@@ -994,6 +994,16 @@ class Parser {
      name=name=="qtexsum" ? "sum" : name=="qtexprod" ? "product" : name=="qtexbigotimes" ? "qtensorproduct" : "qblocksum";
      args.insert(args.begin(),product());
     }
+    if(name=="qsequence" && args.size()==3 && args[0].size()>=2 && args[0].front()=='[' && args[0].back()==']') {
+     // Preserve singleton lists: libqalculate otherwise collapses [step] to step.
+     std::string body=args[0].substr(1,args[0].size()-2);int nesting=0;bool quoted=false;
+     for(char c:body) {
+      if(c=='"'){quoted=!quoted;continue;}if(quoted)continue;
+      if(c=='(' || c=='[')++nesting;else if(c==')' || c==']')--nesting;
+      else if(c==';' && nesting==0)throw std::runtime_error("A sequence requires a flat comma-separated transformation list.");
+     }
+     args[0]="vector("+body+")";
+    }
     scopeIndex(name,args);
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";

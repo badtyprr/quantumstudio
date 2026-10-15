@@ -128,8 +128,13 @@ int main(){try {
  equal("quantum: sequence([apply(X,s_0,[0]),reset(s_0,[0])],|0>,s_0)","[1,0;0,0]");
  equal("quantum: sequence([],|1>,s_0)","[0;1]");
  std::string longSequence="quantum: sequence([";
- for(int k=0;k<128;++k){if(k)longSequence+=",";longSequence+="apply(X,s_0,[0])";}
+ for(int k=0;k<512;++k){if(k)longSequence+=",";longSequence+="apply(X,s_0,[0])";}
  equal(longSequence+"],|0>,s_0)","[1;0]");
+ equal("quantum: sequence([sequence([apply(X,s_0,[0])],s_0,s_0),apply(X,s_0,[0])],|0>,s_0)","[1;0]");
+ equal(R"(quantum: \sum_{s_0=0}^1 {sequence([apply(X,s_0,[0])],|s_0>_2,s_0)})","[1;1]");
+ equal("quantum: sequence([channel(density(s_0),amplitude_damping(1),0),apply(X,s_0,[0])],|1>,s_0)","[0,0;0,1]");
+ equal("quantum: sequence([dephase(s_0,[0])],|+>,s_0)","[1,0;0,1]/2");
+ equal("quantum: sequence([feedforward(s_0,0,1,X,1)],|+0>,s_0)","[1,0,0,0;0,0,0,0;0,0,0,0;0,0,0,1]/2");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
@@ -140,7 +145,7 @@ int main(){try {
  }
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
- for(const auto &expression:{"quantum: -1⊕1","quantum: 0.5⊕1","quantum: i⊕1","quantum: X⊕1","quantum: |-1⊕-2>_2","quantum: |0.5⊕1>_2","quantum: |i⊕1>_2","quantum: |2⊕1>_2","quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
+ for(const auto &expression:{"quantum: sequence([1],|0>,s_0)","quantum: sequence([],1,s_0)","quantum: sequence([s_0],|0>,1)","quantum: sequence([apply(X,s_0,[2])],|0>,s_0)","quantum: sequence([apply(X,s_0,[0]);s_0],|0>,s_0)","quantum: -1⊕1","quantum: 0.5⊕1","quantum: i⊕1","quantum: X⊕1","quantum: |-1⊕-2>_2","quantum: |0.5⊕1>_2","quantum: |i⊕1>_2","quantum: |2⊕1>_2","quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
      R"(quantum: |a_0 0 0 0 0 0 0 0 0 0 0>)",R"(quantum: \sum_{a_0=2}^{2}{|a_0 0>})",R"(quantum: \sum_{a_0=-1}^{-1}{|a_0 0>})",
      R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();
