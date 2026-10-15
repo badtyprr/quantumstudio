@@ -46,6 +46,14 @@ The compact controlled-T variant originally failed import. The reviewed fix `b0d
 
 For Bernstein–Vazirani, all eight three-bit secrets plus the notebook's `1011` example were generated in compact and unrolled form. All 18 imported circuits produced the expected measured-register probabilities. Cloud jobs, QIR execution, account setup, SDK statements, custom-include file workflows and notebook visualizations were not executed. None of these three notebooks is certified end to end.
 
+## Selected general-measurement audit
+
+On 2026-10-15, selected finite examples from IBM's [measurement formulations](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements) and [Naimark construction](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem) were checked with explicit matrices substituted for lesson variables. This is not a literal-paste or whole-lesson certification.
+
+The released worker at `69f2b383` passed 13 of 15 initial checks. Approximate square roots of two complex tetrahedral effects failed; exact mode passed those same expressions. PR #60 preserves exact algebraic identities before numerical evaluation. Its development worker passed 30 expanded checks: effect probabilities and completeness, matrix roots, Naimark isometries and distributions, conditional states, and partial measurements of a Bell pair. Maximum residual was below 1e-15. The worker linked the changed matrix-power implementation against the earlier release library; these observations do not certify a complete release build.
+
+For a reproducible example, `born([2,1;1,1]/3,|+>)` gives 5/6. A complex-effect root check is `norm(vec(sqrt(density((|0>+sqrt(2)*exp(2*pi*i/3)*|1>)/sqrt(3))/2)-density((|0>+sqrt(2)*exp(2*pi*i/3)*|1>)/sqrt(3))/sqrt(2)))`; its expected value is zero. Maintained native regression cases are in PR #60's `src/quantum-matrix-power-test.cc`. Automatic construction and validation of arbitrary measurements remain unfinished.
+
 ## Numerical conventions
 
 Exact scalar arithmetic and exact matrix identities are retained where implemented. Some matrix algorithms use double precision even when the calculator precision is higher.

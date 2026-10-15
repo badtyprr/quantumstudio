@@ -94,14 +94,30 @@
       "course": "general-formulation-of-quantum-information",
       "path": "general-measurements/formulations-of-measurements",
       "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements",
-      "status": "end_to_end_audit_pending"
+      "status": "end_to_end_audit_pending",
+      "selected_example_audit": {
+        "date": "2026-10-15",
+        "status": "partial_development_audit; end-to-end compatibility remains pending",
+        "worker_commit": "fff4ecbcfb7e5d52e5211c02b5878d391f793f9b",
+        "coverage": "30 checks combined across the two measurement sections; explicit finite matrices substituted for lesson variables",
+        "results": "All passed on development worker; maximum residual below 1e-15. Two approximate complex-effect roots failed in release 69f2b383 and motivated PR60.",
+        "limitations": "Changed matrix-power implementation linked against prior release library; not whole-release or literal-paste certification. See quantum-notation.md."
+      }
     },
     {
       "kind": "ibm_course_section",
       "course": "general-formulation-of-quantum-information",
       "path": "general-measurements/naimark-theorem",
       "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem",
-      "status": "end_to_end_audit_pending"
+      "status": "end_to_end_audit_pending",
+      "selected_example_audit": {
+        "date": "2026-10-15",
+        "status": "partial_development_audit; end-to-end compatibility remains pending",
+        "worker_commit": "fff4ecbcfb7e5d52e5211c02b5878d391f793f9b",
+        "coverage": "30 checks combined across the two measurement sections; explicit finite matrices substituted for lesson variables",
+        "results": "All passed on development worker; maximum residual below 1e-15. Two approximate complex-effect roots failed in release 69f2b383 and motivated PR60.",
+        "limitations": "Changed matrix-power implementation linked against prior release library; not whole-release or literal-paste certification. See quantum-notation.md."
+      }
     },
     {
       "kind": "ibm_course_section",
