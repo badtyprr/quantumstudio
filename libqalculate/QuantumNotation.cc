@@ -984,6 +984,11 @@ class Parser {
     } else {
     std::vector<std::string> args;
     if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
+    if(name=="qtexsum" || name=="qtexprod" || name=="qtexbigotimes" || name=="qtexbigoplus") {
+     if(args.size()!=3)throw std::runtime_error("A finite sum/product requires lower bound, upper bound and index.");
+     name=name=="qtexsum" ? "sum" : name=="qtexprod" ? "product" : name=="qtexbigotimes" ? "qtensorproduct" : "qblocksum";
+     args.insert(args.begin(),product());
+    }
     scopeIndex(name,args);
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
