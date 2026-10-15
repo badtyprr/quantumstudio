@@ -104,6 +104,25 @@ std::string unicodePowers(const std::string &input) {
 }
 std::string ket(const std::string &label, size_t dimension=0) {
  std::string s=labelText(label);
+ if(!dimension && s.find('#')!=std::string::npos) {
+  // In a computational basis label, oplus combines equal-width bit strings.
+  // Outside labels the same token remains the matrix direct sum.
+  std::string bits;size_t start=0;
+  while(true) {
+   size_t end=s.find('#',start);
+   std::string part=s.substr(start,end==std::string::npos ? end : end-start);
+   if(part.empty() || part.size()>10 || part.find_first_not_of("01")!=std::string::npos)
+    throw std::runtime_error("XOR basis labels require literal binary strings of 1 to 10 bits.");
+   if(bits.empty())bits=part;
+   else {
+    if(bits.size()!=part.size())throw std::runtime_error("XOR basis labels require equal-width binary strings.");
+    for(size_t j=0;j<bits.size();++j)bits[j]=bits[j]==part[j] ? '0' : '1';
+   }
+   if(end==std::string::npos)break;
+   start=end+1;
+  }
+  s=bits;
+ }
  if(dimension) {
   if(s.empty() || s.find_first_not_of("0123456789")!=std::string::npos) throw std::runtime_error("Dimension-qualified kets require a decimal basis index.");
   size_t index=0; for(char c:s) {index=index*10+c-'0'; if(index>=dimension) throw std::runtime_error("Basis index must be smaller than its explicit dimension.");}

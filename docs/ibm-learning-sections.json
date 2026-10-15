@@ -110,7 +110,8 @@
         {
           "path": "quantum-query-algorithms/query-model-of-computation",
           "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation",
-          "audit_status": "Not audited end to end"
+          "audit_status": "Partial formula audit",
+          "finding": "Literal equal-width binary XOR in bra/ket labels implemented and checked against oracle action. Abstract function domains, symbolic function-valued labels and full lesson coverage remain unsupported or unaudited."
         },
         {
           "path": "quantum-query-algorithms/deutsch-algorithm",

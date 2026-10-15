@@ -104,7 +104,7 @@ product before surrounding multiplication, so `CNOT|0>|1>` acts on |01>.
 Use explicit tensor products for grouped or transformed expressions.
 
 The existing `adj()` retains its ordinary adjugate meaning. `dagger()` and `†`
-are the quantum conjugate transpose. `⊕` means direct sum here, not classical XOR.
+are the quantum conjugate transpose. `⊕` means direct sum outside basis labels. Inside literal binary basis labels it means bitwise XOR, for example `|001 ⊕ 101⟩ = |100⟩`.
 Quantum mode preserves unknown symbols and disables unit interpretation so
 summation indices and gate parameters have mathematical rather than unit
 semantics. Standard calculator mode is unaffected. Finite products multiply
@@ -2367,7 +2367,7 @@ The output can be fed directly to either binary operation.
 
 `bitxor(bitxor(s,t),t)` restores s, and `bitdot(bitxor(s,t),x)` equals
 `xor(bitdot(s,x),bitdot(t,x))`. The existing `xor` function still operates on
-integers, for example `xor(5,6)=3`. The ⊕ symbol retains its direct-sum meaning
+integers, for example `xor(5,6)=3`. Outside basis labels, the ⊕ symbol retains its direct-sum meaning
 in quantum matrix expressions; use the explicit binary function for bit strings.
 
 Tests independently compare all 256 four-bit XOR pairs, 64 binary-dot linearity
@@ -2509,7 +2509,7 @@ table [0,1,1,0].
 
 The functional call `xor(5,6)` retains native integer bitwise XOR (3).
 Use explicit multiplication, such as `2*xor(5,6)`, when multiplying that
-function's result. `bitxor` still operates on whole bit vectors; ⊕ still
+function's result. `bitxor` still operates on whole bit vectors; outside basis labels, ⊕ still
 forms a matrix direct sum, and ^ remains exponentiation.
 
 [IBM PhaseOracleGate](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.PhaseOracleGate)
@@ -3087,3 +3087,25 @@ and [Python operator matrix ordering](https://nvidia.github.io/cuda-quantum/late
 Independent tests cover 87 matrices/order/offset/expectation cases and 11 invalid
 expressions, including the full qBraid Hamiltonian, complex Pauli products,
 register extension, every supported namespace and the nine-qubit boundary.
+
+
+### Literal XOR in query-gate basis labels
+
+Inside an unqualified bra or ket, `⊕` and TeX `\oplus` combine literal,
+equal-width binary strings: `|001 ⊕ 101⟩` is `|100⟩`, and
+`\bra{001\oplus 101}` is `⟨100|`. Chains are evaluated left to right.
+Leading zeros preserve register width. Each operand has 1–10 bits.
+Comma-separated registers and adjacent kets compose as usual:
+`|01,001⊕101⟩` is `|01100⟩`. Unequal widths, empty operands, nonbinary
+digits, named states, symbolic variables and function-valued operands are
+rejected. Explicit qudit dimensions do not enable XOR label syntax.
+
+Outside state labels, `X ⊕ Z` remains a matrix direct sum, including its
+existing scalar behavior. Use `bitxor` for general bit-vector expressions
+and `oracle(table,m)` for finite query gates. This is not a parser for
+abstract mappings such as `f:Σⁿ→Σᵐ` or symbolic `|y⊕f(x)⟩`.
+
+The regression suite exhaustively checks all three-bit pairs in bras and
+kets, register composition, the ten-bit boundary, invalid labels, direct-sum
+preservation and all basis inputs of a one-input/three-output-bit oracle.
+Source: [IBM Quantum Learning, query gates](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation).

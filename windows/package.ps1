@@ -78,6 +78,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Rectangular channel verification failed.' }
 if ($LASTEXITCODE -ne 0) { throw 'IBM measurement lesson verification failed.' }
 & "$repo\.tools\qasm-venv\Scripts\python.exe" "$PSScriptRoot\test-matrix-order.py"
 if ($LASTEXITCODE -ne 0) { throw 'Hermitian matrix order verification failed.' }
+& "$repo\.tools\qasm-venv\Scripts\python.exe" "$PSScriptRoot\test-xor-labels.py"
+if ($LASTEXITCODE -ne 0) { throw 'XOR basis label verification failed.' }
 & "$repo\.tools\qasm-venv\Scripts\python.exe" "$PSScriptRoot\test-guide.py"
 if ($LASTEXITCODE -ne 0) { throw 'Offline guide structure verification failed.' }
 $cssTest = Join-Path $repo '.tools/css-circuit-package-test'
