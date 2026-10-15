@@ -124,6 +124,12 @@ int main(){try {
   equal("quantum: \\begin{cases}(-1)^"+x+" |->|0> & \\text{if $"+x+"\\oplus "+y+"=0$}\\\\[1mm](-1)^"+x+" |->|1> & \\text{if $"+x+"\\oplus "+y+"=1$}\\end{cases}",
         "(-1)^"+x+"*qtensor([1;-1]/sqrt(2),qbasis("+std::to_string(f0^f1)+",2))");
  }
+ equal("quantum: sequence([apply(H,s_0,[0]),apply(X,s_0,[0])],|0>,s_0)","[1;1]/sqrt(2)");
+ equal("quantum: sequence([apply(X,s_0,[0]),reset(s_0,[0])],|0>,s_0)","[1,0;0,0]");
+ equal("quantum: sequence([],|1>,s_0)","[0;1]");
+ std::string longSequence="quantum: sequence([";
+ for(int k=0;k<128;++k){if(k)longSequence+=",";longSequence+="apply(X,s_0,[0])";}
+ equal(longSequence+"],|0>,s_0)","[1;0]");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {

@@ -256,6 +256,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpermutedim",3},
  {"qphaseoracle",2},
  {"qphasefunction",3},
+ {"qsequence",3},
  {"qpostselect",2},
  {"qpower",2},
  {"qlogm",1},
@@ -327,10 +328,10 @@ class Parser {
  }
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
- std::string s; size_t p = 0; unsigned depth = 0, nodes = 0;
+ std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned nextBoundIndex=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
-  size_t index=(name=="qphasefunction" && args.size()==3) ? 2 :
+  size_t index=((name=="qphasefunction" || name=="qsequence") && args.size()==3) ? 2 :
    ((name=="sum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
   if(!index)return;
   std::string original=args[index];
@@ -426,7 +427,7 @@ class Parser {
    if(!dimension.empty())throw std::runtime_error("A comma-separated register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
    registers.push_back(label.substr(start));std::string state;
    for(const auto &part:registers) {
-    if(++nodes>512)throw std::runtime_error("Quantum expression is too complex.");
+    if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
     if(labelText(part).empty())throw std::runtime_error("Empty register in a comma-separated state label.");
     std::string factor=basisState(part);
     state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
@@ -497,7 +498,7 @@ class Parser {
   return value+")";
  }
  std::string atom() {
-  if(++depth > 256 || ++nodes > 512) throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
+  if(++depth > 256 || ++nodes > nodeLimit) throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
   ws(); std::string a;int kind=0;
   if(take('(')) { a="("+expression()+")"; need(')'); }
   else if(take('[')) {
@@ -557,7 +558,7 @@ class Parser {
      std::string nextLabel=s.substr(nextStart,nextEnd-nextStart);p=nextEnd+1;
      std::string nextDimension=dimensionSuffix();ws();
      if(p<s.size() && std::string("~`?^").find(s[p])!=std::string::npos) {p=saved;break;}
-     if(++nodes>512)throw std::runtime_error("Quantum expression is too complex.");
+     if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
      if(leftRegister.empty())leftRegister=basisState(left,dimension);
      leftRegister="qtensor("+leftRegister+","+basisState(nextLabel,nextDimension)+")";
     }
@@ -584,7 +585,7 @@ class Parser {
      std::string rightRegister=basisState(rawLabel,rightDimension);
      if(!leftRegister.empty()) {
       while(take('|')) {
-       if(++nodes>512)throw std::runtime_error("Quantum expression is too complex.");
+       if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
        size_t nextStart=p;p=labelEnd('>',p);
        if(p==std::string::npos)throw std::runtime_error("Unclosed adjacent ket in inner product.");
        std::string nextLabel=s.substr(nextStart,p-nextStart);++p;
@@ -628,7 +629,7 @@ class Parser {
      // Adjacent input registers belong to the same matrix element. Build
      // their tensor product before contracting it with the operator and bra.
      while(take('|')) {
-      if(++nodes>512)throw std::runtime_error("Quantum expression is too complex.");
+      if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
       size_t nextStart=p;p=labelEnd('>',p);
       if(p==std::string::npos)throw std::runtime_error("Unclosed adjacent ket in matrix element.");
       std::string nextLabel=s.substr(nextStart,p-nextStart);++p;
@@ -767,6 +768,7 @@ class Parser {
     if(name=="QFT") name="qft";
     if(name=="phaseoracle") name="qphaseoracle";
     if(name=="phase_function")name="qphasefunction";
+    if(name=="sequence" || name=="qsequence") {name="qsequence";nodeLimit=4096;}
     if(name=="oracle") name="qoracle";
     if(name=="oracle_function")name="qoraclefunction";
     if(name=="modmul") name="qmodmul";

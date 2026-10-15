@@ -15,7 +15,7 @@ void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const M
   const std::string &name=value.function()->referenceName();
   if((name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="sum" || name=="product") && value[3].equals(index))bound=3;
  }
- if(value.isFunction() && value.size()==3 && value.function()->referenceName()=="qphasefunction" && value[2].equals(index))bound=2;
+ if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence") && value[2].equals(index))bound=2;
  for(size_t k=0;k<value.size();++k) {
   if(bound>=0 && (k==0 || k==size_t(bound)))continue;
   replaceQuantumIndex(value[k],index,replacement);
@@ -28,6 +28,30 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qsequence") {
+   if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A sequence state placeholder must be a symbolic variable.",NULL);return 0;}
+   const MathStructure &steps=raw[0];
+   if((!steps.isVector() && !(steps.isFunction() && (steps.function()->referenceName()=="vector" || steps.function()->referenceName()=="horzcat"))) || steps.size()>512) {CALCULATOR->error(true,"A sequence requires a flat list of at most 512 transformations.",NULL);return 0;}
+   out=raw[1];out.eval(eo);
+   auto validState=[](const MathStructure &state) {
+    if(state.isMatrix()) {
+     if(state.rows()==0 || state.columns()==0 || state.rows()>1024 || state.columns()>1024 || state.rows()*state.columns()>262144)return false;
+     for(size_t r=0;r<state.rows();++r)for(size_t c=0;c<state.columns();++c)if(!state.getElement(r+1,c+1)->representsScalar())return false;
+     return true;
+    }
+    if(!state.isVector() || state.size()==0 || state.size()>1024)return false;
+    for(size_t k=0;k<state.size();++k)if(!state[k].representsScalar())return false;
+    return true;
+   };
+   if(!validState(out)) {CALCULATOR->error(true,"A sequence requires a bounded state vector or matrix.",NULL);return 0;}
+   for(size_t k=0;k<steps.size();++k) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure next=steps[k];replaceQuantumIndex(next,raw[2],out);next.eval(eo);
+    if(!validState(next)) {CALCULATOR->error(true,"A sequence transformation did not produce a bounded state vector or matrix.",NULL);return 0;}
+    out=next;
+   }
+   return 1;
+  }
   if(op=="qphasefunction") {
    if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A phase function index must be a symbolic variable.",NULL);return 0;}
    MathStructure width=raw[1];width.eval(eo);
@@ -103,5 +127,5 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
 }
