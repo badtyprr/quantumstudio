@@ -28,10 +28,11 @@ libqalculateinclude_HEADERS = \
 	util.h includes.h Unit.h BuiltinFunctions.h \
 	QalculateDateTime.h qalculate.h
 
-noinst_HEADERS = QuantumNotation.h QuantumTeX.h QuantumSingular.h MathStructure-support.h Calculator_p.h ExpressionItem_p.h MathStructure_p.h bernoulli_numbers.h primes.h $(libqalculate_compiled_def_headers)
+noinst_HEADERS = QuantumNotation.h QuantumStateMetrics.h QuantumTeX.h QuantumSingular.h MathStructure-support.h Calculator_p.h ExpressionItem_p.h MathStructure_p.h bernoulli_numbers.h primes.h $(libqalculate_compiled_def_headers)
 
 libqalculate_la_SOURCES = \
 	QuantumNotation.cc \
+	QuantumStateMetrics.cc \
 	QuantumTeX.cc \
 	QuantumSingular.cc \
 	Function.cc Calculator.cc Calculator-plot.cc Calculator-parse.cc \
