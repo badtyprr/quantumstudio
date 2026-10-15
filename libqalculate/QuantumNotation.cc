@@ -164,6 +164,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qapply",3},
  {"qbasis",2},
  {"qindexxor",2},
+ {"qoplus",2},
  {"qcompare",3},
  {"qbitdot",2},
  {"qbitxor",2},
@@ -326,7 +327,6 @@ class Parser {
  }
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
- bool basisIndexContext = false;
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0;
  unsigned nextBoundIndex=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
@@ -470,10 +470,9 @@ class Parser {
   // Explicit dimensions disambiguate evaluated decimal indices from binary
   // strings and named states. Reuse the parser's depth and node limits.
   std::string outer=s;size_t outerPosition=p;s=label;p=0;
-  bool outerIndexContext=basisIndexContext;basisIndexContext=true;
   std::string index=expression();ws();
   if(p!=s.size())throw std::runtime_error("Invalid expression in a dimension-qualified basis label.");
-  s=outer;p=outerPosition;basisIndexContext=outerIndexContext;
+  s=outer;p=outerPosition;
   return "qbasis("+index+","+dimension+")";
  }
  std::string dimensionSuffix() {
@@ -1071,7 +1070,7 @@ class Parser {
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
    else if(take('@')) a="qtensor("+a+","+diracFactor()+")";
-   else if(take('#')) a=std::string(basisIndexContext ? "qindexxor(" : "qdirectsum(")+a+","+diracFactor()+")";
+   else if(take('#')) a="qoplus("+a+","+diracFactor()+")";
    else if(startsAtom()) a="qadjacent("+a+","+diracFactor()+")";
    else break;
    checkSize(a);
