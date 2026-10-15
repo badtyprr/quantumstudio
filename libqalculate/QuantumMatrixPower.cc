@@ -61,12 +61,13 @@ static bool spectralMatrixFunction(MathStructure &out,const MathStructure &a,con
  // A rank-one matrix satisfies A^2=tr(A) A. Keep its zero eigenspace
  // exact instead of taking square roots of eigensolver roundoff.
  if(!logarithm && n<=16 && exponent.representsPositive()) {
-  MathStructure trace;for(size_t k=0;k<n;++k)trace+=entry(a,k,k);trace.eval(eo);
+  EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+  MathStructure trace;for(size_t k=0;k<n;++k)trace+=entry(a,k,k);trace.eval(exact);
   if(trace.representsNonZero()) {
-   MathStructure squared=a;squared*=a;squared.eval(eo);bool rankOne=squared.isMatrix();
+   MathStructure squared=a;squared*=a;squared.eval(exact);bool rankOne=squared.isMatrix();
    for(size_t r=0;r<n && rankOne;++r)for(size_t c=0;c<n;++c) {
     MathStructure term=entry(a,r,c);term*=trace;
-    MathStructure difference=entry(squared,r,c);difference-=term;difference.eval(eo);
+    MathStructure difference=entry(squared,r,c);difference-=term;difference.eval(exact);
     if(!difference.isZero()){rankOne=false;break;}
    }
    if(rankOne) {
@@ -205,7 +206,10 @@ class QuantumPowerFunction: public MathFunction {
  QuantumPowerFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumPowerFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
-  MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
+  // Preserve algebraic projector identities before numerical eigendecomposition.
+  EvaluationOptions input=eo;
+  if(op=="qpower" || op=="qsqrt")input.approximation=APPROXIMATION_EXACT;
+  MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(input);
   const MathStructure &a=args[0];
   if(op=="qlogm")return quantumMatrixLog(out,a,eo) ? 1 : 0;
   if(op=="qpower" || op=="qsqrt") {
