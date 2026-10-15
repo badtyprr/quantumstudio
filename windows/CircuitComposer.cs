@@ -358,8 +358,7 @@ class CircuitComposer : Window {
   string next=future[future.Count-1];future.RemoveAt(future.Count-1);past.Add(snapshot);Restore(next);return true;
  }
  public void OpenCircuit(string path) {
-  if(new FileInfo(path).Length>262144) throw new InvalidDataException("Circuit files must be smaller than 256 KB.");
-  LoadCircuit(File.ReadAllText(path,Encoding.UTF8));
+  LoadCircuit(Encoding.UTF8.GetString(BoundedUtf8File.Read(path,262144,"Circuit")));
  }
  public void LoadCircuit(string text) {
   if(text==null || text.Length>262144)throw new InvalidDataException("Circuit data is too large.");
