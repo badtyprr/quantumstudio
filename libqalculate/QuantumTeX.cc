@@ -300,6 +300,7 @@ class TeXReader {
   if(name=="Vert") { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
   static const std::map<std::string,std::string> aliases={
    {"langle","<"},{"rangle",">"},{"vert","|"},{"lvert","|"},{"rvert","|"},
+   {"cup","∪"},{"cap","∩"},{"setminus","∖"},{"emptyset","vector()"},{"varnothing","vector()"},
    {"otimes","@"},{"oplus","#"},{"dagger","~"},{"cdot","*"},{"times","*"},
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
@@ -446,7 +447,7 @@ std::string quantumTeX(const std::string &input) {
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
-  {"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
+  {"∪","\\cup "},{"∩","\\cap "},{"∖","\\setminus "},{"∅","\\emptyset "},{"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
  for(size_t k=0;k<s.size();) {
   if(s[k]=='"' || s[k]=='\'') {if(quote==s[k])quote=0;else if(!quote)quote=s[k];normalized+=s[k++];continue;}

@@ -383,7 +383,7 @@ class Parser {
   return 0;
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
- bool startsAtom() { ws(); if(p == s.size() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   size_t end=labelEnd('|',p+1);
   if(end==std::string::npos)return false;
@@ -1173,8 +1173,26 @@ class Parser {
   }
   return a;
  }
+ bool takeSetOperator(const std::string &token) {
+  ws();if(s.compare(p,token.size(),token)!=0)return false;p+=token.size();return true;
+ }
+ std::string setIntersection() {
+  std::string result=additive();
+  while(true) {
+   if(takeSetOperator("∩"))result="intersect("+result+","+additive()+")";
+   else if(takeSetOperator("∖"))result="setdiff("+result+","+additive()+")";
+   else break;
+   checkSize(result);
+  }
+  return result;
+ }
+ std::string setUnion() {
+  std::string result=setIntersection();
+  while(takeSetOperator("∪")) {result="union("+result+","+setIntersection()+")";checkSize(result);}
+  return result;
+ }
  std::string comparison() {
-  std::string left=additive(),result;
+  std::string left=setUnion(),result;
   while(true) {
    ws();std::string relation;
    for(const char *token:{"<=",">=","!=","==","=","<",">"}) {
@@ -1183,7 +1201,7 @@ class Parser {
    }
    if(relation.empty())break;
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
-   std::string right=additive(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   std::string right=setUnion(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
   }
   return result.empty() ? left : result;

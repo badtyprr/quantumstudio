@@ -20,6 +20,18 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: cardinality(\{0,1\}\cup\{1,2\}))","3");
+ equal(R"(quantum: cardinality(\{0,1\}\cap\{1,2\}))","1");
+ equal(R"(quantum: cardinality(\{0,1\}\setminus\{1,2\}))","1");
+ equal(R"(quantum: cardinality(\varnothing))","0");
+ equal(R"(quantum: cardinality(\emptyset))","0");
+ equal("quantum: cardinality(∅)","0");
+ equal(R"(quantum: cardinality(\{0,1\}∪\{1,2\}∩\{2\}))","3");
+ equal(R"(quantum: cardinality((\{0,1\}∪\{1,2\})∩\{2\}))","1");
+ equal(R"(quantum: cardinality(\{0,1,2\}∖\{1\}∖\{2\}))","1");
+ equal(R"(quantum: cardinality(\{0,1\}^2\cup\emptyset))","4");
+ equal(R"(quantum: cardinality(\{0,1\}^2\cap\emptyset))","0");
+ equal(R"(quantum: cardinality(\{x\in\{0,1\}^2:bitvalue(x)<2\}\cup\{x\in\{0,1\}^2:bitvalue(x)>=2\}))","4");
  auto labelSet=[](int mask) {std::string s="vector(";bool first=true;for(int k=0;k<4;++k)if(mask&(1<<k)){if(!first)s+=",";first=false;s+="bitstring("+std::to_string(k)+",2)";}return s+")";};
  for(int left=0;left<16;++left)for(int right=0;right<16;++right) {
   std::string a=labelSet(left),b=labelSet(right);
