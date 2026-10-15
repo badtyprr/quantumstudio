@@ -58,6 +58,12 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   const MathStructure &a=args[0];
   if(op=="qketstate") {
+   if(a.isFunction() && a.function()->referenceName()=="qbitlabel" && a.size()==2) {
+    MathStructure index=a[0],width=a[1];index.eval(eo);width.eval(eo);
+    if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue())) {CALCULATOR->error(true,"Invalid binary-string basis label.",NULL);return 0;}
+    int dimension=1<<width.number().intValue();out.clearMatrix();out.resizeMatrix(dimension,1,m_zero);
+    element(out,index.number().intValue(),0)=m_one;return 1;
+   }
    if(!a.isMatrix() || a.columns()!=1 || a.rows()==0 || a.rows()>1024) {
     CALCULATOR->error(true,"A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4.",NULL);return 0;
    }

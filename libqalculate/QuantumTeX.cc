@@ -94,6 +94,14 @@ class TeXReader {
     }
     if(membership==std::string::npos && separator==std::string::npos) {
      entries.push_back(trim(contents.substr(startEntry)));
+     size_t afterSet=pos;space();
+     if(pos<input.size() && input[pos]=='^') {
+      bool zero=false,one=false,binary=true;
+      for(const auto &entry:entries) {if(entry=="0")zero=true;else if(entry=="1")one=true;else binary=false;}
+      if(!binary || !zero || !one)throw std::runtime_error(error("Cartesian powers currently require the explicit binary alphabet {0,1}"));
+      ++pos;return "qbitstrings("+argument()+")";
+     }
+     pos=afterSet;
      bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
      if(ellipsis) {
       if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
