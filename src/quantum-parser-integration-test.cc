@@ -19,6 +19,13 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \{0,2,0\})","vector(0,2)");
+ equal(R"(quantum: \{k\in\{-2,0,2,2\}:k\geq0\})","vector(0,2)");
+ equal(R"(quantum: \{k\in\{0,2\}:k<0\})","vector()");
+ equal(R"(quantum: \sum_{k\in\{j\in\{-1,0,2\}:j>=0\}}{k})","2");
+ equal(R"(quantum: \sum_{k\in\{1,3\}}{\sum_{k\in\{k\in\{k,k+1\}:k>1\}}{k}})","9");
+ equal(R"(quantum: \{\alpha\in\{-1,0,1\}:\alpha\geq0\})","vector(0,1)");
+
  equal(R"(quantum: \prod_{\alpha=1}^{2}{\sum_{\alpha\in\{2,3\}}{\alpha}})","25");
  equal(R"(quantum: \sum_{\alpha\in\{0,1\}}{\prod_{\alpha=2}^{3}{\alpha}})","12");
 

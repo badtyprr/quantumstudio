@@ -332,13 +332,14 @@ class Parser {
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned nextBoundIndex=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
-  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset") && args.size()==3) ? 2 :
+  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="select") && args.size()==3) ? 2 :
    ((name=="sum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
   if(!index)return;
+  size_t body=name=="select" ? 1 : 0;
   std::string original=args[index];
   while(original.size()>2 && original.front()=='(' && original.back()==')')
    original=original.substr(1,original.size()-2);
-  bool plain=(name=="qsumset" || name=="sum" || name=="product") && !original.empty() && original!="pi" && original!="i" && original!="e";
+  bool plain=(name=="qsumset" || name=="sum" || name=="product" || name=="select") && !original.empty() && original!="pi" && original!="i" && original!="e";
   for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
   if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
      original.find('"',1)!=original.size()-1))return;
@@ -352,14 +353,14 @@ class Parser {
   // Nested calls are already scoped. Rename only this body and declaration;
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
-  while((at=args[0].find(original,at))!=std::string::npos) {
+  while((at=args[body].find(original,at))!=std::string::npos) {
    if(plain) {
     auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
-    bool quoted=false;for(size_t k=0;k<at;++k)if(args[0][k]=='"')quoted=!quoted;
-    if(quoted || (at && identifier(args[0][at-1])) ||
-       (at+original.size()<args[0].size() && identifier(args[0][at+original.size()]))) {at+=original.size();continue;}
+    bool quoted=false;for(size_t k=0;k<at;++k)if(args[body][k]=='"')quoted=!quoted;
+    if(quoted || (at && identifier(args[body][at-1])) ||
+       (at+original.size()<args[body].size() && identifier(args[body][at+original.size()]))) {at+=original.size();continue;}
    }
-   args[0].replace(at,original.size(),symbol);at+=symbol.size();checkSize(args[0]);
+   args[body].replace(at,original.size(),symbol);at+=symbol.size();checkSize(args[body]);
   }
   args[index]=symbol;
  }

@@ -34,6 +34,11 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure members=raw[1];
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    members.eval(exact);
+   // The generic evaluator collapses a singleton function-result vector.
+   // Preserve the collection type of the set operations used by TeX builders.
+   if(!members.isVector() && members.representsScalar() && raw[1].isFunction() &&
+      (raw[1].function()->referenceName()=="unique" || raw[1].function()->referenceName()=="select"))
+    members.transform(STRUCT_VECTOR);
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    std::vector<MathStructure> seen;
    out=m_zero;

@@ -17,9 +17,16 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\{0,1,0\})","unique(vector(0,1,0))");
+  equal(R"(\{k\in\{0,1\}:k>0\})","unique(select(unique(vector(0,1)),k>0,k))");
+  equal(R"(\left\{k\in S_0\mid k\geq0\right\})","unique(select(S_0,k>=0,k))");
+  rejects(R"(\{k\in S_0:\})");
+  rejects(R"(\{k+1\in S_0:k>0\})");
+  rejects(R"(\{k\in S_0:k>0:k<2\})");
+
   rejects(R"(\sum_{k\in\{0,1}{k})");
   rejects(R"(\prod_{k\in\{0,1\}}{k})");
-  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","sumset(k^2,vector(0,2,5),k)");
+  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","sumset(k^2,unique(vector(0,2,5)),k)");
   equal(R"(\sum_{k\in S_0} k+1)","qtexsumset( S_0,k) k+1");
   rejects(R"(\sum^{2}_{k\in S_0}{k})");
   rejects(R"(\sum_{k\in}{k})");
