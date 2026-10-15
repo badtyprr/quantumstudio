@@ -60,7 +60,7 @@ Selected identities from [IBM's Grover analysis](https://quantum.cloud.ibm.com/l
 
 At released revision `f1af3559`, ten further checks passed with zero reported residual: uniform-state preparation and the diffusion-reflection identity for one through five qubits. These exercised compact register notation such as `H^{\otimes n}|0^n>` with concrete widths. A reproducible example is `norm(vec(H^{\otimes 2}|0^2>-(1/2)\sum_{x\in\{0,\ldots,3\}}{|x>_4}))`, whose expected value is zero.
 
-These audits replace the symbolic bit-string domain with an explicit integer range and supply ket/identity dimensions. General symbolic alphabets, Cartesian set powers, set cardinality and automatic state-dimension inference remain unfinished. At `f1af3559`, an unqualified sum of `|x>` over `{0,1,2}` incorrectly returned scalar `3`; this is not a valid quantum-state result. The explicit form `\sum_{x\in\{0,1,2\}}{|x>_3}` avoids that ambiguity. The recorded checks are selected source audits, not full-lesson certification or a claim that CI replays every audit.
+These audits replace the symbolic bit-string domain with an explicit integer range and supply ket/identity dimensions. General symbolic alphabets, Cartesian set powers and automatic state-dimension inference remain unfinished at `97e1d120`; that revision adds finite-set cardinality. At `f1af3559`, an unqualified sum of `|x>` over `{0,1,2}` incorrectly returned scalar `3`; this is not a valid quantum-state result. Revision `0dee0478` rejects those scalar ket labels. The explicit form `\sum_{x\in\{0,1,2\}}{|x>_3}` supplies the required dimension. The recorded checks are selected source audits, not full-lesson certification or a claim that CI replays every audit.
 
 ## Selected general-measurement audit
 
