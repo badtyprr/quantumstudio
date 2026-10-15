@@ -14,6 +14,7 @@
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
 #include "QuantumReset.h"
+#include "QuantumNoise.h"
 #include "QuantumOperators.h"
 #include "QuantumSubsystem.h"
 #include "QuantumGates.h"
@@ -1693,6 +1694,7 @@ void Calculator::addBuiltinVariables() {
 void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
 	registerQuantumReset(*this);
+	registerQuantumNoise(*this);
 	registerQuantumOperators(*this);
 	registerQuantumSubsystem(*this);
 	registerQuantumGates(*this);
