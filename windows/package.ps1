@@ -13,6 +13,14 @@ function Invoke-SourceGit([string[]]$Arguments) {
     if ($LASTEXITCODE -ne 0) { throw "Git failed: $Arguments" }
     return $result
 }
+function Assert-UnchangedSources {
+    if ($revision -ne (Invoke-SourceGit -Arguments @('rev-parse','HEAD'))) { throw 'Source revision changed during the build.' }
+    # Autoreconf and make dist regenerate these documentation/translation files.
+    # Every other tracked input must still match the recorded revision.
+    $changes = @(Invoke-SourceGit -Arguments @('diff','--name-only','HEAD'))
+    $unexpected = @($changes | Where-Object { $_ -notmatch '^(ABOUT-NLS|INSTALL|(po|po-defs)/[^/]+\.pot?)$' })
+    if ($unexpected.Count) { throw ('Source inputs changed during the build: ' + ($unexpected -join ', ')) }
+}
 $revision = Invoke-SourceGit -Arguments @('rev-parse','HEAD')
 if (Invoke-SourceGit -Arguments @('status','--porcelain','--untracked-files=all')) { throw 'Package from a clean source checkout.' }
 if (!$Candidate) {
@@ -81,6 +89,7 @@ try {
     if (!$process.WaitForExit(300000)) { $process.Kill(); $process.WaitForExit(); throw 'Packaged GUI smoke test timed out.' }
     if ($process.ExitCode -ne 0 -or !(Get-Content -LiteralPath ($smoke+'.txt') -Raw).StartsWith('PASS:')) { throw 'Packaged GUI smoke test failed.' }
 } finally { $process.Dispose() }
+Assert-UnchangedSources
 if (!$Candidate) {
     Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null
     if ($revision -ne (Invoke-SourceGit -Arguments @('rev-parse','origin/master'))) { throw 'Master changed during the build; rebuild the current merged tip.' }
