@@ -138,6 +138,12 @@ class TeXReader {
    variable=variable.substr(first,last-first+1);
    if(variable[0]>='0' && variable[0]<='9') throw std::runtime_error(error("A summation index cannot begin with a digit"));
    for(unsigned char c:variable) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && variable.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
+   space();
+   if(pos==input.size())throw std::runtime_error(error("Missing finite sum/product body"));
+   if(input[pos]!='{') {
+    // The expression parser determines the multiplicative body's extent.
+    return "qtex"+name+"("+startValue+","+upper+","+variable+") ";
+   }
    auto body=group();
    return (name=="sum" ? "sum(" : name=="prod" ? "product(" : name=="bigoplus" ? "blocksum(" : "tensorproduct(")+body+","+startValue+","+upper+","+variable+")";
   }
