@@ -20,6 +20,16 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(int width=1;width<=4;++width)for(int count=0;count<=(1<<width);++count) {
+  std::string domain="\\{x\\in\\{0,1\\}^"+std::to_string(width)+":bitvalue(x)<"+std::to_string(count)+"\\}";
+  equal("quantum: |"+domain+"|",std::to_string(count));
+  equal("quantum: \\sum_{x\\in"+domain+"}{bitvalue(x)}",std::to_string(count*(count-1)/2));
+ }
+ equal(R"(quantum: norm(vec(\sum_{x\in\{x\in\{0,1\}^3:bitvalue(x)<3\}}{|x>}-|000>-|001>-|010>)))","0");
+ equal(R"(quantum: |\{x\in\{0,1\}^0:bitvalue(x)=0\}|)","1");
+ equal("quantum: cardinality(unique(vector(bitstring(1,2),bitstring(1,3),bitstring(1,2))))","2");
+ equal("quantum: cardinality(unique(vector(bitstring(1+1,3),bitstring(2,3))))","1");
+ equal("quantum: cardinality(unique([3,2,3,1]))","3");
  for(int a=0;a<8;++a)for(int b=0;b<8;++b) {
   std::string left="bitstring("+std::to_string(a)+",3)",right="bitstring("+std::to_string(b)+",3)";
   equal("quantum: bitvalue(bitxor("+left+","+right+"))",std::to_string(a^b));

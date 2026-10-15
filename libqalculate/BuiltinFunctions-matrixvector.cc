@@ -1619,8 +1619,20 @@ int ColonFunction::calculate(MathStructure &mstruct, const MathStructure &vargs,
 	if(CALCULATOR->aborted() || mstruct.size() == 0) return 0;
 	return 1;
 }
+class BinaryLabelVectorArgument : public VectorArgument {
+public:
+	BinaryLabelVectorArgument() : VectorArgument("") {}
+	Argument *copy() const {return new BinaryLabelVectorArgument(*this);}
+protected:
+	bool subtest(MathStructure &value, const EvaluationOptions &eo) const {
+		if(VectorArgument::subtest(value, eo)) return true;
+		// Evaluation can collapse a one-element vector of typed labels.
+		if(value.isFunction() && value.function()->referenceName() == "qbitlabel") {value.transform(STRUCT_VECTOR); return true;}
+		return false;
+	}
+};
 SelectFunction::SelectFunction() : MathFunction("select", 2, 4) {
-	setArgumentDefinition(1, new VectorArgument());
+	setArgumentDefinition(1, new BinaryLabelVectorArgument());
 	setArgumentDefinition(3, new SymbolicArgument());
 	setDefaultValue(3, "undefined");
 	setArgumentDefinition(4, new BooleanArgument());
@@ -2154,7 +2166,7 @@ int IsSubsetFunction::calculate(MathStructure &mstruct, const MathStructure &var
 }
 
 UniqueFunction::UniqueFunction() : MathFunction("unique", 1, 1) {
-	setArgumentDefinition(1, new VectorArgument(""));
+	setArgumentDefinition(1, new BinaryLabelVectorArgument());
 }
 int UniqueFunction::calculate(MathStructure &mstruct, const MathStructure &vargs, const EvaluationOptions &eo) {
 	mstruct = vargs[0];
@@ -2163,6 +2175,28 @@ int UniqueFunction::calculate(MathStructure &mstruct, const MathStructure &vargs
 	for(size_t i = 0; i < mstruct.size(); i++) {
 		if(CALCULATOR->aborted()) return 0;
 		mstruct[i].eval(eo2);
+	}
+	// Binary labels are finite strings, not ordered scalar expressions. Sort
+	// their validated (width, value) keys without invoking scalar comparison.
+	bool labels = mstruct.size() > 0;
+	for(size_t i = 0; i < mstruct.size(); ++i) {
+		if(!mstruct[i].isFunction() || mstruct[i].function()->referenceName() != "qbitlabel") {labels = false; break;}
+	}
+	if(labels) {
+		if(mstruct.size() > 1024) {CALCULATOR->error(true, "Binary-string sets support at most 1024 entries.", NULL); return 0;}
+		std::vector<std::pair<int, int>> keys;
+		MathFunction *label = mstruct[0].function();
+		for(size_t i = 0; i < mstruct.size(); ++i) {
+			if(CALCULATOR->aborted()) return 0;
+			if(mstruct[i].size() != 2) {CALCULATOR->error(true, "Invalid binary-string label.", NULL); return 0;}
+			MathStructure index = mstruct[i][0], width = mstruct[i][1]; index.eval(eo2); width.eval(eo2);
+			if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number() < 0 || width.number() > 10 || index.number() < 0 || index.number() >= Number(1 << width.number().intValue())) {CALCULATOR->error(true, "Invalid binary-string label.", NULL); return 0;}
+			keys.push_back(std::make_pair(width.number().intValue(), index.number().intValue()));
+		}
+		std::sort(keys.begin(), keys.end()); keys.erase(std::unique(keys.begin(), keys.end()), keys.end());
+		mstruct.clearVector();
+		for(const auto &key : keys) {MathStructure index(key.second), width(key.first), entry; entry.set(label, &index, &width, NULL); mstruct.addChild(entry);}
+		return 1;
 	}
 	if(!mstruct.sortVector()) return 0;
 	for(size_t i = 1; i < mstruct.size();) {
