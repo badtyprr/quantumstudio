@@ -12,6 +12,8 @@ import openqasm3.ast as ast
 import pyqasm
 from pyqasm.visitor import QasmVisitor
 from pyqasm.expressions import Qasm3ExprEvaluator
+from pyqasm.transformer import Qasm3Transformer
+from pyqasm.validator import Qasm3Validator
 
 
 def unroll_preserving_phase(module, primitives):
@@ -24,6 +26,17 @@ def unroll_preserving_phase(module, primitives):
     if pyqasm.__version__ != '1.0.4':
         raise ValueError('This compiler adapter requires PyQASM 1.0.4.')
     original = QasmVisitor._visit_phase_operation
+    original_range = Qasm3Transformer.get_qubits_from_range_definition
+    def register_range(range_def, qreg_size, is_qubit_reg, op_node=None):
+        # OpenQASM index ranges include their endpoint, unlike Python slices.
+        start = 0 if range_def.start is None else Qasm3ExprEvaluator.evaluate_expression(range_def.start)[0]
+        end = qreg_size-1 if range_def.end is None else Qasm3ExprEvaluator.evaluate_expression(range_def.end)[0]
+        step = 1 if range_def.step is None else Qasm3ExprEvaluator.evaluate_expression(range_def.step)[0]
+        if any(type(value) is not int for value in (start, end, step)) or step == 0:
+            raise ValueError('Register ranges require integer bounds and a nonzero integer step.')
+        for index in (start, end):
+            Qasm3Validator.validate_register_index(index, qreg_size, qubit=is_qubit_reg, op_node=op_node)
+        return list(range(start, end+(1 if step > 0 else -1), step))
     def phase(visitor, operation, inverse=False, ctrls=None):
         if not ctrls:
             return original(visitor, operation, inverse, ctrls)
@@ -35,10 +48,12 @@ def unroll_preserving_phase(module, primitives):
         return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
     QasmVisitor._visit_phase_operation = phase
+    Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     try:
         module.unroll(max_loop_iters=4096, external_gates=list(primitives))
     finally:
         QasmVisitor._visit_phase_operation = original
+        Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
 
 
 GATES = {name.lower(): name for name in (
