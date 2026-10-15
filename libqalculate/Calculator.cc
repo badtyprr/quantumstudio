@@ -13,6 +13,7 @@
 
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
+#include "QuantumGates.h"
 #include "QuantumMatrixPower.h"
 #include "QuantumStateFunctions.h"
 #include "QuantumMatrixExp.h"
@@ -1687,6 +1688,7 @@ void Calculator::addBuiltinVariables() {
 
 void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
+	registerQuantumGates(*this);
 	registerQuantumMatrixPower(*this);
 	registerQuantumStateFunctions(*this);
 	registerQuantumMatrixExp(*this);
