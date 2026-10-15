@@ -134,6 +134,20 @@ int main() {
   matrix.resizeMatrix(33,33,m_zero);
   if(quantumSchattenNorm(out,matrix,order,eo))throw std::runtime_error("Oversized operator accepted");
   ++checks;
+  MathStructure secondOrder(2),complexEntry=parse("3+4i");
+  for(size_t r=1;r<=33;++r)for(size_t c=1;c<=33;++c)*matrix.getElement(r,c)=complexEntry;
+  if(!quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Large Frobenius matrix rejected");
+  checkNear(out.number().floatValue(),165);
+  matrix.clearMatrix();matrix.resizeMatrix(1024,1024,m_zero);
+  *matrix.getElement(1024,1024)=complexEntry;
+  if(!quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Maximum Frobenius matrix rejected");
+  checkNear(out.number().floatValue(),5);
+  *matrix.getElement(1,1)=parse("infinity");
+  if(quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Nonfinite Frobenius entry accepted");
+  ++checks;
+  matrix.clearMatrix();matrix.resizeMatrix(1025,1,m_zero);
+  if(quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Oversized Frobenius dimension accepted");
+  ++checks;
   std::cout<<"PASS: "<<checks<<" Schmidt and Schatten checks\n";return 0;
  } catch(const std::exception &error) {std::cerr<<error.what()<<'\n';return 1;}
 }

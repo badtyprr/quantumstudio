@@ -105,17 +105,19 @@ bool quantumSchattenNorm(MathStructure &out,const MathStructure &matrix,const Ma
  bool spectral=pn.isPlusInfinity();double exponent=spectral ? 1 : pn.floatValue();
  if(!spectral && (!std::isfinite(exponent) || exponent<1)) {CALCULATOR->error(true,"Finite Schatten norm order exceeds floating-point range.",NULL);return false;}
  size_t rows=matrix.isMatrix() ? matrix.rows() : 1,cols=matrix.isMatrix() ? matrix.columns() : 1,n=rows*cols;
- if((!matrix.isMatrix() && !matrix.isNumber()) || n==0 || n>1024) {CALCULATOR->error(true,"Operator norms require a numeric matrix with at most 1024 entries, or a scalar.",NULL);return false;}
- MathStructure ket;ket.clearMatrix();ket.resizeMatrix(n,1,m_zero);Number weight(0);
+ bool frobenius=!spectral && pn==Number(2);
+ if((!matrix.isMatrix() && !matrix.isNumber()) || n==0 || rows>1024 || cols>1024 || n>(frobenius ? 1048576U : 1024U)) {CALCULATOR->error(true,"Frobenius norms support numeric matrices up to 1024 by 1024; other operator norms support at most 1024 entries.",NULL);return false;}
+ MathStructure ket;if(!frobenius){ket.clearMatrix();ket.resizeMatrix(n,1,m_zero);}Number weight(0);
  for(size_t r=0;r<rows;++r)for(size_t c=0;c<cols;++c) {
+  if(CALCULATOR->aborted())return false;
   MathStructure value=matrix.isMatrix() ? entry(matrix,r,c) : matrix;value.eval(numeric);
   if(!value.isNumber() || value.number().isUndefined() || value.number().isInfinite(false)) {CALCULATOR->error(true,"Operator norms require finite numeric entries.",NULL);return false;}
   Number re=value.number().realPart(),im=value.number().imaginaryPart();
   if((re.isInterval() && !re.intervalToPrecision(12)) || (im.isInterval() && !im.intervalToPrecision(12)) || !std::isfinite(re.floatValue()) || !std::isfinite(im.floatValue())) {CALCULATOR->error(true,"Operator norm entries must fit floating-point range without broad uncertainty.",NULL);return false;}
-  re.square();im.square();re.add(im);weight.add(re);entry(ket,r*cols+c,0)=value;
+  re.square();im.square();re.add(im);weight.add(re);if(!frobenius)entry(ket,r*cols+c,0)=value;
  }
  if(!weight.sqrt())return false;
- if(weight.isZero() || n==1 || (!spectral && exponent==2)) {weight.intervalToMidValue();weight.setApproximate(true);weight.setPrecision(12);out=weight;return true;}
+ if(weight.isZero() || n==1 || frobenius) {weight.intervalToMidValue();weight.setApproximate(true);weight.setPrecision(12);out=weight;return true;}
  MathStructure dimensions;dimensions.clearVector();dimensions.addChild(MathStructure(Number(rows)));dimensions.addChild(MathStructure(Number(cols)));
  MathStructure coefficients,index(0);if(!quantumSchmidt(coefficients,ket,index,&dimensions,eo))return false;
  double largest=entry(coefficients,0,0).number().floatValue(),factor=largest;
