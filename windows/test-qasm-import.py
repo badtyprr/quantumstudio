@@ -49,6 +49,16 @@ def verify(source, expected, published_u=False):
     checks += 1
 
 # Coherent controls expose a lost relative phase that basis probabilities miss.
+for selection, bits in [('0:1','11000'),('0:0','10000'),('0:2:4','10101'),
+                        ('4:-2:0','10101'),(':2','11100'),('2:','00111'),
+                        (':','11111'),('0:3:4','10010'),('4:-3:0','01001')]:
+    source=header+'qubit[5] q; x q['+selection+'];'
+    verify(source,'|'+bits+'>');phase_sources.append((source,False))
+source=header+'qubit[2] q; bit[2] c; h q; c[0:1]=measure q[0:1];'
+verify(source,'identity(4)/4');phase_sources.append((source,False))
+source=header+'qubit[2] q; x q; reset q[1:-1:0];'
+verify(source,'density(|00>)');phase_sources.append((source,False))
+
 for gate, angle in [('s','pi/2'),('sdg','-pi/2'),('t','pi/4'),('tdg','-pi/4')]:
     for modifier, factor, negative in [('ctrl @ ',1,False),('negctrl @ ',1,True),
                                       ('inv @ ctrl @ ',-1,False),('ctrl @ inv @ ',-1,False),
@@ -175,6 +185,7 @@ for secret in range(8):
     verify(source,'|'+format(secret,'03b')+'>@|->')
 
 invalid = [
+    *[header+'qubit[3] q; x q['+selection+'];' for selection in ('0:0:2','0:3','-1:1','0:1.5')],
     header+'qubit[9] q; h q[0];', header+'qubit q; for int i in [0:512] {x q;}',
     header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
     header+'qubit q; unknown q;', header+'qubit q; delay[10ns] q;',
