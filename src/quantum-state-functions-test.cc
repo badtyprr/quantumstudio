@@ -30,5 +30,12 @@ int main(){try {
   for(size_t k=1;k<=2;++k)if(std::abs(value.getElement(k,1)->number().floatValue()-1/std::sqrt(2.0))>1e-9)throw std::runtime_error("Schmidt value mismatch");
   ++checks;
  }
+ for(const auto &expression:{"qentropy()","qentropybase([1,0;0,1],1)","qrootfidelity([0;0],[1;0])","qschmidt([1;0;0;1],2)","qschmidtdim([1;0;0;1],0,[2,3])","qspectralnorm(infinity)"}) {
+  while(calculator.message())calculator.nextMessage();
+  MathStructure value=calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()) {if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error || value.isNumber())throw std::runtime_error(std::string("Invalid call accepted: ")+expression);
+  ++checks;
+ }
  std::cout<<"PASS: "<<checks<<" registered state-function checks\n";return 0;
 }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}
