@@ -13,6 +13,7 @@
 
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
+#include "QuantumStabilizer.h"
 #include "QuantumIndexed.h"
 #include "QuantumOrder.h"
 #include "QuantumBinary.h"
@@ -1701,6 +1702,7 @@ void Calculator::addBuiltinVariables() {
 
 void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
+	registerQuantumStabilizer(*this);
 	registerQuantumIndexed(*this);
 	registerQuantumOrder(*this);
 	registerQuantumBinary(*this);
