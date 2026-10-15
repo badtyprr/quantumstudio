@@ -13,6 +13,7 @@
 
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
+#include "QuantumStateFunctions.h"
 #include "BuiltinFunctions.h"
 #include "util.h"
 #include "MathStructure.h"
@@ -1684,6 +1685,7 @@ void Calculator::addBuiltinVariables() {
 
 void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
+	registerQuantumStateFunctions(*this);
 
 	f_vector = addFunction(new VectorFunction());
 	f_sort = addFunction(new SortFunction());
