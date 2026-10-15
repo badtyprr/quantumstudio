@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
+#include "Variable.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -16,6 +17,17 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qketstate([1;i])","[1;i]");
+ equal("qketstate([3;4])","[3;4]");
+ MathStructure oversized;oversized.clearMatrix();oversized.resizeMatrix(1025,1,m_zero);
+ calculator.addVariable(new KnownVariable("","oversizedstate",oversized));
+ for(const char *expression:{"qketstate(3)","qketstate([1,0])","qketstate(identity(2))","qketstate(oversizedstate)"}) {
+  while(calculator.message())calculator.nextMessage();
+  calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid named state accepted: ")+expression);
+  ++checks;
+ }
  equal("qconj([1;i;2])","[1;-i;2]");
  equal("qconj([1,i,2])","[1,-i,2]");
  equal("qconj(2+3i)","2-3i");

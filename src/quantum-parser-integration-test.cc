@@ -2,6 +2,7 @@
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
 #include "QuantumIndexed.h"
+#include "Variable.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -19,6 +20,19 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ calculator.addVariable(new KnownVariable("","statevector",std::string("[1;i]/sqrt(2)")));
+ calculator.addVariable(new KnownVariable("","scalarstate",std::string("3")));
+ equal("quantum: |statevector>","[1;i]/sqrt(2)");
+ equal("quantum: <statevector|statevector>","1");
+ equal("quantum: |statevector><statevector|","[1,-i;i,1]/2");
+ equal(R"(quantum: \sum_{x\in\{0,1,2\}}{|x>_3})","[1;1;1]");
+ for(const char *expression:{"quantum: |undefinedvector>","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})"}) {
+  while(calculator.message())calculator.nextMessage();
+  calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Scalar named ket accepted: ")+expression);
+  ++checks;
+ }
  equal("quantum: sumset(k,indexrange(0,3),k)","6");
  equal(R"(quantum: \sum_{k\in\{0,\ldots,3\}}{k})","6");
  equal(R"(quantum: \sum_{k\in\{k\in\{0,\ldots,7\}:k\geq4\}}{k})","22");
