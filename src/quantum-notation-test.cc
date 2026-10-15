@@ -32,6 +32,9 @@ int main(){try {
  equal("|⟨101|(H⊗H⊗H)|000⟩|^2",translateQuantum("abs(<101|(H@H@H)|000>)^2"));
  equal("|<0|1>|^2","qpower(abs(qmul(qdag(matrix(2,1,[1,0])),matrix(2,1,[0,1]))),2)");
  equal(" | <0|H|0> | ",translateQuantum("abs(<0|H|0>)"));
+ equal("|<00|H@H|0>|0>|^2",translateQuantum("abs(<00|H@H|0>|0>)^2"));
+ equal("|<0|H|0>|^2+|<1|H|0>|^2",translateQuantum("abs(<0|H|0>)^2+abs(<1|H|0>)^2"));
+ equal("|<0|H|0>|^2 > 0",translateQuantum("abs(<0|H|0>)^2 > 0"));
  rejects("|<0|H|0>");rejects("|<0|H|0>| |<1|H|1>");
  for(unsigned width=1;width<=10;++width)for(unsigned trial=0;trial<8;++trial) {
   unsigned dimension=1U<<width,index=(trial*73+width)%dimension,other=(trial*19+3)%dimension;

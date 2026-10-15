@@ -467,7 +467,15 @@ class Parser {
      else if(s[k]==')' || s[k]==']') {if(nesting==0)break;--nesting;}
      else if(s[k]=='>' && nesting==0) {
       size_t next=k+1;while(next<s.size() && std::isspace((unsigned char)s[next]))++next;
-      if(next<s.size() && s[next]=='|') {closing=next;break;}
+      if(next<s.size() && s[next]=='|') {
+       // A following ket belongs to the same input register, e.g.
+       // |<00|H@H|0>|0>|. Do not consume its opening bar as our close.
+       size_t first=s.find_first_not_of(" \t\r\n",next+1);
+       bool labelStart=first!=std::string::npos && (std::isalnum((unsigned char)s[first]) || (unsigned char)s[first]>=128 || std::string("_+-(").find(s[first])!=std::string::npos);
+       size_t ketEnd=labelStart ? labelEnd('>',next+1) : std::string::npos;
+       if(ketEnd!=std::string::npos && s.substr(next+1,ketEnd-next-1).find_first_of("|<>")==std::string::npos)continue;
+       closing=next;break;
+      }
      }
     }
     if(closing==std::string::npos)throw std::runtime_error("Unclosed magnitude of a Dirac expression; use |<a|U|b>|.");
