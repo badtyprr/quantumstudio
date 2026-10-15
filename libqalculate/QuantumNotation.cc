@@ -383,7 +383,8 @@ class Parser {
   return 0;
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0;}
+ bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   size_t end=labelEnd('|',p+1);
   if(end==std::string::npos)return false;
@@ -706,7 +707,7 @@ class Parser {
      if(p==digits) p=exponent;
     }
    } else {
-    while(p<s.size() && !radical() && (std::isalnum((unsigned char)s[p]) || (unsigned char)s[p]>=128 || s[p]=='_')) ++p;
+    while(p<s.size() && !radical() && !setOperatorAhead() && (std::isalnum((unsigned char)s[p]) || (unsigned char)s[p]>=128 || s[p]=='_')) ++p;
    }
    if(b==p) throw std::runtime_error("Expected a quantum expression at byte "+std::to_string(p+1));
    a=s.substr(b,p-b); ws();

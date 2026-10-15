@@ -20,6 +20,12 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ calculator.addVariable(new KnownVariable("","leftset",std::string("vector(0,1)")));
+ calculator.addVariable(new KnownVariable("","rightset",std::string("vector(1,2)")));
+ equal("quantum: cardinality(leftset∪rightset)","3");
+ equal("quantum: cardinality(leftset∩rightset)","1");
+ equal("quantum: cardinality(leftset∖rightset)","1");
+ equal(R"(quantum: cardinality(leftset\cup rightset))","3");
  equal(R"(quantum: cardinality(\{0,1\}\cup\{1,2\}))","3");
  equal(R"(quantum: cardinality(\{0,1\}\cap\{1,2\}))","1");
  equal(R"(quantum: cardinality(\{0,1\}\setminus\{1,2\}))","1");
