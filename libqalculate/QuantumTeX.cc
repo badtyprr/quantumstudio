@@ -86,7 +86,7 @@ class TeXReader {
      if(token=='"' || token=='\''){quote=token;continue;}
      if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
      else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
-     else if(!nesting && contents.compare(j,3,"∈")==0) {
+     else if(!nesting && separator==std::string::npos && contents.compare(j,3,"∈")==0) {
       if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
      } else if(!nesting && token==':') {
       if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
@@ -175,7 +175,8 @@ class TeXReader {
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
-  if(name=="in" && (setBound || setExpressions))return "∈";
+  if(name=="in")return "∈";
+  if(name=="notin")return "∉";
   if(name=="lfloor" || name=="lceil") {
    auto body=read(0,false,"",false,name=="lfloor" ? "rfloor" : "rceil");
    if(trim(body).empty())throw std::runtime_error(error("Empty rounding operand"));

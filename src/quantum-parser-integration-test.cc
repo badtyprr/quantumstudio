@@ -20,6 +20,25 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: bitstring(1,2)\in\{0,1\}^2)","1");
+ equal(R"(quantum: bitstring(1,3)\notin\{0,1\}^2)","1");
+ equal("quantum: 2∈vector(1,2,3)","1");
+ equal("quantum: 4∉vector(1,2,3)","1");
+ equal("quantum: member(1/2,vector(2/4,3))","1");
+ equal("quantum: member(bitstring(1+1,2),vector(bitstring(2,2)))","1");
+ equal("quantum: member(1,bitstrings(2))","0");
+ equal("quantum: member(0,vector())","0");
+ equal("quantum: member(bitstring(0,0),bitstrings(0))","1");
+ equal(R"(quantum: |\{x\in\{0,1\}^2:x\in\{y\in\{0,1\}^2:bitvalue(y)<2\}\}|)","2");
+ for(int mask=0;mask<16;++mask)for(int index=0;index<4;++index) {
+  std::string collection="vector(";bool first=true;for(int k=0;k<4;++k)if(mask&(1<<k)){if(!first)collection+=",";first=false;collection+="bitstring("+std::to_string(k)+",2)";}collection+=")";
+  equal("quantum: bitstring("+std::to_string(index)+",2)∈"+collection,(mask&(1<<index)) ? "1" : "0");
+ }
+ for(const char *expression:{"quantum: member(1,3)","quantum: member(1,identity(2))","quantum: member(bitstring(4,2),bitstrings(2))","quantum: member(1,vector(1,identity(2)))"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid membership accepted: ")+expression);++checks;
+ }
  calculator.addVariable(new KnownVariable("","leftset",std::string("vector(0,1)")));
  calculator.addVariable(new KnownVariable("","rightset",std::string("vector(1,2)")));
  equal("quantum: cardinality(leftset∪rightset)","3");

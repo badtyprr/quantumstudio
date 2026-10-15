@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(x\in S)","x∈ S");
+  equal(R"(x\notin S)","x∉ S");
   equal(R"(A\cup B\cap C\setminus D)","A∪ B∩ C∖ D");
   equal("A∪B∩C∖D","A∪ B∩ C∖ D");
   equal(R"(\emptyset)","vector()");
