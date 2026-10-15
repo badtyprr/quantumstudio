@@ -1,0 +1,46 @@
+"""Check source and frozen compiler process contracts without a calculation worker."""
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+root = Path(__file__).resolve().parent.parent
+commands = [[sys.executable, str(root/'windows/qasm-import.py')],
+            [str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe')]]
+header = 'OPENQASM 3.0; include "stdgates.inc"; '
+checks = 0
+
+def run(command, source, expected=None, arguments=()):
+    global checks
+    data = source.encode('utf-8') if isinstance(source, str) else source
+    result = subprocess.run(command+list(arguments), input=data, capture_output=True, timeout=30)
+    if expected is None:
+        assert result.returncode != 0 and not result.stdout and result.stderr, (command, result)
+    else:
+        assert result.returncode == 0, result.stderr.decode('utf-8', errors='replace')
+        assert json.loads(result.stdout) == expected, result.stdout
+    checks += 1
+
+bell = {'Version': 1, 'Qubits': 2, 'Steps': [
+    {'Gate': 'H', 'Angle': '', 'Wires': [0]},
+    {'Gate': 'CNOT', 'Angle': '', 'Wires': [0, 1]}]}
+source = header+'qubit[2] q; h q[0]; cx q[0],q[1];'
+for command in commands:
+    run(command, source, bell)
+    run(command, b'\xef\xbb\xbf'+source.encode('utf-8'), bell)
+    run(command, source+' // Unicode comment: \u03c0', bell)
+    run(command, source+' '*(262144-len(source.encode('utf-8'))), bell)
+    run(command, 'OPENQASM 2.0; include "qelib1.inc"; qreg q[2]; h q[0]; cx q[0],q[1];', bell)
+    run(command, header+'qubit q; reset q; bit b; b=measure q;',
+        {'Version': 1, 'Qubits': 1, 'Steps': [
+            {'Gate': 'Reset', 'Angle': '', 'Wires': [0]},
+            {'Gate': 'Measure', 'Angle': '', 'Wires': [0]}]})
+    for invalid in [source+' '*(262145-len(source)),
+                    b'\xef\xbb\xbf'+source.encode()+b' '*(262145-len(source)-3),
+                    b'\xc3\x28', header+'include "private.inc"; qubit q;',
+                    header+'qubit[9] q;', header+'qubit q; for int i in [0:64] {x q;}',
+                    header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
+                    header+'qubit q; delay[10ns] q;']:
+        run(command, invalid)
+    run(command, source, arguments=['--unknown-option'])
+print(f'PASS: {checks} source/frozen OpenQASM process checks.')
