@@ -35,6 +35,8 @@ for command in commands:
         {'Version': 1, 'Qubits': 1, 'Steps': [
             {'Gate': 'Reset', 'Angle': '', 'Wires': [0]},
             {'Gate': 'Measure', 'Angle': '', 'Wires': [0]}]})
+    run(command, header+'qubit[2] q; ctrl @ t q[0],q[1];',
+        {'Version': 1, 'Qubits': 2, 'Steps': [{'Gate': 'CP', 'Angle': '0.78539816339744828', 'Wires': [0,1]}]})
     for count in (65, 512):
         run(command, header+f'qubit q; for int i in [0:{count-1}] {{x q;}}',
             {'Version': 1, 'Qubits': 1, 'Steps': [{'Gate': 'X', 'Angle': '', 'Wires': [0]}]*count})

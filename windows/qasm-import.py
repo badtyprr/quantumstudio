@@ -102,6 +102,14 @@ def gate_steps(statement, wire, published_u=False):
                 raise ValueError('Unsupported inverse gate: ' + gate)
         elif kind in ('ctrl', 'negctrl'):
             controls = 1 if modifier.argument is None else int(number(modifier.argument))
+            # Fixed phase gates are P(theta), including their relative phase.
+            fixed_phase = {'S': math.pi/2, 'Sdg': -math.pi/2,
+                           'T': math.pi/4, 'Tdg': -math.pi/4}
+            if gate in fixed_phase:
+                if args:
+                    raise ValueError('Fixed phase gates do not accept parameters.')
+                args = [format(fixed_phase[gate], '.17g')]
+                gate = 'P'
             mapping = {'X':'CNOT','Y':'CY','Z':'CZ','H':'CH','P':'CP','Rx':'CRx','Ry':'CRy','Rz':'CRz','CNOT':'CCX','CZ':'CCZ','SWAP':'CSWAP','U3':'CU3'}
             mapping.update(iSWAP='CiSWAP', iSWAPdg='CiSWAPdg')
             for _ in range(controls):

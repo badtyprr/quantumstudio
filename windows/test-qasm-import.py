@@ -48,6 +48,20 @@ def verify(source, expected, published_u=False):
         phase_sources.append((source,published_u))
     checks += 1
 
+# Coherent controls expose a lost relative phase that basis probabilities miss.
+for gate, angle in [('s','pi/2'),('sdg','-pi/2'),('t','pi/4'),('tdg','-pi/4')]:
+    for modifier, factor, negative in [('ctrl @ ',1,False),('negctrl @ ',1,True),
+                                      ('inv @ ctrl @ ',-1,False),('ctrl @ inv @ ',-1,False),
+                                      ('pow(-3) @ ctrl @ ',-3,False),('ctrl @ pow(2) @ ',2,False)]:
+        phase=f'exp(i*({factor})*({angle}))'
+        expected=f'[1;{phase};1;1]/2' if negative else f'[1;1;1;{phase}]/2'
+        source=header+f'qubit[2] q; h q; {modifier}{gate} q[0],q[1];'
+        verify(source,expected);phase_sources.append((source,False))
+    # The same gate through a custom definition and a reversed physical order.
+    source=header+f'gate custom a {{ {gate} a; }} qubit[3] q; h q; ctrl @ custom q[2],q[0];'
+    verify(source,f'[1;1;1;1;1;exp(i*({angle}));1;exp(i*({angle}))]/sqrt(8)')
+    phase_sources.append((source,False))
+
 verify(header+'qubit q; U(pi/2,pi/4,pi/3) q;', '(|0>+exp(i*pi/4)|1>)/sqrt(2)')
 verify(header+'qubit q; gphase(pi/3); h q;', 'exp(i*pi/3)|+>')
 verify(header+'qubit q; inv @ U(pi/2,pi/4,pi/3) q;', '(|0>-exp(-i*pi/3)|1>)/sqrt(2)')
