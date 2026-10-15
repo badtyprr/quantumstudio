@@ -19,6 +19,12 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \sum_{k\in\{0,\ldots,3\}}{k})","6");
+ equal(R"(quantum: \sum_{k\in\{k\in\{0,\ldots,7\}:k\geq4\}}{k})","22");
+ equal(R"(quantum: \sum_{n=1}^{3}{\sum_{k\in\{0,\dots,n-1\}}{k}})","4");
+ equal(R"(quantum: \sum_{k\in\{0,\ldots,-1\}}{k})","0");
+ equal(R"(quantum: \sum_{k\in\{3,\ldots,3\}}{k})","3");
+
  equal(R"(quantum: \sum_{\alpha\in\{1,3\}}{\sum_{a_0\in\{\alpha\in\{\alpha,\alpha+1\}:\alpha>1\}}{a_0}})","9");
 
  equal(R"(quantum: \{0,2,0\})","vector(0,2)");

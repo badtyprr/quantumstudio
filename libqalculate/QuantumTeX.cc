@@ -79,18 +79,28 @@ class TeXReader {
    char c=input[pos++];
    if(c=='{') {
     ++setExpressions;std::string contents=read(0,false,"",true);--setExpressions;
-    size_t membership=std::string::npos,separator=std::string::npos;int nesting=0;char quote=0;
+    size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
+    std::vector<std::string> entries;
     for(size_t j=0;j<contents.size();++j) {
      char token=contents[j];if(quote){if(token==quote)quote=0;continue;}
      if(token=='"' || token=='\''){quote=token;continue;}
      if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
+     else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
      else if(!nesting && contents.compare(j,3,"∈")==0) {
       if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
      } else if(!nesting && token==':') {
       if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
      }
     }
-    if(membership==std::string::npos && separator==std::string::npos)return "unique(vector("+contents+"))";
+    if(membership==std::string::npos && separator==std::string::npos) {
+     entries.push_back(trim(contents.substr(startEntry)));
+     bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
+     if(ellipsis) {
+      if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty())throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
+      return "unique(qindexrange("+entries[0]+","+entries[2]+"))";
+     }
+     return "unique(vector("+contents+"))";
+    }
     if(membership==std::string::npos || separator==std::string::npos || separator<membership)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
     std::string index=trim(contents.substr(0,membership)),collection=trim(contents.substr(membership+3,separator-membership-3)),predicate=trim(contents.substr(separator+1));
     if(index.empty() || std::isdigit((unsigned char)index[0]) || collection.empty() || predicate.empty())throw std::runtime_error(error("A set builder requires an index, collection and predicate"));
@@ -136,6 +146,7 @@ class TeXReader {
   }
   if(name=="in" && (setBound || setExpressions))return "∈";
   if(name=="mid" && setExpressions)return ":";
+  if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="tilde" || name=="widetilde") {
    std::string value=trim(argument());

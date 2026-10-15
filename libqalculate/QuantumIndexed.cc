@@ -29,6 +29,21 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qindexrange") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure first=raw[0],last=raw[1];first.eval(exact);last.eval(exact);
+   if(!first.isNumber() || !last.isNumber() || !first.number().isInteger() || !last.number().isInteger()) {CALCULATOR->error(true,"Finite index ranges require evaluated integer endpoints.",NULL);return 0;}
+   if(CALCULATOR->aborted())return 0;
+   out.clearVector();Number span=last.number();span-=first.number();
+   if(span.isNegative())return 1;
+   if(span>1023) {CALCULATOR->error(true,"Finite index ranges support at most 1024 entries.",NULL);return 0;}
+   int count=span.intValue()+1;Number value=first.number();
+   for(int k=0;k<count;++k) {
+    if(CALCULATOR->aborted())return 0;
+    out.addChild(MathStructure(value));value+=1;
+   }
+   return 1;
+  }
   if(op=="qsumset") {
    if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A set sum index must be a symbolic variable.",NULL);return 0;}
    MathStructure members=raw[1];
@@ -37,7 +52,7 @@ class QuantumIndexedFunction: public MathFunction {
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
    if(!members.isVector() && members.representsScalar() && raw[1].isFunction() &&
-      (raw[1].function()->referenceName()=="unique" || raw[1].function()->referenceName()=="select"))
+      (raw[1].function()->referenceName()=="unique" || raw[1].function()->referenceName()=="select" || raw[1].function()->referenceName()=="qindexrange"))
     members.transform(STRUCT_VECTOR);
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    std::vector<MathStructure> seen;
@@ -153,5 +168,5 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
 }

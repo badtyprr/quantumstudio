@@ -258,6 +258,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphasefunction",3},
  {"qsequence",3},
  {"qsumset",3},
+ {"qindexrange",2},
  {"qpostselect",2},
  {"qpower",2},
  {"qlogm",1},
@@ -817,6 +818,7 @@ class Parser {
     if(name=="feedforward") name="qfeedforward";
     if(name=="tensorpow") name="qtensorpow";
     if(name=="tensorproduct") name="qtensorproduct";
+    if(name=="indexrange") name="qindexrange";
     if(name=="sumset") name="qsumset";
     if(name=="blocksum") name="qblocksum";
     if(name=="probs") name="qprobs";
