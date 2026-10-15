@@ -42,6 +42,18 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   const MathStructure &a=args[0];
+  if(op=="qindexxor") {
+   // A computed index may contain matrix expressions such as trace(A oplus B).
+   if(a.isMatrix() && args[1].isMatrix()) {
+    out.set(CALCULATOR->getFunction("qdirectsum"), &a, &args[1], NULL);out.eval(eo);
+    return out.isMatrix() ? 1 : 0;
+   }
+   for(size_t j=0;j<2;++j)if(!args[j].isNumber() || !args[j].number().isInteger() || args[j].number()<0) {
+    CALCULATOR->error(true,"Computed basis XOR requires nonnegative integer operands.",NULL);return 0;
+   }
+   Number value=a.number();if(!value.bitXor(args[1].number()))return 0;
+   out.set(value);return 1;
+  }
   if(op=="qbasis") {
    const MathStructure &dimension=args[1];
    if(!a.isNumber() || !a.number().isInteger() || a.number()<0 || !dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<2 || dimension.number()>1024 || a.number()>=dimension.number()) {
@@ -132,6 +144,6 @@ class QuantumAlgebraFunction: public MathFunction {
 };
 }
 void registerQuantumAlgebra(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qindexxor",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }
