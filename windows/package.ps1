@@ -1,0 +1,109 @@
+param(
+    [Parameter(Mandatory=$true)][string]$MsysRoot,
+    [Parameter(Mandatory=$true)][string]$PythonPath,
+    [switch]$Candidate
+)
+$ErrorActionPreference = 'Stop'
+$repo = Split-Path $PSScriptRoot -Parent
+$MsysRoot = (Resolve-Path -LiteralPath $MsysRoot).Path
+$PythonPath = (Resolve-Path -LiteralPath $PythonPath).Path
+$output = Join-Path $repo 'dist\QuantumStudio'
+function Invoke-SourceGit([string[]]$Arguments) {
+    $result = & git -C $repo @Arguments
+    if ($LASTEXITCODE -ne 0) { throw "Git failed: $Arguments" }
+    return $result
+}
+function Assert-UnchangedSources {
+    if ($revision -ne (Invoke-SourceGit -Arguments @('rev-parse','HEAD'))) { throw 'Source revision changed during the build.' }
+    # Autoreconf and make dist regenerate these documentation/translation files.
+    # Every other tracked input must still match the recorded revision.
+    $changes = @(Invoke-SourceGit -Arguments @('diff','--name-only','HEAD'))
+    $unexpected = @($changes | Where-Object { $_ -notmatch '^(ABOUT-NLS|INSTALL|(po|po-defs)/[^/]+\.pot?)$' })
+    if ($unexpected.Count) { throw ('Source inputs changed during the build: ' + ($unexpected -join ', ')) }
+}
+$revision = Invoke-SourceGit -Arguments @('rev-parse','HEAD')
+if (Invoke-SourceGit -Arguments @('status','--porcelain','--untracked-files=all')) { throw 'Package from a clean source checkout.' }
+if (!$Candidate) {
+    Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null
+    if ($revision -ne (Invoke-SourceGit -Arguments @('rev-parse','origin/master'))) { throw 'Releases must use the current merged master tip.' }
+}
+if (Test-Path -LiteralPath $output) { throw 'Use a fresh checkout: the package output directory already exists.' }
+if (!(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'build-native.sh'))) { throw 'The reviewed native build script is required.' }
+$oldSource = $env:QUANTUM_SOURCE_DIR
+$oldPython = $env:QUANTUM_PYTHON
+try {
+    $env:QUANTUM_SOURCE_DIR = $repo.Replace('\','/')
+    $env:QUANTUM_PYTHON = $PythonPath.Replace('\','/')
+    & (Join-Path $MsysRoot 'usr\bin\bash.exe') -lc 'export PATH="/ucrt64/bin:$PATH"; cd "$QUANTUM_SOURCE_DIR" && bash windows/build-native.sh && make dist-gzip'
+    if ($LASTEXITCODE -ne 0) { throw 'Native build or tests failed.' }
+} finally {
+    $env:QUANTUM_SOURCE_DIR = $oldSource
+    $env:QUANTUM_PYTHON = $oldPython
+}
+$archives = @(Get-ChildItem -LiteralPath $repo -Filter 'libqalculate-*.tar.gz' -File)
+if ($archives.Count -ne 1) { throw 'Expected exactly one generated source archive.' }
+& $PythonPath (Join-Path $PSScriptRoot 'test-source-dist.py') $archives[0].FullName
+if ($LASTEXITCODE -ne 0) { throw 'Source archive verification failed.' }
+Copy-Item -LiteralPath $archives[0].FullName -Destination (Join-Path $repo 'dist\QuantumStudio-source.tar.gz')
+& (Join-Path $PSScriptRoot 'test-gui.ps1')
+& (Join-Path $PSScriptRoot 'build-qasm-import.ps1') -PythonPath $PythonPath
+$nativeBin = Join-Path $MsysRoot 'ucrt64\bin'
+$queue = [Collections.Generic.Queue[string]]::new()
+$queue.Enqueue((Join-Path $output 'quantum-worker.exe'))
+$queue.Enqueue((Join-Path $output 'qalc.exe'))
+$dependencies = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+while ($queue.Count) {
+    $binary = $queue.Dequeue()
+    $imports = & (Join-Path $nativeBin 'objdump.exe') -p $binary
+    if ($LASTEXITCODE -ne 0) { throw "Cannot inspect imports: $binary" }
+    foreach ($line in $imports) {
+        if ($line -match 'DLL Name:\s*(\S+)') {
+            $name = $Matches[1]
+            if ([IO.Path]::GetFileName($name) -ne $name) { throw 'Invalid imported DLL name.' }
+            $source = Join-Path $nativeBin $name
+            if ((Test-Path -LiteralPath $source) -and $dependencies.Add($name)) {
+                Copy-Item -LiteralPath $source -Destination $output
+                $queue.Enqueue((Join-Path $output $name))
+            }
+        }
+    }
+}
+New-Item -ItemType Directory -Path (Join-Path $output 'data') | Out-Null
+Copy-Item (Join-Path $repo 'data\*.xml') (Join-Path $output 'data')
+Copy-Item (Join-Path $repo 'COPYING') (Join-Path $output 'LICENSE.txt')
+Copy-Item (Join-Path $PSScriptRoot 'Notation-guide.html') $output
+Copy-Item (Join-Path $PSScriptRoot 'README.txt') $output
+Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
+$oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
+try {
+    $env:QALCULATE_DEFINITIONS_DIR = Join-Path $output 'data'
+    & $PythonPath (Join-Path $repo 'src\quantum-worker-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged worker tests failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-import.py') --worker (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM numeric tests failed.' }
+    & (Join-Path $PSScriptRoot 'test-keyboard.ps1') -Distribution $output
+} finally { $env:QALCULATE_DEFINITIONS_DIR = $oldDefinitions }
+$smoke = Join-Path $repo 'dist\package-smoke.png'
+$process = Start-Process -FilePath (Join-Path $output 'QuantumStudio.exe') -ArgumentList @('--smoke-test', ('"'+$smoke+'"')) -WindowStyle Hidden -PassThru
+try {
+    if (!$process.WaitForExit(300000)) { $process.Kill(); $process.WaitForExit(); throw 'Packaged GUI smoke test timed out.' }
+    if ($process.ExitCode -ne 0 -or !(Get-Content -LiteralPath ($smoke+'.txt') -Raw).StartsWith('PASS:')) { throw 'Packaged GUI smoke test failed.' }
+} finally { $process.Dispose() }
+Assert-UnchangedSources
+if (!$Candidate) {
+    Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null
+    if ($revision -ne (Invoke-SourceGit -Arguments @('rev-parse','origin/master'))) { throw 'Master changed during the build; rebuild the current merged tip.' }
+}
+$manifest = [ordered]@{revision=$revision; candidate=[bool]$Candidate; files=@()}
+foreach ($file in Get-ChildItem -LiteralPath $output -File -Recurse) {
+    $manifest.files += [ordered]@{path=$file.FullName.Substring($output.Length+1).Replace('\','/'); sha256=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash}
+}
+$manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $output 'build-manifest.json') -Encoding UTF8
+$name = if ($Candidate) { 'QuantumStudio-candidate-Windows-x64.zip' } else { 'QuantumStudio-Windows-x64.zip' }
+$zip = Join-Path $repo ('dist\'+$name)
+Compress-Archive -LiteralPath $output -DestinationPath $zip
+$verifyArguments = @((Join-Path $PSScriptRoot 'test-package.py'), $zip, '--revision', $revision)
+if ($Candidate) { $verifyArguments += '--candidate' }
+& $PythonPath @verifyArguments
+if ($LASTEXITCODE -ne 0) { throw 'Portable ZIP verification failed.' }
+Get-FileHash -LiteralPath $zip -Algorithm SHA256
