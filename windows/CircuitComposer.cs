@@ -711,7 +711,16 @@ class CircuitComposer : Window {
    string parameters=parameterText.ToString();
    for(int suffix=1;parameters.Contains(placeholder);++suffix)placeholder="qstate_"+suffix;
   }
-  foreach(var step in steps) {
+  for(int position=0;position<steps.Count;position++) {
+   var step=steps[position];
+   // Consecutive computational-basis measurements commute and are idempotent.
+   // Group only the calculation; preserve the editable steps and exported program.
+   if(step.Gate=="Measure" && position+1<steps.Count && steps[position+1].Gate=="Measure") {
+    var measured=new List<int>(step.Wires);
+    while(position+1<steps.Count && steps[position+1].Gate=="Measure")
+     foreach(int wire in steps[++position].Wires)if(!measured.Contains(wire))measured.Add(wire);
+    step=new Step {Gate="Measure",Angle="",Wires=measured.ToArray()};
+   }
    if(transformations!=null)value=placeholder;
    if(Feedback(step.Gate)) {
     string bits=FeedbackBits(step.Gate),measured=bits.Length==1 ? step.Wires[0].ToString() : "["+step.Wires[0]+","+step.Wires[1]+"]";
