@@ -16,6 +16,11 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qconj([1;i;2])","[1;-i;2]");
+ equal("qconj([1,i,2])","[1,-i,2]");
+ equal("qconj(2+3i)","2-3i");
+ equal("qconj([1,i,2;3,4i,5])","[1,-i,2;3,-4i,5]");
+ equal("qconj(qconj([1;i;2]))","[1;i;2]");
  equal("qdag([1,i])","[1;-i]");equal("qconj([1,i;2,3])","[1,-i;2,3]");
  equal("qtranspose([1,2;3,4])","[1,3;2,4]");
  equal("qmul(qdag([1;i]),[1;i])","2");

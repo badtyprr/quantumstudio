@@ -1,0 +1,6 @@
+// GPL-2.0-or-later; see COPYING.
+#ifndef QALCULATE_QUANTUM_RESET_H
+#define QALCULATE_QUANTUM_RESET_H
+class Calculator;
+void registerQuantumReset(Calculator &);
+#endif
