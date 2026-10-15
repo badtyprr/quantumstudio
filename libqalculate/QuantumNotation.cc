@@ -257,6 +257,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
+ {"qsumset",3},
  {"qpostselect",2},
  {"qpower",2},
  {"qlogm",1},
@@ -331,7 +332,7 @@ class Parser {
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned nextBoundIndex=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
-  size_t index=((name=="qphasefunction" || name=="qsequence") && args.size()==3) ? 2 :
+  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset") && args.size()==3) ? 2 :
    ((name=="sum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
   if(!index)return;
   std::string original=args[index];
@@ -807,6 +808,7 @@ class Parser {
     if(name=="feedforward") name="qfeedforward";
     if(name=="tensorpow") name="qtensorpow";
     if(name=="tensorproduct") name="qtensorproduct";
+    if(name=="sumset") name="qsumset";
     if(name=="blocksum") name="qblocksum";
     if(name=="probs") name="qprobs";
     if(name=="QFT") name="qft";
@@ -1033,6 +1035,10 @@ class Parser {
     } else {
     std::vector<std::string> args;
     if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
+    if(name=="qtexsumset") {
+     if(args.size()!=2)throw std::runtime_error("A set sum requires a collection and index.");
+     name="qsumset";args.insert(args.begin(),product());
+    }
     if(name=="qtexsum" || name=="qtexprod" || name=="qtexbigotimes" || name=="qtexbigoplus") {
      if(args.size()!=3)throw std::runtime_error("A finite sum/product requires lower bound, upper bound and index.");
      name=name=="qtexsum" ? "sum" : name=="qtexprod" ? "product" : name=="qtexbigotimes" ? "qtensorproduct" : "qblocksum";

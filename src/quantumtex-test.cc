@@ -11,12 +11,18 @@ static void equal(const std::string &input,const std::string &expected) {
  ++checks;
 }
 static void rejects(const std::string &input) {
- try {quantumTeX(input);}
+ try {
+quantumTeX(input);}
  catch(const std::runtime_error &) {++checks;return;}
  throw std::runtime_error("Accepted invalid or oversized input: "+input.substr(0,100));
 }
 int main() {
  try {
+  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","sumset(k^2,vector(0,2,5),k)");
+  equal(R"(\sum_{k\in S_0} k+1)","qtexsumset( S_0,k) k+1");
+  rejects(R"(\sum^{2}_{k\in S_0}{k})");
+  rejects(R"(\sum_{k\in}{k})");
+
   equal(R"(\tilde{\rho})"," ρ_tilde ");
   equal(R"(\widetilde{x})"," x_tilde ");
   equal(R"(\tilde{\rho}_0)"," ρ_tilde_0");
