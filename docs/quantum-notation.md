@@ -83,6 +83,12 @@ These audits substitute explicit vectors for named states and expand finite sums
 
 Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; finite filtering comprehensions are described below. More general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
 
+## Named ket validation
+
+A named ket such as `|statevector>` must evaluate to a column matrix with at most 1024 rows. Bras validate the same column state before taking its adjoint. Scalars, row vectors, square operators and unresolved scalar names are not silently accepted as states. Normalization is not imposed.
+
+For a sum over integer basis indices, specify the state dimension: `\sum_{x\in\{0,1,2\}}{|x>_3}` produces the column `[1;1;1]`. Omitting `_3` does not provide enough information to infer a register dimension and now reports an error rather than returning the scalar sum `3`. General symbolic bit-string domains and automatic dimension inference remain unfinished.
+
 ## TeX trigonometric powers
 
 `\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. Inverse results retain the library's angle units and principal-branch conventions.
