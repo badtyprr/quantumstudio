@@ -37,6 +37,17 @@ int main(){try {
  {"qlogm([5,4;4,5])","[ln(9)/2,ln(9)/2;ln(9)/2,ln(9)/2]"},
  {"qpower([0,-1;1,0],1/2)","[1/sqrt(2),-1/sqrt(2);1/sqrt(2),1/sqrt(2)]"}})
   expectClose(calculator.calculate(t.first,eo),calculator.calculate(t.second,eo),eo);
+ // IBM's complex tetrahedral effects have an exact zero eigenspace.
+ // Approximate evaluation must preserve the algebraic projector identity.
+ for(const auto &phase:{"2*pi*i/3","-2*pi*i/3"}) {
+  std::string ket="[1;sqrt(2)*exp("+std::string(phase)+")]/sqrt(3)";
+  std::string effect="(qdensity("+ket+")/2)";
+  for(const auto &power:{"1/2","1/3"}) {
+   expectClose(calculator.calculate("qpower("+effect+","+power+")",eo),
+               calculator.calculate("2^(1-("+std::string(power)+"))*"+effect,eo),eo);
+  }
+  expectClose(calculator.calculate("qsqrt("+effect+")",eo),calculator.calculate("sqrt(2)*"+effect,eo),eo);
+ }
  // Non-diagonal matrices must retain tiny positive eigenvalues in positive powers.
  for(int exponent:{16,28,100,200}) {
   std::string text="qsqrt([2,1,0;1,2,0;0,0,1e-"+std::to_string(exponent)+"] )";
