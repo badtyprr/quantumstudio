@@ -19,6 +19,11 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \prod_{\alpha=1}^{2}{\sum_{\alpha\in\{2,3\}}{\alpha}})","25");
+ equal(R"(quantum: \sum_{\alpha\in\{0,1\}}{\prod_{\alpha=2}^{3}{\alpha}})","12");
+
+ equal(R"(quantum: \sum_{\alpha=0}^{1}{\sum_{\alpha\in\{2,3\}}{\alpha}})","10");
+
  equal(R"(quantum: \sum_{k=0}^{1}{\sum_{k\in\{2,3\}}{k}})","10");
  equal(R"(quantum: \sum_{k\in\{2,3\}}{\sum_{k=0}^{1}{k}})","2");
  equal(R"(quantum: sumset(k,[0,2,5],k))","7");

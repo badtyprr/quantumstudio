@@ -338,8 +338,8 @@ class Parser {
   std::string original=args[index];
   while(original.size()>2 && original.front()=='(' && original.back()==')')
    original=original.substr(1,original.size()-2);
-  bool plain=name=="qsumset" && !original.empty() && original!="pi" && original!="i" && original!="e";
-  for(unsigned char c:original)if(!std::isalpha(c) || c>=128)plain=false;
+  bool plain=(name=="qsumset" || name=="sum" || name=="product") && !original.empty() && original!="pi" && original!="i" && original!="e";
+  for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
   if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
      original.find('"',1)!=original.size()-1))return;
   std::string symbol;
