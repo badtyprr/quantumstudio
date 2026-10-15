@@ -18,6 +18,12 @@ int main(){try {
 #endif
  eo.approximation=APPROXIMATION_EXACT;
  equal("quantum: |⟨101|(H⊗H⊗H)|000⟩|^2","1/8");
+ equal("quantum: cirq.XPowGate(exponent=1/2)","[1+i,1-i;1-i,1+i]/2");
+ equal("quantum: cirq.XPowGate(exponent=1,global_shift=1/2)","[0,i;i,0]");
+ equal("quantum: cirq.ZPowGate(exponent=1/2)","[1,0;0,i]");
+ equal("quantum: cirq.CZPowGate(exponent=1/2)","[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,i]");
+ equal("quantum: controlled(cirq.XPowGate(exponent=1,global_shift=1/2))","[1,0,0,0;0,1,0,0;0,0,0,i;0,0,i,0]");
+
  equal("quantum: ⟨0|H|0⟩","1/sqrt(2)");
  equal("quantum: norm(|->)","1");
  equal("quantum: |+><+|","[1,1;1,1]/2");

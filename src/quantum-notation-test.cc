@@ -23,6 +23,12 @@ static std::string basis(unsigned index,unsigned dimension) {
 }
 int main(){try {
  equal("5⊕6","qoplus(5,6)");
+ for(const std::string &gate:{"XPowGate","ZPowGate","CZPowGate"}) {
+  equal("cirq."+gate+"(exponent=3/10,global_shift=-1/2)",translateQuantum(gate+"(exponent=3/10,global_shift=-1/2)"));
+  equal("cirq . "+gate+"()",translateQuantum(gate+"()"));
+ }
+ for(const auto &input:{"cirq.XPowGate","cirq.Unknown(1)","cirq.XPowGateExtra(1)","othercirq.XPowGate(1)","cirq..XPowGate(1)","cirq.XPowGate(dimension=3)","cirq.XPowGate(exponent=1,exponent=2)"})rejects(input);
+
  equal("|0⊕a_0>_2","qbasis(qoplus(0,\"a_0\"),2)");
  equal("|2⊕3>_4 ⊕ |0>","qoplus(qbasis(qoplus(2,3),4),matrix(2,1,[1,0]))");
  equal("1+2*3","(1+qmul(2,3))");

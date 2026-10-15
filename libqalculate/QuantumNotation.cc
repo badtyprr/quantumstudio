@@ -655,6 +655,14 @@ class Parser {
    }
    if(b==p) throw std::runtime_error("Expected a quantum expression at byte "+std::to_string(p+1));
    a=s.substr(b,p-b); ws();
+   if(a=="cirq" && take('.')) {
+    ws();size_t start=p;
+    while(p<s.size() && (std::isalnum((unsigned char)s[p]) || s[p]=='_'))++p;
+    a=s.substr(start,p-start);ws();
+    if((a!="XPowGate" && a!="ZPowGate" && a!="CZPowGate") || p==s.size() || s[p]!='(')
+     throw std::runtime_error("Supported cirq expressions are XPowGate, ZPowGate and CZPowGate calls.");
+   }
+
    if(numericToken && p<s.size() && (s[p]=='_' || s.compare(p,std::string("₂").size(),"₂")==0)) {
     if(s[p]=='_') {
      ++p;size_t start=p;while(p<s.size() && std::isdigit((unsigned char)s[p]))++p;
