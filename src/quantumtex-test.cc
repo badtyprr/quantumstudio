@@ -39,6 +39,8 @@ int main() {
   equal(R"(\sum_{k=0}^{2}{k})","sum(k,0,2,k)");
   equal(R"(\sum_{a_0=0}^{2}{a_0})","sum(qsumindex_0,0,2,qsumindex_0)");
   equal(R"(\sum_{a_{10}=0}^{2}{a_{10}})","sum(qsumindex_0,0,2,qsumindex_0)");
+  const std::string collision="qsumindex"+std::string(15000,'q');
+  equal(R"(\sum_{a_0=0}^{2}{a_0}+)"+collision,"sum(qsumindex0_0,0,2,qsumindex0_0)+"+collision);
   equal(R"(\prod^{2}_{k=0}{k})","product(k,0,2,k)");
   equal(R"(\bigotimes_{k=0}^{2}{X})","tensorproduct(X,0,2,k)");
   equal(R"(\bigoplus_{k=0}^{2}{X})","blocksum(X,0,2,k)");
@@ -60,6 +62,9 @@ int main() {
   rejects(std::string(128,'(')+"x"+std::string(128,')'));
   equal(std::string(131072,'x'),std::string(131072,'x'));
   rejects(std::string(131073,'x'));
+  std::string indexedExpansion;
+  for(unsigned i=0;i<12000;++i)indexedExpansion+="a_0+";
+  rejects(R"(\sum_{a_0=0}^{1}{)"+indexedExpansion+"0}");
   std::string expansion="0";
   for(unsigned i=0;i<20;++i)expansion="\\ketbra{"+expansion+"}";
   rejects(expansion);

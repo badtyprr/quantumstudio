@@ -13,7 +13,8 @@ class TeXReader {
  unsigned nextIndex=0;
  std::string scopedIndex(const std::string &variable,std::string &body) {
   std::string prefix="qsumindex";
-  while(input.find(prefix)!=std::string::npos)prefix+='q';
+  unsigned collision=0;
+  while(input.find(prefix)!=std::string::npos)prefix="qsumindex"+std::to_string(collision++);
   std::string name=prefix+"_"+std::to_string(nextIndex++),result;
   char quote=0;
   auto nameChar=[](unsigned char c){return c>=128 || std::isalnum(c) || c=='_';};
@@ -27,6 +28,7 @@ class TeXReader {
       (p+variable.size()==body.size() || !nameChar(body[p+variable.size()]))) {
     result+=name;p+=variable.size();
    } else result+=body[p++];
+   if(result.size()>131072)throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
   }
   body=std::move(result);return name;
  }
