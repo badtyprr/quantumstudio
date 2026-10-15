@@ -56,6 +56,8 @@ For a reproducible example, `born([2,1;1,1]/3,|+>)` gives 5/6. A complex-effect 
 
 ## Numerical conventions
 
+TeX `\tilde{\rho}` and `\widetilde{\rho}` denote the distinct symbol `ρ_tilde`; they do not evaluate to `ρ`. This supports estimated-state notation in the IBM tomography lesson. Subscripts outside the decoration follow the suffix, so `\tilde{x}_0` names `x_tilde_0`. These symbols can be bound as finite-sum indices. The decoration does not define a state or automatically reconstruct one: supply the symbol's value when a numerical result is needed. Compound operands such as `\tilde{x+y}` are rejected because their meaning is not specified by a symbol decoration.
+
 Exact scalar arithmetic and exact matrix identities are retained where implemented. Some matrix algorithms use double precision even when the calculator precision is higher.
 
 The numerical fractional-power and matrix-logarithm path supports Hermitian or unitary matrices up to dimension 64. It uses the principal phase in (-pi,pi], with +pi at the negative real axis. In `libqalculate/QuantumMatrixPower.cc`, normalized Hermiticity is checked at 1e-12, unitarity at 1e-11, and eigenvector residuals at 1e-10. Near-zero scaled Hermitian eigenvalues below 1e-13 are rejected for logarithms and negative powers. Positive powers also reject unresolved small eigenvalues. These are numerical acceptance thresholds, not error guarantees for arbitrary inputs; general nonnormal matrices are unsupported.
