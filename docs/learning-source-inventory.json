@@ -324,7 +324,22 @@
       "course": "fundamentals-of-quantum-algorithms",
       "path": "grover-algorithm/analysis",
       "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis",
-      "status": "end_to_end_audit_pending"
+      "status": "end_to_end_audit_pending",
+      "selected_release_audits": [
+        {
+          "revision": "366f836a401f6c3313c1b3d510fec7e19fdbf3c7",
+          "cases": 36,
+          "scope": "Finite-state Grover rotation comparisons",
+          "maximum_residual": 1.5695269988120625e-15
+        },
+        {
+          "revision": "f1af3559fcf25182caed48c3143bcda6499db90e",
+          "cases": 10,
+          "scope": "Compact-register uniform-state and reflection identities",
+          "maximum_residual": 0
+        }
+      ],
+      "audit_qualification": "Explicit dimensions and integer ranges replace symbolic domains. No direct-paste or whole-lesson certification. See docs/quantum-notation.md#selected-grover-analysis-audit."
     },
     {
       "kind": "ibm_course_section",
@@ -1148,7 +1163,22 @@
       "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb",
       "revision": "86787e1ba372facc224f925189755e69c479828b",
       "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4",
-      "status": "end_to_end_execution_audit_pending"
+      "status": "end_to_end_execution_audit_pending",
+      "selected_release_audit": {
+        "date": "2026-10-15",
+        "revision": "232ef1b770aea059e26a53b9a209c6f083813dd9",
+        "evidence": "docs/quantum-notation.md#selected-qbraid-adder-audit",
+        "source_sha256": "503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad",
+        "hash_encoding": "Extracted UTF-8 program text with LF newlines",
+        "qubits": 10,
+        "steps": 45,
+        "original_full_distribution_cases": 1,
+        "adapted_input_cases": 8,
+        "reset_semantics_cases": 8,
+        "original_residual": 0,
+        "original_worker_seconds": 1.36,
+        "qualification": "Actual packaged importer, GUI load/save/reload and worker. SDK calls and arbitrary notebook execution remain unverified."
+      }
     },
     {
       "kind": "qbraid_notebook",
