@@ -27,7 +27,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y \
             build-essential autoconf automake libtool gettext autopoint intltool \
-            pkg-config libgmp-dev libmpfr-dev libxml2-dev libreadline-dev
+            python3 pkg-config libgmp-dev libmpfr-dev libxml2-dev libreadline-dev
       - name: Configure
         run: |
           autoreconf -fi
