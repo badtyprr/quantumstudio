@@ -1,0 +1,27 @@
+name: Windows GUI CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-gui-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gui:
+    name: Windows GUI build and tests
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out proposed revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Build GUI and validate sessions and circuit layout
+        shell: powershell
+        run: ./windows/test-gui.ps1
