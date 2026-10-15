@@ -67,6 +67,12 @@ These audits substitute explicit vectors for named states and expand finite sums
 
 Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; finite filtering comprehensions are described below. More general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
 
+## Floor and ceiling
+
+Floor and ceiling brackets accept both TeX (`\lfloor x\rfloor`, `\lceil x\rceil`) and Unicode (`⌊x⌋`, `⌈x⌉`), including nesting and delimiter sizing. They use mathematical floor and ceiling, so `⌊-3/2⌋ = -2` and `⌈-3/2⌉ = -1`. Empty, mismatched and unclosed brackets are rejected.
+
+For example, the approximation in IBM's [Grover iteration-count lesson](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations), `\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor`, evaluates to `3`. The brackets also work around the lesson's angle-dependent formula when the angle is supplied explicitly; this does not provide implicit set cardinalities or certify the entire lesson.
+
 ## TeX trigonometric powers
 
 `\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. Inverse results retain the library's angle units and principal-branch conventions.

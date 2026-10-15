@@ -19,6 +19,16 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor)","3");
+ equal(R"(quantum: \lfloor-3/2\rfloor)","-2");
+ equal(R"(quantum: \lceil-3/2\rceil)","-1");
+ equal(R"(quantum: \lceil\lfloor3/2\rfloor+1/2\rceil)","2");
+ equal(R"(quantum: \lfloor3/2\rfloor^2+\lceil3/2\rceil^2)","5");
+ equal("quantum: ⌊3/2⌋","1");
+ equal("quantum: ⌈3/2⌉","2");
+ equal("quantum: ⌊-3/2⌋+⌈-3/2⌉","-3");
+ equal("quantum: ⌈⌊3/2⌋+1/2⌉","2");
+ equal(R"(quantum: \sum_{k=1}^{4}{\lfloor k/2\rfloor})","4");
  equal(R"(quantum: \sin^{-1}(1/2))","asin(1/2)");
  equal(R"(quantum: \sin^{- 1}(1/2))","asin(1/2)");
  equal(R"(quantum: \cos^{-\!1}(1/2))","acos(1/2)");
