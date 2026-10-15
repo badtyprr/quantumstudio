@@ -25,7 +25,10 @@ $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
 $layout = Join-Path $validation ('layout-' + [Guid]::NewGuid().ToString('N') + '.txt')
 $process = Start-Process -FilePath $app -ArgumentList @('--circuit-layout-test', ('"' + $layout + '"')) -WindowStyle Hidden -PassThru
 try {
-    if (-not $process.WaitForExit(30000)) {
+    # Exercise all layout combinations with the full 512-step circuit.
+    $layoutDeadline = [DateTime]::UtcNow.AddSeconds(120)
+    while (-not $process.WaitForExit(1000) -and [DateTime]::UtcNow -lt $layoutDeadline) {}
+    if (-not $process.HasExited) {
         $process.Kill()
         $process.WaitForExit()
         throw 'Circuit layout test timed out.'
