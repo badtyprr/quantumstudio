@@ -431,6 +431,30 @@ class Parser {
    return state;
   }
   if(dimension.empty()) {
+   // Space-separated subscripted bit indices denote a computational register.
+   // Keep named states and literal bit strings on their existing paths.
+   std::vector<std::string> bits;
+   bool symbolic=false, valid=true;
+   for(size_t k=0;k<label.size();) {
+    if(std::isspace((unsigned char)label[k])) {++k;continue;}
+    size_t begin=k;
+    while(k<label.size() && !std::isspace((unsigned char)label[k]))++k;
+    std::string bit=label.substr(begin,k-begin);
+    bool indexed=bit.find('_')!=std::string::npos &&
+     !std::isdigit((unsigned char)bit.front());
+    for(unsigned char c:bit)if(c<128 && !std::isalnum(c) && c!='_')indexed=false;
+    if(bit!="0" && bit!="1" && !indexed)valid=false;
+    symbolic=symbolic || indexed;bits.push_back(bit);
+   }
+   if(valid && symbolic && bits.size()>1) {
+    if(bits.size()>10)throw std::runtime_error("Basis kets are limited to 10 qubits.");
+    std::string state;
+    for(const auto &bit:bits) {
+     std::string factor=basisState(bit,"2");
+     state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
+    }
+    return state;
+   }
    size_t mark=repeatedRegister(label);
    if(mark==std::string::npos)return ket(label);
    std::string outer=s;size_t outerPosition=p;s=label.substr(mark+1);p=0;
