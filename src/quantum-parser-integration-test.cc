@@ -19,6 +19,12 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \sin^{-1}(1/2))","asin(1/2)");
+ equal(R"(quantum: \cos^{-1}\biggl(1/2\biggr))","acos(1/2)");
+ equal(R"(quantum: \tan^{-1}{1})","atan(1)");
+ equal(R"(quantum: \sin^2(pi/6)+\cos^2(pi/6))","1");
+ equal(R"(quantum: \sin^{-2}(pi/6))","4");
+ equal(R"(quantum: \arcsin(1/2))","asin(1/2)");
  equal("quantum: sumset(k,indexrange(0,3),k)","6");
  equal(R"(quantum: \sum_{k\in\{0,\ldots,3\}}{k})","6");
  equal(R"(quantum: \sum_{k\in\{k\in\{0,\ldots,7\}:k\geq4\}}{k})","22");

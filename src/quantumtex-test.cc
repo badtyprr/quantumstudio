@@ -17,6 +17,16 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\sin x)","sin x");
+  equal(R"(\cos (x))","cos (x)");
+  equal(R"(\sin^{-1}(1/2))","asin(1/2)");
+  equal(R"(\cos^{-1}\biggl(1/2\biggr))","acos(1/2)");
+  equal(R"(\tan^{-1}{1})","atan(1)");
+  equal(R"(\sin^2\left(pi/6\right))","(sin(pi/6))^(2)");
+  equal(R"(\cos^{2+2}{x})","(cos(x))^(2+2)");
+  equal(R"(\sin^{-2}(x))","(sin(x))^(-2)");
+  equal(R"(\arcsin(x)+\arccos(x)+\arctan(x))","asin(x)+acos(x)+atan(x)");
+  for(const char *s:{R"(\sin^{}(x))",R"(\sin^2())",R"(\sin^2)",R"(\sin^2 x)",R"(\sin^2(x)"})rejects(s);
   rejects(R"(\{0,\ldots,\ldots\})");
   equal(R"(\{0,\ldots,n-1\})","unique(qindexrange(0,n-1))");
   equal(R"(\{0,\cdots,3\})","unique(qindexrange(0,3))");
