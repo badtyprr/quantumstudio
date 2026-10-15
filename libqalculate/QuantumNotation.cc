@@ -517,9 +517,9 @@ class Parser {
   else if(take('[')) {
    if(take(']'))a="vector()";
    else {
-    a="["; a+=expression();
-    while(true) { if(take(',')) a+=","+expression(); else if(take(';')) a+=";"+expression(); else break; }
-    need(']'); a+="]";
+    std::string first=expression();bool multiple=false;a="["+first;
+    while(true) { if(take(',')) {multiple=true;a+=","+expression();} else if(take(';')) {multiple=true;a+=";"+expression();} else break; }
+    need(']'); a=multiple ? a+"]" : "vector("+first+")";
    }
   }
   else if(s.compare(p,2,"||")==0) {
@@ -560,7 +560,12 @@ class Parser {
   }
   else if(take('|')) {
    ws();
-   if(p<s.size() && s[p]=='<') {
+   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0) {
+    // TeX set literals/builders have a distinct collection expression. Do not
+    // guess whether an arbitrary named value inside bars is a set or a ket.
+    std::string collection=atom();need('|');
+    a="qsumset(1,"+collection+",'__cardinality_index')";
+   } else if(p<s.size() && s[p]=='<') {
     // A leading bra inside bars denotes the magnitude of a Dirac scalar,
     // e.g. |<a|U|b>|. Its closing bar follows the ket's closing bracket.
     size_t closing=std::string::npos;int nesting=0;
@@ -897,6 +902,9 @@ class Parser {
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }
      else a=name+"("+state+","+indices+")";
      need(')');
+    } else if(name=="cardinality") {
+     std::string collection=expression();need(')');
+     a="qsumset(1,"+collection+",'__cardinality_index')";
     } else if(name=="qnorm") {
      std::string operand=expression();
      if(take(','))a="qschatten("+operand+","+expression()+")";else a="qnorm("+operand+")";
