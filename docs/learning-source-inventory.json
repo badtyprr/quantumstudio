@@ -218,13 +218,15 @@
         "subscripted nested indices",
         "space-separated bit labels",
         "unbraced finite sums",
-        "TeX Fourier matrix row spacing"
+        "TeX Fourier matrix row spacing",
+        "QFT dimension subscripts",
+        "all four exact two-bit phase-estimation outcomes"
       ],
       "evidence": [
         "src/quantum-parser-integration-test.cc",
         "src/quantumtex-test.cc"
       ],
-      "remaining": "Full lesson, diagrams, code, assumptions and generalized dimensions are not certified. QFT subscript changes remain in a separate unmerged PR."
+      "remaining": "Full lesson, diagrams, code, assumptions and generalized dimensions are not certified."
     },
     {
       "kind": "ibm_course_section",
