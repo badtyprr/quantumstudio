@@ -37,7 +37,12 @@ int main(){try {
  equal(R"(quantum: \sum_{qsumindex_0=0}^{1}{\sum_{a_0=0}^{1}{qsumindex_0+a_0}})","4");
  equal(R"(quantum: \sum_{a_0=0}^{2}{\sum_{a_0=0}^{a_0}{a_0}})","4");
  equal(R"(quantum: \sum_{a_0=0}^{1}{\sum_{a_01=0}^{1}{a_0+a_01}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{a_0+sum(a_0,0,1,a_0)})","6");
  equal(R"(quantum: norm((\bigotimes_{a_0=0}^{1}{Ry(a_0*pi)})|00>-|01>))","0");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{a_0+sum(a_0,0,1,(a_0))})","6");
+ equal(R"(quantum: \sum_{qboundindex_0=0}^{1}{\sum_{a_0=0}^{1}{qboundindex_0+a_0}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{|sum(b_0,0,a_0,b_0)>_4})","[1;1;0;0]");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{a_0+<1|phase_function(a_0,1,a_0)|1>})","-1");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {

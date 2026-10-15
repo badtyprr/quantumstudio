@@ -10,28 +10,6 @@ class TeXReader {
  const std::string &input;
  size_t pos=0;
  unsigned depth=0;
- unsigned nextIndex=0;
- std::string scopedIndex(const std::string &variable,std::string &body) {
-  std::string prefix="qsumindex";
-  unsigned collision=0;
-  while(input.find(prefix)!=std::string::npos)prefix="qsumindex"+std::to_string(collision++);
-  std::string name=prefix+"_"+std::to_string(nextIndex++),result;
-  char quote=0;
-  auto nameChar=[](unsigned char c){return c>=128 || std::isalnum(c) || c=='_';};
-  for(size_t p=0;p<body.size();) {
-   if(body[p]=='\"' || body[p]=='\'') {
-    if(quote==body[p])quote=0;else if(!quote)quote=body[p];
-    result+=body[p++];continue;
-   }
-   if(!quote && body.compare(p,variable.size(),variable)==0 &&
-      (p==0 || !nameChar(body[p-1])) &&
-      (p+variable.size()==body.size() || !nameChar(body[p+variable.size()]))) {
-    result+=name;p+=variable.size();
-   } else result+=body[p++];
-   if(result.size()>131072)throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
-  }
-  body=std::move(result);return name;
- }
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  std::string group() {
@@ -138,9 +116,6 @@ class TeXReader {
    if(variable[0]>='0' && variable[0]<='9') throw std::runtime_error(error("A summation index cannot begin with a digit"));
    for(unsigned char c:variable) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && variable.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
    auto body=group();
-   // Inner binders have already been renamed. Only rename this binder's body;
-   // its bounds can still refer to an enclosing index with the same spelling.
-   if(variable.find('_')!=std::string::npos)variable=scopedIndex(variable,body);
    return (name=="sum" ? "sum(" : name=="prod" ? "product(" : name=="bigoplus" ? "blocksum(" : "tensorproduct(")+body+","+startValue+","+upper+","+variable+")";
   }
   bool expectation=name=="expectationvalue" || name=="expval" || name=="ev";

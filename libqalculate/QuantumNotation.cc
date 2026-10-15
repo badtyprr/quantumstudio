@@ -325,6 +325,31 @@ class Parser {
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0;
+ unsigned nextBoundIndex=0;
+ void scopeIndex(const std::string &name,std::vector<std::string> &args) {
+  size_t index=(name=="qphasefunction" && args.size()==3) ? 2 :
+   ((name=="sum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
+  if(!index)return;
+  std::string original=args[index];
+  while(original.size()>2 && original.front()=='(' && original.back()==')')
+   original=original.substr(1,original.size()-2);
+  if(original.size()<3 || original.front()!='"' || original.back()!='"' ||
+     original.find('"',1)!=original.size()-1)return;
+  std::string symbol;
+  bool used;
+  do {
+   symbol="\"qboundindex_"+std::to_string(nextBoundIndex++)+"\"";
+   used=s.find(symbol.substr(1,symbol.size()-2))!=std::string::npos;
+   for(const auto &arg:args)if(arg.find(symbol)!=std::string::npos)used=true;
+  } while(used);
+  // Nested calls are already scoped. Rename only this body and declaration;
+  // bounds and widths may refer to an enclosing index with the same spelling.
+  size_t at=0;
+  while((at=args[0].find(original,at))!=std::string::npos) {
+   args[0].replace(at,original.size(),symbol);at+=symbol.size();checkSize(args[0]);
+  }
+  args[index]=symbol;
+ }
  void ws() { while(p < s.size() && std::isspace((unsigned char)s[p])) ++p; }
  bool take(char c) { ws(); if(p < s.size() && s[p] == c) { ++p; return true; } return false; }
  bool word(const std::string &token) {
@@ -933,10 +958,13 @@ class Parser {
      if(name=="P") a="[1,0;0,exp(i*"+theta+")]";
      if(controlled) a="qcontrolled("+a+")";
     } else {
-    a=name+"("; unsigned count=0;
-    if(!take(')')) { a+=expression(); ++count; while(take(',')) {a+=","+expression();++count;} need(')'); } a+=")";
+    std::vector<std::string> args;
+    if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
+    scopeIndex(name,args);
+    a=name+"(";
+    for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
     auto signature=quantumSignatures.find(name);
-    if(signature!=quantumSignatures.end() && count!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
+    if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }
    } else {
     auto it=gates.find(a); if(it!=gates.end()) a=it->second;
