@@ -188,5 +188,3 @@ bool quantumTraceDistance(MathStructure &out,const MathStructure &first,const Ma
  distance=std::min(1.0,distance);
  Number result;result.setFloat(distance);result.setApproximate(true);result.setPrecision(12);out=result;return true;
 }
-
-

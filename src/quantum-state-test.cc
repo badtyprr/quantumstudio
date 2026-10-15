@@ -8,14 +8,14 @@ static unsigned checks=0;
 static EvaluationOptions eo;
 static MathStructure parse(const std::string &s){return CALCULATOR->calculate(s,eo);}
 static void compare(const MathStructure &out,const std::string &expected) {
- if(!out.isNumber())throw std::runtime_error("Nonnumeric metric");
+ if(!out.isNumber() || out.number().isComplex() || out.number().isUndefined() || out.number().isInfinite(false))throw std::runtime_error("Nonfinite or nonreal metric");
  MathStructure reference=parse(expected);EvaluationOptions numeric=eo;numeric.approximation=APPROXIMATION_APPROXIMATE;reference.eval(numeric);
  if(!reference.isNumber())throw std::runtime_error("Nonnumeric reference");
  Number want=reference.number(),value=out.number();
  if(want.isZero()) {
   if(std::abs(value.floatValue())>1e-12)throw std::runtime_error("Expected zero at check "+std::to_string(checks)+", got "+std::to_string(value.floatValue()));
  } else {
-  value.divide(want);
+  if(!value.divide(want))throw std::runtime_error("Reference division failed");
   if(!std::isfinite(value.floatValue()) || std::abs(value.floatValue()-1)>1e-8)
    throw std::runtime_error("Relative metric mismatch, expected "+expected);
  }
@@ -62,5 +62,25 @@ int main(){try {
   if(quantumTraceDistance(out,state,other,eo,true))throw std::runtime_error("Invalid state accepted");
   ++checks;
  }
+ MathStructure state,out,other;
+ state.clearMatrix();state.resizeMatrix(64,1,m_zero);*state.getElement(1,1)=1;other=state;
+ if(!quantumTraceDistance(out,state,other,eo,true))throw std::runtime_error("Maximum fidelity dimension rejected");
+ compare(out,"1");
+ state.resizeMatrix(65,1,m_zero);other=state;
+ if(quantumTraceDistance(out,state,other,eo,true))throw std::runtime_error("Oversized fidelity accepted");
+ ++checks;
+ state.resizeMatrix(1024,1,m_zero);
+ if(!quantumEntropy(out,state,eo))throw std::runtime_error("Maximum ket entropy rejected");
+ compare(out,"0");
+ state.resizeMatrix(1025,1,m_zero);
+ if(quantumEntropy(out,state,eo))throw std::runtime_error("Oversized ket entropy accepted");
+ ++checks;
+ state.clearMatrix();state.resizeMatrix(64,64,m_zero);
+ for(size_t k=1;k<=64;++k)*state.getElement(k,k)=1;
+ if(!quantumEntropy(out,state,eo))throw std::runtime_error("Maximum matrix entropy rejected");
+ compare(out,"6");
+ state.resizeMatrix(65,65,m_zero);
+ if(quantumEntropy(out,state,eo))throw std::runtime_error("Oversized matrix entropy accepted");
+ ++checks;
  std::cout<<"PASS: "<<checks<<" state metric checks\n";return 0;
 }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}
