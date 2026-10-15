@@ -46,6 +46,22 @@ The compact controlled-T variant originally failed import. The reviewed fix `b0d
 
 For Bernstein–Vazirani, all eight three-bit secrets plus the notebook's `1011` example were generated in compact and unrolled form. All 18 imported circuits produced the expected measured-register probabilities. Cloud jobs, QIR execution, account setup, SDK statements, custom-include file workflows and notebook visualizations were not executed. None of these three notebooks is certified end to end.
 
+## Selected qBraid adder audit
+
+The pinned [PyQASM unrolling notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb) contains a ten-qubit ripple-carry adder. Its `adder_qasm_str` was extracted without executing the notebook. The notebook SHA-256 is `ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4`; the extracted UTF-8 source with LF newlines hashes to `503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad`.
+
+At released revision `232ef1b7`, the packaged importer produced 45 editable steps. The packaged GUI loaded, saved and reopened them; its expression produced the independently expected full 1024-outcome distribution. The initialized little-endian operands are 8 and 15, so the result is 23. With QuantumStudio's leftmost-wire convention, the final basis index is 61: the first operand is restored, the low sum is 7, and the carry is 1. Evaluation took 1.36 seconds on the audit machine; this is an observation, not a performance guarantee.
+
+Eight separately adapted inputs also passed full-distribution comparisons: `(0,0)`, `(1,1)`, `(1,15)`, `(7,9)`, `(15,15)`, `(15,0)`, `(0,15)` and `(5,10)`. Eight additional packaged-GUI comparisons checked leading resets followed by unitary gates, measurements, later resets or noise, in short and long circuits. The editor defers density conversion for initial resets of its known zero state, retaining density output semantics and saved steps. The earlier grouped-reset development audit timed out after 120 seconds. Notebook SDK calls, visualizations and arbitrary notebook execution are not certified by these checks.
+
+## Selected Grover analysis audit
+
+Selected identities from [IBM's Grover analysis](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis) were checked on 2026-10-15. At released revision `366f836a`, 36 full-state comparisons passed for dimensions 4, 8 and 16, with 1, half, or all-but-one marked states and 0 through 3 iterations. Finite sums built the uniform state and marked-state projector. Independent reference amplitudes used the lesson's rotation angle `asin(sqrt(M/N))`; maximum residual was 1.57e-15.
+
+At released revision `f1af3559`, ten further checks passed with zero reported residual: uniform-state preparation and the diffusion-reflection identity for one through five qubits. These exercised compact register notation such as `H^{\otimes n}|0^n>` with concrete widths. A reproducible example is `norm(vec(H^{\otimes 2}|0^2>-(1/2)\sum_{x\in\{0,\ldots,3\}}{|x>_4}))`, whose expected value is zero.
+
+These audits replace the symbolic bit-string domain with an explicit integer range and supply ket/identity dimensions. General symbolic alphabets, Cartesian set powers and automatic state-dimension inference remain unfinished at `97e1d120`; that revision adds finite-set cardinality. At `f1af3559`, an unqualified sum of `|x>` over `{0,1,2}` incorrectly returned scalar `3`; this is not a valid quantum-state result. Revision `0dee0478` rejects those scalar ket labels. The explicit form `\sum_{x\in\{0,1,2\}}{|x>_3}` supplies the required dimension. The recorded checks are selected source audits, not full-lesson certification or a claim that CI replays every audit.
+
 ## Selected general-measurement audit
 
 On 2026-10-15, selected finite examples from IBM's [measurement formulations](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements) and [Naimark construction](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem) were checked with explicit matrices substituted for lesson variables. This is not a literal-paste or whole-lesson certification.
