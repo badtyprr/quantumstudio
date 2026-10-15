@@ -11,9 +11,9 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = @QALCULATE_TEXT@
 noinst_PROGRAMS = @QALCULATE_DEFS2DOC@ @QALCULATE_TEST@ @QALCULATE_UNITTEST@
 EXTRA_PROGRAMS = qalc defs2doc test unittest
-check_PROGRAMS = quantum-gates-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
+check_PROGRAMS = quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
 TESTS_ENVIRONMENT = QALCULATE_DEFINITIONS_DIR=$(abs_top_builddir)/data
-TESTS = quantum-gates-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
+TESTS = quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
 
 qalc_SOURCES = qalc.cc
 
@@ -78,6 +78,9 @@ quantum_matrix_exp_test_LDADD = $(test_LDADD)
 
 quantum_matrix_power_test_SOURCES = quantum-matrix-power-test.cc
 quantum_matrix_power_test_LDADD = $(test_LDADD)
+
+quantum_measurement_test_SOURCES = quantum-measurement-test.cc
+quantum_measurement_test_LDADD = $(test_LDADD)
 
 quantum_gates_test_SOURCES = quantum-gates-test.cc
 quantum_gates_test_LDADD = $(test_LDADD)
