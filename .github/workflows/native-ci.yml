@@ -37,6 +37,10 @@ jobs:
         run: make -j2
       - name: Run native tests
         run: make check
+      - name: Verify source distribution
+        run: |
+          make dist-gzip
+          python3 windows/test-source-dist.py libqalculate-*.tar.gz
       - name: Show test diagnostics
         if: always()
         run: |
