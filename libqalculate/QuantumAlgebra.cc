@@ -42,6 +42,12 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   const MathStructure &a=args[0];
+  if(op=="qketstate") {
+   if(!a.isMatrix() || a.columns()!=1 || a.rows()==0 || a.rows()>1024) {
+    CALCULATOR->error(true,"A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4.",NULL);return 0;
+   }
+   out=a;return 1;
+  }
   if(op=="qindexxor" || op=="qoplus") {
    // A computed index may contain matrix expressions such as trace(A oplus B).
    if(a.isMatrix() && args[1].isMatrix()) {
@@ -144,6 +150,7 @@ class QuantumAlgebraFunction: public MathFunction {
 };
 }
 void registerQuantumAlgebra(Calculator &calculator) {
+ calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }
