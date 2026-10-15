@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 namespace {
+const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
  MathStructure out=a;
@@ -15,11 +16,6 @@ MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
   }
  } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
  return out;
-}
-MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
- a*=b; a.eval(eo);
- if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
- return a;
 }
 class QuantumResetFunction: public MathFunction {
  std::string op;
@@ -50,16 +46,23 @@ class QuantumResetFunction: public MathFunction {
      if(mask & bit) { CALCULATOR->error(true,"Channel indices must be unique.",NULL); return 0; } mask|=bit;
     }
    }
-   MathStructure state=a;
+   MathStructure adjoint;
    if(a.columns()==1) {
     if(!CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global functions before converting a ket to a density matrix.",NULL); return 0; }
-    state=multiply(a,dagger(a,eo),eo);
+    adjoint=dagger(a,eo);
    }
    out.clearMatrix(); out.resizeMatrix(n,n,m_zero);
    // Retain matching outcome blocks. Reset additionally maps those outcomes to zero.
    for(size_t r=0;r<n;++r) {
     if(CALCULATOR->aborted()) return 0;
-    for(size_t c=0;c<n;++c) if((r & mask)==(c & mask)) element(out,dephase ? r : r & ~mask,dephase ? c : c & ~mask)+=element(state,r,c);
+    for(size_t c=0;c<n;++c) if((r & mask)==(c & mask)) {
+     MathStructure term;
+     if(a.columns()==1) {
+      if(element(a,r,0).isZero() || element(adjoint,0,c).isZero())continue;
+      term=element(a,r,0);term*=element(adjoint,0,c);term.eval(eo);
+     } else term=element(a,r,c);
+     element(out,dephase ? r : r & ~mask,dephase ? c : c & ~mask)+=term;
+    }
    }
    return 1;
   }
