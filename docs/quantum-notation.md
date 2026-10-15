@@ -65,7 +65,7 @@ Selected finite examples from IBM's [discrimination and tomography lesson](https
 
 These audits substitute explicit vectors for named states and expand finite sums. For example, twelve identical tetrahedral outcomes reconstruct the trace-one matrix `[2,0;0,-1]`; the audit verifies that estimate, without claiming it is a physical density matrix or applying an automatic positivity correction. Sampling, arbitrary ensembles, general optimal-measurement construction and automatic tomography reconstruction remain unverified or unimplemented.
 
-Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
+Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; finite filtering comprehensions are described below. More general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
 
 ## Finite set-indexed sums
 
@@ -73,7 +73,15 @@ Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\
 
 Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
 
-Escaped set braces and membership are recognized in summation bounds. General set expressions, set comprehensions, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`. When directly nesting it inside the library's ordinary `sum` or `product` outside quantum mode, use distinct index names: those existing outer functions perform unscoped replacement. Quantum-mode parsing gives set-sum indices unique names to avoid that capture. Parser byte and node limits can reject an input before the collection-size limit is reached.
+Escaped set braces and membership are recognized in summation bounds. Arbitrary set algebra, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`. When directly nesting it inside the library's ordinary `sum` or `product` outside quantum mode, use distinct index names: those existing outer functions perform unscoped replacement. Quantum-mode parsing gives set-sum indices unique names to avoid that capture. Parser byte and node limits can reject an input before the collection-size limit is reached.
+
+## Finite set literals and filtering comprehensions
+
+TeX `\{0,2,0\}` evaluates using the library's `unique(vector(0,2,0))`. A filtering comprehension such as `\{k\in\{-2,0,2,2\}:k\geq0\}` keeps the distinct nonnegative entries, producing the vector `[0,2]`. `\mid` may replace the colon, and `\left`/`\right` sizing is accepted. Named finite collections must have a value, and the predicate must evaluate to a Boolean for each member. This implements the finite filtering shape used to partition indices in IBM's discrimination lesson; it does not infer an unspecified eigenvalue list or register dimension.
+
+Comprehensions compose with set-indexed sums. For example, `\sum_{k\in\{j\in\{-1,0,2\}:j\geq0\}}{k}` gives 2. The predicate's index is local; its collection may refer to an enclosing index. Nested Latin, Greek and subscripted indices use the quantum parser's binding rules.
+
+Sets use the existing `unique`/`select` representation, not a new symbolic set type. The library may display a one-element result as its scalar member; set sums preserve that result as a one-element collection when evaluating these operations. Ordering and symbolic equality follow the existing vector/set functions, so not every unresolved symbolic set can be evaluated. Parser size/nesting limits and the set-sum collection limit still apply. Mapped comprehensions such as `\{k^2:k\in S\}`, ellipsis expansion, infinite domains, and general membership propositions remain unfinished.
 
 ## Numerical conventions
 

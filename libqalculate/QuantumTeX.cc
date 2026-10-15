@@ -16,7 +16,7 @@ class TeXReader {
  size_t pos=0;
  unsigned depth=0;
  bool setBound=false;
- unsigned setBraces=0;
+ unsigned setExpressions=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  std::string group() {
@@ -77,8 +77,27 @@ class TeXReader {
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
-   if(setBound && c=='{'){++setBraces;return "vector(";}
-   if(setBound && c=='}'){if(!setBraces)throw std::runtime_error(error("Unmatched set delimiter"));--setBraces;return ")";}
+   if(c=='{') {
+    ++setExpressions;std::string contents=read(0,false,"",true);--setExpressions;
+    size_t membership=std::string::npos,separator=std::string::npos;int nesting=0;char quote=0;
+    for(size_t j=0;j<contents.size();++j) {
+     char token=contents[j];if(quote){if(token==quote)quote=0;continue;}
+     if(token=='"' || token=='\''){quote=token;continue;}
+     if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
+     else if(!nesting && contents.compare(j,3,"∈")==0) {
+      if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
+     } else if(!nesting && token==':') {
+      if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
+     }
+    }
+    if(membership==std::string::npos && separator==std::string::npos)return "unique(vector("+contents+"))";
+    if(membership==std::string::npos || separator==std::string::npos || separator<membership)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
+    std::string index=trim(contents.substr(0,membership)),collection=trim(contents.substr(membership+3,separator-membership-3)),predicate=trim(contents.substr(separator+1));
+    if(index.empty() || std::isdigit((unsigned char)index[0]) || collection.empty() || predicate.empty())throw std::runtime_error(error("A set builder requires an index, collection and predicate"));
+    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
+    return "unique(select("+collection+","+predicate+","+index+"))";
+   }
+   if(c=='}')throw std::runtime_error(error("Unmatched set delimiter"));
    if(c=='\\' && matrix) {
     space();
     if(pos<input.size() && input[pos]=='[') {
@@ -115,7 +134,8 @@ class TeXReader {
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
-  if(name=="in" && setBound)return "∈";
+  if(name=="in" && (setBound || setExpressions))return "∈";
+  if(name=="mid" && setExpressions)return ":";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="tilde" || name=="widetilde") {
    std::string value=trim(argument());
@@ -143,9 +163,8 @@ class TeXReader {
    std::string lower, upper;
    for(int k=0;k<2;++k) {
     space(); if(pos==input.size() || (input[pos]!='_' && input[pos]!='^')) throw std::runtime_error(error("A finite sum/product requires lower and upper bounds"));
-    char bound=input[pos++]; bool priorSetBound=setBound;unsigned priorSetBraces=setBraces;setBound=bound=='_';
+    char bound=input[pos++]; bool priorSetBound=setBound;setBound=bound=='_';
     std::string value=argument();setBound=priorSetBound;
-    if(setBraces!=priorSetBraces)throw std::runtime_error(error("Unclosed set delimiter"));
     if(bound=='_') { if(!lower.empty()) throw std::runtime_error(error("Duplicate lower bound")); lower=value; }
     else { if(!upper.empty()) throw std::runtime_error(error("Duplicate upper bound")); upper=value; }
     if(lower.find("∈")!=std::string::npos)break;
@@ -248,7 +267,7 @@ class TeXReader {
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
- std::string read(char close=0, bool matrix=false, const std::string &environment="") {
+ std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false) {
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
   std::string result; int norms=0; bool closed=false;
   std::vector<std::pair<std::string,std::string>> branches;
@@ -259,6 +278,7 @@ class TeXReader {
    branches.emplace_back(trim(caseValue),trim(result));result.clear();caseValue.clear();caseColumn=false;
   };
   while(pos<input.size()) {
+   if(setClose && input.compare(pos,2,"\\}")==0) {pos+=2;closed=true;break;}
    if(close && input[pos]==close) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
@@ -339,7 +359,7 @@ class TeXReader {
    else result+=input[pos++];
    if(result.size()>131072) throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
   }
-  if((close || matrix) && !closed) throw std::runtime_error(error("Unclosed TeX group or environment"));
+  if((close || matrix || setClose) && !closed) throw std::runtime_error(error("Unclosed TeX group or environment"));
   if(norms) throw std::runtime_error(error("Unclosed norm delimiter"));
   if(environment=="cases") {
    if(caseColumn || !trim(result).empty())finishCase();
