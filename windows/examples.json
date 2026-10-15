@@ -32,7 +32,7 @@
     "title": "Correct a detected bit flip",
     "description": "The syndrome [1,1] selects a middle-qubit X correction for the repetition code. Applying it restores the encoded superposition; fidelity is one.",
     "expression": "fidelity(stabilizer_correction(⟨ZZI,IZZ⟩,[1,1])pauli(IXI)(|000⟩+i|111⟩), |000⟩+i|111⟩)",
-    "expected": "1.00000000000"
+    "expected": "1"
   },
   {
     "category": "States and measurements",
@@ -459,7 +459,7 @@
     "title": "Choi matrix of complete dephasing",
     "description": "The Kraus operators I/sqrt(2) and Z/sqrt(2) give a Choi matrix with trace 2, in input ⊗ output order.",
     "expression": "choi(vector(I/sqrt(2),Z/sqrt(2)))",
-    "expected": "[1 0 0 0; 0 0 0 0; 0 0 0 0; 0 0 0 1]"
+    "expected": "[1  0  0  0; 0  0  0  0; 0  0  0  0; 0  0  0  1]"
   },
   {
     "category": "Quantum channels",
@@ -480,7 +480,7 @@
     "title": "Entangle two qutrits",
     "description": "Fourier preparation followed by modular SUM produces a maximally entangled pair; either qutrit has reduced state I/3.",
     "expression": "3ptrace(density(SUM(3)(fourier(3) ⊗ identity(3))(|0⟩_3 ⊗ |0⟩_3)),0,[3,3])",
-    "expected": "[1 0 0; 0 1 0; 0 0 1]"
+    "expected": "[1  0  0; 0  1  0; 0  0  1]"
   },
   {
     "category": "Qudits",
@@ -501,7 +501,7 @@
     "title": "Teleport a phase-sensitive qubit",
     "description": "Measure Alice's two qubits, apply X/Z corrections to Bob, and trace out Alice. Bob recovers |i>.",
     "expression": "ptrace(feedforward(feedforward(apply(H,apply(CNOT,|i⟩ ⊗ (|00⟩+|11⟩)/sqrt(2),[0,1]),0),1,1,X,2),0,1,Z,2),[0,1])",
-    "expected": "[0.5 −0.5i; 0.5i 0.5]"
+    "expected": "[0.5  −0.5i; 0.5i  0.5]"
   },
   {
     "category": "Circuits",
@@ -564,14 +564,14 @@
     "title": "Read an output register",
     "description": "Measure wires 2 and 0 in that order; the outcome is 01.",
     "expression": "probs(|100⟩,[2,0])",
-    "expected": "[0;1;0;0]"
+    "expected": "[0; 1; 0; 0]"
   },
   {
     "category": "Mixed states",
     "title": "Phase a density matrix",
     "description": "Apply S on the ket and S dagger on the bra.",
     "expression": "apply(S,density(|+⟩),0)",
-    "expected": "[0.5 −0.5i; 0.5i 0.5]"
+    "expected": "[0.5  −0.5i; 0.5i  0.5]"
   },
   {
     "category": "Mixed states",
@@ -585,21 +585,21 @@
     "title": "Reduced Bell state",
     "description": "Trace out wire 1 to reveal a maximally mixed qubit.",
     "expression": "ptrace(density((|00⟩+|11⟩)/sqrt(2)),1)",
-    "expected": "[0.5 0; 0 0.5]"
+    "expected": "[0.5  0; 0  0.5]"
   },
   {
     "category": "Noise",
     "title": "Amplitude damping",
     "description": "An excited qubit decays with probability one quarter.",
     "expression": "channel(density(|1⟩),vector([1,0;0,sqrt(3)/2],[0,1/2;0,0]),0)",
-    "expected": "[0.25 0; 0 0.75]"
+    "expected": "[0.25  0; 0  0.75]"
   },
   {
     "category": "Noise",
     "title": "Complete dephasing",
     "description": "Random I or Z removes coherence from a plus state.",
     "expression": "channel(density(|+⟩),vector(I/sqrt(2),Z/sqrt(2)),0)",
-    "expected": "[0.5 0; 0 0.5]"
+    "expected": "[0.5  0; 0  0.5]"
   },
   {
     "category": "Mixed states",
@@ -725,7 +725,7 @@
     "title": "Embed a qubit into a qutrit",
     "description": "A rectangular Kraus isometry changes the output dimension while preserving the state trace.",
     "expression": "channel(density(|1⟩),vector([1,0;0,1;0,0]))",
-    "expected": "[0 0 0; 0 1 0; 0 0 0]"
+    "expected": "[0  0  0; 0  1  0; 0  0  0]"
   },
   {
     "category": "General measurements",
