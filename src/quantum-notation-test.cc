@@ -56,6 +56,10 @@ int main(){try {
  rejects(std::string(32769,' '));
  rejects(std::string(300,'(')+"1"+std::string(300,')'));
  std::string many="1";for(unsigned i=0;i<600;++i)many+="+1";rejects(many);
+ std::string excessiveSequence="sequence([";
+ for(unsigned i=0;i<4200;++i){if(i)excessiveSequence+=",";excessiveSequence+="x";}
+ rejects(excessiveSequence+"],|0>,x)");
+ rejects("sequence(["+std::string(300,'(')+"x"+std::string(300,')')+"],|0>,x)");
  for(const auto &prefix:{std::string("quantum:"),std::string(" \tquantum:"),std::string("\xef\xbb\xbf")+"quantum:",std::string("\xc2\xa0")+"quantum:"}) {
   if(quantumPrefixLength(prefix+"X")!=prefix.size())throw std::runtime_error("Incorrect quantum prefix offset");
   ++checks;
