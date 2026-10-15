@@ -60,7 +60,7 @@ For a reproducible example, `born([2,1;1,1]/3,|+>)` gives 5/6. A complex-effect 
 
 Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
 
-Escaped set braces and membership are recognized in summation bounds. General set expressions, set comprehensions, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`.
+Escaped set braces and membership are recognized in summation bounds. General set expressions, set comprehensions, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`. When directly nesting it inside the library's ordinary `sum` or `product` outside quantum mode, use distinct index names: those existing outer functions perform unscoped replacement. Quantum-mode parsing gives set-sum indices unique names to avoid that capture. Parser byte and node limits can reject an input before the collection-size limit is reached.
 
 ## Numerical conventions
 
