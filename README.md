@@ -109,9 +109,8 @@ collects runtime dependencies and licenses, and runs the release checks.
 Research and compatibility work draws on IBM Quantum Learning and qBraid learning
 materials. **Complete coverage of their notation and programs has not been
 achieved.** Supported syntax, conventions and limits are documented in the
-development checkpoint's
-[notation guide](https://github.com/badtyprr/quantumstudio/blob/9c7dc9ded4260ecaee490414e9980311b1943485/docs/quantum-notation.md)
-and [Windows guide](https://github.com/badtyprr/quantumstudio/blob/9c7dc9ded4260ecaee490414e9980311b1943485/windows/README.txt).
+[research and coverage notes](docs/quantum-notation.md)
+and [Windows notation guide](windows/Notation-guide.html).
 The packaged application also includes an offline guide.
 
 The circuit composer currently supports 1–8 qubits and 64 steps. OpenQASM import

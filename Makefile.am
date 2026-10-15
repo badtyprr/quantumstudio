@@ -7,6 +7,7 @@ SUBDIRS = po-defs po-defs-fixed po-defs-fixed/fixed data libqalculate src man po
 EXTRA_DIST = config.rpath  \
 	autogen.sh \
 	README.translate \
+	docs/quantum-notation.md \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
 	windows/build-qasm-import.ps1 \
