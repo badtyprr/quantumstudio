@@ -29,8 +29,8 @@ class QuantumResetFunction: public MathFunction {
   if((op=="qfeedforward" || op=="qindexedchannel") && !CALCULATOR->getFunction("qapply")){CALCULATOR->error(true,"Targeted gate application is unavailable.",NULL);return 0;}
   if(op=="qreset" || op=="qresetall" || op=="qdephase" || op=="qdephaseall") {
    bool dephase=op=="qdephase" || op=="qdephaseall";
-   if(!a.isMatrix() || a.rows()<2 || a.rows()>512 || (a.columns()!=1 && a.columns()!=a.rows())) {
-    CALCULATOR->error(true,"Reset and dephasing require a qubit ket or square density matrix with 2 to 512 rows.",NULL); return 0;
+   if(!a.isMatrix() || a.rows()<2 || a.rows()>1024 || (a.columns()!=1 && a.columns()!=a.rows())) {
+    CALCULATOR->error(true,"Reset and dephasing require a qubit ket or square density matrix with 2 to 1024 rows.",NULL); return 0;
    }
    size_t n=a.rows(), bits=0, mask=0; while((size_t(1)<<bits)<n) ++bits;
    if(n!=(size_t(1)<<bits)) { CALCULATOR->error(true,"Reset and dephasing require a power-of-two state dimension.",NULL); return 0; }
@@ -96,7 +96,7 @@ class QuantumResetFunction: public MathFunction {
    out+=corrected; return 1;
   }
   if(op=="qindexedchannel") {
-   if(a.rows()!=a.columns() || a.rows()>512 || !args[1].isVector() || args[1].size()==0 || args[1].size()>256) { CALCULATOR->error(true,"Indexed channel requires a square density matrix of at most 512 rows and 1 to 256 Kraus matrices.",NULL); return 0; }
+   if(a.rows()!=a.columns() || a.rows()>1024 || !args[1].isVector() || args[1].size()==0 || args[1].size()>256) { CALCULATOR->error(true,"Indexed channel requires a square density matrix of at most 1024 rows and 1 to 256 Kraus matrices.",NULL); return 0; }
    MathFunction &apply=*CALCULATOR->getFunction("qapply");
    out.clearMatrix(); out.resizeMatrix(a.rows(),a.columns(),m_zero);
    for(size_t k=0;k<args[1].size();++k) {

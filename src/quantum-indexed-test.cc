@@ -44,7 +44,7 @@ int main(){try {
  equal("qblocksum(qblocksum(x,1,y,x),1,2,y)","[1,0,0;0,1,0;0,0,2]");
  equal("qblocksum(sum(x,1,2,x),1,2,x)","[3,0;0,3]");
  equal("qphasefunction(mod(sum(x,0,1,x),2),1,x)","[-1,0;0,-1]");
- for(const auto &expression:{"qsequence(vector(x),identity(513),x)","qsequence(vector(identity(513)),[1;0],x)","qsequence(vector(vector(x)),[1;0],x)","qphasefunction(x,2,x)","qphasefunction(0,10,x)","qphasefunction(0,1,1)","qoraclefunction(x,2,1,x)","qoraclefunction(-1,1,1,x)","qoraclefunction(0,5,5,x)","qblocksum(x,2,1,x)","qblocksum(x,0,32,x)","qblocksum(x,-1000001,0,x)","qtensorproduct([1;0],1,2,1)","qblocksum(identity(513),1,2,x)"}) {
+ for(const auto &expression:{"qsequence(vector(x),matrix(1025,1,vector(1)),x)","qsequence(vector(matrix(1025,1,vector(1))),[1;0],x)","qsequence(vector(vector(x)),[1;0],x)","qphasefunction(x,2,x)","qphasefunction(0,10,x)","qphasefunction(0,1,1)","qoraclefunction(x,2,1,x)","qoraclefunction(-1,1,1,x)","qoraclefunction(0,5,5,x)","qblocksum(x,2,1,x)","qblocksum(x,0,32,x)","qblocksum(x,-1000001,0,x)","qtensorproduct([1;0],1,2,1)","qblocksum(identity(513),1,2,x)"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

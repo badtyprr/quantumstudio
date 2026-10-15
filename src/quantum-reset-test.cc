@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "Calculator.h"
 #include "QuantumReset.h"
+#include "Function.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -25,6 +26,19 @@ int main(){try {
  equal("qindexedchannel(qdensity("+bell+"),vector([1,0;0,0],[0,1;0,0]),1)","[1,0,0,0;0,0,0,0;0,0,1,0;0,0,0,0]/2");
  equal("qdephase([1;i],0)","identity(2)");
  equal("qresetall([1;i])","[2,0;0,0]");
+ equal("qtrace(qdephase(qbasis(0,1024),9))","1");
+ equal("qprobsub(qreset(qbasis(1023,1024),9),9)","[1;0]");
+ equal("qprobsub(qapply([0,1;1,0],qdensity(qbasis(0,1024)),9),9)","[0;1]");
+ // Reject a state one row beyond capacity before allocating a density matrix.
+ MathStructure oversized;oversized.clearMatrix();oversized.resizeMatrix(1025,1,m_zero);
+ for(const auto &name:{"qreset","qdephase","qdensity"}) {
+  while(calculator.message())calculator.nextMessage();
+  MathStructure arguments,result;arguments.clearVector();arguments.addChild(oversized);
+  if(std::string(name)!="qdensity")arguments.addChild(MathStructure(0));
+  if(calculator.getFunction(name)->calculate(result,arguments,eo)!=0)throw std::runtime_error("Oversized state accepted");
+  bool error=false;while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error("Missing capacity diagnostic");++checks;
+ }
  // Compare direct ket processing with the density path for every subset.
  // Complex coherences and non-unit norm expose conjugation and accumulation errors.
  for(const auto &indices:{"[]","[0]","[1]","[0,1]","[1,0]"}) {
