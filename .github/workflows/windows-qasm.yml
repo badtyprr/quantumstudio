@@ -1,0 +1,37 @@
+name: Windows OpenQASM CI
+on:
+  pull_request:
+  push:
+    branches: [master]
+permissions:
+  contents: read
+concurrency:
+  group: windows-qasm-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  compiler:
+    name: Windows OpenQASM build and tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out proposed revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Install compiler dependencies
+        shell: powershell
+        run: |
+          python -m venv .tools/qasm-venv
+          if ($LASTEXITCODE -ne 0) { throw 'Python environment creation failed.' }
+          & .tools/qasm-venv/Scripts/python.exe -m pip install -r windows/qasm-import-requirements.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency installation failed.' }
+      - name: Build and validate packaged compiler
+        shell: powershell
+        run: |
+          & windows/build-qasm-import.ps1
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-protocol.py
+          if ($LASTEXITCODE -ne 0) { throw 'OpenQASM protocol tests failed.' }
