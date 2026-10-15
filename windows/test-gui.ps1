@@ -9,6 +9,11 @@ $sessionTest = Join-Path $validation 'session-tests.exe'
 if ($LASTEXITCODE -ne 0) { throw 'Session tests did not compile.' }
 & $sessionTest
 if ($LASTEXITCODE -ne 0) { throw 'Session tests failed.' }
+$qasmTest = Join-Path $validation 'qasm-input-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$qasmTest" (Join-Path $PSScriptRoot 'QasmImport.cs') (Join-Path $PSScriptRoot 'QasmImportTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
+& $qasmTest
+if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
 $layout = Join-Path $validation ('layout-' + [Guid]::NewGuid().ToString('N') + '.txt')
 $process = Start-Process -FilePath $app -ArgumentList @('--circuit-layout-test', ('"' + $layout + '"')) -WindowStyle Hidden -PassThru
