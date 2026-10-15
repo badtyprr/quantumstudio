@@ -20,6 +20,21 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ auto labelSet=[](int mask) {std::string s="vector(";bool first=true;for(int k=0;k<4;++k)if(mask&(1<<k)){if(!first)s+=",";first=false;s+="bitstring("+std::to_string(k)+",2)";}return s+")";};
+ for(int left=0;left<16;++left)for(int right=0;right<16;++right) {
+  std::string a=labelSet(left),b=labelSet(right);
+  equal("quantum: sumset(2^bitvalue(k),union("+a+","+b+"),k)",std::to_string(left|right));
+  equal("quantum: sumset(2^bitvalue(k),intersect("+a+","+b+"),k)",std::to_string(left&right));
+  equal("quantum: sumset(2^bitvalue(k),setdiff("+a+","+b+"),k)",std::to_string(left&~right));
+ }
+ equal("quantum: cardinality(union(vector(bitstring(0,2)),vector(bitstring(0,3))))","2");
+ equal("quantum: cardinality(intersect(vector(bitstring(0,2)),vector(bitstring(0,3))))","0");
+ for(const auto &item:{std::pair<const char *,int>("union",3),{"intersect",2},{"setdiff",1}}) {
+  MathStructure result=calculator.calculate(std::string("quantum: ")+item.first+"(vector(bitstring(1,2),bitstring(1,2),bitstring(1,2)),vector(bitstring(1,2),bitstring(1,2)),1)",eo);
+  MathStructure label=calculator.calculate("quantum: bitstring(1,2)",eo);
+  if(item.second==1 && result.equals(label))result.transform(STRUCT_VECTOR);
+  if(!result.isVector() || result.size()!=static_cast<size_t>(item.second))throw std::runtime_error(std::string("Wrong binary multiset size: ")+item.first);++checks;
+ }
  calculator.addVariable(new KnownVariable("","markedstrings",std::string("quantum: \\{x\\in\\{0,1\\}^3:bitvalue(x)<3\\}")));
  equal("quantum: |markedstrings>","[1;1;1;0;0;0;0;0]/sqrt(3)");
  equal("quantum: <markedstrings|markedstrings>","1");
