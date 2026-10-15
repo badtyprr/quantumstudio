@@ -150,10 +150,11 @@ std::string ket(const std::string &label, size_t dimension=0) {
  if(s.empty()) throw std::runtime_error("Empty ket label.");
  if(s.find_first_not_of("0123456789")==std::string::npos) throw std::runtime_error("Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3).");
  for(unsigned char c : s) if(c < 128 && !std::isalnum(c) && c != '_') throw std::runtime_error("Use a basis label or a named column vector inside a ket.");
- return "(" + s + ")";
+ return "qketstate(" + s + ")";
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
+ {"qketstate",1},
  {"qamplitudedamping",1},
  {"qgeneralizeddamping",2},
  {"qcombineddamping",3},

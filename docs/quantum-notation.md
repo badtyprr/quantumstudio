@@ -72,6 +72,11 @@ Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\
 Floor and ceiling brackets accept both TeX (`\lfloor x\rfloor`, `\lceil x\rceil`) and Unicode (`⌊x⌋`, `⌈x⌉`), including nesting and delimiter sizing. They use mathematical floor and ceiling, so `⌊-3/2⌋ = -2` and `⌈-3/2⌉ = -1`. Empty, mismatched and unclosed brackets are rejected.
 
 For example, the approximation in IBM's [Grover iteration-count lesson](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations), `\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor`, evaluates to `3`. The brackets also work around the lesson's angle-dependent formula when the angle is supplied explicitly; this does not provide implicit set cardinalities or certify the entire lesson.
+## Named ket validation
+
+A named ket such as `|statevector>` must evaluate to a column matrix with at most 1024 rows. Bras validate the same column state before taking its adjoint. Scalars, row vectors, square operators and unresolved scalar names are not silently accepted as states. Normalization is not imposed.
+
+For a sum over integer basis indices, specify the state dimension: `\sum_{x\in\{0,1,2\}}{|x>_3}` produces the column `[1;1;1]`. Omitting `_3` does not provide enough information to infer a register dimension and now reports an error rather than returning the scalar sum `3`. General symbolic bit-string domains and automatic dimension inference remain unfinished.
 
 ## TeX trigonometric powers
 
