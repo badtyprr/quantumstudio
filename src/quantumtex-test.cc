@@ -39,6 +39,7 @@ int main() {
   equal(R"(\sum_{k=0}^{2}{k})","sum(k,0,2,k)");
   equal(R"(\sum_{a_0=0}^{2}{a_0})","sum(a_0,0,2,a_0)");
   equal(R"(\sum_{a_{10}=0}^{2}{a_{10}})","sum(a_10,0,2,a_10)");
+  equal(R"(\sum_{k=0}^{2} k+1)","qtexsum(0,2,k) k+1");
   equal(R"(\prod^{2}_{k=0}{k})","product(k,0,2,k)");
   equal(R"(\bigotimes_{k=0}^{2}{X})","tensorproduct(X,0,2,k)");
   equal(R"(\bigoplus_{k=0}^{2}{X})","blocksum(X,0,2,k)");
