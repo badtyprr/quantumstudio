@@ -109,6 +109,21 @@ int main(){try {
   equal("quantum: (-1)^"+x+" |-> (|0>+(-1)^("+x+"⊕"+y+")|1>)/sqrt(2)",
         "["+std::to_string(1-2*f0)+";"+std::to_string(1-2*f1)+";"+std::to_string(2*f0-1)+";"+std::to_string(2*f1-1)+"]/2");
  }
+ equal(R"(quantum: \begin{cases}|0> & \text{if $1=1$}\\[1mm]|1> & \text{if $1=0$}\end{cases})","[1;0]");
+ equal(R"(quantum: \begin{cases}|0> & 0\\|1> & \text{otherwise}\end{cases})","[0;1]");
+ equal(R"(quantum: \begin{cases}|0> & 1\\1/0 & \text{otherwise}\end{cases})","[1;0]");
+ equal(R"(quantum: 2\begin{cases}3 & 1\\4 & 0\end{cases}+1)","7");
+ equal(R"(quantum: \sum_{a_0=0}^1 {\begin{cases}|0> & a_0=0\\|1> & a_0=1\end{cases}})","[1;1]");
+ equal(R"(quantum: \begin{cases}\begin{cases}4 & 1\end{cases} & 1\\5 & 0\end{cases})","4");
+ equal(R"(quantum: \begin{cases}\begin{bmatrix}1&0\\0&1\end{bmatrix} & 1\\X & 0\end{cases})","[1,0;0,1]");
+ equal(R"(quantum: \begin{cases}|0,1> & 1\\|1,0> & 1\end{cases})","[0;1;0;0]");
+ if(!calculator.calculate(R"(quantum: \begin{cases}1 & 0\\2 & 0\end{cases})",eo).isUndefined())throw std::runtime_error("Unmatched cases must be undefined");
+ ++checks;
+ for(int f0=0;f0<2;++f0)for(int f1=0;f1<2;++f1) {
+  std::string x=std::to_string(f0),y=std::to_string(f1);
+  equal("quantum: \\begin{cases}(-1)^"+x+" |->|0> & \\text{if $"+x+"\\oplus "+y+"=0$}\\\\[1mm](-1)^"+x+" |->|1> & \\text{if $"+x+"\\oplus "+y+"=1$}\\end{cases}",
+        "(-1)^"+x+"*qtensor([1;-1]/sqrt(2),qbasis("+std::to_string(f0^f1)+",2))");
+ }
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {

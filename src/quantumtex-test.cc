@@ -17,6 +17,20 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\begin{cases}1 & x=0\\2 & \text{otherwise}\end{cases})","(if(x=0,1,2))");
+  equal(R"(\begin{cases}|0> & \text{if $1=1$}\\[1mm]|1> & \text{if }1=0\end{cases})","(if(1=1,|0>,if(1=0,|1>,undefined)))");
+  equal(R"(\begin{cases}1 & 1\\\end{cases})","(if(1,1,undefined))");
+  rejects(R"(\begin{cases}\end{cases})");
+  rejects(R"(\begin{cases}1\end{cases})");
+  rejects(R"(\begin{cases}1 & \end{cases})");
+  rejects(R"(\begin{cases}1 & 1 & 2\end{cases})");
+  rejects(R"(\begin{cases}1 & \text{otherwise}\\2 & 1\end{cases})");
+  rejects(R"(\begin{cases}1 & \text{perhaps}\end{cases})");
+  rejects(R"(\begin{cases}1 & 1\end{matrix})");
+  std::string tooMany=R"(\begin{cases})";
+  for(int j=0;j<65;++j)tooMany+=R"(1 & 1\\)";
+  rejects(tooMany+R"(\end{cases})");
+  rejects(R"(\begin{cases}1 & 1\\\\2 & 0\end{cases})");
   equal("",""); equal(" \n\t",""); equal("x+y","x+y");
   equal(R"(\frac{1}{\sqrt{2}})","((1)/(sqrt(2)))");
   equal(R"(\frac12)","((1)/(2))");

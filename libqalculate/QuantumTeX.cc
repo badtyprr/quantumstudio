@@ -3,9 +3,14 @@
 #include <cctype>
 #include <map>
 #include <stdexcept>
+#include <vector>
 
 namespace {
 bool asciiLetter(unsigned char c) {return (c>='A' && c<='Z') || (c>='a' && c<='z');}
+std::string trim(const std::string &s) {
+ size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
+ return first==std::string::npos ? "" : s.substr(first,last-first+1);
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -65,7 +70,7 @@ class TeXReader {
   if(required && order.empty())throw std::runtime_error(error("Matrix norms require an explicit norm convention"));
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
- std::string command(bool matrix, int &norms) {
+ std::string command(bool matrix, int &norms, bool cases=false) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
@@ -185,8 +190,17 @@ class TeXReader {
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
   }
+  if(name=="text" && cases) {
+   std::string text=trim(group());
+   if(text=="otherwise")return text;
+   if(text!="if" && (text.size()<3 || text.compare(0,2,"if")!=0 || !std::isspace((unsigned char)text[2])))throw std::runtime_error(error("Cases text must introduce if or otherwise"));
+   text=trim(text.substr(2));
+   if(text.size()>=2 && text.front()=='$' && text.back()=='$')text=text.substr(1,text.size()-2);
+   return text;
+  }
   if(name=="begin") {
    auto env=nameGroup();
+   if(env=="cases")return read(0,true,env);
    if(env!="matrix" && env!="pmatrix" && env!="bmatrix" && env!="Bmatrix" && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
    auto body=read(0,true,env); std::string m="["+body+"]";
    if(env=="vmatrix") return "det("+m+")";
@@ -216,6 +230,13 @@ class TeXReader {
  std::string read(char close=0, bool matrix=false, const std::string &environment="") {
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
   std::string result; int norms=0; bool closed=false;
+  std::vector<std::pair<std::string,std::string>> branches;
+  std::string caseValue;bool caseColumn=false;
+  auto finishCase=[&]() {
+   if(!caseColumn || trim(caseValue).empty() || trim(result).empty())throw std::runtime_error(error("Each case requires a value and condition separated by &"));
+   if(branches.size()>=64)throw std::runtime_error(error("Cases are limited to 64 branches"));
+   branches.emplace_back(trim(caseValue),trim(result));result.clear();caseValue.clear();caseColumn=false;
+  };
   while(pos<input.size()) {
    if(close && input[pos]==close) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
@@ -227,7 +248,10 @@ class TeXReader {
     while(pos<input.size()) {char c=input[pos++];result+=c;if(c==quote){ended=true;break;}}
     if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
    }
-   else if(input[pos]=='\\') result+=command(matrix,norms);
+   else if(input[pos]=='\\') {
+    std::string part=command(matrix,norms,environment=="cases");
+    if(environment=="cases" && part==";")finishCase();else result+=part;
+   }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
     result+=open; result+=read(end); result+=end;
@@ -284,13 +308,32 @@ class TeXReader {
     else result+="("+value+")";
    }
    else if(input[pos]=='}') throw std::runtime_error(error("Unexpected closing brace"));
-   else if(input[pos]=='&') { if(!matrix) throw std::runtime_error(error("Alignment separator outside a matrix")); ++pos; result+=","; }
+   else if(input[pos]=='&') { if(!matrix) throw std::runtime_error(error("Alignment separator outside a matrix")); ++pos;
+    if(environment=="cases") {
+     if(caseColumn)throw std::runtime_error(error("Each case has exactly two columns"));
+     caseValue=result;result.clear();caseColumn=true;
+    } else result+=",";
+   }
    else if(input.compare(pos,3,"‖")==0 || input.compare(pos,3,"∥")==0) { pos+=3; if(norms) { --norms; result+=closeNorm(); } else { ++norms; result+="norm("; } }
    else result+=input[pos++];
    if(result.size()>131072) throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
   }
   if((close || matrix) && !closed) throw std::runtime_error(error("Unclosed TeX group or environment"));
   if(norms) throw std::runtime_error(error("Unclosed norm delimiter"));
+  if(environment=="cases") {
+   if(caseColumn || !trim(result).empty())finishCase();
+   if(branches.empty())throw std::runtime_error(error("A cases environment cannot be empty"));
+   result="undefined";
+   for(size_t j=branches.size();j>0;--j) {
+    const auto &branch=branches[j-1];
+    if(branch.second=="otherwise") {
+     if(j!=branches.size())throw std::runtime_error(error("Otherwise must be the final case"));
+     result=branch.first;
+    } else result="if("+branch.second+","+branch.first+","+result+")";
+    if(result.size()>131072)throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
+   }
+   result="("+result+")";
+  }
   --depth; return result;
  }
  public:
