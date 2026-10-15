@@ -1102,7 +1102,170 @@
       "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb",
       "revision": "86787e1ba372facc224f925189755e69c479828b",
       "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
-      "status": "end_to_end_execution_audit_pending"
+      "status": "partial_generated_program_audit",
+      "audit_date": "2026-10-15",
+      "evidence": [
+        "docs/quantum-notation.md",
+        "windows/test-qasm-import.py",
+        "windows/test-qasm-protocol.py"
+      ],
+      "remaining": "Complete notebook compatibility is unproven. Cloud/QIR jobs, account setup, SDK execution, file-based custom includes, visualizations and all other notebook operations remain unaudited or unsupported.",
+      "development_audit": {
+        "versions": {
+          "qbraid-algorithms": "0.1.3",
+          "pyqasm": "1.3.0"
+        },
+        "cases": [
+          {
+            "secret": "000",
+            "variant": "source",
+            "sha256": "567936d12a76bc3b5068de46c6c9f0db3235821c8aef619b58e1963fe211d6f1",
+            "steps": 11,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "000",
+            "variant": "unrolled",
+            "sha256": "b9b734f6d669beddc74cdeb3a2058f32f1e176d2a858bc6d6fc4684d3aa7e42e",
+            "steps": 11,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "001",
+            "variant": "source",
+            "sha256": "d7c9068bff9bc8ea5fc246c23be5c7580c815e5edff4ae948745bf7ef77e6ca6",
+            "steps": 12,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "001",
+            "variant": "unrolled",
+            "sha256": "3746daa515ca59a77dece62591524b82102bce0263314dfecd8f742d2e164d4e",
+            "steps": 12,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "010",
+            "variant": "source",
+            "sha256": "40d649975ab48087db2b5060e912816e3948ae014d59e2e9cb1e8a339eb4a4f9",
+            "steps": 12,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "010",
+            "variant": "unrolled",
+            "sha256": "e9270234c75dc9dae613ed490ed12b4083e3005303692bbb6ff27850663cd07b",
+            "steps": 12,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "011",
+            "variant": "source",
+            "sha256": "ddc90bed57d1053ff093907265762e9c7793b0e3f976bee7fc1b7ce896ccc5ed",
+            "steps": 13,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "011",
+            "variant": "unrolled",
+            "sha256": "c6815b9f1ad3f337bab55d39ecfcef1dfdac3623bf283770a78df7f81ce3281b",
+            "steps": 13,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "100",
+            "variant": "source",
+            "sha256": "b4c5df854d06e6941a0a54de551e7aeb086d73e073b50f619df71d0df48c3e5e",
+            "steps": 12,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "100",
+            "variant": "unrolled",
+            "sha256": "f603992238edc7190ec170fb266c942262b63df767f45c1e2e603e705fd8ed66",
+            "steps": 12,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "101",
+            "variant": "source",
+            "sha256": "ccc7cdb7bb6e3f499c94b196bde0568ea287b84e094eaac222683dd39293f406",
+            "steps": 13,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "101",
+            "variant": "unrolled",
+            "sha256": "4ac4ae45a616bb3a66aecba7567fe1334693d500bf5a9165e9b6144d449fe9ce",
+            "steps": 13,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "110",
+            "variant": "source",
+            "sha256": "211bd09a2ea51001a281a5ac08ee381d86af1ca4d3d32cfdd04a7026771c3682",
+            "steps": 13,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "110",
+            "variant": "unrolled",
+            "sha256": "6984aeb4c05d48ca96d84b0663159e533a38913d3567181c7adfe39befb9282c",
+            "steps": 13,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "111",
+            "variant": "source",
+            "sha256": "e1d39a81cadea694809f33d86953e2f3420191b200b1383c464cff2c4e9374ee",
+            "steps": 14,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "111",
+            "variant": "unrolled",
+            "sha256": "2123418b7c485fd38eb6eed4fbe0051ac8c041db25f0614302b363ef9ac676a1",
+            "steps": 14,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "1011",
+            "variant": "source",
+            "sha256": "47c55121860966dd6fb041609408fc5fb7ef8bd58fa52a4581ebe41cee086cba",
+            "steps": 17,
+            "residual": 0.0,
+            "pass": true
+          },
+          {
+            "secret": "1011",
+            "variant": "unrolled",
+            "sha256": "d0ffe44c9eea26c2f04e206e5b9cfac8321ffbfb8d9781d0eba53c4ee3e03a44",
+            "steps": 17,
+            "residual": 0.0,
+            "pass": true
+          }
+        ],
+        "worker_release_revision": "23c42f27f11cac11df097e62c769f77a3ba58a8e",
+        "importer_reviewed_commit": "b6d2d4f7daa98f8875ac38b700ca60ea8448b485",
+        "qualification": "Generated source and unrolled circuits for all eight three-bit secrets and notebook example 1011 were imported and evaluated. Measured-register probabilities matched the secret exactly in these numerical runs. This does not run the notebook or certify its cloud-result conventions.",
+        "generated_hash_encoding": "SHA-256 of UTF-8 program text with LF newlines, before platform file newline conversion."
+      }
     },
     {
       "kind": "qbraid_notebook",
@@ -1110,7 +1273,69 @@
       "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qft.ipynb",
       "revision": "86787e1ba372facc224f925189755e69c479828b",
       "sha256": "bc648239a475fbfead15b185e201e821498369ff5d133ba928603bb1319fc3d3",
-      "status": "end_to_end_execution_audit_pending"
+      "status": "partial_generated_program_audit",
+      "audit_date": "2026-10-15",
+      "evidence": [
+        "docs/quantum-notation.md",
+        "windows/test-qasm-import.py",
+        "windows/test-qasm-protocol.py"
+      ],
+      "remaining": "Complete notebook compatibility is unproven. Cloud/QIR jobs, account setup, SDK execution, file-based custom includes, visualizations and all other notebook operations remain unaudited or unsupported.",
+      "development_audit": {
+        "versions": {
+          "qbraid-algorithms": "0.1.3",
+          "qbraid": "0.13.0",
+          "pyqasm": "1.3.0",
+          "openqasm3": "1.0.1"
+        },
+        "generated_programs": [
+          {
+            "algorithm": "qft",
+            "qubits": 3,
+            "source": "qft-3-source.qasm",
+            "source_sha256": "07b2889e8d70b64cb7f7a746b17f617f93762fe6aa81f94b2cd9b9aa9fcffe23",
+            "unrolled": "qft-3-unrolled.qasm",
+            "unrolled_sha256": "b231708aa972a348eb4dd310e46f7649b963bb838ac726834be19d3ff18f6902"
+          },
+          {
+            "algorithm": "qft",
+            "qubits": 4,
+            "source": "qft-4-source.qasm",
+            "source_sha256": "f1911e218d7bff25c6d816b540d27ef5eb2784e5936d4d5c6fa32b9445899cc1",
+            "unrolled": "qft-4-unrolled.qasm",
+            "unrolled_sha256": "9d2901c34d42f607ccca0ba3d96024003e94d8d58fd28fd4c1672a4435c8ba06"
+          },
+          {
+            "algorithm": "iqft",
+            "qubits": 3,
+            "source": "iqft-3-source.qasm",
+            "source_sha256": "93164dbd2744e34aff86f5d06419ede13e12787a99317508f51bc6fe41ab7d2c",
+            "unrolled": "iqft-3-unrolled.qasm",
+            "unrolled_sha256": "f92c9700786608fcf8a0f447736f9972402d1c5835dc23f7198ba86f34495568"
+          },
+          {
+            "algorithm": "iqft",
+            "qubits": 4,
+            "source": "iqft-4-source.qasm",
+            "source_sha256": "de4f6463ce5acd0afb057f6c4f74cc0f0265ff70be4a82fbb94d5d5dedfa8dd2",
+            "unrolled": "iqft-4-unrolled.qasm",
+            "unrolled_sha256": "c18ea2ad96bebc6b519f4e70ecc9c05a11b7963089fd27183a0627e1201cb07d"
+          }
+        ],
+        "checks": {
+          "unitary_basis_columns": 32,
+          "measurement_inputs": 16
+        },
+        "max_unitary_residual": 2.1946902018807443e-15,
+        "max_measurement_residual": 1.4571299751208723e-16,
+        "packaged_editor_revision": "4d27af21bb82748a9b0405acd3b21ca50888f91d",
+        "packaged_import_steps": [
+          108,
+          112
+        ],
+        "qualification": "Numerical counts cover the four-qubit unrolled programs. Unitary portions were compared to an independent gate-by-gate NumPy calculation, including generated global phase. They do not establish ideal IQFT wire-order equivalence. The packaged editor checks used its zero input; all-basis checks used generated sequence expressions.",
+        "generated_hash_encoding": "SHA-256 of UTF-8 program text with LF newlines, before platform file newline conversion."
+      }
     },
     {
       "kind": "qbraid_notebook",
@@ -1118,7 +1343,126 @@
       "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb",
       "revision": "86787e1ba372facc224f925189755e69c479828b",
       "sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
-      "status": "end_to_end_execution_audit_pending"
+      "status": "partial_generated_program_audit",
+      "audit_date": "2026-10-15",
+      "evidence": [
+        "docs/quantum-notation.md",
+        "windows/test-qasm-import.py",
+        "windows/test-qasm-protocol.py"
+      ],
+      "remaining": "Complete notebook compatibility is unproven. Cloud/QIR jobs, account setup, SDK execution, file-based custom includes, visualizations and all other notebook operations remain unaudited or unsupported.",
+      "development_audit": {
+        "versions": {
+          "qbraid-algorithms": "0.1.3",
+          "pyqasm": "1.3.0",
+          "openqasm3": "1.0.1"
+        },
+        "generated_programs": [
+          {
+            "gate": "z",
+            "variant": "generated",
+            "source_sha256": "41e1607193de6d4a3679b853df039d3de49e4e2eaac37a02c0466e9500974b53",
+            "unrolled_sha256": "b0209a54e19acfa94b4bde2620ca199da8b3428187955e10322aa3793840945c"
+          },
+          {
+            "gate": "z",
+            "variant": "explicit-preparation",
+            "source_sha256": "0a7cf087c96e33e8bc154b89813c273d28e587d24a2343a5efc5952a8728e893",
+            "unrolled_sha256": "c4d98f160228aedee347acf9dbfa8cc1a958316f27ce54f0bec01a20705a1411"
+          },
+          {
+            "gate": "t",
+            "variant": "generated",
+            "source_sha256": "0a364267e67eda2092d2ae7c5712da77eaed3987afa46265ec0971b86d65e3fc",
+            "unroll_error": "Unsupported controlled QASM operation: t with 1 controls"
+          },
+          {
+            "gate": "t",
+            "variant": "explicit-preparation",
+            "source_sha256": "c64e2e604e071046cfb43391050b2a915455528040499a400ce25af5f4d388a4",
+            "unroll_error": "Unsupported controlled QASM operation: t with 1 controls"
+          },
+          {
+            "gate": "phase",
+            "variant": "generated",
+            "source_sha256": "8844b2c628faff45d03fb3e83e8229134513d2f5d8eafcdd034670e8cb94a35e",
+            "unrolled_sha256": "f69a30289e2772f1d808c039bd1402cbb05dff054c96b62fa148836b05eb8a93"
+          },
+          {
+            "gate": "phase",
+            "variant": "explicit-preparation",
+            "source_sha256": "ae5c882fd10fb4f5108f59a80371ffce2f3ed382cff59e16e343af8874dd18c5",
+            "unrolled_sha256": "96eac471e6d10b98d548eaeee78b8aa3bcf681481a1dc1351204e57436a070e1"
+          }
+        ],
+        "probability_checks": [
+          {
+            "source": "phase-explicit-preparation-source.circuit.json",
+            "displayed_bits": "100",
+            "phase_after_notebook_bit_reversal": 0.125,
+            "max_probability_residual": 1.4972817924700007e-33
+          },
+          {
+            "source": "phase-explicit-preparation-unrolled.circuit.json",
+            "displayed_bits": "100",
+            "phase_after_notebook_bit_reversal": 0.125,
+            "max_probability_residual": 9.33161395518675e-32
+          },
+          {
+            "source": "phase-generated-source.circuit.json",
+            "displayed_bits": "000",
+            "phase_after_notebook_bit_reversal": 0.0,
+            "max_probability_residual": 0.0
+          },
+          {
+            "source": "phase-generated-unrolled.circuit.json",
+            "displayed_bits": "000",
+            "phase_after_notebook_bit_reversal": 0.0,
+            "max_probability_residual": 2.7198605877129276e-31
+          },
+          {
+            "source": "z-explicit-preparation-source.circuit.json",
+            "displayed_bits": "001",
+            "phase_after_notebook_bit_reversal": 0.5,
+            "max_probability_residual": 0.0
+          },
+          {
+            "source": "z-explicit-preparation-unrolled.circuit.json",
+            "displayed_bits": "001",
+            "phase_after_notebook_bit_reversal": 0.5,
+            "max_probability_residual": 1.3987850405464777e-31
+          },
+          {
+            "source": "z-generated-source.circuit.json",
+            "displayed_bits": "000",
+            "phase_after_notebook_bit_reversal": 0.0,
+            "max_probability_residual": 0.0
+          },
+          {
+            "source": "z-generated-unrolled.circuit.json",
+            "displayed_bits": "000",
+            "phase_after_notebook_bit_reversal": 0.0,
+            "max_probability_residual": 1.3987850405464777e-31
+          }
+        ],
+        "controlled_t_checks": [
+          {
+            "source": "t-generated-source.qasm",
+            "steps": 20,
+            "expected_displayed_bits": "000",
+            "residual": 0.0
+          },
+          {
+            "source": "t-explicit-preparation-source.qasm",
+            "steps": 21,
+            "expected_displayed_bits": "100",
+            "residual": 4.468880069335782e-33
+          }
+        ],
+        "controlled_t_reviewed_commit": "b0d401485115b485f033f26244ce44da947178e6",
+        "qualification": "In qbraid-algorithms 0.1.3 the generated program defines but does not call the supplied eigenstate preparation gate. Explicit-preparation variants add prep_eigenstate psi[0] immediately before qpe(q, psi); generated variants are unchanged. Three counting qubits and one eigenstate qubit were used. No automatic input repair is performed. PyQASM 1.3.0 rejected unrolling controlled T; compact T source was checked with the QuantumStudio adapter using pinned PyQASM 1.0.4.",
+        "generated_hash_encoding": "SHA-256 of UTF-8 program text with LF newlines, before platform file newline conversion."
+      }
     },
     {
       "kind": "qbraid_notebook",
