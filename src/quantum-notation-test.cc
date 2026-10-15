@@ -22,6 +22,9 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal(R"(\tilde{\rho})","\"ρ_tilde\"");
+ equal(R"(\widetilde{x}_0)","\"x_tilde_0\"");
+ equal(R"(\tilde{X})","\"X_tilde\"");
  for(const auto &body:{"X","(density(|0>)-density(|+>))","|0><0|","<0||1>","|0>","(||X||_1)"})
   equal("||"+std::string(body)+"||_1",translateQuantum("norm("+std::string(body)+",1)"));
  equal("||X||_1^2",translateQuantum("norm(X,1)^2"));

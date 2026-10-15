@@ -17,6 +17,11 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\tilde{\rho})"," ρ_tilde ");
+  equal(R"(\widetilde{x})"," x_tilde ");
+  equal(R"(\tilde{\rho}_0)"," ρ_tilde_0");
+  rejects(R"(\tilde{})");
+  rejects(R"(\tilde{x+y})");
   equal(R"(\begin{cases}1 & x=0\\2 & \text{otherwise}\end{cases})","(if(x=0,1,2))");
   equal(R"(\begin{cases}|0> & \text{if $1=1$}\\[1mm]|1> & \text{if }1=0\end{cases})","(if(1=1,|0>,if(1=0,|1>,undefined)))");
   equal(R"(\begin{cases}1 & 1\\\end{cases})","(if(1,1,undefined))");

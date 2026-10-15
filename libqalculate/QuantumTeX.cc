@@ -112,6 +112,13 @@ class TeXReader {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
+  if(name=="tilde" || name=="widetilde") {
+   std::string value=trim(argument());
+   if(value.empty() || std::isdigit((unsigned char)value[0]))throw std::runtime_error(error("A tilde requires a symbol name"));
+   for(unsigned char c:value)if(c<128 && !std::isalnum(c) && c!='_')throw std::runtime_error(error("A tilde requires a symbol name, not a compound expression"));
+   // Estimates and transformed variables must remain distinct from the original.
+   return " "+value+"_tilde ";
+  }
   if(name=="hat" || name=="widehat") {
    auto value=argument();size_t first=value.find_first_not_of(" \t\r\n"), last=value.find_last_not_of(" \t\r\n");
    if(first==std::string::npos)throw std::runtime_error(error("An operator hat requires an operand"));
