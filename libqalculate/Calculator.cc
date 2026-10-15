@@ -14,6 +14,12 @@
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
 #include "QuantumCSS.h"
+#include "QuantumStabilizer.h"
+#include "QuantumIndexed.h"
+#include "QuantumOrder.h"
+#include "QuantumBinary.h"
+#include "QuantumEvolution.h"
+#include "QuantumHellinger.h"
 #include "QuantumChannelRepresentations.h"
 #include "QuantumSuperoperators.h"
 #include "QuantumGeometry.h"
@@ -1698,6 +1704,12 @@ void Calculator::addBuiltinVariables() {
 void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
 	registerQuantumCSS(*this);
+	registerQuantumStabilizer(*this);
+	registerQuantumIndexed(*this);
+	registerQuantumOrder(*this);
+	registerQuantumBinary(*this);
+	registerQuantumEvolution(*this);
+	registerQuantumHellinger(*this);
 	registerQuantumChannelRepresentations(*this);
 	registerQuantumSuperoperators(*this);
 	registerQuantumGeometry(*this);
