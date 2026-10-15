@@ -81,7 +81,15 @@ TeX `\{0,2,0\}` evaluates using the library's `unique(vector(0,2,0))`. A filteri
 
 Comprehensions compose with set-indexed sums. For example, `\sum_{k\in\{j\in\{-1,0,2\}:j\geq0\}}{k}` gives 2. The predicate's index is local; its collection may refer to an enclosing index. Nested Latin, Greek and subscripted indices use the quantum parser's binding rules.
 
-Sets use the existing `unique`/`select` representation, not a new symbolic set type. The library may display a one-element result as its scalar member; set sums preserve that result as a one-element collection when evaluating these operations. Ordering and symbolic equality follow the existing vector/set functions, so not every unresolved symbolic set can be evaluated. Parser size/nesting limits and the set-sum collection limit still apply. Mapped comprehensions such as `\{k^2:k\in S\}`, ellipsis expansion, infinite domains, and general membership propositions remain unfinished.
+Sets use the existing `unique`/`select` representation, not a new symbolic set type. The library may display a one-element result as its scalar member; set sums preserve that result as a one-element collection when evaluating these operations. Ordering and symbolic equality follow the existing vector/set functions, so not every unresolved symbolic set can be evaluated. Parser size/nesting limits and the set-sum collection limit still apply. Mapped comprehensions such as `\{k^2:k\in S\}`, general ellipsis expansion, infinite domains, and general membership propositions remain unfinished.
+
+## Finite integer index ranges
+
+Inside a TeX set, `\{a,\ldots,b\}` denotes the ascending integer range from `a` to `b`, inclusive, with step +1. `\dots`, `\cdots`, and literal `...` are also accepted in that three-entry form. Endpoints must evaluate to integers. For example, `\sum_{k\in\{0,\ldots,3\}}{k}` gives 6; the equivalent function input is `sumset(k,indexrange(0,3),k)`.
+
+This convention supports IBM's finite index domains `\{0,\ldots,n-1\}` after supplying `n`. An upper endpoint below the lower endpoint gives the empty range, so `n=0` yields an empty domain; equal endpoints give one member. The native function `qindexrange(first,last)` checks the span before allocating and permits at most 1024 entries. Large integer endpoints are allowed when their span fits that limit, and cancellation is checked during expansion. Range results compose with filtering comprehensions and set-indexed sums.
+
+This is an explicit step +1 convention, not arbitrary sequence inference. Descending or stepped sequences, multiple leading terms such as `\{0,1,\ldots,3\}`, tuples of ensemble entries, and infinite endpoints are not inferred by this form. Existing parser and collection limits still apply.
 
 ## Numerical conventions
 

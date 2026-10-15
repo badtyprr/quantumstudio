@@ -17,6 +17,13 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  rejects(R"(\{0,\ldots,\ldots\})");
+  equal(R"(\{0,\ldots,n-1\})","unique(qindexrange(0,n-1))");
+  equal(R"(\{0,\cdots,3\})","unique(qindexrange(0,3))");
+  equal(R"(\{0,...,3\})","unique(qindexrange(0,3))");
+  rejects(R"(\{0,\ldots\})");
+  rejects(R"(\{0,1,\ldots,3\})");
+
   equal(R"(\{\})","unique(vector())");
   equal(R"(\{"a:b",'c:d'\})",R"(unique(vector("a:b",'c:d')))");
   rejects(R"(\{0,1)");

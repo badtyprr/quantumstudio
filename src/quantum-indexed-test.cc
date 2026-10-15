@@ -21,6 +21,12 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qindexrange(-2,2)","vector(-2,-1,0,1,2)");
+ equal("qindexrange(0,-1)","vector()");
+ equal("qsumset(x,qindexrange(3,3),x)","3");
+ equal("qindexrange(1000000000000000000000,1000000000000000000002)","vector(1000000000000000000000,1000000000000000000001,1000000000000000000002)");
+ equal("qsumset(1,qindexrange(0,1023),x)","1024");
+
  equal("qsumset(x,unique(vector(2,2)),x)","2");
  equal("qsumset(x,select(vector(-1,2),x>0,x),x)","2");
  equal("qsumset(x^2,vector(0,2,5),x)","29");
@@ -43,6 +49,12 @@ int main(){try {
  calculator.stopControl();
  if(cancellationResult!=0)throw std::runtime_error("Sequence ignored cancellation");
  ++checks;
+ MathStructure rangeStopped=calculator.parse("qindexrange(0,1023)");
+ calculator.startControl();calculator.abort();
+ cancellationResult=calculator.getFunction("qindexrange")->calculate(cancelled,rangeStopped,eo);
+ calculator.stopControl();
+ if(cancellationResult!=0)throw std::runtime_error("Index range ignored cancellation");
+ ++checks;
  equal("qphasefunction(x,1,x)","[1,0;0,-1]");
  equal("qphasefunction(mod(x,2),2,x)","[1,0,0,0;0,-1,0,0;0,0,1,0;0,0,0,-1]");
  equal("qoraclefunction(x,1,1,x)","[1,0,0,0;0,1,0,0;0,0,0,1;0,0,1,0]");
@@ -57,7 +69,7 @@ int main(){try {
  equal("qblocksum(qblocksum(x,1,y,x),1,2,y)","[1,0,0;0,1,0;0,0,2]");
  equal("qblocksum(sum(x,1,2,x),1,2,x)","[3,0;0,3]");
  equal("qphasefunction(mod(sum(x,0,1,x),2),1,x)","[-1,0;0,-1]");
- for(const auto &expression:{"qsumset(x,3,x)","qsumset(x,[1,2;3,4],x)","qsumset(x,vector(1,2),1)","qsequence(vector(x),matrix(1025,1,vector(1)),x)","qsequence(vector(matrix(1025,1,vector(1))),[1;0],x)","qsequence(vector(vector(x)),[1;0],x)","qphasefunction(x,2,x)","qphasefunction(0,10,x)","qphasefunction(0,1,1)","qoraclefunction(x,2,1,x)","qoraclefunction(-1,1,1,x)","qoraclefunction(0,5,5,x)","qblocksum(x,2,1,x)","qblocksum(x,0,32,x)","qblocksum(x,-1000001,0,x)","qtensorproduct([1;0],1,2,1)","qblocksum(identity(513),1,2,x)"}) {
+ for(const auto &expression:{"qindexrange(0,1024)","qindexrange(1/2,3)","qindexrange(0,infinity)","qsumset(x,3,x)","qsumset(x,[1,2;3,4],x)","qsumset(x,vector(1,2),1)","qsequence(vector(x),matrix(1025,1,vector(1)),x)","qsequence(vector(matrix(1025,1,vector(1))),[1;0],x)","qsequence(vector(vector(x)),[1;0],x)","qphasefunction(x,2,x)","qphasefunction(0,10,x)","qphasefunction(0,1,1)","qoraclefunction(x,2,1,x)","qoraclefunction(-1,1,1,x)","qoraclefunction(0,5,5,x)","qblocksum(x,2,1,x)","qblocksum(x,0,32,x)","qblocksum(x,-1000001,0,x)","qtensorproduct([1;0],1,2,1)","qblocksum(identity(513),1,2,x)"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
