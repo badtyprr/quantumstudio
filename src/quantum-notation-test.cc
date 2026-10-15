@@ -22,6 +22,12 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ for(const auto &body:{"X","(density(|0>)-density(|+>))","|0><0|","<0||1>","|0>","(||X||_1)"})
+  equal("||"+std::string(body)+"||_1",translateQuantum("norm("+std::string(body)+",1)"));
+ equal("||X||_1^2",translateQuantum("norm(X,1)^2"));
+ equal("|||0>||",translateQuantum("norm(|0>)"));
+ equal("<0||0>","qadjacent(qdag(matrix(2,1,[1,0])),matrix(2,1,[1,0]))");
+ rejects("||X");rejects("||X||_");
  equal("5⊕6","qoplus(5,6)");
  for(const std::string &gate:{"XPowGate","ZPowGate","CZPowGate"}) {
   equal("cirq."+gate+"(exponent=3/10,global_shift=-1/2)",translateQuantum(gate+"(exponent=3/10,global_shift=-1/2)"));

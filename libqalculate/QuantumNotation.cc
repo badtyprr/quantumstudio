@@ -509,6 +509,28 @@ class Parser {
     need(']'); a+="]";
    }
   }
+  else if(s.compare(p,2,"||")==0) {
+   p+=2;size_t closing=std::string::npos;int nesting=0;
+   for(size_t k=p;k<s.size();++k) {
+    if(s[k]=='\"' || s[k]=='\'') {char quote=s[k++];while(k<s.size() && s[k]!=quote)++k;if(k==s.size())break;}
+    else if(s[k]=='(' || s[k]=='[')++nesting;
+    else if(s[k]==')' || s[k]==']') {if(nesting==0)break;--nesting;}
+    else if(nesting==0 && s[k]=='<') {
+     // Consume the bra's closing bar before looking for a norm delimiter.
+     size_t end=labelEnd('|',k+1);if(end==std::string::npos)break;k=end;
+    }
+    else if(nesting==0 && s.compare(k,2,"||")==0) {closing=k;break;}
+    else if(nesting==0 && s[k]=='|') {
+     size_t end=labelEnd('>',k+1);if(end==std::string::npos)break;k=end;
+    }
+   }
+   if(closing==std::string::npos)throw std::runtime_error("Unclosed ASCII norm; use ||expression||.");
+   s[closing]=')';std::string value=expression();ws();
+   if(p!=closing)throw std::runtime_error("Invalid expression inside ASCII norm bars.");
+   s[closing]='|';p=closing+2;
+   std::string order=dimensionSuffix();
+   a=order.empty() ? "qnorm("+value+")" : "qschatten("+value+","+order+")";
+  }
   else if(take('|')) {
    ws();
    if(p<s.size() && s[p]=='<') {
