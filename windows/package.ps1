@@ -73,6 +73,7 @@ Copy-Item (Join-Path $repo 'data\*.xml') (Join-Path $output 'data')
 Copy-Item (Join-Path $repo 'COPYING') (Join-Path $output 'LICENSE.txt')
 Copy-Item (Join-Path $PSScriptRoot 'Notation-guide.html') $output
 Copy-Item (Join-Path $PSScriptRoot 'README.txt') $output
+Copy-Item (Join-Path $repo 'docs\quantum-notation.md') (Join-Path $output 'Research-notes.md')
 Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
 $oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
 try {

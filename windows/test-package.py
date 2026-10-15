@@ -39,7 +39,7 @@ def verify(archive, revision, candidate):
             raise ValueError('Archive contents differ from the manifest')
         for name in ('QuantumStudio.exe', 'quantum-worker.exe', 'qalc.exe',
                      'qasm-import/qasm-import.exe', 'Notation-guide.html',
-                     'README.txt', 'LICENSE.txt'):
+                     'README.txt', 'LICENSE.txt', 'Research-notes.md'):
             if prefix + name not in files:
                 raise ValueError('Missing required package file: ' + name)
         if not any(name.startswith(prefix + 'data/') and name.endswith('.xml') for name in files):
