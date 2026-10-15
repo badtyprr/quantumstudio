@@ -703,8 +703,16 @@ class CircuitComposer : Window {
   string value="|"+new string('0',Count)+"⟩";
   bool mixed=false;
   var transformations=steps.Count>64 ? new List<string>() : null;
+  string placeholder="qstate_0";
+  if(transformations!=null) {
+   // Keep a user-supplied angle symbol free, including braced TeX subscripts.
+   var parameterText=new StringBuilder();
+   foreach(var step in steps)foreach(char ch in step.Angle ?? "")if(!Char.IsWhiteSpace(ch) && ch!='{' && ch!='}' && ch!='\\')parameterText.Append(ch);
+   string parameters=parameterText.ToString();
+   for(int suffix=1;parameters.Contains(placeholder);++suffix)placeholder="qstate_"+suffix;
+  }
   foreach(var step in steps) {
-   if(transformations!=null)value="qstate_0";
+   if(transformations!=null)value=placeholder;
    if(Feedback(step.Gate)) {
     string bits=FeedbackBits(step.Gate),measured=bits.Length==1 ? step.Wires[0].ToString() : "["+step.Wires[0]+","+step.Wires[1]+"]";
     value="feedforward("+value+","+measured+","+Convert.ToInt32(bits,2)+","+FeedbackGate(step.Gate)+","+step.Wires[bits.Length]+")";mixed=true;if(transformations!=null)transformations.Add(value);continue;
@@ -721,7 +729,7 @@ class CircuitComposer : Window {
    if(step.Gate=="Reset" || step.Gate=="Measure")mixed=true;
    if(transformations!=null)transformations.Add(value);
   }
-  return transformations==null ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,qstate_0)";
+  return transformations==null ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,"+placeholder+")";
  }
  void Line(double x1,double y1,double x2,double y2,Brush color,double width,bool dashed=false) {diagram.Children.Add(new Line {X1=x1,Y1=y1,X2=x2,Y2=y2,Stroke=color,StrokeThickness=width,StrokeDashArray=dashed ? new DoubleCollection {3,2} : null});}
  void Label(string text,double x,double y,double width) {var label=new TextBlock {Text=text,Width=width,TextAlignment=TextAlignment.Center,FontSize=14,TextTrimming=TextTrimming.CharacterEllipsis,ToolTip=text}; Canvas.SetLeft(label,x); Canvas.SetTop(label,y); diagram.Children.Add(label);}

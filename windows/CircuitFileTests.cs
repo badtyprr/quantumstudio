@@ -32,6 +32,11 @@ class CircuitFileTests {
     composer.SaveCircuit(path);composer.BellState(0);composer.OpenCircuit(path);Check(composer.Expression()==longExpression);
     Check(composer.Undo());Check(composer.Redo());Check(composer.Expression()==longExpression);
    }
+   foreach(string angle in new[]{"qstate_0","qstate_{0}"}) {
+    Check(composer.UpdateGate(0,"Rz","0",angle));
+    Check(composer.Expression().Contains("Rz("+angle+")"));
+    Check(composer.Expression().EndsWith(",qstate_1)"));
+   }
    string preserved=composer.Expression();
    var excessive=new CircuitComposer.Step[CircuitComposer.MaxSteps+1];
    for(int k=0;k<excessive.Length;++k)excessive[k]=new CircuitComposer.Step {Gate="X",Angle="",Wires=new[]{0}};
