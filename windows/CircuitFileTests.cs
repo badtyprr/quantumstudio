@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 using System.Windows;
 class CircuitFileTests {
  static int checks;
- static void Check(bool condition) {if(!condition)throw new Exception("Circuit file assertion failed.");++checks;}
+ static void Check(bool condition) {if(!condition)throw new Exception("Circuit file assertion failed at check "+(checks+1));++checks;}
  [STAThread] static int Main() {
   string path=Path.Combine(Path.GetTempPath(),"quantum-circuit-"+Guid.NewGuid().ToString("N")+".qcircuit");
   var owner=new Window {ShowInTaskbar=false,Opacity=0};owner.Show();var composer=new CircuitComposer(owner,delegate(string expression){});
@@ -57,6 +57,20 @@ class CircuitFileTests {
    Check(composer.UpdateGate(2,"H","0",""));
    Check(composer.Expression()=="dephase(apply(H,dephase(apply(H,|00⟩,[0]),[1]),[0]),[1])");
    Check(composer.Undo());Check(composer.Expression()==grouped);
+   foreach(var step in measurements)if(step.Gate=="Measure")step.Gate="Reset";
+   composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=2,Steps=measurements}));
+   string groupedReset=composer.Expression();Check(groupedReset=="reset(apply(H,|00⟩,[0]),[1,0])");
+   composer.SaveCircuit(path);saved=serializer.Deserialize<CircuitComposer.CircuitFile>(File.ReadAllText(path));
+   Check(saved.Steps.Length==4 && saved.Steps[1].Gate=="Reset" && saved.Steps[3].Wires[0]==1);
+   Check(composer.OpenQasm().Split(new[]{"reset"},StringSplitOptions.None).Length==5);
+   composer.BellState(0);composer.OpenCircuit(path);Check(composer.Expression()==groupedReset);
+   Check(composer.UpdateGate(2,"Measure","0",""));
+   Check(composer.Expression()=="reset(dephase(reset(apply(H,|00⟩,[0]),[1]),[0]),[1])");
+   Check(composer.Undo());Check(composer.Expression()==groupedReset);
+   var resets=new CircuitComposer.Step[65];
+   for(int k=0;k<resets.Length;++k)resets[k]=new CircuitComposer.Step {Gate="Reset",Angle="",Wires=new[]{k%2}};
+   composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=2,Steps=resets}));
+   Check(composer.Expression()=="sequence([reset(qstate_0,[0,1])],|00⟩,qstate_0)");
    foreach(int width in new[]{9,10}) {
     var edge=new[]{new CircuitComposer.Step {Gate="X",Angle="",Wires=new[]{width-1}}};
     composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=width,Steps=edge}));

@@ -714,13 +714,13 @@ class CircuitComposer : Window {
   }
   for(int position=0;position<steps.Count;position++) {
    var step=steps[position];
-   // Consecutive computational-basis measurements commute and are idempotent.
+   // Consecutive resets, or computational-basis measurements, commute and are idempotent.
    // Group only the calculation; preserve the editable steps and exported program.
-   if(step.Gate=="Measure" && position+1<steps.Count && steps[position+1].Gate=="Measure") {
+   if((step.Gate=="Measure" || step.Gate=="Reset") && position+1<steps.Count && steps[position+1].Gate==step.Gate) {
     var measured=new List<int>(step.Wires);
-    while(position+1<steps.Count && steps[position+1].Gate=="Measure")
+    while(position+1<steps.Count && steps[position+1].Gate==step.Gate)
      foreach(int wire in steps[++position].Wires)if(!measured.Contains(wire))measured.Add(wire);
-    step=new Step {Gate="Measure",Angle="",Wires=measured.ToArray()};
+    step=new Step {Gate=step.Gate,Angle="",Wires=measured.ToArray()};
    }
    if(transformations!=null)value=placeholder;
    if(Feedback(step.Gate)) {
