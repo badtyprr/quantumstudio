@@ -96,7 +96,7 @@ class TeXReader {
      entries.push_back(trim(contents.substr(startEntry)));
      bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
      if(ellipsis) {
-      if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty())throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
+      if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
       return "unique(qindexrange("+entries[0]+","+entries[2]+"))";
      }
      return "unique(vector("+contents+"))";

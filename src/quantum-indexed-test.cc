@@ -49,6 +49,12 @@ int main(){try {
  calculator.stopControl();
  if(cancellationResult!=0)throw std::runtime_error("Sequence ignored cancellation");
  ++checks;
+ MathStructure rangeStopped=calculator.parse("qindexrange(0,1023)");
+ calculator.startControl();calculator.abort();
+ cancellationResult=calculator.getFunction("qindexrange")->calculate(cancelled,rangeStopped,eo);
+ calculator.stopControl();
+ if(cancellationResult!=0)throw std::runtime_error("Index range ignored cancellation");
+ ++checks;
  equal("qphasefunction(x,1,x)","[1,0;0,-1]");
  equal("qphasefunction(mod(x,2),2,x)","[1,0,0,0;0,-1,0,0;0,0,1,0;0,0,0,-1]");
  equal("qoraclefunction(x,1,1,x)","[1,0,0,0;0,1,0,0;0,0,0,1;0,0,1,0]");

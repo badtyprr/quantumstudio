@@ -19,6 +19,7 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: sumset(k,indexrange(0,3),k)","6");
  equal(R"(quantum: \sum_{k\in\{0,\ldots,3\}}{k})","6");
  equal(R"(quantum: \sum_{k\in\{k\in\{0,\ldots,7\}:k\geq4\}}{k})","22");
  equal(R"(quantum: \sum_{n=1}^{3}{\sum_{k\in\{0,\dots,n-1\}}{k}})","4");
