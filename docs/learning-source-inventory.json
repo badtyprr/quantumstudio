@@ -1,0 +1,1347 @@
+{
+  "schema_version": 1,
+  "requested_scope": "All IBM Quantum Learning and qBraid syntax and learning; this inventory is not a restriction of that scope.",
+  "discovery_date": "2026-10-14",
+  "notebook_hash_verification_date": "2026-10-15",
+  "status_meaning": "Pending means that complete compatibility has not been proven, even when individual features or examples have already been tested. Notebook hashes prove source identity, not execution support.",
+  "discovery_method": "Read the public course catalog, expanded all collapsed lesson groups in each of the 15 course sidebars, and captured their displayed section links. Read the module catalog for the 12 module links. No course text or notebook content is redistributed here.",
+  "inventory_limits": "Observed public English catalog and sidebar links; excludes overview pages and exams. Does not claim coverage of videos, downloadable notebooks, practice content or linked external material.",
+  "remaining_discovery": [
+    "Overview and exam material",
+    "Videos and downloadable or linked materials",
+    "Account-only qBook courses",
+    "New or changed public material after the discovery date"
+  ],
+  "counts": {
+    "ibm_courses": 15,
+    "ibm_sections": 137,
+    "ibm_modules": 12,
+    "qbraid_notebooks": 35
+  },
+  "sources": [
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "density-matrices/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "density-matrices/density-matrix-basics",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "density-matrices/convex-combinations",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "density-matrices/bloch-sphere",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "density-matrices/multiple-systems",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "quantum-channels/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "quantum-channels/quantum-channel-basics",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "quantum-channels/representations-of-channels",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "quantum-channels/representation-equivalence",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representation-equivalence",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "general-measurements/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "general-measurements/formulations-of-measurements",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "general-measurements/naimark-theorem",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "general-measurements/discrimination-and-tomography",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "purifications-and-fidelity/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "purifications-and-fidelity/purifications",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "general-formulation-of-quantum-information",
+      "path": "purifications-and-fidelity/fidelity",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-query-algorithms/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-query-algorithms/query-model-of-computation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-query-algorithms/deutsch-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-query-algorithms/deutsch-jozsa-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-query-algorithms/simon-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/simon-algorithm",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-algorithmic-foundations/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-algorithmic-foundations/factoring-and-gcd",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/factoring-and-gcd",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-algorithmic-foundations/measuring-computational-cost",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/measuring-computational-cost",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "quantum-algorithmic-foundations/simulating-classical-computations",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulating-classical-computations",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "phase-estimation-and-factoring/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "phase-estimation-and-factoring/phase-estimation-problem",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-problem",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "phase-estimation-and-factoring/phase-estimation-procedure",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure",
+      "status": "partial_formula_audit",
+      "verified_examples": [
+        "subscripted nested indices",
+        "space-separated bit labels",
+        "unbraced finite sums",
+        "TeX Fourier matrix row spacing",
+        "QFT dimension subscripts",
+        "all four exact two-bit phase-estimation outcomes"
+      ],
+      "evidence": [
+        "src/quantum-parser-integration-test.cc",
+        "src/quantumtex-test.cc"
+      ],
+      "remaining": "Full lesson, diagrams, code, assumptions and generalized dimensions are not certified."
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "phase-estimation-and-factoring/shor-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "grover-algorithm/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "grover-algorithm/unstructured-search",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/unstructured-search",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "grover-algorithm/grover-algorithm-description",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/grover-algorithm-description",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "grover-algorithm/analysis",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "grover-algorithm/number-of-iterations",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "fundamentals-of-quantum-algorithms",
+      "path": "grover-algorithm/concluding-remarks",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/concluding-remarks",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "single-systems/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "single-systems/classical-information",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/classical-information",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "single-systems/quantum-information",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/quantum-information",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "single-systems/qiskit-implementation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/qiskit-implementation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "multiple-systems/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "multiple-systems/classical-information",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/classical-information",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "multiple-systems/quantum-information",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/quantum-information",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "multiple-systems/qiskit-implementation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/qiskit-implementation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "quantum-circuits/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "quantum-circuits/circuits",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/circuits",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "quantum-circuits/inner-products-and-projections",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "quantum-circuits/limitations-on-quantum-information",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "entanglement-in-action/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "entanglement-in-action/quantum-teleportation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/quantum-teleportation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "entanglement-in-action/superdense-coding",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/superdense-coding",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "entanglement-in-action/chsh-game",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/chsh-game",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "basics-of-quantum-information",
+      "path": "entanglement-in-action/qiskit-implementation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "correcting-quantum-errors/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "correcting-quantum-errors/repetition-codes",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-codes",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "correcting-quantum-errors/shor-code",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "correcting-quantum-errors/discretization-of-errors",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "stabilizer-formalism/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "stabilizer-formalism/pauli-operations-and-observables",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "stabilizer-formalism/repetition-code-revisited",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "stabilizer-formalism/stabilizer-codes",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "quantum-code-constructions/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "quantum-code-constructions/css-codes",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "quantum-code-constructions/toric-code",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "quantum-code-constructions/other-code-families",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "fault-tolerant-quantum-computing/introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "fault-tolerant-quantum-computing/approach-to-fault-tolerance",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "fault-tolerant-quantum-computing/controlling-error-propagation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "foundations-of-quantum-error-correction",
+      "path": "fault-tolerant-quantum-computing/threshold-theorem",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/threshold-theorem",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "use-a-qc-today",
+      "path": "build-and-run-your-first-quantum-program",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/build-and-run-your-first-quantum-program",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "use-a-qc-today",
+      "path": "quantum-mechanics-basics",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/quantum-mechanics-basics",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "use-a-qc-today",
+      "path": "your-first-quantum-experiment",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/your-first-quantum-experiment",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "use-a-qc-today",
+      "path": "quantum-computing-context",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/quantum-computing-context",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "use-a-qc-today",
+      "path": "continue-your-learning-journey",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/continue-your-learning-journey",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-computing-in-practice",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-computing-in-practice",
+      "path": "running-quantum-circuits",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/running-quantum-circuits",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-computing-in-practice",
+      "path": "utility-scale-qaoa",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/utility-scale-qaoa",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-computing-in-practice",
+      "path": "applications-of-qc",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/applications-of-qc",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-computing-in-practice",
+      "path": "mapping",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/mapping",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-computing-in-practice",
+      "path": "simulating-nature",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/simulating-nature",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "tools-for-quantum-advantage",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "tools-for-quantum-advantage",
+      "path": "noise-and-errors",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/noise-and-errors",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "tools-for-quantum-advantage",
+      "path": "error-suppression",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-suppression",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "tools-for-quantum-advantage",
+      "path": "error-mitigation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-mitigation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "tools-for-quantum-advantage",
+      "path": "error-correction-i",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-correction-i",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "integrating-quantum-and-high-performance-computing",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "integrating-quantum-and-high-performance-computing",
+      "path": "compute-resources",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/compute-resources",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "integrating-quantum-and-high-performance-computing",
+      "path": "programming-models",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/programming-models",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "integrating-quantum-and-high-performance-computing",
+      "path": "sqd-skqd",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/sqd-skqd",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "integrating-quantum-and-high-performance-computing",
+      "path": "next-steps",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/next-steps",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-diagonalization-algorithms",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-diagonalization-algorithms",
+      "path": "vqe",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-diagonalization-algorithms",
+      "path": "krylov",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-diagonalization-algorithms",
+      "path": "sqd-overview",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-diagonalization-algorithms",
+      "path": "sqd-implementation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-diagonalization-algorithms",
+      "path": "skqd",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-machine-learning",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-machine-learning",
+      "path": "classical-ml-review",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-machine-learning",
+      "path": "data-encoding",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-machine-learning",
+      "path": "quantum-kernel-methods",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-machine-learning",
+      "path": "qvc-qnn",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "variational-algorithms",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/variational-algorithms",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "reference-states",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/reference-states",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "ansaetze-and-variational-forms",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/ansaetze-and-variational-forms",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "cost-functions",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/cost-functions",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "optimization-loops",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/optimization-loops",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "instances-and-extensions",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/instances-and-extensions",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "variational-algorithm-design",
+      "path": "examples-and-applications",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/examples-and-applications",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-chem-with-vqe",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-chem-with-vqe",
+      "path": "hamiltonian-construction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-chem-with-vqe",
+      "path": "ansatz",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ansatz",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-chem-with-vqe",
+      "path": "classical-optimizers",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/classical-optimizers",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-chem-with-vqe",
+      "path": "ground-state",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ground-state",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-chem-with-vqe",
+      "path": "geometry",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/geometry",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "bits-gates-and-circuits",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/bits-gates-and-circuits",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "teleportation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/teleportation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "grovers-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/grovers-algorithm",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "quantum-phase-estimation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-phase-estimation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "variational-quantum-algorithms",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "quantum-simulation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-simulation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "classical-simulation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/classical-simulation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "hardware",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/hardware",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "quantum-circuit-optimization",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-circuit-optimization",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "error-mitigation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/error-mitigation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "utility-i",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-i",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "utility-ii",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-ii",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "utility-scale-quantum-computing",
+      "path": "utility-iii",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-iii",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-business-foundations",
+      "path": "start-your-quantum-journey",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/start-your-quantum-journey",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-business-foundations",
+      "path": "introduction-to-quantum-computing",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/introduction-to-quantum-computing",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-business-foundations",
+      "path": "quantum-computing-fundamentals",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/quantum-computing-fundamentals",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-business-foundations",
+      "path": "quantum-technology",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/quantum-technology",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-business-foundations",
+      "path": "business-impacts",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/business-impacts",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "quantum-business-foundations",
+      "path": "how-to-become-quantum-ready",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/how-to-become-quantum-ready",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "designing-and-leading-quantum-projects",
+      "path": "introduction",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/introduction",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "designing-and-leading-quantum-projects",
+      "path": "early-stages",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/early-stages",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "designing-and-leading-quantum-projects",
+      "path": "standing-up-team",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/standing-up-team",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_course_section",
+      "course": "designing-and-leading-quantum-projects",
+      "path": "grant-writing",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/grant-writing",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "quantum-mechanics/get-started-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/get-started-with-qiskit",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "quantum-mechanics/superposition-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/superposition-with-qiskit",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "quantum-mechanics/stern-gerlach-measurements-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/stern-gerlach-measurements-with-qiskit",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "quantum-mechanics/exploring-uncertainty-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/exploring-uncertainty-with-qiskit",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "quantum-mechanics/bells-inequality-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/bells-inequality-with-qiskit",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/deutsch-jozsa",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/deutsch-jozsa",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/grovers",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/grovers",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/quantum-teleportation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-teleportation",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/quantum-key-distribution",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-key-distribution",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/qft",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/qft",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/shors-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/shors-algorithm",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "ibm_module",
+      "path": "computer-science/vqe",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/vqe",
+      "status": "end_to_end_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "PyQASM-Examples/deutsch_josza_unroll.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "PyQASM-Examples/qasm_processing.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_processing.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "4a82502bb158e79847b569785edbd470ce9d03b80773558ebb6d4996b1eba546",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "PyQASM-Examples/qasm_unroll.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Algorithms/qft.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qft.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "bc648239a475fbfead15b185e201e821498369ff5d133ba928603bb1319fc3d3",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Algorithms/qpe.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Algorithms/cirq_vqe.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "8e728d49ca432accd2765b9411e37cd6102dd9aca1b9546cf3f01e435d0981da",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-SDK/bell_circuit_examples.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/bell_circuit_examples.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "eea3ace95ea4cf2cee1baf72559efe81ee6232ec83f913d8fd7bf07a07c2d140",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-SDK/qbraid_sdk_devices.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_devices.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "668481d0cfdd2820f08bdc65d5f8d7997674b26ffe4ca9bb1ca93e3220bd4f78",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "5b5ae29f1a5813111d1474d60a13aac6c06c2ef1904f75de73ec75a7224c8145",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-SDK/qbraid_visualization.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_visualization.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "c2231836e666d1776e0e2700ed32d8d8c0138ebcd5f4c087255068020cac3b97",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "b98d5095d707a0e19ec063a59bc0bff02aa75c134ef814406552d4c8b840a7f5",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "6e0aff466dd3a4e97c3d0dfd9da945621e7e5daba553af9d40cb319ae18910f4",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "586ad421664e4fe76b172cdb80165efb55a8ec9a82bd2c648911a773e02e0c15",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "0ff2b015561e0bec4690422eb5a00db06d990d13f5c327a2f9b5054b614494f4",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "421214ae6b2701d8bdd3c721741d17bd70a4709c617766dcf3f9472622565dd9",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "d3e806a15eca86f9c7e92120faa3319b2b9639e2409f497015f2b436817cf66c",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "67bf6c500057d145871e8549aabf60cbad6084904a4ccc51379b204315a654b8",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "f6ab8127957d977bb43ade4f63227512852ce2c950adf53fe515e3bf796c5535",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "8423a941b6145ace8ba6e2242aeac13fabd8c3aeb815623126ba76d715ee5b1c",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+      "status": "end_to_end_execution_audit_pending"
+    },
+    {
+      "kind": "qbraid_notebook",
+      "path": "qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "status": "end_to_end_execution_audit_pending"
+    }
+  ]
+}
