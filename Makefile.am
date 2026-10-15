@@ -7,7 +7,13 @@ SUBDIRS = po-defs po-defs-fixed po-defs-fixed/fixed data libqalculate src man po
 EXTRA_DIST = config.rpath  \
 	autogen.sh \
 	README.translate \
-	libqalculate.pc.in
+	libqalculate.pc.in \
+	windows/test-source-dist.py \
+	windows/build-qasm-import.ps1 \
+	windows/qasm-import-requirements.txt \
+	windows/qasm-import.py \
+	windows/test-qasm-import.py \
+	windows/test-qasm-protocol.py
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libqalculate.pc
