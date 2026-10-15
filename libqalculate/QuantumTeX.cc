@@ -168,6 +168,12 @@ class TeXReader {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
   if(name=="in" && (setBound || setExpressions))return "∈";
+  if(name=="lfloor" || name=="lceil") {
+   auto body=read(0,false,"",false,name=="lfloor" ? "rfloor" : "rceil");
+   if(trim(body).empty())throw std::runtime_error(error("Empty rounding operand"));
+   return (name=="lfloor" ? "floor(" : "ceil(")+body+")";
+  }
+  if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
   if(name=="mid" && setExpressions)return ":";
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
@@ -301,7 +307,7 @@ class TeXReader {
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
- std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false) {
+ std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="") {
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
   std::string result; int norms=0; bool closed=false;
   std::vector<std::pair<std::string,std::string>> branches;
@@ -312,6 +318,10 @@ class TeXReader {
    branches.emplace_back(trim(caseValue),trim(result));result.clear();caseValue.clear();caseColumn=false;
   };
   while(pos<input.size()) {
+   if(!roundClose.empty() && input[pos]=='\\' && input.compare(pos+1,roundClose.size(),roundClose)==0 &&
+      (pos+1+roundClose.size()==input.size() || !asciiLetter((unsigned char)input[pos+1+roundClose.size()]))) {
+    pos+=roundClose.size()+1;closed=true;break;
+   }
    if(setClose && input.compare(pos,2,"\\}")==0) {pos+=2;closed=true;break;}
    if(close && input[pos]==close) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
@@ -393,7 +403,7 @@ class TeXReader {
    else result+=input[pos++];
    if(result.size()>131072) throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
   }
-  if((close || matrix || setClose) && !closed) throw std::runtime_error(error("Unclosed TeX group or environment"));
+  if((close || matrix || setClose || !roundClose.empty()) && !closed) throw std::runtime_error(error("Unclosed TeX group or environment"));
   if(norms) throw std::runtime_error(error("Unclosed norm delimiter"));
   if(environment=="cases") {
    if(caseColumn || !trim(result).empty())finishCase();
@@ -425,9 +435,10 @@ std::string quantumTeX(const std::string &input) {
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
- // Unicode large operators use the same explicit bounds and operand grammar
- // as their TeX spellings. Preserve quoted labels verbatim.
- static const auto largeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "}};
+ // Unicode operators and rounding brackets share their TeX grammar.
+ // Preserve quoted labels verbatim.
+ static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
+  {"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
  for(size_t k=0;k<s.size();) {
   if(s[k]=='"' || s[k]=='\'') {if(quote==s[k])quote=0;else if(!quote)quote=s[k];normalized+=s[k++];continue;}
@@ -445,7 +456,7 @@ std::string quantumTeX(const std::string &input) {
    if(!digits.empty()) {normalized+="QFT_{"+digits+"}";k=end;continue;}
   }
   bool matched=false;
-  if(!quote)for(const auto &alias:largeOperators) {
+  if(!quote)for(const auto &alias:unicodeOperators) {
    if(s.compare(k,alias.first.size(),alias.first)==0) {normalized+=alias.second;k+=alias.first.size();matched=true;break;}
   }
   if(!matched)normalized+=s[k++];

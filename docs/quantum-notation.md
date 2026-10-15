@@ -83,6 +83,12 @@ These audits substitute explicit vectors for named states and expand finite sums
 
 Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; finite filtering comprehensions are described below. More general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
 
+## Floor and ceiling
+
+Floor and ceiling brackets accept both TeX (`\lfloor x\rfloor`, `\lceil x\rceil`) and Unicode (`⌊x⌋`, `⌈x⌉`), including nesting and delimiter sizing. They use mathematical floor and ceiling, so `⌊-3/2⌋ = -2` and `⌈-3/2⌉ = -1`. Empty, mismatched and unclosed brackets are rejected.
+
+For example, the approximation in IBM's [Grover iteration-count lesson](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations), `\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor`, evaluates to `3`. The angle-dependent formula currently requires an explicit dimensionless radian value: inverse trig functions return angle units, so directly composing `\lfloor\pi/(4\sin^{-1}(1/2))\rfloor` remains unevaluated. Quantum angle conventions and implicit set cardinalities remain work items; this does not certify the entire lesson.
+
 ## Named ket validation
 
 A named ket such as `|statevector>` must evaluate to a column matrix with at most 1024 rows. Bras validate the same column state before taking its adjoint. Scalars, row vectors, square operators and unresolved scalar names are not silently accepted as states. Normalization is not imposed.

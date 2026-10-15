@@ -17,6 +17,14 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor)","floor(((pi)/(4))sqrt(16))");
+  equal(R"(\lfloor-3/2\rfloor^2)","floor(-3/2)^2");
+  equal(R"(\lceil\lfloor3/2\rfloor+1/2\rceil)","ceil(floor(3/2)+1/2)");
+  equal(R"(\left\lfloor(3/2)\right\rfloor)","floor((3/2))");
+  equal("'⌊label⌉'","'⌊label⌉'");
+  for(const char *s:{"⌊1⌉","⌈1⌋","⌊⌋","⌈1","1⌉"})rejects(s);
+  std::string nestedFloor="1";for(int j=0;j<130;++j)nestedFloor="\\lfloor"+nestedFloor+"\\rfloor";rejects(nestedFloor);
+  for(const char *s:{R"(\lfloor\rfloor)",R"(\lceil\rceil)",R"(\lfloor1)",R"(\rfloor)",R"(\rceil)",R"(\lfloor1\rceil)",R"(\lceil1\rfloor)",R"((\lfloor1)\rfloor)",R"(\lfloor(1\rfloor))",R"(\lfloor1\rfloorx)"})rejects(s);
   equal(R"(\sin x)","sin x");
   equal(R"(\cos (x))","cos (x)");
   equal(R"(\sin^{-1}(1/2))","asin(1/2)");
