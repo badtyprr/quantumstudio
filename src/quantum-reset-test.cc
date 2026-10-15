@@ -25,6 +25,13 @@ int main(){try {
  equal("qindexedchannel(qdensity("+bell+"),vector([1,0;0,0],[0,1;0,0]),1)","[1,0,0,0;0,0,0,0;0,0,1,0;0,0,0,0]/2");
  equal("qdephase([1;i],0)","identity(2)");
  equal("qresetall([1;i])","[2,0;0,0]");
+ // Compare direct ket processing with the density path for every subset.
+ // Complex coherences and non-unit norm expose conjugation and accumulation errors.
+ for(const auto &indices:{"[]","[0]","[1]","[0,1]","[1,0]"}) {
+  std::string ket="[1;2*i;3-i;-1+4*i]";
+  equal("qdephase("+ket+","+indices+")","qdephase(qdensity("+ket+"),"+indices+")");
+  equal("qreset("+ket+","+indices+")","qreset(qdensity("+ket+"),"+indices+")");
+ }
  for(unsigned state=0;state<8;++state)for(unsigned wire=0;wire<3;++wire) {
   std::string ket="qbasis("+std::to_string(state)+",8)",index=std::to_string(wire);
   equal("qreset("+ket+","+index+")","qdensity(qbasis("+std::to_string(state&~(1U<<(2-wire)))+",8))");
