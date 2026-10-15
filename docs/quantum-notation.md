@@ -67,6 +67,12 @@ These audits substitute explicit vectors for named states and expand finite sums
 
 Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; finite filtering comprehensions are described below. More general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
 
+## TeX trigonometric powers
+
+`\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. Inverse results retain the library's angle units and principal-branch conventions.
+
+Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and `\sin^{-2}(pi/6)` gives `4`. The inverse interpretation applies to the literal exponent `-1`; write `(\sin(x))^{-1}` for a reciprocal. Powered functions require a parenthesized or braced argument, optionally with TeX delimiter-sizing commands such as `\left` or `\biggl`. Unbraced powered-function arguments remain unfinished.
+
 ## Finite set-indexed sums
 
 `\sum_{k\in\{0,2,5\}}{k^2}` evaluates to 29. The equivalent function form is `sumset(k^2,[0,2,5],k)`. A named collection such as `\sum_{k\in S_0}{k}` must evaluate to a finite flat vector. The index is local to the summand; nested sums may reuse it, and the inner collection can refer to the outer index. An unbraced summand uses the existing multiplicative-term scope.
