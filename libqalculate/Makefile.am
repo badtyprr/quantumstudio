@@ -28,7 +28,7 @@ libqalculateinclude_HEADERS = \
 	util.h includes.h Unit.h BuiltinFunctions.h \
 	QalculateDateTime.h qalculate.h
 
-noinst_HEADERS = QuantumStabilizer.h QuantumIndexed.h QuantumOrder.h QuantumBinary.h QuantumEvolution.h QuantumHellinger.h QuantumChannelRepresentations.h QuantumSuperoperators.h QuantumGeometry.h QuantumReset.h QuantumNoise.h QuantumOperators.h QuantumSubsystem.h QuantumGates.h QuantumMeasurement.h QuantumMatrixPower.h QuantumMatrixExp.h QuantumAlgebra.h QuantumStateFunctions.h QuantumNotation.h QuantumStateMetrics.h QuantumTeX.h QuantumSingular.h MathStructure-support.h Calculator_p.h ExpressionItem_p.h MathStructure_p.h bernoulli_numbers.h primes.h $(libqalculate_compiled_def_headers)
+noinst_HEADERS = QuantumCSS.h QuantumStabilizer.h QuantumIndexed.h QuantumOrder.h QuantumBinary.h QuantumEvolution.h QuantumHellinger.h QuantumChannelRepresentations.h QuantumSuperoperators.h QuantumGeometry.h QuantumReset.h QuantumNoise.h QuantumOperators.h QuantumSubsystem.h QuantumGates.h QuantumMeasurement.h QuantumMatrixPower.h QuantumMatrixExp.h QuantumAlgebra.h QuantumStateFunctions.h QuantumNotation.h QuantumStateMetrics.h QuantumTeX.h QuantumSingular.h MathStructure-support.h Calculator_p.h ExpressionItem_p.h MathStructure_p.h bernoulli_numbers.h primes.h $(libqalculate_compiled_def_headers)
 
 libqalculate_la_SOURCES = \
 	QuantumMatrixPower.cc \
@@ -48,6 +48,7 @@ libqalculate_la_SOURCES = \
 	QuantumOrder.cc \
 	QuantumIndexed.cc \
 	QuantumStabilizer.cc \
+	QuantumCSS.cc \
 	QuantumAlgebra.cc \
 	QuantumStateFunctions.cc \
 	QuantumNotation.cc \
