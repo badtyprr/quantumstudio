@@ -93,7 +93,7 @@ class QuantumAlgebraFunction: public MathFunction {
    out= op=="qnorm" ? norm : a; if(op=="qnormalize") out/=norm; return 1;
   }
   if(op=="qdensity") {
-   if(a.columns()!=1 || a.rows()>512) { CALCULATOR->error(true,"density requires a column ket with at most 512 entries.",NULL); return 0; }
+   if(a.columns()!=1 || a.rows()>1024) { CALCULATOR->error(true,"density requires a column ket with at most 1024 entries.",NULL); return 0; }
    out=multiply(a,dagger(a,eo),eo); return 1;
   }
   if(op=="qtrace") {
@@ -131,7 +131,7 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   size_t rows=op=="qtensor" ? a.rows()*b.rows() : a.rows()+b.rows();
   size_t cols=op=="qtensor" ? a.columns()*b.columns() : a.columns()+b.columns();
-  if(rows>1024 || cols>1024 || rows*cols>262144) { CALCULATOR->error(true,"Quantum matrix allocation limit exceeded (262144 elements).",NULL); return 0; }
+  if(rows>1024 || cols>1024 || rows*cols>1048576) { CALCULATOR->error(true,"Quantum matrix allocation limit exceeded (1048576 elements).",NULL); return 0; }
   out.clearMatrix(); out.resizeMatrix(rows,cols,m_zero);
   for(size_t r=0;r<a.rows();++r) for(size_t c=0;c<a.columns();++c) {
    if(CALCULATOR->aborted()) return 0;

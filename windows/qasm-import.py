@@ -207,8 +207,8 @@ def convert(source, published_u=False):
             size = 1 if statement.size is None else statement.size.value
             registers[statement.qubit.name] = (count, size)
             count += size
-    if not 1 <= count <= 8:
-        raise ValueError('The circuit editor currently supports 1–8 qubits.')
+    if not 1 <= count <= 10:
+        raise ValueError('The circuit editor currently supports 1–10 qubits.')
 
     def wire(value):
         if isinstance(value, ast.Identifier):

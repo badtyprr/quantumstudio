@@ -12,6 +12,7 @@ using Path = System.IO.Path;
 
 class CircuitComposer : Window {
  public const int MaxSteps=512;
+ public const int MaxQubits=10;
  public class Step { public string Gate, Angle; public int[] Wires; }
  public class CircuitFile { public int Version, Qubits; public Step[] Steps; }
  readonly List<Step> steps=new List<Step>();
@@ -26,7 +27,7 @@ class CircuitComposer : Window {
  readonly Canvas diagram=new Canvas();
  readonly ScrollViewer page=new ScrollViewer {VerticalScrollBarVisibility=ScrollBarVisibility.Auto,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled,HorizontalContentAlignment=HorizontalAlignment.Stretch};
  readonly ScrollViewer diagramView=new ScrollViewer {HorizontalScrollBarVisibility=ScrollBarVisibility.Auto,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
- readonly Slider zoom=new Slider {Minimum=0.25,Maximum=1.5,Value=1,Width=105,SmallChange=0.05,LargeChange=0.25,VerticalAlignment=VerticalAlignment.Center};
+ readonly Slider zoom=new Slider {Minimum=0.1,Maximum=1.5,Value=1,Width=105,SmallChange=0.05,LargeChange=0.25,VerticalAlignment=VerticalAlignment.Center};
  readonly TextBlock zoomLabel=new TextBlock {Text="100%",Width=42,VerticalAlignment=VerticalAlignment.Center,TextAlignment=TextAlignment.Right};
  readonly Expander expressionDetails=new Expander {Header="Equivalent expression",Margin=new Thickness(0,4,0,0)};
  readonly Expander helpDetails=new Expander {Header="Measurement and feedback help",Margin=new Thickness(0,4,0,0)};
@@ -53,7 +54,7 @@ class CircuitComposer : Window {
   top.Children.Add(new TextBlock {Text="Build a quantum circuit",FontSize=26,FontWeight=FontWeights.SemiBold});
   top.Children.Add(new TextBlock {Text="Start at |0…0⟩. Gates run left to right. Wire 0 is the first tensor factor.",FontSize=13,Margin=new Thickness(0,6,0,8)});
   var inputs=new WrapPanel(); top.Children.Add(inputs);
-  for(int n=1;n<=8;n++) qubits.Items.Add(n+" qubits"); qubits.SelectedIndex=1; qubits.Width=100;
+  for(int n=1;n<=MaxQubits;n++) qubits.Items.Add(n+" qubits"); qubits.SelectedIndex=1; qubits.Width=100;
   foreach(string name in new[]{"H","X","Y","Z","S","T","Sdg","Tdg","SX","SXdg","Rx","Ry","Rz","P","CNOT","CZ","SWAP","CCX","CY","CH","CCZ","CSWAP","Reset","Measure"}) gate.Items.Add(name);
   gate.SelectedIndex=0; gate.Width=100;
   foreach(string name in new[]{"M0-X","M1-X","M0-Z","M1-Z"}) gate.Items.Add(name);
@@ -201,7 +202,7 @@ class CircuitComposer : Window {
  }
  public void VerifyLayout() {
   string original=Snapshot();Show();
-  foreach(int count in new[]{3,8}) {
+  foreach(int count in new[]{3,MaxQubits}) {
    var layoutSteps=new List<Step> {new Step {Gate="H",Angle="",Wires=new[]{0}},new Step {Gate="ECR",Angle="",Wires=new[]{count-1,0}}};
    for(int step=2;step<MaxSteps;++step)layoutSteps.Add(new Step {Gate="Rz",Angle="pi/4",Wires=new[]{step%count}});
    LoadCircuit(new JavaScriptSerializer().Serialize(new CircuitFile {Version=1,Qubits=count,Steps=layoutSteps.ToArray()}));string expected=Expression();
@@ -364,7 +365,7 @@ class CircuitComposer : Window {
  public void LoadCircuit(string text) {
   if(text==null || text.Length>262144)throw new InvalidDataException("Circuit data is too large.");
   var file=new JavaScriptSerializer().Deserialize<CircuitFile>(text);
-  if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>8 || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–8 qubits and at most 512 steps.");
+  if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>MaxQubits || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–10 qubits and at most 512 steps.");
   // Validate the entire document before changing any controls or circuit state.
   foreach(var step in file.Steps) {
    if(step==null || step.Gate==null || !gate.Items.Contains(step.Gate) || step.Wires==null) throw new InvalidDataException("Unknown gate or missing wire list.");
