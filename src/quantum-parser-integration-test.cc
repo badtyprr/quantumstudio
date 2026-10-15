@@ -20,6 +20,18 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ calculator.addVariable(new KnownVariable("","markedstrings",std::string("quantum: \\{x\\in\\{0,1\\}^3:bitvalue(x)<3\\}")));
+ equal("quantum: |markedstrings>","[1;1;1;0;0;0;0;0]/sqrt(3)");
+ equal("quantum: <markedstrings|markedstrings>","1");
+ equal("quantum: <001|markedstrings>","1/sqrt(3)");
+ equal("quantum: qketstate(vector(bitstring(0,2),bitstring(3,2),bitstring(0,2)))","[1;0;0;1]/sqrt(2)");
+ equal("quantum: qketstate(bitstrings(0))","identity(1)");
+ for(int width=1;width<=5;++width)equal("quantum: qketstate(bitstrings("+std::to_string(width)+"))","quantum: H^{\\otimes "+std::to_string(width)+"}|0^"+std::to_string(width)+">");
+ for(const char *expression:{"quantum: qketstate(vector())","quantum: qketstate(vector(bitstring(0,2),bitstring(0,3)))","quantum: qketstate(vector(bitstring(0,2),1))","quantum: qketstate(vector(bitstring(4,2),bitstring(0,2)))"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid set ket accepted: ")+expression);++checks;
+ }
  for(int width=1;width<=4;++width)for(int count=0;count<=(1<<width);++count) {
   std::string domain="\\{x\\in\\{0,1\\}^"+std::to_string(width)+":bitvalue(x)<"+std::to_string(count)+"\\}";
   equal("quantum: |"+domain+"|",std::to_string(count));
