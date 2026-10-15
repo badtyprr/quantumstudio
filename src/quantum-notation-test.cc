@@ -38,6 +38,11 @@ int main(){try {
   equal("|"+label+"⊕"+bits(other,width)+">",basis(index^other,dimension));
  }
  for(const auto &input:{"","(","|2>","|01⊕1>","spin.x(9)","spin.x(-1)","qbasis(1)","X^^2","[1,2","\\unknown{X}"})rejects(input);
+ std::string expanded="1";
+ for(unsigned k=0;k<12;++k)expanded="XPowGate("+expanded+")";
+ rejects(expanded);
+ expanded="1";for(unsigned k=0;k<14;++k)expanded="Rx("+expanded+")";
+ rejects(expanded);
  rejects(std::string(32769,' '));
  rejects(std::string(300,'(')+"1"+std::string(300,')'));
  std::string many="1";for(unsigned i=0;i<600;++i)many+="+1";rejects(many);

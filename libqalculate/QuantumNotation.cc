@@ -319,6 +319,9 @@ std::string pauliLabelExpression(const std::string &label) {
  return "qpauliword("+std::to_string(label.size()-first)+","+std::to_string(x)+","+std::to_string(z)+","+std::to_string(phase%4)+")";
 }
 class Parser {
+ static void checkSize(const std::string &value) {
+  if(value.size()>131072)throw std::runtime_error("Expanded quantum expression exceeds 131072 bytes.");
+ }
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0;
@@ -398,7 +401,7 @@ class Parser {
     if(++nodes>512)throw std::runtime_error("Quantum expression is too complex.");
     if(labelText(part).empty())throw std::runtime_error("Empty register in a comma-separated state label.");
     std::string factor=basisState(part);
-    state=state.empty() ? factor : "qtensor("+state+","+factor+")";
+    state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
    }
    return state;
   }
@@ -911,7 +914,7 @@ class Parser {
    else if(take('?')) a="qconj("+a+")";
    else break;
   }
-  --depth;diracKind=kind;return a;
+  --depth;diracKind=kind;checkSize(a);return a;
  }
  std::string power() {
   auto a=atom();int kind=diracKind;
@@ -936,7 +939,7 @@ class Parser {
    else if(a=="e") a="qexp("+unary()+")";
    else a="qpower("+a+","+unary()+")";
   }
-  diracKind=kind;return a;
+  diracKind=kind;checkSize(a);return a;
  }
  std::string unary() {
   if(++depth>256)throw std::runtime_error("Quantum expression nesting exceeds 256.");
@@ -945,7 +948,7 @@ class Parser {
   else if(take('+'))a=unary();
   else if(take('-'))a="(-"+unary()+")";
   else a=power();
-  --depth;return a;
+  --depth;checkSize(a);return a;
  }
  std::string diracFactor() {
   auto a=unary();int kind=diracKind;
@@ -955,7 +958,7 @@ class Parser {
    if(diracKind==kind)a="qtensor("+a+","+b+")";
    else {a="qmul("+a+","+b+")";kind=0;}
   }
-  diracKind=kind;return a;
+  diracKind=kind;checkSize(a);return a;
  }
  bool moduloWord() {
   ws();if(s.compare(p,3,"mod")!=0 || (p>0 && !std::isspace((unsigned char)s[p-1])))return false;
@@ -973,6 +976,7 @@ class Parser {
    else if(take('#')) a="qdirectsum("+a+","+diracFactor()+")";
    else if(startsAtom()) a="qmul("+a+","+diracFactor()+")";
    else break;
+   checkSize(a);
   } return a;
  }
  std::string additive() {
@@ -981,6 +985,7 @@ class Parser {
    if(take('+')) {auto b=product();a=spinContext ? "qspinadd("+a+","+b+")" : "("+a+"+"+b+")";}
    else if(take('-')) {auto b=product();a=spinContext ? "qspinadd("+a+",(-"+b+"))" : "("+a+"-"+b+")";}
    else break;
+   checkSize(a);
   }
   return a;
  }
@@ -995,7 +1000,7 @@ class Parser {
    if(relation.empty())break;
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
    std::string right=additive(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
-   result=result.empty() ? clause : "("+result+"&&"+clause+")";left=right;
+   result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
   }
   return result.empty() ? left : result;
  }
@@ -1003,27 +1008,27 @@ class Parser {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
   std::string result=comparison();
-  for(size_t k=0;k<count;++k)result="!("+result+")";
+  for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
  }
  std::string logicalAnd() {
   std::string result=logicalNot();
-  while(takeWord("and"))result="("+result+"&&"+logicalNot()+")";
+  while(takeWord("and")) {result="("+result+"&&"+logicalNot()+")";checkSize(result);}
   return result;
  }
  std::string logicalXor() {
   std::string result=logicalAnd();
-  while(takeWord("xor"))result="lxor("+result+","+logicalAnd()+")";
+  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd()+")";checkSize(result);}
   return result;
  }
  std::string expression() {
   std::string result=logicalXor();
-  while(takeWord("or"))result="("+result+"||"+logicalXor()+")";
+  while(takeWord("or")) {result="("+result+"||"+logicalXor()+")";checkSize(result);}
   return result;
  }
  public:
  explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
- std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); return out; }
+ std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); checkSize(out);return out; }
 };
 
 }
