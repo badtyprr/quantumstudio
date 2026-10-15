@@ -259,6 +259,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphasefunction",3},
  {"qsequence",3},
  {"qsumset",3},
+ {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
  {"qpostselect",2},
  {"qpower",2},
@@ -560,7 +561,7 @@ class Parser {
   }
   else if(take('|')) {
    ws();
-   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0) {
+   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0) {
     // TeX set literals/builders have a distinct collection expression. Do not
     // guess whether an arbitrary named value inside bars is a set or a ket.
     std::string collection=atom();need('|');
@@ -827,6 +828,8 @@ class Parser {
     if(name=="tensorproduct") name="qtensorproduct";
     if(name=="indexrange") name="qindexrange";
     if(name=="sumset") name="qsumset";
+    if(name=="bitstrings") name="qbitstrings";
+    if(name=="bitstring") name="qbitlabel";
     if(name=="blocksum") name="qblocksum";
     if(name=="probs") name="qprobs";
     if(name=="QFT") name="qft";

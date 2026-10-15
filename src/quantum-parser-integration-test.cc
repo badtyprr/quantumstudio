@@ -20,6 +20,19 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \sum_{x\in\{0,1\}^2}{|x>})","[1;1;1;1]");
+ equal(R"(quantum: \sum_{x\in\{0,1\}^2}{|x><x|})","identity(4)");
+ equal(R"(quantum: \sum_{x\in\{0,1\}^2}{<x|x>})","4");
+ equal(R"(quantum: |\{0,1\}^3|)","8");
+ equal("quantum: cardinality(bitstrings(0))","1");
+ equal("quantum: cardinality(bitstrings(10))","1024");
+ equal(R"(quantum: \sum_{x\in\{0,1\}^2}{\sum_{x\in\{0,1\}^1}{|x>}})","[4;4]");
+ equal("quantum: qketstate(bitstring(1,3))","[0;1;0;0;0;0;0;0]");
+ for(const char *expression:{"quantum: bitstrings(-1)","quantum: bitstrings(11)","quantum: bitstrings(1/2)","quantum: bitstrings(n)","quantum: bitstring(4,2)","quantum: bitstring(-1,2)"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid binary domain accepted: ")+expression);++checks;
+ }
  equal(R"(quantum: \lvert\{0,1,1\}\rvert)","2");
  equal(R"(quantum: \vert\{0,1,1\}\vert)","2");
  equal(R"(quantum: |\{0,1,1\}|)","2");

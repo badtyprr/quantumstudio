@@ -17,6 +17,11 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\{0,1\}^{3})","qbitstrings(3)");
+  equal(R"(\{1,0\}^{n})","qbitstrings(n)");
+  equal(R"(\{0,1,1\}^{2})","qbitstrings(2)");
+  rejects(R"(\{0,2\}^{2})");
+  rejects(R"(\{0,\ldots,3\}^{2})");
   equal(R"(\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor)","floor(((pi)/(4))sqrt(16))");
   equal(R"(\lfloor-3/2\rfloor^2)","floor(-3/2)^2");
   equal(R"(\lceil\lfloor3/2\rfloor+1/2\rceil)","ceil(floor(3/2)+1/2)");

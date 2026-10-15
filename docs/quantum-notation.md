@@ -87,6 +87,10 @@ Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and
 
 ## Finite set-indexed sums
 
+The explicit binary Cartesian domain `\{0,1\}^n` enumerates bit strings of width `n`, preserving leading zeros. Widths must evaluate to integers from 0 through 10; width zero contains the empty string. `bitstrings(n)` is the function spelling. These domains work in finite sums: `\sum_{x\in\{0,1\}^2}{|x>}` yields `[1;1;1;1]`, and the corresponding sum of `|x><x|` is `identity(4)`. A typed label supplies its own ket dimension. Reversing or repeating the alphabet's entries does not change the domain.
+
+Internally, `bitstring(value,width)` constructs a width-carrying label, rather than an integer or state vector. General arithmetic and bit operations on these descriptors, filtered binary domains, arbitrary Cartesian alphabets, implicit definitions of `Sigma`, and unbounded materialization remain unfinished. Unsupported literal alphabets reject instead of being interpreted as vector powers. This does not establish whole-lesson compatibility.
+
 Cardinality bars around an explicit finite set, such as `|\{0,1,1\}|` or `\lvert\{0,1,1\}\rvert`, give `2`. Empty sets count as zero. Ranges and filtering comprehensions also work: `|\{k\in\{0,\ldots,7\}:k>3\}|` gives `4`. Use `cardinality(S)` for a named finite flat scalar collection; arbitrary named bars are not inferred to denote a set.
 
 Counting uses the existing finite-set sum evaluator with summand `1`, including its 1024-entry limit, exact evaluation and structural duplicate comparison. This is not a new typed symbolic set system: general equality of unresolved symbolic members, Cartesian powers, infinite sets and sets of vectors remain unfinished. Column states and operators must not be treated as finite scalar collections.

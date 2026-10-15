@@ -29,6 +29,25 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qbitstrings" || op=="qbitlabel") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure width=raw[op=="qbitlabel" ? 1 : 0];width.eval(exact);
+   if(!width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10) {CALCULATOR->error(true,"Binary-string widths must be integers from 0 to 10.",NULL);return 0;}
+   int count=1<<width.number().intValue();
+   if(op=="qbitlabel") {
+    MathStructure index=raw[0];index.eval(exact);
+    if(!index.isNumber() || !index.number().isInteger() || index.number()<0 || index.number()>=count)CALCULATOR->error(true,"Binary-string value is outside its width.",NULL);
+    // Preserve a typed label instead of collapsing it to an integer or ket.
+    return 0;
+   }
+   auto label=CALCULATOR->getFunction("qbitlabel");if(!label)return 0;
+   out.clearVector();
+   for(int k=0;k<count;++k) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure index(k),entry;entry.set(label,&index,&width,NULL);out.addChild(entry);
+   }
+   return 1;
+  }
   if(op=="qindexrange") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure first=raw[0],last=raw[1];first.eval(exact);last.eval(exact);
@@ -58,8 +77,9 @@ class QuantumIndexedFunction: public MathFunction {
    members.eval(exact);
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
-   if(!members.isVector() && members.representsScalar() && (collection.isVector() || (collection.isFunction() &&
-      (collection.function()->referenceName()=="vector" || collection.function()->referenceName()=="unique" || collection.function()->referenceName()=="select" || collection.function()->referenceName()=="qindexrange"))))
+   bool bitLabel=members.isFunction() && members.function()->referenceName()=="qbitlabel";
+   if(!members.isVector() && (members.representsScalar() || bitLabel) && (collection.isVector() || (collection.isFunction() &&
+      (collection.function()->referenceName()=="qbitstrings" || collection.function()->referenceName()=="vector" || collection.function()->referenceName()=="unique" || collection.function()->referenceName()=="select" || collection.function()->referenceName()=="qindexrange"))))
     members.transform(STRUCT_VECTOR);
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    std::vector<MathStructure> seen;
@@ -67,7 +87,7 @@ class QuantumIndexedFunction: public MathFunction {
    for(size_t k=0;k<members.size();++k) {
     if(CALCULATOR->aborted())return 0;
     const MathStructure &member=members[k];
-    if(!member.representsScalar()) {CALCULATOR->error(true,"Set sum indices must be scalars.",NULL);return 0;}
+    if(!member.representsScalar() && !(member.isFunction() && member.function()->referenceName()=="qbitlabel")) {CALCULATOR->error(true,"Set sum indices must be scalars or binary-string labels.",NULL);return 0;}
     bool duplicate=false;for(const auto &previous:seen)if(member.equals(previous)){duplicate=true;break;}
     if(duplicate)continue;
     seen.push_back(member);
@@ -175,5 +195,7 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
+ calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
 }
