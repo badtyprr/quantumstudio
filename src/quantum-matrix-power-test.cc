@@ -15,7 +15,7 @@ static void expectClose(MathStructure actual,MathStructure expected,const Evalua
  actual-=expected;actual.eval(eo);
  if(!actual.isNumber())throw std::runtime_error("Nonnumeric difference");
  Number error=actual.number();error.abs();double value=error.floatValue();
- if(!std::isfinite(value) || value>1e-12)throw std::runtime_error("Exponential mismatch");
+ if(!std::isfinite(value) || value>1e-12)throw std::runtime_error("Matrix power mismatch");
  ++checks;
 }
 int main(){try {
@@ -33,6 +33,7 @@ int main(){try {
  {"qlogm([1,0;0,-1])","[0,0;0,i*pi]"},
  {"qlogm([0,1;1,0])","[i*pi/2,-i*pi/2;-i*pi/2,i*pi/2]"},
  {"qsqrt([5,4;4,5])","[2,1;1,2]"},
+ {"qsqrt([1,2,3;2,4,6;3,6,9])","[1,2,3;2,4,6;3,6,9]/sqrt(14)"},
  {"qlogm([5,4;4,5])","[ln(9)/2,ln(9)/2;ln(9)/2,ln(9)/2]"},
  {"qpower([0,-1;1,0],1/2)","[1/sqrt(2),-1/sqrt(2);1/sqrt(2),1/sqrt(2)]"}})
   expectClose(calculator.calculate(t.first,eo),calculator.calculate(t.second,eo),eo);

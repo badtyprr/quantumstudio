@@ -58,6 +58,23 @@ static bool spectralMatrixFunction(MathStructure &out,const MathStructure &a,con
    } else {entry(out,k,k).raise(exponent);entry(out,k,k).eval(eo);}
   }return true;
  }
+ // A rank-one matrix satisfies A^2=tr(A) A. Keep its zero eigenspace
+ // exact instead of taking square roots of eigensolver roundoff.
+ if(!logarithm && n<=16 && exponent.representsPositive()) {
+  MathStructure trace;for(size_t k=0;k<n;++k)trace+=entry(a,k,k);trace.eval(eo);
+  if(trace.representsNonZero()) {
+   MathStructure squared=a;squared*=a;squared.eval(eo);bool rankOne=squared.isMatrix();
+   for(size_t r=0;r<n && rankOne;++r)for(size_t c=0;c<n;++c) {
+    MathStructure term=entry(a,r,c);term*=trace;
+    MathStructure difference=entry(squared,r,c);difference-=term;difference.eval(eo);
+    if(!difference.isZero()){rankOne=false;break;}
+   }
+   if(rankOne) {
+    MathStructure factor=trace;factor.raise(exponent);factor/=trace;factor.eval(eo);
+    out=a;out*=factor;out.eval(eo);return true;
+   }
+  }
+ }
  // Involutions have projectors (I+A)/2 and (I-A)/2. Use the +pi
  // argument for the eigenvalue -1, preserving the usual SX/SWAP roots.
  if(n<=16) {
@@ -151,6 +168,9 @@ static bool spectralMatrixFunction(MathStructure &out,const MathStructure &a,con
    // Inversion and logarithms remain conservative near numerical singularity.
    // Positive powers must not erase a small but nonzero eigenvalue.
    if((logarithm || t<0) && std::abs(eigen)<1e-13)return fail();
+   if(std::abs(eigen)<1e-13 && std::sqrt(residual)>std::abs(eigen)*1e-6) {
+    CALCULATOR->error(true,"Matrix power cannot resolve a near-zero eigenvalue at numerical precision.",NULL);return false;
+   }
    if(eigen==0)radius=0;
    else {logMagnitude=std::log(std::abs(eigen))+std::log(scale);if(std::abs(logMagnitude)>1e-11)unitaryLog=false;if(!logarithm)radius=0.5*std::exp(t*logMagnitude);}
   }
