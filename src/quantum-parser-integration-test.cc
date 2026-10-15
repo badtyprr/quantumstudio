@@ -19,6 +19,8 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \sum_{\alpha\in\{1,3\}}{\sum_{a_0\in\{\alpha\in\{\alpha,\alpha+1\}:\alpha>1\}}{a_0}})","9");
+
  equal(R"(quantum: \{0,2,0\})","vector(0,2)");
  equal(R"(quantum: \{k\in\{-2,0,2,2\}:k\geq0\})","vector(0,2)");
  equal(R"(quantum: \{k\in\{0,2\}:k<0\})","vector()");

@@ -17,6 +17,11 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\{\})","unique(vector())");
+  equal(R"(\{"a:b",'c:d'\})",R"(unique(vector("a:b",'c:d')))");
+  rejects(R"(\{0,1)");
+  rejects(R"(\})");
+
   equal(R"(\{0,1,0\})","unique(vector(0,1,0))");
   equal(R"(\{k\in\{0,1\}:k>0\})","unique(select(unique(vector(0,1)),k>0,k))");
   equal(R"(\left\{k\in S_0\mid k\geq0\right\})","unique(select(S_0,k>=0,k))");

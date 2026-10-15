@@ -21,6 +21,8 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qsumset(x,unique(vector(2,2)),x)","2");
+ equal("qsumset(x,select(vector(-1,2),x>0,x),x)","2");
  equal("qsumset(x^2,vector(0,2,5),x)","29");
  equal("qsumset(x,vector(1,1,2,2),x)","3");
  equal("qsumset(x,vector(1/2,2/4),x)","1/2");
