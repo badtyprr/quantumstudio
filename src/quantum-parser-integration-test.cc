@@ -43,6 +43,9 @@ int main(){try {
  equal(R"(quantum: \sum_{qboundindex_0=0}^{1}{\sum_{a_0=0}^{1}{qboundindex_0+a_0}})","4");
  equal(R"(quantum: \sum_{a_0=0}^{1}{|sum(b_0,0,a_0,b_0)>_4})","[1;1;0;0]");
  equal(R"(quantum: \sum_{a_0=0}^{1}{a_0+<1|phase_function(a_0,1,a_0)|1>})","-1");
+ equal(R"(quantum: \frac{1}{2}\sum_{a_0=0}^{1}{\sum_{a_1=0}^{1}{exp(2*pi*i*a_0/4)|a_1 a_0>}})","[1;i;1;i]/2");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{|1 a_0 0>})","[0;0;0;0;1;0;1;0]");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{<a_0 1|0 a_0>})","0");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
@@ -54,6 +57,7 @@ int main(){try {
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
  for(const auto &expression:{"quantum: |0","quantum: <0|H|", "quantum: |0> +",
+     R"(quantum: \sum_{a_0=2}^{2}{|a_0 0>})",R"(quantum: \sum_{a_0=-1}^{-1}{|a_0 0>})",
      R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();
   MathStructure value=calculator.calculate(expression,eo);bool error=false;
