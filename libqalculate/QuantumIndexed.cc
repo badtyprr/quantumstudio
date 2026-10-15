@@ -35,7 +35,7 @@ class QuantumIndexedFunction: public MathFunction {
    out=raw[1];out.eval(eo);
    auto validState=[](const MathStructure &state) {
     if(state.isMatrix()) {
-     if(state.rows()==0 || state.columns()==0 || state.rows()>1024 || state.columns()>1024 || state.rows()*state.columns()>262144)return false;
+     if(state.rows()==0 || state.columns()==0 || state.rows()>1024 || state.columns()>1024 || state.rows()*state.columns()>1048576)return false;
      for(size_t r=0;r<state.rows();++r)for(size_t c=0;c<state.columns();++c)if(!state.getElement(r+1,c+1)->representsScalar())return false;
      return true;
     }
@@ -105,13 +105,13 @@ class QuantumIndexedFunction: public MathFunction {
       if(flat) {MathStructure row=factor;factor.clearMatrix();factor.resizeMatrix(1,row.size(),m_zero);for(size_t c=0;c<row.size();++c)element(factor,0,c)=row[c];}
      }
      if(!factor.isMatrix()) {CALCULATOR->error(true,"Block sums require matrix or scalar blocks.",NULL);return 0;}
-     if(factor.rows()>1024 || factor.columns()>1024 || factor.rows()*factor.columns()>262144) {CALCULATOR->error(true,"Block sum matrix allocation limit exceeded.",NULL);return 0;}
+     if(factor.rows()>1024 || factor.columns()>1024 || factor.rows()*factor.columns()>1048576) {CALCULATOR->error(true,"Block sum matrix allocation limit exceeded.",NULL);return 0;}
      if(k==first.number().intValue()) {out=factor;continue;}
      // Evaluation can collapse a 1x1 matrix to its scalar entry.
      if(!out.isVector()) {MathStructure scalar=out;out.clearMatrix();out.resizeMatrix(1,1,m_zero);element(out,0,0)=scalar;}
      // Build directly so a one-row rectangular block keeps its matrix shape.
      size_t rows=out.rows()+factor.rows(),cols=out.columns()+factor.columns();
-     if(rows>1024 || cols>1024 || rows*cols>262144) {CALCULATOR->error(true,"Block sum matrix allocation limit exceeded.",NULL);return 0;}
+     if(rows>1024 || cols>1024 || rows*cols>1048576) {CALCULATOR->error(true,"Block sum matrix allocation limit exceeded.",NULL);return 0;}
      MathStructure previous=out;out.clearMatrix();out.resizeMatrix(rows,cols,m_zero);
      for(size_t r=0;r<previous.rows();++r)for(size_t c=0;c<previous.columns();++c)element(out,r,c)=element(previous,r,c);
      for(size_t r=0;r<factor.rows();++r)for(size_t c=0;c<factor.columns();++c)element(out,r+previous.rows(),c+previous.columns())=element(factor,r,c);

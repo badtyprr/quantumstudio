@@ -38,7 +38,7 @@ class QuantumSubsystemFunction: public MathFunction {
   if(!a.isMatrix()){CALCULATOR->error(true,"Subsystem operations require a matrix (kets are column matrices).",NULL);return 0;}
   if(op=="qapply") {
    const MathStructure &state=args[1];
-   if(!a.isMatrix() || a.rows()!=a.columns() || !state.isMatrix() || (state.columns()!=1 && state.columns()!=state.rows()) || state.rows()>1024 || state.rows()*state.columns()>262144) { CALCULATOR->error(true,"apply requires a square gate and a column ket or square density matrix (at most 1024 rows and 262144 elements).",NULL); return 0; }
+   if(!a.isMatrix() || a.rows()!=a.columns() || !state.isMatrix() || (state.columns()!=1 && state.columns()!=state.rows()) || state.rows()>1024 || state.rows()*state.columns()>1048576) { CALCULATOR->error(true,"apply requires a square gate and a column ket or square density matrix (at most 1024 rows and 1048576 elements).",NULL); return 0; }
    if(state.columns()!=1 && !CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global function definitions before applying a gate to a density matrix.",NULL); return 0; }
    size_t n=state.rows(), dim=a.rows(), bits=0, gatebits=0;
    while((size_t(1)<<bits)<n) ++bits;
@@ -94,8 +94,8 @@ class QuantumSubsystemFunction: public MathFunction {
    return 1;
   }
   if(op=="qpermute" || op=="qpermutedim") {
-   if(!a.isMatrix() || (a.rows()!=1 && a.columns()!=1 && a.rows()!=a.columns()) || a.rows()*a.columns()>262144) {
-    CALCULATOR->error(true,"permute requires a ket, bra, or square matrix with at most 262144 elements.",NULL); return 0;
+   if(!a.isMatrix() || (a.rows()!=1 && a.columns()!=1 && a.rows()!=a.columns()) || a.rows()*a.columns()>1048576) {
+    CALCULATOR->error(true,"permute requires a ket, bra, or square matrix with at most 1048576 elements.",NULL); return 0;
    }
    size_t n=std::max(a.rows(),a.columns());
    if(n>1024) { CALCULATOR->error(true,"Permutation dimension must not exceed 1024.",NULL); return 0; }

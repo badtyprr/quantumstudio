@@ -85,7 +85,7 @@ class QuantumMeasurementFunction: public MathFunction {
   }
   if(op=="qpurity") {
    bool ket=a.columns()==1;
-   if((!ket && a.rows()!=a.columns()) || a.rows()>1024 || a.rows()*a.columns()>262144) { CALCULATOR->error(true,"purity requires a ket or square density matrix, with at most 1024 rows and 262144 elements.",NULL); return 0; }
+   if((!ket && a.rows()!=a.columns()) || a.rows()>1024 || a.rows()*a.columns()>1048576) { CALCULATOR->error(true,"purity requires a ket or square density matrix, with at most 1024 rows and 1048576 elements.",NULL); return 0; }
    if(!CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global definitions before evaluating state purity.",NULL); return 0; }
    MathStructure normalization=ket ? multiply(dagger(a,eo),a,eo) : trace(a,eo);
    if(normalization.isZero()) { CALCULATOR->error(true,"Purity requires nonzero state norm or trace.",NULL); return 0; }
