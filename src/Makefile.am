@@ -11,9 +11,9 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = @QALCULATE_TEXT@
 noinst_PROGRAMS = @QALCULATE_DEFS2DOC@ @QALCULATE_TEST@ @QALCULATE_UNITTEST@
 EXTRA_PROGRAMS = qalc defs2doc test unittest
-check_PROGRAMS = quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
+check_PROGRAMS = quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
 TESTS_ENVIRONMENT = QALCULATE_DEFINITIONS_DIR=$(abs_top_builddir)/data
-TESTS = quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
+TESTS = quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
 
 qalc_SOURCES = qalc.cc
 
@@ -90,3 +90,18 @@ quantum_subsystem_test_LDADD = $(test_LDADD)
 
 quantum_operators_test_SOURCES = quantum-operators-test.cc
 quantum_operators_test_LDADD = $(test_LDADD)
+
+quantum_noise_test_SOURCES = quantum-noise-test.cc
+quantum_noise_test_LDADD = $(test_LDADD)
+
+quantum_reset_test_SOURCES = quantum-reset-test.cc
+quantum_reset_test_LDADD = $(test_LDADD)
+
+quantum_geometry_test_SOURCES = quantum-geometry-test.cc
+quantum_geometry_test_LDADD = $(test_LDADD)
+
+quantum_superoperators_test_SOURCES = quantum-superoperators-test.cc
+quantum_superoperators_test_LDADD = $(test_LDADD)
+
+quantum_channel_representations_test_SOURCES = quantum-channel-representations-test.cc
+quantum_channel_representations_test_LDADD = $(test_LDADD)
