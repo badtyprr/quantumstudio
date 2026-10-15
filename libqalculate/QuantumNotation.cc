@@ -528,8 +528,22 @@ class Parser {
    s[closing]=')';std::string value=expression();ws();
    if(p!=closing)throw std::runtime_error("Invalid expression inside ASCII norm bars.");
    s[closing]='|';p=closing+2;
-   std::string order=dimensionSuffix();
+   std::string exponent,order;
+   if(take('^')) {
+    ws();size_t end=p;
+    if(end<s.size() && (s[end]=='+' || s[end]=='-'))++end;
+    while(end<s.size() && (std::isdigit((unsigned char)s[end]) || s[end]=='.'))++end;
+    // A norm index is not the radix suffix of its preceding numeric power.
+    bool indexed=end>p && end<s.size() && s[end]=='_';
+    if(indexed)s[end]=')';exponent=unary();if(indexed)s[end]='_';
+   }
+   if(take('_')) {
+    if(take('(')) {order=expression();need(')');}
+    else order=atom();
+    if(order=="F")order="2";
+   }
    a=order.empty() ? "qnorm("+value+")" : "qschatten("+value+","+order+")";
+   if(!exponent.empty())a="qpower("+a+","+exponent+")";
   }
   else if(take('|')) {
    ws();

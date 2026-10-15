@@ -25,6 +25,11 @@ int main(){try {
  for(const auto &body:{"X","(density(|0>)-density(|+>))","|0><0|","<0||1>","|0>","(||X||_1)"})
   equal("||"+std::string(body)+"||_1",translateQuantum("norm("+std::string(body)+",1)"));
  equal("||X||_1^2",translateQuantum("norm(X,1)^2"));
+ equal("||X||^2_1",translateQuantum("norm(X,1)^2"));
+ equal("||X||_{F}",translateQuantum("norm(X,2)"));
+ equal("||X||_{infinity}",translateQuantum("norm(X,infinity)"));
+ equal("||X||_{3/2}",translateQuantum("norm(X,3/2)"));
+ equal("||X||_1+||Y||_1",translateQuantum("norm(X,1)+norm(Y,1)"));
  equal("|||0>||",translateQuantum("norm(|0>)"));
  equal("<0||0>","qadjacent(qdag(matrix(2,1,[1,0])),matrix(2,1,[1,0]))");
  rejects("||X");rejects("||X||_");
