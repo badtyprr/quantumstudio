@@ -54,6 +54,19 @@ The released worker at `69f2b383` passed 13 of 15 initial checks. Approximate sq
 
 For a reproducible example, `born([2,1;1,1]/3,|+>)` gives 5/6. A complex-effect root check is `norm(vec(sqrt(density((|0>+sqrt(2)*exp(2*pi*i/3)*|1>)/sqrt(3))/2)-density((|0>+sqrt(2)*exp(2*pi*i/3)*|1>)/sqrt(3))/sqrt(2)))`; its expected value is zero. Maintained native regression cases are in PR #60's `src/quantum-matrix-power-test.cc`. Automatic construction and validation of arbitrary measurements remain unfinished.
 
+## Selected discrimination and tomography audit
+
+The packaged worker at `e5b92d21` passed the 30 general-measurement checks above, with maximum residual 9.55e-16. This verifies those selected examples in the complete release, beyond the earlier development linkage check.
+
+Selected finite examples from IBM's [discrimination and tomography lesson](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography) received further packaged-worker checks on 2026-10-15:
+
+- At `e5b92d21`, 29 checks passed with zero reported residual: 16 tetrahedral overlaps, six state reconstructions, two empirical-count estimates, four tetrahedral optimality-certificate identities, and the success probability 1/2. The certificate identities compare each matrix with `(I-density(phi_a))/4`, whose positivity follows because `phi_a` is normalized. This is not a general semidefinite-program solver.
+- At `3da8f2ca`, 24 checks passed with maximum residual 9.80e-17: five prior probabilities for discriminating `|0>` from `|+>`, each expressed using function, ASCII-bar, Unicode-bar and TeX norms, plus four Pauli-basis reconstructions. The independently derived reference probability is `(1+sqrt(1-2*p*(1-p)))/2`.
+
+These audits substitute explicit vectors for named states and expand finite sums. For example, twelve identical tetrahedral outcomes reconstruct the trace-one matrix `[2,0;0,-1]`; the audit verifies that estimate, without claiming it is a physical density matrix or applying an automatic positivity correction. Sampling, arbitrary ensembles, general optimal-measurement construction and automatic tomography reconstruction remain unverified or unimplemented.
+
+Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
+
 ## Finite set-indexed sums
 
 `\sum_{k\in\{0,2,5\}}{k^2}` evaluates to 29. The equivalent function form is `sumset(k^2,[0,2,5],k)`. A named collection such as `\sum_{k\in S_0}{k}` must evaluate to a finite flat vector. The index is local to the summand; nested sums may reuse it, and the inner collection can refer to the outer index. An unbraced summand uses the existing multiplicative-term scope.

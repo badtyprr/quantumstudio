@@ -102,6 +102,13 @@
         "coverage": "30 checks combined across the two measurement sections; explicit finite matrices substituted for lesson variables",
         "results": "All passed on development worker; maximum residual below 1e-15. Two approximate complex-effect roots failed in release 69f2b383 and motivated PR60.",
         "limitations": "Changed matrix-power implementation linked against prior release library; not whole-release or literal-paste certification. See quantum-notation.md."
+      },
+      "selected_release_audit": {
+        "date": "2026-10-15",
+        "revision": "e5b92d2174cadb2711987ca6d1d82fed18ee661f",
+        "coverage": "30 combined checks across both sections, using explicit finite matrices",
+        "results": "All passed with maximum residual 9.55e-16 in the packaged worker",
+        "limitations": "Selected substitutions, not literal-paste or whole-lesson certification"
       }
     },
     {
@@ -117,6 +124,13 @@
         "coverage": "30 checks combined across the two measurement sections; explicit finite matrices substituted for lesson variables",
         "results": "All passed on development worker; maximum residual below 1e-15. Two approximate complex-effect roots failed in release 69f2b383 and motivated PR60.",
         "limitations": "Changed matrix-power implementation linked against prior release library; not whole-release or literal-paste certification. See quantum-notation.md."
+      },
+      "selected_release_audit": {
+        "date": "2026-10-15",
+        "revision": "e5b92d2174cadb2711987ca6d1d82fed18ee661f",
+        "coverage": "30 combined checks across both sections, using explicit finite matrices",
+        "results": "All passed with maximum residual 9.55e-16 in the packaged worker",
+        "limitations": "Selected substitutions, not literal-paste or whole-lesson certification"
       }
     },
     {
@@ -124,7 +138,31 @@
       "course": "general-formulation-of-quantum-information",
       "path": "general-measurements/discrimination-and-tomography",
       "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography",
-      "status": "end_to_end_audit_pending"
+      "status": "end_to_end_audit_pending",
+      "selected_release_audit": {
+        "date": "2026-10-15",
+        "results": [
+          {
+            "revision": "e5b92d2174cadb2711987ca6d1d82fed18ee661f",
+            "checks": 29,
+            "coverage": "Tetrahedral overlaps, reconstructions, counts, optimality-certificate identities and success probability",
+            "maximum_residual": 0
+          },
+          {
+            "revision": "3da8f2ca80e11f5fdc4f26a0a43e684c89fded31",
+            "checks": 24,
+            "coverage": "Two-state discrimination with four norm spellings and Pauli reconstruction",
+            "maximum_residual": 9.8e-17
+          }
+        ],
+        "adaptations": "Explicit vectors substituted for named states; finite sums expanded",
+        "reproduced_gaps": [
+          "Named-set sums using TeX membership",
+          "Explicit-set sums using TeX membership",
+          "Escaped set delimiters and set-builder notation"
+        ],
+        "limitations": "No general optimal-measurement solver, sampling, automatic tomography or whole-lesson certification"
+      }
     },
     {
       "kind": "ibm_course_section",
