@@ -456,7 +456,31 @@ class Parser {
     need(']'); a+="]";
    }
   }
-  else if(take('|')) { size_t b=p; p=labelEnd('>',p); if(p==std::string::npos) throw std::runtime_error("Unclosed ket; use |0> or |0⟩."); std::string label=s.substr(b,p-b); ++p; a=take('>') ? operatorState(label) : basisState(label,dimensionSuffix());kind=1; }
+  else if(take('|')) {
+   ws();
+   if(p<s.size() && s[p]=='<') {
+    // A leading bra inside bars denotes the magnitude of a Dirac scalar,
+    // e.g. |<a|U|b>|. Its closing bar follows the ket's closing bracket.
+    size_t closing=std::string::npos;int nesting=0;
+    for(size_t k=p;k<s.size();++k) {
+     if(s[k]=='(' || s[k]=='[')++nesting;
+     else if(s[k]==')' || s[k]==']') {if(nesting==0)break;--nesting;}
+     else if(s[k]=='>' && nesting==0) {
+      size_t next=k+1;while(next<s.size() && std::isspace((unsigned char)s[next]))++next;
+      if(next<s.size() && s[next]=='|') {closing=next;break;}
+     }
+    }
+    if(closing==std::string::npos)throw std::runtime_error("Unclosed magnitude of a Dirac expression; use |<a|U|b>|.");
+    s[closing]=')';std::string value=expression();ws();
+    if(p!=closing)throw std::runtime_error("Invalid Dirac expression inside magnitude bars.");
+    s[closing]='|';p=closing+1;a="abs("+value+")";
+   } else {
+    size_t b=p;p=labelEnd('>',p);
+    if(p==std::string::npos)throw std::runtime_error("Unclosed ket; use |0> or |0⟩.");
+    std::string label=s.substr(b,p-b);++p;
+    a=take('>') ? operatorState(label) : basisState(label,dimensionSuffix());kind=1;
+   }
+  }
   else if(take('<')) {
    bool vectorized=take('<');
    size_t b=p; p=labelEnd('|',p); if(p==std::string::npos) throw std::runtime_error("Unclosed bra.");
