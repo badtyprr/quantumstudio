@@ -13,7 +13,8 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm-import-requirements.txt \
 	windows/qasm-import.py \
 	windows/test-qasm-import.py \
-	windows/test-qasm-protocol.py
+	windows/test-qasm-protocol.py \
+	windows/build-native.sh
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libqalculate.pc
