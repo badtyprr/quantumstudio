@@ -17,6 +17,9 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: \\tilde{x}-\\widetilde{x}","0");
+ equal("quantum: \\sum_{\\tilde{k}=0}^{3} \\tilde{k}","6");
+ equal("quantum: \\sum_{\\tilde{k}=0}^{2} (\\tilde{k}+k)","3+3*k");
  equal("quantum: |||0>||","1");
  equal("quantum: <0||0>","1");
  equal("quantum: ||X||_1","qtracenorm([0,1;1,0])");
