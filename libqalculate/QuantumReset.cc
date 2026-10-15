@@ -17,11 +17,6 @@ MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
  } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
  return out;
 }
-MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
- a*=b; a.eval(eo);
- if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
- return a;
-}
 class QuantumResetFunction: public MathFunction {
  std::string op;
  public:
