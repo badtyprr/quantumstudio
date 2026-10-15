@@ -46,6 +46,14 @@ The compact controlled-T variant originally failed import. The reviewed fix `b0d
 
 For Bernstein–Vazirani, all eight three-bit secrets plus the notebook's `1011` example were generated in compact and unrolled form. All 18 imported circuits produced the expected measured-register probabilities. Cloud jobs, QIR execution, account setup, SDK statements, custom-include file workflows and notebook visualizations were not executed. None of these three notebooks is certified end to end.
 
+## Selected qBraid Deutsch–Jozsa audit
+
+The pinned [PyQASM Deutsch–Jozsa notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb) contains a five-qubit OpenQASM 3 program using custom gates, a subroutine, loops, an ancilla and measurement. Its notebook SHA-256 is `a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14`; the extracted `qasm` literal, encoded as UTF-8 with LF newlines, hashes to `6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08`.
+
+Release `482ef2f3390ceb1967224f1acfbc95636a26e797` imported the original program into 18 editor steps. The packaged editor loaded, saved and reloaded it, and the packaged worker matched the complete expected 32-by-32 density matrix. Seventeen explicitly adapted cases also passed: the other 15 four-bit linear oracles and two affine variants with an additional oracle X on the ancilla. All 18 reported zero residual in approximate mode. For an oracle `f(x)=a·x ⊕ b`, the independently specified expected state has data register `|a>` and ancilla `|->`; measuring the data register preserves this density matrix.
+
+The first audit harness used literal 32-by-32 expected matrices and all 18 comparisons exceeded the expression complexity limit. Replacing each expected matrix with the density of its explicitly specified 32-entry state retained the full-matrix comparison and passed. The parser limit was not changed. These are selected released-program observations, not maintained CI replay cases or certification of notebook Python execution, all subroutines, or every Deutsch–Jozsa oracle.
+
 ## Selected qBraid adder audit
 
 The pinned [PyQASM unrolling notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb) contains a ten-qubit ripple-carry adder. Its `adder_qasm_str` was extracted without executing the notebook. The notebook SHA-256 is `ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4`; the extracted UTF-8 source with LF newlines hashes to `503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad`.
