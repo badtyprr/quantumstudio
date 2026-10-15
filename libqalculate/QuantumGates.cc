@@ -92,7 +92,7 @@ class QuantumGateFunction: public MathFunction {
   }
   if(op=="qft" || op=="qfourier" || op=="qshift" || op=="qclock") {
    bool qubits=op=="qft";
-   if(!a.isNumber() || !a.number().isInteger() || a.number()<(qubits ? 1 : 2) || a.number()>(qubits ? 6 : 64)) { CALCULATOR->error(true,"QFT requires 1 to 6 qubits; shift, clock, and fourier require an integer dimension from 2 to 64.",NULL); return 0; }
+   if(!a.isNumber() || !a.number().isInteger() || a.number()<((qubits || op=="qfourier") ? 1 : 2) || a.number()>(qubits ? 6 : 64)) { CALCULATOR->error(true,"QFT requires 1 to 6 qubits; fourier requires dimension 1 to 64; shift and clock require dimension 2 to 64.",NULL); return 0; }
    size_t n=qubits ? size_t(1)<<a.number().intValue() : a.number().intValue(); out.clearMatrix(); out.resizeMatrix(n,n,m_zero);
    if(op=="qshift") { for(size_t c=0;c<n;++c) element(out,(c+1)%n,c)=m_one; return 1; }
    if(op=="qclock") {

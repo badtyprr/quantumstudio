@@ -19,6 +19,7 @@ int main(){try {
  equal("qft(1)","[1,1;1,-1]/sqrt(2)");
  equal("qfourier(4)","[1,1,1,1;1,i,-1,-i;1,-1,1,-1;1,-i,-1,i]/2");
  equal("qft(2)","qfourier(4)");
+ equal("qfourier(1)","matrix(1,1,[1])");
  equal("qclock(4)","[1,0,0,0;0,i,0,0;0,0,-1,0;0,0,0,-i]");
  equal("qshift(3)","[0,0,1;1,0,0;0,1,0]");
  equal("qphaseoracle(2,[0,3])","[-1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,-1]");
@@ -32,7 +33,7 @@ int main(){try {
   unsigned x=state>>1,y=state&1,result=2*x+(y^((table>>x)&1));
   equal("qmul(qoracle("+entries+",1),qbasis("+std::to_string(state)+",8))","qbasis("+std::to_string(result)+",8)");
  }
- for(const auto &expression:{"qmodmul(2,4)","qmodmul(1,513)","qoracle([0,2],1)","qoracle([0,1,0],1)","qphaseoracle(2,[0,0])","qphaseoracle(2,4)","qdiffusion(10)","qsumgate(64,64)","qft(7)","qfourier(1)","qshift(65)","qclock(0)"}) {
+ for(const auto &expression:{"qmodmul(2,4)","qmodmul(1,513)","qoracle([0,2],1)","qoracle([0,1,0],1)","qphaseoracle(2,[0,0])","qphaseoracle(2,4)","qdiffusion(10)","qsumgate(64,64)","qft(7)","qfourier(0)","qshift(65)","qclock(0)"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

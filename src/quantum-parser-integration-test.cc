@@ -66,6 +66,12 @@ int main(){try {
  equal(R"(quantum: \bigoplus_{k=0}^{1} X)","qdirectsum([0,1;1,0],[0,1;1,0])");
  equal(R"(quantum: ∑_{k=0}^{2} k)","3");
  equal(R"(quantum: \frac{1}{2}\sum_{a_0=0}^1\sum_{a_1=0}^1 e^{2\pi i a_0/4}\vert a_1 a_0\rangle)","[1;i;1;i]/2");
+ equal(R"(quantum: \mathrm{QFT}_4)","[1,1,1,1;1,i,-1,-i;1,-1,1,-1;1,-i,-1,i]/2");
+ equal("quantum: QFT₄|01>","[1;i;-1;-i]/2");
+ equal("quantum: QFT_16|0000>","matrix(16,1,[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])/4");
+ equal(R"(quantum: QFT_{2^2}^\dagger QFT_4)","identity(4)");
+ equal("quantum: QFT_1","matrix(1,1,[1])");
+ equal("quantum: QFT_3|0>_3","[1;1;1]/sqrt(3)");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
@@ -76,7 +82,7 @@ int main(){try {
  }
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
- for(const auto &expression:{R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
+ for(const auto &expression:{"quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
      R"(quantum: |a_0 0 0 0 0 0 0 0 0 0 0>)",R"(quantum: \sum_{a_0=2}^{2}{|a_0 0>})",R"(quantum: \sum_{a_0=-1}^{-1}{|a_0 0>})",
      R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();
