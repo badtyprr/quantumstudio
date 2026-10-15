@@ -23,6 +23,7 @@
 #include <time.h>
 #include <limits>
 #include <algorithm>
+#include <map>
 
 #include "MathStructure-support.h"
 
@@ -1790,9 +1791,41 @@ int KroneckerProductFunction::calculate(MathStructure &mstruct, const MathStruct
 	return 1;
 }
 
+// Returns -1 for ordinary scalar sets, zero for invalid labels, one on success.
+static int binaryLabelSetOperation(MathStructure &out, const MathStructure &left, const MathStructure &right, bool multiset, int operation, const EvaluationOptions &eo) {
+ const MathStructure *inputs[2]={&left,&right}; MathFunction *label=nullptr;
+ for(const auto *input:inputs)for(size_t k=0;k<input->size();++k) {
+  const auto &entry=(*input)[k];
+  if(!entry.isFunction() || entry.function()->referenceName()!="qbitlabel")return -1;
+  label=entry.function();
+ }
+ if(!label)return -1;
+ std::map<std::pair<int,int>,std::pair<int,int>> counts;
+ for(int j=0;j<2;++j) {
+  if(inputs[j]->size()>1024) {CALCULATOR->error(true,"Binary-string sets support at most 1024 entries.",NULL);return 0;}
+  for(size_t k=0;k<inputs[j]->size();++k) {
+   if(CALCULATOR->aborted())return 0;
+   const auto &entry=(*inputs[j])[k];
+   if(entry.size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
+   MathStructure index=entry[0],width=entry[1];index.eval(eo);width.eval(eo);
+   if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue())) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
+   auto &pair=counts[std::make_pair(width.number().intValue(),index.number().intValue())];
+   int &count=j==0 ? pair.first : pair.second;if(multiset)++count;else count=1;
+  }
+ }
+ out.clearVector();
+ for(const auto &entry:counts) {
+  int count=operation==0 ? std::max(entry.second.first,entry.second.second) : operation==1 ? std::min(entry.second.first,entry.second.second) : std::max(0,entry.second.first-entry.second.second);
+  if(out.size()+count>1024) {CALCULATOR->error(true,"Binary-string set results support at most 1024 entries.",NULL);return 0;}
+  MathStructure index(entry.first.second),width(entry.first.first),value;value.set(label,&index,&width,NULL);
+  for(int k=0;k<count;++k)out.addChild(value);
+ }
+ return 1;
+}
+
 UnionFunction::UnionFunction() : MathFunction("union", 2, 3) {
-	setArgumentDefinition(1, new VectorArgument(""));
-	setArgumentDefinition(2, new VectorArgument(""));
+	setArgumentDefinition(1, new BinaryLabelVectorArgument());
+	setArgumentDefinition(2, new BinaryLabelVectorArgument());
 	setArgumentDefinition(3, new BooleanArgument(""));
 	setDefaultValue(3, "0");
 }
@@ -1810,6 +1843,8 @@ int UnionFunction::calculate(MathStructure &mstruct, const MathStructure &vargs,
 		if(CALCULATOR->aborted()) return 0;
 		mstruct2[i].eval(eo2);
 	}
+	int labelResult=binaryLabelSetOperation(mstruct,mstruct,mstruct2,multiset,0,eo2);
+	if(labelResult>=0)return labelResult;
 	if(!mstruct.sortVector() || !mstruct2.sortVector()) return 0;
 	size_t i2 = 0;
 	for(size_t i = 0; i <= mstruct.size();) {
@@ -1899,8 +1934,8 @@ bool test_infinite_set(const MathStructure &m, int infinite_set, const Evaluatio
 	}
 
 IntersectFunction::IntersectFunction() : MathFunction("intersect", 2, 3) {
-	setArgumentDefinition(1, new VectorArgument(""));
-	setArgumentDefinition(2, new VectorArgument(""));
+	setArgumentDefinition(1, new BinaryLabelVectorArgument());
+	setArgumentDefinition(2, new BinaryLabelVectorArgument());
 	setArgumentDefinition(3, new BooleanArgument(""));
 	setDefaultValue(3, "0");
 }
@@ -1918,6 +1953,8 @@ int IntersectFunction::calculate(MathStructure &mstruct, const MathStructure &va
 		if(CALCULATOR->aborted()) return 0;
 		mstruct2[i].eval(eo2);
 	}
+	int labelResult=binaryLabelSetOperation(mstruct,mstruct,mstruct2,multiset,1,eo2);
+	if(labelResult>=0)return labelResult;
 	if(!mstruct.sortVector() || !mstruct2.sortVector()) return 0;
 	PREPARE_INFINITE_SET
 	size_t i2 = 0;
@@ -1967,8 +2004,8 @@ int IntersectFunction::calculate(MathStructure &mstruct, const MathStructure &va
 }
 
 SetDifferenceFunction::SetDifferenceFunction() : MathFunction("setdiff", 2, 3) {
-	setArgumentDefinition(1, new VectorArgument(""));
-	setArgumentDefinition(2, new VectorArgument(""));
+	setArgumentDefinition(1, new BinaryLabelVectorArgument());
+	setArgumentDefinition(2, new BinaryLabelVectorArgument());
 	setArgumentDefinition(3, new BooleanArgument(""));
 	setDefaultValue(3, "0");
 }
@@ -1986,6 +2023,8 @@ int SetDifferenceFunction::calculate(MathStructure &mstruct, const MathStructure
 		if(CALCULATOR->aborted()) return 0;
 		mstruct2[i].eval(eo2);
 	}
+	int labelResult=binaryLabelSetOperation(mstruct,mstruct,mstruct2,multiset,2,eo2);
+	if(labelResult>=0)return labelResult;
 	if(!mstruct.sortVector() || !mstruct2.sortVector()) return 0;
 	PREPARE_INFINITE_SET
 	size_t i2 = 0;
