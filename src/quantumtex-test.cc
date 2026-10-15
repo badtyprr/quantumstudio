@@ -44,6 +44,8 @@ int main() {
   equal(R"(\bigotimes_{k=0}^{2}{X})","tensorproduct(X,0,2,k)");
   equal(R"(\bigoplus_{k=0}^{2}{X})","blocksum(X,0,2,k)");
   equal("∑_{k=0}^{2}{k}","sum(k,0,2,k)");
+  equal(R"(\begin{pmatrix}1&2\\[1mm]3&4\end{pmatrix})","[1,2;3,4]");
+  equal(R"(\begin{bmatrix}1\\[-.5 em]2\\[+2pt]3\end{bmatrix})","[1;2;3]");
   equal(R"(\Tr_{1}{X})","ptrace(X,vector(1))");
   equal(R"(\hat{X+Y}^{2})","(X+Y)^(2)");
   equal(R"(\preceq)","<="); equal(R"(\succeq)",">=");
@@ -56,7 +58,11 @@ int main() {
       R"(\norm{X}_{})",R"(\begin{Vmatrix}1\end{Vmatrix})",
       R"(\expval{X})",R"(\ket**{0})",R"(\sum_{k=0}{k})",
       R"(\sum_{0}^{2}{k})",R"(\sum_{k=0}_{k=1}{k})",
-      R"(\begin{matrix}1\\[2pt]2\end{matrix})"})rejects(input);
+      R"(\begin{matrix}1\\[2]2\end{matrix})",
+      R"(\begin{matrix}1\\[mm]2\end{matrix})",
+      R"(\begin{matrix}1\\[1mm+2]2\end{matrix})",
+      R"(\begin{matrix}1\\[1mm2\end{matrix})",
+      R"(\begin{matrix}1\\[\foo]2\end{matrix})"})rejects(input);
   equal(std::string(127,'(')+"x"+std::string(127,')'),std::string(127,'(')+"x"+std::string(127,')'));
   rejects(std::string(128,'(')+"x"+std::string(128,')'));
   equal(std::string(131072,'x'),std::string(131072,'x'));
