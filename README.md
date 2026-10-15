@@ -113,7 +113,7 @@ achieved.** Supported syntax, conventions and limits are documented in the
 and [Windows notation guide](windows/Notation-guide.html).
 The packaged application also includes an offline guide.
 
-The circuit composer currently supports 1–8 qubits and 64 steps. OpenQASM import
+The circuit composer currently supports 1–8 qubits and 512 steps. OpenQASM import
 has corresponding circuit limits and a 256 KB source limit. It does not execute
 general Python/SDK programs, runtime classical feedback, or pulse/timing programs.
 Matrix and state operations have their own documented size and numerical limits;

@@ -161,7 +161,7 @@ for secret in range(8):
     verify(source,'|'+format(secret,'03b')+'>@|->')
 
 invalid = [
-    header+'qubit[9] q; h q[0];', header+'qubit q; for int i in [0:64] {x q;}',
+    header+'qubit[9] q; h q[0];', header+'qubit q; for int i in [0:512] {x q;}',
     header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
     header+'qubit q; unknown q;', header+'qubit q; delay[10ns] q;',
     header+'qubit q; rx q;', header+'qubit[2] q; cx q[0],q[0];',

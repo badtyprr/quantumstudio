@@ -214,8 +214,8 @@ def convert(source, published_u=False):
             if statement.duration is not None:
                 raise ValueError('Timed gates are not supported.')
             steps.extend(gate_steps(statement, wire, published_u))
-            if len(steps) > 64:
-                raise ValueError('The compiled circuit exceeds the editor limit of 64 steps.')
+            if len(steps) > 512:
+                raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
             continue
         elif isinstance(statement, ast.QuantumPhase):
             if statement.modifiers:
@@ -236,8 +236,8 @@ def convert(source, published_u=False):
             raise ValueError('The editor cannot represent ' + type(statement).__name__ +
                              '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
         steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
-        if len(steps) > 64:
-            raise ValueError('The compiled circuit exceeds the editor limit of 64 steps.')
+        if len(steps) > 512:
+            raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
     return {'Version': 1, 'Qubits': count, 'Steps': steps}
 
 

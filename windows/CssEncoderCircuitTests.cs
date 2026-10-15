@@ -51,7 +51,7 @@ static class CssEncoderCircuitTests {
    bool failed=false;try {composer.CssEncoder(pair[0],pair[1],true);}catch(ArgumentException){failed=true;}
    if(!failed || composer.Expression()!=beforeAppend)throw new Exception("Invalid append register changed the circuit.");
   }
-  var many=new List<CircuitComposer.Step>();for(int j=0;j<64;j++)many.Add(new CircuitComposer.Step {Gate="H",Angle="",Wires=new[]{0}});
+  var many=new List<CircuitComposer.Step>();for(int j=0;j<CircuitComposer.MaxSteps;j++)many.Add(new CircuitComposer.Step {Gate="H",Angle="",Wires=new[]{0}});
   composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=1,Steps=many.ToArray()}));string beforeLimit=composer.Expression();bool limit=false;
   try {composer.CssEncoder(h,h,true);}catch(ArgumentException){limit=true;}
   if(!limit || composer.Expression()!=beforeLimit)throw new Exception("Encoder step limit failed.");

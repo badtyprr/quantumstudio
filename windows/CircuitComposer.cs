@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using Path = System.IO.Path;
 
 class CircuitComposer : Window {
- public const int MaxSteps=64;
+ public const int MaxSteps=512;
  public class Step { public string Gate, Angle; public int[] Wires; }
  public class CircuitFile { public int Version, Qubits; public Step[] Steps; }
  readonly List<Step> steps=new List<Step>();
@@ -202,8 +202,9 @@ class CircuitComposer : Window {
  public void VerifyLayout() {
   string original=Snapshot();Show();
   foreach(int count in new[]{3,8}) {
-   qubits.SelectedIndex=count-1;AddGate("H","0","");AddGate("ECR",(count-1)+",0","");
-   for(int step=2;step<MaxSteps;++step)AddGate("Rz",(step%count).ToString(),"pi/4");string expected=Expression();
+   var layoutSteps=new List<Step> {new Step {Gate="H",Angle="",Wires=new[]{0}},new Step {Gate="ECR",Angle="",Wires=new[]{count-1,0}}};
+   for(int step=2;step<MaxSteps;++step)layoutSteps.Add(new Step {Gate="Rz",Angle="pi/4",Wires=new[]{step%count}});
+   LoadCircuit(new JavaScriptSerializer().Serialize(new CircuitFile {Version=1,Qubits=count,Steps=layoutSteps.ToArray()}));string expected=Expression();
    foreach(var size in new[]{new Size(1040,780),new Size(800,550),new Size(1360,960)}) {
     Width=size.Width;Height=size.Height;
     foreach(int inspection in new[]{0,3,4}) foreach(bool expanded in new[]{false,true}) {
@@ -363,7 +364,7 @@ class CircuitComposer : Window {
  public void LoadCircuit(string text) {
   if(text==null || text.Length>262144)throw new InvalidDataException("Circuit data is too large.");
   var file=new JavaScriptSerializer().Deserialize<CircuitFile>(text);
-  if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>8 || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–8 qubits and at most 64 steps.");
+  if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>8 || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–8 qubits and at most 512 steps.");
   // Validate the entire document before changing any controls or circuit state.
   foreach(var step in file.Steps) {
    if(step==null || step.Gate==null || !gate.Items.Contains(step.Gate) || step.Wires==null) throw new InvalidDataException("Unknown gate or missing wire list.");
@@ -409,7 +410,7 @@ class CircuitComposer : Window {
  bool WriteGate(int index,string name,string selectedWires,string parameter) {
   int required=WireCount(name);
   if(!gate.Items.Contains(name)) {status.Text="Choose a supported gate."; return false;}
-  if(index<0 && steps.Count>=MaxSteps) {status.Text="This composer supports up to 64 gate steps."; return false;}
+  if(index<0 && steps.Count>=MaxSteps) {status.Text="This composer supports up to 512 gate steps."; return false;}
   string[] parts=selectedWires.Split(','); var targets=new int[parts.Length]; var seen=new HashSet<int>();
   if(parts.Length!=required) {status.Text=name+" needs "+required+" wire indices, separated by commas. Controls come first."; return false;}
   for(int k=0;k<parts.Length;k++) if(!Int32.TryParse(parts[k].Trim(),out targets[k]) || targets[k]<0 || targets[k]>=Count || !seen.Add(targets[k])) {status.Text="Wire indices must be distinct integers from 0 to "+(Count-1)+"."; return false;}
@@ -569,7 +570,7 @@ class CircuitComposer : Window {
   if(append)foreach(var step in steps)synthesized.Add(new Step {Gate=step.Gate,Angle=step.Angle,Wires=(int[])step.Wires.Clone()});
   for(int j=0;j<xbasis.Count;j++)synthesized.Add(new Step {Gate="H",Angle="",Wires=new[]{k+j}});
   synthesized.AddRange(LinearSteps(map,n));
-  if(synthesized.Count>MaxSteps)throw new ArgumentException("The encoder and existing steps exceed the 64-step circuit limit.");
+  if(synthesized.Count>MaxSteps)throw new ArgumentException("The encoder and existing steps exceed the 512-step circuit limit.");
   batch=true;try {editing=-1;qubits.SelectedIndex=n-1;steps.Clear();steps.AddRange(synthesized);}finally {batch=false;}
   Refresh();resultView.SelectedIndex=0;
   status.Text="CSS encoder · "+k+" logical qubits → "+n+" physical qubits. Logical inputs occupy the first "+k+" wires; remaining inputs are zero ancillas. "+(append ? "Previous preparation is preserved." : "Insert logical preparation before these gates to change the encoded state.");
@@ -585,7 +586,7 @@ class CircuitComposer : Window {
   var z=new TextBox {Text=h,AcceptsReturn=true,Height=100,FontFamily=new FontFamily("Consolas"),FontSize=16,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
   Input(panel,"X checks (Hx)",x);Input(panel,"Z checks (Hz)",z);
   var append=new CheckBox {Content="Append to my current logical-input circuit",Margin=new Thickness(0,4,0,10)};panel.Children.Add(append);
-  panel.Children.Add(new TextBlock {Text="The defaults encode one logical qubit into the seven-qubit Steane code. To encode |i⟩, first prepare a one-qubit circuit with H then S and select Append. Use [] for an absent check type. Limits: 1–8 physical qubits, 32 check rows, 64 total gate steps.",TextWrapping=TextWrapping.Wrap,FontSize=12});
+  panel.Children.Add(new TextBlock {Text="The defaults encode one logical qubit into the seven-qubit Steane code. To encode |i⟩, first prepare a one-qubit circuit with H then S and select Append. Use [] for an absent check type. Limits: 1–8 physical qubits, 32 check rows, 512 total gate steps.",TextWrapping=TextWrapping.Wrap,FontSize=12});
   var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=Brushes.Firebrick,Margin=new Thickness(0,8,0,0)};panel.Children.Add(error);
   var actions=new StackPanel {Orientation=Orientation.Horizontal,Margin=new Thickness(0,12,0,0)};panel.Children.Add(actions);
   var build=new Button {Content="Build encoding circuit",Background=blue,Foreground=Brushes.White};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
@@ -701,22 +702,34 @@ class CircuitComposer : Window {
  public string Expression() {
   string value="|"+new string('0',Count)+"⟩";
   bool mixed=false;
+  var transformations=steps.Count>64 ? new List<string>() : null;
+  string placeholder="qstate_0";
+  if(transformations!=null) {
+   // Keep a user-supplied angle symbol free, including braced TeX subscripts.
+   var parameterText=new StringBuilder();
+   foreach(var step in steps)foreach(char ch in step.Angle ?? "")if(!Char.IsWhiteSpace(ch) && ch!='{' && ch!='}' && ch!='\\')parameterText.Append(ch);
+   string parameters=parameterText.ToString();
+   for(int suffix=1;parameters.Contains(placeholder);++suffix)placeholder="qstate_"+suffix;
+  }
   foreach(var step in steps) {
+   if(transformations!=null)value=placeholder;
    if(Feedback(step.Gate)) {
     string bits=FeedbackBits(step.Gate),measured=bits.Length==1 ? step.Wires[0].ToString() : "["+step.Wires[0]+","+step.Wires[1]+"]";
-    value="feedforward("+value+","+measured+","+Convert.ToInt32(bits,2)+","+FeedbackGate(step.Gate)+","+step.Wires[bits.Length]+")";mixed=true;continue;
+    value="feedforward("+value+","+measured+","+Convert.ToInt32(bits,2)+","+FeedbackGate(step.Gate)+","+step.Wires[bits.Length]+")";mixed=true;if(transformations!=null)transformations.Add(value);continue;
    }
    if(Noise(step.Gate)) {
     if(!mixed)value="density("+value+")";
     string constructor=step.Gate=="AD" || step.Gate=="GAD" ? "amplitude_damping" : step.Gate=="PD" ? "phase_damping" : step.Gate=="PAD" ? "phase_amplitude_damping" : step.Gate=="Thermal" ? "thermal_relaxation" : "depolarizing";
-    value="channel("+value+","+constructor+"("+step.Angle+"),"+step.Wires[0]+")";mixed=true;continue;
+    value="channel("+value+","+constructor+"("+step.Angle+"),"+step.Wires[0]+")";mixed=true;if(transformations!=null)transformations.Add(value);continue;
    }
    string op=step.Gate+(NeedsAngle(step.Gate) ? "("+step.Angle+")" : "");
    if(step.Gate=="GPhase")op="(exp(i*("+step.Angle+"))*I)";
    string indices=String.Join(",",Array.ConvertAll(step.Wires,n=>n.ToString()));
    value=step.Gate=="Reset" ? "reset("+value+",["+indices+"])" : step.Gate=="Measure" ? "dephase("+value+",["+indices+"])" : "apply("+op+","+value+",["+indices+"])";
    if(step.Gate=="Reset" || step.Gate=="Measure")mixed=true;
-  } return value;
+   if(transformations!=null)transformations.Add(value);
+  }
+  return transformations==null ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,"+placeholder+")";
  }
  void Line(double x1,double y1,double x2,double y2,Brush color,double width,bool dashed=false) {diagram.Children.Add(new Line {X1=x1,Y1=y1,X2=x2,Y2=y2,Stroke=color,StrokeThickness=width,StrokeDashArray=dashed ? new DoubleCollection {3,2} : null});}
  void Label(string text,double x,double y,double width) {var label=new TextBlock {Text=text,Width=width,TextAlignment=TextAlignment.Center,FontSize=14,TextTrimming=TextTrimming.CharacterEllipsis,ToolTip=text}; Canvas.SetLeft(label,x); Canvas.SetTop(label,y); diagram.Children.Add(label);}

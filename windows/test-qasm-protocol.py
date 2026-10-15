@@ -35,10 +35,13 @@ for command in commands:
         {'Version': 1, 'Qubits': 1, 'Steps': [
             {'Gate': 'Reset', 'Angle': '', 'Wires': [0]},
             {'Gate': 'Measure', 'Angle': '', 'Wires': [0]}]})
+    for count in (65, 512):
+        run(command, header+f'qubit q; for int i in [0:{count-1}] {{x q;}}',
+            {'Version': 1, 'Qubits': 1, 'Steps': [{'Gate': 'X', 'Angle': '', 'Wires': [0]}]*count})
     for invalid in [source+' '*(262145-len(source)),
                     b'\xef\xbb\xbf'+source.encode()+b' '*(262145-len(source)-3),
                     b'\xc3\x28', header+'include "private.inc"; qubit q;',
-                    header+'qubit[9] q;', header+'qubit q; for int i in [0:64] {x q;}',
+                    header+'qubit[9] q;', header+'qubit q; for int i in [0:512] {x q;}',
                     header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
                     header+'qubit q; delay[10ns] q;']:
         run(command, invalid)
