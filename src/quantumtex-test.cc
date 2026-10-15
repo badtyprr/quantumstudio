@@ -37,6 +37,8 @@ int main() {
   equal(R"(\norm{X}^{2}_F)","norm(X,2)^(2)");
   equal(R"(\lVert X\rVert_2)","norm( X,2)");
   equal(R"(\sum_{k=0}^{2}{k})","sum(k,0,2,k)");
+  equal(R"(\sum_{a_0=0}^{2}{a_0})","sum(qsumindex_0,0,2,qsumindex_0)");
+  equal(R"(\sum_{a_{10}=0}^{2}{a_{10}})","sum(qsumindex_0,0,2,qsumindex_0)");
   equal(R"(\prod^{2}_{k=0}{k})","product(k,0,2,k)");
   equal(R"(\bigotimes_{k=0}^{2}{X})","tensorproduct(X,0,2,k)");
   equal(R"(\bigoplus_{k=0}^{2}{X})","blocksum(X,0,2,k)");

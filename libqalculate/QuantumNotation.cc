@@ -938,7 +938,12 @@ class Parser {
     auto signature=quantumSignatures.find(name);
     if(signature!=quantumSignatures.end() && count!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }
-   } else { auto it=gates.find(a); if(it!=gates.end()) a=it->second; }
+   } else {
+    auto it=gates.find(a); if(it!=gates.end()) a=it->second;
+    // Preserve subscripted symbols as one backend symbol, rather than letting
+    // a numeric suffix become multiplication (a_0 must not become a * 0).
+    else if(!numericToken && a.find('_')!=std::string::npos) a="\""+a+"\"";
+   }
   }
   while(true) {
    if(take('~')) {a="qdag("+a+")";if(kind)kind=3-kind;}
