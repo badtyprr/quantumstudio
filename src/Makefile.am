@@ -11,9 +11,9 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = @QALCULATE_TEXT@
 noinst_PROGRAMS = @QALCULATE_DEFS2DOC@ @QALCULATE_TEST@ @QALCULATE_UNITTEST@
 EXTRA_PROGRAMS = qalc defs2doc test unittest
-check_PROGRAMS = quantum-state-test threadtest quantumtex-test quantum-singular-test
+check_PROGRAMS = quantum-state-functions-test quantum-state-test threadtest quantumtex-test quantum-singular-test
 TESTS_ENVIRONMENT = QALCULATE_DEFINITIONS_DIR=$(abs_top_builddir)/data
-TESTS = quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
+TESTS = quantum-state-functions-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
 
 qalc_SOURCES = qalc.cc
 
@@ -63,3 +63,6 @@ quantum_singular_test_LDADD = $(test_LDADD)
 
 quantum_state_test_SOURCES = quantum-state-test.cc
 quantum_state_test_LDADD = $(test_LDADD)
+
+quantum_state_functions_test_SOURCES = quantum-state-functions-test.cc
+quantum_state_functions_test_LDADD = $(test_LDADD)
