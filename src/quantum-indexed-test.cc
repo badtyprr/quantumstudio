@@ -24,6 +24,7 @@ int main(){try {
  equal("qsumset(x^2,vector(0,2,5),x)","29");
  equal("qsumset(x,vector(1,1,2,2),x)","3");
  equal("qsumset(x,vector(1/2,2/4),x)","1/2");
+ equal("qsumset(x,vector(1/2,0.5),x)","1/2");
  equal("qsumset(x,vector(3),x)","3");
  equal("qsumset(x,vector(),x)","0");
  equal("qsumset(qdensity(qbasis(x,2)),vector(0,1),x)","identity(2)");
@@ -61,6 +62,20 @@ int main(){try {
   if(!error)throw std::runtime_error(std::string("Invalid indexed operation accepted: ")+expression);
   ++checks;
  }
+ MathStructure setStopped=calculator.parse("qsumset(x,vector(1,2),x)");
+ calculator.startControl();calculator.abort();
+ cancellationResult=calculator.getFunction("qsumset")->calculate(cancelled,setStopped,eo);
+ calculator.stopControl();
+ if(cancellationResult!=0)throw std::runtime_error("Set sum ignored cancellation");
+ ++checks;
+ std::string largeSet="qsumset(x,vector(";
+ for(int j=0;j<1025;++j){if(j)largeSet+=",";largeSet+=std::to_string(j);}
+ largeSet+="),x)";
+ while(calculator.message())calculator.nextMessage();
+ calculator.calculate(largeSet,eo);bool setBoundError=false;
+ while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)setBoundError=true;calculator.nextMessage();}
+ if(!setBoundError)throw std::runtime_error("Set sum ignored collection bound");
+ ++checks;
  std::string excessive="qsequence([";
  for(int j=0;j<513;++j){if(j)excessive+=",";excessive+="x";}
  excessive+="],[1;0],x)";

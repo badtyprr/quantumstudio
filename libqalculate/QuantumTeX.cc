@@ -16,6 +16,7 @@ class TeXReader {
  size_t pos=0;
  unsigned depth=0;
  bool setBound=false;
+ unsigned setBraces=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  std::string group() {
@@ -76,8 +77,8 @@ class TeXReader {
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
-   if(setBound && c=='{')return "vector(";
-   if(setBound && c=='}')return ")";
+   if(setBound && c=='{'){++setBraces;return "vector(";}
+   if(setBound && c=='}'){if(!setBraces)throw std::runtime_error(error("Unmatched set delimiter"));--setBraces;return ")";}
    if(c=='\\' && matrix) {
     space();
     if(pos<input.size() && input[pos]=='[') {
@@ -142,8 +143,9 @@ class TeXReader {
    std::string lower, upper;
    for(int k=0;k<2;++k) {
     space(); if(pos==input.size() || (input[pos]!='_' && input[pos]!='^')) throw std::runtime_error(error("A finite sum/product requires lower and upper bounds"));
-    char bound=input[pos++]; bool priorSetBound=setBound;setBound=bound=='_';
+    char bound=input[pos++]; bool priorSetBound=setBound;unsigned priorSetBraces=setBraces;setBound=bound=='_';
     std::string value=argument();setBound=priorSetBound;
+    if(setBraces!=priorSetBraces)throw std::runtime_error(error("Unclosed set delimiter"));
     if(bound=='_') { if(!lower.empty()) throw std::runtime_error(error("Duplicate lower bound")); lower=value; }
     else { if(!upper.empty()) throw std::runtime_error(error("Duplicate upper bound")); upper=value; }
     if(lower.find("∈")!=std::string::npos)break;

@@ -54,6 +54,14 @@ The released worker at `69f2b383` passed 13 of 15 initial checks. Approximate sq
 
 For a reproducible example, `born([2,1;1,1]/3,|+>)` gives 5/6. A complex-effect root check is `norm(vec(sqrt(density((|0>+sqrt(2)*exp(2*pi*i/3)*|1>)/sqrt(3))/2)-density((|0>+sqrt(2)*exp(2*pi*i/3)*|1>)/sqrt(3))/sqrt(2)))`; its expected value is zero. Maintained native regression cases are in PR #60's `src/quantum-matrix-power-test.cc`. Automatic construction and validation of arbitrary measurements remain unfinished.
 
+## Finite set-indexed sums
+
+`\sum_{k\in\{0,2,5\}}{k^2}` evaluates to 29. The equivalent function form is `sumset(k^2,[0,2,5],k)`. A named collection such as `\sum_{k\in S_0}{k}` must evaluate to a finite flat vector. The index is local to the summand; nested sums may reuse it, and the inner collection can refer to the outer index. An unbraced summand uses the existing multiplicative-term scope.
+
+Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
+
+Escaped set braces and membership are recognized in summation bounds. General set expressions, set comprehensions, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`.
+
 ## Numerical conventions
 
 TeX `\tilde{\rho}` and `\widetilde{\rho}` denote the distinct symbol `ρ_tilde`; they do not evaluate to `ρ`. This supports estimated-state notation in the IBM tomography lesson. Subscripts outside the decoration follow the suffix, so `\tilde{x}_0` names `x_tilde_0`. These symbols can be bound as finite-sum indices. The decoration does not define a state or automatically reconstruct one: supply the symbol's value when a numerical result is needed. Compound operands such as `\tilde{x+y}` are rejected because their meaning is not specified by a symbol decoration.

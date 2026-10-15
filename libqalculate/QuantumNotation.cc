@@ -338,8 +338,10 @@ class Parser {
   std::string original=args[index];
   while(original.size()>2 && original.front()=='(' && original.back()==')')
    original=original.substr(1,original.size()-2);
-  if(original.size()<3 || original.front()!='"' || original.back()!='"' ||
-     original.find('"',1)!=original.size()-1)return;
+  bool plain=name=="qsumset" && !original.empty() && original!="pi" && original!="i" && original!="e";
+  for(unsigned char c:original)if(!std::isalpha(c) || c>=128)plain=false;
+  if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
+     original.find('"',1)!=original.size()-1))return;
   std::string symbol;
   bool used;
   do {
@@ -351,6 +353,12 @@ class Parser {
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
   while((at=args[0].find(original,at))!=std::string::npos) {
+   if(plain) {
+    auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
+    bool quoted=false;for(size_t k=0;k<at;++k)if(args[0][k]=='"')quoted=!quoted;
+    if(quoted || (at && identifier(args[0][at-1])) ||
+       (at+original.size()<args[0].size() && identifier(args[0][at+original.size()]))) {at+=original.size();continue;}
+   }
    args[0].replace(at,original.size(),symbol);at+=symbol.size();checkSize(args[0]);
   }
   args[index]=symbol;
