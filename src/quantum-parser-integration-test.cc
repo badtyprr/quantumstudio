@@ -83,6 +83,22 @@ int main(){try {
  equal("quantum: H(|0>+|1>)","[sqrt(2);0]");
  equal("quantum: (|0>+|1>)(<0|-<1|)","[1,-1;1,-1]");
  equal("quantum: (<0|-<1|)(|0>+|1>)","0");
+ for(int a=0;a<2;++a) {
+  equal("quantum: |0⊕"+std::to_string(a)+">_2-|1⊕"+std::to_string(a)+">_2",a ? "[-1;1]" : "[1;-1]");
+ }
+ equal(R"(quantum: \sum_{a_0=0}^1 (|0\oplus a_0>_2-|1\oplus a_0>_2))","[0;0]");
+ equal("quantum: |(1+1)⊕3>_4","[0;1;0;0]");
+ equal("quantum: <(1+1)⊕3|_4","[0,1,0,0]");
+ equal("quantum: |2⊕3⊕1>_4","[1;0;0;0]");
+ equal("quantum: |00⊕11>","[0;0;0;1]");
+ equal("quantum: |0⊕0>_2 ⊕ |1>","qdirectsum([1;0],[0;1])");
+ for(int f0=0;f0<2;++f0)for(int f1=0;f1<2;++f1) {
+  std::string x=std::to_string(f0),y=std::to_string(f1);
+  equal("quantum: (|0⊕"+x+">_2-|1⊕"+x+">_2)|0>/2+(|0⊕"+y+">_2-|1⊕"+y+">_2)|1>/2",
+        "["+std::to_string(1-2*f0)+";"+std::to_string(1-2*f1)+";"+std::to_string(2*f0-1)+";"+std::to_string(2*f1-1)+"]/2");
+ }
+ equal("quantum: |trace(I⊕I)>_8","qbasis(4,8)");
+ equal("quantum: |mod(2⊕3,2)>_2","[0;1]");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
@@ -93,7 +109,7 @@ int main(){try {
  }
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
- for(const auto &expression:{"quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
+ for(const auto &expression:{"quantum: |-1⊕-2>_2","quantum: |0.5⊕1>_2","quantum: |i⊕1>_2","quantum: |2⊕1>_2","quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
      R"(quantum: |a_0 0 0 0 0 0 0 0 0 0 0>)",R"(quantum: \sum_{a_0=2}^{2}{|a_0 0>})",R"(quantum: \sum_{a_0=-1}^{-1}{|a_0 0>})",
      R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();
