@@ -94,7 +94,12 @@ class QuantumStudio {
   Find<Button>("BrowseExamples").Click+=delegate {ExamplesWindow().ShowDialog();};
   Find<Button>("ComposeCircuit").Click+=delegate {new CircuitComposer(window,delegate(string value) {mode.SelectedIndex=0;input.Text=value;input.Focus();}).ShowDialog();};
   run.Click += async delegate { await Calculate(); };
-  input.KeyDown += async delegate(object sender, KeyEventArgs e) { if(e.Key==Key.Enter && Keyboard.Modifiers==ModifierKeys.Control) { e.Handled=true; await Calculate(); } };
+  input.PreviewKeyDown += async delegate(object sender, KeyEventArgs e) {
+   if(e.Key==Key.Enter && (Keyboard.Modifiers==ModifierKeys.None || Keyboard.Modifiers==ModifierKeys.Control)) {
+    e.Handled=true;
+    if(!e.IsRepeat) await Calculate();
+   }
+  };
   Find<Button>("Copy").Click += delegate { try { Clipboard.SetText(output.Text); status.Text="Result copied."; } catch(Exception ex) { status.Text=ex.Message; } };
   Find<Button>("Clear").Click += delegate { history.Items.Clear(); };
   Find<Button>("SaveSession").Click+=delegate {
