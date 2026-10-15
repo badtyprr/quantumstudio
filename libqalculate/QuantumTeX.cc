@@ -221,7 +221,13 @@ class TeXReader {
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
    }
-   if(input[pos]=='\\') result+=command(matrix,norms);
+   // Quoted labels are literal data; do not reinterpret operator subscripts.
+   if(input[pos]=='"' || input[pos]=='\'') {
+    char quote=input[pos++];result+=quote;bool ended=false;
+    while(pos<input.size()) {char c=input[pos++];result+=c;if(c==quote){ended=true;break;}}
+    if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
+   }
+   else if(input[pos]=='\\') result+=command(matrix,norms);
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
     result+=open; result+=read(end); result+=end;
@@ -234,15 +240,21 @@ class TeXReader {
     bool bell=false;
     for(const std::string &name:{std::string("Φ"),std::string("φ"),std::string("ϕ"),std::string("Ψ"),std::string("ψ"),std::string("Phi"),std::string("phi"),std::string("Psi"),std::string("psi")})
      if(result.size()>=name.size() && result.compare(result.size()-name.size(),name.size(),name)==0)bell=true;
+    bool fourier=result.size()>=3 && result.substr(result.size()-3)=="QFT" &&
+     (result.size()==3 || (!std::isalnum((unsigned char)result[result.size()-4]) && result[result.size()-4]!='_' && (unsigned char)result[result.size()-4]<128));
     ++pos; space(); std::string index;bool grouped=false;
     if(pos<input.size() && input[pos]=='{') {grouped=true;index=group();}
     else if(pos<input.size() && input[pos]=='(') {grouped=true;++pos;index=read(')');}
+    else if(fourier && pos<input.size() && std::isdigit((unsigned char)input[pos])) {
+     while(pos<input.size() && std::isdigit((unsigned char)input[pos]))index+=input[pos++];
+    }
     else if(pos<input.size() && std::isalnum((unsigned char)input[pos])) index+=input[pos++];
     else if((spin || bell) && pos<input.size() && (input[pos]=='+' || input[pos]=='-')) index+=input[pos++];
     else throw std::runtime_error(error("Expected a subscript"));
     bool trace=result.size()>=2 && (result.substr(result.size()-2)=="Tr" || result.substr(result.size()-2)=="tr") &&
      (result.size()==2 || !std::isalnum((unsigned char)result[result.size()-3]));
-    if(trace) {
+    if(fourier) {result.resize(result.size()-3);result+="qfourier("+index+")";}
+    else if(trace) {
      space(); std::string body;
      if(pos<input.size() && input[pos]=='{') body=group();
      else if(pos<input.size() && input[pos]=='(') { ++pos; body=read(')'); }
@@ -301,6 +313,19 @@ std::string quantumTeX(const std::string &input) {
  std::string normalized;char quote=0;
  for(size_t k=0;k<s.size();) {
   if(s[k]=='"' || s[k]=='\'') {if(quote==s[k])quote=0;else if(!quote)quote=s[k];normalized+=s[k++];continue;}
+  if(!quote && s.compare(k,3,"QFT")==0 &&
+     (k==0 || (!std::isalnum((unsigned char)s[k-1]) && s[k-1]!='_' && (unsigned char)s[k-1]<128))) {
+   size_t end=k+3;std::string digits;
+   const std::string subscripts[]={"₀","₁","₂","₃","₄","₅","₆","₇","₈","₉"};
+   while(end<s.size()) {
+    bool found=false;
+    for(unsigned d=0;d<10;++d)if(s.compare(end,subscripts[d].size(),subscripts[d])==0) {
+     digits+=char('0'+d);end+=subscripts[d].size();found=true;break;
+    }
+    if(!found)break;
+   }
+   if(!digits.empty()) {normalized+="QFT_{"+digits+"}";k=end;continue;}
+  }
   bool matched=false;
   if(!quote)for(const auto &alias:largeOperators) {
    if(s.compare(k,alias.first.size(),alias.first)==0) {normalized+=alias.second;k+=alias.first.size();matched=true;break;}
