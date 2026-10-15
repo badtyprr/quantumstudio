@@ -17,6 +17,11 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: |||0>||","1");
+ equal("quantum: <0||0>","1");
+ equal("quantum: ||X||_1","qtracenorm([0,1;1,0])");
+ equal("quantum: ||(|0><0|-|+><+|)||_1","qtracenorm([1,0;0,0]-[1,1;1,1]/2)");
+ equal("quantum: |||0><0|||_1","qtracenorm([1,0;0,0])");
  equal("quantum: |⟨101|(H⊗H⊗H)|000⟩|^2","1/8");
  equal("quantum: cirq.XPowGate(exponent=1/2)","[1+i,1-i;1-i,1+i]/2");
  equal("quantum: cirq.XPowGate(exponent=1,global_shift=1/2)","[0,i;i,0]");
