@@ -150,7 +150,16 @@
       "course": "fundamentals-of-quantum-algorithms",
       "path": "quantum-query-algorithms/deutsch-algorithm",
       "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm",
-      "status": "end_to_end_audit_pending"
+      "status": "partial_formula_audit",
+      "verified_examples": [
+        "Initial distributed two-qubit state with grouped ket sums",
+        "Grouped bras and inner/outer products"
+      ],
+      "evidence": [
+        "src/quantum-parser-integration-test.cc",
+        "src/quantum-algebra-test.cc"
+      ],
+      "remaining": "Full lesson is not certified. Computed XOR ket labels, named function definitions, cases/align environments, and executable lesson code remain to be audited or implemented."
     },
     {
       "kind": "ibm_course_section",
