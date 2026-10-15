@@ -60,7 +60,6 @@ class QuantumAlgebraFunction: public MathFunction {
   const MathStructure &a=args[0];
   if(op=="qadd" || op=="qsub") {
    const MathStructure &b=args[1];
-   if(op=="qsub" && !a.isVector() && a.equals(b)) {out=m_zero;return 1;}
    if(a.isVector() && b.isVector()) {
     size_t ar=a.isMatrix() ? a.rows() : 1,ac=a.isMatrix() ? a.columns() : a.size();
     size_t br=b.isMatrix() ? b.rows() : 1,bc=b.isMatrix() ? b.columns() : b.size();
