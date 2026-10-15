@@ -141,6 +141,29 @@ class TeXReader {
   }
   size_t start=pos; while(pos<input.size() && asciiLetter((unsigned char)input[pos])) ++pos;
   std::string name=input.substr(start,pos-start);
+  if(name=="sin" || name=="cos" || name=="tan") {
+   size_t afterName=pos;
+   space();
+   if(pos<input.size() && input[pos]=='^') {
+    ++pos;std::string power=trim(argument());
+    if(power.empty())throw std::runtime_error(error("Empty trigonometric power"));
+    space();
+    if(pos<input.size() && input[pos]=='\\') {
+     size_t end=pos+1;while(end<input.size() && asciiLetter((unsigned char)input[end]))++end;
+     std::string size=input.substr(pos+1,end-pos-1);
+     if(size=="left" || size=="big" || size=="Big" || size=="bigl" || size=="Bigl" || size=="bigg" || size=="Bigg" || size=="biggl" || size=="Biggl") {pos=end;space();}
+    }
+    std::string operand;
+    if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
+    else if(pos<input.size() && input[pos]=='{')operand=group();
+    else throw std::runtime_error(error("A powered trigonometric function requires a parenthesized or braced argument"));
+    if(trim(operand).empty())throw std::runtime_error(error("Empty trigonometric argument"));
+    std::string compactPower;for(unsigned char c:power)if(!std::isspace(c))compactPower+=c;
+    if(compactPower=="-1")return "a"+name+"("+operand+")";
+    return "("+name+"("+operand+"))^("+power+")";
+   }
+   pos=afterName;
+  }
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
@@ -272,7 +295,7 @@ class TeXReader {
    {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
    {"lambda","λ"},{"omega","ω"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
-   {"sin","sin"},{"cos","cos"},{"tan","tan"},{"exp","exp"},{"log","ln"},{"ln","ln"},
+   {"sin","sin"},{"cos","cos"},{"tan","tan"},{"arcsin","asin"},{"arccos","acos"},{"arctan","atan"},{"exp","exp"},{"log","ln"},{"ln","ln"},
    {"det","det"},{"tr","tr"},{"Tr","Tr"},{"quad"," "},{"qquad"," "}
   };
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
