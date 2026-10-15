@@ -99,6 +99,16 @@ int main(){try {
  }
  equal("quantum: |trace(I⊕I)>_8","qbasis(4,8)");
  equal("quantum: |mod(2⊕3,2)>_2","[0;1]");
+ equal(R"(quantum: \begin{cases}|0> & \text{if $1=1$}\\[1mm]|1> & \text{if $1=0$}\end{cases})","[1;0]");
+ equal(R"(quantum: \begin{cases}|0> & 0\\|1> & \text{otherwise}\end{cases})","[0;1]");
+ equal(R"(quantum: \begin{cases}|0> & 1\\1/0 & \text{otherwise}\end{cases})","[1;0]");
+ equal(R"(quantum: 2\begin{cases}3 & 1\\4 & 0\end{cases}+1)","7");
+ equal(R"(quantum: \sum_{a_0=0}^1 {\begin{cases}|0> & a_0=0\\|1> & a_0=1\end{cases}})","[1;1]");
+ equal(R"(quantum: \begin{cases}\begin{cases}4 & 1\end{cases} & 1\\5 & 0\end{cases})","4");
+ equal(R"(quantum: \begin{cases}\begin{bmatrix}1&0\\0&1\end{bmatrix} & 1\\X & 0\end{cases})","[1,0;0,1]");
+ equal(R"(quantum: \begin{cases}|0,1> & 1\\|1,0> & 1\end{cases})","[0;1;0;0]");
+ if(!calculator.calculate(R"(quantum: \begin{cases}1 & 0\\2 & 0\end{cases})",eo).isUndefined())throw std::runtime_error("Unmatched cases must be undefined");
+ ++checks;
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
