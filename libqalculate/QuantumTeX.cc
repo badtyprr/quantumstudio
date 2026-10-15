@@ -15,6 +15,8 @@ class TeXReader {
  const std::string &input;
  size_t pos=0;
  unsigned depth=0;
+ bool setBound=false;
+ unsigned setBraces=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  std::string group() {
@@ -75,6 +77,8 @@ class TeXReader {
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
+   if(setBound && c=='{'){++setBraces;return "vector(";}
+   if(setBound && c=='}'){if(!setBraces)throw std::runtime_error(error("Unmatched set delimiter"));--setBraces;return ")";}
    if(c=='\\' && matrix) {
     space();
     if(pos<input.size() && input[pos]=='[') {
@@ -111,6 +115,7 @@ class TeXReader {
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
+  if(name=="in" && setBound)return "∈";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="tilde" || name=="widetilde") {
    std::string value=trim(argument());
@@ -138,13 +143,20 @@ class TeXReader {
    std::string lower, upper;
    for(int k=0;k<2;++k) {
     space(); if(pos==input.size() || (input[pos]!='_' && input[pos]!='^')) throw std::runtime_error(error("A finite sum/product requires lower and upper bounds"));
-    char bound=input[pos++]; std::string value=argument();
+    char bound=input[pos++]; bool priorSetBound=setBound;unsigned priorSetBraces=setBraces;setBound=bound=='_';
+    std::string value=argument();setBound=priorSetBound;
+    if(setBraces!=priorSetBraces)throw std::runtime_error(error("Unclosed set delimiter"));
     if(bound=='_') { if(!lower.empty()) throw std::runtime_error(error("Duplicate lower bound")); lower=value; }
     else { if(!upper.empty()) throw std::runtime_error(error("Duplicate upper bound")); upper=value; }
+    if(lower.find("∈")!=std::string::npos)break;
    }
-   size_t equal=lower.find('=');
+   size_t membership=lower.find("∈");
+   bool setSum=membership!=std::string::npos;
+   if(setSum && (name!="sum" || !upper.empty()))throw std::runtime_error(error("Set-indexed sums have no upper bound"));
+   size_t equal=setSum ? membership : lower.find('=');
    if(equal==std::string::npos) throw std::runtime_error(error("Use an index assignment such as k=0 in the lower bound"));
-   std::string variable=lower.substr(0,equal), startValue=lower.substr(equal+1);
+   std::string variable=lower.substr(0,equal), startValue=lower.substr(equal+(setSum ? std::string("∈").size() : 1));
+   if(setSum && trim(startValue).empty())throw std::runtime_error(error("A set sum requires a finite index collection"));
    size_t first=variable.find_first_not_of(" \t\r\n"), last=variable.find_last_not_of(" \t\r\n");
    if(first==std::string::npos) throw std::runtime_error(error("Missing summation index"));
    variable=variable.substr(first,last-first+1);
@@ -154,9 +166,11 @@ class TeXReader {
    if(pos==input.size())throw std::runtime_error(error("Missing finite sum/product body"));
    if(input[pos]!='{') {
     // The expression parser determines the multiplicative body's extent.
+    if(setSum)return "qtexsumset("+startValue+","+variable+") ";
     return "qtex"+name+"("+startValue+","+upper+","+variable+") ";
    }
    auto body=group();
+   if(setSum)return "sumset("+body+","+startValue+","+variable+")";
    return (name=="sum" ? "sum(" : name=="prod" ? "product(" : name=="bigoplus" ? "blocksum(" : "tensorproduct(")+body+","+startValue+","+upper+","+variable+")";
   }
   bool expectation=name=="expectationvalue" || name=="expval" || name=="ev";

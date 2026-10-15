@@ -65,7 +65,15 @@ Selected finite examples from IBM's [discrimination and tomography lesson](https
 
 These audits substitute explicit vectors for named states and expand finite sums. For example, twelve identical tetrahedral outcomes reconstruct the trace-one matrix `[2,0;0,-1]`; the audit verifies that estimate, without claiming it is a physical density matrix or applying an automatic positivity correction. Sampling, arbitrary ensembles, general optimal-measurement construction and automatic tomography reconstruction remain unverified or unimplemented.
 
-Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. These named-set sums and set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
+Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\sum_{k\in\{0,1\}} |k><k|` reject `\in`; `\{k\in\{0,1\}: k\geq 0\}` rejects the escaped set delimiter. Finite set-indexed sums are now implemented as described below; general set-builder forms remain work items. None of the selected checks establishes whole-lesson compatibility.
+
+## Finite set-indexed sums
+
+`\sum_{k\in\{0,2,5\}}{k^2}` evaluates to 29. The equivalent function form is `sumset(k^2,[0,2,5],k)`. A named collection such as `\sum_{k\in S_0}{k}` must evaluate to a finite flat vector. The index is local to the summand; nested sums may reuse it, and the inner collection can refer to the outer index. An unbraced summand uses the existing multiplicative-term scope.
+
+Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
+
+Escaped set braces and membership are recognized in summation bounds. General set expressions, set comprehensions, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`. When directly nesting it inside the library's ordinary `sum` or `product` outside quantum mode, use distinct index names: those existing outer functions perform unscoped replacement. Quantum-mode parsing gives set-sum indices unique names to avoid that capture. Parser byte and node limits can reject an input before the collection-size limit is reached.
 
 ## Numerical conventions
 

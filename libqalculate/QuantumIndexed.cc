@@ -5,6 +5,7 @@
 #include "Variable.h"
 #include <string>
 #include <utility>
+#include <vector>
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // Substitute a free index without capturing a nested finite-product/sum index.
@@ -15,7 +16,7 @@ void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const M
   const std::string &name=value.function()->referenceName();
   if((name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="sum" || name=="product") && value[3].equals(index))bound=3;
  }
- if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence") && value[2].equals(index))bound=2;
+ if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence" || value.function()->referenceName()=="qsumset") && value[2].equals(index))bound=2;
  for(size_t k=0;k<value.size();++k) {
   if(bound>=0 && (k==0 || k==size_t(bound)))continue;
   replaceQuantumIndex(value[k],index,replacement);
@@ -28,6 +29,26 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qsumset") {
+   if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A set sum index must be a symbolic variable.",NULL);return 0;}
+   MathStructure members=raw[1];
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   members.eval(exact);
+   if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
+   std::vector<MathStructure> seen;
+   out=m_zero;
+   for(size_t k=0;k<members.size();++k) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &member=members[k];
+    if(!member.representsScalar()) {CALCULATOR->error(true,"Set sum indices must be scalars.",NULL);return 0;}
+    bool duplicate=false;for(const auto &previous:seen)if(member.equals(previous)){duplicate=true;break;}
+    if(duplicate)continue;
+    seen.push_back(member);
+    MathStructure term=raw[0];replaceQuantumIndex(term,raw[2],member);term.eval(eo);
+    if(seen.size()==1)out=term;else {out.add(term);out.eval(eo);}
+   }
+   return 1;
+  }
   if(op=="qsequence") {
    if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A sequence state placeholder must be a symbolic variable.",NULL);return 0;}
    const MathStructure &steps=raw[0];
@@ -127,5 +148,5 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
 }

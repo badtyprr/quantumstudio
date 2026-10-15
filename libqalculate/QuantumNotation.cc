@@ -257,6 +257,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
+ {"qsumset",3},
  {"qpostselect",2},
  {"qpower",2},
  {"qlogm",1},
@@ -331,14 +332,16 @@ class Parser {
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned nextBoundIndex=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
-  size_t index=((name=="qphasefunction" || name=="qsequence") && args.size()==3) ? 2 :
+  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset") && args.size()==3) ? 2 :
    ((name=="sum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
   if(!index)return;
   std::string original=args[index];
   while(original.size()>2 && original.front()=='(' && original.back()==')')
    original=original.substr(1,original.size()-2);
-  if(original.size()<3 || original.front()!='"' || original.back()!='"' ||
-     original.find('"',1)!=original.size()-1)return;
+  bool plain=(name=="qsumset" || name=="sum" || name=="product") && !original.empty() && original!="pi" && original!="i" && original!="e";
+  for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
+  if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
+     original.find('"',1)!=original.size()-1))return;
   std::string symbol;
   bool used;
   do {
@@ -350,6 +353,12 @@ class Parser {
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
   while((at=args[0].find(original,at))!=std::string::npos) {
+   if(plain) {
+    auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
+    bool quoted=false;for(size_t k=0;k<at;++k)if(args[0][k]=='"')quoted=!quoted;
+    if(quoted || (at && identifier(args[0][at-1])) ||
+       (at+original.size()<args[0].size() && identifier(args[0][at+original.size()]))) {at+=original.size();continue;}
+   }
    args[0].replace(at,original.size(),symbol);at+=symbol.size();checkSize(args[0]);
   }
   args[index]=symbol;
@@ -807,6 +816,7 @@ class Parser {
     if(name=="feedforward") name="qfeedforward";
     if(name=="tensorpow") name="qtensorpow";
     if(name=="tensorproduct") name="qtensorproduct";
+    if(name=="sumset") name="qsumset";
     if(name=="blocksum") name="qblocksum";
     if(name=="probs") name="qprobs";
     if(name=="QFT") name="qft";
@@ -1033,6 +1043,10 @@ class Parser {
     } else {
     std::vector<std::string> args;
     if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
+    if(name=="qtexsumset") {
+     if(args.size()!=2)throw std::runtime_error("A set sum requires a collection and index.");
+     name="qsumset";args.insert(args.begin(),product());
+    }
     if(name=="qtexsum" || name=="qtexprod" || name=="qtexbigotimes" || name=="qtexbigoplus") {
      if(args.size()!=3)throw std::runtime_error("A finite sum/product requires lower bound, upper bound and index.");
      name=name=="qtexsum" ? "sum" : name=="qtexprod" ? "product" : name=="qtexbigotimes" ? "qtensorproduct" : "qblocksum";

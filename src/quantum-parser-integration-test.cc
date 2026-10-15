@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
+#include "QuantumIndexed.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -15,8 +16,24 @@ int main(){try {
  Calculator calculator;if(!calculator.loadGlobalDefinitions())throw std::runtime_error("Definitions unavailable");
 #ifdef LOCAL_CHECKPOINT
  registerQuantumAlgebra(calculator);
+ registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \prod_{\alpha=1}^{2}{\sum_{\alpha\in\{2,3\}}{\alpha}})","25");
+ equal(R"(quantum: \sum_{\alpha\in\{0,1\}}{\prod_{\alpha=2}^{3}{\alpha}})","12");
+
+ equal(R"(quantum: \sum_{\alpha=0}^{1}{\sum_{\alpha\in\{2,3\}}{\alpha}})","10");
+
+ equal(R"(quantum: \sum_{k=0}^{1}{\sum_{k\in\{2,3\}}{k}})","10");
+ equal(R"(quantum: \sum_{k\in\{2,3\}}{\sum_{k=0}^{1}{k}})","2");
+ equal(R"(quantum: sumset(k,[0,2,5],k))","7");
+
+ equal(R"(quantum: \sum_{k\in\{0,2,5\}}{k^2})","29");
+ equal(R"(quantum: \sum_{k\in\{1,1,2\}} k+1)","4");
+ equal(R"(quantum: \sum_{k\in\{\}}{k})","0");
+ equal(R"(quantum: \sum_{k\in\{0,1\}} |k>_2<k|_2)","identity(2)");
+ equal(R"(quantum: \sum_{a_0\in\{1,3\}}{\sum_{a_0\in\{a_0,a_0+1\}}{a_0}})","10");
+
  equal("quantum: \\tilde{x}-\\widetilde{x}","0");
  equal("quantum: \\sum_{\\tilde{k}=0}^{3} \\tilde{k}","6");
  equal("quantum: \\sum_{\\tilde{k}=0}^{2} (\\tilde{k}+k)","3+3*k");
