@@ -72,6 +72,10 @@ int main(){try {
  equal(R"(quantum: QFT_{2^2}^\dagger QFT_4)","identity(4)");
  equal("quantum: QFT_1","matrix(1,1,[1])");
  equal("quantum: QFT_3|0>_3","[1;1;1]/sqrt(3)");
+ for(unsigned phase=0;phase<4;++phase) {
+  equal(R"(quantum: QFT_4^\dagger(\frac{1}{2}\sum_{a_0=0}^1\sum_{a_1=0}^1 e^{2\pi i(2*a_1+a_0)*)"+std::to_string(phase)+R"(/4}\vert a_1 a_0\rangle))",
+        "qbasis("+std::to_string(phase)+",4)");
+ }
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
