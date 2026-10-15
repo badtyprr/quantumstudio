@@ -87,7 +87,7 @@ Direct-paste gaps were reproduced at `3da8f2ca`: `\sum_{k\in S_0} |k><k|` and `\
 
 Floor and ceiling brackets accept both TeX (`\lfloor x\rfloor`, `\lceil x\rceil`) and Unicode (`⌊x⌋`, `⌈x⌉`), including nesting and delimiter sizing. They use mathematical floor and ceiling, so `⌊-3/2⌋ = -2` and `⌈-3/2⌉ = -1`. Empty, mismatched and unclosed brackets are rejected.
 
-For example, the approximation in IBM's [Grover iteration-count lesson](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations), `\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor`, evaluates to `3`. The angle-dependent formula currently requires an explicit dimensionless radian value: inverse trig functions return angle units, so directly composing `\lfloor\pi/(4\sin^{-1}(1/2))\rfloor` remains unevaluated. Quantum angle conventions and implicit set cardinalities remain work items; this does not certify the entire lesson.
+For example, the approximation in IBM's [Grover iteration-count lesson](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations), `\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor`, evaluates to `3`. The angle-dependent formula `\lfloor\pi/(4\sin^{-1}(1/2))\rfloor` evaluates to `1`. Quantum inverse trig functions return dimensionless radian values so the ratio is a number. Implicit set cardinalities remain work items; these examples do not certify the entire lesson.
 
 ## Named ket validation
 
@@ -97,7 +97,7 @@ For a sum over integer basis indices, specify the state dimension: `\sum_{x\in\{
 
 ## TeX trigonometric powers
 
-`\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. Inverse results retain the library's angle units and principal-branch conventions.
+`\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. In quantum mode these commands and `asin`, `acos`, `atan` return dimensionless radian values, preserving the library's principal branches. For example, `asin(1/2)` gives `pi/6`. The internal functions are `qasin`, `qacos`, and `qatan`; unresolved calls retain the radian convention when evaluated after substitution. Ordinary calculator-mode inverse trig behavior is unchanged.
 
 Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and `\sin^{-2}(pi/6)` gives `4`. The inverse interpretation applies to the literal exponent `-1`; write `(\sin(x))^{-1}` for a reciprocal. Powered functions require a parenthesized or braced argument, optionally with TeX delimiter-sizing commands such as `\left` or `\biggl`. Unbraced powered-function arguments remain unfinished.
 

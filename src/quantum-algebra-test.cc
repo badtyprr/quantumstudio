@@ -17,6 +17,22 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(AngleUnit mode:{ANGLE_UNIT_NONE,ANGLE_UNIT_RADIANS,ANGLE_UNIT_DEGREES}) {
+  eo.parse_options.angle_unit=mode;
+  equal("qasin(1/2)","pi/6");equal("qacos(1/2)","pi/3");equal("qatan(1)","pi/4");
+  equal("qasin(-1)","-pi/2");equal("qacos(-1)","pi");equal("qatan(-1)","-pi/4");
+ }
+ eo.parse_options.angle_unit=ANGLE_UNIT_NONE;
+ MathStructure symbol=calculator.calculate("x",eo),delayed=calculator.calculate("qasin(x)",eo);
+ delayed.replace(symbol,MathStructure(Number(1,2)));eo.parse_options.angle_unit=ANGLE_UNIT_DEGREES;delayed.eval(eo);
+ MathStructure reference=calculator.calculate("pi/6",eo);delayed.transform(COMPARISON_EQUALS,reference);delayed.eval(eo);
+ if(!delayed.isNumber() || !delayed.number().isOne())throw std::runtime_error("Deferred inverse changed angle convention");++checks;
+ equal("asin(1/2)","30");
+ eo.parse_options.angle_unit=ANGLE_UNIT_NONE;
+ equal("qasin(i)","i*asinh(1)");
+ eo.approximation=APPROXIMATION_APPROXIMATE;
+ equal("floor(pi/(4*qasin(sqrt(1/2))))","1");
+ eo.approximation=APPROXIMATION_EXACT;
  equal("qketstate([1;i])","[1;i]");
  equal("qketstate([3;4])","[3;4]");
  MathStructure oversized;oversized.clearMatrix();oversized.resizeMatrix(1025,1,m_zero);

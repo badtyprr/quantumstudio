@@ -279,6 +279,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qresetall",1},
  {"qshift",1},
  {"qsinhc",1},
+ {"qasin",1},{"qacos",1},{"qatan",1},
  {"qsumgate",2},
  {"qsuperop",1},
  {"qtensor",2},
@@ -852,6 +853,7 @@ class Parser {
     if(name=="exp" || name=="expm") name="qexp";
     if(name=="logm") name="qlogm";
     if(name=="sinhc") name="qsinhc";
+    if(name=="asin" || name=="acos" || name=="atan")name="q"+name;
     if(name=="evolution") name="qevolution";
     if(name=="born") name="qborn";
     if(name=="postselect") name="qpostselect";
