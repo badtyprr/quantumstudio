@@ -14,6 +14,23 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm-import.py \
 	windows/test-qasm-import.py \
 	windows/test-qasm-protocol.py \
+	windows/BoundedUtf8File.cs \
+	windows/CircuitComposer.cs \
+	windows/CircuitFileTests.cs \
+	windows/CssCircuitTests.cs \
+	windows/CssEncoderCircuitTests.cs \
+	windows/MainWindow.xaml \
+	windows/Notation-guide.html \
+	windows/QasmAngle.cs \
+	windows/QasmImport.cs \
+	windows/QasmImportTests.cs \
+	windows/QuantumStudio.cs \
+	windows/SessionStore.cs \
+	windows/SessionStoreTests.cs \
+	windows/build-gui.ps1 \
+	windows/examples.json \
+	windows/test-gui.ps1 \
+	windows/test-keyboard.ps1 \
 	windows/build-native.sh
 
 pkgconfigdir = $(libdir)/pkgconfig

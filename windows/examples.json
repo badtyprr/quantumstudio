@@ -1,0 +1,786 @@
+[
+  {
+    "category": "States and measurements",
+    "title": "Encode a logical superposition",
+    "description": "A CSS encoding isometry maps |i⟩ into the repetition code while preserving its relative phase. Decoding with its adjoint returns the original state.",
+    "expression": "norm(css_encoder([],[1,1,0;0,1,1])|i⟩ - (|000⟩+i|111⟩)/sqrt(2))",
+    "expected": "0"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Build a CSS code from binary checks",
+    "description": "X and Z checks on all four qubits define a code with two logical qubits and distance two.",
+    "expression": "stabilizer_parameters(css_generators([1,1,1,1], [1,1,1,1]))",
+    "expected": "[4  2  2]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Prepare a CSS coset state",
+    "description": "The checks XX and ZZ define a Bell state. The representative 0 selects its uniform superposition over 00 and 11.",
+    "expression": "css_state([1,1], [1,1], 0)",
+    "expected": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Paste a Qiskit Pauli label",
+    "description": "A single-quoted Pauli label with a -1j phase prefix maps |000⟩ to |110⟩ exactly.",
+    "expression": "Pauli('-1jXYZ')|000⟩",
+    "expected": "[0; 0; 0; 0; 0; 0; 1; 0]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Correct a detected bit flip",
+    "description": "The syndrome [1,1] selects a middle-qubit X correction for the repetition code. Applying it restores the encoded superposition; fidelity is one.",
+    "expression": "fidelity(stabilizer_correction(⟨ZZI,IZZ⟩,[1,1])pauli(IXI)(|000⟩+i|111⟩), |000⟩+i|111⟩)",
+    "expected": "1"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Find a quantum code's distance",
+    "description": "The five-qubit code encodes one logical qubit with distance three. The result lists [physical qubits, logical qubits, distance]; it can correct any single-qubit Pauli error.",
+    "expression": "stabilizer_parameters(⟨XZZXI, IXZZX, XIXZZ, ZXIXZ⟩)",
+    "expected": "[5  1  3]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Detect a bit-flip error with stabilizers",
+    "description": "The repetition-code checks ZZI and IZZ both anticommute with a flip on the middle qubit. Syndrome bits 1,1 mean both stabilizer measurements change sign.",
+    "expression": "stabilizer_syndrome(⟨ZZI, IZZ⟩, pauli(IXI))",
+    "expected": "[1  1]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Paste a stabilizer group",
+    "description": "Angle brackets enclose Pauli generators. Adjacent letters inside the group are tensor factors: XX and ZZ stabilize the Bell state Phi+.",
+    "expression": "stabilizer_projector(⟨XX, ZZ⟩)",
+    "expected": "[0.5  0  0  0.5; 0  0  0  0; 0  0  0  0; 0.5  0  0  0.5]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "Paste a LaTeX expectation value",
+    "description": "The physics-package expval macro evaluates the observable in an explicit state. The +1 eigenstate of Pauli Y is |i⟩, including its complex phase.",
+    "expression": "\\expval{\\sigma_y}{i}",
+    "expected": "1"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Build a quantum gate from a binary map",
+    "description": "The binary map (x0,x1) → (x0,x0 XOR x1) becomes CNOT. Acting on |+0⟩ entangles the qubits; only 00 and 11 are measured.",
+    "expression": "probs(linear_gate([1,0;1,1])|+0⟩)",
+    "expected": "[0.5; 0; 0; 0.5]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Invert a reversible binary map",
+    "description": "Invert a linear bit transformation over GF(2). XOR is the addition operation, so the inverse can differ from its ordinary real-valued matrix inverse.",
+    "expression": "gf2_inverse([1,1,0;0,1,1;0,0,1])",
+    "expected": "[1  1  1; 0  1  1; 0  0  1]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Solve Simon measurement equations",
+    "description": "Measured strings 010 and 101 constrain the hidden mask. Solve their homogeneous equations over GF(2); the nonzero nullspace basis vector is 101. All XOR combinations of basis columns are solutions.",
+    "expression": "gf2_nullspace([0,1,0;1,0,1])",
+    "expected": "[1; 0; 1]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Recover a parity mask with XOR",
+    "description": "The predicate x>=2 xor x mod 2 is the parity of the two input bits. Its phase oracle and two Hadamards recover the mask 11 with ideal probability 1.",
+    "expression": "probs((H@H)phase_function(x>=2 xor x mod 2,2,x)|++⟩)",
+    "expected": "[0; 0; 0; 1]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "A compound oracle predicate",
+    "description": "The predicate x=1 or x=3 marks states whose last bit is 1. Acting on |++⟩ produces |+−⟩; inspect the minus signs in the amplitudes.",
+    "expression": "phase_function(x=1 or x=3,2,x)|++⟩",
+    "expected": "[0.5; −0.5; 0.5; −0.5]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Grover search with an equality predicate",
+    "description": "Use x=3 directly as the oracle predicate. It marks the two-qubit state |11⟩; one diffusion step yields that outcome with ideal probability 1.",
+    "expression": "probs(diffusion(2)phase_function(x=3,2,x)|++⟩)",
+    "expected": "[0; 0; 0; 1]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Grover search with a formula-defined phase oracle",
+    "description": "On two-bit indices, floor(x/3) is 1 only for x=3. The phase oracle marks |11⟩ and one diffusion step amplifies its ideal probability to 100%.",
+    "expression": "probs(diffusion(2)phase_function(floor(x/3),2,x)|++⟩)",
+    "expected": "[0; 0; 0; 1]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Bernstein–Vazirani from an oracle expression",
+    "description": "Build the parity oracle for hidden string 101 directly from its binary inner-product formula. Hadamards and phase kickback recover 101 on the three input wires.",
+    "expression": "probs((H @ H @ H @ I)oracle_function(bitdot(\"101\",bits(x,3)),3,1,x)(H @ H @ H @ I)|000,−⟩,[0,1,2])",
+    "expected": "[0; 0; 0; 0; 0; 1; 0; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Fixed-width binary registers",
+    "description": "Convert integer indices to four-bit registers, combine them with XOR, and decode the result. Leading zeros remain part of each vector until it is decoded.",
+    "expression": "bitvalue(bitxor(bits(5,4),bits(6,4)))",
+    "expected": "3"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Binary oracle identities",
+    "description": "Entrywise XOR retains leading zeros and the width of each register. Its bit-vector result composes directly with the binary inner product.",
+    "expression": "bitdot(bitxor(\"001\",\"101\"),\"100\")",
+    "expected": "1"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Binary phase kickback",
+    "description": "The binary inner product counts overlapping 1 bits modulo 2. Its parity determines the phase sign used in Bernstein–Vazirani and Walsh–Hadamard formulas.",
+    "expression": "(-1)^bitdot(\"101\",\"100\")",
+    "expected": "−1"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Comma-separated input registers",
+    "description": "A comma inside the ket separates tensor-product registers. The controlled gate turns |+,0⟩ into the correlated Bell state.",
+    "expression": "probs(CNOT|+,0⟩)",
+    "expected": "[0.5; 0; 0; 0.5]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Bell probability from separate register bras",
+    "description": "Adjacent output bras and input kets form their respective registers before contracting with the gate. Squaring the 11 amplitude gives the Bell-state outcome probability.",
+    "expression": "(<1|<1|CNOT|+⟩|0⟩)^2",
+    "expected": "0.5"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Adjacent registers through a controlled gate",
+    "description": "Adjacent kets form a tensor-product register before the gate acts. CNOT applied to |+⟩|0⟩ prepares Φ+, with correlated 00 and 11 outcomes. Ordinary matrix juxtaposition still multiplies matrices.",
+    "expression": "probs(CNOT|+⟩|0⟩)",
+    "expected": "[0.5; 0; 0; 0.5]"
+  },
+  {
+    "category": "States and measurements",
+    "title": "The Bell singlet",
+    "description": "Ψ− is the normalized state (|01⟩−|10⟩)/√2. Its computational outcomes are always opposite. Bell labels accept Greek, ASCII, and LaTeX forms with an explicit sign.",
+    "expression": "probs(|Ψ⁻⟩)",
+    "expected": "[0; 0.5; 0.5; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Fourier transform of a zero register",
+    "description": "The label 0^3 means three repeated zero bits, equivalent to |000⟩ or |0⟩ tensor-cubed. QFT(3) creates a uniform distribution over its eight basis states.",
+    "expression": "probs(QFT(3)|0^3⟩)",
+    "expected": "[0.125; 0.125; 0.125; 0.125; 0.125; 0.125; 0.125; 0.125]"
+  },
+  {
+    "category": "Algorithms",
+    "title": "An order-finding orbit in ket notation",
+    "description": "The orbit of 1 under multiplication by 2 modulo 15 contains 1, 2, 4, and 8. The indexed sum builds its normalized superposition, using the new infix modular notation inside a dimension-qualified ket.",
+    "expression": "\\sum_{k=0}^{3}{|2^k\\bmod 15>_16}/2",
+    "expected": "[0; 0.5; 0.5; 0; 0.5; 0; 0; 0; 0.5; 0; 0; 0; 0; 0; 0; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Sum over computational basis states",
+    "description": "A dimension-qualified ket evaluates its index inside the sum. This builds the normalized two-qubit uniform state, equivalent to H⊗H acting on |00⟩. Unsuffixed binary labels keep their leading zeroes.",
+    "expression": "\\frac{1}{2}\\sum_{k=0}^{3}{\\ket{k}_4}",
+    "expected": "[0.5; 0.5; 0.5; 0.5]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "A controlled gate from blocks",
+    "description": "An indexed direct sum puts I in the control-zero block and X in the control-one block. The result is CNOT, with the first qubit as control. Blocks follow increasing index order.",
+    "expression": "(\\bigoplus_{k=0}^{1}{X^k})|10>",
+    "expected": "[0; 0; 0; 1]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Indexed layer of rotations",
+    "description": "The finite tensor product puts increasing indices left to right. Ry(2π) contributes a minus sign, so this layer returns −|010⟩. Bounds are inclusive; put the TeX operand in braces.",
+    "expression": "\\bigotimes_{k=0}^{2}{Ry(k*pi)}|000>",
+    "expected": "[0; 0; −1; 0; 0; 0; 0; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Recover a gate from its logarithm",
+    "description": "logm uses the natural matrix logarithm, with argument +π at negative real eigenvalues. Exponentiating it reconstructs X, including its global phase. For evolution exp(−iHt), take H=i logm(U) at unit time.",
+    "expression": "norm(vec(expm(logm(X))-X))",
+    "expected": "0"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Pasted multiplication and division",
+    "description": "Typographic multiplication and division signs follow the same ordering rules as * and /. This verifies the noncommuting Pauli identity XY=iZ with symbols copied from mathematical text.",
+    "expression": "norm(vec((X×Y)÷2−i⋅Z∕2))",
+    "expected": "0"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Pasted square-root notation",
+    "description": "Unicode radicals accept gates and grouped expressions. Here √SWAP is the same matrix root as sqrt(SWAP), with its principal complex phase retained.",
+    "expression": "probs(√SWAP|01⟩)",
+    "expected": "[0; 0.5; 0.5; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "A square-root SWAP gate",
+    "description": "Fractional matrix powers preserve the principal branch and global phase. Applying this root twice gives SWAP; one application entangles the initial product state.",
+    "expression": "probs(sqrt(SWAP)|01⟩)",
+    "expected": "[0; 0.5; 0.5; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Echoed cross-resonance gate",
+    "description": "ECR uses ordered operands, with the first on the left in tensor products. This checks its exact standard-gate decomposition, including the global phase required when the gate is controlled.",
+    "expression": "norm(vec(ECR-exp(-i*pi/4)*(X @ I)*CNOT*(S @ SX)))",
+    "expected": "0"
+  },
+  {
+    "category": "State analysis",
+    "title": "Entanglement left after mixing",
+    "description": "Half a Bell state mixed with uniform noise has negativity 0.125. Unlike marginal entropy, negativity detects entanglement in this mixed state. Subsystem zero is the leftmost qubit.",
+    "expression": "negativity(density((|00⟩+|11⟩)/sqrt(2))/2+identity(4)/8,0)",
+    "expected": "0.125000000000"
+  },
+  {
+    "category": "Quantum channels",
+    "title": "Overlap of operator expressions",
+    "description": "Double brackets use column-stacked operators. Parentheses let a label contain an expression; this overlap is the Hilbert–Schmidt product Tr(A†A), without normalization.",
+    "expression": "⟪(X+iY)|(X+iY)⟫",
+    "expected": "4"
+  },
+  {
+    "category": "Quantum channels",
+    "title": "Lindblad relaxation toward the ground state",
+    "description": "A collapse operator carries the square root of its rate. This unit-rate lowering operator gives the derivative of the excited-state density matrix, gaining ground population and losing excited population.",
+    "expression": "unvec(liouvillian(0I,vector(destroy(2)))vec(density(|1⟩)),2)",
+    "expected": "[1  0; 0  −1]"
+  },
+  {
+    "category": "Quantum channels",
+    "title": "A commutator in operator space",
+    "description": "spre(A) and spost(A) multiply an operator from the left and right. Their difference implements the commutator in the column-stacking basis.",
+    "expression": "norm((spre(Y)-spost(Y))vec(X)-vec(comm(Y,X)))",
+    "expected": "0"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "Rotation about an equatorial axis",
+    "description": "R(theta,phi) rotates through theta about cos(phi)X+sin(phi)Y. At phi=pi/2 it is Ry; both parameters are in radians.",
+    "expression": "bloch(R(pi/2,pi/2)|0⟩)",
+    "expected": "[1; 0; 0]"
+  },
+  {
+    "category": "Quantum circuits",
+    "title": "A gate controlled by a binary pattern",
+    "description": "The quoted pattern must contain one bit per control. The leftmost control is the most significant bit; here X activates only when the controls are 01.",
+    "expression": "controlled(X,2,\"01\")|010⟩",
+    "expected": "[0; 0; 0; 1; 0; 0; 0; 0]"
+  },
+  {
+    "category": "Quantum channels",
+    "title": "Chi process matrix of the phase gate",
+    "description": "The normalized Pauli convention gives E(rho)=sum(chi_ij P_i rho P_j)/d. Complex off-diagonal entries preserve relative phases; this matrix does not compose channels by ordinary multiplication.",
+    "expression": "chi(vector(S))",
+    "expected": "[1  0  0  i; 0  0  0  0; 0  0  0  0; −i  0  0  1]"
+  },
+  {
+    "category": "Bloch sphere",
+    "title": "Inspect one qubit of an entangled pair",
+    "description": "The optional wire index selects a qubit, with wire 0 leftmost. Each qubit of this pure Bell pair is individually maximally mixed, at the sphere center.",
+    "expression": "bloch((|00⟩+|11⟩)/sqrt(2),0)",
+    "expected": "[0; 0; 0]"
+  },
+  {
+    "category": "Bloch sphere",
+    "title": "A pure state on the Y axis",
+    "description": "Bloch coordinates are the normalized Pauli X, Y, Z expectations. This expression also opens the sphere view, with vector length and purity.",
+    "expression": "bloch(|i⟩)",
+    "expected": "[0; 1; 0]"
+  },
+  {
+    "category": "Bloch sphere",
+    "title": "Watch damping move a state inward",
+    "description": "Amplitude damping reduces Y coherence and moves the state toward +Z, the ground-state pole. The shorter vector indicates a mixed state.",
+    "expression": "bloch(channel(density(|i⟩),amplitude_damping(3/4)))",
+    "expected": "[0; 0.5; 0.75]"
+  },
+  {
+    "category": "Noise channels",
+    "title": "Relaxation from T1 and T2",
+    "description": "Use consistent time units for T1, T2 and elapsed time. At T1=T2=1 and time ln(2), the Y coherence decays to one half.",
+    "expression": "expect(Y,channel(density(|i⟩),thermal_relaxation(1,1,ln(2),1/4)))",
+    "expected": "0.5"
+  },
+  {
+    "category": "Channel representations",
+    "title": "Pauli coordinates of a Y eigenstate",
+    "description": "paulivec uses the normalized Pauli basis. Multiplying by sqrt(2) gives the familiar augmented Bloch coordinates [1,x,y,z].",
+    "expression": "sqrt(2)paulivec(density(|i⟩))",
+    "expected": "[1; 0; 1; 0]"
+  },
+  {
+    "category": "Channel representations",
+    "title": "Reconstruct a noisy state from Pauli coordinates",
+    "description": "Convert the density matrix to Pauli coordinates, apply a damping PTM, then use unpaulivec to reconstruct the output density matrix.",
+    "expression": "unpaulivec(ptm(amplitude_damping(3/4))paulivec(density(|i⟩)))",
+    "expected": "[0.875  −0.25i; 0.25i  0.125]"
+  },
+  {
+    "category": "Channel representations",
+    "title": "Amplitude damping in the Pauli basis",
+    "description": "The Pauli transfer matrix uses rows and columns I, X, Y, Z. Its first column shows the shift toward the ground state; the remaining columns describe Bloch-vector contraction.",
+    "expression": "ptm(amplitude_damping(3/4))",
+    "expected": "[1  0  0  0; 0  0.5  0  0; 0  0  0.5  0; 0.75  0  0  0.25]"
+  },
+  {
+    "category": "Channel representations",
+    "title": "Rotate Bloch coordinates with a phase gate",
+    "description": "The augmented Bloch vector of |+⟩ is [1,x,y,z]=[1,1,0,0]. The S channel sends it to |i⟩, with y=1.",
+    "expression": "ptm(vector(S))[1;1;0;0]",
+    "expected": "[1; 0; 1; 0]"
+  },
+  {
+    "category": "Noise channels",
+    "title": "Relax toward a thermal population",
+    "description": "The optional second parameter is the equilibrium probability of |1⟩. Complete relaxation sends any input to that diagonal mixed state.",
+    "expression": "probs(channel(density(|i⟩),amplitude_damping(1,1/4)))",
+    "expected": "[0.75; 0.25]"
+  },
+  {
+    "category": "Noise channels",
+    "title": "Combine relaxation and dephasing",
+    "description": "Amplitude 1/4 and phase damping 1/2 leave half the initial coherence. The third parameter sets the equilibrium excited-state population to 1/4.",
+    "expression": "expect(Y,channel(density(|i⟩),phase_amplitude_damping(1/4,1/2,1/4)))",
+    "expected": "0.5"
+  },
+  {
+    "category": "Noise channels",
+    "title": "Energy loss from an excited qubit",
+    "description": "Amplitude damping with probability 3/4 transfers excited-state population to |0⟩. The constructor returns Kraus matrices for channel().",
+    "expression": "probs(channel(density(|1⟩),amplitude_damping(3/4)))",
+    "expected": "[0.75; 0.25]"
+  },
+  {
+    "category": "Noise channels",
+    "title": "Partial loss of phase coherence",
+    "description": "Phase damping leaves populations unchanged and scales coherence by sqrt(1-p). At p=3/4 the X expectation of |+⟩ falls to 1/2.",
+    "expression": "expect(X,channel(density(|+⟩),phase_damping(3/4)))",
+    "expected": "0.5"
+  },
+  {
+    "category": "Noise channels",
+    "title": "Depolarize one half of a Bell pair",
+    "description": "Applying complete depolarization to wire 0 destroys the Bell correlations. The two-qubit state becomes maximally mixed, with purity 1/4.",
+    "expression": "purity(channel(density((|00⟩+|11⟩)/sqrt(2)),depolarizing(1),0))",
+    "expected": "0.25"
+  },
+  {
+    "category": "Gates",
+    "title": "Pauli ladder combination",
+    "description": "The imaginary coefficient in iY is multiplied by the Pauli Y matrix. (X+iY)/2 lowers |1⟩ to |0⟩.",
+    "expression": "((X+iY)/2)|1⟩",
+    "expected": "[1; 0]"
+  },
+  {
+    "category": "TeX",
+    "title": "Operator hats in a matrix element",
+    "description": "Operator hats preserve the named matrix: the hatted Pauli Y has expectation 1 in |i⟩.",
+    "expression": "\\bra{i}\\hat{\\sigma}_{y}\\ket{i}",
+    "expected": "1"
+  },
+  {
+    "category": "Fermionic operators",
+    "title": "Fermionic swap keeps the exchange sign",
+    "description": "FSWAP exchanges adjacent Jordan–Wigner modes. Swapping two occupied modes adds a minus sign, unlike ordinary SWAP.",
+    "expression": "FSWAP |11⟩",
+    "expected": "[0; 0; 0; −1]"
+  },
+  {
+    "category": "Fermionic operators",
+    "title": "Jordan–Wigner parity sign",
+    "description": "Removing the fermion at mode 1 from |110⟩ contributes a minus sign because mode 0 is occupied. Mode 0 is the leftmost bit.",
+    "expression": "fdestroy(3,1)|110⟩",
+    "expected": "[0; 0; 0; 0; −1; 0; 0; 0]"
+  },
+  {
+    "category": "Bosonic operators",
+    "title": "Lower a Fock state",
+    "description": "In a five-level truncation, a|2⟩ = √2|1⟩. Explicit dimension suffixes distinguish occupation numbers from binary qubit labels.",
+    "expression": "norm(destroy(5)|2⟩_5-sqrt(2)|1⟩_5)",
+    "expected": "0"
+  },
+  {
+    "category": "Bosonic operators",
+    "title": "The truncation boundary matters",
+    "description": "The finite-dimensional commutator is I − d|d−1⟩⟨d−1|. Its expectation on the top state is −4 for d=5, not 1.",
+    "expression": "expect(comm(destroy(5),create(5)),|4⟩_5)",
+    "expected": "−4"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Phase estimation: modular multiplier eigenphase",
+    "description": "The work register is an eigenstate of multiplication by 2 modulo 15 with eigenvalue i. Controlled powers and an inverse QFT recover phase 1/4 as the counting-register bitstring 01.",
+    "expression": "probs(apply(QFT(2)†,apply(controlled(modmul(2,15)),apply(controlled(modmul(2,15)^2),(|+⟩ ⊗ |+⟩ ⊗ (|0001⟩-i|0010⟩-|0100⟩+i|1000⟩)/2),[0,2,3,4,5]),[1,2,3,4,5]),[0,1]),[0,1])",
+    "expected": "[0; 1; 0; 0]"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Order finding: multiply by 2 modulo 15",
+    "description": "Four modular multiplications return |0001⟩ to itself: 1 → 2 → 4 → 8 → 1. States outside the modulus remain fixed.",
+    "expression": "modmul(2,15)^4 |0001⟩",
+    "expected": "[0; 1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Deutsch–Jozsa: balanced parity function",
+    "description": "The truth table 0,1,1,0 is balanced. The input register returns 11, never 00. The final qubit starts in |−⟩ for phase kickback.",
+    "expression": "probs((H ⊗ H ⊗ I)oracle([0,1,1,0])(H ⊗ H ⊗ I)(|00⟩ ⊗ |−⟩),[0,1])",
+    "expected": "[0; 0; 0; 1]"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Grover search: one marked state",
+    "description": "Two Grover iterations amplify |101⟩ from probability 1/8 to 121/128.",
+    "expression": "born(density(|101⟩),(diffusion(3)phaseoracle(3,5))^2 H^⊗3 |000⟩)",
+    "expected": "0.9453125"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Grover search: two marked states",
+    "description": "One iteration finds either |001⟩ or |110⟩ with certainty. Marked indices are decimal, with the leftmost bit most significant.",
+    "expression": "probs(diffusion(3)phaseoracle(3,[1,6])H^⊗3 |000⟩)",
+    "expected": "[0; 0.5; 0; 0; 0; 0; 0.5; 0]"
+  },
+  {
+    "category": "Quantum channels",
+    "title": "Choi matrix of complete dephasing",
+    "description": "The Kraus operators I/sqrt(2) and Z/sqrt(2) give a Choi matrix with trace 2, in input ⊗ output order.",
+    "expression": "choi(vector(I/sqrt(2),Z/sqrt(2)))",
+    "expected": "[1  0  0  0; 0  0  0  0; 0  0  0  0; 0  0  0  1]"
+  },
+  {
+    "category": "Quantum channels",
+    "title": "Operator double-ket",
+    "description": "Column-stack the Pauli Y operator into a Liouville-space vector; the signs distinguish this from row stacking.",
+    "expression": "|Y⟩⟩",
+    "expected": "[0; i; −i; 0]"
+  },
+  {
+    "category": "Qudits",
+    "title": "Reorder a qubit and qutrit",
+    "description": "Move the qutrit before the qubit while preserving the superposition. Output dimensions are [3,2].",
+    "expression": "permute(|+⟩ ⊗ |2⟩_3,[1,0],[2,3])",
+    "expected": "[0; 0; 0; 0; (1 ∕ √(2)); (1 ∕ √(2))]"
+  },
+  {
+    "category": "Qudits",
+    "title": "Entangle two qutrits",
+    "description": "Fourier preparation followed by modular SUM produces a maximally entangled pair; either qutrit has reduced state I/3.",
+    "expression": "3ptrace(density(SUM(3)(fourier(3) ⊗ identity(3))(|0⟩_3 ⊗ |0⟩_3)),0,[3,3])",
+    "expected": "[1  0  0; 0  1  0; 0  0  1]"
+  },
+  {
+    "category": "Qudits",
+    "title": "Qutrit cyclic shift",
+    "description": "An explicit dimension makes |2>_3 a three-level basis vector; shifting wraps it to |0>_3.",
+    "expression": "shift(3)|2⟩_3",
+    "expected": "[1; 0; 0]"
+  },
+  {
+    "category": "Algorithms",
+    "title": "QFT from elementary gates",
+    "description": "Two-qubit positive-exponent Fourier transform of |01>, including the final wire swap.",
+    "expression": "apply(SWAP,apply(H,apply(CP(pi/2),apply(H,|01⟩,0),[1,0]),1),[0,1])",
+    "expected": "[0.5; 0.5i; −0.5; −0.5i]"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Teleport a phase-sensitive qubit",
+    "description": "Measure Alice's two qubits, apply X/Z corrections to Bob, and trace out Alice. Bob recovers |i>.",
+    "expression": "ptrace(feedforward(feedforward(apply(H,apply(CNOT,|i⟩ ⊗ (|00⟩+|11⟩)/sqrt(2),[0,1]),0),1,1,X,2),0,1,Z,2),[0,1])",
+    "expected": "[0.5  −0.5i; 0.5i  0.5]"
+  },
+  {
+    "category": "Circuits",
+    "title": "Nonadjacent wires",
+    "description": "Control wire 0, target wire 2; the middle wire is untouched.",
+    "expression": "apply(CNOT,|100⟩,[0,2])",
+    "expected": "[0; 0; 0; 0; 0; 1; 0; 0]"
+  },
+  {
+    "category": "Circuits",
+    "title": "Open control",
+    "description": "Flip the target when the leading control is zero.",
+    "expression": "controlled(X,1,0)|00⟩",
+    "expected": "[0; 1; 0; 0]"
+  },
+  {
+    "category": "Circuits",
+    "title": "Textbook Toffoli",
+    "description": "C squared means two controls, both activated on 1.",
+    "expression": "C^{2}(X)|110⟩",
+    "expected": "[0; 0; 0; 0; 0; 0; 0; 1]"
+  },
+  {
+    "category": "Circuits",
+    "title": "U gate state preparation",
+    "description": "Prepare the +Y eigenstate using a three-angle single-qubit gate.",
+    "expression": "expect(Y,U(pi/2,pi/2,0)|0⟩)",
+    "expected": "1"
+  },
+  {
+    "category": "Evolution",
+    "title": "Pauli Hamiltonian",
+    "description": "Evolve under X for pi/2 with hbar equal to one.",
+    "expression": "evolution(X,pi/2)|0⟩",
+    "expected": "[0; −i]"
+  },
+  {
+    "category": "Hamiltonians",
+    "title": "Heisenberg singlet energy",
+    "description": "The singlet has expectation −3 for XX + YY + ZZ.",
+    "expression": "expect(pauli(\"XX\")+pauli(\"YY\")+pauli(\"ZZ\"),(|01⟩-|10⟩)/sqrt(2))",
+    "expected": "−3"
+  },
+  {
+    "category": "Measurement",
+    "title": "Bell probabilities",
+    "description": "The outcomes 00 and 11 each have probability one half.",
+    "expression": "probs(CNOT (H ⊗ I)|00⟩)",
+    "expected": "[0.5; 0; 0; 0.5]"
+  },
+  {
+    "category": "Measurement",
+    "title": "Postselect zero",
+    "description": "Project a plus state onto zero and normalize the branch.",
+    "expression": "postselect(density(|0⟩),|+⟩)",
+    "expected": "[1; 0]"
+  },
+  {
+    "category": "Measurement",
+    "title": "Read an output register",
+    "description": "Measure wires 2 and 0 in that order; the outcome is 01.",
+    "expression": "probs(|100⟩,[2,0])",
+    "expected": "[0; 1; 0; 0]"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Phase a density matrix",
+    "description": "Apply S on the ket and S dagger on the bra.",
+    "expression": "apply(S,density(|+⟩),0)",
+    "expected": "[0.5  −0.5i; 0.5i  0.5]"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Purity of a reduced Bell pair",
+    "description": "A globally pure entangled pair has a mixed single-qubit reduction.",
+    "expression": "purity(ptrace(density((|00⟩+|11⟩)/sqrt(2)),1))",
+    "expected": "0.5"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Reduced Bell state",
+    "description": "Trace out wire 1 to reveal a maximally mixed qubit.",
+    "expression": "ptrace(density((|00⟩+|11⟩)/sqrt(2)),1)",
+    "expected": "[0.5  0; 0  0.5]"
+  },
+  {
+    "category": "Noise",
+    "title": "Amplitude damping",
+    "description": "An excited qubit decays with probability one quarter.",
+    "expression": "channel(density(|1⟩),vector([1,0;0,sqrt(3)/2],[0,1/2;0,0]),0)",
+    "expected": "[0.25  0; 0  0.75]"
+  },
+  {
+    "category": "Noise",
+    "title": "Complete dephasing",
+    "description": "Random I or Z removes coherence from a plus state.",
+    "expression": "channel(density(|+⟩),vector(I/sqrt(2),Z/sqrt(2)),0)",
+    "expected": "[0.5  0; 0  0.5]"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Reset one half of a Bell pair",
+    "description": "Reset wire 0 to zero while preserving the mixed state of wire 1.",
+    "expression": "probs(reset((|00⟩+|11⟩)/sqrt(2),0))",
+    "expected": "[0.5; 0.5; 0; 0]"
+  },
+  {
+    "category": "States",
+    "title": "Bell pair",
+    "description": "Entangle two qubits with Hadamard and CNOT.",
+    "expression": "CNOT (H ⊗ I) |00⟩",
+    "expected": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Measure a Bell pair without reading the outcome",
+    "description": "Z-basis measurement removes quantum coherence but preserves the classical Z correlation.",
+    "expression": "expect(Z ⊗ Z,dephase((|00⟩+|11⟩)/sqrt(2),0))",
+    "expected": "1"
+  },
+  {
+    "category": "TeX",
+    "title": "Pasted bra-ket expression",
+    "description": "Evaluate a Y expectation using mathematical TeX.",
+    "expression": "\\braket{i|Y|i}",
+    "expected": "1"
+  },
+  {
+    "category": "Gates",
+    "title": "Exchange an excitation with iSWAP",
+    "description": "The exchanged state gains a relative phase of i.",
+    "expression": "norm(iSWAP |01⟩ - i|10⟩)",
+    "expected": "0"
+  },
+  {
+    "category": "Spin operators",
+    "title": "Raise a spin-one magnetic state",
+    "description": "Basis index 1 is m=0; Jplus raises it to m=1 with coefficient sqrt(2). Units use hbar=1.",
+    "expression": "norm(J_{+}(1)basis(1,3)-sqrt(2)*basis(0,3))",
+    "expected": "0"
+  },
+  {
+    "category": "Spin operators",
+    "title": "Spin-three-halves total angular momentum",
+    "description": "The squared angular momentum has eigenvalue j(j+1)=15/4 in every magnetic state.",
+    "expression": "expect(Jx(3/2)^2+Jy(3/2)^2+Jz(3/2)^2,basis(2,4))",
+    "expected": "3.75"
+  },
+  {
+    "category": "Spin operators",
+    "title": "Spin singlet in arrow notation",
+    "description": "Up and down denote the Z-basis qubit states 0 and 1. The singlet has zero total z spin.",
+    "expression": "norm((Jz(1/2) ⊗ I + I ⊗ Jz(1/2)) (|↑↓⟩-|↓↑⟩)/sqrt(2))",
+    "expected": "0"
+  },
+  {
+    "category": "Algorithms",
+    "title": "Phase kickback with a compact product ket",
+    "description": "The XOR oracle applies a sign to odd-parity inputs when the output qubit starts in |−⟩.",
+    "expression": "norm(oracle([0,1,1,0]) |++−⟩ - (phaseoracle(2,[1,2]) |++⟩) ⊗ |−⟩)",
+    "expected": "0"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Entropy of one half of a Bell pair",
+    "description": "The reduced qubit is maximally mixed and has one bit of von Neumann entropy. Density-matrix entropy is numerical.",
+    "expression": "entropy(ptrace(density((|00⟩+|11⟩)/sqrt(2)),0))",
+    "expected": "1.00000000000"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Distinguish a pure qubit from a mixed qubit",
+    "description": "Trace distance is zero for identical states and one for perfectly distinguishable states. It is evaluated numerically.",
+    "expression": "tracedistance(|i⟩,I/2)",
+    "expected": "0.500000000000"
+  },
+  {
+    "category": "Mixed states",
+    "title": "Squared fidelity of noncommuting mixed qubits",
+    "description": "Fidelity uses the squared convention, matching Qiskit state_fidelity. These mixed states point along different Bloch axes.",
+    "expression": "fidelity((I+Z/2)/2,(I+X/2)/2)",
+    "expected": "0.875000000000"
+  },
+  {
+    "category": "Two-qubit gates",
+    "title": "Bell state by an even-parity rotation",
+    "description": "Rotate |00⟩ into an equal, positive superposition with |11⟩.",
+    "expression": "probs(XXMinusYY(pi/2,pi/2)|00⟩)",
+    "expected": "[0.5; 0; 0; 0.5]"
+  },
+  {
+    "category": "Entanglement",
+    "title": "Schmidt coefficients of an unequal pair",
+    "description": "The coefficients describe entanglement across the first qubit versus the rest. The input is normalized automatically.",
+    "expression": "schmidt_coeffs(3|00⟩+4i|11⟩,0)",
+    "expected": "[0.800000000000; 0.600000000000]"
+  },
+  {
+    "category": "Operators and norms",
+    "title": "Trace norm of a gate",
+    "description": "Indexed norm bars use the Schatten convention: 1 is trace, 2 is Frobenius, infinity is spectral.",
+    "expression": "‖X‖₁",
+    "expected": "2.00000000000"
+  },
+  {
+    "category": "Operators and norms",
+    "title": "A matrix norm pasted from LaTeX",
+    "description": "Double bars with subscript 1 compute the trace norm. This diagonal matrix has singular values 3 and 4.",
+    "expression": "\\begin{Vmatrix}3&0\\\\0&4\\end{Vmatrix}_1",
+    "expected": "7.00000000000"
+  },
+  {
+    "category": "Quantum algorithms",
+    "title": "Grover search with state reflections",
+    "description": "Reflect in the marked state and the initial uniform state. The leading minus preserves the diffusion convention.",
+    "expression": "probs(-reflection(|++⟩)reflection(|11⟩)|++⟩)",
+    "expected": "[0; 0; 0; 1]"
+  },
+  {
+    "category": "General measurements",
+    "title": "Embed a qubit into a qutrit",
+    "description": "A rectangular Kraus isometry changes the output dimension while preserving the state trace.",
+    "expression": "channel(density(|1⟩),vector([1,0;0,1;0,0]))",
+    "expected": "[0  0  0; 0  1  0; 0  0  0]"
+  },
+  {
+    "category": "General measurements",
+    "title": "Probability of a general measurement effect",
+    "description": "IBM's non-projective two-outcome example. An effect determines probability; it is not itself a Kraus operator.",
+    "expression": "born([2/3,1/3;1/3,1/3],|+⟩)",
+    "expected": "0.833333333333333333333333333333"
+  },
+  {
+    "category": "Indexed spin operators",
+    "title": "Scalar offsets mean identity",
+    "description": "In a spin expression, adding 1 adds the identity operator. This projects onto zero with weight two.",
+    "expression": "expect(1+spin.z(0),|0⟩)",
+    "expected": "2"
+  },
+  {
+    "category": "Indexed spin operators",
+    "title": "CUDA-Q Hamiltonian energy",
+    "description": "The qBraid CUDA-Q example at theta = 0. CUDA-Q index 0 is the rightmost tensor factor, so its prepared state is |01⟩.",
+    "expression": "expect(5.907-2.1433*spin.x(0)*spin.x(1)-2.1433*spin.y(0)*spin.y(1)+0.21829*spin.z(0)-6.125*spin.z(1),|01⟩)",
+    "expected": "−0.43629"
+  },
+  {
+    "category": "IBM Learning",
+    "title": "IBM root fidelity convention",
+    "description": "The General Formulation course uses unsquared fidelity. Qiskit state_fidelity and this app's fidelity function use its square.",
+    "expression": "root_fidelity(|0⟩,|+⟩)",
+    "expected": "0.707106781187"
+  },
+  {
+    "category": "IBM Learning",
+    "title": "Optimal binary state discrimination",
+    "description": "Helstrom success probability for equally likely |0⟩ and |+⟩ states. The trace norm includes the prior weights.",
+    "expression": "1/2+tracenorm((density(|0⟩)-density(|+⟩))/2)/2",
+    "expected": "0.853553390593"
+  },
+  {
+    "category": "Matrix order",
+    "title": "A positive matrix with negative entries",
+    "description": "Positive semidefinite means nonnegative eigenvalues, not nonnegative individual entries.",
+    "expression": "[1,-1;-1,1] ≽ 0",
+    "expected": "1"
+  },
+  {
+    "category": "Matrix order",
+    "title": "Positive entries can be indefinite",
+    "description": "This matrix has eigenvalues 3 and -1, so its positive entries do not make it positive semidefinite.",
+    "expression": "[1,2;2,1] ≽ 0",
+    "expected": "0"
+  },
+  {
+    "category": "Matrix order",
+    "title": "Check a general measurement effect",
+    "description": "An effect must lie between zero and the identity in Hermitian matrix order.",
+    "expression": "0 ≼ [2/3,1/3;1/3,1/3] ≼ I",
+    "expected": "1"
+  }
+]
