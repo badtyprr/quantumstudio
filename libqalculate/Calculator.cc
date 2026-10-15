@@ -13,6 +13,7 @@
 
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
+#include "QuantumGeometry.h"
 #include "QuantumSubsystem.h"
 #include "QuantumGates.h"
 #include "QuantumMeasurement.h"
@@ -1690,6 +1691,7 @@ void Calculator::addBuiltinVariables() {
 
 void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
+	registerQuantumGeometry(*this);
 	registerQuantumSubsystem(*this);
 	registerQuantumGates(*this);
 	registerQuantumMeasurement(*this);
