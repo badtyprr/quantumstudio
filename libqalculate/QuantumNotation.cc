@@ -242,6 +242,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qjminus",1},
  {"qmodmul",2},
  {"qmul",2},
+ {"qadd",2},{"qsub",2},
  {"qadjacent",2},
  {"qspinadd",2},
  {"qnorm",1},
@@ -1166,8 +1167,8 @@ class Parser {
  std::string additive() {
   auto a=product();
   while(true) {
-   if(take('+')) {auto b=product();a=spinContext ? "qspinadd("+a+","+b+")" : "("+a+"+"+b+")";}
-   else if(take('-')) {auto b=product();a=spinContext ? "qspinadd("+a+",(-"+b+"))" : "("+a+"-"+b+")";}
+   if(take('+')) {auto b=product();a=spinContext ? "qspinadd("+a+","+b+")" : "qadd("+a+","+b+")";}
+   else if(take('-')) {auto b=product();a=spinContext ? "qspinadd("+a+",(-"+b+"))" : "qsub("+a+","+b+")";}
    else break;
    checkSize(a);
   }
