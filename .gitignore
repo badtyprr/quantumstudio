@@ -1,4 +1,8 @@
 *.lo
+.tools/
+dist/
+build-win/
+*.exe
 *.o
 *.la
 Makefile
@@ -34,3 +38,5 @@ stamp-h1
 lokalize-scripts/
 main.lqa
 libqalculate.lokalize
+__pycache__/
+*.pyc

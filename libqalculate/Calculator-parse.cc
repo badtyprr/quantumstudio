@@ -1,3 +1,4 @@
+#include "Quantum.h"
 /*
     Qalculate
 
@@ -1457,8 +1458,24 @@ MathStructure *last_is_function(MathStructure &m) {
 void Calculator::parse(MathStructure *mstruct, string str, const ParseOptions &parseoptions) {
 
 	initialize_global_variables();
+	const size_t quantum_prefix = quantumPrefixLength(str);
+	const bool quantum_mode = quantum_prefix != 0;
+	if(quantum_mode) {
+		try { str = translateQuantum(str.substr(quantum_prefix)); }
+		catch(const std::exception &e) {
+			error(true, "%s", e.what(), NULL);
+			mstruct->setUndefined();
+			return;
+		}
+	}
 
 	ParseOptions po = parseoptions;
+	if(quantum_mode) {
+		// Summation indices and symbolic gate parameters must survive CLI defaults
+		// which otherwise discard unknown symbols or interpret them as units.
+		po.unknowns_enabled = true;
+		po.units_enabled = false;
+	}
 
 	if(po.base == BASE_UNICODE || (po.base == BASE_CUSTOM && priv->custom_input_base_i > 62)) {
 		// Read whole expression as a number if the number base digits other than alphanumerical characters

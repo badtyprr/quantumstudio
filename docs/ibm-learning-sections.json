@@ -1,0 +1,853 @@
+{
+  "observed_date": "2026-10-14",
+  "method": "Read the public course catalog, expanded all collapsed lesson groups in each of the 15 course sidebars, and captured their displayed section links. Read the module catalog for the 12 module links. No course text or notebook content is redistributed here.",
+  "scope": "Observed public English catalog and sidebar links; excludes overview pages and exams. Does not claim coverage of videos, downloadable notebooks, practice content or linked external material.",
+  "compatibility_status": "Discovery inventory, not evidence of implementation or complete lesson compatibility. Existing feature tests and partial reviews are recorded separately in learning-source-inventory.json.",
+  "courses": [
+    {
+      "id": "general-formulation-of-quantum-information",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information",
+      "sections": [
+        {
+          "path": "density-matrices/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "density-matrices/density-matrix-basics",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics",
+          "audit_status": "Partial formula audit",
+          "finding": "Hermitian positive-semidefinite and positive-definite matrix inequalities implemented with exact Schur-complement sign checks. Scalar identity bounds, singular matrices and tiny rational pivots tested. Abstract state sets, arbitrary symbolic sign assumptions and full lesson coverage remain unaudited.",
+          "verification": "windows/test-matrix-order.py"
+        },
+        {
+          "path": "density-matrices/convex-combinations",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "density-matrices/bloch-sphere",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "density-matrices/multiple-systems",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-channels/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-channels/quantum-channel-basics",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-channels/representations-of-channels",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-channels/representation-equivalence",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representation-equivalence",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "general-measurements/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "general-measurements/formulations-of-measurements",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "general-measurements/naimark-theorem",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "general-measurements/discrimination-and-tomography",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography",
+          "audit_status": "Partial formula audit",
+          "finding": "Partial: finite binary Helstrom formula, Pauli and tetrahedral tomography verified against independent numerical examples. Symbolic ensemble/set notation, automatic optimal POVM synthesis, multi-state SDP optimization, shot sampling and statistical reconstruction pipelines remain open.",
+          "verification": "windows/test-ibm-measurement-lessons.py"
+        },
+        {
+          "path": "purifications-and-fidelity/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "purifications-and-fidelity/purifications",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications",
+          "audit_status": "Partial formula audit",
+          "finding": "Partial: finite pure-state constructions and subsystem ordering verified through partial trace with rectangular coefficient matrices. Abstract indexed derivations, rank-minimal automatic purification and all examples/proofs are not audited end to end.",
+          "verification": "windows/test-ibm-measurement-lessons.py"
+        },
+        {
+          "path": "purifications-and-fidelity/fidelity",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity",
+          "audit_status": "Partial formula audit",
+          "finding": "Partial: root_fidelity implements the course unsquared convention; fidelity retains Qiskit squared convention. Independent mixed-state numerical examples verified in dimensions 2, 3 and 4. Abstract Uhlmann maximizations, all inequalities/proofs and full programs remain unaudited.",
+          "verification": "windows/test-ibm-measurement-lessons.py"
+        }
+      ]
+    },
+    {
+      "id": "fundamentals-of-quantum-algorithms",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms",
+      "sections": [
+        {
+          "path": "quantum-query-algorithms/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-query-algorithms/query-model-of-computation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-query-algorithms/deutsch-algorithm",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-query-algorithms/deutsch-jozsa-algorithm",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-query-algorithms/simon-algorithm",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/simon-algorithm",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-algorithmic-foundations/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-algorithmic-foundations/factoring-and-gcd",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/factoring-and-gcd",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-algorithmic-foundations/measuring-computational-cost",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/measuring-computational-cost",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-algorithmic-foundations/simulating-classical-computations",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulating-classical-computations",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "phase-estimation-and-factoring/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "phase-estimation-and-factoring/phase-estimation-problem",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-problem",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "phase-estimation-and-factoring/phase-estimation-procedure",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "phase-estimation-and-factoring/shor-algorithm",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grover-algorithm/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grover-algorithm/unstructured-search",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/unstructured-search",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grover-algorithm/grover-algorithm-description",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/grover-algorithm-description",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grover-algorithm/analysis",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grover-algorithm/number-of-iterations",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grover-algorithm/concluding-remarks",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/concluding-remarks",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "basics-of-quantum-information",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information",
+      "sections": [
+        {
+          "path": "single-systems/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "single-systems/classical-information",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/classical-information",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "single-systems/quantum-information",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/quantum-information",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "single-systems/qiskit-implementation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/qiskit-implementation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "multiple-systems/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "multiple-systems/classical-information",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/classical-information",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "multiple-systems/quantum-information",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/quantum-information",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "multiple-systems/qiskit-implementation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/qiskit-implementation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-circuits/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-circuits/circuits",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/circuits",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-circuits/inner-products-and-projections",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-circuits/limitations-on-quantum-information",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "entanglement-in-action/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "entanglement-in-action/quantum-teleportation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/quantum-teleportation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "entanglement-in-action/superdense-coding",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/superdense-coding",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "entanglement-in-action/chsh-game",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/chsh-game",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "entanglement-in-action/qiskit-implementation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "foundations-of-quantum-error-correction",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction",
+      "sections": [
+        {
+          "path": "correcting-quantum-errors/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "correcting-quantum-errors/repetition-codes",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-codes",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "correcting-quantum-errors/shor-code",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "correcting-quantum-errors/discretization-of-errors",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "stabilizer-formalism/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "stabilizer-formalism/pauli-operations-and-observables",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "stabilizer-formalism/repetition-code-revisited",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "stabilizer-formalism/stabilizer-codes",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-code-constructions/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-code-constructions/css-codes",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-code-constructions/toric-code",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-code-constructions/other-code-families",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "fault-tolerant-quantum-computing/introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "fault-tolerant-quantum-computing/approach-to-fault-tolerance",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "fault-tolerant-quantum-computing/controlling-error-propagation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "fault-tolerant-quantum-computing/threshold-theorem",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/threshold-theorem",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "use-a-qc-today",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today",
+      "sections": [
+        {
+          "path": "build-and-run-your-first-quantum-program",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/build-and-run-your-first-quantum-program",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-mechanics-basics",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/quantum-mechanics-basics",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "your-first-quantum-experiment",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/your-first-quantum-experiment",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-computing-context",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/quantum-computing-context",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "continue-your-learning-journey",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/continue-your-learning-journey",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "quantum-computing-in-practice",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "running-quantum-circuits",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/running-quantum-circuits",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "utility-scale-qaoa",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/utility-scale-qaoa",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "applications-of-qc",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/applications-of-qc",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "mapping",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/mapping",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "simulating-nature",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/simulating-nature",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "tools-for-quantum-advantage",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "noise-and-errors",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/noise-and-errors",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "error-suppression",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-suppression",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "error-mitigation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-mitigation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "error-correction-i",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-correction-i",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "integrating-quantum-and-high-performance-computing",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "compute-resources",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/compute-resources",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "programming-models",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/programming-models",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "sqd-skqd",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/sqd-skqd",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "next-steps",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/next-steps",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "quantum-diagonalization-algorithms",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "vqe",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "krylov",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "sqd-overview",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "sqd-implementation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "skqd",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "quantum-machine-learning",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "classical-ml-review",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "data-encoding",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-kernel-methods",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "qvc-qnn",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "variational-algorithm-design",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design",
+      "sections": [
+        {
+          "path": "variational-algorithms",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/variational-algorithms",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "reference-states",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/reference-states",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "ansaetze-and-variational-forms",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/ansaetze-and-variational-forms",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "cost-functions",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/cost-functions",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "optimization-loops",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/optimization-loops",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "instances-and-extensions",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/instances-and-extensions",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "examples-and-applications",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/examples-and-applications",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "quantum-chem-with-vqe",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "hamiltonian-construction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "ansatz",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ansatz",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "classical-optimizers",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/classical-optimizers",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "ground-state",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ground-state",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "geometry",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/geometry",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "utility-scale-quantum-computing",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "bits-gates-and-circuits",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/bits-gates-and-circuits",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "teleportation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/teleportation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grovers-algorithm",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/grovers-algorithm",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-phase-estimation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-phase-estimation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "variational-quantum-algorithms",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-simulation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-simulation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "classical-simulation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/classical-simulation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "hardware",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/hardware",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-circuit-optimization",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-circuit-optimization",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "error-mitigation",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/error-mitigation",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "utility-i",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-i",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "utility-ii",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-ii",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "utility-iii",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-iii",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "quantum-business-foundations",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations",
+      "sections": [
+        {
+          "path": "start-your-quantum-journey",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/start-your-quantum-journey",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "introduction-to-quantum-computing",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/introduction-to-quantum-computing",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-computing-fundamentals",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/quantum-computing-fundamentals",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "quantum-technology",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/quantum-technology",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "business-impacts",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/business-impacts",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "how-to-become-quantum-ready",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/how-to-become-quantum-ready",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    },
+    {
+      "id": "designing-and-leading-quantum-projects",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects",
+      "sections": [
+        {
+          "path": "introduction",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/introduction",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "early-stages",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/early-stages",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "standing-up-team",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/standing-up-team",
+          "audit_status": "Not audited end to end"
+        },
+        {
+          "path": "grant-writing",
+          "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/grant-writing",
+          "audit_status": "Not audited end to end"
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "path": "quantum-mechanics/get-started-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/get-started-with-qiskit",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "quantum-mechanics/superposition-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/superposition-with-qiskit",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "quantum-mechanics/stern-gerlach-measurements-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/stern-gerlach-measurements-with-qiskit",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "quantum-mechanics/exploring-uncertainty-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/exploring-uncertainty-with-qiskit",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "quantum-mechanics/bells-inequality-with-qiskit",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/bells-inequality-with-qiskit",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/deutsch-jozsa",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/deutsch-jozsa",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/grovers",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/grovers",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/quantum-teleportation",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-teleportation",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/quantum-key-distribution",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-key-distribution",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/qft",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/qft",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/shors-algorithm",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/shors-algorithm",
+      "audit_status": "Not audited end to end"
+    },
+    {
+      "path": "computer-science/vqe",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/vqe",
+      "audit_status": "Not audited end to end"
+    }
+  ]
+}

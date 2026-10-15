@@ -1,3 +1,4 @@
+#include "Quantum.h"
 /*
     Qalculate
 
@@ -1683,6 +1684,7 @@ void Calculator::addBuiltinVariables() {
 
 void Calculator::addBuiltinFunctions() {
 
+	registerQuantumFunctions(*this);
 	f_vector = addFunction(new VectorFunction());
 	f_sort = addFunction(new SortFunction());
 	f_rank = addFunction(new RankFunction());

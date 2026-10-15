@@ -1,0 +1,266 @@
+{
+  "repository": "https://github.com/qBraid/qbraid-lab-demo",
+  "commit": "86787e1ba372facc224f925189755e69c479828b",
+  "scope": "Static code-cell and Markdown review of all 35 notebooks at the pinned revision. Selected literal programs and concrete notation are tested separately. This is not full executable compatibility; notebook outputs, linked courses and SDK implementations are not exhaustively audited.",
+  "discovered_notebooks": 35,
+  "reviewed": [
+    {
+      "path": "PyQASM-Examples/deutsch_josza_unroll.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb",
+      "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+      "finding": "Literal OpenQASM imports as five qubits and 18 steps. Independent final-density check confirms all-one data register and minus-state ancilla for the balanced parity oracle. Custom gates, fixed loops and subroutine arguments compile. Measurements discard classical outcomes in the app."
+    },
+    {
+      "path": "PyQASM-Examples/qasm_processing.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_processing.ipynb",
+      "sha256": "4a82502bb158e79847b569785edbd470ce9d03b80773558ebb6d4996b1eba546",
+      "finding": "Ten-qubit literal exceeds editor capacity. Notebook also demonstrates idle-wire removal, barrier removal and wire reversal; those Python module methods are not executable in the app."
+    },
+    {
+      "path": "PyQASM-Examples/qasm_unroll.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb",
+      "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4",
+      "finding": "Ten-qubit ripple-carry adder exceeds editor capacity. Uses constant Boolean arrays, branches, reverse loops, reset and measurement."
+    },
+    {
+      "path": "qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
+      "finding": "Python generates OpenQASM and submits provider jobs. Algorithm equivalents exist, but generated programs in this notebook have not yet been captured and checked."
+    },
+    {
+      "path": "qBraid-Algorithms/qft.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qft.ipynb",
+      "sha256": "bc648239a475fbfead15b185e201e821498369ff5d133ba928603bb1319fc3d3",
+      "finding": "Python generates QFT/inverse-QFT programs and submits jobs. Native QFT exists; exact generated-program audit remains open."
+    },
+    {
+      "path": "qBraid-Algorithms/qpe.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb",
+      "sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
+      "finding": "Generator references unitary.qasm and prepare_state.qasm. This audit did not resolve those files. Histogram processing reverses the phase-register bit order."
+    },
+    {
+      "path": "qBraid-Algorithms/cirq_vqe.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+      "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "finding": "Uses XPowGate, ZPowGate and CZPowGate with half-turn exponents. These mathematical gate calls are now implemented, including global_shift. Python grid construction, GPU simulation, sampling and 25-qubit example remain unsupported."
+    },
+    {
+      "path": "qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+      "sha256": "8e728d49ca432accd2765b9411e37cd6102dd9aca1b9546cf3f01e435d0981da",
+      "finding": "QTRAN gate libraries generate Grover circuits, then Qiskit runs batches. Existing Grover presets do not establish QTRAN/Python compatibility. Generated-program audit remains open."
+    },
+    {
+      "path": "qBraid-SDK/bell_circuit_examples.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/bell_circuit_examples.ipynb",
+      "sha256": "eea3ace95ea4cf2cee1baf72559efe81ee6232ec83f913d8fd7bf07a07c2d140",
+      "finding": "Bell preparation and measurement in ten frameworks. Literal OpenQASM imports as two qubits and four steps; final density independently checked. Python framework constructors, QIR, Stim and cloud-job calls are not executed by the app."
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_devices.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_devices.ipynb",
+      "sha256": "668481d0cfdd2820f08bdc65d5f8d7997674b26ffe4ca9bb1ca93e3220bd4f78",
+      "finding": "Provider discovery, credentials and device metadata only; no mathematical notation to add. Provider API execution remains unsupported."
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+      "sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+      "finding": "Four-qubit circuit combines standard gates, rotations, SX, adjoints, iSWAP and broadcast swaps. Primitive OpenQASM iSWAP import now preserves phases in inverse, integer-power and single-control forms. Native framework transpilation, random 8\u201310-qubit generation and conversion-graph execution remain unsupported."
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+      "sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+      "finding": "Bell circuit and custom conversion-graph edge through OpenQASM 3. Bell mathematics and OpenQASM are supported; Python graph mutation and framework transpilation are not."
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+      "sha256": "5b5ae29f1a5813111d1474d60a13aac6c06c2ef1904f75de73ec75a7224c8145",
+      "finding": "Converts a measured Bell circuit through Qiskit/Cirq/Stim and samples shots. This is SDK execution, not additional matrix notation. Stim sampling and framework conversion are not supported."
+    },
+    {
+      "path": "qBraid-SDK/qbraid_visualization.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_visualization.ipynb",
+      "sha256": "c2231836e666d1776e0e2700ed32d8d8c0138ebcd5f4c087255068020cac3b97",
+      "finding": "Draws circuits/conversion graphs and plots sampled Bell counts. App has circuit and probability visualizations; it does not run these Python plotting functions or cloud jobs."
+    },
+    {
+      "path": "qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+      "finding": "AutoQASM decorators create five-qubit constant and balanced Deutsch-Jozsa circuits. Gates are supported mathematically; decorator execution, program generation and provider submission remain unsupported."
+    },
+    {
+      "path": "qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+      "sha256": "b98d5095d707a0e19ec063a59bc0bff02aa75c134ef814406552d4c8b840a7f5",
+      "finding": "Two literal OpenQASM programs prepare and measure three- and four-qubit GHZ states. Both are independently checked against ideal measured density matrices. QIR provider batching is not implemented."
+    },
+    {
+      "path": "qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+      "sha256": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+      "finding": "Bell preparation converted from Braket via OpenQASM to QIR. Bell mathematics is supported; conversion-graph execution, LLVM IR generation and QIR files are not implemented."
+    },
+    {
+      "path": "qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+      "finding": "Four-qubit GHZ preparation through PyQIR, Cirq and Squin, compared by state-vector dot product. Full SDK/compiler execution is unsupported. For general complex states use the conjugating inner product; the notebook real GHZ example does not expose that distinction."
+    },
+    {
+      "path": "qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+      "sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+      "finding": "Seven-qubit BV circuit with secret 110000, followed by provider sampling. Native equivalents exist; Qiskit construction and AWS job execution remain unsupported."
+    },
+    {
+      "path": "qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+      "sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+      "finding": "Bell circuit, SparsePauliOp ZZ estimator and hardware sampling. Pauli matrices and expectations exist; SparsePauliOp Python construction, layout application and Runtime jobs are unsupported."
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+      "sha256": "6e0aff466dd3a4e97c3d0dfd9da945621e7e5daba553af9d40cb319ae18910f4",
+      "finding": "Six-atom coordinate register with Blackman amplitude and ramp detuning waveforms. Analog pulse scheduling, Pulser objects and provider execution are unsupported; generic matrix evolution does not establish pulse-program compatibility."
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+      "sha256": "586ad421664e4fe76b172cdb80165efb55a8ec9a82bd2c648911a773e02e0c15",
+      "finding": "Batch Bell and GHZ sampling through a provider. State preparation mathematics exists; Python batching and external sampling are unsupported."
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+      "sha256": "0ff2b015561e0bec4690422eb5a00db06d990d13f5c327a2f9b5054b614494f4",
+      "finding": "Nine-atom square lattice with piecewise-linear Rabi/detuning controls and parameter sweeps. Analog register construction, pulse evolution and batch hardware execution remain unsupported."
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+      "sha256": "421214ae6b2701d8bdd3c721741d17bd70a4709c617766dcf3f9472622565dd9",
+      "finding": "Bell preparation in Cirq/Qiskit, simulator and hardware runs, metadata and counts. Gate mathematics exists; framework/provider APIs are unsupported."
+    },
+    {
+      "path": "qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "sha256": "d3e806a15eca86f9c7e92120faa3319b2b9639e2409f497015f2b436817cf66c",
+      "finding": "Bell and six-qubit GHZ chains with noise toggle and fixed sampling seed. Generic app noise channels do not reproduce the provider-specific Pioneer model; provider execution remains unsupported."
+    },
+    {
+      "path": "qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+      "finding": "GHZ population, leakage and Hellinger fidelity computed from counts for two to nine qubits. Hellinger measures now accept aligned nonnegative weight vectors. Provider noise model, cached data loading and Python plotting remain unsupported."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+      "sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+      "finding": "Measured Bell circuit expressed through Braket, credentials and submission. Gate mathematics exists; Braket Python and provider execution are unsupported."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+      "finding": "Literal Bell QASM has an OPENQASM 2 header but qubit declaration and stdgates include. Pinned PyQASM accepts it; the app result is checked against the pure Bell density matrix. This acceptance does not certify standards-conforming QASM 2 syntax or IonQ execution."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+      "finding": "Same mixed-version Bell QASM pattern as IonQ. Pinned compiler accepts it and pure Bell density result is checked. Credentials, device discovery and hardware jobs are unsupported."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+      "sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+      "finding": "Single-atom Blackman pi pulse in Pulser. Pulse-object execution, physical timing and Pasqal jobs are unsupported; scalar pi notation is available."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+      "sha256": "67bf6c500057d145871e8549aabf60cbad6084904a4ccc51379b204315a654b8",
+      "finding": "Qiskit measured Bell circuit and IBM provider submission. Native gate equivalents exist; Python constructor and Runtime calls are unsupported."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+      "sha256": "f6ab8127957d977bb43ade4f63227512852ce2c950adf53fe515e3bf796c5535",
+      "finding": "PyTKET measured Bell circuit, Nexus login and provider submission. Gate equivalents exist; Python framework and authentication/job execution are unsupported."
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+      "sha256": "8423a941b6145ace8ba6e2242aeac13fabd8c3aeb815623126ba76d715ee5b1c",
+      "finding": "Literal OpenQASM 3 measured Bell circuit passes independent density verification. Quil compilation, provider credentials and hardware execution are unsupported."
+    },
+    {
+      "path": "qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+      "finding": "Parameterized GHZ kernels and cross-provider sampling. The function named ghz_fidelity measures population on the two all-equal outcomes, not quantum-state fidelity. Total variation distance is suggested in prose but has no dedicated calculator function yet. CUDA-Q execution and async jobs are unsupported."
+    },
+    {
+      "path": "qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+      "source": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+      "sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "finding": "Indexed spin.i/x/y/z expressions and scalar identity offsets now work with a full 0..max-index register, CUDA-Q least-significant-index ordering and exact Pauli products. The example Hamiltonian and analytic ansatz energy are independently tested. Python/C++ statements, object methods, kernels and provider execution remain unsupported."
+    }
+  ],
+  "remaining_notebooks": [],
+  "verification": "windows/test-qbraid-notebooks.py checks 35 hashes, extracts literal strings without executing notebook Python, verifies seven Deutsch-Jozsa/Bell/GHZ density results and reproduces two capacity gaps. Separate tests cover power gates, iSWAP, Hellinger measures and binary numerals.",
+  "remaining_work": [
+    "Implement and verify unresolved notation listed in findings and notation_findings.",
+    "Audit generated QASM and multi-file includes for algorithm notebooks.",
+    "Audit linked learning courses and SDK documentation beyond this repository.",
+    "Resolve framework execution, pulse programs, larger circuits and dynamic control coverage."
+  ],
+  "notation_findings": [
+    {
+      "source_path": "qBraid-Algorithms/qpe.ipynb",
+      "notation": "0.100_2",
+      "status": "Finite binary numerals now parse exactly with _2, Unicode subscript 2, or TeX _{2}. Equation assignments and symbolic phase derivations remain distinct from numeric expression evaluation."
+    },
+    {
+      "source_path": "qBraid-Algorithms/cirq_vqe.ipynb",
+      "notation": "H = sum over edges (i,j) of J_ij Z_i Z_j plus sum over sites h_i Z_i",
+      "status": "Concrete Pauli matrices and finite numeric sums exist. Abstract graph-indexed sums, indexed operator symbols and coefficient environments remain unresolved."
+    },
+    {
+      "source_path": "qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "notation": "Oracle and register derivation",
+      "status": "Oracle, bit XOR/dot, concrete kets and numeric tensor powers exist. Function mappings, set domains, symbolic width and cases notation are not a complete executable language."
+    },
+    {
+      "source_path": "qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "notation": "GHZ population and total variation distance",
+      "status": "GHZ states and Hellinger measures exist. A population score must not be presented as quantum-state fidelity. Dedicated total-variation function remains open."
+    }
+  ],
+  "source_issues": [
+    {
+      "source_path": "qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "issue": "The displayed psi_2 denominator is sqrt(2^n+1), while the unnormalized sum has squared norm 2^(n+1). Correct normalization is sqrt(2^(n+1)); for n=4 the displayed state has squared norm 32/17. The app must not silently treat it as normalized."
+    },
+    {
+      "source_path": "qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "issue": "np.dot without conjugation is suitable for the shown real GHZ vectors but is not the general complex-state inner product."
+    },
+    {
+      "source_path": "Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "issue": "Version 2 header combined with version 3 declaration/include syntax; accepted by pinned PyQASM, not evidence of strict standard compliance."
+    },
+    {
+      "source_path": "Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "issue": "Same mixed-version OpenQASM pattern as IonQ example."
+    }
+  ]
+}

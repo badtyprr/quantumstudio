@@ -1,0 +1,190 @@
+{
+  "review_date": "2026-10-14",
+  "status": "Public course/module section discovery completed; lesson-by-lesson compatibility audit remains incomplete",
+  "requested_scope": "All IBM Quantum Learning, plus qBraid syntax and learning",
+  "ibm_course_catalog": {
+    "source": "https://quantum.cloud.ibm.com/learning/en/courses",
+    "discovered_titles": [
+      "Use a quantum computer today",
+      "Quantum computing in practice",
+      "Basics of quantum information",
+      "Fundamentals of quantum algorithms",
+      "General formulation of quantum information",
+      "Foundations of quantum error correction",
+      "Tools for quantum advantage",
+      "Integrating quantum and high-performance computing",
+      "Quantum diagonalization algorithms",
+      "Quantum machine learning",
+      "Variational algorithm design",
+      "Quantum chemistry with VQE",
+      "Utility-scale quantum computing",
+      "Quantum business foundations",
+      "Designing and leading quantum projects"
+    ],
+    "remaining": "Inspect each lesson, classify notation versus runnable code, add independent examples and regression tests. Course discovery alone does not establish support.",
+    "section_inventory": "ibm-learning-sections.json: 137 section links across the 15 displayed courses, observed from expanded browser sidebars on 2026-10-14; overviews and exams excluded."
+  },
+  "ibm_module_catalog": {
+    "source": "https://quantum.cloud.ibm.com/learning/en/modules",
+    "discovered_titles": [
+      "Get started with Qiskit in the classroom",
+      "Superposition",
+      "Stern-Gerlach",
+      "Uncertainty",
+      "Bell's inequality",
+      "The Deutsch-Jozsa algorithm",
+      "Grover's algorithm",
+      "Quantum teleportation",
+      "Quantum key distribution",
+      "Quantum Fourier transform",
+      "Shor's algorithm",
+      "Variational Quantum Eigensolver"
+    ],
+    "remaining": "Module-by-module mathematical and Qiskit code compatibility audit",
+    "section_inventory": "ibm-learning-sections.json: 12 module links observed from the public module catalog on 2026-10-14."
+  },
+  "qbraid": [
+    {
+      "source": "https://docs.qbraid.com/v2/home/learning",
+      "finding": "Courses are listed in Account and chapters open in qBook with account/organization context.",
+      "remaining": "Course contents available to the user have not been inspected; public qbook.qbraid.com HTML returned a loading shell."
+    },
+    {
+      "source": "https://github.com/qBraid/qbraid-lab-demo",
+      "finding": "Public notebook categories include SDK, algorithms, runtime, QIR, CUDA-Q, PyQASM and provider jobs.",
+      "remaining": "Static code/Markdown review completed for all 35 notebooks at commit 86787e1ba372facc224f925189755e69c479828b. This is not executable compatibility. See qbraid-notebook-audit.json for notation gaps, source issues and pending generated-program/course audits."
+    },
+    {
+      "source": "https://docs.qbraid.com/v2/sdk/user-guide/transpiler",
+      "finding": "qBraid converts programs among multiple frameworks through a conversion graph; it is not a single mathematical notation.",
+      "remaining": "Python SDK execution and framework imports are not implemented in Quantum Studio."
+    },
+    {
+      "source": "https://docs.qbraid.com/v2/algorithms/user-guide/overview",
+      "finding": "Examples generate OpenQASM for BV, QFT, inverse QFT and QPE, including subroutines, loops and classical expressions.",
+      "remaining": "Equivalent algorithms do not constitute full SDK compatibility. A PyQASM-backed OpenQASM 2/3 importer now covers bounded static circuits; runtime classical feedback, pulse/timing operations and larger programs remain unsupported."
+    },
+    {
+      "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/overview",
+      "finding": "PyQASM validates and unrolls OpenQASM programs.",
+      "remaining": "PyQASM 1.0.4 is integrated for bounded editor imports; further language/runtime and corpus coverage remains open."
+    }
+  ],
+  "concrete_gaps": [
+    {
+      "area": "Symbolic stabilizer groups and codes",
+      "source": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes",
+      "status": "Exact stabilizer projectors, dimensions and Pauli-error syndromes accept commuting signed generators on 1–9 qubits, including angle-bracket Pauli-word groups. Exact logical code distance and [n,k,d] parameters are available for 1–9 qubits with k>0. Lowest-weight Pauli correction from a consistent bit syndrome is available on 1–9 qubits. Abstract symbolic groups, automatic encoding/measurement circuits, noise-aware decoders and larger-code distance computation remain open."
+    },
+    {
+      "area": "Program execution",
+      "status": "No general Python, Qiskit, qBraid SDK, QIR execution or cloud-job submission. OpenQASM imports cover static programs that compile into supported editor gates, not general runtime classical programs."
+    },
+    {
+      "area": "Scale",
+      "status": "The circuit editor supports at most 8 qubits and 64 steps. Dense numeric operators have separate documented limits; utility-scale course examples cannot be simulated in general."
+    }
+  ],
+  "completed_audit_items": [
+    {
+      "area": "Explicit U convention selection",
+      "sources": [
+        "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.UGate",
+        "https://openqasm.com/versions/3.0/language/gates.html"
+      ],
+      "status": "Import menu offers IBM/Qiskit and published OpenQASM 3 uppercase-U matrices. Controlled, inverse and integer-powered forms are tested. This does not certify full OpenQASM language coverage."
+    },
+    {
+      "area": "Qiskit Pauli string phases",
+      "sources": [
+        "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.quantum_info.Pauli"
+      ],
+      "status": "Single/double-quoted Pauli labels accept optional sign, 1 and i/j phase prefixes on 1–9 qubits. Tensor matrices and all four phases are independently tested. Python object methods and general Qiskit execution remain unsupported; editor wire-numbering differences are documented."
+    },
+    {
+      "area": "CSS check matrices and code-space cosets",
+      "sources": [
+        "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes"
+      ],
+      "status": "Binary X/Z checks can construct commuting generators and normalized coset states on 1–9 qubits. Independent projector and Steane-state tests cover these operations. Abstract code-space symbols remain open. CSS encoding circuits are supported by the composer."
+    },
+    {
+      "area": "CSS coset preparation circuits",
+      "sources": [
+        "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes"
+      ],
+      "status": "Composer builds H/CNOT/X preparation circuits from compatible binary checks and a representative, through eight qubits. 219 circuits match independent projector amplitudes and native CSS states; 336 invalid combinations are rejected. CSS unknown-input encoders are now supported separately. General non-CSS stabilizer encoders and fault-tolerant preparation remain open."
+    },
+    {
+      "area": "CSS encoding isometry",
+      "sources": [
+        "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes"
+      ],
+      "status": "Exact CSS encoding matrices support arbitrary logical amplitudes, density encoding and adjoint decoding inside the code space. Deterministic quotient-basis convention, Steane states and isometry identities tested through bounded cases. Composer H/CNOT/SWAP encoders support arbitrary logical input on the first k wires and zero ancillas, including append to coherent or noisy preparations. Independent tests cover 73 circuits and 565 logical basis columns. General non-CSS stabilizer encoders and fault-tolerant encoding remain open."
+    },
+    {
+      "area": "Cirq power-gate phases in qBraid VQE",
+      "sources": [
+        "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+        "https://quantumai.google/reference/python/cirq/XPowGate",
+        "https://quantumai.google/reference/python/cirq/CZPowGate"
+      ],
+      "status": "XPowGate, ZPowGate and CZPowGate accept exponent and global_shift in calculator expressions. Default exponent 1 and shift 0; phases retained under control. No cirq namespace or Python program execution."
+    },
+    {
+      "area": "iSWAP OpenQASM imports from SDK workflows",
+      "sources": [
+        "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.iSwapGate",
+        "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler.ipynb"
+      ],
+      "status": "Primitive iswap imports to the existing composer gate; inverse, integer powers and single positive/negative control preserve amplitudes. Multiple controls and fractional OpenQASM pow modifiers remain unsupported."
+    },
+    {
+      "area": "Hellinger comparison of measured count distributions",
+      "sources": [
+        "https://quantum.cloud.ibm.com/docs/en/api/qiskit/quantum_info#hellinger_fidelity",
+        "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb"
+      ],
+      "status": "hellinger_fidelity and hellinger_distance normalize aligned finite nonnegative real weight vectors. Counts/probabilities accepted; outcome labels must be aligned manually. Python dictionaries, provider-specific noise and shot sampling remain unsupported."
+    },
+    {
+      "area": "QPE binary fraction notation",
+      "sources": [
+        "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb"
+      ],
+      "status": "Finite binary numerals with _2, Unicode subscript 2 and TeX _{2} are evaluated exactly. Maximum 1024 digits; repeating expansions, symbolic digits and other radix subscripts remain unsupported."
+    },
+    {
+      "area": "CUDA-Q indexed spin Hamiltonian expressions",
+      "sources": [
+        "https://nvidia.github.io/cuda-quantum/latest/specification/cudaq/operators.html",
+        "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb"
+      ],
+      "status": "Indexed i/x/y/z factors, shared full-register embedding and scalar identity offsets are supported and tested. Index 0 is least significant. SDK object methods, kernels and general program execution remain open."
+    },
+    {
+      "area": "Dimension-changing Kraus maps in general measurements",
+      "sources": [
+        "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements",
+        "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem"
+      ],
+      "status": "Two sections reviewed for finite measurement formulas. channel now accepts rectangular Kraus maps. 189 independent checks cover dimension changes, scalar-input preparation, discards, partial branches, a three-outcome measurement, and consistency with superop and Choi. A column-Kraus conjugation defect in channel conversion was also fixed. Automatic POVM validation, Naimark unitary construction, symbolic systems and general instruments remain open; this is not a completed lesson audit."
+    },
+    {
+      "area": "Selected IBM discrimination, tomography, purification and fidelity formulas",
+      "sources": [
+        "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography",
+        "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications",
+        "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity"
+      ],
+      "status": "122 independent checks plus six invalid inputs. Added explicit root_fidelity matching the course unsquared convention. Sections remain partially audited; see ibm-learning-sections.json for remaining work."
+    },
+    {
+      "area": "Hermitian matrix order notation",
+      "sources": [
+        "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics"
+      ],
+      "status": "Matrix inequalities now test positive semidefiniteness or strict positive definiteness, with scalar identity promotion, Unicode and TeX aliases. Exact Schur-complement sign analysis handles singular matrices without an eigenvalue cutoff. Unresolved symbolic signs, incompatible dimensions and unprovable Hermiticity are rejected; semidefinite optimization is not implemented."
+    }
+  ]
+}

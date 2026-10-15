@@ -1,0 +1,315 @@
+set approximation exact
+quantum:<0|0>
+	1
+quantum:<0|1>
+	0
+quantum:⟨i|Y|i⟩
+	1
+quantum:⟨i|-i⟩
+	0
+quantum:norm(CNOT (H ⊗ I) |00⟩ - (|00⟩+|11⟩)/sqrt(2))
+	0
+quantum:tr(S† S)
+	2
+quantum:tr(density(|i⟩))
+	1
+quantum:norm(Rx(pi) |0⟩ + i |1⟩)
+	0
+quantum:norm(apply(CNOT,|100⟩,[0,2])-|101⟩)
+	0
+quantum:tr(QFT(2)† QFT(2))
+	4
+quantum:norm(CCX |110⟩ - |111⟩)
+	0
+quantum:\norm{\frac{\ket{0}+\ket{1}}{\sqrt{2}}}
+	1
+quantum:\braket{i|Y|i}
+	1
+quantum:\sum_{k=0}^3{k^2}
+	14
+quantum:Tr_{0,1}(density((|00>+|11>)/sqrt(2)))
+	1
+quantum:tr(expm(0I))
+	2
+quantum:norm(evolution(X,pi/2)|0>+i|1>)
+	0
+quantum:expect(Z,I/2)
+	0
+quantum:born(density(|0>),I/2)
+	0.5
+quantum:norm(postselect(density(|0>),|+>)-|0>)
+	0
+quantum:tr(ptranspose(density((|00>+|11>)/sqrt(2)),1))
+	1
+quantum:norm(Y^T|0>+Y|0>)
+	0
+quantum:norm(controlled(X,2,1)|010>-|011>)
+	0
+quantum:norm(controlled(X,1,0)|10>-|10>)
+	0
+quantum:norm(Rxx(pi/2)|00>-(|00>-i|11>)/sqrt(2))
+	0
+quantum:norm(Rzx(pi)|10>-i|11>)
+	0
+quantum:tr(apply(S,density(|+>),0)*density(|i>))
+	1
+quantum:tr(apply(CNOT,density(|100>),[0,2])*density(|101>))
+	1
+quantum:tr(apply(density(|0>),I/2,0))
+	0.5
+quantum:tr(channel(density(|100>),vector(CNOT),[0,2])*density(|101>))
+	1
+quantum:tr(channel(I/2,vector(density(|0>)),0))
+	0.5
+quantum:expect(Z,channel(density(|1>),vector([1,0;0,sqrt(3)/2],[0,1/2;0,0]),0))
+	-0.5
+quantum:norm(R_{XX}(pi/2)|00>-(|00>-i|11>)/sqrt(2))
+	0
+quantum:norm(C^2(X)|110>-|111>)
+	0
+quantum:norm(C^{2}(X)|110>-|111>)
+	0
+quantum:probs(|100>,[2,0])
+	[0; 1; 0; 0]
+quantum:probs(identity(8)/8,[2,0])
+	[0.25; 0.25; 0.25; 0.25]
+quantum:3ptrace(density((basis(0,9)+basis(4,9)+basis(8,9))/sqrt(3)),1,[3,3])
+	[1  0  0; 0  1  0; 0  0  1]
+quantum:dagger(basis(2,6)) ptranspose(basis(0,6) dagger(basis(5,6)),1,[2,3]) basis(3,6)
+	1
+quantum:norm(shift(3)basis(2,3)-basis(0,3))
+	0
+quantum:tr(fourier(3)†fourier(3))
+	3
+quantum:norm(clock(3)shift(3)basis(0,3)-exp(2pi i/3)shift(3)clock(3)basis(0,3))
+	0
+quantum:norm(pauli("XYZ")|000>-i|110>)
+	0
+quantum:norm(Pauli("-iXYZ")|000>-|110>)
+	0
+quantum:expect(pauli("XX")+pauli("YY")+pauli("ZZ"),(|01>-|10>)/sqrt(2))
+	-3
+quantum:norm(U3(pi/2,0,pi)|1>-H|1>)
+	0
+quantum:norm(controlled(U(0,pi,pi)) (|00>+|10>)/sqrt(2)-(|00>+|10>)/sqrt(2))
+	0
+quantum:purity(ptrace(density((|00>+|11>)/sqrt(2)),1))
+	0.5
+quantum:variance(3I+2Z,3I)
+	4
+quantum:variance([1,i;-i,3],|0>)
+	1
+quantum:norm(SX|0>-((1+i)|0>+(1-i)|1>)/2)
+	0
+quantum:norm(SX^2|0>-X|0>)
+	0
+quantum:tr(SXdg SX)
+	2
+quantum:norm(SX†|1>-SXdg|1>)
+	0
+quantum:norm(Sdg|1>-S†|1>)
+	0
+quantum:norm(Tdg|1>-T†|1>)
+	0
+quantum:norm(controlled(SX)^2|10>-CNOT|10>)
+	0
+quantum:norm(S X|0>-i|1>)
+	0
+quantum:tr(reset((|00>+|11>)/sqrt(2),0)*density(|01>))
+	0.5
+quantum:purity(reset((|00>+|11>)/sqrt(2),1))
+	0.5
+quantum:tr(reset(3I,0))
+	6
+quantum:tr(reset(|111>,[2,0])*density(|010>))
+	1
+quantum:tr(reset(|i>)*density(|0>))
+	1
+quantum:purity(dephase(|+>))
+	0.5
+quantum:expect(X @ X,dephase((|00>+|11>)/sqrt(2),0))
+	0
+quantum:expect(Z @ Z,dephase((|00>+|11>)/sqrt(2),1))
+	1
+quantum:tr(dephase(3I,0))
+	6
+quantum:tr((dephase(|i>)-channel(density(|i>),vector(I/sqrt(2),Z/sqrt(2))))^2)
+	0
+quantum:purity(dephase(|+> @ |+> @ |+>,[2,0]))
+	0.25
+quantum:tr(feedforward(|+>,0,1,X,0)*density(|0>))
+	1
+quantum:tr(feedforward(|+>,0,0,X,0)*density(|1>))
+	1
+quantum:expect(Z @ Z,feedforward((|00>+|11>)/sqrt(2),0,1,X,1))
+	0
+quantum:purity(feedforward((|00>+|11>)/sqrt(2),0,1,X,1))
+	0.5
+quantum:tr(feedforward(|100>,[2,0],1,X,1)*density(|110>))
+	1
+quantum:tr(feedforward(|100>,[0,2],1,X,1)*density(|100>))
+	1
+quantum:expect(Y,ptrace(feedforward(feedforward(apply(H,apply(CNOT,|i> @ (|00>+|11>)/sqrt(2),[0,1]),0),1,1,X,2),0,1,Z,2),[0,1]))
+	1
+quantum:expect(X,ptrace(feedforward(feedforward(apply(H,apply(CNOT,|-> @ (|00>+|11>)/sqrt(2),[0,1]),0),1,1,X,2),0,1,Z,2),[0,1]))
+	-1
+quantum:<-|->
+	1
+quantum:norm(H|->-|1>)
+	0
+quantum:norm(CP(pi)|11>+|11>)
+	0
+quantum:norm(CRz(pi)|10>+i|10>)
+	0
+quantum:norm(CRx(pi)|10>+i|11>)
+	0
+quantum:norm(CRy(pi)|10>-|11>)
+	0
+quantum:norm(CR_{z}(pi)|11>-i|11>)
+	0
+quantum:norm((CP(pi/2)-controlled(P(pi/2)))|11>)
+	0
+quantum:<2|2>_3
+	1
+quantum:<1|2>_{3}
+	0
+quantum:norm(shift(3)|2>_3-|0>_3)
+	0
+quantum:<0|_3 shift(3)|2>_3
+	1
+quantum:norm(|10>_16-basis(10,16))
+	0
+quantum:norm(|10>-basis(2,4))
+	0
+quantum:tr((SUM(2)-CNOT)^2)
+	0
+quantum:norm(SUM(3)(|2>_3 @ |2>_3)-(|2>_3 @ |1>_3))
+	0
+quantum:norm(SUM(3)†(|2>_3 @ |1>_3)-(|2>_3 @ |2>_3))
+	0
+quantum:norm(CADD(2,3)(|1> @ |2>_3)-(|1> @ |0>_3))
+	0
+quantum:tr(SUM(3)^3)
+	9
+quantum:norm(SUM_{3}(|2>_3 @ |2>_3)-(|2>_3 @ |1>_3))
+	0
+quantum:3purity(ptrace(density(SUM(3)(fourier(3) @ identity(3))(|0>_3 @ |0>_3)),0,[3,3]))
+	1
+quantum:norm(permute(|i> @ |+>,[1,0])-SWAP(|i> @ |+>))
+	0
+quantum:norm(permute(|+> @ |2>_3,[1,0],[2,3])-(|2>_3 @ |+>))
+	0
+quantum:norm(permute(permute(|+> @ |2>_3,[1,0],[2,3]),[1,0],[3,2])-(|+> @ |2>_3))
+	0
+quantum:permute(<01|,[1,0])|10>
+	1
+quantum:tr((permute(X @ Y,[1,0])-Y @ X)^2)
+	0
+quantum:<<Y|Y>>
+	2
+quantum:<<X|Y>>
+	0
+quantum:norm(|Y>>-vec(Y))
+	0
+quantum:tr(unvec(vec([1,i;2,3]),2))
+	4
+quantum:norm(vec(Y [1,i;2,3] S)-(S^T @ Y)vec([1,i;2,3]))
+	0
+quantum:tr(choi(vector(I)))
+	2
+quantum:\bra{0}\mathbf{X}\mathbf{Y}\ket{0}
+	i
+quantum:norm(iY|0>+|1>)
+	0
+quantum:tr(iY^2)
+	2i
+quantum:tr((iY)^2)
+	-2
+quantum:\bra{i}\hat{\sigma}_{y}\ket{i}
+	1
+quantum:tr(\widehat{X+Y}^{2})
+	4
+quantum:norm(FSWAP|11>+|11>)
+	0
+quantum:tr((FSWAP^2-identity(4))^2)
+	0
+quantum:norm(fdestroy(3,1)|110>+|100>)
+	0
+quantum:tr((anticomm(fdestroy(3,0),fcreate(3,0))-identity(8))^2)
+	0
+quantum:tr(anticomm(fdestroy(3,0),fcreate(3,1))†anticomm(fdestroy(3,0),fcreate(3,1)))
+	0
+quantum:norm(destroy(5)|2>_5-sqrt(2)|1>_5)
+	0
+quantum:tr((create(5)destroy(5)-numberop(5))^2)
+	0
+quantum:tr((comm(destroy(5),create(5))-identity(5)+5density(|4>_5))^2)
+	0
+quantum:norm(modmul(2,15)|1000>-|0001>)
+	0
+quantum:tr((modmul(2,15)^4-identity(16))^2)
+	0
+quantum:tr((modmul(2,15)†-modmul(8,15))^2)
+	0
+quantum:tr((oracle([0,1])-CNOT)^2)
+	0
+quantum:norm(oracle([2,1],2)|011>-|001>)
+	0
+quantum:norm(oracle([0,1,1,0])(|+> @ |+> @ |->)-(phaseoracle(2,[1,2])(|+> @ |+>)) @ |->)
+	0
+quantum:norm(diffusion(2)phaseoracle(2,3)(H @ H)|00>-|11>)
+	0
+quantum:born(density(|101>),(diffusion(3)phaseoracle(3,5))^2 H^⊗3 |000>)
+	0.9453125
+quantum:tr((diffusion(3)^2-identity(8))^2)
+	0
+quantum:norm(iSWAP|01>-i|10>)
+	0
+quantum:tr((ISWAP^2-Z @ Z)^2)
+	0
+quantum:norm((fSim(-pi/2,0)-iSWAP)|01>)
+	0
+quantum:tr(fSim(pi/3,pi/4)†fSim(pi/3,pi/4))
+	4
+quantum:tr((choi(vector(I))-density(|I>>))^2)
+	0
+quantum:norm(superop(vector(S))vec(density(|+>))-vec(channel(density(|+>),vector(S))))
+	0
+quantum:tr((ptrace(choi(vector([1,0;0,1;0,0])),1,[2,3])-I)^2)
+	0
+quantum:tr((comm(Jx(3/2),Jy(3/2))-i*Jz(3/2))^2)
+	0
+quantum:tr((Jx(2)^2+Jy(2)^2+Jz(2)^2-6identity(5))^2)
+	0
+quantum:norm(Jplus(1)basis(1,3)-sqrt(2)*basis(0,3))
+	0
+quantum:norm(\hat{J}_{+}(1)basis(1,3)-sqrt(2)*basis(0,3))
+	0
+quantum:tr((J_+(3/2)-J_x(3/2)-i*J_y(3/2))^2)
+	0
+quantum:norm(\ket{\uparrow\downarrow}-|01>)
+	0
+quantum:<↑|Jz(1/2)|↑>
+	0.5
+quantum:norm(J_+(1/2)|↓>-|↑>)
+	0
+quantum:norm(|+->-H^⊗2 |01>)
+	0
+quantum:<+-|-+>
+	0
+quantum:<+-|X @ X|+->
+	-1
+quantum:<0|X+Z|0>
+	1
+quantum:<0|density(|0>)+density(|1>)|0>
+	1
+quantum:(<0| @ <1|)|01>
+	1
+quantum:entropy(|+>)
+	0
+quantum:tr((X²-I)^2)
+	0
+quantum:norm(H⁻¹H|0>-|0>)
+	0
+quantum:entropy(|+>,e)
+	0

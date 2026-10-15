@@ -1,0 +1,253 @@
+"""Compile OpenQASM 2/3 to the editor's validated circuit format.
+
+Uses qBraid PyQASM 1.0.4. The adapter fails closed for AST operations that
+cannot be represented by CircuitComposer; it never executes Python input.
+"""
+import json
+import math
+import sys
+from dataclasses import fields, is_dataclass
+
+import openqasm3.ast as ast
+import pyqasm
+from pyqasm.visitor import QasmVisitor
+from pyqasm.expressions import Qasm3ExprEvaluator
+
+
+def unroll_preserving_phase(module, primitives):
+    """Adapt the pinned compiler's controlled-gphase lowering.
+
+    PyQASM 1.0.4 lowers controlled gphase through its basic P decomposition,
+    yielding Rz and losing a global phase. Emit a numeric P/CP node with the actual controls, preserving its phase.
+    The helper is a single-request process; restore the method for test callers.
+    """
+    if pyqasm.__version__ != '1.0.4':
+        raise ValueError('This compiler adapter requires PyQASM 1.0.4.')
+    original = QasmVisitor._visit_phase_operation
+    def phase(visitor, operation, inverse=False, ctrls=None):
+        if not ctrls:
+            return original(visitor, operation, inverse, ctrls)
+        value = Qasm3ExprEvaluator.evaluate_expression(operation.argument)[0]
+        if inverse:
+            value = -value
+        if len(ctrls) not in (1,2):
+            raise ValueError("Controlled global phase currently supports one or two controls.")
+        return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
+                                arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
+    QasmVisitor._visit_phase_operation = phase
+    try:
+        module.unroll(max_loop_iters=4096, external_gates=list(primitives))
+    finally:
+        QasmVisitor._visit_phase_operation = original
+
+
+GATES = {name.lower(): name for name in (
+    'H', 'X', 'Y', 'Z', 'S', 'T', 'Sdg', 'Tdg', 'SX', 'SXdg',
+    'Rx', 'Ry', 'Rz', 'P', 'CZ', 'SWAP', 'CCX', 'CY', 'CH', 'CCZ',
+    'CSWAP', 'CP', 'CRx', 'CRy', 'CRz', 'Rxx', 'Ryy', 'Rzz', 'Rzx')}
+GATES.update(cx='CNOT', cnot='CNOT', u='U3', U='U3', u3='U3')
+GATES.update(u1='P')
+GATES.update(iswap='iSWAP')
+
+def gate_steps(statement, wire, published_u=False):
+    name = statement.name.name
+    if name not in GATES and name not in ('id', 'i', 'u2'):
+        raise ValueError('The editor cannot represent compiled gate: ' + name)
+    args = [number(a) for a in statement.arguments]
+    wires = [wire(q) for q in statement.qubits]
+    gate = GATES.get(name, name)
+    phase = 0.0
+    if published_u and name == 'U':
+        if len(args) != 3:
+            raise ValueError('U requires three parameters.')
+        # The published OpenQASM 3 matrix is exp(i*theta/2) times the
+        # IBM/Qiskit cos/sin matrix. Keep this phase when adding controls.
+        phase = float(args[0]) / 2
+    if name == 'u2':
+        if len(args) != 2:
+            raise ValueError('u2 requires two parameters.')
+        gate, args = 'U3', [format(math.pi / 2, '.17g')] + args
+    prefix, suffix, repeats = [], [], 1
+    offsets, offset = {}, 0
+    for modifier in statement.modifiers:
+        if modifier.modifier.name in ('ctrl', 'negctrl'):
+            value = 1.0 if modifier.argument is None else float(number(modifier.argument))
+            if not value.is_integer() or not 1 <= value <= 7:
+                raise ValueError('Invalid control count.')
+            offsets[id(modifier)] = offset
+            offset += int(value)
+    for modifier in reversed(statement.modifiers):
+        kind = modifier.modifier.name
+        if kind == 'pow':
+            value = float(number(modifier.argument))
+            if not value.is_integer() or abs(value) > 64:
+                raise ValueError('Gate powers must be integers between -64 and 64.')
+            repeats *= abs(int(value))
+            if repeats > 64:
+                raise ValueError('The gate power exceeds 64 steps.')
+            if value >= 0:
+                continue
+            kind = 'inv'
+        if kind == 'inv':
+            phase = -phase
+            inverse = {'S':'Sdg', 'Sdg':'S', 'T':'Tdg', 'Tdg':'T', 'SX':'SXdg', 'SXdg':'SX',
+                       'iSWAP':'iSWAPdg', 'iSWAPdg':'iSWAP', 'CiSWAP':'CiSWAPdg', 'CiSWAPdg':'CiSWAP'}
+            if gate in inverse:
+                gate = inverse[gate]
+            elif gate in ('U3', 'CU3'):
+                args = [number(ast.FloatLiteral(-float(args[i]))) for i in (0,2,1)]
+            elif args:
+                args = [number(ast.FloatLiteral(-float(a))) for a in args]
+            elif gate not in ('H','X','Y','Z','CNOT','CZ','CY','CH','CCX','CCZ','SWAP','CSWAP','id','i'):
+                raise ValueError('Unsupported inverse gate: ' + gate)
+        elif kind in ('ctrl', 'negctrl'):
+            controls = 1 if modifier.argument is None else int(number(modifier.argument))
+            mapping = {'X':'CNOT','Y':'CY','Z':'CZ','H':'CH','P':'CP','Rx':'CRx','Ry':'CRy','Rz':'CRz','CNOT':'CCX','CZ':'CCZ','SWAP':'CSWAP','U3':'CU3'}
+            mapping.update(iSWAP='CiSWAP', iSWAPdg='CiSWAPdg')
+            for _ in range(controls):
+                if gate not in mapping:
+                    raise ValueError('Controlled gate is not representable: ' + gate)
+                gate = mapping[gate]
+            if kind == 'negctrl':
+                start = offsets[id(modifier)]
+                selected = wires[start:start+controls]
+                prefix = [{'Gate':'X','Angle':'','Wires':[w]} for w in selected] + prefix
+                suffix += [{'Gate':'X','Angle':'','Wires':[w]} for w in reversed(selected)]
+        else:
+            raise ValueError('Unsupported gate modifier: ' + kind)
+    required = 3 if gate in ('CCX','CCZ','CSWAP','CiSWAP','CiSWAPdg') else 2 if gate in ('CNOT','CZ','CY','CH','SWAP','CP','CRx','CRy','CRz','Rxx','Ryy','Rzz','Rzx','CU3','iSWAP','iSWAPdg') else 1
+    parameters = 3 if gate in ('U3','CU3') else 1 if gate in ('Rx','Ry','Rz','P','CP','CRx','CRy','CRz','Rxx','Ryy','Rzz','Rzx') else 0
+    if len(wires) != required or len(set(wires)) != len(wires) or len(args) != parameters:
+        raise ValueError('Incorrect qubit or parameter count for ' + name)
+    if gate in ('id','i'):
+        return []
+    operations = ([{'Gate':g,'Angle':a,'Wires':wires} for g,a in
+                   [('CP',args[2]),('CRy',args[0]),('CP',args[1])]] if gate=='CU3' else
+                  [{'Gate':gate,'Angle':','.join(args),'Wires':wires}]) * repeats
+    if gate == 'iSWAPdg':
+        # iSWAP^-1 = (Z tensor Z) iSWAP, with no dropped global phase.
+        operations = ([{'Gate':'iSWAP','Angle':'','Wires':wires}] +
+                      [{'Gate':'Z','Angle':'','Wires':[w]} for w in wires]) * repeats
+    elif gate in ('CiSWAP','CiSWAPdg'):
+        # iSWAP = SWAP CZ (S tensor S). Control every factor, including phase.
+        angle = format((-1 if gate.endswith('dg') else 1) * math.pi/2, '.17g')
+        operations = ([{'Gate':'CP','Angle':angle,'Wires':[wires[0],w]} for w in wires[1:]] +
+                      [{'Gate':'CCZ','Angle':'','Wires':wires},
+                       {'Gate':'CSWAP','Angle':'','Wires':wires}]) * repeats
+    if phase and repeats:
+        operations.append({'Gate':'P' if offset else 'GPhase',
+                           'Angle':format(phase*repeats,'.17g'),'Wires':[wires[0]]})
+    return prefix + operations + suffix
+
+
+def nodes(value):
+    if is_dataclass(value):
+        yield value
+        for field in fields(value):
+            if field.name not in ('span', 'annotations'):
+                yield from nodes(getattr(value, field.name))
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            yield from nodes(item)
+
+
+def number(value):
+    if not isinstance(value, (ast.IntegerLiteral, ast.FloatLiteral)):
+        raise ValueError('An unresolved gate parameter remains after compilation.')
+    if not math.isfinite(value.value):
+        raise ValueError('Gate parameters must be finite.')
+    return format(value.value, '.17g')
+
+
+def convert(source, published_u=False):
+    if len(source.encode('utf-8')) > 262144:
+        raise ValueError('OpenQASM input must be at most 256 KB.')
+    module = pyqasm.loads(source)
+    if published_u and not str(module.original_program.version).startswith('3'):
+        raise ValueError('The published OpenQASM 3 U convention requires an OpenQASM 3 program.')
+    # PyQASM recognizes built-in includes but does not resolve arbitrary files.
+    # Reject these before compilation, rather than pretend their content ran.
+    for node in nodes(module.original_program):
+        if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
+            raise ValueError('Only stdgates.inc and qelib1.inc includes are supported.')
+        if getattr(node, 'annotations', None):
+            raise ValueError('Annotated operations require semantics the editor does not support.')
+    # Preserve primitive gates: generic decomposition may preserve a unitary
+    # only up to global phase. The calculator exposes exact state amplitudes.
+    defined = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGateDefinition)}
+    primitives = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGate)} - defined
+    unroll_preserving_phase(module, primitives)
+    statements = module.unrolled_ast.statements
+    registers, count = {}, 0
+    for statement in statements:
+        if isinstance(statement, ast.QubitDeclaration):
+            size = 1 if statement.size is None else statement.size.value
+            registers[statement.qubit.name] = (count, size)
+            count += size
+    if not 1 <= count <= 8:
+        raise ValueError('The circuit editor currently supports 1–8 qubits.')
+
+    def wire(value):
+        if isinstance(value, ast.Identifier):
+            start, size = registers[value.name]
+            if size != 1:
+                raise ValueError('A register operation was not expanded by the compiler.')
+            return start
+        if not isinstance(value, ast.IndexedIdentifier) or len(value.indices) != 1 or len(value.indices[0]) != 1:
+            raise ValueError('Unresolved qubit reference.')
+        start, size = registers[value.name.name]
+        index = value.indices[0][0].value
+        if not isinstance(index, int) or not 0 <= index < size:
+            raise ValueError('Qubit index is outside its register.')
+        return start + index
+
+    steps = []
+    for statement in statements:
+        if isinstance(statement, (ast.Include, ast.QubitDeclaration, ast.QuantumBarrier)):
+            continue
+        if isinstance(statement, ast.ClassicalDeclaration):
+            if not isinstance(statement.type, ast.BitType) or statement.init_expression is not None:
+                raise ValueError('Unresolved classical state remains after compilation.')
+            continue
+        angle = ''
+        if isinstance(statement, ast.QuantumGate):
+            if statement.duration is not None:
+                raise ValueError('Timed gates are not supported.')
+            steps.extend(gate_steps(statement, wire, published_u))
+            if len(steps) > 64:
+                raise ValueError('The compiled circuit exceeds the editor limit of 64 steps.')
+            continue
+        elif isinstance(statement, ast.QuantumPhase):
+            if statement.modifiers:
+                if (len(statement.modifiers) != 1 or statement.modifiers[0].modifier != ast.GateModifierName.ctrl
+                        or statement.modifiers[0].argument.value != len(statement.qubits)):
+                    raise ValueError('Unresolved controlled global phase.')
+                wires = [wire(q) for q in statement.qubits]
+                if len(wires) not in (1,2) or len(set(wires)) != len(wires):
+                    raise ValueError('Controlled global phase currently supports one or two distinct controls.')
+                gate, angle = ('P' if len(wires)==1 else 'CP'), number(statement.argument)
+            else:
+                gate, angle, wires = 'GPhase', number(statement.argument), [0]
+        elif isinstance(statement, ast.QuantumReset):
+            gate, wires = 'Reset', [wire(statement.qubits)]
+        elif isinstance(statement, ast.QuantumMeasurementStatement):
+            gate, wires = 'Measure', [wire(statement.measure.qubit)]
+        else:
+            raise ValueError('The editor cannot represent ' + type(statement).__name__ +
+                             '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
+        steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
+        if len(steps) > 64:
+            raise ValueError('The compiled circuit exceeds the editor limit of 64 steps.')
+    return {'Version': 1, 'Qubits': count, 'Steps': steps}
+
+
+if __name__ == '__main__':
+    try:
+        source = sys.stdin.buffer.read(262145).decode('utf-8-sig')
+        if sys.argv[1:] not in ([], ['--published-u']):
+            raise ValueError('Usage: qasm-import.exe [--published-u] (OpenQASM on stdin)')
+        result = convert(source, published_u=bool(sys.argv[1:]))
+        sys.stdout.write(json.dumps(result))
+    except Exception as error:
+        sys.stderr.write(str(error)[:4096] + '\n')
+        sys.exit(1)

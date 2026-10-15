@@ -12,6 +12,7 @@
 #include "support.h"
 
 #include "Calculator.h"
+#include "Quantum.h"
 #include "BuiltinFunctions.h"
 #include "util.h"
 #include "MathStructure.h"
@@ -2603,6 +2604,8 @@ size_t rfind_unquoted(const string &str, const char *match, size_t pos = string:
 }
 
 bool Calculator::hasToExpression(const string &str, bool allow_empty_from) const {
+	// Quantum notation owns its delimiters; |-> is a ket, not a conversion arrow.
+	if(quantumPrefixLength(str)) return false;
 	if(str.empty()) return false;
 	size_t i = rfind_unquoted(str, "->");
 	if(i != string::npos && (allow_empty_from || i > 0)) return true;
@@ -2633,6 +2636,7 @@ bool Calculator::hasToExpression(const string &str, bool allow_empty_from) const
 	return false;
 }
 bool Calculator::hasToExpression(const string &str, bool allow_empty_from, const EvaluationOptions &eo) const {
+	if(quantumPrefixLength(str)) return false;
 	if(DO_NOT_TOUCH_EXPRESSION(str, eo.parse_options)) return false;
 	if(str.empty()) return false;
 	size_t i = rfind_unquoted(str, "->");
@@ -2665,6 +2669,7 @@ bool Calculator::hasToExpression(const string &str, bool allow_empty_from, const
 }
 bool Calculator::separateToExpression(string &str, string &to_str, const EvaluationOptions &eo, bool keep_modifiers, bool allow_empty_from) const {
 	to_str = "";
+	if(quantumPrefixLength(str)) return false;
 	if(DO_NOT_TOUCH_EXPRESSION(str, eo.parse_options)) return false;
 	if(str.empty()) return false;
 	size_t i = 1, i2, l_arrow = 2;
