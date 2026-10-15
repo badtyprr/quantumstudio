@@ -11,9 +11,9 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = @QALCULATE_TEXT@
 noinst_PROGRAMS = @QALCULATE_DEFS2DOC@ @QALCULATE_TEST@ @QALCULATE_UNITTEST@
 EXTRA_PROGRAMS = qalc defs2doc test unittest
-check_PROGRAMS = quantum-negativity-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
+check_PROGRAMS = quantum-negativity-test quantum-css-test quantum-stabilizer-test quantum-indexed-test quantum-order-test quantum-binary-test quantum-evolution-test quantum-hellinger-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
 TESTS_ENVIRONMENT = QALCULATE_DEFINITIONS_DIR=$(abs_top_builddir)/data
-TESTS = quantum-negativity-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
+TESTS = quantum-negativity-test quantum-css-test quantum-stabilizer-test quantum-indexed-test quantum-order-test quantum-binary-test quantum-evolution-test quantum-hellinger-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
 
 qalc_SOURCES = qalc.cc
 
@@ -105,6 +105,27 @@ quantum_superoperators_test_LDADD = $(test_LDADD)
 
 quantum_channel_representations_test_SOURCES = quantum-channel-representations-test.cc
 quantum_channel_representations_test_LDADD = $(test_LDADD)
+
+quantum_hellinger_test_SOURCES = quantum-hellinger-test.cc
+quantum_hellinger_test_LDADD = $(test_LDADD)
+
+quantum_evolution_test_SOURCES = quantum-evolution-test.cc
+quantum_evolution_test_LDADD = $(test_LDADD)
+
+quantum_binary_test_SOURCES = quantum-binary-test.cc
+quantum_binary_test_LDADD = $(test_LDADD)
+
+quantum_order_test_SOURCES = quantum-order-test.cc
+quantum_order_test_LDADD = $(test_LDADD)
+
+quantum_indexed_test_SOURCES = quantum-indexed-test.cc
+quantum_indexed_test_LDADD = $(test_LDADD)
+
+quantum_stabilizer_test_SOURCES = quantum-stabilizer-test.cc
+quantum_stabilizer_test_LDADD = $(test_LDADD)
+
+quantum_css_test_SOURCES = quantum-css-test.cc
+quantum_css_test_LDADD = $(test_LDADD)
 
 quantum_negativity_test_SOURCES = quantum-negativity-test.cc
 quantum_negativity_test_LDADD = $(test_LDADD)
