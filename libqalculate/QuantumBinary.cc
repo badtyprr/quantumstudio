@@ -113,9 +113,17 @@ class QuantumBinaryFunction: public MathFunction {
   }
   if(op=="qbitdot" || op=="qbitxor" || op=="qbitvalue") {
    std::vector<MathStructure> bits[2];
+   bool labels[2]={false,false};
    for(size_t j=0;j<(op=="qbitvalue" ? 1U : 2U);++j) {
     const MathStructure &value=args[j];
-    if(value.isMatrix()) {
+    labels[j]=value.isFunction() && value.function()->referenceName()=="qbitlabel";
+    if(labels[j]) {
+     if(value.size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
+     MathStructure index=value[0],width=value[1];
+     EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;index.eval(exact);width.eval(exact);
+     if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue())) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
+     for(int k=width.number().intValue()-1;k>=0;--k)bits[j].push_back((index.number().intValue()>>k)&1 ? m_one : m_zero);
+    } else if(value.isMatrix()) {
      if(value.rows()!=1 && value.columns()!=1) {CALCULATOR->error(true,"Binary bit operations require vectors, not multi-row matrices.",NULL);return 0;}
      if(value.rows()*value.columns()>1024) {CALCULATOR->error(true,"Binary bit operations support at most 1024 bits.",NULL);return 0;}
      for(size_t r=0;r<value.rows();++r)for(size_t c=0;c<value.columns();++c)bits[j].push_back(*value.getElement(r+1,c+1));
@@ -123,7 +131,7 @@ class QuantumBinaryFunction: public MathFunction {
      if(value.size()>1024) {CALCULATOR->error(true,"Binary bit operations support at most 1024 bits.",NULL);return 0;}
      for(size_t k=0;k<value.size();++k)bits[j].push_back(value[k]);
     } else bits[j].push_back(value);
-    if(bits[j].empty()) {CALCULATOR->error(true,"Binary bit operations require nonempty bit vectors.",NULL);return 0;}
+    if(bits[j].empty() && !labels[j]) {CALCULATOR->error(true,"Binary bit operations require nonempty bit vectors.",NULL);return 0;}
     for(const auto &bit:bits[j])if(!bit.isNumber() || (!bit.number().isZero() && !bit.number().isOne())) {CALCULATOR->error(true,"Binary bit operations require each entry to be 0 or 1.",NULL);return 0;}
    }
    if(op=="qbitvalue") {
@@ -133,6 +141,12 @@ class QuantumBinaryFunction: public MathFunction {
    }
    if(bits[0].size()!=bits[1].size()) {CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;}
    if(op=="qbitxor") {
+    if(labels[0] && labels[1]) {
+     int value=0;
+     for(size_t k=0;k<bits[0].size();++k)value=2*value+(bits[0][k].number().isOne()!=bits[1][k].number().isOne());
+     MathStructure index(value),width(static_cast<int>(bits[0].size()));
+     out.set(args[0].function(),&index,&width,NULL);return 1;
+    }
     out.clearVector();
     for(size_t k=0;k<bits[0].size();++k)out.addChild(bits[0][k].number().isOne()!=bits[1][k].number().isOne() ? m_one : m_zero);
     return 1;

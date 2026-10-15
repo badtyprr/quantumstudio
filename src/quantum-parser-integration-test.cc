@@ -20,6 +20,23 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(int a=0;a<8;++a)for(int b=0;b<8;++b) {
+  std::string left="bitstring("+std::to_string(a)+",3)",right="bitstring("+std::to_string(b)+",3)";
+  equal("quantum: bitvalue(bitxor("+left+","+right+"))",std::to_string(a^b));
+  int intersection=a&b,parity=(intersection^(intersection>>1)^(intersection>>2))&1;
+  equal("quantum: bitdot("+left+","+right+")",std::to_string(parity));
+ }
+ equal("quantum: qketstate(bitxor(bitstring(5,4),bitstring(6,4)))","quantum: |0011>");
+ equal("quantum: bitxor(bitstring(5,3),[1,1,0])","[0,1,1]");
+ equal("quantum: bitvalue(bitstring(0,0))","0");
+ equal("quantum: bitdot(bitstring(0,0),bitstring(0,0))","0");
+ equal("quantum: bitvalue(bitxor(bitstring(0,0),bitstring(0,0)))","0");
+ equal("quantum: bitvalue(bitstring(1023,10))","1023");
+ for(const char *expression:{"quantum: bitdot(bitstring(1,2),bitstring(1,3))","quantum: bitxor(bitstring(0,0),[0])","quantum: bitvalue(bitstring(4,2))","quantum: bitvalue(bitstring(0,11))"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid binary operation accepted: ")+expression);++checks;
+ }
  equal(R"(quantum: \sum_{x\in\{0,1\}^2}{|x>})","[1;1;1;1]");
  equal(R"(quantum: \sum_{x\in\{0,1\}^2}{|x><x|})","identity(4)");
  equal(R"(quantum: \sum_{x\in\{0,1\}^2}{<x|x>})","4");
