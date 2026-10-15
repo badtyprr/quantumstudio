@@ -11,9 +11,9 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = @QALCULATE_TEXT@
 noinst_PROGRAMS = @QALCULATE_DEFS2DOC@ @QALCULATE_TEST@ @QALCULATE_UNITTEST@
 EXTRA_PROGRAMS = qalc defs2doc test unittest
-check_PROGRAMS = threadtest
+check_PROGRAMS = threadtest quantumtex-test
 TESTS_ENVIRONMENT = QALCULATE_DEFINITIONS_DIR=$(abs_top_builddir)/data
-TESTS = unittest threadtest
+TESTS = unittest threadtest quantumtex-test
 
 qalc_SOURCES = qalc.cc
 
@@ -50,6 +50,9 @@ unittest_SOURCES = unittest.cc
 
 threadtest_SOURCES = threadtest.cc
 threadtest_LDADD = $(test_LDADD)
+
+quantumtex_test_SOURCES = quantumtex-test.cc
+quantumtex_test_LDADD = ../libqalculate/libqalculate.la
 
 #install-exec-local:
 #	cd $(DESTDIR)$(bindir) && rm -f qalculate; $(LN_S) @LN_QALCULATE@ qalculate
