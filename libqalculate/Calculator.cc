@@ -15,6 +15,7 @@
 #include "QuantumAlgebra.h"
 #include "QuantumMatrixPower.h"
 #include "QuantumStateFunctions.h"
+#include "QuantumMatrixExp.h"
 #include "BuiltinFunctions.h"
 #include "util.h"
 #include "MathStructure.h"
@@ -1688,6 +1689,7 @@ void Calculator::addBuiltinFunctions() {
 	registerQuantumAlgebra(*this);
 	registerQuantumMatrixPower(*this);
 	registerQuantumStateFunctions(*this);
+	registerQuantumMatrixExp(*this);
 
 	f_vector = addFunction(new VectorFunction());
 	f_sort = addFunction(new SortFunction());
