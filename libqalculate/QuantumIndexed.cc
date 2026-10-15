@@ -46,13 +46,20 @@ class QuantumIndexedFunction: public MathFunction {
   }
   if(op=="qsumset") {
    if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A set sum index must be a symbolic variable.",NULL);return 0;}
+   MathStructure collection=raw[1];
+   for(unsigned depth=0;eo.calculate_variables && depth<128 && collection.isVariable() && collection.variable()->isKnown();++depth) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure value=((KnownVariable*)collection.variable())->get();
+    if(value.equals(collection))break;
+    collection=value;
+   }
    MathStructure members=raw[1];
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    members.eval(exact);
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
-   if(!members.isVector() && members.representsScalar() && raw[1].isFunction() &&
-      (raw[1].function()->referenceName()=="unique" || raw[1].function()->referenceName()=="select" || raw[1].function()->referenceName()=="qindexrange"))
+   if(!members.isVector() && members.representsScalar() && (collection.isVector() || (collection.isFunction() &&
+      (collection.function()->referenceName()=="vector" || collection.function()->referenceName()=="unique" || collection.function()->referenceName()=="select" || collection.function()->referenceName()=="qindexrange"))))
     members.transform(STRUCT_VECTOR);
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    std::vector<MathStructure> seen;

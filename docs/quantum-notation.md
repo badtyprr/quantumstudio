@@ -87,6 +87,12 @@ Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and
 
 ## Finite set-indexed sums
 
+Cardinality bars around an explicit finite set, such as `|\{0,1,1\}|` or `\lvert\{0,1,1\}\rvert`, give `2`. Empty sets count as zero. Ranges and filtering comprehensions also work: `|\{k\in\{0,\ldots,7\}:k>3\}|` gives `4`. Use `cardinality(S)` for a named finite flat scalar collection; arbitrary named bars are not inferred to denote a set.
+
+Counting uses the existing finite-set sum evaluator with summand `1`, including its 1024-entry limit, exact evaluation and structural duplicate comparison. This is not a new typed symbolic set system: general equality of unresolved symbolic members, Cartesian powers, infinite sets and sets of vectors remain unfinished. Column states and operators must not be treated as finite scalar collections.
+
+Quantum-mode `[7]` preserves a one-element vector. For a named one-element collection defined through the library API, use `vector(7)` or `quantum: [7]`; ordinary calculator parsing can treat `[7]` as grouped scalar input. A bare scalar remains invalid for cardinality.
+
 `\sum_{k\in\{0,2,5\}}{k^2}` evaluates to 29. The equivalent function form is `sumset(k^2,[0,2,5],k)`. A named collection such as `\sum_{k\in S_0}{k}` must evaluate to a finite flat vector. The index is local to the summand; nested sums may reuse it, and the inner collection can refer to the outer index. An unbraced summand uses the existing multiplicative-term scope.
 
 Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
