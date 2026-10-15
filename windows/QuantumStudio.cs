@@ -195,6 +195,26 @@ class QuantumStudio {
     using(var file=File.Create(args[1]))encoder.Save(file);window.Close();
    };
   }
+  if(args.Length==2 && args[0]=="--enter-key-test") {
+   window.Loaded+=async delegate {
+    try {
+     mode.SelectedIndex=1;input.Text="2+2";input.Focus();
+     int previous=history.Items.Count;
+     var key=new KeyEventArgs(Keyboard.PrimaryDevice,PresentationSource.FromVisual(input),Environment.TickCount,Key.Enter) {RoutedEvent=Keyboard.PreviewKeyDownEvent};
+     input.RaiseEvent(key);
+     if(!key.Handled)throw new Exception("Enter was not handled by the expression box.");
+     var elapsed=Stopwatch.StartNew();
+     while(!run.IsEnabled && elapsed.ElapsedMilliseconds<10000)await Task.Delay(20);
+     if(!run.IsEnabled || history.Items.Count!=previous+1 || output.Text!="4" || input.Text!="2+2")throw new Exception("Enter did not calculate exactly once without inserting a newline.");
+     input.Text="";
+     var emptyKey=new KeyEventArgs(Keyboard.PrimaryDevice,PresentationSource.FromVisual(input),Environment.TickCount,Key.Enter) {RoutedEvent=Keyboard.PreviewKeyDownEvent};
+     input.RaiseEvent(emptyKey);
+     if(!emptyKey.Handled || history.Items.Count!=previous+1 || !run.IsEnabled)throw new Exception("Empty Enter changed calculation state.");
+     File.WriteAllText(args[1],"PASS: routed Enter calculates exactly once without a newline; empty input remains idle.");
+    }catch(Exception ex){File.WriteAllText(args[1],ex.ToString());Environment.ExitCode=1;}
+    window.Close();
+   };
+  }
   if(args.Length==2 && args[0]=="--calculation-control-test") {
    window.Loaded+=async delegate {
     try {
