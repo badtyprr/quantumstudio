@@ -221,7 +221,13 @@ class TeXReader {
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
    }
-   if(input[pos]=='\\') result+=command(matrix,norms);
+   // Quoted labels are literal data; do not reinterpret operator subscripts.
+   if(input[pos]=='"' || input[pos]=='\'') {
+    char quote=input[pos++];result+=quote;bool ended=false;
+    while(pos<input.size()) {char c=input[pos++];result+=c;if(c==quote){ended=true;break;}}
+    if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
+   }
+   else if(input[pos]=='\\') result+=command(matrix,norms);
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
     result+=open; result+=read(end); result+=end;

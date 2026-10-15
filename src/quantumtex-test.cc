@@ -49,6 +49,8 @@ int main() {
   equal(R"(\mathrm{QFT}_{16})"," qfourier(16)");
   equal("QFT₁₆","qfourier(16)");
   equal("myQFT_4","myQFT_4");
+  equal("\"QFT_4\"","\"QFT_4\"");
+  equal("'QFT₄'","'QFT₄'");
   equal(R"(\Tr_{1}{X})","ptrace(X,vector(1))");
   equal(R"(\hat{X+Y}^{2})","(X+Y)^(2)");
   equal(R"(\preceq)","<="); equal(R"(\succeq)",">=");
