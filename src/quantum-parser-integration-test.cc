@@ -37,6 +37,8 @@ int main(){try {
  equal("quantum: cardinality(markedindices)","3");
  calculator.addVariable(new KnownVariable("","singletonindices",std::string("quantum: [7]")));
  equal("quantum: cardinality(singletonindices)","1");
+ equal(R"(quantum: \lfloor\pi/(4\sin^{-1}(\sqrt{|\{k\in\{0,\ldots,15\}:k<4\}|/16}))\rfloor)","1");
+ equal(R"(quantum: \sin^2(3\sin^{-1}(\sqrt{|\{k\in\{0,\ldots,15\}:k<4\}|/16})))","1");
  equal(R"(quantum: \Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor)","3");
  equal(R"(quantum: \lfloor-3/2\rfloor)","-2");
  equal(R"(quantum: \lceil-3/2\rceil)","-1");
