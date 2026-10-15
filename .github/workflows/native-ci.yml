@@ -1,0 +1,43 @@
+name: Native CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    name: Native build and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out proposed revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            build-essential autoconf automake libtool gettext autopoint intltool \
+            pkg-config libgmp-dev libmpfr-dev libxml2-dev libreadline-dev
+      - name: Configure
+        run: |
+          autoreconf -fi
+          ./configure --disable-shared --enable-static \
+            --without-libcurl --without-icu --disable-nls
+      - name: Compile
+        run: make -j2
+      - name: Run native tests
+        run: make check
+      - name: Show test diagnostics
+        if: always()
+        run: |
+          if test -f src/test-suite.log; then cat src/test-suite.log; fi
