@@ -43,6 +43,20 @@ class CircuitFileTests {
    bool overLimit=false;
    try {composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=1,Steps=excessive}));}catch(InvalidDataException){overLimit=true;}
    Check(overLimit);Check(composer.Expression()==preserved);
+   var measurements=new[]{
+    new CircuitComposer.Step {Gate="H",Angle="",Wires=new[]{0}},
+    new CircuitComposer.Step {Gate="Measure",Angle="",Wires=new[]{1}},
+    new CircuitComposer.Step {Gate="Measure",Angle="",Wires=new[]{0}},
+    new CircuitComposer.Step {Gate="Measure",Angle="",Wires=new[]{1}}};
+   composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=2,Steps=measurements}));
+   string grouped=composer.Expression();Check(grouped=="dephase(apply(H,|00⟩,[0]),[1,0])");
+   composer.SaveCircuit(path);var saved=serializer.Deserialize<CircuitComposer.CircuitFile>(File.ReadAllText(path));
+   Check(saved.Steps.Length==4 && saved.Steps[1].Wires[0]==1 && saved.Steps[3].Wires[0]==1);
+   Check(composer.OpenQasm().Split(new[]{"measure"},StringSplitOptions.None).Length==4);
+   composer.BellState(0);composer.OpenCircuit(path);Check(composer.Expression()==grouped);
+   Check(composer.UpdateGate(2,"H","0",""));
+   Check(composer.Expression()=="dephase(apply(H,dephase(apply(H,|00⟩,[0]),[1]),[0]),[1])");
+   Check(composer.Undo());Check(composer.Expression()==grouped);
    Console.WriteLine("PASS: "+checks+" circuit file and state preservation checks");return 0;
   }catch(Exception error){Console.Error.WriteLine(error);return 1;}
   finally {composer.Close();owner.Close();if(File.Exists(path))File.Delete(path);}
