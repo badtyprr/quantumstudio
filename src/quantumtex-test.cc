@@ -20,6 +20,9 @@ int main() {
   equal(R"(\sin x)","sin x");
   equal(R"(\cos (x))","cos (x)");
   equal(R"(\sin^{-1}(1/2))","asin(1/2)");
+  equal(R"(\sin^{- 1}(1/2))","asin(1/2)");
+  equal(R"(\cos^{-\!1}(1/2))","acos(1/2)");
+  equal(R"(\tan^{ -\,1 }{1})","atan(1)");
   equal(R"(\cos^{-1}\biggl(1/2\biggr))","acos(1/2)");
   equal(R"(\tan^{-1}{1})","atan(1)");
   equal(R"(\sin^2\left(pi/6\right))","(sin(pi/6))^(2)");

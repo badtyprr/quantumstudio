@@ -20,6 +20,8 @@ int main(){try {
 #endif
  eo.approximation=APPROXIMATION_EXACT;
  equal(R"(quantum: \sin^{-1}(1/2))","asin(1/2)");
+ equal(R"(quantum: \sin^{- 1}(1/2))","asin(1/2)");
+ equal(R"(quantum: \cos^{-\!1}(1/2))","acos(1/2)");
  equal(R"(quantum: \cos^{-1}\biggl(1/2\biggr))","acos(1/2)");
  equal(R"(quantum: \tan^{-1}{1})","atan(1)");
  equal(R"(quantum: \sin^2(pi/6)+\cos^2(pi/6))","1");

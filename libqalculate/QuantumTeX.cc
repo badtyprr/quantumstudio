@@ -158,7 +158,8 @@ class TeXReader {
     else if(pos<input.size() && input[pos]=='{')operand=group();
     else throw std::runtime_error(error("A powered trigonometric function requires a parenthesized or braced argument"));
     if(trim(operand).empty())throw std::runtime_error(error("Empty trigonometric argument"));
-    if(power=="-1")return "a"+name+"("+operand+")";
+    std::string compactPower;for(unsigned char c:power)if(!std::isspace(c))compactPower+=c;
+    if(compactPower=="-1")return "a"+name+"("+operand+")";
     return "("+name+"("+operand+"))^("+power+")";
    }
    pos=afterName;
