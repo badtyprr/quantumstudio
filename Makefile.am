@@ -30,7 +30,8 @@ EXTRA_DIST = config.rpath  \
 	windows/build-gui.ps1 \
 	windows/examples.json \
 	windows/test-gui.ps1 \
-	windows/test-keyboard.ps1
+	windows/test-keyboard.ps1 \
+	windows/build-native.sh
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libqalculate.pc
