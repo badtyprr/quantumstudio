@@ -21,6 +21,7 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qsumset(x,vector(7),x)","7");
  equal("qindexrange(-2,2)","vector(-2,-1,0,1,2)");
  equal("qindexrange(0,-1)","vector()");
  equal("qsumset(x,qindexrange(3,3),x)","3");

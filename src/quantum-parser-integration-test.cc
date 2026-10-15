@@ -20,6 +20,23 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \lvert\{0,1,1\}\rvert)","2");
+ equal(R"(quantum: \vert\{0,1,1\}\vert)","2");
+ equal(R"(quantum: |\{0,1,1\}|)","2");
+ equal(R"(quantum: \lvert\{\}\rvert)","0");
+ equal(R"(quantum: \lvert\{7\}\rvert)","1");
+ equal(R"(quantum: \lvert\{0,\ldots,7\}\rvert)","8");
+ equal(R"(quantum: \left|\{k\in\{0,\ldots,7\}:k>3\}\right|)","4");
+ equal("quantum: cardinality([0,1,1])","2");
+ equal("quantum: cardinality([7])","1");
+ equal("quantum: cardinality([1/2,2/4])","1");
+ equal("quantum: cardinality(indexrange(0,1023))","1024");
+ equal(R"(quantum: \sum_{n=1}^{3}{|\{0,\ldots,n\}|})","9");
+ equal(R"(quantum: |\{0,1\}|^2)","4");
+ calculator.addVariable(new KnownVariable("","markedindices",std::string("[0,2,2,5]")));
+ equal("quantum: cardinality(markedindices)","3");
+ calculator.addVariable(new KnownVariable("","singletonindices",std::string("quantum: [7]")));
+ equal("quantum: cardinality(singletonindices)","1");
  equal(R"(quantum: \Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor)","3");
  equal(R"(quantum: \lfloor-3/2\rfloor)","-2");
  equal(R"(quantum: \lceil-3/2\rceil)","-1");
@@ -36,7 +53,7 @@ int main(){try {
  equal("quantum: <statevector|statevector>","1");
  equal("quantum: |statevector><statevector|","[1,-i;i,1]/2");
  equal(R"(quantum: \sum_{x\in\{0,1,2\}}{|x>_3})","[1;1;1]");
- for(const char *expression:{"quantum: |undefinedvector>","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})"}) {
+ for(const char *expression:{"quantum: cardinality(3)","quantum: cardinality([[1]])","quantum: cardinality(identity(2))","quantum: cardinality(indexrange(0,1024))","quantum: |undefinedvector>","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
