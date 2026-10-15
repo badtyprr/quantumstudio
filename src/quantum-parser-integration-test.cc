@@ -25,6 +25,24 @@ int main(){try {
  equal("  quantum: <0|0>","1");
  equal("\xEF\xBB\xBFquantum: <1|0>","0");
  equal("quantum: \\frac{1}{2}","1/2");
+ equal(R"(quantum: \sum_{a_0=0}^{3}{a_0})","6");
+ equal(R"(quantum: \sum_{a_{10}=0}^{3}{a_{10}^2})","14");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{\sum_{a_1=0}^{1}{a_0+a_1}})","4");
+ equal(R"(quantum: \frac{1}{2}\sum_{a_0=0}^{1}{\sum_{a_1=0}^{1}{exp(2*pi*i*a_0/4)basis(2*a_1+a_0,4)}})","[1;i;1;i]/2");
+ equal(R"(quantum: \prod_{a_0=1}^{3}{a_0})","6");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{a_0+\sum_{a_0=0}^{1}{a_0}})","6");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{\sum_{a_1=0}^{a_0}{a_1}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{|a_0>_2})","[1;1]");
+ equal(R"(quantum: \sum_{\alpha_0=0}^{3}{\alpha_0})","6");
+ equal(R"(quantum: \sum_{qsumindex_0=0}^{1}{\sum_{a_0=0}^{1}{qsumindex_0+a_0}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{\sum_{a_0=0}^{a_0}{a_0}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{\sum_{a_01=0}^{1}{a_0+a_01}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{a_0+sum(a_0,0,1,a_0)})","6");
+ equal(R"(quantum: norm((\bigotimes_{a_0=0}^{1}{Ry(a_0*pi)})|00>-|01>))","0");
+ equal(R"(quantum: \sum_{a_0=0}^{2}{a_0+sum(a_0,0,1,(a_0))})","6");
+ equal(R"(quantum: \sum_{qboundindex_0=0}^{1}{\sum_{a_0=0}^{1}{qboundindex_0+a_0}})","4");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{|sum(b_0,0,a_0,b_0)>_4})","[1;1;0;0]");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{a_0+<1|phase_function(a_0,1,a_0)|1>})","-1");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
@@ -35,7 +53,8 @@ int main(){try {
  }
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
- for(const auto &expression:{"quantum: |0","quantum: <0|H|", "quantum: |0> +"}) {
+ for(const auto &expression:{"quantum: |0","quantum: <0|H|", "quantum: |0> +",
+     R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();
   MathStructure value=calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

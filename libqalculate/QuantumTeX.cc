@@ -113,8 +113,10 @@ class TeXReader {
    size_t first=variable.find_first_not_of(" \t\r\n"), last=variable.find_last_not_of(" \t\r\n");
    if(first==std::string::npos) throw std::runtime_error(error("Missing summation index"));
    variable=variable.substr(first,last-first+1);
-   for(unsigned char c:variable) if(c<128 && !asciiLetter(c) && c!='_') throw std::runtime_error(error("Invalid summation index"));
-   auto body=group(); return (name=="sum" ? "sum(" : name=="prod" ? "product(" : name=="bigoplus" ? "blocksum(" : "tensorproduct(")+body+","+startValue+","+upper+","+variable+")";
+   if(variable[0]>='0' && variable[0]<='9') throw std::runtime_error(error("A summation index cannot begin with a digit"));
+   for(unsigned char c:variable) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && variable.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
+   auto body=group();
+   return (name=="sum" ? "sum(" : name=="prod" ? "product(" : name=="bigoplus" ? "blocksum(" : "tensorproduct(")+body+","+startValue+","+upper+","+variable+")";
   }
   bool expectation=name=="expectationvalue" || name=="expval" || name=="ev";
   bool matrixElement=name=="matrixelement" || name=="matrixel" || name=="mel";
