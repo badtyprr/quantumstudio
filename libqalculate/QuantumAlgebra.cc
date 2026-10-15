@@ -32,7 +32,7 @@ class QuantumAlgebraFunction: public MathFunction {
    CALCULATOR->error(true,"Load global function definitions before quantum conjugation.",NULL);return 0;
   }
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
-  if(op=="qtensor" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<(op=="qtensor" ? 2U : 1U);++j) {
+  if(op=="qtensor" || op=="qadjacent" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<((op=="qtensor" || op=="qadjacent") ? 2U : 1U);++j) {
    if(!args[j].isVector() || args[j].isMatrix())continue;
    bool flat=true;for(size_t k=0;k<args[j].size();++k)if(args[j][k].isVector())flat=false;
    if(flat && args[j].size()>0 && args[j].size()<=1024) {
@@ -52,7 +52,14 @@ class QuantumAlgebraFunction: public MathFunction {
   if(op=="qdag") { out=dagger(a,eo); return 1; }
   if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) out.transposeMatrix(); return 1; }
   if(op=="qtranspose") { out=a; if(a.isMatrix()) out.transposeMatrix(); else if(a.isVector()) { CALCULATOR->error(true,"Transpose requires a matrix or scalar.",NULL); return 0; } return 1; }
-  if(op=="qmul") {
+  if(op=="qadjacent" && a.isMatrix() && args[1].isMatrix() &&
+     ((a.columns()==1 && args[1].columns()==1) || (a.rows()==1 && args[1].rows()==1))) {
+   // Juxtaposed state vectors form a tensor product, including grouped sums.
+   // Reuse the tensor operation's allocation and cancellation checks.
+   out.set(CALCULATOR->getFunction("qtensor"), &a, &args[1], NULL);out.eval(eo);
+   return out.isMatrix() || out.isVector() ? 1 : 0;
+  }
+  if(op=="qmul" || op=="qadjacent") {
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
    out=multiply(a,args[1],eo); return 1;
   }
@@ -125,6 +132,6 @@ class QuantumAlgebraFunction: public MathFunction {
 };
 }
 void registerQuantumAlgebra(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }

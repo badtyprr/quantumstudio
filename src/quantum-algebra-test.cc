@@ -24,6 +24,9 @@ int main(){try {
  equal("qdag([1,i])","[1;-i]");equal("qconj([1,i;2,3])","[1,-i;2,3]");
  equal("qtranspose([1,2;3,4])","[1,3;2,4]");
  equal("qmul(qdag([1;i]),[1;i])","2");
+ equal("qadjacent([1;-1],[1;0])","[1;0;-1;0]");
+ equal("qadjacent([1,i],[1,-1])","[1,-1,i,-i]");
+ equal("qadjacent([1,0;0,1],[2;3])","[2;3]");
  equal("qnorm([3;4])","5");equal("qnormalize([3;4])","[3/5;4/5]");
  equal("qdensity([1;i])","[1,-i;i,1]");equal("qtrace([1,2;3,4])","5");
  equal("qtensor([1;0],[0;1])","[0;1;0;0]");
@@ -36,7 +39,7 @@ int main(){try {
  equal("qanticomm([0,1;1,0],[0,-i;i,0])","[0,0;0,0]");
  for(unsigned i=0;i<8;++i)for(unsigned j=0;j<8;++j)
   equal("qmul(qdag(qbasis("+std::to_string(i)+",8)),qbasis("+std::to_string(j)+",8))",i==j ? "1" : "0");
- for(const auto &expression:{"qbasis(8,8)","qbasis(0,1025)","qnormalize([0;0])","qcontrol([0,1;1,0],9,0)","qcontrolpattern([0,1;1,0],1,1,2)","qtrace([1;2])","qmul([1,0;0,1],[1;2;3])"}) {
+ for(const auto &expression:{"qadjacent([1,0;0,1],[1;2;3])","qadjacent(qbasis(0,64),qbasis(0,64))","qbasis(8,8)","qbasis(0,1025)","qnormalize([0;0])","qcontrol([0,1;1,0],9,0)","qcontrolpattern([0,1;1,0],1,1,2)","qtrace([1;2])","qmul([1,0;0,1],[1;2;3])"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
