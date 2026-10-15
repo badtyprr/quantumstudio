@@ -239,6 +239,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qjminus",1},
  {"qmodmul",2},
  {"qmul",2},
+ {"qadjacent",2},
  {"qspinadd",2},
  {"qnorm",1},
  {"qschatten",2},
@@ -1068,7 +1069,7 @@ class Parser {
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
    else if(take('@')) a="qtensor("+a+","+diracFactor()+")";
    else if(take('#')) a="qdirectsum("+a+","+diracFactor()+")";
-   else if(startsAtom()) a="qmul("+a+","+diracFactor()+")";
+   else if(startsAtom()) a="qadjacent("+a+","+diracFactor()+")";
    else break;
    checkSize(a);
   } return a;

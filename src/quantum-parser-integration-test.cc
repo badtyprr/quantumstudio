@@ -76,6 +76,13 @@ int main(){try {
   equal(R"(quantum: QFT_4^\dagger(\frac{1}{2}\sum_{a_0=0}^1\sum_{a_1=0}^1 e^{2\pi i(2*a_1+a_0)*)"+std::to_string(phase)+R"(/4}\vert a_1 a_0\rangle))",
         "qbasis("+std::to_string(phase)+",4)");
  }
+ equal("quantum: (|0>-|1>)|0>","[1;0;-1;0]");
+ equal("quantum: (|0>-|1>)(|0>+|1>)","[1;1;-1;-1]");
+ equal("quantum: (<0|+i<1|)(<0|-<1|)","[1,-1,i,-i]");
+ equal(R"(quantum: \frac{1}{2}(|0>-|1>)|0>+\frac{1}{2}(|0>-|1>)|1>)","[1;1;-1;-1]/2");
+ equal("quantum: H(|0>+|1>)","[sqrt(2);0]");
+ equal("quantum: (|0>+|1>)(<0|-<1|)","[1,-1;1,-1]");
+ equal("quantum: (<0|-<1|)(|0>+|1>)","0");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {
@@ -86,7 +93,7 @@ int main(){try {
  }
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
- for(const auto &expression:{"quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
+ for(const auto &expression:{"quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
      R"(quantum: |a_0 0 0 0 0 0 0 0 0 0 0>)",R"(quantum: \sum_{a_0=2}^{2}{|a_0 0>})",R"(quantum: \sum_{a_0=-1}^{-1}{|a_0 0>})",
      R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();
