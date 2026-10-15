@@ -57,6 +57,21 @@ class CircuitFileTests {
    Check(composer.UpdateGate(2,"H","0",""));
    Check(composer.Expression()=="dephase(apply(H,dephase(apply(H,|00⟩,[0]),[1]),[0]),[1])");
    Check(composer.Undo());Check(composer.Expression()==grouped);
+   foreach(int resetCount in new[]{1,65}) {
+    var leading=new CircuitComposer.Step[resetCount+1];
+    for(int k=0;k<resetCount;++k)leading[k]=new CircuitComposer.Step {Gate="Reset",Angle="",Wires=new[]{k%2}};
+    leading[resetCount]=new CircuitComposer.Step {Gate="H",Angle="",Wires=new[]{0}};
+    composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=2,Steps=leading}));
+    string deferred=composer.Expression();Check(deferred.StartsWith("density("));Check(!deferred.Contains("reset("));
+    composer.SaveCircuit(path);Check(serializer.Deserialize<CircuitComposer.CircuitFile>(File.ReadAllText(path)).Steps.Length==leading.Length);
+    composer.BellState(0);composer.OpenCircuit(path);Check(composer.Expression()==deferred);
+    Check(composer.UpdateGate(resetCount,"Measure","0",""));Check(!composer.Expression().StartsWith("density("));
+    Check(composer.UpdateGate(resetCount,"AD","0","0.2"));Check(composer.Expression().Contains("density("));
+    Check(composer.UpdateGate(resetCount,"Reset","0",""));Check(composer.Expression()=="density(|00⟩)");
+   }
+   var lateReset=new[]{new CircuitComposer.Step {Gate="H",Angle="",Wires=new[]{0}},new CircuitComposer.Step {Gate="Reset",Angle="",Wires=new[]{0}}};
+   composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=2,Steps=lateReset}));
+   Check(composer.Expression()=="reset(apply(H,|00⟩,[0]),[0])");
    foreach(int width in new[]{9,10}) {
     var edge=new[]{new CircuitComposer.Step {Gate="X",Angle="",Wires=new[]{width-1}}};
     composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=width,Steps=edge}));

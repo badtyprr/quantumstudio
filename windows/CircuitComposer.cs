@@ -702,7 +702,7 @@ class CircuitComposer : Window {
  }
  public string Expression() {
   string value="|"+new string('0',Count)+"⟩";
-  bool mixed=false;
+  bool mixed=false,initial=true,requiresDensity=false;
   var transformations=steps.Count>64 ? new List<string>() : null;
   string placeholder="qstate_0";
   if(transformations!=null) {
@@ -714,6 +714,10 @@ class CircuitComposer : Window {
   }
   for(int position=0;position<steps.Count;position++) {
    var step=steps[position];
+   // The composer starts in the all-zero ket. Leading resets leave it unchanged.
+   // Defer their density conversion through linear gates, but retain the output type.
+   if(initial && step.Gate=="Reset") {requiresDensity=true;continue;}
+   initial=false;
    // Consecutive computational-basis measurements commute and are idempotent.
    // Group only the calculation; preserve the editable steps and exported program.
    if(step.Gate=="Measure" && position+1<steps.Count && steps[position+1].Gate=="Measure") {
@@ -739,7 +743,8 @@ class CircuitComposer : Window {
    if(step.Gate=="Reset" || step.Gate=="Measure")mixed=true;
    if(transformations!=null)transformations.Add(value);
   }
-  return transformations==null ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,"+placeholder+")";
+  string result=transformations==null || transformations.Count==0 ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,"+placeholder+")";
+  return requiresDensity && !mixed ? "density("+result+")" : result;
  }
  void Line(double x1,double y1,double x2,double y2,Brush color,double width,bool dashed=false) {diagram.Children.Add(new Line {X1=x1,Y1=y1,X2=x2,Y2=y2,Stroke=color,StrokeThickness=width,StrokeDashArray=dashed ? new DoubleCollection {3,2} : null});}
  void Label(string text,double x,double y,double width) {var label=new TextBlock {Text=text,Width=width,TextAlignment=TextAlignment.Center,FontSize=14,TextTrimming=TextTrimming.CharacterEllipsis,ToolTip=text}; Canvas.SetLeft(label,x); Canvas.SetTop(label,y); diagram.Children.Add(label);}
