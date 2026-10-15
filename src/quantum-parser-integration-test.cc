@@ -43,6 +43,7 @@ int main(){try {
  equal(R"(quantum: \sum_{qboundindex_0=0}^{1}{\sum_{a_0=0}^{1}{qboundindex_0+a_0}})","4");
  equal(R"(quantum: \sum_{a_0=0}^{1}{|sum(b_0,0,a_0,b_0)>_4})","[1;1;0;0]");
  equal(R"(quantum: \sum_{a_0=0}^{1}{a_0+<1|phase_function(a_0,1,a_0)|1>})","-1");
+ equal(R"(quantum: \frac{1}{2}\begin{pmatrix}1&1&1&1\\[1mm]1&i&-1&-i\\[1mm]1&-1&1&-1\\[1mm]1&-i&-1&i\end{pmatrix})","qfourier(4)");
  equal("2+3*4","14");
  equal("sin(pi/2)","1");
  for(const char *input:{"quantum: |->"," quantum: |->"}) {

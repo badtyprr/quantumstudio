@@ -71,7 +71,30 @@ class TeXReader {
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
    if(c=='\\' && matrix) {
-    space(); if(pos<input.size() && input[pos]=='[') throw std::runtime_error(error("Optional matrix row spacing is not supported; remove [spacing]"));
+    space();
+   if(pos<input.size() && input[pos]=='[') {
+    // Row spacing is presentation-only. Accept a literal TeX dimension, never
+    // translate its contents into the matrix's mathematical expression.
+    ++pos;space();
+    if(pos<input.size() && (input[pos]=='+' || input[pos]=='-'))++pos;
+    bool digit=false,dot=false;
+    while(pos<input.size()) {
+     char d=input[pos];
+     if(d>='0' && d<='9')digit=true;
+     else if(d=='.' && !dot)dot=true;
+     else break;
+     ++pos;
+    }
+    if(!digit)throw std::runtime_error(error("Matrix row spacing requires a literal numeric dimension"));
+    space();size_t unitStart=pos;
+    while(pos<input.size() && asciiLetter((unsigned char)input[pos]))++pos;
+    std::string unit=input.substr(unitStart,pos-unitStart);
+    if(unit!="pt" && unit!="pc" && unit!="in" && unit!="bp" && unit!="cm" && unit!="mm" &&
+       unit!="dd" && unit!="cc" && unit!="sp" && unit!="em" && unit!="ex" && unit!="mu")
+     throw std::runtime_error(error("Unsupported matrix row spacing unit"));
+    space();if(pos==input.size() || input[pos]!=']')throw std::runtime_error(error("Invalid matrix row spacing"));
+    ++pos;
+   }
     return ";";
    }
    if(c==',' || c==';' || c==':' || c=='!' || c==' ') return " ";
