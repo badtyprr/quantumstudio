@@ -25,6 +25,25 @@ int main(){try {
  equal("qpermute([0,1,0,0],[1,0])","[0,0,1,0]");
  equal("qpermute(qdensity([1;i;2;3]),[1,0])","qdensity([1;2;i;3])");
  equal("qapply([1,0;0,i],qdensity([1;1;0;0]),1)","qdensity([1;i;0;0])");
+ // The ket path supplies an independent outer-product reference for U rho U†.
+ // Include nonunitary operators, complex coherences and every ordered wire pair.
+ const std::string coherent="[1;i;2-i;0;-1;3*i;1+i;2]";
+ for(unsigned wire=0;wire<3;++wire)for(const auto &gate:{"[0,-i;i,0]","[1,0;0,i]","[1,i;2,3-i]"}) {
+  std::string index=std::to_string(wire),operation=gate;
+  equal("qapply("+operation+",qdensity("+coherent+"),"+index+")","qdensity(qapply("+operation+","+coherent+","+index+"))");
+ }
+ for(unsigned first=0;first<3;++first)for(unsigned second=0;second<3;++second)if(first!=second) {
+  std::string wires="["+std::to_string(first)+","+std::to_string(second)+"]";
+  for(const auto &gate:{"[1,0,0,0;0,1,0,0;0,0,0,-i;0,0,i,0]","[1,i,0,2;0,2,0,0;1,0,3-i,0;0,0,i,1]"}) {
+   std::string operation=gate;
+   equal("qapply("+operation+",qdensity("+coherent+"),"+wires+")","qdensity(qapply("+operation+","+coherent+","+wires+"))");
+  }
+ }
+ for(unsigned wire=0;wire<3;++wire) {
+  std::string index=std::to_string(wire),gate="[1,i;2,3-i]",other="[0;1;i;0;1;0;0;2]";
+  equal("qapply("+gate+",(qdensity("+coherent+")+2*qdensity("+other+"))/3,"+index+")",
+        "(qdensity(qapply("+gate+","+coherent+","+index+"))+2*qdensity(qapply("+gate+","+other+","+index+")))/3");
+ }
  for(unsigned wire=0;wire<3;++wire)for(unsigned state=0;state<8;++state) {
   std::string ket="qbasis("+std::to_string(state)+",8)";
   equal("qapply([0,1;1,0],"+ket+","+std::to_string(wire)+")","qbasis("+std::to_string(state^(1U<<(2-wire)))+",8)");

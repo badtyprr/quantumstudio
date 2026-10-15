@@ -71,11 +71,25 @@ class QuantumSubsystemFunction: public MathFunction {
    } return 1;
    };
    if(!leftApply(state,out)) return 0;
-   // (U (U rho)-dagger)-dagger = U rho U-dagger. No full-system gate needed.
+   // Right-multiply by U-dagger directly. Only the small local gate needs
+   // conjugation; transposing/conjugating full density matrices duplicates them.
    if(state.columns()!=1) {
-    MathStructure adjoint=dagger(out,eo), second;
-    if(!leftApply(adjoint,second)) return 0;
-    out=dagger(second,eo);
+    MathStructure adjoint=dagger(a,eo), second;
+    second.clearMatrix();second.resizeMatrix(n,n,m_zero);
+    for(size_t j=0;j<n;++j) {
+     if(CALCULATOR->aborted())return 0;
+     size_t column=0;for(size_t bit:targets)column=(column<<1) | ((j & bit) ? 1 : 0);
+     for(size_t r=0;r<dim;++r) {
+      if(element(adjoint,column,r).isZero())continue;
+      size_t index=j & ~mask;
+      for(size_t k=0;k<count;++k)if(r & (size_t(1)<<(count-1-k)))index|=targets[k];
+      for(size_t row=0;row<n;++row) {
+       if(element(out,row,j).isZero())continue;
+       MathStructure term=element(out,row,j);term*=element(adjoint,column,r);element(second,row,index)+=term;
+      }
+     }
+    }
+    out=second;
    }
    return 1;
   }
