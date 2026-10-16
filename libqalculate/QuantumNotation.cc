@@ -393,6 +393,8 @@ class Parser {
  bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
+  // A non-strict comparison cannot start a bra, even if its RHS has bars.
+  if(s.compare(p,2,"<=")==0)return false;
   size_t end=labelEnd('|',p+1);
   if(end==std::string::npos)return false;
   int nesting=0;
