@@ -63,6 +63,29 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qbars") {
+   MathStructure source=raw[0];
+   for(unsigned depth=0;eo.calculate_variables && depth<128 && source.isVariable() && source.variable()->isKnown();++depth) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure value=((KnownVariable*)source.variable())->get();
+    if(value.equals(source))break;
+    source=value;
+   }
+   bool collection=source.isVector();
+   if(source.isFunction()) {
+    const std::string &name=source.function()->referenceName();
+    collection=name=="qbitstrings" || name=="vector" || name=="union" || name=="intersect" || name=="setdiff" || name=="unique" || name=="select" || name=="qindexrange";
+   }
+   MathStructure value=raw[0];value.eval(eo);
+   if(collection || value.isVector()) {
+    MathStructure parameters;parameters.clearVector();parameters.addChild(m_one);parameters.addChild(raw[0]);parameters.addChild(MathStructure("__cardinality_index",true));
+    auto sum=CALCULATOR->getFunction("qsumset");if(!sum)return 0;
+    return sum->calculate(out,parameters,eo);
+   }
+   if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
+   auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
+   out.set(absolute,&value,NULL);out.eval(eo);return 1;
+  }
   if(op=="qsumset" || op=="qmember") {
    if(op=="qsumset" && ((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown()))) {CALCULATOR->error(true,"A set sum index must be a symbolic variable.",NULL);return 0;}
    MathStructure collection=raw[1];
@@ -224,6 +247,7 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
