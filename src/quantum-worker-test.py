@@ -39,8 +39,25 @@ for flags in [(), ("--approx",)]:
         for k, row in enumerate(decimal["cells"]):
             assert abs(float(row[0]) - (k+1)/385**0.5) < 1e-13
 
+for flags in [(), ("--approx",)]:
+    for expression in ["|0>_1", "QFT_1|0>_1", "qdensity(|0>_1)", "qdag(|0>_1)", "qconj(|0>_1)", "qtranspose(|0>_1)", "qketstate(bitstrings(0))", r"\sum_{k=0}^{0}{|k>}",
+                       r"replace(\sum_{k=0}^{N-1}{|k>},N,1)"]:
+        value=data("quantum: "+expression, *flags)
+        assert value["rows"] == value["columns"] == 1 and value["cells"] == [["1"]], (expression, value)
+    for expression in ["qnorm(qbasis(0,1))", "qmul(qdag(qbasis(0,1)),qbasis(0,1))", "matrix(1,1,[1])"]:
+        scalar=data(expression, *flags)
+        assert scalar["text"] == "1" and scalar["rows"] == scalar["columns"] == 0
+# Complex amplitudes must preserve state shape before adjoint/density evaluation.
+for flags in [(), ("--approx",)]:
+    for expression, expected in [("i*|0>_1", "i"), ("|0>_1*i", "i"),
+                                 ("qdag(i*|0>_1)", "-i"), ("qconj(i*|0>_1)", "-i"),
+                                 ("qtranspose(i*|0>_1)", "i"), ("qdensity(i*|0>_1)", "1"),
+                                 ("qnormalize(i*|0>_1)", "i")]:
+        value = data("quantum: " + expression, *flags)
+        assert value["rows"] == value["columns"] == 1, (expression, value)
+        assert value["cells"][0][0].replace("−", "-") == expected, (expression, value)
 for expression in [r"\sum_{k=0}^{1024}{|k>}", r"\sum_{k=1}^{2}{|k>}",
-                   r"\sum_{k=0}^{2}{|k>_2}", r"\sum_{k=0}^{0}{|k>}"]:
+                   r"\sum_{k=0}^{2}{|k>_2}", "basis(0,0)", "basis(1,1)", "basis(-1,1)"]:
     assert run("quantum: " + expression, "--json", success=False).stdout == b""
 
 # An unknown domain stays symbolic; an explicit singleton is already a set.

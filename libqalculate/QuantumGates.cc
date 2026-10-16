@@ -12,6 +12,7 @@ class QuantumGateFunction: public MathFunction {
  public:
  QuantumGateFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumGateFunction(*this);}
+ bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
   const MathStructure &a=args[0];

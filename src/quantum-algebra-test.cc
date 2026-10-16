@@ -17,6 +17,14 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ MathStructure unitBasis=calculator.calculate("qbasis(0,1)",eo);
+ if(!unitBasis.isMatrix() || unitBasis.rows()!=1 || unitBasis.columns()!=1 || !unitBasis.getElement(1,1)->isOne())throw std::runtime_error("Unit basis lost matrix shape");
+ ++checks;
+ equal("qbasis(0,1)","qketstate(qbitlabel(0,0))");
+ equal("qtensor(qbasis(0,1),qbasis(1,2))","qbasis(1,2)");
+ equal("qdensity(qbasis(0,1))","qbasis(0,1)");
+ equal("qnorm(qbasis(0,1))","1");
+ equal("qmul(qdag(qbasis(0,1)),qbasis(0,1))","1");
  for(bool approximate:{false,true})for(const char *operation:{"qdag","qconj","qtranspose"})for(const char *operand:{"qketstate(x)","qbasis(x,4)","qfourier(x)","qmul(qfourier(x),qketstate(y))"}) {
   EvaluationOptions options=eo;options.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
   std::string twice=std::string(operation)+"("+operation+"("+operand+"))";

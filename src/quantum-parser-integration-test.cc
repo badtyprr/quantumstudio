@@ -21,6 +21,10 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: |0>_1","qbasis(0,1)");
+ equal("quantum: QFT_1|0>_1","qbasis(0,1)");
+ equal(R"(quantum: \sum_{k=0}^{0}{|k>})","qbasis(0,1)");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{|k>},N,1))","qbasis(0,1)");
  equal(R"(quantum: \frac{1}{\sqrt{385}}\sum_{k=0}^9 (k+1)\vert k\rangle)","[1;2;3;4;5;6;7;8;9;10]/sqrt(385)");
  equal(R"(quantum: \sum_{k=0}^{2}{|k><k|})","identity(3)");
  equal(R"(quantum: \sum_{k=0}^{2}{<k|k>})","3");
@@ -176,7 +180,7 @@ int main(){try {
  equal("quantum: <markedstrings|markedstrings>","1");
  equal("quantum: <001|markedstrings>","1/sqrt(3)");
  equal("quantum: qketstate(vector(bitstring(0,2),bitstring(3,2),bitstring(0,2)))","[1;0;0;1]/sqrt(2)");
- equal("quantum: qketstate(bitstrings(0))","identity(1)");
+ equal("quantum: qketstate(bitstrings(0))","qbasis(0,1)");
  for(int width=1;width<=5;++width)equal("quantum: qketstate(bitstrings("+std::to_string(width)+"))","quantum: H^{\\otimes "+std::to_string(width)+"}|0^"+std::to_string(width)+">");
  for(const char *expression:{"quantum: qketstate(vector())","quantum: qketstate(vector(bitstring(0,2),bitstring(0,3)))","quantum: qketstate(vector(bitstring(0,2),1))","quantum: qketstate(vector(bitstring(4,2),bitstring(0,2)))"}) {
   while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
@@ -387,7 +391,7 @@ int main(){try {
  equal("quantum: QFT₄|01>","[1;i;-1;-i]/2");
  equal("quantum: QFT_16|0000>","matrix(16,1,[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])/4");
  equal(R"(quantum: QFT_{2^2}^\dagger QFT_4)","identity(4)");
- equal("quantum: QFT_1","matrix(1,1,[1])");
+ equal("quantum: QFT_1","qbasis(0,1)");
  equal("quantum: QFT_3|0>_3","[1;1;1]/sqrt(3)");
  for(unsigned phase=0;phase<4;++phase) {
   equal(R"(quantum: QFT_4^\dagger(\frac{1}{2}\sum_{a_0=0}^1\sum_{a_1=0}^1 e^{2\pi i(2*a_1+a_0)*)"+std::to_string(phase)+R"(/4}\vert a_1 a_0\rangle))",
