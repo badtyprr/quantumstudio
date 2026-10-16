@@ -163,3 +163,7 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 - Address scale separately from syntax. The current circuit editor is limited to ten qubits and 512 steps; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
+
+### Frobenius uncertainty
+
+Frobenius norms propagate finite real and complex interval entries through squared magnitudes and the square root. This preserves bounds for cancellation residuals near zero and for explicitly uncertain entries, instead of requiring 12 significant digits in each entry. The resulting value may be an interval. Other Schatten orders retain their existing broad-uncertainty rejection.
