@@ -17,6 +17,26 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(const char *source:{"qketstate(x)","qbasis(x,4)","qbasis(1,x)","qmul(qfourier(x),qbasis(1,x))","qadjacent(qfourier(x),qketstate(y))","qdag(qketstate(x))"}) {
+  while(calculator.message())calculator.nextMessage();MathStructure value=calculator.calculate(source,eo);
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error(std::string("Symbolic state rejected: ")+source);calculator.nextMessage();}
+  if(!value.isFunction() || !value.containsUnknowns())throw std::runtime_error("Symbolic operation lost its structure");++checks;
+ }
+ MathStructure symbolicX=calculator.calculate("x",eo),symbolicY=calculator.calculate("y",eo);
+ for(const char *source:{"qmul(qfourier(x),qbasis(1,x))","qadjacent(qfourier(x),qbasis(1,x))"}) {
+  MathStructure value=calculator.calculate(source,eo);value.replace(symbolicX,MathStructure(4));value.eval(eo);
+  MathStructure expected=calculator.calculate("[1;i;-1;-i]/2",eo);value.transform(COMPARISON_EQUALS,expected);value.eval(eo);
+  if(!value.isNumber() || !value.number().isOne())throw std::runtime_error("Symbolic Fourier application substitution failed");++checks;
+ }
+ MathStructure delayedKet=calculator.calculate("qmul([0,1;1,0],qketstate(x))",eo),zeroKet=calculator.calculate("[1;0]",eo);
+ delayedKet.replace(symbolicX,zeroKet);delayedKet.eval(eo);delayedKet.transform(COMPARISON_EQUALS,calculator.calculate("[0;1]",eo));delayedKet.eval(eo);
+ if(!delayedKet.isNumber() || !delayedKet.number().isOne())throw std::runtime_error("Named ket substitution failed");++checks;
+ for(const char *source:{"qbasis(-1,x)","qbasis(x,0)","qbasis(x,1025)","qbasis(x,1/2)","qbasis([1,2],x)"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(source,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error("Symbolic parameter hid an invalid basis argument");++checks;
+ }
+
  for(AngleUnit mode:{ANGLE_UNIT_NONE,ANGLE_UNIT_RADIANS,ANGLE_UNIT_DEGREES}) {
   eo.parse_options.angle_unit=mode;
   equal("qasin(1/2)","pi/6");equal("qacos(1/2)","pi/3");equal("qatan(1)","pi/4");
