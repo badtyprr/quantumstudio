@@ -22,6 +22,9 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("1 <= |x|","qcompare(1,qbars(x),2)");
+ equal("1 ≤ |x|","qcompare(1,qbars(x),2)");
+ equal("|x| <= 2|y|","qcompare(qbars(x),qadjacent(2,qbars(y)),2)");
  for(const std::string dimension:{"N","n","registerdim","d_0","δ"}) {
   equal("|x>_"+dimension,translateQuantum("|x>_{"+dimension+"}"));
   equal("<x|_"+dimension,translateQuantum("<x|_{"+dimension+"}"));

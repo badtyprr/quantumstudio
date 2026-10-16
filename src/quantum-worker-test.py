@@ -31,6 +31,12 @@ for flags in [(), ("--approx",)]:
 for expression in [r"quantum: \ket{x}_\alpha", r"quantum: \ket{x}_{\alpha}", r"quantum: \ket{x}_\theta", r"quantum: \ket{x}_{\theta}"]:
     assert b"integer dimension" in run(expression, "--json", success=False).stderr
 
+for flags in [(), ("--approx",)]:
+    assert data("quantum: 1 <= |-2|", *flags)["text"] == "1"
+    assert data("quantum: 3 <= |-2|", *flags)["text"] == "0"
+    assert data("quantum: |-1| ≤ 2|-1/2|", *flags)["text"] == "1"
+    assert data(r"quantum: |e^{2\pi i (-1/2)}-1| <= 2\pi|-1/2|", *flags)["text"] == "1"
+
 assert run("1+1").stdout.decode("utf-8").strip() == "2"
 assert data("1+1")["text"] == "2"
 assert data("sqrt(2)", "--approx")["approximate"] is True

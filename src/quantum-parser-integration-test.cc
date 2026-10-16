@@ -21,6 +21,10 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: 1 <= |-2|","1");
+ equal("quantum: 3 <= |-2|","0");
+ equal("quantum: |-1| ≤ 2|-1/2|","1");
+ equal(R"(quantum: |e^{2\pi i (-1/2)}-1| <= 2\pi|-1/2|)","1");
  equal("quantum: |x>_N","quantum: |x>_{N}");
  equal("quantum: QFT_N|x>_N","quantum: QFT_N|x>_{N}");
  calculator.addVariable(new KnownVariable("","registerdim",std::string("3")));
