@@ -568,10 +568,22 @@ class Parser {
   }
   else if(take('|')) {
    ws();
-   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0) {
+   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0) {
     // TeX set literals/builders have a distinct collection expression. Do not
     // guess whether an arbitrary named value inside bars is a set or a ket.
-    std::string collection=atom();need('|');
+    size_t closing=std::string::npos;int nesting=0;char quote=0;
+    for(size_t k=p;k<s.size();++k) {
+     char c=s[k];
+     if(quote) {if(c==quote)quote=0;continue;}
+     if(c=='\'' || c=='"') {quote=c;continue;}
+     if(c=='(' || c=='[')++nesting;
+     else if(c==')' || c==']') {if(nesting==0)break;--nesting;}
+     else if(c=='|' && nesting==0) {closing=k;break;}
+    }
+    if(closing==std::string::npos)throw std::runtime_error("Unclosed set cardinality bars.");
+    s[closing]=')';std::string collection=setUnion();ws();
+    if(p!=closing)throw std::runtime_error("Invalid set expression inside cardinality bars.");
+    s[closing]='|';p=closing+1;
     a="qsumset(1,"+collection+",'__cardinality_index')";
    } else if(p<s.size() && s[p]=='<') {
     // A leading bra inside bars denotes the magnitude of a Dirac scalar,
