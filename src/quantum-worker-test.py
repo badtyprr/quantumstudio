@@ -27,9 +27,25 @@ for flags in [(), ("--approx",)]:
                           ("|x>_N^2", "(|x>_{N})^2")]:
         assert data("quantum: " + bare, *flags) == data("quantum: " + grouped, *flags)
 
-# Existing constants and functions are not unknown dimensions.
-for expression in [r"quantum: \ket{x}_\alpha", r"quantum: \ket{x}_{\alpha}"]:
-    assert b"integer dimension" in run(expression, "--json", success=False).stderr
+# Quantum amplitudes and error bounds remain symbolic even in approximate mode.
+for flags in [(), ("--approx",)]:
+    for command, letter in [("Sigma", "Σ"), ("Pi", "Π"), ("Gamma", "Γ"),
+                            ("Delta", "Δ"), ("Omega", "Ω"), ("tau", "τ"),
+                            ("xi", "ξ"), ("varpi", "ϖ"), ("varsigma", "ς")]:
+        assert data("quantum: \\" + command, *flags) == data("quantum: " + letter, *flags)
+    for letter in "αβγδεζηθικλμνξορστυφχψωΓΔΘΛΞΠΣΦΨΩ":
+        result = data("quantum: " + letter, *flags)
+        assert result["text"] == "'" + letter + "'" and not result["approximate"]
+    state = data(r"quantum: \alpha|0>+\beta|1>", *flags)
+    assert state["cells"] == [["'α'"], ["'β'"]]
+    assert data(r"quantum: \ket{x}_\alpha", *flags) == data(r"quantum: |x>_{α}", *flags)
+assert data("quantum: δ(1)")["text"] == "0"
+assert data(r"quantum: \sum_{\alpha=0}^{1}{|\alpha>_2}")["cells"] == [["1"], ["1"]]
+assert data(r"quantum: \sum_{\delta=0}^{2}{\delta^2}")["text"] == "5"
+assert data(r"quantum: replace(\alpha,\alpha,1/2)")["text"] == "0.5"
+assert data("α", "--approx")["approximate"]
+
+assert data("quantum: alpha", "--approx")["approximate"]
 
 for flags in [(), ("--approx",)]:
     for expression in [r"\cos^2(\pi\theta)", r"\sin^2(\pi\theta)",

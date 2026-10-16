@@ -17,6 +17,9 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\zeta\eta\iota\kappa\nu\xi\omicron\tau\upsilon)","ζηικνξοτυ");
+  equal(R"(\Gamma\Delta\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Omega)","ΓΔΘΛΞΠΣΥΩ");
+  equal(R"(\vartheta\varrho\varkappa\varpi\varsigma)","θρκϖς");
   equal(R"(\ket{x}_\alpha)","|x>_(α)");
   equal("<x|_δ","<x|_(δ)");
   equal(R"(x\in S)","x∈ S");

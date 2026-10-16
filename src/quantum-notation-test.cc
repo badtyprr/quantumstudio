@@ -22,6 +22,11 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ for(const std::string letter:{"α","β","γ","δ","Σ","Π","ρ","ϕ","Ω"})equal(letter,"\""+letter+"\"");
+ equal(R"(\alpha\beta)","(\"α\"*\"β\")");
+ equal("δ(1)","δ(1)");
+ equal("pi","pi");
+
  equal("θ","\"θ\"");
  equal(R"(\theta)","\"θ\"");
  equal("θ(0)","θ(0)");

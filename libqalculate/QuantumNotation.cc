@@ -1132,19 +1132,24 @@ class Parser {
     }
    } else {
     auto it=gates.find(a); if(it!=gates.end()) a=it->second;
-    // Keep subscripted identifiers atomic. Bare theta factors are phase
-    // symbols, including adjacent products such as piθ from TeX \pi\theta.
-    // Explicit theta(...) calls use the function-call path above.
+    // Greek scalar letters denote unknown parameters in quantum notation.
+    // Pi stays numerical, and explicit function calls take the path above.
+    // Subscripted identifiers remain atomic instead of becoming products.
     else if(!numericToken && a.find('_')!=std::string::npos) a="\""+a+"\"";
-    else if(a.find("θ")!=std::string::npos) {
-     std::string product;size_t begin=0,at;
-     auto factor=[&](const std::string &value){if(!product.empty())product+="*";product+=value;};
-     while((at=a.find("θ",begin))!=std::string::npos) {
-      if(at>begin)factor(a.substr(begin,at-begin));
-      factor("\"θ\"");begin=at+std::string("θ").size();
+    else if(!numericToken) {
+     static const std::string letters="αβγδεζηθικλμνξορςστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϑϕϖϱϵ";
+     std::string product;size_t begin=0,factors=0;
+     auto factor=[&](const std::string &value){if(factors++)product+="*";product+=value;};
+     for(size_t at=0;at+1<a.size();++at) {
+      if(((unsigned char)a[at]==0xce || (unsigned char)a[at]==0xcf) && letters.find(a.substr(at,2))!=std::string::npos) {
+       if(at>begin)factor(a.substr(begin,at-begin));
+       factor("\""+a.substr(at,2)+"\"");begin=at+2;++at;
+      }
      }
-     if(begin<a.size())factor(a.substr(begin));
-     a=product=="\"θ\"" ? product : "("+product+")";
+     if(begin) {
+      if(begin<a.size())factor(a.substr(begin));
+      a=factors==1 ? product : "("+product+")";
+     }
     }
    }
   }
