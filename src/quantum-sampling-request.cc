@@ -1,0 +1,116 @@
+// GPL-2.0-or-later; see COPYING.
+#include "quantum-sampling-request.h"
+#include <libqalculate/Calculator.h>
+#include <libqalculate/MathStructure.h>
+#include <libqalculate/QuantumNumericalState.h>
+#include <cmath>
+#include <limits>
+#include <sstream>
+
+namespace {
+class Reader {
+ const std::string &input;
+ size_t position = 9; // QSAMPLE1 followed by LF
+public:
+ explicit Reader(const std::string &value) : input(value) {
+  if(input.size()>1100000 || input.compare(0,9,"QSAMPLE1\n")!=0)
+   throw std::runtime_error("Expected a bounded QSAMPLE1 request.");
+ }
+ std::uint64_t integer(std::uint64_t maximum) {
+  std::uint64_t value=0;size_t start=position;
+  while(position<input.size() && input[position]!='\n') {
+   unsigned char c=input[position++];
+   if(c<'0' || c>'9' || position-start>20 || value>maximum/10 ||
+      (value==maximum/10 && static_cast<unsigned>(c-'0')>maximum%10))
+    throw std::runtime_error("Invalid or excessive sampling request integer.");
+   value=value*10+c-'0';
+  }
+  if(position==start || position==input.size())throw std::runtime_error("Truncated sampling request integer.");
+  ++position;return value;
+ }
+ std::vector<unsigned> wires(unsigned qubits, unsigned maximum) {
+  unsigned count=static_cast<unsigned>(integer(maximum));std::vector<unsigned> result;
+  for(unsigned k=0;k<count;++k) {
+   if(!qubits)throw std::runtime_error("A zero-qubit state has no wires.");
+   unsigned wire=static_cast<unsigned>(integer(qubits-1));
+   for(unsigned previous:result)if(wire==previous)throw std::runtime_error("Sampling request wires must be distinct.");
+   result.push_back(wire);
+  }
+  return result;
+ }
+ std::string expression() {
+  size_t length=static_cast<size_t>(integer(4096));
+  if(!length || length>input.size()-position)throw std::runtime_error("Empty or truncated gate expression.");
+  std::string result=input.substr(position,length);position+=length;
+  if(result.find('\0')!=std::string::npos)throw std::runtime_error("Gate expressions cannot contain NUL.");
+  return result;
+ }
+ void end() {if(position!=input.size())throw std::runtime_error("Unexpected trailing sampling request data.");}
+};
+double component(Number value) {
+ if(value.isUndefined() || value.isInfinite(false))
+  throw std::runtime_error("Gate entries must be finite numerical values.");
+ // Relative precision is undefined around zero (for example cos(pi/2)).
+ // An absolute enclosure below the unitary tolerance is safe to round here.
+ if(value.isInterval() && !value.intervalToPrecision(12)) {
+  double lower=value.lowerEndPoint().floatValue(), upper=value.upperEndPoint().floatValue();
+  if(!std::isfinite(lower) || !std::isfinite(upper) || upper<lower || upper-lower>1e-14)
+   throw std::runtime_error("Gate interval is too wide for numerical sampling.");
+  return lower+(upper-lower)/2;
+ }
+ double result=value.floatValue();
+ if(!std::isfinite(result))throw std::runtime_error("Gate entry is outside the numerical range.");
+ return result;
+}
+struct Gate { std::vector<unsigned> wires;std::vector<QuantumNumerics::Complex> matrix; };
+}
+
+std::string quantumSamplingRequest(Calculator &calculator,const std::string &input) {
+ Reader reader(input);
+ unsigned qubits=static_cast<unsigned>(reader.integer(25));
+ unsigned shots=static_cast<unsigned>(reader.integer(1000000));
+ std::uint64_t seed=reader.integer(std::numeric_limits<std::uint64_t>::max());
+ std::vector<unsigned> measured=reader.wires(qubits,qubits);
+ unsigned count=static_cast<unsigned>(reader.integer(4096));
+ std::vector<Gate> gates;gates.reserve(count);
+ EvaluationOptions numeric;numeric.approximation=APPROXIMATION_APPROXIMATE;
+ for(unsigned k=0;k<count;++k) {
+  Gate gate;gate.wires=reader.wires(qubits,3);
+  if(gate.wires.empty())throw std::runtime_error("A gate needs one to three target wires.");
+  MathStructure matrix=calculator.calculate("quantum: "+reader.expression(),numeric);
+  bool failed=false;
+  while(calculator.message()) {
+   if(calculator.message()->type()==MESSAGE_ERROR)failed=true;
+   calculator.nextMessage();
+  }
+  size_t dimension=size_t(1)<<gate.wires.size();
+  if(failed || !matrix.isMatrix() || matrix.rows()!=dimension || matrix.columns()!=dimension)
+   throw std::runtime_error("Gate expression must resolve to a numerical matrix matching its target wires.");
+  for(size_t r=1;r<=dimension;++r)for(size_t c=1;c<=dimension;++c) {
+   const MathStructure &cell=*matrix.getElement(r,c);
+   if(!cell.isNumber())throw std::runtime_error("Gate entries must be numerical; assign parameter values before sampling.");
+   gate.matrix.emplace_back(component(cell.number().realPart()),component(cell.number().imaginaryPart()));
+  }
+  // Validate unitarity with the same kernel contract before allocating the full state.
+  QuantumNumerics::StateVector probe(static_cast<unsigned>(gate.wires.size()),8*sizeof(QuantumNumerics::Complex));
+  std::vector<unsigned> local;for(unsigned wire=0;wire<gate.wires.size();++wire)local.push_back(wire);
+  probe.apply(gate.matrix,local);
+  gates.push_back(std::move(gate));
+ }
+ reader.end();
+ QuantumNumerics::StateVector state(qubits,size_t(512)*1024*1024);
+ for(const Gate &gate:gates)state.apply(gate.matrix,gate.wires);
+ auto counts=state.sampleCounts(shots,measured,seed);
+ std::ostringstream output;
+ output << "{\"qubits\":" << qubits << ",\"shots\":" << shots << ",\"seed\":\"" << seed << "\",\"wires\":[";
+ for(size_t k=0;k<measured.size();++k) {if(k)output << ',';output << measured[k];}
+ output << "],\"counts\":{";
+ bool first=true;
+ for(const auto &entry:counts) {
+  if(!first)output << ',';
+  first=false;output << '\"';
+  for(size_t bit=measured.size();bit>0;--bit)output << ((entry.first>>(bit-1))&1);
+  output << "\":" << entry.second;
+ }
+ output << "}}";return output.str();
+}

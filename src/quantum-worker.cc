@@ -4,6 +4,7 @@
 #include <libqalculate/Function.h>
 #include <libqalculate/Variable.h>
 #include <stdexcept>
+#include "quantum-sampling-request.h"
 #include <set>
 #ifdef _WIN32
 #include <io.h>
@@ -71,7 +72,7 @@ static void defineStates(Calculator &calculator,std::string &input) {
  if(input.empty() || input.size()>32768 || input.find('\0')!=std::string::npos)throw std::runtime_error("State request expression must contain 1 to 32768 bytes without NUL.");
 }
 int main(int argc,char **argv) {
- bool json=false, approximate=false, probabilities=false, bloch=false, states=false;
+ bool json=false, approximate=false, probabilities=false, bloch=false, states=false, sample=false;
  for(int k=1;k<argc;++k) {
   std::string argument=argv[k];
   if(argument=="--json") json=true;
@@ -79,20 +80,24 @@ int main(int argc,char **argv) {
   else if(argument=="--probabilities") probabilities=true;
   else if(argument=="--bloch") bloch=true;
   else if(argument=="--states") states=true;
-  else { std::cerr << "Usage: quantum-worker.exe [--json] [--approx] [--probabilities] [--bloch] [--states] (expression or state request on UTF-8 stdin)"; return 2; }
+  else if(argument=="--sample") sample=true;
+  else { std::cerr << "Usage: quantum-worker.exe [--json] [--approx] [--probabilities] [--bloch] [--states] or --sample (expression or structured request on UTF-8 stdin)"; return 2; }
  }
+ if(sample && argc!=2) {std::cerr << "--sample is a separate request mode; do not combine flags.";return 2;}
 #ifdef _WIN32
- if(states && _setmode(_fileno(stdin),_O_BINARY)==-1) {std::cerr << "Cannot open binary state input.";return 2;}
+ if((states || sample) && _setmode(_fileno(stdin),_O_BINARY)==-1) {std::cerr << "Cannot open binary state input.";return 2;}
 #endif
  std::string input;input.reserve(32768);char byte;
  while(std::cin.get(byte)) {
-  if(input.size()==(states ? 1100000U : 32768U)) {std::cerr << (states ? "State request exceeds 1100000 bytes." : "Input exceeds 32768 bytes.");return 2;}
+  if(input.size()==((states || sample) ? 1100000U : 32768U)) {std::cerr << ((states || sample) ? "Structured request exceeds 1100000 bytes." : "Input exceeds 32768 bytes.");return 2;}
   input.push_back(byte);
  }
  if(std::cin.bad()) {std::cerr << "Cannot read expression from stdin.";return 2;}
  Calculator calculator;
  if(!calculator.loadGlobalDefinitions()) { std::cerr << "Cannot load calculator definitions. Keep the data folder beside QuantumStudio.exe."; return 2; }
  calculator.setPrecision(30);
+ if(sample)try {std::cout << quantumSamplingRequest(calculator,input) << std::endl;return 0;}
+ catch(const std::exception &error){std::cerr << error.what() << '\n';return 2;}
  if(states)try {defineStates(calculator,input);}catch(const std::exception &error){std::cerr << error.what() << '\n';return 2;}
  EvaluationOptions eo;
  eo.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
