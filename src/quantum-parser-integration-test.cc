@@ -21,6 +21,18 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: |0>+|1>","[1;1]");
+ equal("quantum: |0>-|1>","[1;-1]");
+ equal("quantum: [1,2]+[3,4]","[4,6]");
+ equal("quantum: 0+|0>","[1;0]");
+ equal("quantum: |0>+0","[1;0]");
+ equal("quantum: 0-|0>","[-1;0]");
+ equal("quantum: 2+3-1","4");
+ for(const char *expression:{"quantum: |0>-density(|0>)","quantum: |0>+identity(2)","quantum: [1;2]+[1,2]","quantum: [1;2]+[3;4;5]","quantum: 2+identity(2)","quantum: identity(2)-2"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid quantum sum accepted: ")+expression);++checks;
+ }
  equal(R"(quantum: |\{0,1\}\cup\{1,2\}|)","3");
  equal(R"(quantum: |\{0,1\}∩\{1,2\}|)","1");
  equal(R"(quantum: |\{0,1,2\}∖\{1\}|^2)","4");

@@ -109,6 +109,10 @@ For a sum over integer basis indices, specify the state dimension: `\sum_{x\in\{
 
 Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and `\sin^{-2}(pi/6)` gives `4`. The inverse interpretation applies to the literal exponent `-1`; write `(\sin(x))^{-1}` for a reciprocal. Powered functions require a parenthesized or braced argument, optionally with TeX delimiter-sizing commands such as `\left` or `\biggl`. Unbraced powered-function arguments remain unfinished.
 
+## Quantum addition and subtraction
+
+In quantum mode, addition and subtraction require matching matrix dimensions. A ket cannot be added to an operator, and a row vector cannot be added to a column vector by broadcasting. Nonzero scalar additions to matrices also reject: write an explicit identity or constant matrix for the intended operation. Scalar zero remains an additive identity, and ordinary symbolic scalar arithmetic is preserved. These checks apply to the quantum notation parser; ordinary libqalculate expressions retain their existing behavior. Unresolved non-scalar expressions remain deferred until their dimensions can be evaluated.
+
 ## Finite set-indexed sums
 
 Finite membership uses `x ∈ S` or `x \in S`, with `∉` / `\notin` for nonmembership. The function spelling is `member(x,S)`. Collections may contain scalar values or typed binary labels, with at most 1024 entries; bare scalars and matrices are rejected as collections. Binary labels compare by width and value, so `bitstring(1,3)` is not a member of `bitstrings(2)`. Exact scalar equality is used, and undecidable symbolic equality reports an error rather than a false result. Membership predicates can also appear inside set filters. Infinite and general symbolic domains remain unfinished.
