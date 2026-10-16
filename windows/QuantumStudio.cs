@@ -252,6 +252,18 @@ class QuantumStudio {
     window.Close();
    };
   }
+  if(args.Length==2 && args[0]=="--sampling-test") {
+   window.Loaded+=async delegate {
+    CircuitComposer composer=null;SamplingWindow sampling=null;
+    try {
+     composer=new CircuitComposer(window,delegate(string value) {});composer.BellState(0);
+     sampling=new SamplingWindow(window,2,composer.SamplingGates());sampling.Show();
+     await sampling.VerifySampling(args[1]+".png");
+     File.WriteAllText(args[1],"PASS: packaged sampling button, 10000 Bell shots, result rows, control cleanup and rendered window.");
+    } catch(Exception ex) {File.WriteAllText(args[1],"FAIL: "+ex);Environment.ExitCode=1;}
+    finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
+   };
+  }
   if(args.Length==2 && args[0]=="--state-editor-test") {
    window.Loaded+=async delegate {
     try {await CheckStateEditor(args[1]+".png");File.WriteAllText(args[1],"PASS: state editor draft isolation, cancel, apply, duplicate rejection, add/remove, ordering and minimum-width layout.");}

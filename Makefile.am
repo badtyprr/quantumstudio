@@ -18,6 +18,9 @@ EXTRA_DIST = config.rpath  \
 	windows/test-qasm-protocol.py \
 	windows/BoundedUtf8File.cs \
 	windows/CircuitComposer.cs \
+	windows/NumericalSampling.cs \
+	windows/SamplingTests.cs \
+	windows/SamplingWindow.cs \
 	windows/CircuitFileTests.cs \
 	windows/CssCircuitTests.cs \
 	windows/CssEncoderCircuitTests.cs \

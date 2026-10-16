@@ -111,6 +111,8 @@ class CircuitComposer : Window {
    resultWire.ToolTip=resultView.SelectedIndex==4 ? "A nonempty list of distinct wires, in the desired outcome bit order." : resultView.SelectedIndex==3 ? "A nonempty proper subset, e.g. 0,2. The other wires form side B." : "One zero-based wire index.";
   };
   use=new Button {Content="Load into calculator →",Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary,VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(0,0,0,8)};outputOptions.Children.Add(use);
+  var sample=new Button {Content="Sample circuit…",VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(8,0,0,8)};outputOptions.Children.Add(sample);
+  sample.Click+=delegate {try {new SamplingWindow(this,Count,SamplingGates()).Show();}catch(Exception error) {status.Text=error.Message;}};
   var circuitCard=new Border {Background=WorkspaceTheme.Surface,CornerRadius=new CornerRadius(10),Margin=new Thickness(0,8,0,12),Padding=new Thickness(10)};Grid.SetRow(circuitCard,1);root.Children.Add(circuitCard);
   var preview=new DockPanel();circuitCard.Child=preview;
   var previewHeader=new DockPanel {Margin=new Thickness(0,0,0,8)};DockPanel.SetDock(previewHeader,Dock.Top);preview.Children.Add(previewHeader);
@@ -736,8 +738,7 @@ class CircuitComposer : Window {
     string constructor=step.Gate=="AD" || step.Gate=="GAD" ? "amplitude_damping" : step.Gate=="PD" ? "phase_damping" : step.Gate=="PAD" ? "phase_amplitude_damping" : step.Gate=="Thermal" ? "thermal_relaxation" : "depolarizing";
     value="channel("+value+","+constructor+"("+step.Angle+"),"+step.Wires[0]+")";mixed=true;if(transformations!=null)transformations.Add(value);continue;
    }
-   string op=step.Gate+(NeedsAngle(step.Gate) ? "("+step.Angle+")" : "");
-   if(step.Gate=="GPhase")op="(exp(i*("+step.Angle+"))*I)";
+   string op=GateExpression(step);
    string indices=String.Join(",",Array.ConvertAll(step.Wires,n=>n.ToString()));
    value=step.Gate=="Reset" ? "reset("+value+",["+indices+"])" : step.Gate=="Measure" ? "dephase("+value+",["+indices+"])" : "apply("+op+","+value+",["+indices+"])";
    if(step.Gate=="Reset" || step.Gate=="Measure")mixed=true;
@@ -745,6 +746,19 @@ class CircuitComposer : Window {
   }
   string result=transformations==null || transformations.Count==0 ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,"+placeholder+")";
   return requiresDensity && !mixed ? "density("+result+")" : result;
+ }
+ static string GateExpression(Step step) {
+  return step.Gate=="GPhase" ? "(exp(i*("+step.Angle+"))*I)" : step.Gate+(NeedsAngle(step.Gate) ? "("+step.Angle+")" : "");
+ }
+ public List<NumericalSampling.Gate> SamplingGates() {
+  var result=new List<NumericalSampling.Gate>();bool measured=false;
+  foreach(var step in steps) {
+   if(step.Gate=="Measure") {measured=true;continue;}
+   if(measured || step.Gate=="Reset" || Noise(step.Gate) || Feedback(step.Gate))
+    throw new InvalidOperationException("Sampling currently supports unitary circuits with optional terminal measurements. Use the calculator for noise, reset, or measurement feedback.");
+   result.Add(new NumericalSampling.Gate {Expression=GateExpression(step),Wires=(int[])step.Wires.Clone()});
+  }
+  return result;
  }
  void Line(double x1,double y1,double x2,double y2,Brush color,double width,bool dashed=false) {diagram.Children.Add(new Line {X1=x1,Y1=y1,X2=x2,Y2=y2,Stroke=color,StrokeThickness=width,StrokeDashArray=dashed ? new DoubleCollection {3,2} : null});}
  void Label(string text,double x,double y,double width) {var label=new TextBlock {Text=text,Width=width,TextAlignment=TextAlignment.Center,FontSize=14,TextTrimming=TextTrimming.CharacterEllipsis,ToolTip=text}; Canvas.SetLeft(label,x); Canvas.SetTop(label,y); diagram.Children.Add(label);}
