@@ -157,8 +157,19 @@ class QuantumAlgebraFunction: public MathFunction {
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
   }
   // Each of these operations is an involution, including on unresolved states.
-  if((op=="qdag" || op=="qconj" || op=="qtranspose") && raw[0].isFunction() && raw[0].size()==1 && raw[0].function()->referenceName()==op) {
-   out=raw[0][0];out.eval(eo);return 1;
+  if((op=="qdag" || op=="qconj" || op=="qtranspose") && raw[0].isFunction() && raw[0].size()==1) {
+   const std::string &inner=raw[0].function()->referenceName();
+   if(inner=="qdag" || inner=="qconj" || inner=="qtranspose") {
+    // Transpose and conjugation commute, and each is an involution.
+    // Keep the operand so later substitution still validates its domain.
+    out=raw[0][0];
+    if(inner!=op) {
+     const char *composed=op!="qdag" && inner!="qdag" ? "qdag" :
+       op!="qconj" && inner!="qconj" ? "qconj" : "qtranspose";
+     MathStructure operand=out;out.set(CALCULATOR->getFunction(composed),&operand,NULL);
+    }
+    out.eval(eo);return 1;
+   }
   }
   if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
