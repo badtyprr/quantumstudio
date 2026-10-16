@@ -96,6 +96,13 @@ try {
     if (!$process.WaitForExit(300000)) { $process.Kill(); $process.WaitForExit(); throw 'Packaged GUI smoke test timed out.' }
     if ($process.ExitCode -ne 0 -or !(Get-Content -LiteralPath ($smoke+'.txt') -Raw).StartsWith('PASS:')) { throw 'Packaged GUI smoke test failed.' }
 } finally { $process.Dispose() }
+$samplingReport = Join-Path $repo 'dist\sampling-smoke.txt'
+$samplingProcess = Start-Process -FilePath (Join-Path $output 'QuantumStudio.exe') -ArgumentList @('--sampling-test', ('"'+$samplingReport+'"')) -WindowStyle Hidden -PassThru
+try {
+    if (!$samplingProcess.WaitForExit(45000)) { $samplingProcess.Kill(); $samplingProcess.WaitForExit(); throw 'Packaged sampling GUI timed out.' }
+    if ($samplingProcess.ExitCode -ne 0 -or !(Get-Content -LiteralPath $samplingReport -Raw).StartsWith('PASS:')) { throw 'Packaged sampling GUI failed.' }
+    Get-Content -LiteralPath $samplingReport
+} finally { $samplingProcess.Dispose() }
 Assert-UnchangedSources
 if (!$Candidate) {
     Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null

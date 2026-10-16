@@ -58,6 +58,19 @@ sealed class SamplingWindow : Window {
    } catch(Exception error) {status.Text="Could not save counts: "+error.Message;}
   };
  }
+ public async System.Threading.Tasks.Task VerifySampling(string screenshot) {
+  run.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+  if(run.IsEnabled || !cancel.IsEnabled)throw new Exception("Sampling did not enter its running state.");
+  var deadline=DateTime.UtcNow.AddSeconds(30);
+  while(!run.IsEnabled && DateTime.UtcNow<deadline)await System.Threading.Tasks.Task.Delay(50);
+  if(!run.IsEnabled || result==null || result.shots!=10000 || result.seed!="7" || result.counts.Count!=2 ||
+     !result.counts.ContainsKey("00") || !result.counts.ContainsKey("11") || rows.Children.Count!=2 || !save.IsEnabled || cancel.IsEnabled)
+   throw new Exception("Sampling window did not display the Bell results: "+status.Text);
+  UpdateLayout();
+  var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);bitmap.Render(this);
+  var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder();encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
+  using(var file=File.Create(screenshot))encoder.Save(file);
+ }
  static void Field(Panel panel,string label,Control input) {
   var field=new StackPanel {Margin=new Thickness(0,0,12,0)};field.Children.Add(new TextBlock {Text=label,Margin=new Thickness(0,0,0,4)});field.Children.Add(input);panel.Children.Add(field);
   System.Windows.Automation.AutomationProperties.SetName(input,label);
