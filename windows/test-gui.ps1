@@ -29,6 +29,14 @@ if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests failed.' }
 $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
+$sessionResult = Join-Path $validation ('session-preservation-' + [Guid]::NewGuid().ToString('N') + '.txt')
+$sessionProcess = Start-Process -FilePath $app -ArgumentList @('--session-preservation-test', ('"' + $sessionResult + '"')) -WindowStyle Hidden -PassThru
+try {
+    if (-not $sessionProcess.WaitForExit(30000)) { $sessionProcess.Kill(); $sessionProcess.WaitForExit(); throw 'Session preservation test timed out.' }
+    $sessionReport = Get-Content -LiteralPath $sessionResult -Raw
+    if ($sessionProcess.ExitCode -ne 0 -or -not $sessionReport.StartsWith('PASS:')) { throw $sessionReport }
+    Write-Output $sessionReport
+} finally { $sessionProcess.Dispose() }
 $editorResult = Join-Path $validation ('state-editor-' + [Guid]::NewGuid().ToString('N') + '.txt')
 $editorProcess = Start-Process -FilePath $app -ArgumentList @('--state-editor-test', ('"' + $editorResult + '"')) -WindowStyle Hidden -PassThru
 try {
