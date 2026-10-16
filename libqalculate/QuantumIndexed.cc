@@ -14,7 +14,7 @@ void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const M
  int bound=-1;
  if(value.isFunction() && value.size()==4) {
   const std::string &name=value.function()->referenceName();
-  if((name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="sum" || name=="product") && value[3].equals(index))bound=3;
+  if((name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="qsum" || name=="sum" || name=="product") && value[3].equals(index))bound=3;
  }
  if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence" || value.function()->referenceName()=="qsumset") && value[2].equals(index))bound=2;
  for(size_t k=0;k<value.size();++k) {
@@ -29,6 +29,33 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qsum") {
+   if((!raw[3].isSymbolic() && !raw[3].isVariable()) || (raw[3].isVariable() && raw[3].variable()->isKnown())) {
+    CALCULATOR->error(true,"A finite sum index must be a symbolic variable.",NULL);return 0;
+   }
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure first=raw[1],last=raw[2];first.eval(exact);last.eval(exact);
+   bool pending=false;
+   for(const MathStructure *bound:{&first,&last}) {
+    if(bound->isNumber() && bound->number().isInteger())continue;
+    if(!bound->isNumber() && !bound->isVector() && bound->containsUnknowns()) {pending=true;continue;}
+    CALCULATOR->error(true,"Finite sum bounds must be integers or unresolved symbolic expressions.",NULL);return 0;
+   }
+   // Keep the scoped body intact until both endpoints have numerical values.
+   if(pending || CALCULATOR->aborted())return 0;
+   if(last.number()<first.number()) {CALCULATOR->error(true,"Finite sum bounds must be ascending.",NULL);return 0;}
+   MathStructure parameters=raw;parameters[1]=first;parameters[2]=last;
+   // The generic sum substitutes recursively. Give this binder a fresh name
+   // first, so it cannot replace a nested sum's declaration or bound body.
+   unsigned serial=0;MathStructure index;
+   do {
+    if(CALCULATOR->aborted())return 0;
+    index=MathStructure("__qsum_index_"+std::to_string(serial++),true);
+   } while(raw.contains(index));
+   replaceQuantumIndex(parameters[0],raw[3],index);parameters[3]=index;parameters.childrenUpdated();
+   auto sum=CALCULATOR->getFunction("sum");if(!sum)return 0;
+   return sum->calculate(out,parameters,eo);
+  }
   if(op=="qbitstrings" || op=="qbitlabel") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure width=raw[op=="qbitlabel" ? 1 : 0];width.eval(exact);
@@ -247,6 +274,7 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));

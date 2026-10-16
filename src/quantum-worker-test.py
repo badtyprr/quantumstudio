@@ -56,6 +56,14 @@ assert data("quantum: θ(1)")["text"] == "1"
 assert data("quantum: θ(-1)")["text"] == "0"
 
 for flags in [(), ("--approx",)]:
+    symbolic = data(r"quantum: \sum_{k=0}^{N-1}{k}", *flags)
+    assert "qsum(" in symbolic["text"] and "N" in symbolic["text"]
+    assert data(r"quantum: replace(\sum_{k=0}^{N-1}{k},N,4)", *flags)["text"] == "6"
+    assert data(r"quantum: replace(\sum_{k=0}^{N-1}{|k>_4},N,4)", *flags)["cells"] == [["1"], ["1"], ["1"], ["1"]]
+for expression in [r"\sum_{k=0.5}^{N}{k}", r"\sum_{k=0}^{1.5}{k}", r"\sum_{k=2}^{1}{k}", "qsum(k,0,[1,2],k)"]:
+    assert run("quantum: " + expression, "--json", success=False).stdout == b""
+
+for flags in [(), ("--approx",)]:
     assert data("quantum: 1 <= |-2|", *flags)["text"] == "1"
     assert data("quantum: 3 <= |-2|", *flags)["text"] == "0"
     assert data("quantum: |-1| ≤ 2|-1/2|", *flags)["text"] == "1"
