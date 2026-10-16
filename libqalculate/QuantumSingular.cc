@@ -106,6 +106,7 @@ bool quantumSchattenNorm(MathStructure &out,const MathStructure &matrix,const Ma
  if(!spectral && (!std::isfinite(exponent) || exponent<1)) {CALCULATOR->error(true,"Finite Schatten norm order exceeds floating-point range.",NULL);return false;}
  size_t rows=matrix.isMatrix() ? matrix.rows() : 1,cols=matrix.isMatrix() ? matrix.columns() : 1,n=rows*cols;
  bool frobenius=!spectral && pn==Number(2);
+ if(frobenius)numeric.interval_calculation=INTERVAL_CALCULATION_INTERVAL_ARITHMETIC;
  if((!matrix.isMatrix() && !matrix.isNumber()) || n==0 || rows>1024 || cols>1024 || n>(frobenius ? 1048576U : 1024U)) {CALCULATOR->error(true,"Frobenius norms support numeric matrices up to 1024 by 1024; other operator norms support at most 1024 entries.",NULL);return false;}
  MathStructure ket;if(!frobenius){ket.clearMatrix();ket.resizeMatrix(n,1,m_zero);}Number weight(0);
  for(size_t r=0;r<rows;++r)for(size_t c=0;c<cols;++c) {
@@ -113,11 +114,14 @@ bool quantumSchattenNorm(MathStructure &out,const MathStructure &matrix,const Ma
   MathStructure value=matrix.isMatrix() ? entry(matrix,r,c) : matrix;value.eval(numeric);
   if(!value.isNumber() || value.number().isUndefined() || value.number().isInfinite(false)) {CALCULATOR->error(true,"Operator norms require finite numeric entries.",NULL);return false;}
   Number re=value.number().realPart(),im=value.number().imaginaryPart();
-  if((re.isInterval() && !re.intervalToPrecision(12)) || (im.isInterval() && !im.intervalToPrecision(12)) || !std::isfinite(re.floatValue()) || !std::isfinite(im.floatValue())) {CALCULATOR->error(true,"Operator norm entries must fit floating-point range without broad uncertainty.",NULL);return false;}
+  if((!frobenius && ((re.isInterval() && !re.intervalToPrecision(12)) || (im.isInterval() && !im.intervalToPrecision(12)))) || !std::isfinite(re.lowerEndPoint().floatValue()) || !std::isfinite(re.upperEndPoint().floatValue()) || !std::isfinite(im.lowerEndPoint().floatValue()) || !std::isfinite(im.upperEndPoint().floatValue())) {CALCULATOR->error(true,"Operator norm entries must fit floating-point range without broad uncertainty.",NULL);return false;}
   re.square();im.square();re.add(im);weight.add(re);if(!frobenius)entry(ket,r*cols+c,0)=value;
  }
  if(!weight.sqrt())return false;
- if(weight.isZero() || n==1 || frobenius) {weight.intervalToMidValue();weight.setApproximate(true);weight.setPrecision(12);out=weight;return true;}
+ // Frobenius norms use interval-safe arithmetic throughout. Near-zero
+ // cancellation may have little relative precision but still a useful bound.
+ if(frobenius) {weight.setApproximate(true);if(!weight.isInterval())weight.setPrecision(12);out=weight;return true;}
+ if(weight.isZero() || n==1) {weight.intervalToMidValue();weight.setApproximate(true);weight.setPrecision(12);out=weight;return true;}
  MathStructure dimensions;dimensions.clearVector();dimensions.addChild(MathStructure(Number(rows)));dimensions.addChild(MathStructure(Number(cols)));
  MathStructure coefficients,index(0);if(!quantumSchmidt(coefficients,ket,index,&dimensions,eo))return false;
  double largest=entry(coefficients,0,0).number().floatValue(),factor=largest;

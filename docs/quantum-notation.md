@@ -50,6 +50,10 @@ For Bernstein–Vazirani, all eight three-bit secrets plus the notebook's `1011`
 
 `frobeniusnorm(A)` and Schatten order 2 support finite numeric matrices up to 1024 by 1024, including ten-qubit density matrices. This path sums squared entry magnitudes directly and checks cancellation during the scan; it does not allocate a vectorized copy or compute singular values. Other Schatten orders, trace norms and spectral norms retain the 1024-entry bound. `vec` retains its own 1024-entry limit, so use `frobeniusnorm(A-B)` to compare large density matrices. Numerical precision and finite-entry validation still apply.
 
+### Frobenius uncertainty
+
+Frobenius norms propagate finite real and complex interval entries through squared magnitudes and the square root. This preserves bounds for cancellation residuals near zero and for explicitly uncertain entries, instead of requiring 12 significant digits in each entry. The resulting value may be an interval. Other Schatten orders retain their existing broad-uncertainty rejection.
+
 ## Selected qBraid adder audit
 
 The pinned [PyQASM unrolling notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb) contains a ten-qubit ripple-carry adder. Its `adder_qasm_str` was extracted without executing the notebook. The notebook SHA-256 is `ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4`; the extracted UTF-8 source with LF newlines hashes to `503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad`.
