@@ -1,4 +1,4 @@
-﻿// GPL-2.0-or-later; see COPYING.
+// GPL-2.0-or-later; see COPYING.
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -21,6 +21,14 @@ class QuantumStudio {
  static CancellationTokenSource calculationCancellation;
  static ComboBox mode, evaluation, timeAllowance;
  static ListBox history;
+ static StateDefinition[] states=new StateDefinition[0];
+ static void RefreshStates() {Find<Button>("EditStates").Content="States · "+states.Length;}
+ static Window StateEditor() {
+  return NamedStateEditor.Create(window,states,delegate(StateDefinition[] applied) {
+   states=applied;RefreshStates();
+   status.Text="State definitions updated · Calculate to evaluate; Save session to keep them.";
+  });
+ }
  static ScrollViewer matrixView;
  static Grid matrixCells;
  static TextBlock matrixCaption;
@@ -37,7 +45,7 @@ class QuantumStudio {
  }
  static ExampleEntry[] examples;
  static Window ExamplesWindow() {
-  var dialog=new Window {Title="Explore quantum examples", Owner=window, Width=740, Height=650, MinWidth=540, MinHeight=430, WindowStartupLocation=WindowStartupLocation.CenterOwner, Background=new SolidColorBrush(Color.FromRgb(245,246,250)), FontFamily=new FontFamily("Segoe UI")};
+  var dialog=new Window {Title="Explore quantum examples", Owner=window, Width=740, Height=650, MinWidth=540, MinHeight=430, WindowStartupLocation=WindowStartupLocation.CenterOwner, Background=WorkspaceTheme.Background, FontFamily=new FontFamily("Segoe UI")};
   dialog.Resources=window.Resources;
   var panel=new DockPanel {Margin=new Thickness(24)}; dialog.Content=panel;
   var heading=new TextBlock {Text="Choose an experiment",FontSize=25,FontWeight=FontWeights.SemiBold,Margin=new Thickness(0,0,0,16)}; DockPanel.SetDock(heading,Dock.Top); panel.Children.Add(heading);
@@ -55,7 +63,7 @@ class QuantumStudio {
     var content=new StackPanel {Margin=new Thickness(6)};
     content.Children.Add(new TextBlock {Text=example.title,FontSize=17,FontWeight=FontWeights.SemiBold});
     content.Children.Add(new TextBlock {Text=example.description,FontSize=13,TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,4,0,4)});
-    content.Children.Add(new TextBlock {Text=example.expression,FontSize=17,FontFamily=new FontFamily("Cambria Math"),TextWrapping=TextWrapping.Wrap,Foreground=new SolidColorBrush(Color.FromRgb(55,94,232))});
+    content.Children.Add(new TextBlock {Text=example.expression,FontSize=17,FontFamily=new FontFamily("Cambria Math"),TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Accent});
     list.Items.Add(new ListBoxItem {Content=content,Tag=example,HorizontalContentAlignment=HorizontalAlignment.Stretch});
    }
    if(list.Items.Count==0) list.Items.Add(new ListBoxItem {IsEnabled=false,Content="No matching examples. Try another topic."});
@@ -81,6 +89,7 @@ class QuantumStudio {
  static T Find<T>(string name) where T : class { return window.FindName(name) as T; }
  [STAThread] static void Main(string[] args) {
   var app = new Application();
+  WorkspaceTheme.Install(app);
   using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MainWindow.xaml")) window = (Window)XamlReader.Load(stream);
   input=Find<TextBox>("Input"); output=Find<TextBox>("Output"); status=Find<TextBlock>("Status"); resultLabel=Find<TextBlock>("ResultLabel");
   run=Find<Button>("Run"); mode=Find<ComboBox>("Mode"); history=Find<ListBox>("History");
@@ -92,6 +101,7 @@ class QuantumStudio {
   blochView=new StackPanel {Visibility=Visibility.Collapsed,Margin=new Thickness(0,20,0,0)};((Panel)probabilityView.Parent).Children.Add(blochView);
   using(var reader=new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("examples.json"))) examples=new JavaScriptSerializer().Deserialize<ExampleEntry[]>(reader.ReadToEnd());
   Find<Button>("BrowseExamples").Click+=delegate {ExamplesWindow().ShowDialog();};
+  Find<Button>("EditStates").Click+=delegate {if(run.IsEnabled)StateEditor().ShowDialog();};
   Find<Button>("ComposeCircuit").Click+=delegate {new CircuitComposer(window,delegate(string value) {mode.SelectedIndex=0;input.Text=value;input.Focus();}).ShowDialog();};
   run.Click += async delegate { await Calculate(); };
   input.PreviewKeyDown += async delegate(object sender, KeyEventArgs e) {
@@ -180,7 +190,8 @@ class QuantumStudio {
    bitmap.Render(dialog); var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder(); encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
    using(var file=File.Create(args[1])) encoder.Save(file); dialog.Close(); window.Close(); return;
   }
-  if(args.Length==2 && args[0]=="--render") {
+  if(args.Length==2 && (args[0]=="--render" || args[0]=="--render-compact")) {
+   if(args[0]=="--render-compact") {window.Width=window.MinWidth;window.Height=window.MinHeight;}
    window.Show(); window.UpdateLayout();
    var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)window.ActualWidth,(int)window.ActualHeight,96,96,PixelFormats.Pbgra32);
    bitmap.Render(window); var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder(); encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
@@ -238,6 +249,13 @@ class QuantumStudio {
      timeAllowance.SelectedIndex=0;
      File.WriteAllText(args[1],"PASS: immediate and running cancellation, timeout, cleanup, unchanged interrupted history, and successful reuse with all four allowances.");
     } catch(Exception ex) {File.WriteAllText(args[1],ex.ToString());Environment.ExitCode=1;}
+    window.Close();
+   };
+  }
+  if(args.Length==2 && args[0]=="--state-editor-test") {
+   window.Loaded+=async delegate {
+    try {await CheckStateEditor(args[1]+".png");File.WriteAllText(args[1],"PASS: state editor draft isolation, cancel, apply, duplicate rejection, add/remove, ordering and minimum-width layout.");}
+    catch(Exception ex){File.WriteAllText(args[1],"FAIL: "+ex);Environment.ExitCode=1;}
     window.Close();
    };
   }
@@ -726,6 +744,17 @@ class QuantumStudio {
     bool tooLongRejected=false;try {SessionStore.Save(sessionPath,badSession);}catch(InvalidDataException){tooLongRejected=true;}
     if(!tooLongRejected || File.ReadAllText(sessionPath)!=validSessionText)throw new Exception("Oversized session draft was not safely rejected.");
     OpenSession(sessionPath);await Calculate();if(output.Text!=originalSession.History[0].Result)throw new Exception("Restored expression did not recompute correctly.");
+    await CheckStateEditor(args[1]+".states.png");
+    mode.SelectedIndex=0;evaluation.SelectedIndex=0;input.Text="<Bell|after CZ>";await Calculate();
+    if(output.Text!="0")throw new Exception("Named-state GUI overlap failed: "+output.Text);
+    input.Text="<Bell|Bell>";await Calculate();if(output.Text!="1")throw new Exception("Named-state GUI self overlap failed.");
+    var namedHistory=(ListBoxItem)history.Items[0];
+    SessionStore.Save(sessionPath,CaptureSession());states[0].Expression="2|0>";
+    namedHistory.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,Environment.TickCount,MouseButton.Left) {RoutedEvent=Control.MouseDoubleClickEvent});
+    if(states[0].Expression!="|Phi+>")throw new Exception("History did not restore its state definitions.");
+    states=new StateDefinition[0];OpenSession(sessionPath);await Calculate();
+    if(states.Length!=2 || states[1].Name!="after CZ" || output.Text!="1")throw new Exception("Saved named states did not restore and recalculate.");
+    SessionStore.Save(sessionPath,originalSession);OpenSession(sessionPath);
     File.WriteAllText(args[1]+".txt",passed ? "PASS: GUI matrices, TeX, history, errors, unit conversion, example search, circuit calculation, save/open, and invalid-file preservation." : "FAIL: "+output.Text);
     Environment.ExitCode=passed ? 0 : 1; window.Close();
     } catch(Exception ex) {
@@ -735,19 +764,54 @@ class QuantumStudio {
   }
   app.Run(window);
  }
+ static async Task CheckStateEditor(string screenshotPath) {
+    states=new StateDefinition[0];
+    var stateEditor=StateEditor();stateEditor.Show();
+    ((Button)stateEditor.FindName("AddBell")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    var stateGrid=(DataGrid)stateEditor.FindName("Definitions");
+    if(stateGrid.Items.Count!=2 || states.Length!=0)throw new Exception("State editor changed the workspace before Apply.");
+    ((Button)stateEditor.FindName("Cancel")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(states.Length!=0)throw new Exception("State editor Cancel changed definitions.");
+    stateEditor=StateEditor();stateEditor.Show();
+    ((Button)stateEditor.FindName("AddBell")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    stateGrid=(DataGrid)stateEditor.FindName("Definitions");
+    ((Button)stateEditor.FindName("AddBell")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(stateGrid.Items.Count!=2 || String.IsNullOrEmpty(((TextBlock)stateEditor.FindName("Error")).Text))throw new Exception("Duplicate Bell example was not rejected.");
+    stateGrid.SelectedIndex=1;((Button)stateEditor.FindName("MoveUp")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(((StateDefinition)stateGrid.Items[0]).Name!="after CZ")throw new Exception("Move state up failed.");
+    ((Button)stateEditor.FindName("MoveDown")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    ((Button)stateEditor.FindName("Add")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    ((Button)stateEditor.FindName("Remove")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(stateGrid.Items.Count!=2)throw new Exception("Add/remove state failed.");
+    ((StateDefinition)stateGrid.Items[1]).Name="Bell";
+    ((Button)stateEditor.FindName("Apply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(!stateEditor.IsVisible || states.Length!=0)throw new Exception("Invalid state edits were applied.");
+    ((StateDefinition)stateGrid.Items[1]).Name="after CZ";stateGrid.Items.Refresh();
+    stateEditor.Width=600;stateEditor.Height=520;stateEditor.UpdateLayout();await Task.Delay(100);stateEditor.UpdateLayout();
+    if(stateGrid.Columns[1].ActualWidth<240)throw new Exception("State expression column collapsed at minimum window size.");
+    var editorBitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)stateEditor.ActualWidth,(int)stateEditor.ActualHeight,96,96,PixelFormats.Pbgra32);editorBitmap.Render(stateEditor);
+    var editorEncoder=new System.Windows.Media.Imaging.PngBitmapEncoder();editorEncoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(editorBitmap));using(var editorFile=File.Create(screenshotPath))editorEncoder.Save(editorFile);
+    ((Button)stateEditor.FindName("Apply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(stateEditor.IsVisible || states.Length!=2 || Find<Button>("EditStates").Content.ToString()!="States · 2")throw new Exception("State editor Apply failed.");
+ }
  static void Example(string name,string expression) { Find<Button>(name).Click += delegate { mode.SelectedIndex=0; input.Text=expression; input.Focus(); input.CaretIndex=input.Text.Length; }; }
  static ListBoxItem HistoryItem(SessionEntry record,bool saved) {
   var item=new ListBoxItem {Content=new TextBlock {Text=(saved ? "Saved · " : "")+record.Expression+"   =   "+record.Result,TextWrapping=TextWrapping.Wrap,FontSize=14,Margin=new Thickness(4,7,4,7)},Tag=record};
-  item.MouseDoubleClick+=delegate {input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
+  item.MouseDoubleClick+=delegate {states=SessionStore.CopyStates(record.States);RefreshStates();input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
  }
  static CalculationSession CaptureSession() {
   var entries=new SessionEntry[history.Items.Count];for(int j=0;j<entries.Length;j++)entries[j]=(SessionEntry)((ListBoxItem)history.Items[j]).Tag;
-  return new CalculationSession {Version=1,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=entries};
+  var snapshots=new SessionEntry[entries.Length];
+  for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States)};
+  return new CalculationSession {Version=2,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states)};
  }
  static void OpenSession(string path) {
   var session=SessionStore.Load(path);
+  var restoredStates=SessionStore.CopyStates(session.States);
   var items=new ListBoxItem[session.History.Length];for(int j=0;j<items.Length;j++)items[j]=HistoryItem(session.History[j],true);
   history.Items.Clear();foreach(var item in items)history.Items.Add(item);
+  states=restoredStates;
+  RefreshStates();
   input.Text=session.Expression;mode.SelectedIndex=session.Mode;evaluation.SelectedIndex=session.Evaluation;
   matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;
   output.Visibility=Visibility.Visible;output.Text="Choose Calculate to evaluate the restored expression.";resultLabel.Text="SESSION RESTORED";
@@ -758,7 +822,7 @@ class QuantumStudio {
   if(result.probabilities==null || result.probabilities.Length<2 || result.probabilities.Length>64)return;
   double total=0;foreach(double p in result.probabilities) {if(Double.IsNaN(p) || Double.IsInfinity(p) || p<0 || p>1)return;total+=p;}
   if(Math.Abs(total-1)>1e-9)return;
-  probabilityView.Children.Add(new TextBlock {Text="MEASUREMENT PROBABILITIES",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=new SolidColorBrush(Color.FromRgb(71,101,155))});
+  probabilityView.Children.Add(new TextBlock {Text="MEASUREMENT PROBABILITIES",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=WorkspaceTheme.Muted});
   int count=result.probabilities.Length,bits=0;while((1 << bits)<count)bits++;
   bool powerOfTwo=(1 << bits)==count,binary=binaryProbabilityLabels && powerOfTwo;
   var options=new WrapPanel {Margin=new Thickness(0,5,0,10)};
@@ -776,8 +840,8 @@ class QuantumStudio {
    row.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(binary ? 78 : 50)});row.ColumnDefinitions.Add(new ColumnDefinition());row.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(75)});
    string outcome=binary ? Convert.ToString(index,2).PadLeft(bits,'0') : index.ToString();
    var label=new TextBlock {Text=outcome,VerticalAlignment=VerticalAlignment.Center,FontFamily=new FontFamily("Consolas")};row.Children.Add(label);
-   var fill=new Border {Background=new SolidColorBrush(Color.FromRgb(55,94,232)),CornerRadius=new CornerRadius(6),Height=12,HorizontalAlignment=HorizontalAlignment.Left};
-   var track=new Border {Background=new SolidColorBrush(Color.FromRgb(213,223,247)),CornerRadius=new CornerRadius(6),Height=12,VerticalAlignment=VerticalAlignment.Center,Child=fill};
+   var fill=new Border {Background=WorkspaceTheme.Accent,CornerRadius=new CornerRadius(6),Height=12,HorizontalAlignment=HorizontalAlignment.Left};
+   var track=new Border {Background=WorkspaceTheme.Raised,CornerRadius=new CornerRadius(6),Height=12,VerticalAlignment=VerticalAlignment.Center,Child=fill};
    track.SizeChanged+=delegate {fill.Width=Math.Max(0,track.ActualWidth*p);};Grid.SetColumn(track,1);row.Children.Add(track);
    string percent=p.ToString("0.##%",System.Globalization.CultureInfo.InvariantCulture);
    var value=new TextBlock {Text=percent,HorizontalAlignment=HorizontalAlignment.Right,VerticalAlignment=VerticalAlignment.Center};Grid.SetColumn(value,2);row.Children.Add(value);
@@ -793,14 +857,14 @@ class QuantumStudio {
   if(result.bloch==null || result.bloch.Length!=3)return;
   double lengthSquared=0;foreach(double v in result.bloch) {if(Double.IsNaN(v) || Double.IsInfinity(v))return;lengthSquared+=v*v;}
   if(lengthSquared>1+1e-10)return;
-  blochView.Children.Add(new TextBlock {Text="BLOCH SPHERE",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=new SolidColorBrush(Color.FromRgb(71,101,155))});
+  blochView.Children.Add(new TextBlock {Text="BLOCH SPHERE",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=WorkspaceTheme.Muted});
   blochView.Children.Add(new TextBlock {Text="Single-qubit state · approximate 3D projection · coordinates above",FontSize=12,Margin=new Thickness(0,5,0,0)});
   var layout=new WrapPanel();blochView.Children.Add(layout);
   var canvas=new Canvas {Width=280,Height=245};layout.Children.Add(canvas);
-  var blue=new SolidColorBrush(Color.FromRgb(55,94,232));var grid=new SolidColorBrush(Color.FromRgb(194,209,235));
+  var blue=WorkspaceTheme.Accent;var grid=WorkspaceTheme.Border;
   double cosine=Math.Cos(blochAngle),sine=Math.Sin(blochAngle);
   Func<double,double,double,Point> project=(x,y,z)=>new Point(140+90*(cosine*x+sine*y),120+90*((-sine*x+cosine*y)/Math.Sqrt(3)-z*Math.Sqrt(2.0/3)));
-  var shell=new System.Windows.Shapes.Ellipse {Width=180,Height=180,Fill=new RadialGradientBrush(Colors.White,Color.FromRgb(233,240,253)),Stroke=grid,StrokeThickness=1};Canvas.SetLeft(shell,50);Canvas.SetTop(shell,30);canvas.Children.Add(shell);
+  var shell=new System.Windows.Shapes.Ellipse {Width=180,Height=180,Fill=new RadialGradientBrush(WorkspaceTheme.Raised.Color,WorkspaceTheme.Input.Color),Stroke=grid,StrokeThickness=1};Canvas.SetLeft(shell,50);Canvas.SetTop(shell,30);canvas.Children.Add(shell);
   for(int plane=0;plane<3;plane++) {
    var circle=new System.Windows.Shapes.Polyline {Stroke=grid,StrokeThickness=1};
    for(int k=0;k<=72;k++) {double theta=2*Math.PI*k/72,c=Math.Cos(theta),s=Math.Sin(theta);circle.Points.Add(plane==0 ? project(c,s,0) : plane==1 ? project(c,0,s) : project(0,c,s));}
@@ -810,8 +874,8 @@ class QuantumStudio {
   string[] labels={"+X","+Y","+Z · |0⟩"};
   for(int axis=0;axis<3;axis++) {
    Point a=project(axis==0 ? -1.1 : 0,axis==1 ? -1.1 : 0,axis==2 ? -1.1 : 0),b=project(axis==0 ? 1.1 : 0,axis==1 ? 1.1 : 0,axis==2 ? 1.1 : 0);
-   line(a,b,new SolidColorBrush(Color.FromRgb(139,158,190)),1,true);
-   var label=new TextBlock {Text=labels[axis],FontSize=12,Foreground=new SolidColorBrush(Color.FromRgb(71,101,155))};Canvas.SetLeft(label,b.X+5);Canvas.SetTop(label,b.Y-10);canvas.Children.Add(label);
+   line(a,b,WorkspaceTheme.Muted,1,true);
+   var label=new TextBlock {Text=labels[axis],FontSize=12,Foreground=WorkspaceTheme.Muted};Canvas.SetLeft(label,b.X+5);Canvas.SetTop(label,b.Y-10);canvas.Children.Add(label);
   }
   Point origin=project(0,0,0),tip=project(result.bloch[0],result.bloch[1],result.bloch[2]);line(origin,tip,blue,3,false);
   double dx=tip.X-origin.X,dy=tip.Y-origin.Y,projected=Math.Sqrt(dx*dx+dy*dy);
@@ -866,6 +930,10 @@ class QuantumStudio {
   if(Encoding.UTF8.GetByteCount(expression)>32000) { status.Text="Please keep expressions below 32 KB."; return; }
   int calculationMode=mode.SelectedIndex, calculationEvaluation=evaluation.SelectedIndex;
   string request=(calculationMode==0 ? "quantum:" : "")+expression;
+  var calculationStates=SessionStore.CopyStates(states);
+  byte[] requestBytes;
+  try {requestBytes=calculationStates.Length==0 ? Encoding.UTF8.GetBytes(request) : SessionStore.StateRequest(calculationStates,request);}
+  catch(Exception ex) {status.Text=ex.Message;return;}
   bool chart=calculationMode==0 && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^probs\s*\(");
   bool sphere=calculationMode==0 && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^bloch\s*\(");
   int seconds=new[]{15,60,180,600}[timeAllowance.SelectedIndex];
@@ -873,17 +941,18 @@ class QuantumStudio {
   var cancellation=new CancellationTokenSource();calculationCancellation=cancellation;
   run.IsEnabled=false;cancel.IsEnabled=true;timeAllowance.IsEnabled=false; status.Text="Calculating… · "+seconds+" second allowance"; resultLabel.Text="RESULT";
   Find<Button>("OpenSession").IsEnabled=false;Find<Button>("SaveSession").IsEnabled=false;
+  Find<Button>("EditStates").IsEnabled=false;
   try {
    runningWorker=Task.Run(async delegate {
     using(var process=new Process()) {
-     process.StartInfo=new ProcessStartInfo(Path.Combine(root,"quantum-worker.exe"),(calculationEvaluation==1 ? "--json --approx" : "--json")+(chart ? " --probabilities" : "")+(sphere ? " --bloch" : "")) { UseShellExecute=false, CreateNoWindow=true, RedirectStandardInput=true, RedirectStandardOutput=true, RedirectStandardError=true, StandardOutputEncoding=Encoding.UTF8, StandardErrorEncoding=Encoding.UTF8, WorkingDirectory=root };
+     process.StartInfo=new ProcessStartInfo(Path.Combine(root,"quantum-worker.exe"),(calculationEvaluation==1 ? "--json --approx" : "--json")+(chart ? " --probabilities" : "")+(sphere ? " --bloch" : "")+(calculationStates.Length>0 ? " --states" : "")) { UseShellExecute=false, CreateNoWindow=true, RedirectStandardInput=true, RedirectStandardOutput=true, RedirectStandardError=true, StandardOutputEncoding=Encoding.UTF8, StandardErrorEncoding=Encoding.UTF8, WorkingDirectory=root };
      process.StartInfo.EnvironmentVariables["QALCULATE_DEFINITIONS_DIR"]=Path.Combine(root,"data");
      cancellation.Token.ThrowIfCancellationRequested();
      process.Start(); active=process;
      var elapsed=Stopwatch.StartNew();
      try {
      var stdout=process.StandardOutput.ReadToEndAsync(); var stderr=process.StandardError.ReadToEndAsync();
-     byte[] bytes=Encoding.UTF8.GetBytes(request); process.StandardInput.BaseStream.Write(bytes,0,bytes.Length); process.StandardInput.Close();
+     process.StandardInput.BaseStream.Write(requestBytes,0,requestBytes.Length); process.StandardInput.Close();
      while(!process.WaitForExit(100)) {
       cancellation.Token.ThrowIfCancellationRequested();
       if(elapsed.ElapsedMilliseconds>=deadline)throw new TimeoutException("Calculation exceeded the time allowance. Choose a longer allowance or simplify the expression.");
@@ -905,12 +974,12 @@ class QuantumStudio {
    status.Text=response[1].Length==0 ? (result.approximate ? "Complete · Approximate arithmetic" : "Complete · Exact arithmetic")+" · Leftmost qubit is subsystem 0" : response[1];
    string preview=result.text;
    if(preview.Length>32768){int end=32767;if(Char.IsHighSurrogate(preview[end-1]))end--;preview=preview.Substring(0,end)+"…";}
-   var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation},false);
+   var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation,States=calculationStates},false);
    history.Items.Insert(0,entry); if(history.Items.Count>50) history.Items.RemoveAt(50);
   } catch(OperationCanceledException) {
    blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;
    resultLabel.Text="CANCELLED";output.Text="Calculation cancelled.";status.Text="Stopped · Your expression is ready to edit or run again.";
   } catch(Exception ex) { blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed; matrixCaption.Visibility=Visibility.Collapsed; output.Visibility=Visibility.Visible; resultLabel.Text=ex is TimeoutException ? "TIME ALLOWANCE REACHED" : "CHECK YOUR EXPRESSION"; output.Text=ex.Message; status.Text="Calculation stopped. Edit the expression and try again."; }
-  finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true; }
+  finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true;Find<Button>("EditStates").IsEnabled=true; }
  }
 }

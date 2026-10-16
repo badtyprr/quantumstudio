@@ -16,12 +16,21 @@ if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $circuitTest = Join-Path $validation 'circuit-file-tests.exe'
 $circuitArgs = @('/nologo', '/target:exe', "/out:$circuitTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('CircuitFileTests.cs','CircuitComposer.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('CircuitFileTests.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @circuitArgs
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests did not compile.' }
 & $circuitTest
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests failed.' }
 $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
+$editorResult = Join-Path $validation ('state-editor-' + [Guid]::NewGuid().ToString('N') + '.txt')
+$editorProcess = Start-Process -FilePath $app -ArgumentList @('--state-editor-test', ('"' + $editorResult + '"')) -WindowStyle Hidden -PassThru
+try {
+    if (-not $editorProcess.WaitForExit(30000)) { $editorProcess.Kill(); $editorProcess.WaitForExit(); throw 'State editor test timed out.' }
+    if ($editorProcess.ExitCode -ne 0) { throw "State editor test failed: $(Get-Content -LiteralPath $editorResult -Raw)" }
+    $editorReport = Get-Content -LiteralPath $editorResult -Raw
+    if (-not $editorReport.StartsWith('PASS:')) { throw $editorReport }
+    Write-Output $editorReport
+} finally { $editorProcess.Dispose() }
 $layout = Join-Path $validation ('layout-' + [Guid]::NewGuid().ToString('N') + '.txt')
 $process = Start-Process -FilePath $app -ArgumentList @('--circuit-layout-test', ('"' + $layout + '"')) -WindowStyle Hidden -PassThru
 try {

@@ -33,7 +33,7 @@ class CircuitComposer : Window {
  readonly Expander helpDetails=new Expander {Header="Measurement and feedback help",Margin=new Thickness(0,4,0,0)};
  Button use;
  readonly Action<string> load;
- readonly Button commit=new Button {Content="Add gate",VerticalAlignment=VerticalAlignment.Bottom,Background=blue,Foreground=Brushes.White};
+ readonly Button commit=new Button {Content="Add gate",VerticalAlignment=VerticalAlignment.Bottom,Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary};
  readonly Button cancelEdit=new Button {Content="Cancel edit",VerticalAlignment=VerticalAlignment.Bottom,Visibility=Visibility.Collapsed};
  readonly Button earlier=new Button {Content="← Move earlier"}, later=new Button {Content="Move later →"}, deleteStep=new Button {Content="Delete selected"};
  readonly Button undoChange=new Button {Content="Undo"}, redoChange=new Button {Content="Redo"};
@@ -42,11 +42,11 @@ class CircuitComposer : Window {
  bool restoring, batch;
  int editing=-1;
  int Count {get{return qubits.SelectedIndex+1;}}
- static readonly Brush blue=new SolidColorBrush(Color.FromRgb(55,94,232));
+ static readonly Brush blue=WorkspaceTheme.Accent;
  public CircuitComposer(Window owner,Action<string> loadExpression) {
   Owner=owner; load=loadExpression; Resources=owner.Resources; Title="Circuit composer";
   Width=1040; Height=780; MinWidth=800; MinHeight=550; WindowStartupLocation=WindowStartupLocation.CenterOwner;
-  Background=new SolidColorBrush(Color.FromRgb(245,246,250)); FontFamily=new FontFamily("Segoe UI");
+  Background=WorkspaceTheme.Background; Foreground=WorkspaceTheme.Text; FontFamily=new FontFamily("Segoe UI");
   page.Margin=new Thickness(20);Content=page;
   var root=new Grid();page.Content=root;
   root.RowDefinitions.Add(new RowDefinition {Height=GridLength.Auto});root.RowDefinitions.Add(new RowDefinition());root.RowDefinitions.Add(new RowDefinition {Height=GridLength.Auto});
@@ -110,8 +110,8 @@ class CircuitComposer : Window {
    partitionHelp.Text=resultView.SelectedIndex==4 ? "Comma-separated measured wires, e.g. 0,1,2. Outcomes follow the entered wire order." : "Side A: comma-separated wires, e.g. 0,2. All other wires form side B. Pure circuits only.";
    resultWire.ToolTip=resultView.SelectedIndex==4 ? "A nonempty list of distinct wires, in the desired outcome bit order." : resultView.SelectedIndex==3 ? "A nonempty proper subset, e.g. 0,2. The other wires form side B." : "One zero-based wire index.";
   };
-  use=new Button {Content="Load into calculator →",Background=blue,Foreground=Brushes.White,VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(0,0,0,8)};outputOptions.Children.Add(use);
-  var circuitCard=new Border {Background=Brushes.White,CornerRadius=new CornerRadius(10),Margin=new Thickness(0,8,0,12),Padding=new Thickness(10)};Grid.SetRow(circuitCard,1);root.Children.Add(circuitCard);
+  use=new Button {Content="Load into calculator →",Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary,VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(0,0,0,8)};outputOptions.Children.Add(use);
+  var circuitCard=new Border {Background=WorkspaceTheme.Surface,CornerRadius=new CornerRadius(10),Margin=new Thickness(0,8,0,12),Padding=new Thickness(10)};Grid.SetRow(circuitCard,1);root.Children.Add(circuitCard);
   var preview=new DockPanel();circuitCard.Child=preview;
   var previewHeader=new DockPanel {Margin=new Thickness(0,0,0,8)};DockPanel.SetDock(previewHeader,Dock.Top);preview.Children.Add(previewHeader);
   var viewControls=new StackPanel {Orientation=Orientation.Horizontal};DockPanel.SetDock(viewControls,Dock.Right);previewHeader.Children.Add(viewControls);
@@ -536,9 +536,9 @@ class CircuitComposer : Window {
   var u=new TextBox {Text="0000000",FontFamily=new FontFamily("Consolas"),FontSize=17};
   Input(panel,"X checks (Hx)",x);Input(panel,"Z checks (Hz)",z);Input(panel,"Representative bits",u);
   panel.Children.Add(new TextBlock {Text="The defaults prepare Steane logical |0⟩. Use 0000111 for logical |1⟩. A representative must satisfy the Z checks; equivalent representatives can prepare the same state.",TextWrapping=TextWrapping.Wrap,FontSize=12,Margin=new Thickness(0,0,0,8)});
-  var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=Brushes.Firebrick};panel.Children.Add(error);
+  var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Error};panel.Children.Add(error);
   var actions=new StackPanel {Orientation=Orientation.Horizontal,Margin=new Thickness(0,10,0,0)};panel.Children.Add(actions);
-  var build=new Button {Content="Build preparation circuit",Background=blue,Foreground=Brushes.White};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
+  var build=new Button {Content="Build preparation circuit",Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
   build.Click+=delegate {try {CssState(x.Text,z.Text,u.Text);dialog.DialogResult=true;}catch(ArgumentException ex){error.Text=ex.Message;}};
   return dialog;
  }
@@ -588,9 +588,9 @@ class CircuitComposer : Window {
   Input(panel,"X checks (Hx)",x);Input(panel,"Z checks (Hz)",z);
   var append=new CheckBox {Content="Append to my current logical-input circuit",Margin=new Thickness(0,4,0,10)};panel.Children.Add(append);
   panel.Children.Add(new TextBlock {Text="The defaults encode one logical qubit into the seven-qubit Steane code. To encode |i⟩, first prepare a one-qubit circuit with H then S and select Append. Use [] for an absent check type. Limits: 1–8 physical qubits, 32 check rows, 512 total gate steps.",TextWrapping=TextWrapping.Wrap,FontSize=12});
-  var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=Brushes.Firebrick,Margin=new Thickness(0,8,0,0)};panel.Children.Add(error);
+  var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Error,Margin=new Thickness(0,8,0,0)};panel.Children.Add(error);
   var actions=new StackPanel {Orientation=Orientation.Horizontal,Margin=new Thickness(0,12,0,0)};panel.Children.Add(actions);
-  var build=new Button {Content="Build encoding circuit",Background=blue,Foreground=Brushes.White};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
+  var build=new Button {Content="Build encoding circuit",Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
   build.Click+=delegate {try {CssEncoder(x.Text,z.Text,append.IsChecked==true);dialog.DialogResult=true;}catch(ArgumentException ex){error.Text=ex.Message;}};
   return dialog;
  }
@@ -631,9 +631,9 @@ class CircuitComposer : Window {
   panel.Children.Add(new TextBlock {Text="Enter an invertible 1–8 bit matrix. Rows are output bits and columns are input bits, with q0 first. Separate rows with new lines or semicolons.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,10,0,12)});
   var input=new TextBox {Text="1, 0\n1, 1",AcceptsReturn=true,Height=150,FontFamily=new FontFamily("Consolas"),FontSize=17,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};panel.Children.Add(input);
   System.Windows.Automation.AutomationProperties.SetName(input,"Binary matrix");
-  var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=Brushes.Firebrick,Margin=new Thickness(0,8,0,8)};panel.Children.Add(error);
+  var error=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Error,Margin=new Thickness(0,8,0,8)};panel.Children.Add(error);
   var actions=new StackPanel {Orientation=Orientation.Horizontal};panel.Children.Add(actions);
-  var build=new Button {Content="Build circuit",Background=blue,Foreground=Brushes.White};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
+  var build=new Button {Content="Build circuit",Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary};var cancel=new Button {Content="Cancel",IsCancel=true};actions.Children.Add(build);actions.Children.Add(cancel);
   build.Click+=delegate {try {LinearMap(input.Text);dialog.DialogResult=true;}catch(ArgumentException ex){error.Text=ex.Message;}};
   return dialog;
  }
@@ -762,10 +762,10 @@ class CircuitComposer : Window {
   earlier.IsEnabled=editing>0;later.IsEnabled=editing>=0 && editing<steps.Count-1;deleteStep.IsEnabled=editing>=0;
   diagram.Children.Clear(); diagram.Width=Math.Max(750,100+steps.Count*90); diagram.Height=28+Count*65;
   if(editing>=0) {
-   var highlight=new Border {Width=86,Height=diagram.Height-25,Background=new SolidColorBrush(Color.FromRgb(235,241,255)),CornerRadius=new CornerRadius(8)};
+   var highlight=new Border {Width=86,Height=diagram.Height-25,Background=WorkspaceTheme.Selection,CornerRadius=new CornerRadius(8)};
    Canvas.SetLeft(highlight,67+editing*90);Canvas.SetTop(highlight,25);diagram.Children.Add(highlight);
   }
-  for(int q=0;q<Count;q++) {double y=45+65*q; Label("q"+q+"  |0⟩",0,y-12,75); Line(78,y,diagram.Width-15,y,Brushes.LightSlateGray,1);}
+  for(int q=0;q<Count;q++) {double y=45+65*q; Label("q"+q+"  |0⟩",0,y-12,75); Line(78,y,diagram.Width-15,y,WorkspaceTheme.Border,1);}
   for(int j=0;j<steps.Count;j++) {
    var step=steps[j]; double x=110+j*90; int low=step.Wires[0], high=low;
    int stepIndex=j;
@@ -778,25 +778,25 @@ class CircuitComposer : Window {
     double y=45+65*step.Wires[k];
     if(Noise(step.Gate)) {
      double noiseWidth=step.Gate=="Thermal" ? 70 : 54;
-     var noiseBox=new Border {Width=noiseWidth,Height=32,Background=new SolidColorBrush(Color.FromRgb(255,245,226)),BorderBrush=new SolidColorBrush(Color.FromRgb(176,111,26)),BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5),ToolTip="Noise channel: "+step.Gate};
+     var noiseBox=new Border {Width=noiseWidth,Height=32,Background=WorkspaceTheme.WarningSurface,BorderBrush=WorkspaceTheme.Warning,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5),ToolTip="Noise channel: "+step.Gate};
      Canvas.SetLeft(noiseBox,x-noiseWidth/2);Canvas.SetTop(noiseBox,y-16);diagram.Children.Add(noiseBox);Label(step.Gate,x-noiseWidth/2+1,y-10,noiseWidth-2);continue;
     }
     if(step.Gate=="ECR") {
-     var echoBox=new Border {Width=64,Height=32,Background=Brushes.White,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5),ToolTip="ECR operand "+k+" (ordered wire "+step.Wires[k]+")"};
+     var echoBox=new Border {Width=64,Height=32,Background=WorkspaceTheme.Surface,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5),ToolTip="ECR operand "+k+" (ordered wire "+step.Wires[k]+")"};
      Canvas.SetLeft(echoBox,x-32);Canvas.SetTop(echoBox,y-16);diagram.Children.Add(echoBox);Label("ECR "+k,x-31,y-10,62);continue;
     }
     if(ParityRotation(step.Gate) || step.Gate=="fSim" || Interaction(step.Gate)) {
-     var pairBox=new Border {Width=52,Height=32,Background=Brushes.White,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5)};
+     var pairBox=new Border {Width=52,Height=32,Background=WorkspaceTheme.Surface,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5)};
      Canvas.SetLeft(pairBox,x-26);Canvas.SetTop(pairBox,y-16);diagram.Children.Add(pairBox);Label(ParityRotation(step.Gate) ? (step.Gate=="XXPlusYY" ? "XY+" : "XY−")+k : step.Gate=="fSim" ? "fSim" : Char.ToUpperInvariant(step.Gate[k+1]).ToString(),x-25,y-10,50);continue;
     }
     if(Feedback(step.Gate)) {
-     var feedbackBox=new Border {Width=48,Height=32,Background=Brushes.White,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5)};
+     var feedbackBox=new Border {Width=48,Height=32,Background=WorkspaceTheme.Surface,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5)};
      Canvas.SetLeft(feedbackBox,x-24);Canvas.SetTop(feedbackBox,y-16);diagram.Children.Add(feedbackBox);
      Label(k<step.Wires.Length-1 ? "M" : FeedbackGate(step.Gate)+"|"+FeedbackBits(step.Gate),x-23,y-10,46); continue;
     }
     if(step.Gate=="SWAP" || step.Gate=="iSWAP" || step.Gate=="FSWAP" || (step.Gate=="CSWAP" && k>0)) {Line(x-8,y-8,x+8,y+8,blue,2);Line(x-8,y+8,x+8,y-8,blue,2);if(step.Gate=="iSWAP" || step.Gate=="FSWAP")Label(step.Gate=="FSWAP" ? "f" : "i",x+10,y-18,16);}
     else if(step.Wires.Length>1 && (k<step.Wires.Length-1 || step.Gate=="CZ" || step.Gate=="CCZ")) {var dot=new Ellipse {Width=10,Height=10,Fill=blue}; Canvas.SetLeft(dot,x-5);Canvas.SetTop(dot,y-5);diagram.Children.Add(dot);}
-    else {var box=new Border {Width=42,Height=32,Background=Brushes.White,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5)}; Canvas.SetLeft(box,x-21);Canvas.SetTop(box,y-16);diagram.Children.Add(box); Label(ControlledAngle(step.Gate) ? step.Gate.Substring(1) : step.Gate=="Measure" ? "M" : step.Gate=="Reset" ? "|0⟩" : step.Gate=="CY" ? "Y" : step.Gate=="CH" ? "H" : step.Wires.Length>1 ? "X" : step.Gate,x-20,y-10,40);}
+    else {var box=new Border {Width=42,Height=32,Background=WorkspaceTheme.Surface,BorderBrush=blue,BorderThickness=new Thickness(2),CornerRadius=new CornerRadius(5)}; Canvas.SetLeft(box,x-21);Canvas.SetTop(box,y-16);diagram.Children.Add(box); Label(ControlledAngle(step.Gate) ? step.Gate.Substring(1) : step.Gate=="Measure" ? "M" : step.Gate=="Reset" ? "|0⟩" : step.Gate=="CY" ? "Y" : step.Gate=="CH" ? "H" : step.Wires.Length>1 ? "X" : step.Gate,x-20,y-10,40);}
    }
    if(NeedsAngle(step.Gate)) Label(step.Angle,x-40,45+65*high+20,80);
   }

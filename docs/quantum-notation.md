@@ -176,7 +176,7 @@ Applying an adjoint twice, conjugation twice, or transpose twice cancels symboli
 
 ## Named state labels
 
-Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. The GUI does not yet provide a named-state definition editor.
+Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. In the GUI, choose **States** beside Calculate to define named column vectors.
 
 `Bell` is not a predefined alias or a normalization assumption. Use `<Phi+|Phi+>` for the built-in normalized Bell-state overlap (1), and `<Phi+|CZ|Phi+>` for its overlap after CZ (0).
 
@@ -189,7 +189,17 @@ and may refer to earlier definitions. Each must resolve to a column vector with
 1–1024 rows and scalar amplitudes. Symbolic amplitudes are allowed. Vectors are
 not automatically normalized, and names cannot override existing variables or
 built-in ket labels. Unknown references, forward references and cycles reject.
-Definitions last for one worker request. GUI editing and persistence remain pending.
+Definitions last for one worker request. Version 2 GUI session files store exact
+state definitions in a `States` array of `Name` and `Expression` objects, both
+for the current workspace and for each history entry. Opening a session restores
+its definitions; reusing a history entry restores the definitions from that
+calculation. Version 1 files still load with no definitions. Invalid files leave
+the current workspace unchanged. The GUI sends the restored definitions with
+each calculation. Choose **States** beside Calculate to edit definitions, reorder
+dependencies, or add the Bell example. **Apply states** updates the workspace;
+**Cancel** discards the private draft. Use **Save session** to keep definitions.
+The editor checks names and size limits; Calculate checks whether the expressions
+resolve to valid vectors. Errors leave the definitions available for correction.
 
 The UTF-8 stdin protocol begins with `QSTATES1\n`, then a decimal definition
 count and newline. For each definition, send its name's byte length and newline,
