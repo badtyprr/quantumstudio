@@ -113,8 +113,8 @@ class QuantumAlgebraFunction: public MathFunction {
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
   }
   // Each of these operations is an involution, including on unresolved states.
-  if((op=="qdag" || op=="qconj" || op=="qtranspose") && a.isFunction() && a.size()==1 && a.function()->referenceName()==op) {
-   out=a[0];return 1;
+  if((op=="qdag" || op=="qconj" || op=="qtranspose") && raw[0].isFunction() && raw[0].size()==1 && raw[0].function()->referenceName()==op) {
+   out=raw[0][0];out.eval(eo);return 1;
   }
   if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
