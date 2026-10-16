@@ -800,6 +800,7 @@ bool MathFunction::representsNonMatrix(const MathStructure &vargs) const {
 bool MathFunction::representsScalar(const MathStructure &vargs) const {
 	return representsNonMatrix(vargs);
 }
+bool MathFunction::preservesSingletonMatrix() const {return false;}
 
 UserFunction::UserFunction(string cat_, string name_, string formula_, bool is_local, int argc_, string title_, string descr_, int max_argc_, bool is_active) : MathFunction(name_, argc_, max_argc_, cat_, title_, descr_, is_active) {
 	b_local = is_local;

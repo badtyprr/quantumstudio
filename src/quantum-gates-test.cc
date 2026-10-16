@@ -48,7 +48,7 @@ int main(){try {
  equal("qft(1)","[1,1;1,-1]/sqrt(2)");
  equal("qfourier(4)","[1,1,1,1;1,i,-1,-i;1,-1,1,-1;1,-i,-1,i]/2");
  equal("qft(2)","qfourier(4)");
- equal("qfourier(1)","matrix(1,1,[1])");
+ equal("qfourier(1)","qbasis(0,1)");
  equal("qclock(4)","[1,0,0,0;0,i,0,0;0,0,-1,0;0,0,0,-i]");
  equal("qshift(3)","[0,0,1;1,0,0;0,1,0]");
  equal("qphaseoracle(2,[0,3])","[-1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,-1]");

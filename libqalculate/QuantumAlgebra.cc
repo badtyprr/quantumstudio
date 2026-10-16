@@ -9,19 +9,32 @@
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
+// Transposing a 1-by-1 matrix is the identity; the generic helper flattens it.
+void transposeQuantumMatrix(MathStructure &a) {
+ if(a.rows()!=1 || a.columns()!=1) a.transposeMatrix();
+}
 MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
  MathStructure out=a;
  if(out.isMatrix()) {
-  out.transposeMatrix();
+  transposeQuantumMatrix(out);
   for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
    MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
   }
  } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
  return out;
 }
-MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
+MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo, bool scalarResult=true) {
+ bool unitMatrix=!scalarResult && (
+  (a.isMatrix() && b.isMatrix() && a.rows()==1 && b.columns()==1 && a.columns()==b.rows()) ||
+  (a.isMatrix() && a.rows()==1 && a.columns()==1 && b.representsScalar()) ||
+  (b.isMatrix() && b.rows()==1 && b.columns()==1 && a.representsScalar()));
  a*=b; a.eval(eo);
- if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
+ // Generic multiplication reduces a 1-by-1 product to a scalar. Restore the
+ // declared matrix shape for callers such as density, while norms stay scalar.
+ if(unitMatrix && !a.isVector() && a.representsScalar()) {
+  MathStructure scalar=a;a.clearMatrix();a.resizeMatrix(1,1,m_zero);element(a,0,0)=scalar;
+ }
+ if(scalarResult && a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
  return a;
 }
 class QuantumAlgebraFunction: public MathFunction {
@@ -31,6 +44,7 @@ class QuantumAlgebraFunction: public MathFunction {
   if(op=="qnamedket")setArgumentDefinition(1,new TextArgument());
  }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
+ bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if((op=="qdag" || op=="qconj" || op=="qdensity" || op=="qnorm" || op=="qnormalize") && !CALCULATOR->getFunction("conj")) {
    CALCULATOR->error(true,"Load global function definitions before quantum conjugation.",NULL);return 0;
@@ -135,9 +149,9 @@ class QuantumAlgebraFunction: public MathFunction {
    bool symbolicIndex=!a.isNumber() && a.representsScalar() && a.containsUnknowns();
    bool symbolicDimension=!dimension.isNumber() && dimension.representsScalar() && dimension.containsUnknowns();
    if((!symbolicIndex && (!a.isNumber() || !a.number().isInteger() || a.number()<0)) ||
-      (!symbolicDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<2 || dimension.number()>1024)) ||
+      (!symbolicDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<1 || dimension.number()>1024)) ||
       (!symbolicIndex && !symbolicDimension && a.number()>=dimension.number())) {
-    CALCULATOR->error(true,"basis(index,dimension) requires an integer dimension from 2 to 1024 and a zero-based index in range.",NULL); return 0;
+    CALCULATOR->error(true,"basis(index,dimension) requires an integer dimension from 1 to 1024 and a zero-based index in range.",NULL); return 0;
    }
    if(symbolicIndex || symbolicDimension)return 0;
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
@@ -148,8 +162,8 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
-  if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) out.transposeMatrix(); return 1; }
-  if(op=="qtranspose") { out=a; if(a.isMatrix()) out.transposeMatrix(); else if(a.isVector()) { CALCULATOR->error(true,"Transpose requires a matrix or scalar.",NULL); return 0; } return 1; }
+  if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) transposeQuantumMatrix(out); return 1; }
+  if(op=="qtranspose") { out=a; if(a.isMatrix()) transposeQuantumMatrix(out); else if(a.isVector()) { CALCULATOR->error(true,"Transpose requires a matrix or scalar.",NULL); return 0; } return 1; }
   if(op=="qadjacent" && a.isMatrix() && args[1].isMatrix() &&
      ((a.columns()==1 && args[1].columns()==1) || (a.rows()==1 && args[1].rows()==1))) {
    // Juxtaposed state vectors form a tensor product, including grouped sums.
@@ -161,7 +175,9 @@ class QuantumAlgebraFunction: public MathFunction {
    // Retain operand order until symbolic operators and states have dimensions.
    if((!a.isVector() && !a.representsScalar()) || (!args[1].isVector() && !args[1].representsScalar()))return 0;
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
-   out=multiply(a,args[1],eo); return 1;
+   // Scaling a matrix retains its shape; a row-column product is a scalar.
+   bool scaling=(a.isMatrix() && args[1].representsScalar()) || (args[1].isMatrix() && a.representsScalar());
+   out=multiply(a,args[1],eo,!scaling); return 1;
   }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
@@ -182,7 +198,7 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qdensity") {
    if(a.columns()!=1 || a.rows()>1024) { CALCULATOR->error(true,"density requires a column ket with at most 1024 entries.",NULL); return 0; }
-   out=multiply(a,dagger(a,eo),eo); return 1;
+   out=multiply(a,dagger(a,eo),eo,false); return 1;
   }
   if(op=="qtrace") {
    if(a.rows()!=a.columns()) { CALCULATOR->error(true,"Trace requires a square matrix.",NULL); return 0; }

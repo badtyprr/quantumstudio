@@ -150,7 +150,7 @@ An unspecified domain in `\sum_{a\in\Sigma}{|a>}` remains symbolic as `qsumset`.
 
 Counting uses the existing finite-set sum evaluator with summand `1`, including its 1024-entry limit, exact evaluation and structural duplicate comparison. This is not a new typed symbolic set system: general equality of unresolved symbolic members, Cartesian powers, infinite sets and sets of vectors remain unfinished. Column states and operators must not be treated as finite scalar collections.
 
-A finite sum over the complete integer range `k=0,...,d-1`, with `2 <= d <= 1024`, supplies dimension `d` to bare `|k>` and `<k|` in its body. Thus IBM's decimal-digit state `\frac{1}{\sqrt{385}}\sum_{k=0}^9 (k+1)\vert k\rangle` evaluates directly to `[1;2;3;4;5;6;7;8;9;10]/sqrt(385)`. Explicit dimensions take precedence, and nested binders retain their own index scope. Symbolic bounds remain unevaluated until supplied. Partial ranges, transformed indices such as `|f(k)>`, arbitrary alphabets, and context outside the sum still require a dimension or typed basis labels. The existing basis constructor accepts dimensions 2 through 1024; one-dimensional inference is not yet supported.
+A finite sum over the complete integer range `k=0,...,d-1`, with `1 <= d <= 1024`, supplies dimension `d` to bare `|k>` and `<k|` in its body. Thus IBM's decimal-digit state `\frac{1}{\sqrt{385}}\sum_{k=0}^9 (k+1)\vert k\rangle` evaluates directly to `[1;2;3;4;5;6;7;8;9;10]/sqrt(385)`. Explicit dimensions take precedence, and nested binders retain their own index scope. Symbolic bounds remain unevaluated until supplied. Partial ranges, transformed indices such as `|f(k)>`, arbitrary alphabets, and context outside the sum still require a dimension or typed basis labels. The basis constructor accepts dimensions 1 through 1024. A one-dimensional basis is the 1-by-1 column matrix `[1]`, consistent with a zero-width binary label; it remains a matrix in the worker result. `QFT_1|0>_1` and a complete sum with only index zero therefore work.
 
 Quantum-mode `[7]` preserves a one-element vector. For a named one-element collection defined through the library API, use `vector(7)` or `quantum: [7]`; ordinary calculator parsing can treat `[7]` as grouped scalar input. A bare scalar remains invalid for cardinality.
 
@@ -281,3 +281,7 @@ are preserved. An empty measured subset has outcome `""`; zero shots returns
 empty counts. Failures write stderr diagnostics and exit nonzero without partial
 JSON. Native CI tests this protocol; packaging repeats those tests against the
 bundled executable.
+
+### Library ABI compatibility
+
+One-dimensional quantum states and operators retain their 1-by-1 matrix shape. The new `MathFunction::preservesSingletonMatrix()` virtual hook changes the C++ ABI; the libtool interface version is 27:0:0. Rebuild clients and derived function classes against this library rather than loading them from a previous ABI. Ordinary singleton-vector evaluation retains its existing behavior.

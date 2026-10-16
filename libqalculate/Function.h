@@ -205,6 +205,8 @@ class MathFunction : public ExpressionItem {
 	virtual bool representsBoolean(const MathStructure&) const;
 	virtual bool representsNonMatrix(const MathStructure&) const;
 	virtual bool representsScalar(const MathStructure&) const;
+	/// Preserve a 1-by-1 matrix result instead of reducing it to a scalar.
+	virtual bool preservesSingletonMatrix() const;
 
 };
 
