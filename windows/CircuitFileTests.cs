@@ -86,9 +86,13 @@ class CircuitFileTests {
    for(int k=0;k<resets.Length;++k)resets[k]=new CircuitComposer.Step {Gate="Reset",Angle="",Wires=new[]{k%2}};
    composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=2,Steps=resets}));
    Check(composer.Expression()=="density(|00⟩)");
-   foreach(int width in new[]{9,10}) {
+   foreach(int width in new[]{9,10,11,25}) {
     var edge=new[]{new CircuitComposer.Step {Gate="X",Angle="",Wires=new[]{width-1}}};
     composer.LoadCircuit(serializer.Serialize(new CircuitComposer.CircuitFile {Version=1,Qubits=width,Steps=edge}));
+    Check(composer.QubitCount==width);
+    Check(composer.SamplingGates()[0].Wires[0]==width-1);
+    if(width>10) {bool blocked=false;try {composer.InspectionExpression(0,0);}catch(InvalidDataException) {blocked=true;}Check(blocked);}
+    else Check(composer.InspectionExpression(0,0)==composer.Expression());
     string edgeExpression=composer.Expression();Check(edgeExpression.Contains("["+(width-1)+"]"));
     composer.SaveCircuit(path);composer.BellState(0);composer.OpenCircuit(path);Check(composer.Expression()==edgeExpression);
     var savedWideCircuit=serializer.Deserialize<CircuitComposer.CircuitFile>(File.ReadAllText(path));Check(savedWideCircuit.Qubits==width);
@@ -96,7 +100,7 @@ class CircuitFileTests {
    }
    string tenQubitExpression=composer.Expression();
    foreach(var invalidFile in new[]{
-    new CircuitComposer.CircuitFile {Version=1,Qubits=11,Steps=new CircuitComposer.Step[0]},
+    new CircuitComposer.CircuitFile {Version=1,Qubits=26,Steps=new CircuitComposer.Step[0]},
     new CircuitComposer.CircuitFile {Version=1,Qubits=10,Steps=new[]{new CircuitComposer.Step {Gate="X",Angle="",Wires=new[]{10}}}}}) {
     bool rejected=false;try {composer.LoadCircuit(serializer.Serialize(invalidFile));}catch(InvalidDataException){rejected=true;}
     Check(rejected);Check(composer.Expression()==tenQubitExpression);

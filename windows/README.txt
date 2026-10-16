@@ -37,4 +37,6 @@ Cancel stops the worker; runs have a five-minute allowance. Save counts exports
 all observed outcomes to CSV (the view shows the 128 most frequent outcomes).
 Optional terminal Measure gates are allowed. Noise, reset, feedback and gates
 after measurement must use the existing calculator workflow. The editor and
-importer retain their current 10-qubit limit in this version.
+importer support up to 25 qubits. Above 10 qubits, use numerical sampling; exact
+state and density-matrix inspection is disabled. A 25-qubit state requires
+512 MiB, plus memory for sampling and the application.

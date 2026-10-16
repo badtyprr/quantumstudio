@@ -192,7 +192,7 @@ for secret in range(8):
 
 invalid = [
     *[header+'qubit[3] q; x q['+selection+'];' for selection in ('0:0:2','0:3','-1:1','0:1.5')],
-    header+'qubit[11] q; h q[0];', header+'qubit q; for int i in [0:512] {x q;}',
+    header+'qubit[26] q; h q[0];', header+'qubit q; for int i in [0:512] {x q;}',
     header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
     header+'qubit q; unknown q;', header+'qubit q; delay[10ns] q;',
     header+'qubit q; rx q;', header+'qubit[2] q; cx q[0],q[0];',

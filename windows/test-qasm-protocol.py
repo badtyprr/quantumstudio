@@ -47,17 +47,17 @@ for command in commands:
     for count in (65, 512):
         run(command, header+f'qubit q; for int i in [0:{count-1}] {{x q;}}',
             {'Version': 1, 'Qubits': 1, 'Steps': [{'Gate': 'X', 'Angle': '', 'Wires': [0]}]*count})
-    for width in (9, 10):
+    for width in (9, 10, 11, 25):
         run(command, header+f'qubit[{width}] q; x q[{width-1}];',
             {'Version': 1, 'Qubits': width, 'Steps': [{'Gate': 'X', 'Angle': '', 'Wires': [width-1]}]})
     for invalid in [source+' '*(262145-len(source)),
                     b'\xef\xbb\xbf'+source.encode()+b' '*(262145-len(source)-3),
                     b'\xc3\x28', header+'include "private.inc"; qubit q;',
-                    header+'qubit[11] q;', header+'qubit q; for int i in [0:512] {x q;}',
+                    header+'qubit[26] q;', header+'qubit q; for int i in [0:512] {x q;}',
                     header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
                     header+'qubit q; delay[10ns] q;']:
         run(command, invalid)
     run(command, source, arguments=['--unknown-option'])
-    run(command, header+'qubit[25] q;',
-        diagnostic='The circuit editor currently supports 1–10 qubits.')
+    run(command, header+'qubit[26] q;',
+        diagnostic='The circuit editor currently supports 1–25 qubits.')
 print(f'PASS: {checks} source/frozen OpenQASM process checks.')

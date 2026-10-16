@@ -252,6 +252,19 @@ class QuantumStudio {
     window.Close();
    };
   }
+  if(args.Length==3 && args[0]=="--sampling-circuit-test") {
+   window.Loaded+=async delegate {
+    CircuitComposer composer=null;SamplingWindow sampling=null;
+    try {
+     composer=new CircuitComposer(window,delegate(string value) {});composer.OpenCircuit(args[1]);
+     sampling=new SamplingWindow(window,composer.QubitCount,composer.SamplingGates());sampling.Show();
+     var result=await sampling.VerifySampling(args[2]+".png",false,1731);
+     File.WriteAllText(args[2]+".json",new JavaScriptSerializer {MaxJsonLength=8000000}.Serialize(result));
+     File.WriteAllText(args[2],"PASS: loaded circuit sampled through the actual GUI; all counts saved for independent validation.");
+    } catch(Exception ex) {File.WriteAllText(args[2],"FAIL: "+ex);Environment.ExitCode=1;}
+    finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
+   };
+  }
   if(args.Length==2 && args[0]=="--sampling-test") {
    window.Loaded+=async delegate {
     CircuitComposer composer=null;SamplingWindow sampling=null;
