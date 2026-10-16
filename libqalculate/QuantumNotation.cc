@@ -1132,9 +1132,20 @@ class Parser {
     }
    } else {
     auto it=gates.find(a); if(it!=gates.end()) a=it->second;
-    // Preserve subscripted symbols as one backend symbol, rather than letting
-    // a numeric suffix become multiplication (a_0 must not become a * 0).
+    // Keep subscripted identifiers atomic. Bare theta factors are phase
+    // symbols, including adjacent products such as piθ from TeX \pi\theta.
+    // Explicit theta(...) calls use the function-call path above.
     else if(!numericToken && a.find('_')!=std::string::npos) a="\""+a+"\"";
+    else if(a.find("θ")!=std::string::npos) {
+     std::string product;size_t begin=0,at;
+     auto factor=[&](const std::string &value){if(!product.empty())product+="*";product+=value;};
+     while((at=a.find("θ",begin))!=std::string::npos) {
+      if(at>begin)factor(a.substr(begin,at-begin));
+      factor("\"θ\"");begin=at+std::string("θ").size();
+     }
+     if(begin<a.size())factor(a.substr(begin));
+     a=product=="\"θ\"" ? product : "("+product+")";
+    }
    }
   }
   while(true) {
