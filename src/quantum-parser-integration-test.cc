@@ -33,6 +33,10 @@ int main(){try {
   while(calculator.message()) {if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error("Symbolic sum reported an error");calculator.nextMessage();}
   ++checks;
  }
+ equal("quantum: 1 <= |-2|","1");
+ equal("quantum: 3 <= |-2|","0");
+ equal("quantum: |-1| ≤ 2|-1/2|","1");
+ equal(R"(quantum: |e^{2\pi i (-1/2)}-1| <= 2\pi|-1/2|)","1");
  equal(R"(quantum: \alpha|0>+\beta|1>)",R"(["α";"β"])");
  equal(R"(quantum: \gamma\delta)",R"("γ"*"δ")");
  equal("quantum: δ(1)","dirac(1)");

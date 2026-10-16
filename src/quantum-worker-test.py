@@ -63,6 +63,12 @@ for flags in [(), ("--approx",)]:
 for expression in [r"\sum_{k=0.5}^{N}{k}", r"\sum_{k=0}^{1.5}{k}", r"\sum_{k=2}^{1}{k}", "qsum(k,0,[1,2],k)"]:
     assert run("quantum: " + expression, "--json", success=False).stdout == b""
 
+for flags in [(), ("--approx",)]:
+    assert data("quantum: 1 <= |-2|", *flags)["text"] == "1"
+    assert data("quantum: 3 <= |-2|", *flags)["text"] == "0"
+    assert data("quantum: |-1| ≤ 2|-1/2|", *flags)["text"] == "1"
+    assert data(r"quantum: |e^{2\pi i (-1/2)}-1| <= 2\pi|-1/2|", *flags)["text"] == "1"
+
 assert run("1+1").stdout.decode("utf-8").strip() == "2"
 assert data("1+1")["text"] == "2"
 assert data("sqrt(2)", "--approx")["approximate"] is True
