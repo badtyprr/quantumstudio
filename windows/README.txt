@@ -27,3 +27,14 @@ qBraid programming languages. Broader learning-notation coverage is ongoing.
 
 build-manifest.json records the source revision and hashes of packaged files.
 A filename containing "candidate" is a validation build, not a release.
+
+Circuit sampling
+----------------
+Choose "Sample circuit..." in the circuit composer to run a captured copy of
+its unitary gates from the all-zero state. Set 1-100,000 shots and a 64-bit seed;
+results show outcomes in q0, q1, ... order, counts and estimated frequencies.
+Cancel stops the worker; runs have a five-minute allowance. Save counts exports
+all observed outcomes to CSV (the view shows the 128 most frequent outcomes).
+Optional terminal Measure gates are allowed. Noise, reset, feedback and gates
+after measurement must use the existing calculator workflow. The editor and
+importer retain their current 10-qubit limit in this version.
