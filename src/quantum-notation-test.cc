@@ -22,6 +22,7 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ for(const char *input:{R"(|\{0\}∪|)",R"(|\{0\}∩\{1\})",R"(|\{0\}∪(\{1\}|))"})rejects(input);
  for(const char *input:{"cardinality()","cardinality([1],2)",R"(|\{0,1\})",R"(|\{0,1\}> )"})rejects(input);
  equal(R"(\tilde{\rho})","\"ρ_tilde\"");
  equal(R"(\widetilde{x}_0)","\"x_tilde_0\"");
