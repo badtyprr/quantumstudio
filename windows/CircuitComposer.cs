@@ -12,7 +12,8 @@ using Path = System.IO.Path;
 
 class CircuitComposer : Window {
  public const int MaxSteps=512;
- public const int MaxQubits=10;
+ public const int MaxQubits=25;
+ public const int MaxExactQubits=10;
  public class Step { public string Gate, Angle; public int[] Wires; }
  public class CircuitFile { public int Version, Qubits; public Step[] Steps; }
  readonly List<Step> steps=new List<Step>();
@@ -27,7 +28,7 @@ class CircuitComposer : Window {
  readonly Canvas diagram=new Canvas();
  readonly ScrollViewer page=new ScrollViewer {VerticalScrollBarVisibility=ScrollBarVisibility.Auto,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled,HorizontalContentAlignment=HorizontalAlignment.Stretch};
  readonly ScrollViewer diagramView=new ScrollViewer {HorizontalScrollBarVisibility=ScrollBarVisibility.Auto,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
- readonly Slider zoom=new Slider {Minimum=0.1,Maximum=1.5,Value=1,Width=105,SmallChange=0.05,LargeChange=0.25,VerticalAlignment=VerticalAlignment.Center};
+ readonly Slider zoom=new Slider {Minimum=0.05,Maximum=1.5,Value=1,Width=105,SmallChange=0.05,LargeChange=0.25,VerticalAlignment=VerticalAlignment.Center};
  readonly TextBlock zoomLabel=new TextBlock {Text="100%",Width=42,VerticalAlignment=VerticalAlignment.Center,TextAlignment=TextAlignment.Right};
  readonly Expander expressionDetails=new Expander {Header="Equivalent expression",Margin=new Thickness(0,4,0,0)};
  readonly Expander helpDetails=new Expander {Header="Measurement and feedback help",Margin=new Thickness(0,4,0,0)};
@@ -42,6 +43,7 @@ class CircuitComposer : Window {
  bool restoring, batch;
  int editing=-1;
  int Count {get{return qubits.SelectedIndex+1;}}
+ public int QubitCount {get{return Count;}}
  static readonly Brush blue=WorkspaceTheme.Accent;
  public CircuitComposer(Window owner,Action<string> loadExpression) {
   Owner=owner; load=loadExpression; Resources=owner.Resources; Title="Circuit composer";
@@ -129,7 +131,7 @@ class CircuitComposer : Window {
   var examples=new MenuItem {Header="_Examples"};examples.Items.Add(bell);examples.Items.Add(teleport);examples.Items.Add(correction);examples.Items.Add(estimation);examples.Items.Add(grover);examples.Items.Add(hiddenString);examples.Items.Add(simon);menus.Items.Add(examples);
   diagramView.Content=diagram;preview.Children.Add(diagramView);
   System.Windows.Automation.AutomationProperties.SetName(zoom,"Circuit zoom");
-  zoom.ToolTip="Zoom the diagram from 25% to 150%. This changes only the view.";
+  zoom.ToolTip="Zoom the diagram from 5% to 150%. This changes only the view.";
   zoom.ValueChanged+=delegate {diagram.LayoutTransform=new ScaleTransform(zoom.Value,zoom.Value);zoomLabel.Text=Math.Round(zoom.Value*100)+"%";};
   fit.Click+=delegate {FitWires();};
   // Keep a usable diagram viewport. On smaller windows the whole editor can
@@ -367,7 +369,7 @@ class CircuitComposer : Window {
  public void LoadCircuit(string text) {
   if(text==null || text.Length>262144)throw new InvalidDataException("Circuit data is too large.");
   var file=new JavaScriptSerializer().Deserialize<CircuitFile>(text);
-  if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>MaxQubits || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–10 qubits and at most 512 steps.");
+  if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>MaxQubits || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–25 qubits and at most 512 steps.");
   // Validate the entire document before changing any controls or circuit state.
   foreach(var step in file.Steps) {
    if(step==null || step.Gate==null || !gate.Items.Contains(step.Gate) || step.Wires==null) throw new InvalidDataException("Unknown gate or missing wire list.");
@@ -686,6 +688,7 @@ class CircuitComposer : Window {
  public void SelectSchmidtPartition(string wires) {resultView.SelectedIndex=3;resultWire.Text=wires;}
  public string InspectionExpression(int view,int wire) {return InspectionExpression(view,wire.ToString());}
  public string InspectionExpression(int view,string wires) {
+  if(Count>MaxExactQubits)throw new InvalidDataException("Use Sample circuit for registers above 10 qubits. Exact state and density-matrix inspection supports up to 10 qubits.");
   if(view<0 || view>4)throw new InvalidDataException("Choose State, Probabilities, Bloch qubit, Schmidt coefficients, or Marginal probabilities.");
   if(view==3 || view==4) {
    var selected=new HashSet<int>();var ordered=new List<int>();
@@ -770,8 +773,11 @@ class CircuitComposer : Window {
     future.Clear();snapshot=current;
    }
   }
+  use.IsEnabled=Count<=MaxExactQubits;
+  use.ToolTip=Count>MaxExactQubits ? "Use Sample circuit for this register. Exact state and density-matrix inspection is limited to 10 qubits." : null;
   undoChange.IsEnabled=past.Count>0;redoChange.IsEnabled=future.Count>0;
   expression.Text=Expression(); status.Text=editing<0 ? steps.Count+" gate steps · Select a numbered step to edit it · Changing register size starts a new circuit" : "Editing step "+(editing+1)+" · Update gate to apply changes, or Cancel edit to keep the original";
+  if(Count>MaxExactQubits)status.Text+=" · Numerical sampling only · 25-qubit states use 512 MiB plus sampling memory";
   commit.Content=editing<0 ? "Add gate" : "Update gate";cancelEdit.Visibility=editing<0 ? Visibility.Collapsed : Visibility.Visible;
   earlier.IsEnabled=editing>0;later.IsEnabled=editing>=0 && editing<steps.Count-1;deleteStep.IsEnabled=editing>=0;
   diagram.Children.Clear(); diagram.Width=Math.Max(750,100+steps.Count*90); diagram.Height=28+Count*65;
