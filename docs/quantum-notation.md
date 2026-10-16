@@ -26,6 +26,14 @@ These are selected finite examples, not certification of the entire phase-estima
 
 ## Sequential state evaluation
 
+### Numerical simulation foundation
+
+`QuantumNumericalState` provides an internal double-precision pure-state kernel for future larger-circuit execution. It stores up to 25 qubits under an explicit caller-supplied memory budget and applies one-, two-, or three-wire unitary matrices without constructing full-register operators. Wire 0 is the most significant bit; the first wire in a gate's ordered wire list is its local matrix's most significant bit. Matrices must be finite and unitary within a `1e-12` absolute column-inner-product tolerance. Cancellation during an update invalidates the partial state so it cannot be read or reused.
+
+This is a foundation, not a larger-circuit feature in the GUI or notation parser. Sampling, classical records, process integration, and end-to-end notebook execution remain unfinished. The design follows the state-vector and terminal-sampling distinction described by [qsim](https://quantumai.google/qsim/overview) and [IBM Statevector](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.quantum_info.Statevector). The native regression suite compares local evolution with independently constructed full-register operators on small circuits. Original-scale audits belong in later validation stages rather than every commit's tests.
+
+### Symbolic sequence expressions
+
 `quantum: sequence([apply(H,s_0,[0]),apply(X,s_0,[0])],|0>,s_0)` applies the two transformations in list order and returns |+>. Each step receives the previous result through the bound placeholder `s_0`. The initial expression is outside that binding; nested sequences may reuse the same placeholder. An empty list returns the evaluated initial state. Steps are evaluated only after substitution, so noise channels, reset, dephasing and feed-forward operations can be mixed with gates.
 
 Use a flat comma-separated list of at most 512 transformations. The initial value and every result must be a vector of at most 1024 scalar entries or a matrix with at most 1024 rows, 1024 columns and 1048576 scalar entries. These are shape limits, not a guarantee of a normalized or physical quantum state; individual operations perform their own validation. Direct native callers use `qsequence(vector(step1,step2),initial,placeholder)`; explicit `vector(step)` preserves a one-step list.
