@@ -3,6 +3,7 @@
 #include "QuantumAlgebra.h"
 #include "QuantumIndexed.h"
 #include "Variable.h"
+#include "Function.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -185,13 +186,26 @@ int main(){try {
  equal("quantum: ⌊-3/2⌋+⌈-3/2⌉","-3");
  equal("quantum: ⌈⌊3/2⌋+1/2⌉","2");
  equal(R"(quantum: \sum_{k=1}^{4}{\lfloor k/2\rfloor})","4");
+ for(bool approximate:{false,true})for(const char *label:{"Bell","psi","undefinedvector","after CZ","afterCZ","today","undefined"}) {
+  EvaluationOptions options=eo;options.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
+  while(calculator.message())calculator.nextMessage();
+  MathStructure value=calculator.calculate(std::string("quantum: |")+label+">",options);
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error(std::string("Named state rejected: ")+label);calculator.nextMessage();}
+  if(!value.isFunction() || value.function()->referenceName()!="qketstate" || value.size()!=1 || !value[0].isSymbolic() || value[0].symbol()!=label)throw std::runtime_error(std::string("State label was not preserved atomically: ")+label+" -> "+value.print()+" child="+(value.size() ? value[0].symbol() : "none"));++checks;
+ }
+ calculator.addVariable(new KnownVariable("","Bell",std::string("[1;0;0;1]/sqrt(2)")));
+ calculator.addVariable(new KnownVariable("","psi",std::string("[1;i]/sqrt(2)")));
+ equal("quantum: <Bell|Bell>","1");
+ equal("quantum: <Bell|CZ|Bell>","0");
+ equal("quantum: <psi|psi>","1");
+ equal("quantum: |psi>","[1;i]/sqrt(2)");
  calculator.addVariable(new KnownVariable("","statevector",std::string("[1;i]/sqrt(2)")));
  calculator.addVariable(new KnownVariable("","scalarstate",std::string("3")));
  equal("quantum: |statevector>","[1;i]/sqrt(2)");
  equal("quantum: <statevector|statevector>","1");
  equal("quantum: |statevector><statevector|","[1,-i;i,1]/2");
  equal(R"(quantum: \sum_{x\in\{0,1,2\}}{|x>_3})","[1;1;1]");
- for(const char *expression:{"quantum: cardinality(3)","quantum: cardinality([[1]])","quantum: cardinality(identity(2))","quantum: cardinality(indexrange(0,1024))","quantum: |undefinedvector>","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})"}) {
+ for(const char *expression:{"quantum: cardinality(3)","quantum: cardinality([[1]])","quantum: cardinality(identity(2))","quantum: cardinality(indexrange(0,1024))","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

@@ -167,3 +167,57 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 - Address scale separately from syntax. The current circuit editor is limited to ten qubits and 512 steps; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
+
+## Symbolic Fourier operators
+
+`QFT_N` and `fourier(N)` use dimension N, following [IBM's definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). `qft(n)` and `QFT(n)` instead take a qubit count. Unknown scalar dimensions remain symbolic in exact and approximate modes; substituting a numeric dimension evaluates the matrix and applies the existing numeric limits. This does not yet provide symbolic basis kets, Fourier-sum expansion, or general symbolic operator identities.
+
+
+### Symbolic states and application
+
+An unknown named ket such as `|x>` remains a state expression until its name is assigned a column vector. An integer index requires an explicit dimension: `|x>_{N}` or `basis(x,N)`. Unknown scalar indices or dimensions remain symbolic; already-known invalid numeric arguments still reject. Products and adjoints involving unevaluated operators or states retain their operation structure and operand order. After values are substituted, the existing matrix evaluation and shape checks run. `QFT_N|x>` can therefore remain symbolic, but does not yet expand into the Fourier sum or infer that x is a numeric basis index.
+
+
+### Repeated adjoints, conjugations and transposes
+
+Applying an adjoint twice, conjugation twice, or transpose twice cancels symbolically, including for unresolved state and operator expressions. For example, `dagger(dagger(QFT_N))` reduces to `QFT_N`, and `dagger(dagger(|x>))` reduces to `|x>`. These identities do not assume normalization, reality or unitarity; they do not replace a single adjoint with an inverse.
+
+## Named state labels
+
+Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. In the GUI, choose **States** beside Calculate to define named column vectors.
+
+`Bell` is not a predefined alias or a normalization assumption. Use `<Phi+|Phi+>` for the built-in normalized Bell-state overlap (1), and `<Phi+|CZ|Phi+>` for its overlap after CZ (0).
+
+### Worker state definitions
+
+The worker's `--states` option accepts definitions alongside one expression. Define
+`Bell` as `|Phi+>` and then `after CZ` as `CZ|Bell>` to evaluate `<Bell|Bell>`
+to 1 and `<Bell|after CZ>` to 0. Definitions are evaluated exactly, in order,
+and may refer to earlier definitions. Each must resolve to a column vector with
+1–1024 rows and scalar amplitudes. Symbolic amplitudes are allowed. Vectors are
+not automatically normalized, and names cannot override existing variables or
+built-in ket labels. Unknown references, forward references and cycles reject.
+Definitions last for one worker request. Version 2 GUI session files store exact
+state definitions in a `States` array of `Name` and `Expression` objects, both
+for the current workspace and for each history entry. Opening a session restores
+its definitions; reusing a history entry restores the definitions from that
+calculation. Version 1 files still load with no definitions. Invalid files leave
+the current workspace unchanged. The GUI sends the restored definitions with
+each calculation. Choose **States** beside Calculate to edit definitions, reorder
+dependencies, or add the Bell example. **Apply states** updates the workspace;
+**Cancel** discards the private draft. Use **Save session** to keep definitions.
+The editor checks names and size limits; Calculate checks whether the expressions
+resolve to valid vectors. Errors leave the definitions available for correction.
+
+The UTF-8 stdin protocol begins with `QSTATES1\n`, then a decimal definition
+count and newline. For each definition, send its name's byte length and newline,
+its expression's byte length and newline, then the raw name and expression bytes
+without separators. The remaining bytes are the calculation expression, including
+the `quantum:` prefix when using quantum notation. Definition expressions use
+quantum notation automatically and do not include that prefix. Limits are 32
+definitions, 128 bytes per name, 32768 bytes per definition or final expression,
+and 1100000 bytes for the entire request. Names may contain internal spaces;
+definition expressions may contain newlines. NUL is rejected in names and
+expressions. Empty fields, invalid lengths and incomplete records reject without
+producing a result. Without `--states`, the existing expression-only protocol and
+32768-byte limit are unchanged.

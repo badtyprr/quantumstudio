@@ -28,6 +28,10 @@ EXTRA_DIST = config.rpath  \
 	windows/QasmImportTests.cs \
 	windows/QuantumStudio.cs \
 	windows/SessionStore.cs \
+	windows/NamedStateEditor.cs \
+	windows/WorkspaceTheme.cs \
+	windows/WorkspaceTheme.xaml \
+	windows/GUI-design.md \
 	windows/SessionStoreTests.cs \
 	windows/build-gui.ps1 \
 	windows/examples.json \
