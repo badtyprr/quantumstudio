@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\ket{x}_\alpha)","|x>_(α)");
+  equal("<x|_δ","<x|_(δ)");
   equal(R"(x\in S)","x∈ S");
   equal(R"(x\notin S)","x∉ S");
   equal(R"(A\cup B\cap C\setminus D)","A∪ B∩ C∖ D");
