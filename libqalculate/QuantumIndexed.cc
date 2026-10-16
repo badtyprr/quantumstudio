@@ -104,6 +104,9 @@ class QuantumIndexedFunction: public MathFunction {
     collection=name=="qbitstrings" || name=="vector" || name=="union" || name=="intersect" || name=="setdiff" || name=="unique" || name=="select" || name=="qindexrange";
    }
    MathStructure value=raw[0];value.eval(eo);
+   // A bare unknown may later denote a collection or a scalar. Preserve the
+   // overloaded bars until substitution determines cardinality or magnitude.
+   if(!collection && (value.isSymbolic() || (value.isVariable() && !value.variable()->isKnown())))return 0;
    if(collection || value.isVector()) {
     MathStructure parameters;parameters.clearVector();parameters.addChild(m_one);parameters.addChild(raw[0]);parameters.addChild(MathStructure("__cardinality_index",true));
     auto sum=CALCULATOR->getFunction("qsumset");if(!sum)return 0;
@@ -131,6 +134,9 @@ class QuantumIndexedFunction: public MathFunction {
    if(!members.isVector() && (members.representsScalar() || bitLabel) && (collection.isVector() || (collection.isFunction() &&
       (collection.function()->referenceName()=="qbitstrings" || collection.function()->referenceName()=="vector" || collection.function()->referenceName()=="union" || collection.function()->referenceName()=="intersect" || collection.function()->referenceName()=="setdiff" || collection.function()->referenceName()=="unique" || collection.function()->referenceName()=="select" || collection.function()->referenceName()=="qindexrange"))))
     members.transform(STRUCT_VECTOR);
+   // An unspecified domain is not an invalid concrete collection. Preserve
+   // symbolic singleton collections above before deferring an unknown domain.
+   if(op=="qsumset" && (members.isSymbolic() || (members.isVariable() && !members.variable()->isKnown())))return 0;
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    if(op=="qmember") {
     auto canonical=[&](MathStructure &value)->bool {
