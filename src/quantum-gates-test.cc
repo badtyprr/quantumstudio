@@ -2,6 +2,7 @@
 #include "Calculator.h"
 #include "QuantumGates.h"
 #include <iostream>
+#include <cmath>
 #include <stdexcept>
 static unsigned checks=0;
 static EvaluationOptions eo;
@@ -16,6 +17,34 @@ int main(){try {
  registerQuantumGates(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(bool approximate:{false,true})for(const char *name:{"qft","qfourier"}) {
+  EvaluationOptions symbolicOptions=eo;symbolicOptions.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
+  MathStructure symbol(std::string("dimension_parameter"),true),expression;
+  expression.set(calculator.getFunction(name),&symbol,NULL);
+  while(calculator.message())calculator.nextMessage();
+  expression.eval(symbolicOptions);
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error("Symbolic Fourier dimension rejected");calculator.nextMessage();}
+  if(!expression.isFunction() || expression.function()!=calculator.getFunction(name) || !expression.containsUnknowns())throw std::runtime_error("Symbolic Fourier operator was lost");++checks;
+  MathStructure resolved=expression;resolved.replace(symbol,MathStructure(2));resolved.eval(symbolicOptions);
+  MathStructure expected=calculator.calculate(std::string(name)+"(2)",symbolicOptions);
+  if(approximate) {
+   if(!resolved.isMatrix() || resolved.rows()!=expected.rows() || resolved.columns()!=expected.columns())throw std::runtime_error("Substituted Fourier shape differs");
+   for(size_t row=1;row<=resolved.rows();++row)for(size_t col=1;col<=resolved.columns();++col) {
+    const MathStructure &actual=*resolved.getElement(row,col), &reference=*expected.getElement(row,col);
+    if(!actual.isNumber() || !reference.isNumber())throw std::runtime_error("Substituted Fourier entry is not numeric");
+    Number difference=actual.number();difference.subtract(reference.number());difference.abs();
+    if(!std::isfinite(difference.floatValue()) || difference.floatValue()>1e-10)throw std::runtime_error("Substituted Fourier entry differs");
+   }
+  } else {
+   resolved.transform(COMPARISON_EQUALS,expected);resolved.eval(symbolicOptions);
+   if(!resolved.isNumber() || !resolved.number().isOne())throw std::runtime_error("Substituted exact Fourier operator differs");
+  }
+  ++checks;
+  expression.replace(symbol,MathStructure(0));expression.eval(symbolicOptions);bool invalid=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)invalid=true;calculator.nextMessage();}
+  if(!invalid)throw std::runtime_error("Invalid substituted Fourier dimension accepted");++checks;
+ }
+
  equal("qft(1)","[1,1;1,-1]/sqrt(2)");
  equal("qfourier(4)","[1,1,1,1;1,i,-1,-i;1,-1,1,-1;1,-i,-1,i]/2");
  equal("qft(2)","qfourier(4)");
