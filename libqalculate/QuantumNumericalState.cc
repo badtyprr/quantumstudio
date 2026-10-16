@@ -109,6 +109,32 @@ void StateVector::apply(const std::vector<Complex> &unitary,
   for(std::size_t j = 0; j < wires.size(); ++j)
    if(k & (std::size_t(1) << (wires.size()-1-j))) offsets[k] |= bits[j];
  try {
+  bool diagonal = true;
+  for(std::size_t r=0;r<dimension;++r)for(std::size_t c=0;c<dimension;++c)
+   if(r!=c && unitary[r*dimension+c]!=Complex(0))diagonal=false;
+  // Only exact zeros select this path; small nonzero entries are never dropped.
+  if(diagonal) {
+   for(std::size_t i=0;i<amplitudes_.size();++i) {
+    if((i & 4095)==0)checkCancellation(cancelled);
+    std::size_t local=0;
+    for(std::size_t j=0;j<wires.size();++j)local=(local<<1)|((i & bits[j]) ? 1 : 0);
+    const Complex phase=unitary[local*dimension+local];
+    if(phase!=Complex(1))amplitudes_[i]*=phase;
+   }
+   return;
+  }
+  if(dimension==2) {
+   const std::size_t bit=bits[0];std::size_t pairs=0;
+   for(std::size_t block=0;block<amplitudes_.size();block+=2*bit)
+    for(std::size_t offset=0;offset<bit;++offset) {
+     if((pairs++ & 4095)==0)checkCancellation(cancelled);
+     const std::size_t a=block+offset,b=a+bit;
+     const Complex x=amplitudes_[a],y=amplitudes_[b];
+     amplitudes_[a]=unitary[0]*x+unitary[1]*y;
+     amplitudes_[b]=unitary[2]*x+unitary[3]*y;
+    }
+   return;
+  }
   for(std::size_t base = 0; base < amplitudes_.size(); ++base) {
    if((base & 4095) == 0) checkCancellation(cancelled);
    if(base & mask) continue;

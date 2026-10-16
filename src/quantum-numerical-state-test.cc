@@ -43,6 +43,10 @@ int main() {try {
      reference=dense(dense(reference,n,{q},hadamard),n,{q},phase);
     }
     std::size_t d=std::size_t(1)<<width;std::vector<Complex> gate(d*d);
+    std::vector<Complex> diagonal(d*d);
+    for(std::size_t r=0;r<d;++r)diagonal[r*d+r]=std::polar(1.0,.23*r);
+    state.apply(diagonal,wires);reference=dense(reference,n,wires,diagonal);
+    for(std::size_t i=0;i<reference.size();++i)check(std::abs(state.amplitude(i)-reference[i])<1e-12);
     for(std::size_t r=0;r<d;++r)for(std::size_t c=0;c<d;++c)
      gate[r*d+c]=std::polar(1/std::sqrt(double(d)),2*pi*r*c/d+.17*r+.31*c);
     state.apply(gate,wires);reference=dense(reference,n,wires,gate);
@@ -76,5 +80,12 @@ int main() {try {
  rejects<std::logic_error>([&]{cancelled.amplitude(0);});
  rejects<std::logic_error>([&]{cancelled.normSquared();});
  rejects<std::logic_error>([&]{cancelled.apply(x,{0});});
+ StateVector diagonalCancelled(14,262144);calls=0;
+ rejects<Cancelled>([&]{diagonalCancelled.apply({1,0,0,Complex(0,1)},{0},[&]{return ++calls==3;});});
+ check(!diagonalCancelled.valid());
+ // A very small off-diagonal rotation must still mix amplitudes.
+ StateVector tiny(1,32);const double angle=1e-8;
+ tiny.apply({std::cos(angle),-std::sin(angle),std::sin(angle),std::cos(angle)},{0});
+ check(std::abs(tiny.amplitude(1)-std::sin(angle))<1e-20);
  std::cout<<"PASS: "<<checks<<" numerical state checks\n";
  } catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}
