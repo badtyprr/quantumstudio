@@ -20,6 +20,15 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: |\{0,1\}\cup\{1,2\}|)","3");
+ equal(R"(quantum: |\{0,1\}∩\{1,2\}|)","1");
+ equal(R"(quantum: |\{0,1,2\}∖\{1\}|^2)","4");
+ equal(R"(quantum: |\{0,1\}∪(\{1,2\}∩\{2\})|)","3");
+ equal(R"(quantum: |\{0,1\}∪\{1,2\}∩\{2\}|)","3");
+ equal("quantum: |∅|","0");
+ equal(R"(quantum: \lvert\{0,1\}^2\cup\emptyset\rvert)","4");
+ equal(R"(quantum: |\{x\in\{0,1\}^2:<x|x>=1\}∩\{0,1\}^2|)","4");
+ equal("quantum: |⟨101|(H⊗H⊗H)|000⟩|^2","1/8");
  equal(R"(quantum: bitstring(1,2)\in\{0,1\}^2)","1");
  equal(R"(quantum: bitstring(1,3)\notin\{0,1\}^2)","1");
  equal("quantum: 2∈vector(1,2,3)","1");
