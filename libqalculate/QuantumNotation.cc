@@ -344,13 +344,13 @@ class Parser {
  unsigned nextBoundIndex=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="select") && args.size()==3) ? 2 :
-   ((name=="sum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
+   ((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
   if(!index)return;
   size_t body=name=="select" ? 1 : 0;
   std::string original=args[index];
   while(original.size()>2 && original.front()=='(' && original.back()==')')
    original=original.substr(1,original.size()-2);
-  bool plain=(name=="qsumset" || name=="sum" || name=="product" || name=="select") && !original.empty() && original!="pi" && original!="i" && original!="e";
+  bool plain=(name=="qsumset" || name=="sum" || name=="qsum" || name=="product" || name=="select") && !original.empty() && original!="pi" && original!="i" && original!="e";
   for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
   if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
      original.find('"',1)!=original.size()-1))return;
@@ -1125,6 +1125,7 @@ class Parser {
      args[0]="vector("+body+")";
     }
     scopeIndex(name,args);
+    if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
     auto signature=quantumSignatures.find(name);

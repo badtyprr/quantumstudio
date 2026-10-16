@@ -21,6 +21,19 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ MathStructure finiteStopped=calculator.parse("qsum(x,0,1000,x)"), finiteCancelled;
+ calculator.startControl();calculator.abort();
+ int finiteCancellation=calculator.getFunction("qsum")->calculate(finiteCancelled,finiteStopped,eo);
+ calculator.stopControl();
+ if(finiteCancellation!=0)throw std::runtime_error("Finite sum ignored cancellation");
+ ++checks;
+ equal("qsum(x,-2,2,x)","0");
+ equal("qsum(x,3,3,x)","3");
+ equal("qsum(qsum(x,0,1,x),0,1,x)","2");
+ equal("qsum(qsum(x,0,x,x),0,2,x)","4");
+ equal("qsum(qsum(x+y,0,1,y),0,2,x)","9");
+ equal("qsum(qsumset(x,vector(0,1),x),0,2,x)","3");
+ equal("qsumset(qsum(x,0,1,x),vector(0,1),x)","2");
  equal("qsumset(x,vector(7),x)","7");
  equal("qindexrange(-2,2)","vector(-2,-1,0,1,2)");
  equal("qindexrange(0,-1)","vector()");

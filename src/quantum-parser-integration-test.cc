@@ -21,6 +21,18 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{k},N,4))","6");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{|k>_4},N,4))","[1;1;1;1]");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{\sum_{k=0}^{1}{k}},N,3))","3");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{\sum_{j=0}^{k}{j}},N,3))","4");
+ equal(R"(quantum: replace(replace(\sum_{k=0}^{N-1}{\alpha^k},N,4),\alpha,2))","15");
+ for(const char *expression:{R"(quantum: \sum_{k=0}^{N-1}{k})",R"(quantum: \sum_{k=L}^{N}{k})",R"(quantum: \sum_{k=0}^{2^m-1}{e^{2\pi i k\theta}})"}) {
+  while(calculator.message())calculator.nextMessage();
+  MathStructure value=calculator.calculate(expression,eo);
+  if(!value.isFunction() || value.function()->referenceName()!="qsum")throw std::runtime_error("Symbolic sum was not retained");
+  while(calculator.message()) {if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error("Symbolic sum reported an error");calculator.nextMessage();}
+  ++checks;
+ }
  equal(R"(quantum: \alpha|0>+\beta|1>)",R"(["α";"β"])");
  equal(R"(quantum: \gamma\delta)",R"("γ"*"δ")");
  equal("quantum: δ(1)","dirac(1)");
