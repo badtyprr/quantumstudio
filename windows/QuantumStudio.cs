@@ -16,6 +16,7 @@ using System.Web.Script.Serialization;
 class QuantumStudio {
  static Window window;
  static TextBox input, output;
+ static string copyText;
  static TextBlock status, resultLabel;
  static Button run, cancel;
  static CancellationTokenSource calculationCancellation;
@@ -76,6 +77,7 @@ class QuantumStudio {
  }
  public class CalculationResult {
   public string text {get;set;}
+  public string copy_text {get;set;}
   public bool approximate {get;set;}
   public int rows {get;set;}
   public int columns {get;set;}
@@ -110,7 +112,7 @@ class QuantumStudio {
     if(!e.IsRepeat) await Calculate();
    }
   };
-  Find<Button>("Copy").Click += delegate { try { Clipboard.SetText(output.Text); status.Text="Result copied."; } catch(Exception ex) { status.Text=ex.Message; } };
+  Find<Button>("Copy").Click += delegate { try { Clipboard.SetText(copyText ?? output.Text); status.Text="Result copied."; } catch(Exception ex) { status.Text=ex.Message; } };
   Find<Button>("Clear").Click += delegate { history.Items.Clear(); };
   Find<Button>("SaveSession").Click+=delegate {
    if(!run.IsEnabled)return;
@@ -780,6 +782,16 @@ class QuantumStudio {
     states=new StateDefinition[0];OpenSession(sessionPath);await Calculate();
     if(states.Length!=2 || states[1].Name!="after CZ" || output.Text!="1")throw new Exception("Saved named states did not restore and recalculate.");
     SessionStore.Save(sessionPath,originalSession);OpenSession(sessionPath);
+    if(copyText!=null)throw new Exception("Restoring a session retained a stale copied result.");
+    mode.SelectedIndex=0;evaluation.SelectedIndex=0;
+    foreach(string matrixExpression in new[]{"I","[1+i,2;3,4-i]","basis(0,1)","basis(0,256)"}) {
+     input.Text=matrixExpression;await Calculate();string shown=output.Text, copied=copyText;
+     if(String.IsNullOrEmpty(copied))throw new Exception("Matrix copy expression is missing.");
+     input.Text=copied;await Calculate();
+     if(output.Text!=shown || copyText!=copied)throw new Exception("Copying a matrix changed its value or shape.");
+    }
+    input.Text="H(";await Calculate();
+    if(resultLabel.Text!="CHECK YOUR EXPRESSION" || copyText!=null)throw new Exception("A failed calculation retained stale matrix copy text.");
     File.WriteAllText(args[1]+".txt",passed ? "PASS: GUI matrices, TeX, history, errors, unit conversion, example search, circuit calculation, save/open, and invalid-file preservation." : "FAIL: "+output.Text);
     Environment.ExitCode=passed ? 0 : 1; window.Close();
     } catch(Exception ex) {
@@ -839,7 +851,7 @@ class QuantumStudio {
   RefreshStates();
   input.Text=session.Expression;mode.SelectedIndex=session.Mode;evaluation.SelectedIndex=session.Evaluation;
   matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;
-  output.Visibility=Visibility.Visible;output.Text="Choose Calculate to evaluate the restored expression.";resultLabel.Text="SESSION RESTORED";
+  copyText=null;output.Visibility=Visibility.Visible;output.Text="Choose Calculate to evaluate the restored expression.";resultLabel.Text="SESSION RESTORED";
   status.Text="Opened "+Path.GetFileName(path)+" · Saved results are snapshots; double-click a history item to reuse it.";
  }
  static void ShowProbabilities(CalculationResult result) {
@@ -930,6 +942,7 @@ class QuantumStudio {
   ShowProbabilities(result);
   ShowBloch(result);
   output.Text=result.text;
+  copyText=result.copy_text ?? result.text;
   resultLabel.Text=result.approximate ? "APPROXIMATE RESULT" : "EXACT RESULT";
   matrixCells.Children.Clear(); matrixCells.RowDefinitions.Clear(); matrixCells.ColumnDefinitions.Clear();
   bool matrix=result.rows>0 && result.columns>0 && result.cells!=null && result.cells.Length==result.rows;
@@ -1003,8 +1016,8 @@ class QuantumStudio {
    history.Items.Insert(0,entry); if(history.Items.Count>50) history.Items.RemoveAt(50);
   } catch(OperationCanceledException) {
    blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;
-   resultLabel.Text="CANCELLED";output.Text="Calculation cancelled.";status.Text="Stopped · Your expression is ready to edit or run again.";
-  } catch(Exception ex) { blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed; matrixCaption.Visibility=Visibility.Collapsed; output.Visibility=Visibility.Visible; resultLabel.Text=ex is TimeoutException ? "TIME ALLOWANCE REACHED" : "CHECK YOUR EXPRESSION"; output.Text=ex.Message; status.Text="Calculation stopped. Edit the expression and try again."; }
+   copyText=null;resultLabel.Text="CANCELLED";output.Text="Calculation cancelled.";status.Text="Stopped · Your expression is ready to edit or run again.";
+  } catch(Exception ex) { copyText=null;blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed; matrixCaption.Visibility=Visibility.Collapsed; output.Visibility=Visibility.Visible; resultLabel.Text=ex is TimeoutException ? "TIME ALLOWANCE REACHED" : "CHECK YOUR EXPRESSION"; output.Text=ex.Message; status.Text="Calculation stopped. Edit the expression and try again."; }
   finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true;Find<Button>("EditStates").IsEnabled=true; }
  }
 }

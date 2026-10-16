@@ -14,7 +14,9 @@ The source archive also contains `docs/learning-source-inventory.json`: 137 disc
 
 ## Selected verified notation
 
-Printed symbolic results can be pasted back into quantum input, including quoted names in `qfourier('N')`, named kets, and matrices of Greek coefficients. Matching single or double quotes protect their contents from operator, superscript, and whitespace normalization. Unclosed quotes reject. Finite and set sums may rename their internal bound index when read again; substituting numerical dimensions or finite domains preserves their evaluated result. This is input round-trip support, not mathematical typesetting or a general symbolic simplifier.
+Selected printed symbolic results can be pasted back into quantum input, including quoted names in `qfourier('N')`, named kets, and column matrices of Greek coefficients. Matching single or double quotes protect their contents from operator, superscript, and whitespace normalization. Unclosed quotes reject. Finite and set sums may rename their internal bound index when read again; substituting numerical dimensions or finite domains preserves their evaluated result. This is input round-trip support, not mathematical typesetting or a general symbolic simplifier.
+
+**Copy result** uses a separate expression for matrices and vectors, retaining dimensions and explicit element separators while leaving the displayed grid unchanged. This avoids interpreting space-separated columns as multiplication. A one-element matrix retains its matrix shape, and copying includes elements beyond the 128-cell grid preview. The worker JSON exposes this as `copy_text`; `text` remains the display string. Existing input-size and complexity limits still apply. General symbolic output containing angle-unit names such as `rad` is not yet guaranteed to round-trip in quantum mode.
 
 The [IBM phase-estimation procedure](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure) motivates these regression cases:
 

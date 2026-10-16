@@ -24,6 +24,27 @@ static void jsonString(const std::string &s) {
  }
  std::cout << '"';
 }
+static std::string copyText(const MathStructure &result, const PrintOptions &po) {
+ // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
+ // for implicit multiplication by the quantum parser.
+ if(!result.isMatrix()) {
+  if(result.isVector()) {
+   std::string text="vector(";
+   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
+   return text+")";
+  }
+  MathStructure display=result;display.format(po);return display.print(po);
+ }
+ if(result.rows()==1 && result.columns()==1)
+  return "qmul(("+copyText(*result.getElement(1,1),po)+"),qbasis(0,1))";
+ std::string text="matrix("+std::to_string(result.rows())+","+std::to_string(result.columns())+",[";
+ for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c) {
+  if(r!=1 || c!=1)text+=",";
+  MathStructure cell=*result.getElement(r,c);cell.format(po);
+  text+=cell.print(po);
+ }
+ return text+"])";
+}
 static bool messages(Calculator &calculator) {
  bool failed=false;
  while(calculator.message()) {
@@ -115,6 +136,7 @@ int main(int argc,char **argv) {
  else {
   size_t rows=result.isMatrix() ? result.rows() : 0, cols=result.isMatrix() ? result.columns() : 0;
   std::cout << "{\"text\":"; jsonString(display.print(po));
+  std::cout << ",\"copy_text\":"; jsonString(copyText(result,po));
   std::cout << ",\"approximate\":" << (result.isApproximate() ? "true" : "false") << ",\"rows\":" << rows << ",\"columns\":" << cols << ",\"cells\":[";
   if(rows*cols<=128) for(size_t r=0;r<rows;++r) {
    if(r) std::cout << ',';
