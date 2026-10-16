@@ -21,6 +21,18 @@ def data(expression, *flags):
     assert set(value) == {"text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Mixed adjoint operations simplify even when dimensions are unresolved.
+for flags in [(), ("--approx",)]:
+    for outer, inner, composed in [("qdag", "qconj", "qtranspose"), ("qconj", "qdag", "qtranspose"),
+                                    ("qdag", "qtranspose", "qconj"), ("qtranspose", "qdag", "qconj"),
+                                    ("qconj", "qtranspose", "qdag"), ("qtranspose", "qconj", "qdag")]:
+        nested = outer + "(" + inner + "(QFT_N))"
+        reduced = composed + "(QFT_N)"
+        assert data("quantum: " + nested, *flags) == data("quantum: " + reduced, *flags)
+        for dimension in [1, 3, 4]:
+            assert data("quantum: replace(" + nested + ",N," + str(dimension) + ")", *flags) == data("quantum: " + composed + "(QFT_" + str(dimension) + ")", *flags)
+        assert run("quantum: replace(" + nested + ",N,0)", "--json", *flags, success=False).stdout == b""
+
 # Suit labels are names, not automatically assigned basis coordinates.
 for flags in [(), ("--approx",)]:
     for command, symbol in [("clubsuit", "♣"), ("diamondsuit", "♢"), ("heartsuit", "♡"), ("spadesuit", "♠")]:
