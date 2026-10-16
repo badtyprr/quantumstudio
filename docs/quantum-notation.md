@@ -54,6 +54,14 @@ Release `482ef2f3390ceb1967224f1acfbc95636a26e797` imported the original program
 
 The first audit harness used literal 32-by-32 expected matrices and all 18 comparisons exceeded the expression complexity limit. Replacing each expected matrix with the density of its explicitly specified 32-entry state retained the full-matrix comparison and passed. The parser limit was not changed. These are selected released-program observations, not maintained CI replay cases or certification of notebook Python execution, all subroutines, or every Deutsch–Jozsa oracle.
 
+## Large density-matrix comparisons
+
+`frobeniusnorm(A)` and Schatten order 2 support finite numeric matrices up to 1024 by 1024, including ten-qubit density matrices. This path sums squared entry magnitudes directly and checks cancellation during the scan; it does not allocate a vectorized copy or compute singular values. Other Schatten orders, trace norms and spectral norms retain the 1024-entry bound. `vec` retains its own 1024-entry limit, so use `frobeniusnorm(A-B)` to compare large density matrices. Numerical precision and finite-entry validation still apply.
+
+### Frobenius uncertainty
+
+Frobenius norms propagate finite real and complex interval entries through squared magnitudes and the square root. This preserves bounds for cancellation residuals near zero and for explicitly uncertain entries, instead of requiring 12 significant digits in each entry. The resulting value may be an interval. Other Schatten orders retain their existing broad-uncertainty rejection.
+
 ## Selected qBraid adder audit
 
 The pinned [PyQASM unrolling notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb) contains a ten-qubit ripple-carry adder. Its `adder_qasm_str` was extracted without executing the notebook. The notebook SHA-256 is `ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4`; the extracted UTF-8 source with LF newlines hashes to `503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad`.
@@ -108,6 +116,10 @@ For a sum over integer basis indices, specify the state dimension: `\sum_{x\in\{
 `\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. In quantum mode these commands and `asin`, `acos`, `atan` return dimensionless radian values, preserving the library's principal branches. For example, `asin(1/2)` gives `pi/6`. The internal functions are `qasin`, `qacos`, and `qatan`; unresolved calls retain the radian convention when evaluated after substitution. Ordinary calculator-mode inverse trig behavior is unchanged.
 
 Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and `\sin^{-2}(pi/6)` gives `4`. The inverse interpretation applies to the literal exponent `-1`; write `(\sin(x))^{-1}` for a reciprocal. Powered functions require a parenthesized or braced argument, optionally with TeX delimiter-sizing commands such as `\left` or `\biggl`. Unbraced powered-function arguments remain unfinished.
+
+## Quantum addition and subtraction
+
+In quantum mode, addition and subtraction require matching matrix dimensions. A ket cannot be added to an operator, and a row vector cannot be added to a column vector by broadcasting. Nonzero scalar additions to matrices also reject: write an explicit identity or constant matrix for the intended operation. Scalar zero remains an additive identity, and ordinary symbolic scalar arithmetic is preserved. These checks apply to the quantum notation parser; ordinary libqalculate expressions retain their existing behavior. Unresolved non-scalar expressions remain deferred until their dimensions can be evaluated.
 
 ## Finite set-indexed sums
 

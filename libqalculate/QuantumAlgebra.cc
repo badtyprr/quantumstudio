@@ -71,6 +71,23 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   const MathStructure &a=args[0];
+  if(op=="qadd" || op=="qsub") {
+   const MathStructure &b=args[1];
+   if(a.isVector() && b.isVector()) {
+    size_t ar=a.isMatrix() ? a.rows() : 1,ac=a.isMatrix() ? a.columns() : a.size();
+    size_t br=b.isMatrix() ? b.rows() : 1,bc=b.isMatrix() ? b.columns() : b.size();
+    if(ar!=br || ac!=bc) {CALCULATOR->error(true,"Quantum addition and subtraction require matching matrix dimensions.",NULL);return 0;}
+   } else if(a.isVector() || b.isVector()) {
+    const MathStructure &scalar=a.isVector() ? b : a;
+    if(!scalar.representsScalar())return 0;
+    if(!scalar.isZero()) {CALCULATOR->error(true,"Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.",NULL);return 0;}
+   } else if(!a.representsScalar() || !b.representsScalar()) {
+    // Retain non-scalar expressions until dimensions are available. Ordinary
+    // symbolic scalars still use the library's algebraic simplification.
+    return 0;
+   }
+   out=a;if(op=="qsub")out-=b;else out+=b;out.eval(eo);return 1;
+  }
   if(op=="qketstate") {
    if(a.isUnknown())return 0;
    if(a.isVector() && !a.isMatrix() && a.size()>0 && a.size()<=1024) {
@@ -215,6 +232,8 @@ class QuantumAlgebraFunction: public MathFunction {
 };
 }
 void registerQuantumAlgebra(Calculator &calculator) {
+ calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));

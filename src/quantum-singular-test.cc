@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include <tuple>
 
 static unsigned checks=0;
 static EvaluationOptions eo;
@@ -71,6 +72,29 @@ int main() {
   norm("[3,4]","1",5);norm("3+4i","infinity",5);norm("[0,0;0,0]","1",0);
   norm("[1e-200,0;0,2e-200]","1",3e-200);
   norm("[1e200,0;0,2e200]","infinity",2e200);
+  for(const auto &test:std::vector<std::tuple<std::string,double,double>>{
+   {"interval(3,4)",3,4},{"interval(-1,2)",0,2},
+   {"[interval(3,4),4;0,0]",5,std::sqrt(32.0)},
+   {"interval(-1,2)+i*interval(-3,4)",0,std::sqrt(20.0)}}) {
+   EvaluationOptions intervals=eo;intervals.interval_calculation=INTERVAL_CALCULATION_INTERVAL_ARITHMETIC;
+   MathStructure value=calculator.calculate(std::get<0>(test),intervals),out,p(2);
+   if(!quantumSchattenNorm(out,value,p,eo) || !out.isNumber() || !out.number().isInterval())throw std::runtime_error("Frobenius uncertainty was rejected or lost: "+std::get<0>(test)+" input="+value.print()+" -> "+out.print());
+   checkNear(out.number().lowerEndPoint().floatValue(),std::get<1>(test));
+   checkNear(out.number().upperEndPoint().floatValue(),std::get<2>(test));
+   for(bool approximate:{false,true})for(const char *name:{"qfrobeniusnorm","qschatten"}) {
+    EvaluationOptions options=eo;options.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
+    std::string expression=std::string(name)+"("+std::get<0>(test)+(std::string(name)=="qschatten" ? ",2)" : ")");
+    MathStructure result=calculator.calculate(expression,options);
+    if(!result.isNumber() || !result.number().isInterval())throw std::runtime_error("Frobenius wrapper lost uncertainty: "+expression);
+    checkNear(result.number().lowerEndPoint().floatValue(),std::get<1>(test));
+    checkNear(result.number().upperEndPoint().floatValue(),std::get<2>(test));
+   }
+  }
+  {
+   MathStructure value=parse("interval(1,1000000000001/1000000000000)"),out,p(2);
+   if(!quantumSchattenNorm(out,value,p,eo) || !out.number().isInterval() || out.number().lowerEndPoint()>Number(1) || out.number().upperEndPoint()<parse("1000000000001/1000000000000").number())throw std::runtime_error("Narrow Frobenius interval was collapsed");++checks;
+   for(int order:{1,3}) {MathStructure p(order),wide=parse("interval(1,2)");if(quantumSchattenNorm(out,wide,p,eo))throw std::runtime_error("Other Schatten order accepted broad uncertainty");++checks;}
+  }
   // Prescribed spectra are invariant under independent complex unitary
   // transformations on each side; this avoids deriving the oracle from A*A.
   std::mt19937 random(1731);
@@ -133,6 +157,20 @@ int main() {
   checkNear(out.number().floatValue(),32);
   matrix.resizeMatrix(33,33,m_zero);
   if(quantumSchattenNorm(out,matrix,order,eo))throw std::runtime_error("Oversized operator accepted");
+  ++checks;
+  MathStructure secondOrder(2),complexEntry=parse("3+4i");
+  for(size_t r=1;r<=33;++r)for(size_t c=1;c<=33;++c)*matrix.getElement(r,c)=complexEntry;
+  if(!quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Large Frobenius matrix rejected");
+  checkNear(out.number().floatValue(),165);
+  matrix.clearMatrix();matrix.resizeMatrix(1024,1024,m_zero);
+  *matrix.getElement(1024,1024)=complexEntry;
+  if(!quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Maximum Frobenius matrix rejected");
+  checkNear(out.number().floatValue(),5);
+  *matrix.getElement(1,1)=parse("infinity");
+  if(quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Nonfinite Frobenius entry accepted");
+  ++checks;
+  matrix.clearMatrix();matrix.resizeMatrix(1025,1,m_zero);
+  if(quantumSchattenNorm(out,matrix,secondOrder,eo))throw std::runtime_error("Oversized Frobenius dimension accepted");
   ++checks;
   std::cout<<"PASS: "<<checks<<" Schmidt and Schatten checks\n";return 0;
  } catch(const std::exception &error) {std::cerr<<error.what()<<'\n';return 1;}

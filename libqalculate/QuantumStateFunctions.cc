@@ -14,7 +14,11 @@ class QuantumStateFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumStateFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;
-  for(size_t k=0;k<args.size();++k)args[k].eval(eo);
+  EvaluationOptions stateOptions=eo;
+  if(op=="qschatten")args[1].eval(eo);
+  if(op=="qfrobeniusnorm" || (op=="qschatten" && args[1].isNumber() && args[1].number()==Number(2)))
+   stateOptions.interval_calculation=INTERVAL_CALCULATION_INTERVAL_ARITHMETIC;
+  for(size_t k=0;k<args.size();++k)args[k].eval(k==0 ? stateOptions : eo);
   const MathStructure &state=args[0];
   if(op=="qentropy")return quantumEntropy(out,state,eo) ? 1 : 0;
   if(op=="qtracedistance" || op=="qfidelity" || op=="qrootfidelity") {
