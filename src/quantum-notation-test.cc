@@ -22,6 +22,18 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ for(const std::string dimension:{"N","n","registerdim","d_0","δ"}) {
+  equal("|x>_"+dimension,translateQuantum("|x>_{"+dimension+"}"));
+  equal("<x|_"+dimension,translateQuantum("<x|_{"+dimension+"}"));
+  equal("|x>_"+dimension+"^2",translateQuantum("|x>_{"+dimension+"}^2"));
+  equal("|x>_"+dimension+"†",translateQuantum("|x>_{"+dimension+"}†"));
+  equal("<x|_"+dimension+"|y>_"+dimension,translateQuantum("<x|_{"+dimension+"}|y>_{"+dimension+"}"));
+ }
+ equal(R"(\ket{x}_\alpha)",translateQuantum(R"(\ket{x}_{\alpha})"));
+ equal("QFT_N|x>_N",translateQuantum("QFT_N|x>_{N}"));
+ equal("|x>_N H",translateQuantum("|x>_{N} H"));
+ for(const char *input:{"|x>_","|x>_-N","|x>_2.5","|x>_2N"})rejects(input);
+
  for(const char *input:{R"(|\{0\}∪|)",R"(|\{0\}∩\{1\})",R"(|\{0\}∪(\{1\}|))"})rejects(input);
  for(const char *input:{"cardinality()","cardinality([1],2)",R"(|\{0,1\})",R"(|\{0,1\}> )"})rejects(input);
  equal(R"(\tilde{\rho})","\"ρ_tilde\"");

@@ -21,6 +21,19 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: |x>_N","quantum: |x>_{N}");
+ equal("quantum: QFT_N|x>_N","quantum: QFT_N|x>_{N}");
+ calculator.addVariable(new KnownVariable("","registerdim",std::string("3")));
+ equal("quantum: |1>_registerdim","[0;1;0]");
+ equal("quantum: <1|_registerdim","[0,1,0]");
+ equal("quantum: <1|_registerdim|1>_registerdim","1");
+ for(const char *expression:{"quantum: |3>_registerdim","quantum: |-1>_registerdim","quantum: |1>_H"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid dimension-qualified ket accepted: ")+expression);++checks;
+ }
+
+
  equal("quantum: |0>+|1>","[1;1]");
  equal("quantum: |0>-|1>","[1;-1]");
  equal("quantum: [1,2]+[3,4]","[4,6]");

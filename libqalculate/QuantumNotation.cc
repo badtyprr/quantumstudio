@@ -502,6 +502,15 @@ class Parser {
   if(!take('_')) return "";
   if(take('(')) {std::string dimension=expression();need(')');return dimension;}
   ws();size_t start=p;
+  if(p<s.size() && (std::isalpha((unsigned char)s[p]) || (unsigned char)s[p]>=128)) {
+   while(p<s.size() && (std::isalnum((unsigned char)s[p]) || s[p]=='_' || (unsigned char)s[p]>=128))++p;
+   // A bare identifier has the same meaning as its grouped spelling. Parse it
+   // in isolation so a following power/adjoint still applies to the whole ket.
+   std::string outer=s,identifier=s.substr(start,p-start);size_t outerPosition=p;
+   s=identifier;p=0;std::string dimension=expression();ws();
+   if(p!=s.size())throw std::runtime_error("Invalid basis dimension identifier.");
+   s=outer;p=outerPosition;return dimension;
+  }
   while(p<s.size() && s[p]>='0' && s[p]<='9')++p;
   if(p==start || (p<s.size() && (s[p]=='.' || std::isalnum((unsigned char)s[p]))))throw std::runtime_error("Put a basis dimension expression in braces or parentheses.");
   return s.substr(start,p-start);
