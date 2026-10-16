@@ -33,6 +33,7 @@
       <ComboBox x:Name="TimeAllowance" SelectedIndex="0" Width="155" Padding="8" Margin="0,0,8,8" ToolTip="Maximum time for each new calculation" AutomationProperties.Name="Calculation time allowance"><ComboBoxItem Content="15 seconds"/><ComboBoxItem Content="1 minute"/><ComboBoxItem Content="3 minutes"/><ComboBoxItem Content="10 minutes"/></ComboBox>
       <Button x:Name="Run" Content="Calculate  →" Background="#375EE8" Foreground="White" Padding="20,10" ToolTip="Enter or Ctrl+Enter to calculate; Shift+Enter for a new line"/>
       <Button x:Name="Cancel" Content="Cancel" IsEnabled="False" ToolTip="Stop the current calculation"/>
+      <Button x:Name="EditStates" Content="States · 0" ToolTip="Define named states such as Bell and after CZ"/>
      </WrapPanel>
     </StackPanel>
    </Border>
