@@ -312,6 +312,7 @@ class TeXReader {
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
    {"lambda","λ"},{"omega","ω"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
    {"zeta","ζ"},{"eta","η"},{"iota","ι"},{"kappa","κ"},{"nu","ν"},{"xi","ξ"},
+   {"clubsuit","♣"},{"diamondsuit","♢"},{"heartsuit","♡"},{"spadesuit","♠"},
    {"omicron","ο"},{"tau","τ"},{"upsilon","υ"},{"vartheta","θ"},{"varrho","ρ"},
    {"varkappa","κ"},{"varpi","ϖ"},{"varsigma","ς"},
    {"Gamma","Γ"},{"Delta","Δ"},{"Theta","Θ"},{"Lambda","Λ"},{"Xi","Ξ"},

@@ -285,3 +285,9 @@ bundled executable.
 ### Library ABI compatibility
 
 One-dimensional quantum states and operators retain their 1-by-1 matrix shape. The new `MathFunction::preservesSingletonMatrix()` virtual hook changes the C++ ABI; the libtool interface version is 27:0:0. Rebuild clients and derived function classes against this library rather than loading them from a previous ABI. Ordinary singleton-vector evaluation retains its existing behavior.
+
+### Named basis labels in IBM examples
+
+The card-suit commands `\clubsuit`, `\diamondsuit`, `\heartsuit`, and `\spadesuit` map to `♣`, `♢`, `♡`, and `♠`. The [IBM single-system lesson](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/quantum-information) uses these as classical basis labels. Undeclared labels remain named symbolic states; the parser does not assume that arbitrary named vectors are orthogonal.
+
+Supply the chosen coordinates by replacing whole kets, for example `replace(|\clubsuit>,|\clubsuit>,|0>_4)`. Replacing the four suit kets with `|0>_4`, `|1>_4`, `|2>_4`, and `|3>_4` evaluates the lesson's superposition to `[1;i;-1;-i]/2`, with norm 1. This declares the basis ordering explicitly; it is not automatic inference from a sum's domain. The same whole-ket substitution works for multi-letter names such as `|high>`. General symbolic basis declarations and automatic orthogonality remain unfinished.

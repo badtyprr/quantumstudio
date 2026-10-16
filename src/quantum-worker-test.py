@@ -21,6 +21,18 @@ def data(expression, *flags):
     assert set(value) == {"text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Suit labels are names, not automatically assigned basis coordinates.
+for flags in [(), ("--approx",)]:
+    for command, symbol in [("clubsuit", "♣"), ("diamondsuit", "♢"), ("heartsuit", "♡"), ("spadesuit", "♠")]:
+        assert data("quantum: |\\" + command + ">", *flags) == data("quantum: |" + symbol + ">", *flags)
+    suits = r"\frac{1}{2}\vert\clubsuit\rangle+\frac{i}{2}\vert\diamondsuit\rangle-\frac{1}{2}\vert\heartsuit\rangle-\frac{i}{2}\vert\spadesuit\rangle"
+    symbolic = data("quantum: " + suits, *flags)
+    assert symbolic["rows"] == 0 and "qnamedket" in symbolic["text"]
+    for index, command in enumerate(["clubsuit", "diamondsuit", "heartsuit", "spadesuit"]):
+        suits = "replace(" + suits + ",|\\" + command + ">,|" + str(index) + ">_4)"
+    assert data("quantum: norm((" + suits + ")-[1;i;-1;-i]/2)", *flags)["text"] == "0"
+    assert data("quantum: norm(" + suits + ")", *flags)["text"] == "1"
+
 for flags in [(), ("--approx",)]:
     for bare, grouped in [("|x>_N", "|x>_{N}"), ("<x|_N", "<x|_{N}"),
                           ("QFT_N|x>_N", "QFT_N|x>_{N}"),
