@@ -21,6 +21,14 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \alpha|0>+\beta|1>)",R"(["α";"β"])");
+ equal(R"(quantum: \gamma\delta)",R"("γ"*"δ")");
+ equal("quantum: δ(1)","dirac(1)");
+ equal("quantum: pi","pi");
+ equal("quantum: alpha","fine_structure");
+ equal("quantum: Σ",R"("Σ")");
+ equal("quantum: Π",R"("Π")");
+
  equal(R"(quantum: \cos^2(\pi\theta))",R"(cos(pi*"θ")^2)");
  equal(R"(quantum: \sin^2(\pi\theta))",R"(sin(pi*"θ")^2)");
  equal(R"(quantum: e^{2\pi i\theta})",R"(exp(2*pi*i*"θ"))");
