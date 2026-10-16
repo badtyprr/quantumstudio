@@ -47,7 +47,14 @@ class QuantumAlgebraFunction: public MathFunction {
    if(out.containsFunction(function))return 0;
    return 1;
   }
-  MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
+  MathStructure args=raw;
+  // Quoted ket labels retain their full name; resolve explicitly registered
+  // variables without routing the label through the ordinary expression parser.
+  if(op=="qketstate" && args[0].isSymbolic()) {
+   Variable *state=CALCULATOR->getActiveVariable(args[0].symbol());
+   if(state)args[0].set(state);
+  }
+  for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   if(op=="qtensor" || op=="qadjacent" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<((op=="qtensor" || op=="qadjacent") ? 2U : 1U);++j) {
    if(!args[j].isVector() || args[j].isMatrix())continue;
    bool flat=true;for(size_t k=0;k<args[j].size();++k)if(args[j][k].isVector())flat=false;
