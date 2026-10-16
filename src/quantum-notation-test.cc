@@ -47,7 +47,8 @@ int main(){try {
 
  equal("|0⊕a_0>_2","qbasis(qoplus(0,\"a_0\"),2)");
  equal("|2⊕3>_4 ⊕ |0>","qoplus(qbasis(qoplus(2,3),4),matrix(2,1,[1,0]))");
- equal("1+2*3","(1+qmul(2,3))");
+ equal("1+2*3","qadd(1,qmul(2,3))");
+ equal("1-2*3","qsub(1,qmul(2,3))");
  equal("<0|1>","qmul(qdag(matrix(2,1,[1,0])),matrix(2,1,[0,1]))");
  equal("|0><1|","qadjacent(matrix(2,1,[1,0]),qdag(matrix(2,1,[0,1])))");
  equal("H ⊗ I","qtensor(([1,1;1,-1]/sqrt(2)),[1,0;0,1])");

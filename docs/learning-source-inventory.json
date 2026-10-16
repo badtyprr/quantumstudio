@@ -1147,7 +1147,22 @@
       "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb",
       "revision": "86787e1ba372facc224f925189755e69c479828b",
       "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
-      "status": "end_to_end_execution_audit_pending"
+      "status": "end_to_end_execution_audit_pending",
+      "selected_release_audit": {
+        "date": "2026-10-15",
+        "revision": "482ef2f3390ceb1967224f1acfbc95636a26e797",
+        "evidence": "docs/quantum-notation.md#selected-qbraid-deutschjozsa-audit",
+        "source_sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08",
+        "hash_encoding": "Extracted UTF-8 program text with LF newlines",
+        "qubits": 5,
+        "original_steps": 18,
+        "original_cases": 1,
+        "adapted_cases": 17,
+        "compared_density_dimension": 32,
+        "maximum_reported_residual": 0,
+        "qualification": "Packaged importer, GUI load/save/reload and worker. One original program, all 16 linear four-bit oracles including the original, and two affine variants. Notebook Python execution and general subroutine compatibility remain unverified.",
+        "initial_harness_failure": "Literal 32x32 expected matrices exceeded the parser complexity limit in all 18 cases; compact density of an independently specified 32-entry state preserves the full-matrix comparison."
+      }
     },
     {
       "kind": "qbraid_notebook",
