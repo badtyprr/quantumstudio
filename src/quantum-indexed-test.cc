@@ -21,6 +21,10 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qsum(qketstate(x),0,2,x)","[1;1;1]");
+ equal("qsum(qsum(qketstate(x),0,1,x),0,2,x)","[3;3]");
+ equal("qsum(qsum(qketstate(x),0,1,y),0,2,x)","[2;2;2]");
+ equal("qsum(qbasis(x,4),0,2,x)","[1;1;1;0]");
  equal("replace(qsumset(x,S,x),S,vector(2,3,3))","5");
  equal("replace(qsumset(1,S,x),S,vector())","0");
  equal("replace(qbars(S),S,vector(2,3,3))","2");

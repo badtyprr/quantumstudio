@@ -27,6 +27,22 @@ for flags in [(), ("--approx",)]:
                           ("|x>_N^2", "(|x>_{N})^2")]:
         assert data("quantum: " + bare, *flags) == data("quantum: " + grouped, *flags)
 
+for flags in [(), ("--approx",)]:
+    assert data(r"quantum: \sum_{k=0}^{2}{|k>}", *flags)["cells"] == [["1"], ["1"], ["1"]]
+    assert data(r"quantum: replace(\sum_{k=0}^{N-1}{|k>},N,3)", *flags)["cells"] == [["1"], ["1"], ["1"]]
+    assert data(r"quantum: \sum_{k=0}^{2}{|k>_4}", *flags)["cells"] == [["1"], ["1"], ["1"], ["0"]]
+    assert data(r"quantum: \sum_{k=0}^{2}{\sum_{k=0}^{1}{|k>}}", *flags)["cells"] == [["3"], ["3"]]
+    assert data(r"quantum: \sum_{k=0}^{2}{<k|k>}", *flags)["text"] == "3"
+    decimal = data(r"quantum: \frac{1}{\sqrt{385}}\sum_{k=0}^9 (k+1)\vert k\rangle", *flags)
+    assert decimal["rows"] == 10 and decimal["columns"] == 1
+    if flags:
+        for k, row in enumerate(decimal["cells"]):
+            assert abs(float(row[0]) - (k+1)/385**0.5) < 1e-13
+
+for expression in [r"\sum_{k=0}^{1024}{|k>}", r"\sum_{k=1}^{2}{|k>}",
+                   r"\sum_{k=0}^{2}{|k>_2}", r"\sum_{k=0}^{0}{|k>}"]:
+    assert run("quantum: " + expression, "--json", success=False).stdout == b""
+
 # An unknown domain stays symbolic; an explicit singleton is already a set.
 for flags in [(), ("--approx",)]:
     uniform = r"1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}"
