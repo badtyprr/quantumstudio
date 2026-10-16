@@ -11,7 +11,7 @@ concurrency:
 jobs:
   compiler:
     name: Windows OpenQASM build and tests
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     timeout-minutes: 15
     steps:
       - name: Check out proposed revision
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
-          python-version: '3.12'
+          python-version: '3.12.10'
       - name: Install compiler dependencies
         shell: powershell
         run: |
@@ -29,6 +29,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Python environment creation failed.' }
           & .tools/qasm-venv/Scripts/python.exe -m pip install -r windows/qasm-import-requirements.txt
           if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency installation failed.' }
+          & .tools/qasm-venv/Scripts/python.exe -m pip check
+          if ($LASTEXITCODE -ne 0) { throw 'Compiler dependencies are inconsistent.' }
       - name: Build and validate packaged compiler
         shell: powershell
         run: |
