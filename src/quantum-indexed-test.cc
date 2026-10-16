@@ -21,6 +21,13 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("replace(qsumset(x,S,x),S,vector(2,3,3))","5");
+ equal("replace(qsumset(1,S,x),S,vector())","0");
+ equal("replace(qbars(S),S,vector(2,3,3))","2");
+ equal("replace(qbars(S),S,-3)","3");
+ equal("replace(qbars(S),S,3+4*i)","5");
+ equal("qbars(vector(x))","1");
+ equal("qsumset(1,vector(x),x)","1");
  MathStructure finiteStopped=calculator.parse("qsum(x,0,1000,x)"), finiteCancelled;
  calculator.startControl();calculator.abort();
  int finiteCancellation=calculator.getFunction("qsum")->calculate(finiteCancelled,finiteStopped,eo);

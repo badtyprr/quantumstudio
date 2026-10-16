@@ -21,6 +21,10 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: replace(1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>},\Sigma,bitstrings(1)))","[1;1]/sqrt(2)");
+ equal(R"(quantum: replace(cardinality(S),S,vector(2,3,3)))","2");
+ equal(R"(quantum: replace(|S|,S,-3))","3");
+ equal(R"(quantum: replace(\sum_{x\in S}{x},S,vector(2,3,3)))","5");
  equal(R"(quantum: replace(\sum_{k=0}^{N-1}{k},N,4))","6");
  equal(R"(quantum: replace(\sum_{k=0}^{N-1}{|k>_4},N,4))","[1;1;1;1]");
  equal(R"(quantum: replace(\sum_{k=0}^{N-1}{\sum_{k=0}^{1}{k}},N,3))","3");

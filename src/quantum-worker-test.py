@@ -27,6 +27,22 @@ for flags in [(), ("--approx",)]:
                           ("|x>_N^2", "(|x>_{N})^2")]:
         assert data("quantum: " + bare, *flags) == data("quantum: " + grouped, *flags)
 
+# An unknown domain stays symbolic; an explicit singleton is already a set.
+for flags in [(), ("--approx",)]:
+    uniform = r"1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}"
+    symbolic = data("quantum: " + uniform, *flags)
+    assert "qsumset(" in symbolic["text"] and "qbars(" in symbolic["text"]
+    assert data("quantum: replace(" + uniform + r",\Sigma,bitstrings(1))", *flags) == data("quantum: |+>", *flags)
+    for expression, expected in [("replace(cardinality(S),S,vector(2,3,3))", "2"),
+                                 ("replace(|S|,S,vector(2,3,3))", "2"),
+                                 ("replace(|S|,S,-3)", "3"),
+                                 ("replace(|S|,S,3+4*i)", "5"),
+                                 (r"replace(\sum_{x\in S}{x},S,vector())", "0"),
+                                 ("cardinality(vector(x))", "1"), ("|vector(x)|", "1")]:
+        assert data("quantum: " + expression, *flags)["text"] == expected
+    for expression in ["replace(cardinality(S),S,3)", "replace(cardinality(S),S,[1,2;3,4])"]:
+        assert run("quantum: " + expression, "--json", *flags, success=False).stdout == b""
+
 # Quantum amplitudes and error bounds remain symbolic even in approximate mode.
 for flags in [(), ("--approx",)]:
     for command, letter in [("Sigma", "Σ"), ("Pi", "Π"), ("Gamma", "Γ"),
