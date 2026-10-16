@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\clubsuit\diamondsuit\heartsuit\spadesuit)","♣♢♡♠");
+  equal(R"(\vert\clubsuit\rangle)","|♣>");
   equal(R"(\zeta\eta\iota\kappa\nu\xi\omicron\tau\upsilon)","ζηικνξοτυ");
   equal(R"(\Gamma\Delta\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Omega)","ΓΔΘΛΞΠΣΥΩ");
   equal(R"(\vartheta\varrho\varkappa\varpi\varsigma)","θρκϖς");
