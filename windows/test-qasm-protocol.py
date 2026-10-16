@@ -1,5 +1,6 @@
 """Check source and frozen compiler process contracts without a calculation worker."""
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -10,12 +11,18 @@ commands = [[sys.executable, str(root/'windows/qasm-import.py')],
 header = 'OPENQASM 3.0; include "stdgates.inc"; '
 checks = 0
 
-def run(command, source, expected=None, arguments=()):
+def run(command, source, expected=None, arguments=(), diagnostic=None):
     global checks
     data = source.encode('utf-8') if isinstance(source, str) else source
-    result = subprocess.run(command+list(arguments), input=data, capture_output=True, timeout=30)
+    # Reproduce a Windows locale that cannot write UTF-8 by default, even on
+    # developer machines whose Python runtime enables UTF-8 mode globally.
+    result = subprocess.run(command+list(arguments), input=data, capture_output=True, timeout=30,
+                            env=dict(os.environ, PYTHONIOENCODING='cp1252'))
+    stderr = result.stderr.decode('utf-8')
     if expected is None:
         assert result.returncode != 0 and not result.stdout and result.stderr, (command, result)
+        if diagnostic is not None:
+            assert stderr.strip() == diagnostic, (command, stderr)
     else:
         assert result.returncode == 0, result.stderr.decode('utf-8', errors='replace')
         assert json.loads(result.stdout) == expected, result.stdout
@@ -51,4 +58,6 @@ for command in commands:
                     header+'qubit q; delay[10ns] q;']:
         run(command, invalid)
     run(command, source, arguments=['--unknown-option'])
+    run(command, header+'qubit[25] q;',
+        diagnostic='The circuit editor currently supports 1–10 qubits.')
 print(f'PASS: {checks} source/frozen OpenQASM process checks.')

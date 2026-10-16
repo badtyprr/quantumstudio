@@ -265,6 +265,10 @@ def convert(source, published_u=False):
 
 
 if __name__ == '__main__':
+    # Redirected Windows streams otherwise inherit the local code page, while
+    # the GUI consumes UTF-8. Keep diagnostics readable in every locale.
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     try:
         source_bytes = sys.stdin.buffer.read(262145)
         if len(source_bytes) > 262144:
