@@ -1,6 +1,8 @@
 #include "QuantumNumericalState.h"
+#include <algorithm>
 #include <cmath>
 #include <limits>
+#include <random>
 
 namespace QuantumNumerics {
 namespace {
@@ -30,6 +32,50 @@ double StateVector::normSquared() const {
  requireValid();long double sum = 0;
  for(const auto &a : amplitudes_) sum += std::norm(a);
  return double(sum);
+}
+std::map<std::uint64_t, unsigned> StateVector::sampleCounts(unsigned shots,
+                         const std::vector<unsigned> &wires, std::uint64_t seed,
+                         const Cancellation &cancelled) const {
+ requireValid();
+ if(shots > 1000000) throw std::length_error("Sampling supports at most 1000000 shots");
+ std::size_t selected = 0;
+ for(unsigned q : wires) {
+  if(q >= qubits_) throw std::out_of_range("Sampled wire is outside the register");
+  const std::size_t bit = std::size_t(1) << (qubits_-1-q);
+  if(selected & bit) throw std::invalid_argument("Sampled wires must be distinct");
+  selected |= bit;
+ }
+ checkCancellation(cancelled);
+ std::map<std::uint64_t, unsigned> counts;
+ if(shots == 0) return counts;
+ long double norm = 0;
+ for(std::size_t i=0;i<amplitudes_.size();++i) {
+  if((i & 4095) == 0) checkCancellation(cancelled);
+  norm += std::norm(amplitudes_[i]);
+ }
+ if(!std::isfinite(norm) || std::abs(norm-1) > 1e-8L)
+  throw std::runtime_error("Cannot sample a state with invalid numerical normalization");
+ // Specify the integer-to-uniform conversion rather than depending on a
+ // standard-library distribution's platform-specific implementation.
+ std::mt19937_64 generator(seed);
+ std::vector<long double> draws(shots);
+ for(unsigned i=0;i<shots;++i) {
+  if((i & 4095) == 0) checkCancellation(cancelled);
+  draws[i] = (generator() >> 11) * (1.0L / 9007199254740992.0L) * norm;
+ }
+ std::sort(draws.begin(),draws.end());
+ checkCancellation(cancelled);
+ long double cumulative = 0;std::size_t next = 0;
+ for(std::size_t i=0;i<amplitudes_.size() && next<draws.size();++i) {
+  if((i & 4095) == 0) checkCancellation(cancelled);
+  cumulative += std::norm(amplitudes_[i]);
+  if(draws[next] >= cumulative) continue;
+  std::uint64_t outcome=0;
+  for(unsigned q : wires) outcome = (outcome << 1) | ((i >> (qubits_-1-q)) & 1);
+  while(next<draws.size() && draws[next]<cumulative) {++counts[outcome];++next;}
+ }
+ if(next != draws.size()) throw std::runtime_error("Numerical sampling lost probability mass");
+ return counts;
 }
 void StateVector::apply(const std::vector<Complex> &unitary,
                          const std::vector<unsigned> &wires,
