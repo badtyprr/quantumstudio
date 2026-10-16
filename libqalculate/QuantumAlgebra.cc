@@ -59,6 +59,7 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   const MathStructure &a=args[0];
   if(op=="qketstate") {
+   if(a.isUnknown())return 0;
    if(a.isVector() && !a.isMatrix() && a.size()>0 && a.size()<=1024) {
     std::set<int> indices;int registerWidth=-1;
     for(size_t k=0;k<a.size();++k) {
@@ -101,11 +102,17 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qbasis") {
    const MathStructure &dimension=args[1];
-   if(!a.isNumber() || !a.number().isInteger() || a.number()<0 || !dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<2 || dimension.number()>1024 || a.number()>=dimension.number()) {
+   bool symbolicIndex=!a.isNumber() && a.representsScalar() && a.containsUnknowns();
+   bool symbolicDimension=!dimension.isNumber() && dimension.representsScalar() && dimension.containsUnknowns();
+   if((!symbolicIndex && (!a.isNumber() || !a.number().isInteger() || a.number()<0)) ||
+      (!symbolicDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<2 || dimension.number()>1024)) ||
+      (!symbolicIndex && !symbolicDimension && a.number()>=dimension.number())) {
     CALCULATOR->error(true,"basis(index,dimension) requires an integer dimension from 2 to 1024 and a zero-based index in range.",NULL); return 0;
    }
+   if(symbolicIndex || symbolicDimension)return 0;
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
   }
+  if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
   if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) out.transposeMatrix(); return 1; }
   if(op=="qtranspose") { out=a; if(a.isMatrix()) out.transposeMatrix(); else if(a.isVector()) { CALCULATOR->error(true,"Transpose requires a matrix or scalar.",NULL); return 0; } return 1; }
@@ -117,6 +124,8 @@ class QuantumAlgebraFunction: public MathFunction {
    return out.isMatrix() || out.isVector() ? 1 : 0;
   }
   if(op=="qmul" || op=="qadjacent") {
+   // Retain operand order until symbolic operators and states have dimensions.
+   if((!a.isVector() && !a.representsScalar()) || (!args[1].isVector() && !args[1].representsScalar()))return 0;
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
    out=multiply(a,args[1],eo); return 1;
   }
