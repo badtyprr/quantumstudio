@@ -86,7 +86,7 @@ class TeXReader {
      if(token=='"' || token=='\''){quote=token;continue;}
      if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
      else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
-     else if(!nesting && contents.compare(j,3,"∈")==0) {
+     else if(!nesting && separator==std::string::npos && contents.compare(j,3,"∈")==0) {
       if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
      } else if(!nesting && token==':') {
       if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
@@ -175,7 +175,8 @@ class TeXReader {
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
-  if(name=="in" && (setBound || setExpressions))return "∈";
+  if(name=="in")return "∈";
+  if(name=="notin")return "∉";
   if(name=="lfloor" || name=="lceil") {
    auto body=read(0,false,"",false,name=="lfloor" ? "rfloor" : "rceil");
    if(trim(body).empty())throw std::runtime_error(error("Empty rounding operand"));
@@ -300,6 +301,7 @@ class TeXReader {
   if(name=="Vert") { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
   static const std::map<std::string,std::string> aliases={
    {"langle","<"},{"rangle",">"},{"vert","|"},{"lvert","|"},{"rvert","|"},
+   {"cup","∪"},{"cap","∩"},{"setminus","∖"},{"emptyset","vector()"},{"varnothing","vector()"},
    {"otimes","@"},{"oplus","#"},{"dagger","~"},{"cdot","*"},{"times","*"},
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
@@ -446,7 +448,7 @@ std::string quantumTeX(const std::string &input) {
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
-  {"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
+  {"∪","\\cup "},{"∩","\\cap "},{"∖","\\setminus "},{"∅","\\emptyset "},{"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
  for(size_t k=0;k<s.size();) {
   if(s[k]=='"' || s[k]=='\'') {if(quote==s[k])quote=0;else if(!quote)quote=s[k];normalized+=s[k++];continue;}

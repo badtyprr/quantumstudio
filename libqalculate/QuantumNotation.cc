@@ -150,6 +150,12 @@ std::string ket(const std::string &label, size_t dimension=0) {
  if(s.empty()) throw std::runtime_error("Empty ket label.");
  if(s.find_first_not_of("0123456789")==std::string::npos) throw std::runtime_error("Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3).");
  for(unsigned char c : s) if(c < 128 && !std::isalnum(c) && c != '_') throw std::runtime_error("Use a basis label or a named column vector inside a ket.");
+ // Use a text argument so ordinary parsing cannot split state-label letters
+ // or reinterpret a state name such as psi as a calculator function.
+ if(s.size()>1) {
+  size_t first=label.find_first_not_of(" \t\r\n"),last=label.find_last_not_of(" \t\r\n");
+  return "qnamedket("+label.substr(first,last-first+1)+")";
+ }
  return "qketstate(" + s + ")";
 }
 // Shared by registration and strict quantum-call validation.
@@ -259,7 +265,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"qsumset",3},
+ {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
  {"qpostselect",2},
@@ -384,7 +390,8 @@ class Parser {
   return 0;
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
- bool startsAtom() { ws(); if(p == s.size() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
+ bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   size_t end=labelEnd('|',p+1);
   if(end==std::string::npos)return false;
@@ -562,10 +569,37 @@ class Parser {
   }
   else if(take('|')) {
    ws();
-   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0) {
+   size_t plainClosing=std::string::npos;int plainDepth=0;char plainQuote=0;
+   if(p<s.size() && s[p]!='<')for(size_t k=p;k<s.size();++k) {
+    char c=s[k];
+    if(plainQuote) {if(c==plainQuote)plainQuote=0;continue;}
+    if(c=='\'' || c=='"') {plainQuote=c;continue;}
+    if(c=='(' || c=='[')++plainDepth;
+    else if(c==')' || c==']') {if(plainDepth==0)break;--plainDepth;}
+    else if(c=='>' && plainDepth==0)break;
+    else if(c=='|' && plainDepth==0) {plainClosing=k;break;}
+   }
+   bool explicitCollection=s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0;
+   if(plainClosing!=std::string::npos && !explicitCollection) {
+    s[plainClosing]=')';std::string value=expression();ws();
+    if(p!=plainClosing)throw std::runtime_error("Invalid expression inside bars.");
+    s[plainClosing]='|';p=plainClosing+1;a="qbars("+value+")";
+   } else if(explicitCollection) {
     // TeX set literals/builders have a distinct collection expression. Do not
     // guess whether an arbitrary named value inside bars is a set or a ket.
-    std::string collection=atom();need('|');
+    size_t closing=std::string::npos;int nesting=0;char quote=0;
+    for(size_t k=p;k<s.size();++k) {
+     char c=s[k];
+     if(quote) {if(c==quote)quote=0;continue;}
+     if(c=='\'' || c=='"') {quote=c;continue;}
+     if(c=='(' || c=='[')++nesting;
+     else if(c==')' || c==']') {if(nesting==0)break;--nesting;}
+     else if(c=='|' && nesting==0) {closing=k;break;}
+    }
+    if(closing==std::string::npos)throw std::runtime_error("Unclosed set cardinality bars.");
+    s[closing]=')';std::string collection=setUnion();ws();
+    if(p!=closing)throw std::runtime_error("Invalid set expression inside cardinality bars.");
+    s[closing]='|';p=closing+1;
     a="qsumset(1,"+collection+",'__cardinality_index')";
    } else if(p<s.size() && s[p]=='<') {
     // A leading bra inside bars denotes the magnitude of a Dirac scalar,
@@ -707,7 +741,7 @@ class Parser {
      if(p==digits) p=exponent;
     }
    } else {
-    while(p<s.size() && !radical() && (std::isalnum((unsigned char)s[p]) || (unsigned char)s[p]>=128 || s[p]=='_')) ++p;
+    while(p<s.size() && !radical() && !setOperatorAhead() && (std::isalnum((unsigned char)s[p]) || (unsigned char)s[p]>=128 || s[p]=='_')) ++p;
    }
    if(b==p) throw std::runtime_error("Expected a quantum expression at byte "+std::to_string(p+1));
    a=s.substr(b,p-b); ws();
@@ -829,6 +863,7 @@ class Parser {
     if(name=="tensorproduct") name="qtensorproduct";
     if(name=="indexrange") name="qindexrange";
     if(name=="sumset") name="qsumset";
+    if(name=="member") name="qmember";
     if(name=="bitstrings") name="qbitstrings";
     if(name=="bitstring") name="qbitlabel";
     if(name=="blocksum") name="qblocksum";
@@ -1174,17 +1209,38 @@ class Parser {
   }
   return a;
  }
+ bool takeSetOperator(const std::string &token) {
+  ws();if(s.compare(p,token.size(),token)!=0)return false;p+=token.size();return true;
+ }
+ std::string setIntersection() {
+  std::string result=additive();
+  while(true) {
+   if(takeSetOperator("∩"))result="intersect("+result+","+additive()+")";
+   else if(takeSetOperator("∖"))result="setdiff("+result+","+additive()+")";
+   else break;
+   checkSize(result);
+  }
+  return result;
+ }
+ std::string setUnion() {
+  std::string result=setIntersection();
+  while(takeSetOperator("∪")) {result="union("+result+","+setIntersection()+")";checkSize(result);}
+  return result;
+ }
  std::string comparison() {
-  std::string left=additive(),result;
+  std::string left=setUnion(),result;
   while(true) {
    ws();std::string relation;
+   if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
    for(const char *token:{"<=",">=","!=","==","=","<",">"}) {
+    if(!relation.empty())break;
     std::string candidate(token);
     if(s.compare(p,candidate.size(),candidate)==0) {relation=candidate;p+=candidate.size();break;}
    }
    if(relation.empty())break;
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
-   std::string right=additive(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   std::string right=setUnion(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
   }
   return result.empty() ? left : result;

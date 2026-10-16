@@ -17,6 +17,14 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(x\in S)","x∈ S");
+  equal(R"(x\notin S)","x∉ S");
+  equal(R"(A\cup B\cap C\setminus D)","A∪ B∩ C∖ D");
+  equal("A∪B∩C∖D","A∪ B∩ C∖ D");
+  equal(R"(\emptyset)","vector()");
+  equal(R"(\varnothing)","vector()");
+  equal("∅","vector() ");
+  equal("'∪∩∖∅'","'∪∩∖∅'");
   equal(R"(\{0,1\}^{3})","qbitstrings(3)");
   equal(R"(\{1,0\}^{n})","qbitstrings(n)");
   equal(R"(\{0,1,1\}^{2})","qbitstrings(2)");

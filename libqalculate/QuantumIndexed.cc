@@ -63,8 +63,31 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qsumset") {
-   if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {CALCULATOR->error(true,"A set sum index must be a symbolic variable.",NULL);return 0;}
+  if(op=="qbars") {
+   MathStructure source=raw[0];
+   for(unsigned depth=0;eo.calculate_variables && depth<128 && source.isVariable() && source.variable()->isKnown();++depth) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure value=((KnownVariable*)source.variable())->get();
+    if(value.equals(source))break;
+    source=value;
+   }
+   bool collection=source.isVector();
+   if(source.isFunction()) {
+    const std::string &name=source.function()->referenceName();
+    collection=name=="qbitstrings" || name=="vector" || name=="union" || name=="intersect" || name=="setdiff" || name=="unique" || name=="select" || name=="qindexrange";
+   }
+   MathStructure value=raw[0];value.eval(eo);
+   if(collection || value.isVector()) {
+    MathStructure parameters;parameters.clearVector();parameters.addChild(m_one);parameters.addChild(raw[0]);parameters.addChild(MathStructure("__cardinality_index",true));
+    auto sum=CALCULATOR->getFunction("qsumset");if(!sum)return 0;
+    return sum->calculate(out,parameters,eo);
+   }
+   if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
+   auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
+   out.set(absolute,&value,NULL);out.eval(eo);return 1;
+  }
+  if(op=="qsumset" || op=="qmember") {
+   if(op=="qsumset" && ((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown()))) {CALCULATOR->error(true,"A set sum index must be a symbolic variable.",NULL);return 0;}
    MathStructure collection=raw[1];
    for(unsigned depth=0;eo.calculate_variables && depth<128 && collection.isVariable() && collection.variable()->isKnown();++depth) {
     if(CALCULATOR->aborted())return 0;
@@ -82,6 +105,35 @@ class QuantumIndexedFunction: public MathFunction {
       (collection.function()->referenceName()=="qbitstrings" || collection.function()->referenceName()=="vector" || collection.function()->referenceName()=="union" || collection.function()->referenceName()=="intersect" || collection.function()->referenceName()=="setdiff" || collection.function()->referenceName()=="unique" || collection.function()->referenceName()=="select" || collection.function()->referenceName()=="qindexrange"))))
     members.transform(STRUCT_VECTOR);
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
+   if(op=="qmember") {
+    auto canonical=[&](MathStructure &value)->bool {
+     if(value.isFunction() && value.function()->referenceName()=="qbitlabel") {
+      if(value.size()!=2)return false;
+      MathStructure index=value[0],width=value[1];index.eval(exact);width.eval(exact);
+      if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue()))return false;
+      auto function=value.function();value.set(function,&index,&width,NULL);return true;
+     }
+     return value.representsScalar();
+    };
+    MathStructure probe=raw[0];probe.eval(exact);
+    if(!canonical(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
+    bool found=false,unknown=false;
+    for(size_t k=0;k<members.size();++k) {
+     if(CALCULATOR->aborted())return 0;
+     MathStructure member=members[k];
+     if(!canonical(member)) {CALCULATOR->error(true,"Membership requires a finite flat scalar or binary-string collection.",NULL);return 0;}
+     bool probeLabel=probe.isFunction() && probe.function()->referenceName()=="qbitlabel";
+     bool memberLabel=member.isFunction() && member.function()->referenceName()=="qbitlabel";
+     if(probeLabel && memberLabel) {if(probe[0].equals(member[0]) && probe[1].equals(member[1]))found=true;continue;}
+     if(probe.equals(member)) {found=true;continue;}
+     if(probeLabel || memberLabel)continue;
+     ComparisonResult comparison=probe.compare(member);
+     if(comparison==COMPARISON_RESULT_EQUAL)found=true;
+     else if(comparison!=COMPARISON_RESULT_LESS && comparison!=COMPARISON_RESULT_GREATER && comparison!=COMPARISON_RESULT_NOT_EQUAL)unknown=true;
+    }
+    if(!found && unknown) {CALCULATOR->error(true,"Membership could not determine equality of symbolic entries.",NULL);return 0;}
+    out=found ? m_one : m_zero;return 1;
+   }
    std::vector<MathStructure> seen;
    out=m_zero;
    for(size_t k=0;k<members.size();++k) {
@@ -195,6 +247,8 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qbars",1));
+ calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));

@@ -2,6 +2,7 @@
 #include "QuantumAlgebra.h"
 #include "Calculator.h"
 #include "Function.h"
+#include "Variable.h"
 #include <string>
 #include <utility>
 #include <set>
@@ -26,7 +27,9 @@ MathStructure multiply(MathStructure a, const MathStructure &b, const Evaluation
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
- QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {}
+ QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {
+  if(op=="qnamedket")setArgumentDefinition(1,new TextArgument());
+ }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if((op=="qdag" || op=="qconj" || op=="qdensity" || op=="qnorm" || op=="qnormalize") && !CALCULATOR->getFunction("conj")) {
@@ -47,7 +50,17 @@ class QuantumAlgebraFunction: public MathFunction {
    if(out.containsFunction(function))return 0;
    return 1;
   }
-  MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
+  if(op=="qnamedket") {
+   out.set(CALCULATOR->getFunction("qketstate"), &raw[0], NULL);out.eval(eo);return 1;
+  }
+  MathStructure args=raw;
+  // Text ket labels retain their full name; resolve explicitly registered
+  // variables without routing the label through the ordinary expression parser.
+  if(op=="qketstate" && args[0].isSymbolic()) {
+   Variable *state=CALCULATOR->getActiveVariable(args[0].symbol());
+   if(state && !state->isBuiltin())args[0].set(state);
+  }
+  for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   if(op=="qtensor" || op=="qadjacent" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<((op=="qtensor" || op=="qadjacent") ? 2U : 1U);++j) {
    if(!args[j].isVector() || args[j].isMatrix())continue;
    bool flat=true;for(size_t k=0;k<args[j].size();++k)if(args[j][k].isVector())flat=false;
@@ -76,6 +89,7 @@ class QuantumAlgebraFunction: public MathFunction {
    out=a;if(op=="qsub")out-=b;else out+=b;out.eval(eo);return 1;
   }
   if(op=="qketstate") {
+   if(a.isUnknown())return 0;
    if(a.isVector() && !a.isMatrix() && a.size()>0 && a.size()<=1024) {
     std::set<int> indices;int registerWidth=-1;
     for(size_t k=0;k<a.size();++k) {
@@ -118,11 +132,21 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qbasis") {
    const MathStructure &dimension=args[1];
-   if(!a.isNumber() || !a.number().isInteger() || a.number()<0 || !dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<2 || dimension.number()>1024 || a.number()>=dimension.number()) {
+   bool symbolicIndex=!a.isNumber() && a.representsScalar() && a.containsUnknowns();
+   bool symbolicDimension=!dimension.isNumber() && dimension.representsScalar() && dimension.containsUnknowns();
+   if((!symbolicIndex && (!a.isNumber() || !a.number().isInteger() || a.number()<0)) ||
+      (!symbolicDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<2 || dimension.number()>1024)) ||
+      (!symbolicIndex && !symbolicDimension && a.number()>=dimension.number())) {
     CALCULATOR->error(true,"basis(index,dimension) requires an integer dimension from 2 to 1024 and a zero-based index in range.",NULL); return 0;
    }
+   if(symbolicIndex || symbolicDimension)return 0;
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
   }
+  // Each of these operations is an involution, including on unresolved states.
+  if((op=="qdag" || op=="qconj" || op=="qtranspose") && raw[0].isFunction() && raw[0].size()==1 && raw[0].function()->referenceName()==op) {
+   out=raw[0][0];out.eval(eo);return 1;
+  }
+  if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
   if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) out.transposeMatrix(); return 1; }
   if(op=="qtranspose") { out=a; if(a.isMatrix()) out.transposeMatrix(); else if(a.isVector()) { CALCULATOR->error(true,"Transpose requires a matrix or scalar.",NULL); return 0; } return 1; }
@@ -134,6 +158,8 @@ class QuantumAlgebraFunction: public MathFunction {
    return out.isMatrix() || out.isVector() ? 1 : 0;
   }
   if(op=="qmul" || op=="qadjacent") {
+   // Retain operand order until symbolic operators and states have dimensions.
+   if((!a.isVector() && !a.representsScalar()) || (!args[1].isVector() && !args[1].representsScalar()))return 0;
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
    out=multiply(a,args[1],eo); return 1;
   }
@@ -210,6 +236,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }
