@@ -66,7 +66,20 @@ static class NumericalSampling {
    using(var process=new Process()) {
     process.StartInfo=new ProcessStartInfo(worker,"--sample") {UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8,WorkingDirectory=Path.GetDirectoryName(worker)};
     process.StartInfo.EnvironmentVariables["QALCULATE_DEFINITIONS_DIR"]=Path.Combine(Path.GetDirectoryName(worker),"data");
-    process.Start();var clock=Stopwatch.StartNew();
+    // Closing the last WPF window can end the process before a thread-pool
+    // continuation runs. Stop the child synchronously when cancellation fires.
+    // Serialize startup with cancellation so closing during Start cannot orphan it.
+    var lifetime=new object();bool started=false;
+    using(cancellation.Register(delegate {
+     lock(lifetime) {
+      if(!started)return;
+      try {if(!process.HasExited)process.Kill();}
+      catch(InvalidOperationException) {} // The child may have exited concurrently.
+      catch(System.ComponentModel.Win32Exception) {} // Cleanup below repeats the check.
+     }
+    })) {
+    lock(lifetime) {cancellation.ThrowIfCancellationRequested();process.Start();started=true;}
+    var clock=Stopwatch.StartNew();
     try {
      var output=process.StandardOutput.ReadToEndAsync();var error=process.StandardError.ReadToEndAsync();
      await process.StandardInput.BaseStream.WriteAsync(request,0,request.Length,cancellation);process.StandardInput.Close();
@@ -78,7 +91,9 @@ static class NumericalSampling {
      string stdout=await output,stderr=await error;
      if(process.ExitCode!=0)throw new InvalidOperationException(String.IsNullOrWhiteSpace(stderr) ? "Sampling failed." : stderr.Trim());
      return ReadResult(stdout,qubits,shots,seed,order);
-    } finally {if(!process.HasExited) {process.Kill();process.WaitForExit();}}
+    } catch {cancellation.ThrowIfCancellationRequested();throw;}
+    finally {lock(lifetime) {if(!process.HasExited)process.Kill();}process.WaitForExit();}
+    }
    }
   });
  }

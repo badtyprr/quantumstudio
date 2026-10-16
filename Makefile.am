@@ -40,6 +40,7 @@ EXTRA_DIST = config.rpath  \
 	windows/examples.json \
 	windows/test-gui.ps1 \
 	windows/test-keyboard.ps1 \
+	windows/test-sampling-shutdown.ps1 \
 	windows/package.ps1 \
 	windows/README.txt \
 	windows/test-package.py \
