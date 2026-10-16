@@ -15,7 +15,7 @@ concurrency:
 jobs:
   gui:
     name: Windows GUI build and tests
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     timeout-minutes: 10
     steps:
       - name: Check out proposed revision
