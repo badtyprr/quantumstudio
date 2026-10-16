@@ -29,6 +29,10 @@ for flags in [(), ("--approx",)]:
 
 # Quantum amplitudes and error bounds remain symbolic even in approximate mode.
 for flags in [(), ("--approx",)]:
+    for command, letter in [("Sigma", "Σ"), ("Pi", "Π"), ("Gamma", "Γ"),
+                            ("Delta", "Δ"), ("Omega", "Ω"), ("tau", "τ"),
+                            ("xi", "ξ"), ("varpi", "ϖ"), ("varsigma", "ς")]:
+        assert data("quantum: \\" + command, *flags) == data("quantum: " + letter, *flags)
     for letter in "αβγδεζηθικλμνξορστυφχψωΓΔΘΛΞΠΣΦΨΩ":
         result = data("quantum: " + letter, *flags)
         assert result["text"] == "'" + letter + "'" and not result["approximate"]
