@@ -20,6 +20,52 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: |\{0,1\}\cup\{1,2\}|)","3");
+ equal(R"(quantum: |\{0,1\}∩\{1,2\}|)","1");
+ equal(R"(quantum: |\{0,1,2\}∖\{1\}|^2)","4");
+ equal(R"(quantum: |\{0,1\}∪(\{1,2\}∩\{2\})|)","3");
+ equal(R"(quantum: |\{0,1\}∪\{1,2\}∩\{2\}|)","3");
+ equal("quantum: |∅|","0");
+ equal(R"(quantum: \lvert\{0,1\}^2\cup\emptyset\rvert)","4");
+ equal(R"(quantum: |\{x\in\{0,1\}^2:<x|x>=1\}∩\{0,1\}^2|)","4");
+ equal("quantum: |⟨101|(H⊗H⊗H)|000⟩|^2","1/8");
+ equal(R"(quantum: bitstring(1,2)\in\{0,1\}^2)","1");
+ equal(R"(quantum: bitstring(1,3)\notin\{0,1\}^2)","1");
+ equal("quantum: 2∈vector(1,2,3)","1");
+ equal("quantum: 4∉vector(1,2,3)","1");
+ equal("quantum: member(1/2,vector(2/4,3))","1");
+ equal("quantum: member(bitstring(1+1,2),vector(bitstring(2,2)))","1");
+ equal("quantum: member(1,bitstrings(2))","0");
+ equal("quantum: member(0,vector())","0");
+ equal("quantum: member(bitstring(0,0),bitstrings(0))","1");
+ equal(R"(quantum: |\{x\in\{0,1\}^2:x\in\{y\in\{0,1\}^2:bitvalue(y)<2\}\}|)","2");
+ for(int mask=0;mask<16;++mask)for(int index=0;index<4;++index) {
+  std::string collection="vector(";bool first=true;for(int k=0;k<4;++k)if(mask&(1<<k)){if(!first)collection+=",";first=false;collection+="bitstring("+std::to_string(k)+",2)";}collection+=")";
+  equal("quantum: bitstring("+std::to_string(index)+",2)∈"+collection,(mask&(1<<index)) ? "1" : "0");
+ }
+ for(const char *expression:{"quantum: member(1,3)","quantum: member(1,identity(2))","quantum: member(bitstring(4,2),bitstrings(2))","quantum: member(1,vector(1,identity(2)))"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid membership accepted: ")+expression);++checks;
+ }
+ calculator.addVariable(new KnownVariable("","leftset",std::string("vector(0,1)")));
+ calculator.addVariable(new KnownVariable("","rightset",std::string("vector(1,2)")));
+ equal("quantum: cardinality(leftset∪rightset)","3");
+ equal("quantum: cardinality(leftset∩rightset)","1");
+ equal("quantum: cardinality(leftset∖rightset)","1");
+ equal(R"(quantum: cardinality(leftset\cup rightset))","3");
+ equal(R"(quantum: cardinality(\{0,1\}\cup\{1,2\}))","3");
+ equal(R"(quantum: cardinality(\{0,1\}\cap\{1,2\}))","1");
+ equal(R"(quantum: cardinality(\{0,1\}\setminus\{1,2\}))","1");
+ equal(R"(quantum: cardinality(\varnothing))","0");
+ equal(R"(quantum: cardinality(\emptyset))","0");
+ equal("quantum: cardinality(∅)","0");
+ equal(R"(quantum: cardinality(\{0,1\}∪\{1,2\}∩\{2\}))","3");
+ equal(R"(quantum: cardinality((\{0,1\}∪\{1,2\})∩\{2\}))","1");
+ equal(R"(quantum: cardinality(\{0,1,2\}∖\{1\}∖\{2\}))","1");
+ equal(R"(quantum: cardinality(\{0,1\}^2\cup\emptyset))","4");
+ equal(R"(quantum: cardinality(\{0,1\}^2\cap\emptyset))","0");
+ equal(R"(quantum: cardinality(\{x\in\{0,1\}^2:bitvalue(x)<2\}\cup\{x\in\{0,1\}^2:bitvalue(x)>=2\}))","4");
  auto labelSet=[](int mask) {std::string s="vector(";bool first=true;for(int k=0;k<4;++k)if(mask&(1<<k)){if(!first)s+=",";first=false;s+="bitstring("+std::to_string(k)+",2)";}return s+")";};
  for(int left=0;left<16;++left)for(int right=0;right<16;++right) {
   std::string a=labelSet(left),b=labelSet(right);
