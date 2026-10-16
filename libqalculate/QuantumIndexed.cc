@@ -8,18 +8,39 @@
 #include <vector>
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
-// Substitute a free index without capturing a nested finite-product/sum index.
-void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement) {
- if(value.equals(index)) {value=replacement;return;}
+// Locate a nested declaration that shadows this index.
+int quantumIndexBinder(const MathStructure &value,const MathStructure &index) {
  int bound=-1;
  if(value.isFunction() && value.size()==4) {
   const std::string &name=value.function()->referenceName();
   if((name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="qsum" || name=="sum" || name=="product") && value[3].equals(index))bound=3;
  }
  if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence" || value.function()->referenceName()=="qsumset") && value[2].equals(index))bound=2;
+ return bound;
+}
+// Substitute a free index without capturing a nested finite-product/sum index.
+void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement) {
+ if(value.equals(index)) {value=replacement;return;}
+ int bound=quantumIndexBinder(value,index);
  for(size_t k=0;k<value.size();++k) {
   if(bound>=0 && (k==0 || k==size_t(bound)))continue;
   replaceQuantumIndex(value[k],index,replacement);
+ }
+ value.childrenUpdated();
+}
+// The complete range 0..d-1 supplies a basis for bare kets/bras of its index.
+// Explicit basis dimensions and nested declarations retain their own meaning.
+void inferSumBasis(MathStructure &value,const MathStructure &index,const MathStructure &dimension) {
+ if(value.isFunction() && value.size()==1 && value[0].equals(index) &&
+    (value.function()->referenceName()=="qketstate" || value.function()->referenceName()=="qnamedket")) {
+  auto basis=CALCULATOR->getFunction("qbasis");
+  if(basis)value.set(basis,&index,&dimension,NULL);
+  return;
+ }
+ int bound=quantumIndexBinder(value,index);
+ for(size_t k=0;k<value.size();++k) {
+  if(bound>=0 && (k==0 || k==size_t(bound)))continue;
+  inferSumBasis(value[k],index,dimension);
  }
  value.childrenUpdated();
 }
@@ -45,6 +66,10 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending || CALCULATOR->aborted())return 0;
    if(last.number()<first.number()) {CALCULATOR->error(true,"Finite sum bounds must be ascending.",NULL);return 0;}
    MathStructure parameters=raw;parameters[1]=first;parameters[2]=last;
+   if(first.number().isZero()) {
+    Number dimension=last.number();dimension+=1;
+    inferSumBasis(parameters[0],raw[3],MathStructure(dimension));
+   }
    // The generic sum substitutes recursively. Give this binder a fresh name
    // first, so it cannot replace a nested sum's declaration or bound body.
    unsigned serial=0;MathStructure index;

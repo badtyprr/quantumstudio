@@ -21,6 +21,11 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \frac{1}{\sqrt{385}}\sum_{k=0}^9 (k+1)\vert k\rangle)","[1;2;3;4;5;6;7;8;9;10]/sqrt(385)");
+ equal(R"(quantum: \sum_{k=0}^{2}{|k><k|})","identity(3)");
+ equal(R"(quantum: \sum_{k=0}^{2}{<k|k>})","3");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{|k>},N,3))","[1;1;1]");
+ equal(R"(quantum: \sum_{k=0}^{2}{\sum_{k=0}^{1}{|k>}})","[3;3]");
  equal(R"(quantum: replace(1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>},\Sigma,bitstrings(1)))","[1;1]/sqrt(2)");
  equal(R"(quantum: replace(cardinality(S),S,vector(2,3,3)))","2");
  equal(R"(quantum: replace(|S|,S,-3))","3");
