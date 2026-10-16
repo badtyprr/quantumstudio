@@ -264,7 +264,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"qsumset",3},{"qmember",2},
+ {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
  {"qpostselect",2},
@@ -568,7 +568,22 @@ class Parser {
   }
   else if(take('|')) {
    ws();
-   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0) {
+   size_t plainClosing=std::string::npos;int plainDepth=0;char plainQuote=0;
+   if(p<s.size() && s[p]!='<')for(size_t k=p;k<s.size();++k) {
+    char c=s[k];
+    if(plainQuote) {if(c==plainQuote)plainQuote=0;continue;}
+    if(c=='\'' || c=='"') {plainQuote=c;continue;}
+    if(c=='(' || c=='[')++plainDepth;
+    else if(c==')' || c==']') {if(plainDepth==0)break;--plainDepth;}
+    else if(c=='>' && plainDepth==0)break;
+    else if(c=='|' && plainDepth==0) {plainClosing=k;break;}
+   }
+   bool explicitCollection=s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0;
+   if(plainClosing!=std::string::npos && !explicitCollection) {
+    s[plainClosing]=')';std::string value=expression();ws();
+    if(p!=plainClosing)throw std::runtime_error("Invalid expression inside bars.");
+    s[plainClosing]='|';p=plainClosing+1;a="qbars("+value+")";
+   } else if(explicitCollection) {
     // TeX set literals/builders have a distinct collection expression. Do not
     // guess whether an arbitrary named value inside bars is a set or a ket.
     size_t closing=std::string::npos;int nesting=0;char quote=0;
