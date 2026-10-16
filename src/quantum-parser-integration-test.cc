@@ -21,6 +21,14 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \cos^2(\pi\theta))",R"(cos(pi*"θ")^2)");
+ equal(R"(quantum: \sin^2(\pi\theta))",R"(sin(pi*"θ")^2)");
+ equal(R"(quantum: e^{2\pi i\theta})",R"(exp(2*pi*i*"θ"))");
+ equal("quantum: θ(0)","heaviside(0)");
+ equal("quantum: θ(1)","1");
+ equal("quantum: θ(-1)","0");
+ equal("quantum: |x>_θ",R"(qbasis(x,"θ"))");
+
  equal("quantum: |x>_N","quantum: |x>_{N}");
  equal("quantum: QFT_N|x>_N","quantum: QFT_N|x>_{N}");
  calculator.addVariable(new KnownVariable("","registerdim",std::string("3")));

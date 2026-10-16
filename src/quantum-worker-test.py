@@ -28,8 +28,16 @@ for flags in [(), ("--approx",)]:
         assert data("quantum: " + bare, *flags) == data("quantum: " + grouped, *flags)
 
 # Existing constants and functions are not unknown dimensions.
-for expression in [r"quantum: \ket{x}_\alpha", r"quantum: \ket{x}_{\alpha}", r"quantum: \ket{x}_\theta", r"quantum: \ket{x}_{\theta}"]:
+for expression in [r"quantum: \ket{x}_\alpha", r"quantum: \ket{x}_{\alpha}"]:
     assert b"integer dimension" in run(expression, "--json", success=False).stderr
+
+for flags in [(), ("--approx",)]:
+    for expression in [r"\cos^2(\pi\theta)", r"\sin^2(\pi\theta)",
+                       r"\frac{1}{\sqrt{2}}|0>+\frac{e^{2\pi i\theta}}{\sqrt{2}}|1>"]:
+        assert "θ" in data("quantum: " + expression, *flags)["text"]
+    assert data(r"quantum: \ket{x}_\theta", *flags) == data(r"quantum: |x>_{θ}", *flags)
+assert data("quantum: θ(1)")["text"] == "1"
+assert data("quantum: θ(-1)")["text"] == "0"
 
 assert run("1+1").stdout.decode("utf-8").strip() == "2"
 assert data("1+1")["text"] == "2"

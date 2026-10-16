@@ -22,6 +22,11 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("θ","\"θ\"");
+ equal(R"(\theta)","\"θ\"");
+ equal("θ(0)","θ(0)");
+ equal(R"(\pi\theta)","(pi*\"θ\")");
+ equal("θθ","(\"θ\"*\"θ\")");
  for(const std::string dimension:{"N","n","registerdim","d_0","δ"}) {
   equal("|x>_"+dimension,translateQuantum("|x>_{"+dimension+"}"));
   equal("<x|_"+dimension,translateQuantum("<x|_{"+dimension+"}"));
