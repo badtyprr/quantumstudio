@@ -168,3 +168,8 @@ The released executable can lag newly merged source changes until the next revie
 ### Symbolic states and application
 
 An unknown named ket such as `|x>` remains a state expression until its name is assigned a column vector. An integer index requires an explicit dimension: `|x>_{N}` or `basis(x,N)`. Unknown scalar indices or dimensions remain symbolic; already-known invalid numeric arguments still reject. Products and adjoints involving unevaluated operators or states retain their operation structure and operand order. After values are substituted, the existing matrix evaluation and shape checks run. `QFT_N|x>` can therefore remain symbolic, but does not yet expand into the Fourier sum or infer that x is a numeric basis index.
+
+
+### Repeated adjoints, conjugations and transposes
+
+Applying an adjoint twice, conjugation twice, or transpose twice cancels symbolically, including for unresolved state and operator expressions. For example, `dagger(dagger(QFT_N))` reduces to `QFT_N`, and `dagger(dagger(|x>))` reduces to `|x>`. These identities do not assume normalization, reality or unitarity; they do not replace a single adjoint with an inverse.

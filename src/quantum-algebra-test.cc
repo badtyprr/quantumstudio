@@ -17,6 +17,17 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(bool approximate:{false,true})for(const char *operation:{"qdag","qconj","qtranspose"})for(const char *operand:{"qketstate(x)","qbasis(x,4)","qfourier(x)","qmul(qfourier(x),qketstate(y))"}) {
+  EvaluationOptions options=eo;options.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
+  std::string twice=std::string(operation)+"("+operation+"("+operand+"))";
+  while(calculator.message())calculator.nextMessage();
+  MathStructure simplified=calculator.calculate(twice,options),expected=calculator.calculate(operand,options);
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error("Symbolic involution produced an error");calculator.nextMessage();}
+  if(!simplified.equals(expected))throw std::runtime_error(std::string("Symbolic involution did not cancel: ")+twice);++checks;
+ }
+ for(const char *operation:{"qdag","qconj","qtranspose"})for(const char *operand:{"[1,i;2,3]","[1;i]","2+3i"})
+  equal(std::string(operation)+"("+operation+"("+operand+"))",operand);
+
  for(const char *source:{"qketstate(x)","qbasis(x,4)","qbasis(1,x)","qmul(qfourier(x),qbasis(1,x))","qadjacent(qfourier(x),qketstate(y))","qdag(qketstate(x))"}) {
   while(calculator.message())calculator.nextMessage();MathStructure value=calculator.calculate(source,eo);
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error(std::string("Symbolic state rejected: ")+source);calculator.nextMessage();}

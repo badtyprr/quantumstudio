@@ -112,6 +112,10 @@ class QuantumAlgebraFunction: public MathFunction {
    if(symbolicIndex || symbolicDimension)return 0;
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
   }
+  // Each of these operations is an involution, including on unresolved states.
+  if((op=="qdag" || op=="qconj" || op=="qtranspose") && a.isFunction() && a.size()==1 && a.function()->referenceName()==op) {
+   out=a[0];return 1;
+  }
   if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
   if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) out.transposeMatrix(); return 1; }
