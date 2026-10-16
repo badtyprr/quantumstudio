@@ -10,6 +10,8 @@ $compilerArgs = @('/nologo', '/target:winexe', '/platform:x64', "/out:$output\Qu
     "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll", "$PSScriptRoot\QuantumStudio.cs", "$PSScriptRoot\CircuitComposer.cs", "$PSScriptRoot\QasmAngle.cs")
 $compilerArgs += "$PSScriptRoot\SessionStore.cs"
 $compilerArgs += "$PSScriptRoot\NamedStateEditor.cs"
+$compilerArgs += "$PSScriptRoot\WorkspaceTheme.cs"
+$compilerArgs += "/resource:$PSScriptRoot\WorkspaceTheme.xaml,WorkspaceTheme.xaml"
 $compilerArgs += "$PSScriptRoot\QasmImport.cs"
 $compilerArgs += "$PSScriptRoot\BoundedUtf8File.cs"
 $compilerArgs += "$PSScriptRoot\CssCircuitTests.cs"

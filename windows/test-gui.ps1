@@ -16,7 +16,7 @@ if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $circuitTest = Join-Path $validation 'circuit-file-tests.exe'
 $circuitArgs = @('/nologo', '/target:exe', "/out:$circuitTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('CircuitFileTests.cs','CircuitComposer.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('CircuitFileTests.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @circuitArgs
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests did not compile.' }
 & $circuitTest
