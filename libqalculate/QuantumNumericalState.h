@@ -3,7 +3,9 @@
 
 #include <complex>
 #include <cstddef>
+#include <cstdint>
 #include <functional>
+#include <map>
 #include <stdexcept>
 #include <vector>
 
@@ -35,6 +37,13 @@ public:
  bool valid() const { return valid_; }
  Complex amplitude(std::size_t index) const;
  double normSquared() const;
+ // Terminal computational-basis samples; does not collapse or modify the state.
+ // Result bits follow the supplied wire order (first wire is most significant).
+ // An empty wire list yields outcome 0. At most 1,000,000 shots are allowed;
+ // sampling storage and returned counts are additional to the state byte budget.
+ std::map<std::uint64_t, unsigned> sampleCounts(unsigned shots,
+            const std::vector<unsigned> &wires, std::uint64_t seed,
+            const Cancellation &cancelled = Cancellation()) const;
  // Row-major 2^k by 2^k unitary, for 1 <= k <= 3 distinct ordered wires.
  // The first listed wire is the local matrix's most significant bit.
  // Invalid arguments leave the state unchanged. Cancellation during mutation
