@@ -82,6 +82,8 @@ try {
     $env:QALCULATE_DEFINITIONS_DIR = Join-Path $output 'data'
     & $PythonPath (Join-Path $repo 'src\quantum-worker-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged worker tests failed.' }
+    & $PythonPath (Join-Path $repo 'src\quantum-sampling-request-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged numerical sampling tests failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-import.py') --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM numeric tests failed.' }
     & (Join-Path $PSScriptRoot 'test-keyboard.ps1') -Distribution $output

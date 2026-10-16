@@ -243,3 +243,36 @@ definition expressions may contain newlines. NUL is rejected in names and
 expressions. Empty fields, invalid lengths and incomplete records reject without
 producing a result. Without `--states`, the existing expression-only protocol and
 32768-byte limit are unchanged.
+
+
+### Numerical sampling worker protocol
+
+`quantum-worker --sample` accepts one `QSAMPLE1` request on binary UTF-8 stdin
+and returns JSON. It is a separate numerical mode; ordinary symbolic calculation
+is unchanged. The circuit editor and OpenQASM importer are not yet connected.
+
+The request begins with `QSAMPLE1\n`. Unsigned decimal integers terminated by LF
+follow: qubits (0–25), shots (0–1,000,000), 64-bit seed, measured wire count, each
+measured wire, and gate count (0–4096). Each gate contains its target count
+(1–3), each target wire, its expression's UTF-8 byte length (1–4096), and exactly
+that many expression bytes. No separator follows expression bytes. Total input
+is limited to 1,100,000 bytes. Trailing data, duplicate or out-of-range wires,
+NUL expressions, and combined CLI flags fail. Wire 0 is the most significant
+state bit; the first gate target is the local matrix's most significant bit.
+The first measured wire is the leftmost output bit, regardless of wire order.
+
+The initial state is all-zero. Each local gate is evaluated through libqalculate
+and must be a finite numerical unitary of matching dimensions. Unknown
+parameters, broad intervals, and nonunitaries are rejected. Narrow rounding
+intervals around zero use an absolute width tolerance of 1e-14; the kernel still
+checks unitarity. State storage is capped at 512 MiB; gates, samples, and output
+counts require additional memory. Only terminal computational-basis sampling is
+supported here, without collapse, mid-circuit measurement, reset, or classical
+feedback. Callers cancel by terminating the one-request worker process.
+
+The response contains `qubits`, `shots`, `seed` (a decimal string preserving all
+64 bits), `wires`, and `counts` (bit strings mapped to integers). Leading zeros
+are preserved. An empty measured subset has outcome `""`; zero shots returns
+empty counts. Failures write stderr diagnostics and exit nonzero without partial
+JSON. Native CI tests this protocol; packaging repeats those tests against the
+bundled executable.
