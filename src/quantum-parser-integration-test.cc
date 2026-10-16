@@ -50,6 +50,27 @@ int main(){try {
  }
  calculator.addVariable(new KnownVariable("","leftset",std::string("vector(0,1)")));
  calculator.addVariable(new KnownVariable("","rightset",std::string("vector(1,2)")));
+ equal("quantum: |leftset|","2");
+ equal("quantum: |leftset∪rightset|","3");
+ equal("quantum: |(leftset∩rightset)|","1");
+ equal("quantum: |-3|","3");
+ equal("quantum: |3+4i|","5");
+ equal("quantum: |(2-5)|^2","9");
+ equal("quantum: |vector(7)|","1");
+ calculator.addVariable(new KnownVariable("","oneset",std::string("vector(7)")));
+ equal("quantum: |oneset|","1");
+ equal("quantum: |bitstrings(0)|","1");
+ equal(R"(quantum: \frac{1}{\sqrt{\vert leftset\vert}})","1/sqrt(2)");
+ equal("quantum: |leftset|+|rightset|","4");
+ equal("quantum: |(∅)|","0");
+ eo.approximation=APPROXIMATION_APPROXIMATE;
+ equal("quantum: |oneset|","1");
+ eo.approximation=APPROXIMATION_EXACT;
+ for(const char *expression:{"quantum: |identity(2)|","quantum: |bitstring(1,2)|","quantum: |leftset∪|","quantum: |(leftset|"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid bars accepted: ")+expression);++checks;
+ }
  equal("quantum: cardinality(leftset∪rightset)","3");
  equal("quantum: cardinality(leftset∩rightset)","1");
  equal("quantum: cardinality(leftset∖rightset)","1");
@@ -82,6 +103,8 @@ int main(){try {
   if(!result.isVector() || result.size()!=static_cast<size_t>(item.second))throw std::runtime_error(std::string("Wrong binary multiset size: ")+item.first);++checks;
  }
  calculator.addVariable(new KnownVariable("","markedstrings",std::string("quantum: \\{x\\in\\{0,1\\}^3:bitvalue(x)<3\\}")));
+ equal("quantum: |markedstrings|","3");
+ equal("quantum: norm(vec(|markedstrings>-sumset(|x>,markedstrings,x)/sqrt(|markedstrings|)))","0");
  equal("quantum: |markedstrings>","[1;1;1;0;0;0;0;0]/sqrt(3)");
  equal("quantum: <markedstrings|markedstrings>","1");
  equal("quantum: <001|markedstrings>","1/sqrt(3)");
