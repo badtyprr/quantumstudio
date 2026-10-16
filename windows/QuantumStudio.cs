@@ -1,4 +1,4 @@
-﻿// GPL-2.0-or-later; see COPYING.
+// GPL-2.0-or-later; see COPYING.
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +22,13 @@ class QuantumStudio {
  static ComboBox mode, evaluation, timeAllowance;
  static ListBox history;
  static StateDefinition[] states=new StateDefinition[0];
+ static void RefreshStates() {Find<Button>("EditStates").Content="States · "+states.Length;}
+ static Window StateEditor() {
+  return NamedStateEditor.Create(window,states,delegate(StateDefinition[] applied) {
+   states=applied;RefreshStates();
+   status.Text="State definitions updated · Calculate to evaluate; Save session to keep them.";
+  });
+ }
  static ScrollViewer matrixView;
  static Grid matrixCells;
  static TextBlock matrixCaption;
@@ -93,6 +100,7 @@ class QuantumStudio {
   blochView=new StackPanel {Visibility=Visibility.Collapsed,Margin=new Thickness(0,20,0,0)};((Panel)probabilityView.Parent).Children.Add(blochView);
   using(var reader=new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("examples.json"))) examples=new JavaScriptSerializer().Deserialize<ExampleEntry[]>(reader.ReadToEnd());
   Find<Button>("BrowseExamples").Click+=delegate {ExamplesWindow().ShowDialog();};
+  Find<Button>("EditStates").Click+=delegate {if(run.IsEnabled)StateEditor().ShowDialog();};
   Find<Button>("ComposeCircuit").Click+=delegate {new CircuitComposer(window,delegate(string value) {mode.SelectedIndex=0;input.Text=value;input.Focus();}).ShowDialog();};
   run.Click += async delegate { await Calculate(); };
   input.PreviewKeyDown += async delegate(object sender, KeyEventArgs e) {
@@ -239,6 +247,13 @@ class QuantumStudio {
      timeAllowance.SelectedIndex=0;
      File.WriteAllText(args[1],"PASS: immediate and running cancellation, timeout, cleanup, unchanged interrupted history, and successful reuse with all four allowances.");
     } catch(Exception ex) {File.WriteAllText(args[1],ex.ToString());Environment.ExitCode=1;}
+    window.Close();
+   };
+  }
+  if(args.Length==2 && args[0]=="--state-editor-test") {
+   window.Loaded+=async delegate {
+    try {await CheckStateEditor(args[1]+".png");File.WriteAllText(args[1],"PASS: state editor draft isolation, cancel, apply, duplicate rejection, add/remove, ordering and minimum-width layout.");}
+    catch(Exception ex){File.WriteAllText(args[1],"FAIL: "+ex);Environment.ExitCode=1;}
     window.Close();
    };
   }
@@ -727,7 +742,7 @@ class QuantumStudio {
     bool tooLongRejected=false;try {SessionStore.Save(sessionPath,badSession);}catch(InvalidDataException){tooLongRejected=true;}
     if(!tooLongRejected || File.ReadAllText(sessionPath)!=validSessionText)throw new Exception("Oversized session draft was not safely rejected.");
     OpenSession(sessionPath);await Calculate();if(output.Text!=originalSession.History[0].Result)throw new Exception("Restored expression did not recompute correctly.");
-    states=new[]{new StateDefinition {Name="Bell",Expression="|Phi+>"},new StateDefinition {Name="after CZ",Expression="CZ|Bell>"}};
+    await CheckStateEditor(args[1]+".states.png");
     mode.SelectedIndex=0;evaluation.SelectedIndex=0;input.Text="<Bell|after CZ>";await Calculate();
     if(output.Text!="0")throw new Exception("Named-state GUI overlap failed: "+output.Text);
     input.Text="<Bell|Bell>";await Calculate();if(output.Text!="1")throw new Exception("Named-state GUI self overlap failed.");
@@ -747,10 +762,40 @@ class QuantumStudio {
   }
   app.Run(window);
  }
+ static async Task CheckStateEditor(string screenshotPath) {
+    states=new StateDefinition[0];
+    var stateEditor=StateEditor();stateEditor.Show();
+    ((Button)stateEditor.FindName("AddBell")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    var stateGrid=(DataGrid)stateEditor.FindName("Definitions");
+    if(stateGrid.Items.Count!=2 || states.Length!=0)throw new Exception("State editor changed the workspace before Apply.");
+    ((Button)stateEditor.FindName("Cancel")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(states.Length!=0)throw new Exception("State editor Cancel changed definitions.");
+    stateEditor=StateEditor();stateEditor.Show();
+    ((Button)stateEditor.FindName("AddBell")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    stateGrid=(DataGrid)stateEditor.FindName("Definitions");
+    ((Button)stateEditor.FindName("AddBell")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(stateGrid.Items.Count!=2 || String.IsNullOrEmpty(((TextBlock)stateEditor.FindName("Error")).Text))throw new Exception("Duplicate Bell example was not rejected.");
+    stateGrid.SelectedIndex=1;((Button)stateEditor.FindName("MoveUp")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(((StateDefinition)stateGrid.Items[0]).Name!="after CZ")throw new Exception("Move state up failed.");
+    ((Button)stateEditor.FindName("MoveDown")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    ((Button)stateEditor.FindName("Add")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    ((Button)stateEditor.FindName("Remove")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(stateGrid.Items.Count!=2)throw new Exception("Add/remove state failed.");
+    ((StateDefinition)stateGrid.Items[1]).Name="Bell";
+    ((Button)stateEditor.FindName("Apply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(!stateEditor.IsVisible || states.Length!=0)throw new Exception("Invalid state edits were applied.");
+    ((StateDefinition)stateGrid.Items[1]).Name="after CZ";stateGrid.Items.Refresh();
+    stateEditor.Width=600;stateEditor.Height=520;stateEditor.UpdateLayout();await Task.Delay(100);stateEditor.UpdateLayout();
+    if(stateGrid.Columns[1].ActualWidth<240)throw new Exception("State expression column collapsed at minimum window size.");
+    var editorBitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)stateEditor.ActualWidth,(int)stateEditor.ActualHeight,96,96,PixelFormats.Pbgra32);editorBitmap.Render(stateEditor);
+    var editorEncoder=new System.Windows.Media.Imaging.PngBitmapEncoder();editorEncoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(editorBitmap));using(var editorFile=File.Create(screenshotPath))editorEncoder.Save(editorFile);
+    ((Button)stateEditor.FindName("Apply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    if(stateEditor.IsVisible || states.Length!=2 || Find<Button>("EditStates").Content.ToString()!="States · 2")throw new Exception("State editor Apply failed.");
+ }
  static void Example(string name,string expression) { Find<Button>(name).Click += delegate { mode.SelectedIndex=0; input.Text=expression; input.Focus(); input.CaretIndex=input.Text.Length; }; }
  static ListBoxItem HistoryItem(SessionEntry record,bool saved) {
   var item=new ListBoxItem {Content=new TextBlock {Text=(saved ? "Saved · " : "")+record.Expression+"   =   "+record.Result,TextWrapping=TextWrapping.Wrap,FontSize=14,Margin=new Thickness(4,7,4,7)},Tag=record};
-  item.MouseDoubleClick+=delegate {states=SessionStore.CopyStates(record.States);input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
+  item.MouseDoubleClick+=delegate {states=SessionStore.CopyStates(record.States);RefreshStates();input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
  }
  static CalculationSession CaptureSession() {
   var entries=new SessionEntry[history.Items.Count];for(int j=0;j<entries.Length;j++)entries[j]=(SessionEntry)((ListBoxItem)history.Items[j]).Tag;
@@ -764,6 +809,7 @@ class QuantumStudio {
   var items=new ListBoxItem[session.History.Length];for(int j=0;j<items.Length;j++)items[j]=HistoryItem(session.History[j],true);
   history.Items.Clear();foreach(var item in items)history.Items.Add(item);
   states=restoredStates;
+  RefreshStates();
   input.Text=session.Expression;mode.SelectedIndex=session.Mode;evaluation.SelectedIndex=session.Evaluation;
   matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;
   output.Visibility=Visibility.Visible;output.Text="Choose Calculate to evaluate the restored expression.";resultLabel.Text="SESSION RESTORED";
@@ -893,6 +939,7 @@ class QuantumStudio {
   var cancellation=new CancellationTokenSource();calculationCancellation=cancellation;
   run.IsEnabled=false;cancel.IsEnabled=true;timeAllowance.IsEnabled=false; status.Text="Calculating… · "+seconds+" second allowance"; resultLabel.Text="RESULT";
   Find<Button>("OpenSession").IsEnabled=false;Find<Button>("SaveSession").IsEnabled=false;
+  Find<Button>("EditStates").IsEnabled=false;
   try {
    runningWorker=Task.Run(async delegate {
     using(var process=new Process()) {
@@ -931,6 +978,6 @@ class QuantumStudio {
    blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;
    resultLabel.Text="CANCELLED";output.Text="Calculation cancelled.";status.Text="Stopped · Your expression is ready to edit or run again.";
   } catch(Exception ex) { blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed; matrixCaption.Visibility=Visibility.Collapsed; output.Visibility=Visibility.Visible; resultLabel.Text=ex is TimeoutException ? "TIME ALLOWANCE REACHED" : "CHECK YOUR EXPRESSION"; output.Text=ex.Message; status.Text="Calculation stopped. Edit the expression and try again."; }
-  finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true; }
+  finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true;Find<Button>("EditStates").IsEnabled=true; }
  }
 }

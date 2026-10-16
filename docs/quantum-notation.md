@@ -195,7 +195,11 @@ for the current workspace and for each history entry. Opening a session restores
 its definitions; reusing a history entry restores the definitions from that
 calculation. Version 1 files still load with no definitions. Invalid files leave
 the current workspace unchanged. The GUI sends the restored definitions with
-each calculation. A graphical definition editor remains pending.
+each calculation. Choose **States** beside Calculate to edit definitions, reorder
+dependencies, or add the Bell example. **Apply states** updates the workspace;
+**Cancel** discards the private draft. Use **Save session** to keep definitions.
+The editor checks names and size limits; Calculate checks whether the expressions
+resolve to valid vectors. Errors leave the definitions available for correction.
 
 The UTF-8 stdin protocol begins with `QSTATES1\n`, then a decimal definition
 count and newline. For each definition, send its name's byte length and newline,

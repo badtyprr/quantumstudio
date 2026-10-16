@@ -26,11 +26,12 @@ public class CalculationSession {
  public StateDefinition[] States {get;set;}
 }
 static class SessionStore {
+ public const int MaximumStates=32;
  const int MaximumBytes=8*1024*1024;
  static readonly UTF8Encoding StrictUtf8=new UTF8Encoding(false,true);
  static JavaScriptSerializer Serializer() {return new JavaScriptSerializer {MaxJsonLength=MaximumBytes,RecursionLimit=16};}
  public static void ValidateStates(StateDefinition[] states) {
-  if(states==null || states.Length>32)throw new InvalidDataException("Expected at most 32 state definitions.");
+  if(states==null || states.Length>MaximumStates)throw new InvalidDataException("Expected at most "+MaximumStates+" state definitions.");
   var names=new HashSet<string>(StringComparer.Ordinal);
   foreach(var state in states) {
    if(state==null || String.IsNullOrWhiteSpace(state.Name) || state.Name!=state.Name.Trim() || state.Name.IndexOfAny(new[]{'\r','\n','\t','\0'})>=0 || StrictUtf8.GetByteCount(state.Name)>128 || !names.Add(state.Name))
