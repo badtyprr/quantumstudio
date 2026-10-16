@@ -50,6 +50,10 @@ For Bernstein–Vazirani, all eight three-bit secrets plus the notebook's `1011`
 
 `frobeniusnorm(A)` and Schatten order 2 support finite numeric matrices up to 1024 by 1024, including ten-qubit density matrices. This path sums squared entry magnitudes directly and checks cancellation during the scan; it does not allocate a vectorized copy or compute singular values. Other Schatten orders, trace norms and spectral norms retain the 1024-entry bound. `vec` retains its own 1024-entry limit, so use `frobeniusnorm(A-B)` to compare large density matrices. Numerical precision and finite-entry validation still apply.
 
+### Frobenius uncertainty
+
+Frobenius norms propagate finite real and complex interval entries through squared magnitudes and the square root. This preserves bounds for cancellation residuals near zero and for explicitly uncertain entries, instead of requiring 12 significant digits in each entry. The resulting value may be an interval. Other Schatten orders retain their existing broad-uncertainty rejection.
+
 ## Selected qBraid adder audit
 
 The pinned [PyQASM unrolling notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb) contains a ten-qubit ripple-carry adder. Its `adder_qasm_str` was extracted without executing the notebook. The notebook SHA-256 is `ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4`; the extracted UTF-8 source with LF newlines hashes to `503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad`.
@@ -109,7 +113,7 @@ Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and
 
 Finite membership uses `x ∈ S` or `x \in S`, with `∉` / `\notin` for nonmembership. The function spelling is `member(x,S)`. Collections may contain scalar values or typed binary labels, with at most 1024 entries; bare scalars and matrices are rejected as collections. Binary labels compare by width and value, so `bitstring(1,3)` is not a member of `bitstrings(2)`. Exact scalar equality is used, and undecidable symbolic equality reports an error rather than a false result. Membership predicates can also appear inside set filters. Infinite and general symbolic domains remain unfinished.
 
-`union(A,B)`, `intersect(A,B)` and `setdiff(A,B)` accept finite collections of binary-string labels, including empty and singleton collections. Labels compare by width and value. The optional third argument `1` uses multiset multiplicities: maximum for union, minimum for intersection, and nonnegative subtraction for difference. Each input and output is limited to 1024 entries. Use `vector(...)` for explicit label collections. The operators `\cup` / `∪`, `\cap` / `∩` and `\setminus` / `∖` call union, intersection and difference. Intersection and difference bind more tightly than union; repeated intersection/difference operators associate left to right. Use parentheses to override this grouping. `\emptyset`, `\varnothing` and `∅` denote an empty vector set. For example, `cardinality(\{0,1\}\cup\{1,2\})` gives `3`. Cardinality bars accept compound expressions that begin with an explicit set or a `vector(...)` call, for example `|\{0,1\}\cup\{1,2\}|` gives `3`, and `|∅|` gives `0`. Nested predicates may contain bra–ket bars. Use `cardinality(...)` when the expression starts with a named set or a parenthesized group; those leading forms inside bars and general symbolic set algebra remain unfinished.
+`union(A,B)`, `intersect(A,B)` and `setdiff(A,B)` accept finite collections of binary-string labels, including empty and singleton collections. Labels compare by width and value. The optional third argument `1` uses multiset multiplicities: maximum for union, minimum for intersection, and nonnegative subtraction for difference. Each input and output is limited to 1024 entries. Use `vector(...)` for explicit label collections. The operators `\cup` / `∪`, `\cap` / `∩` and `\setminus` / `∖` call union, intersection and difference. Intersection and difference bind more tightly than union; repeated intersection/difference operators associate left to right. Use parentheses to override this grouping. `\emptyset`, `\varnothing` and `∅` denote an empty vector set. For example, `cardinality(\{0,1\}\cup\{1,2\})` gives `3`. Cardinality bars accept compound expressions that begin with an explicit set or a `vector(...)` call, for example `|\{0,1\}\cup\{1,2\}|` gives `3`, and `|∅|` gives `0`. Nested predicates may contain bra–ket bars. Bars also accept named finite collections and parenthesized set expressions: |S| counts distinct members, while |S> remains a ket. Scalar bars evaluate absolute value, so |-3| is 3 and |3+4i| is 5. Flat collections use cardinality rather than a vector norm; use norm(...) for the latter. Matrix bars (including determinants), general symbolic set algebra, and infinite sets remain unfinished.
 
 A named nonempty collection of binary-string labels can be used as a set ket, following the uniform-state convention in [IBM's Grover analysis](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis). `|S>` normalizes the sum of the distinct basis states in `S`; `<S|` is its adjoint. The function spelling is `qketstate(S)`. For example, `qketstate(vector(bitstring(0,2),bitstring(3,2),bitstring(0,2)))` gives `[1;0;0;1]/sqrt(2)`. Repeated labels do not increase amplitudes. All labels must have the same width, and the collection is limited to 1024 entries. Empty sets and mixed-width sets reject. Existing column-vector kets retain their amplitudes. Arbitrary symbolic alphabets and sets of nonbinary labels remain unfinished.
 
@@ -164,6 +168,56 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
 
-### Frobenius uncertainty
+## Symbolic Fourier operators
 
-Frobenius norms propagate finite real and complex interval entries through squared magnitudes and the square root. This preserves bounds for cancellation residuals near zero and for explicitly uncertain entries, instead of requiring 12 significant digits in each entry. The resulting value may be an interval. Other Schatten orders retain their existing broad-uncertainty rejection.
+`QFT_N` and `fourier(N)` use dimension N, following [IBM's definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). `qft(n)` and `QFT(n)` instead take a qubit count. Unknown scalar dimensions remain symbolic in exact and approximate modes; substituting a numeric dimension evaluates the matrix and applies the existing numeric limits. This does not yet provide symbolic basis kets, Fourier-sum expansion, or general symbolic operator identities.
+
+
+### Symbolic states and application
+
+An unknown named ket such as `|x>` remains a state expression until its name is assigned a column vector. An integer index requires an explicit dimension: `|x>_{N}` or `basis(x,N)`. Unknown scalar indices or dimensions remain symbolic; already-known invalid numeric arguments still reject. Products and adjoints involving unevaluated operators or states retain their operation structure and operand order. After values are substituted, the existing matrix evaluation and shape checks run. `QFT_N|x>` can therefore remain symbolic, but does not yet expand into the Fourier sum or infer that x is a numeric basis index.
+
+
+### Repeated adjoints, conjugations and transposes
+
+Applying an adjoint twice, conjugation twice, or transpose twice cancels symbolically, including for unresolved state and operator expressions. For example, `dagger(dagger(QFT_N))` reduces to `QFT_N`, and `dagger(dagger(|x>))` reduces to `|x>`. These identities do not assume normalization, reality or unitarity; they do not replace a single adjoint with an inverse.
+
+## Named state labels
+
+Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. In the GUI, choose **States** beside Calculate to define named column vectors.
+
+`Bell` is not a predefined alias or a normalization assumption. Use `<Phi+|Phi+>` for the built-in normalized Bell-state overlap (1), and `<Phi+|CZ|Phi+>` for its overlap after CZ (0).
+
+### Worker state definitions
+
+The worker's `--states` option accepts definitions alongside one expression. Define
+`Bell` as `|Phi+>` and then `after CZ` as `CZ|Bell>` to evaluate `<Bell|Bell>`
+to 1 and `<Bell|after CZ>` to 0. Definitions are evaluated exactly, in order,
+and may refer to earlier definitions. Each must resolve to a column vector with
+1–1024 rows and scalar amplitudes. Symbolic amplitudes are allowed. Vectors are
+not automatically normalized, and names cannot override existing variables or
+built-in ket labels. Unknown references, forward references and cycles reject.
+Definitions last for one worker request. Version 2 GUI session files store exact
+state definitions in a `States` array of `Name` and `Expression` objects, both
+for the current workspace and for each history entry. Opening a session restores
+its definitions; reusing a history entry restores the definitions from that
+calculation. Version 1 files still load with no definitions. Invalid files leave
+the current workspace unchanged. The GUI sends the restored definitions with
+each calculation. Choose **States** beside Calculate to edit definitions, reorder
+dependencies, or add the Bell example. **Apply states** updates the workspace;
+**Cancel** discards the private draft. Use **Save session** to keep definitions.
+The editor checks names and size limits; Calculate checks whether the expressions
+resolve to valid vectors. Errors leave the definitions available for correction.
+
+The UTF-8 stdin protocol begins with `QSTATES1\n`, then a decimal definition
+count and newline. For each definition, send its name's byte length and newline,
+its expression's byte length and newline, then the raw name and expression bytes
+without separators. The remaining bytes are the calculation expression, including
+the `quantum:` prefix when using quantum notation. Definition expressions use
+quantum notation automatically and do not include that prefix. Limits are 32
+definitions, 128 bytes per name, 32768 bytes per definition or final expression,
+and 1100000 bytes for the entire request. Names may contain internal spaces;
+definition expressions may contain newlines. NUL is rejected in names and
+expressions. Empty fields, invalid lengths and incomplete records reject without
+producing a result. Without `--states`, the existing expression-only protocol and
+32768-byte limit are unchanged.

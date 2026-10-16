@@ -150,6 +150,12 @@ std::string ket(const std::string &label, size_t dimension=0) {
  if(s.empty()) throw std::runtime_error("Empty ket label.");
  if(s.find_first_not_of("0123456789")==std::string::npos) throw std::runtime_error("Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3).");
  for(unsigned char c : s) if(c < 128 && !std::isalnum(c) && c != '_') throw std::runtime_error("Use a basis label or a named column vector inside a ket.");
+ // Use a text argument so ordinary parsing cannot split state-label letters
+ // or reinterpret a state name such as psi as a calculator function.
+ if(s.size()>1) {
+  size_t first=label.find_first_not_of(" \t\r\n"),last=label.find_last_not_of(" \t\r\n");
+  return "qnamedket("+label.substr(first,last-first+1)+")";
+ }
  return "qketstate(" + s + ")";
 }
 // Shared by registration and strict quantum-call validation.
@@ -258,7 +264,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"qsumset",3},{"qmember",2},
+ {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
  {"qpostselect",2},
@@ -562,7 +568,22 @@ class Parser {
   }
   else if(take('|')) {
    ws();
-   if(s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0) {
+   size_t plainClosing=std::string::npos;int plainDepth=0;char plainQuote=0;
+   if(p<s.size() && s[p]!='<')for(size_t k=p;k<s.size();++k) {
+    char c=s[k];
+    if(plainQuote) {if(c==plainQuote)plainQuote=0;continue;}
+    if(c=='\'' || c=='"') {plainQuote=c;continue;}
+    if(c=='(' || c=='[')++plainDepth;
+    else if(c==')' || c==']') {if(plainDepth==0)break;--plainDepth;}
+    else if(c=='>' && plainDepth==0)break;
+    else if(c=='|' && plainDepth==0) {plainClosing=k;break;}
+   }
+   bool explicitCollection=s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0;
+   if(plainClosing!=std::string::npos && !explicitCollection) {
+    s[plainClosing]=')';std::string value=expression();ws();
+    if(p!=plainClosing)throw std::runtime_error("Invalid expression inside bars.");
+    s[plainClosing]='|';p=plainClosing+1;a="qbars("+value+")";
+   } else if(explicitCollection) {
     // TeX set literals/builders have a distinct collection expression. Do not
     // guess whether an arbitrary named value inside bars is a set or a ket.
     size_t closing=std::string::npos;int nesting=0;char quote=0;
