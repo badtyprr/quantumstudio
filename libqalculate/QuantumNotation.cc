@@ -150,11 +150,11 @@ std::string ket(const std::string &label, size_t dimension=0) {
  if(s.empty()) throw std::runtime_error("Empty ket label.");
  if(s.find_first_not_of("0123456789")==std::string::npos) throw std::runtime_error("Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3).");
  for(unsigned char c : s) if(c < 128 && !std::isalnum(c) && c != '_') throw std::runtime_error("Use a basis label or a named column vector inside a ket.");
- // Quote multi-character labels so ordinary parsing cannot split their letters
+ // Use a text argument so ordinary parsing cannot split state-label letters
  // or reinterpret a state name such as psi as a calculator function.
  if(s.size()>1) {
   size_t first=label.find_first_not_of(" \t\r\n"),last=label.find_last_not_of(" \t\r\n");
-  return "qketstate(\""+label.substr(first,last-first+1)+"\")";
+  return "qnamedket("+label.substr(first,last-first+1)+")";
  }
  return "qketstate(" + s + ")";
 }

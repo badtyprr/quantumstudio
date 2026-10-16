@@ -154,7 +154,7 @@ int main(){try {
  equal("quantum: ⌊-3/2⌋+⌈-3/2⌉","-3");
  equal("quantum: ⌈⌊3/2⌋+1/2⌉","2");
  equal(R"(quantum: \sum_{k=1}^{4}{\lfloor k/2\rfloor})","4");
- for(bool approximate:{false,true})for(const char *label:{"Bell","psi","undefinedvector","after CZ","afterCZ"}) {
+ for(bool approximate:{false,true})for(const char *label:{"Bell","psi","undefinedvector","after CZ","afterCZ","today","undefined"}) {
   EvaluationOptions options=eo;options.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
   while(calculator.message())calculator.nextMessage();
   MathStructure value=calculator.calculate(std::string("quantum: |")+label+">",options);

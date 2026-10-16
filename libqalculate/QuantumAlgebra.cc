@@ -2,6 +2,7 @@
 #include "QuantumAlgebra.h"
 #include "Calculator.h"
 #include "Function.h"
+#include "Variable.h"
 #include <string>
 #include <utility>
 #include <set>
@@ -26,7 +27,9 @@ MathStructure multiply(MathStructure a, const MathStructure &b, const Evaluation
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
- QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {}
+ QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {
+  if(op=="qnamedket")setArgumentDefinition(1,new TextArgument());
+ }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if((op=="qdag" || op=="qconj" || op=="qdensity" || op=="qnorm" || op=="qnormalize") && !CALCULATOR->getFunction("conj")) {
@@ -47,12 +50,15 @@ class QuantumAlgebraFunction: public MathFunction {
    if(out.containsFunction(function))return 0;
    return 1;
   }
+  if(op=="qnamedket") {
+   out.set(CALCULATOR->getFunction("qketstate"), &raw[0], NULL);out.eval(eo);return 1;
+  }
   MathStructure args=raw;
-  // Quoted ket labels retain their full name; resolve explicitly registered
+  // Text ket labels retain their full name; resolve explicitly registered
   // variables without routing the label through the ordinary expression parser.
   if(op=="qketstate" && args[0].isSymbolic()) {
    Variable *state=CALCULATOR->getActiveVariable(args[0].symbol());
-   if(state)args[0].set(state);
+   if(state && !state->isBuiltin())args[0].set(state);
   }
   for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   if(op=="qtensor" || op=="qadjacent" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<((op=="qtensor" || op=="qadjacent") ? 2U : 1U);++j) {
@@ -211,6 +217,7 @@ class QuantumAlgebraFunction: public MathFunction {
 void registerQuantumAlgebra(Calculator &calculator) {
  for(const char *name:{"qasin","qacos","qatan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }
