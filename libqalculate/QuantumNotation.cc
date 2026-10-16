@@ -18,16 +18,21 @@ size_t quantumSpaceLength(const std::string &s,size_t p) {
  return 0;
 }
 std::string quantumWhitespace(const std::string &s) {
- std::string out;bool quoted=false;
+ std::string out;char quoted=0;
  for(size_t p=s.compare(0,3,"\xef\xbb\xbf")==0 ? 3 : 0;p<s.size();) {
-  if(s[p]=='"')quoted=!quoted;
+  if(s[p]=='"' || s[p]=='\'') {if(quoted==s[p])quoted=0;else if(!quoted)quoted=s[p];}
   size_t length=quoted ? 0 : quantumSpaceLength(s,p);
   if(length){out+=' ';p+=length;}else out+=s[p++];
  }
  return out;
 }
 void replaceAll(std::string &s, const std::string &a, const std::string &b) {
- size_t p = 0; while((p = s.find(a, p)) != std::string::npos) { s.replace(p, a.size(), b); p += b.size(); }
+ char quote=0;
+ for(size_t p=0;p<s.size();) {
+  if(s[p]=='"' || s[p]=='\'') {if(quote==s[p])quote=0;else if(!quote)quote=s[p];++p;continue;}
+  if(!quote && s.compare(p,a.size(),a)==0) {s.replace(p,a.size(),b);p+=b.size();}
+  else ++p;
+ }
 }
 std::string labelText(std::string s) {
  s.erase(std::remove_if(s.begin(),s.end(),[](unsigned char c) { return std::isspace(c); }),s.end()); return s;
@@ -48,9 +53,9 @@ std::string binaryNumeral(const std::string &text) {
 }
 std::string unicodeArithmetic(const std::string &input) {
  static const std::map<std::string,char> symbols={{"×",'*'},{"⋅",'*'},{"·",'*'},{"∙",'*'},{"∗",'*'},{"÷",'/'},{"∕",'/'},{"⁄",'/'}};
- std::string out;bool quoted=false;
+ std::string out;char quoted=0;
  for(size_t p=0;p<input.size();) {
-  if(input[p]=='"'){quoted=!quoted;out+=input[p++];continue;}
+  if(input[p]=='"' || input[p]=='\'') {if(quoted==input[p])quoted=0;else if(!quoted)quoted=input[p];out+=input[p++];continue;}
   bool matched=false;
   if(!quoted)for(const auto &symbol:symbols)if(input.compare(p,symbol.first.size(),symbol.first)==0) {
    out+=symbol.second;p+=symbol.first.size();matched=true;break;
@@ -78,9 +83,9 @@ std::string bellState(const std::string &label) {
 }
 std::string unicodePowers(const std::string &input) {
  static const std::map<std::string,char> digits={{"⁰",'0'},{"¹",'1'},{"²",'2'},{"³",'3'},{"⁴",'4'},{"⁵",'5'},{"⁶",'6'},{"⁷",'7'},{"⁸",'8'},{"⁹",'9'},{"⁺",'+'},{"⁻",'-'}};
- std::string result;bool quoted=false;
+ std::string result;char quoted=0;
  for(size_t p=0;p<input.size();) {
-  if(input[p]=='"') {quoted=!quoted;result+=input[p++];continue;}
+  if(input[p]=='"' || input[p]=='\'') {if(quoted==input[p])quoted=0;else if(!quoted)quoted=input[p];result+=input[p++];continue;}
   std::string exponent;
   if(!quoted)while(p<input.size()) {
    bool found=false;
@@ -367,7 +372,7 @@ class Parser {
   while((at=args[body].find(original,at))!=std::string::npos) {
    if(plain) {
     auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
-    bool quoted=false;for(size_t k=0;k<at;++k)if(args[body][k]=='"')quoted=!quoted;
+    char quoted=0;for(size_t k=0;k<at;++k) {char c=args[body][k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;}}
     if(quoted || (at && identifier(args[body][at-1])) ||
        (at+original.size()<args[body].size() && identifier(args[body][at+original.size()]))) {at+=original.size();continue;}
    }
@@ -391,7 +396,7 @@ class Parser {
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
  bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -408,9 +413,9 @@ class Parser {
   return last!=std::string::npos && last>p && s[last]!=',';
  }
  size_t labelEnd(char delimiter,size_t start) {
-  int nesting=0;bool quoted=false;
+  int nesting=0;char quoted=0;
   for(size_t k=start;k<s.size();++k) {
-   char c=s[k];if(c=='"'){quoted=!quoted;continue;}if(quoted)continue;
+   char c=s[k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;continue;}if(quoted)continue;
    if(nesting==0 && c==delimiter)return k;
    if(c=='(' || c=='[')++nesting;
    else if(c==')' || c==']'){if(nesting==0)return std::string::npos;--nesting;}
@@ -533,7 +538,13 @@ class Parser {
  std::string atom() {
   if(++depth > 256 || ++nodes > nodeLimit) throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
   ws(); std::string a;int kind=0;
-  if(take('(')) { a="("+expression()+")"; need(')'); }
+  if(p<s.size() && (s[p]=='"' || s[p]=='\'')) {
+   size_t start=p;char quote=s[p++];
+   while(p<s.size() && s[p]!=quote)++p;
+   if(p==s.size())throw std::runtime_error("Unclosed quoted quantum symbol.");
+   ++p;a=s.substr(start,p-start);
+  }
+  else if(take('(')) { a="("+expression()+")"; need(')'); }
   else if(take('[')) {
    if(take(']'))a="vector()";
    else {
@@ -702,10 +713,10 @@ class Parser {
     a="qdag("+(vectorized ? operatorState(left) : leftRegister.empty() ? basisState(left,dimension) : leftRegister)+")";kind=2;
     // A complete bra/operator/ket expression scopes the operator between its
     // bars. Respect nested function/matrix arguments and quoted Pauli labels.
-    size_t start=p, closing=std::string::npos;int nesting=0;bool quoted=false;
+    size_t start=p, closing=std::string::npos;int nesting=0;char quoted=0;
     for(size_t k=p;k<s.size();++k) {
      char c=s[k];
-     if(c=='"') {quoted=!quoted;continue;}
+     if(c=='"' || c=='\'') {if(quoted==c)quoted=0;else if(!quoted)quoted=c;continue;}
      if(quoted)continue;
      if(c=='(' || c=='[')++nesting;
      else if(c==')' || c==']') {if(nesting==0)break;--nesting;}
@@ -1118,9 +1129,9 @@ class Parser {
     }
     if(name=="qsequence" && args.size()==3 && args[0].size()>=2 && args[0].front()=='[' && args[0].back()==']') {
      // Preserve singleton lists: libqalculate otherwise collapses [step] to step.
-     std::string body=args[0].substr(1,args[0].size()-2);int nesting=0;bool quoted=false;
+     std::string body=args[0].substr(1,args[0].size()-2);int nesting=0;char quoted=0;
      for(char c:body) {
-      if(c=='"'){quoted=!quoted;continue;}if(quoted)continue;
+      if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;continue;}if(quoted)continue;
       if(c=='(' || c=='[')++nesting;else if(c==')' || c==']')--nesting;
       else if(c==';' && nesting==0)throw std::runtime_error("A sequence requires a flat comma-separated transformation list.");
      }

@@ -22,6 +22,12 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ for(const std::string literal:{"'N'","\"high\"","'α'","'π⊗σ_x²'","\"a'⊗b\"","'a\"⊗b'","'a b'"})equal(literal,literal);
+ equal("['α';'β']","['α';'β']");
+ equal("qfourier('N')","qfourier('N')");
+ equal("|'a|b'|","qbars('a|b')");
+ rejects("'unfinished");
+ rejects("\"unfinished");
  equal("1 <= |x|","qcompare(1,qbars(x),2)");
  equal("1 ≤ |x|","qcompare(1,qbars(x),2)");
  equal("|x| <= 2|y|","qcompare(qbars(x),qadjacent(2,qbars(y)),2)");

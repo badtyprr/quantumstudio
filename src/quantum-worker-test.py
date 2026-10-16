@@ -21,6 +21,23 @@ def data(expression, *flags):
     assert set(value) == {"text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Printed symbolic results must be usable as quantum input again.
+for flags in [(), ("--approx",)]:
+    for expression in ["QFT_N|x>_N", "|high>", r"\alpha|0>+\beta|1>"]:
+        first = data("quantum: " + expression, *flags)
+        assert data("quantum: " + first["text"], *flags) == first
+    for expression, symbol, value in [(r"\sum_{k=0}^{N-1}{|k>}", "N", "3"),
+                                      (r"1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}", r"\Sigma", "bitstrings(1)")]:
+        first = data("quantum: " + expression, *flags)
+        copied = data("quantum: " + first["text"], *flags)
+        def substituted(text):
+            return data("quantum: replace(" + text + "," + symbol + "," + value + ")", *flags)
+        assert substituted(copied["text"]) == substituted(expression)
+    for literal in ["'π⊗σ_x²'", "'a b'", '"a\'⊗b"', "'a\"⊗b'"]:
+        assert data("quantum: " + literal, *flags) == data(literal, *flags)
+    run("quantum: 'unfinished", *flags, success=False)
+    run('quantum: "unfinished', *flags, success=False)
+
 # Suit labels are names, not automatically assigned basis coordinates.
 for flags in [(), ("--approx",)]:
     for command, symbol in [("clubsuit", "♣"), ("diamondsuit", "♢"), ("heartsuit", "♡"), ("spadesuit", "♠")]:
