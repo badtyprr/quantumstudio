@@ -1134,9 +1134,25 @@ class Parser {
     }
    } else {
     auto it=gates.find(a); if(it!=gates.end()) a=it->second;
-    // Preserve subscripted symbols as one backend symbol, rather than letting
-    // a numeric suffix become multiplication (a_0 must not become a * 0).
+    // Greek scalar letters denote unknown parameters in quantum notation.
+    // Pi stays numerical, and explicit function calls take the path above.
+    // Subscripted identifiers remain atomic instead of becoming products.
     else if(!numericToken && a.find('_')!=std::string::npos) a="\""+a+"\"";
+    else if(!numericToken) {
+     static const std::string letters="αβγδεζηθικλμνξορςστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϑϕϖϱϵ";
+     std::string product;size_t begin=0,factors=0;
+     auto factor=[&](const std::string &value){if(factors++)product+="*";product+=value;};
+     for(size_t at=0;at+1<a.size();++at) {
+      if(((unsigned char)a[at]==0xce || (unsigned char)a[at]==0xcf) && letters.find(a.substr(at,2))!=std::string::npos) {
+       if(at>begin)factor(a.substr(begin,at-begin));
+       factor("\""+a.substr(at,2)+"\"");begin=at+2;++at;
+      }
+     }
+     if(begin) {
+      if(begin<a.size())factor(a.substr(begin));
+      a=factors==1 ? product : "("+product+")";
+     }
+    }
    }
   }
   while(true) {

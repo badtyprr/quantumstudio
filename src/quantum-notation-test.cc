@@ -25,6 +25,16 @@ int main(){try {
  equal("1 <= |x|","qcompare(1,qbars(x),2)");
  equal("1 ≤ |x|","qcompare(1,qbars(x),2)");
  equal("|x| <= 2|y|","qcompare(qbars(x),qadjacent(2,qbars(y)),2)");
+ for(const std::string letter:{"α","β","γ","δ","Σ","Π","ρ","ϕ","Ω"})equal(letter,"\""+letter+"\"");
+ equal(R"(\alpha\beta)","(\"α\"*\"β\")");
+ equal("δ(1)","δ(1)");
+ equal("pi","pi");
+
+ equal("θ","\"θ\"");
+ equal(R"(\theta)","\"θ\"");
+ equal("θ(0)","θ(0)");
+ equal(R"(\pi\theta)","(pi*\"θ\")");
+ equal("θθ","(\"θ\"*\"θ\")");
  for(const std::string dimension:{"N","n","registerdim","d_0","δ"}) {
   equal("|x>_"+dimension,translateQuantum("|x>_{"+dimension+"}"));
   equal("<x|_"+dimension,translateQuantum("<x|_{"+dimension+"}"));
