@@ -189,7 +189,13 @@ and may refer to earlier definitions. Each must resolve to a column vector with
 1–1024 rows and scalar amplitudes. Symbolic amplitudes are allowed. Vectors are
 not automatically normalized, and names cannot override existing variables or
 built-in ket labels. Unknown references, forward references and cycles reject.
-Definitions last for one worker request. GUI editing and persistence remain pending.
+Definitions last for one worker request. Version 2 GUI session files store exact
+state definitions in a `States` array of `Name` and `Expression` objects, both
+for the current workspace and for each history entry. Opening a session restores
+its definitions; reusing a history entry restores the definitions from that
+calculation. Version 1 files still load with no definitions. Invalid files leave
+the current workspace unchanged. The GUI sends the restored definitions with
+each calculation. A graphical definition editor remains pending.
 
 The UTF-8 stdin protocol begins with `QSTATES1\n`, then a decimal definition
 count and newline. For each definition, send its name's byte length and newline,

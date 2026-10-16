@@ -21,6 +21,7 @@ class QuantumStudio {
  static CancellationTokenSource calculationCancellation;
  static ComboBox mode, evaluation, timeAllowance;
  static ListBox history;
+ static StateDefinition[] states=new StateDefinition[0];
  static ScrollViewer matrixView;
  static Grid matrixCells;
  static TextBlock matrixCaption;
@@ -726,6 +727,17 @@ class QuantumStudio {
     bool tooLongRejected=false;try {SessionStore.Save(sessionPath,badSession);}catch(InvalidDataException){tooLongRejected=true;}
     if(!tooLongRejected || File.ReadAllText(sessionPath)!=validSessionText)throw new Exception("Oversized session draft was not safely rejected.");
     OpenSession(sessionPath);await Calculate();if(output.Text!=originalSession.History[0].Result)throw new Exception("Restored expression did not recompute correctly.");
+    states=new[]{new StateDefinition {Name="Bell",Expression="|Phi+>"},new StateDefinition {Name="after CZ",Expression="CZ|Bell>"}};
+    mode.SelectedIndex=0;evaluation.SelectedIndex=0;input.Text="<Bell|after CZ>";await Calculate();
+    if(output.Text!="0")throw new Exception("Named-state GUI overlap failed: "+output.Text);
+    input.Text="<Bell|Bell>";await Calculate();if(output.Text!="1")throw new Exception("Named-state GUI self overlap failed.");
+    var namedHistory=(ListBoxItem)history.Items[0];
+    SessionStore.Save(sessionPath,CaptureSession());states[0].Expression="2|0>";
+    namedHistory.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,Environment.TickCount,MouseButton.Left) {RoutedEvent=Control.MouseDoubleClickEvent});
+    if(states[0].Expression!="|Phi+>")throw new Exception("History did not restore its state definitions.");
+    states=new StateDefinition[0];OpenSession(sessionPath);await Calculate();
+    if(states.Length!=2 || states[1].Name!="after CZ" || output.Text!="1")throw new Exception("Saved named states did not restore and recalculate.");
+    SessionStore.Save(sessionPath,originalSession);OpenSession(sessionPath);
     File.WriteAllText(args[1]+".txt",passed ? "PASS: GUI matrices, TeX, history, errors, unit conversion, example search, circuit calculation, save/open, and invalid-file preservation." : "FAIL: "+output.Text);
     Environment.ExitCode=passed ? 0 : 1; window.Close();
     } catch(Exception ex) {
@@ -738,16 +750,20 @@ class QuantumStudio {
  static void Example(string name,string expression) { Find<Button>(name).Click += delegate { mode.SelectedIndex=0; input.Text=expression; input.Focus(); input.CaretIndex=input.Text.Length; }; }
  static ListBoxItem HistoryItem(SessionEntry record,bool saved) {
   var item=new ListBoxItem {Content=new TextBlock {Text=(saved ? "Saved · " : "")+record.Expression+"   =   "+record.Result,TextWrapping=TextWrapping.Wrap,FontSize=14,Margin=new Thickness(4,7,4,7)},Tag=record};
-  item.MouseDoubleClick+=delegate {input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
+  item.MouseDoubleClick+=delegate {states=SessionStore.CopyStates(record.States);input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
  }
  static CalculationSession CaptureSession() {
   var entries=new SessionEntry[history.Items.Count];for(int j=0;j<entries.Length;j++)entries[j]=(SessionEntry)((ListBoxItem)history.Items[j]).Tag;
-  return new CalculationSession {Version=1,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=entries};
+  var snapshots=new SessionEntry[entries.Length];
+  for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States)};
+  return new CalculationSession {Version=2,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states)};
  }
  static void OpenSession(string path) {
   var session=SessionStore.Load(path);
+  var restoredStates=SessionStore.CopyStates(session.States);
   var items=new ListBoxItem[session.History.Length];for(int j=0;j<items.Length;j++)items[j]=HistoryItem(session.History[j],true);
   history.Items.Clear();foreach(var item in items)history.Items.Add(item);
+  states=restoredStates;
   input.Text=session.Expression;mode.SelectedIndex=session.Mode;evaluation.SelectedIndex=session.Evaluation;
   matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;
   output.Visibility=Visibility.Visible;output.Text="Choose Calculate to evaluate the restored expression.";resultLabel.Text="SESSION RESTORED";
@@ -866,6 +882,10 @@ class QuantumStudio {
   if(Encoding.UTF8.GetByteCount(expression)>32000) { status.Text="Please keep expressions below 32 KB."; return; }
   int calculationMode=mode.SelectedIndex, calculationEvaluation=evaluation.SelectedIndex;
   string request=(calculationMode==0 ? "quantum:" : "")+expression;
+  var calculationStates=SessionStore.CopyStates(states);
+  byte[] requestBytes;
+  try {requestBytes=calculationStates.Length==0 ? Encoding.UTF8.GetBytes(request) : SessionStore.StateRequest(calculationStates,request);}
+  catch(Exception ex) {status.Text=ex.Message;return;}
   bool chart=calculationMode==0 && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^probs\s*\(");
   bool sphere=calculationMode==0 && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^bloch\s*\(");
   int seconds=new[]{15,60,180,600}[timeAllowance.SelectedIndex];
@@ -876,14 +896,14 @@ class QuantumStudio {
   try {
    runningWorker=Task.Run(async delegate {
     using(var process=new Process()) {
-     process.StartInfo=new ProcessStartInfo(Path.Combine(root,"quantum-worker.exe"),(calculationEvaluation==1 ? "--json --approx" : "--json")+(chart ? " --probabilities" : "")+(sphere ? " --bloch" : "")) { UseShellExecute=false, CreateNoWindow=true, RedirectStandardInput=true, RedirectStandardOutput=true, RedirectStandardError=true, StandardOutputEncoding=Encoding.UTF8, StandardErrorEncoding=Encoding.UTF8, WorkingDirectory=root };
+     process.StartInfo=new ProcessStartInfo(Path.Combine(root,"quantum-worker.exe"),(calculationEvaluation==1 ? "--json --approx" : "--json")+(chart ? " --probabilities" : "")+(sphere ? " --bloch" : "")+(calculationStates.Length>0 ? " --states" : "")) { UseShellExecute=false, CreateNoWindow=true, RedirectStandardInput=true, RedirectStandardOutput=true, RedirectStandardError=true, StandardOutputEncoding=Encoding.UTF8, StandardErrorEncoding=Encoding.UTF8, WorkingDirectory=root };
      process.StartInfo.EnvironmentVariables["QALCULATE_DEFINITIONS_DIR"]=Path.Combine(root,"data");
      cancellation.Token.ThrowIfCancellationRequested();
      process.Start(); active=process;
      var elapsed=Stopwatch.StartNew();
      try {
      var stdout=process.StandardOutput.ReadToEndAsync(); var stderr=process.StandardError.ReadToEndAsync();
-     byte[] bytes=Encoding.UTF8.GetBytes(request); process.StandardInput.BaseStream.Write(bytes,0,bytes.Length); process.StandardInput.Close();
+     process.StandardInput.BaseStream.Write(requestBytes,0,requestBytes.Length); process.StandardInput.Close();
      while(!process.WaitForExit(100)) {
       cancellation.Token.ThrowIfCancellationRequested();
       if(elapsed.ElapsedMilliseconds>=deadline)throw new TimeoutException("Calculation exceeded the time allowance. Choose a longer allowance or simplify the expression.");
@@ -905,7 +925,7 @@ class QuantumStudio {
    status.Text=response[1].Length==0 ? (result.approximate ? "Complete · Approximate arithmetic" : "Complete · Exact arithmetic")+" · Leftmost qubit is subsystem 0" : response[1];
    string preview=result.text;
    if(preview.Length>32768){int end=32767;if(Char.IsHighSurrogate(preview[end-1]))end--;preview=preview.Substring(0,end)+"…";}
-   var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation},false);
+   var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation,States=calculationStates},false);
    history.Items.Insert(0,entry); if(history.Items.Count>50) history.Items.RemoveAt(50);
   } catch(OperationCanceledException) {
    blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;
