@@ -45,7 +45,7 @@ class QuantumStudio {
  }
  static ExampleEntry[] examples;
  static Window ExamplesWindow() {
-  var dialog=new Window {Title="Explore quantum examples", Owner=window, Width=740, Height=650, MinWidth=540, MinHeight=430, WindowStartupLocation=WindowStartupLocation.CenterOwner, Background=new SolidColorBrush(Color.FromRgb(245,246,250)), FontFamily=new FontFamily("Segoe UI")};
+  var dialog=new Window {Title="Explore quantum examples", Owner=window, Width=740, Height=650, MinWidth=540, MinHeight=430, WindowStartupLocation=WindowStartupLocation.CenterOwner, Background=WorkspaceTheme.Background, FontFamily=new FontFamily("Segoe UI")};
   dialog.Resources=window.Resources;
   var panel=new DockPanel {Margin=new Thickness(24)}; dialog.Content=panel;
   var heading=new TextBlock {Text="Choose an experiment",FontSize=25,FontWeight=FontWeights.SemiBold,Margin=new Thickness(0,0,0,16)}; DockPanel.SetDock(heading,Dock.Top); panel.Children.Add(heading);
@@ -63,7 +63,7 @@ class QuantumStudio {
     var content=new StackPanel {Margin=new Thickness(6)};
     content.Children.Add(new TextBlock {Text=example.title,FontSize=17,FontWeight=FontWeights.SemiBold});
     content.Children.Add(new TextBlock {Text=example.description,FontSize=13,TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,4,0,4)});
-    content.Children.Add(new TextBlock {Text=example.expression,FontSize=17,FontFamily=new FontFamily("Cambria Math"),TextWrapping=TextWrapping.Wrap,Foreground=new SolidColorBrush(Color.FromRgb(55,94,232))});
+    content.Children.Add(new TextBlock {Text=example.expression,FontSize=17,FontFamily=new FontFamily("Cambria Math"),TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Accent});
     list.Items.Add(new ListBoxItem {Content=content,Tag=example,HorizontalContentAlignment=HorizontalAlignment.Stretch});
    }
    if(list.Items.Count==0) list.Items.Add(new ListBoxItem {IsEnabled=false,Content="No matching examples. Try another topic."});
@@ -89,6 +89,7 @@ class QuantumStudio {
  static T Find<T>(string name) where T : class { return window.FindName(name) as T; }
  [STAThread] static void Main(string[] args) {
   var app = new Application();
+  WorkspaceTheme.Install(app);
   using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MainWindow.xaml")) window = (Window)XamlReader.Load(stream);
   input=Find<TextBox>("Input"); output=Find<TextBox>("Output"); status=Find<TextBlock>("Status"); resultLabel=Find<TextBlock>("ResultLabel");
   run=Find<Button>("Run"); mode=Find<ComboBox>("Mode"); history=Find<ListBox>("History");
@@ -189,7 +190,8 @@ class QuantumStudio {
    bitmap.Render(dialog); var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder(); encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
    using(var file=File.Create(args[1])) encoder.Save(file); dialog.Close(); window.Close(); return;
   }
-  if(args.Length==2 && args[0]=="--render") {
+  if(args.Length==2 && (args[0]=="--render" || args[0]=="--render-compact")) {
+   if(args[0]=="--render-compact") {window.Width=window.MinWidth;window.Height=window.MinHeight;}
    window.Show(); window.UpdateLayout();
    var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)window.ActualWidth,(int)window.ActualHeight,96,96,PixelFormats.Pbgra32);
    bitmap.Render(window); var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder(); encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
@@ -820,7 +822,7 @@ class QuantumStudio {
   if(result.probabilities==null || result.probabilities.Length<2 || result.probabilities.Length>64)return;
   double total=0;foreach(double p in result.probabilities) {if(Double.IsNaN(p) || Double.IsInfinity(p) || p<0 || p>1)return;total+=p;}
   if(Math.Abs(total-1)>1e-9)return;
-  probabilityView.Children.Add(new TextBlock {Text="MEASUREMENT PROBABILITIES",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=new SolidColorBrush(Color.FromRgb(71,101,155))});
+  probabilityView.Children.Add(new TextBlock {Text="MEASUREMENT PROBABILITIES",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=WorkspaceTheme.Muted});
   int count=result.probabilities.Length,bits=0;while((1 << bits)<count)bits++;
   bool powerOfTwo=(1 << bits)==count,binary=binaryProbabilityLabels && powerOfTwo;
   var options=new WrapPanel {Margin=new Thickness(0,5,0,10)};
@@ -838,8 +840,8 @@ class QuantumStudio {
    row.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(binary ? 78 : 50)});row.ColumnDefinitions.Add(new ColumnDefinition());row.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(75)});
    string outcome=binary ? Convert.ToString(index,2).PadLeft(bits,'0') : index.ToString();
    var label=new TextBlock {Text=outcome,VerticalAlignment=VerticalAlignment.Center,FontFamily=new FontFamily("Consolas")};row.Children.Add(label);
-   var fill=new Border {Background=new SolidColorBrush(Color.FromRgb(55,94,232)),CornerRadius=new CornerRadius(6),Height=12,HorizontalAlignment=HorizontalAlignment.Left};
-   var track=new Border {Background=new SolidColorBrush(Color.FromRgb(213,223,247)),CornerRadius=new CornerRadius(6),Height=12,VerticalAlignment=VerticalAlignment.Center,Child=fill};
+   var fill=new Border {Background=WorkspaceTheme.Accent,CornerRadius=new CornerRadius(6),Height=12,HorizontalAlignment=HorizontalAlignment.Left};
+   var track=new Border {Background=WorkspaceTheme.Raised,CornerRadius=new CornerRadius(6),Height=12,VerticalAlignment=VerticalAlignment.Center,Child=fill};
    track.SizeChanged+=delegate {fill.Width=Math.Max(0,track.ActualWidth*p);};Grid.SetColumn(track,1);row.Children.Add(track);
    string percent=p.ToString("0.##%",System.Globalization.CultureInfo.InvariantCulture);
    var value=new TextBlock {Text=percent,HorizontalAlignment=HorizontalAlignment.Right,VerticalAlignment=VerticalAlignment.Center};Grid.SetColumn(value,2);row.Children.Add(value);
@@ -855,14 +857,14 @@ class QuantumStudio {
   if(result.bloch==null || result.bloch.Length!=3)return;
   double lengthSquared=0;foreach(double v in result.bloch) {if(Double.IsNaN(v) || Double.IsInfinity(v))return;lengthSquared+=v*v;}
   if(lengthSquared>1+1e-10)return;
-  blochView.Children.Add(new TextBlock {Text="BLOCH SPHERE",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=new SolidColorBrush(Color.FromRgb(71,101,155))});
+  blochView.Children.Add(new TextBlock {Text="BLOCH SPHERE",FontSize=11,FontWeight=FontWeights.SemiBold,Foreground=WorkspaceTheme.Muted});
   blochView.Children.Add(new TextBlock {Text="Single-qubit state · approximate 3D projection · coordinates above",FontSize=12,Margin=new Thickness(0,5,0,0)});
   var layout=new WrapPanel();blochView.Children.Add(layout);
   var canvas=new Canvas {Width=280,Height=245};layout.Children.Add(canvas);
-  var blue=new SolidColorBrush(Color.FromRgb(55,94,232));var grid=new SolidColorBrush(Color.FromRgb(194,209,235));
+  var blue=WorkspaceTheme.Accent;var grid=WorkspaceTheme.Border;
   double cosine=Math.Cos(blochAngle),sine=Math.Sin(blochAngle);
   Func<double,double,double,Point> project=(x,y,z)=>new Point(140+90*(cosine*x+sine*y),120+90*((-sine*x+cosine*y)/Math.Sqrt(3)-z*Math.Sqrt(2.0/3)));
-  var shell=new System.Windows.Shapes.Ellipse {Width=180,Height=180,Fill=new RadialGradientBrush(Colors.White,Color.FromRgb(233,240,253)),Stroke=grid,StrokeThickness=1};Canvas.SetLeft(shell,50);Canvas.SetTop(shell,30);canvas.Children.Add(shell);
+  var shell=new System.Windows.Shapes.Ellipse {Width=180,Height=180,Fill=new RadialGradientBrush(WorkspaceTheme.Raised.Color,WorkspaceTheme.Input.Color),Stroke=grid,StrokeThickness=1};Canvas.SetLeft(shell,50);Canvas.SetTop(shell,30);canvas.Children.Add(shell);
   for(int plane=0;plane<3;plane++) {
    var circle=new System.Windows.Shapes.Polyline {Stroke=grid,StrokeThickness=1};
    for(int k=0;k<=72;k++) {double theta=2*Math.PI*k/72,c=Math.Cos(theta),s=Math.Sin(theta);circle.Points.Add(plane==0 ? project(c,s,0) : plane==1 ? project(c,0,s) : project(0,c,s));}
@@ -872,8 +874,8 @@ class QuantumStudio {
   string[] labels={"+X","+Y","+Z · |0⟩"};
   for(int axis=0;axis<3;axis++) {
    Point a=project(axis==0 ? -1.1 : 0,axis==1 ? -1.1 : 0,axis==2 ? -1.1 : 0),b=project(axis==0 ? 1.1 : 0,axis==1 ? 1.1 : 0,axis==2 ? 1.1 : 0);
-   line(a,b,new SolidColorBrush(Color.FromRgb(139,158,190)),1,true);
-   var label=new TextBlock {Text=labels[axis],FontSize=12,Foreground=new SolidColorBrush(Color.FromRgb(71,101,155))};Canvas.SetLeft(label,b.X+5);Canvas.SetTop(label,b.Y-10);canvas.Children.Add(label);
+   line(a,b,WorkspaceTheme.Muted,1,true);
+   var label=new TextBlock {Text=labels[axis],FontSize=12,Foreground=WorkspaceTheme.Muted};Canvas.SetLeft(label,b.X+5);Canvas.SetTop(label,b.Y-10);canvas.Children.Add(label);
   }
   Point origin=project(0,0,0),tip=project(result.bloch[0],result.bloch[1],result.bloch[2]);line(origin,tip,blue,3,false);
   double dx=tip.X-origin.X,dy=tip.Y-origin.Y,projected=Math.Sqrt(dx*dx+dy*dy);

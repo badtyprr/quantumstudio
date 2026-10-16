@@ -11,6 +11,13 @@ returns 0.125. Unicode bra-ket and tensor symbols work as well.
 
 Browse examples, compose a circuit, or open the searchable Notation guide.
 Save session preserves calculations; Save circuit preserves editable circuits.
+For named states, choose States beside Calculate, then Add Bell example and
+Apply states. This defines Bell as |Phi+> and after CZ as CZ|Bell>.
+Now <Bell|Bell> returns 1 and <Bell|after CZ> returns 0. Save session keeps
+the definitions, including those used by each history entry. Cancel discards
+editor changes. Definitions may reference earlier rows and are not
+automatically normalized; Calculate reports invalid vectors for correction.
+
 OpenQASM import supports bounded static circuits through the bundled compiler.
 Runtime feedback, timing and pulse program imports are not supported.
 

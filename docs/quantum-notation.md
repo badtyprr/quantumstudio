@@ -176,7 +176,7 @@ Applying an adjoint twice, conjugation twice, or transpose twice cancels symboli
 
 ## Named state labels
 
-Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. The GUI does not yet provide a named-state definition editor.
+Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. In the GUI, choose **States** beside Calculate to define named column vectors.
 
 `Bell` is not a predefined alias or a normalization assumption. Use `<Phi+|Phi+>` for the built-in normalized Bell-state overlap (1), and `<Phi+|CZ|Phi+>` for its overlap after CZ (0).
 
