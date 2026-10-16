@@ -258,7 +258,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"qsumset",3},
+ {"qsumset",3},{"qmember",2},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
  {"qpostselect",2},
@@ -383,7 +383,7 @@ class Parser {
   return 0;
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
- bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0;}
+ bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   size_t end=labelEnd('|',p+1);
@@ -829,6 +829,7 @@ class Parser {
     if(name=="tensorproduct") name="qtensorproduct";
     if(name=="indexrange") name="qindexrange";
     if(name=="sumset") name="qsumset";
+    if(name=="member") name="qmember";
     if(name=="bitstrings") name="qbitstrings";
     if(name=="bitstring") name="qbitlabel";
     if(name=="blocksum") name="qblocksum";
@@ -1196,13 +1197,16 @@ class Parser {
   std::string left=setUnion(),result;
   while(true) {
    ws();std::string relation;
+   if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
    for(const char *token:{"<=",">=","!=","==","=","<",">"}) {
+    if(!relation.empty())break;
     std::string candidate(token);
     if(s.compare(p,candidate.size(),candidate)==0) {relation=candidate;p+=candidate.size();break;}
    }
    if(relation.empty())break;
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
    std::string right=setUnion(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
   }
   return result.empty() ? left : result;
