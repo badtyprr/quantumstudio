@@ -179,3 +179,27 @@ Applying an adjoint twice, conjugation twice, or transpose twice cancels symboli
 Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. The GUI does not yet provide a named-state definition editor.
 
 `Bell` is not a predefined alias or a normalization assumption. Use `<Phi+|Phi+>` for the built-in normalized Bell-state overlap (1), and `<Phi+|CZ|Phi+>` for its overlap after CZ (0).
+
+### Worker state definitions
+
+The worker's `--states` option accepts definitions alongside one expression. Define
+`Bell` as `|Phi+>` and then `after CZ` as `CZ|Bell>` to evaluate `<Bell|Bell>`
+to 1 and `<Bell|after CZ>` to 0. Definitions are evaluated exactly, in order,
+and may refer to earlier definitions. Each must resolve to a column vector with
+1–1024 rows and scalar amplitudes. Symbolic amplitudes are allowed. Vectors are
+not automatically normalized, and names cannot override existing variables or
+built-in ket labels. Unknown references, forward references and cycles reject.
+Definitions last for one worker request. GUI editing and persistence remain pending.
+
+The UTF-8 stdin protocol begins with `QSTATES1\n`, then a decimal definition
+count and newline. For each definition, send its name's byte length and newline,
+its expression's byte length and newline, then the raw name and expression bytes
+without separators. The remaining bytes are the calculation expression, including
+the `quantum:` prefix when using quantum notation. Definition expressions use
+quantum notation automatically and do not include that prefix. Limits are 32
+definitions, 128 bytes per name, 32768 bytes per definition or final expression,
+and 1100000 bytes for the entire request. Names may contain internal spaces;
+definition expressions may contain newlines. NUL is rejected in names and
+expressions. Empty fields, invalid lengths and incomplete records reject without
+producing a result. Without `--states`, the existing expression-only protocol and
+32768-byte limit are unchanged.
