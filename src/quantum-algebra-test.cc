@@ -17,6 +17,15 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ // Custom functions (id zero) must sort consistently against built-ins.
+ for(const char *component:{"re","im","abs"}) {
+  std::string part=std::string(component)+"(complexparam(x))";
+  equal(part+"*complexparam(x)-complexparam(x)*"+part,"0");
+  equal("complexparam(x)*"+part+"-"+part+"*complexparam(x)","0");
+ }
+ equal("re(complexparam(x))*complexparam(y)*im(complexparam(z))-im(complexparam(z))*re(complexparam(x))*complexparam(y)","0");
+ equal("qdensity(exp(i*\"theta\")*[complexparam(x);0])-qdensity([complexparam(x);0])","[0,0;0,0]");
+
  for(const char *symbol:{"x","\"alpha\""}) {
   std::string parameter=std::string("complexparam(")+symbol+")";
   equal("qconj("+parameter+")","re("+parameter+")-i*im("+parameter+")");

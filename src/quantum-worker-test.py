@@ -21,6 +21,15 @@ def data(expression, *flags):
     assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Scalar products commute even when built-in and custom functions are mixed.
+for flags in [(), ("--approx",)]:
+    for component in ["re", "im", "abs"]:
+        left = component + "(complexparam(x))"
+        right = "complexparam(x)"
+        for first, second in [(left,right),(right,left)]:
+            assert data("quantum:"+first+"*"+second+"-"+second+"*"+first,*flags)["text"] == "0"
+assert data("quantum:density(exp(i*t)*complexparam(x)|0>)-density(complexparam(x)|0>)")["cells"] == [["0","0"],["0","0"]]
+
 # Explicit complex parameters retain their domain through worker serialization.
 for flags in [(), ("--approx",)]:
     for symbol in ["x", r"\alpha"]:
