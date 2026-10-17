@@ -28,11 +28,12 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    if(wireMask&bit)throw std::invalid_argument("Trajectory gate wires must be distinct");
    wireMask|=bit;
   }
-  if(step.kind==TrajectoryStep::Kind::Gate || step.kind==TrajectoryStep::Kind::Conditional) {
+  if(step.kind==TrajectoryStep::Kind::Gate || step.kind==TrajectoryStep::Kind::Conditional || step.kind==TrajectoryStep::Kind::Channel) {
    if(step.wires.empty() || step.wires.size()>3)throw std::invalid_argument("Trajectory gate needs one to three wires");
    StateVector probe(step.wires.size(),8*sizeof(Complex));std::vector<unsigned> local;
    for(unsigned k=0;k<step.wires.size();++k)local.push_back(k);
-   probe.apply(step.matrix,local,cancelled);
+   if(step.kind==TrajectoryStep::Kind::Channel)probe.channel(step.kraus,local,0,cancelled);
+   else probe.apply(step.matrix,local,cancelled);
    if((step.mask&~allowed) || (step.value&~step.mask))throw std::invalid_argument("Invalid classical condition mask or value");
   } else if(step.kind==TrajectoryStep::Kind::Measure && step.classicalBit>=classicalBits)
    throw std::out_of_range("Measurement destination is outside the classical register");
@@ -47,7 +48,8 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,step.wires,cancelled);
    else if(step.kind==TrajectoryStep::Kind::Conditional) {
     if((bits&step.mask)==step.value)state.apply(step.matrix,step.wires,cancelled);
-   } else if(step.kind==TrajectoryStep::Kind::Measure) {
+   } else if(step.kind==TrajectoryStep::Kind::Channel)state.channel(step.kraus,step.wires,draw(),cancelled);
+   else if(step.kind==TrajectoryStep::Kind::Measure) {
     const std::uint64_t bit=std::uint64_t(1)<<step.classicalBit;
     bits=(bits&~bit)|(state.measure(step.wires[0],draw(),cancelled) ? bit : 0);
    } else if(state.measure(step.wires[0],draw(),cancelled))state.apply(X,step.wires,cancelled);

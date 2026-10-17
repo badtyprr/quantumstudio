@@ -48,5 +48,21 @@ int main(){try {
  maximum.push_back(Step::reset(0));rejects<std::length_error>([&]{sampleTrajectories(1,1,1,0,{0},maximum,32);});
  check(sampleTrajectories(0,0,10,0,{}, {},16).at(0)==10);
  check(sampleTrajectories(1,1,0,0,{0},{},32).empty());
+ const std::vector<std::vector<Complex>> damping={{1,0,0,h},{0,h,0,0}};
+ std::vector<Step> noisyBell={Step::gate(H,{0}),Step::gate(CX,{0,1}),Step::channel(damping,{1}),Step::measure(0,0),Step::measure(1,1)};
+ counts=sampleTrajectories(2,2,20000,42,{0,1},noisyBell,64);
+ check(counts.size()==3 && counts.count(0) && counts.count(2) && counts.count(3));
+ check(std::abs(int(counts[0])-10000)<400 && std::abs(int(counts[2])-5000)<300 && std::abs(int(counts[3])-5000)<300);
+ check(counts==sampleTrajectories(2,2,20000,42,{0,1},noisyBell,64));
+ check(counts!=sampleTrajectories(2,2,20000,43,{0,1},noisyBell,64));
+ // Noise changes the quantum state but never rewrites a prior measurement.
+ counts=sampleTrajectories(1,2,100,1,{0,1},{Step::gate(X,{0}),Step::measure(0,0),Step::channel({{1,0,0,0},{0,1,0,0}},{0}),Step::measure(0,1)},32);
+ check(counts.size()==1 && counts.at(2)==100);
+ counts=sampleTrajectories(1,1,10000,7,{0},{Step::gate(H,{0}),Step::channel({{h,0,0,h},{h,0,0,-h}},{0}),Step::gate(H,{0}),Step::measure(0,0)},32);
+ check(counts.size()==2 && std::abs(int(counts.at(0))-5000)<300);
+ rejects<std::invalid_argument>([&]{sampleTrajectories(1,1,0,0,{0},{Step::channel({{2,0,0,1}},{0})},32);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(1,1,1,0,{0},{Step::channel(damping,{1})},32);});
+ rejects<std::invalid_argument>([&]{sampleTrajectories(2,1,1,0,{0},{Step::channel({CX},{0,0})},64);});
+ calls=0;rejects<Cancelled>([&]{sampleTrajectories(2,2,20000,42,{0,1},noisyBell,64,[&]{return ++calls==100;});});
  std::cout<<"PASS: "<<checks<<" numerical trajectory checks\n";
  }catch(const std::exception &error){std::cerr<<error.what()<<'\n';return 1;}}
