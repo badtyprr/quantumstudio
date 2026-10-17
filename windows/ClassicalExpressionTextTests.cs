@@ -11,6 +11,9 @@ static class ClassicalExpressionTextTests {
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
  static void VariableChecks(string worker) {
   var context=Context();context.Version=5;context.Variables=new[]{new ClassicalCircuit.Variable{Name="counter",Signedness="Signed",Width=8}};
+  string boundary="counter";for(int depth=1;depth<32;depth++)boundary="int("+boundary+")";
+  Check(ClassicalExpressionText.ParseInteger(boundary,context)!=null);
+  Reject(()=>ClassicalExpressionText.ParseInteger("int("+boundary+")",context));
   var rhs=ClassicalExpressionText.ParseInteger("counter ** 2 - 1",context);
   Check(ClassicalExpressionText.RequiredVersion(rhs)==5);
   string pretty=ClassicalExpressionText.Format(rhs,context);Check(pretty.Contains("counter"));

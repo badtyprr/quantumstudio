@@ -26,8 +26,7 @@ static class ClassicalExpressionText {
   if(context==null)throw new ArgumentNullException("context");
   var parser=new Parser(text,context.Registers,context.Variables);var value=parser.Expression(1,0);parser.End();
   value=AsInteger(Normalize(value,0));ResolveInteger(value,0);
-  var condition=new N{Kind="IntegerCompare",Operator="Equal",Left=value,Right=new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"}};
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(condition),context.Version),Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="ExpressionBranch",ClassicalValue=condition,WhenTrue=new ClassicalCircuit.Step[0],WhenFalse=new ClassicalCircuit.Step[0]}}});
+  ClassicalCircuit.ValidateIntegerExpression(value,context);
   return value;
  }
  static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
