@@ -621,3 +621,9 @@ and editing. Existing ordinary bit expressions retain their earlier format.
 Integer variable declarations and integer-valued assignments are not yet exposed
 by this editor; casts currently accept integer expressions, bit constants and
 register reads, rather than arbitrary computed bit expressions.
+
+OpenQASM import also preserves Boolean `&&` and `||` as version-4 logical
+nodes, including assignments and nested branches. Bitwise `&` and `|` retain
+bit-vector nodes. Runtime integer casts and arithmetic in imported conditions
+remain a separate unsupported feature; use the classical editor for those
+expressions until the importer supports them.
