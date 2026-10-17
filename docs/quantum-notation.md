@@ -332,6 +332,7 @@ Each step begins with an integer kind and then these fields:
 | 3: conditional gate | 64-bit mask, 64-bit value, then the gate payload |
 | 4: channel | Target count, targets, byte length, Kraus-vector expression |
 | 5: readout assignment | Classical target count, targets, byte length, probability-matrix expression |
+| 6: branch | Mask, value, true-body count and operations, false-body count and operations |
 
 Every shot starts with all-zero quantum state and classical memory. A measurement
 collapses its wire and overwrites the destination bit. Reset returns its wire
@@ -390,5 +391,7 @@ body at entry using the saved classical bits. Measurements or readout errors
 inside that body can change later conditions without changing the already
 selected body. Validation checks both bodies even at zero shots, counts all
 nested operations toward the 4096-step limit, and allows at most 32 nested
-branches. This native API is not yet exposed by the worker protocol or OpenQASM
-importer; it is the execution foundation for runtime blocks.
+branches. The worker exposes these blocks as QSAMPLE2 operation 6. Body counts include
+only their immediate operations; all nested operations in both bodies count
+toward the shared 4096-operation limit. Every field and body is required even
+when it would not execute. The OpenQASM importer does not yet emit these blocks.
