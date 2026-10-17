@@ -64,9 +64,15 @@ static class ClassicalExpressionText {
   if(n.Kind=="Read")return "read("+String.Join(",",n.Bits)+")";
   if(n.Kind=="Complement")return "~("+FormatNode(n.Left,depth+1)+")";
   if(n.Kind=="PopulationCount")return "popcount("+FormatNode(n.Left,depth+1)+")";
-  if(n.Kind=="Rotate")return (n.RotationDirection=="Left" ? "rotl" : "rotr")+(n.DistanceInterpretation=="Signed" ? "_signed" : "")+"("+FormatNode(n.Left,depth+1)+", "+FormatNode(n.Right,depth+1)+")";
+  if(n.Kind=="Rotate") {
+   string distance=n.DistanceInterpretation=="Signed" && n.Right.Kind=="Constant" && n.Right.Width==64 ? unchecked((long)UInt64.Parse(n.Right.Value,CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) : FormatNode(n.Right,depth+1);
+   return (n.RotationDirection=="Left" ? "rotl" : "rotr")+(n.DistanceInterpretation=="Signed" ? "_signed" : "")+"("+FormatNode(n.Left,depth+1)+", "+distance+")";
+  }
   int op=Array.IndexOf(Names,n.Operator);if(op<0)throw new ArgumentException("Unknown expression operator.");
-  return "("+FormatNode(n.Left,depth+1)+" "+Symbols[op]+" "+FormatNode(n.Right,depth+1)+")";
+  bool sharedWidth=n.Operator!="ShiftLeft" && n.Operator!="ShiftRight";
+  string left=sharedWidth && n.Right.Kind=="PopulationCount" && n.Left.Kind=="Constant" && n.Left.Width==64 ? n.Left.Value : FormatNode(n.Left,depth+1);
+  string right=sharedWidth && n.Left.Kind=="PopulationCount" && n.Right.Kind=="Constant" && n.Right.Width==64 ? n.Right.Value : FormatNode(n.Right,depth+1);
+  return "("+left+" "+Symbols[op]+" "+right+")";
  }
  sealed class Parser {
   readonly string text;int position,nodes;readonly Dictionary<string,int[]> registers=new Dictionary<string,int[]>(StringComparer.Ordinal);
