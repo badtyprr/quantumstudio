@@ -14,12 +14,19 @@ static class ClassicalExpressionText {
  static int Minimum(ulong value){int width=1;while((value>>=1)!=0)width++;return width;}
  public static N Parse(string text,ClassicalCircuit.Document context,int width) {
   if(context==null || width<1 || width>64)throw new ArgumentException("Use a valid circuit and 1–64 result bits.");
-  var parser=new Parser(text,context.Registers);var value=parser.Expression(1,0);parser.End();value=Normalize(value,0);
+  var parser=new Parser(text,context.Registers,context.Variables);var value=parser.Expression(1,0);parser.End();value=Normalize(value,0);
   if(IntegerValue(value))throw new ArgumentException("Compare integer values to produce a one-bit condition.");
   if(Resolve(value,width,0)!=width)throw new ArgumentException("Expression width must match the assignment or one-bit condition.");
   var step=width==1 ? new ClassicalCircuit.Step{Kind="ExpressionBranch",ClassicalValue=value,WhenTrue=new ClassicalCircuit.Step[0],WhenFalse=new ClassicalCircuit.Step[0]} :
    new ClassicalCircuit.Step{Kind="Assign",ClassicalValue=value,Wires=Enumerable.Range(0,width).ToArray()};
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=RequiredVersion(value),Qubits=0,Registers=context.Registers,OutputBits=new int[0],Steps=new[]{step}});
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new[]{step}});
+  return value;
+ }
+ public static N ParseInteger(string text,ClassicalCircuit.Document context) {
+  if(context==null)throw new ArgumentNullException("context");
+  var parser=new Parser(text,context.Registers,context.Variables);var value=parser.Expression(1,0);parser.End();
+  value=AsInteger(Normalize(value,0));ResolveInteger(value,0);
+  ClassicalCircuit.ValidateIntegerExpression(value,context);
   return value;
  }
  static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
@@ -75,7 +82,7 @@ static class ClassicalExpressionText {
  public static int RequiredVersion(N value){return RequiredVersion(value,0);}
  static int RequiredVersion(N n,int depth) {
   if(n==null)return 3;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
-  return Math.Max((n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
+  return Math.Max(n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
  }
  static void ResolveInteger(N n,int depth) {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
@@ -119,19 +126,27 @@ static class ClassicalExpressionText {
   if(logical){n.Kind="Logical";n.Operator=n.Operator=="LogicalAnd" ? "And" : "Or";}
   return compare ? 1 : left;
  }
- public static string Format(N value){return FormatNode(value,0);}
- static string FormatNode(N n,int depth) {
+ public static string Format(N value,ClassicalCircuit.Document context=null){return FormatNode(value,0,context);}
+ static string FormatNode(N n,int depth,ClassicalCircuit.Document context) {
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
-  if(n.Kind=="IntegerBits")return "bit["+n.Left.Width.Value.ToString(CultureInfo.InvariantCulture)+"]("+FormatNode(n.Left,depth+1)+")";
+  if(n.Kind=="IntegerVariable") {
+   int slot=n.Slot.Value;
+   if(context!=null && context.Variables!=null && slot>=0 && slot<context.Variables.Length) {
+    string name=context.Variables[slot].Name;
+    if(!String.IsNullOrEmpty(name) && (Char.IsLetter(name[0]) || name[0]=='_') && name.All(c=>Char.IsLetterOrDigit(c) || c=='_') && name!="true" && name!="false")return name;
+   }
+   return "variable("+slot.ToString(CultureInfo.InvariantCulture)+")";
+  }
+  if(n.Kind=="IntegerBits")return "bit["+n.Left.Width.Value.ToString(CultureInfo.InvariantCulture)+"]("+FormatNode(n.Left,depth+1,context)+")";
   if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast") {
    string type=(n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width.Value.ToString(CultureInfo.InvariantCulture)+"]");
-   string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1);
+   string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1,context);
    return type+"("+operand+")";
   }
   if(n.Kind=="IntegerBinary") {
    string[] names={"Add","Subtract","Multiply","Divide","Remainder","Power"},symbols={"+","-","*","/","%","**"};
    int code=Array.IndexOf(names,n.Operator);if(code<0)throw new ArgumentException("Unknown integer operator.");
-   return "("+FormatNode(n.Left,depth+1)+" "+symbols[code]+" "+FormatNode(n.Right,depth+1)+")";
+   return "("+FormatNode(n.Left,depth+1,context)+" "+symbols[code]+" "+FormatNode(n.Right,depth+1,context)+")";
   }
   if(n.Kind=="Constant") {
    ulong value=UInt64.Parse(n.Value,CultureInfo.InvariantCulture);int width=n.Width.Value;var bits=new char[width];
@@ -139,22 +154,24 @@ static class ClassicalExpressionText {
    return "\""+new string(bits)+"\"";
   }
   if(n.Kind=="Read")return "read("+String.Join(",",n.Bits)+")";
-  if(n.Kind=="Complement")return "~("+FormatNode(n.Left,depth+1)+")";
-  if(n.Kind=="PopulationCount")return "popcount("+FormatNode(n.Left,depth+1)+")";
+  if(n.Kind=="Complement")return "~("+FormatNode(n.Left,depth+1,context)+")";
+  if(n.Kind=="PopulationCount")return "popcount("+FormatNode(n.Left,depth+1,context)+")";
   if(n.Kind=="Rotate") {
-   string distance=n.DistanceInterpretation=="Signed" && n.Right.Kind=="Constant" && n.Right.Width==64 ? unchecked((long)UInt64.Parse(n.Right.Value,CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) : FormatNode(n.Right,depth+1);
-   return (n.RotationDirection=="Left" ? "rotl" : "rotr")+(n.DistanceInterpretation=="Signed" ? "_signed" : "")+"("+FormatNode(n.Left,depth+1)+", "+distance+")";
+   string distance=n.DistanceInterpretation=="Signed" && n.Right.Kind=="Constant" && n.Right.Width==64 ? unchecked((long)UInt64.Parse(n.Right.Value,CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) : FormatNode(n.Right,depth+1,context);
+   return (n.RotationDirection=="Left" ? "rotl" : "rotr")+(n.DistanceInterpretation=="Signed" ? "_signed" : "")+"("+FormatNode(n.Left,depth+1,context)+", "+distance+")";
   }
-  if(n.Kind=="Logical")return "("+FormatNode(n.Left,depth+1)+(n.Operator=="And" ? " && " : " || ")+FormatNode(n.Right,depth+1)+")";
+  if(n.Kind=="Logical")return "("+FormatNode(n.Left,depth+1,context)+(n.Operator=="And" ? " && " : " || ")+FormatNode(n.Right,depth+1,context)+")";
   int op=Array.IndexOf(Names,n.Operator);if(op<0)throw new ArgumentException("Unknown expression operator.");
   bool sharedWidth=n.Operator!="ShiftLeft" && n.Operator!="ShiftRight";
-  string left=sharedWidth && n.Right.Kind=="PopulationCount" && n.Left.Kind=="Constant" && n.Left.Width==64 ? n.Left.Value : FormatNode(n.Left,depth+1);
-  string right=sharedWidth && n.Left.Kind=="PopulationCount" && n.Right.Kind=="Constant" && n.Right.Width==64 ? n.Right.Value : FormatNode(n.Right,depth+1);
+  string left=sharedWidth && n.Right.Kind=="PopulationCount" && n.Left.Kind=="Constant" && n.Left.Width==64 ? n.Left.Value : FormatNode(n.Left,depth+1,context);
+  string right=sharedWidth && n.Left.Kind=="PopulationCount" && n.Right.Kind=="Constant" && n.Right.Width==64 ? n.Right.Value : FormatNode(n.Right,depth+1,context);
   return "("+left+" "+Symbols[op]+" "+right+")";
  }
  sealed class Parser {
   readonly string text;int position,nodes;readonly Dictionary<string,int[]> registers=new Dictionary<string,int[]>(StringComparer.Ordinal);
-  public Parser(string value,ClassicalCircuit.Register[] declared) {
+  readonly ClassicalCircuit.Variable[] variables;
+  public Parser(string value,ClassicalCircuit.Register[] declared,ClassicalCircuit.Variable[] variables) {
+   this.variables=variables ?? new ClassicalCircuit.Variable[0];
    if(value==null || value.Length>65536 || declared==null)throw new ArgumentException("Enter an expression of at most 65536 characters.");
    text=value;int offset=0;foreach(var r in declared){registers.Add(r.Name,Enumerable.Range(offset,r.Size).ToArray());offset+=r.Size;}
   }
@@ -176,6 +193,7 @@ static class ClassicalExpressionText {
    }
    return left;
   }
+  N Variable(int slot){var declaration=variables[slot];return Node(new N{Kind="IntegerVariable",Signedness=declaration.Signedness,Width=declaration.Width,Slot=slot});}
   N Atom(int depth) {
    if(depth>=128)throw new ArgumentException("Expression nesting is too deep.");
    if(Take("-"))return Node(new N{Kind="UnaryMinus",Left=Expression(11,depth+1)});
@@ -204,6 +222,7 @@ static class ClassicalExpressionText {
     }
     position=saved;
    }
+   if(name=="variable" && Take("(")){ulong slot=Number();Need(")");if(slot>4095 || slot>=(ulong)variables.Length)throw new ArgumentException("Unknown variable slot.");return Variable((int)slot);}
    if(name=="read" && Take("(")){var indices=new List<int>();do{indices.Add(Index());}while(Take(","));Need(")");return Node(new N{Kind="Read",Bits=indices.ToArray()});}
    if(name=="popcount" && Take("(")){var operand=Expression(1,depth+1);Need(")");return Node(new N{Kind="PopulationCount",Left=operand});}
    if((name=="rotl" || name=="rotr" || name=="rotl_signed" || name=="rotr_signed") && Take("(")) {
@@ -215,6 +234,7 @@ static class ClassicalExpressionText {
     Need(")");return Node(new N{Kind="Rotate",RotationDirection=name.StartsWith("rotl",StringComparison.Ordinal) ? "Left" : "Right",DistanceInterpretation=signed ? "Signed" : "Unsigned",Left=operand,Right=distance});
    }
    if(name=="true" || name=="false")return Node(new N{Kind="Constant",Width=1,Value=name=="true" ? "1" : "0"});
+   for(int slot=0;slot<variables.Length;++slot)if(variables[slot].Name==name)return Variable(slot);
    int[] bits;if(!registers.TryGetValue(name,out bits))throw new ArgumentException("Unknown classical register: "+name);
    if(Take("[")) {
     int first=Index(),last=first;

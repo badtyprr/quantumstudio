@@ -97,6 +97,11 @@ sealed class ClassicalCircuit {
   var allowed=new HashSet<string>(permitted.Split(','),StringComparer.Ordinal);
   foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected field for classical expression: "+field.Key);
  }
+ internal static void ValidateIntegerExpression(ExpressionNode node,Document context) {
+  var definitions=From(new Document {Version=context.Version,Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new Step[0]});
+  int nodes=0;ExpressionFields(Serializer().DeserializeObject(Serializer().Serialize(node)),0,ref nodes,Math.Max(4,context.Version),true);
+  ConvertInteger(node).Validate(definitions.ClassicalBits,definitions.VariableTypes);
+ }
  static ClassicalIntegerExpression ConvertInteger(ExpressionNode node) {
   if(node.Kind=="IntegerBinary") {
    ClassicalIntegerExpression.Operator op;
