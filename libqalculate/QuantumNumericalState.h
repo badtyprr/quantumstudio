@@ -50,6 +50,14 @@ public:
  // Cancellation during collapse invalidates the state, as with apply().
  bool measure(unsigned wire, double uniformDraw,
               const Cancellation &cancelled = Cancellation());
+ // Sample one branch of a trace-preserving Kraus channel on 1-3 wires.
+ // Returns the selected Kraus index. Draw and cancellation follow measure().
+ // Accepts 1-256 finite square matrices with sum(K dagger K)=I within 1e-12.
+ // Uses bounded local buffers, never another full state. Caller-owned matrices
+ // are additional to the state budget. Invalid arguments leave the state intact.
+ std::size_t channel(const std::vector<std::vector<Complex>> &kraus,
+            const std::vector<unsigned> &wires,double uniformDraw,
+            const Cancellation &cancelled = Cancellation());
  // Row-major 2^k by 2^k unitary, for 1 <= k <= 3 distinct ordered wires.
  // The first listed wire is the local matrix's most significant bit.
  // Invalid arguments leave the state unchanged. Cancellation during mutation

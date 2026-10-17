@@ -68,5 +68,52 @@ int main(){try {
  check(large.valid() && std::abs(large.normSquared()-1)<1e-12);
  calls=0;rejects<Cancelled>([&]{large.apply(X,{13},[&]{return ++calls==3;});});
  rejects<std::logic_error>([&]{large.sampleCounts(100,{0},1);});
+ const std::vector<std::vector<Complex>> damping={{1,0,0,h},{0,h,0,0}};
+ const std::vector<Complex> CX={1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0};
+ for(double draw:{0.,.9}) {
+  StateVector state(2,64);state.apply(H,{0});state.apply(CX,{0,1});state.apply({1,0,0,Complex(0,1)},{1});
+  auto branch=state.channel(damping,{1},draw);check(branch==(draw==0 ? 0U : 1U));
+  if(branch==0) {check(std::abs(state.amplitude(0)-std::sqrt(2./3))<1e-12);check(std::abs(state.amplitude(3)-Complex(0,std::sqrt(1./3)))<1e-12);}
+  else check(std::abs(state.amplitude(2)-Complex(0,1))<1e-12);
+  check(std::abs(state.normSquared()-1)<1e-12);
+ }
+ StateVector tinyChannel(1,32);
+ check(tinyChannel.channel({{1e-150,0,0,1e-150},{1,0,0,1}},{0},0)==0);
+ check(std::abs(tinyChannel.amplitude(0)-Complex(1))<1e-12);
+ check(tinyChannel.channel({{0,0,0,0},{1,0,0,1}},{0},0)==1);
+ StateVector channelBoundary(1,32);channelBoundary.apply(X,{0});
+ check(channelBoundary.channel({{1,0,0,0},{0,1,0,0}},{0},0)==1);
+ check(channelBoundary.amplitude(0)==Complex(1));
+ std::vector<std::vector<Complex>> maximumRank(256,{1./16,0,0,1./16});
+ check(channelBoundary.channel(maximumRank,{0},.999)==255);check(channelBoundary.amplitude(0)==Complex(1));
+ for(double draw:{0.,.999}) {
+  StateVector phase(1,32);phase.apply(H,{0});auto branch=phase.channel({{h,0,0,h},{h,0,0,-h}},{0},draw);
+  phase.apply(H,{0});check(std::abs(phase.amplitude(branch)-Complex(1))<1e-12);
+ }
+ StateVector ordered(3,128);ordered.apply(X,{2});check(ordered.channel({CX},{2,0},.5)==0);check(ordered.amplitude(5)==Complex(1));
+ StateVector invalid(1,32);
+ for(const auto &bad:std::vector<std::vector<std::vector<Complex>>>{{},{{1,0,0}},{{2,0,0,1}},{{1,0,0,0}},{{std::numeric_limits<double>::infinity(),0,0,1}}})
+  rejects<std::invalid_argument>([&]{invalid.channel(bad,{0},.5);});
+ for(double draw:{-1.,1.,std::numeric_limits<double>::quiet_NaN()})rejects<std::invalid_argument>([&]{invalid.channel(damping,{0},draw);});
+ rejects<std::invalid_argument>([&]{invalid.channel(damping,{},.5);});
+ rejects<std::invalid_argument>([&]{invalid.channel({CX},{0,0},.5);});
+ rejects<std::out_of_range>([&]{invalid.channel(damping,{1},.5);});
+ rejects<std::invalid_argument>([&]{invalid.channel(std::vector<std::vector<Complex>>(257,{1,0,0,1}),{0},.5);});
+ check(invalid.valid() && invalid.amplitude(0)==Complex(1));
+ StateVector channelCancel(14,262144);unsigned channelCalls=0;
+ rejects<Cancelled>([&]{channelCancel.channel(damping,{0},.5,[&]{return ++channelCalls==7;});});check(channelCancel.valid());
+ channelCalls=0;rejects<Cancelled>([&]{channelCancel.channel(damping,{0},.5,[&]{return ++channelCalls==12;});});check(!channelCancel.valid());
+ rejects<std::logic_error>([&]{channelCancel.channel(damping,{0},.5);});
+ // Deterministic midpoint quadrature reconstructs the exact Bell density:
+ // damping on wire 1: populations (1/2,0,1/4,1/4), coherence sqrt(2)/4.
+ Complex density[16]={};
+ for(unsigned shot=0;shot<1000;++shot) {
+  StateVector state(2,64);state.apply(H,{0});state.apply(CX,{0,1});state.channel(damping,{1},(shot+.5)/1000);
+  for(unsigned r=0;r<4;++r)for(unsigned c=0;c<4;++c)density[r*4+c]+=state.amplitude(r)*std::conj(state.amplitude(c))/1000.;
+ }
+ for(unsigned r=0;r<4;++r)for(unsigned c=0;c<4;++c) {
+  double expected=r==c ? (r==0 ? .5 : r==1 ? 0 : .25) : ((r==0 && c==3)||(r==3 && c==0)) ? std::sqrt(2.)/4 : 0;
+  check(std::abs(density[r*4+c]-expected)<1e-12);
+ }
  std::cout<<"PASS: "<<checks<<" numerical sampling checks\n";
  }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}
