@@ -451,3 +451,13 @@ Save replaces an existing file atomically. The editor samples classical records;
 exact classical-record evaluation and runtime OpenQASM import are not yet
 available.
 
+The compiler has an opt-in `preserve_branches` unrolling path for the upcoming
+classical importer. It preserves equality/inequality against constants and
+single-bit conditions as whole branches, including both bodies and saved
+measurement destinations. This avoids the pinned compiler's reversed indexing
+when expanding register comparisons: OpenQASM uses little-endian register to
+integer conversion ([types specification](https://openqasm.com/versions/3.0/language/types.html)).
+Runtime-register right-hand operands and ordered comparisons currently produce
+explicit diagnostics in this path. The legacy version-1 importer is unchanged;
+version-2 output conversion and GUI import wiring remain to be implemented.
+

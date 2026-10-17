@@ -56,6 +56,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if isinstance(condition, ast.BinaryExpression):
             if condition.op.name not in ('==', '!='):
                 raise ValueError('Classical circuit import currently requires equality or inequality conditions.')
+            if Qasm3ExprEvaluator.classical_register_in_expr(condition.rhs):
+                raise ValueError('A classical comparison currently needs a constant right-hand side.')
             rhs = Qasm3ExprEvaluator.evaluate_expression(condition.rhs)[0]
             if type(rhs) not in (int, bool):
                 raise ValueError('A classical comparison needs an integer or Boolean constant.')

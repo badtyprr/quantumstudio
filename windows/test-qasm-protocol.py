@@ -29,7 +29,16 @@ for predicate in ['c==2', 'c!=2', 'c[1]', '!c[1]']:
         assert branch.condition.lhs.name == 'c' and branch.condition.rhs.value == 2
         assert branch.condition.op.name == predicate[1:3]
     assert adapter.QasmVisitor._visit_branching_statement is original_branch
-print('PASS: 4 classical branch preservation checks.')
+for predicate in ['c==d', 'c>1']:
+    module = adapter.pyqasm.loads(header+'qubit q; bit[2] c; bit[2] d; if('+predicate+') x q;')
+    try:
+        adapter.unroll_preserving_phase(module, {'x'}, preserve_branches=True)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Unsupported runtime comparison accepted: '+predicate)
+    assert adapter.QasmVisitor._visit_branching_statement is original_branch
+print('PASS: 6 classical branch preservation checks.')
 
 def run(command, source, expected=None, arguments=(), diagnostic=None):
     global checks
