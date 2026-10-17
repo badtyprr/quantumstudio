@@ -11,6 +11,7 @@ EXTRA_DIST = config.rpath  \
 	docs/exact-circuit-protocol.md \
 	docs/classical-expression-protocol.md \
 	docs/classical-circuit-files.md \
+	docs/classical-expression-text.md \
 	docs/learning-source-inventory.json \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
@@ -25,6 +26,8 @@ EXTRA_DIST = config.rpath  \
 	windows/NumericalSampling.cs \
 	windows/ClassicalExpression.cs \
 	windows/ClassicalExpressionTests.cs \
+	windows/ClassicalExpressionText.cs \
+	windows/ClassicalExpressionTextTests.cs \
 	windows/ExactCircuit.cs \
 	windows/ExactCircuitWindow.cs \
 	windows/test-exact-window.ps1 \
