@@ -49,7 +49,7 @@ class SamplingTests {
    var reset=new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}}};
    Check(Encoding.UTF8.GetString(NumericalSampling.Request(1,100,7,new[]{0},reset))=="QSAMPLE2\n1\n100\n7\n1\n1\n0\n2\n2\n0\n1\n0\n0\n");
    foreach(var invalid in new[]{
-    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)6,Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)7,Wires=new[]{0}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0,1}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{2}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Wires=new[]{0},Expression="X",Mask=4,Value=4},
@@ -109,8 +109,40 @@ class SamplingTests {
    Check(NumericalSampling.ReadClassicalResult(savedJson,1,4,10,7,new[]{3}).counts["1"]==10);
    Reject(()=>NumericalSampling.ReadClassicalResult(savedJson,1,3,10,7,new[]{3}));
    Reject(()=>NumericalSampling.ReadResult(savedJson,1,10,7,new[]{3},true));
+   var emptyBody=new NumericalSampling.Gate[0];
+   var branch=new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,Mask=1,Value=1,WhenTrue=new[]{
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0},ClassicalBit=0},
+    new NumericalSampling.Gate {Expression="X",Wires=new[]{1}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{1},ClassicalBit=1}},WhenFalse=emptyBody};
+   var branchProgram=new[]{new NumericalSampling.Gate {Expression="X",Wires=new[]{0}},new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0},ClassicalBit=0},branch};
+   Check(NumericalSampling.RequestClassical(2,2,100,7,new[]{0,1},branchProgram).Length>0);
+   Reject(()=>NumericalSampling.Request(2,100,7,new[]{0,1},branchProgram));
+   foreach(var invalid in new[]{
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=emptyBody},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=emptyBody,WhenFalse=emptyBody,Mask=4},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=emptyBody,WhenFalse=emptyBody,Value=1},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=emptyBody,WhenFalse=emptyBody,Expression="X"},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=emptyBody,WhenFalse=new NumericalSampling.Gate[]{null}},
+    new NumericalSampling.Gate {Expression="X",Wires=new[]{0},WhenTrue=emptyBody}})
+    Reject(()=>NumericalSampling.RequestClassical(2,2,100,7,new[]{0},new[]{invalid}));
+   NumericalSampling.Gate[] nested=emptyBody;
+   for(int k=0;k<32;k++)nested=new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=nested,WhenFalse=emptyBody}};
+   Check(NumericalSampling.RequestClassical(0,0,1,7,new int[0],nested).Length>0);
+   Reject(()=>NumericalSampling.RequestClassical(0,0,1,7,new int[0],new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=nested,WhenFalse=emptyBody}}));
+   var cycle=new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenFalse=emptyBody};cycle.WhenTrue=new[]{cycle};
+   Reject(()=>NumericalSampling.RequestClassical(0,0,1,7,new int[0],new[]{cycle}));
+   var wideBody=new List<NumericalSampling.Gate>();for(int k=0;k<4095;k++)wideBody.Add(new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}});
+   var wideBranch=new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Branch,WhenTrue=wideBody,WhenFalse=emptyBody};
+   Check(NumericalSampling.RequestClassical(1,1,1,7,new[]{0},new[]{wideBranch}).Length>0);
+   wideBody.Add(wideBody[0]);Reject(()=>NumericalSampling.RequestClassical(1,1,1,7,new[]{0},new[]{wideBranch}));
    if(args.Length==1) {
     string worker=Path.GetFullPath(args[0]);gates=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},new NumericalSampling.Gate {Expression="CX",Wires=new[]{0,1}}};
+    var branchResult=NumericalSampling.RunClassical(worker,2,2,100,7,new[]{0,1},branchProgram,CancellationToken.None).GetAwaiter().GetResult();
+    Check(branchResult.counts.Count==1 && branchResult.counts["01"]==100);
+    var branchPending=NumericalSampling.RunClassical(worker,2,2,100,7,new[]{0,1},branchProgram,CancellationToken.None);
+    branch.WhenTrue=emptyBody;
+    Check(branchPending.GetAwaiter().GetResult().counts["01"]==100);
     var savedResult=NumericalSampling.RunClassical(worker,2,64,100,7,new[]{63,3,0},saved,CancellationToken.None).GetAwaiter().GetResult();
     Check(savedResult.counts.Count==1 && savedResult.counts["110"]==100);
     savedResult=NumericalSampling.RunClassical(worker,1,1,100,7,new[]{0},new[]{new NumericalSampling.Gate {Expression="X",Wires=new[]{0}}},CancellationToken.None).GetAwaiter().GetResult();

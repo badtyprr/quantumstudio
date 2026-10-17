@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout }
- public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public int? ClassicalBit {get;set;}}
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch }
+ public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  public sealed class Readout {public string Expression;public int[] Bits;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
  public sealed class Result {
@@ -54,10 +54,30 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  foreach(var gate in operations) {
+  int total=0;
+  Action<Gate,int> write=null;
+  write=delegate(Gate gate,int depth) {
+   if(++total>4096)throw new ArgumentException("Sampling branches exceed 4096 total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
    if(gate.ClassicalBit.HasValue && (!classicalBits.HasValue || gate.Kind!=Operation.Measure))throw new ArgumentException("A classical destination requires an explicit classical-output measurement.");
+   if(gate.Kind!=Operation.Branch && (gate.WhenTrue!=null || gate.WhenFalse!=null))throw new ArgumentException("Only a branch can contain operation bodies.");
    if(dynamic)number((ulong)gate.Kind);
+   if(gate.Kind==Operation.Conditional || gate.Kind==Operation.Branch) {
+    ulong allowed=bits==64 ? UInt64.MaxValue : (1UL<<bits)-1;
+    if((gate.Mask & ~allowed)!=0 || (gate.Value & ~gate.Mask)!=0)throw new ArgumentException("Invalid classical condition.");
+    number(gate.Mask);number(gate.Value);
+   }
+   if(gate.Kind==Operation.Branch) {
+    if(!classicalBits.HasValue)throw new ArgumentException("Branches require explicit classical outputs.");
+    if(depth>=32)throw new ArgumentException("Sampling branches exceed 32 nesting levels.");
+    if(gate.WhenTrue==null || gate.WhenFalse==null || (gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression))throw new ArgumentException("A branch requires two bodies and no matrix or quantum targets.");
+    foreach(var body in new[]{gate.WhenTrue,gate.WhenFalse}) {
+     if(body.Count>4096-total)throw new ArgumentException("Sampling branches exceed 4096 total operations.");
+     number((ulong)body.Count);
+     foreach(var child in body)write(child,depth+1);
+    }
+    return;
+   }
    if(gate.Kind==Operation.Measure || gate.Kind==Operation.Reset) {
     if(gate.Wires==null || gate.Wires.Length!=1 || gate.Wires[0]<0 || gate.Wires[0]>=qubits)
      throw new ArgumentException("Measurement and reset need one wire inside the register.");
@@ -67,12 +87,7 @@ static class NumericalSampling {
      if(destination<0 || destination>=bits)throw new ArgumentException("Measurement needs a destination inside the classical register.");
      number((ulong)destination);
     }
-    continue;
-   }
-   if(gate.Kind==Operation.Conditional) {
-    ulong allowed=bits==64 ? UInt64.MaxValue : (1UL<<bits)-1;
-    if((gate.Mask & ~allowed)!=0 || (gate.Value & ~gate.Mask)!=0)throw new ArgumentException("Invalid classical condition.");
-    number(gate.Mask);number(gate.Value);
+    return;
    }
    if(gate.Wires==null || gate.Wires.Length==0 || String.IsNullOrWhiteSpace(gate.Expression) || gate.Expression.IndexOf('\0')>=0)
     throw new ArgumentException("Each sampling gate needs a matrix expression and target wires.");
@@ -81,7 +96,8 @@ static class NumericalSampling {
    if(length>4096)throw new ArgumentException("A sampling gate expression exceeds 4096 UTF-8 bytes.");
    number((ulong)length);text.Append(gate.Expression);
    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
-  }
+  };
+  foreach(var operation in operations)write(operation,0);
   byte[] bytes=new UTF8Encoding(false,true).GetBytes(text.ToString());
   if(bytes.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   return bytes;
