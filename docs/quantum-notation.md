@@ -332,6 +332,7 @@ Each step begins with an integer kind and then these fields:
 | 3: conditional gate | 64-bit mask, 64-bit value, then the gate payload |
 | 4: channel | Target count, targets, byte length, Kraus-vector expression |
 | 5: readout assignment | Classical target count, targets, byte length, probability-matrix expression |
+| 6: branch | Mask, value, true-body count and operations, false-body count and operations |
 
 Every shot starts with all-zero quantum state and classical memory. A measurement
 collapses its wire and overwrites the destination bit. Reset returns its wire
@@ -384,6 +385,17 @@ Supply the chosen coordinates by replacing whole kets, for example `replace(|\cl
 Transpose, entrywise conjugation and adjoint compose symbolically: transpose followed by conjugation is adjoint, adjoint followed by conjugation is transpose, and adjoint followed by transpose is conjugation. These pairs commute, and applying any one operation twice returns its operand. For example, `(QFT_N^*)^T` reduces to the adjoint of `QFT_N` without supplying N. The underlying expression remains present, so substituting an invalid Fourier dimension still rejects it. This does not yet simplify general symbolic unitary products or expand `QFT_N|x>_N` into a Fourier sum.
 
 
+The native trajectory API additionally supports `TrajectoryStep::branch(mask,
+value, whenTrue, whenFalse)`. It snapshots both bodies and selects exactly one
+body at entry using the saved classical bits. Measurements or readout errors
+inside that body can change later conditions without changing the already
+selected body. Validation checks both bodies even at zero shots, counts all
+nested operations toward the 4096-step limit, and allows at most 32 nested
+branches. The worker exposes these blocks as QSAMPLE2 operation 6. Body counts include
+only their immediate operations; all nested operations in both bodies count
+toward the shared 4096-operation limit. Every field and body is required even
+when it would not execute. The OpenQASM importer does not yet emit these blocks.
+
 The Windows sampling adapter also exposes `RequestClassical` / `RunClassical`
 for callers that need saved classical records. These accept an independent
 0–64-bit classical register and an explicit output-bit order (first bit most
@@ -394,3 +406,4 @@ classical bit indices; gate and reset targets use quantum wire indices.
 The existing editor sampling API retains its final-quantum-measurement behavior.
 This adapter support does not yet add named classical registers or runtime
 OpenQASM branches to circuit files or the editor.
+
