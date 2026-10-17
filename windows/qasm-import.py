@@ -461,7 +461,7 @@ def classical_expression(value, registers, expected_width=None):
             return width(node.lhs) or width(node.rhs)
         return None
     count=0
-    arithmetic={'+':'Add','-':'Subtract','*':'Multiply','/':'Divide','%':'Remainder'}
+    arithmetic={'+':'Add','-':'Subtract','*':'Multiply','/':'Divide','%':'Remainder','**':'Power'}
     def integer_value(node):
         return (isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
                 isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic or
