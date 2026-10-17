@@ -535,3 +535,10 @@ and limited to 32 levels and 512 expanded nodes. The caller supplies an already
 initialized record; declaration and initialization tracking are not supplied by
 this layer. This API is not yet connected to the worker wire protocol, circuit
 files, OpenQASM importer or editor.
+
+`Bits::integerCompare` converts one of the six typed integer comparisons into a
+single-bit condition usable by native exact and trajectory circuits. Untaken
+branches are structurally checked without executing their arithmetic; an
+executed zero divisor raises an error. Combined bit/integer expression trees
+share the same depth and expanded-node limits. This native bridge does not yet
+add an integer expression encoding to the worker protocol or OpenQASM importer.

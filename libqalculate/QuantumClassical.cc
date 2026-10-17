@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumClassical.h"
+#include "QuantumClassicalIntegerExpression.h"
 #include <algorithm>
 #include <stdexcept>
 
@@ -11,10 +12,11 @@ std::uint64_t mask(unsigned width) {
 }
 }
 struct Bits::Node {
- enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate };
+ enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate, IntegerCompare };
  Kind kind;Binary operation=Binary::And;
  Direction direction=Direction::Left;Distance interpretation=Distance::Unsigned;
  unsigned width,depth=1,count=1;std::uint64_t value=0,references=0;
+ std::shared_ptr<const IntegerExpression> integerLeft,integerRight;
  std::vector<unsigned> indices;std::shared_ptr<const Node> left,right;
  explicit Node(Kind k,unsigned w):kind(k),width(w) {
   if(!w || w>64)throw std::out_of_range("Classical expressions require 1..64 bits");
@@ -31,6 +33,15 @@ struct Bits::Node {
    std::uint64_t result=0;
    for(unsigned k=0;k<indices.size();++k)result|=((record>>indices[k])&1)<<k;
    return result;
+  }
+  if(kind==Kind::IntegerCompare) {
+   const int comparison=integerLeft->evaluate(record,64).compare(integerRight->evaluate(record,64));
+   switch(operation) {
+    case Binary::Equal:return comparison==0;case Binary::NotEqual:return comparison!=0;
+    case Binary::Less:return comparison<0;case Binary::LessEqual:return comparison<=0;
+    case Binary::Greater:return comparison>0;case Binary::GreaterEqual:return comparison>=0;
+    default:throw std::logic_error("Invalid integer comparison");
+   }
   }
   auto a=left->evaluate(record);
   if(kind==Kind::Complement)return (~a)&mask(width);
@@ -94,6 +105,19 @@ Bits Bits::binary(Binary operation,const Bits &left,const Bits &right) {
  }
  auto node=std::make_shared<Node>(Node::Kind::Binary,width);node->operation=operation;
  node->left=left.node_;node->right=right.node_;node->bound();return Bits(node);
+}
+Bits Bits::integerCompare(Binary operation,const IntegerExpression &left,const IntegerExpression &right) {
+ switch(operation) {
+  case Binary::Equal:case Binary::NotEqual:case Binary::Less:case Binary::LessEqual:
+  case Binary::Greater:case Binary::GreaterEqual:break;
+  default:throw std::invalid_argument("Integer conditions require a comparison operation");
+ }
+ auto node=std::make_shared<Node>(Node::Kind::IntegerCompare,1);node->operation=operation;
+ node->depth=1+std::max(left.depth(),right.depth());node->count=1+left.count()+right.count();
+ node->references=left.references()|right.references();
+ if(node->depth>32 || node->count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 expanded nodes");
+ node->integerLeft=std::make_shared<const IntegerExpression>(left);
+ node->integerRight=std::make_shared<const IntegerExpression>(right);return Bits(node);
 }
 Bits Bits::populationCount(const Bits &operand) {
  auto node=std::make_shared<Node>(Node::Kind::PopulationCount,64);

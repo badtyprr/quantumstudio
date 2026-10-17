@@ -8,6 +8,10 @@ namespace QuantumClassical {
 // Immutable runtime expressions over an already initialized packed record.
 // Register declarations/initialization and protocol decoding belong to callers.
 class IntegerExpression {
+ friend class Bits;
+ unsigned depth() const;
+ unsigned count() const;
+ std::uint64_t references() const;
  struct Node;
  std::shared_ptr<const Node> node_;
  explicit IntegerExpression(std::shared_ptr<const Node> node):node_(node) {}
