@@ -178,8 +178,8 @@ static class NumericalSampling {
   int[] order=(int[])measured.Clone();
   return RunSerialized(worker,qubits,shots,seed,order,request,cancellation,dynamic ? (int?)qubits : null);
  }
- public static Task<Result> RunClassical(string worker,int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates,CancellationToken cancellation) {
-  byte[] request=RequestClassical(qubits,classicalBits,shots,seed,outputBits,gates);
+ public static Task<Result> RunClassical(string worker,int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates,CancellationToken cancellation,IList<ClassicalIntegerType> variableTypes=null) {
+  byte[] request=RequestClassical(qubits,classicalBits,shots,seed,outputBits,gates,variableTypes);
   return RunSerialized(worker,qubits,shots,seed,(int[])outputBits.Clone(),request,cancellation,classicalBits);
  }
  static Task<Result> RunSerialized(string worker,int qubits,int shots,ulong seed,int[] order,byte[] request,CancellationToken cancellation,int? classicalBits) {

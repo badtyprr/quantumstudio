@@ -6,6 +6,41 @@ class ClassicalCircuitTests {
  static int checks;
  static void Check(bool ok) {if(!ok)throw new Exception("Check failed: "+checks);checks++;}
  static void Reject(Action action) {try {action();}catch(ArgumentException){checks++;return;}catch(InvalidDataException){checks++;return;}throw new Exception("Invalid circuit accepted: "+checks);}
+ static void Variables(string worker) {
+  var constant=new ClassicalCircuit.ExpressionNode {Kind="IntegerConstant",Signedness="Signed",Width=8,Value="3"};
+  var variable=new ClassicalCircuit.ExpressionNode {Kind="IntegerVariable",Signedness="Signed",Width=8,Slot=0};
+  var doc=new ClassicalCircuit.Document {Version=5,Qubits=0,Registers=new[]{new ClassicalCircuit.Register {Name="flag",Size=1}},OutputBits=new[]{0},
+   Variables=new[]{new ClassicalCircuit.Variable {Name="counter",Signedness="Signed",Width=8}},Steps=new[]{
+    new ClassicalCircuit.Step {Kind="StoreInteger",VariableSlot=0,IntegerValue=constant},
+    new ClassicalCircuit.Step {Kind="Assign",Wires=new[]{0},ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="IntegerCompare",Operator="Equal",Left=variable,Right=constant}}}};
+  var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  Check(ClassicalCircuit.Load(saved).Serialize()==saved);
+  Check(circuit.VariableTypes.Length==1 && circuit.VariableTypes[0].DeclaredWidth==8);
+  var snapshot=circuit.Snapshot();snapshot.Variables[0].Name="changed";snapshot.Steps[0].IntegerValue.Value="0";
+  Check(circuit.Serialize()==saved && circuit.Snapshot().Variables[0].Name=="counter");
+  var types=circuit.VariableTypes;types[0]=ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned);
+  Check(circuit.VariableTypes[0].Signedness==ClassicalIntegerType.Sign.Signed);
+  Check(Encoding.UTF8.GetString(NumericalSampling.RequestExact(0,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes)).StartsWith("QEXACT4\n"));
+  Check(Encoding.UTF8.GetString(NumericalSampling.RequestClassical(0,1,10,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes)).StartsWith("QSAMPLE5\n"));
+  foreach(int version in new[]{2,3,4}){var invalid=circuit.Snapshot();invalid.Version=version;Reject(()=>ClassicalCircuit.From(invalid));}
+  if(worker!=null)foreach(bool exact in new[]{true,false}) {
+   var reopened=ClassicalCircuit.Load(saved);
+   byte[] request=exact ? NumericalSampling.RequestExact(0,1,new[]{0},reopened.SamplingGates(),reopened.VariableTypes) : NumericalSampling.RequestClassical(0,1,10,1,new[]{0},reopened.SamplingGates(),reopened.VariableTypes);
+   string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,text=>text).GetAwaiter().GetResult();
+   var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+   var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+   Check(values.Count==1 && Convert.ToString(values["1"])==(exact ? "1" : "10"));
+  }
+  var bad=circuit.Snapshot();bad.Variables=null;Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Variables[0].Name="flag";Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Variables[0].Width=65;Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Variables[0].Signedness="0";Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Steps[0].VariableSlot=1;Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Steps[1].ClassicalValue.Left.Signedness="Unsigned";Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Steps[1].VariableSlot=0;Reject(()=>ClassicalCircuit.From(bad));
+  bad=circuit.Snapshot();bad.Steps[0].Kind="ClearInteger";Reject(()=>ClassicalCircuit.From(bad));
+  bad.Steps[0].IntegerValue=null;Check(ClassicalCircuit.From(bad).Snapshot().Steps[0].Kind=="ClearInteger");
+ }
  static ClassicalCircuit.Step Measure(int bit) {return new ClassicalCircuit.Step {Kind="Measure",Wires=new[]{0},ClassicalBit=bit};}
  static ClassicalCircuit.Document Program() {return new ClassicalCircuit.Document {Version=2,Qubits=1,Registers=new[]{new ClassicalCircuit.Register {Name="flag",Size=1},new ClassicalCircuit.Register {Name="record",Size=63}},OutputBits=new[]{63,0},Steps=new[]{Measure(63),new ClassicalCircuit.Step {Kind="Branch",Mask="9223372036854775808",Value="9223372036854775808",WhenTrue=new[]{Measure(0)},WhenFalse=new ClassicalCircuit.Step[0]}}};}
  static ClassicalCircuit.ExpressionNode Constant(int width,string value) {return new ClassicalCircuit.ExpressionNode {Kind="Constant",Width=width,Value=value};}
@@ -185,6 +220,7 @@ class ClassicalCircuitTests {
   wide.Steps[0].ClassicalValue.RotationDirection="Left";Reject(()=>ClassicalCircuit.From(wide));
   TypedChecks();
   BitCastChecks();
+  Variables(args.Length==0 ? null : args[0]);
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }
