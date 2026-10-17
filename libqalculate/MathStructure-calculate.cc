@@ -7620,7 +7620,9 @@ int evalSortCompare(const MathStructure &mstruct1, const MathStructure &mstruct2
 		}
 		case STRUCT_FUNCTION: {
 			if(mstruct1.function()->id() != mstruct2.function()->id()) {
+				// Custom functions follow built-ins in both comparison directions.
 				if(mstruct1.function()->id() == 0) return 1;
+				if(mstruct2.function()->id() == 0) return -1;
 				if(mstruct1.function()->id() < mstruct2.function()->id()) return -1;
 				return 1;
 			}
