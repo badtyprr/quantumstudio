@@ -17,6 +17,16 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal("|psi_{pi/8}>","|psi_{pi/8}>");
+  equal("|psi_{a+b}>","|psi_{a+b}>");
+  equal("|psi_a+b>","|psi_a+b>");
+  equal(R"(\ket{psi_{a+b}})","|psi_{a+b}>");
+  equal("|Phi_{+}>","|Phi_+>");
+  rejects("|psi_{}>");
+  equal("<0|+A_{i+j}","<0|+A_i+j");
+  equal(R"(\ket{\psi_\alpha})","|ψ_α>");
+  equal(R"(\braket{psi_{a+b}}{psi_{c+d}})","<psi_{a+b}|psi_{c+d}>");
+  equal(R"(\dyad{psi_{a+b}}{psi_{c+d}})","(|psi_{a+b}><psi_{c+d}|)");
   equal(R"(\clubsuit\diamondsuit\heartsuit\spadesuit)","♣♢♡♠");
   equal(R"(\vert\clubsuit\rangle)","|♣>");
   equal(R"(\zeta\eta\iota\kappa\nu\xi\omicron\tau\upsilon)","ζηικνξοτυ");

@@ -299,6 +299,30 @@ for parameter in ["α", "theta_1"]:
     assert data(state_request(declaration, "quantum:|ψ(t)>"), "--states") == data("quantum:t*|0>")
 run(state_request([("psi(π)", "π*|0>")], "1"), "--states", success=False)
 
+for label in ["|psi_{pi/2}>", r"\ket{psi_{pi/2}}", r"\ket{psi_{\pi/2}}"]:
+    assert data(state_request(family, "quantum:"+label), "--states")["cells"] == [["0"], ["1"]]
+for label in ["|psi_t>", "|psi_{t}>"]:
+    assert data(state_request(family, "quantum:"+label), "--states") == data(state_request(family, "quantum:|psi(t)>"), "--states")
+assert data(state_request([("psi_t", "|1>")]+family, "quantum:|psi_t>"), "--states")["cells"] == [["0"], ["1"]]
+assert data(state_request(family+[("psi_t", "|1>")], "quantum:|psi_t>"), "--states")["cells"] == [["0"], ["1"]]
+assert data(state_request(family, r"quantum:\braket{psi_{pi/2}}{psi_0}"), "--states")["text"] == "0"
+greek_family = [("ψ(α)", "cos(α)|0>+sin(α)|1>")]
+assert data(state_request(greek_family, r"quantum:\ket{\psi_{\pi/2}}"), "--states")["cells"] == [["0"], ["1"]]
+assert data(state_request(greek_family, r"quantum:\ket{\psi_\beta}"), "--states") == data(state_request(greek_family, "quantum:|ψ(β)>"), "--states")
+for label in ["|psi_{}>", "|psi_{1,2}>"]:
+    run(state_request(family, "quantum:"+label), "--states", success=False)
+
+
+for expression in ["|unknown_{a+b}>", r"\dyad{psi_{pi/2}}{psi_0}", r"\mel{psi_{pi/2}}{X}{psi_0}"]:
+    value = data(state_request(family, "quantum:"+expression), "--states")
+    assert data(state_request(family, "quantum:"+value["copy_text"]), "--states") == value
+mixture = "(2+sqrt(2))/4*|psi_{pi/8}><psi_{pi/8}|+(2-sqrt(2))/4*|psi_{5*pi/8}><psi_{5*pi/8}|"
+value = data(state_request(family, "quantum:"+mixture), "--states", "--approx")
+assert (value["rows"],value["columns"]) == (2,2)
+for r in range(2):
+    for c in range(2):
+        assert abs(Decimal(value["cells"][r][c])-Decimal("0.75" if (r,c)==(0,0) else "0.25")) < Decimal("1e-25"), value
+
 definitions = [("Bell", "|Phi+>"), ("after CZ", "CZ|Bell>")]
 for flags in [(), ("--approx",)]:
     for expression, expected in [("<Bell|Bell>", 1), ("<Bell|after CZ>", 0), ("<after CZ|after CZ>", 1)]:

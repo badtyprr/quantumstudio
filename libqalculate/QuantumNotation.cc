@@ -38,8 +38,9 @@ std::string labelText(std::string s) {
  s.erase(std::remove_if(s.begin(),s.end(),[](unsigned char c) { return std::isspace(c); }),s.end()); return s;
 }
 size_t stateFamilyOpen(const std::string &label) {
- size_t open=label.find('(');
- if(open==std::string::npos || open==0 || label.back()!=')' || std::isdigit((unsigned char)label[0]))return std::string::npos;
+ size_t subscript=label.find("_{"),open=subscript==std::string::npos ? label.find('(') : subscript+1;
+ char close=subscript==std::string::npos ? ')' : '}';
+ if(subscript==0 || open==std::string::npos || open==0 || label.back()!=close || std::isdigit((unsigned char)label[0]))return std::string::npos;
  for(size_t k=0;k<open;++k)if((unsigned char)label[k]<128 && !std::isalnum((unsigned char)label[k]) && label[k]!='_')return std::string::npos;
  return open;
 }
@@ -457,7 +458,9 @@ class Parser {
    std::string argument=expression();ws();
    if(p!=s.size())throw std::runtime_error("A state family currently takes one scalar argument.");
    s=outer;p=outerPosition;
-   return "qstatecall(\""+familyLabel.substr(0,familyOpen)+"\","+argument+")";
+   std::string familyName=familyLabel.substr(0,familyOpen);
+   if(familyLabel[familyOpen]=='{')familyName.pop_back();
+   return "qstatecall(\""+familyName+"\","+argument+")";
   }
   // Commas at the top level separate registers. Commas inside a computed
   // basis index, such as mod(k,3), remain ordinary function arguments.

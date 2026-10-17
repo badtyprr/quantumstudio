@@ -236,8 +236,12 @@ definition; Greek parameters such as `α` and subscripted identifiers such as
 `theta_1` are supported. A symbolic argument retains symbolic amplitudes. Families share the
 existing definition order, finite column-vector limits and session storage.
 An undeclared family stays symbolic, without an assumed normalization or
-orthogonality. This function-style form takes one scalar argument; mathematical
-subscript forms such as `|psi_{pi/8}>` are not yet supported.
+orthogonality. Each family takes one scalar argument. Subscript calls include
+`|psi_{pi/8}>` and `|psi_t>` and work inside Dirac macros such as
+`\ket{\psi_{\pi/8}}` when the corresponding family is declared. Compound
+subscripts require braces. Simple subscript labels retain their existing
+symbolic meaning without a declared family; explicitly defined fixed states
+such as `psi_t` take precedence over a family call.
 
 The worker's `--states` option accepts definitions alongside one expression. Define
 `Bell` as `|Phi+>` and then `after CZ` as `CZ|Bell>` to evaluate `<Bell|Bell>`

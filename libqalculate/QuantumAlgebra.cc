@@ -88,6 +88,20 @@ class QuantumAlgebraFunction: public MathFunction {
   if(op=="qketstate" && args[0].isSymbolic()) {
    Variable *state=CALCULATOR->getActiveVariable(args[0].symbol());
    if(state && !state->isBuiltin())args[0].set(state);
+   else {
+    // A declared family gives a simple subscript its parameter meaning.
+    // Explicit named states take precedence; undeclared labels stay opaque.
+    const std::string label=args[0].symbol();
+    size_t split=label.rfind('_');
+    while(split!=std::string::npos && split>0) {
+     if(split+1<label.size() && CALCULATOR->getFunction("__qstate_family_"+label.substr(0,split))) {
+      MathStructure argument=CALCULATOR->calculate("quantum: "+label.substr(split+1),eo),name;
+      name.set(label.substr(0,split),true);
+      out.set(CALCULATOR->getFunction("qstatecall"),&name,&argument,NULL);out.eval(eo);return 1;
+     }
+     split=label.rfind('_',split-1);
+    }
+   }
   }
   for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   if(op=="qtensor" || op=="qadjacent" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<((op=="qtensor" || op=="qadjacent") ? 2U : 1U);++j) {
