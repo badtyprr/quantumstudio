@@ -10,6 +10,11 @@ $classicalTest = Join-Path $validation 'classical-circuit-tests.exe'
 if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests did not compile.' }
 & $classicalTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests failed.' }
+$historyTest = Join-Path $validation 'classical-history-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$historyTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistory.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistoryTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Classical history tests did not compile.' }
+& $historyTest
+if ($LASTEXITCODE -ne 0) { throw 'Classical history tests failed.' }
 & "$fx\csc.exe" /nologo /target:exe "/out:$sessionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'SessionStoreTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Session tests did not compile.' }
 & $sessionTest
