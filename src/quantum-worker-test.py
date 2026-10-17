@@ -21,6 +21,15 @@ def data(expression, *flags):
     assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Symbolic members retain their free names inside nested summations.
+for flags in [(), ("--approx",)]:
+    for expression in [
+        "qsumset(qsum(x+y,0,1,y),vector(y),x)-(2*y+1)",
+        "qsumset(qsumset(x+y,vector(0,1),y),vector(y),x)-(2*y+1)",
+        "qsumset(qsum(qsum(x+y,0,1,y),0,1,y),vector(y),x)-(4*y+2)",
+    ]:
+        assert data(expression, *flags)["text"] == "0"
+
 # A bra ending one projector must not consume the next weighted summand.
 for flags in [(), ("--approx",)]:
     for expression, expected in [

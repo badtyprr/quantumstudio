@@ -8,19 +8,35 @@
 #include <vector>
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
-// Locate a nested declaration that shadows this index.
-int quantumIndexBinder(const MathStructure &value,const MathStructure &index) {
+// These operations bind an index in their first argument only.
+int quantumBinderPosition(const MathStructure &value) {
  int bound=-1;
  if(value.isFunction() && value.size()==4) {
   const std::string &name=value.function()->referenceName();
-  if((name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="qsum" || name=="sum" || name=="product") && value[3].equals(index))bound=3;
+  if(name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction" || name=="qsum" || name=="sum" || name=="product")bound=3;
  }
- if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence" || value.function()->referenceName()=="qsumset") && value[2].equals(index))bound=2;
+ if(value.isFunction() && value.size()==3 && (value.function()->referenceName()=="qphasefunction" || value.function()->referenceName()=="qsequence" || value.function()->referenceName()=="qsumset"))bound=2;
  return bound;
+}
+int quantumIndexBinder(const MathStructure &value,const MathStructure &index) {
+ int bound=quantumBinderPosition(value);
+ return bound>=0 && value[bound].equals(index) ? bound : -1;
 }
 // Substitute a free index without capturing a nested finite-product/sum index.
 void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement) {
  if(value.equals(index)) {value=replacement;return;}
+ int declaration=quantumBinderPosition(value);
+ if(declaration>=0 && !value[declaration].equals(index) &&
+    (value[declaration].isSymbolic() || value[declaration].isVariable()) &&
+    replacement.contains(value[declaration]) && value[0].contains(index)) {
+  // A free name in a symbolic replacement must not become a nested index.
+  // Rename only its bound body; range endpoints and initial states are free.
+  unsigned serial=0;MathStructure fresh;
+  do {fresh=MathStructure("__qbound_index_"+std::to_string(serial++),true);}
+  while(value.contains(fresh) || replacement.contains(fresh) || index.equals(fresh));
+  MathStructure old=value[declaration];
+  replaceQuantumIndex(value[0],old,fresh);value[declaration]=fresh;
+ }
  int bound=quantumIndexBinder(value,index);
  for(size_t k=0;k<value.size();++k) {
   if(bound>=0 && (k==0 || k==size_t(bound)))continue;
