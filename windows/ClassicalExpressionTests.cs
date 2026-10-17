@@ -15,12 +15,45 @@ static class ClassicalExpressionTests {
  static void Reject(Action action){bool rejected=false;try{action();}catch(ArgumentException){rejected=true;}Check(rejected);}
  static G Assign(int[] targets,E value){return new G{Kind=O.Assign,Wires=targets,ClassicalExpression=value};}
  static G Branch(E condition,IList<G> yes,IList<G> no=null){return new G{Kind=O.ExpressionBranch,ClassicalExpression=condition,WhenTrue=yes,WhenFalse=no??new G[0]};}
- static byte[] Request(bool exact,int q,int bits,int[] output,IList<G> steps){return exact ? NumericalSampling.RequestExact(q,bits,output,steps) : NumericalSampling.RequestClassical(q,bits,10000,1731,output,steps);}
+ static byte[] Request(bool exact,int q,int bits,int[] output,IList<G> steps,IList<T> types=null){return exact ? NumericalSampling.RequestExact(q,bits,output,steps,types) : NumericalSampling.RequestClassical(q,bits,10000,1731,output,steps,types);}
  static string Encode(E value,int bits){var text=new StringBuilder();value.Write(v=>text.Append(v).Append('\n'),bits);return text.ToString();}
- static Dictionary<string,object> Evaluate(string worker,bool exact,int q,int bits,int[] output,IList<G> steps) {
-  string text=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",Request(exact,q,bits,output,steps),CancellationToken.None,s=>s).GetAwaiter().GetResult();
+ static Dictionary<string,object> Evaluate(string worker,bool exact,int q,int bits,int[] output,IList<G> steps,IList<T> types=null) {
+  string text=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",Request(exact,q,bits,output,steps,types),CancellationToken.None,s=>s).GetAwaiter().GetResult();
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+ }
+ static void VariableChecks(string worker) {
+  var type=T.Create(T.Sign.Signed,8);var types=new[]{type};var value=I.Variable(type,0);
+  var three=I.Constant(type,3);var positive=E.IntegerCompare(E.Operator.Greater,value,I.Constant(type,0));
+  var store=new G {Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=three};
+  var clear=new G {Kind=O.ClearInteger,VariableSlot=0};
+  Reject(()=>I.Variable(type,-1));Reject(()=>I.Variable(type,4096));Reject(()=>I.Variable(null,0));
+  Reject(()=>Encode(positive,0));
+  foreach(bool exact in new[]{true,false}) {
+   var steps=new[]{store,Branch(positive,new[]{Assign(new[]{0},E.Constant(1,1))})};
+   string encoded=Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},steps,types));
+   Check(encoded.StartsWith(exact ? "QEXACT4\n0\n1\n1\n0\n8\n" : "QSAMPLE5\n0\n10000\n1731\n1\n1\n0\n8\n"));
+   Reject(()=>Request(exact,0,1,new[]{0},steps));
+   Reject(()=>Request(exact,0,1,new[]{0},steps,new[]{T.Create(T.Sign.Unsigned,8)}));
+   Reject(()=>Request(exact,0,1,new[]{0},steps,new T[0]));
+   Reject(()=>Request(exact,0,1,new[]{0},steps,new T[]{null}));
+   Reject(()=>Request(exact,0,0,new int[0],new G[0],new T[4097]));
+   foreach(var bad in new[]{new G {Kind=O.StoreInteger,VariableSlot=0},new G {Kind=O.ClearInteger,VariableSlot=0,IntegerExpression=three},
+     new G {Kind=O.StoreInteger,VariableSlot=1,IntegerExpression=three},new G {Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=three,Expression="X"},
+     new G {Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=three,Wires=new[]{0}},new G {Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=three,Mask=1},
+     new G {Kind=O.Gate,Expression="X",Wires=new[]{0},VariableSlot=0},new G {Kind=O.ClearInteger,VariableSlot=0,ClassicalExpression=E.Constant(1,0)}})
+    Reject(()=>Request(exact,1,1,new[]{0},new[]{bad},types));
+   var invalid=E.IntegerCompare(E.Operator.Equal,I.Variable(type,1),three);
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{Branch(E.Constant(1,0),new[]{Branch(invalid,new G[0])})},types));
+   if(worker==null)continue;
+   var result=Evaluate(worker,exact,0,1,new[]{0},steps,types);Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+   result=Evaluate(worker,exact,0,1,new[]{0},new[]{store,clear,new G {Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=I.Constant(type,0)},Branch(positive,new[]{Assign(new[]{0},E.Constant(1,1))})},types);
+   Check(result.Count==1 && Convert.ToString(result["0"])==(exact ? "1" : "10000"));
+   var measured=I.Read(T.Create(T.Sign.Unsigned,1),0);
+   result=Evaluate(worker,exact,1,1,new[]{0},new[]{new G {Expression="H",Wires=new[]{0}},new G {Kind=O.Measure,Wires=new[]{0},ClassicalBit=0},
+    new G {Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=measured},Assign(new[]{0},E.Constant(1,0)),Branch(positive,new[]{Assign(new[]{0},E.Constant(1,1))})},types);
+   Check(result.Count==2);foreach(string label in new[]{"0","1"})Check(exact ? Convert.ToString(result[label])=="0.5" : Math.Abs(Convert.ToInt32(result[label])-5000)<400);
+  }
  }
  static void PowerChecks(string worker) {
   var machine=T.Create(T.Sign.Signed);var byteType=T.Create(T.Sign.Signed,8);
@@ -195,6 +228,7 @@ static class ClassicalExpressionTests {
   LogicalChecks(args.Length>0 ? args[0] : null);
   IntegerBitChecks(args.Length>0 ? args[0] : null);
   PowerChecks(args.Length>0 ? args[0] : null);
+  VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }

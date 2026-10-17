@@ -57,8 +57,8 @@ For example, `c[1:2] = c[0:1]` uses operation fields
 ## Typed variable storage: QEXACT4 and QSAMPLE5
 
 These versions insert a declaration table immediately after the classical-bit
-count and before the output-bit list. It contains a slot count (0–4096), followed
-by each slot's signedness (0 signed, 1 unsigned) and width (0 machine, 1–64 sized).
+count and before the output-bit list. It contains a slot count (0-4096), followed
+by each slot's signedness (0 signed, 1 unsigned) and width (0 machine, 1-64 sized).
 Names and lexical scopes are resolved by the producer. Slot IDs are zero-based.
 
 Integer node 4 contains signedness, width and slot ID. Its type must exactly match

@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 using System;
+using System.Collections.Generic;
 
 // Immutable unsigned expressions shared by exact and sampled request builders.
 sealed class ClassicalExpression {
@@ -75,12 +76,17 @@ sealed class ClassicalExpression {
   if(!Enum.IsDefined(typeof(Direction),direction) || !Enum.IsDefined(typeof(Distance),interpretation))throw new ArgumentException("Unknown rotation direction or distance interpretation.");
   return new ClassicalExpression(NodeKind.Rotate,operand.Width,0,null,0,operand,distance) {RotationDirection=direction,DistanceInterpretation=interpretation};
  }
- public void Write(Action<ulong> number,int registerBits) {
+ public void Write(Action<ulong> number,int registerBits,IList<ClassicalIntegerType> variables=null) {
   if(number==null)throw new ArgumentNullException("number");
   if(registerBits<0 || registerBits>64)throw new ArgumentException("Use 0–64 classical bits.");
   ulong allowed=registerBits==64 ? UInt64.MaxValue : (1UL<<registerBits)-1;
   if((references & ~allowed)!=0)throw new ArgumentException("Expression reads outside the classical register.");
+  ValidateVariables(registerBits,variables);
   WriteNode(number);
+ }
+ void ValidateVariables(int bits,IList<ClassicalIntegerType> variables) {
+  if(IntegerLeft!=null)IntegerLeft.Validate(bits,variables);if(IntegerRight!=null)IntegerRight.Validate(bits,variables);
+  if(Left!=null)Left.ValidateVariables(bits,variables);if(Right!=null)Right.ValidateVariables(bits,variables);
  }
  void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
@@ -112,9 +118,10 @@ sealed class ClassicalIntegerType {
  internal void Write(Action<ulong> number){number((ulong)Signedness);number((ulong)DeclaredWidth);}
 }
 sealed class ClassicalIntegerExpression {
- public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3 }
+ public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
+ public int Slot {get;private set;}
  public ClassicalIntegerType Type {get;private set;}public ulong Value {get;private set;}
  public ClassicalIntegerExpression Left {get;private set;}public ClassicalIntegerExpression Right {get;private set;}
  internal int Depth {get;private set;}internal int Count {get;private set;}internal ulong References {get;private set;}
@@ -138,6 +145,18 @@ sealed class ClassicalIntegerExpression {
   if(bits.Length!=type.Width)throw new ArgumentException("Integer read width must match its type.");
   return new ClassicalIntegerExpression(NodeKind.Read,type,0,bits,0,null,null);
  }
+ public static ClassicalIntegerExpression Variable(ClassicalIntegerType type,int slot) {
+  if(slot<0 || slot>=4096)throw new ArgumentException("Variable slots must be 0-4095.");
+  return new ClassicalIntegerExpression(NodeKind.Variable,type,0,null,0,null,null) {Slot=slot};
+ }
+ internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+  if(bits<0 || bits>64 || (bits<64 && (References>>bits)!=0))throw new ArgumentException("Integer expression reads outside the classical register.");
+  if(Kind==NodeKind.Variable) {
+   if(variables==null || Slot>=variables.Count || variables[Slot]==null || variables[Slot].Signedness!=Type.Signedness || variables[Slot].DeclaredWidth!=Type.DeclaredWidth)
+    throw new ArgumentException("Variable slot or declared type does not match the circuit.");
+  }
+  if(Left!=null)Left.Validate(bits,variables);if(Right!=null)Right.Validate(bits,variables);
+ }
  public static ClassicalIntegerExpression Cast(ClassicalIntegerType type,ClassicalIntegerExpression operand) {
   if(operand==null)throw new ArgumentNullException("operand");
   return new ClassicalIntegerExpression(NodeKind.Cast,type,0,null,0,operand,null);
@@ -153,6 +172,7 @@ sealed class ClassicalIntegerExpression {
   Type.Write(number);
   if(Kind==NodeKind.Constant)number(Value);
   else if(Kind==NodeKind.Read){foreach(int bit in indices)number((ulong)bit);}
+  else if(Kind==NodeKind.Variable)number((ulong)Slot);
   else Left.WriteNode(number);
  }
 }
