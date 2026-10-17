@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "quantum-exact-request.h"
+#include "quantum-classical-request.h"
 #include <libqalculate/Calculator.h>
 #include <libqalculate/QuantumExactCircuit.h>
 #include <limits>
@@ -11,9 +12,10 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
+ bool classical() const {return input.compare(0,8,"QEXACT2\n")==0;}
  explicit Reader(const std::string &value):input(value) {
-  if(input.size()>1100000 || input.compare(0,8,"QEXACT1\n"))
-   throw std::runtime_error("Expected a bounded QEXACT1 request.");
+  if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
+   throw std::runtime_error("Expected a bounded QEXACT1 or QEXACT2 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -58,17 +60,22 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
  unsigned &total,const EvaluationOptions &exact) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(6));
- if(kind==6) {
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.classical()?8:6));
+ if(kind==7) {
+  auto targets=reader.targets(bits,bits);
+  return Step::assign(targets,QuantumClassicalRequest::read(reader,bits));
+ }
+ if(kind==6 || kind==8) {
   if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches.");
-  auto mask=reader.integer(std::numeric_limits<std::uint64_t>::max());
-  auto value=reader.integer(std::numeric_limits<std::uint64_t>::max());
+  std::uint64_t mask=0,value=0;
+  if(kind==6) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
+  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,bits) : QuantumClassical::Bits::constant(1,0);
   std::vector<Step> bodies[2];
   for(auto &body:bodies) {
    unsigned count=static_cast<unsigned>(reader.integer(512-total));
    for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,bits,depth+1,total,exact));
   }
-  return Step::branch(mask,value,bodies[0],bodies[1]);
+  return kind==8 ? Step::branch(condition,bodies[0],bodies[1]) : Step::branch(mask,value,bodies[0],bodies[1]);
  }
  if(kind==5) {
   auto targets=reader.targets(bits,8);
