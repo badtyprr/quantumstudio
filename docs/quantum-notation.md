@@ -554,7 +554,11 @@ add an integer expression encoding to the worker protocol or OpenQASM importer.
 `QEXACT3` and `QSAMPLE4` retain the field layout of `QEXACT2` and `QSAMPLE3`
 and additionally accept bit-expression node 6: a comparison code followed by
 two integer expression trees. Comparison codes 0..5 mean `==`, `!=`, `<`, `<=`,
-`>` and `>=`. Existing protocol versions reject this node.
+`>` and `>=`. Node 7 encodes logical And (0) or Or (1), followed by two
+one-bit expression children. QuantumStudio evaluates logical operands left to
+right and skips the right operand when the left determines the result. Bitwise
+And/Or (node 3) continue to evaluate both children. Older protocol versions reject
+nodes 6 and 7. Structural checks still inspect skipped logical operands.
 
 An integer type is encoded as signedness (0 signed, 1 unsigned) and width
 (1..64 explicit, 0 machine precision). Integer tree nodes are:
