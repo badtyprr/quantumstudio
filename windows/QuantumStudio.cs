@@ -296,6 +296,14 @@ class QuantumStudio {
     finally {if(editor!=null)editor.Close();window.Close();}
    };
   }
+  if(args.Length==3 && args[0]=="--exact-circuit-test") {
+   window.Loaded+=async delegate {
+    ExactCircuitWindow exact=null;
+    try {exact=new ExactCircuitWindow(window,ClassicalCircuit.Load(File.ReadAllText(args[1],Encoding.UTF8)));exact.Show();await exact.Verify(args[2]);File.WriteAllText(args[2],"PASS: exact results, copy/save data and minimum layout.");}
+    catch(Exception ex){File.WriteAllText(args[2],"FAIL: "+ex);Environment.ExitCode=1;}
+    finally {if(exact!=null)exact.Close();window.Close();}
+   };
+  }
   if(args.Length==3 && args[0]=="--classical-sampling-test") {
    window.Loaded+=async delegate {
     SamplingWindow sampling=null;
