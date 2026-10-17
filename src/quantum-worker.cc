@@ -99,7 +99,10 @@ static void defineStates(Calculator &calculator,std::string &input) {
    if(previousParameterUnit)previousParameterUnit->setActive(false);
    parameterBinding=new UnknownVariable("",parameterName);calculator.addVariable(parameterBinding,false,false);
    parameter=calculator.calculate("quantum: "+parameterName,exact);
-   if(messages(calculator) || !parameter.isVariable() || parameter.variable()!=parameterBinding)throw std::runtime_error("A family parameter must be an unambiguous scalar variable.");
+   // Quantum Greek letters and subscripted identifiers lower to atomic symbols.
+   // Accept that exact symbol as well as the temporary variable binding.
+   bool localParameter=(parameter.isVariable() && parameter.variable()==parameterBinding) || (parameter.isSymbolic() && parameter.symbol()==parameterName);
+   if(messages(calculator) || !localParameter)throw std::runtime_error("A family parameter must be an unambiguous scalar variable.");
   }
   MathStructure label=calculator.calculate("quantum: |"+name+">",exact);
   if(messages(calculator) || !label.isFunction() || (familyName.empty() ? label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name : label.function()->referenceName()!="qstatecall" || label.size()!=2 || label[0].symbol()!=familyName))throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
