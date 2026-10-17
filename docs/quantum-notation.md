@@ -382,3 +382,13 @@ Supply the chosen coordinates by replacing whole kets, for example `replace(|\cl
 ### Symbolic adjoint composition
 
 Transpose, entrywise conjugation and adjoint compose symbolically: transpose followed by conjugation is adjoint, adjoint followed by conjugation is transpose, and adjoint followed by transpose is conjugation. These pairs commute, and applying any one operation twice returns its operand. For example, `(QFT_N^*)^T` reduces to the adjoint of `QFT_N` without supplying N. The underlying expression remains present, so substituting an invalid Fourier dimension still rejects it. This does not yet simplify general symbolic unitary products or expand `QFT_N|x>_N` into a Fourier sum.
+
+
+The native trajectory API additionally supports `TrajectoryStep::branch(mask,
+value, whenTrue, whenFalse)`. It snapshots both bodies and selects exactly one
+body at entry using the saved classical bits. Measurements or readout errors
+inside that body can change later conditions without changing the already
+selected body. Validation checks both bodies even at zero shots, counts all
+nested operations toward the 4096-step limit, and allows at most 32 nested
+branches. This native API is not yet exposed by the worker protocol or OpenQASM
+importer; it is the execution foundation for runtime blocks.
