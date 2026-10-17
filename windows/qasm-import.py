@@ -36,7 +36,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return any(isinstance(item,ast.Identifier) and item.name in visitor._global_creg_size_map for item in nodes(value))
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
-    def normalize(visitor, value, depth=0, cast_distance=False):
+    def normalize(visitor, value, depth=0, cast_distance=False, typed=False):
+        typed=typed or (runtime(visitor,value) and any(isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(value)))
         if depth >= 32:
             raise ValueError('Classical expressions exceed 32 levels.')
         registers = visitor._global_creg_size_map
@@ -73,19 +74,19 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             expected=1 if value.name.name=='popcount' else 2
             if len(value.arguments)!=expected:raise ValueError('Wrong number of classical bit-function arguments.')
             return ast.FunctionCall(name=copy.deepcopy(value.name),arguments=[normalize(visitor,item,depth+1,cast_distance=(value.name.name in ('rotl','rotr') and index==1)) for index,item in enumerate(value.arguments)])
-        if isinstance(value,ast.Cast) and isinstance(value.type,(ast.IntType,ast.UintType)) and (cast_distance or runtime(visitor,value)):
-            if value.type.size is None:raise ValueError('Runtime integer casts need an explicit width.')
-            size=Qasm3ExprEvaluator.evaluate_expression(value.type.size)[0]
-            if type(size) is not int or not 1<=size<=64:raise ValueError('Integer cast width must be 1–64.')
-            return ast.Cast(type=type(value.type)(size=ast.IntegerLiteral(size)),argument=normalize(visitor,value.argument,depth+1))
+        if isinstance(value,ast.Cast) and isinstance(value.type,(ast.IntType,ast.UintType)) and (typed or cast_distance or runtime(visitor,value)):
+            if value.type.size is not None and runtime(visitor,value.type.size):raise ValueError("Integer cast widths must be compile-time constants.")
+            size=0 if value.type.size is None else Qasm3ExprEvaluator.evaluate_expression(value.type.size)[0]
+            if type(size) is not int or not 0<=size<=64 or (size==0 and value.type.size is not None):raise ValueError('Integer cast width must be 1–64.')
+            return ast.Cast(type=type(value.type)(size=ast.IntegerLiteral(size)),argument=normalize(visitor,value.argument,depth+1,typed=typed))
         if isinstance(value, ast.BinaryExpression):
-            if not runtime(visitor,value) and not bit_function(value) and not any(isinstance(item,ast.BitstringLiteral) for item in nodes(value)):
+            if not typed and not runtime(visitor,value) and not bit_function(value) and not any(isinstance(item,ast.BitstringLiteral) for item in nodes(value)):
                 result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
                 if type(result) not in (int,bool):raise ValueError('Expected an integer classical constant.')
                 return ast.BooleanLiteral(result) if type(result) is bool else ast.IntegerLiteral(result)
-            return ast.BinaryExpression(op=value.op, lhs=normalize(visitor,value.lhs,depth+1), rhs=normalize(visitor,value.rhs,depth+1))
-        if isinstance(value, ast.UnaryExpression) and value.op.name in ('~','!'):
-            return ast.UnaryExpression(op=value.op, expression=normalize(visitor,value.expression,depth+1))
+            return ast.BinaryExpression(op=value.op, lhs=normalize(visitor,value.lhs,depth+1,typed=typed), rhs=normalize(visitor,value.rhs,depth+1,typed=typed))
+        if isinstance(value, ast.UnaryExpression) and value.op.name in (('~','!','-') if typed else ('~','!')):
+            return ast.UnaryExpression(op=value.op, expression=normalize(visitor,value.expression,depth+1,typed=typed))
         if isinstance(value, (ast.IntegerLiteral,ast.BooleanLiteral,ast.BitstringLiteral)):
             return copy.deepcopy(value)
         if runtime(visitor,value):
@@ -458,10 +459,46 @@ def classical_expression(value, registers, expected_width=None):
             return width(node.lhs) or width(node.rhs)
         return None
     count=0
-    def build(node,hint=None,depth=0):
+    arithmetic={'+':'Add','-':'Subtract','*':'Multiply','/':'Divide','%':'Remainder'}
+    def integer_value(node):
+        return (isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
+                isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic or
+                isinstance(node,ast.UnaryExpression) and node.op.name=='-')
+    def bound(depth):
         nonlocal count
         count+=1
         if count>512 or depth>=32:raise ValueError('Classical expressions exceed 512 nodes or 32 levels.')
+    def integer(node,depth):
+        bound(depth)
+        if isinstance(node,ast.IntegerLiteral):
+            value=node.value
+            if type(value) is not int or not -(1<<63)<=value<(1<<64):raise ValueError('Integer literal exceeds 64 bits.')
+            return {'Kind':'IntegerConstant','Signedness':'Signed' if value<(1<<63) else 'Unsigned','Width':0,'Value':str(value&((1<<64)-1))}
+        if isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)):
+            size=node.type.size.value;storage=size or 64
+            if type(size) is not int or not 0<=size<=64:raise ValueError('Invalid integer cast width.')
+            sign='Signed' if isinstance(node.type,ast.IntType) else 'Unsigned'
+            if isinstance(node.argument,(ast.Identifier,ast.IndexExpression)):
+                bits=classical_indices(node.argument,registers)
+                if len(bits)!=storage:raise ValueError('Bit-to-integer casts require matching widths.')
+                return {'Kind':'IntegerRead','Signedness':sign,'Width':size,'Bits':bits}
+            if isinstance(node.argument,ast.BitstringLiteral):
+                if node.argument.width!=storage:raise ValueError('Bit-to-integer casts require matching widths.')
+                return {'Kind':'IntegerConstant','Signedness':sign,'Width':size,'Value':str(node.argument.value)}
+            return {'Kind':'IntegerCast','Signedness':sign,'Width':size,'Left':integer(node.argument,depth+1)}
+        if isinstance(node,ast.UnaryExpression) and node.op.name=='-':
+            if isinstance(node.expression,ast.IntegerLiteral):
+                magnitude=node.expression.value
+                if type(magnitude) is not int or not 0<=magnitude<=(1<<63):raise ValueError('Negative literals must fit signed 64 bits.')
+                return {'Kind':'IntegerConstant','Signedness':'Signed','Width':0,'Value':str((-magnitude)&((1<<64)-1))}
+            return {'Kind':'IntegerBinary','Operator':'Subtract','Left':integer(ast.IntegerLiteral(0),depth+1),'Right':integer(node.expression,depth+1)}
+        if isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic:
+            return {'Kind':'IntegerBinary','Operator':arithmetic[node.op.name],'Left':integer(node.lhs,depth+1),'Right':integer(node.rhs,depth+1)}
+        raise ValueError('Cast bit operands explicitly before integer arithmetic.')
+    def build(node,hint=None,depth=0):
+        bound(depth)
+        if isinstance(node,ast.BinaryExpression) and node.op.name in comparisons and (integer_value(node.lhs) or integer_value(node.rhs)):
+            return {'Kind':'IntegerCompare','Operator':operations[node.op.name],'Left':integer(node.lhs,depth+1),'Right':integer(node.rhs,depth+1)},1
         if isinstance(node,(ast.Identifier,ast.IndexExpression)):
             bits=classical_indices(node,registers);return {'Kind':'Read','Bits':bits},len(bits)
         if isinstance(node,(ast.IntegerLiteral,ast.BooleanLiteral,ast.BitstringLiteral)):
@@ -552,7 +589,7 @@ def classical_circuit(statements, published_u):
     version = 2
     def expression_version(node):
         if not isinstance(node,dict):return 3
-        return max(4 if node.get('Kind')=='Logical' else 3,
+        return max(4 if node.get('Kind')=='Logical' or node.get('Kind','').startswith('Integer') else 3,
                    expression_version(node.get('Left')),expression_version(node.get('Right')))
     def lower(body, depth=0):
         nonlocal count,version
