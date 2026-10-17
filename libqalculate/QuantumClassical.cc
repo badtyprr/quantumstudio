@@ -12,7 +12,7 @@ std::uint64_t mask(unsigned width) {
 }
 }
 struct Bits::Node {
- enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate, IntegerCompare };
+ enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate, IntegerCompare, Logical };
  Kind kind;Binary operation=Binary::And;
  Direction direction=Direction::Left;Distance interpretation=Distance::Unsigned;
  unsigned width,depth=1,count=1;std::uint64_t value=0,references=0;
@@ -48,6 +48,7 @@ struct Bits::Node {
   if(kind==Kind::PopulationCount) {
    std::uint64_t result=0;for(;a;a&=a-1)++result;return result;
   }
+  if(kind==Kind::Logical && ((operation==Binary::And && !a) || (operation==Binary::Or && a)))return a;
   auto b=right->evaluate(record);
   if(kind==Kind::Rotate) {
    bool leftward=direction==Direction::Left;
@@ -104,6 +105,12 @@ Bits Bits::binary(Binary operation,const Bits &left,const Bits &right) {
   default:throw std::invalid_argument("Unknown classical binary operation");
  }
  auto node=std::make_shared<Node>(Node::Kind::Binary,width);node->operation=operation;
+ node->left=left.node_;node->right=right.node_;node->bound();return Bits(node);
+}
+Bits Bits::logical(Binary operation,const Bits &left,const Bits &right) {
+ if(operation!=Binary::And && operation!=Binary::Or)throw std::invalid_argument("Logical expressions require And or Or");
+ if(left.width()!=1 || right.width()!=1)throw std::invalid_argument("Logical operands require one bit");
+ auto node=std::make_shared<Node>(Node::Kind::Logical,1);node->operation=operation;
  node->left=left.node_;node->right=right.node_;node->bound();return Bits(node);
 }
 Bits Bits::integerCompare(Binary operation,const IntegerExpression &left,const IntegerExpression &right) {

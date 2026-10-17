@@ -27,6 +27,35 @@ int main(){try {
   reject<std::out_of_range>([&]{Bits::complement(condition).validate(7);});
  }
  reject<std::invalid_argument>([&]{Bits::integerCompare(Bits::Binary::And,negative,positive);});
+ // Partial arithmetic distinguishes logical short circuit from eager bitwise operations.
+ auto zero=Bits::constant(1,0),one=Bits::constant(1,1);
+ auto quotient=Expr::binary(Int::Operation::Divide,constant(6),negative);
+ auto condition=Bits::integerCompare(Op::Equal,quotient,constant(3));
+ check(Bits::logical(Op::And,zero,condition).evaluate(0,8)==0);
+ check(Bits::logical(Op::Or,one,condition).evaluate(0,8)==1);
+ reject<std::domain_error>([&]{Bits::logical(Op::And,one,condition).evaluate(0,8);});
+ reject<std::domain_error>([&]{Bits::logical(Op::Or,zero,condition).evaluate(0,8);});
+ reject<std::domain_error>([&]{Bits::binary(Op::And,zero,condition).evaluate(0,8);});
+ reject<std::domain_error>([&]{Bits::binary(Op::Or,one,condition).evaluate(0,8);});
+ for(unsigned a=0;a<2;++a)for(unsigned b=0;b<2;++b) {
+  check(Bits::logical(Op::And,Bits::constant(1,a),Bits::constant(1,b)).evaluate(0,0)==(a&&b));
+  check(Bits::logical(Op::Or,Bits::constant(1,a),Bits::constant(1,b)).evaluate(0,0)==(a||b));
+ }
+ auto guarded=Bits::logical(Op::And,Bits::integerCompare(Op::NotEqual,negative,constant(0)),condition);
+ check(guarded.evaluate(0,8)==0);check(guarded.evaluate(2,8)==1);check(guarded.evaluate(3,8)==0);
+ reject<std::out_of_range>([&]{Bits::logical(Op::And,zero,condition).validate(7);});
+ reject<std::out_of_range>([&]{Bits::logical(Op::Or,one,condition).evaluate(0,7);});
+ reject<std::out_of_range>([&]{Bits::logical(Op::And,zero,condition).evaluate(256,8);});
+ reject<std::invalid_argument>([&]{Bits::logical(Op::Xor,zero,one);});
+ reject<std::invalid_argument>([&]{Bits::logical(static_cast<Op>(99),zero,one);});
+ reject<std::invalid_argument>([&]{Bits::logical(Op::And,Bits::constant(2,0),one);});
+ reject<std::invalid_argument>([&]{Bits::logical(Op::Or,one,Bits::constant(2,0));});
+ auto logicalDepth=zero;for(unsigned k=1;k<32;++k)logicalDepth=Bits::logical(Op::And,zero,logicalDepth);
+ check(logicalDepth.evaluate(0,0)==0);
+ reject<std::length_error>([&]{Bits::logical(Op::And,zero,logicalDepth);});
+ auto logicalBreadth=one;for(unsigned k=0;k<8;++k)logicalBreadth=Bits::logical(Op::Or,logicalBreadth,logicalBreadth);
+ check(logicalBreadth.evaluate(0,0)==1);
+ reject<std::length_error>([&]{Bits::logical(Op::Or,logicalBreadth,logicalBreadth);});
  auto deep=constant(0);for(unsigned k=1;k<32;++k)deep=Expr::cast(machine,deep);
  reject<std::length_error>([&]{Bits::integerCompare(Bits::Binary::Equal,deep,constant(0));});
  auto shared=constant(0);for(unsigned k=0;k<8;++k)shared=Expr::binary(Int::Operation::Add,shared,shared);
