@@ -10,16 +10,17 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel }
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout }
  public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;}
+ public sealed class Readout {public string Expression;public int[] Bits;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
  public sealed class Result {
   public int? classical_bits {get;set;} public int qubits {get;set;} public int shots {get;set;} public string seed {get;set;} public int[] wires {get;set;} public Dictionary<string,int> counts {get;set;}
  }
- public static byte[] Request(int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates) {
-  if(qubits<0 || qubits>25 || shots<1 || shots>100000 || gates==null || gates.Count>4096)
+ public static byte[] Request(int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,IList<Readout> readout=null) {
+  if(qubits<0 || qubits>25 || shots<1 || shots>100000 || gates==null || gates.Count>4096 || measured==null || (readout!=null && readout.Count>4096))
    throw new ArgumentException("Use 0–25 qubits, 1–100,000 shots and at most 4096 gates.");
-  bool dynamic=IsDynamic(gates);
+  bool dynamic=IsDynamic(gates) || (readout!=null && readout.Count>0);
   var text=new StringBuilder(dynamic ? "QSAMPLE2\n" : "QSAMPLE1\n");
   Action<ulong> number=value=>text.Append(value.ToString(CultureInfo.InvariantCulture)).Append('\n');
   number((ulong)qubits);number((ulong)shots);number(seed);if(dynamic)number((ulong)qubits);
@@ -32,10 +33,19 @@ static class NumericalSampling {
    }
   };
   wires(measured,qubits);
-  int stepCount=gates.Count+(dynamic ? measured.Length : 0);
+  int stepCount=gates.Count+(dynamic ? measured.Length : 0)+(readout==null ? 0 : readout.Count);
   if(stepCount>4096)throw new ArgumentException("Sampling needs at most 4096 operations including final measurements.");
   number((ulong)stepCount);
-  foreach(var gate in gates) {
+  // Final assignment errors must follow final measurements, or those
+  // measurements would overwrite the noisy records before returning counts.
+  var operations=new List<Gate>(gates);
+  if(dynamic)foreach(int wire in measured)operations.Add(new Gate {Kind=Operation.Measure,Wires=new[]{wire}});
+  if(readout!=null)foreach(var error in readout) {
+   if(error==null || error.Bits==null)throw new ArgumentException("Invalid readout assignment.");
+   foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
+   operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
+  }
+  foreach(var gate in operations) {
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
    if(dynamic)number((ulong)gate.Kind);
    if(gate.Kind==Operation.Measure || gate.Kind==Operation.Reset) {
@@ -52,13 +62,12 @@ static class NumericalSampling {
    }
    if(gate.Wires==null || gate.Wires.Length==0 || String.IsNullOrWhiteSpace(gate.Expression) || gate.Expression.IndexOf('\0')>=0)
     throw new ArgumentException("Each sampling gate needs a matrix expression and target wires.");
-   wires(gate.Wires,3);
+   wires(gate.Wires,gate.Kind==Operation.Readout ? 8 : 3);
    int length=Encoding.UTF8.GetByteCount(gate.Expression);
    if(length>4096)throw new ArgumentException("A sampling gate expression exceeds 4096 UTF-8 bytes.");
    number((ulong)length);text.Append(gate.Expression);
    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   }
-  if(dynamic)foreach(int wire in measured) {number((ulong)Operation.Measure);number((ulong)wire);number((ulong)wire);}
   byte[] bytes=new UTF8Encoding(false,true).GetBytes(text.ToString());
   if(bytes.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   return bytes;
@@ -80,10 +89,10 @@ static class NumericalSampling {
   if(total!=shots)throw new InvalidDataException("Sample counts do not sum to the requested shots.");
   return result;
  }
- public static Task<Result> Run(string worker,int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,CancellationToken cancellation) {
+ public static Task<Result> Run(string worker,int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,CancellationToken cancellation,IList<Readout> readout=null) {
   // Serialize before handing work to another thread, so editor changes cannot alter a run.
-  byte[] request=Request(qubits,shots,seed,measured,gates);
-  bool dynamic=IsDynamic(gates);
+  byte[] request=Request(qubits,shots,seed,measured,gates,readout);
+  bool dynamic=IsDynamic(gates) || (readout!=null && readout.Count>0);
   int[] order=(int[])measured.Clone();
   return Task.Run(async delegate {
    cancellation.ThrowIfCancellationRequested();

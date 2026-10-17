@@ -49,7 +49,7 @@ class SamplingTests {
    var reset=new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}}};
    Check(Encoding.UTF8.GetString(NumericalSampling.Request(1,100,7,new[]{0},reset))=="QSAMPLE2\n1\n100\n7\n1\n1\n0\n2\n2\n0\n1\n0\n0\n");
    foreach(var invalid in new[]{
-    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)5,Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)6,Wires=new[]{0}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0,1}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{2}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Wires=new[]{0},Expression="X",Mask=4,Value=4},
@@ -62,11 +62,31 @@ class SamplingTests {
    Check(NumericalSampling.ReadResult(dynamicJson,2,100,7,new[]{1,0},true).classical_bits==2);
    Reject(()=>NumericalSampling.ReadResult(valid,2,100,7,new[]{1,0},true));
    Reject(()=>NumericalSampling.ReadResult(dynamicJson,2,100,7,new[]{1,0}));
+   var flip=new NumericalSampling.Readout {Bits=new[]{0},Expression="[0,1;1,0]"};
+   var empty=new NumericalSampling.Gate[0];
+   Check(Encoding.UTF8.GetString(NumericalSampling.Request(1,100,7,new[]{0},empty,new[]{flip}))=="QSAMPLE2\n1\n100\n7\n1\n1\n0\n2\n1\n0\n0\n5\n1\n0\n9\n[0,1;1,0]");
+   Check(Encoding.UTF8.GetString(NumericalSampling.Request(1,100,7,new[]{0},empty,new NumericalSampling.Readout[0])).StartsWith("QSAMPLE1\n"));
+   foreach(var error in new[]{null,new NumericalSampling.Readout(),new NumericalSampling.Readout {Bits=new int[0],Expression="1"},new NumericalSampling.Readout {Bits=new[]{0,0},Expression=flip.Expression},new NumericalSampling.Readout {Bits=new[]{1},Expression=flip.Expression},new NumericalSampling.Readout {Bits=new[]{0},Expression=""}})
+    Reject(()=>NumericalSampling.Request(2,100,7,new[]{0},empty,new[]{error}));
+   var overLimit=new List<NumericalSampling.Readout>();for(int k=0;k<4096;k++)overLimit.Add(flip);
+   Reject(()=>NumericalSampling.Request(1,100,7,new[]{0},empty,overLimit));
+   overLimit.RemoveAt(0);Check(NumericalSampling.Request(1,100,7,new[]{0},empty,overLimit).Length>0);
+   Reject(()=>NumericalSampling.Request(0,100,7,new int[0],empty,new[]{flip}));
    composer.Close();owner.Close();
    if(args.Length==1) {
     string worker=Path.GetFullPath(args[0]);gates=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},new NumericalSampling.Gate {Expression="CX",Wires=new[]{0,1}}};
     var result=NumericalSampling.Run(worker,2,10000,7,new[]{0,1},gates,CancellationToken.None).GetAwaiter().GetResult();
     Check(result.counts.Count==2 && result.counts.ContainsKey("00") && result.counts.ContainsKey("11"));
+    var readoutResult=NumericalSampling.Run(worker,2,1000,7,new[]{0,1},gates,CancellationToken.None,new[]{flip}).GetAwaiter().GetResult();
+    Check(readoutResult.classical_bits==2 && readoutResult.counts.Count==2 && readoutResult.counts.ContainsKey("01") && readoutResult.counts.ContainsKey("10"));
+    var correlated=new NumericalSampling.Readout {Bits=new[]{1,0},Expression="[0,1,0,0;0,1,0,0;0,0,1,0;0,0,0,1]"};
+    readoutResult=NumericalSampling.Run(worker,2,100,7,new[]{0,1},empty,CancellationToken.None,new[]{correlated}).GetAwaiter().GetResult();
+    Check(readoutResult.counts.Count==1 && readoutResult.counts["10"]==100);
+    readoutResult=NumericalSampling.Run(worker,1,100,7,new[]{0},empty,CancellationToken.None,new[]{flip,flip}).GetAwaiter().GetResult();
+    Check(readoutResult.counts.Count==1 && readoutResult.counts["0"]==100);
+    var snapshot=NumericalSampling.Run(worker,1,100,7,new[]{0},empty,CancellationToken.None,new[]{flip});
+    flip.Expression="[1,0;0,1]";readoutResult=snapshot.GetAwaiter().GetResult();
+    Check(readoutResult.counts.Count==1 && readoutResult.counts["1"]==100);
     var dynamicCircuit=new List<NumericalSampling.Gate> {
      new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},
      new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0}},
