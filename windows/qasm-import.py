@@ -14,9 +14,10 @@ from pyqasm.visitor import QasmVisitor
 from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.transformer import Qasm3Transformer
 from pyqasm.validator import Qasm3Validator
+from pyqasm.elements import Context
 
 
-def unroll_preserving_phase(module, primitives):
+def unroll_preserving_phase(module, primitives, preserve_branches=False):
     """Adapt the pinned compiler's controlled-gphase lowering.
 
     PyQASM 1.0.4 lowers controlled gphase through its basic P decomposition,
@@ -27,6 +28,61 @@ def unroll_preserving_phase(module, primitives):
         raise ValueError('This compiler adapter requires PyQASM 1.0.4.')
     original = QasmVisitor._visit_phase_operation
     original_range = Qasm3Transformer.get_qubits_from_range_definition
+    original_branch = QasmVisitor._visit_branching_statement
+    def branch(visitor, statement):
+        if not Qasm3ExprEvaluator.classical_register_in_expr(statement.condition):
+            return original_branch(visitor, statement)
+        # Preserve one decision at block entry. The pinned compiler expands
+        # register comparisons with reversed bit significance.
+        def reference(value):
+            if isinstance(value, ast.Identifier):
+                name, index = value.name, None
+            elif isinstance(value, ast.IndexExpression) and isinstance(value.collection, ast.Identifier) and isinstance(value.index, list) and len(value.index) == 1:
+                name = value.collection.name
+                index = Qasm3ExprEvaluator.evaluate_expression(value.index[0])[0]
+            else:
+                raise ValueError('A runtime condition needs a classical register or one indexed bit.')
+            size = visitor._global_creg_size_map.get(name)
+            if size is None:
+                raise ValueError('Unknown classical condition register: ' + name)
+            if index is not None:
+                if type(index) is not int or not 0 <= index < size:
+                    raise ValueError('Classical condition index is outside its register.')
+                visitor._is_branch_clbits.add((name, index))
+                return ast.IndexExpression(collection=ast.Identifier(name), index=[ast.IntegerLiteral(index)])
+            visitor._is_branch_clbits.update((name, bit) for bit in range(size))
+            return ast.Identifier(name)
+        condition = statement.condition
+        if isinstance(condition, ast.BinaryExpression):
+            if condition.op.name not in ('==', '!='):
+                raise ValueError('Classical circuit import currently requires equality or inequality conditions.')
+            if Qasm3ExprEvaluator.classical_register_in_expr(condition.rhs):
+                raise ValueError('A classical comparison currently needs a constant right-hand side.')
+            rhs = Qasm3ExprEvaluator.evaluate_expression(condition.rhs)[0]
+            if type(rhs) not in (int, bool):
+                raise ValueError('A classical comparison needs an integer or Boolean constant.')
+            condition = ast.BinaryExpression(op=condition.op, lhs=reference(condition.lhs), rhs=ast.IntegerLiteral(int(rhs)))
+        elif isinstance(condition, ast.UnaryExpression) and condition.op.name == '!':
+            condition = ast.UnaryExpression(op=condition.op, expression=reference(condition.expression))
+        else:
+            condition = reference(condition)
+        if visitor._in_branching_statement >= 32:
+            raise ValueError('Classical circuit branches exceed 32 levels.')
+        visitor._scope_manager.push_context(Context.BLOCK)
+        visitor._scope_manager.push_scope({})
+        visitor._scope_manager.increment_scope_level()
+        visitor._in_branching_statement += 1
+        try:
+            yes = visitor.visit_basic_block(statement.if_block)
+            no = visitor.visit_basic_block(statement.else_block)
+            return [] if visitor._check_only else [ast.BranchingStatement(condition=condition, if_block=yes, else_block=no)]
+        finally:
+            visitor._scope_manager.decrement_scope_level()
+            visitor._scope_manager.pop_scope()
+            visitor._scope_manager.restore_context()
+            visitor._in_branching_statement -= 1
+            if not visitor._in_branching_statement:
+                visitor._update_branching_gate_depths()
     def register_range(range_def, qreg_size, is_qubit_reg, op_node=None):
         # OpenQASM index ranges include their endpoint, unlike Python slices.
         start = 0 if range_def.start is None else Qasm3ExprEvaluator.evaluate_expression(range_def.start)[0]
@@ -49,11 +105,14 @@ def unroll_preserving_phase(module, primitives):
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
+    if preserve_branches:
+        QasmVisitor._visit_branching_statement = branch
     try:
         module.unroll(max_loop_iters=4096, external_gates=list(primitives))
     finally:
         QasmVisitor._visit_phase_operation = original
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
+        QasmVisitor._visit_branching_statement = original_branch
 
 
 GATES = {name.lower(): name for name in (
