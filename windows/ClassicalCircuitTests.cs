@@ -78,6 +78,20 @@ class ClassicalCircuitTests {
   bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Complement",Left=expr};Check(ClassicalCircuit.From(bounded).SamplingGates()[0].ClassicalExpression.Width==1);
   bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Binary",Operator="Xor",Left=expr,Right=Constant(1,"1")};Reject(()=>ClassicalCircuit.From(bounded));
   foreach(string op in new[]{"0","XOR","Unknown"}) {bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Binary",Operator=op,Left=Constant(1,"0"),Right=Constant(1,"1")};Reject(()=>ClassicalCircuit.From(bounded));}
+  foreach(string direction in new[]{"Left","Right"})foreach(string signedness in new[]{"Unsigned","Signed"}) {
+   var rotated=Expressions();rotated.Steps=new[]{new ClassicalCircuit.Step {Kind="Assign",Wires=allBits,ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Rotate",RotationDirection=direction,DistanceInterpretation=signedness,Left=Constant(64,"1"),Right=Constant(8,"255")}}};
+   var rotation=ClassicalCircuit.From(rotated);var loaded=ClassicalCircuit.Load(rotation.Serialize());
+   Check(loaded.Serialize()==rotation.Serialize());
+   var node=loaded.SamplingGates()[0].ClassicalExpression;
+   Check(node.Width==64 && node.RotationDirection.ToString()==direction && node.DistanceInterpretation.ToString()==signedness && node.Right.Width==8);
+   foreach(var mutate in new Action<ClassicalCircuit.ExpressionNode>[] {n=>n.RotationDirection=null,n=>n.RotationDirection="0",n=>n.RotationDirection="left",n=>n.DistanceInterpretation="Unknown",n=>n.DistanceInterpretation=null,n=>n.Left=null,n=>n.Right=null,n=>n.Width=64,n=>n.Operator="And"}) {
+    var bad=loaded.Snapshot();mutate(bad.Steps[0].ClassicalValue);Reject(()=>ClassicalCircuit.From(bad));
+   }
+  }
+  wide.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="PopulationCount",Left=Constant(64,"18446744073709551615")};
+  var counted=ClassicalCircuit.From(wide);Check(ClassicalCircuit.Load(counted.Serialize()).SamplingGates()[0].ClassicalExpression.Width==64);
+  wide.Steps[0].ClassicalValue.Right=Constant(1,"0");Reject(()=>ClassicalCircuit.From(wide));wide.Steps[0].ClassicalValue.Right=null;
+  wide.Steps[0].ClassicalValue.RotationDirection="Left";Reject(()=>ClassicalCircuit.From(wide));
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }

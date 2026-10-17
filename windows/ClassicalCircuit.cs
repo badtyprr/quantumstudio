@@ -13,6 +13,7 @@ sealed class ClassicalCircuit {
  public sealed class ExpressionNode {
   public string Kind {get;set;}public int? Width {get;set;}public string Value {get;set;}
   public int[] Bits {get;set;}public string Operator {get;set;}
+  public string RotationDirection {get;set;}public string DistanceInterpretation {get;set;}
   public ExpressionNode Left {get;set;}public ExpressionNode Right {get;set;}
  }
  public sealed class Step {
@@ -51,12 +52,17 @@ sealed class ClassicalCircuit {
  static void IntegerArray(object value) {foreach(object item in ArrayValue(value))Integer(item);}
  static void ExpressionFields(object value,int depth,ref int count) {
   if(depth>=32 || ++count>512)throw Invalid("Classical expressions allow 32 levels and 512 nodes.");
-  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right");
+  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation");
   var kind=Required(fields,"Kind") as string;string permitted;
   if(kind=="Constant") {permitted="Kind,Width,Value";Integer(Required(fields,"Width"));if(!(Required(fields,"Value") is string))throw Invalid("A constant value must be unsigned decimal text.");}
   else if(kind=="Read") {permitted="Kind,Bits";IntegerArray(Required(fields,"Bits"));}
-  else if(kind=="Complement") {permitted="Kind,Left";ExpressionFields(Required(fields,"Left"),depth+1,ref count);}
+  else if(kind=="Complement" || kind=="PopulationCount") {permitted="Kind,Left";ExpressionFields(Required(fields,"Left"),depth+1,ref count);}
   else if(kind=="Binary") {permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A classical operator must be a name.");ExpressionFields(Required(fields,"Left"),depth+1,ref count);ExpressionFields(Required(fields,"Right"),depth+1,ref count);}
+  else if(kind=="Rotate") {
+   permitted="Kind,RotationDirection,DistanceInterpretation,Left,Right";
+   if(!(Required(fields,"RotationDirection") is string) || !(Required(fields,"DistanceInterpretation") is string))throw Invalid("Rotation direction and distance interpretation must be names.");
+   ExpressionFields(Required(fields,"Left"),depth+1,ref count);ExpressionFields(Required(fields,"Right"),depth+1,ref count);
+  }
   else throw Invalid("Unknown classical expression kind.");
   var allowed=new HashSet<string>(permitted.Split(','),StringComparer.Ordinal);
   foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected field for classical expression: "+field.Key);
@@ -66,6 +72,13 @@ sealed class ClassicalCircuit {
   if(node.Kind=="Constant")return ClassicalExpression.Constant(node.Width.Value,Condition(node.Value));
   if(node.Kind=="Read")return ClassicalExpression.Read(node.Bits);
   if(node.Kind=="Complement")return ClassicalExpression.Complement(ConvertExpression(node.Left));
+  if(node.Kind=="PopulationCount")return ClassicalExpression.PopulationCount(ConvertExpression(node.Left));
+  if(node.Kind=="Rotate") {
+   ClassicalExpression.Direction direction;ClassicalExpression.Distance interpretation;
+   if(!Enum.TryParse(node.RotationDirection,out direction) || direction.ToString()!=node.RotationDirection || !Enum.IsDefined(typeof(ClassicalExpression.Direction),direction))throw Invalid("Unknown rotation direction.");
+   if(!Enum.TryParse(node.DistanceInterpretation,out interpretation) || interpretation.ToString()!=node.DistanceInterpretation || !Enum.IsDefined(typeof(ClassicalExpression.Distance),interpretation))throw Invalid("Unknown distance interpretation.");
+   return ClassicalExpression.Rotate(direction,ConvertExpression(node.Left),ConvertExpression(node.Right),interpretation);
+  }
   ClassicalExpression.Operator operation;
   if(!Enum.TryParse(node.Operator,out operation) || operation.ToString()!=node.Operator || !Enum.IsDefined(typeof(ClassicalExpression.Operator),operation))throw Invalid("Unknown classical expression operator.");
   return ClassicalExpression.Binary(operation,ConvertExpression(node.Left),ConvertExpression(node.Right));

@@ -51,3 +51,11 @@ Assignment copy and bit-width behavior follow the
 [OpenQASM 3 classical instruction specification](https://openqasm.com/versions/3.0/language/classical.html).
 The pinned PyQASM 1.0.4 visitor is adapted only during unrolling; all replaced
 methods are restored even when compilation fails.
+
+Version 3 expression trees also support `PopulationCount` with `Left`, returning
+an unsigned 64-bit count, and `Rotate` with `Left` (value), `Right` (distance),
+`RotationDirection` (`Left` or `Right`), and `DistanceInterpretation` (`Unsigned`
+or `Signed`). Signed distances use two's-complement at the distance node's width.
+Rotation preserves the value width and wraps the distance modulo that width.
+Names are case-sensitive; numeric enum values and irrelevant fields are rejected.
+Older readers reject these additional kinds instead of changing their meaning.
