@@ -17,6 +17,10 @@ static class ClassicalExpressionTextTests {
   Check(Parse("popcount(c)",64).Kind=="PopulationCount");
   foreach(string text in new[]{"popcount(c) == 2","popcount(read(63)) != 0","popcount(\"111\") == popcount(7)"})Roundtrip(Parse(text,1),1);
   foreach(string text in new[]{"rotl(c, 1)","rotr(c, -1)","rotl(c, -9223372036854775808)","rotr(c, 18446744073709551615)","rotl_signed(c, c)","rotr_signed(c, 1)","rotl(c, popcount(c))"})Roundtrip(Parse(text,3),3);
+  foreach(string text in new[]{"int[3](c)**3 == 8","2**3**2 == 512","-2**2 == -4","(-2)**2 == 4","2**-1 == 0","bit[3](int[3](2**3))"})Roundtrip(Parse(text,text.StartsWith("bit") ? 3 : 1),text.StartsWith("bit") ? 3 : 1);
+  Check(Parse("2**3**2 == 512",1).Left.Right.Operator=="Power");
+  Check(Parse("-2**2 == -4",1).Left.Operator=="Subtract" && Parse("-2**2 == -4",1).Left.Right.Operator=="Power");
+  foreach(string bad in new[]{"c**2 == 1","2***3 == 8","2** == 1"})Reject(()=>Parse(bad,1));
   var signedRotation=Parse("rotl(c, -1)",3);Check(signedRotation.DistanceInterpretation=="Signed" && signedRotation.Right.Width==64 && signedRotation.Right.Value==UInt64.MaxValue.ToString());
   signedRotation=Parse("rotl_signed(c, 1)",3);Check(signedRotation.Right.Width==64 && signedRotation.Right.Value=="1");
   var imported=new N{Kind="Rotate",RotationDirection="Right",DistanceInterpretation="Signed",Left=new N{Kind="Read",Bits=new[]{0,1,2}},Right=new N{Kind="Constant",Width=8,Value="255"}};Roundtrip(imported,3);
@@ -88,6 +92,19 @@ static class ClassicalExpressionTextTests {
    Check(Format(ClassicalExpressionText.Parse(name+"[0:1]",named,2))=="read(0,1)");
    Check(Format(ClassicalExpressionText.Parse(name+"[1]",named,1))=="read(1)");
    Check(Format(ClassicalExpressionText.Parse(name,named,3))=="read(0,1,2)");
+  }
+  foreach(string text in new[]{"2**3**2 == 512","(2**3)**2 == 64","-2**2 == -4","(-2)**2 == 4","2*3**2 == 18","2**3*2 == 16","int[3](c)**0 == 1","2**int[3](c) == 1","false && 2**-1 == 0","true || 2**63 == 0"}) {
+   var node=Parse(text,1);var d=Context();d.Version=4;d.OutputBits=new[]{3};
+   d.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{3},ClassicalValue=node}};
+   var saved=ClassicalCircuit.From(d);var opened=ClassicalCircuit.Load(saved.Serialize());
+   Check(opened.Serialize()==saved.Serialize());Check(Format(opened.Snapshot().Steps[0].ClassicalValue)==Format(node));
+   if(args.Length>0)foreach(bool exact in new[]{true,false}) {
+    var steps=opened.SamplingGates();byte[] request=exact ? NumericalSampling.RequestExact(0,64,new[]{3},steps) : NumericalSampling.RequestClassical(0,64,10000,1731,new[]{3},steps);
+    string result=NumericalSampling.RunRequest(args[0],exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,x=>x).GetAwaiter().GetResult();
+    var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+    string want=text.StartsWith("false") ? "0" : "1";Check(values.Count==1 && Convert.ToString(values[want])==(exact ? "1" : "10000"));
+   }
   }
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}

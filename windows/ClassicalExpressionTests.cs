@@ -22,6 +22,35 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void PowerChecks(string worker) {
+  var machine=T.Create(T.Sign.Signed);var byteType=T.Create(T.Sign.Signed,8);
+  var two=I.Constant(machine,2);var three=I.Constant(machine,3);
+  var power=I.Binary(I.Operator.Power,two,three);
+  var equal=E.IntegerCompare(E.Operator.Equal,power,I.Constant(machine,8));
+  Check(Encode(equal,0)=="6\n0\n3\n5\n0\n0\n0\n2\n0\n0\n0\n3\n0\n0\n0\n8\n");
+  Check(equal.UsesTypedProtocol && power.Type.DeclaredWidth==0);
+  Reject(()=>I.Binary(I.Operator.Power,null,three));Reject(()=>I.Binary(I.Operator.Power,two,null));
+  var read=I.Read(byteType,0,1,2,3,4,5,6,7);
+  var runtime=I.Binary(I.Operator.Power,two,read);
+  var condition=E.IntegerCompare(E.Operator.Equal,runtime,I.Constant(machine,8));
+  Reject(()=>Encode(condition,7));
+  foreach(bool exact in new[]{true,false}) {
+   var steps=new[]{Assign(new[]{0,1,2,3,4,5,6,7},E.Constant(8,3)),Assign(new[]{8},condition)};
+   Check(Encoding.UTF8.GetString(Request(exact,0,9,new[]{8},steps)).StartsWith(exact ? "QEXACT3\n" : "QSAMPLE4\n"));
+   if(worker==null)continue;
+   var result=Evaluate(worker,exact,0,9,new[]{8},steps);
+   Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+   var nested=I.Binary(I.Operator.Power,two,I.Binary(I.Operator.Power,three,two));
+   result=Evaluate(worker,exact,0,1,new[]{0},new[]{Assign(new[]{0},E.IntegerCompare(E.Operator.Equal,nested,I.Constant(machine,512)))});
+   Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+   foreach(ulong bad in new ulong[]{63,255}) {
+    var prefix=Assign(new[]{0,1,2,3,4,5,6,7},E.Constant(8,bad));
+    bool failed=false;try{Evaluate(worker,exact,0,9,new[]{8},new[]{prefix,Assign(new[]{8},condition)});}catch(InvalidOperationException){failed=true;}Check(failed);
+    result=Evaluate(worker,exact,0,9,new[]{8},new[]{prefix,Branch(E.Constant(1,0),new[]{Assign(new[]{8},condition)})});
+    Check(result.Count==1 && Convert.ToString(result["0"])==(exact ? "1" : "10000"));
+   }
+  }
+ }
  static void IntegerBitChecks(string worker) {
   var sized=T.Create(T.Sign.Signed,3);var machine=T.Create(T.Sign.Signed);
   var value=E.FromInteger(I.Constant(sized,7));
@@ -165,6 +194,7 @@ static class ClassicalExpressionTests {
   IntegerChecks(args.Length>0 ? args[0] : null);
   LogicalChecks(args.Length>0 ? args[0] : null);
   IntegerBitChecks(args.Length>0 ? args[0] : null);
+  PowerChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }

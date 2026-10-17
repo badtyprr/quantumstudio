@@ -113,7 +113,7 @@ sealed class ClassicalIntegerType {
 }
 sealed class ClassicalIntegerExpression {
  public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3 }
- public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4 }
+ public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public ClassicalIntegerType Type {get;private set;}public ulong Value {get;private set;}
  public ClassicalIntegerExpression Left {get;private set;}public ClassicalIntegerExpression Right {get;private set;}

@@ -7,9 +7,9 @@ using N=ClassicalCircuit.ExpressionNode;
 
 // Text syntax is independent of WPF and resolves to the validated file model.
 static class ClassicalExpressionText {
- static readonly string[] Symbols={"||","&&","|","^","&","==","!=","<",">","<=",">=","<<",">>","+","-","*","/","%"};
- static readonly string[] Names={"LogicalOr","LogicalAnd","Or","Xor","And","Equal","NotEqual","Less","Greater","LessEqual","GreaterEqual","ShiftLeft","ShiftRight","Add","Subtract","Multiply","Divide","Remainder"};
- static readonly int[] Priority={1,2,3,4,5,6,6,7,7,7,7,8,8,9,9,10,10,10};
+ static readonly string[] Symbols={"||","&&","|","^","&","==","!=","<",">","<=",">=","<<",">>","+","-","*","/","%","**"};
+ static readonly string[] Names={"LogicalOr","LogicalAnd","Or","Xor","And","Equal","NotEqual","Less","Greater","LessEqual","GreaterEqual","ShiftLeft","ShiftRight","Add","Subtract","Multiply","Divide","Remainder","Power"};
+ static readonly int[] Priority={1,2,3,4,5,6,6,7,7,7,7,8,8,9,9,10,10,10,12};
  static bool Comparison(string op){return op=="Equal" || op=="NotEqual" || op=="Less" || op=="Greater" || op=="LessEqual" || op=="GreaterEqual";}
  static int Minimum(ulong value){int width=1;while((value>>=1)!=0)width++;return width;}
  public static N Parse(string text,ClassicalCircuit.Document context,int width) {
@@ -23,7 +23,7 @@ static class ClassicalExpressionText {
   return value;
  }
  static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
- static bool Arithmetic(string op){return op=="Add" || op=="Subtract" || op=="Multiply" || op=="Divide" || op=="Remainder";}
+ static bool Arithmetic(string op){return op=="Add" || op=="Subtract" || op=="Multiply" || op=="Divide" || op=="Remainder" || op=="Power";}
  static N AsInteger(N n) {
   if(IntegerValue(n))return n;
   if(n.Kind=="Constant" && !n.Width.HasValue) {
@@ -124,7 +124,7 @@ static class ClassicalExpressionText {
    return type+"("+operand+")";
   }
   if(n.Kind=="IntegerBinary") {
-   string[] names={"Add","Subtract","Multiply","Divide","Remainder"},symbols={"+","-","*","/","%"};
+   string[] names={"Add","Subtract","Multiply","Divide","Remainder","Power"},symbols={"+","-","*","/","%","**"};
    int code=Array.IndexOf(names,n.Operator);if(code<0)throw new ArgumentException("Unknown integer operator.");
    return "("+FormatNode(n.Left,depth+1)+" "+symbols[code]+" "+FormatNode(n.Right,depth+1)+")";
   }
@@ -167,15 +167,15 @@ static class ClassicalExpressionText {
     Space();int op=-1;
     for(int i=0;i<Symbols.Length;i++)if(position+Symbols[i].Length<=text.Length && String.CompareOrdinal(text,position,Symbols[i],0,Symbols[i].Length)==0 && (op<0 || Symbols[i].Length>Symbols[op].Length))op=i;
     if(op<0 || Priority[op]<minimum)break;
-    position+=Symbols[op].Length;var right=Expression(Priority[op]+1,depth+1);left=Node(new N{Kind="Binary",Operator=Names[op],Left=left,Right=right});
+    position+=Symbols[op].Length;var right=Expression(Priority[op]+(Names[op]=="Power" ? 0 : 1),depth+1);left=Node(new N{Kind="Binary",Operator=Names[op],Left=left,Right=right});
    }
    return left;
   }
   N Atom(int depth) {
    if(depth>=128)throw new ArgumentException("Expression nesting is too deep.");
-   if(Take("-"))return Node(new N{Kind="UnaryMinus",Left=Atom(depth+1)});
-   if(Take("~"))return Node(new N{Kind="Complement",Left=Atom(depth+1)});
-   if(Take("!"))return Node(new N{Kind="LogicalNot",Left=Atom(depth+1)});
+   if(Take("-"))return Node(new N{Kind="UnaryMinus",Left=Expression(11,depth+1)});
+   if(Take("~"))return Node(new N{Kind="Complement",Left=Expression(11,depth+1)});
+   if(Take("!"))return Node(new N{Kind="LogicalNot",Left=Expression(11,depth+1)});
    if(Take("(")){var value=Expression(1,depth+1);Need(")");return value;}
    if(Take("\"")) {
     ulong value=0;int width=0;
