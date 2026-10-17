@@ -11,9 +11,9 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = @QALCULATE_TEXT@ quantum-worker
 noinst_PROGRAMS = @QALCULATE_DEFS2DOC@ @QALCULATE_TEST@ @QALCULATE_UNITTEST@
 EXTRA_PROGRAMS = qalc defs2doc test unittest
-check_PROGRAMS = quantum-trajectory-test quantum-numerical-sampling-test quantum-numerical-state-test quantum-parser-integration-test quantum-negativity-test quantum-css-test quantum-stabilizer-test quantum-indexed-test quantum-order-test quantum-binary-test quantum-evolution-test quantum-hellinger-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
+check_PROGRAMS = quantum-readout-test quantum-trajectory-test quantum-numerical-sampling-test quantum-numerical-state-test quantum-parser-integration-test quantum-negativity-test quantum-css-test quantum-stabilizer-test quantum-indexed-test quantum-order-test quantum-binary-test quantum-evolution-test quantum-hellinger-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test threadtest quantumtex-test quantum-singular-test
 TESTS_ENVIRONMENT = QALCULATE_DEFINITIONS_DIR=$(abs_top_builddir)/data
-TESTS = quantum-trajectory-test quantum-sampling-request-test.py quantum-numerical-sampling-test quantum-numerical-state-test quantum-worker-test.py quantum-parser-integration-test quantum-negativity-test quantum-css-test quantum-stabilizer-test quantum-indexed-test quantum-order-test quantum-binary-test quantum-evolution-test quantum-hellinger-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
+TESTS = quantum-readout-test quantum-trajectory-test quantum-sampling-request-test.py quantum-numerical-sampling-test quantum-numerical-state-test quantum-worker-test.py quantum-parser-integration-test quantum-negativity-test quantum-css-test quantum-stabilizer-test quantum-indexed-test quantum-order-test quantum-binary-test quantum-evolution-test quantum-hellinger-test quantum-channel-representations-test quantum-superoperators-test quantum-geometry-test quantum-reset-test quantum-noise-test quantum-operators-test quantum-subsystem-test quantum-gates-test quantum-measurement-test quantum-matrix-power-test quantum-matrix-exp-test quantum-algebra-test quantum-state-functions-test quantum-notation-test quantum-state-test unittest threadtest quantumtex-test quantum-singular-test
 
 qalc_SOURCES = qalc.cc
 
@@ -147,3 +147,6 @@ quantum_numerical_sampling_test_LDADD = ../libqalculate/libqalculate.la
 
 quantum_trajectory_test_SOURCES = quantum-trajectory-test.cc
 quantum_trajectory_test_LDADD = ../libqalculate/libqalculate.la
+
+quantum_readout_test_SOURCES = quantum-readout-test.cc
+quantum_readout_test_LDADD = ../libqalculate/libqalculate.la
