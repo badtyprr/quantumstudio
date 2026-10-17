@@ -4,19 +4,24 @@ $repo = Split-Path $PSScriptRoot -Parent
 $validation = Join-Path $repo 'dist\gui-validation'
 New-Item -ItemType Directory -Force $validation | Out-Null
 $fx = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
+$expressionTest = Join-Path $validation 'classical-expression-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$expressionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalExpressionTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Classical expression adapter tests did not compile.' }
+& $expressionTest
+if ($LASTEXITCODE -ne 0) { throw 'Classical expression adapter tests failed.' }
 $exactTest = Join-Path $validation 'exact-circuit-tests.exe'
-& "$fx\csc.exe" /nologo /target:exe "/out:$exactTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuitTests.cs')
+& "$fx\csc.exe" /nologo /target:exe "/out:$exactTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuitTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Exact circuit adapter tests did not compile.' }
 & $exactTest
 if ($LASTEXITCODE -ne 0) { throw 'Exact circuit adapter tests failed.' }
 $sessionTest = Join-Path $validation 'session-tests.exe'
 $classicalTest = Join-Path $validation 'classical-circuit-tests.exe'
-& "$fx\csc.exe" /nologo /target:exe "/out:$classicalTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalCircuitTests.cs')
+& "$fx\csc.exe" /nologo /target:exe "/out:$classicalTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalCircuitTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests did not compile.' }
 & $classicalTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests failed.' }
 $historyTest = Join-Path $validation 'classical-history-tests.exe'
-& "$fx\csc.exe" /nologo /target:exe "/out:$historyTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistory.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistoryTests.cs')
+& "$fx\csc.exe" /nologo /target:exe "/out:$historyTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistory.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistoryTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests did not compile.' }
 & $historyTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests failed.' }
@@ -31,14 +36,14 @@ if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $circuitTest = Join-Path $validation 'circuit-file-tests.exe'
 $circuitArgs = @('/nologo', '/target:exe', "/out:$circuitTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('CircuitFileTests.cs','NumericalSampling.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('CircuitFileTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @circuitArgs
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests did not compile.' }
 & $circuitTest
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests failed.' }
 $samplingTest = Join-Path $validation 'sampling-tests.exe'
 $samplingArgs = @('/nologo', '/target:exe', "/out:$samplingTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @samplingArgs
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest
