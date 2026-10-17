@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "quantum-sampling-request.h"
+#include "quantum-classical-request.h"
 #include <libqalculate/Calculator.h>
 #include <libqalculate/MathStructure.h>
 #include <libqalculate/QuantumNumericalState.h>
@@ -13,10 +14,11 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0;}
+ bool classical() const {return input.compare(0,9,"QSAMPLE3\n")==0;}
+ bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1 or QSAMPLE2 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1, QSAMPLE2 or QSAMPLE3 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -123,18 +125,23 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
 QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total) {
  using Step=QuantumNumerics::TrajectoryStep;
  if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
- const unsigned kind=static_cast<unsigned>(reader.integer(6));
- if(kind==6) {
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.classical()?8:6));
+ if(kind==7) {
+  auto targets=reader.wires(classicalBits,classicalBits);
+  return Step::assign(targets,QuantumClassicalRequest::read(reader,classicalBits));
+ }
+ if(kind==6 || kind==8) {
   if(depth>=32)throw std::length_error("Sampling branches exceed 32 nesting levels.");
-  auto mask=reader.integer(std::numeric_limits<std::uint64_t>::max());
-  auto value=reader.integer(std::numeric_limits<std::uint64_t>::max());
+  std::uint64_t mask=0,value=0;
+  if(kind==6) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
+  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,classicalBits) : QuantumClassical::Bits::constant(1,0);
   std::vector<Step> bodies[2];
   for(auto &body:bodies) {
    const unsigned count=static_cast<unsigned>(reader.integer(4096-total));
    body.reserve(count);
    for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,classicalBits,depth+1,total));
   }
-  return Step::branch(mask,value,bodies[0],bodies[1]);
+  return kind==8 ? Step::branch(condition,bodies[0],bodies[1]) : Step::branch(mask,value,bodies[0],bodies[1]);
  }
  if(kind==5)return readAssignment(calculator,reader,classicalBits);
  if(kind==4)return readChannel(calculator,reader,qubits);

@@ -133,12 +133,12 @@ quantum_negativity_test_LDADD = $(test_LDADD)
 quantum_parser_integration_test_SOURCES = quantum-parser-integration-test.cc
 quantum_parser_integration_test_LDADD = $(test_LDADD)
 
-quantum_worker_SOURCES = quantum-worker.cc quantum-sampling-request.cc quantum-sampling-request.h quantum-exact-request.cc quantum-exact-request.h
+quantum_worker_SOURCES = quantum-worker.cc quantum-sampling-request.cc quantum-sampling-request.h quantum-exact-request.cc quantum-exact-request.h quantum-classical-request.h
 quantum_worker_LDADD = $(test_LDADD)
 TEST_EXTENSIONS = .py
 PY_LOG_COMPILER = python3
-EXTRA_DIST = quantum-worker-test.py quantum-sampling-request-test.py quantum-exact-request-test.py quantum-exact-fixtures.json
-TESTS += quantum-exact-request-test.py
+EXTRA_DIST = quantum-worker-test.py quantum-sampling-request-test.py quantum-exact-request-test.py quantum-exact-fixtures.json quantum-classical-request-test.py
+TESTS += quantum-exact-request-test.py quantum-classical-request-test.py
 
 quantum_numerical_state_test_SOURCES = quantum-numerical-state-test.cc
 quantum_numerical_state_test_LDADD = ../libqalculate/libqalculate.la

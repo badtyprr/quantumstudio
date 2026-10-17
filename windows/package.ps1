@@ -86,6 +86,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged numerical sampling tests failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-exact-request-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged exact circuit tests failed.' }
+    & $PythonPath (Join-Path $repo 'src\quantum-classical-request-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged classical expression tests failed.' }
     & (Join-Path $repo 'dist\gui-validation\exact-circuit-tests.exe') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged exact circuit adapter tests failed.' }
     & (Join-Path $PSScriptRoot 'test-exact-window.ps1') -Distribution $output
