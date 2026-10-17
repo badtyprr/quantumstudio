@@ -160,3 +160,8 @@ check_PROGRAMS += quantum-exact-operation-test
 TESTS += quantum-exact-operation-test
 quantum_exact_operation_test_SOURCES = quantum-exact-operation-test.cc
 quantum_exact_operation_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-exact-readout-test
+TESTS += quantum-exact-readout-test
+quantum_exact_readout_test_SOURCES = quantum-exact-readout-test.cc
+quantum_exact_readout_test_LDADD = $(test_LDADD)
