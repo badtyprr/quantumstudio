@@ -4,6 +4,8 @@ using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
 using E=ClassicalExpression;
+using I=ClassicalIntegerExpression;
+using T=ClassicalIntegerType;
 using G=NumericalSampling.Gate;
 using O=NumericalSampling.Operation;
 
@@ -19,6 +21,35 @@ static class ClassicalExpressionTests {
   string text=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",Request(exact,q,bits,output,steps),CancellationToken.None,s=>s).GetAwaiter().GetResult();
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+ }
+ static void IntegerChecks(string worker) {
+  var machine=T.Create(T.Sign.Signed);var s8=T.Create(T.Sign.Signed,8);var u8=T.Create(T.Sign.Unsigned,8);
+  Check(machine.Width==64 && machine.DeclaredWidth==0 && T.Create(T.Sign.Signed,64).DeclaredWidth==64);
+  var bits=new[]{0,1,2,3,4,5,6,7};var read=I.Read(s8,bits);bits[0]=63;var copy=read.Indices;copy[0]=62;Check(read.Indices[0]==0);
+  var zero=I.Constant(machine,0);var negative=E.IntegerCompare(E.Operator.Less,read,zero);
+  Check(negative.Width==1 && negative.UsesIntegers && E.Complement(negative).UsesIntegers);
+  Check(Encode(negative,8)=="6\n2\n1\n0\n8\n0\n1\n2\n3\n4\n5\n6\n7\n0\n0\n0\n0\n");
+  Reject(()=>T.Create((T.Sign)99));Reject(()=>T.Create(T.Sign.Signed,-1));Reject(()=>T.Create(T.Sign.Signed,65));
+  Reject(()=>I.Read(s8,0));Reject(()=>I.Read(T.Create(T.Sign.Signed,1),64));Reject(()=>I.Constant(s8,256));
+  Reject(()=>I.Cast(machine,null));Reject(()=>I.Binary((I.Operator)99,zero,zero));Reject(()=>E.IntegerCompare(E.Operator.And,zero,zero));
+  Reject(()=>Encode(negative,7));Reject(()=>Encode(E.Complement(negative),7));
+  var deep=zero;for(int k=1;k<32;k++)deep=I.Cast(machine,deep);Reject(()=>I.Cast(machine,deep));Reject(()=>E.IntegerCompare(E.Operator.Equal,deep,zero));
+  var broad=zero;for(int k=0;k<8;k++)broad=I.Binary(I.Operator.Add,broad,broad);Reject(()=>E.IntegerCompare(E.Operator.Equal,broad,zero));
+  var quotient=I.Binary(I.Operator.Divide,I.Constant(machine,6),read);
+  var condition=E.IntegerCompare(E.Operator.Equal,quotient,I.Constant(machine,3));
+  var initialize=Assign(new[]{0,1,2,3,4,5,6,7},E.Constant(8,255));var output=Assign(new[]{8},E.Constant(1,1));
+  foreach(bool exact in new[]{true,false}) {
+   var steps=new[]{initialize,Branch(negative,new[]{output})};
+   Check(Encoding.UTF8.GetString(Request(exact,0,9,new[]{8},steps)).StartsWith(exact ? "QEXACT3\n" : "QSAMPLE4\n"));
+   Check(Encoding.UTF8.GetString(Request(exact,0,9,new[]{8},new[]{Branch(E.Constant(1,0),new[]{Branch(condition,new[]{output})})})).StartsWith(exact ? "QEXACT3\n" : "QSAMPLE4\n"));
+   Reject(()=>Request(exact,0,7,new int[0],new[]{Branch(E.Constant(1,0),new[]{Branch(negative,new G[0])})}));
+   if(worker!=null) {
+    var result=Evaluate(worker,exact,0,9,new[]{8},steps);Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+    result=Evaluate(worker,exact,0,9,new[]{8},new[]{Assign(new[]{0,1,2,3,4,5,6,7},E.Constant(8,2)),Branch(condition,new[]{output})});Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+    result=Evaluate(worker,exact,0,9,new[]{8},new[]{Branch(E.Constant(1,0),new[]{Branch(condition,new[]{output})})});Check(result.Count==1 && Convert.ToString(result["0"])==(exact ? "1" : "10000"));
+    var cast=I.Cast(u8,read);result=Evaluate(worker,exact,0,9,new[]{8},new[]{initialize,Assign(new[]{8},E.IntegerCompare(E.Operator.Greater,cast,zero))});Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+   }
+  }
  }
  static int Main(string[] args){try {
   var countValue=E.PopulationCount(E.Constant(64,UInt64.MaxValue));Check(countValue.Width==64);
@@ -69,6 +100,7 @@ static class ClassicalExpressionTests {
    }
   }
   Reject(()=>NumericalSampling.Request(1,1,0,new[]{0},new[]{Assign(new[]{0},E.Constant(1,1))}));
+  IntegerChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }
