@@ -431,3 +431,12 @@ Matrix expressions are evaluated and checked by the worker when run.
 This model is not yet connected to GUI save/open or OpenQASM import; existing
 version-1 circuit files keep their current behavior.
 
+The sampling window also accepts a captured `ClassicalCircuit`. It displays
+register names in the selected output order and samples the saved classical
+record without appending final quantum measurements. An empty output selection
+is displayed as `(empty)`. Readout operations are part of the stored program;
+the legacy final-readout controls are not shown for this mode. JSON sampling
+exports use `QuantumStudio.sampling.v2` and include the captured circuit. CSV
+exports include that circuit once in `run_classical_circuit`, on the first data
+row. The editor command that opens this mode remains follow-up work.
+
