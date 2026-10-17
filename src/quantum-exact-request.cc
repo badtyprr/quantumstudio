@@ -12,11 +12,12 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool typed() const {return input.compare(0,8,"QEXACT3\n")==0;}
+ bool variables() const {return input.compare(0,8,"QEXACT4\n")==0;}
+ bool typed() const {return input.compare(0,8,"QEXACT3\n")==0 || variables();}
  bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1, QEXACT2 or QEXACT3 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1, QEXACT2, QEXACT3 or QEXACT4 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -59,22 +60,28 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
  return value;
 }
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
- unsigned &total,const EvaluationOptions &exact) {
+ unsigned &total,const EvaluationOptions &exact,const QuantumClassical::IntegerStorage *variables) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.classical()?8:6));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.variables()?10:(reader.classical()?8:6)));
+ if(kind==9 || kind==10) {
+  const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
+  if(kind==10)return Step::clearInteger(slot);
+  unsigned nodes=0;auto value=QuantumClassicalRequest::integerNode(reader,0,nodes,true);
+  value.validate(bits,*variables);return Step::storeInteger(slot,value);
+ }
  if(kind==7) {
   auto targets=reader.targets(bits,bits);
-  return Step::assign(targets,QuantumClassicalRequest::read(reader,bits,reader.typed()));
+  return Step::assign(targets,QuantumClassicalRequest::read(reader,bits,reader.typed(),variables));
  }
  if(kind==6 || kind==8) {
   if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches.");
   std::uint64_t mask=0,value=0;
   if(kind==6) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
-  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,bits,reader.typed()) : QuantumClassical::Bits::constant(1,0);
+  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,bits,reader.typed(),variables) : QuantumClassical::Bits::constant(1,0);
   std::vector<Step> bodies[2];
   for(auto &body:bodies) {
    unsigned count=static_cast<unsigned>(reader.integer(512-total));
-   for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,bits,depth+1,total,exact));
+   for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,bits,depth+1,total,exact,variables));
   }
   return kind==8 ? Step::branch(condition,bodies[0],bodies[1]) : Step::branch(mask,value,bodies[0],bodies[1]);
  }
@@ -115,11 +122,17 @@ void jsonString(std::ostream &output,const std::string &text) {
 std::string quantumExactRequest(Calculator &calculator,const std::string &input) {
  Reader reader(input);EvaluationOptions exact;exact.approximation=APPROXIMATION_EXACT;
  unsigned qubits=static_cast<unsigned>(reader.integer(10)),bits=static_cast<unsigned>(reader.integer(64));
+ std::vector<QuantumClassical::IntegerType> types;
+ if(reader.variables()) {
+  const auto slots=reader.integer(4096);
+  for(std::uint64_t slot=0;slot<slots;++slot)types.push_back(QuantumClassicalRequest::integerType(reader));
+ }
+ const QuantumClassical::IntegerStorage declarations(types);
  auto selected=reader.targets(bits,bits);
  unsigned count=static_cast<unsigned>(reader.integer(512)),total=0;std::vector<Step> steps;
- for(unsigned k=0;k<count;++k)steps.push_back(readStep(calculator,reader,qubits,bits,0,total,exact));
+ for(unsigned k=0;k<count;++k)steps.push_back(readStep(calculator,reader,qubits,bits,0,total,exact,reader.variables()?&declarations:nullptr));
  reader.end();
- auto records=QuantumExact::evaluateCircuit(qubits,bits,steps,1048576,exact);
+ auto records=QuantumExact::evaluateCircuit(qubits,bits,steps,types,1048576,exact);
  auto probabilities=QuantumExact::weights(records,qubits,bits,selected,1048576,exact);
  PrintOptions print;print.use_unicode_signs=false;print.number_fraction_format=FRACTION_DECIMAL_EXACT;
  std::ostringstream output;output<<"{\"qubits\":"<<qubits<<",\"classical_bits\":"<<bits<<",\"bits\":[";

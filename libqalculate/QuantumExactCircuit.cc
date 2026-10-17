@@ -86,7 +86,7 @@ public:
   if(merged.empty())return;
   if(found==records_.end()) {
    const std::size_t cells=(std::size_t(1)<<qubits_)*(std::size_t(1)<<qubits_);
-   if(records_.size()>=maxCells_/cells)throw std::length_error("Exact variable record cell budget exceeded");
+   if(records_.size()>=maxCells_/cells || (variables.size() && records_.size()>=maxCells_/variables.size()))throw std::length_error("Exact variable record cell budget exceeded");
    records_.emplace(std::move(key),RuntimeRecord{bits,variables,merged.begin()->second});
   } else found->second.density=merged.begin()->second;
  }
@@ -147,6 +147,7 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
  const std::vector<QuantumClassical::IntegerType> &variableTypes,std::size_t maxCells,const EvaluationOptions &options) {
  checkpoint();RecordAccumulator initial(qubits,classicalBits,maxCells,options);
+ if(variableTypes.size()>maxCells)throw std::length_error("Exact variable slot budget exceeded");
  const QuantumClassical::IntegerStorage variables(variableTypes);
  std::size_t count=0;validate(steps,qubits,classicalBits,0,count,variables);
  EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
