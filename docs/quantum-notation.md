@@ -416,3 +416,18 @@ input graphs fail the nesting check. Branches require the branch-capable worker
 protocol; they are not available through the legacy final-measurement API.
 This does not yet add branch editing or OpenQASM lowering to the GUI.
 
+`ClassicalCircuit` provides a version-2 storage model for the forthcoming
+classical circuit editor. `Registers` lists distinct named registers in bit
+allocation order: the first register starts at bit zero, and subsequent
+registers follow it. `OutputBits` specifies the displayed bit order. `Steps`
+stores operation names, expressions, wires, measurement destinations and nested
+branch bodies. Condition masks and values are unsigned decimal strings, so bit
+63 survives JSON consumers that cannot represent every 64-bit integer exactly.
+Documents are limited to 256 KiB, 64 classical bits, 512 total steps and 32
+branch levels. Loading validates both branch bodies and rejects unknown fields
+and incorrectly typed values before returning a program. Snapshots and sampling
+operations are copies; editing them cannot mutate the validated program.
+Matrix expressions are evaluated and checked by the worker when run.
+This model is not yet connected to GUI save/open or OpenQASM import; existing
+version-1 circuit files keep their current behavior.
+

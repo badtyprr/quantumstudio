@@ -5,6 +5,11 @@ $validation = Join-Path $repo 'dist\gui-validation'
 New-Item -ItemType Directory -Force $validation | Out-Null
 $fx = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
 $sessionTest = Join-Path $validation 'session-tests.exe'
+$classicalTest = Join-Path $validation 'classical-circuit-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$classicalTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalCircuitTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests did not compile.' }
+& $classicalTest
+if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests failed.' }
 & "$fx\csc.exe" /nologo /target:exe "/out:$sessionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'SessionStoreTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Session tests did not compile.' }
 & $sessionTest
