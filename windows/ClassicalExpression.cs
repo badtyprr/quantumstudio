@@ -3,7 +3,11 @@ using System;
 
 // Immutable unsigned expressions shared by exact and sampled request builders.
 sealed class ClassicalExpression {
- public enum NodeKind { Constant=0, Read=1, Complement=2, Binary=3 }
+ public enum NodeKind { Constant=0, Read=1, Complement=2, Binary=3, PopulationCount=4, Rotate=5 }
+ public enum Direction { Left=0, Right=1 }
+ public enum Distance { Unsigned=0, Signed=1 }
+ public Direction RotationDirection {get;private set;}
+ public Distance DistanceInterpretation {get;private set;}
  public enum Operator { And=0, Or=1, Xor=2, ShiftLeft=3, ShiftRight=4, Equal=5, NotEqual=6, Less=7, LessEqual=8, Greater=9, GreaterEqual=10 }
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public int Width {get;private set;}public ulong Value {get;private set;}
@@ -42,6 +46,15 @@ sealed class ClassicalExpression {
   int width=(int)operation>=(int)Operator.Equal ? 1 : left.Width;
   return new ClassicalExpression(NodeKind.Binary,width,0,null,operation,left,right);
  }
+ public static ClassicalExpression PopulationCount(ClassicalExpression operand) {
+  if(operand==null)throw new ArgumentNullException("operand");
+  return new ClassicalExpression(NodeKind.PopulationCount,64,0,null,0,operand,null);
+ }
+ public static ClassicalExpression Rotate(Direction direction,ClassicalExpression operand,ClassicalExpression distance,Distance interpretation) {
+  if(operand==null || distance==null)throw new ArgumentNullException("operand");
+  if(!Enum.IsDefined(typeof(Direction),direction) || !Enum.IsDefined(typeof(Distance),interpretation))throw new ArgumentException("Unknown rotation direction or distance interpretation.");
+  return new ClassicalExpression(NodeKind.Rotate,operand.Width,0,null,0,operand,distance) {RotationDirection=direction,DistanceInterpretation=interpretation};
+ }
  public void Write(Action<ulong> number,int registerBits) {
   if(number==null)throw new ArgumentNullException("number");
   if(registerBits<0 || registerBits>64)throw new ArgumentException("Use 0–64 classical bits.");
@@ -53,7 +66,8 @@ sealed class ClassicalExpression {
   number((ulong)Kind);
   if(Kind==NodeKind.Constant){number((ulong)Width);number(Value);}
   else if(Kind==NodeKind.Read){number((ulong)indices.Length);foreach(int bit in indices)number((ulong)bit);}
-  else if(Kind==NodeKind.Complement)Left.WriteNode(number);
+  else if(Kind==NodeKind.Complement || Kind==NodeKind.PopulationCount)Left.WriteNode(number);
+  else if(Kind==NodeKind.Rotate){number((ulong)RotationDirection);number((ulong)DistanceInterpretation);Left.WriteNode(number);Right.WriteNode(number);}
   else {number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);}
  }
 }
