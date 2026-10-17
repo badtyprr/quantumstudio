@@ -45,7 +45,8 @@ zero; symbolic expressions are retained. All bodies, even untaken ones, are
 validated. Limits are 512 total operations, 32 nested branches, 1,100,000 input
 bytes, 1,048,576 stored density-matrix cells per record map, and 1,048,576 Kraus
 entries per operation. Temporary matrices and symbolic expression storage are
-additional. The caller should enforce a process timeout and may terminate the
+additional. Code 3 expands to a branch containing a map and counts as two steps
+against the evaluator's 512-step limit. The caller should enforce a process timeout and may terminate the
 worker on cancellation, as with other worker modes.
 
 Response fields are `qubits`, `classical_bits`, `bits` (selected indices), and

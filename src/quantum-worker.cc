@@ -150,7 +150,7 @@ int main(int argc,char **argv) {
   else if(argument=="--states") states=true;
   else if(argument=="--sample") sample=true;
   else if(argument=="--exact-circuit") exactCircuit=true;
-  else { std::cerr << "Usage: quantum-worker.exe [--json] [--approx] [--probabilities] [--bloch] [--states] or --sample (expression or structured request on UTF-8 stdin)"; return 2; }
+  else { std::cerr << "Usage: quantum-worker.exe [--json] [--approx] [--probabilities] [--bloch] [--states] or --sample or --exact-circuit (expression or structured request on UTF-8 stdin)"; return 2; }
  }
  if(sample && argc!=2) {std::cerr << "--sample is a separate request mode; do not combine flags.";return 2;}
  if(exactCircuit && argc!=2) {std::cerr << "--exact-circuit is a separate request mode; do not combine flags.";return 2;}
