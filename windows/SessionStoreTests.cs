@@ -40,6 +40,10 @@ class SessionStoreTests {
    expected=WithStates();SessionStore.Save(path,expected);actual=SessionStore.Load(path);
    Require(actual.Version==2 && actual.States.Length==2 && actual.States[1].Name=="after CZ" && actual.States[1].Expression=="CZ|Bell>","Current state definitions did not roundtrip");
    Require(actual.History[0].States.Length==1 && actual.History[0].States[0].Name=="état" && actual.History[0].States[0].Expression=="[1;\r\n0]","History lost its original state definitions");
+   var complexFamily=WithStates();complexFamily.States=new[]{new StateDefinition {Name="psi(a:complex,b:complex)",Expression="a|0>+b|1>"}};
+   SessionStore.Save(path,complexFamily);var loadedFamily=SessionStore.Load(path);
+   Require(loadedFamily.States[0].Name==complexFamily.States[0].Name && loadedFamily.States[0].Expression==complexFamily.States[0].Expression,"Complex parameter declarations did not roundtrip");
+   SessionStore.Save(path,expected);
    var snapshot=SessionStore.CopyStates(expected.States);expected.States[0].Expression="|0>";expected.States[1]=null;
    Require(snapshot[0].Expression=="|Phi+>" && snapshot[1].Name=="after CZ","State history copy shares mutable objects");
    before=File.ReadAllText(path);Reject(delegate {SessionStore.Save(path,expected);});Require(File.ReadAllText(path)==before,"Invalid definitions damaged saved session");

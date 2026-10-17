@@ -21,6 +21,25 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ // Domain declarations rewrite only free occurrences, before simplification.
+ for(const auto &entry:std::vector<std::pair<std::string,std::string>>{
+  {"x+conj(x)","complexparam(x)+conj(complexparam(x))"},
+  {"complexparam(x)","complexparam(x)"},
+  {"qsum(x,0,x,x)","qsum(x,0,complexparam(x),x)"},
+  {"qsequence(x+x,x,x)","qsequence(x+x,complexparam(x),x)"},
+  {"qsum(x+y,0,1,y)","qsum(complexparam(x)+y,0,1,y)"}
+ }) {
+  MathStructure body=calculator.parse(entry.first);
+  declareQuantumComplexParameter(calculator,body,calculator.parse("x"));
+  if(!body.equals(calculator.parse(entry.second)))throw std::runtime_error("Complex declaration changed binding: "+entry.first);
+  ++checks;
+ }
+ bool invalidDomain=false;
+ try {MathStructure body=calculator.parse("x");declareQuantumComplexParameter(calculator,body,MathStructure(1));}
+ catch(const std::invalid_argument &) {invalidDomain=true;}
+ if(!invalidDomain)throw std::runtime_error("Numeric complex declaration accepted");
+ ++checks;
+
  defineQuantumStateFamily(calculator,"pair",calculator.parse("matrix(2,1,vector(x,y))"),std::vector<MathStructure>{calculator.parse("x"),calculator.parse("y")});
  equal("__qstate_family_pair(y,x)","[y;x]");
  equal("qstatecalls(pair,vector(y,x))","[y;x]");

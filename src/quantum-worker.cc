@@ -82,7 +82,7 @@ static void defineStates(Calculator &calculator,std::string &input) {
   std::string expression=input.substr(position,expressionSize);position+=expressionSize;
   if(expression.find('\0')!=std::string::npos)throw std::runtime_error("State definitions cannot contain NUL.");
   if(name.find_first_of("\r\n\t")!=std::string::npos || name.find('\0')!=std::string::npos || name.front()==' ' || name.back()==' ' || !names.insert(name).second || calculator.getActiveVariable(name))throw std::runtime_error("Duplicate, reserved, or invalid state name: "+name);
-  std::string familyName;std::vector<MathStructure> parameters;
+  std::string familyName,labelName=name;std::vector<MathStructure> parameters;std::vector<bool> complexParameters;
   std::vector<Variable*> bindings,previousVariables;std::vector<Unit*> previousUnits;
   size_t open=name.find('(');
   if(open!=std::string::npos) {
@@ -93,10 +93,21 @@ static void defineStates(Calculator &calculator,std::string &input) {
    do {
     size_t comma=list.find(',',start);std::string part=list.substr(start,comma==std::string::npos ? comma : comma-start);
     size_t first=part.find_first_not_of(' '),last=part.find_last_not_of(' ');part=first==std::string::npos ? "" : part.substr(first,last-first+1);
+    bool complex=false;size_t colon=part.find(':');
+    if(colon!=std::string::npos) {
+     std::string domain=part.substr(colon+1);size_t begin=domain.find_first_not_of(' '),end=domain.find_last_not_of(' ');
+     domain=begin==std::string::npos ? "" : domain.substr(begin,end-begin+1);
+     if(domain!="complex")throw std::runtime_error("Use parameter:complex for a complex state-family amplitude.");
+     part=part.substr(0,colon);size_t endName=part.find_last_not_of(' ');part=endName==std::string::npos ? "" : part.substr(0,endName+1);complex=true;
+    }
+    complexParameters.push_back(complex);
     if(!unique.insert(part).second)throw std::runtime_error("State-family parameters must be distinct.");
     parameterNames.push_back(part);if(parameterNames.size()>16)throw std::runtime_error("State families support at most 16 parameters.");
     if(comma==std::string::npos)break;start=comma+1;
    }while(true);
+   labelName=familyName+"(";
+   for(size_t j=0;j<parameterNames.size();++j) {if(j)labelName+=",";labelName+=parameterNames[j];}
+   labelName+=")";
    std::vector<std::string> identifiers=parameterNames;identifiers.push_back(familyName);
    for(const std::string &part:identifiers) {
     if(part.empty() || std::isdigit((unsigned char)part.front()))throw std::runtime_error("Family names and parameters must be identifiers.");
@@ -116,12 +127,14 @@ static void defineStates(Calculator &calculator,std::string &input) {
   }
   // Validate a declaration's spelling before evaluation can resolve it through
   // an earlier state family (for example a fixed psi_t after psi(alpha)).
-  MathStructure label=familyName.empty() ? calculator.parse("quantum: |"+name+">",exact.parse_options) : calculator.calculate("quantum: |"+name+">",exact);
+  MathStructure label=familyName.empty() ? calculator.parse("quantum: |"+name+">",exact.parse_options) : calculator.calculate("quantum: |"+labelName+">",exact);
   if(familyName.empty() && label.isFunction() && label.function()->referenceName()=="qnamedket" && label.size()==1) {
    MathStructure text=label[0];label.set(calculator.getFunction("qketstate"),&text,NULL);
   }
   if(messages(calculator) || !label.isFunction() || (familyName.empty() ? label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name : label.function()->referenceName()!=(parameters.size()==1 ? "qstatecall" : "qstatecalls") || label.size()!=2 || label[0].symbol()!=familyName))throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
-  MathStructure state=calculator.calculate("quantum: "+expression,exact);
+  MathStructure state=calculator.parse("quantum: "+expression,exact.parse_options);
+  for(size_t j=0;j<parameters.size();++j)if(complexParameters[j])declareQuantumComplexParameter(calculator,state,parameters[j]);
+  state.eval(exact);
   if(messages(calculator) || !state.isMatrix() || state.columns()!=1 || state.rows()==0 || state.rows()>1024)throw std::runtime_error("State "+name+" must resolve to a column vector of at most 1024 rows. Define referenced states earlier; unknown or cyclic references are not allowed.");
   for(size_t r=1;r<=state.rows();++r) {
    const MathStructure &cell=*state.getElement(r,1);

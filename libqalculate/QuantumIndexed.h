@@ -8,4 +8,6 @@ class MathStructure;
 void registerQuantumIndexed(Calculator &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const MathStructure &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const std::vector<MathStructure> &);
+// Lower a complex declaration in free occurrences, respecting nested binders.
+void declareQuantumComplexParameter(Calculator &,MathStructure &,const MathStructure &);
 #endif
