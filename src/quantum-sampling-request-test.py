@@ -26,7 +26,7 @@ def run(value, success=True, flags=("--sample",)):
         assert process.stdout == b"" and process.stderr
         return
     result = json.loads(process.stdout)
-    assert set(result) == {"qubits", "shots", "seed", "wires", "counts"}
+    assert set(result) == ({"qubits", "shots", "seed", "wires", "counts", "classical_bits"} if value.startswith(b"QSAMPLE2\n") else {"qubits", "shots", "seed", "wires", "counts"})
     assert sum(result["counts"].values()) == result["shots"]
     assert all(len(bits) == len(result["wires"]) and set(bits) <= {"0", "1"} for bits in result["counts"])
     return result
@@ -72,4 +72,51 @@ for bad in [
     run(bad, success=False)
 run(request(), success=False, flags=("--sample", "--json"))
 run(request(), success=False, flags=("--sample", "--sample"))
+
+
+# QSAMPLE2: explicit classical memory and ordered trajectory operations.
+def trajectory(qubits=2, classical=2, bits=(0,1), steps=(), shots=1000, seed=7):
+    fields = ["QSAMPLE2", str(qubits), str(shots), str(seed), str(classical), str(len(bits)), *map(str,bits), str(len(steps))]
+    data = ("\n".join(fields)+"\n").encode()
+    for step in steps:
+        kind, *args = step
+        data += (str(kind)+"\n").encode()
+        if kind in (0,3):
+            if kind == 3:
+                mask, value, targets, expression = args
+                data += f"{mask}\n{value}\n".encode()
+            else:
+                targets, expression = args
+            encoded = expression.encode()
+            data += ("\n".join(map(str,[len(targets),*targets,len(encoded)]))+"\n").encode()+encoded
+        else:
+            data += ("\n".join(map(str,args))+"\n").encode()
+    return data
+
+saved = [(0,(0,),"X"),(1,0,0),(2,0),(3,1,1,(1,),"X"),(1,1,1)]
+assert run(trajectory(steps=saved))["counts"] == {"11":1000}
+assert run(trajectory(steps=saved[:-1],bits=(1,0)))["counts"] == {"01":1000}
+assert run(trajectory(steps=[(0,(0,),"X"),(1,0,0),(2,0),(1,0,0)]))["counts"] == {"00":1000}
+# Teleport a nontrivial complex state; inverse preparation on Bob returns zero.
+teleport = [(0,(0,),"Ry(pi/3)"),(0,(0,),"Rz(pi/5)"),(0,(1,),"H"),(0,(1,2),"CX"),
+            (0,(0,1),"CX"),(0,(0,),"H"),(1,0,0),(1,1,1),
+            (3,2,2,(2,),"X"),(3,1,1,(2,),"Z"),
+            (0,(2,),"Rz(-pi/5)"),(0,(2,),"Ry(-pi/3)"),(1,2,2)]
+t = trajectory(qubits=3,classical=3,bits=(0,1,2),steps=teleport,shots=2000)
+r = run(t)
+assert set(r["counts"]) == {"000","010","100","110"}
+assert all(abs(n-500)<100 for n in r["counts"].values())
+assert run(t) == r
+assert run(trajectory(classical=64,bits=(63,),steps=[(0,(0,),"X"),(1,0,63)]))["counts"] == {"1":1000}
+assert run(trajectory(classical=64,bits=(0,),steps=[(0,(0,),"X"),(1,0,63),(3,2**63,2**63,(1,),"X"),(1,1,0)]))["counts"] == {"1":1000}
+assert run(trajectory(qubits=0,classical=0,bits=(),shots=1))["counts"] == {"":1}
+assert run(trajectory(qubits=0,classical=0,bits=(),shots=0))["counts"] == {}
+for cut in range(len(t)):
+    run(t[:cut],success=False)
+for bad in [trajectory(classical=65),trajectory(classical=0,bits=(),steps=[(1,0,0)]),
+            trajectory(bits=(0,0)),trajectory(steps=[(1,2,0)]),trajectory(steps=[(1,0,2)]),
+            trajectory(qubits=0,steps=[(2,0)]),trajectory(steps=[(3,4,4,(0,),"X")]),
+            trajectory(steps=[(3,1,2,(0,),"X")]),trajectory(steps=[(3,1,1,(0,),"[2,0;0,1]")]),
+            trajectory(steps=[(4,0)]),t+b"x"]:
+    run(bad,success=False)
 print(f"PASS: {checks} numerical sampling process checks.")
