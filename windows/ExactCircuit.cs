@@ -15,7 +15,7 @@ static class ExactCircuit {
  }
  public static byte[] Request(ClassicalCircuit circuit) {
   if(circuit==null)throw new ArgumentNullException("circuit");
-  return NumericalSampling.RequestExact(circuit.Qubits,circuit.ClassicalBits,circuit.OutputBits,circuit.SamplingGates());
+  return NumericalSampling.RequestExact(circuit.Qubits,circuit.ClassicalBits,circuit.OutputBits,circuit.SamplingGates(),circuit.VariableTypes);
  }
  public static Result ReadResult(string json,ClassicalCircuit circuit) {
   var serializer=new JavaScriptSerializer {MaxJsonLength=8000000,RecursionLimit=12};
