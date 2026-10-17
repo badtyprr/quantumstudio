@@ -407,3 +407,12 @@ The existing editor sampling API retains its final-quantum-measurement behavior.
 This adapter support does not yet add named classical registers or runtime
 OpenQASM branches to circuit files or the editor.
 
+The explicit classical-output Windows adapter accepts `Operation.Branch` with
+`Mask`, `Value`, `WhenTrue` and `WhenFalse`. Both bodies are required, including
+an empty body for an omitted else clause. The adapter serializes nested bodies
+before starting the worker, validates every body, limits nesting to 32 levels,
+and shares the 4096-operation limit across the whole request. Cyclic mutable
+input graphs fail the nesting check. Branches require the branch-capable worker
+protocol; they are not available through the legacy final-measurement API.
+This does not yet add branch editing or OpenQASM lowering to the GUI.
+
