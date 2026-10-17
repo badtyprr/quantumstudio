@@ -115,6 +115,8 @@ class CircuitComposer : Window {
   use=new Button {Content="Load into calculator →",Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary,VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(0,0,0,8)};outputOptions.Children.Add(use);
   var sample=new Button {Content="Sample circuit…",VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(8,0,0,8)};outputOptions.Children.Add(sample);
   sample.Click+=delegate {try {new SamplingWindow(this,Count,SamplingGates()).Show();}catch(Exception error) {status.Text=error.Message;}};
+  var classical=new Button {Content="Classical circuit…",VerticalAlignment=VerticalAlignment.Bottom,Margin=new Thickness(8,0,0,8)};outputOptions.Children.Add(classical);
+  classical.Click+=delegate {new ClassicalProgramWindow(this).Show();};
   var circuitCard=new Border {Background=WorkspaceTheme.Surface,CornerRadius=new CornerRadius(10),Margin=new Thickness(0,8,0,12),Padding=new Thickness(10)};Grid.SetRow(circuitCard,1);root.Children.Add(circuitCard);
   var preview=new DockPanel();circuitCard.Child=preview;
   var previewHeader=new DockPanel {Margin=new Thickness(0,0,0,8)};DockPanel.SetDock(previewHeader,Dock.Top);preview.Children.Add(previewHeader);

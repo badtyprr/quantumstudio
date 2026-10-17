@@ -21,6 +21,9 @@ EXTRA_DIST = config.rpath  \
 	windows/NumericalSampling.cs \
 	windows/ClassicalCircuit.cs \
 	windows/ClassicalCircuitTests.cs \
+	windows/ClassicalProgramHistory.cs \
+	windows/ClassicalProgramHistoryTests.cs \
+	windows/ClassicalProgramWindow.cs \
 	windows/SamplingTests.cs \
 	windows/SamplingWindow.cs \
 	windows/SamplingReadout.cs \
