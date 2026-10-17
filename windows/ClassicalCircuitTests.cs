@@ -1,12 +1,20 @@
 // GPL-2.0-or-later; see COPYING.
 using System;
 using System.IO;
+using System.Text;
 class ClassicalCircuitTests {
  static int checks;
  static void Check(bool ok) {if(!ok)throw new Exception("Check failed: "+checks);checks++;}
  static void Reject(Action action) {try {action();}catch(ArgumentException){checks++;return;}catch(InvalidDataException){checks++;return;}throw new Exception("Invalid circuit accepted: "+checks);}
  static ClassicalCircuit.Step Measure(int bit) {return new ClassicalCircuit.Step {Kind="Measure",Wires=new[]{0},ClassicalBit=bit};}
  static ClassicalCircuit.Document Program() {return new ClassicalCircuit.Document {Version=2,Qubits=1,Registers=new[]{new ClassicalCircuit.Register {Name="flag",Size=1},new ClassicalCircuit.Register {Name="record",Size=63}},OutputBits=new[]{63,0},Steps=new[]{Measure(63),new ClassicalCircuit.Step {Kind="Branch",Mask="9223372036854775808",Value="9223372036854775808",WhenTrue=new[]{Measure(0)},WhenFalse=new ClassicalCircuit.Step[0]}}};}
+ static ClassicalCircuit.ExpressionNode Constant(int width,string value) {return new ClassicalCircuit.ExpressionNode {Kind="Constant",Width=width,Value=value};}
+ static ClassicalCircuit.Document Expressions() {
+  var result=Program();result.Version=3;
+  result.Steps=new[]{new ClassicalCircuit.Step {Kind="Assign",Wires=new[]{63},ClassicalValue=Constant(1,"1")},
+   new ClassicalCircuit.Step {Kind="ExpressionBranch",ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Read",Bits=new[]{63}},WhenTrue=new[]{Measure(0)},WhenFalse=new ClassicalCircuit.Step[0]}};
+  return result;
+ }
  static void Main() {
   var draft=Program();var circuit=ClassicalCircuit.From(draft);var text=circuit.Serialize();
   Check(circuit.ClassicalBits==64 && circuit.Qubits==1);
@@ -42,6 +50,34 @@ class ClassicalCircuitTests {
   nested.Steps=new[]{new ClassicalCircuit.Step {Kind="Branch",Mask="1",Value="1",WhenTrue=body,WhenFalse=new ClassicalCircuit.Step[0]}};
   Reject(()=>ClassicalCircuit.From(nested));
   Reject(()=>ClassicalCircuit.Load(new string(' ',262145)));
+  var expressionDraft=Expressions();var expressionCircuit=ClassicalCircuit.From(expressionDraft);string expressionText=expressionCircuit.Serialize();
+  Check(ClassicalCircuit.Load(expressionText).Serialize()==expressionText);
+  var wide=Expressions();var allBits=new int[64];for(int bit=0;bit<64;bit++)allBits[bit]=bit;
+  wide.Steps=new[]{new ClassicalCircuit.Step {Kind="Assign",Wires=allBits,ClassicalValue=Constant(64,"18446744073709551615")}};
+  Check(ClassicalCircuit.Load(ClassicalCircuit.From(wide).Serialize()).SamplingGates()[0].ClassicalExpression.Value==UInt64.MaxValue);
+  Check(Encoding.UTF8.GetString(NumericalSampling.RequestExact(1,64,new[]{63,0},expressionCircuit.SamplingGates())).StartsWith("QEXACT2\n"));
+  Check(Encoding.UTF8.GetString(NumericalSampling.RequestClassical(1,64,1,0,new[]{63,0},expressionCircuit.SamplingGates())).StartsWith("QSAMPLE3\n"));
+  expressionDraft.Steps[0].ClassicalValue.Value="0";expressionCircuit.Snapshot().Steps[1].ClassicalValue.Bits[0]=0;
+  Check(expressionCircuit.Snapshot().Steps[0].ClassicalValue.Value=="1" && expressionCircuit.SamplingGates()[1].ClassicalExpression.Indices[0]==63);
+  foreach(var mutate in new Action<ClassicalCircuit.Document>[] {
+   d=>d.Version=2,d=>d.Version=4,d=>d.Steps[0].ClassicalValue=null,
+   d=>d.Steps[0].ClassicalValue.Width=null,d=>d.Steps[0].ClassicalValue.Width=0,d=>d.Steps[0].ClassicalValue.Value="2",
+   d=>d.Steps[0].ClassicalValue.Value="18446744073709551616",d=>d.Steps[0].ClassicalValue.Value="-1",
+   d=>d.Steps[0].ClassicalValue.Value=" 1",d=>d.Steps[0].ClassicalValue.Bits=new[]{0},
+   d=>d.Steps[0].Kind="Reset",d=>d.Steps[0].Mask="0",d=>d.Steps[0].Expression="X",
+   d=>d.Steps[1].ClassicalValue.Bits=new[]{64},d=>d.Steps[1].ClassicalValue.Bits=new[]{0,1},
+   d=>d.Steps[1].ClassicalValue.Kind="Unknown",d=>d.Steps[1].ClassicalValue.Left=Constant(1,"0")
+  }) {var bad=Expressions();mutate(bad);Reject(()=>ClassicalCircuit.From(bad));}
+  Reject(()=>ClassicalCircuit.Load(expressionText.Replace("\"Width\":1","\"Width\":1.0")));
+  Reject(()=>ClassicalCircuit.Load(expressionText.Replace("\"Value\":\"1\"","\"Value\":1")));
+  Reject(()=>ClassicalCircuit.Load(expressionText.Replace("\"Kind\":\"Read\"","\"Kind\":\"Read\",\"Unknown\":null")));
+  var expr=Constant(1,"0");for(int k=1;k<32;k++)expr=new ClassicalCircuit.ExpressionNode {Kind="Complement",Left=expr};
+  var bounded=Expressions();bounded.Steps[0].ClassicalValue=expr;Check(ClassicalCircuit.From(bounded).SamplingGates()[0].ClassicalExpression.Width==1);
+  bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Complement",Left=expr};Reject(()=>ClassicalCircuit.From(bounded));
+  expr=Constant(1,"1");for(int k=0;k<8;k++)expr=new ClassicalCircuit.ExpressionNode {Kind="Binary",Operator="Xor",Left=expr,Right=expr};
+  bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Complement",Left=expr};Check(ClassicalCircuit.From(bounded).SamplingGates()[0].ClassicalExpression.Width==1);
+  bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Binary",Operator="Xor",Left=expr,Right=Constant(1,"1")};Reject(()=>ClassicalCircuit.From(bounded));
+  foreach(string op in new[]{"0","XOR","Unknown"}) {bounded.Steps[0].ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Binary",Operator=op,Left=Constant(1,"0"),Right=Constant(1,"1")};Reject(()=>ClassicalCircuit.From(bounded));}
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }

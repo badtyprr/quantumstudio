@@ -22,6 +22,13 @@ class ClassicalProgramHistoryTests {
   for(int i=0;i<70;i++)history.Edit(d=>d.Qubits=d.Qubits==1 ? 2 : 1);
   int count=0;while(history.CanUndo) {history.Undo();count++;}Check(count==64);
   while(history.CanRedo)history.Redo();Check(history.Current.Qubits==1);
+  history.Edit(d=>{d.Version=3;d.Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}};d.OutputBits=new[]{0};d.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="1"}}};});
+  string expressions=history.Current.Serialize();history.Edit(d=>d.Steps[0].ClassicalValue.Value="0");
+  history.Undo();Check(history.Current.Serialize()==expressions && history.CanRedo);
+  try {history.Edit(d=>d.Steps[0].ClassicalValue.Value="2");throw new Exception("Invalid expression edit accepted");}catch(ArgumentException) {}
+  Check(history.Current.Serialize()==expressions && history.CanRedo);
+  history.Redo();Check(history.Current.Snapshot().Steps[0].ClassicalValue.Value=="0");
+  history.Open(expressions);Check(history.Current.Serialize()==expressions && !history.CanUndo && !history.CanRedo);
   Console.WriteLine("PASS: "+checks+" atomic classical edit and history checks.");
  }
 }
