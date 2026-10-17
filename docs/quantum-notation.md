@@ -526,3 +526,12 @@ For example, `int[8](-1)` compares below `uint[8](255)`, while a signed machine
 -1 compares equal to the largest unsigned machine integer after conversion.
 This is an explicit target policy, not a claim that OpenQASM mandates 64-bit
 unspecified integers. Runtime import and typed circuit storage remain unfinished.
+
+The native `IntegerExpression` layer retains integer type identity across
+constants, packed-register reads, casts and arithmetic expressions. It validates
+register references without evaluating an artificial record, so a runtime
+divisor is checked only when the expression executes. Expressions are immutable
+and limited to 32 levels and 512 expanded nodes. The caller supplies an already
+initialized record; declaration and initialization tracking are not supplied by
+this layer. This API is not yet connected to the worker wire protocol, circuit
+files, OpenQASM importer or editor.

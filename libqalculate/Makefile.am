@@ -60,6 +60,7 @@ libqalculate_la_SOURCES = \
 	QuantumClassical.cc \
 	QuantumClassicalInteger.cc \
 	QuantumClassicalIntegerType.cc \
+	QuantumClassicalIntegerExpression.cc \
 	QuantumExactOperation.cc \
 	QuantumExactRecords.cc \
 	QuantumReadout.cc \
@@ -105,3 +106,5 @@ noinst_HEADERS += QuantumExactOperation.h
 noinst_HEADERS += QuantumExactReadout.h
 noinst_HEADERS += QuantumExactCircuit.h
 noinst_HEADERS += QuantumClassical.h QuantumClassicalInteger.h QuantumClassicalIntegerType.h
+
+noinst_HEADERS += QuantumClassicalIntegerExpression.h
