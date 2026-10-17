@@ -20,6 +20,11 @@ int main(){try {
     for(unsigned k=0;k<exponent;++k)expected=sign==Sign::Unsigned ? (expected*value)&mask : expected*value;
     if(sign==Sign::Signed && (expected<minimum || expected>maximum))reject<std::overflow_error>([&]{left.power(exponent);});
     else check(left.power(exponent).bits()==(static_cast<std::uint64_t>(expected)&mask));
+    if(exponent<=static_cast<unsigned>(sign==Sign::Signed ? maximum : mask)) {
+     auto right=Integer::fromBits(sign,w,exponent);
+     if(sign==Sign::Signed && (expected<minimum || expected>maximum))reject<std::overflow_error>([&]{left.binary(Op::Power,right);});
+     else check(left.binary(Op::Power,right).bits()==(static_cast<std::uint64_t>(expected)&mask));
+    }
    }
    for(std::int64_t other=0;other<size;++other) {
     const auto b=sign==Sign::Signed && other>=size/2 ? other-size : other;
@@ -39,6 +44,9 @@ int main(){try {
  const auto high=std::uint64_t(1)<<63,all=~std::uint64_t(0);
  auto minimum=Integer::fromBits(Sign::Signed,64,high),maximum=Integer::fromBits(Sign::Signed,64,high-1);
  auto minusOne=Integer::fromBits(Sign::Signed,64,all),one=Integer::fromBits(Sign::Signed,64,1);
+ reject<std::domain_error>([&]{one.binary(Op::Power,minusOne);});
+ reject<std::invalid_argument>([&]{one.binary(Op::Power,Integer::fromBits(Sign::Unsigned,64,1));});
+ check(Integer::fromBits(Sign::Unsigned,64,all).binary(Op::Power,Integer::fromBits(Sign::Unsigned,64,all)).bits()==all);
  reject<std::overflow_error>([&]{minimum.binary(Op::Divide,minusOne);});
  reject<std::overflow_error>([&]{minimum.binary(Op::Remainder,minusOne);});
  reject<std::overflow_error>([&]{minimum.binary(Op::Multiply,minusOne);});

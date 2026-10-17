@@ -8,7 +8,7 @@ namespace QuantumClassical {
 class Integer {
 public:
  enum class Signedness { Signed, Unsigned };
- enum class Operation { Add, Subtract, Multiply, Divide, Remainder };
+ enum class Operation { Add, Subtract, Multiply, Divide, Remainder, Power };
  static Integer fromBits(Signedness sign,unsigned width,std::uint64_t bits);
  Signedness signedness() const {return sign_;}
  unsigned width() const {return width_;}
@@ -18,6 +18,8 @@ public:
  // widening. This is a deliberate policy for narrowing integer conversions.
  Integer cast(Signedness sign,unsigned width) const;
  Integer binary(Operation operation,const Integer &right) const;
+ // Integer powers require a nonnegative exponent; 0**0 is the identity 1.
+ // Signed overflow is checked; unsigned results wrap at the value width.
  Integer power(std::uint64_t exponent) const;
  int compare(const Integer &right) const;
 private:

@@ -32,6 +32,17 @@ int main(){try {
  auto wrap=all.binary(Op::Add,TypedInteger::fromBits(machine,1));check(wrap.type()==umachine && wrap.value().bits()==0);
  auto quotient=TypedInteger::fromBits(s8,249).binary(Op::Divide,TypedInteger::fromBits(u8,2));
  check(quotient.type()==machine && quotient.value().bits()==~std::uint64_t(2));
+ // Powers use the same promotion boundary as the other binary arithmetic.
+ auto power=TypedInteger::fromBits(s8,2).binary(Op::Power,TypedInteger::fromBits(u8,8));
+ check(power.type()==machine && power.value().bits()==256);
+ check(negative.binary(Op::Power,TypedInteger::fromBits(u8,3)).value().bits()==~std::uint64_t(0));
+ reject<std::domain_error>([&]{positive.binary(Op::Power,negative);});
+ check(TypedInteger::fromBits(machine,0).binary(Op::Power,TypedInteger::fromBits(machine,0)).value().bits()==1);
+ reject<std::overflow_error>([&]{TypedInteger::fromBits(machine,2).binary(Op::Power,TypedInteger::fromBits(machine,63));});
+ auto wrapped=TypedInteger::fromBits(umachine,2).binary(Op::Power,TypedInteger::fromBits(u8,64));
+ check(wrapped.type()==umachine && wrapped.value().bits()==0);
+ // Usual conversions happen before the operation, including the exponent.
+ check(all.binary(Op::Power,negative).value().bits()==~std::uint64_t(0));
  reject<std::out_of_range>([]{IntegerType::sized(Sign::Signed,0);});
  reject<std::out_of_range>([]{IntegerType::sized(Sign::Unsigned,65);});
  reject<std::invalid_argument>([]{IntegerType::machine(static_cast<Sign>(9));});

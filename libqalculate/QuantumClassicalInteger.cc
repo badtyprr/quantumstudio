@@ -35,6 +35,10 @@ Integer Integer::signedMagnitude(bool neg,std::uint64_t value) const {
 }
 Integer Integer::binary(Operation operation,const Integer &right) const {
  sameType(right);
+ if(operation==Operation::Power) {
+  if(right.negative())throw std::domain_error("Integer power requires a nonnegative exponent");
+  return power(right.bits_);
+ }
  if(operation==Operation::Divide || operation==Operation::Remainder) {
   if(!right.bits_)throw std::domain_error("Integer division by zero");
  }
