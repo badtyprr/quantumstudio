@@ -59,7 +59,7 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  int total=0;bool expressions=false,integers=false;
+  int total=0;bool expressions=false,typedProtocol=false;
   Action<Gate,int> write=null;
   write=delegate(Gate gate,int depth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
@@ -71,7 +71,7 @@ static class NumericalSampling {
    if(!expression && gate.ClassicalExpression!=null)throw new ArgumentException("Only assignments and expression branches accept classical expressions.");
    if(expression) {
     if(!classicalBits.HasValue || gate.ClassicalExpression==null || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Classical expressions require explicit outputs and cannot include matrices or masks.");
-    expressions=true;integers|=gate.ClassicalExpression.UsesIntegers;
+    expressions=true;typedProtocol|=gate.ClassicalExpression.UsesTypedProtocol;
    }
    if(dynamic)number((ulong)gate.Kind);
    if(gate.Kind==Operation.Assign) {
@@ -122,7 +122,7 @@ static class NumericalSampling {
    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   };
   foreach(var operation in operations)write(operation,0);
-  if(expressions)text.Remove(0,exact ? 8 : 9).Insert(0,integers ? (exact ? "QEXACT3\n" : "QSAMPLE4\n") : (exact ? "QEXACT2\n" : "QSAMPLE3\n"));
+  if(expressions)text.Remove(0,exact ? 8 : 9).Insert(0,typedProtocol ? (exact ? "QEXACT3\n" : "QSAMPLE4\n") : (exact ? "QEXACT2\n" : "QSAMPLE3\n"));
   byte[] bytes=new UTF8Encoding(false,true).GetBytes(text.ToString());
   if(bytes.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   return bytes;

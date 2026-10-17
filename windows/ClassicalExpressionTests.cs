@@ -22,12 +22,45 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void LogicalChecks(string worker) {
+  var zero=E.Constant(1,0);var one=E.Constant(1,1);
+  var value=E.Logical(E.Operator.And,zero,one);
+  Check(value.Width==1 && value.UsesTypedProtocol && E.Complement(value).UsesTypedProtocol);
+  Check(Encode(value,0)=="7\n0\n0\n1\n0\n0\n1\n1\n");
+  Reject(()=>E.Logical(E.Operator.And,null,one));Reject(()=>E.Logical(E.Operator.Or,zero,null));
+  Reject(()=>E.Logical(E.Operator.Xor,zero,one));Reject(()=>E.Logical((E.Operator)99,zero,one));
+  Reject(()=>E.Logical(E.Operator.And,E.Constant(2,0),one));Reject(()=>E.Logical(E.Operator.Or,one,E.Constant(2,0)));
+  Reject(()=>Encode(E.Logical(E.Operator.And,zero,E.Read(1)),1));
+  var deep=zero;for(int k=1;k<32;k++)deep=E.Logical(E.Operator.And,zero,deep);
+  Check(Encode(deep,0).Length>32);Reject(()=>E.Logical(E.Operator.And,zero,deep));
+  var broad=one;for(int k=0;k<8;k++)broad=E.Logical(E.Operator.Or,broad,broad);
+  Check(Encode(E.Complement(broad),0).Length>512);Reject(()=>E.Complement(E.Complement(broad)));
+  var machine=T.Create(T.Sign.Signed);
+  var quotient=I.Binary(I.Operator.Divide,I.Constant(machine,6),I.Read(T.Create(T.Sign.Signed,1),0));
+  var condition=E.IntegerCompare(E.Operator.Equal,quotient,I.Constant(machine,3));
+  foreach(bool exact in new[]{true,false}) {
+   Check(Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},new[]{Assign(new[]{0},value)})).StartsWith(exact ? "QEXACT3\n" : "QSAMPLE4\n"));
+   Check(Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},new[]{Branch(zero,new[]{Assign(new[]{0},value)})})).StartsWith(exact ? "QEXACT3\n" : "QSAMPLE4\n"));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{Assign(new[]{0},E.Logical(E.Operator.And,zero,E.Read(1)))}));
+   if(worker==null)continue;
+   foreach(var op in new[]{E.Operator.And,E.Operator.Or})for(int a=0;a<2;a++)for(int b=0;b<2;b++) {
+    int want=op==E.Operator.And ? a&b : a|b;
+    var result=Evaluate(worker,exact,0,1,new[]{0},new[]{Assign(new[]{0},E.Logical(op,E.Constant(1,(ulong)a),E.Constant(1,(ulong)b)))});
+    Check(result.Count==1 && Convert.ToString(result[want.ToString()])==(exact ? "1" : "10000"));
+   }
+   foreach(var op in new[]{E.Operator.And,E.Operator.Or}) {
+    int want=op==E.Operator.And ? 0 : 1;
+    var result=Evaluate(worker,exact,0,1,new[]{0},new[]{Assign(new[]{0},E.Logical(op,E.Constant(1,(ulong)want),condition))});
+    Check(result.Count==1 && Convert.ToString(result[want.ToString()])==(exact ? "1" : "10000"));
+   }
+  }
+ }
  static void IntegerChecks(string worker) {
   var machine=T.Create(T.Sign.Signed);var s8=T.Create(T.Sign.Signed,8);var u8=T.Create(T.Sign.Unsigned,8);
   Check(machine.Width==64 && machine.DeclaredWidth==0 && T.Create(T.Sign.Signed,64).DeclaredWidth==64);
   var bits=new[]{0,1,2,3,4,5,6,7};var read=I.Read(s8,bits);bits[0]=63;var copy=read.Indices;copy[0]=62;Check(read.Indices[0]==0);
   var zero=I.Constant(machine,0);var negative=E.IntegerCompare(E.Operator.Less,read,zero);
-  Check(negative.Width==1 && negative.UsesIntegers && E.Complement(negative).UsesIntegers);
+  Check(negative.Width==1 && negative.UsesTypedProtocol && E.Complement(negative).UsesTypedProtocol);
   Check(Encode(negative,8)=="6\n2\n1\n0\n8\n0\n1\n2\n3\n4\n5\n6\n7\n0\n0\n0\n0\n");
   Reject(()=>T.Create((T.Sign)99));Reject(()=>T.Create(T.Sign.Signed,-1));Reject(()=>T.Create(T.Sign.Signed,65));
   Reject(()=>I.Read(s8,0));Reject(()=>I.Read(T.Create(T.Sign.Signed,1),64));Reject(()=>I.Constant(s8,256));
@@ -101,6 +134,7 @@ static class ClassicalExpressionTests {
   }
   Reject(()=>NumericalSampling.Request(1,1,0,new[]{0},new[]{Assign(new[]{0},E.Constant(1,1))}));
   IntegerChecks(args.Length>0 ? args[0] : null);
+  LogicalChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }
