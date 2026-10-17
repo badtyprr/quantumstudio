@@ -160,24 +160,24 @@ sealed class ClassicalCircuit {
   // Reuse the worker adapter's bounds, destinations, masks and payload checks.
   NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates);
   var canonicalObject=serializer.DeserializeObject(serializer.Serialize(value));
-  string canonical=serializer.Serialize(CanonicalFields(canonicalObject,version==4));
+  string canonical=serializer.Serialize(CanonicalFields(canonicalObject));
   if(Encoding.UTF8.GetByteCount(canonical)>MaxBytes)throw Invalid("Canonical circuit data exceeds 256 KiB.");
   return new ClassicalCircuit(value,canonical,bits);
  }
  // JavaScriptSerializer may cache DTO property order differently after reads.
- // Version 4 has deterministic ordinal field order; preserve legacy ordering.
+ // Use deterministic ordinal order for every supported circuit version.
  // Keep the added field last, and omit it entirely on legacy expression nodes.
- static object CanonicalFields(object value,bool stable) {
+ static object CanonicalFields(object value) {
   var fields=value as Dictionary<string,object>;
   if(fields!=null) {
    var result=new Dictionary<string,object>();
-   IEnumerable<KeyValuePair<string,object>> ordered=stable ? (IEnumerable<KeyValuePair<string,object>>)new SortedDictionary<string,object>(fields,StringComparer.Ordinal) : fields;
-   foreach(var field in ordered)if(field.Key!="Signedness")result.Add(field.Key,CanonicalFields(field.Value,stable));
+   var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
+   foreach(var field in ordered)if(field.Key!="Signedness")result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
   var array=value as object[];
-  if(array!=null){var result=new object[array.Length];for(int i=0;i<array.Length;i++)result[i]=CanonicalFields(array[i],stable);return result;}
+  if(array!=null){var result=new object[array.Length];for(int i=0;i<array.Length;i++)result[i]=CanonicalFields(array[i]);return result;}
   return value;
  }
  static ulong Condition(string text) {
