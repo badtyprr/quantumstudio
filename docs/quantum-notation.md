@@ -207,6 +207,17 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
 
+`complexparam(x)` represents an explicitly general complex scalar parameter,
+including possible real values. Use it for amplitudes whose imaginary parts
+are unknown, for example `density(complexparam(α)|0>+complexparam(β)|1>)`.
+The wrapper preserves conjugation and remains in printed expressions. A
+numeric substitution such as `replace(complexparam(α),α,i/sqrt(2))` evaluates
+to that number. Its argument must be one unknown symbol or a finite numeric
+expression; wrap separate symbols individually rather than a compound
+unknown expression. Ordinary unwrapped symbols retain the calculator's
+existing assumptions. This helper does not yet provide a symbol-declaration
+editor or automatically infer domains from lesson notation.
+
 ## Symbolic Fourier operators
 
 `QFT_N` and `fourier(N)` use dimension N, following [IBM's definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). `qft(n)` and `QFT(n)` instead take a qubit count. Unknown scalar dimensions remain symbolic in exact and approximate modes; substituting a numeric dimension evaluates the matrix and applies the existing numeric limits. This does not yet provide symbolic basis kets, Fourier-sum expansion, or general symbolic operator identities.

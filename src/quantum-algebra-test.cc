@@ -17,6 +17,15 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(const char *symbol:{"x","\"alpha\""}) {
+  std::string parameter=std::string("complexparam(")+symbol+")";
+  equal("qconj("+parameter+")","re("+parameter+")-i*im("+parameter+")");
+  equal("replace(qconj("+parameter+"),"+symbol+",1+i)","1-i");
+ }
+ equal("complexparam(sqrt(2)/3)","sqrt(2)/3");
+ equal("complexparam(0)","0");
+ equal("complexparam(i)","i");
+ equal("replace(replace(qdensity([complexparam(\"alpha\");complexparam(\"beta\")]),\"alpha\",1/sqrt(2)),\"beta\",i/sqrt(2))","[1,-i;i,1]/2");
  equal("qconj(exp(i*x))","exp(-i*x)");
  equal("qconj(exp(x+i*y))","exp(x-i*y)");
  equal("qconj(i*exp(i*x))","-i*exp(-i*x)");
@@ -137,7 +146,7 @@ int main(){try {
  equal("qanticomm([0,1;1,0],[0,-i;i,0])","[0,0;0,0]");
  for(unsigned i=0;i<8;++i)for(unsigned j=0;j<8;++j)
   equal("qmul(qdag(qbasis("+std::to_string(i)+",8)),qbasis("+std::to_string(j)+",8))",i==j ? "1" : "0");
- for(const auto &expression:{"qadjacent([1,0;0,1],[1;2;3])","qadjacent(qbasis(0,64),qbasis(0,64))","qbasis(8,8)","qbasis(0,1025)","qnormalize([0;0])","qcontrol([0,1;1,0],9,0)","qcontrolpattern([0,1;1,0],1,1,2)","qtrace([1;2])","qmul([1,0;0,1],[1;2;3])"}) {
+ for(const auto &expression:{"complexparam(x+y)","complexparam([1;2])","complexparam(inf)","complexparam(1 m)","qadjacent([1,0;0,1],[1;2;3])","qadjacent(qbasis(0,64),qbasis(0,64))","qbasis(8,8)","qbasis(0,1025)","qnormalize([0;0])","qcontrol([0,1;1,0],9,0)","qcontrolpattern([0,1;1,0],1,1,2)","qtrace([1;2])","qmul([1,0;0,1],[1;2;3])"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

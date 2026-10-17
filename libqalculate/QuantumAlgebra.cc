@@ -7,6 +7,26 @@
 #include <utility>
 #include <set>
 namespace {
+// An expression-level domain survives printing and a fresh calculator request.
+// Unlike changing the default assumptions, it does not change real angles.
+class QuantumComplexParameter: public MathFunction {
+public:
+ QuantumComplexParameter():MathFunction("complexparam",1) {}
+ ExpressionItem *copy() const {return new QuantumComplexParameter(*this);}
+ // General complex numbers include real values; representsComplex would
+ // incorrectly assert a nonzero imaginary part.
+ bool representsNumber(const MathStructure&,bool=false) const {return true;}
+ int calculate(MathStructure &out,const MathStructure &args,const EvaluationOptions &eo) {
+  MathStructure value=args[0];value.eval(eo);
+  if(value.isUnknown()) {out=value;return -1;}
+  if(!value.containsUnknowns() && value.representsNumber() &&
+     !(value.isNumber() && (value.number().isUndefined() || value.number().isInfinite(false)))) {
+   out=value;return 1;
+  }
+  CALCULATOR->error(true,"complexparam requires a single unknown symbol or a finite numeric substitution.",NULL);
+  return 0;
+ }
+};
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 // Transposing a 1-by-1 matrix is the identity; the generic helper flattens it.
@@ -307,6 +327,7 @@ MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions
  return dagger(value,options);
 }
 void registerQuantumAlgebra(Calculator &calculator) {
+ calculator.addFunction(new QuantumComplexParameter());
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
