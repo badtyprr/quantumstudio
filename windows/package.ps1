@@ -84,6 +84,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged worker tests failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-sampling-request-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged numerical sampling tests failed.' }
+    & $PythonPath (Join-Path $repo 'src\quantum-exact-request-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged exact circuit tests failed.' }
     & (Join-Path $repo 'dist\gui-validation\sampling-tests.exe') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged sampling adapter tests failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-import.py') --worker (Join-Path $output 'quantum-worker.exe')
