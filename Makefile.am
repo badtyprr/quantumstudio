@@ -19,6 +19,7 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm-import.py \
 	windows/test-qasm-import.py \
 	windows/test-qasm-protocol.py \
+	windows/test-qasm-classical-expressions.py \
 	windows/BoundedUtf8File.cs \
 	windows/CircuitComposer.cs \
 	windows/NumericalSampling.cs \

@@ -37,3 +37,5 @@ jobs:
           & windows/build-qasm-import.ps1
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-protocol.py
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM protocol tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-classical-expressions.py
+          if ($LASTEXITCODE -ne 0) { throw 'Classical expression import tests failed.' }

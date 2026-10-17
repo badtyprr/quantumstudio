@@ -35,4 +35,19 @@ The existing 256 KiB file limit and 512-step, 32-branch-level bounds apply.
 Each expression allows at most 512 nodes and 32 levels. All expression trees,
 including untaken branches, are validated before a file or edit becomes the
 current program. Snapshots and undo/redo preserve the complete trees. This schema
-does not itself provide textual expression entry or OpenQASM translation.
+does not itself provide textual expression entry.
+
+The classical OpenQASM importer preserves bit-register initializers, assignments,
+bitwise compound assignments, comparisons and logical conditions in this schema.
+Indices and slice bounds must resolve at compile time. Assignments inside static
+loops retain their runtime position. Existing simple mask conditions can remain
+version 2; expressions and assignments require version 3. Unsupported runtime
+loops, switches, register indices/sizes, classical aliases, function arguments
+and gate parameters are rejected rather than
+evaluated using placeholder bit values. Signed, floating-point and general
+arithmetic state remain separate work.
+
+Assignment copy and bit-width behavior follow the
+[OpenQASM 3 classical instruction specification](https://openqasm.com/versions/3.0/language/classical.html).
+The pinned PyQASM 1.0.4 visitor is adapted only during unrolling; all replaced
+methods are restored even when compilation fails.

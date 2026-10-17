@@ -31,12 +31,9 @@ for predicate in ['c==2', 'c!=2', 'c[1]', '!c[1]']:
     assert adapter.QasmVisitor._visit_branching_statement is original_branch
 for predicate in ['c==d', 'c>1']:
     module = adapter.pyqasm.loads(header+'qubit q; bit[2] c; bit[2] d; if('+predicate+') x q;')
-    try:
-        adapter.unroll_preserving_phase(module, {'x'}, preserve_branches=True)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError('Unsupported runtime comparison accepted: '+predicate)
+    adapter.unroll_preserving_phase(module, {'x'}, preserve_branches=True)
+    branch=module.unrolled_ast.statements[-1]
+    assert isinstance(branch,adapter.ast.BranchingStatement) and branch.condition.op.name==('==' if predicate=='c==d' else '>')
     assert adapter.QasmVisitor._visit_branching_statement is original_branch
 print('PASS: 6 classical branch preservation checks.')
 
@@ -73,8 +70,8 @@ for command in commands:
          'Steps':[{'Kind':'Branch','Mask':'3','Value':'2','WhenTrue':[{'Kind':'Gate','Expression':'X','Wires':[0]}],'WhenFalse':[{'Kind':'Reset','Wires':[0]}]}]}, arguments=['--classical'])
     run(command, header+'qubit q; measure q;',
         {'Version':2,'Qubits':1,'Registers':[],'OutputBits':[],'Steps':[{'Kind':'Channel','Expression':'phase_damping(1)','Wires':[0]}]}, arguments=['--classical'])
-    for body in ['qubit q; bit c=1;', 'qubit q; bit c; c=1;', 'qubit q; bit[65] c;',
-                 'qubit q; bit[2] c; if(c>1) x q;', 'qubit q; bit[2] c; bit[2] d; if(c==d) x q;']:
+    for body in ['qubit q; bit c=2;', 'qubit q; bit c; c=-1;', 'qubit q; bit[65] c;',
+                 'qubit q; bit[2] c; if(c>4) x q;', 'qubit q; bit[2] c; bit[3] d; if(c==d) x q;']:
         run(command, header+body, arguments=['--classical'])
     run(command, source, bell)
     run(command, b'\xef\xbb\xbf'+source.encode('utf-8'), bell)
