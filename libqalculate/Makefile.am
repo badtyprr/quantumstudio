@@ -55,6 +55,7 @@ libqalculate_la_SOURCES = \
 	QuantumNotation.cc \
 	QuantumStateMetrics.cc \
 	QuantumTeX.cc \
+	QuantumExactOperation.cc \
 	QuantumExactRecords.cc \
 	QuantumReadout.cc \
 	QuantumTrajectory.cc \
@@ -93,3 +94,5 @@ AM_CPPFLAGS = \
 	@LIBCURL_CFLAGS@  @LIBXML_CFLAGS@  @ICU_CFLAGS@
 
 noinst_HEADERS += QuantumExactRecords.h
+
+noinst_HEADERS += QuantumExactOperation.h
