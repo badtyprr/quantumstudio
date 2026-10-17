@@ -601,3 +601,23 @@ the new unused type field so older readers can still load them. Snapshots and
 undo/redo preserve version 4; ordinary bit-expression edits do not downgrade it.
 Typed conditions can be reopened and displayed in the editor. Entering/editing
 typed expression text and importing it from OpenQASM remain follow-up work.
+
+### Integer conditions in the classical editor
+
+Enter typed comparisons and arithmetic directly, for example `int[8](c) < 0`
+or `int[8](c) != 0 && 6 / int[8](c) == 3`, when `c` contains eight bits.
+`int[n](c)` interprets the register as signed two's-complement; `uint[n](c)`
+interprets it as unsigned. The width must match the register or slice. `int(x)`
+and `uint(x)` use QuantumStudio's 64-bit machine type. Decimal literals inside
+integer arithmetic use that machine type; explicit casts narrow to low bits.
+Supported arithmetic is `+`, `-`, `*`, `/`, `%`, with parentheses and unary minus.
+Compare the result to produce a one-bit condition or assignment value.
+
+`&&` and `||` evaluate from left to right and skip the right operand when the
+left determines the result. `&` and `|` retain eager bitwise behavior. Invalid
+register references are rejected even in skipped operands. Integer and logical
+conditions are saved as circuit version 4 and survive formatting, reopening,
+and editing. Existing ordinary bit expressions retain their earlier format.
+Integer variable declarations and integer-valued assignments are not yet exposed
+by this editor; casts currently accept integer expressions, bit constants and
+register reads, rather than arbitrary computed bit expressions.
