@@ -548,3 +548,28 @@ branches are structurally checked without executing their arithmetic; an
 executed zero divisor raises an error. Combined bit/integer expression trees
 share the same depth and expanded-node limits. This native bridge does not yet
 add an integer expression encoding to the worker protocol or OpenQASM importer.
+
+### Typed integer condition wire protocol
+
+`QEXACT3` and `QSAMPLE4` retain the field layout of `QEXACT2` and `QSAMPLE3`
+and additionally accept bit-expression node 6: a comparison code followed by
+two integer expression trees. Comparison codes 0..5 mean `==`, `!=`, `<`, `<=`,
+`>` and `>=`. Existing protocol versions reject this node.
+
+An integer type is encoded as signedness (0 signed, 1 unsigned) and width
+(1..64 explicit, 0 machine precision). Integer tree nodes are:
+
+- 0: type, then unsigned decimal raw bit pattern.
+- 1: type, then one classical bit index per storage bit, least-significant first
+  (64 indices for machine precision).
+- 2: target type, then one integer child (explicit cast).
+- 3: arithmetic code, then two integer children. Codes 0..4 mean addition,
+  subtraction, multiplication, division and remainder.
+
+All fields are LF-terminated unsigned decimal integers. Integer and bit nodes
+share a 32-level/512-expanded-node budget, checked before descending. References
+are checked even in untaken branches, but arithmetic executes only when reached.
+A comparison produces one bit usable by the existing assignment and branch
+operations. These versions do not yet declare integer variables, track their
+initialization or persist their type in circuit files. The GUI and importer
+still emit the older bit-expression protocols.

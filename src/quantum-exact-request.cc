@@ -12,10 +12,11 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool classical() const {return input.compare(0,8,"QEXACT2\n")==0;}
+ bool typed() const {return input.compare(0,8,"QEXACT3\n")==0;}
+ bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1 or QEXACT2 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1, QEXACT2 or QEXACT3 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -63,13 +64,13 @@ Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bit
  const unsigned kind=static_cast<unsigned>(reader.integer(reader.classical()?8:6));
  if(kind==7) {
   auto targets=reader.targets(bits,bits);
-  return Step::assign(targets,QuantumClassicalRequest::read(reader,bits));
+  return Step::assign(targets,QuantumClassicalRequest::read(reader,bits,reader.typed()));
  }
  if(kind==6 || kind==8) {
   if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches.");
   std::uint64_t mask=0,value=0;
   if(kind==6) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
-  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,bits) : QuantumClassical::Bits::constant(1,0);
+  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,bits,reader.typed()) : QuantumClassical::Bits::constant(1,0);
   std::vector<Step> bodies[2];
   for(auto &body:bodies) {
    unsigned count=static_cast<unsigned>(reader.integer(512-total));

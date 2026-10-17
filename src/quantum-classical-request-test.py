@@ -12,8 +12,9 @@ def assign(targets,value):return n(7,len(targets),*targets)+value
 def branch(condition,yes,no=()):return n(8)+condition+n(len(yes))+b''.join(yes)+n(len(no))+b''.join(no)
 def gate(text,*wires):
     encoded=text.encode();return n(0,len(wires),*wires,len(encoded))+encoded
-def payload(exact,qubits,bits,output,steps,legacy=False):
+def payload(exact,qubits,bits,output,steps,legacy=False,typed=False):
     header=(b'QEXACT1\n' if legacy else b'QEXACT2\n') if exact else (b'QSAMPLE2\n' if legacy else b'QSAMPLE3\n')
+    if typed:header=b'QEXACT3\n' if exact else b'QSAMPLE4\n'
     return header+n(qubits)+ (b'' if exact else n(10000,1731))+n(bits,len(output),*output,len(steps))+b''.join(steps)
 def run(exact,data,expected=None):
     global checks
@@ -73,4 +74,53 @@ for exact in (True,False):
     for end in range(len(valid)):run(exact,valid[:end])
     run(exact,valid+b'\n')
     run(exact,payload(exact,0,1,[0],[assign([0],const(1,1))],legacy=True))
+# Typed integer nodes are available only in the new protocol versions.
+def integer_constant(sign,width,value):return n(0,sign,width,value)
+def integer_read(sign,width,*indices):return n(1,sign,width,*indices)
+def integer_binary(op,left,right):return n(3,op)+left+right
+def integer_cast(sign,width,value):return n(2,sign,width)+value
+def compare(op,left,right):return n(6,op)+left+right
+for exact in (True,False):
+    def typed(steps,bits=9,out=[8],expected=None):
+        run(exact,payload(exact,0,bits,out,steps,typed=True),expected)
+    signed=integer_read(0,8,*range(8));unsigned=integer_read(1,8,*range(8))
+    zero=integer_constant(0,0,0);one=integer_constant(0,0,1)
+    initialize=assign(list(range(8)),const(8,255));set_output=assign([8],const(1,1))
+    for op,value in enumerate([0,1,1,1,0,0]):
+        typed([initialize,assign([8],compare(op,signed,unsigned))],expected={str(value):1})
+    negative=compare(2,signed,zero)
+    typed([initialize,branch(negative,[set_output])],expected={'1':1})
+    typed([initialize,assign([8],compare(2,integer_cast(0,0,signed),zero))],expected={'1':1})
+    typed([initialize,assign([8],compare(4,integer_cast(1,8,signed),zero))],expected={'1':1})
+    quotient=integer_binary(3,integer_constant(0,0,6),signed)
+    condition=compare(0,quotient,integer_constant(0,0,3))
+    typed([assign(list(range(8)),const(8,2)),branch(condition,[set_output])],expected={'1':1})
+    typed([branch(const(1,0),[branch(condition,[set_output])])],expected={'0':1})
+    typed([branch(condition,[set_output])]) # Runtime division by zero.
+    typed([branch(const(1,0),[branch(negative,[])])],bits=7,out=[])
+    for op,want in enumerate([8,4,12,3,0]):
+        expr=integer_binary(op,integer_constant(0,0,6),integer_constant(0,0,2))
+        typed([assign([8],compare(0,expr,integer_constant(0,0,want)))],expected={'1':1})
+    for malformed in [n(4),n(0,2,8,0),n(0,0,65,0),n(0,0,8,256),n(1,0,1,64),n(3,5),n(2,2,8)+one]:
+        typed([assign([8],compare(0,malformed,zero))])
+    typed([assign([8],n(6,6)+zero+zero)])
+    typed([assign([8],compare(0,n(2,0,0)*32+zero,zero))])
+    broad=zero
+    for _ in range(8):broad=integer_binary(0,broad,broad)
+    typed([assign([8],compare(0,broad,zero))]) # 513 expanded nodes.
+    overflow=integer_binary(0,integer_constant(0,0,(1<<63)-1),one)
+    typed([assign([8],compare(0,overflow,zero))])
+    typed([assign(list(range(64)),const(64,1<<63)),assign([0],compare(2,integer_read(0,0,*range(64)),zero))],bits=64,out=[0],expected={'1':1})
+    typed([assign([8],compare(0,n(2,0,0)*30+zero,zero))],expected={'1':1})
+    typed([assign([8],compare(0,n(2,0,0)*31+zero,zero))])
+    half=zero
+    for _ in range(7):half=integer_binary(0,half,half) # 255 nodes each.
+    at_limit=n(2)+compare(0,half,half) # 512 nodes including bit complement.
+    typed([assign([8],at_limit)],expected={'0':1})
+    typed([assign([8],n(2)+at_limit)])
+    # Old headers must reject the typed node, not silently reinterpret it.
+    run(exact,payload(exact,0,9,[8],[initialize,branch(negative,[set_output])]))
+    valid=payload(exact,0,9,[8],[initialize,branch(negative,[set_output])],typed=True)
+    for end in range(len(valid)):run(exact,valid[:end])
+    run(exact,valid+b'\n')
 print('PASS: '+str(checks)+' classical expression process checks.')
