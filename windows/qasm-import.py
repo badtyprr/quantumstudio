@@ -241,7 +241,7 @@ def number(value):
     return format(value.value, '.17g')
 
 
-def convert(source, published_u=False):
+def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(source)
@@ -250,6 +250,11 @@ def convert(source, published_u=False):
     # PyQASM recognizes built-in includes but does not resolve arbitrary files.
     # Reject these before compilation, rather than pretend their content ran.
     for node in nodes(module.original_program):
+        if classical and isinstance(node, ast.ClassicalAssignment):
+            raise ValueError('Runtime classical assignments are not yet supported by the classical circuit importer.')
+        if classical and isinstance(node, ast.ClassicalDeclaration):
+            if not isinstance(node.type, ast.BitType) or (node.init_expression is not None and not isinstance(node.init_expression, ast.QuantumMeasurement)):
+                raise ValueError('Classical circuit import supports bit registers initialized to zero or by measurement; other classical declarations are not yet supported.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise ValueError('Only stdgates.inc and qelib1.inc includes are supported.')
         if getattr(node, 'annotations', None):
@@ -258,8 +263,10 @@ def convert(source, published_u=False):
     # only up to global phase. The calculator exposes exact state amplitudes.
     defined = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGateDefinition)}
     primitives = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGate)} - defined
-    unroll_preserving_phase(module, primitives)
+    unroll_preserving_phase(module, primitives, preserve_branches=classical)
     statements = module.unrolled_ast.statements
+    if classical:
+        return classical_circuit(statements, published_u)
     registers, count = {}, 0
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
@@ -323,6 +330,113 @@ def convert(source, published_u=False):
     return {'Version': 1, 'Qubits': count, 'Steps': steps}
 
 
+def classical_circuit(statements, published_u):
+    quantum, classical, named = {}, {}, []
+    nq = nc = 0
+    for statement in statements:
+        if isinstance(statement, ast.QubitDeclaration):
+            size = 1 if statement.size is None else statement.size.value
+            quantum[statement.qubit.name] = (nq, size)
+            nq += size
+        elif isinstance(statement, ast.ClassicalDeclaration):
+            if not isinstance(statement.type, ast.BitType) or statement.init_expression is not None:
+                raise ValueError('Unresolved classical initialization after compilation.')
+            size = 1 if statement.type.size is None else statement.type.size.value
+            if type(size) is not int or size < 1:
+                raise ValueError('Classical registers need a positive integer size.')
+            name = statement.identifier.name
+            classical[name] = (nc, size)
+            named.append({'Name': name, 'Size': size})
+            nc += size
+    if not 1 <= nq <= 25 or not 0 <= nc <= 64:
+        raise ValueError('Classical circuits support 1–25 qubits and up to 64 classical bits.')
+
+    def reference(value, registers, whole=False):
+        if isinstance(value, ast.Identifier):
+            start, size = registers[value.name]
+            if whole:
+                return start, size
+            if size != 1:
+                raise ValueError('Register operation was not expanded by the compiler.')
+            return start
+        if isinstance(value, ast.IndexedIdentifier):
+            name, indices = value.name.name, value.indices
+            if len(indices) != 1:
+                raise ValueError('Unresolved register index.')
+            indices = indices[0]
+        elif isinstance(value, ast.IndexExpression) and isinstance(value.collection, ast.Identifier):
+            name, indices = value.collection.name, value.index
+        else:
+            raise ValueError('Unresolved register reference.')
+        if not isinstance(indices, list) or len(indices) != 1 or not isinstance(indices[0], ast.IntegerLiteral):
+            raise ValueError('Expected one literal register index.')
+        start, size = registers[name]
+        index = indices[0].value
+        if type(index) is not int or not 0 <= index < size:
+            raise ValueError('Register index is outside its declaration.')
+        return (start+index, 1) if whole else start+index
+
+    count = 0
+    def lower(body, depth=0):
+        nonlocal count
+        result = []
+        def append(step):
+            nonlocal count
+            count += 1
+            if count > 512:
+                raise ValueError('Classical circuits support at most 512 total operations.')
+            result.append(step)
+        for statement in body:
+            if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
+                continue
+            if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
+                if depth:
+                    raise ValueError('Register declarations inside runtime branches are not supported.')
+                continue
+            if isinstance(statement, ast.BranchingStatement):
+                if depth >= 32:
+                    raise ValueError('Classical circuits support at most 32 nested branches.')
+                condition = statement.condition
+                negate = False
+                if isinstance(condition, ast.BinaryExpression) and condition.op.name in ('==', '!=') and isinstance(condition.rhs, ast.IntegerLiteral):
+                    target, expected = condition.lhs, condition.rhs.value
+                    negate = condition.op.name == '!='
+                elif isinstance(condition, ast.UnaryExpression) and condition.op.name == '!':
+                    target, expected = condition.expression, 0
+                else:
+                    target, expected = condition, 1
+                start, size = reference(target, classical, whole=True)
+                if not isinstance(condition, ast.BinaryExpression) and size != 1:
+                    raise ValueError('Whole-register truth conditions require an explicit comparison.')
+                if type(expected) is not int or not 0 <= expected < (1 << size):
+                    raise ValueError('Condition constant is outside its register range.')
+                yes, no = lower(statement.if_block, depth+1), lower(statement.else_block, depth+1)
+                if negate:
+                    yes, no = no, yes
+                append({'Kind': 'Branch', 'Mask': str(((1 << size)-1) << start), 'Value': str(expected << start), 'WhenTrue': yes, 'WhenFalse': no})
+            elif isinstance(statement, ast.QuantumMeasurementStatement):
+                wire = reference(statement.measure.qubit, quantum)
+                if statement.target is None:
+                    append({'Kind': 'Channel', 'Expression': 'phase_damping(1)', 'Wires': [wire]})
+                else:
+                    append({'Kind': 'Measure', 'Wires': [wire], 'ClassicalBit': reference(statement.target, classical)})
+            elif isinstance(statement, ast.QuantumReset):
+                append({'Kind': 'Reset', 'Wires': [reference(statement.qubits, quantum)]})
+            elif isinstance(statement, ast.QuantumGate):
+                if statement.duration is not None:
+                    raise ValueError('Timed gates are not supported.')
+                for step in gate_steps(statement, lambda q: reference(q, quantum), published_u):
+                    name, angle = step['Gate'], step['Angle']
+                    expression = '(exp(i*('+angle+'))*I)' if name == 'GPhase' else name+('('+angle+')' if angle else '')
+                    append({'Kind': 'Gate', 'Expression': expression, 'Wires': step['Wires']})
+            elif isinstance(statement, ast.QuantumPhase) and not statement.modifiers:
+                append({'Kind': 'Gate', 'Expression': '(exp(i*('+number(statement.argument)+'))*I)', 'Wires': [0]})
+            else:
+                raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
+        return result
+    return {'Version': 2, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(range(nc))), 'Steps': lower(statements)}
+
+
 if __name__ == '__main__':
     # Redirected Windows streams otherwise inherit the local code page, while
     # the GUI consumes UTF-8. Keep diagnostics readable in every locale.
@@ -333,9 +447,9 @@ if __name__ == '__main__':
         if len(source_bytes) > 262144:
             raise ValueError('OpenQASM input must be at most 256 KB.')
         source = source_bytes.decode('utf-8-sig')
-        if sys.argv[1:] not in ([], ['--published-u']):
-            raise ValueError('Usage: qasm-import.exe [--published-u] (OpenQASM on stdin)')
-        result = convert(source, published_u=bool(sys.argv[1:]))
+        if len(set(sys.argv[1:])) != len(sys.argv[1:]) or any(arg not in ('--published-u', '--classical') for arg in sys.argv[1:]):
+            raise ValueError('Usage: qasm-import.exe [--published-u] [--classical] (OpenQASM on stdin)')
+        result = convert(source, published_u='--published-u' in sys.argv[1:], classical='--classical' in sys.argv[1:])
         sys.stdout.write(json.dumps(result))
     except Exception as error:
         sys.stderr.write(str(error)[:4096] + '\n')

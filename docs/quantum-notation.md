@@ -459,5 +459,18 @@ when expanding register comparisons: OpenQASM uses little-endian register to
 integer conversion ([types specification](https://openqasm.com/versions/3.0/language/types.html)).
 Runtime-register right-hand operands and ordered comparisons currently produce
 explicit diagnostics in this path. The legacy version-1 importer is unchanged;
-version-2 output conversion and GUI import wiring remain to be implemented.
+the classical editor uses this path for version-2 import.
+
+Choose **Import OpenQASM** in the classical editor, with either the IBM/Qiskit
+or published OpenQASM 3 U convention. Import preserves declared bit-register
+names, measurement destinations, resets and nested equality/inequality branches.
+Outputs default to descending global bit indices, with register names displayed
+in the sampling window; this order is editable. A discarded measurement is
+represented as complete phase damping, preserving its quantum effect without
+inventing a saved output. Import is undoable and validates before changing the
+current program. The compiler CLI exposes the same conversion as `--classical`.
+Current limits are 25 qubits, 64 classical bits, 512 operations and 32 branch
+levels. General runtime assignments, nonzero bit initializers, ordered/runtime
+register comparisons and other classical arithmetic remain unsupported and are
+rejected explicitly.
 

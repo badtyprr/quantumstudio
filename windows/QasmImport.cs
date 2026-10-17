@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 static class QasmImport {
  internal static byte[] ReadSource(string path) {return BoundedUtf8File.Read(path,262144,"OpenQASM source");}
- public static string Compile(string path,bool publishedU=false) {
+ public static string Compile(string path,bool publishedU=false,bool classical=false) {
   byte[] source=ReadSource(path);
   string executable=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"qasm-import","qasm-import.exe");
   var start=new ProcessStartInfo(executable) {UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8};
-  if(publishedU)start.Arguments="--published-u";
+  start.Arguments=(publishedU ? "--published-u " : "")+(classical ? "--classical" : "");
   using(var process=new Process {StartInfo=start}) {
    process.Start();
    try {
