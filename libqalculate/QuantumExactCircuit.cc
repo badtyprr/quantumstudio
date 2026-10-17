@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumExactCircuit.h"
+#include "QuantumClassicalIntegerStorage.h"
 #include "Calculator.h"
 #include "Function.h"
 #include <stdexcept>
@@ -8,11 +9,16 @@ namespace QuantumExact {
 namespace {
 using Step=CircuitStep;
 void checkpoint() {if(CALCULATOR->aborted())throw std::runtime_error("Exact circuit evaluation cancelled");}
-void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsigned depth,std::size_t &count) {
+void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsigned depth,std::size_t &count,const QuantumClassical::IntegerStorage &variables) {
  for(const auto &step:steps) {
   checkpoint();if(++count>512)throw std::length_error("Exact circuits support at most 512 steps across all bodies");
+  if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
+   variables.type(step.variableSlot);
+   if(step.integerExpression)step.integerExpression->validate(bits,variables);
+   continue;
+  }
   if(step.kind==Step::Kind::Assign) {
-   QuantumClassical::validateAssignment(bits,step.wires,*step.expression);continue;
+   QuantumClassical::validateAssignment(bits,step.wires,*step.expression,variables);continue;
   }
   unsigned targets=0;
   for(unsigned wire:step.wires) {
@@ -30,12 +36,12 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
   } else if(step.kind==Step::Kind::Branch) {
    if(step.expression) {
     if(step.expression->width()!=1)throw std::invalid_argument("Exact branch expressions must be one bit");
-    step.expression->validate(bits);
+    step.expression->validate(bits,variables);
    }
    if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches");
    if((bits<64 && (step.mask>>bits)) || (step.value&~step.mask))
     throw std::invalid_argument("Branch mask/value is outside the classical register or mask");
-   validate(*step.whenTrue,qubits,bits,depth+1,count);validate(*step.whenFalse,qubits,bits,depth+1,count);
+   validate(*step.whenTrue,qubits,bits,depth+1,count,variables);validate(*step.whenFalse,qubits,bits,depth+1,count,variables);
   }
  }
 }
@@ -53,40 +59,80 @@ MathStructure apply(const MathStructure &rho,const Step &step,const EvaluationOp
  }
  sum.eval(exact);checkpoint();return sum;
 }
-Records execute(Records records,unsigned qubits,unsigned bits,const std::vector<Step> &steps,
+struct RuntimeRecord {
+ std::uint64_t bits;
+ QuantumClassical::IntegerStorage variables;
+ MathStructure density;
+};
+using RuntimeRecords=std::vector<RuntimeRecord>;
+// All records in a run share a fixed declaration table. A key therefore needs
+// only the packed record plus each slot's initialized flag and bit pattern.
+class RuntimeAccumulator {
+ unsigned qubits_,bits_;std::size_t maxCells_;const EvaluationOptions &exact_;
+ std::map<std::vector<std::uint64_t>,RuntimeRecord> records_;
+public:
+ RuntimeAccumulator(unsigned qubits,unsigned bits,std::size_t maxCells,const EvaluationOptions &exact):
+  qubits_(qubits),bits_(bits),maxCells_(maxCells),exact_(exact) {}
+ void add(std::uint64_t bits,const QuantumClassical::IntegerStorage &variables,const MathStructure &density) {
+  checkpoint();std::vector<std::uint64_t> key={bits};
+  for(std::size_t slot=0;slot<variables.size();++slot) {
+   const bool initialized=variables.initialized(slot);key.push_back(initialized);
+   key.push_back(initialized ? variables.read(slot).value().bits() : 0);
+  }
+  auto found=records_.find(key);
+  RecordAccumulator sum(qubits_,bits_,maxCells_,exact_);
+  if(found!=records_.end())sum.add(bits,found->second.density);
+  sum.add(bits,density);auto merged=sum.take();
+  if(merged.empty())return;
+  if(found==records_.end()) {
+   const std::size_t cells=(std::size_t(1)<<qubits_)*(std::size_t(1)<<qubits_);
+   if(records_.size()>=maxCells_/cells)throw std::length_error("Exact variable record cell budget exceeded");
+   records_.emplace(std::move(key),RuntimeRecord{bits,variables,merged.begin()->second});
+  } else found->second.density=merged.begin()->second;
+ }
+ RuntimeRecords take() {
+  RuntimeRecords result;result.reserve(records_.size());
+  for(auto &item:records_)result.push_back(std::move(item.second));
+  records_.clear();return result;
+ }
+};
+RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,const std::vector<Step> &steps,
  std::size_t maxCells,const EvaluationOptions &exact) {
  for(const auto &step:steps) {
-  checkpoint();
-  if(step.kind==Step::Kind::Measure) {
-   records=measure(records,qubits,bits,step.wires[0],step.classicalBit,maxCells,exact);continue;
-  }
-  RecordAccumulator output(qubits,bits,maxCells,exact);
+  checkpoint();RuntimeAccumulator output(qubits,bits,maxCells,exact);
   for(const auto &record:records) {
    checkpoint();
-   if(step.kind==Step::Kind::Branch) {
-    // Select once for this incoming record; body writes cannot switch paths.
-    const bool selected=step.expression ? step.expression->evaluate(record.first,bits)!=0 : (record.first&step.mask)==step.value;
+   if(step.kind==Step::Kind::Measure) {
+    for(const auto &outcome:measure({{record.bits,record.density}},qubits,bits,step.wires[0],step.classicalBit,maxCells,exact))
+     output.add(outcome.first,record.variables,outcome.second);
+   } else if(step.kind==Step::Kind::Branch) {
+    const bool selected=step.expression ? step.expression->evaluate(record.bits,bits,record.variables)!=0 : (record.bits&step.mask)==step.value;
     const auto &body=selected ? *step.whenTrue : *step.whenFalse;
-    auto branch=execute({record},qubits,bits,body,maxCells,exact);
-    for(const auto &result:branch)output.add(result.first,result.second);
+    for(const auto &result:execute({record},qubits,bits,body,maxCells,exact))
+     output.add(result.bits,result.variables,result.density);
+   } else if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
+    auto variables=record.variables;
+    if(step.kind==Step::Kind::ClearInteger)variables.clear(step.variableSlot);
+    else variables.write(step.variableSlot,step.integerExpression->evaluate(record.bits,bits,record.variables));
+    output.add(record.bits,variables,record.density);
    } else if(step.kind==Step::Kind::Assign) {
-    output.add(QuantumClassical::assign(record.first,bits,step.wires,*step.expression),record.second);
+    output.add(QuantumClassical::assign(record.bits,bits,step.wires,*step.expression,record.variables),record.variables,record.density);
    } else if(step.kind==Step::Kind::Readout) {
-    for(const auto &outcome:step.assignment->outcomes(record.first)) {
-     MathStructure rho=record.second;
+    for(const auto &outcome:step.assignment->outcomes(record.bits)) {
+     MathStructure rho=record.density;
      for(std::size_t r=1;r<=rho.rows();++r) {
       checkpoint();for(std::size_t c=1;c<=rho.columns();++c) {
        auto &cell=*rho.getElement(r,c);cell*=outcome.second;cell.eval(exact);
       }
      }
-     output.add(outcome.first,rho);
+     output.add(outcome.first,record.variables,rho);
     }
-   } else if(step.kind==Step::Kind::Map) output.add(record.first,apply(record.second,step,exact));
+   } else if(step.kind==Step::Kind::Map) output.add(record.bits,record.variables,apply(record.density,step,exact));
    else {
     auto reset=CALCULATOR->getFunction("qreset");if(!reset)throw std::runtime_error("Exact reset is unavailable");
     MathStructure wire(static_cast<int>(step.wires[0])),result;
-    result.set(reset,&record.second,&wire,NULL);result.eval(exact);checkpoint();
-    output.add(record.first,result);
+    result.set(reset,&record.density,&wire,NULL);result.eval(exact);checkpoint();
+    output.add(record.bits,record.variables,result);
    }
   }
   records=output.take();
@@ -96,12 +142,20 @@ Records execute(Records records,unsigned qubits,unsigned bits,const std::vector<
 }
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
  std::size_t maxCells,const EvaluationOptions &options) {
+ return evaluateCircuit(qubits,classicalBits,steps,{},maxCells,options);
+}
+Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
+ const std::vector<QuantumClassical::IntegerType> &variableTypes,std::size_t maxCells,const EvaluationOptions &options) {
  checkpoint();RecordAccumulator initial(qubits,classicalBits,maxCells,options);
- std::size_t count=0;validate(steps,qubits,classicalBits,0,count);
+ const QuantumClassical::IntegerStorage variables(variableTypes);
+ std::size_t count=0;validate(steps,qubits,classicalBits,0,count,variables);
  EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
  const std::size_t n=std::size_t(1)<<qubits;
  MathStructure rho;rho.clearMatrix();rho.resizeMatrix(n,n,m_zero);*rho.getElement(1,1)=m_one;
  initial.add(0,rho);
- return execute(initial.take(),qubits,classicalBits,steps,maxCells,exact);
+ RuntimeRecords input;for(const auto &item:initial.take())input.push_back({item.first,variables,item.second});
+ RecordAccumulator output(qubits,classicalBits,maxCells,exact);
+ for(const auto &item:execute(std::move(input),qubits,classicalBits,steps,maxCells,exact))output.add(item.bits,item.density);
+ return output.take();
 }
 }
