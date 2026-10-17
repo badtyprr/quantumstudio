@@ -3,7 +3,7 @@ using System;
 
 // Immutable unsigned expressions shared by exact and sampled request builders.
 sealed class ClassicalExpression {
- public enum NodeKind { Constant=0, Read=1, Complement=2, Binary=3, PopulationCount=4, Rotate=5, IntegerCompare=6, Logical=7 }
+ public enum NodeKind { Constant=0, Read=1, Complement=2, Binary=3, PopulationCount=4, Rotate=5, IntegerCompare=6, Logical=7, IntegerBits=8 }
  public enum Direction { Left=0, Right=1 }
  public enum Distance { Unsigned=0, Signed=1 }
  public Direction RotationDirection {get;private set;}
@@ -20,7 +20,7 @@ sealed class ClassicalExpression {
   if(width<1 || width>64)throw new ArgumentException("Classical expressions need 1–64 bits.");
   Kind=kind;Width=width;Value=value;Operation=operation;Left=left;Right=right;
   IntegerLeft=integerLeft;IntegerRight=integerRight;
-  UsesTypedProtocol=kind==NodeKind.Logical || kind==NodeKind.IntegerCompare || (left!=null && left.UsesTypedProtocol) || (right!=null && right.UsesTypedProtocol);
+  UsesTypedProtocol=kind==NodeKind.Logical || kind==NodeKind.IntegerCompare || kind==NodeKind.IntegerBits || (left!=null && left.UsesTypedProtocol) || (right!=null && right.UsesTypedProtocol);
   depth=1+Math.Max(Math.Max(left==null ? 0 : left.depth,right==null ? 0 : right.depth),Math.Max(integerLeft==null ? 0 : integerLeft.Depth,integerRight==null ? 0 : integerRight.Depth));
   count=1+(left==null ? 0 : left.count)+(right==null ? 0 : right.count)+(integerLeft==null ? 0 : integerLeft.Count)+(integerRight==null ? 0 : integerRight.Count);
   if(depth>32 || count>512)throw new ArgumentException("Classical expressions allow 32 levels and 512 nodes.");
@@ -61,6 +61,11 @@ sealed class ClassicalExpression {
   if((int)operation<5 || (int)operation>10)throw new ArgumentException("Integer conditions require a comparison operator.");
   return new ClassicalExpression(NodeKind.IntegerCompare,1,0,null,operation,null,null,left,right);
  }
+ public static ClassicalExpression FromInteger(ClassicalIntegerExpression operand) {
+  if(operand==null)throw new ArgumentNullException("operand");
+  if(operand.Type.DeclaredWidth==0)throw new ArgumentException("Bit casts require an explicitly sized integer.");
+  return new ClassicalExpression(NodeKind.IntegerBits,operand.Type.Width,0,null,0,null,null,operand);
+ }
  public static ClassicalExpression PopulationCount(ClassicalExpression operand) {
   if(operand==null)throw new ArgumentNullException("operand");
   return new ClassicalExpression(NodeKind.PopulationCount,64,0,null,0,operand,null);
@@ -80,6 +85,7 @@ sealed class ClassicalExpression {
  void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
   if(Kind==NodeKind.IntegerCompare){number((ulong)((int)Operation-5));IntegerLeft.WriteNode(number);IntegerRight.WriteNode(number);}
+  else if(Kind==NodeKind.IntegerBits)IntegerLeft.WriteNode(number);
   else if(Kind==NodeKind.Constant){number((ulong)Width);number(Value);}
   else if(Kind==NodeKind.Read){number((ulong)indices.Length);foreach(int bit in indices)number((ulong)bit);}
   else if(Kind==NodeKind.Complement || Kind==NodeKind.PopulationCount)Left.WriteNode(number);
