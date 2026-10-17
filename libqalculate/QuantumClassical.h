@@ -7,9 +7,11 @@
 
 namespace QuantumClassical {
 class IntegerExpression;
+class IntegerStorage;
 // Immutable unsigned bit-vector expressions; not OpenQASM signed/float arithmetic.
 // Register/slice indices are least-significant first. Copies retain their value.
 class Bits {
+ void validateContext(unsigned registerBits,const IntegerStorage *storage) const;
  struct Node;
  std::shared_ptr<const Node> node_;
  explicit Bits(std::shared_ptr<const Node> node):node_(node) {}
@@ -40,13 +42,18 @@ public:
  // Rejects records or references outside the supplied 0..64-bit register.
  // Check register references without evaluating a fabricated runtime value.
  void validate(unsigned registerBits) const;
+ void validate(unsigned registerBits,const IntegerStorage &storage) const;
  std::uint64_t evaluate(std::uint64_t record,unsigned registerBits) const;
+ std::uint64_t evaluate(std::uint64_t record,unsigned registerBits,const IntegerStorage &storage) const;
 };
 // Validate target width, distinctness and references without evaluating the RHS.
 void validateAssignment(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression);
+void validateAssignment(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression,const IntegerStorage &storage);
 // Evaluate the full RHS against the old record, then write distinct targets.
 // Overlapping source/destination slices therefore have copy semantics.
 std::uint64_t assign(std::uint64_t record,unsigned registerBits,
  const std::vector<unsigned> &targets,const Bits &expression);
+std::uint64_t assign(std::uint64_t record,unsigned registerBits,
+ const std::vector<unsigned> &targets,const Bits &expression,const IntegerStorage &storage);
 }
 #endif

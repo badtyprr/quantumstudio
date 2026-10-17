@@ -1,4 +1,5 @@
 #include "libqalculate/QuantumClassicalIntegerExpression.h"
+#include "libqalculate/QuantumClassicalIntegerStorage.h"
 // GPL-2.0-or-later; see COPYING.
 #include "libqalculate/QuantumClassical.h"
 #include <iostream>
@@ -14,6 +15,36 @@ template<class E,class F>void reject(F f){bool caught=false;try{f();}catch(const
 int main(){try {
  {
  using Int=QuantumClassical::Integer;using Type=QuantumClassical::IntegerType;using Expr=QuantumClassical::IntegerExpression;using Value=QuantumClassical::TypedInteger;
+ auto signedByte=Type::sized(Int::Signedness::Signed,8);
+ QuantumClassical::IntegerStorage variables({signedByte});
+ auto variable=Expr::variable(signedByte,0);
+ auto variableBits=Bits::fromInteger(variable);
+ auto positive=Bits::integerCompare(Op::Greater,variable,Expr::constant(Value::fromBits(signedByte,0)));
+ positive.validate(0,variables);check(true);
+ reject<std::domain_error>([&]{positive.evaluate(0,0,variables);});
+ reject<std::invalid_argument>([&]{positive.validate(0);});
+ reject<std::invalid_argument>([&]{variableBits.validate(0);});
+ auto skipped=Bits::logical(Op::And,Bits::constant(1,0),positive);
+ check(skipped.evaluate(0,0,variables)==0); // Valid but undefined RHS is not read.
+ auto malformed=Bits::integerCompare(Op::Equal,Expr::variable(signedByte,1),variable);
+ reject<std::out_of_range>([&]{Bits::logical(Op::And,Bits::constant(1,0),malformed).evaluate(0,0,variables);});
+ auto mismatched=Bits::fromInteger(Expr::variable(Type::sized(Int::Signedness::Unsigned,8),0));
+ reject<std::invalid_argument>([&]{mismatched.validate(0,variables);});
+ variables.write(0,Value::fromBits(signedByte,255));
+ check(positive.evaluate(0,0,variables)==0);
+ check(Bits::complement(variableBits).evaluate(0,0,variables)==0);
+ check(Bits::populationCount(variableBits).evaluate(0,0,variables)==8);
+ QuantumClassical::validateAssignment(8,{0,1,2,3,4,5,6,7},variableBits,variables);check(true);
+ check(assign(0,8,{0,1,2,3,4,5,6,7},variableBits,variables)==255);
+ reject<std::invalid_argument>([&]{assign(0,8,{0,0,2,3,4,5,6,7},variableBits,variables);});
+ reject<std::out_of_range>([&]{variableBits.evaluate(1,0,variables);});
+ variables.write(0,Value::fromBits(signedByte,3));
+ auto snapshot=variables;snapshot.write(0,Value::fromBits(signedByte,0));
+ check(positive.evaluate(0,0,variables)==1 && positive.evaluate(0,0,snapshot)==0);
+ auto mixedVariable=Bits::binary(Op::Xor,variableBits,Bits::read({0,1,2,3,4,5,6,7}));
+ check(assign(5,8,{0,1,2,3,4,5,6,7},mixedVariable,variables)==6);
+ reject<std::out_of_range>([&]{mixedVariable.validate(7,variables);});
+ variables.clear(0);reject<std::domain_error>([&]{assign(5,8,{0,1,2,3,4,5,6,7},mixedVariable,variables);});
  for(unsigned width=1;width<=64;++width)for(auto sign:{Int::Signedness::Signed,Int::Signedness::Unsigned}) {
   auto type=Type::sized(sign,width);std::vector<unsigned> indices;for(unsigned k=0;k<width;++k)indices.push_back(k);
   auto mask=width==64 ? ~std::uint64_t(0) : (std::uint64_t(1)<<width)-1;
