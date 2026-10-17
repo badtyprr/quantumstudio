@@ -726,7 +726,12 @@ class Parser {
      }
     }
     std::string body=closing==std::string::npos ? "" : labelText(s.substr(start,closing-start));
-    if(!body.empty() && body!="+" && body!="-" && std::string("*/@#~`?^").find(body[0])==std::string::npos) {
+    // A weighted following ket can belong to the next additive term, as in
+    // |0><0|+0.5*|1><1|. Its trailing multiplication is not a complete
+    // operator between this bra and that ket; leave it to product/additive.
+    bool unfinishedOperator=!body.empty() && std::string("+-*/@#^").find(body.back())!=std::string::npos;
+    if(body.size()>=2 && body.compare(body.size()-2,2,"^*")==0)unfinishedOperator=false; // Conjugation is postfix.
+    if(!body.empty() && !unfinishedOperator && body!="+" && body!="-" && std::string("*/@#~`?^").find(body[0])==std::string::npos) {
      // Use this parser (and its shared nesting/node budget), with a temporary
      // terminator, instead of recursively creating an unrestricted parser.
      s[closing]=')';std::string op=expression();

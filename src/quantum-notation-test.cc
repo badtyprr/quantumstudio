@@ -22,6 +22,12 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ const std::string zero=basis(0,2), one=basis(1,2);
+ for(const std::string sign:{"+","-"}) {
+  equal("0.5*|0><0|"+sign+"0.5*|1><1|",(sign=="+" ? "qadd(" : "qsub(")+std::string("qadjacent(qmul(0.5,")+zero+"),qdag("+zero+")),qadjacent(qmul(0.5,"+one+"),qdag("+one+")))");
+ }
+ equal("<0|-X|0>","qmul(qmul(qdag("+zero+"),(-[0,1;1,0])),"+zero+")");
+ equal("<0|X^*|1>","qmul(qmul(qdag("+zero+"),qconj([0,1;1,0])),"+one+")");
  equal("GHz","qfrequency(\"GHz\")");
  equal("Hz","qfrequency(\"Hz\")");
  equal("'GHz'","'GHz'");
