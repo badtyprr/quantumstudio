@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "libqalculate/QuantumClassicalIntegerExpression.h"
+#include "libqalculate/QuantumClassicalIntegerStorage.h"
 #include <iostream>
 #include <stdexcept>
 using namespace QuantumClassical;
@@ -10,6 +11,23 @@ int main(){try {
  auto machine=IntegerType::machine(Sign::Signed),s8=IntegerType::sized(Sign::Signed,8),u8=IntegerType::sized(Sign::Unsigned,8);
  auto constant=[&](std::uint64_t value){return Expr::constant(TypedInteger::fromBits(machine,value));};
  auto byte=Expr::read(s8,{0,1,2,3,4,5,6,7});
+ IntegerStorage storage({s8,machine});auto variable=Expr::variable(s8,0);
+ variable.validate(0,storage);check(true); // An uninitialized slot is structurally valid.
+ reject<std::domain_error>([&]{variable.evaluate(0,0,storage);});
+ reject<std::invalid_argument>([&]{variable.validate(0);});
+ reject<std::invalid_argument>([&]{variable.evaluate(0,0);});
+ reject<std::invalid_argument>([&]{Expr::variable(machine,0).validate(0,storage);});
+ reject<std::out_of_range>([&]{Expr::variable(s8,2).validate(0,storage);});
+ storage.write(0,TypedInteger::fromBits(s8,3));
+ auto mixed=Expr::binary(Op::Add,variable,byte);
+ check(mixed.evaluate(2,8,storage).value().bits()==5);
+ reject<std::out_of_range>([&]{mixed.validate(7,storage);});
+ reject<std::out_of_range>([&]{mixed.evaluate(256,8,storage);});
+ auto fork=storage;fork.write(0,TypedInteger::fromBits(s8,7));
+ check(mixed.evaluate(2,8,fork).value().bits()==9 && mixed.evaluate(2,8,storage).value().bits()==5);
+ auto powerVariable=Expr::binary(Op::Power,constant(2),variable);
+ check(powerVariable.evaluate(0,0,storage).value().bits()==8);
+ storage.clear(0);reject<std::domain_error>([&]{powerVariable.evaluate(0,0,storage);});
  check(byte.evaluate(255,8).value().negative());check(byte.type()==s8);
  auto widened=Expr::cast(machine,byte);check(widened.evaluate(255,8).value().bits()==~std::uint64_t(0));
  auto unsignedByte=Expr::cast(u8,byte);check(unsignedByte.evaluate(255,8).value().bits()==255);
