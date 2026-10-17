@@ -4,6 +4,11 @@ $repo = Split-Path $PSScriptRoot -Parent
 $validation = Join-Path $repo 'dist\gui-validation'
 New-Item -ItemType Directory -Force $validation | Out-Null
 $fx = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
+$exactTest = Join-Path $validation 'exact-circuit-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$exactTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuitTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Exact circuit adapter tests did not compile.' }
+& $exactTest
+if ($LASTEXITCODE -ne 0) { throw 'Exact circuit adapter tests failed.' }
 $sessionTest = Join-Path $validation 'session-tests.exe'
 $classicalTest = Join-Path $validation 'classical-circuit-tests.exe'
 & "$fx\csc.exe" /nologo /target:exe "/out:$classicalTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalCircuitTests.cs')

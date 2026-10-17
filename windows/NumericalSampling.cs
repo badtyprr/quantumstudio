@@ -24,15 +24,20 @@ static class NumericalSampling {
  public static byte[] RequestClassical(int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates) {
   return Serialize(qubits,shots,seed,outputBits,gates,null,classicalBits);
  }
- static byte[] Serialize(int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,IList<Readout> readout,int? classicalBits) {
+ internal static byte[] RequestExact(int qubits,int classicalBits,int[] outputBits,IList<Gate> gates) {
+  return Serialize(qubits,1,0,outputBits,gates,null,classicalBits,true);
+ }
+ static byte[] Serialize(int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,IList<Readout> readout,int? classicalBits,bool exact=false) {
+  if(exact && qubits>10)throw new ArgumentException("Exact circuits support at most 10 qubits.");
+  int maxSteps=exact ? 512 : 4096;
   if(classicalBits.HasValue && (classicalBits.Value<0 || classicalBits.Value>64))throw new ArgumentException("Use 0–64 classical bits.");
   int bits=classicalBits ?? qubits;
   if(qubits<0 || qubits>25 || shots<1 || shots>100000 || gates==null || gates.Count>4096 || measured==null || (readout!=null && readout.Count>4096))
    throw new ArgumentException("Use 0–25 qubits, 1–100,000 shots and at most 4096 gates.");
   bool dynamic=classicalBits.HasValue || IsDynamic(gates) || (readout!=null && readout.Count>0);
-  var text=new StringBuilder(dynamic ? "QSAMPLE2\n" : "QSAMPLE1\n");
+  var text=new StringBuilder(exact ? "QEXACT1\n" : dynamic ? "QSAMPLE2\n" : "QSAMPLE1\n");
   Action<ulong> number=value=>text.Append(value.ToString(CultureInfo.InvariantCulture)).Append('\n');
-  number((ulong)qubits);number((ulong)shots);number(seed);if(dynamic)number((ulong)bits);
+  number((ulong)qubits);if(!exact){number((ulong)shots);number(seed);}if(dynamic)number((ulong)bits);
   Action<int[],int,int> wires=delegate(int[] values,int maximum,int registerSize) {
    if(values==null || values.Length>maximum)throw new ArgumentException("Invalid sampling wire list.");
    var seen=new HashSet<int>();number((ulong)values.Length);
@@ -43,7 +48,7 @@ static class NumericalSampling {
   };
   wires(measured,bits,bits);
   int stepCount=gates.Count+(dynamic && !classicalBits.HasValue ? measured.Length : 0)+(readout==null ? 0 : readout.Count);
-  if(stepCount>4096)throw new ArgumentException("Sampling needs at most 4096 operations including final measurements.");
+  if(stepCount>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" operations including final measurements.");
   number((ulong)stepCount);
   // Final assignment errors must follow final measurements, or those
   // measurements would overwrite the noisy records before returning counts.
@@ -57,12 +62,13 @@ static class NumericalSampling {
   int total=0;
   Action<Gate,int> write=null;
   write=delegate(Gate gate,int depth) {
-   if(++total>4096)throw new ArgumentException("Sampling branches exceed 4096 total operations.");
+   if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
    if(gate.ClassicalBit.HasValue && (!classicalBits.HasValue || gate.Kind!=Operation.Measure))throw new ArgumentException("A classical destination requires an explicit classical-output measurement.");
    if(gate.Kind!=Operation.Branch && (gate.WhenTrue!=null || gate.WhenFalse!=null))throw new ArgumentException("Only a branch can contain operation bodies.");
    if(dynamic)number((ulong)gate.Kind);
    if(gate.Kind==Operation.Conditional || gate.Kind==Operation.Branch) {
+    if(exact && gate.Kind==Operation.Conditional && ++total>maxSteps)throw new ArgumentException("Exact conditional expansion exceeds 512 steps.");
     ulong allowed=bits==64 ? UInt64.MaxValue : (1UL<<bits)-1;
     if((gate.Mask & ~allowed)!=0 || (gate.Value & ~gate.Mask)!=0)throw new ArgumentException("Invalid classical condition.");
     number(gate.Mask);number(gate.Value);
@@ -72,7 +78,7 @@ static class NumericalSampling {
     if(depth>=32)throw new ArgumentException("Sampling branches exceed 32 nesting levels.");
     if(gate.WhenTrue==null || gate.WhenFalse==null || (gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression))throw new ArgumentException("A branch requires two bodies and no matrix or quantum targets.");
     foreach(var body in new[]{gate.WhenTrue,gate.WhenFalse}) {
-     if(body.Count>4096-total)throw new ArgumentException("Sampling branches exceed 4096 total operations.");
+     if(body.Count>maxSteps-total)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
      number((ulong)body.Count);
      foreach(var child in body)write(child,depth+1);
     }
@@ -91,7 +97,7 @@ static class NumericalSampling {
    }
    if(gate.Wires==null || gate.Wires.Length==0 || String.IsNullOrWhiteSpace(gate.Expression) || gate.Expression.IndexOf('\0')>=0)
     throw new ArgumentException("Each sampling gate needs a matrix expression and target wires.");
-   wires(gate.Wires,gate.Kind==Operation.Readout ? 8 : 3,gate.Kind==Operation.Readout ? bits : qubits);
+   wires(gate.Wires,gate.Kind==Operation.Readout ? 8 : exact ? qubits : 3,gate.Kind==Operation.Readout ? bits : qubits);
    int length=Encoding.UTF8.GetByteCount(gate.Expression);
    if(length>4096)throw new ArgumentException("A sampling gate expression exceeds 4096 UTF-8 bytes.");
    number((ulong)length);text.Append(gate.Expression);
@@ -138,10 +144,13 @@ static class NumericalSampling {
   return RunSerialized(worker,qubits,shots,seed,(int[])outputBits.Clone(),request,cancellation,classicalBits);
  }
  static Task<Result> RunSerialized(string worker,int qubits,int shots,ulong seed,int[] order,byte[] request,CancellationToken cancellation,int? classicalBits) {
+  return RunRequest(worker,"--sample",request,cancellation,json=>ValidateResult(json,qubits,shots,seed,order,classicalBits));
+ }
+ internal static Task<T> RunRequest<T>(string worker,string mode,byte[] request,CancellationToken cancellation,Func<string,T> parse) {
   return Task.Run(async delegate {
    cancellation.ThrowIfCancellationRequested();
    using(var process=new Process()) {
-    process.StartInfo=new ProcessStartInfo(worker,"--sample") {UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8,WorkingDirectory=Path.GetDirectoryName(worker)};
+    process.StartInfo=new ProcessStartInfo(worker,mode) {UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8,WorkingDirectory=Path.GetDirectoryName(worker)};
     process.StartInfo.EnvironmentVariables["QALCULATE_DEFINITIONS_DIR"]=Path.Combine(Path.GetDirectoryName(worker),"data");
     // Closing the last WPF window can end the process before a thread-pool
     // continuation runs. Stop the child synchronously when cancellation fires.
@@ -162,12 +171,12 @@ static class NumericalSampling {
      await process.StandardInput.BaseStream.WriteAsync(request,0,request.Length,cancellation);process.StandardInput.Close();
      while(!process.WaitForExit(50)) {
       cancellation.ThrowIfCancellationRequested();
-      if(clock.Elapsed.TotalMinutes>=5)throw new TimeoutException("Sampling exceeded five minutes. Reduce the circuit or shot count.");
+      if(clock.Elapsed.TotalMinutes>=5)throw new TimeoutException("Circuit evaluation exceeded five minutes. Reduce the circuit size or shot count.");
      }
      cancellation.ThrowIfCancellationRequested();
      string stdout=await output,stderr=await error;
-     if(process.ExitCode!=0)throw new InvalidOperationException(String.IsNullOrWhiteSpace(stderr) ? "Sampling failed." : stderr.Trim());
-     return ValidateResult(stdout,qubits,shots,seed,order,classicalBits);
+     if(process.ExitCode!=0)throw new InvalidOperationException(String.IsNullOrWhiteSpace(stderr) ? "Circuit evaluation failed." : stderr.Trim());
+     return parse(stdout);
     } catch {cancellation.ThrowIfCancellationRequested();throw;}
     finally {lock(lifetime) {if(!process.HasExited)process.Kill();}process.WaitForExit();}
     }
