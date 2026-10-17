@@ -494,3 +494,25 @@ levels. General runtime assignments, nonzero bit initializers, ordered/runtime
 register comparisons and other classical arithmetic remain unsupported and are
 rejected explicitly.
 
+
+### Native integer value groundwork
+
+`QuantumClassical::Integer` is a native value layer for future runtime integer
+expressions. It is not connected to the OpenQASM importer or GUI. Values carry
+explicit signedness and a width of 1–64 bits. Operations require matching types;
+parsing, unspecified-width type identity and implicit promotions belong to the
+future expression layer.
+
+Unsigned arithmetic wraps modulo the declared width. Signed arithmetic reports
+overflow, including the minimum signed value divided by -1 (also for remainder).
+Division truncates toward zero and the remainder has the dividend's sign.
+Zero divisors report an error. Powers take a nonnegative integer exponent;
+a zero exponent produces one if that value fits the result type.
+
+Explicit integer casts preserve low bits when narrowing and sign-extend negative
+signed sources when widening. Same-width signed/unsigned casts preserve the bit
+pattern. The narrowing behavior is a QuantumStudio policy: OpenQASM leaves
+out-of-range standard-type conversions implementation-specific
+([casting rules](https://openqasm.com/versions/3.1/language/types.html#casting-specifics)).
+The implementation uses unsigned bit patterns and checked signed operations,
+without relying on host signed overflow.

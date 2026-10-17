@@ -176,3 +176,8 @@ check_PROGRAMS += quantum-classical-test
 TESTS += quantum-classical-test
 quantum_classical_test_SOURCES = quantum-classical-test.cc
 quantum_classical_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-classical-integer-test
+TESTS += quantum-classical-integer-test
+quantum_classical_integer_test_SOURCES = quantum-classical-integer-test.cc
+quantum_classical_integer_test_LDADD = $(test_LDADD)
