@@ -3,7 +3,7 @@ using System;
 
 // Immutable unsigned expressions shared by exact and sampled request builders.
 sealed class ClassicalExpression {
- public enum NodeKind { Constant=0, Read=1, Complement=2, Binary=3, PopulationCount=4, Rotate=5, IntegerCompare=6 }
+ public enum NodeKind { Constant=0, Read=1, Complement=2, Binary=3, PopulationCount=4, Rotate=5, IntegerCompare=6, Logical=7 }
  public enum Direction { Left=0, Right=1 }
  public enum Distance { Unsigned=0, Signed=1 }
  public Direction RotationDirection {get;private set;}
@@ -13,14 +13,14 @@ sealed class ClassicalExpression {
  public int Width {get;private set;}public ulong Value {get;private set;}
  public ClassicalExpression Left {get;private set;}public ClassicalExpression Right {get;private set;}
  public ClassicalIntegerExpression IntegerLeft {get;private set;}public ClassicalIntegerExpression IntegerRight {get;private set;}
- public bool UsesIntegers {get;private set;}
+ public bool UsesTypedProtocol {get;private set;}
  readonly int[] indices;readonly ulong references;readonly int depth,count;
  public int[] Indices {get{return indices==null ? null : (int[])indices.Clone();}}
  ClassicalExpression(NodeKind kind,int width,ulong value,int[] bits,Operator operation,ClassicalExpression left,ClassicalExpression right,ClassicalIntegerExpression integerLeft=null,ClassicalIntegerExpression integerRight=null) {
   if(width<1 || width>64)throw new ArgumentException("Classical expressions need 1–64 bits.");
   Kind=kind;Width=width;Value=value;Operation=operation;Left=left;Right=right;
   IntegerLeft=integerLeft;IntegerRight=integerRight;
-  UsesIntegers=kind==NodeKind.IntegerCompare || (left!=null && left.UsesIntegers) || (right!=null && right.UsesIntegers);
+  UsesTypedProtocol=kind==NodeKind.Logical || kind==NodeKind.IntegerCompare || (left!=null && left.UsesTypedProtocol) || (right!=null && right.UsesTypedProtocol);
   depth=1+Math.Max(Math.Max(left==null ? 0 : left.depth,right==null ? 0 : right.depth),Math.Max(integerLeft==null ? 0 : integerLeft.Depth,integerRight==null ? 0 : integerRight.Depth));
   count=1+(left==null ? 0 : left.count)+(right==null ? 0 : right.count)+(integerLeft==null ? 0 : integerLeft.Count)+(integerRight==null ? 0 : integerRight.Count);
   if(depth>32 || count>512)throw new ArgumentException("Classical expressions allow 32 levels and 512 nodes.");
@@ -49,6 +49,12 @@ sealed class ClassicalExpression {
   if(!shift && left.Width!=right.Width)throw new ArgumentException("Classical operands require equal widths.");
   int width=(int)operation>=(int)Operator.Equal ? 1 : left.Width;
   return new ClassicalExpression(NodeKind.Binary,width,0,null,operation,left,right);
+ }
+ public static ClassicalExpression Logical(Operator operation,ClassicalExpression left,ClassicalExpression right) {
+  if(left==null || right==null)throw new ArgumentNullException("operand");
+  if(operation!=Operator.And && operation!=Operator.Or)throw new ArgumentException("Logical conditions require And or Or.");
+  if(left.Width!=1 || right.Width!=1)throw new ArgumentException("Logical operands require one bit.");
+  return new ClassicalExpression(NodeKind.Logical,1,0,null,operation,left,right);
  }
  public static ClassicalExpression IntegerCompare(Operator operation,ClassicalIntegerExpression left,ClassicalIntegerExpression right) {
   if(left==null || right==null)throw new ArgumentNullException("operand");
