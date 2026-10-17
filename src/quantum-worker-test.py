@@ -293,6 +293,12 @@ assert data(state_request([("scaled(m)", "m*|0>")], "1 m"), "--states") == data(
 assert data(state_request([("fixed", "|1>"), ("scaled(fixed)", "fixed*|0>")], "quantum:|fixed>"), "--states")["cells"] == [["0"], ["1"]]
 assert data(state_request([("first(x)", "x*|0>"), ("second(x)", "x*|1>")], "quantum:|first(2)>+|second(3)>"), "--states")["cells"] == [["2"], ["3"]]
 
+for parameter in ["α", "theta_1"]:
+    declaration = [("ψ("+parameter+")", parameter+"*|0>")]
+    assert data(state_request(declaration, "quantum:|ψ(2)>"), "--states")["cells"] == [["2"], ["0"]]
+    assert data(state_request(declaration, "quantum:|ψ(t)>"), "--states") == data("quantum:t*|0>")
+run(state_request([("psi(π)", "π*|0>")], "1"), "--states", success=False)
+
 definitions = [("Bell", "|Phi+>"), ("after CZ", "CZ|Bell>")]
 for flags in [(), ("--approx",)]:
     for expression, expected in [("<Bell|Bell>", 1), ("<Bell|after CZ>", 0), ("<after CZ|after CZ>", 1)]:

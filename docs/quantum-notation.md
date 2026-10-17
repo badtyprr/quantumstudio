@@ -232,7 +232,8 @@ Multi-character ket and bra labels are preserved as single names, including `|Be
 Single-parameter state families use a declaration such as `psi(alpha)` with the
 expression `cos(alpha)|0>+sin(alpha)|1>`. Enter it in **States**, then evaluate
 `|psi(pi/8)>`, `<psi(0)|psi(pi/2)>`, or `|psi(t)>`. The parameter is local to the
-definition; a symbolic argument retains symbolic amplitudes. Families share the
+definition; Greek parameters such as `α` and subscripted identifiers such as
+`theta_1` are supported. A symbolic argument retains symbolic amplitudes. Families share the
 existing definition order, finite column-vector limits and session storage.
 An undeclared family stays symbolic, without an assumed normalization or
 orthogonality. This function-style form takes one scalar argument; mathematical
