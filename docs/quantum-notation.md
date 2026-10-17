@@ -581,3 +581,19 @@ including expressions in nested or untaken branches. Ordinary bit requests
 retain their existing protocol versions. Construction and serialization check
 combined expression bounds and register references. Circuit-file persistence,
 text entry and OpenQASM import of integer expressions remain follow-up work.
+
+### Typed conditions in circuit files
+
+Classical circuit version 4 adds `IntegerCompare` bit nodes with integer children
+`IntegerConstant`, `IntegerRead`, `IntegerCast` and `IntegerBinary`. Leaf/cast
+nodes preserve `Signedness` (`Signed` or `Unsigned`) and `Width` (0 for machine
+precision, 1..64 for explicit width). Integer values are raw unsigned decimal
+bit-pattern strings. Binary nodes use the named arithmetic operator and inherit
+the target promotion policy. The shared 32-level/512-node limit applies across
+both node families.
+
+Versions 2 and 3 reject typed expressions. Saving ordinary legacy circuits omits
+the new unused type field so older readers can still load them. Snapshots and
+undo/redo preserve version 4; ordinary bit-expression edits do not downgrade it.
+Typed conditions can be reopened and displayed in the editor. Entering/editing
+typed expression text and importing it from OpenQASM remain follow-up work.
