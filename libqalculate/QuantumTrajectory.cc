@@ -22,6 +22,11 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  // never run. A tiny state checks local matrices without allocating 2^n here.
  for(const auto &step:steps) {
   cancel();std::uint64_t wireMask=0;
+  if(step.kind==TrajectoryStep::Kind::Readout) {
+   for(unsigned bit:step.wires)if(bit>=classicalBits)
+    throw std::out_of_range("Readout target is outside the classical register");
+   continue; // The factory has already validated the immutable assignment table.
+  }
   for(unsigned wire:step.wires) {
    if(wire>=qubits)throw std::out_of_range("Trajectory wire is outside the register");
    const std::uint64_t bit=std::uint64_t(1)<<wire;
@@ -49,6 +54,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    else if(step.kind==TrajectoryStep::Kind::Conditional) {
     if((bits&step.mask)==step.value)state.apply(step.matrix,step.wires,cancelled);
    } else if(step.kind==TrajectoryStep::Kind::Channel)state.channel(step.kraus,step.wires,draw(),cancelled);
+   else if(step.kind==TrajectoryStep::Kind::Readout)bits=step.assignment->apply(bits,draw());
    else if(step.kind==TrajectoryStep::Kind::Measure) {
     const std::uint64_t bit=std::uint64_t(1)<<step.classicalBit;
     bits=(bits&~bit)|(state.measure(step.wires[0],draw(),cancelled) ? bit : 0);

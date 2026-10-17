@@ -64,5 +64,23 @@ int main(){try {
  rejects<std::out_of_range>([&]{sampleTrajectories(1,1,1,0,{0},{Step::channel(damping,{1})},32);});
  rejects<std::invalid_argument>([&]{sampleTrajectories(2,1,1,0,{0},{Step::channel({CX},{0,0})},64);});
  calls=0;rejects<Cancelled>([&]{sampleTrajectories(2,2,20000,42,{0,1},noisyBell,64,[&]{return ++calls==100;});});
+ // Assignment corrupts a record, not the physical state that was measured.
+ const std::vector<std::vector<double>> flip={{0,1},{1,0}};
+ counts=sampleTrajectories(1,2,100,7,{0,1},{Step::gate(X,{0}),Step::measure(0,0),Step::readout(flip,{0}),Step::measure(0,1)},32);
+ check(counts.size()==1 && counts.at(1)==100);
+ // Feedback uses the corrupted record; remeasurement of the original wire is unchanged.
+ counts=sampleTrajectories(2,3,100,7,{0,1,2},{Step::measure(0,0),Step::readout(flip,{0}),Step::conditional(X,{1},1,1),Step::measure(1,1),Step::measure(0,2)},64);
+ check(counts.size()==1 && counts.at(6)==100);
+ std::vector<Step> readoutOnly={Step::readout({{.75,.25},{.5,.5}},{63})};
+ counts=sampleTrajectories(0,64,20000,42,{63},readoutOnly,16);
+ check(counts.size()==2 && std::abs(int(counts.at(1))-5000)<300);
+ check(counts==sampleTrajectories(0,64,20000,42,{63},readoutOnly,16));
+ check(counts!=sampleTrajectories(0,64,20000,43,{63},readoutOnly,16));
+ counts=sampleTrajectories(0,64,100,7,{63,0},{Step::readout({{0,0,0,1},{0,1,0,0},{0,0,1,0},{1,0,0,0}},{63,0})},16);
+ check(counts.size()==1 && counts.at(3)==100);
+ check(sampleTrajectories(0,64,0,7,{63},readoutOnly,16).empty());
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,1,0,7,{0},readoutOnly,16);});
+ rejects<std::invalid_argument>([&]{Step::readout({{.2,.2},{0,1}},{0});});
+ calls=0;rejects<Cancelled>([&]{sampleTrajectories(0,64,20000,42,{63},readoutOnly,16,[&]{return ++calls==100;});});
  std::cout<<"PASS: "<<checks<<" numerical trajectory checks\n";
  }catch(const std::exception &error){std::cerr<<error.what()<<'\n';return 1;}}
