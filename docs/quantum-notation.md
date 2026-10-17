@@ -14,6 +14,8 @@ The source archive also contains `docs/learning-source-inventory.json`: 137 disc
 
 ## Selected verified notation
 
+Printed symbolic results can be pasted back into quantum input, including quoted names in `qfourier('N')`, named kets, and matrices of Greek coefficients. Matching single or double quotes protect their contents from operator, superscript, and whitespace normalization. Unclosed quotes reject. Finite and set sums may rename their internal bound index when read again; substituting numerical dimensions or finite domains preserves their evaluated result. This is input round-trip support, not mathematical typesetting or a general symbolic simplifier.
+
 The [IBM phase-estimation procedure](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure) motivates these regression cases:
 
 - Subscripted summation indices such as `a_0`, including nested binders and reused index names. See `src/quantum-parser-integration-test.cc`.
