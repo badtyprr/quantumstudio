@@ -29,8 +29,12 @@ public:
  unsigned width() const;
  // Bounds: widths 1..64, 512 expanded nodes and 32 node levels.
  // Rejects records or references outside the supplied 0..64-bit register.
+ // Check register references without evaluating a fabricated runtime value.
+ void validate(unsigned registerBits) const;
  std::uint64_t evaluate(std::uint64_t record,unsigned registerBits) const;
 };
+// Validate target width, distinctness and references without evaluating the RHS.
+void validateAssignment(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression);
 // Evaluate the full RHS against the old record, then write distinct targets.
 // Overlapping source/destination slices therefore have copy semantics.
 std::uint64_t assign(std::uint64_t record,unsigned registerBits,
