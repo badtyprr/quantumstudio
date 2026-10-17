@@ -21,6 +21,12 @@ def data(expression, *flags):
     assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Symbolic phase adjoints retain exact exponent conjugation through the GUI path.
+for gate in ["Rz(x)", "Rx(x)", "Ry(x)", "[1,0;0,exp(i*x)]"]:
+    value = data("quantum: dagger(" + gate + ")*(" + gate + ")")
+    assert (value["rows"], value["columns"], value["cells"]) == (2, 2, [["1", "0"], ["0", "1"]]), value
+assert data("quantum: norm((|0>+exp(i*x)*|1>)/sqrt(2))")["text"] == "1"
+
 # Symbolic members retain their free names inside nested summations.
 for flags in [(), ("--approx",)]:
     for expression in [
