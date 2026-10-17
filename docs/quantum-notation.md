@@ -330,6 +330,7 @@ Each step begins with an integer kind and then these fields:
 | 1: measurement | Quantum wire, destination classical bit |
 | 2: reset | Quantum wire |
 | 3: conditional gate | 64-bit mask, 64-bit value, then the gate payload |
+| 4: channel | Target count, targets, byte length, Kraus-vector expression |
 
 Every shot starts with all-zero quantum state and classical memory. A measurement
 collapses its wire and overwrites the destination bit. Reset returns its wire
@@ -337,7 +338,12 @@ to zero without changing classical memory. A conditional gate runs when
 `(classical_memory & mask) == value`; masks must fit the classical register and
 values must be subsets of the mask. Even unreachable gates must be valid
 numerical unitaries. Classical bit 0 has weight 1 in masks, independently of
-quantum wire order. No implicit final measurements occur.
+quantum wire order. No implicit final measurements occur. A channel expression, such as
+`amplitude_damping(0.5)`, must evaluate to a vector of 1-256 finite square Kraus
+matrices matching its one to three target wires. Their completeness relation
+must hold within the numerical tolerance. Each shot samples and normalizes one
+Kraus branch without changing classical memory. This worker support does not
+yet enable the GUI's noise controls for sampling.
 
 The response adds `classical_bits`; `wires` now identifies the requested classical
 bits in left-to-right output order. The explicit ordering avoids relying on a
