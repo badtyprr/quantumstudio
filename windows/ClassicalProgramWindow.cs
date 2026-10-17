@@ -42,7 +42,8 @@ sealed class ClassicalProgramWindow : Window {
   var bottom=new StackPanel();DockPanel.SetDock(bottom,Dock.Bottom);root.Children.Add(bottom);
   bottom.Children.Add(status);
   var editor=new WrapPanel();bottom.Children.Add(editor);
-  foreach(string item in Enum.GetNames(typeof(NumericalSampling.Operation)))kind.Items.Add(item);kind.SelectedItem="Gate";
+  // Keep the menu tied to the fields this editor can currently construct.
+  foreach(string item in new[]{"Gate","Measure","Reset","Conditional","Channel","Readout","Branch"})kind.Items.Add(item);kind.SelectedItem="Gate";
   Field(editor,"Operation",kind,125);Field(editor,"Matrix / channel",expression,180);Field(editor,"Target wires / bits",wires,120);Field(editor,"Save to classical bit",destination,120);
   Field(editor,"Condition mask · decimal",mask,170);Field(editor,"Condition value · decimal",value,170);
   kind.SelectionChanged+=delegate {SetFields();};SetFields();

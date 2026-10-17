@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch }
- public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch }
+ public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  public sealed class Readout {public string Expression;public int[] Bits;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
  public sealed class Result {
@@ -59,21 +59,39 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  int total=0;
+  int total=0;bool expressions=false;
   Action<Gate,int> write=null;
   write=delegate(Gate gate,int depth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
    if(gate.ClassicalBit.HasValue && (!classicalBits.HasValue || gate.Kind!=Operation.Measure))throw new ArgumentException("A classical destination requires an explicit classical-output measurement.");
-   if(gate.Kind!=Operation.Branch && (gate.WhenTrue!=null || gate.WhenFalse!=null))throw new ArgumentException("Only a branch can contain operation bodies.");
+   bool branch=gate.Kind==Operation.Branch || gate.Kind==Operation.ExpressionBranch;
+   bool expression=gate.Kind==Operation.Assign || gate.Kind==Operation.ExpressionBranch;
+   if(!branch && (gate.WhenTrue!=null || gate.WhenFalse!=null))throw new ArgumentException("Only a branch can contain operation bodies.");
+   if(!expression && gate.ClassicalExpression!=null)throw new ArgumentException("Only assignments and expression branches accept classical expressions.");
+   if(expression) {
+    if(!classicalBits.HasValue || gate.ClassicalExpression==null || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Classical expressions require explicit outputs and cannot include matrices or masks.");
+    expressions=true;
+   }
    if(dynamic)number((ulong)gate.Kind);
+   if(gate.Kind==Operation.Assign) {
+    if(gate.Wires==null || gate.Wires.Length!=gate.ClassicalExpression.Width)throw new ArgumentException("Assignment width must match its targets.");
+    wires(gate.Wires,bits,bits);gate.ClassicalExpression.Write(number,bits);
+    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
+    return;
+   }
+   if(gate.Kind==Operation.ExpressionBranch) {
+    if(gate.ClassicalExpression.Width!=1)throw new ArgumentException("A branch condition must be one bit.");
+    gate.ClassicalExpression.Write(number,bits);
+    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
+   }
    if(gate.Kind==Operation.Conditional || gate.Kind==Operation.Branch) {
     if(exact && gate.Kind==Operation.Conditional && ++total>maxSteps)throw new ArgumentException("Exact conditional expansion exceeds 512 steps.");
     ulong allowed=bits==64 ? UInt64.MaxValue : (1UL<<bits)-1;
     if((gate.Mask & ~allowed)!=0 || (gate.Value & ~gate.Mask)!=0)throw new ArgumentException("Invalid classical condition.");
     number(gate.Mask);number(gate.Value);
    }
-   if(gate.Kind==Operation.Branch) {
+   if(branch) {
     if(!classicalBits.HasValue)throw new ArgumentException("Branches require explicit classical outputs.");
     if(depth>=32)throw new ArgumentException("Sampling branches exceed 32 nesting levels.");
     if(gate.WhenTrue==null || gate.WhenFalse==null || (gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression))throw new ArgumentException("A branch requires two bodies and no matrix or quantum targets.");
@@ -104,6 +122,7 @@ static class NumericalSampling {
    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   };
   foreach(var operation in operations)write(operation,0);
+  if(expressions)text.Remove(0,exact ? 8 : 9).Insert(0,exact ? "QEXACT2\n" : "QSAMPLE3\n");
   byte[] bytes=new UTF8Encoding(false,true).GetBytes(text.ToString());
   if(bytes.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   return bytes;

@@ -21,6 +21,8 @@ EXTRA_DIST = config.rpath  \
 	windows/BoundedUtf8File.cs \
 	windows/CircuitComposer.cs \
 	windows/NumericalSampling.cs \
+	windows/ClassicalExpression.cs \
+	windows/ClassicalExpressionTests.cs \
 	windows/ExactCircuit.cs \
 	windows/ExactCircuitWindow.cs \
 	windows/test-exact-window.ps1 \
