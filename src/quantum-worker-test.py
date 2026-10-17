@@ -35,6 +35,17 @@ for flags in [(), ("--approx",)]:
     for invalid in ["complexparam(x+y)", "complexparam([1;2])", "complexparam(inf)"]:
         run("quantum: " + invalid, "--json", *flags, success=False)
 
+# Exact clipboard values must survive re-entry without decimal truncation.
+for prefix in ["", "quantum: "]:
+    for expression in ["1/3", "-22/7", "(1+2i)/3", "sqrt(2)/3",
+                       "1/123456789012345678901234567890123456789"]:
+        value = data(prefix + expression)
+        assert data(prefix + "(" + value["copy_text"] + ")-(" + expression + ")")["text"] == "0"
+for expression in ["[1/3,2/7;5/9,-11/13]", "density(((1+2i)/3)*|0>-(2/3)*|1>)"]:
+    value = data("quantum: " + expression)
+    residual = "quantum: (" + value["copy_text"] + ")-(" + expression + ")"
+    assert data(residual)["cells"] == [["0", "0"], ["0", "0"]]
+
 # Symbolic phase adjoints retain exact exponent conjugation through the GUI path.
 for gate in ["Rz(x)", "Rx(x)", "Ry(x)", "[1,0;0,exp(i*x)]"]:
     value = data("quantum: dagger(" + gate + ")*(" + gate + ")")

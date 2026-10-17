@@ -187,7 +187,13 @@ int main(int argc,char **argv) {
  else {
   size_t rows=result.isMatrix() ? result.rows() : 0, cols=result.isMatrix() ? result.columns() : 0;
   std::cout << "{\"text\":"; jsonString(display.print(po));
-  std::cout << ",\"copy_text\":"; jsonString(copyText(result,po));
+  // Clipboard serialization must preserve rational values even when their
+  // display is a rounded decimal. Decimal-exact mode still limits long
+  // denominators, so use unrestricted fractions for this serialization.
+  PrintOptions copyOptions=po;
+  copyOptions.number_fraction_format=FRACTION_FRACTIONAL;
+  copyOptions.restrict_fraction_length=false;
+  std::cout << ",\"copy_text\":"; jsonString(copyText(result,copyOptions));
   std::cout << ",\"approximate\":" << (result.isApproximate() ? "true" : "false") << ",\"rows\":" << rows << ",\"columns\":" << cols << ",\"cells\":[";
   if(rows*cols<=128) for(size_t r=0;r<rows;++r) {
    if(r) std::cout << ',';
