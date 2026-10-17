@@ -81,6 +81,7 @@ def integer_binary(op,left,right):return n(3,op)+left+right
 def integer_cast(sign,width,value):return n(2,sign,width)+value
 def compare(op,left,right):return n(6,op)+left+right
 def logical(op,left,right):return n(7,op)+left+right
+def integer_bits(value):return n(8)+value
 for exact in (True,False):
     def typed(steps,bits=9,out=[8],expected=None):
         run(exact,payload(exact,0,bits,out,steps,typed=True),expected)
@@ -113,7 +114,7 @@ for exact in (True,False):
             for b in (0,1):
                 want=(a and b) if op==0 else (a or b)
                 typed([assign([8],logical(op,const(1,a),const(1,b)))],expected={str(want):1})
-    for bad in [n(7,2),n(8),logical(0,const(2,0),const(1,1)),logical(1,const(1,1),const(2,0)),logical(0,const(1,0),read(9))]:
+    for bad in [n(7,2),n(9),logical(0,const(2,0),const(1,1)),logical(1,const(1,1),const(2,0)),logical(0,const(1,0),read(9))]:
         typed([branch(const(1,0),[assign([8],bad)])])
     valid_logical=payload(exact,0,9,[8],[assign([8],guarded)],typed=True)
     for end in range(len(valid_logical)):run(exact,valid_logical[:end])
@@ -156,4 +157,35 @@ for exact in (True,False):
     valid=payload(exact,0,9,[8],[initialize,branch(negative,[set_output])],typed=True)
     for end in range(len(valid)):run(exact,valid[:end])
     run(exact,valid+b'\n')
+for exact in (True,False):
+    def typed(steps,bits=8,out=list(range(8)),expected=None):
+        run(exact,payload(exact,0,bits,out,steps,typed=True),expected)
+    for sign in (0,1):
+        for width in (1,3,8,63,64):
+            targets=list(range(width));value=(1<<width)-1
+            typed([assign(targets,integer_bits(integer_constant(sign,width,value)))],bits=width,out=targets,expected={'1'*width:1})
+            typed([assign(targets,const(width,value)),assign(targets,integer_bits(integer_read(sign,width,*reversed(targets))))],bits=width,out=targets,expected={'1'*width:1})
+            # Output strings follow requested bit order, unlike integer display.
+            typed([assign(targets,const(width,1)),assign(targets,integer_bits(integer_read(sign,width,*reversed(targets))))],bits=width,out=targets,expected={'0'*(width-1)+'1':1})
+    one=integer_constant(0,0,1)
+    source=integer_read(0,3,0,1,2)
+    increment=integer_bits(integer_cast(0,3,integer_binary(0,source,one)))
+    typed([assign([0,1,2],const(3,3)),assign([1,2,3],increment)],bits=4,out=list(range(4)),expected={'1001':1})
+    quotient=integer_bits(integer_cast(0,8,integer_binary(3,one,integer_read(0,8,*range(8)))))
+    typed([branch(const(1,0),[assign(list(range(8)),quotient)])],expected={'00000000':1})
+    typed([assign(list(range(8)),quotient)])
+    for malformed in [integer_bits(one),integer_bits(n(4)),integer_bits(integer_read(0,8,*range(1,9))),integer_bits(integer_constant(0,3,8))]:
+        typed([branch(const(1,0),[assign(list(range(8)),malformed)])])
+    typed([assign([0],integer_bits(integer_constant(0,8,0)))])
+    valid=payload(exact,0,8,list(range(8)),[assign(list(range(8)),integer_bits(integer_constant(0,8,255)))],typed=True)
+    for end in range(len(valid)):run(exact,valid[:end])
+    run(exact,valid+b'\n')
+    for legacy in (False,True):run(exact,payload(exact,0,8,list(range(8)),[assign(list(range(8)),integer_bits(integer_constant(0,8,0)))],legacy=legacy))
+    deep=integer_constant(0,8,0)
+    for _ in range(30):deep=integer_cast(0,8,deep)
+    typed([assign(list(range(8)),integer_bits(deep))],expected={'00000000':1})
+    typed([assign(list(range(8)),integer_bits(integer_cast(0,8,deep)))])
+    broad=integer_constant(0,8,0)
+    for _ in range(8):broad=integer_binary(0,broad,broad)
+    typed([assign(list(range(8)),integer_bits(integer_cast(0,8,broad)))])
 print('PASS: '+str(checks)+' classical expression process checks.')

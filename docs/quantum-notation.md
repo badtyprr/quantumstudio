@@ -558,7 +558,13 @@ two integer expression trees. Comparison codes 0..5 mean `==`, `!=`, `<`, `<=`,
 one-bit expression children. QuantumStudio evaluates logical operands left to
 right and skips the right operand when the left determines the result. Bitwise
 And/Or (node 3) continue to evaluate both children. Older protocol versions reject
-nodes 6 and 7. Structural checks still inspect skipped logical operands.
+nodes 6 through 8. Structural checks still inspect skipped logical operands.
+
+Node 8 contains one integer expression child and reinterprets its raw bits as a
+bit vector of the same width. The child must have an explicit width; cast a
+machine-sized arithmetic result to `int[n]` or `uint[n]` first. Assignment
+destinations must match that width. This implements the equal-width integer to
+bit-register conversion in the [OpenQASM casting rules](https://openqasm.com/language/types.html#casting-from-int-uint).
 
 An integer type is encoded as signedness (0 signed, 1 unsigned) and width
 (1..64 explicit, 0 machine precision). Integer tree nodes are:
