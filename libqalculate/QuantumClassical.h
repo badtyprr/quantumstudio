@@ -29,6 +29,9 @@ public:
  // Compare typed runtime integers, producing one bit for assignments/branches.
  // Only the six comparison Binary values are accepted.
  static Bits integerCompare(Binary operation,const IntegerExpression &left,const IntegerExpression &right);
+ // Reinterpret an explicitly sized integer without changing its width or bits.
+ // Cast arithmetic results to a sized integer first; machine types are distinct.
+ static Bits fromInteger(const IntegerExpression &operand);
  static Bits populationCount(const Bits &operand);
  // Signed distances use the declared two's-complement width, including bit 63.
  static Bits rotate(Direction direction,const Bits &operand,const Bits &distance,Distance interpretation);
