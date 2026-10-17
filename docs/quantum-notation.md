@@ -353,7 +353,12 @@ matrix index. Entries must be in `[0,1]` and each row must sum to one within
 `1e-12`. Subsequent conditions use the changed records. For example,
 `[0.9,0.1;0.2,0.8]` records a true zero as one with probability 0.1, and a true
 one as zero with probability 0.2. This protocol support does not yet expose
-readout assignment in the GUI.
+mid-circuit readout assignment in the GUI. The sampling window offers an
+optional final readout assignment over up to eight selected bits. This runs
+after final measurements and does not alter earlier feedback. JSON exports
+include the captured model, seed and counts. CSV exports include the model as
+JSON in `run_final_readout` on the first data row only; it applies to the entire
+run. Later rows leave that cell empty to avoid repeating large matrices.
 
 The response adds `classical_bits`; `wires` now identifies the requested classical
 bits in left-to-right output order. The explicit ordering avoids relying on a

@@ -11,6 +11,7 @@ $compilerArgs = @('/nologo', '/target:winexe', '/platform:x64', "/out:$output\Qu
 $compilerArgs += "$PSScriptRoot\SessionStore.cs"
 $compilerArgs += "$PSScriptRoot\NumericalSampling.cs"
 $compilerArgs += "$PSScriptRoot\SamplingWindow.cs"
+$compilerArgs += "$PSScriptRoot\SamplingReadout.cs"
 $compilerArgs += "$PSScriptRoot\NamedStateEditor.cs"
 $compilerArgs += "$PSScriptRoot\WorkspaceTheme.cs"
 $compilerArgs += "/resource:$PSScriptRoot\WorkspaceTheme.xaml,WorkspaceTheme.xaml"

@@ -72,6 +72,20 @@ class SamplingTests {
    Reject(()=>NumericalSampling.Request(1,100,7,new[]{0},empty,overLimit));
    overLimit.RemoveAt(0);Check(NumericalSampling.Request(1,100,7,new[]{0},empty,overLimit).Length>0);
    Reject(()=>NumericalSampling.Request(0,100,7,new int[0],empty,new[]{flip}));
+   var readoutEditor=new SamplingReadout();Check(readoutEditor.Capture(2).Length==0);
+   readoutEditor.SetAssignment("1,0"," [0,1,0,0;0,1,0,0;0,0,1,0;0,0,0,1] ");
+   var capturedReadout=readoutEditor.Capture(2);
+   Check(capturedReadout.Length==1 && capturedReadout[0].Bits[0]==1 && capturedReadout[0].Bits[1]==0 && !capturedReadout[0].Expression.StartsWith(" "));
+   readoutEditor.SetAssignment("0","[0,1;1,0]");Check(capturedReadout[0].Bits.Length==2);
+   foreach(string invalidBits in new[]{"","0,0","-1","2","0,","0,1,2,3,4,5,6,7,8"}) {readoutEditor.SetAssignment(invalidBits,"I");Reject(()=>readoutEditor.Capture(2));}
+   readoutEditor.SetAssignment("0",new string('H',4097));Reject(()=>readoutEditor.Capture(2));
+   readoutEditor.SetAssignment("0","");Reject(()=>readoutEditor.Capture(2));
+   var exportResult=NumericalSampling.ReadResult(valid,2,100,7,new[]{1,0});
+   string exported=SamplingExport.Json(exportResult,capturedReadout);
+   var exportFields=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Dictionary<string,object>>(exported);
+   Check((string)exportFields["schema"]=="QuantumStudio.sampling.v1" && exportFields.ContainsKey("final_readout") && exportFields.ContainsKey("assignment_orientation"));
+   Check(SamplingExport.Csv(exportResult,capturedReadout).StartsWith("bits,count,frequency,shots,seed,run_final_readout\r\n00,40,0.4,100,7,"));
+   Check(SamplingExport.Csv(exportResult,capturedReadout).EndsWith("11,60,0.6,100,7,\r\n"));
    composer.Close();owner.Close();
    if(args.Length==1) {
     string worker=Path.GetFullPath(args[0]);gates=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},new NumericalSampling.Gate {Expression="CX",Wires=new[]{0,1}}};
