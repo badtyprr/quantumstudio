@@ -1,21 +1,12 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumNoise.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <string>
 #include <utility>
 namespace {
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
  a*=b; a.eval(eo);
  if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
@@ -136,7 +127,7 @@ class QuantumNoiseFunction: public MathFunction {
     }
     if(!v.isMatrix() || v.columns()!=a.rows() || v.rows()==0 || v.rows()>512 || (k && v.rows()!=output)) { CALCULATOR->error(true,"Kraus matrices must have one column per input dimension and a common output dimension of 1 to 512.",NULL); return 0; }
     if(k==0) {output=v.rows();out.clearMatrix();out.resizeMatrix(output,output,m_zero);}
-    MathStructure term=multiply(multiply(v,a,eo),dagger(v,eo),eo);
+    MathStructure term=multiply(multiply(v,a,eo),quantumAdjoint(v,eo),eo);
     if(output==1 && !term.isMatrix())element(out,0,0)+=term;
     else out+=term;
    } return 1;

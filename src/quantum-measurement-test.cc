@@ -16,6 +16,8 @@ int main(){try {
  registerQuantumMeasurement(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qexpect(identity(2),[1;exp(i*x)]/sqrt(2))","1");
+
  equal("qprobs([3;4i])","[9/25;16/25]");
  equal("qprobs([3,0;0,1])","[3/4;1/4]");
  equal("qpurity([3;4i])","1");equal("qpurity([3,0;0,1])","5/8");

@@ -16,6 +16,9 @@ int main(){try {
  registerQuantumSubsystem(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qapply([1,0;0,exp(i*x)],identity(2)/2,0)","identity(2)/2");
+ equal("qapply([1,0;0,exp(i*x)],[1,1;1,1]/2,0)","[1,exp(-i*x);exp(i*x),1]/2");
+
  equal("qptrace([1,0,0,1;0,0,0,0;0,0,0,0;1,0,0,1]/2,0)","[1/2,0;0,1/2]");
  equal("qptranspose([1,0,0,1;0,0,0,0;0,0,0,0;1,0,0,1]/2,0)","[1,0,0,0;0,0,1,0;0,1,0,0;0,0,0,1]/2");
  equal("qptracedim(qdensity(qbasis(5,6)),0,[2,3])","qdensity(qbasis(2,3))");
