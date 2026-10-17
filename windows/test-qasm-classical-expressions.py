@@ -7,6 +7,15 @@ p=argparse.ArgumentParser();p.add_argument('--worker',type=Path);p.add_argument(
 spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'windows/qasm-import.py');adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
 header='OPENQASM 3.0; include "stdgates.inc"; '
 cases=[
+ ('static-cast','qubit q; bit[3] c; c=int[3](1);',{'001':'1'}),
+ ('literal-signed-cast','qubit q; bit[3] c; c=rotl("001",int[3]("111"));',{'100':'1'}),
+ ('rotate-left','qubit q; bit[3] c="001"; c=rotl(c,1);',{'010':'1'}),
+ ('rotate-negative','qubit q; bit[3] c="001"; c=rotr(c,-1);',{'010':'1'}),
+ ('rotate-cast','qubit q; bit[3] c="111"; c=rotl("001",int[3](c));',{'100':'1'}),
+ ('rotate-unsigned','qubit q; bit[3] c="111"; c=rotl("001",uint[3](c));',{'010':'1'}),
+ ('popcount-branch','qubit q; bit[3] c="101"; if(popcount(c)==2){c="111";}',{'111':'1'}),
+ ('popcount-literal','qubit q; bit c; if(popcount("111")==3){c=1;}',{'1':'1'}),
+ ('rotate-count','qubit q; bit[3] c="101"; c=rotl(c,popcount(c));',{'110':'1'}),
  ('copy','qubit q; bit a; bit b; x q; a=measure q; b=a; a=0;',{'10':'1'}),
  ('overlap','qubit q; bit[3] c="001"; c[1:2]=c[0:1];',{'011':'1'}),
  ('initializer','qubit q; bit c=1; if(c) x q; c=measure q;',{'1':'1'}),
@@ -21,7 +30,12 @@ cases=[
 ]
 checks=0
 hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement'])
-rejected=['qubit q; bit c=2;', 'qubit q; bit[2] c; c="1";',
+rejected=['qubit q; bit[3] c; c=rotl(c);',
+          'qubit q; bit[3] c; c=rotr(c,1,2);',
+          'qubit q; bit[3] c; c=rotl(c,-9223372036854775809);',
+          'qubit q; bit[3] c; c=rotl(c,int[4](c));',
+          'qubit q; bit[3] c; c=rotl(c,c);',
+          'qubit q; bit c; if(popcount(c,c)==1){c=1;}', 'qubit q; bit c=2;', 'qubit q; bit[2] c; c="1";',
           'qubit q; bit[2] c; c[0]=c[2];', 'qubit q; bit[3] c; c[0:2]=c[0:1];',
           'qubit q; bit c=1; while(c==1){c=0;}',
           'qubit q; bit c; c=measure q; rx(float(c)) q;',
@@ -45,6 +59,8 @@ def expression(e):
  if k=='Constant':return n(0,e['Width'],e['Value'])
  if k=='Read':return n(1,len(e['Bits']),*e['Bits'])
  if k=='Complement':return n(2)+expression(e['Left'])
+ if k=='PopulationCount':return n(4)+expression(e['Left'])
+ if k=='Rotate':return n(5,0 if e['RotationDirection']=='Left' else 1,0 if e['DistanceInterpretation']=='Unsigned' else 1)+expression(e['Left'])+expression(e['Right'])
  return n(3,ops.index(e['Operator']))+expression(e['Left'])+expression(e['Right'])
 def steps(body):
  out=b''
