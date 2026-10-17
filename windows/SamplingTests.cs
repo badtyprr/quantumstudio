@@ -28,17 +28,44 @@ class SamplingTests {
    var captured=composer.SamplingGates();Check(captured.Count==2 && captured[0].Expression=="H" && captured[1].Expression=="CNOT");
    captured[0].Wires[0]=1;Check(composer.SamplingGates()[0].Wires[0]==0);
    composer.AddGate("Measure","0","");Check(composer.SamplingGates().Count==2);
-   composer.AddGate("X","1","");
-   bool rejected=false;try {composer.SamplingGates();}catch(InvalidOperationException) {rejected=true;}Check(rejected);
-   foreach(string name in new[]{"Reset","AD","M1-X"}) {
-    composer.BellState(0);composer.AddGate(name,name=="M1-X" ? "0,1" : "0",name=="AD" ? "1/4" : "");
-    rejected=false;try {composer.SamplingGates();}catch(InvalidOperationException) {rejected=true;}Check(rejected);
+   composer.AddGate("X","1","");Check(composer.SamplingGates().Count==4);
+   Check(NumericalSampling.IsDynamic(composer.SamplingGates()));
+   foreach(string name in new[]{"Reset","M1-X"}) {
+    composer.BellState(0);composer.AddGate(name,name=="M1-X" ? "0,1" : "0","");
+    var dynamic=composer.SamplingGates();Check(dynamic.Count==(name=="Reset" ? 3 : 4));
+    Check(Encoding.UTF8.GetString(NumericalSampling.Request(2,100,7,new[]{0,1},dynamic)).StartsWith("QSAMPLE2\n"));
    }
+   composer.BellState(0);composer.AddGate("AD","0","1/4");
+   bool rejected=false;try {composer.SamplingGates();}catch(InvalidOperationException) {rejected=true;}Check(rejected);
+   var reset=new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}}};
+   Check(Encoding.UTF8.GetString(NumericalSampling.Request(1,100,7,new[]{0},reset))=="QSAMPLE2\n1\n100\n7\n1\n1\n0\n2\n2\n0\n1\n0\n0\n");
+   foreach(var invalid in new[]{
+    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)4,Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0,1}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{2}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Wires=new[]{0},Expression="X",Mask=4,Value=4},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Wires=new[]{0},Expression="X",Mask=1,Value=2}})
+    Reject(()=>NumericalSampling.Request(2,100,7,new[]{0},new[]{invalid}));
+   var limit=new List<NumericalSampling.Gate>();for(int k=0;k<4096;k++)limit.Add(reset[0]);
+   Reject(()=>NumericalSampling.Request(1,100,7,new[]{0},limit));
+   limit.RemoveAt(0);Check(NumericalSampling.Request(1,100,7,new[]{0},limit).Length>0);
+   string dynamicJson=valid.Replace("{\"qubits\"","{\"classical_bits\":2,\"qubits\"");
+   Check(NumericalSampling.ReadResult(dynamicJson,2,100,7,new[]{1,0},true).classical_bits==2);
+   Reject(()=>NumericalSampling.ReadResult(valid,2,100,7,new[]{1,0},true));
+   Reject(()=>NumericalSampling.ReadResult(dynamicJson,2,100,7,new[]{1,0}));
    composer.Close();owner.Close();
    if(args.Length==1) {
     string worker=Path.GetFullPath(args[0]);gates=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},new NumericalSampling.Gate {Expression="CX",Wires=new[]{0,1}}};
     var result=NumericalSampling.Run(worker,2,10000,7,new[]{0,1},gates,CancellationToken.None).GetAwaiter().GetResult();
     Check(result.counts.Count==2 && result.counts.ContainsKey("00") && result.counts.ContainsKey("11"));
+    var dynamicCircuit=new List<NumericalSampling.Gate> {
+     new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},
+     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0}},
+     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}},
+     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Mask=1,Value=1,Expression="X",Wires=new[]{1}}};
+    var dynamicResult=NumericalSampling.Run(worker,2,10000,7,new[]{0,1},dynamicCircuit,CancellationToken.None).GetAwaiter().GetResult();
+    Check(dynamicResult.classical_bits==2 && dynamicResult.counts.Count==2 && dynamicResult.counts.ContainsKey("00") && dynamicResult.counts.ContainsKey("01"));
+    Check(Math.Abs(dynamicResult.counts["01"]-5000)<250);
     using(var cancellation=new CancellationTokenSource()) {
      var many=new List<NumericalSampling.Gate>();for(int k=0;k<100;k++)many.Add(new NumericalSampling.Gate {Expression="H",Wires=new[]{k%25}});
      var pending=NumericalSampling.Run(worker,25,10000,7,new[]{0},many,cancellation.Token);cancellation.CancelAfter(300);
