@@ -42,6 +42,13 @@ cases=[
  ('typed-zero','bit[8] c; bit r; if(6/int[8](c)==3){r=1;}',None),
  ('typed-overflow','bit[64] c=1; if(int(c)+9223372036854775807>0){c[0]=0;}',None),
  ('typed-machine','bit[64] c; if(int(c)==0){c[0]=1;} ',{'0'*63+'1':'1'}),
+ ('typed-bitcast','bit[3] c="011"; c=bit[3](int[3](int[3](c)+1));',{'100':'1'}),
+ ('typed-bitcast-negative','bit[3] c="111"; c=bit[3](uint[3](int[3](c)));',{'111':'1'}),
+ ('typed-bitcast-compare','bit[3] c="011"; bit r; if(bit[3](int[3](c))==3){r=1;}',{'1011':'1'}),
+ ('typed-bitcast-measure','qubit q; bit c; h q; c=measure q; c=bit[1](int[1](c));',{'0':'1/2','1':'1/2'}),
+ ('typed-bitcast-skipped','bit[3] c; if(c==1){c=bit[3](int[3](1/int[3](c)));}',{'000':'1'}),
+ ('typed-bitcast-divzero','bit[3] c; c=bit[3](int[3](1/int[3](c)));',None),
+ ('typed-bitcast-wide','bit[64] c=1; c=bit[64](uint[64](c));',{'0'*63+'1':'1'}),
  ('registers','qubit q; bit[2] c="10"; bit[2] d="10"; if(c==d){c=0;}',{'1000':'1'}),
 ]
 checks=0
@@ -60,6 +67,7 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
           'qubit q; bit[2] c; bit d=1; c[d]=measure q;',
           'qubit q; bit[2] c; let d=c; d=1;',
           'qubit q; bit c; c+=1;', 'qubit q; bit[2] c; if(c>4) x q;']
+rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
@@ -74,6 +82,7 @@ def expression(e):
  k=e['Kind']
  if k=='Constant':return n(0,e['Width'],e['Value'])
  if k=='Read':return n(1,len(e['Bits']),*e['Bits'])
+ if k=='IntegerBits':return n(8)+integer_expression(e['Left'])
  if k=='IntegerCompare':return n(6,ops.index(e['Operator'])-5)+integer_expression(e['Left'])+integer_expression(e['Right'])
  if k=='Logical':return n(7,0 if e['Operator']=='And' else 1)+expression(e['Left'])+expression(e['Right'])
  if k=='Complement':return n(2)+expression(e['Left'])

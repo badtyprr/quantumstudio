@@ -635,6 +635,10 @@ its three raw bits. The assignment must target three bits. These expressions
 are editable and saved in version-4 circuit files as `IntegerBits` nodes with
 one typed `Left` child; their width comes from that child. A machine-width
 integer needs an explicit-width cast before it can become a bit vector.
+OpenQASM imports preserve the same equal-width `bit[n](integer)` casts, including
+computed assignments and casts of measurement-dependent values. Cast widths
+must be compile-time constants. Entirely static expressions still use the
+pinned PyQASM constant evaluator.
 
 OpenQASM import also preserves Boolean `&&` and `||` as version-4 logical
 nodes, including assignments and nested branches. Bitwise `&` and `|` retain
