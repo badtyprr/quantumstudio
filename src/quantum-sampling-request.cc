@@ -65,30 +65,46 @@ double component(Number value) {
  return result;
 }
 struct Gate { std::vector<unsigned> wires;std::vector<QuantumNumerics::Complex> matrix; };
-Gate readGate(Calculator &calculator,Reader &reader,unsigned qubits) {
- Gate gate;gate.wires=reader.wires(qubits,3);
- if(gate.wires.empty())throw std::runtime_error("A gate needs one to three target wires.");
- std::string expression=reader.expression();
+MathStructure evaluate(Calculator &calculator,const std::string &expression) {
  EvaluationOptions numeric;numeric.approximation=APPROXIMATION_APPROXIMATE;
- MathStructure matrix=calculator.calculate("quantum: "+expression,numeric);
+ MathStructure value=calculator.calculate("quantum: "+expression,numeric);
  bool failed=false;
  while(calculator.message()) {
   if(calculator.message()->type()==MESSAGE_ERROR)failed=true;
   calculator.nextMessage();
  }
- size_t dimension=size_t(1)<<gate.wires.size();
- if(failed || !matrix.isMatrix() || matrix.rows()!=dimension || matrix.columns()!=dimension)
-  throw std::runtime_error("Gate expression must resolve to a numerical matrix matching its target wires.");
+ if(failed)throw std::runtime_error("Sampling expression could not be evaluated.");
+ return value;
+}
+std::vector<QuantumNumerics::Complex> numericalMatrix(const MathStructure &matrix,size_t dimension) {
+ if(!matrix.isMatrix() || matrix.rows()!=dimension || matrix.columns()!=dimension)
+  throw std::runtime_error("Sampling matrix dimensions must match its target wires.");
+ std::vector<QuantumNumerics::Complex> result;
  for(size_t r=1;r<=dimension;++r)for(size_t c=1;c<=dimension;++c) {
   const MathStructure &cell=*matrix.getElement(r,c);
-  if(!cell.isNumber())throw std::runtime_error("Gate entries must be numerical; assign parameter values before sampling.");
-  gate.matrix.emplace_back(component(cell.number().realPart()),component(cell.number().imaginaryPart()));
+  if(!cell.isNumber())throw std::runtime_error("Sampling entries must be numerical; assign parameters before sampling.");
+  result.emplace_back(component(cell.number().realPart()),component(cell.number().imaginaryPart()));
  }
- // Validate unitarity with the same kernel contract before allocating the full state.
+ return result;
+}
+Gate readGate(Calculator &calculator,Reader &reader,unsigned qubits) {
+ Gate gate;gate.wires=reader.wires(qubits,3);
+ if(gate.wires.empty())throw std::runtime_error("A gate needs one to three target wires.");
+ gate.matrix=numericalMatrix(evaluate(calculator,reader.expression()),size_t(1)<<gate.wires.size());
  QuantumNumerics::StateVector probe(static_cast<unsigned>(gate.wires.size()),8*sizeof(QuantumNumerics::Complex));
  std::vector<unsigned> local;for(unsigned wire=0;wire<gate.wires.size();++wire)local.push_back(wire);
  probe.apply(gate.matrix,local);
  return gate;
+}
+QuantumNumerics::TrajectoryStep readChannel(Calculator &calculator,Reader &reader,unsigned qubits) {
+ auto wires=reader.wires(qubits,3);
+ if(wires.empty())throw std::runtime_error("A channel needs one to three target wires.");
+ MathStructure value=evaluate(calculator,reader.expression());
+ if(!value.isVector() || value.size()==0 || value.size()>256)
+  throw std::runtime_error("A sampled channel needs a vector of 1-256 Kraus matrices.");
+ std::vector<std::vector<QuantumNumerics::Complex>> kraus;
+ for(size_t k=0;k<value.size();++k)kraus.push_back(numericalMatrix(value[k],size_t(1)<<wires.size()));
+ return QuantumNumerics::TrajectoryStep::channel(kraus,wires);
 }
 
 }
@@ -104,8 +120,9 @@ std::string quantumSamplingRequest(Calculator &calculator,const std::string &inp
  std::vector<Gate> gates;gates.reserve(count);
  std::vector<QuantumNumerics::TrajectoryStep> steps;steps.reserve(count);
  for(unsigned k=0;k<count;++k) {
-  unsigned kind=reader.dynamic()?static_cast<unsigned>(reader.integer(3)):0;
-  if(kind==0 || kind==3) {
+  unsigned kind=reader.dynamic()?static_cast<unsigned>(reader.integer(4)):0;
+  if(kind==4)steps.push_back(readChannel(calculator,reader,qubits));
+  else if(kind==0 || kind==3) {
    std::uint64_t mask=0,value=0;
    if(kind==3) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
    Gate gate=readGate(calculator,reader,qubits);

@@ -81,7 +81,7 @@ def trajectory(qubits=2, classical=2, bits=(0,1), steps=(), shots=1000, seed=7):
     for step in steps:
         kind, *args = step
         data += (str(kind)+"\n").encode()
-        if kind in (0,3):
+        if kind in (0,3,4):
             if kind == 3:
                 mask, value, targets, expression = args
                 data += f"{mask}\n{value}\n".encode()
@@ -117,6 +117,20 @@ for bad in [trajectory(classical=65),trajectory(classical=0,bits=(),steps=[(1,0,
             trajectory(bits=(0,0)),trajectory(steps=[(1,2,0)]),trajectory(steps=[(1,0,2)]),
             trajectory(qubits=0,steps=[(2,0)]),trajectory(steps=[(3,4,4,(0,),"X")]),
             trajectory(steps=[(3,1,2,(0,),"X")]),trajectory(steps=[(3,1,1,(0,),"[2,0;0,1]")]),
-            trajectory(steps=[(4,0)]),t+b"x"]:
+            trajectory(steps=[(5,0)]),t+b"x"]:
     run(bad,success=False)
+for expression in ["amplitude_damping(1)","amplitude_damping(1,0)","phase_amplitude_damping(1,0,0)"]:
+    result = run(trajectory(qubits=1,classical=1,bits=(0,),steps=[(0,(0,),"X"),(4,(0,),expression),(1,0,0)]))
+    assert result["counts"] == {"0":1000}, (expression,result)
+noise = trajectory(steps=[(0,(0,),"H"),(0,(0,1),"CX"),(4,(1,),"amplitude_damping(0.5)"),(1,0,0),(1,1,1)],shots=10000)
+r = run(noise)
+assert set(r["counts"]) == {"00","10","11"}
+assert abs(r["counts"]["00"]-5000)<300 and abs(r["counts"]["10"]-2500)<250
+assert run(noise) == r
+phase = run(trajectory(qubits=1,classical=1,bits=(0,),steps=[(0,(0,),"H"),(4,(0,),"phase_damping(1)"),(0,(0,),"H"),(1,0,0)],shots=10000))
+assert set(phase["counts"]) == {"0","1"} and abs(phase["counts"]["0"]-5000)<300
+for expression in ["H","vector([2,0;0,1])","vector([1,0;0,0])","amplitude_damping(2)","amplitude_damping(t)","vector([1,0,0;0,1,0;0,0,1])"]:
+    run(trajectory(steps=[(4,(0,),expression)],shots=0),success=False)
+for cut in range(len(noise)):
+    run(noise[:cut],success=False)
 print(f"PASS: {checks} numerical sampling process checks.")
