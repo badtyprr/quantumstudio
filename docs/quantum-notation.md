@@ -257,6 +257,15 @@ subscripts require braces. Simple subscript labels retain their existing
 symbolic meaning without a declared family; explicitly defined fixed states
 such as `psi_t` take precedence over a family call.
 
+Declare complex amplitudes in a family name with `:complex`, for example
+`psi(a:complex,b:complex)` with body `a|0>+b|1>`. Calls use ordinary values:
+`|psi(1,i)>`. Symbolic calls such as `density(|psi(x,y)>)` retain conjugation
+when values are substituted later. Parameters without a domain keep the
+calculator's default real assumption; `psi(a:complex,theta)` can mix a complex
+amplitude with a real angle. The declaration applies only to free occurrences
+in the body, not to a nested sum's bound index. Existing `complexparam(a)`
+annotations remain valid. A family is not automatically normalized.
+
 The worker's `--states` option accepts definitions alongside one expression. Define
 `Bell` as `|Phi+>` and then `after CZ` as `CZ|Bell>` to evaluate `<Bell|Bell>`
 to 1 and `<Bell|after CZ>` to 0. Definitions are evaluated exactly, in order,

@@ -24,7 +24,8 @@ int quantumIndexBinder(const MathStructure &value,const MathStructure &index) {
  return bound>=0 && value[bound].equals(index) ? bound : -1;
 }
 // Substitute a free index without capturing a nested finite-product/sum index.
-void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement) {
+void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement,bool preserveComplexDomain=false) {
+ if(preserveComplexDomain && value.isFunction() && value.function()->referenceName()=="complexparam")return;
  if(value.equals(index)) {value=replacement;return;}
  int declaration=quantumBinderPosition(value);
  if(declaration>=0 && !value[declaration].equals(index) &&
@@ -41,7 +42,7 @@ void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const M
  int bound=quantumIndexBinder(value,index);
  for(size_t k=0;k<value.size();++k) {
   if(bound>=0 && (k==0 || k==size_t(bound)))continue;
-  replaceQuantumIndex(value[k],index,replacement);
+  replaceQuantumIndex(value[k],index,replacement,preserveComplexDomain);
  }
  value.childrenUpdated();
 }
@@ -394,4 +395,14 @@ void defineQuantumStateFamily(Calculator &calculator,const std::string &name,con
   for(size_t j=0;j<k;++j)if(parameters[k].equals(parameters[j]))throw std::invalid_argument("State-family parameters must be distinct.");
  }
  calculator.addFunction(new QuantumStateFamilyFunction(name,body,parameters));
+}
+
+// Apply declarations before evaluating the body; assumptions alone disappear
+// when a family parameter is replaced by an ordinary unknown argument.
+void declareQuantumComplexParameter(Calculator &calculator,MathStructure &body,const MathStructure &parameter) {
+ if(!parameter.isSymbolic() && (!parameter.isVariable() || parameter.variable()->isKnown()))throw std::invalid_argument("Complex parameters must be unknown symbols.");
+ auto function=calculator.getFunction("complexparam");
+ if(!function)throw std::logic_error("Complex parameter support is not registered.");
+ MathStructure replacement;replacement.set(function,&parameter,NULL);
+ replaceQuantumIndex(body,parameter,replacement,true);
 }

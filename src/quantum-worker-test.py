@@ -1,5 +1,6 @@
 """Exercise the worker process and JSON contract used by the Windows GUI."""
 import json
+from decimal import Decimal
 import os
 from pathlib import Path
 import subprocess
@@ -284,6 +285,28 @@ def state_request(definitions, expression):
         value += f"{len(name.encode('utf-8'))}\n{len(definition.encode('utf-8'))}\n{name}{definition}"
     return value + expression
 
+
+# Complex declarations apply before evaluation and survive later substitution.
+for flags in [(), ("--approx",)]:
+    declared = [("psi(a:complex,b:complex)", "a|0>+b|1>")]
+    original = data(state_request(declared, "quantum:density(|psi(x,y)>)"), "--states", *flags)
+    expression = "quantum:replace(replace(("+original["copy_text"]+"),x,1),y,i)-[1,-i;i,1]"
+    assert data(expression,*flags)["cells"] == [["0","0"],["0","0"]]
+    for name, body, expression, expected in [
+        ("psi(a:complex,b:complex)", "a|0>+b|1>", "density(|psi(1,i)>)-[1,-i;i,1]", [["0","0"],["0","0"]]),
+        ("psi(a:complex,b)", "exp(i*b)*a|0>", "density(|psi(i,pi/2)>)-[1,0;0,0]", [["0","0"],["0","0"]]),
+        ("psi(a:complex)", "complexparam(a)|0>", "|psi(i)>", [["i"],["0"]]),
+        ("psi(a:complex)", "qsum(a*|0>,0,1,a)", "|psi(i)>", [["1"],["0"]]),
+        ("psi(a:complex)", "a|0>", "|psi(0)>", [["0"],["0"]]),
+    ]:
+        result = data(state_request([(name,body)],"quantum:"+expression),"--states",*flags)
+        assert len(result["cells"]) == len(expected)
+        for actual_row, expected_row in zip(result["cells"], expected):
+            assert len(actual_row) == len(expected_row)
+            for actual, target in zip(actual_row, expected_row):
+                assert actual == target or (flags and target == "0" and Decimal(actual) == 0), (name, body, expression, flags, result)
+for name in ["psi(a:real)","psi(a:complex,a)","psi(:complex)","psi(a:complex:complex)"]:
+    run(state_request([(name,"a|0>")],"1"),"--states",success=False)
 
 family = [("psi(alpha)", "cos(alpha)|0>+sin(alpha)|1>")]
 for flags in [(), ("--approx",)]:
