@@ -18,47 +18,51 @@ sealed class SamplingWindow : Window {
  readonly Button cancel=new Button {Content="Cancel",IsEnabled=false}, save=new Button {Content="Save counts…",IsEnabled=false};
  readonly TextBlock status=new TextBlock {Text="Ready · The circuit is captured when this window opens.",TextWrapping=TextWrapping.Wrap};
  readonly StackPanel rows=new StackPanel();
+ readonly SamplingReadout readout=new SamplingReadout();
+ NumericalSampling.Readout[] resultReadout=new NumericalSampling.Readout[0];
  CancellationTokenSource cancellation;
  NumericalSampling.Result result;
  public SamplingWindow(Window owner,int count,IList<NumericalSampling.Gate> circuit) {
   Owner=owner;Resources=owner.Resources;qubits=count;gates=circuit;Title="Circuit samples";
-  Width=780;Height=660;MinWidth=600;MinHeight=420;WindowStartupLocation=WindowStartupLocation.CenterOwner;
+  Width=780;Height=800;MinWidth=600;MinHeight=420;WindowStartupLocation=WindowStartupLocation.CenterOwner;
   Background=WorkspaceTheme.Background;Foreground=WorkspaceTheme.Text;FontFamily=new FontFamily("Segoe UI");
   var root=new DockPanel {Margin=new Thickness(24)};Content=root;
-  var top=new StackPanel();DockPanel.SetDock(top,Dock.Top);root.Children.Add(top);
+  var top=new StackPanel();var settings=new ScrollViewer {Content=top,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,MaxHeight=360};DockPanel.SetDock(settings,Dock.Top);root.Children.Add(settings);
+  SizeChanged+=delegate {settings.MaxHeight=Math.Max(180,ActualHeight*0.65);};
   top.Children.Add(new TextBlock {Text="Sample the circuit",FontSize=26,FontWeight=FontWeights.SemiBold});
   top.Children.Add(new TextBlock {Text=count+" qubits · "+circuit.Count+" operations · Final computational-basis outcomes",Margin=new Thickness(0,6,0,12),TextWrapping=TextWrapping.Wrap});
   var controls=new WrapPanel();top.Children.Add(controls);
   Field(controls,"Shots (1–100,000)",shots);Field(controls,"Seed",seed);controls.Children.Add(run);controls.Children.Add(cancel);controls.Children.Add(save);
   top.Children.Add(new TextBlock {Text="Bits read left to right: q0, q1, … . Frequencies estimate probabilities; they vary with the seed. Sampling starts from |0…0⟩. Noise, measurements, and resets run on each shot; feedback measures its control wires at that step.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,8,0,12)});
-  status.Margin=new Thickness(0,0,0,12);top.Children.Add(status);
+  top.Children.Add(readout);status.Margin=new Thickness(0,0,0,12);DockPanel.SetDock(status,Dock.Top);root.Children.Add(status);
   root.Children.Add(new Border {Background=WorkspaceTheme.Surface,CornerRadius=new CornerRadius(10),Padding=new Thickness(14),Child=new ScrollViewer {VerticalScrollBarVisibility=ScrollBarVisibility.Auto,Content=rows}});
   run.Click+=async delegate {
    int shotCount;ulong seedValue;
    if(!Int32.TryParse(shots.Text,NumberStyles.None,CultureInfo.InvariantCulture,out shotCount) || shotCount<1 || shotCount>100000 || !UInt64.TryParse(seed.Text,NumberStyles.None,CultureInfo.InvariantCulture,out seedValue)) {status.Text="Enter 1–100,000 shots and a nonnegative 64-bit integer seed.";return;}
+   NumericalSampling.Readout[] model;try {model=readout.Capture(qubits);}catch(ArgumentException error) {status.Text=error.Message;return;}
    run.IsEnabled=false;shots.IsEnabled=false;seed.IsEnabled=false;cancel.IsEnabled=true;save.IsEnabled=false;result=null;rows.Children.Clear();
-   cancellation=new CancellationTokenSource();status.Text="Sampling… · Up to five minutes · Cancel is available.";
+   readout.IsEnabled=false;cancellation=new CancellationTokenSource();status.Text="Sampling… · Up to five minutes · Cancel is available.";
    try {
-    result=await NumericalSampling.Run(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"quantum-worker.exe"),qubits,shotCount,seedValue,Enumerable.Range(0,qubits).ToArray(),gates,cancellation.Token);
+    result=await NumericalSampling.Run(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"quantum-worker.exe"),qubits,shotCount,seedValue,Enumerable.Range(0,qubits).ToArray(),gates,cancellation.Token,model);
+    resultReadout=model;
     Render();save.IsEnabled=true;
    } catch(OperationCanceledException) {status.Text="Sampling cancelled. Change the settings or run again.";}
    catch(Exception error) {status.Text=error.Message;}
-   finally {cancellation.Dispose();cancellation=null;run.IsEnabled=true;shots.IsEnabled=true;seed.IsEnabled=true;cancel.IsEnabled=false;}
+   finally {cancellation.Dispose();cancellation=null;run.IsEnabled=true;shots.IsEnabled=true;seed.IsEnabled=true;readout.IsEnabled=true;cancel.IsEnabled=false;}
   };
   cancel.Click+=delegate {if(cancellation!=null)cancellation.Cancel();};
   Closed+=delegate {if(cancellation!=null)cancellation.Cancel();};
   save.Click+=delegate {
    if(result==null)return;
-   var picker=new Microsoft.Win32.SaveFileDialog {Filter="CSV counts (*.csv)|*.csv",DefaultExt=".csv",AddExtension=true,FileName="Circuit samples.csv",OverwritePrompt=true};
+   var picker=new Microsoft.Win32.SaveFileDialog {Filter="JSON counts and settings (*.json)|*.json|CSV counts and settings (*.csv)|*.csv",DefaultExt=".json",AddExtension=true,FileName="Circuit samples.json",OverwritePrompt=true};
    if(picker.ShowDialog(this)!=true)return;
    try {
-    var text=new StringBuilder("bits,count,frequency\r\n");
-    foreach(var item in result.counts.OrderBy(pair=>pair.Key,StringComparer.Ordinal))text.Append(item.Key).Append(',').Append(item.Value.ToString(CultureInfo.InvariantCulture)).Append(',').Append(((double)item.Value/result.shots).ToString("R",CultureInfo.InvariantCulture)).Append("\r\n");
-    File.WriteAllText(picker.FileName,text.ToString(),new UTF8Encoding(false));status.Text="Saved all "+result.counts.Count+" observed outcomes.";
+    File.WriteAllText(picker.FileName,picker.FilterIndex==2 ? SamplingExport.Csv(result,resultReadout) : SamplingExport.Json(result,resultReadout),new UTF8Encoding(false));status.Text="Saved all "+result.counts.Count+" observed outcomes and captured readout settings.";
    } catch(Exception error) {status.Text="Could not save counts: "+error.Message;}
   };
  }
- public async System.Threading.Tasks.Task<NumericalSampling.Result> VerifySampling(string screenshot,bool expectBell=true,ulong seedValue=7) {
+ public async System.Threading.Tasks.Task<NumericalSampling.Result> VerifySampling(string screenshot,bool expectBell=true,ulong seedValue=7,string readoutBits=null,string readoutMatrix=null) {
+  if(readoutBits!=null)readout.SetAssignment(readoutBits,readoutMatrix);
   seed.Text=seedValue.ToString(CultureInfo.InvariantCulture);
   run.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
   if(run.IsEnabled || !cancel.IsEnabled)throw new Exception("Sampling did not enter its running state.");
@@ -72,6 +76,10 @@ sealed class SamplingWindow : Window {
   var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);bitmap.Render(this);
   var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder();encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
   using(var file=File.Create(screenshot))encoder.Save(file);
+  if(readoutBits!=null) {
+   File.WriteAllText(screenshot+".json",SamplingExport.Json(result,resultReadout));
+   File.WriteAllText(screenshot+".csv",SamplingExport.Csv(result,resultReadout));
+  }
   return result;
  }
  static void Field(Panel panel,string label,Control input) {
@@ -81,6 +89,7 @@ sealed class SamplingWindow : Window {
  void Render() {
   rows.Children.Clear();
   status.Text=result.shots.ToString("N0")+" shots · "+result.counts.Count+" outcomes · Seed "+result.seed+(result.counts.Count>128 ? " · Showing the 128 most frequent; Save counts exports all." : "");
+  if(resultReadout.Length>0)status.Text+=" · Final readout error applied";
   foreach(var item in result.counts.OrderByDescending(pair=>pair.Value).ThenBy(pair=>pair.Key,StringComparer.Ordinal).Take(128)) {
    var line=new Grid {Margin=new Thickness(0,5,0,5)};
    line.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(Math.Max(110,qubits*12))});line.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(80)});line.ColumnDefinitions.Add(new ColumnDefinition {Width=new GridLength(85)});line.ColumnDefinitions.Add(new ColumnDefinition());
