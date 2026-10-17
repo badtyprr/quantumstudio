@@ -10,6 +10,7 @@ EXTRA_DIST = config.rpath  \
 	docs/quantum-notation.md \
 	docs/exact-circuit-protocol.md \
 	docs/classical-expression-protocol.md \
+	docs/classical-circuit-files.md \
 	docs/learning-source-inventory.json \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
