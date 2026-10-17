@@ -32,6 +32,8 @@ sealed class ClassicalProgramWindow : Window {
   top.Children.Add(new TextBlock {Text="Measurements save into named registers. Branches read the saved bits once when entered.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,6,0,12)});
   var commands=new WrapPanel();top.Children.Add(commands);
   Button(commands,"Open…",Open);Button(commands,"Save…",Save);Button(commands,"Sample…",()=>new SamplingWindow(this,history.Current).Show());
+  var convention=new ComboBox {Width=180,VerticalAlignment=VerticalAlignment.Center};convention.Items.Add("IBM / Qiskit U");convention.Items.Add("Published OpenQASM 3 U");convention.SelectedIndex=0;commands.Children.Add(convention);System.Windows.Automation.AutomationProperties.SetName(convention,"Imported U gate convention");
+  Button(commands,"Import OpenQASM…",()=>{var picker=new Microsoft.Win32.OpenFileDialog {Filter="OpenQASM (*.qasm)|*.qasm|All files (*.*)|*.*"};if(picker.ShowDialog(this)==true)Import(picker.FileName,convention.SelectedIndex==1);});
   commands.Children.Add(undo);commands.Children.Add(redo);undo.Click+=delegate {history.Undo();Refresh();};redo.Click+=delegate {history.Redo();Refresh();};
   var settings=new WrapPanel();top.Children.Add(settings);Field(settings,"Qubits",qubits,65);Field(settings,"Registers · name:size, …",registers,260);Field(settings,"Output bit indices · left to right",outputs,200);
   Button(settings,"Apply registers",()=>history.Edit(d=>{d.Qubits=Int(qubits.Text);d.Registers=ParseRegisters(registers.Text);d.OutputBits=Indices(outputs.Text);}));
@@ -80,6 +82,12 @@ sealed class ClassicalProgramWindow : Window {
   }return node;
  }
  bool Discard() {return verifying || history.Current.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
+ void Import(string path,bool published) {var next=ClassicalCircuit.Load(QasmImport.Compile(path,published,true)).Snapshot();history.Edit(d=>{d.Version=next.Version;d.Qubits=next.Qubits;d.Registers=next.Registers;d.OutputBits=next.OutputBits;d.Steps=next.Steps;});}
+ public void VerifyImport(string path,string report) {
+  verifying=true;string before=history.Current.Serialize();Import(path,false);string imported=history.Current.Serialize();
+  history.Undo();if(history.Current.Serialize()!=before)throw new Exception("Import undo lost the previous circuit.");history.Redo();if(history.Current.Serialize()!=imported)throw new Exception("Import redo lost classical circuit data.");
+  File.WriteAllText(report+".qcircuit",imported);Refresh();status.Text="Imported · Classical registers, saved measurements and branches preserved.";Capture(report+".png");
+ }
  void Open() {var picker=new Microsoft.Win32.OpenFileDialog {Filter="Classical circuits (*.qcircuit)|*.qcircuit|JSON (*.json)|*.json"};if(picker.ShowDialog(this)!=true)return;string text=new UTF8Encoding(false,true).GetString(BoundedUtf8File.Read(picker.FileName,262144,"Classical circuit"));var next=ClassicalCircuit.Load(text);if(!Discard())return;history.Open(next.Serialize());saved=history.Current.Serialize();}
  void Save() {var picker=new Microsoft.Win32.SaveFileDialog {Filter="Classical circuit (*.qcircuit)|*.qcircuit",DefaultExt=".qcircuit",AddExtension=true,OverwritePrompt=true};if(picker.ShowDialog(this)!=true)return;string temp=picker.FileName+"."+Guid.NewGuid().ToString("N")+".tmp";try {File.WriteAllText(temp,history.Current.Serialize(),new UTF8Encoding(false));if(File.Exists(picker.FileName))File.Replace(temp,picker.FileName,null);else File.Move(temp,picker.FileName);saved=history.Current.Serialize();}finally {if(File.Exists(temp))File.Delete(temp);}}
  public void VerifyEditing(string screenshot) {

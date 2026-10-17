@@ -62,6 +62,20 @@ bell = {'Version': 1, 'Qubits': 2, 'Steps': [
     {'Gate': 'CNOT', 'Angle': '', 'Wires': [0, 1]}]}
 source = header+'qubit[2] q; h q[0]; cx q[0],q[1];'
 for command in commands:
+    run(command, 'OPENQASM 2.0; include "qelib1.inc"; qreg q[1]; creg c[1]; if(c==0) x q[0]; measure q[0] -> c[0];',
+        {'Version':2,'Qubits':1,'Registers':[{'Name':'c','Size':1}],'OutputBits':[0],
+         'Steps':[{'Kind':'Branch','Mask':'1','Value':'0','WhenTrue':[{'Kind':'Gate','Expression':'X','Wires':[0]}],'WhenFalse':[]}, {'Kind':'Measure','Wires':[0],'ClassicalBit':0}]}, arguments=['--classical'])
+    measure = {'Kind':'Measure','Wires':[0],'ClassicalBit':3}
+    run(command, header+'qubit q; bit[4] c; c[3]=measure q;',
+        {'Version':2,'Qubits':1,'Registers':[{'Name':'c','Size':4}],'OutputBits':[3,2,1,0],'Steps':[measure]}, arguments=['--classical'])
+    run(command, header+'qubit q; bit[2] c; if(c==2) {x q;} else {reset q;}',
+        {'Version':2,'Qubits':1,'Registers':[{'Name':'c','Size':2}],'OutputBits':[1,0],
+         'Steps':[{'Kind':'Branch','Mask':'3','Value':'2','WhenTrue':[{'Kind':'Gate','Expression':'X','Wires':[0]}],'WhenFalse':[{'Kind':'Reset','Wires':[0]}]}]}, arguments=['--classical'])
+    run(command, header+'qubit q; measure q;',
+        {'Version':2,'Qubits':1,'Registers':[],'OutputBits':[],'Steps':[{'Kind':'Channel','Expression':'phase_damping(1)','Wires':[0]}]}, arguments=['--classical'])
+    for body in ['qubit q; bit c=1;', 'qubit q; bit c; c=1;', 'qubit q; bit[65] c;',
+                 'qubit q; bit[2] c; if(c>1) x q;', 'qubit q; bit[2] c; bit[2] d; if(c==d) x q;']:
+        run(command, header+body, arguments=['--classical'])
     run(command, source, bell)
     run(command, b'\xef\xbb\xbf'+source.encode('utf-8'), bell)
     run(command, source+' // Unicode comment: \u03c0', bell)

@@ -280,6 +280,14 @@ class QuantumStudio {
     finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
    };
   }
+  if(args.Length==3 && args[0]=="--classical-qasm-test") {
+   window.Loaded+=delegate {
+    ClassicalProgramWindow editor=null;
+    try {editor=new ClassicalProgramWindow(window);editor.Show();editor.VerifyImport(args[1],args[2]);File.WriteAllText(args[2],"PASS: frozen classical OpenQASM import, undo/redo and display.");}
+    catch(Exception ex) {File.WriteAllText(args[2],"FAIL: "+ex);Environment.ExitCode=1;}
+    finally {if(editor!=null)editor.Close();window.Close();}
+   };
+  }
   if(args.Length==2 && args[0]=="--classical-editor-test") {
    window.Loaded+=delegate {
     ClassicalProgramWindow editor=null;
