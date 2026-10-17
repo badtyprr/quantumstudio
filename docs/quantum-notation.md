@@ -31,13 +31,17 @@ These are selected finite examples, not certification of the entire phase-estima
 
 ## Sequential state evaluation
 
-### Numerical simulation foundation
+### Numerical circuit sampling
 
-`QuantumNumericalState` provides an internal double-precision pure-state kernel for future larger-circuit execution. It stores up to 25 qubits under an explicit caller-supplied memory budget and applies one-, two-, or three-wire unitary matrices without constructing full-register operators. Wire 0 is the most significant bit; the first wire in a gate's ordered wire list is its local matrix's most significant bit. Matrices must be finite and unitary within a `1e-12` absolute column-inner-product tolerance. Cancellation during an update invalidates the partial state so it cannot be read or reused.
+`QuantumNumericalState` provides the double-precision pure-state kernel used by the circuit editor's **Sample circuit** command. It stores up to 25 qubits under an explicit caller-supplied memory budget and applies one-, two-, or three-wire unitary matrices without constructing full-register operators. Wire 0 is the most significant bit; the first wire in a gate's ordered wire list is its local matrix's most significant bit. Matrices must be finite and unitary within a `1e-12` absolute column-inner-product tolerance. Cancellation during an update invalidates the partial state so it cannot be read or reused.
 
-This is a foundation, not a larger-circuit feature in the GUI or notation parser. Classical records, process integration, and end-to-end notebook execution remain unfinished. The design follows the state-vector and terminal-sampling distinction described by [qsim](https://quantumai.google/qsim/overview) and [IBM Statevector](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.quantum_info.Statevector). The native regression suite compares local evolution with independently constructed full-register operators on small circuits. Original-scale audits belong in later validation stages rather than every commit's tests.
+The editor accepts up to 25 qubits and 512 steps, including circuits loaded through the bounded OpenQASM importer. Sampling accepts unitary circuits with optional terminal measurements; noise, reset, mid-circuit measurement and feedback are rejected by this path. The sampling window accepts 1–100,000 shots and an explicit 64-bit seed. It displays the 128 most frequent outcomes and exports all counts through **Save counts**. Exact state and density-matrix inspection remains limited to ten qubits. A 25-qubit numerical state uses 512 MiB, with additional memory needed for sampling and results. This does not provide arbitrary notebook execution.
 
-The internal `sampleCounts` operation draws terminal computational-basis outcomes without changing the state. It accepts an explicit ordered subset of wires and a 64-bit seed, returning counts keyed by integers whose most significant bit corresponds to the first listed wire. An empty subset yields outcome zero; zero shots yields no counts. The shot limit is 1,000,000, and temporary sample storage and returned counts are additional to the state memory budget. Sampling checks cancellation and rejects normalization error above `1e-8`; it does not implement mid-circuit collapse, classical feedback, or a GUI sampling command.
+The GUI samples every qubit in register order, including when an imported circuit's terminal measurements select fewer wires. It does not reconstruct the imported program's classical-register output mapping. Direct worker callers can select and order measured wires as described below.
+
+The design follows the state-vector and terminal-sampling distinction described by [qsim](https://quantumai.google/qsim/overview) and [IBM Statevector](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.quantum_info.Statevector). The native regression suite compares local evolution with independently constructed full-register operators on small circuits. Original-scale audits belong in later validation stages rather than every commit's tests.
+
+The internal `sampleCounts` operation draws terminal computational-basis outcomes without changing the state. It accepts an explicit ordered subset of wires and a 64-bit seed, returning counts keyed by integers whose most significant bit corresponds to the first listed wire. An empty subset yields outcome zero; zero shots yields no counts. The kernel's shot limit is 1,000,000 (the GUI uses the lower limit above), and temporary sample storage and returned counts are additional to the state memory budget. Sampling checks cancellation and rejects normalization error above `1e-8`; it does not implement mid-circuit collapse or classical feedback.
 
 ### Symbolic sequence expressions
 
@@ -199,7 +203,7 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 - Finish the lesson-by-lesson IBM audit and the qBraid generated-program and learning-content audits. Account-only qBook contents have not been inspected.
 - Resolve implicit register dimensions, general symbolic bit strings and sets, ensembles, general instruments, and automatic POVM/Naimark constructions.
 - Extend programming support beyond the current bounded static OpenQASM importer. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, runtime classical feedback, cloud jobs, or pulse/timing programs.
-- Address scale separately from syntax. The current circuit editor is limited to ten qubits and 512 steps; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
+- Address scale separately from syntax. The circuit editor supports up to 25 qubits and 512 steps for numerical sampling, with exact state and density-matrix inspection limited to ten qubits; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
 
@@ -262,7 +266,8 @@ producing a result. Without `--states`, the existing expression-only protocol an
 
 `quantum-worker --sample` accepts one `QSAMPLE1` request on binary UTF-8 stdin
 and returns JSON. It is a separate numerical mode; ordinary symbolic calculation
-is unchanged. The circuit editor and OpenQASM importer are not yet connected.
+is unchanged. The circuit editor's sampling window uses this protocol, including
+for supported imported OpenQASM circuits.
 
 The request begins with `QSAMPLE1\n`. Unsigned decimal integers terminated by LF
 follow: qubits (0–25), shots (0–1,000,000), 64-bit seed, measured wire count, each
