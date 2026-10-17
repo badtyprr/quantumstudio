@@ -28,12 +28,12 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
   cancel();
   if(++totalSteps>4096)throw std::length_error("Trajectory branches exceed 4096 total steps");
   if(step.kind==TrajectoryStep::Kind::Assign) {
-   QuantumClassical::assign(0,classicalBits,step.wires,*step.expression);continue;
+   QuantumClassical::validateAssignment(classicalBits,step.wires,*step.expression);continue;
   }
   if(step.kind==TrajectoryStep::Kind::Branch) {
    if(step.expression) {
     if(step.expression->width()!=1)throw std::invalid_argument("Trajectory branch expressions must be one bit");
-    step.expression->evaluate(0,classicalBits);
+    step.expression->validate(classicalBits);
    }
    if(depth>=32)throw std::length_error("Trajectory branches exceed 32 nesting levels");
    if((step.mask&~allowed) || (step.value&~step.mask))throw std::invalid_argument("Invalid classical branch mask or value");

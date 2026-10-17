@@ -107,12 +107,16 @@ Bits Bits::rotate(Direction direction,const Bits &operand,const Bits &distance,D
  node->left=operand.node_;node->right=distance.node_;node->bound();return Bits(node);
 }
 unsigned Bits::width() const {return node_->width;}
+void Bits::validate(unsigned registerBits) const {
+ if(node_->references&~mask(registerBits))throw std::out_of_range("Classical record or expression exceeds its register");
+}
 std::uint64_t Bits::evaluate(std::uint64_t record,unsigned registerBits) const {
- auto allowed=mask(registerBits);
- if((record|node_->references)&~allowed)throw std::out_of_range("Classical record or expression exceeds its register");
+ validate(registerBits);
+ if(record&~mask(registerBits))throw std::out_of_range("Classical record or expression exceeds its register");
  return node_->evaluate(record);
 }
-std::uint64_t assign(std::uint64_t record,unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression) {
+namespace {
+std::uint64_t assignmentTargets(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression) {
  if(targets.size()!=expression.width())throw std::invalid_argument("Assignment width must match its targets");
  auto allowed=mask(registerBits);std::uint64_t seen=0;
  for(unsigned target:targets) {
@@ -122,6 +126,15 @@ std::uint64_t assign(std::uint64_t record,unsigned registerBits,const std::vecto
   seen|=flag;
  }
  (void)allowed;
+ return seen;
+}
+}
+void validateAssignment(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression) {
+ assignmentTargets(registerBits,targets,expression);
+ expression.validate(registerBits);
+}
+std::uint64_t assign(std::uint64_t record,unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression) {
+ const auto seen=assignmentTargets(registerBits,targets,expression);
  const auto value=expression.evaluate(record,registerBits);
  auto result=record&~seen;
  for(unsigned k=0;k<targets.size();++k)result|=((value>>k)&1)<<targets[k];
