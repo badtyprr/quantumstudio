@@ -55,6 +55,7 @@ libqalculate_la_SOURCES = \
 	QuantumNotation.cc \
 	QuantumStateMetrics.cc \
 	QuantumTeX.cc \
+	QuantumExactRecords.cc \
 	QuantumReadout.cc \
 	QuantumTrajectory.cc \
 	QuantumNumericalState.cc \
@@ -90,3 +91,5 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	@LIBCURL_CFLAGS@  @LIBXML_CFLAGS@  @ICU_CFLAGS@
+
+noinst_HEADERS += QuantumExactRecords.h
