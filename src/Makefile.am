@@ -150,3 +150,8 @@ quantum_trajectory_test_LDADD = ../libqalculate/libqalculate.la
 
 quantum_readout_test_SOURCES = quantum-readout-test.cc
 quantum_readout_test_LDADD = ../libqalculate/libqalculate.la
+
+check_PROGRAMS += quantum-exact-records-test
+TESTS += quantum-exact-records-test
+quantum_exact_records_test_SOURCES = quantum-exact-records-test.cc
+quantum_exact_records_test_LDADD = $(test_LDADD)
