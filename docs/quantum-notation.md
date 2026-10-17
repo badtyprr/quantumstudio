@@ -202,7 +202,7 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 
 - Finish the lesson-by-lesson IBM audit and the qBraid generated-program and learning-content audits. Account-only qBook contents have not been inspected.
 - Resolve implicit register dimensions, general symbolic bit strings and sets, ensembles, general instruments, and automatic POVM/Naimark constructions.
-- Extend programming support beyond the current bounded static OpenQASM importer. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, runtime classical feedback, cloud jobs, or pulse/timing programs.
+- Extend programming support beyond the bounded OpenQASM importer and its runtime bit-register operations. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs. General runtime integer arithmetic, data-dependent loops and dynamic wire indexing remain unsupported.
 - Address scale separately from syntax. The circuit editor supports up to 25 qubits and 512 steps for numerical sampling, with exact state and density-matrix inspection limited to ten qubits; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
@@ -373,8 +373,8 @@ distinct classical targets and a real square matrix with row `m` containing
 matrix index. Entries must be in `[0,1]` and each row must sum to one within
 `1e-12`. Subsequent conditions use the changed records. For example,
 `[0.9,0.1;0.2,0.8]` records a true zero as one with probability 0.1, and a true
-one as zero with probability 0.2. This protocol support does not yet expose
-mid-circuit readout assignment in the GUI. The sampling window offers an
+one as zero with probability 0.2. The classical editor exposes mid-circuit
+readout assignment as **Readout error**. The legacy sampling window offers an
 optional final readout assignment over up to eight selected bits. This runs
 after final measurements and does not alter earlier feedback. JSON exports
 include the captured model, seed and counts. CSV exports include the model as
@@ -414,7 +414,8 @@ nested operations toward the 4096-step limit, and allows at most 32 nested
 branches. The worker exposes these blocks as QSAMPLE2 operation 6. Body counts include
 only their immediate operations; all nested operations in both bodies count
 toward the shared 4096-operation limit. Every field and body is required even
-when it would not execute. The OpenQASM importer does not yet emit these blocks.
+when it would not execute. The classical OpenQASM importer preserves nested
+branches; its expression-capable requests use QSAMPLE3.
 
 The Windows sampling adapter also exposes `RequestClassical` / `RunClassical`
 for callers that need saved classical records. These accept an independent
@@ -424,8 +425,8 @@ They do not append final measurements. Conditions and readout assignments use
 classical bit indices; gate and reset targets use quantum wire indices.
 `ReadClassicalResult` validates the independent classical register size.
 The existing editor sampling API retains its final-quantum-measurement behavior.
-This adapter support does not yet add named classical registers or runtime
-OpenQASM branches to circuit files or the editor.
+The classical editor and circuit files preserve named registers, runtime
+branches and their saved measurement destinations.
 
 The explicit classical-output Windows adapter accepts `Operation.Branch` with
 `Mask`, `Value`, `WhenTrue` and `WhenFalse`. Both bodies are required, including
@@ -448,8 +449,8 @@ branch levels. Loading validates both branch bodies and rejects unknown fields
 and incorrectly typed values before returning a program. Snapshots and sampling
 operations are copies; editing them cannot mutate the validated program.
 Matrix expressions are evaluated and checked by the worker when run.
-This model is not yet connected to GUI save/open or OpenQASM import; existing
-version-1 circuit files keep their current behavior.
+The classical editor uses this model for Save, Open and OpenQASM import;
+existing version-1 circuit files keep their current behavior.
 
 The sampling window also accepts a captured `ClassicalCircuit`. It displays
 register names in the selected output order and samples the saved classical
@@ -467,32 +468,37 @@ to replace/delete it. Replacing a branch preserves its children; changing it to
 another operation requires empty bodies. Invalid edits leave the program and
 undo history unchanged. Undo retains the latest 64 edits. Opening a validated
 file resets history, and opening or closing asks before discarding unsaved work.
-Save replaces an existing file atomically. The editor samples classical records;
-exact classical-record evaluation and runtime OpenQASM import are not yet
-available.
+Save replaces an existing file atomically. Use **Sample** for sampled classical
+records or **Exact probabilities** for
+exact classical-record evaluation with fractions and symbolic parameters.
+**Import OpenQASM** preserves the supported runtime operations described below.
 
-The compiler has an opt-in `preserve_branches` unrolling path for the upcoming
-classical importer. It preserves equality/inequality against constants and
-single-bit conditions as whole branches, including both bodies and saved
-measurement destinations. This avoids the pinned compiler's reversed indexing
+The classical importer uses the compiler's `preserve_branches` unrolling path.
+It preserves whole branches, including both bodies and saved measurement
+destinations, and lowers supported bit expressions without evaluating them
+at import time. This avoids the pinned compiler's reversed indexing
 when expanding register comparisons: OpenQASM uses little-endian register to
 integer conversion ([types specification](https://openqasm.com/versions/3.0/language/types.html)).
-Runtime-register right-hand operands and ordered comparisons currently produce
-explicit diagnostics in this path. The legacy version-1 importer is unchanged;
-the classical editor uses this path for version-2 import.
+Runtime-register comparisons and ordered unsigned comparisons are supported
+in this path. The legacy version-1 importer is unchanged; the classical editor
+uses this path for version-2 import.
 
 Choose **Import OpenQASM** in the classical editor, with either the IBM/Qiskit
 or published OpenQASM 3 U convention. Import preserves declared bit-register
-names, measurement destinations, resets and nested equality/inequality branches.
+names, measurement destinations, resets and nested bit-expression branches.
 Outputs default to descending global bit indices, with register names displayed
 in the sampling window; this order is editable. A discarded measurement is
 represented as complete phase damping, preserving its quantum effect without
 inventing a saved output. Import is undoable and validates before changing the
 current program. The compiler CLI exposes the same conversion as `--classical`.
 Current limits are 25 qubits, 64 classical bits, 512 operations and 32 branch
-levels. General runtime assignments, nonzero bit initializers, ordered/runtime
-register comparisons and other classical arithmetic remain unsupported and are
-rejected explicitly.
+levels. Supported runtime bit operations include assignments (including
+overlapping slices), initializers, bitwise operations, shifts, unsigned
+comparisons, `popcount`, `rotl` and `rotr`. Assignments evaluate the whole
+right-hand side before writing targets. Programs with no qubits can use these
+classical operations and both evaluation modes. General runtime integer
+arithmetic, data-dependent loops, dynamic wire indexing and measurement-driven
+gate angles remain unsupported and are rejected explicitly.
 
 
 ### Native integer value groundwork
