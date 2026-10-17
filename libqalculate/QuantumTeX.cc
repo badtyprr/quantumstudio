@@ -16,6 +16,9 @@ class TeXReader {
  size_t pos=0;
  unsigned depth=0;
  bool setBound=false;
+ bool stateLabel=false;
+ std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
+ std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
  unsigned setExpressions=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
@@ -251,22 +254,22 @@ class TeXReader {
   if(expectation) {
    auto observable=group();space();
    if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("An expectation value requires an explicit state label: use expval{A}{state}"));
-   auto state=group();return "(<"+state+"|("+observable+")|"+state+">)";
+   auto state=stateGroup();return "(<"+state+"|("+observable+")|"+state+">)";
   }
   if(matrixElement) {
-   auto left=group(),observable=group(),right=group();
+   auto left=stateGroup(),observable=group(),right=stateGroup();
    return "(<"+left+"|("+observable+")|"+right+">)";
   }
-  if(name=="ket" || name=="Ket") return "|"+argument()+">";
-  if(name=="bra" || name=="Bra") return "<"+argument()+"|";
+  if(name=="ket" || name=="Ket") return "|"+stateArgument()+">";
+  if(name=="bra" || name=="Bra") return "<"+stateArgument()+"|";
   if(name=="braket" || name=="Braket" || name=="innerproduct" || name=="ip") {
-   auto a=group(); space();
-   if(pos<input.size() && input[pos]=='{') return "<"+a+"|"+group()+">";
+   auto a=stateGroup(); space();
+   if(pos<input.size() && input[pos]=='{') return "<"+a+"|"+stateGroup()+">";
    if(a.find('|')==std::string::npos)return "<"+a+"|"+a+">";
    return "<"+a+">";
   }
   if(name=="ketbra" || name=="outerproduct" || name=="dyad" || name=="op") {
-   auto a=group(); space(); auto b=pos<input.size() && input[pos]=='{' ? group() : a;
+   auto a=stateGroup(); space(); auto b=pos<input.size() && input[pos]=='{' ? stateGroup() : a;
    return "(|"+a+"><"+b+"|)";
   }
   if(name=="norm") {auto body=group();return "norm("+body+closeNorm();}
@@ -359,6 +362,12 @@ class TeXReader {
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
    else if(input[pos]=='_') {
+    size_t stateDelimiter=result.find_last_of("|<>");
+    bool stateSubscript=stateLabel;
+    if(!stateSubscript && stateDelimiter!=std::string::npos && result[stateDelimiter]!='>') {
+     std::string prefix=trim(result.substr(stateDelimiter+1));stateSubscript=!prefix.empty();
+     for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')stateSubscript=false;
+    }
     while(!result.empty() && std::isspace((unsigned char)result.back()))result.pop_back();
     bool spin=!result.empty() && result.back()=='J' && (result.size()==1 ||
      ((unsigned char)result[result.size()-2]<128 && !std::isalnum((unsigned char)result[result.size()-2]) && result[result.size()-2]!='_'));
@@ -374,10 +383,11 @@ class TeXReader {
      while(pos<input.size() && std::isdigit((unsigned char)input[pos]))index+=input[pos++];
     }
     else if(pos<input.size() && std::isalnum((unsigned char)input[pos])) index+=input[pos++];
-    else if(!result.empty() && (result.back()=='>' || result.back()=='|') && pos<input.size() &&
+    else if((stateSubscript || (!result.empty() && (result.back()=='>' || result.back()=='|'))) && pos<input.size() &&
             (input[pos]=='\\' || (unsigned char)input[pos]>=128)) {grouped=true;index=argument();}
     else if((spin || bell) && pos<input.size() && (input[pos]=='+' || input[pos]=='-')) index+=input[pos++];
     else throw std::runtime_error(error("Expected a subscript"));
+    if(stateSubscript && grouped && trim(index).empty())throw std::runtime_error(error("A state subscript cannot be empty"));
     bool trace=result.size()>=2 && (result.substr(result.size()-2)=="Tr" || result.substr(result.size()-2)=="tr") &&
      (result.size()==2 || !std::isalnum((unsigned char)result[result.size()-3]));
     if(fourier) {result.resize(result.size()-3);result+="qfourier("+index+")";}
@@ -394,7 +404,12 @@ class TeXReader {
      else if(index=="-")result+="minus";
      else result+="_"+index;
     } else if(grouped && !result.empty() && (result.back()=='>' || result.back()=='|'))result+="_("+index+")";
-    else result+="_"+index;
+    else {
+     bool compound=false;for(unsigned char c:index)if(c<128 && !std::isalnum(c) && c!='_' && !std::isspace(c))compound=true;
+     // Preserve the scope of an expression used as a state-family parameter.
+     // Atomic labels and Bell signs retain their existing spelling.
+     result+=stateSubscript && grouped && compound && index!="+" && index!="-" ? "_{"+index+"}" : "_"+index;
+    }
    }
    else if(input[pos]=='{') {
     auto value=group();

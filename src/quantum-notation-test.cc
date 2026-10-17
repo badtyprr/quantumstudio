@@ -22,6 +22,8 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("|psi_{pi/8}>","qstatecall(\"psi\",(pi/(8)))");
+ equal("|psi_(2)>","qnamedket(psi_2)");
  equal("|psi(pi/8)>","qstatecall(\"psi\",(pi/(8)))");
  equal("<psi(0)|psi(1)>","qmul(qdag(qstatecall(\"psi\",0)),qstatecall(\"psi\",1))");
  rejects("|psi()>");rejects("|psi(1,2)>");

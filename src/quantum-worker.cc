@@ -104,7 +104,12 @@ static void defineStates(Calculator &calculator,std::string &input) {
    bool localParameter=(parameter.isVariable() && parameter.variable()==parameterBinding) || (parameter.isSymbolic() && parameter.symbol()==parameterName);
    if(messages(calculator) || !localParameter)throw std::runtime_error("A family parameter must be an unambiguous scalar variable.");
   }
-  MathStructure label=calculator.calculate("quantum: |"+name+">",exact);
+  // Validate a declaration's spelling before evaluation can resolve it through
+  // an earlier state family (for example a fixed psi_t after psi(alpha)).
+  MathStructure label=familyName.empty() ? calculator.parse("quantum: |"+name+">",exact.parse_options) : calculator.calculate("quantum: |"+name+">",exact);
+  if(familyName.empty() && label.isFunction() && label.function()->referenceName()=="qnamedket" && label.size()==1) {
+   MathStructure text=label[0];label.set(calculator.getFunction("qketstate"),&text,NULL);
+  }
   if(messages(calculator) || !label.isFunction() || (familyName.empty() ? label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name : label.function()->referenceName()!="qstatecall" || label.size()!=2 || label[0].symbol()!=familyName))throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
   MathStructure state=calculator.calculate("quantum: "+expression,exact);
   if(messages(calculator) || !state.isMatrix() || state.columns()!=1 || state.rows()==0 || state.rows()>1024)throw std::runtime_error("State "+name+" must resolve to a column vector of at most 1024 rows. Define referenced states earlier; unknown or cyclic references are not allowed.");
