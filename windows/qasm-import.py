@@ -495,7 +495,7 @@ def classical_expression(value, registers, expected_width=None):
             left,lw=build(node.lhs,size,depth+1)
             right,rw=build(node.rhs,None if shift else lw,depth+1)
             if (not shift and lw!=rw) or (logical and lw!=1):raise ValueError('Classical operands have incompatible widths.')
-            return {'Kind':'Binary','Operator':operations[op],'Left':left,'Right':right},1 if op in comparisons else lw
+            return {'Kind':'Logical' if logical else 'Binary','Operator':operations[op],'Left':left,'Right':right},1 if op in comparisons else lw
         raise ValueError('Unsupported classical bit expression: '+type(node).__name__)
     result,size=build(value,expected_width)
     if expected_width is not None and size!=expected_width:raise ValueError('Classical assignment or condition width mismatch.')
@@ -550,11 +550,16 @@ def classical_circuit(statements, published_u):
 
     count = 0
     version = 2
+    def expression_version(node):
+        if not isinstance(node,dict):return 3
+        return max(4 if node.get('Kind')=='Logical' else 3,
+                   expression_version(node.get('Left')),expression_version(node.get('Right')))
     def lower(body, depth=0):
         nonlocal count,version
         result = []
         def append(step):
-            nonlocal count
+            nonlocal count,version
+            if 'ClassicalValue' in step:version=max(version,expression_version(step['ClassicalValue']))
             count += 1
             if count > 512:
                 raise ValueError('Classical circuits support at most 512 total operations.')
@@ -570,7 +575,6 @@ def classical_circuit(statements, published_u):
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
                 append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets))})
-                version=3
             elif isinstance(statement, ast.BranchingStatement):
                 if depth >= 32:
                     raise ValueError('Classical circuits support at most 32 nested branches.')
@@ -581,7 +585,6 @@ def classical_circuit(statements, published_u):
                 if not simple:
                     append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
-                    version=3
                     continue
                 negate = False
                 if isinstance(condition, ast.BinaryExpression) and condition.op.name in ('==', '!=') and isinstance(condition.rhs, ast.IntegerLiteral):
@@ -596,7 +599,6 @@ def classical_circuit(statements, published_u):
                 except ValueError:
                     append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
-                    version=3
                     continue
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
                     raise ValueError('Whole-register truth conditions require an explicit comparison.')

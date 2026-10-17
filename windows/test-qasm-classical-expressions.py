@@ -29,6 +29,9 @@ cases=[
  ('parity','qubit[3] q; bit[3] c; h q[0]; h q[1]; c[0]=measure q[0]; c[1]=measure q[1]; if(c[0]^c[1]) x q[2]; c[2]=measure q[2];',dict.fromkeys(['000','011','101','110'],'1/4')),
  ('branch-once','qubit q; bit c=1; if(c){c=0; x q;} c=measure q;',{'1':'1'}),
  ('comparison','qubit q; bit[2] c="10"; bit d; if(c>1 && c!=3) {d=1;}',{'110':'1'}),
+ ('logical-assignment','bit a=1; bit b=0; bit r; r=a || b;',{'101':'1'}),
+ ('logical-nested','bit a=1; bit b=0; if(a){if(a || b){b=1;}} a=0;',{'10':'1'}),
+ ('logical-and-or','bit a=1; bit b=0; bit r; if((a==1 || b==1) && b==0){r=1;}',{'101':'1'}),
  ('registers','qubit q; bit[2] c="10"; bit[2] d="10"; if(c==d){c=0;}',{'1000':'1'}),
 ]
 checks=0
@@ -61,6 +64,7 @@ def expression(e):
  k=e['Kind']
  if k=='Constant':return n(0,e['Width'],e['Value'])
  if k=='Read':return n(1,len(e['Bits']),*e['Bits'])
+ if k=='Logical':return n(7,0 if e['Operator']=='And' else 1)+expression(e['Left'])+expression(e['Right'])
  if k=='Complement':return n(2)+expression(e['Left'])
  if k=='PopulationCount':return n(4)+expression(e['Left'])
  if k=='Rotate':return n(5,0 if e['RotationDirection']=='Left' else 1,0 if e['DistanceInterpretation']=='Unsigned' else 1)+expression(e['Left'])+expression(e['Right'])
@@ -79,7 +83,7 @@ def steps(body):
  return out
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
- assert circuit['Version']==3,(name,circuit)
+ assert circuit['Version']==(4 if name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('classical-only-'):assert circuit['Qubits']==0,(name,circuit)
  # The overlap case must retain a simultaneous read of both old source bits.
  if name=='overlap':assert circuit['Steps'][1]=={'Kind':'Assign','Wires':[1,2],'ClassicalValue':{'Kind':'Read','Bits':[0,1]}}
@@ -90,7 +94,8 @@ for name,body,expected in cases:
  if a.worker:
   worker=a.worker.resolve();bits=sum(r['Size'] for r in circuit['Registers']);output=circuit['OutputBits']
   for exact in (True,False):
-   payload=(b'QEXACT2\n' if exact else b'QSAMPLE3\n')+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits,len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
+   protocol=(b'QEXACT3\n' if exact else b'QSAMPLE4\n') if circuit['Version']==4 else (b'QEXACT2\n' if exact else b'QSAMPLE3\n')
+   payload=protocol+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits,len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
    run=subprocess.run([str(worker),'--exact-circuit' if exact else '--sample'],input=payload,capture_output=True,timeout=30,env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/'data')))
    assert run.returncode==0 and not run.stderr,(name,run.stderr);value=json.loads(run.stdout)
    if exact:assert {k:Fraction(v) for k,v in value['probabilities'].items()}=={k:Fraction(v) for k,v in expected.items()},(name,value)
