@@ -60,6 +60,10 @@ Rotation preserves the value width and wraps the distance modulo that width.
 Names are case-sensitive; numeric enum values and irrelevant fields are rejected.
 Older readers reject these additional kinds instead of changing their meaning.
 
+Classical imports may contain no qubits. Such programs retain `Qubits: 0` and
+execute assignments and conditions against their classical registers in both
+exact and sampled modes; no unused quantum register is added.
+
 The OpenQASM importer preserves `popcount`, `rotl`, and `rotr` in assignments
 and branch conditions, including nested calls. Rotation distances may be signed
 integer constants, population counts, or explicit width-matched `int[n]` and

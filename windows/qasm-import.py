@@ -520,8 +520,8 @@ def classical_circuit(statements, published_u):
             classical[name] = (nc, size)
             named.append({'Name': name, 'Size': size})
             nc += size
-    if not 1 <= nq <= 25 or not 0 <= nc <= 64:
-        raise ValueError('Classical circuits support 1–25 qubits and up to 64 classical bits.')
+    if not 0 <= nq <= 25 or not 0 <= nc <= 64:
+        raise ValueError('Classical circuits support 0–25 qubits and up to 64 classical bits.')
 
     def reference(value, registers, whole=False):
         if isinstance(value, ast.Identifier):
