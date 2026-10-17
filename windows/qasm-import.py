@@ -32,7 +32,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_branch = QasmVisitor._visit_branching_statement
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
-    runtime_integer_names={node.identifier.name for node in module.original_program.statements
+    runtime_integer_names={node.identifier.name for node in nodes(module.original_program)
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType))}
     def integers(visitor):
         return getattr(visitor, '_quantum_integer_names', set())
@@ -105,6 +105,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             raise ValueError('Classical bit expressions require integer or Boolean values.')
         return ast.IntegerLiteral(int(result))
     def assignment(visitor, statement):
+        if getattr(statement,"_quantum_clear",False):
+            return [] if visitor._check_only else [copy.deepcopy(statement)]
         name = statement.lvalue.name
         name = name.name if isinstance(name,ast.Identifier) else name
         integer_target = name in integers(visitor)
@@ -319,6 +321,85 @@ def nodes(value):
             yield from nodes(item)
 
 
+def resolve_integer_scopes(program):
+    """Give locals unique slots and preserve explicit scope-exit clears through unrolling.
+
+    The compiler may flatten constant blocks and repeat loop bodies. Unique names
+    prevent capture; clear markers retain lifetime boundaries after that flattening.
+    Markers are private AST attributes, never syntax accepted from input text.
+    """
+    if not any(isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType)) for node in nodes(program)):return set()
+    used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
+    scoped=set();serial=0
+    def fresh(name):
+        nonlocal serial
+        base=name
+        while len(base.encode('utf-16-le'))//2>44:base=base[:-1]
+        while True:
+            serial+=1;candidate=base+'_scope_'+str(serial)
+            if candidate not in used:used.add(candidate);return candidate
+    def expression(value,env):
+        if isinstance(value,ast.Identifier):value.name=env.get(value.name,value.name)
+        elif isinstance(value,list):
+            for item in value:expression(item,env)
+        elif is_dataclass(value):
+            for field in fields(value):
+                if field.name not in ('span','annotations') and not (isinstance(value,ast.FunctionCall) and field.name=='name'):
+                    expression(getattr(value,field.name),env)
+    def clear(name):
+        result=ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=ast.IntegerLiteral(0))
+        result._quantum_clear=True
+        return result
+    def block(body,parent,depth=0,declared=None):
+        if depth>32:raise ValueError('Classical scopes exceed 32 levels.')
+        env=dict(parent);declared=set() if declared is None else set(declared);local=[];result=[]
+        for statement in body:
+            if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
+                name=statement.identifier.name
+                if name in declared:raise ValueError('Duplicate declaration in one scope: '+name)
+                declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType))
+                if depth and name in env and not integer:raise ValueError('Non-integer shadowing is not yet supported by the importer.')
+                expression(statement.type,env)
+                renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
+                if integer:
+                    if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                    statement._quantum_scoped=depth>0
+                    env[name]=renamed
+                    if depth:scoped.add(renamed);local.append(renamed)
+                expression(statement.init_expression,env)
+                statement.identifier.name=renamed;env[name]=renamed
+                result.append(statement)
+            elif isinstance(statement,ast.BranchingStatement):
+                expression(statement.condition,env)
+                block(statement.if_block,env,depth+1);block(statement.else_block,env,depth+1)
+                result.append(statement)
+            elif isinstance(statement,ast.ForInLoop):
+                expression(statement.type,env);expression(statement.set_declaration,env)
+                name=statement.identifier.name;renamed=fresh(name) if name in env else name
+                statement.identifier.name=renamed;inner=dict(env);inner[name]=renamed
+                block(statement.block,inner,depth+1,{name});result.append(statement)
+            elif isinstance(statement,ast.CompoundStatement):
+                block(statement.statements,env,depth+1);result.extend(statement.statements)
+            elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
+                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(statement)):
+                    raise ValueError('Integer declarations in subroutines require activation storage not yet supported.')
+                result.append(statement)
+            else:
+                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(statement)):
+                    raise ValueError('Integer declarations in this control structure are not yet supported.')
+                if isinstance(statement,ast.QuantumGate):
+                    expression(statement.arguments,env);expression(statement.modifiers,env);expression(statement.qubits,env)
+                elif isinstance(statement,ast.QubitDeclaration):
+                    expression(statement.size,env)
+                else:expression(statement,env)
+                result.append(statement)
+        result.extend(clear(name) for name in reversed(local));body[:]=result
+    block(program.statements,{})
+    if scoped and any(isinstance(item,(ast.BreakStatement,ast.ContinueStatement)) for item in nodes(program)):
+        raise ValueError('Break and continue with scoped integers require lifetime-aware control flow not yet supported.')
+    return scoped
+
+
 def number(value):
     if not isinstance(value, (ast.IntegerLiteral, ast.FloatLiteral)):
         raise ValueError('An unresolved gate parameter remains after compilation.')
@@ -331,6 +412,7 @@ def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(source)
+    if classical:resolve_integer_scopes(module.original_program)
     if classical:
         runtime_names={node.identifier.name for node in nodes(module.original_program)
                    if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,ast.IntType,ast.UintType))}
@@ -371,8 +453,6 @@ def convert(source, published_u=False, classical=False):
         if classical and isinstance(node, ast.ClassicalDeclaration):
             if not isinstance(node.type, (ast.BitType,ast.IntType,ast.UintType)):
                 raise ValueError('Classical circuit import supports bit registers and integer variables; other classical declarations are not yet supported.')
-            if isinstance(node.type,(ast.IntType,ast.UintType)) and not any(node is top for top in module.original_program.statements):
-                raise ValueError('Scoped integer declarations require lexical storage not yet supported by the importer.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise ValueError('Only stdgates.inc and qelib1.inc includes are supported.')
         if getattr(node, 'annotations', None):
@@ -597,7 +677,7 @@ def classical_circuit(statements, published_u):
     quantum, classical, named = {}, {}, []
     variables, declarations = {}, []
     nq = nc = 0
-    for statement in statements:
+    for statement in nodes(statements):
         if isinstance(statement, ast.QubitDeclaration):
             size = 1 if statement.size is None else statement.size.value
             quantum[statement.qubit.name] = (nq, size)
@@ -606,8 +686,11 @@ def classical_circuit(statements, published_u):
             if isinstance(statement.type,(ast.IntType,ast.UintType)):
                 name=statement.identifier.name;size=statement.type.size.value
                 sign='Signed' if isinstance(statement.type,ast.IntType) else 'Unsigned'
-                if len(name)>64:raise ValueError('Integer variable names must be at most 64 characters.')
-                if name in variables or len(variables)>=4096:raise ValueError('Duplicate or excessive integer declarations.')
+                if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                if name in variables:
+                    if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
+                    continue
+                if len(variables)>=4096:raise ValueError('Excessive integer declarations.')
                 variables[name]=(len(variables),sign,size)
                 declarations.append({'Name':name,'Signedness':sign,'Width':size})
                 continue
@@ -667,11 +750,17 @@ def classical_circuit(statements, published_u):
         for statement in body:
             if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
                 continue
+            if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType)):
+                if getattr(statement,'_quantum_scoped',False):append({'Kind':'ClearInteger','VariableSlot':variables[statement.identifier.name][0]})
+                continue
             if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
                 if depth:
                     raise ValueError('Register declarations inside runtime branches are not supported.')
                 continue
             if isinstance(statement, ast.ClassicalAssignment):
+                if getattr(statement,'_quantum_clear',False):
+                    append({'Kind':'ClearInteger','VariableSlot':variables[statement.lvalue.name][0]})
+                    continue
                 if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in variables:
                     append({'Kind':'StoreInteger','VariableSlot':variables[statement.lvalue.name][0],
                             'IntegerValue':classical_expression(statement.rvalue,classical,variables=variables,integer_only=True)})
