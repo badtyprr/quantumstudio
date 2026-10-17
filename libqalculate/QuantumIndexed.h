@@ -4,6 +4,8 @@
 class Calculator;
 class MathStructure;
 #include <string>
+#include <vector>
 void registerQuantumIndexed(Calculator &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const MathStructure &);
+void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const std::vector<MathStructure> &);
 #endif

@@ -26,7 +26,7 @@ int main(){try {
  equal("|psi_(2)>","qnamedket(psi_2)");
  equal("|psi(pi/8)>","qstatecall(\"psi\",(pi/(8)))");
  equal("<psi(0)|psi(1)>","qmul(qdag(qstatecall(\"psi\",0)),qstatecall(\"psi\",1))");
- rejects("|psi()>");rejects("|psi(1,2)>");
+ rejects("|psi()>");equal("|psi(1,2)>","qstatecalls(\"psi\",vector(1,2))");
  const std::string zero=basis(0,2), one=basis(1,2);
  for(const std::string sign:{"+","-"}) {
   equal("0.5*|0><0|"+sign+"0.5*|1><1|",(sign=="+" ? "qadd(" : "qsub(")+std::string("qadjacent(qmul(0.5,")+zero+"),qdag("+zero+")),qadjacent(qmul(0.5,"+one+"),qdag("+one+")))");

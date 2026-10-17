@@ -229,14 +229,17 @@ Multi-character ket and bra labels are preserved as single names, including `|Be
 
 ### Worker state definitions
 
-Single-parameter state families use a declaration such as `psi(alpha)` with the
+State families use a declaration such as `psi(alpha)` with the
 expression `cos(alpha)|0>+sin(alpha)|1>`. Enter it in **States**, then evaluate
 `|psi(pi/8)>`, `<psi(0)|psi(pi/2)>`, or `|psi(t)>`. The parameter is local to the
 definition; Greek parameters such as `α` and subscripted identifiers such as
 `theta_1` are supported. A symbolic argument retains symbolic amplitudes. Families share the
 existing definition order, finite column-vector limits and session storage.
 An undeclared family stays symbolic, without an assumed normalization or
-orthogonality. Each family takes one scalar argument. Subscript calls include
+orthogonality. Families take 1 to 16 distinct scalar parameters. For example, declare
+`psi(theta,phi)` as `cos(theta/2)|0>+exp(i*phi)*sin(theta/2)|1>` and evaluate
+`|psi(pi/2,pi/2)>` for the positive Y state. Arguments substitute simultaneously,
+so `pair(y,x)` does not overwrite one argument with the other. Subscript calls include
 `|psi_{pi/8}>` and `|psi_t>` and work inside Dirac macros such as
 `\ket{\psi_{\pi/8}}` when the corresponding family is declared. Compound
 subscripts require braces. Simple subscript labels retain their existing

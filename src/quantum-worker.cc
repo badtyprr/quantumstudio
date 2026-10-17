@@ -81,28 +81,37 @@ static void defineStates(Calculator &calculator,std::string &input) {
   std::string expression=input.substr(position,expressionSize);position+=expressionSize;
   if(expression.find('\0')!=std::string::npos)throw std::runtime_error("State definitions cannot contain NUL.");
   if(name.find_first_of("\r\n\t")!=std::string::npos || name.find('\0')!=std::string::npos || name.front()==' ' || name.back()==' ' || !names.insert(name).second || calculator.getActiveVariable(name))throw std::runtime_error("Duplicate, reserved, or invalid state name: "+name);
-  std::string familyName,parameterName;MathStructure parameter;Variable *parameterBinding=NULL,*previousParameter=NULL;Unit *previousParameterUnit=NULL;
+  std::string familyName;std::vector<MathStructure> parameters;
+  std::vector<Variable*> bindings,previousVariables;std::vector<Unit*> previousUnits;
   size_t open=name.find('(');
   if(open!=std::string::npos) {
-   if(open==0 || name.back()!=')')throw std::runtime_error("Use name(parameter) for a state family.");
-   familyName=name.substr(0,open);parameterName=name.substr(open+1,name.size()-open-2);
-   for(const std::string &part:{familyName,parameterName}) {
+   if(open==0 || name.back()!=')')throw std::runtime_error("Use name(parameters) for a state family.");
+   familyName=name.substr(0,open);std::string list=name.substr(open+1,name.size()-open-2);
+   std::vector<std::string> parameterNames;std::set<std::string> unique;
+   size_t start=0;
+   do {
+    size_t comma=list.find(',',start);std::string part=list.substr(start,comma==std::string::npos ? comma : comma-start);
+    size_t first=part.find_first_not_of(' '),last=part.find_last_not_of(' ');part=first==std::string::npos ? "" : part.substr(first,last-first+1);
+    if(!unique.insert(part).second)throw std::runtime_error("State-family parameters must be distinct.");
+    parameterNames.push_back(part);if(parameterNames.size()>16)throw std::runtime_error("State families support at most 16 parameters.");
+    if(comma==std::string::npos)break;start=comma+1;
+   }while(true);
+   std::vector<std::string> identifiers=parameterNames;identifiers.push_back(familyName);
+   for(const std::string &part:identifiers) {
     if(part.empty() || std::isdigit((unsigned char)part.front()))throw std::runtime_error("Family names and parameters must be identifiers.");
     for(unsigned char c:part)if(c<128 && !std::isalnum(c) && c!='_')throw std::runtime_error("Family names and parameters must be identifiers.");
    }
    if(!names.insert("family:"+familyName).second)throw std::runtime_error("Duplicate state family.");
-   previousParameter=calculator.getActiveVariable(parameterName);
-   previousParameterUnit=calculator.getActiveUnit(parameterName);
-   // Forced registration destroys conflicting local variables. Suspend the
-   // previous bindings instead, and restore them after parsing this body.
-   if(previousParameter)previousParameter->setActive(false);
-   if(previousParameterUnit)previousParameterUnit->setActive(false);
-   parameterBinding=new UnknownVariable("",parameterName);calculator.addVariable(parameterBinding,false,false);
-   parameter=calculator.calculate("quantum: "+parameterName,exact);
-   // Quantum Greek letters and subscripted identifiers lower to atomic symbols.
-   // Accept that exact symbol as well as the temporary variable binding.
-   bool localParameter=(parameter.isVariable() && parameter.variable()==parameterBinding) || (parameter.isSymbolic() && parameter.symbol()==parameterName);
-   if(messages(calculator) || !localParameter)throw std::runtime_error("A family parameter must be an unambiguous scalar variable.");
+   for(const auto &parameterName:parameterNames) {
+    Variable *previous=calculator.getActiveVariable(parameterName);Unit *unit=calculator.getActiveUnit(parameterName);
+    if(previous)previous->setActive(false);if(unit)unit->setActive(false);
+    previousVariables.push_back(previous);previousUnits.push_back(unit);
+    Variable *binding=new UnknownVariable("",parameterName);calculator.addVariable(binding,false,false);bindings.push_back(binding);
+    MathStructure parameter=calculator.calculate("quantum: "+parameterName,exact);
+    bool local=(parameter.isVariable() && parameter.variable()==binding) || (parameter.isSymbolic() && parameter.symbol()==parameterName);
+    if(messages(calculator) || !local)throw std::runtime_error("A family parameter must be an unambiguous scalar variable.");
+    parameters.push_back(parameter);
+   }
   }
   // Validate a declaration's spelling before evaluation can resolve it through
   // an earlier state family (for example a fixed psi_t after psi(alpha)).
@@ -110,7 +119,7 @@ static void defineStates(Calculator &calculator,std::string &input) {
   if(familyName.empty() && label.isFunction() && label.function()->referenceName()=="qnamedket" && label.size()==1) {
    MathStructure text=label[0];label.set(calculator.getFunction("qketstate"),&text,NULL);
   }
-  if(messages(calculator) || !label.isFunction() || (familyName.empty() ? label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name : label.function()->referenceName()!="qstatecall" || label.size()!=2 || label[0].symbol()!=familyName))throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
+  if(messages(calculator) || !label.isFunction() || (familyName.empty() ? label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name : label.function()->referenceName()!=(parameters.size()==1 ? "qstatecall" : "qstatecalls") || label.size()!=2 || label[0].symbol()!=familyName))throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
   MathStructure state=calculator.calculate("quantum: "+expression,exact);
   if(messages(calculator) || !state.isMatrix() || state.columns()!=1 || state.rows()==0 || state.rows()>1024)throw std::runtime_error("State "+name+" must resolve to a column vector of at most 1024 rows. Define referenced states earlier; unknown or cyclic references are not allowed.");
   for(size_t r=1;r<=state.rows();++r) {
@@ -119,9 +128,11 @@ static void defineStates(Calculator &calculator,std::string &input) {
   }
   if(familyName.empty())calculator.addVariable(new KnownVariable("",name,state));
   else {
-   defineQuantumStateFamily(calculator,familyName,state,parameter);
-   parameterBinding->setActive(false);if(previousParameter)previousParameter->setActive(true);
-   if(previousParameterUnit)previousParameterUnit->setActive(true);
+   defineQuantumStateFamily(calculator,familyName,state,parameters);
+   for(size_t k=bindings.size();k>0;--k) {
+    bindings[k-1]->setActive(false);if(previousVariables[k-1])previousVariables[k-1]->setActive(true);
+    if(previousUnits[k-1])previousUnits[k-1]->setActive(true);
+   }
   }
  }
  input.erase(0,position);
