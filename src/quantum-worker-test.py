@@ -18,8 +18,17 @@ def run(expression, *flags, success=True):
 def data(expression, *flags):
     result = run(expression, "--json", *flags)
     value = json.loads(result.stdout.decode("utf-8"))
-    assert set(value) == {"text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
+    assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
+
+# Copying preserves matrix values and dimensions, including beyond the UI cell cap.
+for flags in [(), ("--approx",)]:
+    for expression in ["I", "[1+i,2;3,4-i]", "[1,2,3;4,5,6]", "[1,2;3,4;5,6]",
+                       "matrix(1,3,[1,2,3])", "basis(0,1)", "0*basis(0,1)", "i*basis(0,1)", "basis(0,256)"]:
+        first = data("quantum: " + expression, *flags)
+        assert first["copy_text"]
+        assert data("quantum: " + first["copy_text"], *flags) == first
+        assert data(first["copy_text"], *flags) == first
 
 # Printed symbolic results must be usable as quantum input again.
 for flags in [(), ("--approx",)]:
