@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 sealed class ClassicalProgramWindow : Window {
+ sealed class OperationChoice {public string Key {get;set;} public string Label {get;set;} public override string ToString() {return Label;}}
  sealed class Selection {public int[] Route;public int Index;}
  readonly ClassicalProgramHistory history;
  readonly TreeView tree=new TreeView();
@@ -42,15 +43,21 @@ sealed class ClassicalProgramWindow : Window {
   var bottom=new StackPanel();DockPanel.SetDock(bottom,Dock.Bottom);root.Children.Add(bottom);
   bottom.Children.Add(status);
   var editor=new WrapPanel();bottom.Children.Add(editor);
-  // Keep the menu tied to the fields this editor can currently construct.
-  foreach(string item in new[]{"Gate","Measure","Reset","Conditional","Channel","Readout","Branch"})kind.Items.Add(item);kind.SelectedItem="Gate";
-  Field(editor,"Operation",kind,125);Field(editor,"Matrix / channel",expression,180);Field(editor,"Target wires / bits",wires,120);Field(editor,"Save to classical bit",destination,120);
+  kind.DisplayMemberPath="Label";kind.SelectedValuePath="Key";
+  string[] keys={"Gate","Measure","Reset","Conditional","Channel","Readout","Branch","Assign","ExpressionBranch"};
+  string[] labels={"Gate","Measure","Reset","Conditional gate","Noise channel","Readout error","If mask","Assign bits","If expression"};
+  for(int i=0;i<keys.Length;i++)kind.Items.Add(new OperationChoice {Key=keys[i],Label=labels[i]});kind.SelectedValue="Gate";
+  Field(editor,"Operation",kind,150);Field(editor,"Expression / matrix / channel",expression,240);Field(editor,"Target wires / bits",wires,120);Field(editor,"Save to classical bit",destination,120);
   Field(editor,"Condition mask · decimal",mask,170);Field(editor,"Condition value · decimal",value,170);
   kind.SelectionChanged+=delegate {SetFields();};SetFields();
   var edits=new WrapPanel();bottom.Children.Add(edits);Button(edits,"Add to selected body",()=>ChangeStep(false));Button(edits,"Replace selected",()=>ChangeStep(true));Button(edits,"Delete selected",Delete);
-  bottom.Children.Add(new TextBlock {Text="Select Program, Then or Else to append operations. Select an operation to replace or delete it. Exact probabilities preserves fractions and symbolic parameters; Sample estimates outcomes over repeated shots.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,8,0,0)});
+  bottom.Children.Add(new TextBlock {Text="For bit expressions, use c[0] ^ c[1], ~c or quoted binary digits. Assignment targets are classical bit indices. Select Program, Then or Else to append operations. Select an operation to replace or delete it. Exact probabilities preserves fractions and symbolic parameters; Sample estimates outcomes over repeated shots.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,8,0,0)});
+  tree.Resources[SystemColors.HighlightBrushKey]=WorkspaceTheme.Selection;
+  tree.Resources[SystemColors.HighlightTextBrushKey]=WorkspaceTheme.Text;
+  tree.Resources[SystemColors.InactiveSelectionHighlightBrushKey]=WorkspaceTheme.Selection;
+  tree.Resources[SystemColors.InactiveSelectionHighlightTextBrushKey]=WorkspaceTheme.Text;
   tree.Background=WorkspaceTheme.Surface;tree.Foreground=WorkspaceTheme.Text;tree.Margin=new Thickness(0,8,0,12);root.Children.Add(tree);
-  tree.SelectedItemChanged+=delegate {var node=tree.SelectedItem as TreeViewItem;var selected=node==null ? null : node.Tag as Selection;if(selected==null || selected.Index<0)return;var step=Body(history.Current.Snapshot(),selected.Route)[selected.Index];kind.SelectedItem=step.Kind;expression.Text=step.Expression ?? "";wires.Text=String.Join(",",step.Wires ?? new int[0]);destination.Text=step.ClassicalBit.HasValue ? step.ClassicalBit.Value.ToString(CultureInfo.InvariantCulture) : "";mask.Text=step.Mask ?? "1";value.Text=step.Value ?? "1";};
+  tree.SelectedItemChanged+=delegate {var node=tree.SelectedItem as TreeViewItem;var selected=node==null ? null : node.Tag as Selection;if(selected==null || selected.Index<0)return;var step=Body(history.Current.Snapshot(),selected.Route)[selected.Index];kind.SelectedValue=step.Kind;expression.Text=step.ClassicalValue==null ? step.Expression ?? "" : ClassicalExpressionText.Format(step.ClassicalValue);wires.Text=String.Join(",",step.Wires ?? new int[0]);destination.Text=step.ClassicalBit.HasValue ? step.ClassicalBit.Value.ToString(CultureInfo.InvariantCulture) : "";mask.Text=step.Mask ?? "1";value.Text=step.Value ?? "1";};
   Refresh();
  }
  static int Int(string text) {int result;if(!Int32.TryParse(text.Trim(),NumberStyles.None,CultureInfo.InvariantCulture,out result))throw new ArgumentException("Enter nonnegative integer indices and sizes.");return result;}
@@ -59,7 +66,8 @@ sealed class ClassicalProgramWindow : Window {
   if(String.IsNullOrWhiteSpace(text))return new ClassicalCircuit.Register[0];
   return text.Split(',').Select(entry=>{string[] parts=entry.Split(':');if(parts.Length!=2)throw new ArgumentException("Write each register as name:size, such as c:2, flag:1.");return new ClassicalCircuit.Register {Name=parts[0].Trim(),Size=Int(parts[1])};}).ToArray();
  }
- void SetFields() {string op=kind.SelectedItem as string;bool branch=op=="Branch",condition=branch || op=="Conditional";expression.IsEnabled=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout";wires.IsEnabled=!branch;destination.IsEnabled=op=="Measure";mask.IsEnabled=value.IsEnabled=condition;}
+ static bool IsBranch(string op) {return op=="Branch" || op=="ExpressionBranch";}
+ void SetFields() {string op=kind.SelectedItem==null ? null : ((OperationChoice)kind.SelectedItem).Key;bool branch=IsBranch(op),condition=op=="Branch" || op=="Conditional";expression.IsEnabled=op=="Assign" || op=="ExpressionBranch" || op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout";wires.IsEnabled=!branch;destination.IsEnabled=op=="Measure";mask.IsEnabled=value.IsEnabled=condition;}
  static void Field(Panel panel,string label,Control control,int width) {var group=new StackPanel {Margin=new Thickness(0,6,12,6)};group.Children.Add(new TextBlock {Text=label});control.Width=width;group.Children.Add(control);panel.Children.Add(group);System.Windows.Automation.AutomationProperties.SetName(control,label);}
  void Button(Panel panel,string title,Action action) {var button=new Button {Content=title,VerticalAlignment=VerticalAlignment.Bottom};panel.Children.Add(button);button.Click+=delegate {try {action();Refresh();status.Text="Ready · Changes are captured for undo.";}catch(Exception error) {status.Text=error.Message;}};}
  static ClassicalCircuit.Step[] Body(ClassicalCircuit.Document doc,int[] route) {var body=doc.Steps;for(int i=0;i<route.Length;i+=2)body=route[i+1]==0 ? body[route[i]].WhenTrue : body[route[i]].WhenFalse;return body;}
@@ -67,9 +75,11 @@ sealed class ClassicalProgramWindow : Window {
  Selection Selected() {var node=tree.SelectedItem as TreeViewItem;return node==null ? new Selection {Route=new int[0],Index=-1} : (Selection)node.Tag;}
  void ChangeStep(bool replace) {
   var selected=Selected();if(replace && selected.Index<0)throw new ArgumentException("Select an operation to replace.");
-  string op=(string)kind.SelectedItem;bool branch=op=="Branch",condition=branch || op=="Conditional";
-  var step=new ClassicalCircuit.Step {Kind=op,Expression=expression.IsEnabled ? expression.Text.Trim() : null,Wires=branch ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch ? new ClassicalCircuit.Step[0] : null};
-  history.Edit(d=>{var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(old.Kind=="Branch") {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
+  string op=(string)kind.SelectedValue;bool branch=IsBranch(op),condition=op=="Branch" || op=="Conditional";
+  var step=new ClassicalCircuit.Step {Kind=op,Expression=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout" ? expression.Text.Trim() : null,Wires=branch ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch ? new ClassicalCircuit.Step[0] : null};
+  bool classical=op=="Assign" || op=="ExpressionBranch";
+  if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
+  history.Edit(d=>{if(classical)d.Version=3;var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
  }
  void Delete() {var selected=Selected();if(selected.Index<0)throw new ArgumentException("Select an operation to delete.");history.Edit(d=>{var list=Body(d,selected.Route).ToList();list.RemoveAt(selected.Index);ReplaceBody(d,selected.Route,list.ToArray());});}
  void Refresh() {
@@ -78,9 +88,9 @@ sealed class ClassicalProgramWindow : Window {
  }
  static TreeViewItem BodyNode(string title,ClassicalCircuit.Step[] body,int[] route) {
   var node=new TreeViewItem {Header=title,IsExpanded=true,Tag=new Selection {Route=route,Index=-1}};
-  for(int i=0;i<body.Length;i++) {var step=body[i];string description=step.Kind=="Branch" ? "If (record & "+step.Mask+") = "+step.Value : step.Kind+" "+(step.Expression ?? "")+" ["+String.Join(",",step.Wires ?? new int[0])+"]"+(step.ClassicalBit.HasValue ? " → bit "+step.ClassicalBit : "")+(step.Kind=="Conditional" ? " if (record & "+step.Mask+") = "+step.Value : "");
+  for(int i=0;i<body.Length;i++) {var step=body[i];string description=step.Kind=="Assign" ? "Assign ["+String.Join(",",step.Wires)+"] ← "+ClassicalExpressionText.Format(step.ClassicalValue) : step.Kind=="ExpressionBranch" ? "If "+ClassicalExpressionText.Format(step.ClassicalValue) : step.Kind=="Branch" ? "If (record & "+step.Mask+") = "+step.Value : step.Kind+" "+(step.Expression ?? "")+" ["+String.Join(",",step.Wires ?? new int[0])+"]"+(step.ClassicalBit.HasValue ? " → bit "+step.ClassicalBit : "")+(step.Kind=="Conditional" ? " if (record & "+step.Mask+") = "+step.Value : "");
    var child=new TreeViewItem {Header=new TextBlock {Text=description,TextWrapping=TextWrapping.Wrap,FontFamily=new FontFamily("Consolas")},IsExpanded=true,Tag=new Selection {Route=route,Index=i}};node.Items.Add(child);
-   if(step.Kind=="Branch") {child.Items.Add(BodyNode("Then",step.WhenTrue,route.Concat(new[]{i,0}).ToArray()));child.Items.Add(BodyNode("Else",step.WhenFalse,route.Concat(new[]{i,1}).ToArray()));}
+   if(IsBranch(step.Kind)) {child.Items.Add(BodyNode("Then",step.WhenTrue,route.Concat(new[]{i,0}).ToArray()));child.Items.Add(BodyNode("Else",step.WhenFalse,route.Concat(new[]{i,1}).ToArray()));}
   }return node;
  }
  bool Discard() {return verifying || history.Current.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
@@ -95,24 +105,40 @@ sealed class ClassicalProgramWindow : Window {
  public void VerifyEditing(string screenshot) {
   verifying=true;
   history.Edit(d=>{d.Qubits=2;d.Registers=ParseRegisters("c:2");d.OutputBits=new[]{1,0};});Refresh();
-  kind.SelectedItem="Gate";expression.Text="H";wires.Text="0";ChangeStep(false);Refresh();
-  kind.SelectedItem="Measure";destination.Text="1";ChangeStep(false);Refresh();
-  kind.SelectedItem="Branch";mask.Text="2";value.Text="2";ChangeStep(false);Refresh();
+  kind.SelectedValue="Gate";expression.Text="H";wires.Text="0";ChangeStep(false);Refresh();
+  kind.SelectedValue="Measure";destination.Text="1";ChangeStep(false);Refresh();
+  kind.SelectedValue="Branch";mask.Text="2";value.Text="2";ChangeStep(false);Refresh();
   var branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];((TreeViewItem)branch.Items[0]).IsSelected=true;
-  kind.SelectedItem="Gate";expression.Text="X";wires.Text="1";ChangeStep(false);Refresh();
+  kind.SelectedValue="Gate";expression.Text="X";wires.Text="1";ChangeStep(false);Refresh();
   string valid=history.Current.Serialize();
-  kind.SelectedItem="Measure";wires.Text="9";destination.Text="0";
+  kind.SelectedValue="Measure";wires.Text="9";destination.Text="0";
   try {ChangeStep(false);throw new Exception("Invalid wire accepted.");}catch(ArgumentException) {}
   if(history.Current.Serialize()!=valid)throw new Exception("Invalid edit changed the program.");
   branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
-  kind.SelectedItem="Gate";wires.Text="0";expression.Text="H";
+  kind.SelectedValue="Gate";wires.Text="0";expression.Text="H";
   try {ChangeStep(true);throw new Exception("Branch children were discarded.");}catch(ArgumentException) {}
   if(history.Current.Serialize()!=valid)throw new Exception("Rejected replacement changed the program.");
   history.Undo();history.Redo();if(history.Current.Serialize()!=valid)throw new Exception("Undo/redo lost a nested operation.");
   history.Open(valid);Refresh();if(history.Current.Serialize()!=valid || history.CanUndo)throw new Exception("Reload did not preserve the program.");
+  branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
+  kind.SelectedValue="ExpressionBranch";expression.Text="c[0] ^ c[1]";ChangeStep(true);Refresh();
+  var converted=history.Current.Snapshot();
+  if(converted.Version!=3 || converted.Steps[2].Kind!="ExpressionBranch" || converted.Steps[2].WhenTrue.Length!=1)throw new Exception("Expression replacement lost branch children.");
+  branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];
+  if(branch.Items.Count!=2)throw new Exception("Expression branch bodies are hidden.");
+  ((TreeViewItem)branch.Items[1]).IsSelected=true;kind.SelectedValue="Assign";wires.Text="1,0";expression.Text="~c";ChangeStep(false);Refresh();
+  valid=history.Current.Serialize();
+  var assignment=(TreeViewItem)((TreeViewItem)((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2]).Items[1]).Items[0];assignment.IsSelected=true;
+  if((string)kind.SelectedValue!="Assign" || expression.Text!=ClassicalExpressionText.Format(history.Current.Snapshot().Steps[2].WhenFalse[0].ClassicalValue))throw new Exception("Assignment selection lost its expression.");
+  expression.Text="c[99]";try {ChangeStep(true);throw new Exception("Invalid expression accepted.");}catch(ArgumentException) {}
+  if(history.Current.Serialize()!=valid)throw new Exception("Invalid expression changed history.");
+  history.Undo();history.Redo();if(history.Current.Serialize()!=valid)throw new Exception("Expression undo/redo lost data.");
+  history.Open(valid);Refresh();if(history.Current.Serialize()!=valid)throw new Exception("Expression reload lost data.");
+  assignment=(TreeViewItem)((TreeViewItem)((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2]).Items[1]).Items[0];assignment.IsSelected=true;
+  if(kind.SelectedItem.ToString()!="Assign bits" || !expression.IsEnabled || !wires.IsEnabled || destination.IsEnabled || mask.IsEnabled || value.IsEnabled)throw new Exception("Assignment controls have stale labels or enabled states.");
   saved=valid;
   File.WriteAllText(screenshot+".qcircuit",valid);
-  status.Text="Verified · Nested branch, saved measurement, output order, invalid edits and undo/redo.";
+  status.Text="Verified · Bit assignments, expression branches, preserved children, invalid edits and undo/redo.";
   Capture(screenshot);
   Width=MinWidth;Height=MinHeight;UpdateLayout();var scroll=(ScrollViewer)Content;
   if(scroll.ScrollableHeight<=0)throw new Exception("Short editor did not make all controls scrollable.");

@@ -22,5 +22,10 @@ expressions retain their widths and meaning when edited again. Limits are 512
 nodes and 32 expression levels. The parser validates its output using the same
 circuit model as imported files.
 
-Connecting this component to window controls is a separate integration step.
+In the classical circuit editor, choose **Assign bits**, enter target bit indices
+in least-significant-first order, and type an expression. Choose **If expression**
+for a one-bit condition, then add operations to its Then and Else bodies.
+Replacing either kind of condition preserves both bodies. Invalid expressions
+leave the circuit and undo history unchanged. Saving uses the expression-aware
+circuit format automatically.
 These register names are not added to the general calculator namespace.
