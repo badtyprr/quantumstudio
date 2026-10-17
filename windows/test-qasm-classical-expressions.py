@@ -7,6 +7,9 @@ p=argparse.ArgumentParser();p.add_argument('--worker',type=Path);p.add_argument(
 spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'windows/qasm-import.py');adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
 header='OPENQASM 3.0; include "stdgates.inc"; '
 cases=[
+ ('classical-only-initializer','bit c=1;',{'1':'1'}),
+ ('classical-only-overlap','bit[3] c="001"; c[1:2]=c[0:1];',{'011':'1'}),
+ ('classical-only-functions','bit[3] c="101"; if(popcount(c)==2){c=rotl(c,1);}',{'011':'1'}),
  ('static-cast','qubit q; bit[3] c; c=int[3](1);',{'001':'1'}),
  ('literal-signed-cast','qubit q; bit[3] c; c=rotl("001",int[3]("111"));',{'100':'1'}),
  ('rotate-left','qubit q; bit[3] c="001"; c=rotl(c,1);',{'010':'1'}),
@@ -77,6 +80,7 @@ def steps(body):
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
  assert circuit['Version']==3,(name,circuit)
+ if name.startswith('classical-only-'):assert circuit['Qubits']==0,(name,circuit)
  # The overlap case must retain a simultaneous read of both old source bits.
  if name=='overlap':assert circuit['Steps'][1]=={'Kind':'Assign','Wires':[1,2],'ClassicalValue':{'Kind':'Read','Bits':[0,1]}}
  checks+=1
