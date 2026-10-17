@@ -106,6 +106,19 @@ QuantumNumerics::TrajectoryStep readChannel(Calculator &calculator,Reader &reade
  for(size_t k=0;k<value.size();++k)kraus.push_back(numericalMatrix(value[k],size_t(1)<<wires.size()));
  return QuantumNumerics::TrajectoryStep::channel(kraus,wires);
 }
+QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &reader,unsigned classicalBits) {
+ auto bits=reader.wires(classicalBits,8);
+ if(bits.empty())throw std::runtime_error("Readout assignment needs one to eight classical bits.");
+ const size_t dimension=size_t(1)<<bits.size();
+ auto matrix=numericalMatrix(evaluate(calculator,reader.expression()),dimension);
+ std::vector<std::vector<double>> probabilities(dimension,std::vector<double>(dimension));
+ for(size_t r=0;r<dimension;++r)for(size_t c=0;c<dimension;++c) {
+  const auto entry=matrix[r*dimension+c];
+  if(entry.imag()!=0)throw std::runtime_error("Readout probabilities must be real.");
+  probabilities[r][c]=entry.real();
+ }
+ return QuantumNumerics::TrajectoryStep::readout(probabilities,bits);
+}
 
 }
 
@@ -120,8 +133,9 @@ std::string quantumSamplingRequest(Calculator &calculator,const std::string &inp
  std::vector<Gate> gates;gates.reserve(count);
  std::vector<QuantumNumerics::TrajectoryStep> steps;steps.reserve(count);
  for(unsigned k=0;k<count;++k) {
-  unsigned kind=reader.dynamic()?static_cast<unsigned>(reader.integer(4)):0;
-  if(kind==4)steps.push_back(readChannel(calculator,reader,qubits));
+  unsigned kind=reader.dynamic()?static_cast<unsigned>(reader.integer(5)):0;
+  if(kind==5)steps.push_back(readAssignment(calculator,reader,classicalBits));
+  else if(kind==4)steps.push_back(readChannel(calculator,reader,qubits));
   else if(kind==0 || kind==3) {
    std::uint64_t mask=0,value=0;
    if(kind==3) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}

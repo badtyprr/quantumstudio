@@ -81,7 +81,7 @@ def trajectory(qubits=2, classical=2, bits=(0,1), steps=(), shots=1000, seed=7):
     for step in steps:
         kind, *args = step
         data += (str(kind)+"\n").encode()
-        if kind in (0,3,4):
+        if kind in (0,3,4,5):
             if kind == 3:
                 mask, value, targets, expression = args
                 data += f"{mask}\n{value}\n".encode()
@@ -117,7 +117,7 @@ for bad in [trajectory(classical=65),trajectory(classical=0,bits=(),steps=[(1,0,
             trajectory(bits=(0,0)),trajectory(steps=[(1,2,0)]),trajectory(steps=[(1,0,2)]),
             trajectory(qubits=0,steps=[(2,0)]),trajectory(steps=[(3,4,4,(0,),"X")]),
             trajectory(steps=[(3,1,2,(0,),"X")]),trajectory(steps=[(3,1,1,(0,),"[2,0;0,1]")]),
-            trajectory(steps=[(5,0)]),t+b"x"]:
+            trajectory(steps=[(6,0)]),t+b"x"]:
     run(bad,success=False)
 for expression in ["amplitude_damping(1)","amplitude_damping(1,0)","phase_amplitude_damping(1,0,0)"]:
     result = run(trajectory(qubits=1,classical=1,bits=(0,),steps=[(0,(0,),"X"),(4,(0,),expression),(1,0,0)]))
@@ -133,4 +133,20 @@ for expression in ["H","vector([2,0;0,1])","vector([1,0;0,0])","amplitude_dampin
     run(trajectory(steps=[(4,(0,),expression)],shots=0),success=False)
 for cut in range(len(noise)):
     run(noise[:cut],success=False)
+flip = "[0,1;1,0]"
+assert run(trajectory(steps=[(0,(0,),"X"),(1,0,0),(5,(0,),flip),(1,0,1)]))["counts"] == {"01":1000}
+assert run(trajectory(classical=3,bits=(0,1,2),steps=[(1,0,0),(5,(0,),flip),(3,1,1,(1,),"X"),(1,1,1),(1,0,2)]))["counts"] == {"110":1000}
+assert run(trajectory(qubits=0,classical=64,bits=(63,0),steps=[(5,(63,0),"[0,0,0,1;0,1,0,0;0,0,1,0;1,0,0,0]")]))["counts"] == {"11":1000}
+readout = trajectory(qubits=0,classical=1,bits=(0,),steps=[(5,(0,),"[0.75,0.25;0.5,0.5]")],shots=10000)
+r = run(readout)
+assert set(r["counts"]) == {"0","1"} and abs(r["counts"]["1"]-2500)<250
+assert run(readout) == r
+assert run(trajectory(qubits=0,classical=1,bits=(0,),steps=[(5,(0,),flip)],shots=0))["counts"] == {}
+for expression in ["1","[1;0]","[0.2,0.2;0,1]","[-0.1,1.1;0,1]","[i,1-i;0,1]","[a,1-a;0,1]","[infinity,0;0,1]"]:
+    run(trajectory(steps=[(5,(0,),expression)],shots=0),success=False)
+for targets in [(),(0,0),(2,),tuple(range(9))]:
+    run(trajectory(steps=[(5,targets,flip)]),success=False)
+run(trajectory(classical=0,bits=(),steps=[(5,(0,),flip)]),success=False)
+for cut in range(len(readout)):
+    run(readout[:cut],success=False)
 print(f"PASS: {checks} numerical sampling process checks.")
