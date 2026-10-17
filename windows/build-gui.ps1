@@ -11,6 +11,7 @@ $compilerArgs = @('/nologo', '/target:winexe', '/platform:x64', "/out:$output\Qu
 $compilerArgs += "$PSScriptRoot\SessionStore.cs"
 $compilerArgs += "$PSScriptRoot\NumericalSampling.cs"
 $compilerArgs += "$PSScriptRoot\ExactCircuit.cs"
+$compilerArgs += "$PSScriptRoot\ExactCircuitWindow.cs"
 $compilerArgs += "$PSScriptRoot\ClassicalCircuit.cs"
 $compilerArgs += "$PSScriptRoot\ClassicalProgramHistory.cs"
 $compilerArgs += "$PSScriptRoot\ClassicalProgramWindow.cs"

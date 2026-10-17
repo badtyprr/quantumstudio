@@ -88,6 +88,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged exact circuit tests failed.' }
     & (Join-Path $repo 'dist\gui-validation\exact-circuit-tests.exe') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged exact circuit adapter tests failed.' }
+    & (Join-Path $PSScriptRoot 'test-exact-window.ps1') -Distribution $output
     & (Join-Path $repo 'dist\gui-validation\sampling-tests.exe') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged sampling adapter tests failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-import.py') --worker (Join-Path $output 'quantum-worker.exe')

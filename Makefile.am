@@ -21,6 +21,8 @@ EXTRA_DIST = config.rpath  \
 	windows/CircuitComposer.cs \
 	windows/NumericalSampling.cs \
 	windows/ExactCircuit.cs \
+	windows/ExactCircuitWindow.cs \
+	windows/test-exact-window.ps1 \
 	windows/ExactCircuitTests.cs \
 	windows/ClassicalCircuit.cs \
 	windows/ClassicalCircuitTests.cs \
