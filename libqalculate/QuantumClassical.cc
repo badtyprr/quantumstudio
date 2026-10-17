@@ -11,8 +11,9 @@ std::uint64_t mask(unsigned width) {
 }
 }
 struct Bits::Node {
- enum class Kind { Constant, Read, Complement, Binary };
+ enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate };
  Kind kind;Binary operation=Binary::And;
+ Direction direction=Direction::Left;Distance interpretation=Distance::Unsigned;
  unsigned width,depth=1,count=1;std::uint64_t value=0,references=0;
  std::vector<unsigned> indices;std::shared_ptr<const Node> left,right;
  explicit Node(Kind k,unsigned w):kind(k),width(w) {
@@ -33,7 +34,19 @@ struct Bits::Node {
   }
   auto a=left->evaluate(record);
   if(kind==Kind::Complement)return (~a)&mask(width);
+  if(kind==Kind::PopulationCount) {
+   std::uint64_t result=0;for(;a;a&=a-1)++result;return result;
+  }
   auto b=right->evaluate(record);
+  if(kind==Kind::Rotate) {
+   bool leftward=direction==Direction::Left;
+   if(interpretation==Distance::Signed && (b&(std::uint64_t(1)<<(right->width-1)))) {
+    b=(~b+1)&mask(right->width);leftward=!leftward;
+   }
+   const unsigned distance=static_cast<unsigned>(b%width);
+   if(!distance)return a; // In particular, never shift a 64-bit value by 64.
+   return (leftward ? (a<<distance)|(a>>(width-distance)) : (a>>distance)|(a<<(width-distance)))&mask(width);
+  }
   switch(operation) {
    case Binary::And:return a&b;
    case Binary::Or:return a|b;
@@ -81,6 +94,17 @@ Bits Bits::binary(Binary operation,const Bits &left,const Bits &right) {
  }
  auto node=std::make_shared<Node>(Node::Kind::Binary,width);node->operation=operation;
  node->left=left.node_;node->right=right.node_;node->bound();return Bits(node);
+}
+Bits Bits::populationCount(const Bits &operand) {
+ auto node=std::make_shared<Node>(Node::Kind::PopulationCount,64);
+ node->left=operand.node_;node->bound();return Bits(node);
+}
+Bits Bits::rotate(Direction direction,const Bits &operand,const Bits &distance,Distance interpretation) {
+ if(direction!=Direction::Left && direction!=Direction::Right)throw std::invalid_argument("Unknown classical rotation direction");
+ if(interpretation!=Distance::Unsigned && interpretation!=Distance::Signed)throw std::invalid_argument("Unknown classical distance interpretation");
+ auto node=std::make_shared<Node>(Node::Kind::Rotate,operand.width());
+ node->direction=direction;node->interpretation=interpretation;
+ node->left=operand.node_;node->right=distance.node_;node->bound();return Bits(node);
 }
 unsigned Bits::width() const {return node_->width;}
 std::uint64_t Bits::evaluate(std::uint64_t record,unsigned registerBits) const {
