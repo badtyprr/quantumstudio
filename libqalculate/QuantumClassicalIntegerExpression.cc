@@ -11,7 +11,7 @@ std::uint64_t recordMask(unsigned bits) {
 void checkOperation(Integer::Operation operation) {
  switch(operation) {
   case Integer::Operation::Add:case Integer::Operation::Subtract:case Integer::Operation::Multiply:
-  case Integer::Operation::Divide:case Integer::Operation::Remainder:return;
+  case Integer::Operation::Divide:case Integer::Operation::Remainder:case Integer::Operation::Power:return;
  }
  throw std::invalid_argument("Unknown runtime integer operation");
 }
