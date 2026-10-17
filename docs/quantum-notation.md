@@ -382,3 +382,15 @@ Supply the chosen coordinates by replacing whole kets, for example `replace(|\cl
 ### Symbolic adjoint composition
 
 Transpose, entrywise conjugation and adjoint compose symbolically: transpose followed by conjugation is adjoint, adjoint followed by conjugation is transpose, and adjoint followed by transpose is conjugation. These pairs commute, and applying any one operation twice returns its operand. For example, `(QFT_N^*)^T` reduces to the adjoint of `QFT_N` without supplying N. The underlying expression remains present, so substituting an invalid Fourier dimension still rejects it. This does not yet simplify general symbolic unitary products or expand `QFT_N|x>_N` into a Fourier sum.
+
+
+The Windows sampling adapter also exposes `RequestClassical` / `RunClassical`
+for callers that need saved classical records. These accept an independent
+0–64-bit classical register and an explicit output-bit order (first bit most
+significant), and require a `ClassicalBit` destination on every measurement.
+They do not append final measurements. Conditions and readout assignments use
+classical bit indices; gate and reset targets use quantum wire indices.
+`ReadClassicalResult` validates the independent classical register size.
+The existing editor sampling API retains its final-quantum-measurement behavior.
+This adapter support does not yet add named classical registers or runtime
+OpenQASM branches to circuit files or the editor.

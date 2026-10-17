@@ -87,8 +87,38 @@ class SamplingTests {
    Check(SamplingExport.Csv(exportResult,capturedReadout).StartsWith("bits,count,frequency,shots,seed,run_final_readout\r\n00,40,0.4,100,7,"));
    Check(SamplingExport.Csv(exportResult,capturedReadout).EndsWith("11,60,0.6,100,7,\r\n"));
    composer.Close();owner.Close();
+   // Saved classical records have their own size, destinations and output order.
+   var saved=new List<NumericalSampling.Gate> {
+    new NumericalSampling.Gate {Expression="X",Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0},ClassicalBit=63},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Expression="X",Wires=new[]{1},Mask=1UL<<63,Value=1UL<<63},
+    new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{1},ClassicalBit=3}};
+   var measureOnly=new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0},ClassicalBit=3}};
+   Check(Encoding.UTF8.GetString(NumericalSampling.RequestClassical(1,4,10,7,new[]{3},measureOnly))=="QSAMPLE2\n1\n10\n7\n4\n1\n3\n1\n1\n0\n3\n");
+   foreach(int bits in new[]{-1,65})Reject(()=>NumericalSampling.RequestClassical(1,bits,10,7,new int[0],measureOnly));
+   foreach(int[] bits in new[]{new[]{4},new[]{-1},new[]{3,3},null})Reject(()=>NumericalSampling.RequestClassical(1,4,10,7,bits,measureOnly));
+   foreach(int? bit in new int?[]{null,-1,4})Reject(()=>NumericalSampling.RequestClassical(1,4,10,7,new[]{3},new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0},ClassicalBit=bit}}));
+   Reject(()=>NumericalSampling.Request(1,10,7,new[]{0},measureOnly));
+   Reject(()=>NumericalSampling.RequestClassical(1,4,10,7,new[]{3},new[]{new NumericalSampling.Gate {Expression="X",Wires=new[]{0},ClassicalBit=0}}));
+   Reject(()=>NumericalSampling.RequestClassical(2,63,10,7,new[]{3},saved));
+   Check(NumericalSampling.RequestClassical(2,64,10,7,new[]{63,3},saved).Length>0);
+   var noOperations=new NumericalSampling.Gate[0];
+   Check(Encoding.UTF8.GetString(NumericalSampling.RequestClassical(0,0,10,7,new int[0],noOperations))=="QSAMPLE2\n0\n10\n7\n0\n0\n0\n");
+   string savedJson="{\"qubits\":1,\"classical_bits\":4,\"shots\":10,\"seed\":\"7\",\"wires\":[3],\"counts\":{\"1\":10}}";
+   Check(NumericalSampling.ReadClassicalResult(savedJson,1,4,10,7,new[]{3}).counts["1"]==10);
+   Reject(()=>NumericalSampling.ReadClassicalResult(savedJson,1,3,10,7,new[]{3}));
+   Reject(()=>NumericalSampling.ReadResult(savedJson,1,10,7,new[]{3},true));
    if(args.Length==1) {
     string worker=Path.GetFullPath(args[0]);gates=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="H",Wires=new[]{0}},new NumericalSampling.Gate {Expression="CX",Wires=new[]{0,1}}};
+    var savedResult=NumericalSampling.RunClassical(worker,2,64,100,7,new[]{63,3,0},saved,CancellationToken.None).GetAwaiter().GetResult();
+    Check(savedResult.counts.Count==1 && savedResult.counts["110"]==100);
+    savedResult=NumericalSampling.RunClassical(worker,1,1,100,7,new[]{0},new[]{new NumericalSampling.Gate {Expression="X",Wires=new[]{0}}},CancellationToken.None).GetAwaiter().GetResult();
+    Check(savedResult.counts.Count==1 && savedResult.counts["0"]==100);
+    savedResult=NumericalSampling.RunClassical(worker,0,64,100,7,new[]{63,0},new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Readout,Expression="[0,1;1,0]",Wires=new[]{63}}},CancellationToken.None).GetAwaiter().GetResult();
+    Check(savedResult.counts.Count==1 && savedResult.counts["10"]==100);
+    savedResult=NumericalSampling.RunClassical(worker,0,0,100,7,new int[0],noOperations,CancellationToken.None).GetAwaiter().GetResult();
+    Check(savedResult.counts.Count==1 && savedResult.counts[""]==100);
     var result=NumericalSampling.Run(worker,2,10000,7,new[]{0,1},gates,CancellationToken.None).GetAwaiter().GetResult();
     Check(result.counts.Count==2 && result.counts.ContainsKey("00") && result.counts.ContainsKey("11"));
     var readoutResult=NumericalSampling.Run(worker,2,1000,7,new[]{0,1},gates,CancellationToken.None,new[]{flip}).GetAwaiter().GetResult();
