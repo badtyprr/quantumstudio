@@ -31,6 +31,32 @@ int main(){try {
  check(sum.evaluate(127,8).value().bits()==128);
  check(Expr::cast(s8,sum).evaluate(127,8).value().negative());
  check(byte.evaluate(127,8).value().bits()==127); // Building wrappers never mutates inputs.
+ auto exponent=Expr::read(IntegerType::sized(Sign::Unsigned,3),{8,9,10});
+ auto power=Expr::binary(Op::Power,byte,exponent);
+ check(power.type()==machine);
+ // Independent repeated-multiplication oracle across every signed-byte base
+ // and three-bit exponent, both read from the actual measurement record.
+ for(unsigned raw=0;raw<256;++raw)for(unsigned e=0;e<8;++e) {
+  std::int64_t base=raw<128 ? raw : static_cast<std::int64_t>(raw)-256,expected=1;
+  for(unsigned n=0;n<e;++n)expected*=base;
+  check(power.evaluate(raw|(e<<8),11).value().bits()==static_cast<std::uint64_t>(expected));
+ }
+ reject<std::out_of_range>([&]{power.validate(10);});
+ reject<std::out_of_range>([&]{power.evaluate(2048,11);});
+ auto negativePower=Expr::binary(Op::Power,constant(2),byte);
+ negativePower.validate(8);check(true); // Validation must not evaluate operands.
+ reject<std::domain_error>([&]{negativePower.evaluate(255,8);});
+ check(negativePower.evaluate(3,8).value().bits()==8);
+ reject<std::overflow_error>([&]{negativePower.evaluate(63,8);});
+ auto rightAssociated=Expr::binary(Op::Power,constant(2),Expr::binary(Op::Power,constant(3),constant(2)));
+ check(rightAssociated.evaluate(0,0).value().bits()==512);
+ check(Expr::binary(Op::Subtract,constant(0),Expr::binary(Op::Power,constant(2),constant(2))).evaluate(0,0).value().bits()==~std::uint64_t(3));
+ auto deepPower=constant(1);for(unsigned n=1;n<32;++n)deepPower=Expr::binary(Op::Power,deepPower,constant(1));
+ check(deepPower.evaluate(0,0).value().bits()==1);
+ reject<std::length_error>([&]{Expr::binary(Op::Power,deepPower,constant(1));});
+ auto widePower=constant(1);for(unsigned n=0;n<8;++n)widePower=Expr::binary(Op::Power,widePower,widePower);
+ check(widePower.evaluate(0,0).value().bits()==1); // 511 expanded nodes.
+ reject<std::length_error>([&]{Expr::binary(Op::Power,widePower,widePower);});
  reject<std::invalid_argument>([&]{Expr::read(s8,{0});});
  reject<std::out_of_range>([&]{Expr::read(IntegerType::sized(Sign::Unsigned,1),{64});});
  reject<std::invalid_argument>([&]{Expr::binary(static_cast<Op>(99),byte,byte);});
