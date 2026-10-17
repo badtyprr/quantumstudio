@@ -738,8 +738,7 @@ class CircuitComposer : Window {
    }
    if(Noise(step.Gate)) {
     if(!mixed)value="density("+value+")";
-    string constructor=step.Gate=="AD" || step.Gate=="GAD" ? "amplitude_damping" : step.Gate=="PD" ? "phase_damping" : step.Gate=="PAD" ? "phase_amplitude_damping" : step.Gate=="Thermal" ? "thermal_relaxation" : "depolarizing";
-    value="channel("+value+","+constructor+"("+step.Angle+"),"+step.Wires[0]+")";mixed=true;if(transformations!=null)transformations.Add(value);continue;
+    value="channel("+value+","+ChannelExpression(step)+","+step.Wires[0]+")";mixed=true;if(transformations!=null)transformations.Add(value);continue;
    }
    string op=GateExpression(step);
    string indices=String.Join(",",Array.ConvertAll(step.Wires,n=>n.ToString()));
@@ -750,6 +749,10 @@ class CircuitComposer : Window {
   string result=transformations==null || transformations.Count==0 ? value : "sequence(["+String.Join(",",transformations)+"],|"+new string('0',Count)+"⟩,"+placeholder+")";
   return requiresDensity && !mixed ? "density("+result+")" : result;
  }
+ static string ChannelExpression(Step step) {
+  string constructor=step.Gate=="AD" || step.Gate=="GAD" ? "amplitude_damping" : step.Gate=="PD" ? "phase_damping" : step.Gate=="PAD" ? "phase_amplitude_damping" : step.Gate=="Thermal" ? "thermal_relaxation" : "depolarizing";
+  return constructor+"("+step.Angle+")";
+ }
  static string GateExpression(Step step) {
   return step.Gate=="GPhase" ? "(exp(i*("+step.Angle+"))*I)" : step.Gate+(NeedsAngle(step.Gate) ? "("+step.Angle+")" : "");
  }
@@ -757,12 +760,15 @@ class CircuitComposer : Window {
   var result=new List<NumericalSampling.Gate>();bool measured=false,dynamic=false;
   foreach(var step in steps) {
    if(step.Gate=="Measure")measured=true;
-   else if(measured || step.Gate=="Reset" || Feedback(step.Gate))dynamic=true;
+   else if(measured || step.Gate=="Reset" || Feedback(step.Gate) || Noise(step.Gate))dynamic=true;
   }
   foreach(var step in steps) {
    // Terminal measurements can use the faster single-state sampler.
    if(step.Gate=="Measure" && !dynamic)continue;
-   if(Noise(step.Gate))throw new InvalidOperationException("Sampling noise channels is not yet supported. Use exact State or Probabilities for this circuit.");
+   if(Noise(step.Gate)) {
+    result.Add(new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Channel,Expression=ChannelExpression(step),Wires=(int[])step.Wires.Clone()});
+    continue;
+   }
    if(step.Gate=="Measure" || step.Gate=="Reset") {
     result.Add(new NumericalSampling.Gate {Kind=step.Gate=="Measure" ? NumericalSampling.Operation.Measure : NumericalSampling.Operation.Reset,Wires=(int[])step.Wires.Clone()});
    } else if(Feedback(step.Gate)) {

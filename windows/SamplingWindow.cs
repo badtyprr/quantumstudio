@@ -30,7 +30,7 @@ sealed class SamplingWindow : Window {
   top.Children.Add(new TextBlock {Text=count+" qubits · "+circuit.Count+" operations · Final computational-basis outcomes",Margin=new Thickness(0,6,0,12),TextWrapping=TextWrapping.Wrap});
   var controls=new WrapPanel();top.Children.Add(controls);
   Field(controls,"Shots (1–100,000)",shots);Field(controls,"Seed",seed);controls.Children.Add(run);controls.Children.Add(cancel);controls.Children.Add(save);
-  top.Children.Add(new TextBlock {Text="Bits read left to right: q0, q1, … . Frequencies estimate probabilities; they vary with the seed. Sampling starts from |0…0⟩. Measurements and resets run on each shot; feedback measures its control wires at that step.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,8,0,12)});
+  top.Children.Add(new TextBlock {Text="Bits read left to right: q0, q1, … . Frequencies estimate probabilities; they vary with the seed. Sampling starts from |0…0⟩. Noise, measurements, and resets run on each shot; feedback measures its control wires at that step.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,8,0,12)});
   status.Margin=new Thickness(0,0,0,12);top.Children.Add(status);
   root.Children.Add(new Border {Background=WorkspaceTheme.Surface,CornerRadius=new CornerRadius(10),Padding=new Thickness(14),Child=new ScrollViewer {VerticalScrollBarVisibility=ScrollBarVisibility.Auto,Content=rows}});
   run.Click+=async delegate {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional }
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel }
  public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
  public sealed class Result {
