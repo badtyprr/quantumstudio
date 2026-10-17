@@ -9,6 +9,37 @@ static class ClassicalExpressionTextTests {
  static N Parse(string text,int width){return ClassicalExpressionText.Parse(text,Context(),width);}
  static string Format(N n){return ClassicalExpressionText.Format(n);}
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
+ static void VariableChecks(string worker) {
+  var context=Context();context.Version=5;context.Variables=new[]{new ClassicalCircuit.Variable{Name="counter",Signedness="Signed",Width=8}};
+  var rhs=ClassicalExpressionText.ParseInteger("counter ** 2 - 1",context);
+  Check(ClassicalExpressionText.RequiredVersion(rhs)==5);
+  string pretty=ClassicalExpressionText.Format(rhs,context);Check(pretty.Contains("counter"));
+  Check(ClassicalExpressionText.Format(ClassicalExpressionText.ParseInteger(pretty,context),context)==pretty);
+  string fallback=Format(rhs);Check(fallback.Contains("variable(0)"));
+  Check(Format(ClassicalExpressionText.ParseInteger(fallback,context))==fallback);
+  var condition=ClassicalExpressionText.Parse("counter == 8",context,1);
+  Check(ClassicalExpressionText.RequiredVersion(condition)==5);
+  Reject(()=>ClassicalExpressionText.ParseInteger("missing + 1",context));
+  Reject(()=>ClassicalExpressionText.ParseInteger("variable(1)",context));
+  Reject(()=>ClassicalExpressionText.ParseInteger("variable(4096)",context));
+  Reject(()=>ClassicalExpressionText.ParseInteger("counter == 8",context));
+  Reject(()=>ClassicalExpressionText.Parse("counter",context,1));
+  var initial=ClassicalExpressionText.ParseInteger("3",context);
+  context.OutputBits=new[]{0};context.Steps=new[]{new ClassicalCircuit.Step{Kind="StoreInteger",VariableSlot=0,IntegerValue=initial},
+   new ClassicalCircuit.Step{Kind="StoreInteger",VariableSlot=0,IntegerValue=rhs},new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=condition}};
+  var circuit=ClassicalCircuit.From(context);var opened=ClassicalCircuit.Load(circuit.Serialize());Check(opened.Serialize()==circuit.Serialize());
+  if(worker!=null)foreach(bool exact in new[]{true,false}) {
+   byte[] request=exact ? NumericalSampling.RequestExact(0,64,new[]{0},opened.SamplingGates(),opened.VariableTypes) : NumericalSampling.RequestClassical(0,64,10000,1731,new[]{0},opened.SamplingGates(),opened.VariableTypes);
+   string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,x=>x).GetAwaiter().GetResult();
+   var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+   var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+   Check(values.Count==1 && Convert.ToString(values["1"])==(exact ? "1" : "10000"));
+  }
+  foreach(string name in new[]{"with space","true","false","int","variable"}) {
+   context.Variables[0].Name=name;var node=new N{Kind="IntegerVariable",Signedness="Signed",Width=8,Slot=0};
+   string text=ClassicalExpressionText.Format(node,context);Check(ClassicalExpressionText.ParseInteger(text,context).Slot==0);
+  }
+ }
  static void BooleanChecks(string worker) {
   string[] expressions={"bool(c)","bool(int[3](c))","bool(uint[3](c))","bool(popcount(c))","bool(c == 4)","bool(bool(c))","bool(int[3](c) - int[3](c))","bool(~c)","bool(c) && 6 / int[3](c) == 3"};
   int[] initial={0,4,4,4,4,4,4,7,0},expected={0,1,1,1,1,1,0,0,0};
@@ -130,6 +161,7 @@ static class ClassicalExpressionTextTests {
    }
   }
   BooleanChecks(args.Length>0 ? args[0] : null);
+  VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }
