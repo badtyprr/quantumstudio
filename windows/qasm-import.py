@@ -32,18 +32,22 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_branch = QasmVisitor._visit_branching_statement
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
+    runtime_integer_names={node.identifier.name for node in module.original_program.statements
+                           if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType))}
+    def integers(visitor):
+        return getattr(visitor, '_quantum_integer_names', set())
     def runtime(visitor,value):
-        return any(isinstance(item,ast.Identifier) and item.name in visitor._global_creg_size_map for item in nodes(value))
+        return any(isinstance(item,ast.Identifier) and (item.name in visitor._global_creg_size_map or item.name in integers(visitor)) for item in nodes(value))
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
     def bitstring_boolean(value):
         return any(isinstance(item,ast.Cast) and isinstance(item.type,ast.BoolType) and any(isinstance(child,ast.BitstringLiteral) for child in nodes(item.argument)) for item in nodes(value))
     def normalize(visitor, value, depth=0, cast_distance=False, typed=False):
-        typed=typed or (runtime(visitor,value) and any(isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(value)))
+        typed=typed or any(isinstance(item,ast.Identifier) and item.name in integers(visitor) for item in nodes(value)) or (runtime(visitor,value) and any(isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(value)))
         if depth >= 32:
             raise ValueError('Classical expressions exceed 32 levels.')
         registers = visitor._global_creg_size_map
-        if isinstance(value, ast.Identifier) and value.name in registers:
+        if isinstance(value, ast.Identifier) and (value.name in registers or value.name in integers(visitor)):
             return copy.deepcopy(value)
         if isinstance(value, ast.IndexedIdentifier):
             if len(value.indices)!=1:
@@ -103,17 +107,33 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def assignment(visitor, statement):
         name = statement.lvalue.name
         name = name.name if isinstance(name,ast.Identifier) else name
-        if name not in visitor._global_creg_size_map:
+        integer_target = name in integers(visitor)
+        if name not in visitor._global_creg_size_map and not integer_target:
             return original_assignment(visitor,statement)
         target = normalize(visitor,statement.lvalue)
-        value = normalize(visitor,statement.rvalue)
+        value = normalize(visitor,statement.rvalue,typed=integer_target)
         if statement.op.name != '=':
             operation = statement.op.name[:-1]
-            if operation not in ('&','|','^','<<','>>'):
-                raise ValueError('Unsupported classical bit assignment: '+statement.op.name)
+            if operation not in (('+','-','*','/','%','**') if integer_target else ('&','|','^','<<','>>')):
+                raise ValueError('Unsupported classical assignment: '+statement.op.name)
             value = ast.BinaryExpression(op=ast.BinaryOperator[operation],lhs=copy.deepcopy(target),rhs=value)
         return [] if visitor._check_only else [ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=value)]
     def declaration(visitor, statement):
+        if isinstance(statement.type,(ast.IntType,ast.UintType)) and statement.identifier.name in runtime_integer_names:
+            size = statement.type.size
+            if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
+            width = 0 if size is None else Qasm3ExprEvaluator.evaluate_expression(size, const_expr=True)[0]
+            if type(width) is not int or not 0<=width<=64 or (width==0 and size is not None):raise ValueError('Integer width must be 1–64, or omitted.')
+            bare=copy.deepcopy(statement);bare.init_expression=None
+            # Let the compiler validate the declaration and register its name,
+            # but keep the value undefined for the runtime interpreter.
+            original_declaration(visitor,bare)
+            visitor._quantum_integer_names=integers(visitor)|{statement.identifier.name}
+            bare.type.size=ast.IntegerLiteral(width)
+            result=[] if visitor._check_only else [bare]
+            if statement.init_expression is not None:
+                result+=assignment(visitor,ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression))
+            return result
         if not isinstance(statement.type,ast.BitType) or statement.init_expression is None or isinstance(statement.init_expression,ast.QuantumMeasurement):
             return original_declaration(visitor,statement)
         bare = copy.deepcopy(statement);bare.init_expression=None
@@ -312,11 +332,17 @@ def convert(source, published_u=False, classical=False):
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(source)
     if classical:
-        bit_names={node.identifier.name for node in nodes(module.original_program)
-                   if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,ast.BitType)}
+        runtime_names={node.identifier.name for node in nodes(module.original_program)
+                   if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,ast.IntType,ast.UintType))}
         def runtime(value):
-            return any(isinstance(item,ast.Identifier) and item.name in bit_names for item in nodes(value))
+            return any(isinstance(item,ast.Identifier) and item.name in runtime_names for item in nodes(value))
+        integer_names={node.identifier.name for node in module.original_program.statements
+                       if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType))}
         for node in nodes(module.original_program):
+            if isinstance(node,ast.ForInLoop) and node.identifier.name in integer_names:
+                raise ValueError('Loop variables cannot yet shadow runtime integer variables.')
+            if isinstance(node,ast.SubroutineDefinition) and any(isinstance(item,ast.Identifier) and item.name in integer_names for item in nodes(node)):
+                raise ValueError('Runtime integer variables in subroutines require scoped lowering not yet supported.')
             index=(node.indices if isinstance(node,ast.IndexedIdentifier) else node.index if isinstance(node,ast.IndexExpression) else None)
             if index is not None and runtime(index):
                 raise ValueError('Runtime register indices are not yet supported by the circuit importer.')
@@ -343,8 +369,10 @@ def convert(source, published_u=False, classical=False):
     # Reject these before compilation, rather than pretend their content ran.
     for node in nodes(module.original_program):
         if classical and isinstance(node, ast.ClassicalDeclaration):
-            if not isinstance(node.type, ast.BitType):
-                raise ValueError('Classical circuit import currently supports bit registers; other classical declarations are not yet supported.')
+            if not isinstance(node.type, (ast.BitType,ast.IntType,ast.UintType)):
+                raise ValueError('Classical circuit import supports bit registers and integer variables; other classical declarations are not yet supported.')
+            if isinstance(node.type,(ast.IntType,ast.UintType)) and not any(node is top for top in module.original_program.statements):
+                raise ValueError('Scoped integer declarations require lexical storage not yet supported by the importer.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise ValueError('Only stdgates.inc and qelib1.inc includes are supported.')
         if getattr(node, 'annotations', None):
@@ -446,12 +474,15 @@ def classical_indices(value, registers):
     return [start+x for x in selected]
 
 
-def classical_expression(value, registers, expected_width=None):
+def classical_expression(value, registers, expected_width=None, variables=None, integer_only=False):
+    variables=variables or {}
     operations={'&':'And','|':'Or','^':'Xor','<<':'ShiftLeft','>>':'ShiftRight',
                 '==':'Equal','!=':'NotEqual','<':'Less','<=':'LessEqual','>':'Greater','>=':'GreaterEqual',
                 '&&':'And','||':'Or'}
     comparisons={'==','!=','<','<=','>','>='}
     def width(node):
+        if isinstance(node,ast.Identifier) and node.name in variables:
+            raise ValueError("Convert integer variables explicitly with bool(...) or bit[n](...) before using them as bits.")
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType):return 1
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BitType):return node.type.size.value
         if isinstance(node,(ast.Identifier,ast.IndexExpression)):return len(classical_indices(node,registers))
@@ -468,7 +499,8 @@ def classical_expression(value, registers, expected_width=None):
     count=0
     arithmetic={'+':'Add','-':'Subtract','*':'Multiply','/':'Divide','%':'Remainder','**':'Power'}
     def integer_value(node):
-        return (isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
+        return (isinstance(node,ast.Identifier) and node.name in variables or
+                isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
                 isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic or
                 isinstance(node,ast.UnaryExpression) and node.op.name=='-')
     def bound(depth):
@@ -477,6 +509,9 @@ def classical_expression(value, registers, expected_width=None):
         if count>512 or depth>=32:raise ValueError('Classical expressions exceed 512 nodes or 32 levels.')
     def integer(node,depth):
         bound(depth)
+        if isinstance(node,ast.Identifier) and node.name in variables:
+            slot,sign,size=variables[node.name]
+            return {'Kind':'IntegerVariable','Slot':slot,'Signedness':sign,'Width':size}
         if isinstance(node,ast.IntegerLiteral):
             value=node.value
             if type(value) is not int or not -(1<<63)<=value<(1<<64):raise ValueError('Integer literal exceeds 64 bits.')
@@ -485,7 +520,7 @@ def classical_expression(value, registers, expected_width=None):
             size=node.type.size.value;storage=size or 64
             if type(size) is not int or not 0<=size<=64:raise ValueError('Invalid integer cast width.')
             sign='Signed' if isinstance(node.type,ast.IntType) else 'Unsigned'
-            if isinstance(node.argument,(ast.Identifier,ast.IndexExpression)):
+            if isinstance(node.argument,(ast.Identifier,ast.IndexExpression)) and not integer_value(node.argument):
                 bits=classical_indices(node.argument,registers)
                 if len(bits)!=storage:raise ValueError('Bit-to-integer casts require matching widths.')
                 return {'Kind':'IntegerRead','Signedness':sign,'Width':size,'Bits':bits}
@@ -552,6 +587,7 @@ def classical_expression(value, registers, expected_width=None):
             if (not shift and lw!=rw) or (logical and lw!=1):raise ValueError('Classical operands have incompatible widths.')
             return {'Kind':'Logical' if logical else 'Binary','Operator':operations[op],'Left':left,'Right':right},1 if op in comparisons else lw
         raise ValueError('Unsupported classical bit expression: '+type(node).__name__)
+    if integer_only:return integer(value,0)
     result,size=build(value,expected_width)
     if expected_width is not None and size!=expected_width:raise ValueError('Classical assignment or condition width mismatch.')
     return result
@@ -559,6 +595,7 @@ def classical_expression(value, registers, expected_width=None):
 
 def classical_circuit(statements, published_u):
     quantum, classical, named = {}, {}, []
+    variables, declarations = {}, []
     nq = nc = 0
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
@@ -566,6 +603,14 @@ def classical_circuit(statements, published_u):
             quantum[statement.qubit.name] = (nq, size)
             nq += size
         elif isinstance(statement, ast.ClassicalDeclaration):
+            if isinstance(statement.type,(ast.IntType,ast.UintType)):
+                name=statement.identifier.name;size=statement.type.size.value
+                sign='Signed' if isinstance(statement.type,ast.IntType) else 'Unsigned'
+                if len(name)>64:raise ValueError('Integer variable names must be at most 64 characters.')
+                if name in variables or len(variables)>=4096:raise ValueError('Duplicate or excessive integer declarations.')
+                variables[name]=(len(variables),sign,size)
+                declarations.append({'Name':name,'Signedness':sign,'Width':size})
+                continue
             if not isinstance(statement.type, ast.BitType) or statement.init_expression is not None:
                 raise ValueError('Unresolved classical initialization after compilation.')
             size = 1 if statement.type.size is None else statement.type.size.value
@@ -604,7 +649,7 @@ def classical_circuit(statements, published_u):
         return (start+index, 1) if whole else start+index
 
     count = 0
-    version = 2
+    version = 5 if declarations else 2
     def expression_version(node):
         if not isinstance(node,dict):return 3
         return max(4 if node.get('Kind')=='Logical' or node.get('Kind','').startswith('Integer') else 3,
@@ -627,9 +672,13 @@ def classical_circuit(statements, published_u):
                     raise ValueError('Register declarations inside runtime branches are not supported.')
                 continue
             if isinstance(statement, ast.ClassicalAssignment):
+                if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in variables:
+                    append({'Kind':'StoreInteger','VariableSlot':variables[statement.lvalue.name][0],
+                            'IntegerValue':classical_expression(statement.rvalue,classical,variables=variables,integer_only=True)})
+                    continue
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
-                append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets))})
+                append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets),variables)})
             elif isinstance(statement, ast.BranchingStatement):
                 if depth >= 32:
                     raise ValueError('Classical circuits support at most 32 nested branches.')
@@ -637,8 +686,9 @@ def classical_circuit(statements, published_u):
                 simple = (isinstance(condition,(ast.Identifier,ast.IndexExpression)) or
                           isinstance(condition,ast.UnaryExpression) and condition.op.name=='!' or
                           isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
+                simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition))
                 if not simple:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1,variables),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 negate = False
@@ -652,7 +702,7 @@ def classical_circuit(statements, published_u):
                 try:
                     start, size = reference(target, classical, whole=True)
                 except ValueError:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1,variables),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
@@ -684,7 +734,9 @@ def classical_circuit(statements, published_u):
                 raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
         return result
     steps=lower(statements)
-    return {'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(range(nc))), 'Steps': steps}
+    result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(range(nc))), 'Steps': steps}
+    if declarations:result['Variables']=declarations
+    return result
 
 
 if __name__ == '__main__':

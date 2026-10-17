@@ -670,5 +670,23 @@ inside runtime conditions retain QuantumStudio's documented integer semantics,
 including checked signed overflow and narrowing to low bits. Guards may skip
 runtime arithmetic errors, while invalid references and cast widths are always
 rejected. Machine-width casts use 64 bits. Fully static expressions still use
-the pinned compiler's constant evaluator. Integer declarations and assignments
-remain unsupported by this importer.
+the pinned compiler's constant evaluator.
+
+Top-level `int` and `uint` declarations now import as version-5 runtime variables,
+with explicit widths from 1 to 64 or an omitted width for machine-sized integers.
+For example, `int[8] counter=3; bit c; counter=counter**2-1; c=counter==8;`
+sets `c` to one. Arithmetic compound assignments preserve the same runtime
+read/compute/store behavior. Measurement results can enter integer expressions
+through width-matched casts such as `int[1](c)`; `bool(counter)` and
+`bit[8](counter)` explicitly convert variables back to Boolean or bit values.
+
+An uninitialized variable stays undefined until assigned. Each sampled shot gets
+fresh storage, and exact evaluation keeps distinct variable histories until they
+can safely merge. The importer preserves these semantics instead of evaluating
+mutable values while compiling. This follows the initialization and scope rules
+in the [OpenQASM type specification](https://openqasm.com/language/types.html).
+Scoped declarations, shadowing, variable references in subroutines, runtime
+loops, indices and gate parameters still require additional lowering and are
+rejected explicitly. Top-level integer variables may be updated inside an
+unrolled constant-bound loop. Variable names are limited to 64 characters and
+programs to 4096 integer declarations.
