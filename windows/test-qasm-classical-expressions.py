@@ -7,6 +7,17 @@ p=argparse.ArgumentParser();p.add_argument('--worker',type=Path);p.add_argument(
 spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'windows/qasm-import.py');adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
 header='OPENQASM 3.0; include "stdgates.inc"; '
 cases=[
+ ('typed-power','bit[3] c=2; bit r; if(int[3](c)**3==8){r=1;}',{'1010':'1'}),
+ ('typed-power-right','bit[3] c=2; bit r; if(int[3](c)**3**2==512){r=1;}',{'1010':'1'}),
+ ('typed-power-left','bit[3] c=2; bit r; if((int[3](c)**3)**2==64){r=1;}',{'1010':'1'}),
+ ('typed-power-unary','bit[3] c=2; bit r; if(-int[3](c)**2 == -4){r=1;}',{'1010':'1'}),
+ ('typed-power-negative-base','bit[3] c=2; bit r; if((-int[3](c))**2 == 4){r=1;}',{'1010':'1'}),
+ ('typed-power-runtime-exponent','bit[3] c=3; bit r; if(2**int[3](c)==8){r=1;}',{'1011':'1'}),
+ ('typed-power-negative-exponent','bit[3] c=7; bit r; if(2**int[3](c)==0){r=1;}',None),
+ ('typed-power-overflow','bit[8] c=63; bit r; if(2**int[8](c)==0){r=1;}',None),
+ ('typed-power-guard','bit[3] c=7; bit r; if(false && 2**int[3](c)==0){r=1;}',{'0111':'1'}),
+ ('typed-power-wrap','bit[64] c=2; c=bit[64](uint[64](uint[64](c)**64));',{'0'*64:'1'}),
+ ('typed-power-measure','qubit q; bit c; bit r; h q; c=measure q; if(2**uint[1](c)==2){r=1;}',{'00':'1/2','11':'1/2'}),
  ('classical-only-initializer','bit c=1;',{'1':'1'}),
  ('classical-only-overlap','bit[3] c="001"; c[1:2]=c[0:1];',{'011':'1'}),
  ('classical-only-functions','bit[3] c="101"; if(popcount(c)==2){c=rotl(c,1);}',{'011':'1'}),
@@ -91,7 +102,7 @@ def expression(e):
  return n(3,ops.index(e['Operator']))+expression(e['Left'])+expression(e['Right'])
 def integer_expression(e):
  k=e['Kind']
- if k=='IntegerBinary':return n(3,['Add','Subtract','Multiply','Divide','Remainder'].index(e['Operator']))+integer_expression(e['Left'])+integer_expression(e['Right'])
+ if k=='IntegerBinary':return n(3,['Add','Subtract','Multiply','Divide','Remainder','Power'].index(e['Operator']))+integer_expression(e['Left'])+integer_expression(e['Right'])
  t=n(0 if e['Signedness']=='Signed' else 1,e['Width'])
  if k=='IntegerConstant':return n(0)+t+n(e['Value'])
  if k=='IntegerRead':return n(1)+t+n(*e['Bits'])

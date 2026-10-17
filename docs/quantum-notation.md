@@ -655,7 +655,8 @@ pinned PyQASM constant evaluator.
 OpenQASM import also preserves Boolean `&&` and `||` as version-4 logical
 nodes, including assignments and nested branches. Bitwise `&` and `|` retain
 bit-vector nodes. Imported runtime conditions also support width-matched signed/unsigned casts,
-integer `+`, `-`, `*`, `/`, `%`, unary minus and comparisons. Casts and arithmetic
+integer `+`, `-`, `*`, `/`, `%`, `**`, unary minus and comparisons. Powers preserve
+OpenQASM's right associativity and precedence above unary minus. Casts and arithmetic
 inside runtime conditions retain QuantumStudio's documented integer semantics,
 including checked signed overflow and narrowing to low bits. Guards may skip
 runtime arithmetic errors, while invalid references and cast widths are always
