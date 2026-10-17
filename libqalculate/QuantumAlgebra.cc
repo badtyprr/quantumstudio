@@ -41,11 +41,23 @@ class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
  QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {
-  if(op=="qnamedket")setArgumentDefinition(1,new TextArgument());
+  if(op=="qnamedket" || op=="qfrequency")setArgumentDefinition(1,new TextArgument());
  }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qfrequency") {
+   const std::string name=raw[0].symbol();
+   Unit *hertz=CALCULATOR->getActiveUnit("Hz");
+   if(name.size()<2 || name.compare(name.size()-2,2,"Hz")!=0 || !hertz) {
+    CALCULATOR->error(true,"Expected a loaded hertz unit with an optional SI prefix.",NULL);return 0;
+   }
+   Prefix *prefix=name.size()==2 ? NULL : CALCULATOR->getPrefix(name.substr(0,name.size()-2));
+   if(name.size()!=2 && !prefix) {
+    CALCULATOR->error(true,"Unknown frequency unit prefix.",NULL);return 0;
+   }
+   out.set(hertz,prefix);return 1;
+  }
   if((op=="qdag" || op=="qconj" || op=="qdensity" || op=="qnorm" || op=="qnormalize") && !CALCULATOR->getFunction("conj")) {
    CALCULATOR->error(true,"Load global function definitions before quantum conjugation.",NULL);return 0;
   }
@@ -262,6 +274,7 @@ class QuantumAlgebraFunction: public MathFunction {
 };
 }
 void registerQuantumAlgebra(Calculator &calculator) {
+ calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
