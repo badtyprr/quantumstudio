@@ -25,6 +25,8 @@ static class ClassicalExpressionText {
   if(n.Kind=="Constant")return n.Width;
   if(n.Kind=="Read")return n.Bits.Length;
   if(n.Kind=="LogicalNot")return 1;
+  if(n.Kind=="PopulationCount")return 64;
+  if(n.Kind=="Rotate")return Known(n.Left);
   if(n.Kind=="Complement")return Known(n.Left);
   return Comparison(n.Operator) || n.Operator.StartsWith("Logical",StringComparison.Ordinal) ? 1 : Known(n.Left) ?? Known(n.Right);
  }
@@ -33,6 +35,11 @@ static class ClassicalExpressionText {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
   if(n.Kind=="Constant"){n.Width=n.Width ?? hint ?? Natural(n);return n.Width.Value;}
   if(n.Kind=="Read")return n.Bits.Length;
+  if(n.Kind=="PopulationCount"){Resolve(n.Left,null,depth+1);return 64;}
+  if(n.Kind=="Rotate") {
+   int width=Resolve(n.Left,hint,depth+1);
+   Resolve(n.Right,n.DistanceInterpretation=="Signed" ? (int?)64 : null,depth+1);return width;
+  }
   if(n.Kind=="Complement" || n.Kind=="LogicalNot") {
    int size=Resolve(n.Left,hint,depth+1);
    if(n.Kind=="LogicalNot" && size!=1)throw new ArgumentException("Logical negation needs one bit.");
@@ -56,6 +63,8 @@ static class ClassicalExpressionText {
   }
   if(n.Kind=="Read")return "read("+String.Join(",",n.Bits)+")";
   if(n.Kind=="Complement")return "~("+FormatNode(n.Left,depth+1)+")";
+  if(n.Kind=="PopulationCount")return "popcount("+FormatNode(n.Left,depth+1)+")";
+  if(n.Kind=="Rotate")return (n.RotationDirection=="Left" ? "rotl" : "rotr")+(n.DistanceInterpretation=="Signed" ? "_signed" : "")+"("+FormatNode(n.Left,depth+1)+", "+FormatNode(n.Right,depth+1)+")";
   int op=Array.IndexOf(Names,n.Operator);if(op<0)throw new ArgumentException("Unknown expression operator.");
   return "("+FormatNode(n.Left,depth+1)+" "+Symbols[op]+" "+FormatNode(n.Right,depth+1)+")";
  }
@@ -98,6 +107,15 @@ static class ClassicalExpressionText {
    int start=position;while(position<text.Length && (Char.IsLetterOrDigit(text[position]) || text[position]=='_'))position++;
    string name=text.Substring(start,position-start);if(name.Length==0)throw new ArgumentException("Expected a register, bit string or integer.");
    if(name=="read" && Take("(")){var indices=new List<int>();do{indices.Add(Index());}while(Take(","));Need(")");return Node(new N{Kind="Read",Bits=indices.ToArray()});}
+   if(name=="popcount" && Take("(")){var operand=Expression(1,depth+1);Need(")");return Node(new N{Kind="PopulationCount",Left=operand});}
+   if((name=="rotl" || name=="rotr" || name=="rotl_signed" || name=="rotr_signed") && Take("(")) {
+    var operand=Expression(1,depth+1);Need(",");bool signed=name.EndsWith("_signed",StringComparison.Ordinal);N distance;
+    if(Take("-")) {
+     ulong magnitude=Number();if(magnitude>(1UL<<63))throw new ArgumentException("Negative rotation distances must fit signed 64 bits.");
+     distance=Node(new N{Kind="Constant",Width=64,Value=unchecked(0UL-magnitude).ToString(CultureInfo.InvariantCulture)});signed=true;
+    } else distance=Expression(1,depth+1);
+    Need(")");return Node(new N{Kind="Rotate",RotationDirection=name.StartsWith("rotl",StringComparison.Ordinal) ? "Left" : "Right",DistanceInterpretation=signed ? "Signed" : "Unsigned",Left=operand,Right=distance});
+   }
    if(name=="true" || name=="false")return Node(new N{Kind="Constant",Width=1,Value=name=="true" ? "1" : "0"});
    int[] bits;if(!registers.TryGetValue(name,out bits))throw new ArgumentException("Unknown classical register: "+name);
    if(Take("[")) {

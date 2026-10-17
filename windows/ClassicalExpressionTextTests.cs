@@ -10,6 +10,14 @@ static class ClassicalExpressionTextTests {
  static string Format(N n){return ClassicalExpressionText.Format(n);}
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
  static int Main(){try {
+  Check(Parse("popcount(c)",64).Kind=="PopulationCount");
+  foreach(string text in new[]{"popcount(c) == 2","popcount(read(63)) != 0","popcount(\"111\") == popcount(7)"})Roundtrip(Parse(text,1),1);
+  foreach(string text in new[]{"rotl(c, 1)","rotr(c, -1)","rotl(c, -9223372036854775808)","rotr(c, 18446744073709551615)","rotl_signed(c, c)","rotr_signed(c, 1)","rotl(c, popcount(c))"})Roundtrip(Parse(text,3),3);
+  var signedRotation=Parse("rotl(c, -1)",3);Check(signedRotation.DistanceInterpretation=="Signed" && signedRotation.Right.Width==64 && signedRotation.Right.Value==UInt64.MaxValue.ToString());
+  signedRotation=Parse("rotl_signed(c, 1)",3);Check(signedRotation.Right.Width==64 && signedRotation.Right.Value=="1");
+  var imported=new N{Kind="Rotate",RotationDirection="Right",DistanceInterpretation="Signed",Left=new N{Kind="Read",Bits=new[]{0,1,2}},Right=new N{Kind="Constant",Width=8,Value="255"}};Roundtrip(imported,3);
+  foreach(string bad in new[]{"popcount()","popcount(c, 1)","rotl(c)","rotr(c, 1, 2)","rotl(c, -9223372036854775809)","rotl(c, --1)","rotr(c, -c)","rotl(c, -1 << 1)"})Reject(()=>Parse(bad,3));
+  Reject(()=>Parse("popcount(c)",3));
   Check(Format(Parse("c[0] ^ c[1] & c[2]",1))=="(read(0) ^ (read(1) & read(2)))");
   Check(Format(Parse("c == 1 || c == 2",1))=="((read(0,1,2) == \"001\") | (read(0,1,2) == \"010\"))");
   Check(Format(Parse("3 == 7",1))=="(\"011\" == \"111\")");
