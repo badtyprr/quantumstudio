@@ -51,7 +51,7 @@ sealed class ClassicalProgramWindow : Window {
   Field(editor,"Condition mask · decimal",mask,170);Field(editor,"Condition value · decimal",value,170);
   kind.SelectionChanged+=delegate {SetFields();};SetFields();
   var edits=new WrapPanel();bottom.Children.Add(edits);Button(edits,"Add to selected body",()=>ChangeStep(false));Button(edits,"Replace selected",()=>ChangeStep(true));Button(edits,"Delete selected",Delete);
-  bottom.Children.Add(new TextBlock {Text="For bit expressions, use c[0] ^ c[1], ~c or quoted binary digits. Assignment targets are classical bit indices. Select Program, Then or Else to append operations. Select an operation to replace or delete it. Exact probabilities preserves fractions and symbolic parameters; Sample estimates outcomes over repeated shots.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,8,0,0)});
+  bottom.Children.Add(new TextBlock {Text="For bit expressions, use c[0] ^ c[1], popcount(c) == 1 or rotl(c, -1). Assignment targets are classical bit indices. Select Program, Then or Else to append operations. Select an operation to replace or delete it. Exact probabilities preserves fractions and symbolic parameters; Sample estimates outcomes over repeated shots.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,8,0,0)});
   tree.Resources[SystemColors.HighlightBrushKey]=WorkspaceTheme.Selection;
   tree.Resources[SystemColors.HighlightTextBrushKey]=WorkspaceTheme.Text;
   tree.Resources[SystemColors.InactiveSelectionHighlightBrushKey]=WorkspaceTheme.Selection;
@@ -121,12 +121,14 @@ sealed class ClassicalProgramWindow : Window {
   history.Undo();history.Redo();if(history.Current.Serialize()!=valid)throw new Exception("Undo/redo lost a nested operation.");
   history.Open(valid);Refresh();if(history.Current.Serialize()!=valid || history.CanUndo)throw new Exception("Reload did not preserve the program.");
   branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
-  kind.SelectedValue="ExpressionBranch";expression.Text="c[0] ^ c[1]";ChangeStep(true);Refresh();
+  kind.SelectedValue="ExpressionBranch";expression.Text="popcount(c) == 1";ChangeStep(true);Refresh();
   var converted=history.Current.Snapshot();
   if(converted.Version!=3 || converted.Steps[2].Kind!="ExpressionBranch" || converted.Steps[2].WhenTrue.Length!=1)throw new Exception("Expression replacement lost branch children.");
   branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];
   if(branch.Items.Count!=2)throw new Exception("Expression branch bodies are hidden.");
-  ((TreeViewItem)branch.Items[1]).IsSelected=true;kind.SelectedValue="Assign";wires.Text="1,0";expression.Text="~c";ChangeStep(false);Refresh();
+  ((TreeViewItem)branch.Items[1]).IsSelected=true;kind.SelectedValue="Assign";wires.Text="1,0";expression.Text="rotl(~c, -1)";ChangeStep(false);Refresh();
+  var expressionProgram=history.Current.Snapshot();
+  if(expressionProgram.Steps[2].ClassicalValue.Left.Kind!="PopulationCount" || expressionProgram.Steps[2].WhenFalse[0].ClassicalValue.Kind!="Rotate" || expressionProgram.Steps[2].WhenFalse[0].ClassicalValue.DistanceInterpretation!="Signed")throw new Exception("Bit-function editing lost its operation or signed distance.");
   valid=history.Current.Serialize();
   var assignment=(TreeViewItem)((TreeViewItem)((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2]).Items[1]).Items[0];assignment.IsSelected=true;
   if((string)kind.SelectedValue!="Assign" || expression.Text!=ClassicalExpressionText.Format(history.Current.Snapshot().Steps[2].WhenFalse[0].ClassicalValue))throw new Exception("Assignment selection lost its expression.");

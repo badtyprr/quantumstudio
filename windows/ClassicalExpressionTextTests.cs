@@ -10,6 +10,10 @@ static class ClassicalExpressionTextTests {
  static string Format(N n){return ClassicalExpressionText.Format(n);}
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
  static int Main(){try {
+  Check(Format(Parse("rotl(c, -1)",3))=="rotl_signed(read(0,1,2), -1)");
+  Check(Format(Parse("rotl_signed(c, 1)",3))=="rotl_signed(read(0,1,2), 1)");
+  Check(Format(Parse("popcount(c) == 1",1))=="(popcount(read(0,1,2)) == 1)");
+  Check(Format(Parse("1 == popcount(c)",1))=="(1 == popcount(read(0,1,2)))");
   Check(Parse("popcount(c)",64).Kind=="PopulationCount");
   foreach(string text in new[]{"popcount(c) == 2","popcount(read(63)) != 0","popcount(\"111\") == popcount(7)"})Roundtrip(Parse(text,1),1);
   foreach(string text in new[]{"rotl(c, 1)","rotr(c, -1)","rotl(c, -9223372036854775808)","rotr(c, 18446744073709551615)","rotl_signed(c, c)","rotr_signed(c, 1)","rotl(c, popcount(c))"})Roundtrip(Parse(text,3),3);
