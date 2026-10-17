@@ -44,6 +44,12 @@ public:
  std::map<std::uint64_t, unsigned> sampleCounts(unsigned shots,
             const std::vector<unsigned> &wires, std::uint64_t seed,
             const Cancellation &cancelled = Cancellation()) const;
+ // Measure one wire in the computational basis and collapse this state.
+ // uniformDraw must be finite in [0,1); callers own the seeded random stream.
+ // Validation and cancellation before mutation leave the state unchanged.
+ // Cancellation during collapse invalidates the state, as with apply().
+ bool measure(unsigned wire, double uniformDraw,
+              const Cancellation &cancelled = Cancellation());
  // Row-major 2^k by 2^k unitary, for 1 <= k <= 3 distinct ordered wires.
  // The first listed wire is the local matrix's most significant bit.
  // Invalid arguments leave the state unchanged. Cancellation during mutation
