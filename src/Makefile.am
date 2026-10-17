@@ -191,3 +191,8 @@ check_PROGRAMS += quantum-classical-integer-expression-test
 TESTS += quantum-classical-integer-expression-test
 quantum_classical_integer_expression_test_SOURCES = quantum-classical-integer-expression-test.cc
 quantum_classical_integer_expression_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-classical-integer-storage-test
+TESTS += quantum-classical-integer-storage-test
+quantum_classical_integer_storage_test_SOURCES = quantum-classical-integer-storage-test.cc
+quantum_classical_integer_storage_test_LDADD = $(test_LDADD)
