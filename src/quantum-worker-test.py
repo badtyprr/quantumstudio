@@ -21,6 +21,20 @@ def data(expression, *flags):
     assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Explicit complex parameters retain their domain through worker serialization.
+for flags in [(), ("--approx",)]:
+    for symbol in ["x", r"\alpha"]:
+        original = "conj(complexparam(" + symbol + "))"
+        copied = data("quantum: " + original, *flags)["copy_text"]
+        value = data("quantum: replace((" + copied + ")," + symbol + ",1+i)-(1-i)", *flags)
+        assert value["text"] == "0", value
+    density = data(r"quantum: density(complexparam(\alpha)|0>+complexparam(\beta)|1>)", *flags)
+    substituted = r"replace(replace((" + density["copy_text"] + r"),\alpha,1),\beta,i)"
+    value = data("quantum: (" + substituted + ")-[1,-i;i,1]", *flags)
+    assert value["cells"] == [["0", "0"], ["0", "0"]], value
+    for invalid in ["complexparam(x+y)", "complexparam([1;2])", "complexparam(inf)"]:
+        run("quantum: " + invalid, "--json", *flags, success=False)
+
 # Symbolic phase adjoints retain exact exponent conjugation through the GUI path.
 for gate in ["Rz(x)", "Rx(x)", "Ry(x)", "[1,0;0,exp(i*x)]"]:
     value = data("quantum: dagger(" + gate + ")*(" + gate + ")")
