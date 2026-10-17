@@ -624,6 +624,11 @@ register reads, rather than arbitrary computed bit expressions.
 
 OpenQASM import also preserves Boolean `&&` and `||` as version-4 logical
 nodes, including assignments and nested branches. Bitwise `&` and `|` retain
-bit-vector nodes. Runtime integer casts and arithmetic in imported conditions
-remain a separate unsupported feature; use the classical editor for those
-expressions until the importer supports them.
+bit-vector nodes. Imported runtime conditions also support width-matched signed/unsigned casts,
+integer `+`, `-`, `*`, `/`, `%`, unary minus and comparisons. Casts and arithmetic
+inside runtime conditions retain QuantumStudio's documented integer semantics,
+including checked signed overflow and narrowing to low bits. Guards may skip
+runtime arithmetic errors, while invalid references and cast widths are always
+rejected. Machine-width casts use 64 bits. Fully static expressions still use
+the pinned compiler's constant evaluator. Integer declarations and assignments
+remain unsupported by this importer.
