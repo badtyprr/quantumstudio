@@ -567,3 +567,11 @@ A comparison produces one bit usable by the existing assignment and branch
 operations. These versions do not yet declare integer variables, track their
 initialization or persist their type in circuit files. The GUI and importer
 still emit the older bit-expression protocols.
+
+The Windows request adapter now has immutable `ClassicalIntegerType` and
+`ClassicalIntegerExpression` objects and the `ClassicalExpression.IntegerCompare`
+bridge. Requests containing these expressions select `QEXACT3` or `QSAMPLE4`,
+including expressions in nested or untaken branches. Ordinary bit requests
+retain their existing protocol versions. Construction and serialization check
+combined expression bounds and register references. Circuit-file persistence,
+text entry and OpenQASM import of integer expressions remain follow-up work.
