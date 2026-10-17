@@ -12,6 +12,12 @@ class SamplingTests {
  static void Reject(Action action) {try {action();}catch(ArgumentException) {checks++;return;}catch(InvalidDataException) {checks++;return;}throw new Exception("Expected invalid sampling data.");}
  [STAThread] static int Main(string[] args) {
   try {
+   var stored=ClassicalCircuit.From(new ClassicalCircuit.Document {Version=2,Qubits=1,Registers=new[]{new ClassicalCircuit.Register {Name="a",Size=1},new ClassicalCircuit.Register {Name="b",Size=2}},OutputBits=new[]{2,0},Steps=new ClassicalCircuit.Step[0]});
+   Check(SamplingWindow.ClassicalDescription(stored).Contains("b[1], a[0]"));
+   var storedResult=NumericalSampling.ReadClassicalResult("{\"qubits\":1,\"classical_bits\":3,\"shots\":1,\"seed\":\"0\",\"wires\":[2,0],\"counts\":{\"00\":1}}",1,3,1,0,new[]{2,0});
+   string classicalExport=SamplingExport.Json(storedResult,new NumericalSampling.Readout[0],stored);
+   Check(classicalExport.Contains("QuantumStudio.sampling.v2") && classicalExport.Contains("\"OutputBits\":[2,0]"));
+   Check(SamplingExport.Csv(storedResult,new NumericalSampling.Readout[0],stored).Contains("run_classical_circuit"));
    var gates=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="H⊗H",Wires=new[]{1,0}}};
    string request=Encoding.UTF8.GetString(NumericalSampling.Request(2,100,UInt64.MaxValue,new[]{1,0},gates));
    Check(request=="QSAMPLE1\n2\n100\n18446744073709551615\n2\n1\n0\n1\n2\n1\n0\n5\nH⊗H");

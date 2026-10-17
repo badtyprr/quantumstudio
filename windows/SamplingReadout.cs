@@ -45,18 +45,20 @@ static class SamplingExport {
  static object[] Models(IList<NumericalSampling.Readout> readout) {
   return readout.Select(item=>(object)new {bits=(int[])item.Bits.Clone(),matrix=item.Expression}).ToArray();
  }
- public static string Json(NumericalSampling.Result result,IList<NumericalSampling.Readout> readout) {
+ public static string Json(NumericalSampling.Result result,IList<NumericalSampling.Readout> readout,ClassicalCircuit circuit=null) {
+  if(circuit!=null)return new JavaScriptSerializer {MaxJsonLength=16000000,RecursionLimit=128}.Serialize(new {schema="QuantumStudio.sampling.v2",result=result,circuit=circuit.Snapshot()});
   return new JavaScriptSerializer {MaxJsonLength=16000000}.Serialize(new {schema="QuantumStudio.sampling.v1",result=result,final_readout=Models(readout),assignment_orientation="row=true, column=recorded; first target bit most significant"});
  }
- public static string Csv(NumericalSampling.Result result,IList<NumericalSampling.Readout> readout) {
+ public static string Csv(NumericalSampling.Result result,IList<NumericalSampling.Readout> readout,ClassicalCircuit circuit=null) {
   string model=new JavaScriptSerializer {MaxJsonLength=1000000}.Serialize(Models(readout));
   // Store run metadata once, in the first data row: repeating a 4 KiB model
   // for 100,000 outcomes would unnecessarily allocate hundreds of MiB.
   // JSON begins with [, and CSV quoting keeps expressions inside one cell.
   string quoted="\""+model.Replace("\"","\"\"")+"\"";
-  var text=new StringBuilder("bits,count,frequency,shots,seed,run_final_readout\r\n");bool first=true;
+  string program=circuit==null ? "" : ",\""+circuit.Serialize().Replace("\"","\"\"")+"\"";
+  var text=new StringBuilder("bits,count,frequency,shots,seed,run_final_readout"+(circuit==null ? "" : ",run_classical_circuit")+"\r\n");bool first=true;
   foreach(var item in result.counts.OrderBy(pair=>pair.Key,StringComparer.Ordinal)) {
-   text.Append(item.Key).Append(',').Append(item.Value.ToString(CultureInfo.InvariantCulture)).Append(',').Append(((double)item.Value/result.shots).ToString("R",CultureInfo.InvariantCulture)).Append(',').Append(result.shots.ToString(CultureInfo.InvariantCulture)).Append(',').Append(result.seed).Append(',').Append(first ? quoted : "").Append("\r\n");first=false;
+   text.Append(item.Key).Append(',').Append(item.Value.ToString(CultureInfo.InvariantCulture)).Append(',').Append(((double)item.Value/result.shots).ToString("R",CultureInfo.InvariantCulture)).Append(',').Append(result.shots.ToString(CultureInfo.InvariantCulture)).Append(',').Append(result.seed).Append(',').Append(first ? quoted : "").Append(circuit==null ? "" : first ? program : ",").Append("\r\n");first=false;
   }
   return text.ToString();
  }
