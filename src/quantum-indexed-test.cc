@@ -21,6 +21,17 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qsumset(qsum(x+y,0,1,y),vector(y),x)","2*y+1");
+ equal("qsumset(qsum(x+y,0,1,y),vector(z),x)","2*z+1");
+ equal("qsumset(qsum(x+y,0,1,y),vector(3),x)","7");
+ equal("qsumset(qsum(x+y,0,1,y),vector(y+1),x)","2*y+3");
+ equal("qsumset(qsum(x+y+'__qbound_index_0',0,1,y),vector(y),x)","2*y+1+2*'__qbound_index_0'");
+ MathStructure scoped=calculator.calculate("qsumset(qsum(x+y,0,x,y),vector(y),x)",eo);
+ scoped.replace(calculator.parse("y"),MathStructure(2));scoped.eval(eo);
+ if(!scoped.isNumber() || scoped.number()!=9)throw std::runtime_error("Symbolic sum bounds captured the replacement: "+scoped.print());
+ ++checks;
+ equal("qsumset(qsumset(x+y,vector(0,1),y),vector(y),x)","2*y+1");
+ equal("qsumset(qsum(qsum(x+y,0,1,y),0,1,y),vector(y),x)","4*y+2");
  equal("qsum(qketstate(x),0,2,x)","[1;1;1]");
  equal("qsum(qsum(qketstate(x),0,1,x),0,2,x)","[3;3]");
  equal("qsum(qsum(qketstate(x),0,1,y),0,2,x)","[2;2;2]");
