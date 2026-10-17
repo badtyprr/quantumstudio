@@ -42,6 +42,18 @@ for exact in (True,False):
     check(0,1,[0],[branch(const(1,0),[],[assign([0],const(1,1))])],{'1':1})
     check(3,3,[2,1,0],[gate('H',0),gate('H',1),n(1,0,0),n(1,1,1),branch(binary(2,read(0),read(1)),[gate('X',2)]),n(1,2,2)],dict.fromkeys(['000','011','101','110'],Fraction(1,4)))
     check(2,2,[1,0],[gate('H',0),gate('CNOT',0,1),n(1,0,0),assign([0],const(1,0)),n(1,1,1)],{'00':Fraction(1,2),'10':Fraction(1,2)})
+    # Population counts retain full values through 64, including saved measurement reads.
+    for value,count in [(0,0),(1,1),((1<<64)-1,64),(1<<63,1)]:
+        check(0,64,list(reversed(range(64))),[assign(list(range(64)),n(4)+const(64,value))],{format(count,'064b'):1})
+    check(1,64,[1,0],[gate('H',0),n(1,0,63),assign(list(range(64)),n(4)+read(63))],{'00':Fraction(1,2),'01':Fraction(1,2)})
+    for direction,signed,distance,expected in [(0,0,1,'0011'),(1,0,1,'1100'),(0,1,255,'1100'),(1,1,255,'0011'),(0,0,255,'1100'),(0,0,0,'1001'),(1,1,128,'1001')]:
+        check(0,4,[3,2,1,0],[assign([0,1,2,3],n(5,direction,signed)+const(4,9)+const(8,distance))],{expected:1})
+    check(0,64,[63,0],[assign(list(range(64)),n(5,0,1)+const(64,1)+const(64,1<<63))],{'01':1})
+    # Validate new nodes even in an untaken branch, and reject malformed flags.
+    for invalid in [n(6),n(5,2),n(5,0,2),n(4)+read(1),n(5,0,0)+const(64,1)+read(1),n(4)*32+const(1,0)]:
+        run(exact,payload(exact,0,1,[0],[branch(const(1,0),[branch(binary(5,invalid,const(64,0)),[])])]))
+    rotated=payload(exact,0,4,[3,2,1,0],[assign([0,1,2,3],n(5,0,1)+const(4,9)+const(8,255))])
+    for end in range(len(rotated)-12,len(rotated)):run(exact,rotated[:end])
     # Explicit expected values avoid deriving expectations from wire codes.
     for op,value in enumerate([1,7,6,40,0,0,1,0,0,1,1]):
         width=4 if op<5 else 1

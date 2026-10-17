@@ -12,7 +12,7 @@ template<class Reader>
 QuantumClassical::Bits node(Reader &reader,unsigned depth,unsigned &count) {
  using Bits=QuantumClassical::Bits;
  if(depth>=32 || ++count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 nodes.");
- unsigned kind=static_cast<unsigned>(reader.integer(3));
+ unsigned kind=static_cast<unsigned>(reader.integer(5));
  if(kind==0) {
   unsigned width=static_cast<unsigned>(reader.integer(64));
   auto value=reader.integer(std::numeric_limits<std::uint64_t>::max());
@@ -24,6 +24,13 @@ QuantumClassical::Bits node(Reader &reader,unsigned depth,unsigned &count) {
   return Bits::read(indices);
  }
  if(kind==2)return Bits::complement(node(reader,depth+1,count));
+ if(kind==4)return Bits::populationCount(node(reader,depth+1,count));
+ if(kind==5) {
+  const auto direction=reader.integer(1)==0 ? Bits::Direction::Left : Bits::Direction::Right;
+  const auto interpretation=reader.integer(1)==0 ? Bits::Distance::Unsigned : Bits::Distance::Signed;
+  auto value=node(reader,depth+1,count);auto distance=node(reader,depth+1,count);
+  return Bits::rotate(direction,value,distance,interpretation);
+ }
  // Explicit wire mapping remains stable if the C++ enum is reordered.
  const Bits::Binary operations[]={Bits::Binary::And,Bits::Binary::Or,Bits::Binary::Xor,
   Bits::Binary::ShiftLeft,Bits::Binary::ShiftRight,Bits::Binary::Equal,Bits::Binary::NotEqual,

@@ -26,6 +26,15 @@ length-prefixed mathematical strings used by gate and channel operations.
 | 1: read | Index count, classical indices in least-significant-first order |
 | 2: complement | Operand node |
 | 3: binary | Operator code, left node, right node |
+| 4: population count | Operand node |
+| 5: rotation | Direction (0 left, 1 right), distance interpretation (0 unsigned, 1 signed), value node, distance node |
+
+Population count returns an unsigned 64-bit internal value, from 0 through 64.
+Rotation preserves the value width. Signed distances use two's-complement at
+that operand's declared width; negative distances reverse the direction.
+Distances wrap modulo the value width. Zero and full-width rotations preserve
+the value. These node codes extend QEXACT2 and QSAMPLE3; older workers reject
+these new nodes, while all prior node encodings retain their meaning.
 
 Operator codes are 0 AND, 1 OR, 2 XOR, 3 left shift, 4 right shift, 5 equal,
 6 unequal, 7 less, 8 less-or-equal, 9 greater, and 10 greater-or-equal.
