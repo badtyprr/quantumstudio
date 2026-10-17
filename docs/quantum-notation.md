@@ -315,8 +315,9 @@ bundled executable.
 
 #### Dynamic trajectory requests
 
-The same `--sample` entry point also accepts `QSAMPLE2\n`. The GUI continues
-using QSAMPLE1 until its dynamic-circuit controls are connected. QSAMPLE2 follows
+The same `--sample` entry point also accepts `QSAMPLE2\n`. The circuit sampling window
+uses QSAMPLE2 for mid-circuit measurement, reset and feedback, and QSAMPLE1 for
+unitary circuits with optional terminal measurements. QSAMPLE2 follows
 with LF-terminated unsigned integers: qubits, shots, seed, classical bit count
 (0-64), output bit count, each output classical bit, and step count. The size,
 shot, qubit, expression, gate-target and step limits match QSAMPLE1.
@@ -340,7 +341,11 @@ quantum wire order. No implicit final measurements occur.
 
 The response adds `classical_bits`; `wires` now identifies the requested classical
 bits in left-to-right output order. The explicit ordering avoids relying on a
-SDK's display convention. Identical requests reproduce counts using the same
+SDK's display convention. The GUI maps measurement records to the corresponding
+wire index, then appends final measurements for the displayed output wires.
+Its feedback operations measure their control wires at that step, matching
+exact `feedforward()` semantics; they do not refer to an earlier measurement.
+Noise-channel sampling is not yet supported. Identical requests reproduce counts using the same
 backend version. Errors return no partial counts; process termination cancels.
 
 ### Library ABI compatibility

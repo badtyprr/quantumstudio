@@ -754,12 +754,27 @@ class CircuitComposer : Window {
   return step.Gate=="GPhase" ? "(exp(i*("+step.Angle+"))*I)" : step.Gate+(NeedsAngle(step.Gate) ? "("+step.Angle+")" : "");
  }
  public List<NumericalSampling.Gate> SamplingGates() {
-  var result=new List<NumericalSampling.Gate>();bool measured=false;
+  var result=new List<NumericalSampling.Gate>();bool measured=false,dynamic=false;
   foreach(var step in steps) {
-   if(step.Gate=="Measure") {measured=true;continue;}
-   if(measured || step.Gate=="Reset" || Noise(step.Gate) || Feedback(step.Gate))
-    throw new InvalidOperationException("Sampling currently supports unitary circuits with optional terminal measurements. Use the calculator for noise, reset, or measurement feedback.");
-   result.Add(new NumericalSampling.Gate {Expression=GateExpression(step),Wires=(int[])step.Wires.Clone()});
+   if(step.Gate=="Measure")measured=true;
+   else if(measured || step.Gate=="Reset" || Feedback(step.Gate))dynamic=true;
+  }
+  foreach(var step in steps) {
+   // Terminal measurements can use the faster single-state sampler.
+   if(step.Gate=="Measure" && !dynamic)continue;
+   if(Noise(step.Gate))throw new InvalidOperationException("Sampling noise channels is not yet supported. Use exact State or Probabilities for this circuit.");
+   if(step.Gate=="Measure" || step.Gate=="Reset") {
+    result.Add(new NumericalSampling.Gate {Kind=step.Gate=="Measure" ? NumericalSampling.Operation.Measure : NumericalSampling.Operation.Reset,Wires=(int[])step.Wires.Clone()});
+   } else if(Feedback(step.Gate)) {
+    // Editor feedback measures now, as feedforward() does in exact evaluation.
+    // Store each result before applying the condition to preserve correlations.
+    string bits=FeedbackBits(step.Gate);ulong mask=0,value=0;
+    for(int k=0;k<bits.Length;k++) {
+     int wire=step.Wires[k];mask|=1UL<<wire;if(bits[k]=='1')value|=1UL<<wire;
+     result.Add(new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{wire}});
+    }
+    result.Add(new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Mask=mask,Value=value,Expression=FeedbackGate(step.Gate).ToString(),Wires=new[]{step.Wires[bits.Length]}});
+   } else result.Add(new NumericalSampling.Gate {Expression=GateExpression(step),Wires=(int[])step.Wires.Clone()});
   }
   return result;
  }
