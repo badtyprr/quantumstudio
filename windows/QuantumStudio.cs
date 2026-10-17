@@ -131,7 +131,7 @@ class QuantumStudio {
   Example("Overlap", "⟨+|0⟩");
   Example("Reduced", "ptrace(density((|00⟩ + |11⟩)/sqrt(2)), 1)");
   Example("Gates", "H† H");
-  Example("Phase", "\\braket{i|Y|i}");
+  Example("Phase", "<i|Y|i>");
   Example("Grover", "probs((2 density(|+⟩ ⊗ |+⟩) - (I ⊗ I)) CZ (H ⊗ H) |00⟩)");
   Example("Fourier", "QFT(2) |01⟩");
   foreach(string symbol in new [] {"|0⟩", "|1⟩", "|+⟩", "⟨0|", "⊗", "†", "H", "X", "Y", "Z", "π", "√"}) {

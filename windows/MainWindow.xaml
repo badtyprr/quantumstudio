@@ -26,7 +26,7 @@
       <Button x:Name="Overlap" Content="State overlap" FontSize="12" Padding="10,8"/>
       <Button x:Name="Reduced" Content="Reduced density" FontSize="12" Padding="10,8"/>
       <Button x:Name="Gates" Content="Gate identities" FontSize="12" Padding="10,8"/>
-      <Button x:Name="Phase" Content="Complex phase" FontSize="12" Padding="10,8"/>
+      <Button x:Name="Phase" Content="Complex phase" ToolTip="Type &lt;i|Y|i&gt; to measure Pauli Y in the +i state." FontSize="12" Padding="10,8"/>
       <Button x:Name="Grover" Content="Grover search" FontSize="12" Padding="10,8"/>
       <Button x:Name="Fourier" Content="Fourier transform" FontSize="12" Padding="10,8"/>
      </StackPanel>
