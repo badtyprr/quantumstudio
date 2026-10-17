@@ -106,6 +106,71 @@ bool StateVector::measure(unsigned wire,double uniformDraw,const Cancellation &c
  }catch(...) {valid_=false;throw;}
  return outcome;
 }
+std::size_t StateVector::channel(const std::vector<std::vector<Complex>> &kraus,
+ const std::vector<unsigned> &wires,double uniformDraw,const Cancellation &cancelled) {
+ requireValid();
+ if(wires.empty() || wires.size()>3 || kraus.empty() || kraus.size()>256)
+  throw std::invalid_argument("Local channel needs 1-3 wires and 1-256 Kraus matrices");
+ if(!std::isfinite(uniformDraw) || uniformDraw<0 || uniformDraw>=1)
+  throw std::invalid_argument("Channel draw must be finite in [0,1)");
+ checkCancellation(cancelled);
+ const std::size_t dimension=std::size_t(1)<<wires.size();
+ std::size_t mask=0,bits[3],offsets[8]={};
+ for(std::size_t j=0;j<wires.size();++j) {
+  if(wires[j]>=qubits_)throw std::out_of_range("Channel wire is outside the register");
+  bits[j]=std::size_t(1)<<(qubits_-1-wires[j]);
+  if(mask&bits[j])throw std::invalid_argument("Channel wires must be distinct");
+  mask|=bits[j];
+ }
+ for(const auto &matrix:kraus) {
+  if(matrix.size()!=dimension*dimension)throw std::invalid_argument("Kraus dimensions do not match wires");
+  for(const auto &v:matrix)if(!std::isfinite(v.real()) || !std::isfinite(v.imag()))
+   throw std::invalid_argument("Kraus entries must be finite");
+ }
+ for(std::size_t a=0;a<dimension;++a)for(std::size_t b=0;b<dimension;++b) {
+  checkCancellation(cancelled);Complex inner=0;
+  for(const auto &matrix:kraus)for(std::size_t r=0;r<dimension;++r)
+   inner+=std::conj(matrix[r*dimension+a])*matrix[r*dimension+b];
+  if(!std::isfinite(std::abs(inner)) || std::abs(inner-Complex(a==b ? 1 : 0))>1e-12)
+   throw std::invalid_argument("Kraus channel is not trace preserving within numerical tolerance");
+ }
+ for(std::size_t k=0;k<dimension;++k)for(std::size_t j=0;j<wires.size();++j)
+  if(k&(std::size_t(1)<<(wires.size()-1-j)))offsets[k]|=bits[j];
+ long double masses[256]={};
+ // First pass computes probabilities without mutating the state or retaining
+ // a full vector per branch. A second pass applies only the chosen matrix.
+ for(std::size_t base=0;base<amplitudes_.size();++base) {
+  if((base&4095)==0)checkCancellation(cancelled);
+  if(base&mask)continue;
+  Complex input[8];for(std::size_t c=0;c<dimension;++c)input[c]=amplitudes_[base|offsets[c]];
+  for(std::size_t k=0;k<kraus.size();++k)for(std::size_t r=0;r<dimension;++r) {
+   Complex v=0;for(std::size_t c=0;c<dimension;++c)v+=kraus[k][r*dimension+c]*input[c];
+   const long double real=v.real(),imag=v.imag();masses[k]+=real*real+imag*imag;
+  }
+ }
+ long double total=0;for(std::size_t k=0;k<kraus.size();++k)total+=masses[k];
+ if(!std::isfinite(total) || std::abs(total-1)>1e-8L)
+  throw std::runtime_error("Channel input has invalid numerical normalization");
+ const long double draw=static_cast<long double>(uniformDraw)*total;
+ long double cumulative=0;std::size_t selected=kraus.size();
+ for(std::size_t k=0;k<kraus.size();++k) {
+  cumulative+=masses[k];if(masses[k]>0 && draw<cumulative) {selected=k;break;}
+ }
+ if(selected==kraus.size())throw std::runtime_error("Channel sampling lost probability mass");
+ const long double scale=1/std::sqrt(masses[selected]);checkCancellation(cancelled);
+ try {
+  for(std::size_t base=0;base<amplitudes_.size();++base) {
+   if((base&4095)==0)checkCancellation(cancelled);
+   if(base&mask)continue;
+   Complex input[8];for(std::size_t c=0;c<dimension;++c)input[c]=amplitudes_[base|offsets[c]];
+   for(std::size_t r=0;r<dimension;++r) {
+    Complex v=0;for(std::size_t c=0;c<dimension;++c)v+=kraus[selected][r*dimension+c]*input[c];
+    amplitudes_[base|offsets[r]]=Complex(static_cast<double>(v.real()*scale),static_cast<double>(v.imag()*scale));
+   }
+  }
+ }catch(...) {valid_=false;throw;}
+ return selected;
+}
 void StateVector::apply(const std::vector<Complex> &unitary,
                          const std::vector<unsigned> &wires,
                          const Cancellation &cancelled) {
