@@ -13,6 +13,38 @@ template<class E,class F>void reject(F f){bool caught=false;try{f();}catch(const
 }
 int main(){try {
  {
+ using Int=QuantumClassical::Integer;using Type=QuantumClassical::IntegerType;using Expr=QuantumClassical::IntegerExpression;using Value=QuantumClassical::TypedInteger;
+ for(unsigned width=1;width<=64;++width)for(auto sign:{Int::Signedness::Signed,Int::Signedness::Unsigned}) {
+  auto type=Type::sized(sign,width);std::vector<unsigned> indices;for(unsigned k=0;k<width;++k)indices.push_back(k);
+  auto mask=width==64 ? ~std::uint64_t(0) : (std::uint64_t(1)<<width)-1;
+  auto bits=Bits::fromInteger(Expr::read(type,indices));check(bits.width()==width);
+  for(auto value:{std::uint64_t(0),std::uint64_t(1),std::uint64_t(1)<<(width-1),mask}) {
+   check(bits.evaluate(value,width)==value);
+   check(Bits::fromInteger(Expr::constant(Value::fromBits(type,value))).evaluate(0,0)==value);
+  }
+  reject<std::out_of_range>([&]{bits.validate(width-1);});
+ }
+ auto machine=Type::machine(Int::Signedness::Signed),sized=Type::sized(Int::Signedness::Signed,3);
+ auto one=Expr::constant(Value::fromBits(machine,1));
+ reject<std::invalid_argument>([&]{Bits::fromInteger(one);});
+ auto read=Expr::read(sized,{0,1,2});
+ auto increment=Bits::fromInteger(Expr::cast(sized,Expr::binary(Int::Operation::Add,read,one)));
+ check(assign(3,4,{1,2,3},increment)==9); // RHS reads the old overlapping storage.
+ check(increment.evaluate(7,3)==0); // Signed -1 plus one, then explicit width.
+ reject<std::out_of_range>([&]{increment.evaluate(8,3);});
+ reject<std::invalid_argument>([&]{assign(0,3,{0,1},increment);});
+ auto quotient=Bits::fromInteger(Expr::cast(sized,Expr::binary(Int::Operation::Divide,one,read)));
+ quotient.validate(3);check(true); // Structural checks never divide a fabricated zero.
+ reject<std::domain_error>([&]{quotient.evaluate(0,3);});
+ check(quotient.evaluate(1,3)==1);
+ auto deep=Expr::cast(sized,one);for(unsigned k=2;k<31;++k)deep=Expr::cast(sized,deep);
+ auto boundary=Bits::fromInteger(deep);check(boundary.evaluate(0,0)==1);
+ reject<std::length_error>([&]{Bits::complement(boundary);});
+ reject<std::length_error>([&]{Bits::fromInteger(Expr::cast(sized,deep));});
+ auto broad=one;for(unsigned k=0;k<8;++k)broad=Expr::binary(Int::Operation::Add,broad,broad);
+ reject<std::length_error>([&]{Bits::fromInteger(Expr::cast(sized,broad));});
+ }
+ {
  using Int=QuantumClassical::Integer;using Type=QuantumClassical::IntegerType;using Expr=QuantumClassical::IntegerExpression;
  auto machine=Type::machine(Int::Signedness::Signed);
  auto constant=[&](std::uint64_t value){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,value));};

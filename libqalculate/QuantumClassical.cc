@@ -12,7 +12,7 @@ std::uint64_t mask(unsigned width) {
 }
 }
 struct Bits::Node {
- enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate, IntegerCompare, Logical };
+ enum class Kind { Constant, Read, Complement, Binary, PopulationCount, Rotate, IntegerCompare, Logical, IntegerBits };
  Kind kind;Binary operation=Binary::And;
  Direction direction=Direction::Left;Distance interpretation=Distance::Unsigned;
  unsigned width,depth=1,count=1;std::uint64_t value=0,references=0;
@@ -29,6 +29,7 @@ struct Bits::Node {
  }
  std::uint64_t evaluate(std::uint64_t record) const {
   if(kind==Kind::Constant)return value;
+  if(kind==Kind::IntegerBits)return integerLeft->evaluate(record,64).value().bits();
   if(kind==Kind::Read) {
    std::uint64_t result=0;
    for(unsigned k=0;k<indices.size();++k)result|=((record>>indices[k])&1)<<k;
@@ -125,6 +126,13 @@ Bits Bits::integerCompare(Binary operation,const IntegerExpression &left,const I
  if(node->depth>32 || node->count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 expanded nodes");
  node->integerLeft=std::make_shared<const IntegerExpression>(left);
  node->integerRight=std::make_shared<const IntegerExpression>(right);return Bits(node);
+}
+Bits Bits::fromInteger(const IntegerExpression &operand) {
+ if(!operand.type().explicitWidth())throw std::invalid_argument("Bit casts require an explicitly sized integer");
+ auto node=std::make_shared<Node>(Node::Kind::IntegerBits,operand.type().width());
+ node->depth=1+operand.depth();node->count=1+operand.count();node->references=operand.references();
+ if(node->depth>32 || node->count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 expanded nodes");
+ node->integerLeft=std::make_shared<const IntegerExpression>(operand);return Bits(node);
 }
 Bits Bits::populationCount(const Bits &operand) {
  auto node=std::make_shared<Node>(Node::Kind::PopulationCount,64);
