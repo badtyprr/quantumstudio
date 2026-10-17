@@ -254,6 +254,45 @@ def state_request(definitions, expression):
     return value + expression
 
 
+family = [("psi(alpha)", "cos(alpha)|0>+sin(alpha)|1>")]
+for flags in [(), ("--approx",)]:
+    for expression, cells in [("|psi(0)>", [["1"], ["0"]]), ("|psi(pi/2)>", [["0"], ["1"]])]:
+        from decimal import Decimal
+        value = data(state_request(family, "quantum:"+expression), "--states", *flags)
+        assert (value["rows"], value["columns"]) == (2, 1)
+        if not flags:
+            assert value["cells"] == cells
+        assert all(abs(Decimal(value["cells"][r][0].replace("−", "-"))-Decimal(cells[r][0])) < Decimal("1e-25") for r in range(2)), value
+    assert abs(Decimal(data(state_request(family, "quantum:<psi(0)|psi(pi/2)>"), "--states", *flags)["text"].replace("−", "-"))) < Decimal("1e-25")
+    symbolic = data(state_request(family, "quantum:|psi(t)>"), "--states", *flags)
+    assert symbolic["rows"] == 2 and "t" in symbolic["text"]
+    assert data(state_request(family, "quantum:"+symbolic["copy_text"]), "--states", *flags) == symbolic
+    undeclared = data("quantum:|unknown(pi/8)>", *flags)
+    assert "qstatecall" in undeclared["text"]
+    if not flags:
+        assert data("quantum:"+undeclared["copy_text"], *flags) == undeclared
+    else:
+        # Copied decimal literals are exact decimals, so approximation metadata
+        # need not survive. Resolve the same family and compare its value.
+        declaration = [("unknown(x)", "x*|0>")]
+        original = data(state_request(declaration, "quantum:|unknown(pi/8)>"), "--states", *flags)
+        copied = data(state_request(declaration, "quantum:"+undeclared["copy_text"]), "--states", *flags)
+        assert (copied["rows"], copied["columns"]) == (2, 1)
+        assert all(abs(Decimal(copied["cells"][r][0].replace("−", "-"))-Decimal(original["cells"][r][0].replace("−", "-"))) < Decimal("1e-25") for r in range(2))
+    assert data(state_request([("scaled(x)", "x*|0>")], "quantum:<scaled(2)|scaled(2)>"), "--states", *flags)["text"] == "4"
+    for bad in ["|psi([1;2])>", "|psi(infinity)>", "|psi(undefined)>"]:
+        run(state_request(family, "quantum:"+bad), "--states", *flags, success=False)
+for bad_family in [
+    [("psi()", "|0>")], [("psi(x,y)", "|0>")], [("psi(X)", "X|0>")],
+    [("psi(x)", "|psi(x)>")], [("psi(x)", "|missing(x)>")],
+    [("psi(x)", "|0>"), ("psi(y)", "|1>")],
+]:
+    run(state_request(bad_family, "1"), "--states", success=False)
+assert data(state_request(family, "alpha"), "--states") == data("alpha")
+assert data(state_request([("scaled(m)", "m*|0>")], "1 m"), "--states") == data("1 m")
+assert data(state_request([("fixed", "|1>"), ("scaled(fixed)", "fixed*|0>")], "quantum:|fixed>"), "--states")["cells"] == [["0"], ["1"]]
+assert data(state_request([("first(x)", "x*|0>"), ("second(x)", "x*|1>")], "quantum:|first(2)>+|second(3)>"), "--states")["cells"] == [["2"], ["3"]]
+
 definitions = [("Bell", "|Phi+>"), ("after CZ", "CZ|Bell>")]
 for flags in [(), ("--approx",)]:
     for expression, expected in [("<Bell|Bell>", 1), ("<Bell|after CZ>", 0), ("<after CZ|after CZ>", 1)]:

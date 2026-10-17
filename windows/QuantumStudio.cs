@@ -793,6 +793,11 @@ class QuantumStudio {
     if(states[0].Expression!="|Phi+>")throw new Exception("History did not restore its state definitions.");
     states=new StateDefinition[0];OpenSession(sessionPath);await Calculate();
     if(states.Length!=2 || states[1].Name!="after CZ" || output.Text!="1")throw new Exception("Saved named states did not restore and recalculate.");
+    states=new[]{new StateDefinition {Name="psi(alpha)",Expression="cos(alpha)|0>+sin(alpha)|1>"}};RefreshStates();
+    input.Text="<psi(0)|psi(pi/2)>";await Calculate();
+    if(output.Text!="0")throw new Exception("Parameterized-state GUI overlap failed: "+output.Text);
+    SessionStore.Save(sessionPath,CaptureSession());states=new StateDefinition[0];OpenSession(sessionPath);await Calculate();
+    if(states.Length!=1 || states[0].Name!="psi(alpha)" || output.Text!="0")throw new Exception("Saved state family did not restore and recalculate.");
     SessionStore.Save(sessionPath,originalSession);OpenSession(sessionPath);
     if(copyText!=null)throw new Exception("Restoring a session retained a stale copied result.");
     mode.SelectedIndex=0;evaluation.SelectedIndex=0;

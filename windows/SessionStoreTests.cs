@@ -70,6 +70,11 @@ class SessionStoreTests {
    Reject(delegate {SessionStore.StateRequest(States(),"1\0ignored");});
    Reject(delegate {SessionStore.StateRequest(States(),new string('x',32769));});
    Require(Directory.GetFiles(directory,"*.tmp").Length==0,"State save left temporary files behind");
+   expected=WithStates();expected.States=new[]{new StateDefinition {Name="psi(alpha)",Expression="cos(alpha)|0>+sin(alpha)|1>"}};
+   expected.History[0].States=SessionStore.CopyStates(expected.States);
+   SessionStore.Save(path,expected);actual=SessionStore.Load(path);
+   Require(actual.States[0].Name=="psi(alpha)" && actual.States[0].Expression==expected.States[0].Expression,"State family did not survive saving");
+   Require(actual.History[0].States[0].Name=="psi(alpha)","History lost its state family");
    Console.WriteLine("PASS: "+checks+" session storage checks");return 0;
   }catch(Exception e){Console.Error.WriteLine(e);return 1;}
   finally {foreach(string file in Directory.GetFiles(directory))File.Delete(file);Directory.Delete(directory);}

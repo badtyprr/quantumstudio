@@ -3,6 +3,8 @@
 #include <libqalculate/MathStructure.h>
 #include <libqalculate/Function.h>
 #include <libqalculate/Variable.h>
+#include <libqalculate/Unit.h>
+#include <libqalculate/QuantumIndexed.h>
 #include <stdexcept>
 #include "quantum-sampling-request.h"
 #include <set>
@@ -79,15 +81,40 @@ static void defineStates(Calculator &calculator,std::string &input) {
   std::string expression=input.substr(position,expressionSize);position+=expressionSize;
   if(expression.find('\0')!=std::string::npos)throw std::runtime_error("State definitions cannot contain NUL.");
   if(name.find_first_of("\r\n\t")!=std::string::npos || name.find('\0')!=std::string::npos || name.front()==' ' || name.back()==' ' || !names.insert(name).second || calculator.getActiveVariable(name))throw std::runtime_error("Duplicate, reserved, or invalid state name: "+name);
+  std::string familyName,parameterName;MathStructure parameter;Variable *parameterBinding=NULL,*previousParameter=NULL;Unit *previousParameterUnit=NULL;
+  size_t open=name.find('(');
+  if(open!=std::string::npos) {
+   if(open==0 || name.back()!=')')throw std::runtime_error("Use name(parameter) for a state family.");
+   familyName=name.substr(0,open);parameterName=name.substr(open+1,name.size()-open-2);
+   for(const std::string &part:{familyName,parameterName}) {
+    if(part.empty() || std::isdigit((unsigned char)part.front()))throw std::runtime_error("Family names and parameters must be identifiers.");
+    for(unsigned char c:part)if(c<128 && !std::isalnum(c) && c!='_')throw std::runtime_error("Family names and parameters must be identifiers.");
+   }
+   if(!names.insert("family:"+familyName).second)throw std::runtime_error("Duplicate state family.");
+   previousParameter=calculator.getActiveVariable(parameterName);
+   previousParameterUnit=calculator.getActiveUnit(parameterName);
+   // Forced registration destroys conflicting local variables. Suspend the
+   // previous bindings instead, and restore them after parsing this body.
+   if(previousParameter)previousParameter->setActive(false);
+   if(previousParameterUnit)previousParameterUnit->setActive(false);
+   parameterBinding=new UnknownVariable("",parameterName);calculator.addVariable(parameterBinding,false,false);
+   parameter=calculator.calculate("quantum: "+parameterName,exact);
+   if(messages(calculator) || !parameter.isVariable() || parameter.variable()!=parameterBinding)throw std::runtime_error("A family parameter must be an unambiguous scalar variable.");
+  }
   MathStructure label=calculator.calculate("quantum: |"+name+">",exact);
-  if(messages(calculator) || !label.isFunction() || label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name)throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
+  if(messages(calculator) || !label.isFunction() || (familyName.empty() ? label.function()->referenceName()!="qketstate" || label.size()!=1 || !label[0].isSymbolic() || label[0].symbol()!=name : label.function()->referenceName()!="qstatecall" || label.size()!=2 || label[0].symbol()!=familyName))throw std::runtime_error("State name must be an unambiguous named ket label: "+name);
   MathStructure state=calculator.calculate("quantum: "+expression,exact);
   if(messages(calculator) || !state.isMatrix() || state.columns()!=1 || state.rows()==0 || state.rows()>1024)throw std::runtime_error("State "+name+" must resolve to a column vector of at most 1024 rows. Define referenced states earlier; unknown or cyclic references are not allowed.");
   for(size_t r=1;r<=state.rows();++r) {
    const MathStructure &cell=*state.getElement(r,1);
    if(!cell.representsScalar() || cell.isUndefined() || (cell.isNumber() && cell.number().isInfinite(false)))throw std::runtime_error("State amplitudes must be finite scalar expressions: "+name);
   }
-  calculator.addVariable(new KnownVariable("",name,state));
+  if(familyName.empty())calculator.addVariable(new KnownVariable("",name,state));
+  else {
+   defineQuantumStateFamily(calculator,familyName,state,parameter);
+   parameterBinding->setActive(false);if(previousParameter)previousParameter->setActive(true);
+   if(previousParameterUnit)previousParameterUnit->setActive(true);
+  }
  }
  input.erase(0,position);
  if(input.empty() || input.size()>32768 || input.find('\0')!=std::string::npos)throw std::runtime_error("State request expression must contain 1 to 32768 bytes without NUL.");
