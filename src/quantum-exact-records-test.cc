@@ -53,6 +53,15 @@ int main() {try {
  rejects<std::invalid_argument>([&]{weights(plus,1,1,{0,0},8,exact);});
  rejects<std::out_of_range>([&]{weights(plus,1,1,{1},8,exact);});
  rejects<std::invalid_argument>([&]{weights({{0,calc("[1;0]")}},1,1,{},8,exact);});
+ rejects<std::invalid_argument>([&]{weights({{0,calc("[infinity,0;0,0]")}},1,1,{},8,exact);});
+ MathStructure nested=plus.at(0);*nested.getElement(1,1)=calc("[1,2]");
+ rejects<std::invalid_argument>([&]{weights({{0,nested}},1,1,{},8,exact);});
+ MathStructure singleton;singleton.clearMatrix();singleton.resizeMatrix(1,1,m_one);
+ equal(weights({{0,singleton}},0,0,{},1,exact).at(0),"1");
+ rejects<std::out_of_range>([&]{measure({{0,singleton}},0,1,0,0,1,exact);});
+ std::vector<unsigned> allBits;for(unsigned bit=64;bit>0;--bit)allBits.push_back(bit-1);
+ equal(weights(highRecords,1,64,allBits,8,exact).at(high),"1/2");
+ check(weights({},1,1,{},4,exact).empty());
  calculator.startControl();calculator.abort();
  rejects<std::runtime_error>([&]{measure(plus,1,1,0,0,8,exact);});
  calculator.stopControl();
