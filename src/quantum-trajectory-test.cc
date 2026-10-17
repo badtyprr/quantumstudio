@@ -18,6 +18,41 @@ int main(){try {
  auto signedByte=Type::sized(Int::Signedness::Signed,8),machine=Type::machine(Int::Signedness::Signed);
  auto variable=Expr::read(signedByte,{0,1,2,3,4,5,6,7});
  auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
+ {
+ auto slot=Expr::variable(signedByte,0);
+ auto positiveSlot=Bits::integerCompare(Op::Greater,slot,literal(0));
+ auto emit=Step::assign({0},Bits::constant(1,1));
+ std::vector<Type> types={signedByte};
+ auto run=[&](const std::vector<Step> &program,unsigned shots=20) {
+  return sampleTrajectories(0,1,shots,7,{0},program,types,16);
+ };
+ check(run({Step::storeInteger(0,literal(3)),Step::branch(positiveSlot,{emit})}).at(1)==20);
+ check(run({Step::storeInteger(0,literal(255)),Step::branch(positiveSlot,{emit})}).at(0)==20); // Cast to signed byte is -1.
+ check(run({Step::storeInteger(0,literal(3)),Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(5))),Step::branch(positiveSlot,{emit})}).at(0)==20);
+ check(run({Step::branch(Bits::constant(1,0),{Step::storeInteger(0,slot)})}).at(0)==20);
+ rejects<std::domain_error>([&]{run({Step::branch(positiveSlot,{emit})});});
+ rejects<std::domain_error>([&]{run({Step::storeInteger(0,literal(1)),Step::clearInteger(0),Step::branch(positiveSlot,{emit})});});
+ rejects<std::domain_error>([&]{run({Step::storeInteger(0,Expr::binary(Int::Operation::Divide,literal(1),literal(0)))});});
+ rejects<std::out_of_range>([&]{run({Step::branch(Bits::constant(1,0),{Step::storeInteger(1,literal(1))})},0);});
+ rejects<std::out_of_range>([&]{run({Step::clearInteger(1)},0);});
+ rejects<std::invalid_argument>([&]{run({Step::storeInteger(0,Expr::variable(machine,0))},0);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,1,0,7,{0},{Step::storeInteger(0,literal(1))},16);});
+ auto measured=Expr::read(Type::sized(Int::Signedness::Unsigned,1),{0});
+ std::vector<Step> feedForward={Step::gate(H,{0}),Step::measure(0,0),Step::storeInteger(0,measured),
+  Step::assign({0},Bits::constant(1,0)),Step::branch(positiveSlot,{Step::assign({0},Bits::constant(1,1))})};
+ auto expected=sampleTrajectories(1,1,1000,42,{0},{Step::gate(H,{0}),Step::measure(0,0)},32);
+ check(expected.size()==2);
+ // Seed 42 begins with a one, then includes zeros. A later zero must not
+ // inherit the initialized slot from an earlier shot.
+ check(sampleTrajectories(1,1,1,42,{0},{Step::gate(H,{0}),Step::measure(0,0)},32).at(1)==1);
+ rejects<std::domain_error>([&]{sampleTrajectories(1,1,1000,42,{0},
+  {Step::gate(H,{0}),Step::measure(0,0),Step::branch(1,1,{Step::storeInteger(0,literal(1))}),Step::branch(positiveSlot,{})},types,32);});
+ check(run({Step::storeInteger(0,literal(1)),Step::branch(positiveSlot,{Step::storeInteger(0,literal(0)),emit})}).at(1)==20);
+
+ check(sampleTrajectories(1,1,1000,42,{0},feedForward,types,32)==expected);
+ check(sampleTrajectories(0,0,10,1,{}, {Step::storeInteger(0,literal(3))},types,16).at(0)==10);
+ rejects<Cancelled>([&]{sampleTrajectories(0,0,10,1,{}, {Step::storeInteger(0,literal(3))},types,16,[]{return true;});});
+ }
  auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
  auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
  auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
