@@ -28,10 +28,10 @@ sealed class ClassicalProgramWindow : Window {
   history=new ClassicalProgramHistory(ClassicalCircuit.From(new ClassicalCircuit.Document {Version=2,Qubits=1,Registers=new[]{new ClassicalCircuit.Register {Name="c",Size=1}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]}));
   saved=history.Current.Serialize();Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e) {if(!Discard())e.Cancel=true;};
   var root=new DockPanel {Margin=new Thickness(20)};Content=new ScrollViewer {Content=root,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
-  tree.Height=270;SizeChanged+=delegate {tree.Height=Math.Max(180,ActualHeight-580);};
+  tree.Height=140;SizeChanged+=delegate {tree.Height=Math.Max(140,ActualHeight-760);};
   var top=new StackPanel();DockPanel.SetDock(top,Dock.Top);root.Children.Add(top);
   top.Children.Add(new TextBlock {Text="Quantum circuit · classical control",FontSize=26,FontWeight=FontWeights.SemiBold});
-  top.Children.Add(new TextBlock {Text="Measurements save into named registers. Branches read the saved bits once when entered.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,6,0,12)});
+  top.Children.Add(new TextBlock {Text="Measurements save into registers. Variables hold typed values; branches choose a body once.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,6,0,12)});
   var commands=new WrapPanel();top.Children.Add(commands);
   Button(commands,"Open…",Open);Button(commands,"Save…",Save);Button(commands,"Sample…",()=>new SamplingWindow(this,history.Current).Show());
   Button(commands,"Exact probabilities…",()=>new ExactCircuitWindow(this,history.Current).Show());
@@ -43,7 +43,7 @@ sealed class ClassicalProgramWindow : Window {
   top.Children.Add(new TextBlock {Text="Registers occupy consecutive bits starting at 0. Output order is explicit; no final measurements are added. Changing register sizes changes bit allocation.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,4,0,10)});
   var declarations=new WrapPanel();top.Children.Add(declarations);
   Field(declarations,"Integer variables · name:type",variables,440);Button(declarations,"Apply variables",ApplyVariables);
-  top.Children.Add(new TextBlock {Text="Example: counter:int[8], attempts:uint[16]. Assign a value before reading it. Declaration order fixes slot identity; referenced slots cannot be removed or reordered.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted});
+  top.Children.Add(new TextBlock {Text="Example: counter:int[8], attempts:uint[16]. Assign a value before using it. Keep existing variables in order.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted});
   var bottom=new StackPanel();DockPanel.SetDock(bottom,Dock.Bottom);root.Children.Add(bottom);
   bottom.Children.Add(status);
   var editor=new WrapPanel();bottom.Children.Add(editor);
@@ -56,7 +56,7 @@ sealed class ClassicalProgramWindow : Window {
   Field(editor,"Condition mask · decimal",mask,170);Field(editor,"Condition value · decimal",value,170);
   kind.SelectionChanged+=delegate {SetFields();};SetFields();
   var edits=new WrapPanel();bottom.Children.Add(edits);Button(edits,"Add to selected body",()=>ChangeStep(false));Button(edits,"Replace selected",()=>ChangeStep(true));Button(edits,"Delete selected",Delete);
-  bottom.Children.Add(new TextBlock {Text="For bit expressions, use c[0] ^ c[1], popcount(c) == 1 or rotl(c, -1). Assignment targets are classical bit indices. Select Program, Then or Else to append operations. Select an operation to replace or delete it. Exact probabilities preserves fractions and symbolic parameters; Sample estimates outcomes over repeated shots.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,8,0,0)});
+  bottom.Children.Add(new TextBlock {Text="Expressions: counter + 1, c[0] ^ c[1], popcount(c) == 1. Select Program, Then or Else to add an operation. Clear variable makes its value undefined. Exact preserves fractions and symbols; Sample estimates outcomes.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,8,0,0)});
   tree.Resources[SystemColors.HighlightBrushKey]=WorkspaceTheme.Selection;
   tree.Resources[SystemColors.HighlightTextBrushKey]=WorkspaceTheme.Text;
   tree.Resources[SystemColors.InactiveSelectionHighlightBrushKey]=WorkspaceTheme.Selection;
