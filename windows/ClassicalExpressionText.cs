@@ -56,6 +56,16 @@ static class ClassicalExpressionText {
  public static string Format(N value){return FormatNode(value,0);}
  static string FormatNode(N n,int depth) {
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
+  if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast") {
+   string type=(n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width.Value.ToString(CultureInfo.InvariantCulture)+"]");
+   string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1);
+   return type+"("+operand+")";
+  }
+  if(n.Kind=="IntegerBinary") {
+   string[] names={"Add","Subtract","Multiply","Divide","Remainder"},symbols={"+","-","*","/","%"};
+   int code=Array.IndexOf(names,n.Operator);if(code<0)throw new ArgumentException("Unknown integer operator.");
+   return "("+FormatNode(n.Left,depth+1)+" "+symbols[code]+" "+FormatNode(n.Right,depth+1)+")";
+  }
   if(n.Kind=="Constant") {
    ulong value=UInt64.Parse(n.Value,CultureInfo.InvariantCulture);int width=n.Width.Value;var bits=new char[width];
    for(int i=0;i<width;i++)bits[width-i-1]=((value>>i)&1)==0 ? '0' : '1';

@@ -15,6 +15,47 @@ class ClassicalCircuitTests {
    new ClassicalCircuit.Step {Kind="ExpressionBranch",ClassicalValue=new ClassicalCircuit.ExpressionNode {Kind="Read",Bits=new[]{63}},WhenTrue=new[]{Measure(0)},WhenFalse=new ClassicalCircuit.Step[0]}};
   return result;
  }
+ static ClassicalCircuit.Document TypedProgram() {
+  return new ClassicalCircuit.Document {Version=4,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=9}},OutputBits=new[]{8},Steps=new[]{
+   new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0,1,2,3,4,5,6,7},ClassicalValue=Constant(8,"255")},
+   new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{8},ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerCompare",Operator="Less",
+    Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerRead",Signedness="Signed",Width=8,Bits=new[]{0,1,2,3,4,5,6,7}},
+    Right=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"}}}}};
+ }
+ static void TypedChecks() {
+  var original=ClassicalCircuit.From(TypedProgram());var restored=ClassicalCircuit.Load(original.Serialize());
+  Check(restored.Serialize()==original.Serialize());Check(restored.Snapshot().Version==4);
+  Check(restored.Snapshot().Steps[1].ClassicalValue.Left.Signedness=="Signed");
+  Check(restored.SamplingGates()[1].ClassicalExpression.IntegerRight.Type.DeclaredWidth==0);
+  Check(Convert.ToBase64String(NumericalSampling.RequestExact(0,9,new[]{8},original.SamplingGates()))==Convert.ToBase64String(NumericalSampling.RequestExact(0,9,new[]{8},restored.SamplingGates())));
+  Check(Convert.ToBase64String(NumericalSampling.RequestClassical(0,9,10000,1731,new[]{8},original.SamplingGates()))==Convert.ToBase64String(NumericalSampling.RequestClassical(0,9,10000,1731,new[]{8},restored.SamplingGates())));
+  var copy=restored.Snapshot();copy.Steps[1].ClassicalValue.Left.Bits[0]=63;Check(restored.Snapshot().Steps[1].ClassicalValue.Left.Bits[0]==0);
+  foreach(int width in new[]{0,64}) {var d=TypedProgram();d.Steps[1].ClassicalValue.Right.Width=width;var c=ClassicalCircuit.Load(ClassicalCircuit.From(d).Serialize());Check(c.SamplingGates()[1].ClassicalExpression.IntegerRight.Type.DeclaredWidth==width);}
+  foreach(var mutate in new Action<ClassicalCircuit.Document>[] {
+   d=>d.Version=3,d=>d.Version=2,d=>d.Steps[1].ClassicalValue.Operator="And",d=>d.Steps[1].ClassicalValue.Operator="7",
+   d=>d.Steps[1].ClassicalValue.Left.Signedness=null,d=>d.Steps[1].ClassicalValue.Left.Signedness="0",d=>d.Steps[1].ClassicalValue.Left.Signedness="signed",
+   d=>d.Steps[1].ClassicalValue.Left.Width=null,d=>d.Steps[1].ClassicalValue.Left.Width=65,d=>d.Steps[1].ClassicalValue.Left.Width=-1,
+   d=>d.Steps[1].ClassicalValue.Left.Bits[7]=10,d=>d.Steps[1].ClassicalValue.Left.Bits=new[]{0},d=>d.Steps[1].ClassicalValue.Left.Kind="Read",
+   d=>d.Steps[1].ClassicalValue.Right.Kind="Constant",d=>d.Steps[1].ClassicalValue.Right.Value="-1",
+   d=>d.Steps[1].ClassicalValue.Signedness="Signed",d=>d.Steps[1].ClassicalValue.Left.Value="0"}) {
+   var bad=TypedProgram();mutate(bad);Reject(()=>ClassicalCircuit.From(bad));Check(original.Serialize()==restored.Serialize());
+  }
+  Reject(()=>ClassicalCircuit.Load(original.Serialize().Replace("\"Signedness\":\"Signed\"","\"Signedness\":0")));
+  Reject(()=>ClassicalCircuit.Load(original.Serialize().Replace("\"Width\":8","\"Width\":8.5")));
+  var arithmetic=TypedProgram();arithmetic.Steps[1].ClassicalValue.Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerBinary",Operator="Divide",Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="6"},Right=arithmetic.Steps[1].ClassicalValue.Left};
+  var stored=ClassicalCircuit.From(arithmetic);Check(ClassicalCircuit.Load(stored.Serialize()).SamplingGates()[1].ClassicalExpression.IntegerLeft.Operation==ClassicalIntegerExpression.Operator.Divide);
+  var limit=TypedProgram();var leaf=limit.Steps[1].ClassicalValue.Right;
+  var deepInteger=leaf;for(int i=0;i<30;i++)deepInteger=new ClassicalCircuit.ExpressionNode{Kind="IntegerCast",Signedness="Signed",Width=0,Left=deepInteger};
+  limit.Steps[1].ClassicalValue.Left=deepInteger;Check(ClassicalCircuit.From(limit).Snapshot().Version==4);
+  limit.Steps[1].ClassicalValue.Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerCast",Signedness="Signed",Width=0,Left=deepInteger};Reject(()=>ClassicalCircuit.From(limit));
+  var half=leaf;for(int i=0;i<7;i++)half=new ClassicalCircuit.ExpressionNode{Kind="IntegerBinary",Operator="Add",Left=half,Right=half};
+  limit=TypedProgram();limit.Steps[1].ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Complement",Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerCompare",Operator="Equal",Left=half,Right=half}};
+  Check(ClassicalCircuit.From(limit).Snapshot().Version==4);
+  limit.Steps[1].ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Complement",Left=limit.Steps[1].ClassicalValue};Reject(()=>ClassicalCircuit.From(limit));
+  var cast=TypedProgram();cast.Steps[1].ClassicalValue.Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerCast",Signedness="Unsigned",Width=8,Left=cast.Steps[1].ClassicalValue.Left};
+  Check(ClassicalCircuit.From(cast).SamplingGates()[1].ClassicalExpression.IntegerLeft.Type.Signedness==ClassicalIntegerType.Sign.Unsigned);
+  for(int version=2;version<=3;version++){var legacy=version==2 ? Program() : Expressions();Check(!ClassicalCircuit.From(legacy).Serialize().Contains("Signedness"));}
+ }
  static void Main() {
   var draft=Program();var circuit=ClassicalCircuit.From(draft);var text=circuit.Serialize();
   Check(circuit.ClassicalBits==64 && circuit.Qubits==1);
@@ -60,7 +101,7 @@ class ClassicalCircuitTests {
   expressionDraft.Steps[0].ClassicalValue.Value="0";expressionCircuit.Snapshot().Steps[1].ClassicalValue.Bits[0]=0;
   Check(expressionCircuit.Snapshot().Steps[0].ClassicalValue.Value=="1" && expressionCircuit.SamplingGates()[1].ClassicalExpression.Indices[0]==63);
   foreach(var mutate in new Action<ClassicalCircuit.Document>[] {
-   d=>d.Version=2,d=>d.Version=4,d=>d.Steps[0].ClassicalValue=null,
+   d=>d.Version=2,d=>d.Version=5,d=>d.Steps[0].ClassicalValue=null,
    d=>d.Steps[0].ClassicalValue.Width=null,d=>d.Steps[0].ClassicalValue.Width=0,d=>d.Steps[0].ClassicalValue.Value="2",
    d=>d.Steps[0].ClassicalValue.Value="18446744073709551616",d=>d.Steps[0].ClassicalValue.Value="-1",
    d=>d.Steps[0].ClassicalValue.Value=" 1",d=>d.Steps[0].ClassicalValue.Bits=new[]{0},
@@ -92,6 +133,7 @@ class ClassicalCircuitTests {
   var counted=ClassicalCircuit.From(wide);Check(ClassicalCircuit.Load(counted.Serialize()).SamplingGates()[0].ClassicalExpression.Width==64);
   wide.Steps[0].ClassicalValue.Right=Constant(1,"0");Reject(()=>ClassicalCircuit.From(wide));wide.Steps[0].ClassicalValue.Right=null;
   wide.Steps[0].ClassicalValue.RotationDirection="Left";Reject(()=>ClassicalCircuit.From(wide));
+  TypedChecks();
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }

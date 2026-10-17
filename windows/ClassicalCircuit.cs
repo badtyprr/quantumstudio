@@ -6,11 +6,12 @@ using System.IO;
 using System.Text;
 using System.Web.Script.Serialization;
 
-// Version 2 stores saved records; version 3 adds classical expression trees.
+// Version 2 stores saved records; version 3 adds bit expressions; version 4 adds typed integer conditions.
 // The editor receives copies; a validated program cannot change underneath a run.
 sealed class ClassicalCircuit {
  public sealed class Register {public string Name {get;set;}public int Size {get;set;}}
  public sealed class ExpressionNode {
+  public string Signedness {get;set;}
   public string Kind {get;set;}public int? Width {get;set;}public string Value {get;set;}
   public int[] Bits {get;set;}public string Operator {get;set;}
   public string RotationDirection {get;set;}public string DistanceInterpretation {get;set;}
@@ -50,22 +51,54 @@ sealed class ClassicalCircuit {
  static object[] ArrayValue(object value) {var array=value as object[];if(array==null)throw Invalid("Expected a circuit array.");return array;}
  static void Integer(object value) {if(!(value is int))throw Invalid("Expected an integer circuit field.");}
  static void IntegerArray(object value) {foreach(object item in ArrayValue(value))Integer(item);}
- static void ExpressionFields(object value,int depth,ref int count) {
+ static void ExpressionFields(object value,int depth,ref int count,int version,bool integer=false) {
   if(depth>=32 || ++count>512)throw Invalid("Classical expressions allow 32 levels and 512 nodes.");
-  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation");
+  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation,Signedness");
   var kind=Required(fields,"Kind") as string;string permitted;
-  if(kind=="Constant") {permitted="Kind,Width,Value";Integer(Required(fields,"Width"));if(!(Required(fields,"Value") is string))throw Invalid("A constant value must be unsigned decimal text.");}
+  if(integer) {
+   if(version!=4)throw Invalid("Typed integer expressions require circuit version 4.");
+   if(kind=="IntegerConstant" || kind=="IntegerRead" || kind=="IntegerCast") {
+    if(!(Required(fields,"Signedness") is string))throw Invalid("Integer signedness must be a name.");
+    Integer(Required(fields,"Width"));
+    permitted="Kind,Signedness,Width,"+(kind=="IntegerConstant" ? "Value" : kind=="IntegerRead" ? "Bits" : "Left");
+    if(kind=="IntegerConstant" && !(Required(fields,"Value") is string))throw Invalid("Integer values must be raw unsigned decimal text.");
+    if(kind=="IntegerRead")IntegerArray(Required(fields,"Bits"));
+    if(kind=="IntegerCast")ExpressionFields(Required(fields,"Left"),depth+1,ref count,version,true);
+   } else if(kind=="IntegerBinary") {
+    permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("An integer operator must be a name.");
+    ExpressionFields(Required(fields,"Left"),depth+1,ref count,version,true);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version,true);
+   } else throw Invalid("Expected a typed integer expression.");
+  }
+  else if(kind=="IntegerCompare") {
+   if(version!=4)throw Invalid("Typed integer conditions require circuit version 4.");
+   permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A comparison must be a name.");
+   ExpressionFields(Required(fields,"Left"),depth+1,ref count,version,true);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version,true);
+  }
+  else if(kind=="Constant") {permitted="Kind,Width,Value";Integer(Required(fields,"Width"));if(!(Required(fields,"Value") is string))throw Invalid("A constant value must be unsigned decimal text.");}
   else if(kind=="Read") {permitted="Kind,Bits";IntegerArray(Required(fields,"Bits"));}
-  else if(kind=="Complement" || kind=="PopulationCount") {permitted="Kind,Left";ExpressionFields(Required(fields,"Left"),depth+1,ref count);}
-  else if(kind=="Binary") {permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A classical operator must be a name.");ExpressionFields(Required(fields,"Left"),depth+1,ref count);ExpressionFields(Required(fields,"Right"),depth+1,ref count);}
+  else if(kind=="Complement" || kind=="PopulationCount") {permitted="Kind,Left";ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);}
+  else if(kind=="Binary") {permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A classical operator must be a name.");ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version);}
   else if(kind=="Rotate") {
    permitted="Kind,RotationDirection,DistanceInterpretation,Left,Right";
    if(!(Required(fields,"RotationDirection") is string) || !(Required(fields,"DistanceInterpretation") is string))throw Invalid("Rotation direction and distance interpretation must be names.");
-   ExpressionFields(Required(fields,"Left"),depth+1,ref count);ExpressionFields(Required(fields,"Right"),depth+1,ref count);
+   ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version);
   }
   else throw Invalid("Unknown classical expression kind.");
   var allowed=new HashSet<string>(permitted.Split(','),StringComparer.Ordinal);
   foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected field for classical expression: "+field.Key);
+ }
+ static ClassicalIntegerExpression ConvertInteger(ExpressionNode node) {
+  if(node.Kind=="IntegerBinary") {
+   ClassicalIntegerExpression.Operator op;
+   if(!Enum.TryParse(node.Operator,out op) || op.ToString()!=node.Operator || !Enum.IsDefined(typeof(ClassicalIntegerExpression.Operator),op))throw Invalid("Unknown integer operator.");
+   return ClassicalIntegerExpression.Binary(op,ConvertInteger(node.Left),ConvertInteger(node.Right));
+  }
+  ClassicalIntegerType.Sign sign;
+  if(!Enum.TryParse(node.Signedness,out sign) || sign.ToString()!=node.Signedness || !Enum.IsDefined(typeof(ClassicalIntegerType.Sign),sign))throw Invalid("Unknown integer signedness.");
+  var type=ClassicalIntegerType.Create(sign,node.Width.Value);
+  if(node.Kind=="IntegerConstant")return ClassicalIntegerExpression.Constant(type,Condition(node.Value));
+  if(node.Kind=="IntegerRead")return ClassicalIntegerExpression.Read(type,node.Bits);
+  return ClassicalIntegerExpression.Cast(type,ConvertInteger(node.Left));
  }
  static ClassicalExpression ConvertExpression(ExpressionNode node) {
   if(node==null)throw Invalid("A classical expression is required.");
@@ -81,6 +114,7 @@ sealed class ClassicalCircuit {
   }
   ClassicalExpression.Operator operation;
   if(!Enum.TryParse(node.Operator,out operation) || operation.ToString()!=node.Operator || !Enum.IsDefined(typeof(ClassicalExpression.Operator),operation))throw Invalid("Unknown classical expression operator.");
+  if(node.Kind=="IntegerCompare")return ClassicalExpression.IntegerCompare(operation,ConvertInteger(node.Left),ConvertInteger(node.Right));
   return ClassicalExpression.Binary(operation,ConvertExpression(node.Left),ConvertExpression(node.Right));
  }
  static void StepFields(object value,int depth,ref int count,int version) {
@@ -92,8 +126,8 @@ sealed class ClassicalCircuit {
    if(fields.ContainsKey("Wires") && fields["Wires"]!=null)IntegerArray(fields["Wires"]);
    if(fields.ContainsKey("ClassicalBit") && fields["ClassicalBit"]!=null)Integer(fields["ClassicalBit"]);
    if(fields.ContainsKey("ClassicalValue") && fields["ClassicalValue"]!=null) {
-    if(version!=3)throw Invalid("Classical expressions require circuit version 3.");
-    int nodes=0;ExpressionFields(fields["ClassicalValue"],0,ref nodes);
+    if(version<3)throw Invalid("Classical expressions require circuit version 3 or 4.");
+    int nodes=0;ExpressionFields(fields["ClassicalValue"],0,ref nodes,version);
    }
    foreach(string name in new[]{"WhenTrue","WhenFalse"})if(fields.ContainsKey(name) && fields[name]!=null)StepFields(fields[name],depth+1,ref count,version);
   }
@@ -106,7 +140,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version!=2 && version!=3)throw Invalid("Expected a version 2 or 3 classical circuit.");
+  if(version!=2 && version!=3 && version!=4)throw Invalid("Expected a version 2, 3 or 4 classical circuit.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;
@@ -119,9 +153,24 @@ sealed class ClassicalCircuit {
   var gates=ConvertSteps(value.Steps,version);
   // Reuse the worker adapter's bounds, destinations, masks and payload checks.
   NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates);
-  string canonical=serializer.Serialize(value);
+  var canonicalObject=serializer.DeserializeObject(serializer.Serialize(value));
+  string canonical=serializer.Serialize(CanonicalFields(canonicalObject));
   if(Encoding.UTF8.GetByteCount(canonical)>MaxBytes)throw Invalid("Canonical circuit data exceeds 256 KiB.");
   return new ClassicalCircuit(value,canonical,bits);
+ }
+ // JavaScriptSerializer may cache DTO property order differently after reads.
+ // Keep the added field last, and omit it entirely on legacy expression nodes.
+ static object CanonicalFields(object value) {
+  var fields=value as Dictionary<string,object>;
+  if(fields!=null) {
+   var result=new Dictionary<string,object>();
+   foreach(var field in fields)if(field.Key!="Signedness")result.Add(field.Key,CanonicalFields(field.Value));
+   object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
+   return result;
+  }
+  var array=value as object[];
+  if(array!=null){var result=new object[array.Length];for(int i=0;i<array.Length;i++)result[i]=CanonicalFields(array[i]);return result;}
+  return value;
  }
  static ulong Condition(string text) {
   ulong result;if(text==null || !UInt64.TryParse(text,NumberStyles.None,CultureInfo.InvariantCulture,out result))throw Invalid("A condition mask and value must be unsigned decimal strings.");return result;
@@ -132,7 +181,7 @@ sealed class ClassicalCircuit {
    NumericalSampling.Operation kind;
    if(!Enum.TryParse(step.Kind,out kind) || kind.ToString()!=step.Kind || !Enum.IsDefined(typeof(NumericalSampling.Operation),kind))throw Invalid("Unknown operation kind.");
    bool expression=kind==NumericalSampling.Operation.Assign || kind==NumericalSampling.Operation.ExpressionBranch;
-   if(expression && version!=3)throw Invalid("Classical expressions require circuit version 3.");
+   if(expression && version<3)throw Invalid("Classical expressions require circuit version 3 or 4.");
    if(!expression && step.ClassicalValue!=null)throw Invalid("Only assignments and expression branches have classical expressions.");
    bool condition=kind==NumericalSampling.Operation.Conditional || kind==NumericalSampling.Operation.Branch;
    if(!condition && (step.Mask!=null || step.Value!=null))throw Invalid("Only conditions have a mask and value.");

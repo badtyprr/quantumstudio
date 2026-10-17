@@ -79,7 +79,7 @@ sealed class ClassicalProgramWindow : Window {
   var step=new ClassicalCircuit.Step {Kind=op,Expression=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout" ? expression.Text.Trim() : null,Wires=branch ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch ? new ClassicalCircuit.Step[0] : null};
   bool classical=op=="Assign" || op=="ExpressionBranch";
   if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
-  history.Edit(d=>{if(classical)d.Version=3;var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
+  history.Edit(d=>{if(classical)d.Version=Math.Max(3,d.Version);var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
  }
  void Delete() {var selected=Selected();if(selected.Index<0)throw new ArgumentException("Select an operation to delete.");history.Edit(d=>{var list=Body(d,selected.Route).ToList();list.RemoveAt(selected.Index);ReplaceBody(d,selected.Route,list.ToArray());});}
  void Refresh() {
@@ -138,6 +138,15 @@ sealed class ClassicalProgramWindow : Window {
   history.Open(valid);Refresh();if(history.Current.Serialize()!=valid)throw new Exception("Expression reload lost data.");
   assignment=(TreeViewItem)((TreeViewItem)((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2]).Items[1]).Items[0];assignment.IsSelected=true;
   if(kind.SelectedItem.ToString()!="Assign bits" || !expression.IsEnabled || !wires.IsEnabled || destination.IsEnabled || mask.IsEnabled || value.IsEnabled)throw new Exception("Assignment controls have stale labels or enabled states.");
+  history.Edit(d=>d.Version=4);
+  kind.SelectedValue="Assign";wires.Text="1,0";expression.Text="c";ChangeStep(true);
+  if(history.Current.Snapshot().Version!=4)throw new Exception("Editing downgraded a version-4 circuit.");
+  history.Edit(d=>d.Steps[2].ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerCompare",Operator="Less",Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerRead",Signedness="Signed",Width=2,Bits=new[]{0,1}},Right=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"}});
+  string typed=history.Current.Serialize();history.Open(typed);Refresh();
+  branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
+  File.WriteAllText(screenshot+".typed-before.json",typed);File.WriteAllText(screenshot+".typed-after.json",history.Current.Serialize());
+  if(!expression.Text.Contains("int[2](read(0,1))") || history.Current.Serialize()!=typed)throw new Exception("Typed circuit reload lost its display or data: "+expression.Text+"; unchanged="+(history.Current.Serialize()==typed));
+  history.Open(valid);Refresh();
   saved=valid;
   File.WriteAllText(screenshot+".qcircuit",valid);
   status.Text="Verified · Bit assignments, expression branches, preserved children, invalid edits and undo/redo.";
