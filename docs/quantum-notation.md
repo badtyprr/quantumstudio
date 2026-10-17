@@ -500,8 +500,7 @@ rejected explicitly.
 `QuantumClassical::Integer` is a native value layer for future runtime integer
 expressions. It is not connected to the OpenQASM importer or GUI. Values carry
 explicit signedness and a width of 1–64 bits. Operations require matching types;
-parsing, unspecified-width type identity and implicit promotions belong to the
-future expression layer.
+parsing and register storage belong to the future expression layer.
 
 Unsigned arithmetic wraps modulo the declared width. Signed arithmetic reports
 overflow, including the minimum signed value divided by -1 (also for remainder).
@@ -516,3 +515,14 @@ out-of-range standard-type conversions implementation-specific
 ([casting rules](https://openqasm.com/versions/3.1/language/types.html#casting-specifics)).
 The implementation uses unsigned bit patterns and checked signed operations,
 without relying on host signed overflow.
+
+`IntegerType` and `TypedInteger` retain explicit versus unspecified width as
+separate identities. Their target policy uses 64-bit unspecified integers and
+ranks explicit-width integer types below the machine type of equal width.
+Integer promotion therefore uses signed machine integers whenever their range
+contains the operand type, and unsigned machine integers otherwise. Mixed
+arithmetic and comparison first convert both operands to their common type.
+For example, `int[8](-1)` compares below `uint[8](255)`, while a signed machine
+-1 compares equal to the largest unsigned machine integer after conversion.
+This is an explicit target policy, not a claim that OpenQASM mandates 64-bit
+unspecified integers. Runtime import and typed circuit storage remain unfinished.

@@ -34,6 +34,10 @@ jobs:
             src/quantum-classical-integer-test.cc libqalculate/QuantumClassicalInteger.cc \
             -o /tmp/quantum-integer-sanitizer
           /tmp/quantum-integer-sanitizer
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=undefined -I. \
+            src/quantum-classical-integer-type-test.cc libqalculate/QuantumClassicalInteger.cc \
+            libqalculate/QuantumClassicalIntegerType.cc -o /tmp/quantum-integer-type-sanitizer
+          /tmp/quantum-integer-type-sanitizer
       - name: Configure
         run: |
           autoreconf -fi
