@@ -22,7 +22,7 @@ static class ClassicalExpressionText {
   ClassicalCircuit.From(new ClassicalCircuit.Document{Version=RequiredVersion(value),Qubits=0,Registers=context.Registers,OutputBits=new int[0],Steps=new[]{step}});
   return value;
  }
- static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare";}
+ static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
  static bool Arithmetic(string op){return op=="Add" || op=="Subtract" || op=="Multiply" || op=="Divide" || op=="Remainder";}
  static N AsInteger(N n) {
   if(IntegerValue(n))return n;
@@ -35,6 +35,10 @@ static class ClassicalExpressionText {
  static N Normalize(N n,int depth) {
   if(depth>=128)throw new ArgumentException("Expression nesting is too deep.");
   if(n.Left!=null)n.Left=Normalize(n.Left,depth+1);if(n.Right!=null)n.Right=Normalize(n.Right,depth+1);
+  if(n.Kind=="BitCast") {
+   if(!IntegerValue(n.Left) || !n.Left.Width.HasValue || n.Left.Width.Value==0 || n.Left.Width!=n.Width)throw new ArgumentException("Bit casts require an explicitly sized integer of the same width.");
+   return new N{Kind="IntegerBits",Left=n.Left};
+  }
   if(n.Kind=="UnaryMinus") {
    if(n.Left.Kind=="Constant" && !n.Left.Width.HasValue) {
     ulong magnitude=UInt64.Parse(n.Left.Value,CultureInfo.InvariantCulture);
@@ -74,6 +78,7 @@ static class ClassicalExpressionText {
   if(n.Left!=null)ResolveInteger(n.Left,depth+1);if(n.Right!=null)ResolveInteger(n.Right,depth+1);
  }
  static int? Known(N n) {
+  if(n.Kind=="IntegerBits")return n.Left.Width;
   if(n.Kind=="IntegerCompare")return 1;
   if(n.Kind=="Constant")return n.Width;
   if(n.Kind=="Read")return n.Bits.Length;
@@ -86,6 +91,7 @@ static class ClassicalExpressionText {
  static int Natural(N n){return Known(n) ?? (n.Kind=="Constant" ? Minimum(UInt64.Parse(n.Value,CultureInfo.InvariantCulture)) : 1);}
  static int Resolve(N n,int? hint,int depth) {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
+  if(n.Kind=="IntegerBits"){ResolveInteger(n.Left,depth+1);return n.Left.Width.Value;}
   if(n.Kind=="IntegerCompare"){ResolveInteger(n.Left,depth+1);ResolveInteger(n.Right,depth+1);return 1;}
   if(IntegerValue(n))throw new ArgumentException("Compare integer values before using bit operators.");
   if(n.Kind=="Constant"){n.Width=n.Width ?? hint ?? Natural(n);return n.Width.Value;}
@@ -111,6 +117,7 @@ static class ClassicalExpressionText {
  public static string Format(N value){return FormatNode(value,0);}
  static string FormatNode(N n,int depth) {
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
+  if(n.Kind=="IntegerBits")return "bit["+n.Left.Width.Value.ToString(CultureInfo.InvariantCulture)+"]("+FormatNode(n.Left,depth+1)+")";
   if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast") {
    string type=(n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width.Value.ToString(CultureInfo.InvariantCulture)+"]");
    string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1);
@@ -179,12 +186,14 @@ static class ClassicalExpressionText {
    Space();if(position<text.Length && Char.IsDigit(text[position]))return Node(new N{Kind="Constant",Value=Number().ToString(CultureInfo.InvariantCulture)});
    int start=position;while(position<text.Length && (Char.IsLetterOrDigit(text[position]) || text[position]=='_'))position++;
    string name=text.Substring(start,position-start);if(name.Length==0)throw new ArgumentException("Expected a register, bit string or integer.");
-   if(name=="int" || name=="uint") {
+   if(name=="int" || name=="uint" || name=="bit") {
     int saved=position;bool explicitWidth=Take("["),typeShape=true;ulong width=0;
     if(explicitWidth){width=Number();typeShape=Take("]");}
     if(typeShape && Take("(")) {
+     if(name=="bit" && !explicitWidth)throw new ArgumentException("Use an explicit width for bit-register casts.");
      if(width>64 || (explicitWidth && width==0))throw new ArgumentException("Integer widths must be 1–64.");
      var operand=Expression(1,depth+1);Need(")");
+     if(name=="bit")return Node(new N{Kind="BitCast",Width=(int)width,Left=operand});
      return Node(new N{Kind="IntegerCast",Signedness=name=="int" ? "Signed" : "Unsigned",Width=(int)width,Left=operand});
     }
     position=saved;

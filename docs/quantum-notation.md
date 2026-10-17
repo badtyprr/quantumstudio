@@ -624,9 +624,17 @@ left determines the result. `&` and `|` retain eager bitwise behavior. Invalid
 register references are rejected even in skipped operands. Integer and logical
 conditions are saved as circuit version 4 and survive formatting, reopening,
 and editing. Existing ordinary bit expressions retain their earlier format.
-Integer variable declarations and integer-valued assignments are not yet exposed
-by this editor; casts currently accept integer expressions, bit constants and
-register reads, rather than arbitrary computed bit expressions.
+Integer variable declarations are not yet exposed by this editor; integer casts
+currently accept integer expressions, bit constants and register reads, rather
+than arbitrary computed bit expressions.
+
+To store a computed integer in a bit register, use an explicit equal-width cast,
+for example `bit[3](int[3](int[3](c) + 1))`. The inner arithmetic uses integer
+promotion rules; `int[3](...)` narrows the result before `bit[3](...)` preserves
+its three raw bits. The assignment must target three bits. These expressions
+are editable and saved in version-4 circuit files as `IntegerBits` nodes with
+one typed `Left` child; their width comes from that child. A machine-width
+integer needs an explicit-width cast before it can become a bit vector.
 
 OpenQASM import also preserves Boolean `&&` and `||` as version-4 logical
 nodes, including assignments and nested branches. Bitwise `&` and `|` retain

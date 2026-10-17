@@ -68,7 +68,22 @@ static class ClassicalExpressionTextTests {
     string want=text.StartsWith("int[3](c) !=") ? "0" : "1";Check(values.Count==1 && Convert.ToString(values[want])==(exact ? "1" : "10000"));
    }
   }
-  foreach(string name in new[]{"int","uint"}) {
+  foreach(string text in new[]{"bit[3](int[3](c))","bit[3](uint[3](-1))","~bit[3](int[3](c))","bit[3](int[3](int[3](c)+1))","bit[3](uint[3](255)) & c"})Roundtrip(Parse(text,3),3);
+  foreach(string bad in new[]{"bit[3](c)","bit[3](int(c))","bit[2](int[3](c))","bit[3](int[3](c)+1)","bit(int[3](c))","bit[0](int[3](c))","bit[65](int[3](c))","bit[3](1)","bit[3](int[3](c)) + 1"})Reject(()=>Parse(bad,3));
+  Roundtrip(Parse("bit[1](uint[1](1)) && true",1),1);
+  Check(ClassicalExpressionText.RequiredVersion(Parse("bit[3](int[3](c))",3))==4);
+  var castNode=Parse("bit[3](int[3](int[3](c)+1))",3);var castDocument=Context();castDocument.Version=4;
+  castDocument.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0,1,2},ClassicalValue=castNode}};
+  var castSaved=ClassicalCircuit.From(castDocument);var castOpened=ClassicalCircuit.Load(castSaved.Serialize());
+  Check(Format(castOpened.Snapshot().Steps[0].ClassicalValue)==Format(castNode));
+  if(args.Length>0)foreach(bool exact in new[]{true,false}) {
+   byte[] request=exact ? NumericalSampling.RequestExact(0,64,new[]{2,1,0},castOpened.SamplingGates()) : NumericalSampling.RequestClassical(0,64,10000,1731,new[]{2,1,0},castOpened.SamplingGates());
+   string result=NumericalSampling.RunRequest(args[0],exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,x=>x).GetAwaiter().GetResult();
+   var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+   var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+   Check(values.Count==1 && Convert.ToString(values["001"])==(exact ? "1" : "10000"));
+  }
+  foreach(string name in new[]{"int","uint","bit"}) {
    var named=Context();named.Registers[0].Name=name;
    Check(Format(ClassicalExpressionText.Parse(name+"[0:1]",named,2))=="read(0,1)");
    Check(Format(ClassicalExpressionText.Parse(name+"[1]",named,1))=="read(1)");

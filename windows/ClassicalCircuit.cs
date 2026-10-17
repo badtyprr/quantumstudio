@@ -69,6 +69,10 @@ sealed class ClassicalCircuit {
     ExpressionFields(Required(fields,"Left"),depth+1,ref count,version,true);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version,true);
    } else throw Invalid("Expected a typed integer expression.");
   }
+  else if(kind=="IntegerBits") {
+   if(version!=4)throw Invalid("Integer bit casts require circuit version 4.");
+   permitted="Kind,Left";ExpressionFields(Required(fields,"Left"),depth+1,ref count,version,true);
+  }
   else if(kind=="IntegerCompare") {
    if(version!=4)throw Invalid("Typed integer conditions require circuit version 4.");
    permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A comparison must be a name.");
@@ -102,6 +106,7 @@ sealed class ClassicalCircuit {
  }
  static ClassicalExpression ConvertExpression(ExpressionNode node) {
   if(node==null)throw Invalid("A classical expression is required.");
+  if(node.Kind=="IntegerBits")return ClassicalExpression.FromInteger(ConvertInteger(node.Left));
   if(node.Kind=="Constant")return ClassicalExpression.Constant(node.Width.Value,Condition(node.Value));
   if(node.Kind=="Read")return ClassicalExpression.Read(node.Bits);
   if(node.Kind=="Complement")return ClassicalExpression.Complement(ConvertExpression(node.Left));
