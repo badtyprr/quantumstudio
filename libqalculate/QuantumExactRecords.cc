@@ -37,16 +37,27 @@ void accumulate(Records &output, std::uint64_t record, const MathStructure &rho,
   if(output.size()>=maxCells/(n*n)) throw std::length_error("Exact record cell budget exceeded");
   output.emplace(record,rho);
  } else {
+  MathStructure combined=found->second;
   for(std::size_t r=1;r<=n;++r) {
    checkpoint();
    for(std::size_t c=1;c<=n;++c) {
-    auto &cell=*found->second.getElement(r,c);
+    auto &cell=*combined.getElement(r,c);
     cell+=*rho.getElement(r,c);cell.eval(options);
    }
   }
+  checkpoint();found->second=combined;
  }
 }
 }
+RecordAccumulator::RecordAccumulator(unsigned qubits,unsigned bits,std::size_t maxCells,
+ const EvaluationOptions &options):qubits_(qubits),bits_(bits),maxCells_(maxCells),options_(options) {
+ validate({},qubits_,bits_,maxCells_);
+}
+void RecordAccumulator::add(std::uint64_t record,const MathStructure &density) {
+ validate({{record,density}},qubits_,bits_,maxCells_);
+ accumulate(records_,record,density,maxCells_,options_);
+}
+Records RecordAccumulator::take() {Records output;output.swap(records_);return output;}
 Records measure(const Records &input, unsigned qubits, unsigned classicalBits,
  unsigned wire, unsigned destination, std::size_t maxCells, const EvaluationOptions &options) {
  const std::size_t n=validate(input,qubits,classicalBits,maxCells);

@@ -165,3 +165,8 @@ check_PROGRAMS += quantum-exact-readout-test
 TESTS += quantum-exact-readout-test
 quantum_exact_readout_test_SOURCES = quantum-exact-readout-test.cc
 quantum_exact_readout_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-exact-circuit-test
+TESTS += quantum-exact-circuit-test
+quantum_exact_circuit_test_SOURCES = quantum-exact-circuit-test.cc
+quantum_exact_circuit_test_LDADD = $(test_LDADD)
