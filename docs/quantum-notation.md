@@ -331,6 +331,7 @@ Each step begins with an integer kind and then these fields:
 | 2: reset | Quantum wire |
 | 3: conditional gate | 64-bit mask, 64-bit value, then the gate payload |
 | 4: channel | Target count, targets, byte length, Kraus-vector expression |
+| 5: readout assignment | Classical target count, targets, byte length, probability-matrix expression |
 
 Every shot starts with all-zero quantum state and classical memory. A measurement
 collapses its wire and overwrites the destination bit. Reset returns its wire
@@ -343,6 +344,16 @@ quantum wire order. No implicit final measurements occur. A channel expression, 
 matrices matching its one to three target wires. Their completeness relation
 must hold within the numerical tolerance. Each shot samples and normalizes one
 Kraus branch without changing classical memory. The GUI uses this operation for AD, GAD, PD, PAD, Depol and Thermal noise controls.
+
+A readout assignment changes only the recorded
+bits, without measuring or changing the quantum state. It accepts one to eight
+distinct classical targets and a real square matrix with row `m` containing
+`P(recorded n | true m)`. The first target is the most significant bit in each
+matrix index. Entries must be in `[0,1]` and each row must sum to one within
+`1e-12`. Subsequent conditions use the changed records. For example,
+`[0.9,0.1;0.2,0.8]` records a true zero as one with probability 0.1, and a true
+one as zero with probability 0.2. This protocol support does not yet expose
+readout assignment in the GUI.
 
 The response adds `classical_bits`; `wires` now identifies the requested classical
 bits in left-to-right output order. The explicit ordering avoids relying on a
