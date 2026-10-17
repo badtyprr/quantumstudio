@@ -80,6 +80,7 @@ def integer_read(sign,width,*indices):return n(1,sign,width,*indices)
 def integer_binary(op,left,right):return n(3,op)+left+right
 def integer_cast(sign,width,value):return n(2,sign,width)+value
 def compare(op,left,right):return n(6,op)+left+right
+def logical(op,left,right):return n(7,op)+left+right
 for exact in (True,False):
     def typed(steps,bits=9,out=[8],expected=None):
         run(exact,payload(exact,0,bits,out,steps,typed=True),expected)
@@ -97,6 +98,38 @@ for exact in (True,False):
     typed([assign(list(range(8)),const(8,2)),branch(condition,[set_output])],expected={'1':1})
     typed([branch(const(1,0),[branch(condition,[set_output])])],expected={'0':1})
     typed([branch(condition,[set_output])]) # Runtime division by zero.
+    # Logical guards skip runtime arithmetic, but never structural validation.
+    for op,left,want in [(0,0,0),(1,1,1)]:
+        typed([assign([8],logical(op,const(1,left),condition))],expected={str(want):1})
+        typed([branch(logical(op,const(1,left),condition),[set_output])],expected={str(want):1})
+        typed([assign([8],binary(op,const(1,left),condition))]) # Bitwise remains eager.
+    for op,left in [(0,1),(1,0)]:
+        typed([assign([8],logical(op,const(1,left),condition))])
+    guarded=logical(0,compare(1,signed,zero),condition)
+    for value,want in [(0,0),(2,1),(3,0)]:
+        typed([assign(list(range(8)),const(8,value)),assign([8],guarded)],expected={str(want):1})
+    for op in (0,1):
+        for a in (0,1):
+            for b in (0,1):
+                want=(a and b) if op==0 else (a or b)
+                typed([assign([8],logical(op,const(1,a),const(1,b)))],expected={str(want):1})
+    for bad in [n(7,2),n(8),logical(0,const(2,0),const(1,1)),logical(1,const(1,1),const(2,0)),logical(0,const(1,0),read(9))]:
+        typed([branch(const(1,0),[assign([8],bad)])])
+    valid_logical=payload(exact,0,9,[8],[assign([8],guarded)],typed=True)
+    for end in range(len(valid_logical)):run(exact,valid_logical[:end])
+    run(exact,valid_logical+b'\n')
+    for legacy in (False,True):
+        run(exact,payload(exact,0,9,[8],[assign([8],logical(0,const(1,0),const(1,1)))],legacy=legacy))
+    deep=const(1,0)
+    for _ in range(31):deep=logical(0,const(1,0),deep)
+    typed([assign([8],deep)],expected={'0':1})
+    typed([assign([8],logical(0,const(1,0),deep))])
+    broad=const(1,1)
+    for _ in range(8):broad=logical(1,broad,broad)
+    typed([assign([8],broad)],expected={'1':1})
+    typed([assign([8],n(2)+broad)],expected={'0':1}) # Exactly 512 nodes.
+    typed([assign([8],n(2,2)+broad)])
+
     typed([branch(const(1,0),[branch(negative,[])])],bits=7,out=[])
     for op,want in enumerate([8,4,12,3,0]):
         expr=integer_binary(op,integer_constant(0,0,6),integer_constant(0,0,2))

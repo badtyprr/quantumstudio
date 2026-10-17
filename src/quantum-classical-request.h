@@ -39,7 +39,12 @@ template<class Reader>
 QuantumClassical::Bits node(Reader &reader,unsigned depth,unsigned &count,bool typed) {
  using Bits=QuantumClassical::Bits;
  if(depth>=32 || ++count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 nodes.");
- unsigned kind=static_cast<unsigned>(reader.integer(typed ? 6 : 5));
+ unsigned kind=static_cast<unsigned>(reader.integer(typed ? 7 : 5));
+ if(kind==7) {
+  const auto operation=reader.integer(1)==0 ? Bits::Binary::And : Bits::Binary::Or;
+  auto left=node(reader,depth+1,count,typed);auto right=node(reader,depth+1,count,typed);
+  return Bits::logical(operation,left,right);
+ }
  if(kind==6) {
   const Bits::Binary comparisons[]={Bits::Binary::Equal,Bits::Binary::NotEqual,Bits::Binary::Less,
    Bits::Binary::LessEqual,Bits::Binary::Greater,Bits::Binary::GreaterEqual};
