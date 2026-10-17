@@ -36,6 +36,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return any(isinstance(item,ast.Identifier) and item.name in visitor._global_creg_size_map for item in nodes(value))
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
+    def bitstring_boolean(value):
+        return any(isinstance(item,ast.Cast) and isinstance(item.type,ast.BoolType) and any(isinstance(child,ast.BitstringLiteral) for child in nodes(item.argument)) for item in nodes(value))
     def normalize(visitor, value, depth=0, cast_distance=False, typed=False):
         typed=typed or (runtime(visitor,value) and any(isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(value)))
         if depth >= 32:
@@ -74,6 +76,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             expected=1 if value.name.name=='popcount' else 2
             if len(value.arguments)!=expected:raise ValueError('Wrong number of classical bit-function arguments.')
             return ast.FunctionCall(name=copy.deepcopy(value.name),arguments=[normalize(visitor,item,depth+1,cast_distance=(value.name.name in ('rotl','rotr') and index==1)) for index,item in enumerate(value.arguments)])
+        if isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) and (typed or runtime(visitor,value) or bit_function(value) or bitstring_boolean(value)):
+            return ast.Cast(type=ast.BoolType(),argument=normalize(visitor,value.argument,depth+1,typed=typed))
         if isinstance(value,ast.Cast) and isinstance(value.type,(ast.IntType,ast.UintType,ast.BitType)) and (typed or cast_distance or runtime(visitor,value)):
             if isinstance(value.type,ast.BitType) and value.type.size is None:raise ValueError('Runtime bit-register casts require an explicit width.')
             if value.type.size is not None and runtime(visitor,value.type.size):raise ValueError("Integer cast widths must be compile-time constants.")
@@ -117,7 +121,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         initial = ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression)
         return result+assignment(visitor,initial)
     def branch(visitor, statement):
-        if not runtime(visitor,statement.condition) and not bit_function(statement.condition):
+        if not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
             return original_branch(visitor, statement)
         # Preserve the expression and choose the body only during execution.
         condition = normalize(visitor,statement.condition)
@@ -448,6 +452,7 @@ def classical_expression(value, registers, expected_width=None):
                 '&&':'And','||':'Or'}
     comparisons={'==','!=','<','<=','>','>='}
     def width(node):
+        if isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType):return 1
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BitType):return node.type.size.value
         if isinstance(node,(ast.Identifier,ast.IndexExpression)):return len(classical_indices(node,registers))
         if isinstance(node,ast.BitstringLiteral):return node.width
@@ -499,6 +504,13 @@ def classical_expression(value, registers, expected_width=None):
         raise ValueError('Cast bit operands explicitly before integer arithmetic.')
     def build(node,hint=None,depth=0):
         bound(depth)
+        if isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType):
+            # Expand into the existing comparison model; count the added zero.
+            bound(depth+1)
+            if integer_value(node.argument):
+                return {'Kind':'IntegerCompare','Operator':'NotEqual','Left':integer(node.argument,depth+1),'Right':{'Kind':'IntegerConstant','Signedness':'Signed','Width':0,'Value':'0'}},1
+            child,size=build(node.argument,None,depth+1)
+            return {'Kind':'Binary','Operator':'NotEqual','Left':child,'Right':{'Kind':'Constant','Width':size,'Value':'0'}},1
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BitType):
             size=node.type.size.value;child=integer(node.argument,depth+1)
             if type(size) is not int or not 1<=size<=64 or child.get('Width')!=size:raise ValueError('Integer-to-bit casts require equal explicit widths.')

@@ -35,6 +35,11 @@ static class ClassicalExpressionText {
  static N Normalize(N n,int depth) {
   if(depth>=128)throw new ArgumentException("Expression nesting is too deep.");
   if(n.Left!=null)n.Left=Normalize(n.Left,depth+1);if(n.Right!=null)n.Right=Normalize(n.Right,depth+1);
+  if(n.Kind=="BooleanCast") {
+   bool integer=IntegerValue(n.Left);
+   return new N{Kind=integer ? "IntegerCompare" : "Binary",Operator="NotEqual",Left=n.Left,
+    Right=integer ? new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"} : new N{Kind="Constant",Value="0"}};
+  }
   if(n.Kind=="BitCast") {
    if(!IntegerValue(n.Left) || !n.Left.Width.HasValue || n.Left.Width.Value==0 || n.Left.Width!=n.Width)throw new ArgumentException("Bit casts require an explicitly sized integer of the same width.");
    return new N{Kind="IntegerBits",Left=n.Left};
@@ -186,6 +191,7 @@ static class ClassicalExpressionText {
    Space();if(position<text.Length && Char.IsDigit(text[position]))return Node(new N{Kind="Constant",Value=Number().ToString(CultureInfo.InvariantCulture)});
    int start=position;while(position<text.Length && (Char.IsLetterOrDigit(text[position]) || text[position]=='_'))position++;
    string name=text.Substring(start,position-start);if(name.Length==0)throw new ArgumentException("Expected a register, bit string or integer.");
+   if(name=="bool" && Take("(")){var operand=Expression(1,depth+1);Need(")");return Node(new N{Kind="BooleanCast",Left=operand});}
    if(name=="int" || name=="uint" || name=="bit") {
     int saved=position;bool explicitWidth=Take("["),typeShape=true;ulong width=0;
     if(explicitWidth){width=Number();typeShape=Take("]");}
