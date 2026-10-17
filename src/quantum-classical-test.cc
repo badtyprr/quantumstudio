@@ -11,6 +11,21 @@ void check(bool ok){++checks;if(!ok)throw std::runtime_error("Classical check fa
 template<class E,class F>void reject(F f){bool caught=false;try{f();}catch(const E&){caught=true;}check(caught);}
 }
 int main(){try {
+ // Structural validation does not require a runtime record.
+ Bits::constant(64,~std::uint64_t(0)).validate(0);check(true);
+ Bits::read({63}).validate(64);check(true);
+ reject<std::out_of_range>([]{Bits::read({63}).validate(63);});
+ reject<std::out_of_range>([]{Bits::constant(1,0).validate(65);});
+ auto nested=Bits::rotate(Bits::Direction::Left,Bits::read({0}),Bits::read({63}),Bits::Distance::Unsigned);
+ reject<std::out_of_range>([&]{nested.validate(63);});
+ nested.validate(64);check(true);
+ QuantumClassical::validateAssignment(64,{63},Bits::read({0}));check(true);
+ reject<std::out_of_range>([]{QuantumClassical::validateAssignment(1,{0},Bits::read({1}));});
+ reject<std::out_of_range>([]{QuantumClassical::validateAssignment(1,{1},Bits::constant(1,0));});
+ reject<std::invalid_argument>([]{QuantumClassical::validateAssignment(2,{0,0},Bits::constant(2,0));});
+ reject<std::invalid_argument>([]{QuantumClassical::validateAssignment(2,{0},Bits::constant(2,0));});
+
+
  for(unsigned width=1;width<=8;++width) {
   const unsigned size=1U<<width,mask=size-1;
   std::vector<unsigned> leftBits,rightBits;

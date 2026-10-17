@@ -28,6 +28,16 @@ jobs:
           sudo apt-get install --no-install-recommends -y \
             build-essential autoconf automake libtool gettext autopoint intltool \
             python3 pkg-config libgmp-dev libmpfr-dev libxml2-dev libreadline-dev
+      - name: Check integer arithmetic for undefined behavior
+        run: |
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=undefined -I. \
+            src/quantum-classical-integer-test.cc libqalculate/QuantumClassicalInteger.cc \
+            -o /tmp/quantum-integer-sanitizer
+          /tmp/quantum-integer-sanitizer
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=undefined -I. \
+            src/quantum-classical-integer-type-test.cc libqalculate/QuantumClassicalInteger.cc \
+            libqalculate/QuantumClassicalIntegerType.cc -o /tmp/quantum-integer-type-sanitizer
+          /tmp/quantum-integer-type-sanitizer
       - name: Configure
         run: |
           autoreconf -fi

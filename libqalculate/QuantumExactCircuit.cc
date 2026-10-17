@@ -12,7 +12,7 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
  for(const auto &step:steps) {
   checkpoint();if(++count>512)throw std::length_error("Exact circuits support at most 512 steps across all bodies");
   if(step.kind==Step::Kind::Assign) {
-   QuantumClassical::assign(0,bits,step.wires,*step.expression);continue;
+   QuantumClassical::validateAssignment(bits,step.wires,*step.expression);continue;
   }
   unsigned targets=0;
   for(unsigned wire:step.wires) {
@@ -30,7 +30,7 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
   } else if(step.kind==Step::Kind::Branch) {
    if(step.expression) {
     if(step.expression->width()!=1)throw std::invalid_argument("Exact branch expressions must be one bit");
-    step.expression->evaluate(0,bits);
+    step.expression->validate(bits);
    }
    if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches");
    if((bits<64 && (step.mask>>bits)) || (step.value&~step.mask))
