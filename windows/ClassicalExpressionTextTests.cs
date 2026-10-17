@@ -9,6 +9,27 @@ static class ClassicalExpressionTextTests {
  static N Parse(string text,int width){return ClassicalExpressionText.Parse(text,Context(),width);}
  static string Format(N n){return ClassicalExpressionText.Format(n);}
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
+ static void BooleanChecks(string worker) {
+  string[] expressions={"bool(c)","bool(int[3](c))","bool(uint[3](c))","bool(popcount(c))","bool(c == 4)","bool(bool(c))","bool(int[3](c) - int[3](c))","bool(~c)","bool(c) && 6 / int[3](c) == 3"};
+  int[] initial={0,4,4,4,4,4,4,7,0},expected={0,1,1,1,1,1,0,0,0};
+  for(int k=0;k<expressions.Length;k++) {
+   var value=Parse(expressions[k],1);Roundtrip(value,1);
+   var document=Context();document.Version=ClassicalExpressionText.RequiredVersion(value);
+   document.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0,1,2},ClassicalValue=new N{Kind="Constant",Width=3,Value=initial[k].ToString()}},new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{3},ClassicalValue=value}};
+   var stored=ClassicalCircuit.From(document);var reopened=ClassicalCircuit.Load(stored.Serialize());Check(stored.Serialize()==reopened.Serialize());
+   if(worker==null)continue;
+   foreach(bool exact in new[]{true,false}) {
+    byte[] request=exact ? NumericalSampling.RequestExact(0,64,new[]{3},reopened.SamplingGates()) : NumericalSampling.RequestClassical(0,64,10000,1731,new[]{3},reopened.SamplingGates());
+    string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,x=>x).GetAwaiter().GetResult();
+    var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+    Check(values.Count==1 && Convert.ToString(values[expected[k].ToString()])==(exact ? "1" : "10000"));
+   }
+  }
+  foreach(string bad in new[]{"bool()","bool(c, 1)","bool(c + 1)","bool(c) trailing"})Reject(()=>Parse(bad,1));
+  Check(ClassicalExpressionText.RequiredVersion(Parse("bool(c)",1))==3);
+  Check(ClassicalExpressionText.RequiredVersion(Parse("bool(int[3](c))",1))==4);
+ }
  static int Main(string[] args){try {
   Check(Format(Parse("rotl(c, -1)",3))=="rotl_signed(read(0,1,2), -1)");
   Check(Format(Parse("rotl_signed(c, 1)",3))=="rotl_signed(read(0,1,2), 1)");
@@ -42,8 +63,10 @@ static class ClassicalExpressionTextTests {
   Reject(()=>Parse("\"01 \"",2));
   var deep=new N{Kind="Read",Bits=new[]{0}};for(int k=1;k<32;k++)deep=new N{Kind="Complement",Left=deep};Roundtrip(deep,1);
   Reject(()=>Parse("~("+Format(deep)+")",1));
+  Reject(()=>Parse("bool("+Format(deep)+")",1));
   var broad=new N{Kind="Read",Bits=new[]{0}};for(int k=0;k<8;k++)broad=new N{Kind="Binary",Operator="Or",Left=broad,Right=broad};Roundtrip(new N{Kind="Complement",Left=broad},1);
   Reject(()=>Parse("("+Format(broad)+" | read(0))",1));
+  Reject(()=>Parse("bool("+Format(broad)+")",1));
   var parsed=Parse("c ^ 1",3);var document=Context();document.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0,1,2},ClassicalValue=parsed}};
   var circuit=ClassicalCircuit.From(document);Check(Encoding.UTF8.GetString(NumericalSampling.RequestExact(0,64,new[]{2,1,0},circuit.SamplingGates())).StartsWith("QEXACT2\n"));
   foreach(string text in new[]{"int[3](c) < 0","uint[3](c) > 3","6 / int[3](c) == 3","int[3](c) + 2 * 3 == 7","int[3](c) - 1 >= -2","-int[3](c) != 0","int[3](255) < 0","int(-9223372036854775808) == -9223372036854775808","uint(18446744073709551615) == 18446744073709551615","int[3](c) % 2 == 1","int[3](c) < 0 || uint[3](c) == 0","!(int[3](c) < 0)","int[3](\"111\") < 0"}) {
@@ -87,7 +110,7 @@ static class ClassicalExpressionTextTests {
    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
    Check(values.Count==1 && Convert.ToString(values["001"])==(exact ? "1" : "10000"));
   }
-  foreach(string name in new[]{"int","uint","bit"}) {
+  foreach(string name in new[]{"int","uint","bit","bool"}) {
    var named=Context();named.Registers[0].Name=name;
    Check(Format(ClassicalExpressionText.Parse(name+"[0:1]",named,2))=="read(0,1)");
    Check(Format(ClassicalExpressionText.Parse(name+"[1]",named,1))=="read(1)");
@@ -106,6 +129,7 @@ static class ClassicalExpressionTextTests {
     string want=text.StartsWith("false") ? "0" : "1";Check(values.Count==1 && Convert.ToString(values[want])==(exact ? "1" : "10000"));
    }
   }
+  BooleanChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }

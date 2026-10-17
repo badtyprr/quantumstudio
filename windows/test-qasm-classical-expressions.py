@@ -60,6 +60,17 @@ cases=[
  ('typed-bitcast-skipped','bit[3] c; if(c==1){c=bit[3](int[3](1/int[3](c)));}',{'000':'1'}),
  ('typed-bitcast-divzero','bit[3] c; c=bit[3](int[3](1/int[3](c)));',None),
  ('typed-bitcast-wide','bit[64] c=1; c=bit[64](uint[64](c));',{'0'*63+'1':'1'}),
+ ('boolean-zero','bit[3] c; bit r; r=bool(c);',{'0000':'1'}),
+ ('boolean-literal-zero','bit r; r=bool("00");',{'0':'1'}),
+ ('boolean-literal-nonzero','bit r; r=bool("10");',{'1':'1'}),
+ ('boolean-literal-branch','bit r; if(bool("10")){r=1;}',{'1':'1'}),
+ ('boolean-nonzero','bit[3] c="100"; bit r; if(bool(c)){r=1;}',{'1100':'1'}),
+ ('boolean-nested','bit[3] c="100"; bit r; r=bool(bool(c));',{'1100':'1'}),
+ ('boolean-popcount','bit[3] c="100"; bit r; r=bool(popcount(c));',{'1100':'1'}),
+ ('typed-boolean-negative','bit[3] c="100"; bit r; r=bool(int[3](c));',{'1100':'1'}),
+ ('typed-boolean-arithmetic','bit[3] c="100"; bit r; r=bool(int[3](c)-int[3](c));',{'0100':'1'}),
+ ('typed-boolean-guard','bit[3] c; bit r; if(bool(c) && 6/int[3](c)==3){r=1;}',{'0000':'1'}),
+ ('boolean-measure','qubit q; bit c; bit r; h q; c=measure q; r=bool(c);',{'00':'1/2','11':'1/2'}),
  ('registers','qubit q; bit[2] c="10"; bit[2] d="10"; if(c==d){c=0;}',{'1000':'1'}),
 ]
 checks=0
@@ -79,6 +90,9 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
           'qubit q; bit[2] c; let d=c; d=1;',
           'qubit q; bit c; c+=1;', 'qubit q; bit[2] c; if(c>4) x q;']
 rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
+boolean_broad='c'
+for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
+rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1

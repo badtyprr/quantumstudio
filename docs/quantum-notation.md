@@ -652,6 +652,15 @@ computed assignments and casts of measurement-dependent values. Cast widths
 must be compile-time constants. Entirely static expressions still use the
 pinned PyQASM constant evaluator.
 
+The classical editor and OpenQASM importer also accept `bool(...)` on bit and
+integer expressions. Zero becomes false and any nonzero value, including a
+negative integer, becomes true. For example, `bool(c)` tests a whole register,
+and `bool(int[3](c))` tests its signed interpretation. The saved expression is
+the equivalent comparison with zero, using the existing file and worker
+formats. Logical guards such as `bool(c) && 6 / int[3](c) == 3` retain
+short-circuit evaluation. Boolean variable declarations and runtime floating
+point casts remain separate unsupported features.
+
 OpenQASM import also preserves Boolean `&&` and `||` as version-4 logical
 nodes, including assignments and nested branches. Bitwise `&` and `|` retain
 bit-vector nodes. Imported runtime conditions also support width-matched signed/unsigned casts,
