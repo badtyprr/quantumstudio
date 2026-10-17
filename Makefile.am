@@ -20,6 +20,8 @@ EXTRA_DIST = config.rpath  \
 	windows/BoundedUtf8File.cs \
 	windows/CircuitComposer.cs \
 	windows/NumericalSampling.cs \
+	windows/ExactCircuit.cs \
+	windows/ExactCircuitTests.cs \
 	windows/ClassicalCircuit.cs \
 	windows/ClassicalCircuitTests.cs \
 	windows/ClassicalProgramHistory.cs \
