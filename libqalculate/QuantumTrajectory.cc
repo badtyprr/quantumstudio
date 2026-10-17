@@ -27,7 +27,14 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  for(const auto &step:block) {
   cancel();
   if(++totalSteps>4096)throw std::length_error("Trajectory branches exceed 4096 total steps");
+  if(step.kind==TrajectoryStep::Kind::Assign) {
+   QuantumClassical::assign(0,classicalBits,step.wires,*step.expression);continue;
+  }
   if(step.kind==TrajectoryStep::Kind::Branch) {
+   if(step.expression) {
+    if(step.expression->width()!=1)throw std::invalid_argument("Trajectory branch expressions must be one bit");
+    step.expression->evaluate(0,classicalBits);
+   }
    if(depth>=32)throw std::length_error("Trajectory branches exceed 32 nesting levels");
    if((step.mask&~allowed) || (step.value&~step.mask))throw std::invalid_argument("Invalid classical branch mask or value");
    validate(*step.whenTrue,depth+1);validate(*step.whenFalse,depth+1);continue;
@@ -64,10 +71,12 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
   for(const auto &step:block) {
    cancel();
    if(step.kind==TrajectoryStep::Kind::Branch) {
-    const auto &selected=(bits&step.mask)==step.value ? *step.whenTrue : *step.whenFalse;
+    const bool condition=step.expression ? step.expression->evaluate(bits,classicalBits)!=0 : (bits&step.mask)==step.value;
+    const auto &selected=condition ? *step.whenTrue : *step.whenFalse;
     execute(selected,state,bits);continue;
    }
-   if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,step.wires,cancelled);
+   if(step.kind==TrajectoryStep::Kind::Assign)bits=QuantumClassical::assign(bits,classicalBits,step.wires,*step.expression);
+   else if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,step.wires,cancelled);
    else if(step.kind==TrajectoryStep::Kind::Conditional) {
     if((bits&step.mask)==step.value)state.apply(step.matrix,step.wires,cancelled);
    } else if(step.kind==TrajectoryStep::Kind::Channel)state.channel(step.kraus,step.wires,draw(),cancelled);

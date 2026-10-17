@@ -3,12 +3,13 @@
 #define QUANTUM_TRAJECTORY_H
 #include "QuantumNumericalState.h"
 #include "QuantumReadout.h"
+#include "QuantumClassical.h"
 #include <memory>
 
 namespace QuantumNumerics {
 class TrajectoryStep {
 public:
- enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch };
+ enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign };
  const Kind kind;
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
@@ -17,6 +18,7 @@ public:
  const std::uint64_t mask,value;
  const std::shared_ptr<const ReadoutAssignment> assignment;
  const std::shared_ptr<const std::vector<TrajectoryStep>> whenTrue,whenFalse;
+ const std::shared_ptr<const QuantumClassical::Bits> expression;
  static TrajectoryStep gate(const std::vector<Complex> &m,const std::vector<unsigned> &w) {return {Kind::Gate,m,w,0,0,0};}
  static TrajectoryStep measure(unsigned wire,unsigned bit) {return {Kind::Measure,{}, {wire},bit,0,0};}
  static TrajectoryStep reset(unsigned wire) {return {Kind::Reset,{}, {wire},0,0,0};}
@@ -28,8 +30,15 @@ public:
  static TrajectoryStep branch(std::uint64_t mask,std::uint64_t value,const std::vector<TrajectoryStep> &yes,const std::vector<TrajectoryStep> &no={}) {
   return {Kind::Branch,{}, {},0,mask,value,{}, {},std::make_shared<const std::vector<TrajectoryStep>>(yes),std::make_shared<const std::vector<TrajectoryStep>>(no)};
  }
+ // Assignment targets are classical indices ordered least-significant first.
+ static TrajectoryStep assign(const std::vector<unsigned> &targets,const QuantumClassical::Bits &value) {
+  return {Kind::Assign,{},targets,0,0,0,{},{},{},{},std::make_shared<const QuantumClassical::Bits>(value)};
+ }
+ static TrajectoryStep branch(const QuantumClassical::Bits &condition,const std::vector<TrajectoryStep> &yes,const std::vector<TrajectoryStep> &no={}) {
+  return {Kind::Branch,{},{},0,0,0,{},{},std::make_shared<const std::vector<TrajectoryStep>>(yes),std::make_shared<const std::vector<TrajectoryStep>>(no),std::make_shared<const QuantumClassical::Bits>(condition)};
+ }
 private:
- TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no) {}
+ TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr) {}
 };
 // Each shot starts in |0...0> with zero classical memory. Conditions read saved
 // measurement bits, not the current quantum wires. Limits: 25 qubits, 64
