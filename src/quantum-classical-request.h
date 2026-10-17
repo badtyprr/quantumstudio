@@ -43,7 +43,7 @@ QuantumClassical::Bits node(Reader &reader,unsigned depth,unsigned &count) {
 template<class Reader>
 QuantumClassical::Bits read(Reader &reader,unsigned bits) {
  unsigned count=0;auto expression=node(reader,0,count);
- expression.evaluate(0,bits); // Validate even references in untaken branches.
+ expression.validate(bits); // Validate even references in untaken branches.
  return expression;
 }
 }
