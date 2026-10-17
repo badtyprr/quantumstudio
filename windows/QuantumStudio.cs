@@ -279,6 +279,21 @@ class QuantumStudio {
     finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
    };
   }
+  if(args.Length==2 && args[0]=="--session-preservation-test") {
+   window.Loaded+=delegate {
+    try {
+     for(int count=0;count<=50;count+=25) {
+      history.Items.Clear();states=new[]{new StateDefinition {Name="Bell",Expression="|Phi+>"}};RefreshStates();
+      input.Text="draft \u03b8 |Bell>";mode.SelectedIndex=count==25 ? 1 : 0;evaluation.SelectedIndex=count==50 ? 1 : 0;
+      for(int k=0;k<count;k++)history.Items.Add(HistoryItem(new SessionEntry {Expression="H|0>",Result="[1;1]/sqrt(2)",Mode=0,Evaluation=k%2,States=SessionStore.CopyStates(states)},false));
+      string path=args[1]+"."+count+".qsession";
+      CheckInvalidSessions(path,args[1]+"."+count,new JavaScriptSerializer().Serialize(CaptureSession()));
+     }
+     File.WriteAllText(args[1],"PASS: 18 malformed-session GUI preservation checks across empty, partial and full histories.");
+    } catch(Exception ex) {File.WriteAllText(args[1],"FAIL: "+ex);Environment.ExitCode=1;}
+    window.Close();
+   };
+  }
   if(args.Length==2 && args[0]=="--state-editor-test") {
    window.Loaded+=async delegate {
     try {await CheckStateEditor(args[1]+".png");File.WriteAllText(args[1],"PASS: state editor draft isolation, cancel, apply, duplicate rejection, add/remove, ordering and minimum-width layout.");}
@@ -757,10 +772,7 @@ class QuantumStudio {
      if(input.Text!=record.Expression || mode.SelectedIndex!=record.Mode || evaluation.SelectedIndex!=record.Evaluation)throw new Exception("Restored history lost its expression or modes.");
     }
     OpenSession(sessionPath);string validSessionText=File.ReadAllText(sessionPath);
-    foreach(string bad in new[]{"{", "null", "{\"Version\":2}", "{\"Version\":1,\"Expression\":\"x\",\"Mode\":7,\"Evaluation\":0,\"History\":[]}", "{\"Version\":1,\"Expression\":\"x\",\"History\":[null]}", new string('x',8*1024*1024+1)}) {
-     File.WriteAllText(sessionPath,bad);bool badSessionRejected=false;try {OpenSession(sessionPath);}catch {badSessionRejected=true;}
-     if(!badSessionRejected || new JavaScriptSerializer().Serialize(CaptureSession())!=sessionSnapshot)throw new Exception("Invalid session changed the workspace.");
-    }
+    CheckInvalidSessions(sessionPath,args[1],sessionSnapshot);
     File.WriteAllText(sessionPath,validSessionText);
     using(var locked=new FileStream(sessionPath,FileMode.Open,FileAccess.Read,FileShare.Read)) {
      bool sessionLockRejected=false;try {SessionStore.Save(sessionPath,originalSession);}catch(IOException){sessionLockRejected=true;}
@@ -841,6 +853,25 @@ class QuantumStudio {
   var snapshots=new SessionEntry[entries.Length];
   for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States)};
   return new CalculationSession {Version=2,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states)};
+ }
+ static void CheckInvalidSessions(string path,string diagnostics,string expectedSnapshot) {
+  var serializer=new JavaScriptSerializer();
+  string before=serializer.Serialize(CaptureSession());
+  if(before!=expectedSnapshot) {
+   File.WriteAllText(diagnostics+".before.json",expectedSnapshot);File.WriteAllText(diagnostics+".after.json",before);
+   throw new Exception("Workspace differed before invalid-session attempts.");
+  }
+  int index=0;
+  foreach(string bad in new[]{"{", "null", "{\"Version\":2}", "{\"Version\":1,\"Expression\":\"x\",\"Mode\":7,\"Evaluation\":0,\"History\":[]}", "{\"Version\":1,\"Expression\":\"x\",\"History\":[null]}", new string('x',8*1024*1024+1)}) {
+   File.WriteAllText(path,bad);Exception rejected=null;
+   try {OpenSession(path);}catch(Exception ex) {rejected=ex;}
+   string after=serializer.Serialize(CaptureSession());
+   if(rejected==null || after!=before) {
+    File.WriteAllText(diagnostics+".before.json",before);File.WriteAllText(diagnostics+".after.json",after);
+    throw new Exception("Invalid-session case "+index+" ("+bad.Length+" characters): rejected="+(rejected!=null)+", workspace unchanged="+(after==before)+". Rejection: "+(rejected==null ? "none" : rejected.GetType().Name));
+   }
+   ++index;
+  }
  }
  static void OpenSession(string path) {
   var session=SessionStore.Load(path);
