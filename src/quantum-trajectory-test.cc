@@ -12,6 +12,25 @@ int main(){try {
  using Step=TrajectoryStep;const double h=std::sqrt(.5);
  const std::vector<Complex> H={h,h,h,-h},X={0,1,1,0},Z={1,0,0,-1};
  const std::vector<Complex> CX={1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0};
+ using Bits=QuantumClassical::Bits;using Op=Bits::Binary;
+ check(sampleTrajectories(1,2,100,7,{1,0},{Step::gate(X,{0}),Step::measure(0,0),Step::assign({1},Bits::read({0})),Step::assign({0},Bits::constant(1,0))},32).at(2)==100);
+ check(sampleTrajectories(0,3,100,7,{2,1,0},{Step::assign({0},Bits::constant(1,1)),Step::assign({1,2},Bits::read({0,1}))},16).at(3)==100);
+ check(sampleTrajectories(0,64,100,7,{63},{Step::assign({63},Bits::constant(1,1))},16).at(1)==100);
+ auto parity=Bits::binary(Op::Xor,Bits::read({0}),Bits::read({1}));
+ auto parityCounts=sampleTrajectories(3,3,10000,7,{2,1,0},{Step::gate(H,{0}),Step::gate(H,{1}),Step::measure(0,0),Step::measure(1,1),Step::branch(parity,{Step::gate(X,{2})}),Step::measure(2,2)},128);
+ check(parityCounts.size()==4);
+ for(auto outcome:{0,3,5,6})check(parityCounts.count(outcome) && std::abs(int(parityCounts.at(outcome))-2500)<300);
+ check(sampleTrajectories(0,2,100,7,{1,0},{Step::assign({0},Bits::constant(1,1)),Step::branch(Bits::read({0}),{Step::assign({0},Bits::constant(1,0)),Step::assign({1},Bits::constant(1,1))})},16).at(2)==100);
+ check(sampleTrajectories(0,1,100,7,{0},{Step::branch(Bits::constant(1,0),{},{Step::assign({0},Bits::constant(1,1))})},16).at(1)==100);
+ // Changing classical memory cannot change the previously measured qubit.
+ check(sampleTrajectories(1,2,100,7,{1,0},{Step::gate(X,{0}),Step::measure(0,0),Step::assign({0},Bits::constant(1,0)),Step::measure(0,1)},32).at(2)==100);
+ rejects<std::invalid_argument>([&]{sampleTrajectories(0,2,0,7,{}, {Step::assign({0},Bits::constant(2,0))},16);});
+ rejects<std::invalid_argument>([&]{sampleTrajectories(0,2,0,7,{}, {Step::assign({0,0},Bits::constant(2,0))},16);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,1,0,7,{}, {Step::assign({1},Bits::constant(1,0))},16);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,1,0,7,{}, {Step::assign({0},Bits::read({1}))},16);});
+ rejects<std::invalid_argument>([&]{sampleTrajectories(0,2,0,7,{}, {Step::branch(Bits::read({0,1}),{})},16);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,1,0,7,{}, {Step::branch(Bits::read({1}),{})},16);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,1,0,7,{}, {Step::branch(Bits::constant(1,0),{Step::assign({1},Bits::constant(1,0))})},16);});
  // Branch selection is latched at entry, not re-tested after each operation.
  std::vector<Step> block={Step::gate(X,{0}),Step::measure(0,0),
   Step::branch(1,1,{Step::reset(0),Step::measure(0,0),Step::gate(X,{1}),Step::measure(1,1)})};
