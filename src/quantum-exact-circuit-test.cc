@@ -55,6 +55,38 @@ int main(){try {
  auto signedByte=Type::sized(Int::Signedness::Signed,8),machine=Type::machine(Int::Signedness::Signed);
  auto variable=Expr::read(signedByte,{0,1,2,3,4,5,6,7});
  auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
+ {
+ std::vector<Type> types={signedByte};auto slot=Expr::variable(signedByte,0);
+ auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
+ auto emit=Step::assign({0},Bits::constant(1,1));
+ auto run=[&](const std::vector<Step> &program){return evaluateCircuit(0,1,program,types,64,exact);};
+ equal(weights(run({Step::storeInteger(0,literal(3)),Step::branch(positive,{emit})}),0,1,{0},64,exact).at(1),"1");
+ equal(weights(run({Step::storeInteger(0,literal(255)),Step::branch(positive,{emit})}),0,1,{0},64,exact).at(0),"1");
+ equal(weights(run({Step::storeInteger(0,literal(3)),Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(5))),Step::branch(positive,{emit})}),0,1,{0},64,exact).at(0),"1");
+ rejects<std::domain_error>([&]{run({Step::branch(positive,{emit})});});
+ rejects<std::domain_error>([&]{run({Step::storeInteger(0,literal(1)),Step::clearInteger(0),Step::branch(positive,{emit})});});
+ rejects<std::out_of_range>([&]{run({Step::branch(Bits::constant(1,0),{Step::storeInteger(1,literal(1))})});});
+ rejects<std::invalid_argument>([&]{run({Step::storeInteger(0,Expr::variable(machine,0))});});
+ equal(weights(run({Step::branch(Bits::constant(1,0),{Step::storeInteger(0,slot)})}),0,1,{0},64,exact).at(0),"1");
+ auto measured=Expr::read(Type::sized(Int::Signedness::Unsigned,1),{0});
+ std::vector<Step> program={Step::map(H,{0}),Step::measure(0,0),Step::storeInteger(0,measured),
+  Step::assign({0},Bits::constant(1,0)),Step::reset(0)};
+ auto marginal=evaluateCircuit(1,1,program,types,8,exact);
+ check(marginal.size()==1);equal(weights(marginal,1,1,{0},8,exact).at(0),"1");
+ program.push_back(Step::branch(positive,{Step::map(X,{0})}));program.push_back(Step::measure(0,0));
+ auto output=weights(evaluateCircuit(1,1,program,types,8,exact),1,1,{0},8,exact);
+ check(output.size()==2);equal(output.at(0),"1/2");equal(output.at(1),"1/2");
+ rejects<std::length_error>([&]{evaluateCircuit(1,1,program,types,4,exact);});
+ // Undefined and initialized-zero states cannot merge after erasing the bit.
+ rejects<std::domain_error>([&]{evaluateCircuit(1,1,{Step::map(H,{0}),Step::measure(0,0),
+  Step::branch(1,1,{Step::storeInteger(0,literal(0))}),Step::assign({0},Bits::constant(1,0)),Step::branch(positive,{})},types,8,exact);});
+ // Clearing both histories permits merging within a two-record budget before
+ // a new measurement splits them again.
+ std::vector<Step> clearProgram={Step::map(H,{0}),Step::measure(0,0),Step::storeInteger(0,measured),
+  Step::assign({0},Bits::constant(1,0)),Step::reset(0),Step::clearInteger(0),Step::map(H,{0}),Step::measure(0,0)};
+ auto cleared=weights(evaluateCircuit(1,1,clearProgram,types,8,exact),1,1,{0},8,exact);
+ check(cleared.size()==2);equal(cleared.at(0),"1/2");equal(cleared.at(1),"1/2");
+ }
  auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
  auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
  auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
