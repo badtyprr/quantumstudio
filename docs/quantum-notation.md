@@ -342,8 +342,7 @@ quantum wire order. No implicit final measurements occur. A channel expression, 
 `amplitude_damping(0.5)`, must evaluate to a vector of 1-256 finite square Kraus
 matrices matching its one to three target wires. Their completeness relation
 must hold within the numerical tolerance. Each shot samples and normalizes one
-Kraus branch without changing classical memory. This worker support does not
-yet enable the GUI's noise controls for sampling.
+Kraus branch without changing classical memory. The GUI uses this operation for AD, GAD, PD, PAD, Depol and Thermal noise controls.
 
 The response adds `classical_bits`; `wires` now identifies the requested classical
 bits in left-to-right output order. The explicit ordering avoids relying on a
@@ -351,7 +350,7 @@ SDK's display convention. The GUI maps measurement records to the corresponding
 wire index, then appends final measurements for the displayed output wires.
 Its feedback operations measure their control wires at that step, matching
 exact `feedforward()` semantics; they do not refer to an earlier measurement.
-Noise-channel sampling is not yet supported. Identical requests reproduce counts using the same
+Noise sampling uses the same channel expressions as exact density evolution. Identical requests reproduce counts using the same
 backend version. Errors return no partial counts; process termination cancels.
 
 ### Library ABI compatibility

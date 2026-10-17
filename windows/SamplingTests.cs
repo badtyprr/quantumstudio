@@ -35,12 +35,21 @@ class SamplingTests {
     var dynamic=composer.SamplingGates();Check(dynamic.Count==(name=="Reset" ? 3 : 4));
     Check(Encoding.UTF8.GetString(NumericalSampling.Request(2,100,7,new[]{0,1},dynamic)).StartsWith("QSAMPLE2\n"));
    }
-   composer.BellState(0);composer.AddGate("AD","0","1/4");
-   bool rejected=false;try {composer.SamplingGates();}catch(InvalidOperationException) {rejected=true;}Check(rejected);
+   string[] noiseNames={"AD","GAD","PD","PAD","Depol","Thermal"};
+   string[] noiseParameters={"1","1,0","1","1,0,0","1","1,1,0,0"};
+   string[] noiseExpressions={"amplitude_damping(1)","amplitude_damping(1,0)","phase_damping(1)","phase_amplitude_damping(1,0,0)","depolarizing(1)","thermal_relaxation(1,1,0,0)"};
+   var noisyCircuits=new List<List<NumericalSampling.Gate>>();
+   for(int k=0;k<noiseNames.Length;k++) {
+    composer.BellState(0);composer.AddGate(noiseNames[k],"0",noiseParameters[k]);
+    var circuit=composer.SamplingGates();Check(circuit.Count==3 && circuit[2].Kind==NumericalSampling.Operation.Channel && circuit[2].Expression==noiseExpressions[k]);
+    Check(composer.Expression().Contains(noiseExpressions[k]));
+    composer.AddGate("Measure","0","");Check(composer.SamplingGates().Count==4);
+    noisyCircuits.Add(circuit);
+   }
    var reset=new[]{new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{0}}};
    Check(Encoding.UTF8.GetString(NumericalSampling.Request(1,100,7,new[]{0},reset))=="QSAMPLE2\n1\n100\n7\n1\n1\n0\n2\n2\n0\n1\n0\n0\n");
    foreach(var invalid in new[]{
-    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)4,Wires=new[]{0}},
+    new NumericalSampling.Gate {Kind=(NumericalSampling.Operation)5,Wires=new[]{0}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Measure,Wires=new[]{0,1}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Reset,Wires=new[]{2}},
     new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Conditional,Wires=new[]{0},Expression="X",Mask=4,Value=4},
@@ -66,6 +75,12 @@ class SamplingTests {
     var dynamicResult=NumericalSampling.Run(worker,2,10000,7,new[]{0,1},dynamicCircuit,CancellationToken.None).GetAwaiter().GetResult();
     Check(dynamicResult.classical_bits==2 && dynamicResult.counts.Count==2 && dynamicResult.counts.ContainsKey("00") && dynamicResult.counts.ContainsKey("01"));
     Check(Math.Abs(dynamicResult.counts["01"]-5000)<250);
+    for(int k=0;k<noiseExpressions.Length;k++) {
+     var operations=new List<NumericalSampling.Gate> {new NumericalSampling.Gate {Expression="X",Wires=new[]{0}},new NumericalSampling.Gate {Kind=NumericalSampling.Operation.Channel,Expression=noiseExpressions[k],Wires=new[]{0}}};
+     var noisy=NumericalSampling.Run(worker,1,10000,7,new[]{0},operations,CancellationToken.None).GetAwaiter().GetResult();
+     if(k==4)Check(noisy.counts.Count==2 && Math.Abs(noisy.counts["0"]-5000)<300);
+     else Check(noisy.counts.Count==1 && noisy.counts.ContainsKey(k==2 || k==5 ? "1" : "0"));
+    }
     using(var cancellation=new CancellationTokenSource()) {
      var many=new List<NumericalSampling.Gate>();for(int k=0;k<100;k++)many.Add(new NumericalSampling.Gate {Expression="H",Wires=new[]{k%25}});
      var pending=NumericalSampling.Run(worker,25,10000,7,new[]{0},many,cancellation.Token);cancellation.CancelAfter(300);
