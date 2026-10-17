@@ -3,6 +3,6 @@
 #define QUANTUM_SAMPLING_REQUEST_H
 #include <string>
 class Calculator;
-// One bounded QSAMPLE1 request. Throws without writing a partial JSON response.
+// One bounded QSAMPLE1 (terminal) or QSAMPLE2 (trajectory) request. Throws without writing a partial JSON response.
 std::string quantumSamplingRequest(Calculator &calculator, const std::string &input);
 #endif
