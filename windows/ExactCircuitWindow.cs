@@ -25,7 +25,8 @@ sealed class ExactCircuitWindow : Window {
   Width=820;Height=650;MinWidth=600;MinHeight=430;WindowStartupLocation=WindowStartupLocation.CenterOwner;
   Background=WorkspaceTheme.Background;Foreground=WorkspaceTheme.Text;FontFamily=new FontFamily("Segoe UI");
   var root=new DockPanel {Margin=new Thickness(24)};Content=root;
-  var top=new StackPanel();DockPanel.SetDock(top,Dock.Top);root.Children.Add(top);
+  var top=new StackPanel();var settings=new ScrollViewer {Content=top,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,MaxHeight=250};DockPanel.SetDock(settings,Dock.Top);root.Children.Add(settings);
+  SizeChanged+=delegate {settings.MaxHeight=Math.Max(150,ActualHeight*0.45);};
   top.Children.Add(new TextBlock {Text="Exact circuit probabilities",FontSize=26,FontWeight=FontWeights.SemiBold});
   top.Children.Add(new TextBlock {Text=circuit.Qubits+" qubits · "+circuit.ClassicalBits+" classical bits · Fractions and symbolic parameters",Margin=new Thickness(0,6,0,12),TextWrapping=TextWrapping.Wrap});
   var controls=new WrapPanel();top.Children.Add(controls);foreach(var button in new[]{run,cancel,copy,save})controls.Children.Add(button);
