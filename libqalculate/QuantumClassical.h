@@ -23,6 +23,8 @@ public:
  static Bits read(const std::vector<unsigned> &indices);
  static Bits complement(const Bits &operand);
  static Bits binary(Binary operation,const Bits &left,const Bits &right);
+ // One-bit And/Or with left-to-right short circuit; both branches are validated.
+ static Bits logical(Binary operation,const Bits &left,const Bits &right);
  // Population count is an unsigned 64-bit internal value (0..64).
  // Compare typed runtime integers, producing one bit for assignments/branches.
  // Only the six comparison Binary values are accepted.
