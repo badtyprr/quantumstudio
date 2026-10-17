@@ -229,6 +229,15 @@ Multi-character ket and bra labels are preserved as single names, including `|Be
 
 ### Worker state definitions
 
+Single-parameter state families use a declaration such as `psi(alpha)` with the
+expression `cos(alpha)|0>+sin(alpha)|1>`. Enter it in **States**, then evaluate
+`|psi(pi/8)>`, `<psi(0)|psi(pi/2)>`, or `|psi(t)>`. The parameter is local to the
+definition; a symbolic argument retains symbolic amplitudes. Families share the
+existing definition order, finite column-vector limits and session storage.
+An undeclared family stays symbolic, without an assumed normalization or
+orthogonality. This function-style form takes one scalar argument; mathematical
+subscript forms such as `|psi_{pi/8}>` are not yet supported.
+
 The worker's `--states` option accepts definitions alongside one expression. Define
 `Bell` as `|Phi+>` and then `after CZ` as `CZ|Bell>` to evaluate `<Bell|Bell>`
 to 1 and `<Bell|after CZ>` to 0. Definitions are evaluated exactly, in order,

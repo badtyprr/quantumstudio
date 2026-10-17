@@ -60,13 +60,41 @@ void inferSumBasis(MathStructure &value,const MathStructure &index,const MathStr
  }
  value.childrenUpdated();
 }
+class QuantumStateFamilyFunction: public MathFunction {
+ MathStructure body,parameter;
+ public:
+ QuantumStateFamilyFunction(const std::string &name,const MathStructure &value,const MathStructure &index):MathFunction("__qstate_family_"+name,1),body(value),parameter(index) {}
+ ExpressionItem *copy() const {return new QuantumStateFamilyFunction(*this);}
+ bool preservesSingletonMatrix() const {return true;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  MathStructure argument=raw[0];argument.eval(eo);
+  if(!argument.representsScalar()) {CALCULATOR->error(true,"A state-family argument must be scalar.",NULL);return 0;}
+  out=body;replaceQuantumIndex(out,parameter,argument);out.eval(eo);
+  if(!out.isMatrix() || out.columns()!=1 || !out.rows() || out.rows()>1024) {CALCULATOR->error(true,"A state family must produce a column vector of at most 1024 rows.",NULL);return 0;}
+  for(size_t r=1;r<=out.rows();++r) {
+   const MathStructure &cell=*out.getElement(r,1);
+   if(!cell.representsScalar() || cell.isUndefined() || (cell.isNumber() && cell.number().isInfinite(false))) {CALCULATOR->error(true,"State-family amplitudes must be finite scalar expressions.",NULL);return 0;}
+  }
+  return 1;
+ }
+};
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall")setArgumentDefinition(1,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qstatecall") {
+   MathStructure argument=raw[1];argument.eval(eo);
+   if(!argument.representsScalar() || argument.isUndefined() || (argument.isNumber() && argument.number().isInfinite(false))) {CALCULATOR->error(true,"A state-family argument must be a finite scalar expression.",NULL);return 0;}
+   MathFunction *family=CALCULATOR->getFunction("__qstate_family_"+raw[0].symbol());
+   if(!family) {
+    if(argument.equals(raw[1]))return 0;
+    out.set(this,&raw[0],&argument,NULL);return 1;
+   }
+   out.set(family,&argument,NULL);out.eval(eo);return 1;
+  }
   if(op=="qsum") {
    if((!raw[3].isSymbolic() && !raw[3].isVariable()) || (raw[3].isVariable() && raw[3].variable()->isKnown())) {
     CALCULATOR->error(true,"A finite sum index must be a symbolic variable.",NULL);return 0;
@@ -322,10 +350,14 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
+}
+void defineQuantumStateFamily(Calculator &calculator,const std::string &name,const MathStructure &body,const MathStructure &parameter) {
+ calculator.addFunction(new QuantumStateFamilyFunction(name,body,parameter));
 }

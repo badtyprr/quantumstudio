@@ -21,6 +21,9 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ defineQuantumStateFamily(calculator,"scoped",calculator.parse("matrix(2,1,vector(qsum(x+y,0,1,y),0))"),calculator.parse("x"));
+ equal("qstatecall(scoped,y)","[2*y+1;0]");
+ equal("qstatecall(scoped,3)","[7;0]");
  equal("qsumset(qsum(x+y,0,1,y),vector(y),x)","2*y+1");
  equal("qsumset(qsum(x+y,0,1,y),vector(z),x)","2*z+1");
  equal("qsumset(qsum(x+y,0,1,y),vector(3),x)","7");

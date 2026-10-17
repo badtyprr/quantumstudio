@@ -13,7 +13,7 @@ static class NamedStateEditor {
   var draft=new System.Collections.ObjectModel.ObservableCollection<StateDefinition>(SessionStore.CopyStates(initial));
   var panel=new DockPanel {Margin=new Thickness(24)};dialog.Content=panel;
   var heading=new TextBlock {Text="Give your states a name",FontSize=25,FontWeight=FontWeights.SemiBold,Margin=new Thickness(0,0,0,8)};DockPanel.SetDock(heading,Dock.Top);panel.Children.Add(heading);
-  var help=new TextBlock {Text="Use names in bras and kets: <Bell|after CZ>. Definitions use quantum notation and may reference states above them. Calculation checks the vectors; states are not automatically normalized.",TextWrapping=TextWrapping.Wrap,FontSize=14,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,0,0,16)};DockPanel.SetDock(help,Dock.Top);panel.Children.Add(help);
+  var help=new TextBlock {Text="Use names in bras and kets: <Bell|after CZ>. For a family, name it psi(alpha), define cos(alpha)|0>+sin(alpha)|1>, then use |psi(pi/8)>. Definitions may reference earlier states. Calculation checks the vectors; states are not automatically normalized.",TextWrapping=TextWrapping.Wrap,FontSize=14,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,0,0,16)};DockPanel.SetDock(help,Dock.Top);panel.Children.Add(help);
   var actions=new WrapPanel();DockPanel.SetDock(actions,Dock.Top);panel.Children.Add(actions);
   var add=new Button {Content="Add state"};var bell=new Button {Content="Add Bell example"};var remove=new Button {Content="Remove"};var up=new Button {Content="Move up"};var down=new Button {Content="Move down"};
   foreach(var button in new[]{add,bell,remove,up,down})actions.Children.Add(button);

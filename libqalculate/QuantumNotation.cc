@@ -37,6 +37,12 @@ void replaceAll(std::string &s, const std::string &a, const std::string &b) {
 std::string labelText(std::string s) {
  s.erase(std::remove_if(s.begin(),s.end(),[](unsigned char c) { return std::isspace(c); }),s.end()); return s;
 }
+size_t stateFamilyOpen(const std::string &label) {
+ size_t open=label.find('(');
+ if(open==std::string::npos || open==0 || label.back()!=')' || std::isdigit((unsigned char)label[0]))return std::string::npos;
+ for(size_t k=0;k<open;++k)if((unsigned char)label[k]<128 && !std::isalnum((unsigned char)label[k]) && label[k]!='_')return std::string::npos;
+ return open;
+}
 std::string binaryNumeral(const std::string &text) {
  std::string integer="0";size_t digits=0,fraction=0;bool point=false;
  for(char c:text) {
@@ -165,6 +171,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
+ {"qstatecall",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
  {"qgeneralizeddamping",2},
@@ -444,6 +451,14 @@ class Parser {
   return mark!=std::string::npos && label[mark]=='^' ? mark : std::string::npos;
  }
  std::string basisState(const std::string &label,const std::string &dimension="") {
+  std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
+  if(dimension.empty() && familyOpen!=std::string::npos) {
+   std::string outer=s;size_t outerPosition=p;s=familyLabel.substr(familyOpen+1,familyLabel.size()-familyOpen-2);p=0;
+   std::string argument=expression();ws();
+   if(p!=s.size())throw std::runtime_error("A state family currently takes one scalar argument.");
+   s=outer;p=outerPosition;
+   return "qstatecall(\""+familyLabel.substr(0,familyOpen)+"\","+argument+")";
+  }
   // Commas at the top level separate registers. Commas inside a computed
   // basis index, such as mod(k,3), remain ordinary function arguments.
   std::vector<std::string> registers;size_t start=0;int nesting=0;
@@ -684,6 +699,7 @@ class Parser {
     if(!vectorized && (!dimension.empty() || (suffix<s.size() && s[suffix]=='_')))valid=!label.empty();
     if(!vectorized && repeatedRegister(rawLabel)!=std::string::npos)valid=true;
     if(!vectorized && !bellState(rawLabel).empty())valid=true;
+    if(!vectorized && stateFamilyOpen(label)!=std::string::npos)valid=true;
     if(vectorized && label.size()>2 && label.front()=='(' && label.back()==')')valid=true;
     if(valid) {
      p=end+1;
