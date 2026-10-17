@@ -132,10 +132,10 @@ for exact in (True,False):
     typed([assign([8],n(2,2)+broad)])
 
     typed([branch(const(1,0),[branch(negative,[])])],bits=7,out=[])
-    for op,want in enumerate([8,4,12,3,0]):
+    for op,want in enumerate([8,4,12,3,0,36]):
         expr=integer_binary(op,integer_constant(0,0,6),integer_constant(0,0,2))
         typed([assign([8],compare(0,expr,integer_constant(0,0,want)))],expected={'1':1})
-    for malformed in [n(4),n(0,2,8,0),n(0,0,65,0),n(0,0,8,256),n(1,0,1,64),n(3,5),n(2,2,8)+one]:
+    for malformed in [n(4),n(0,2,8,0),n(0,0,65,0),n(0,0,8,256),n(1,0,1,64),n(3,6),n(2,2,8)+one]:
         typed([assign([8],compare(0,malformed,zero))])
     typed([assign([8],n(6,6)+zero+zero)])
     typed([assign([8],compare(0,n(2,0,0)*32+zero,zero))])
@@ -188,4 +188,32 @@ for exact in (True,False):
     broad=integer_constant(0,8,0)
     for _ in range(8):broad=integer_binary(0,broad,broad)
     typed([assign(list(range(8)),integer_bits(integer_cast(0,8,broad)))])
+for exact in (True,False):
+    def typed(steps,expected=None):
+        run(exact,payload(exact,0,9,[8],steps,typed=True),expected)
+    def ic(value):return integer_constant(0,0,value & ((1<<64)-1))
+    base=integer_read(0,8,*range(8))
+    power=integer_binary(5,base,ic(3))
+    for raw,want in [(0,0),(2,8),(127,2048383),(254,-8),(255,-1)]:
+        typed([assign(list(range(8)),const(8,raw)),assign([8],compare(0,power,ic(want)))],{'1':1})
+    runtime_exponent=integer_binary(5,ic(2),base)
+    for raw,want in [(0,1),(3,8),(62,1<<62)]:
+        typed([assign(list(range(8)),const(8,raw)),assign([8],compare(0,runtime_exponent,ic(want)))],{'1':1})
+    for raw in (63,255):
+        steps=[assign(list(range(8)),const(8,raw))]
+        failure=compare(0,runtime_exponent,ic(0))
+        typed(steps+[assign([8],failure)])
+        typed(steps+[branch(const(1,0),[assign([8],failure)])],{'0':1})
+        typed(steps+[assign([8],logical(0,const(1,0),failure))],{'0':1})
+    nested=integer_binary(5,ic(2),integer_binary(5,ic(3),ic(2)))
+    typed([assign([8],compare(0,nested,ic(512)))],{'1':1})
+    wrapped=integer_binary(5,integer_constant(1,0,2),ic(64))
+    typed([assign([8],compare(0,wrapped,ic(0)))],{'1':1})
+    malformed=integer_binary(5,ic(2),integer_read(0,1,9))
+    typed([branch(const(1,0),[assign([8],compare(0,malformed,ic(0)))])])
+    valid=payload(exact,0,9,[8],[assign([8],compare(0,nested,ic(512)))],typed=True)
+    for end in range(len(valid)):run(exact,valid[:end])
+    run(exact,valid+b'\n')
+    for legacy in (False,True):
+        run(exact,payload(exact,0,9,[8],[assign([8],compare(0,nested,ic(512)))],legacy=legacy))
 print('PASS: '+str(checks)+' classical expression process checks.')

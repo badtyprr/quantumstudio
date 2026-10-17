@@ -573,8 +573,14 @@ An integer type is encoded as signedness (0 signed, 1 unsigned) and width
 - 1: type, then one classical bit index per storage bit, least-significant first
   (64 indices for machine precision).
 - 2: target type, then one integer child (explicit cast).
-- 3: arithmetic code, then two integer children. Codes 0..4 mean addition,
-  subtraction, multiplication, division and remainder.
+- 3: arithmetic code, then two integer children. Codes 0..5 mean addition,
+  subtraction, multiplication, division, remainder and power.
+
+Power applies the same common-type conversion as other integer arithmetic.
+After conversion, a negative exponent is a domain error. Signed overflow is
+checked and unsigned powers wrap; zero to the zeroth power is 1. This is the
+worker's integer-domain policy. A skipped branch or short-circuited guard does
+not evaluate the power, but still validates its structure and references.
 
 All fields are LF-terminated unsigned decimal integers. Integer and bit nodes
 share a 32-level/512-expanded-node budget, checked before descending. References

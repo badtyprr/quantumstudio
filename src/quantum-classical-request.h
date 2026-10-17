@@ -23,8 +23,8 @@ QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,un
  const auto kind=reader.integer(3);
  if(kind==3) {
   const Integer::Operation operations[]={Integer::Operation::Add,Integer::Operation::Subtract,
-   Integer::Operation::Multiply,Integer::Operation::Divide,Integer::Operation::Remainder};
-  const auto operation=operations[reader.integer(4)];
+   Integer::Operation::Multiply,Integer::Operation::Divide,Integer::Operation::Remainder,Integer::Operation::Power};
+  const auto operation=operations[reader.integer(5)];
   auto left=integerNode(reader,depth+1,count);auto right=integerNode(reader,depth+1,count);
   return IntegerExpression::binary(operation,left,right);
  }
