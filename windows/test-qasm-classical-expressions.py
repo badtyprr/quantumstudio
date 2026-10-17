@@ -7,6 +7,21 @@ p=argparse.ArgumentParser();p.add_argument('--worker',type=Path);p.add_argument(
 spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'windows/qasm-import.py');adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
 header='OPENQASM 3.0; include "stdgates.inc"; '
 cases=[
+ ('variable-arithmetic','int[8] counter=3; bit c; counter=counter**2-1; c=counter==8;',{'1':'1'}),
+ ('variable-compound','int counter=3; bit c; counter+=2; counter*=3; counter-=1; counter/=2; counter%=4; c=counter==3;',{'1':'1'}),
+ ('variable-undefined','int[8] counter; bit c; c=counter==0;',None),
+ ('variable-guard','int counter; bit c; if(false && counter==0){c=1;}',{'0':'1'}),
+ ('variable-initialize-later','int counter; bit c; counter=8; if(counter==8){c=1;}',{'1':'1'}),
+ ('variable-cast','uint[8] a=255; int[8] b=int[8](a); bit c; c=b<0;',{'1':'1'}),
+ ('variable-bitcast','uint[3] a=5; bit[3] c; c=bit[3](a);',{'101':'1'}),
+ ('variable-bool','int a=-1; bit c; c=bool(a);',{'1':'1'}),
+ ('variable-narrow','uint[3] a=8; bit c; c=a==0;',{'1':'1'}),
+ ('variable-branch','int a=1; bit c; if(a==1){a=2; c=1;}else{a=3;} c=a==2;',{'1':'1'}),
+ ('variable-loop','int counter=0; bit c; for int i in [0:2]{counter+=i;} c=counter==3;',{'1':'1'}),
+ ('variable-const-width','const uint WIDTH=8; int[WIDTH] a=7; bit c; c=a==7;',{'1':'1'}),
+ ('variable-measurement','qubit q; bit c; bit r; int[8] a; h q; c=measure q; a=int[1](c); r=a<0;',{'00':'1/2','11':'1/2'}),
+ ('variable-history','qubit q; bit c; int a; h q; c=measure q; if(c){a=8;}else{a=3;} c=0; reset q; c=a==8;',{'0':'1/2','1':'1/2'}),
+ ('variable-zero','int a=0; bit c; c=1/a==0;',None),
  ('typed-power','bit[3] c=2; bit r; if(int[3](c)**3==8){r=1;}',{'1010':'1'}),
  ('typed-power-right','bit[3] c=2; bit r; if(int[3](c)**3**2==512){r=1;}',{'1010':'1'}),
  ('typed-power-left','bit[3] c=2; bit r; if((int[3](c)**3)**2==64){r=1;}',{'1010':'1'}),
@@ -90,6 +105,11 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
           'qubit q; bit[2] c; let d=c; d=1;',
           'qubit q; bit c; c+=1;', 'qubit q; bit[2] c; if(c>4) x q;']
 rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
+rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
+             'int a=1; qubit[2] q; x q[a];','int a=1; qubit q; rx(a) q;',
+             'int a=1; for int a in [0:2]{}','bit c; if(c){int a=1;}',
+             'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
+             'int a=1; bit[2] c; c[a]=1;','float a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
@@ -120,6 +140,7 @@ def integer_expression(e):
  t=n(0 if e['Signedness']=='Signed' else 1,e['Width'])
  if k=='IntegerConstant':return n(0)+t+n(e['Value'])
  if k=='IntegerRead':return n(1)+t+n(*e['Bits'])
+ if k=='IntegerVariable':return n(4)+t+n(e['Slot'])
  assert k=='IntegerCast'
  return n(2)+t+integer_expression(e['Left'])
 
@@ -131,13 +152,15 @@ def steps(body):
   elif kind in ('Branch','ExpressionBranch'):
    out+=(n(6,s['Mask'],s['Value']) if kind=='Branch' else n(8)+expression(s['ClassicalValue']))
    for key in ['WhenTrue','WhenFalse']:out+=n(len(s[key]))+steps(s[key])
+  elif kind=='StoreInteger':out+=n(9,s['VariableSlot'])+integer_expression(s['IntegerValue'])
+  elif kind=='Reset':out+=n(2,s['Wires'][0])
   elif kind=='Measure':out+=n(1,s['Wires'][0],s['ClassicalBit'])
   else:
    assert kind=='Gate';matrix=s['Expression'].encode();out+=n(0,len(s['Wires']),*s['Wires'],len(matrix))+matrix
  return out
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
- assert circuit['Version']==(4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name.startswith('variable-') else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('classical-only-'):assert circuit['Qubits']==0,(name,circuit)
  # The overlap case must retain a simultaneous read of both old source bits.
  if name=='overlap':assert circuit['Steps'][1]=={'Kind':'Assign','Wires':[1,2],'ClassicalValue':{'Kind':'Read','Bits':[0,1]}}
@@ -149,7 +172,11 @@ for name,body,expected in cases:
   worker=a.worker.resolve();bits=sum(r['Size'] for r in circuit['Registers']);output=circuit['OutputBits']
   for exact in (True,False):
    protocol=(b'QEXACT3\n' if exact else b'QSAMPLE4\n') if circuit['Version']==4 else (b'QEXACT2\n' if exact else b'QSAMPLE3\n')
-   payload=protocol+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits,len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
+   declarations=b''
+   if circuit['Version']==5:
+    protocol=b'QEXACT4\n' if exact else b'QSAMPLE5\n'
+    declarations=n(len(circuit['Variables']))+b''.join(n(0 if v['Signedness']=='Signed' else 1,v['Width']) for v in circuit['Variables'])
+   payload=protocol+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits)+declarations+n(len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
    run=subprocess.run([str(worker),'--exact-circuit' if exact else '--sample'],input=payload,capture_output=True,timeout=30,env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/'data')))
    if expected is None:
     assert run.returncode!=0 and run.stderr and not run.stdout,(name,run.stdout);checks+=1;continue
