@@ -22,6 +22,15 @@ class ClassicalCircuitTests {
     Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerRead",Signedness="Signed",Width=8,Bits=new[]{0,1,2,3,4,5,6,7}},
     Right=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"}}}}};
  }
+ static void ImportedCanonicalChecks() {
+  // Run first: serializer caches differ before any DTO has been constructed.
+  var imported=ClassicalCircuit.Load(@"{""Version"":4,""Qubits"":0,""Registers"":[{""Name"":""c"",""Size"":8},{""Name"":""r"",""Size"":1}],""OutputBits"":[8],""Steps"":[{""Kind"":""Assign"",""Wires"":[0,1,2,3,4,5,6,7],""ClassicalValue"":{""Kind"":""Constant"",""Width"":8,""Value"":""255""}},{""Kind"":""ExpressionBranch"",""ClassicalValue"":{""Kind"":""IntegerCompare"",""Operator"":""Less"",""Left"":{""Kind"":""IntegerRead"",""Signedness"":""Signed"",""Width"":8,""Bits"":[0,1,2,3,4,5,6,7]},""Right"":{""Kind"":""IntegerConstant"",""Signedness"":""Signed"",""Width"":0,""Value"":""0""}},""WhenTrue"":[{""Kind"":""Assign"",""Wires"":[8],""ClassicalValue"":{""Kind"":""Constant"",""Width"":1,""Value"":""1""}}],""WhenFalse"":[]}]}");
+  var canonical=imported.Serialize();
+  for(int round=0;round<3;round++) {
+   var reopened=ClassicalCircuit.Load(canonical);Check(reopened.Serialize()==canonical);
+   Check(Convert.ToBase64String(NumericalSampling.RequestExact(imported.Qubits,imported.ClassicalBits,imported.OutputBits,imported.SamplingGates()))==Convert.ToBase64String(NumericalSampling.RequestExact(reopened.Qubits,reopened.ClassicalBits,reopened.OutputBits,reopened.SamplingGates())));
+  }
+ }
  static void TypedChecks() {
   var original=ClassicalCircuit.From(TypedProgram());var restored=ClassicalCircuit.Load(original.Serialize());
   Check(restored.Serialize()==original.Serialize());Check(restored.Snapshot().Version==4);
@@ -57,6 +66,7 @@ class ClassicalCircuitTests {
   for(int version=2;version<=3;version++){var legacy=version==2 ? Program() : Expressions();Check(!ClassicalCircuit.From(legacy).Serialize().Contains("Signedness"));}
  }
  static void Main() {
+  ImportedCanonicalChecks();
   var draft=Program();var circuit=ClassicalCircuit.From(draft);var text=circuit.Serialize();
   Check(circuit.ClassicalBits==64 && circuit.Qubits==1);
   Check(ClassicalCircuit.Load(text).Serialize()==text);
