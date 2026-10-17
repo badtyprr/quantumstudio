@@ -29,3 +29,14 @@ Replacing either kind of condition preserves both bodies. Invalid expressions
 leave the circuit and undo history unchanged. Saving uses the expression-aware
 circuit format automatically.
 These register names are not added to the general calculator namespace.
+
+`popcount(value)` counts set bits and returns a 64-bit unsigned value; it can be
+compared directly, for example `popcount(c) == 2`. `rotl(value, distance)` and
+`rotr(value, distance)` preserve the value width and wrap the distance modulo
+that width. Negative decimal distances reverse direction, including -2^63.
+Positive distances and register expressions are unsigned by default.
+`rotl_signed` and `rotr_signed` explicitly interpret distance bits as two's
+complement. Their decimal arguments default to 64 bits; quoted bit strings and
+registers retain their declared width. Formatting uses these explicit forms to
+preserve imported signed distances through editing. These names belong to the
+classical circuit editor, not the main mathematical calculator.
