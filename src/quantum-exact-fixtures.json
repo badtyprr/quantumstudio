@@ -1,0 +1,410 @@
+[
+  {
+    "name": "saved-before-reset",
+    "qubits": 1,
+    "output_bits": [
+      0
+    ],
+    "steps": [
+      [
+        "X",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "reset",
+        0
+      ]
+    ],
+    "probabilities": {
+      "1": "1"
+    }
+  },
+  {
+    "name": "no-implicit-final-measurement",
+    "qubits": 1,
+    "output_bits": [
+      0
+    ],
+    "steps": [
+      [
+        "X",
+        0
+      ]
+    ],
+    "probabilities": {
+      "0": "1"
+    }
+  },
+  {
+    "name": "empty-output",
+    "qubits": 1,
+    "output_bits": [],
+    "steps": [
+      [
+        "H",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ]
+    ],
+    "probabilities": {
+      "": "1"
+    }
+  },
+  {
+    "name": "bell-records",
+    "qubits": 2,
+    "output_bits": [
+      1,
+      0
+    ],
+    "steps": [
+      [
+        "H",
+        0
+      ],
+      [
+        "CX",
+        0,
+        1
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "measure",
+        1,
+        1
+      ]
+    ],
+    "probabilities": {
+      "00": "1/2",
+      "11": "1/2"
+    }
+  },
+  {
+    "name": "overwritten-outcome",
+    "qubits": 1,
+    "output_bits": [
+      0
+    ],
+    "steps": [
+      [
+        "H",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "reset",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ]
+    ],
+    "probabilities": {
+      "0": "1"
+    }
+  },
+  {
+    "name": "branch-once",
+    "qubits": 1,
+    "output_bits": [
+      1,
+      0
+    ],
+    "steps": [
+      [
+        "X",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "branch",
+        1,
+        1,
+        [
+          [
+            "reset",
+            0
+          ],
+          [
+            "measure",
+            0,
+            0
+          ],
+          [
+            "X",
+            0
+          ],
+          [
+            "measure",
+            0,
+            1
+          ]
+        ],
+        []
+      ]
+    ],
+    "probabilities": {
+      "10": "1"
+    }
+  },
+  {
+    "name": "else-body",
+    "qubits": 1,
+    "output_bits": [
+      0
+    ],
+    "steps": [
+      [
+        "branch",
+        1,
+        1,
+        [],
+        [
+          [
+            "X",
+            0
+          ],
+          [
+            "measure",
+            0,
+            0
+          ]
+        ]
+      ]
+    ],
+    "probabilities": {
+      "1": "1"
+    }
+  },
+  {
+    "name": "little-endian-condition",
+    "qubits": 2,
+    "output_bits": [
+      1,
+      0
+    ],
+    "steps": [
+      [
+        "X",
+        1
+      ],
+      [
+        "measure",
+        1,
+        1
+      ],
+      [
+        "branch",
+        3,
+        2,
+        [
+          [
+            "X",
+            0
+          ],
+          [
+            "measure",
+            0,
+            0
+          ]
+        ],
+        []
+      ]
+    ],
+    "probabilities": {
+      "11": "1"
+    }
+  },
+  {
+    "name": "bit-63",
+    "qubits": 1,
+    "output_bits": [
+      63,
+      0
+    ],
+    "steps": [
+      [
+        "X",
+        0
+      ],
+      [
+        "measure",
+        0,
+        63
+      ],
+      [
+        "branch",
+        9223372036854775808,
+        9223372036854775808,
+        [
+          [
+            "measure",
+            0,
+            0
+          ]
+        ],
+        []
+      ]
+    ],
+    "probabilities": {
+      "11": "1"
+    }
+  },
+  {
+    "name": "readout-feedback",
+    "qubits": 1,
+    "output_bits": [
+      1,
+      0
+    ],
+    "steps": [
+      [
+        "readout",
+        0,
+        "1/4",
+        "1/3"
+      ],
+      [
+        "branch",
+        1,
+        1,
+        [
+          [
+            "X",
+            0
+          ]
+        ],
+        []
+      ],
+      [
+        "measure",
+        0,
+        1
+      ]
+    ],
+    "probabilities": {
+      "00": "3/4",
+      "11": "1/4"
+    }
+  },
+  {
+    "name": "interference-before-measurement",
+    "qubits": 1,
+    "output_bits": [
+      0
+    ],
+    "steps": [
+      [
+        "H",
+        0
+      ],
+      [
+        "H",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ]
+    ],
+    "probabilities": {
+      "0": "1"
+    }
+  },
+  {
+    "name": "measurement-destroys-interference",
+    "qubits": 1,
+    "output_bits": [
+      0
+    ],
+    "steps": [
+      [
+        "H",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "H",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ]
+    ],
+    "probabilities": {
+      "0": "1/2",
+      "1": "1/2"
+    }
+  },
+  {
+    "name": "merged-records-retain-quantum-mixture",
+    "qubits": 2,
+    "output_bits": [
+      1
+    ],
+    "steps": [
+      [
+        "H",
+        0
+      ],
+      [
+        "CX",
+        0,
+        1
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "reset",
+        0
+      ],
+      [
+        "measure",
+        0,
+        0
+      ],
+      [
+        "measure",
+        1,
+        1
+      ]
+    ],
+    "probabilities": {
+      "0": "1/2",
+      "1": "1/2"
+    }
+  }
+]

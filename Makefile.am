@@ -8,6 +8,7 @@ EXTRA_DIST = config.rpath  \
 	autogen.sh \
 	README.translate \
 	docs/quantum-notation.md \
+	docs/exact-circuit-protocol.md \
 	docs/learning-source-inventory.json \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
