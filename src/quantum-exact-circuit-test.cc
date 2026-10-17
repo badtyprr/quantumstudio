@@ -56,6 +56,8 @@ int main(){try {
  auto variable=Expr::read(signedByte,{0,1,2,3,4,5,6,7});
  auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
  {
+ rejects<std::length_error>([&]{evaluateCircuit(0,0,{},std::vector<Type>(2,signedByte),1,exact);});
+ rejects<std::length_error>([&]{evaluateCircuit(1,1,{Step::map(H,{0}),Step::measure(0,0)},std::vector<Type>(5,signedByte),8,exact);});
  std::vector<Type> types={signedByte};auto slot=Expr::variable(signedByte,0);
  auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
  auto emit=Step::assign({0},Bits::constant(1,1));

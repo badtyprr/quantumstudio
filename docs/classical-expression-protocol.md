@@ -52,3 +52,26 @@ remain in force. Signed integers, floats, casts and loops are separate features.
 For example, `c[1:2] = c[0:1]` uses operation fields
 `7, 2, 1, 2, 1, 2, 0, 1` (each followed by LF). From record `001` this yields
 `011`, because both source bits are read before either destination is written.
+
+
+## Typed variable storage: QEXACT4 and QSAMPLE5
+
+These versions insert a declaration table immediately after the classical-bit
+count and before the output-bit list. It contains a slot count (0–4096), followed
+by each slot's signedness (0 signed, 1 unsigned) and width (0 machine, 1–64 sized).
+Names and lexical scopes are resolved by the producer. Slot IDs are zero-based.
+
+Integer node 4 contains signedness, width and slot ID. Its type must exactly match
+the declaration. Operation 9 contains a slot ID followed by an integer expression;
+it evaluates the RHS before converting and writing to the declared type.
+Operation 10 contains a slot ID and clears that slot to undefined. Earlier
+protocol versions reject these new nodes and operations.
+
+Every shot or exact evaluation starts with undefined variables. An executed read
+of an undefined slot fails the whole request. Structural validation checks both
+branch bodies without reading values. Exact histories retain independent slots
+until their values and initialization states agree; output probabilities sum
+over variable histories. Classical bit outputs and JSON responses are unchanged.
+Existing request-size, expression-depth and operation-count limits still apply.
+Exact execution also limits the total stored variable slots across histories to
+its cell-budget value (1,048,576 for worker requests), independently of matrix cells.

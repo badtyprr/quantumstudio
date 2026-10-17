@@ -12,10 +12,14 @@ def assign(targets,value):return n(7,len(targets),*targets)+value
 def branch(condition,yes,no=()):return n(8)+condition+n(len(yes))+b''.join(yes)+n(len(no))+b''.join(no)
 def gate(text,*wires):
     encoded=text.encode();return n(0,len(wires),*wires,len(encoded))+encoded
-def payload(exact,qubits,bits,output,steps,legacy=False,typed=False):
+def payload(exact,qubits,bits,output,steps,legacy=False,typed=False,variables=None):
     header=(b'QEXACT1\n' if legacy else b'QEXACT2\n') if exact else (b'QSAMPLE2\n' if legacy else b'QSAMPLE3\n')
     if typed:header=b'QEXACT3\n' if exact else b'QSAMPLE4\n'
-    return header+n(qubits)+ (b'' if exact else n(10000,1731))+n(bits,len(output),*output,len(steps))+b''.join(steps)
+    declarations=b''
+    if variables is not None:
+        header=b'QEXACT4\n' if exact else b'QSAMPLE5\n'
+        declarations=n(len(variables))+b''.join(n(*t) for t in variables)
+    return header+n(qubits)+ (b'' if exact else n(10000,1731))+n(bits)+declarations+n(len(output),*output,len(steps))+b''.join(steps)
 def run(exact,data,expected=None):
     global checks
     result=subprocess.run([str(worker),'--exact-circuit' if exact else '--sample'],input=data,capture_output=True,timeout=30)
@@ -216,4 +220,31 @@ for exact in (True,False):
     run(exact,valid+b'\n')
     for legacy in (False,True):
         run(exact,payload(exact,0,9,[8],[assign([8],compare(0,nested,ic(512)))],legacy=legacy))
+def variable(sign,width,slot):return n(4,sign,width,slot)
+def store(slot,value):return n(9,slot)+value
+for exact in (True,False):
+    def checkvars(q,b,out,steps,expected,types=((0,8),)):
+        run(exact,payload(exact,q,b,out,steps,variables=types),expected)
+    v=variable(0,8,0);one=integer_constant(0,0,1);zero=integer_constant(0,0,0)
+    positive=compare(4,v,zero);emit=assign([0],const(1,1))
+    checkvars(0,1,[0],[store(0,integer_constant(0,0,3)),branch(positive,[emit])],{'1':1})
+    checkvars(0,1,[0],[store(0,integer_constant(0,0,255)),branch(positive,[emit])],{'0':1})
+    checkvars(0,8,list(reversed(range(8))),[store(0,integer_constant(0,0,3)),store(0,integer_binary(5,v,integer_constant(0,0,2))),assign(list(range(8)),integer_bits(v))],{'00001001':1})
+    checkvars(1,1,[0],[gate('H',0),n(1,0,0),store(0,integer_read(1,1,0)),assign([0],const(1,0)),n(2,0),branch(positive,[gate('X',0)]),n(1,0,0)],{'0':Fraction(1,2),'1':Fraction(1,2)})
+    checkvars(0,1,[0],[branch(const(1,0),[store(0,v)])],{'0':1})
+    checkvars(0,1,[0],[branch(logical(0,const(1,0),positive),[emit])],{'0':1})
+    checkvars(0,1,[0],[store(4095,one),branch(compare(0,variable(0,8,4095),one),[emit])],{'1':1},[(0,8)]*4096)
+    checkvars(0,1,[0],[emit],{'1':1},[])
+    for steps in [[branch(positive,[emit])],[store(0,one),n(10,0),branch(positive,[emit])],
+                  [store(1,one)],[n(10,1)],[store(0,variable(1,8,0))],
+                  [branch(const(1,0),[store(1,one)])],[store(0,integer_binary(3,one,zero))],
+                  [store(0,variable(0,8,4096))],[n(11)]]:
+        checkvars(0,1,[0],steps,None)
+    for types in [[(2,8)],[(0,65)],[(0,8)]*4097]:checkvars(0,0,[],[],None,types)
+    valid=payload(exact,0,1,[0],[store(0,one),branch(positive,[emit])],variables=[(0,8)])
+    for end in range(len(valid)):run(exact,valid[:end])
+    run(exact,valid+b'0\n')
+    # New nodes are unavailable in the preceding protocol, even if untaken.
+    run(exact,payload(exact,0,1,[0],[branch(const(1,0),[branch(positive,[])])],typed=True))
+    run(exact,payload(exact,0,1,[0],[store(0,one)],typed=True))
 print('PASS: '+str(checks)+' classical expression process checks.')

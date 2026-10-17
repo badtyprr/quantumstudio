@@ -70,6 +70,7 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
  const std::vector<CircuitStep> &steps,std::size_t maxCells,const EvaluationOptions &options);
 // Variables start undefined. Intermediate branches merge only when all variable
 // values and initialization states match. Final records marginalize variables.
+// maxCells also bounds the total variable slots across intermediate histories.
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
  const std::vector<CircuitStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
  std::size_t maxCells,const EvaluationOptions &options);
