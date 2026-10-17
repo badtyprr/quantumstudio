@@ -34,7 +34,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_declaration = QasmVisitor._visit_classical_declaration
     def runtime(visitor,value):
         return any(isinstance(item,ast.Identifier) and item.name in visitor._global_creg_size_map for item in nodes(value))
-    def normalize(visitor, value, depth=0):
+    def bit_function(value):
+        return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
+    def normalize(visitor, value, depth=0, cast_distance=False):
         if depth >= 32:
             raise ValueError('Classical expressions exceed 32 levels.')
         registers = visitor._global_creg_size_map
@@ -67,8 +69,17 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             else:
                 raise ValueError('Expected one classical index or slice.')
             return ast.IndexExpression(collection=copy.deepcopy(value.collection), index=index)
+        if isinstance(value,ast.FunctionCall) and value.name.name in ('popcount','rotl','rotr'):
+            expected=1 if value.name.name=='popcount' else 2
+            if len(value.arguments)!=expected:raise ValueError('Wrong number of classical bit-function arguments.')
+            return ast.FunctionCall(name=copy.deepcopy(value.name),arguments=[normalize(visitor,item,depth+1,cast_distance=(value.name.name in ('rotl','rotr') and index==1)) for index,item in enumerate(value.arguments)])
+        if isinstance(value,ast.Cast) and isinstance(value.type,(ast.IntType,ast.UintType)) and (cast_distance or runtime(visitor,value)):
+            if value.type.size is None:raise ValueError('Runtime integer casts need an explicit width.')
+            size=Qasm3ExprEvaluator.evaluate_expression(value.type.size)[0]
+            if type(size) is not int or not 1<=size<=64:raise ValueError('Integer cast width must be 1–64.')
+            return ast.Cast(type=type(value.type)(size=ast.IntegerLiteral(size)),argument=normalize(visitor,value.argument,depth+1))
         if isinstance(value, ast.BinaryExpression):
-            if not runtime(visitor,value) and not any(isinstance(item,ast.BitstringLiteral) for item in nodes(value)):
+            if not runtime(visitor,value) and not bit_function(value) and not any(isinstance(item,ast.BitstringLiteral) for item in nodes(value)):
                 result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
                 if type(result) not in (int,bool):raise ValueError('Expected an integer classical constant.')
                 return ast.BooleanLiteral(result) if type(result) is bool else ast.IntegerLiteral(result)
@@ -104,7 +115,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         initial = ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression)
         return result+assignment(visitor,initial)
     def branch(visitor, statement):
-        if not runtime(visitor,statement.condition):
+        if not runtime(visitor,statement.condition) and not bit_function(statement.condition):
             return original_branch(visitor, statement)
         # Preserve the expression and choose the body only during execution.
         condition = normalize(visitor,statement.condition)
@@ -314,7 +325,7 @@ def convert(source, published_u=False, classical=False):
                 raise ValueError('Runtime loops and switch statements require control flow not yet supported by the circuit importer.')
             if isinstance(node,ast.QuantumGate) and runtime(node.arguments) or isinstance(node,ast.QuantumPhase) and runtime(node.argument):
                 raise ValueError('Runtime gate parameters are not yet supported by the circuit importer.')
-            if isinstance(node,ast.FunctionCall) and runtime(node.arguments):
+            if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and runtime(node.arguments):
                 raise ValueError('Runtime function arguments are not yet supported by the circuit importer.')
             targets=(node.qubits if isinstance(node,(ast.QuantumGate,ast.QuantumPhase,ast.QuantumReset,ast.QuantumBarrier)) else
                      node.qubit if isinstance(node,ast.QuantumMeasurement) else None)
@@ -439,6 +450,9 @@ def classical_expression(value, registers, expected_width=None):
         if isinstance(node,ast.BitstringLiteral):return node.width
         if isinstance(node,ast.BooleanLiteral):return 1
         if isinstance(node,ast.UnaryExpression):return 1 if node.op.name=='!' else width(node.expression)
+        if isinstance(node,ast.FunctionCall) and node.name.name in ('popcount','rotl','rotr'):
+            if len(node.arguments)!=(1 if node.name.name=='popcount' else 2):raise ValueError('Wrong number of bit-function arguments.')
+            return 64 if node.name.name=='popcount' else width(node.arguments[0])
         if isinstance(node,ast.BinaryExpression):
             if node.op.name in comparisons or node.op.name in ('&&','||'):return 1
             return width(node.lhs) or width(node.rhs)
@@ -454,6 +468,23 @@ def classical_expression(value, registers, expected_width=None):
             value=int(node.value);size=width(node) or hint or max(1,value.bit_length())
             if not 1<=size<=64 or not 0<=value<(1<<size):raise ValueError('Classical constant does not fit its width.')
             return {'Kind':'Constant','Width':size,'Value':str(value)},size
+        if isinstance(node,ast.FunctionCall) and node.name.name in ('popcount','rotl','rotr'):
+            name=node.name.name
+            if len(node.arguments)!=(1 if name=='popcount' else 2):raise ValueError('Wrong number of bit-function arguments.')
+            operand,size=build(node.arguments[0],None if name=='popcount' else hint,depth+1)
+            if name=='popcount':return {'Kind':'PopulationCount','Left':operand},64
+            distance=node.arguments[1]
+            if isinstance(distance,ast.IntegerLiteral):
+                if not -(1<<63)<=distance.value<(1<<63):raise ValueError('Rotation distance must fit signed 64 bits.')
+                encoded,dw=build(ast.IntegerLiteral(distance.value&((1<<64)-1)),64,depth+1);signed='Signed'
+            elif isinstance(distance,ast.Cast) and isinstance(distance.type,(ast.IntType,ast.UintType)):
+                encoded,dw=build(distance.argument,None,depth+1)
+                if distance.type.size.value!=dw:raise ValueError('Bit-to-integer casts require matching widths.')
+                signed='Signed' if isinstance(distance.type,ast.IntType) else 'Unsigned'
+            elif isinstance(distance,ast.FunctionCall) and distance.name.name=='popcount':
+                encoded,dw=build(distance,None,depth+1);signed='Unsigned'
+            else:raise ValueError('Rotation distance requires an integer, popcount, or an explicit width-matched integer cast.')
+            return {'Kind':'Rotate','RotationDirection':'Left' if name=='rotl' else 'Right','DistanceInterpretation':signed,'Left':operand,'Right':encoded},size
         if isinstance(node,ast.UnaryExpression) and node.op.name in ('~','!'):
             operand,size=build(node.expression,hint,depth+1)
             if node.op.name=='!' and size!=1:raise ValueError('Logical negation requires a one-bit value.')

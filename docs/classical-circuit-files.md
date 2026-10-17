@@ -59,3 +59,14 @@ or `Signed`). Signed distances use two's-complement at the distance node's width
 Rotation preserves the value width and wraps the distance modulo that width.
 Names are case-sensitive; numeric enum values and irrelevant fields are rejected.
 Older readers reject these additional kinds instead of changing their meaning.
+
+The OpenQASM importer preserves `popcount`, `rotl`, and `rotr` in assignments
+and branch conditions, including nested calls. Rotation distances may be signed
+integer constants, population counts, or explicit width-matched `int[n]` and
+`uint[n]` casts of bit expressions. A cast retains its signed interpretation;
+static casts outside these calls retain the existing constant evaluation path.
+Bare bit-register rotation distances are rejected: write the intended integer
+cast explicitly. General runtime integer variables and arithmetic remain
+separate work. These rules follow the OpenQASM 3.0 built-in functions and
+bit-to-integer cast definitions:
+https://openqasm.com/versions/3.0/language/types.html
