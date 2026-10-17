@@ -1,3 +1,4 @@
+#include "libqalculate/QuantumClassicalIntegerExpression.h"
 // GPL-2.0-or-later; see COPYING.
 #include "libqalculate/QuantumExactCircuit.h"
 #include "libqalculate/Calculator.h"
@@ -50,6 +51,20 @@ int main(){try {
  distribution(2,64,{1},{Step::map(H, {0}),Step::map(CX, {0,1}),Step::measure(0,0),Step::reset(0),Step::measure(0,0),Step::measure(1,1)},{{0ULL,"1/2"},{1ULL,"1/2"}});
  TracePreservingMap rotation({calc("quantum: Ry(x)")},4,exact);
  using Bits=QuantumClassical::Bits;using Op=Bits::Binary;
+ using Int=QuantumClassical::Integer;using Type=QuantumClassical::IntegerType;using Expr=QuantumClassical::IntegerExpression;
+ auto signedByte=Type::sized(Int::Signedness::Signed,8),machine=Type::machine(Int::Signedness::Signed);
+ auto variable=Expr::read(signedByte,{0,1,2,3,4,5,6,7});
+ auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
+ auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
+ auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
+ auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
+ auto setOutput=Step::assign({8},Bits::constant(1,1));
+ distribution(0,9,{8},{Step::assign({0,1,2,3,4,5,6,7},Bits::constant(8,255)),Step::branch(negative,{setOutput})},{{1,"1"}});
+ distribution(0,9,{8},{Step::assign({0,1,2,3,4,5,6,7},Bits::constant(8,2)),Step::branch(isThree,{setOutput})},{{1,"1"}});
+ distribution(0,9,{8},{Step::branch(Bits::constant(1,0),{Step::branch(isThree,{setOutput})})},{{0,"1"}});
+ rejects<std::domain_error>([&]{evaluateCircuit(0,9,{Step::branch(isThree,{setOutput})},65536,exact);});
+ rejects<std::out_of_range>([&]{evaluateCircuit(0,7,{Step::branch(Bits::constant(1,0),{Step::branch(negative,{})})},65536,exact);});
+
  distribution(1,2,{1,0},{Step::map(X,{0}),Step::measure(0,0),Step::assign({1},Bits::read({0})),Step::assign({0},Bits::constant(1,0))},{{2,"1"}});
  distribution(0,3,{2,1,0},{Step::assign({0},Bits::constant(1,1)),Step::assign({1,2},Bits::read({0,1}))},{{3,"1"}});
  auto parity=Bits::binary(Op::Xor,Bits::read({0}),Bits::read({1}));

@@ -60,6 +60,9 @@ IntegerExpression IntegerExpression::binary(Integer::Operation operation,const I
  auto n=std::make_shared<Node>(Node::Kind::Binary,IntegerType::common(left.type(),right.type()));
  n->operation=operation;n->left=left.node_;n->right=right.node_;n->bound();return IntegerExpression(n);
 }
+unsigned IntegerExpression::depth() const {return node_->depth;}
+unsigned IntegerExpression::count() const {return node_->count;}
+std::uint64_t IntegerExpression::references() const {return node_->references;}
 const IntegerType &IntegerExpression::type() const {return node_->type;}
 void IntegerExpression::validate(unsigned registerBits) const {
  if(node_->references&~recordMask(registerBits))throw std::out_of_range("Integer expression references exceed the register");

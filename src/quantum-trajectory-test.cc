@@ -1,3 +1,4 @@
+#include "libqalculate/QuantumClassicalIntegerExpression.h"
 // GPL-2.0-or-later; see COPYING.
 #include "libqalculate/QuantumTrajectory.h"
 #include <cmath>
@@ -13,6 +14,20 @@ int main(){try {
  const std::vector<Complex> H={h,h,h,-h},X={0,1,1,0},Z={1,0,0,-1};
  const std::vector<Complex> CX={1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0};
  using Bits=QuantumClassical::Bits;using Op=Bits::Binary;
+ using Int=QuantumClassical::Integer;using Type=QuantumClassical::IntegerType;using Expr=QuantumClassical::IntegerExpression;
+ auto signedByte=Type::sized(Int::Signedness::Signed,8),machine=Type::machine(Int::Signedness::Signed);
+ auto variable=Expr::read(signedByte,{0,1,2,3,4,5,6,7});
+ auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
+ auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
+ auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
+ auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
+ auto setOutput=Step::assign({8},Bits::constant(1,1));
+ check(sampleTrajectories(0,9,100,7,{8},{Step::assign({0,1,2,3,4,5,6,7},Bits::constant(8,255)),Step::branch(negative,{setOutput})},16).at(1)==100);
+ check(sampleTrajectories(0,9,100,7,{8},{Step::assign({0,1,2,3,4,5,6,7},Bits::constant(8,2)),Step::branch(isThree,{setOutput})},16).at(1)==100);
+ check(sampleTrajectories(0,9,100,7,{8},{Step::branch(Bits::constant(1,0),{Step::branch(isThree,{setOutput})})},16).at(0)==100);
+ rejects<std::domain_error>([&]{sampleTrajectories(0,9,1,7,{8},{Step::branch(isThree,{setOutput})},16);});
+ rejects<std::out_of_range>([&]{sampleTrajectories(0,7,0,7,{}, {Step::branch(Bits::constant(1,0),{Step::branch(negative,{})})},16);});
+
  check(sampleTrajectories(1,2,100,7,{1,0},{Step::gate(X,{0}),Step::measure(0,0),Step::assign({1},Bits::read({0})),Step::assign({0},Bits::constant(1,0))},32).at(2)==100);
  check(sampleTrajectories(0,3,100,7,{2,1,0},{Step::assign({0},Bits::constant(1,1)),Step::assign({1,2},Bits::read({0,1}))},16).at(3)==100);
  check(sampleTrajectories(0,64,100,7,{63},{Step::assign({63},Bits::constant(1,1))},16).at(1)==100);

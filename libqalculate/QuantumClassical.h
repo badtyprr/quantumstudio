@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace QuantumClassical {
+class IntegerExpression;
 // Immutable unsigned bit-vector expressions; not OpenQASM signed/float arithmetic.
 // Register/slice indices are least-significant first. Copies retain their value.
 class Bits {
@@ -23,6 +24,9 @@ public:
  static Bits complement(const Bits &operand);
  static Bits binary(Binary operation,const Bits &left,const Bits &right);
  // Population count is an unsigned 64-bit internal value (0..64).
+ // Compare typed runtime integers, producing one bit for assignments/branches.
+ // Only the six comparison Binary values are accepted.
+ static Bits integerCompare(Binary operation,const IntegerExpression &left,const IntegerExpression &right);
  static Bits populationCount(const Bits &operand);
  // Signed distances use the declared two's-complement width, including bit 63.
  static Bits rotate(Direction direction,const Bits &operand,const Bits &distance,Distance interpretation);

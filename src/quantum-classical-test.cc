@@ -1,3 +1,4 @@
+#include "libqalculate/QuantumClassicalIntegerExpression.h"
 // GPL-2.0-or-later; see COPYING.
 #include "libqalculate/QuantumClassical.h"
 #include <iostream>
@@ -11,6 +12,30 @@ void check(bool ok){++checks;if(!ok)throw std::runtime_error("Classical check fa
 template<class E,class F>void reject(F f){bool caught=false;try{f();}catch(const E&){caught=true;}check(caught);}
 }
 int main(){try {
+ {
+ using Int=QuantumClassical::Integer;using Type=QuantumClassical::IntegerType;using Expr=QuantumClassical::IntegerExpression;
+ auto machine=Type::machine(Int::Signedness::Signed);
+ auto constant=[&](std::uint64_t value){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,value));};
+ auto negative=Expr::read(Type::sized(Int::Signedness::Signed,8),{0,1,2,3,4,5,6,7});
+ auto positive=Expr::read(Type::sized(Int::Signedness::Unsigned,8),{0,1,2,3,4,5,6,7});
+ Bits::Binary comparisons[]={Bits::Binary::Equal,Bits::Binary::NotEqual,Bits::Binary::Less,Bits::Binary::LessEqual,Bits::Binary::Greater,Bits::Binary::GreaterEqual};
+ const unsigned expected[]={0,1,1,1,0,0};
+ for(unsigned k=0;k<6;++k) {
+  auto condition=Bits::integerCompare(comparisons[k],negative,positive);
+  check(condition.width()==1 && condition.evaluate(255,8)==expected[k]);
+  check(Bits::complement(condition).evaluate(255,8)==1-expected[k]);
+  reject<std::out_of_range>([&]{Bits::complement(condition).validate(7);});
+ }
+ reject<std::invalid_argument>([&]{Bits::integerCompare(Bits::Binary::And,negative,positive);});
+ auto deep=constant(0);for(unsigned k=1;k<32;++k)deep=Expr::cast(machine,deep);
+ reject<std::length_error>([&]{Bits::integerCompare(Bits::Binary::Equal,deep,constant(0));});
+ auto shared=constant(0);for(unsigned k=0;k<8;++k)shared=Expr::binary(Int::Operation::Add,shared,shared);
+ reject<std::length_error>([&]{Bits::integerCompare(Bits::Binary::Equal,shared,constant(0));});
+ auto shallow=constant(0);for(unsigned k=1;k<31;++k)shallow=Expr::cast(machine,shallow);
+ auto boundary=Bits::integerCompare(Bits::Binary::Equal,shallow,constant(0));check(boundary.evaluate(0,0)==1);
+ reject<std::length_error>([&]{Bits::complement(boundary);});
+
+ }
  // Structural validation does not require a runtime record.
  Bits::constant(64,~std::uint64_t(0)).validate(0);check(true);
  Bits::read({63}).validate(64);check(true);
