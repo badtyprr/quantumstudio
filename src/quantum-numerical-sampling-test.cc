@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <limits>
 using namespace QuantumNumerics;
 namespace {
 unsigned checks=0;
@@ -11,6 +12,29 @@ unsigned total(const std::map<std::uint64_t,unsigned> &counts){unsigned n=0;for(
 }
 int main(){try {
  const double h=std::sqrt(.5);const std::vector<Complex> H={h,h,h,-h},X={0,1,1,0};
+ StateVector zero(1,32);check(!zero.measure(0,0));check(!zero.measure(0,.999));
+ zero.apply(X,{0});check(zero.measure(0,0));check(zero.amplitude(1)==Complex(1));
+ for(double draw:{.1,.9}) {
+  StateVector entangled(2,64);entangled.apply(H,{0});entangled.apply({1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0},{0,1});
+  bool outcome=entangled.measure(0,draw);check(outcome==(draw>.5));
+  check(entangled.measure(1,1-draw)==outcome);
+  check(std::abs(entangled.amplitude(outcome ? 3 : 0)-Complex(1))<1e-12);
+  check(std::abs(entangled.normSquared()-1)<1e-12);
+ }
+ StateVector tiny(1,32);const double epsilon=1e-150;tiny.apply({epsilon,-1,1,epsilon},{0});
+ check(!tiny.measure(0,0));check(std::abs(tiny.amplitude(0)-Complex(1))<1e-12);check(tiny.amplitude(1)==Complex(0));
+ for(double draw:{.7,.8}) {
+  StateVector biased(1,32);biased.apply({std::sqrt(.75),-.5,.5,std::sqrt(.75)},{0});
+  check(biased.measure(0,draw)==(draw>.75));check(std::abs(biased.normSquared()-1)<1e-12);
+ }
+ StateVector coherent(2,64);coherent.apply(H,{0});coherent.apply(H,{1});coherent.apply({1,0,0,Complex(0,1)},{1});
+ check(coherent.measure(0,.9));check(std::abs(coherent.amplitude(2)-h)<1e-12);check(std::abs(coherent.amplitude(3)-Complex(0,h))<1e-12);
+ for(double draw:{-1.,1.,std::numeric_limits<double>::infinity(),std::numeric_limits<double>::quiet_NaN()})rejects<std::invalid_argument>([&]{coherent.measure(0,draw);});
+ rejects<std::out_of_range>([&]{coherent.measure(2,.5);});check(coherent.valid() && std::abs(coherent.normSquared()-1)<1e-12);
+ StateVector cancellable(14,262144);cancellable.apply(H,{0});unsigned measurementCalls=0;
+ rejects<Cancelled>([&]{cancellable.measure(0,.9,[&]{return ++measurementCalls==3;});});check(cancellable.valid());
+ measurementCalls=0;rejects<Cancelled>([&]{cancellable.measure(0,.9,[&]{return ++measurementCalls==8;});});check(!cancellable.valid());
+ rejects<std::logic_error>([&]{cancellable.measure(0,.9);});
  StateVector basis(3,128);basis.apply(X,{0});basis.apply(X,{2});
  for(auto test:std::vector<std::pair<std::vector<unsigned>,std::uint64_t>>{{{0,1,2},5},{{2,0,1},6},{{1,0},1},{{1},0},{{},0}}) {
   auto c=basis.sampleCounts(100,test.first,7);check(c.size()==1 && c[test.second]==100);

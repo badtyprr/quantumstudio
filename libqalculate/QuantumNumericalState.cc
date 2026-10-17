@@ -77,6 +77,35 @@ std::map<std::uint64_t, unsigned> StateVector::sampleCounts(unsigned shots,
  if(next != draws.size()) throw std::runtime_error("Numerical sampling lost probability mass");
  return counts;
 }
+bool StateVector::measure(unsigned wire,double uniformDraw,const Cancellation &cancelled) {
+ requireValid();
+ if(wire>=qubits_)throw std::out_of_range("Measured wire is outside the register");
+ if(!std::isfinite(uniformDraw) || uniformDraw<0 || uniformDraw>=1)
+  throw std::invalid_argument("Measurement draw must be finite in [0,1)");
+ checkCancellation(cancelled);
+ const std::size_t bit=std::size_t(1)<<(qubits_-1-wire);
+ // Accumulate both branches independently: subtracting a near-unit mass
+ // from one could erase a small but nonzero branch.
+ long double masses[2]={0,0};
+ for(std::size_t i=0;i<amplitudes_.size();++i) {
+  if((i&4095)==0)checkCancellation(cancelled);
+  masses[(i&bit)!=0]+=std::norm(amplitudes_[i]);
+ }
+ const long double norm=masses[0]+masses[1];
+ if(!std::isfinite(norm) || std::abs(norm-1)>1e-8L)
+  throw std::runtime_error("Cannot measure a state with invalid numerical normalization");
+ const bool outcome=static_cast<long double>(uniformDraw)*norm>=masses[0];
+ if(masses[outcome]<=0)throw std::runtime_error("Measurement selected a zero-probability branch");
+ const double scale=static_cast<double>(1/std::sqrt(masses[outcome]));
+ checkCancellation(cancelled);
+ try {
+  for(std::size_t i=0;i<amplitudes_.size();++i) {
+   if((i&4095)==0)checkCancellation(cancelled);
+   amplitudes_[i]=((i&bit)!=0)==outcome ? amplitudes_[i]*scale : Complex(0);
+  }
+ }catch(...) {valid_=false;throw;}
+ return outcome;
+}
 void StateVector::apply(const std::vector<Complex> &unitary,
                          const std::vector<unsigned> &wires,
                          const Cancellation &cancelled) {
