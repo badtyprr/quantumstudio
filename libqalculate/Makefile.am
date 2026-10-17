@@ -56,6 +56,7 @@ libqalculate_la_SOURCES = \
 	QuantumStateMetrics.cc \
 	QuantumTeX.cc \
 	QuantumExactReadout.cc \
+	QuantumExactCircuit.cc \
 	QuantumExactOperation.cc \
 	QuantumExactRecords.cc \
 	QuantumReadout.cc \
@@ -99,3 +100,4 @@ noinst_HEADERS += QuantumExactRecords.h
 noinst_HEADERS += QuantumExactOperation.h
 
 noinst_HEADERS += QuantumExactReadout.h
+noinst_HEADERS += QuantumExactCircuit.h

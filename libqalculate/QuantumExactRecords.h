@@ -10,6 +10,18 @@ namespace QuantumExact {
 // Each density matrix carries its own mass: never normalize individual records.
 // These algebraic primitives do not certify positivity or physical operations.
 using Records = std::map<std::uint64_t, MathStructure>;
+// Bounded incremental merging without copying the entire record map per add.
+class RecordAccumulator {
+ unsigned qubits_, bits_;
+ std::size_t maxCells_;
+ EvaluationOptions options_;
+ Records records_;
+public:
+ RecordAccumulator(unsigned qubits, unsigned bits, std::size_t maxCells,
+                   const EvaluationOptions &options);
+ void add(std::uint64_t record, const MathStructure &density);
+ Records take();
+};
 // Qubit zero is leftmost; classical bit zero is the least significant bit.
 // maxCells bounds stored matrix cells, not the size of symbolic expressions.
 // Both functions leave inputs intact, including on cancellation or failure.
