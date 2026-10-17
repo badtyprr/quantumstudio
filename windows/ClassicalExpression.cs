@@ -146,7 +146,7 @@ sealed class ClassicalIntegerExpression {
   return new ClassicalIntegerExpression(NodeKind.Read,type,0,bits,0,null,null);
  }
  public static ClassicalIntegerExpression Variable(ClassicalIntegerType type,int slot) {
-  if(slot<0 || slot>=4096)throw new ArgumentException("Variable slots must be 0–4095.");
+  if(slot<0 || slot>=4096)throw new ArgumentException("Variable slots must be 0-4095.");
   return new ClassicalIntegerExpression(NodeKind.Variable,type,0,null,0,null,null) {Slot=slot};
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
