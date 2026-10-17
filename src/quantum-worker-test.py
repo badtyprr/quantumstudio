@@ -21,6 +21,20 @@ def data(expression, *flags):
     assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# A bra ending one projector must not consume the next weighted summand.
+for flags in [(), ("--approx",)]:
+    for expression, expected in [
+        ("0.5*|0><0|+0.5*|+><+|", [["0.75", "0.25"], ["0.25", "0.25"]]),
+        ("0.5*|0><0|-0.5*|+><+|", [["0.25", "-0.25"], ["-0.25", "-0.25"]]),
+        ("0.5*|0⟩⟨0|+0.5*|1⟩⟨1|", [["0.5", "0"], ["0", "0.5"]]),
+        ("|0><0|+2*|1><1|+3*|0><0|", [["4", "0"], ["0", "2"]]),
+    ]:
+        from decimal import Decimal
+        value = data("quantum: " + expression, *flags)
+        assert (value["rows"], value["columns"]) == (2, 2), value
+        assert [[Decimal(cell.replace("−", "-")) for cell in row] for row in value["cells"]] == [[Decimal(cell) for cell in row] for row in expected], value
+    assert data("quantum: <0|-X|1>", *flags)["text"].replace("−", "-") == "-1"
+
 # Printed radian suffixes and explicit degrees are mathematical angle factors.
 for flags in [(), ("--approx",)]:
     for prefix in ["", "quantum: "]:
