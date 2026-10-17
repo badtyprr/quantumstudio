@@ -414,7 +414,7 @@ before starting the worker, validates every body, limits nesting to 32 levels,
 and shares the 4096-operation limit across the whole request. Cyclic mutable
 input graphs fail the nesting check. Branches require the branch-capable worker
 protocol; they are not available through the legacy final-measurement API.
-This does not yet add branch editing or OpenQASM lowering to the GUI.
+Runtime OpenQASM branch lowering remains separate from this adapter support.
 
 `ClassicalCircuit` provides a version-2 storage model for the forthcoming
 classical circuit editor. `Registers` lists distinct named registers in bit
@@ -438,5 +438,16 @@ is displayed as `(empty)`. Readout operations are part of the stored program;
 the legacy final-readout controls are not shown for this mode. JSON sampling
 exports use `QuantumStudio.sampling.v2` and include the captured circuit. CSV
 exports include that circuit once in `run_classical_circuit`, on the first data
-row. The editor command that opens this mode remains follow-up work.
+row. Open this mode from Circuit composer → Classical circuit → Sample.
+
+The classical editor supports named register settings, explicit output order,
+gates, measurement destinations, resets, noise channels, readout assignments and
+nested Then/Else bodies. Select a body to append an operation, or an operation
+to replace/delete it. Replacing a branch preserves its children; changing it to
+another operation requires empty bodies. Invalid edits leave the program and
+undo history unchanged. Undo retains the latest 64 edits. Opening a validated
+file resets history, and opening or closing asks before discarding unsaved work.
+Save replaces an existing file atomically. The editor samples classical records;
+exact classical-record evaluation and runtime OpenQASM import are not yet
+available.
 

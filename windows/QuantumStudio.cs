@@ -280,6 +280,14 @@ class QuantumStudio {
     finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
    };
   }
+  if(args.Length==2 && args[0]=="--classical-editor-test") {
+   window.Loaded+=delegate {
+    ClassicalProgramWindow editor=null;
+    try {editor=new ClassicalProgramWindow(window);editor.Show();editor.VerifyEditing(args[1]+".png");File.WriteAllText(args[1],"PASS: classical editor preserves branches, saved bits, invalid edits and undo/redo.");}
+    catch(Exception ex) {File.WriteAllText(args[1],"FAIL: "+ex);Environment.ExitCode=1;}
+    finally {if(editor!=null)editor.Close();window.Close();}
+   };
+  }
   if(args.Length==3 && args[0]=="--classical-sampling-test") {
    window.Loaded+=async delegate {
     SamplingWindow sampling=null;

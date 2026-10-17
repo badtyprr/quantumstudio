@@ -26,19 +26,26 @@ if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $circuitTest = Join-Path $validation 'circuit-file-tests.exe'
 $circuitArgs = @('/nologo', '/target:exe', "/out:$circuitTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('CircuitFileTests.cs','NumericalSampling.cs','ClassicalCircuit.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('CircuitFileTests.cs','NumericalSampling.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @circuitArgs
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests did not compile.' }
 & $circuitTest
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests failed.' }
 $samplingTest = Join-Path $validation 'sampling-tests.exe'
 $samplingArgs = @('/nologo', '/target:exe', "/out:$samplingTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalCircuit.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @samplingArgs
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests failed.' }
 $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
+$classicalReport = Join-Path $validation ('classical-editor-' + [Guid]::NewGuid().ToString('N') + '.txt')
+$classicalProcess = Start-Process -FilePath $app -ArgumentList @('--classical-editor-test', ('"' + $classicalReport + '"')) -WindowStyle Hidden -PassThru
+try {
+    if (-not $classicalProcess.WaitForExit(30000)) { $classicalProcess.Kill(); $classicalProcess.WaitForExit(); throw 'Classical editor test timed out.' }
+    if ($classicalProcess.ExitCode -ne 0 -or !(Get-Content -LiteralPath $classicalReport -Raw).StartsWith('PASS:')) { throw "Classical editor failed: $(Get-Content -LiteralPath $classicalReport -Raw)" }
+    Get-Content -LiteralPath $classicalReport
+} finally { $classicalProcess.Dispose() }
 $sessionResult = Join-Path $validation ('session-preservation-' + [Guid]::NewGuid().ToString('N') + '.txt')
 $sessionProcess = Start-Process -FilePath $app -ArgumentList @('--session-preservation-test', ('"' + $sessionResult + '"')) -WindowStyle Hidden -PassThru
 try {
