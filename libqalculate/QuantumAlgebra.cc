@@ -13,14 +13,30 @@ MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElem
 void transposeQuantumMatrix(MathStructure &a) {
  if(a.rows()!=1 || a.columns()!=1) a.transposeMatrix();
 }
+MathStructure conjugateScalar(const MathStructure &a, const EvaluationOptions &eo) {
+ if(CALCULATOR->aborted()) return a;
+ MathStructure out=a;
+ // Positive real bases have a real logarithm, so conjugating their powers
+ // only conjugates the exponent. Do not apply this across a branch cut for
+ // negative or unknown-sign bases. This includes exp(z), stored as e^z.
+ if(a.isPower() && a.size()==2 && a[0].representsPositive()) {
+  out[1]=conjugateScalar(a[1],eo);out.childrenUpdated();out.eval(eo);
+ } else if(a.isAddition() || a.isMultiplication()) {
+  for(size_t k=0;k<a.size();++k)out[k]=conjugateScalar(a[k],eo);
+  out.childrenUpdated();out.eval(eo);
+ } else {
+  out.set(CALCULATOR->getFunction("conj"),&a,NULL);out.eval(eo);
+ }
+ return out;
+}
 MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
  MathStructure out=a;
  if(out.isMatrix()) {
   transposeQuantumMatrix(out);
   for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
+   element(out,r,c)=conjugateScalar(element(out,r,c),eo);
   }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
+ } else out=conjugateScalar(a,eo);
  return out;
 }
 MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo, bool scalarResult=true) {

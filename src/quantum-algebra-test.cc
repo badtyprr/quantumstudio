@@ -17,6 +17,34 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qconj(exp(i*x))","exp(-i*x)");
+ equal("qconj(exp(x+i*y))","exp(x-i*y)");
+ equal("qconj(i*exp(i*x))","-i*exp(-i*x)");
+ equal("qconj(1+i*exp(i*x))","1-i*exp(-i*x)");
+ equal("qconj(2^(i*x))","2^(-i*x)");
+ equal("qdag([exp(i*x),0;0,exp(-i*x)])","[exp(-i*x),0;0,exp(i*x)]");
+ equal("qmul(qdag([1,0;0,exp(i*x)]),[1,0;0,exp(i*x)])","identity(2)");
+ equal("qnorm([1;exp(i*x)]/sqrt(2))","1");
+ equal("qdensity([1;exp(i*x)]/sqrt(2))","[1,exp(-i*x);exp(i*x),1]/2");
+ equal("qconj((-1)^i)","exp(-pi)");
+ equal("qconj(sqrt(-2))","-i*sqrt(2)");
+ auto complexPhase=new UnknownVariable("","complexphase");
+ auto complexAssumptions=new Assumptions;complexAssumptions->setType(ASSUMPTION_TYPE_COMPLEX);
+ complexPhase->setAssumptions(complexAssumptions);calculator.addVariable(complexPhase);
+ equal("qconj(exp(complexphase))","exp(conj(complexphase))");
+ MathStructure phaseSymbol(complexPhase);
+ for(const char *value:{"i","1+i","-1+2*i"}) {
+  MathStructure expression=calculator.calculate("qconj(exp(i*complexphase))*exp(i*complexphase)",eo);
+  expression.replace(phaseSymbol,calculator.calculate(value,eo));expression.eval(eo);
+  MathStructure expected=calculator.calculate(std::string("exp(-2*im(")+value+"))",eo);
+  expression.transform(COMPARISON_EQUALS,expected);expression.eval(eo);
+  if(!expression.isOne())throw std::runtime_error("Conjugation assumed a complex phase was real");++checks;
+ }
+ for(const char *gate:{"Rz(x)","Rx(x)","Ry(x)"}) {
+  MathStructure value=calculator.calculate(std::string("quantum: dagger(")+gate+")*("+gate+")",eo);
+  value.transform(COMPARISON_EQUALS,calculator.calculate("identity(2)",eo));value.eval(eo);
+  if(!value.isOne())throw std::runtime_error(std::string("Symbolic gate adjoint failed: ")+gate);++checks;
+ }
  MathStructure unitBasis=calculator.calculate("qbasis(0,1)",eo);
  if(!unitBasis.isMatrix() || unitBasis.rows()!=1 || unitBasis.columns()!=1 || !unitBasis.getElement(1,1)->isOne())throw std::runtime_error("Unit basis lost matrix shape");
  ++checks;
