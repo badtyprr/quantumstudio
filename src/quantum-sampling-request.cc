@@ -3,6 +3,7 @@
 #include <libqalculate/Calculator.h>
 #include <libqalculate/MathStructure.h>
 #include <libqalculate/QuantumNumericalState.h>
+#include <libqalculate/QuantumTrajectory.h>
 #include <cmath>
 #include <limits>
 #include <sstream>
@@ -10,11 +11,12 @@
 namespace {
 class Reader {
  const std::string &input;
- size_t position = 9; // QSAMPLE1 followed by LF
+ size_t position = 9; // Version header followed by LF
 public:
+ bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0;}
  explicit Reader(const std::string &value) : input(value) {
-  if(input.size()>1100000 || input.compare(0,9,"QSAMPLE1\n")!=0)
-   throw std::runtime_error("Expected a bounded QSAMPLE1 request.");
+  if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
+   throw std::runtime_error("Expected a bounded QSAMPLE1 or QSAMPLE2 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -63,6 +65,32 @@ double component(Number value) {
  return result;
 }
 struct Gate { std::vector<unsigned> wires;std::vector<QuantumNumerics::Complex> matrix; };
+Gate readGate(Calculator &calculator,Reader &reader,unsigned qubits) {
+ Gate gate;gate.wires=reader.wires(qubits,3);
+ if(gate.wires.empty())throw std::runtime_error("A gate needs one to three target wires.");
+ std::string expression=reader.expression();
+ EvaluationOptions numeric;numeric.approximation=APPROXIMATION_APPROXIMATE;
+ MathStructure matrix=calculator.calculate("quantum: "+expression,numeric);
+ bool failed=false;
+ while(calculator.message()) {
+  if(calculator.message()->type()==MESSAGE_ERROR)failed=true;
+  calculator.nextMessage();
+ }
+ size_t dimension=size_t(1)<<gate.wires.size();
+ if(failed || !matrix.isMatrix() || matrix.rows()!=dimension || matrix.columns()!=dimension)
+  throw std::runtime_error("Gate expression must resolve to a numerical matrix matching its target wires.");
+ for(size_t r=1;r<=dimension;++r)for(size_t c=1;c<=dimension;++c) {
+  const MathStructure &cell=*matrix.getElement(r,c);
+  if(!cell.isNumber())throw std::runtime_error("Gate entries must be numerical; assign parameter values before sampling.");
+  gate.matrix.emplace_back(component(cell.number().realPart()),component(cell.number().imaginaryPart()));
+ }
+ // Validate unitarity with the same kernel contract before allocating the full state.
+ QuantumNumerics::StateVector probe(static_cast<unsigned>(gate.wires.size()),8*sizeof(QuantumNumerics::Complex));
+ std::vector<unsigned> local;for(unsigned wire=0;wire<gate.wires.size();++wire)local.push_back(wire);
+ probe.apply(gate.matrix,local);
+ return gate;
+}
+
 }
 
 std::string quantumSamplingRequest(Calculator &calculator,const std::string &input) {
@@ -70,41 +98,44 @@ std::string quantumSamplingRequest(Calculator &calculator,const std::string &inp
  unsigned qubits=static_cast<unsigned>(reader.integer(25));
  unsigned shots=static_cast<unsigned>(reader.integer(1000000));
  std::uint64_t seed=reader.integer(std::numeric_limits<std::uint64_t>::max());
- std::vector<unsigned> measured=reader.wires(qubits,qubits);
+ unsigned classicalBits=reader.dynamic()?static_cast<unsigned>(reader.integer(64)):0;
+ std::vector<unsigned> measured=reader.wires(reader.dynamic()?classicalBits:qubits,reader.dynamic()?classicalBits:qubits);
  unsigned count=static_cast<unsigned>(reader.integer(4096));
  std::vector<Gate> gates;gates.reserve(count);
- EvaluationOptions numeric;numeric.approximation=APPROXIMATION_APPROXIMATE;
+ std::vector<QuantumNumerics::TrajectoryStep> steps;steps.reserve(count);
  for(unsigned k=0;k<count;++k) {
-  Gate gate;gate.wires=reader.wires(qubits,3);
-  if(gate.wires.empty())throw std::runtime_error("A gate needs one to three target wires.");
-  MathStructure matrix=calculator.calculate("quantum: "+reader.expression(),numeric);
-  bool failed=false;
-  while(calculator.message()) {
-   if(calculator.message()->type()==MESSAGE_ERROR)failed=true;
-   calculator.nextMessage();
+  unsigned kind=reader.dynamic()?static_cast<unsigned>(reader.integer(3)):0;
+  if(kind==0 || kind==3) {
+   std::uint64_t mask=0,value=0;
+   if(kind==3) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
+   Gate gate=readGate(calculator,reader,qubits);
+   if(!reader.dynamic())gates.push_back(std::move(gate));
+   else if(kind==0)steps.push_back(QuantumNumerics::TrajectoryStep::gate(gate.matrix,gate.wires));
+   else steps.push_back(QuantumNumerics::TrajectoryStep::conditional(gate.matrix,gate.wires,mask,value));
+  } else {
+   if(!qubits)throw std::runtime_error("A measurement or reset needs a quantum wire.");
+   unsigned wire=static_cast<unsigned>(reader.integer(qubits-1));
+   if(kind==1) {
+    if(!classicalBits)throw std::runtime_error("A measurement needs a classical bit.");
+    unsigned bit=static_cast<unsigned>(reader.integer(classicalBits-1));
+    steps.push_back(QuantumNumerics::TrajectoryStep::measure(wire,bit));
+   } else steps.push_back(QuantumNumerics::TrajectoryStep::reset(wire));
   }
-  size_t dimension=size_t(1)<<gate.wires.size();
-  if(failed || !matrix.isMatrix() || matrix.rows()!=dimension || matrix.columns()!=dimension)
-   throw std::runtime_error("Gate expression must resolve to a numerical matrix matching its target wires.");
-  for(size_t r=1;r<=dimension;++r)for(size_t c=1;c<=dimension;++c) {
-   const MathStructure &cell=*matrix.getElement(r,c);
-   if(!cell.isNumber())throw std::runtime_error("Gate entries must be numerical; assign parameter values before sampling.");
-   gate.matrix.emplace_back(component(cell.number().realPart()),component(cell.number().imaginaryPart()));
-  }
-  // Validate unitarity with the same kernel contract before allocating the full state.
-  QuantumNumerics::StateVector probe(static_cast<unsigned>(gate.wires.size()),8*sizeof(QuantumNumerics::Complex));
-  std::vector<unsigned> local;for(unsigned wire=0;wire<gate.wires.size();++wire)local.push_back(wire);
-  probe.apply(gate.matrix,local);
-  gates.push_back(std::move(gate));
  }
  reader.end();
- QuantumNumerics::StateVector state(qubits,size_t(512)*1024*1024);
- for(const Gate &gate:gates)state.apply(gate.matrix,gate.wires);
- auto counts=state.sampleCounts(shots,measured,seed);
+ std::map<std::uint64_t,unsigned> counts;
+ if(reader.dynamic())counts=QuantumNumerics::sampleTrajectories(qubits,classicalBits,shots,seed,measured,steps,size_t(512)*1024*1024);
+ else {
+  QuantumNumerics::StateVector state(qubits,size_t(512)*1024*1024);
+  for(const Gate &gate:gates)state.apply(gate.matrix,gate.wires);
+  counts=state.sampleCounts(shots,measured,seed);
+ }
  std::ostringstream output;
  output << "{\"qubits\":" << qubits << ",\"shots\":" << shots << ",\"seed\":\"" << seed << "\",\"wires\":[";
  for(size_t k=0;k<measured.size();++k) {if(k)output << ',';output << measured[k];}
- output << "],\"counts\":{";
+ output << "]";
+ if(reader.dynamic())output << ",\"classical_bits\":" << classicalBits;
+ output << ",\"counts\":{";
  bool first=true;
  for(const auto &entry:counts) {
   if(!first)output << ',';

@@ -312,6 +312,42 @@ empty counts. Failures write stderr diagnostics and exit nonzero without partial
 JSON. Native CI tests this protocol; packaging repeats those tests against the
 bundled executable.
 
+
+#### Dynamic trajectory requests
+
+The same `--sample` entry point also accepts `QSAMPLE2\n`. The circuit sampling window
+uses QSAMPLE2 for mid-circuit measurement, reset and feedback, and QSAMPLE1 for
+unitary circuits with optional terminal measurements. QSAMPLE2 follows
+with LF-terminated unsigned integers: qubits, shots, seed, classical bit count
+(0-64), output bit count, each output classical bit, and step count. The size,
+shot, qubit, expression, gate-target and step limits match QSAMPLE1.
+
+Each step begins with an integer kind and then these fields:
+
+| Kind | Following fields |
+| --- | --- |
+| 0: gate | The QSAMPLE1 gate payload (target count, targets, byte length, expression) |
+| 1: measurement | Quantum wire, destination classical bit |
+| 2: reset | Quantum wire |
+| 3: conditional gate | 64-bit mask, 64-bit value, then the gate payload |
+
+Every shot starts with all-zero quantum state and classical memory. A measurement
+collapses its wire and overwrites the destination bit. Reset returns its wire
+to zero without changing classical memory. A conditional gate runs when
+`(classical_memory & mask) == value`; masks must fit the classical register and
+values must be subsets of the mask. Even unreachable gates must be valid
+numerical unitaries. Classical bit 0 has weight 1 in masks, independently of
+quantum wire order. No implicit final measurements occur.
+
+The response adds `classical_bits`; `wires` now identifies the requested classical
+bits in left-to-right output order. The explicit ordering avoids relying on a
+SDK's display convention. The GUI maps measurement records to the corresponding
+wire index, then appends final measurements for the displayed output wires.
+Its feedback operations measure their control wires at that step, matching
+exact `feedforward()` semantics; they do not refer to an earlier measurement.
+Noise-channel sampling is not yet supported. Identical requests reproduce counts using the same
+backend version. Errors return no partial counts; process termination cancels.
+
 ### Library ABI compatibility
 
 One-dimensional quantum states and operators retain their 1-by-1 matrix shape. The new `MathFunction::preservesSingletonMatrix()` virtual hook changes the C++ ABI; the libtool interface version is 27:0:0. Rebuild clients and derived function classes against this library rather than loading them from a previous ABI. Ordinary singleton-vector evaluation retains its existing behavior.
