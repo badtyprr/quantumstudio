@@ -292,7 +292,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qresetall",1},
  {"qshift",1},
  {"qsinhc",1},
- {"qasin",1},{"qacos",1},{"qatan",1},
+ {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},
  {"qsumgate",2},
  {"qsuperop",1},
  {"qtensor",2},
@@ -919,7 +919,7 @@ class Parser {
     if(name=="exp" || name=="expm") name="qexp";
     if(name=="logm") name="qlogm";
     if(name=="sinhc") name="qsinhc";
-    if(name=="asin" || name=="acos" || name=="atan")name="q"+name;
+    if(name=="asin" || name=="acos" || name=="atan" || name=="sin" || name=="cos" || name=="tan")name="q"+name;
     if(name=="evolution") name="qevolution";
     if(name=="born") name="qborn";
     if(name=="postselect") name="qpostselect";
@@ -1146,6 +1146,10 @@ class Parser {
     }
    } else {
     auto it=gates.find(a); if(it!=gates.end()) a=it->second;
+    // Quantum angles use radians as dimensionless parameters. Keep explicit
+    // printed angle suffixes from becoming products of unknown letters.
+    else if(a=="rad") a="1";
+    else if(a=="deg") a="(pi/180)";
     // Greek scalar letters denote unknown parameters in quantum notation.
     // Pi stays numerical, and explicit function calls take the path above.
     // Subscripted identifiers remain atomic instead of becoming products.

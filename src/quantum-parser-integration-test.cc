@@ -21,6 +21,18 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(auto angle:{ANGLE_UNIT_NONE,ANGLE_UNIT_RADIANS,ANGLE_UNIT_DEGREES,ANGLE_UNIT_GRADIANS}) {
+  eo.parse_options.angle_unit=angle;
+  equal("quantum: cos(pi rad)","-1");
+  equal("quantum: sin(30 deg)","1/2");
+  equal("quantum: tan(45 deg)","1");
+  equal("quantum: sin(pi/6)","1/2");
+  equal("quantum: replace(cos(theta rad),theta,pi)","-1");
+  equal("quantum: replace(sin(theta deg),theta,30)","1/2");
+  if(angle==ANGLE_UNIT_DEGREES)equal("sin(30)","1/2");
+  if(angle==ANGLE_UNIT_GRADIANS)equal("cos(200)","-1");
+ }
+ eo.parse_options.angle_unit=ANGLE_UNIT_NONE;
  equal("quantum: |0>_1","qbasis(0,1)");
  equal("quantum: QFT_1|0>_1","qbasis(0,1)");
  equal(R"(quantum: \sum_{k=0}^{0}{|k>})","qbasis(0,1)");
@@ -60,6 +72,8 @@ int main(){try {
 
  equal(R"(quantum: \cos^2(\pi\theta))",R"(cos(pi*"θ")^2)");
  equal(R"(quantum: \sin^2(\pi\theta))",R"(sin(pi*"θ")^2)");
+ equal(R"(quantum: replace(\cos^2(\pi\theta),\theta,1/3))","1/4");
+ equal(R"(quantum: replace(\sin^2(\pi\theta),\theta,1/3))","3/4");
  equal(R"(quantum: e^{2\pi i\theta})",R"(exp(2*pi*i*"θ"))");
  equal("quantum: θ(0)","heaviside(0)");
  equal("quantum: θ(1)","1");
