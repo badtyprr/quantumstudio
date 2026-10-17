@@ -395,3 +395,15 @@ branches. The worker exposes these blocks as QSAMPLE2 operation 6. Body counts i
 only their immediate operations; all nested operations in both bodies count
 toward the shared 4096-operation limit. Every field and body is required even
 when it would not execute. The OpenQASM importer does not yet emit these blocks.
+
+The Windows sampling adapter also exposes `RequestClassical` / `RunClassical`
+for callers that need saved classical records. These accept an independent
+0–64-bit classical register and an explicit output-bit order (first bit most
+significant), and require a `ClassicalBit` destination on every measurement.
+They do not append final measurements. Conditions and readout assignments use
+classical bit indices; gate and reset targets use quantum wire indices.
+`ReadClassicalResult` validates the independent classical register size.
+The existing editor sampling API retains its final-quantum-measurement behavior.
+This adapter support does not yet add named classical registers or runtime
+OpenQASM branches to circuit files or the editor.
+
