@@ -155,3 +155,8 @@ check_PROGRAMS += quantum-exact-records-test
 TESTS += quantum-exact-records-test
 quantum_exact_records_test_SOURCES = quantum-exact-records-test.cc
 quantum_exact_records_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-exact-operation-test
+TESTS += quantum-exact-operation-test
+quantum_exact_operation_test_SOURCES = quantum-exact-operation-test.cc
+quantum_exact_operation_test_LDADD = $(test_LDADD)
