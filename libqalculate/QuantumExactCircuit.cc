@@ -11,6 +11,9 @@ void checkpoint() {if(CALCULATOR->aborted())throw std::runtime_error("Exact circ
 void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsigned depth,std::size_t &count) {
  for(const auto &step:steps) {
   checkpoint();if(++count>512)throw std::length_error("Exact circuits support at most 512 steps across all bodies");
+  if(step.kind==Step::Kind::Assign) {
+   QuantumClassical::assign(0,bits,step.wires,*step.expression);continue;
+  }
   unsigned targets=0;
   for(unsigned wire:step.wires) {
    if(wire>=qubits)throw std::out_of_range("Exact circuit wire is outside the register");
@@ -25,6 +28,10 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
   } else if(step.kind==Step::Kind::Readout) {
    for(unsigned bit:step.assignment->bits())if(bit>=bits)throw std::out_of_range("Readout target is outside the classical register");
   } else if(step.kind==Step::Kind::Branch) {
+   if(step.expression) {
+    if(step.expression->width()!=1)throw std::invalid_argument("Exact branch expressions must be one bit");
+    step.expression->evaluate(0,bits);
+   }
    if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches");
    if((bits<64 && (step.mask>>bits)) || (step.value&~step.mask))
     throw std::invalid_argument("Branch mask/value is outside the classical register or mask");
@@ -58,9 +65,12 @@ Records execute(Records records,unsigned qubits,unsigned bits,const std::vector<
    checkpoint();
    if(step.kind==Step::Kind::Branch) {
     // Select once for this incoming record; body writes cannot switch paths.
-    const auto &body=(record.first&step.mask)==step.value ? *step.whenTrue : *step.whenFalse;
+    const bool selected=step.expression ? step.expression->evaluate(record.first,bits)!=0 : (record.first&step.mask)==step.value;
+    const auto &body=selected ? *step.whenTrue : *step.whenFalse;
     auto branch=execute({record},qubits,bits,body,maxCells,exact);
     for(const auto &result:branch)output.add(result.first,result.second);
+   } else if(step.kind==Step::Kind::Assign) {
+    output.add(QuantumClassical::assign(record.first,bits,step.wires,*step.expression),record.second);
    } else if(step.kind==Step::Kind::Readout) {
     for(const auto &outcome:step.assignment->outcomes(record.first)) {
      MathStructure rho=record.second;

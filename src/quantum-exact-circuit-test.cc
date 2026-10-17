@@ -49,6 +49,23 @@ int main(){try {
  // merged-records-retain-quantum-mixture
  distribution(2,64,{1},{Step::map(H, {0}),Step::map(CX, {0,1}),Step::measure(0,0),Step::reset(0),Step::measure(0,0),Step::measure(1,1)},{{0ULL,"1/2"},{1ULL,"1/2"}});
  TracePreservingMap rotation({calc("quantum: Ry(x)")},4,exact);
+ using Bits=QuantumClassical::Bits;using Op=Bits::Binary;
+ distribution(1,2,{1,0},{Step::map(X,{0}),Step::measure(0,0),Step::assign({1},Bits::read({0})),Step::assign({0},Bits::constant(1,0))},{{2,"1"}});
+ distribution(0,3,{2,1,0},{Step::assign({0},Bits::constant(1,1)),Step::assign({1,2},Bits::read({0,1}))},{{3,"1"}});
+ auto parity=Bits::binary(Op::Xor,Bits::read({0}),Bits::read({1}));
+ distribution(3,3,{2,1,0},{Step::map(H,{0}),Step::map(H,{1}),Step::measure(0,0),Step::measure(1,1),Step::branch(parity,{Step::map(X,{2})}),Step::measure(2,2)},{{0,"1/4"},{5,"1/4"},{6,"1/4"},{3,"1/4"}});
+ distribution(2,2,{1,0},{Step::map(H,{0}),Step::map(CX,{0,1}),Step::measure(0,0),Step::assign({0},Bits::constant(1,0)),Step::measure(1,1)},{{0,"1/2"},{2,"1/2"}});
+ distribution(0,64,{63},{Step::assign({63},Bits::constant(1,1))},{{1,"1"}});
+ // A body can overwrite the condition without changing the chosen path.
+ distribution(0,2,{1,0},{Step::assign({0},Bits::constant(1,1)),Step::branch(Bits::read({0}),{Step::assign({0},Bits::constant(1,0)),Step::assign({1},Bits::constant(1,1))})},{{2,"1"}});
+ distribution(0,1,{0},{Step::branch(Bits::constant(1,0),{},{Step::assign({0},Bits::constant(1,1))})},{{1,"1"}});
+ rejects<std::invalid_argument>([&]{evaluateCircuit(0,2,{Step::assign({0},Bits::constant(2,0))},1,exact);});
+ rejects<std::invalid_argument>([&]{evaluateCircuit(0,2,{Step::assign({0,0},Bits::constant(2,0))},1,exact);});
+ rejects<std::out_of_range>([&]{evaluateCircuit(0,1,{Step::assign({1},Bits::constant(1,0))},1,exact);});
+ rejects<std::out_of_range>([&]{evaluateCircuit(0,1,{Step::assign({0},Bits::read({1}))},1,exact);});
+ rejects<std::invalid_argument>([&]{evaluateCircuit(0,2,{Step::branch(Bits::read({0,1}),{})},1,exact);});
+ rejects<std::out_of_range>([&]{evaluateCircuit(0,1,{Step::branch(Bits::read({1}),{})},1,exact);});
+ rejects<std::out_of_range>([&]{evaluateCircuit(0,1,{Step::branch(Bits::constant(1,0),{Step::assign({1},Bits::constant(1,0))})},1,exact);});
  // Reversed, non-adjacent targets retain caller ordering.
  distribution(3,2,{1,0},{Step::map(X,{2}),Step::map(CX,{2,0}),Step::measure(0,0),Step::measure(2,1)},{{3,"1"}});
  // Resetting one half of an entangled state preserves the other's mixture.
