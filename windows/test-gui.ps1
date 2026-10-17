@@ -4,6 +4,11 @@ $repo = Split-Path $PSScriptRoot -Parent
 $validation = Join-Path $repo 'dist\gui-validation'
 New-Item -ItemType Directory -Force $validation | Out-Null
 $fx = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
+$textTest = Join-Path $validation 'classical-expression-text-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$textTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalExpressionText.cs') (Join-Path $PSScriptRoot 'ClassicalExpressionTextTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Classical expression text tests did not compile.' }
+& $textTest
+if ($LASTEXITCODE -ne 0) { throw 'Classical expression text tests failed.' }
 $expressionTest = Join-Path $validation 'classical-expression-tests.exe'
 & "$fx\csc.exe" /nologo /target:exe "/out:$expressionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalExpressionTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Classical expression adapter tests did not compile.' }
