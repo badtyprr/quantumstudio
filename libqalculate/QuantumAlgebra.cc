@@ -303,6 +303,9 @@ class QuantumAlgebraFunction: public MathFunction {
  }
 };
 }
+MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions &options) {
+ return dagger(value,options);
+}
 void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));

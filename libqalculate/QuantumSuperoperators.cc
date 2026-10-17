@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumSuperoperators.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <string>
 #include <vector>
@@ -8,16 +9,6 @@
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
  a*=b; a.eval(eo);
  if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
@@ -34,7 +25,7 @@ MathStructure twoSidedSuperoperator(const MathStructure &left,MathStructure righ
  result.set(CALCULATOR->getFunction("qtensor"),&right,&left,NULL);result.eval(eo);return result;
 }
 MathStructure dissipator(const MathStructure &collapse,const EvaluationOptions &eo) {
- MathStructure adjoint=dagger(collapse,eo), product=multiply(adjoint,collapse,eo), identity;
+ MathStructure adjoint=quantumAdjoint(collapse,eo), product=multiply(adjoint,collapse,eo), identity;
  identity.setToIdentityMatrix(collapse.rows());
  MathStructure result=twoSidedSuperoperator(collapse,adjoint,eo);
  MathStructure loss=twoSidedSuperoperator(product,identity,eo);loss+=twoSidedSuperoperator(identity,product,eo);
@@ -107,7 +98,7 @@ class QuantumSuperoperatorFunction: public MathFunction {
     CALCULATOR->error(true,"Lindblad generators require square operators of dimension 2 to 16.",NULL);return 0;
    }
    if(op=="qlindblad") {out=dissipator(a,eo);return 1;}
-   MathStructure difference=a;difference-=dagger(a,eo);
+   MathStructure difference=a;difference-=quantumAdjoint(a,eo);
    if(!zeroMatrix(difference,eo)) {CALCULATOR->error(true,"liouvillian requires a Hermitian Hamiltonian.",NULL);return 0;}
    MathStructure identity;identity.setToIdentityMatrix(a.rows());
    out=twoSidedSuperoperator(a,identity,eo);out-=twoSidedSuperoperator(identity,a,eo);

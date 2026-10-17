@@ -2,22 +2,13 @@
 #include "QuantumGeometry.h"
 #include "QuantumStateMetrics.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <string>
 #include <utility>
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
  a*=b; a.eval(eo);
  if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
@@ -50,7 +41,7 @@ class QuantumGeometryFunction: public MathFunction {
    if(!CALCULATOR->getFunction("conj")) {CALCULATOR->error(true,"Load global functions before calculating Bloch coordinates.",NULL);return 0;}
    size_t mask=size_t(1)<<(bits-1-args[1].number().intValue());
    MathStructure reduced;reduced.clearMatrix();reduced.resizeMatrix(2,2,m_zero);
-   MathStructure adjoint;if(a.columns()==1)adjoint=dagger(a,eo);
+   MathStructure adjoint;if(a.columns()==1)adjoint=quantumAdjoint(a,eo);
    for(size_t base=0;base<n;++base) {
     if(CALCULATOR->aborted())return 0;
     if(base & mask)continue;
@@ -70,12 +61,12 @@ class QuantumGeometryFunction: public MathFunction {
    if(!CALCULATOR->getFunction("conj")) {CALCULATOR->error(true,"Load global functions before calculating Bloch coordinates.",NULL);return 0;}
    MathStructure checked;
    if(!quantumEntropy(checked,a,eo))return 0;
-   MathStructure rho=a.columns()==1 ? multiply(a,dagger(a,eo),eo) : a;
-   MathStructure difference=rho;difference-=dagger(rho,eo);
+   MathStructure rho=a.columns()==1 ? multiply(a,quantumAdjoint(a,eo),eo) : a;
+   MathStructure difference=rho;difference-=quantumAdjoint(rho,eo);
    if(!rho.isApproximate() && !zeroMatrix(difference,eo)) {CALCULATOR->error(true,"bloch requires a Hermitian density matrix.",NULL);return 0;}
    // Numeric validation above permits rounding-sized Hermiticity residuals.
    // Use the Hermitian part rather than rejecting floating-point states.
-   rho+=dagger(rho,eo);rho*=Number(1,2);rho.eval(eo);
+   rho+=quantumAdjoint(rho,eo);rho*=Number(1,2);rho.eval(eo);
    MathStructure weight=trace(rho,eo);
    if(weight.isNumber())weight=weight.number().realPart();
    out.clearMatrix();out.resizeMatrix(3,1,m_zero);
@@ -120,7 +111,7 @@ class QuantumGeometryFunction: public MathFunction {
     MathStructure sine(CALCULATOR->getFunction("sin"),&args[1],NULL);sine.eval(eo);sine*=imaginary;
     factor.set(CALCULATOR->getFunction("cos"),&args[1],NULL);factor.eval(eo);factor+=sine;factor-=m_one;factor.eval(eo);
    }
-   MathStructure bra=dagger(a,eo),weight=multiply(bra,a,eo);
+   MathStructure bra=quantumAdjoint(a,eo),weight=multiply(bra,a,eo);
    if(weight.isZero()) {CALCULATOR->error(true,"Cannot reflect in a zero state.",NULL);return 0;}
    out=multiply(a,bra,eo);out/=weight;out*=factor;out.eval(eo);
    for(size_t k=0;k<a.rows();++k)element(out,k,k)+=m_one;

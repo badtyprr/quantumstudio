@@ -1,22 +1,13 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumReset.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <string>
 #include <utility>
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 class QuantumResetFunction: public MathFunction {
  std::string op;
  public:
@@ -49,7 +40,7 @@ class QuantumResetFunction: public MathFunction {
    MathStructure adjoint;
    if(a.columns()==1) {
     if(!CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global functions before converting a ket to a density matrix.",NULL); return 0; }
-    adjoint=dagger(a,eo);
+    adjoint=quantumAdjoint(a,eo);
    }
    out.clearMatrix(); out.resizeMatrix(n,n,m_zero);
    // Retain matching outcome blocks. Reset additionally maps those outcomes to zero.

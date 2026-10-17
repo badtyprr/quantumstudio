@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumSubsystem.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <algorithm>
 #include <string>
@@ -9,16 +10,6 @@
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 class QuantumSubsystemFunction: public MathFunction {
  std::string op;
  public:
@@ -74,7 +65,7 @@ class QuantumSubsystemFunction: public MathFunction {
    // Right-multiply by U-dagger directly. Only the small local gate needs
    // conjugation; transposing/conjugating full density matrices duplicates them.
    if(state.columns()!=1) {
-    MathStructure adjoint=dagger(a,eo), second;
+    MathStructure adjoint=quantumAdjoint(a,eo), second;
     second.clearMatrix();second.resizeMatrix(n,n,m_zero);
     for(size_t j=0;j<n;++j) {
      if(CALCULATOR->aborted())return 0;

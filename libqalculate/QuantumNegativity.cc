@@ -3,6 +3,7 @@
 #include "QuantumStateMetrics.h"
 #include "QuantumSingular.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <string>
 #include <vector>
@@ -13,16 +14,6 @@
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 MathStructure trace(const MathStructure &matrix,const EvaluationOptions &eo) {
  MathStructure value;
  for(size_t r=0;r<matrix.rows();++r) value+=element(matrix,r,r);
@@ -142,7 +133,7 @@ class QuantumNegativityFunction: public MathFunction {
   }
   if(!CALCULATOR->getFunction("conj")) {CALCULATOR->error(true,"Load global functions before calculating negativity.",NULL);return 0;}
   MathStructure validation;if(!quantumEntropy(validation,a,eo))return 0;
-  MathStructure rho=a;rho+=dagger(a,eo);rho/=2;rho.eval(eo);rho/=trace(rho,eo);rho.eval(eo);
+  MathStructure rho=a;rho+=quantumAdjoint(a,eo);rho/=2;rho.eval(eo);rho/=trace(rho,eo);rho.eval(eo);
   auto transpose=CALCULATOR->getFunction(dimensions ? "qptransposedim" : "qptranspose");
   if(!transpose) {CALCULATOR->error(true,"Partial transpose is unavailable.",NULL);return 0;}
   MathStructure transposed;

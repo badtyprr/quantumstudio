@@ -16,6 +16,8 @@ int main(){try {
  registerQuantumSuperoperators(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qunvec(qmul(qlindblad([0,exp(i*x);0,0]),qvec([0,0;0,1])),2)","[1,0;0,-1]");
+
  equal("qvec([1,2,3;4,5,6])","[1;4;2;5;3;6]");
  equal("qvec([1,i,3])","[1;i;3]");
  equal("qunvec([1;4;2;5;3;6],2)","[1,2,3;4,5,6]");

@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumMeasurement.h"
 #include "Calculator.h"
+#include "QuantumAlgebra.h"
 #include "Function.h"
 #include <vector>
 #include <string>
@@ -8,16 +9,6 @@
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
-MathStructure dagger(const MathStructure &a, const EvaluationOptions &eo) {
- MathStructure out=a;
- if(out.isMatrix()) {
-  out.transposeMatrix();
-  for(size_t r=0;r<out.rows();++r) for(size_t c=0;c<out.columns();++c) {
-   MathStructure v=element(out,r,c); element(out,r,c).set(CALCULATOR->getFunction("conj"), &v, NULL); element(out,r,c).eval(eo);
-  }
- } else { out.set(CALCULATOR->getFunction("conj"), &a, NULL); out.eval(eo); }
- return out;
-}
 MathStructure multiply(MathStructure a, const MathStructure &b, const EvaluationOptions &eo) {
  a*=b; a.eval(eo);
  if(a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
@@ -72,9 +63,9 @@ class QuantumMeasurementFunction: public MathFunction {
   if(op=="qprobs") {
    bool ket=a.columns()==1;
    if(!ket && a.rows()!=a.columns()) { CALCULATOR->error(true,"probs requires a column ket or a square density matrix.",NULL); return 0; }
-   MathStructure norm=ket ? multiply(dagger(a,eo),a,eo) : trace(a,eo);
+   MathStructure norm=ket ? multiply(quantumAdjoint(a,eo),a,eo) : trace(a,eo);
    if(norm.isZero()) { CALCULATOR->error(true,"A zero-norm/zero-trace state has no normalized measurement distribution.",NULL); return 0; }
-   MathStructure bra; if(ket) bra=dagger(a,eo);
+   MathStructure bra; if(ket) bra=quantumAdjoint(a,eo);
    out.clearMatrix(); out.resizeMatrix(a.rows(),1,m_zero);
    for(size_t r=0;r<a.rows();++r) {
     element(out,r,0)=ket ? element(a,r,0) : element(a,r,r);
@@ -87,7 +78,7 @@ class QuantumMeasurementFunction: public MathFunction {
    bool ket=a.columns()==1;
    if((!ket && a.rows()!=a.columns()) || a.rows()>1024 || a.rows()*a.columns()>1048576) { CALCULATOR->error(true,"purity requires a ket or square density matrix, with at most 1024 rows and 1048576 elements.",NULL); return 0; }
    if(!CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global definitions before evaluating state purity.",NULL); return 0; }
-   MathStructure normalization=ket ? multiply(dagger(a,eo),a,eo) : trace(a,eo);
+   MathStructure normalization=ket ? multiply(quantumAdjoint(a,eo),a,eo) : trace(a,eo);
    if(normalization.isZero()) { CALCULATOR->error(true,"Purity requires nonzero state norm or trace.",NULL); return 0; }
    if(ket) {out=1; return 1;}
    out.clear();
@@ -103,29 +94,29 @@ class QuantumMeasurementFunction: public MathFunction {
    if(!state.isMatrix() || (!ket && state.rows()!=state.columns()) || a.rows()!=a.columns() || a.columns()!=state.rows()) { CALCULATOR->error(true,"Measurement requires a square operator and a compatible ket or density matrix.",NULL); return 0; }
    if(op=="qvariance") {
     if(!CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global definitions before evaluating variance.",NULL); return 0; }
-    MathStructure difference=a; difference-=dagger(a,eo);
+    MathStructure difference=a; difference-=quantumAdjoint(a,eo);
     if(!zeroMatrix(difference,eo)) { CALCULATOR->error(true,"variance requires a Hermitian observable.",NULL); return 0; }
-    MathStructure normalization=ket ? multiply(dagger(state,eo),state,eo) : trace(state,eo);
+    MathStructure normalization=ket ? multiply(quantumAdjoint(state,eo),state,eo) : trace(state,eo);
     if(normalization.isZero()) { CALCULATOR->error(true,"Variance requires nonzero state norm or trace.",NULL); return 0; }
-    MathStructure first=ket ? multiply(dagger(state,eo),multiply(a,state,eo),eo) : trace(multiply(a,state,eo),eo);
+    MathStructure first=ket ? multiply(quantumAdjoint(state,eo),multiply(a,state,eo),eo) : trace(multiply(a,state,eo),eo);
     MathStructure square=multiply(a,a,eo);
-    out=ket ? multiply(dagger(state,eo),multiply(square,state,eo),eo) : trace(multiply(square,state,eo),eo);
+    out=ket ? multiply(quantumAdjoint(state,eo),multiply(square,state,eo),eo) : trace(multiply(square,state,eo),eo);
     out/=normalization; first/=normalization; first.raise(2); out-=first; return 1;
    }
    if(op=="qpostselect") {
-    MathStructure difference=a; difference-=dagger(a,eo);
+    MathStructure difference=a; difference-=quantumAdjoint(a,eo);
     MathStructure squared=multiply(a,a,eo); squared-=a;
     if(!zeroMatrix(difference,eo) || !zeroMatrix(squared,eo)) { CALCULATOR->error(true,"postselect requires a Hermitian projector P with P^2=P.",NULL); return 0; }
     out=multiply(a,state,eo);
     if(!ket) out=multiply(out,a,eo);
-    MathStructure probability=ket ? multiply(dagger(out,eo),out,eo) : trace(out,eo);
+    MathStructure probability=ket ? multiply(quantumAdjoint(out,eo),out,eo) : trace(out,eo);
     if(probability.isZero()) { CALCULATOR->error(true,"Cannot postselect an outcome with zero probability.",NULL); return 0; }
     if(ket) { probability.raise(Number(1,2)); probability.eval(eo); }
     out/=probability; return 1;
    }
-   out=ket ? multiply(dagger(state,eo),multiply(a,state,eo),eo) : trace(multiply(a,state,eo),eo);
+   out=ket ? multiply(quantumAdjoint(state,eo),multiply(a,state,eo),eo) : trace(multiply(a,state,eo),eo);
    if(op=="qborn") {
-    MathStructure normalization=ket ? multiply(dagger(state,eo),state,eo) : trace(state,eo);
+    MathStructure normalization=ket ? multiply(quantumAdjoint(state,eo),state,eo) : trace(state,eo);
     if(normalization.isZero()) { CALCULATOR->error(true,"The Born expression requires nonzero norm or trace.",NULL); return 0; }
     out/=normalization;
    }

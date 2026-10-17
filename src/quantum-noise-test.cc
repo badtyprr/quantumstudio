@@ -16,6 +16,8 @@ int main(){try {
  registerQuantumNoise(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qchannel(identity(2)/2,vector([1,0;0,exp(i*x)]))","identity(2)/2");
+
  equal("qchannel([0,0;0,1],qamplitudedamping(3/4))","[3/4,0;0,1/4]");
  equal("qchannel([1,-i;i,1]/2,qphasedamping(3/4))","[1/2,-i/4;i/4,1/2]");
  equal("qchannel([1,-i;i,1]/2,qdepolarizing(1))","identity(2)/2");

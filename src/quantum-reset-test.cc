@@ -17,6 +17,9 @@ int main(){try {
  registerQuantumReset(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("qreset([1;exp(i*x)]/sqrt(2),0)","[1,0;0,0]");
+ equal("qdephase([1;exp(i*x)]/sqrt(2),0)","identity(2)/2");
+
  std::string bell="[1;0;0;1]/sqrt(2)",mixed="[1,0,0,0;0,0,0,0;0,0,0,0;0,0,0,1]/2";
  equal("qdephase("+bell+",0)",mixed);
  equal("qdephaseall("+bell+")",mixed);
