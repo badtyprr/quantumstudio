@@ -12,6 +12,33 @@ int main(){try {
  using Step=TrajectoryStep;const double h=std::sqrt(.5);
  const std::vector<Complex> H={h,h,h,-h},X={0,1,1,0},Z={1,0,0,-1};
  const std::vector<Complex> CX={1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0};
+ // Branch selection is latched at entry, not re-tested after each operation.
+ std::vector<Step> block={Step::gate(X,{0}),Step::measure(0,0),
+  Step::branch(1,1,{Step::reset(0),Step::measure(0,0),Step::gate(X,{1}),Step::measure(1,1)})};
+ check(sampleTrajectories(2,2,100,7,{1,0},block,64).at(2)==100);
+ check(sampleTrajectories(1,2,100,7,{1,0},{Step::branch(1,1,{}, {Step::gate(X,{0}),Step::measure(0,1)})},32).at(2)==100);
+ check(sampleTrajectories(0,0,10,7,{}, {Step::branch(0,0,{})},16).at(0)==10);
+ const std::uint64_t high=std::uint64_t(1)<<63;
+ check(sampleTrajectories(1,64,10,7,{63},{Step::branch(high,0,{Step::branch(0,0,{Step::gate(X,{0}),Step::measure(0,63)})})},32).at(1)==10);
+ rejects<std::out_of_range>([&]{sampleTrajectories(1,1,0,0,{0},{Step::branch(1,1,{Step::measure(0,1)})},32);});
+ rejects<std::invalid_argument>([&]{sampleTrajectories(1,1,0,0,{0},{Step::branch(1,1,{}, {Step::gate({1,1,1,1},{0})})},32);});
+ rejects<std::invalid_argument>([&]{sampleTrajectories(1,1,0,0,{0},{Step::branch(2,0,{})},32);});
+ rejects<std::invalid_argument>([&]{sampleTrajectories(1,1,0,0,{0},{Step::branch(1,2,{})},32);});
+ std::vector<Step> nested;
+ for(unsigned k=0;k<32;++k){std::vector<Step> next={Step::branch(0,0,nested)};nested.swap(next);}
+ check(sampleTrajectories(0,0,10,0,{},nested,16).at(0)==10);
+ rejects<std::length_error>([&]{sampleTrajectories(0,0,0,0,{}, {Step::branch(0,0,nested)},16);});
+ std::vector<Step> wide(4095,Step::reset(0));
+ check(sampleTrajectories(1,1,1,0,{0},{Step::branch(0,0,wide)},32).at(0)==1);
+ rejects<std::length_error>([&]{sampleTrajectories(1,1,0,0,{0},{Step::branch(0,0,wide,{Step::reset(0)})},32);});
+ std::vector<Step> body={Step::gate(H,{0}),Step::measure(0,0)};
+ Step snapshot=Step::branch(0,0,body);
+ check(sampleTrajectories(1,1,1000,42,{0},{snapshot},32)==sampleTrajectories(1,1,1000,42,{0},body,32));
+ body.clear();
+ check(sampleTrajectories(1,1,1000,42,{0},{snapshot},32).size()==2);
+ check(sampleTrajectories(0,1,10,7,{0},{Step::branch(1,0,{Step::readout({{0,1},{1,0}},{0})})},16).at(1)==10);
+ unsigned branchCalls=0;
+ rejects<Cancelled>([&]{sampleTrajectories(2,2,100,7,{1,0},block,64,[&]{return ++branchCalls==100;});});
  std::vector<Step> saved={Step::gate(H,{0}),Step::measure(0,0),Step::gate(X,{0}),Step::measure(0,1),Step::conditional(X,{1},1,1),Step::measure(1,2)};
  auto counts=sampleTrajectories(2,3,1000,42,{2,1,0},saved,64);
  check(counts.size()==2 && counts.count(2) && counts.count(5));check(counts[2]+counts[5]==1000);

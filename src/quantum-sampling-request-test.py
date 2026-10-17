@@ -78,10 +78,19 @@ run(request(), success=False, flags=("--sample", "--sample"))
 def trajectory(qubits=2, classical=2, bits=(0,1), steps=(), shots=1000, seed=7):
     fields = ["QSAMPLE2", str(qubits), str(shots), str(seed), str(classical), str(len(bits)), *map(str,bits), str(len(steps))]
     data = ("\n".join(fields)+"\n").encode()
+    return data + encode_steps(steps)
+
+
+def encode_steps(steps):
+    data = b""
     for step in steps:
         kind, *args = step
         data += (str(kind)+"\n").encode()
-        if kind in (0,3,4,5):
+        if kind == 6 and len(args) == 4:
+            mask, value, yes, no = args
+            data += f"{mask}\n{value}\n{len(yes)}\n".encode() + encode_steps(yes)
+            data += f"{len(no)}\n".encode() + encode_steps(no)
+        elif kind in (0,3,4,5):
             if kind == 3:
                 mask, value, targets, expression = args
                 data += f"{mask}\n{value}\n".encode()
@@ -149,4 +158,32 @@ for targets in [(),(0,0),(2,),tuple(range(9))]:
 run(trajectory(classical=0,bits=(),steps=[(5,(0,),flip)]),success=False)
 for cut in range(len(readout)):
     run(readout[:cut],success=False)
+# Structured branches choose once and preserve all operations in that body.
+block = [(0,(0,),"X"),(1,0,0),(6,1,1,[(2,0),(1,0,0),(0,(1,),"X"),(1,1,1)],[])]
+encoded_block = trajectory(steps=block)
+assert run(encoded_block)["counts"] == {"01":1000}
+assert run(trajectory(steps=[(6,1,1,[],[(0,(0,),"X"),(1,0,0)])]))["counts"] == {"10":1000}
+flat = [(0,(0,),"H"),(1,0,0)]
+assert run(trajectory(steps=[(6,0,0,flat,[])])) == run(trajectory(steps=flat))
+assert run(trajectory(classical=64,bits=(63,),steps=[(6,2**63,0,[(0,(0,),"X"),(1,0,63)],[])]))["counts"] == {"1":1000}
+assert run(trajectory(qubits=0,classical=0,bits=(),steps=[(6,0,0,[],[])]))["counts"] == {"":1000}
+for cut in range(len(encoded_block)):
+    run(encoded_block[:cut],success=False)
+for bad in [
+    trajectory(steps=[(6,4,0,[],[])]),
+    trajectory(steps=[(6,1,2,[],[])]),
+    trajectory(steps=[(6,1,1,[(1,0,2)],[])],shots=0),
+    trajectory(steps=[(6,1,1,[],[(0,(0,),"[2,0;0,1]")])],shots=0),
+    encoded_block+b"x",
+]:
+    run(bad,success=False)
+nested=[]
+for _ in range(32):
+    nested=[(6,0,0,nested,[])]
+assert run(trajectory(qubits=0,classical=0,bits=(),steps=nested,shots=1))["counts"] == {"":1}
+run(trajectory(qubits=0,classical=0,bits=(),steps=[(6,0,0,nested,[])],shots=0),success=False)
+wide=[(2,0)]*4095
+assert run(trajectory(steps=[(6,0,0,wide,[])],shots=1))["counts"] == {"00":1}
+run(trajectory(steps=[(6,0,0,wide,[(2,0)])],shots=0),success=False)
+
 print(f"PASS: {checks} numerical sampling process checks.")
