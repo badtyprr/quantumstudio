@@ -120,6 +120,40 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
  return QuantumNumerics::TrajectoryStep::readout(probabilities,bits);
 }
 
+QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total) {
+ using Step=QuantumNumerics::TrajectoryStep;
+ if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
+ const unsigned kind=static_cast<unsigned>(reader.integer(6));
+ if(kind==6) {
+  if(depth>=32)throw std::length_error("Sampling branches exceed 32 nesting levels.");
+  auto mask=reader.integer(std::numeric_limits<std::uint64_t>::max());
+  auto value=reader.integer(std::numeric_limits<std::uint64_t>::max());
+  std::vector<Step> bodies[2];
+  for(auto &body:bodies) {
+   const unsigned count=static_cast<unsigned>(reader.integer(4096-total));
+   body.reserve(count);
+   for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,classicalBits,depth+1,total));
+  }
+  return Step::branch(mask,value,bodies[0],bodies[1]);
+ }
+ if(kind==5)return readAssignment(calculator,reader,classicalBits);
+ if(kind==4)return readChannel(calculator,reader,qubits);
+ if(kind==0 || kind==3) {
+  std::uint64_t mask=0,value=0;
+  if(kind==3) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
+  Gate gate=readGate(calculator,reader,qubits);
+  return kind==0 ? Step::gate(gate.matrix,gate.wires) : Step::conditional(gate.matrix,gate.wires,mask,value);
+ }
+ if(!qubits)throw std::runtime_error("A measurement or reset needs a quantum wire.");
+ unsigned wire=static_cast<unsigned>(reader.integer(qubits-1));
+ if(kind==1) {
+  if(!classicalBits)throw std::runtime_error("A measurement needs a classical bit.");
+  unsigned bit=static_cast<unsigned>(reader.integer(classicalBits-1));
+  return Step::measure(wire,bit);
+ }
+ return Step::reset(wire);
+}
+
 }
 
 std::string quantumSamplingRequest(Calculator &calculator,const std::string &input) {
@@ -132,26 +166,10 @@ std::string quantumSamplingRequest(Calculator &calculator,const std::string &inp
  unsigned count=static_cast<unsigned>(reader.integer(4096));
  std::vector<Gate> gates;gates.reserve(count);
  std::vector<QuantumNumerics::TrajectoryStep> steps;steps.reserve(count);
+ unsigned total=0;
  for(unsigned k=0;k<count;++k) {
-  unsigned kind=reader.dynamic()?static_cast<unsigned>(reader.integer(5)):0;
-  if(kind==5)steps.push_back(readAssignment(calculator,reader,classicalBits));
-  else if(kind==4)steps.push_back(readChannel(calculator,reader,qubits));
-  else if(kind==0 || kind==3) {
-   std::uint64_t mask=0,value=0;
-   if(kind==3) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
-   Gate gate=readGate(calculator,reader,qubits);
-   if(!reader.dynamic())gates.push_back(std::move(gate));
-   else if(kind==0)steps.push_back(QuantumNumerics::TrajectoryStep::gate(gate.matrix,gate.wires));
-   else steps.push_back(QuantumNumerics::TrajectoryStep::conditional(gate.matrix,gate.wires,mask,value));
-  } else {
-   if(!qubits)throw std::runtime_error("A measurement or reset needs a quantum wire.");
-   unsigned wire=static_cast<unsigned>(reader.integer(qubits-1));
-   if(kind==1) {
-    if(!classicalBits)throw std::runtime_error("A measurement needs a classical bit.");
-    unsigned bit=static_cast<unsigned>(reader.integer(classicalBits-1));
-    steps.push_back(QuantumNumerics::TrajectoryStep::measure(wire,bit));
-   } else steps.push_back(QuantumNumerics::TrajectoryStep::reset(wire));
-  }
+  if(reader.dynamic())steps.push_back(readStep(calculator,reader,qubits,classicalBits,0,total));
+  else gates.push_back(readGate(calculator,reader,qubits));
  }
  reader.end();
  std::map<std::uint64_t,unsigned> counts;
