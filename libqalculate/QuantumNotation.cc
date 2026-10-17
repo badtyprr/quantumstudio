@@ -172,7 +172,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qstatecall",2},
+ {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
  {"qgeneralizeddamping",2},
@@ -455,12 +455,13 @@ class Parser {
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
   if(dimension.empty() && familyOpen!=std::string::npos) {
    std::string outer=s;size_t outerPosition=p;s=familyLabel.substr(familyOpen+1,familyLabel.size()-familyOpen-2);p=0;
-   std::string argument=expression();ws();
-   if(p!=s.size())throw std::runtime_error("A state family currently takes one scalar argument.");
+   std::string argument=expression();size_t count=1;
+   while(take(',')) {if(++count>16)throw std::runtime_error("State families support at most 16 parameters.");argument+=","+expression();}
+   ws();if(p!=s.size())throw std::runtime_error("Invalid state-family arguments.");
    s=outer;p=outerPosition;
    std::string familyName=familyLabel.substr(0,familyOpen);
    if(familyLabel[familyOpen]=='{')familyName.pop_back();
-   return "qstatecall(\""+familyName+"\","+argument+")";
+   return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
   }
   // Commas at the top level separate registers. Commas inside a computed
   // basis index, such as mod(k,3), remain ordinary function arguments.

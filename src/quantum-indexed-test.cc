@@ -21,6 +21,15 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ defineQuantumStateFamily(calculator,"pair",calculator.parse("matrix(2,1,vector(x,y))"),std::vector<MathStructure>{calculator.parse("x"),calculator.parse("y")});
+ equal("__qstate_family_pair(y,x)","[y;x]");
+ equal("qstatecalls(pair,vector(y,x))","[y;x]");
+ defineQuantumStateFamily(calculator,"nested",calculator.parse("matrix(2,1,vector(qsum(x+y+z,0,1,y),0))"),std::vector<MathStructure>{calculator.parse("x"),calculator.parse("z")});
+ equal("qstatecalls(nested,vector(y,z))","[2*y+2*z+1;0]");
+
+ equal("__qstate_family_pair(y,3)","[y;3]");
+ equal("__qstate_family_pair(__qstate_argument_0,x)","[__qstate_argument_0;x]");
+
  defineQuantumStateFamily(calculator,"scoped",calculator.parse("matrix(2,1,vector(qsum(x+y,0,1,y),0))"),calculator.parse("x"));
  equal("qstatecall(scoped,y)","[2*y+1;0]");
  equal("qstatecall(scoped,3)","[7;0]");

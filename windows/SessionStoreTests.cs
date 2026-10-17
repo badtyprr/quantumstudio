@@ -75,6 +75,11 @@ class SessionStoreTests {
    SessionStore.Save(path,expected);actual=SessionStore.Load(path);
    Require(actual.States[0].Name=="psi(alpha)" && actual.States[0].Expression==expected.States[0].Expression,"State family did not survive saving");
    Require(actual.History[0].States[0].Name=="psi(alpha)","History lost its state family");
+   expected.States=new[]{new StateDefinition {Name="psi(theta,phi)",Expression="cos(theta/2)|0>+exp(i*phi)*sin(theta/2)|1>"}};
+   expected.History[0].States=SessionStore.CopyStates(expected.States);
+   SessionStore.Save(path,expected);actual=SessionStore.Load(path);
+   Require(actual.States[0].Name=="psi(theta,phi)" && actual.States[0].Expression==expected.States[0].Expression,"Multi-parameter family did not survive saving");
+   Require(actual.History[0].States[0].Name=="psi(theta,phi)","History lost multi-parameter family");
    Console.WriteLine("PASS: "+checks+" session storage checks");return 0;
   }catch(Exception e){Console.Error.WriteLine(e);return 1;}
   finally {foreach(string file in Directory.GetFiles(directory))File.Delete(file);Directory.Delete(directory);}

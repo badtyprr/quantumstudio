@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <stdexcept>
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // These operations bind an index in their first argument only.
@@ -61,15 +62,29 @@ void inferSumBasis(MathStructure &value,const MathStructure &index,const MathStr
  value.childrenUpdated();
 }
 class QuantumStateFamilyFunction: public MathFunction {
- MathStructure body,parameter;
+ MathStructure body;std::vector<MathStructure> parameters;
  public:
- QuantumStateFamilyFunction(const std::string &name,const MathStructure &value,const MathStructure &index):MathFunction("__qstate_family_"+name,1),body(value),parameter(index) {}
+ QuantumStateFamilyFunction(const std::string &name,const MathStructure &value,const std::vector<MathStructure> &indices):MathFunction("__qstate_family_"+name,indices.size()),body(value),parameters(indices) {}
  ExpressionItem *copy() const {return new QuantumStateFamilyFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
-  MathStructure argument=raw[0];argument.eval(eo);
-  if(!argument.representsScalar()) {CALCULATOR->error(true,"A state-family argument must be scalar.",NULL);return 0;}
-  out=body;replaceQuantumIndex(out,parameter,argument);out.eval(eo);
+  if(raw.size()!=parameters.size()) {CALCULATOR->error(true,"Wrong number of state-family arguments.",NULL);return 0;}
+  MathStructure arguments=raw;arguments.eval(eo);std::vector<MathStructure> placeholders;
+  for(size_t k=0;k<arguments.size();++k)if(!arguments[k].representsScalar() || arguments[k].isUndefined() || (arguments[k].isNumber() && arguments[k].number().isInfinite(false))) {CALCULATOR->error(true,"State-family arguments must be finite scalars.",NULL);return 0;}
+  out=body;unsigned serial=0;
+  // Substitute simultaneously: an argument may contain another parameter's
+  // name. Fresh placeholders prevent later replacements from rewriting it.
+  for(const auto &parameter:parameters) {
+   MathStructure fresh;bool used;
+   do {
+    fresh=MathStructure("__qstate_argument_"+std::to_string(serial++),true);
+    used=out.contains(fresh) || arguments.contains(fresh);
+    for(const auto &other:parameters)used=used || other.contains(fresh);
+   }while(used);
+   placeholders.push_back(fresh);replaceQuantumIndex(out,parameter,fresh);
+  }
+  for(size_t k=0;k<parameters.size();++k)replaceQuantumIndex(out,placeholders[k],arguments[k]);
+  out.eval(eo);
   if(!out.isMatrix() || out.columns()!=1 || !out.rows() || out.rows()>1024) {CALCULATOR->error(true,"A state family must produce a column vector of at most 1024 rows.",NULL);return 0;}
   for(size_t r=1;r<=out.rows();++r) {
    const MathStructure &cell=*out.getElement(r,1);
@@ -81,10 +96,19 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall")setArgumentDefinition(1,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls")setArgumentDefinition(1,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qstatecalls") {
+   MathStructure arguments=raw[1];arguments.eval(eo);
+   if(!arguments.isVector() || arguments.isMatrix() || arguments.size()<2 || arguments.size()>16) {CALCULATOR->error(true,"A state-family argument list requires 2 to 16 scalars.",NULL);return 0;}
+   for(size_t k=0;k<arguments.size();++k)if(!arguments[k].representsScalar() || arguments[k].isUndefined() || (arguments[k].isNumber() && arguments[k].number().isInfinite(false))) {CALCULATOR->error(true,"State-family arguments must be finite scalars.",NULL);return 0;}
+   MathFunction *family=CALCULATOR->getFunction("__qstate_family_"+raw[0].symbol());
+   if(!family) {if(arguments.equals(raw[1]))return 0;out.set(this,&raw[0],&arguments,NULL);return 1;}
+   if(family->args()!=int(arguments.size())) {CALCULATOR->error(true,"Wrong number of state-family arguments.",NULL);return 0;}
+   out.set(family,&arguments[0],NULL);for(size_t k=1;k<arguments.size();++k)out.addChild(arguments[k]);out.eval(eo);return 1;
+  }
   if(op=="qstatecall") {
    MathStructure argument=raw[1];argument.eval(eo);
    if(!argument.representsScalar() || argument.isUndefined() || (argument.isNumber() && argument.number().isInfinite(false))) {CALCULATOR->error(true,"A state-family argument must be a finite scalar expression.",NULL);return 0;}
@@ -351,6 +375,7 @@ class QuantumIndexedFunction: public MathFunction {
 }
 void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
+ calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
@@ -359,5 +384,14 @@ void registerQuantumIndexed(Calculator &calculator) {
  for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
 }
 void defineQuantumStateFamily(Calculator &calculator,const std::string &name,const MathStructure &body,const MathStructure &parameter) {
- calculator.addFunction(new QuantumStateFamilyFunction(name,body,parameter));
+ defineQuantumStateFamily(calculator,name,body,std::vector<MathStructure>{parameter});
+}
+
+void defineQuantumStateFamily(Calculator &calculator,const std::string &name,const MathStructure &body,const std::vector<MathStructure> &parameters) {
+ if(parameters.empty() || parameters.size()>16)throw std::invalid_argument("State families require 1 to 16 parameters.");
+ for(size_t k=0;k<parameters.size();++k) {
+  if(!parameters[k].isSymbolic() && (!parameters[k].isVariable() || parameters[k].variable()->isKnown()))throw std::invalid_argument("State-family parameters must be unknown symbols.");
+  for(size_t j=0;j<k;++j)if(parameters[k].equals(parameters[j]))throw std::invalid_argument("State-family parameters must be distinct.");
+ }
+ calculator.addFunction(new QuantumStateFamilyFunction(name,body,parameters));
 }

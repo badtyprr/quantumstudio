@@ -283,7 +283,7 @@ for flags in [(), ("--approx",)]:
     for bad in ["|psi([1;2])>", "|psi(infinity)>", "|psi(undefined)>"]:
         run(state_request(family, "quantum:"+bad), "--states", *flags, success=False)
 for bad_family in [
-    [("psi()", "|0>")], [("psi(x,y)", "|0>")], [("psi(X)", "X|0>")],
+    [("psi()", "|0>")], [("psi(X)", "X|0>")],
     [("psi(x)", "|psi(x)>")], [("psi(x)", "|missing(x)>")],
     [("psi(x)", "|0>"), ("psi(y)", "|1>")],
 ]:
@@ -322,6 +322,22 @@ assert (value["rows"],value["columns"]) == (2,2)
 for r in range(2):
     for c in range(2):
         assert abs(Decimal(value["cells"][r][c])-Decimal("0.75" if (r,c)==(0,0) else "0.25")) < Decimal("1e-25"), value
+
+bloch_family = [("psi(theta,phi)", "cos(theta/2)|0>+exp(i*phi)*sin(theta/2)|1>")]
+for expression, expected in [("|psi(0,0)>","|0>"),("|psi(pi/2,0)>","|+>"),("|psi(pi/2,pi/2)>","|+i>")]:
+    assert data(state_request(bloch_family, "quantum:"+expression), "--states") == data("quantum:"+expected)
+value = data(state_request(bloch_family, "quantum:|psi(t,p)>"), "--states")
+assert value['rows']==2 and 't' in value['text'] and 'p' in value['text']
+assert data(state_request(bloch_family, "quantum:"+value['copy_text']), "--states") == value
+assert data(state_request([("pair(x,y)","x*|0>+y*|1>")],"quantum:|pair(y,x)>"),"--states") == data("quantum:y*|0>+x*|1>")
+for expression in ["|psi(1)>","|psi(1,2,3)>","|psi([1;2],0)>","|psi(0,infinity)>"]:
+    run(state_request(bloch_family,"quantum:"+expression),"--states",success=False)
+for declaration in ["psi(x,x)","psi(x,)","psi(,x)"]:
+    run(state_request([(declaration,"|0>")],"1"),"--states",success=False)
+assert data(state_request([("pair(m,alpha)","m*|0>+alpha*|1>")],"1 m"),"--states") == data("1 m")
+names = ["a"+str(k) for k in range(16)]
+assert data(state_request([("wide("+",".join(names)+")", "a0*|0>+a15*|1>")],"quantum:|wide("+",".join(str(k) for k in range(16))+")>"),"--states")["cells"] == [["0"],["15"]]
+run(state_request([("wide("+",".join(names+["a16"])+")", "|0>")],"1"),"--states",success=False)
 
 definitions = [("Bell", "|Phi+>"), ("after CZ", "CZ|Bell>")]
 for flags in [(), ("--approx",)]:
