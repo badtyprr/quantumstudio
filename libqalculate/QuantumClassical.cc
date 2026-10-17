@@ -27,16 +27,26 @@ struct Bits::Node {
   references=(left ? left->references : 0)|(right ? right->references : 0);
   if(depth>32 || count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 expanded nodes");
  }
- std::uint64_t evaluate(std::uint64_t record) const {
+ void validateVariables(unsigned registerBits,const IntegerStorage *storage) const {
+  for(const auto &integer:{integerLeft,integerRight})if(integer) {
+   if(storage)integer->validate(registerBits,*storage);else integer->validate(registerBits);
+  }
+  if(left)left->validateVariables(registerBits,storage);
+  if(right)right->validateVariables(registerBits,storage);
+ }
+ std::uint64_t evaluate(std::uint64_t record,const IntegerStorage *storage) const {
+  auto integerValue=[&](const IntegerExpression &integer) {
+   return storage ? integer.evaluate(record,64,*storage) : integer.evaluate(record,64);
+  };
   if(kind==Kind::Constant)return value;
-  if(kind==Kind::IntegerBits)return integerLeft->evaluate(record,64).value().bits();
+  if(kind==Kind::IntegerBits)return integerValue(*integerLeft).value().bits();
   if(kind==Kind::Read) {
    std::uint64_t result=0;
    for(unsigned k=0;k<indices.size();++k)result|=((record>>indices[k])&1)<<k;
    return result;
   }
   if(kind==Kind::IntegerCompare) {
-   const int comparison=integerLeft->evaluate(record,64).compare(integerRight->evaluate(record,64));
+   const int comparison=integerValue(*integerLeft).compare(integerValue(*integerRight));
    switch(operation) {
     case Binary::Equal:return comparison==0;case Binary::NotEqual:return comparison!=0;
     case Binary::Less:return comparison<0;case Binary::LessEqual:return comparison<=0;
@@ -44,13 +54,13 @@ struct Bits::Node {
     default:throw std::logic_error("Invalid integer comparison");
    }
   }
-  auto a=left->evaluate(record);
+  auto a=left->evaluate(record,storage);
   if(kind==Kind::Complement)return (~a)&mask(width);
   if(kind==Kind::PopulationCount) {
    std::uint64_t result=0;for(;a;a&=a-1)++result;return result;
   }
   if(kind==Kind::Logical && ((operation==Binary::And && !a) || (operation==Binary::Or && a)))return a;
-  auto b=right->evaluate(record);
+  auto b=right->evaluate(record,storage);
   if(kind==Kind::Rotate) {
    bool leftward=direction==Direction::Left;
    if(interpretation==Distance::Signed && (b&(std::uint64_t(1)<<(right->width-1)))) {
@@ -146,13 +156,21 @@ Bits Bits::rotate(Direction direction,const Bits &operand,const Bits &distance,D
  node->left=operand.node_;node->right=distance.node_;node->bound();return Bits(node);
 }
 unsigned Bits::width() const {return node_->width;}
-void Bits::validate(unsigned registerBits) const {
+void Bits::validateContext(unsigned registerBits,const IntegerStorage *storage) const {
  if(node_->references&~mask(registerBits))throw std::out_of_range("Classical record or expression exceeds its register");
+ node_->validateVariables(registerBits,storage);
 }
+void Bits::validate(unsigned registerBits) const {validateContext(registerBits,nullptr);}
+void Bits::validate(unsigned registerBits,const IntegerStorage &storage) const {validateContext(registerBits,&storage);}
 std::uint64_t Bits::evaluate(std::uint64_t record,unsigned registerBits) const {
  validate(registerBits);
  if(record&~mask(registerBits))throw std::out_of_range("Classical record or expression exceeds its register");
- return node_->evaluate(record);
+ return node_->evaluate(record,nullptr);
+}
+std::uint64_t Bits::evaluate(std::uint64_t record,unsigned registerBits,const IntegerStorage &storage) const {
+ validate(registerBits,storage);
+ if(record&~mask(registerBits))throw std::out_of_range("Classical record or expression exceeds its register");
+ return node_->evaluate(record,&storage);
 }
 namespace {
 std::uint64_t assignmentTargets(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression) {
@@ -172,9 +190,20 @@ void validateAssignment(unsigned registerBits,const std::vector<unsigned> &targe
  assignmentTargets(registerBits,targets,expression);
  expression.validate(registerBits);
 }
+void validateAssignment(unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression,const IntegerStorage &storage) {
+ assignmentTargets(registerBits,targets,expression);
+ expression.validate(registerBits,storage);
+}
 std::uint64_t assign(std::uint64_t record,unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression) {
  const auto seen=assignmentTargets(registerBits,targets,expression);
  const auto value=expression.evaluate(record,registerBits);
+ auto result=record&~seen;
+ for(unsigned k=0;k<targets.size();++k)result|=((value>>k)&1)<<targets[k];
+ return result;
+}
+std::uint64_t assign(std::uint64_t record,unsigned registerBits,const std::vector<unsigned> &targets,const Bits &expression,const IntegerStorage &storage) {
+ const auto seen=assignmentTargets(registerBits,targets,expression);
+ const auto value=expression.evaluate(record,registerBits,storage);
  auto result=record&~seen;
  for(unsigned k=0;k<targets.size();++k)result|=((value>>k)&1)<<targets[k];
  return result;
