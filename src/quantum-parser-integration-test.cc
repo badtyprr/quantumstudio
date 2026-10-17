@@ -21,6 +21,11 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: sqrt(8*25GHz*0.5GHz)-0.5GHz","9.5 GHz");
+ equal("quantum: (1GHz)/(1MHz)","1000");
+ equal("quantum: (1mHz)/(1Hz)","1/1000");
+ equal("quantum: (2GHz)^2","4 GHz^2");
+ equal("quantum: 2GHz*|0>","[2 GHz;0]");
  for(auto angle:{ANGLE_UNIT_NONE,ANGLE_UNIT_RADIANS,ANGLE_UNIT_DEGREES,ANGLE_UNIT_GRADIANS}) {
   eo.parse_options.angle_unit=angle;
   equal("quantum: cos(pi rad)","-1");

@@ -23,6 +23,15 @@ def data(expression, *flags):
 
 # Printed radian suffixes and explicit degrees are mathematical angle factors.
 for flags in [(), ("--approx",)]:
+    for prefix in ["", "quantum: "]:
+        result = data(prefix + "sqrt(8*25GHz*0.5GHz) - 0.5GHz", *flags)
+        assert result["text"] == "9.5 GHz", result
+    assert data("quantum: (1GHz)/(1MHz)", *flags)["text"] == "1000"
+    assert data("quantum: (1mHz)/(1Hz)", *flags)["text"] == "0.001"
+    assert data("quantum: H|0>", *flags)["rows"] == 2
+    assert data("quantum: 'GHz'", *flags) == data("'GHz'", *flags)
+
+for flags in [(), ("--approx",)]:
     for expression, expected in [("cos(pi rad)", "-1"), ("sin(30 deg)", "0.5"),
                                   ("cos(90deg)", "0"), ("norm(vec(Rz(180 deg)-Rz(pi)))", "0")]:
         from decimal import Decimal

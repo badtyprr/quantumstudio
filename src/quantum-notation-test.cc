@@ -22,6 +22,9 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("GHz","qfrequency(\"GHz\")");
+ equal("Hz","qfrequency(\"Hz\")");
+ equal("'GHz'","'GHz'");
  equal("rad","1");
  equal("deg","(pi/180)");
  equal("'rad'","'rad'");

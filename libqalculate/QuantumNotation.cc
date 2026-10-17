@@ -292,7 +292,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qresetall",1},
  {"qshift",1},
  {"qsinhc",1},
- {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},
+ {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},{"qfrequency",1},
  {"qsumgate",2},
  {"qsuperop",1},
  {"qtensor",2},
@@ -1150,6 +1150,9 @@ class Parser {
     // printed angle suffixes from becoming products of unknown letters.
     else if(a=="rad") a="1";
     else if(a=="deg") a="(pi/180)";
+    // Frequency symbols are unambiguous beside quantum gates. Resolve their
+    // prefixes through the library without enabling units for symbolic indices.
+    else if(a.size()>=2 && a.compare(a.size()-2,2,"Hz")==0) a="qfrequency(\""+a+"\")";
     // Greek scalar letters denote unknown parameters in quantum notation.
     // Pi stays numerical, and explicit function calls take the path above.
     // Subscripted identifiers remain atomic instead of becoming products.
