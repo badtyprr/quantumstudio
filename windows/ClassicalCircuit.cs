@@ -77,7 +77,7 @@ sealed class ClassicalCircuit {
   else if(kind=="Constant") {permitted="Kind,Width,Value";Integer(Required(fields,"Width"));if(!(Required(fields,"Value") is string))throw Invalid("A constant value must be unsigned decimal text.");}
   else if(kind=="Read") {permitted="Kind,Bits";IntegerArray(Required(fields,"Bits"));}
   else if(kind=="Complement" || kind=="PopulationCount") {permitted="Kind,Left";ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);}
-  else if(kind=="Binary") {permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A classical operator must be a name.");ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version);}
+  else if(kind=="Binary" || kind=="Logical") {if(kind=="Logical" && version!=4)throw Invalid("Logical conditions require circuit version 4.");permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("A classical operator must be a name.");ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);ExpressionFields(Required(fields,"Right"),depth+1,ref count,version);}
   else if(kind=="Rotate") {
    permitted="Kind,RotationDirection,DistanceInterpretation,Left,Right";
    if(!(Required(fields,"RotationDirection") is string) || !(Required(fields,"DistanceInterpretation") is string))throw Invalid("Rotation direction and distance interpretation must be names.");
@@ -115,6 +115,7 @@ sealed class ClassicalCircuit {
   ClassicalExpression.Operator operation;
   if(!Enum.TryParse(node.Operator,out operation) || operation.ToString()!=node.Operator || !Enum.IsDefined(typeof(ClassicalExpression.Operator),operation))throw Invalid("Unknown classical expression operator.");
   if(node.Kind=="IntegerCompare")return ClassicalExpression.IntegerCompare(operation,ConvertInteger(node.Left),ConvertInteger(node.Right));
+  if(node.Kind=="Logical")return ClassicalExpression.Logical(operation,ConvertExpression(node.Left),ConvertExpression(node.Right));
   return ClassicalExpression.Binary(operation,ConvertExpression(node.Left),ConvertExpression(node.Right));
  }
  static void StepFields(object value,int depth,ref int count,int version) {

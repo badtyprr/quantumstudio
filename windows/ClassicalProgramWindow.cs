@@ -79,7 +79,7 @@ sealed class ClassicalProgramWindow : Window {
   var step=new ClassicalCircuit.Step {Kind=op,Expression=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout" ? expression.Text.Trim() : null,Wires=branch ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch ? new ClassicalCircuit.Step[0] : null};
   bool classical=op=="Assign" || op=="ExpressionBranch";
   if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
-  history.Edit(d=>{if(classical)d.Version=Math.Max(3,d.Version);var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
+  history.Edit(d=>{if(classical)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.ClassicalValue),d.Version);var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
  }
  void Delete() {var selected=Selected();if(selected.Index<0)throw new ArgumentException("Select an operation to delete.");history.Edit(d=>{var list=Body(d,selected.Route).ToList();list.RemoveAt(selected.Index);ReplaceBody(d,selected.Route,list.ToArray());});}
  void Refresh() {
@@ -146,6 +146,14 @@ sealed class ClassicalProgramWindow : Window {
   branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
   File.WriteAllText(screenshot+".typed-before.json",typed);File.WriteAllText(screenshot+".typed-after.json",history.Current.Serialize());
   if(!expression.Text.Contains("int[2](read(0,1))") || history.Current.Serialize()!=typed)throw new Exception("Typed circuit reload lost its display or data: "+expression.Text+"; unchanged="+(history.Current.Serialize()==typed));
+  history.Open(valid);Refresh();
+  branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
+  kind.SelectedValue="ExpressionBranch";expression.Text="int[2](c) < 0";ChangeStep(true);Refresh();
+  if(history.Current.Snapshot().Version!=4 || history.Current.Snapshot().Steps[2].ClassicalValue.Kind!="IntegerCompare")throw new Exception("Typed text did not upgrade and preserve the circuit.");
+  typed=history.Current.Serialize();branch=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[2];branch.IsSelected=true;
+  ChangeStep(true);if(history.Current.Serialize()!=typed)throw new Exception("Formatted typed text changed the stored expression.");
+  expression.Text="int[3](c) < 0";try{ChangeStep(true);throw new Exception("Mismatched integer cast accepted.");}catch(ArgumentException){}
+  if(history.Current.Serialize()!=typed)throw new Exception("Invalid typed edit changed the circuit.");
   history.Open(valid);Refresh();
   saved=valid;
   File.WriteAllText(screenshot+".qcircuit",valid);

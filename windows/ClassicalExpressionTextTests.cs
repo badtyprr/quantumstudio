@@ -9,7 +9,7 @@ static class ClassicalExpressionTextTests {
  static N Parse(string text,int width){return ClassicalExpressionText.Parse(text,Context(),width);}
  static string Format(N n){return ClassicalExpressionText.Format(n);}
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
- static int Main(){try {
+ static int Main(string[] args){try {
   Check(Format(Parse("rotl(c, -1)",3))=="rotl_signed(read(0,1,2), -1)");
   Check(Format(Parse("rotl_signed(c, 1)",3))=="rotl_signed(read(0,1,2), 1)");
   Check(Format(Parse("popcount(c) == 1",1))=="(popcount(read(0,1,2)) == 1)");
@@ -23,7 +23,7 @@ static class ClassicalExpressionTextTests {
   foreach(string bad in new[]{"popcount()","popcount(c, 1)","rotl(c)","rotr(c, 1, 2)","rotl(c, -9223372036854775809)","rotl(c, --1)","rotr(c, -c)","rotl(c, -1 << 1)"})Reject(()=>Parse(bad,3));
   Reject(()=>Parse("popcount(c)",3));
   Check(Format(Parse("c[0] ^ c[1] & c[2]",1))=="(read(0) ^ (read(1) & read(2)))");
-  Check(Format(Parse("c == 1 || c == 2",1))=="((read(0,1,2) == \"001\") | (read(0,1,2) == \"010\"))");
+  Check(Format(Parse("c == 1 || c == 2",1))=="((read(0,1,2) == \"001\") || (read(0,1,2) == \"010\"))");
   Check(Format(Parse("3 == 7",1))=="(\"011\" == \"111\")");
   Check(Format(Parse("rest[60]",1))=="read(63)");
   Check(Format(Parse("c[1:2]",2))=="read(1,2)");
@@ -42,6 +42,38 @@ static class ClassicalExpressionTextTests {
   Reject(()=>Parse("("+Format(broad)+" | read(0))",1));
   var parsed=Parse("c ^ 1",3);var document=Context();document.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0,1,2},ClassicalValue=parsed}};
   var circuit=ClassicalCircuit.From(document);Check(Encoding.UTF8.GetString(NumericalSampling.RequestExact(0,64,new[]{2,1,0},circuit.SamplingGates())).StartsWith("QEXACT2\n"));
+  foreach(string text in new[]{"int[3](c) < 0","uint[3](c) > 3","6 / int[3](c) == 3","int[3](c) + 2 * 3 == 7","int[3](c) - 1 >= -2","-int[3](c) != 0","int[3](255) < 0","int(-9223372036854775808) == -9223372036854775808","uint(18446744073709551615) == 18446744073709551615","int[3](c) % 2 == 1","int[3](c) < 0 || uint[3](c) == 0","!(int[3](c) < 0)","int[3](\"111\") < 0"}) {
+   var typed=Parse(text,1);Check(ClassicalExpressionText.RequiredVersion(typed)==4);Roundtrip(typed,1);
+  }
+  Check(Format(Parse("int[3](c) + 2 * 3 == 7",1))=="((int[3](read(0,1,2)) + (int(2) * int(3))) == int(7))");
+  foreach(string bad in new[]{"int[0](c) < 0","int[65](c) < 0","int[8](c) < 0","int[3](c) + c == 1","int[3](c) & int[3](c)","int[3](c)","-9223372036854775809 == 0","int[3](popcount(c)) == 0","int[3](\"11\") == 0"})Reject(()=>Parse(bad,1));
+  var typedLeaf=new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"};
+  var typedDeep=typedLeaf;for(int k=0;k<30;k++)typedDeep=new N{Kind="IntegerCast",Signedness="Signed",Width=0,Left=typedDeep};
+  Roundtrip(new N{Kind="IntegerCompare",Operator="Equal",Left=typedDeep,Right=typedLeaf},1);
+  var typedBroad=typedLeaf;for(int k=0;k<7;k++)typedBroad=new N{Kind="IntegerBinary",Operator="Add",Left=typedBroad,Right=typedBroad};
+  Roundtrip(new N{Kind="Complement",Left=new N{Kind="IntegerCompare",Operator="Equal",Left=typedBroad,Right=typedBroad}},1);
+  Check(ClassicalExpressionText.RequiredVersion(Parse("c == 1",1))==3);
+  foreach(string text in new[]{"int[3](c) != 0 && 6 / int[3](c) == 3","int[3](c) == 0 || 6 / int[3](c) == 3","true || false && true"}) {
+   var node=Parse(text,1);Check(node.Kind=="Logical");Roundtrip(node,1);
+   var d=Context();d.Version=4;d.OutputBits=new[]{3};d.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{3},ClassicalValue=node}};
+   var saved=ClassicalCircuit.From(d);var reopened=ClassicalCircuit.Load(saved.Serialize());Check(reopened.Serialize()==saved.Serialize());
+   Check(Format(reopened.Snapshot().Steps[0].ClassicalValue)==Format(node));
+   foreach(int oldVersion in new[]{2,3}){d.Version=oldVersion;Reject(()=>ClassicalCircuit.From(d));}d.Version=4;
+   foreach(string badOp in new[]{"Xor","Equal","1"}){node.Operator=badOp;Reject(()=>ClassicalCircuit.From(d));}node.Operator=text.Contains("&&") && !text.StartsWith("true") ? "And" : "Or";
+   if(args.Length>0)foreach(bool exact in new[]{true,false}) {
+    var steps=reopened.SamplingGates();byte[] request=exact ? NumericalSampling.RequestExact(0,64,new[]{3},steps) : NumericalSampling.RequestClassical(0,64,10000,1731,new[]{3},steps);
+    string result=NumericalSampling.RunRequest(args[0],exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,x=>x).GetAwaiter().GetResult();
+    var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+    string want=text.StartsWith("int[3](c) !=") ? "0" : "1";Check(values.Count==1 && Convert.ToString(values[want])==(exact ? "1" : "10000"));
+   }
+  }
+  foreach(string name in new[]{"int","uint"}) {
+   var named=Context();named.Registers[0].Name=name;
+   Check(Format(ClassicalExpressionText.Parse(name+"[0:1]",named,2))=="read(0,1)");
+   Check(Format(ClassicalExpressionText.Parse(name+"[1]",named,1))=="read(1)");
+   Check(Format(ClassicalExpressionText.Parse(name,named,3))=="read(0,1,2)");
+  }
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
 }
