@@ -616,6 +616,12 @@ typed expression text and importing it from OpenQASM remain follow-up work.
 
 ### Integer conditions in the classical editor
 
+Use `**` for integer powers: `2**3**2 == 512` groups from the right, while
+`-2**2 == -4` applies negation after the power. Parentheses override that order.
+Typed register operands work too, for example `int[8](c)**3 == 8`.
+Power expressions retain this meaning when saved and reopened. Their evaluation
+uses the integer promotion, domain and overflow policy documented above.
+
 Enter typed comparisons and arithmetic directly, for example `int[8](c) < 0`
 or `int[8](c) != 0 && 6 / int[8](c) == 3`, when `c` contains eight bits.
 `int[n](c)` interprets the register as signed two's-complement; `uint[n](c)`
