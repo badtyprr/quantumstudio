@@ -126,6 +126,8 @@ For a sum over integer basis indices, specify the state dimension: `\sum_{x\in\{
 
 ## TeX trigonometric powers
 
+In quantum mode, `sin`, `cos` and `tan` take radians, regardless of the ordinary calculator's angle setting. The suffixes `rad` and `deg` mean factors of `1` and `pi/180`, respectively: `cos(pi rad)` gives `-1`, `sin(30 deg)` gives `1/2`, and `Rz(180 deg)` equals `Rz(pi)`. Quoted identifiers such as `'rad'` retain their literal meaning. Symbolic trigonometric results retain explicit radian units, so later substitution uses the same convention. Ordinary calculator-mode angle settings remain unchanged.
+
 `\sin^{-1}(x)`, `\cos^{-1}(x)` and `\tan^{-1}(x)` mean the inverse trigonometric functions, matching the notation used in IBM's Grover analysis. The explicit commands `\arcsin`, `\arccos` and `\arctan` are also accepted. In quantum mode these commands and `asin`, `acos`, `atan` return dimensionless radian values, preserving the library's principal branches. For example, `asin(1/2)` gives `pi/6`. The internal functions are `qasin`, `qacos`, and `qatan`; unresolved calls retain the radian convention when evaluated after substitution. Ordinary calculator-mode inverse trig behavior is unchanged.
 
 Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and `\sin^{-2}(pi/6)` gives `4`. The inverse interpretation applies to the literal exponent `-1`; write `(\sin(x))^{-1}` for a reciprocal. Powered functions require a parenthesized or braced argument, optionally with TeX delimiter-sizing commands such as `\left` or `\biggl`. Unbraced powered-function arguments remain unfinished.

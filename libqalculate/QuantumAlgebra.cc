@@ -49,7 +49,7 @@ class QuantumAlgebraFunction: public MathFunction {
   if((op=="qdag" || op=="qconj" || op=="qdensity" || op=="qnorm" || op=="qnormalize") && !CALCULATOR->getFunction("conj")) {
    CALCULATOR->error(true,"Load global function definitions before quantum conjugation.",NULL);return 0;
   }
-  if(op=="qasin" || op=="qacos" || op=="qatan") {
+  if(op=="qasin" || op=="qacos" || op=="qatan" || op=="qsin" || op=="qcos" || op=="qtan") {
    EvaluationOptions radians=eo;radians.parse_options.angle_unit=ANGLE_UNIT_RADIANS;
    EvaluationOptions exact=radians;exact.approximation=APPROXIMATION_EXACT;
    MathFunction *function=CALCULATOR->getFunction(op.substr(1));
@@ -57,11 +57,14 @@ class QuantumAlgebraFunction: public MathFunction {
    // Preserve exact special angles before approximating, especially at the
    // integer discontinuities used by Grover iteration-count floor formulas.
    MathStructure argument=raw[0];argument.eval(exact);
+   // Direct trigonometric AST calls bypass AngleArgument parsing; attach the
+   // radian unit explicitly so exact evaluation sees an angle in every mode.
+   if(op=="qsin" || op=="qcos" || op=="qtan")argument.multiply(CALCULATOR->getRadUnit());
    out.set(function,&argument,NULL);out.eval(exact);
    if(out.containsFunction(function) && eo.approximation!=APPROXIMATION_EXACT)out.eval(radians);
-   // Keep the wrapper on unresolved inverse functions: later substitution must
-   // still evaluate in radians, even if the caller uses another angle mode.
-   if(out.containsFunction(function))return 0;
+   // Direct functions retain the explicit radian unit in their symbolic argument.
+   // Inverse functions need the wrapper to retain dimensionless radian output.
+   if(op.size()==5 && out.containsFunction(function))return 0;
    return 1;
   }
   if(op=="qnamedket") {
@@ -261,7 +264,7 @@ class QuantumAlgebraFunction: public MathFunction {
 void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
- for(const char *name:{"qasin","qacos","qatan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
+ for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})

@@ -22,6 +22,10 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("rad","1");
+ equal("deg","(pi/180)");
+ equal("'rad'","'rad'");
+ equal("\"deg\"","\"deg\"");
  for(const std::string literal:{"'N'","\"high\"","'α'","'π⊗σ_x²'","\"a'⊗b\"","'a\"⊗b'","'a b'"})equal(literal,literal);
  equal("['α';'β']","['α';'β']");
  equal("qfourier('N')","qfourier('N')");

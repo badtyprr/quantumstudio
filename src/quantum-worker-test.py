@@ -21,6 +21,33 @@ def data(expression, *flags):
     assert set(value) == {"text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Printed radian suffixes and explicit degrees are mathematical angle factors.
+for flags in [(), ("--approx",)]:
+    for expression, expected in [("cos(pi rad)", "-1"), ("sin(30 deg)", "0.5"),
+                                  ("cos(90deg)", "0"), ("norm(vec(Rz(180 deg)-Rz(pi)))", "0")]:
+        from decimal import Decimal
+        assert Decimal(data("quantum: " + expression, *flags)["text"].replace("−", "-")) == Decimal(expected)
+    original = r"\cos(\theta/2)|0>+e^{i\phi}\sin(\theta/2)|1>"
+    printed = data("quantum: " + original, *flags)
+    copied = data("quantum: " + printed["text"], *flags)
+    if not flags:
+        assert copied == printed
+    assert (copied["rows"], copied["columns"]) == (2, 1)
+    replaced = "replace(replace(" + printed["text"] + r",\theta,pi/2),\phi,pi/2)"
+    residual = "norm((" + replaced + ")-|+i>)"
+    if flags:
+        # Approximate printing rounds e to 30 significant decimal digits.
+        parts = data("quantum: " + residual, *flags)["text"].replace("−", "-").split(" + ")
+        assert len(parts) in (1, 2)
+        assert 0 <= Decimal(parts[0]) < Decimal("1e-25")
+        if len(parts) == 2:
+            assert parts[1].endswith("i") and Decimal(parts[1][:-1]) == 0
+    else:
+        assert data("quantum: " + residual)["text"] == "0"
+    assert data("quantum: 'rad'", *flags) == data("'rad'", *flags)
+    assert data("quantum: 'deg'", *flags) == data("'deg'", *flags)
+assert "rad" in data("1 rad")["text"]
+
 # Printed symbolic results must be usable as quantum input again.
 for flags in [(), ("--approx",)]:
     for expression in ["QFT_N|x>_N", "|high>", r"\alpha|0>+\beta|1>"]:
