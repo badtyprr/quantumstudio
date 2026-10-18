@@ -572,6 +572,7 @@ class TeXReader {
      if(pair.size()!=2 || pair[0].empty() || pair[1].empty())throw std::runtime_error(error("A paired coefficient subscript requires two indices"));
      size_t start=result.size();
      while(start && ((unsigned char)result[start-1]>=128 || std::isalnum((unsigned char)result[start-1]) || result[start-1]=='_'))--start;
+     while(start<result.size() && std::isdigit((unsigned char)result[start]))++start;
      std::string name=result.substr(start);
      if(name.empty() || ((unsigned char)name[0]<128 && !asciiLetter(name[0])))throw std::runtime_error(error("A paired coefficient subscript requires a name"));
      result.resize(start);result+="qindexedcoefficient(\""+name+"_\",("+pair[0]+"),("+pair[1]+"))";

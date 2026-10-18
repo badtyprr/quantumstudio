@@ -31,7 +31,10 @@ for flags in [(), ("--approx",)]:
     assert data('quantum:'+matrix['copy_text'],*flags)['cells']==matrix['cells']
     replaced=data('quantum:replace('+source+r',\alpha_{0,1},7)',*flags)
     assert replaced['rows']==replaced['columns']==2 and Decimal(replaced['cells'][0][1])==7,replaced
+    assert data('quantum:2a_(0,1)',*flags)['copy_text']==data('quantum:2*a_(0,1)',*flags)['copy_text']
     symbolic=data('quantum:a_(k,l+1)',*flags)
+    assert symbolic['display_text'].startswith('a_('),symbolic
+    assert data('quantum:'+symbolic['display_text'],*flags)['copy_text']==symbolic['copy_text']
     concrete=data('quantum:replace(replace('+symbolic['copy_text']+',k,2),l,3)',*flags)
     assert concrete['copy_text']==data('quantum:a_(2,4)',*flags)['copy_text']
     for bad in ['a_(0,1/2)','a_(k,1/2)','a_([0,1],2)']:

@@ -143,6 +143,14 @@ class Printer {
     return Fragment(text+"]");
    }
   }
+  if(name=="qindexedcoefficient" && value.size()==3 && value[0].isSymbolic()) {
+   std::string prefix=value[0].symbol();bool safe=prefix.size()>1 && prefix.back()=='_' && ((unsigned char)prefix[0]>=128 || std::isalpha((unsigned char)prefix[0]));
+   for(size_t i=0;i+1<prefix.size();++i)if((unsigned char)prefix[i]<128 && !std::isalnum((unsigned char)prefix[i]) && prefix[i]!='_')safe=false;
+   if(safe) {
+    auto index=[&](const MathStructure &v){return render(v,depth+1).text;};
+    return Fragment(prefix+"("+index(value[1])+","+index(value[2])+")");
+   }
+  }
   if(name=="qindexedlabel" && value.size()==3) {
    auto part=[&](const MathStructure &v){return v.isSymbolic() ? v.symbol() : render(v,depth+1).text;};
    Fragment index=render(value[1],depth+1);

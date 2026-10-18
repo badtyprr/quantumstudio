@@ -223,6 +223,7 @@ int main() {
   equal(R"(\alpha_{k,l+1})", "qindexedcoefficient(\"α_\",(k),(l+1))");
   equal(R"(\begin{pmatrix}a_{0,0}&a_{0,1}\\a_{1,0}&a_{1,1}\end{pmatrix})", "[qindexedcoefficient(\"a_\",(0),(0)),qindexedcoefficient(\"a_\",(0),(1));qindexedcoefficient(\"a_\",(1),(0)),qindexedcoefficient(\"a_\",(1),(1))]");
   rejects("a_(0,1,2)");rejects("a_(0,)");
+  equal("2a_(0,1)", "2qindexedcoefficient(\"a_\",(0),(1))");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";
