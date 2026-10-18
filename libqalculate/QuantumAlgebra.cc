@@ -73,6 +73,16 @@ MathStructure multiply(MathStructure a, const MathStructure &b, const Evaluation
  if(scalarResult && a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
  return a;
 }
+bool unresolvedMatrixOperand(const MathStructure &value,unsigned depth=0) {
+ // On a deep expression, defer instead of guessing a scalar domain.
+ if(depth>128)return true;
+ if(value.isUnknown())return true;
+ if(value.isFunction())return !value.representsScalar();
+ if(value.isPower() && value.size()==2)return unresolvedMatrixOperand(value[0],depth+1);
+ if(value.isAddition() || value.isMultiplication())
+  for(size_t i=0;i<value.size();++i)if(unresolvedMatrixOperand(value[i],depth+1))return true;
+ return false;
+}
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
@@ -81,6 +91,9 @@ class QuantumAlgebraFunction: public MathFunction {
  }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
+ bool representsScalar(const MathStructure &args) const {
+  return op=="qtrace" || MathFunction::representsScalar(args);
+ }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qfrequency") {
    const std::string name=raw[0].symbol();
@@ -255,6 +268,11 @@ class QuantumAlgebraFunction: public MathFunction {
    bool scaling=(a.isMatrix() && args[1].representsScalar()) || (args[1].isMatrix() && a.representsScalar());
    out=multiply(a,args[1],eo,!scaling); return 1;
   }
+  // A trace is scalar, but its operand may still be an unresolved operator.
+  // Keep the wrapper so a later substitution is checked for square shape.
+  // Returning without a replacement retains the original ordered quantum AST,
+  // including during clipboard serialization and subsequent substitutions.
+  if(op=="qtrace" && !a.isVector() && unresolvedMatrixOperand(a))return 0;
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
    if(!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10) { CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL); return 0; }

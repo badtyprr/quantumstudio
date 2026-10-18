@@ -81,6 +81,7 @@ class Printer {
   if((name=="qsin" || name=="qcos" || name=="qtan" || name=="qasin" || name=="qacos" || name=="qatan") && value.size()==1)
    return Fragment(name.substr(1)+"("+render(value[0],depth+1).text+")");
   if(name=="qfourier" && value.size()==1)return Fragment("QFT_"+grouped(render(value[0],depth+1),100));
+  if(name=="qtrace" && value.size()==1)return Fragment("Tr("+render(value[0],depth+1).text+")");
   if(name=="qsum" && value.size()==4) {
    Fragment first=render(value[1],depth+1),last=render(value[2],depth+1);
    std::string index=fresh();bindings.push_back({value[3],index});
