@@ -196,3 +196,6 @@ check_PROGRAMS += quantum-classical-integer-storage-test
 TESTS += quantum-classical-integer-storage-test
 quantum_classical_integer_storage_test_SOURCES = quantum-classical-integer-storage-test.cc
 quantum_classical_integer_storage_test_LDADD = $(test_LDADD)
+
+EXTRA_DIST += quantum-loop-request-test.py
+TESTS += quantum-loop-request-test.py

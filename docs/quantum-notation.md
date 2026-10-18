@@ -785,8 +785,9 @@ the existing 32-level nesting and 4096-static-step limits. A separate limit of
 budget overload can change it. Budget exhaustion and cancellation throw without
 returning partial counts, including for empty loop bodies. This implements the
 [OpenQASM while condition semantics](https://openqasm.com/language/classical.html#while-loops)
-in the native numerical and exact APIs. Worker transport, circuit storage,
-the editor, OpenQASM import, and `break`/`continue` support still need integration.
+in the native numerical and exact APIs. Worker transport now exposes loops via
+`QSAMPLE7` and `QEXACT6`; circuit storage, the editor, OpenQASM import, and
+`break`/`continue` support still need integration.
 
 `CircuitStep::whileLoop` preserves exact probability weights as histories enter
 and leave the loop at different iterations. Only histories with equal classical
