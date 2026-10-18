@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue }
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End }
  public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  public sealed class Readout {public string Expression;public int[] Bits;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
@@ -69,7 +69,7 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false,loopProtocol=loopBudget.HasValue,transferProtocol=false;
+  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false,loopProtocol=loopBudget.HasValue,transferProtocol=false,terminationProtocol=false;
   Action<Gate,int,int> write=null;
   write=delegate(Gate gate,int depth,int loopDepth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
@@ -82,11 +82,13 @@ static class NumericalSampling {
    if(!expression && gate.ClassicalExpression!=null)throw new ArgumentException("Only assignments and expression branches accept classical expressions.");
    bool integer=gate.Kind==Operation.StoreInteger || gate.Kind==Operation.ClearInteger;
    if(!integer && (gate.VariableSlot.HasValue || gate.IntegerExpression!=null))throw new ArgumentException("Only variable operations accept variable targets and integer expressions.");
-   if(gate.Kind==Operation.Break || gate.Kind==Operation.Continue) {
-    if(!classicalBits.HasValue || loopDepth==0)throw new ArgumentException("Loop transfers require an enclosing loop and explicit classical outputs.");
+   if(gate.Kind==Operation.Break || gate.Kind==Operation.Continue || gate.Kind==Operation.End) {
+    bool end=gate.Kind==Operation.End;
+    if(!classicalBits.HasValue)throw new ArgumentException("Control transfers require explicit classical outputs.");
+    if(!end && loopDepth==0)throw new ArgumentException("Loop transfers require an enclosing loop.");
     if((gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)
-     throw new ArgumentException("Loop transfers have no expression, targets or condition fields.");
-    transferProtocol=true;number((ulong)gate.Kind);return;
+     throw new ArgumentException("Control transfers have no expression, targets or condition fields.");
+    terminationProtocol|=end;loopProtocol=true;transferProtocol=true;number((ulong)gate.Kind);return;
    }
    if(integer) {
     if(variables==null || !gate.VariableSlot.HasValue || gate.VariableSlot.Value<0 || gate.VariableSlot.Value>=variables.Length ||
@@ -156,7 +158,7 @@ static class NumericalSampling {
    string budget=(loopBudget ?? 1000000).ToString(CultureInfo.InvariantCulture)+"\n";
    if(variables==null)text.Insert(declarationPosition,"0\n"+budget);
    else text.Insert(budgetPosition,budget);
-   text.Remove(0,exact ? 8 : 9).Insert(0,transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
+   text.Remove(0,exact ? 8 : 9).Insert(0,terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
   }
   else if(bitExpressionProtocol) {
    if(variables==null)text.Insert(declarationPosition,"0\n");

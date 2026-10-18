@@ -22,6 +22,32 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void TerminationChecks(string worker) {
+  var yes=E.Constant(1,1);var no=E.Constant(1,0);var end=new G{Kind=O.End};
+  Func<IList<G>,G> loop=body=>new G{Kind=O.While,ClassicalExpression=yes,WhenTrue=body};
+  foreach(bool exact in new[]{false,true}) {
+   string payload=Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},new[]{end}));
+   Check(payload==(exact ? "QEXACT8\n0\n1\n0\n1000000\n1\n0\n1\n14\n" : "QSAMPLE9\n0\n10000\n1731\n1\n0\n1000000\n1\n0\n1\n14\n"));
+   foreach(Action<G> corrupt in new Action<G>[] {
+    g=>g.Wires=new[]{0},g=>g.Expression="X",g=>g.Mask=1,g=>g.Value=1,
+    g=>g.ClassicalBit=0,g=>g.WhenTrue=new G[0],g=>g.WhenFalse=new G[0],
+    g=>g.ClassicalExpression=yes,g=>g.VariableSlot=0,g=>g.IntegerExpression=I.Constant(T.Create(T.Sign.Unsigned,1),0)
+   }) {var invalid=new G{Kind=O.End};corrupt(invalid);Reject(()=>Request(exact,1,1,new[]{0},new[]{invalid}));}
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{end,Assign(new[]{1},yes)}));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{end,new G{Kind=O.Break}}));
+   if(worker==null)continue;
+   foreach(var program in new IList<G>[] {
+    new[]{Assign(new[]{0},yes),end,Assign(new[]{0},no)},
+    new[]{loop(new[]{loop(new[]{Assign(new[]{0},yes),Branch(yes,new[]{end})})}),Assign(new[]{0},no)}
+   }) {
+    var result=Evaluate(worker,exact,0,1,new[]{0},program);
+    Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+   }
+   byte[] zeroBudget=exact ? NumericalSampling.RequestExact(0,1,new[]{0},new[]{end},null,0) : NumericalSampling.RequestClassical(0,1,1,0,new[]{0},new[]{end},null,0);
+   Check(NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",zeroBudget,CancellationToken.None,x=>x).GetAwaiter().GetResult().Length>0);
+  }
+  Reject(()=>NumericalSampling.Request(1,1,0,new[]{0},new[]{end}));
+ }
  static void TransferChecks(string worker) {
   Func<E,IList<G>,G> loop=(condition,body)=>new G{Kind=O.While,ClassicalExpression=condition,WhenTrue=body};
   var yes=E.Constant(1,1);var no=E.Constant(1,0);
@@ -335,6 +361,7 @@ static class ClassicalExpressionTests {
   ComputedBitsChecks(args.Length>0 ? args[0] : null);
   LoopChecks(args.Length>0 ? args[0] : null);
   TransferChecks(args.Length>0 ? args[0] : null);
+  TerminationChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
