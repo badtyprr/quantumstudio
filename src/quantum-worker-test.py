@@ -1,5 +1,6 @@
 """Exercise the worker process and JSON contract used by the Windows GUI."""
 import json
+import re
 from decimal import Decimal
 import os
 from pathlib import Path
@@ -30,7 +31,7 @@ for flags in [(), ("--approx",)]:
         assert '⟩_{' in result['display_text'], result
         assert data('quantum:'+result['copy_text'],*flags)['display_text']==result['display_text']
         difference='replace(('+expression+')-('+result['copy_text']+'),N,4)'
-        difference='norm('+('replace('+difference+',x,1)' if 'x' in expression else difference)+')'
+        difference='norm('+('replace('+difference+',x,1)' if re.search(r'\bx\b',expression) else difference)+')'
         parts=data('quantum:'+difference,*flags)['text'].replace('−','-').split(' + ')
         assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in parts)
     result=data('quantum:basis(x,N)†',*flags)
