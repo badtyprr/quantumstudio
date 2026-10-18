@@ -33,6 +33,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_range = Qasm3Transformer.get_qubits_from_range_definition
     original_switch = QasmVisitor._visit_switch_statement
     original_branch = QasmVisitor._visit_branching_statement
+    original_while = QasmVisitor._visit_while_loop
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
     runtime_integer_names={node.identifier.name for node in nodes(module.original_program)
@@ -181,8 +182,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         result = original_declaration(visitor,bare)
         initial = ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression)
         return result+assignment(visitor,initial)
-    def branch(visitor, statement):
-        if not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
+    def branch(visitor, statement, force=False):
+        if not force and not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
             return original_branch(visitor, statement)
         # Preserve the expression and choose the body only during execution.
         condition = normalize(visitor,statement.condition)
@@ -206,6 +207,16 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             visitor._in_branching_statement -= 1
             if not visitor._in_branching_statement:
                 visitor._update_branching_gate_depths()
+    def while_loop(visitor, statement):
+        # Compile one body, never evaluate or unroll its runtime condition here.
+        # Branch compilation supplies the same scoped block and gate bookkeeping.
+        if any(isinstance(item,(ast.BreakStatement,ast.ContinueStatement,ast.EndStatement)) for item in nodes(statement)):
+            raise ValueError('Break, continue and end inside runtime loops are not yet supported.')
+        if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
+            raise ValueError('Global declarations are not allowed in runtime loops.')
+        proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
+        compiled=branch(visitor,proxy,force=True)
+        return [ast.WhileLoop(while_condition=item.condition,block=item.if_block) for item in compiled]
     def switch(visitor, statement):
         target=normalize(visitor,statement.target)
         def boolean_expression(value):
@@ -291,6 +302,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     if preserve_branches:
         QasmVisitor._visit_switch_statement = switch
         QasmVisitor._visit_branching_statement = branch
+        QasmVisitor._visit_while_loop = while_loop
         QasmVisitor._visit_classical_assignment = assignment
         QasmVisitor._visit_classical_declaration = declaration
     try:
@@ -300,6 +312,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
         QasmVisitor._visit_switch_statement = original_switch
         QasmVisitor._visit_branching_statement = original_branch
+        QasmVisitor._visit_while_loop = original_while
         QasmVisitor._visit_classical_assignment = original_assignment
         QasmVisitor._visit_classical_declaration = original_declaration
 
@@ -480,6 +493,9 @@ def resolve_integer_scopes(program):
                     expression(labels,env);block(case.statements,env,depth+1)
                 if statement.default is not None:block(statement.default.statements,env,depth+1)
                 result.append(statement)
+            elif isinstance(statement,ast.WhileLoop):
+                expression(statement.while_condition,env)
+                block(statement.block,env,depth+1);result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
                 name=statement.identifier.name;renamed=fresh(name) if name in env else name
@@ -546,7 +562,7 @@ def lower_boolean_measurements(program):
             elif isinstance(statement,ast.SwitchStatement):
                 for _,case in statement.cases:block(case.statements)
                 if statement.default is not None:block(statement.default.statements)
-            elif isinstance(statement,ast.ForInLoop):block(statement.block)
+            elif isinstance(statement,(ast.ForInLoop,ast.WhileLoop)):block(statement.block)
             elif isinstance(statement,ast.CompoundStatement):block(statement.statements)
             result.append(statement)
         body[:]=result
@@ -583,9 +599,7 @@ def convert(source, published_u=False, classical=False):
                 raise ValueError('Runtime register sizes are not yet supported by the circuit importer.')
             if isinstance(node,ast.AliasStatement) and runtime(node.value):
                 raise ValueError('Classical aliases are not yet supported by the circuit importer.')
-            control=(node.while_condition if isinstance(node,ast.WhileLoop) else
-                     node.set_declaration if isinstance(node,ast.ForInLoop) else
-                     None)
+            control=node.set_declaration if isinstance(node,ast.ForInLoop) else None
             if control is not None and runtime(control):
                 raise ValueError('Runtime loops require control flow not yet supported by the circuit importer.')
             if isinstance(node,ast.QuantumGate) and runtime(node.arguments) or isinstance(node,ast.QuantumPhase) and runtime(node.argument):
@@ -958,6 +972,11 @@ def classical_circuit(statements, published_u, hidden_registers=None):
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
                 append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets),variables)})
+            elif isinstance(statement, ast.WhileLoop):
+                if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
+                version=7
+                append({'Kind':'While','ClassicalValue':classical_expression(statement.while_condition,classical,1,variables),
+                        'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement, ast.BranchingStatement):
                 if depth >= 32:
                     raise ValueError('Classical circuits support at most 32 nested branches.')
@@ -1016,6 +1035,7 @@ def classical_circuit(statements, published_u, hidden_registers=None):
     visible_bits=[bit for name,(start,size) in classical.items() if name not in hidden_registers for bit in range(start,start+size)]
     result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(visible_bits)), 'Steps': steps}
     if declarations or version>=6:result['Variables']=declarations
+    if version>=7:result['LoopConditionBudget']=1000000
     return result
 
 
