@@ -169,5 +169,8 @@ the shared loop budget, including the exhausted check. A zero step fails when
 executed; saving an unreachable zero-step range is allowed.
 
 Canonical save/reopen and deep snapshots retain all range fields and body steps.
-Requests use QSAMPLE10 or QEXACT9. This format support does not yet add range
-controls to the editor or runtime range lowering to the OpenQASM importer.
+Requests use QSAMPLE10 or QEXACT9. In the editor, choose **For integer range**,
+select a declared binding variable, and enter the inclusive Start, Stop, and
+nonzero Step expressions. Select its Loop body to add operations. Replacing
+bounds preserves the body, and explicit integer widths survive editing.
+Runtime range lowering in the OpenQASM importer remains unfinished.
