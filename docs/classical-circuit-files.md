@@ -138,7 +138,7 @@ The importer represents an active iteration with a one-pass loop and guards
 later iterations with a private Boolean variable. Each executed iteration uses
 one condition check from the saved budget. Nested loops retain their own transfer
 targets and scope cleanup. Expanded programs still obey the 512-operation and
-32-level limits. Runtime for ranges remain unsupported.
+32-level limits. Runtime for ranges use version 10, described below.
 
 ## Version 9: program termination
 

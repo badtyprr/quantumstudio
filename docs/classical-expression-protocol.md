@@ -148,7 +148,7 @@ versions 1 through 7 continue to reject transfers; version 8 preserves them.
 The editor creates and preserves both transfers. OpenQASM import preserves
 transfers targeting runtime while loops and emits scope-exit clears before them.
 Static for-loop transfers lower to guarded, one-pass while bodies with explicit
-scope cleanup. Runtime for ranges remain unsupported. Whole-program termination uses the newer headers below.
+scope cleanup. Runtime for ranges and whole-program termination use the newer headers below.
 These transport versions do not infer or perform source-level
 scope cleanup; a compiler must emit the required clearing before a transfer.
 
