@@ -22,6 +22,57 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void RangeChecks(string worker) {
+  var type=T.Create(T.Sign.Signed,0);var types=new[]{type,type,type};
+  Func<ulong,I> literal=n=>I.Constant(type,n);
+  Func<IList<G>,G> loop=body=>new G{Kind=O.ForRange,VariableSlot=0,Range=new NumericalSampling.IntegerRange(literal(0),literal(2),literal(1)),WhenTrue=body};
+  Reject(()=>new NumericalSampling.IntegerRange(null,literal(2),literal(1)));
+  Reject(()=>new NumericalSampling.IntegerRange(literal(0),null,literal(1)));
+  Reject(()=>new NumericalSampling.IntegerRange(literal(0),literal(2),null));
+  foreach(bool exact in new[]{false,true}) {
+   string payload=Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},new[]{loop(new G[0])},types));
+   Check(payload.StartsWith(exact ? "QEXACT9\n" : "QSAMPLE10\n"));
+   Check(payload.EndsWith("15\n0\n0\n0\n0\n0\n0\n0\n0\n2\n0\n0\n0\n1\n0\n"));
+   foreach(Action<G> corrupt in new Action<G>[] {
+    g=>g.Range=null,g=>g.VariableSlot=null,g=>g.VariableSlot=-1,g=>g.VariableSlot=3,
+    g=>g.ClassicalExpression=E.Constant(1,1),g=>g.IntegerExpression=literal(1),
+    g=>g.ClassicalBit=0,g=>g.Mask=1,g=>g.Value=1,g=>g.Expression="X",g=>g.Wires=new[]{0},
+    g=>g.WhenTrue=null,g=>g.WhenFalse=new G[0]
+   }) {var invalid=loop(new G[0]);corrupt(invalid);Reject(()=>Request(exact,1,1,new[]{0},new[]{invalid},types));}
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(new G[0])}));
+   var foreign=new G{Kind=O.Gate,Expression="X",Wires=new[]{0},Range=loop(new G[0]).Range};
+   Reject(()=>Request(exact,1,1,new[]{0},new[]{foreign},types));
+   var wrong=loop(new G[0]);wrong.Range=new NumericalSampling.IntegerRange(I.Variable(type,3),literal(2),literal(1));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{wrong},types));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(new[]{Assign(new[]{1},E.Constant(1,1))})},types));
+   var nested=new G[0];for(int n=0;n<32;n++)nested=new[]{loop(nested)};
+   Check(Request(exact,0,1,new[]{0},nested,types).Length>0);
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(nested)},types));
+   if(worker==null)continue;
+   var sum=I.Variable(type,1);var binding=I.Variable(type,0);
+   var init=new G{Kind=O.StoreInteger,VariableSlot=1,IntegerExpression=literal(0)};
+   var add=new G{Kind=O.StoreInteger,VariableSlot=1,IntegerExpression=I.Binary(I.Operator.Add,sum,binding)};
+   Func<ulong,G> emit=n=>Assign(new[]{0},E.IntegerCompare(E.Operator.Equal,sum,literal(n)));
+   Action<IList<G>> success=program=>{var result=Evaluate(worker,exact,0,1,new[]{0},program,types);Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));};
+   success(new[]{init,loop(new[]{add}),emit(3)});
+   success(new[]{init,loop(new[]{add,new G{Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=literal(99)}}),emit(3)});
+   var skip=Branch(E.IntegerCompare(E.Operator.Equal,binding,literal(1)),new[]{new G{Kind=O.Continue}});
+   success(new[]{init,loop(new[]{skip,add}),emit(2)});
+   success(new[]{init,loop(new[]{add,new G{Kind=O.Break}}),emit(0)});
+   success(new[]{loop(new[]{Assign(new[]{0},E.Constant(1,1)),new G{Kind=O.End}}),Assign(new[]{0},E.Constant(1,0))});
+   var descending=loop(new[]{add});descending.Range=new NumericalSampling.IntegerRange(literal(5),literal(0),literal(UInt64.MaxValue-1));
+   success(new[]{init,descending,emit(9)});
+   var captured=loop(new[]{add,new G{Kind=O.StoreInteger,VariableSlot=2,IntegerExpression=literal(0)}});
+   captured.Range=new NumericalSampling.IntegerRange(literal(0),I.Variable(type,2),literal(1));
+   success(new[]{init,new G{Kind=O.StoreInteger,VariableSlot=2,IntegerExpression=literal(3)},captured,emit(6)});
+   foreach(var bad in new[]{new[]{loop(new G[0]),new G{Kind=O.StoreInteger,VariableSlot=1,IntegerExpression=binding}},new[]{new G{Kind=O.ForRange,VariableSlot=0,Range=new NumericalSampling.IntegerRange(literal(0),literal(2),literal(0)),WhenTrue=new G[0]}}}) {
+    bool failed=false;try{Evaluate(worker,exact,0,1,new[]{0},bad,types);}catch(InvalidOperationException){failed=true;}Check(failed);
+   }
+   byte[] bounded=exact ? NumericalSampling.RequestExact(0,1,new[]{0},new[]{loop(new G[0])},types,3) : NumericalSampling.RequestClassical(0,1,10,7,new[]{0},new[]{loop(new G[0])},types,3);
+   bool exhausted=false;try{NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",bounded,CancellationToken.None,x=>x).GetAwaiter().GetResult();}catch(InvalidOperationException e){exhausted=e.Message.Contains("loop condition budget");}Check(exhausted);
+  }
+  Reject(()=>NumericalSampling.Request(1,1,0,new[]{0},new[]{loop(new G[0])}));
+ }
  static void TerminationChecks(string worker) {
   var yes=E.Constant(1,1);var no=E.Constant(1,0);var end=new G{Kind=O.End};
   Func<IList<G>,G> loop=body=>new G{Kind=O.While,ClassicalExpression=yes,WhenTrue=body};
@@ -362,6 +413,7 @@ static class ClassicalExpressionTests {
   LoopChecks(args.Length>0 ? args[0] : null);
   TransferChecks(args.Length>0 ? args[0] : null);
   TerminationChecks(args.Length>0 ? args[0] : null);
+  RangeChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}

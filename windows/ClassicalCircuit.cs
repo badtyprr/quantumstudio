@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Web.Script.Serialization;
 
-// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts; version 7 adds loops and their budget; version 8 adds loop transfers; version 9 adds program termination.
+// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts; version 7 adds loops and their budget; version 8 adds loop transfers; version 9 adds program termination; version 10 adds runtime ranges.
 // The editor receives copies; a validated program cannot change underneath a run.
 sealed class ClassicalCircuit {
  public sealed class Register {public string Name {get;set;}public int Size {get;set;}}
@@ -25,7 +25,9 @@ sealed class ClassicalCircuit {
   public Step[] WhenTrue {get;set;}public Step[] WhenFalse {get;set;}
   public ExpressionNode ClassicalValue {get;set;}
   public int? VariableSlot {get;set;}public ExpressionNode IntegerValue {get;set;}
+  public RangeNode Range {get;set;}
  }
+ public sealed class RangeNode {public ExpressionNode Start {get;set;}public ExpressionNode Stop {get;set;}public ExpressionNode Step {get;set;}}
  public sealed class Document {
   public int? LoopConditionBudget {get;set;}
   public int Version {get;set;}public int Qubits {get;set;}public Register[] Registers {get;set;}
@@ -142,7 +144,7 @@ sealed class ClassicalCircuit {
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range");
    if(!(Required(fields,"Kind") is string))throw Invalid("A step kind must be a name.");
    foreach(string name in new[]{"Expression","Mask","Value"})if(fields.ContainsKey(name) && fields[name]!=null && !(fields[name] is string))throw Invalid(name+" must be text.");
    if(fields.ContainsKey("Wires") && fields["Wires"]!=null)IntegerArray(fields["Wires"]);
@@ -157,6 +159,11 @@ sealed class ClassicalCircuit {
    if(fields.ContainsKey("IntegerValue") && fields["IntegerValue"]!=null) {
     if(version<5)throw Invalid("Variables require circuit version 5.");int nodes=0;ExpressionFields(fields["IntegerValue"],0,ref nodes,version,true);
    }
+   if(fields.ContainsKey("Range") && fields["Range"]!=null) {
+    if(version<10)throw Invalid("Runtime ranges require circuit version 10.");
+    var range=Fields(fields["Range"],"Start,Stop,Step");
+    foreach(string name in new[]{"Start","Stop","Step"}) {int nodes=0;ExpressionFields(Required(range,name),0,ref nodes,version,true);}
+   }
    foreach(string name in new[]{"WhenTrue","WhenFalse"})if(fields.ContainsKey(name) && fields[name]!=null)StepFields(fields[name],depth+1,ref count,version);
   }
  }
@@ -168,7 +175,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6 && version!=7 && version!=8 && version!=9)throw Invalid("Expected a version 2, 3, 4, 5, 6, 7, 8 or 9 classical circuit.");
+  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6 && version!=7 && version!=8 && version!=9 && version!=10)throw Invalid("Expected a version 2, 3, 4, 5, 6, 7, 8, 9 or 10 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -183,7 +190,7 @@ sealed class ClassicalCircuit {
     if(!(Required(fields,"Name") is string) || !(Required(fields,"Signedness") is string))throw Invalid("Variable names and signedness must be text.");
     Integer(Required(fields,"Width"));
    }
-  } else if(version>=5)throw Invalid("Versions 5–9 require a variable declaration array.");
+  } else if(version>=5)throw Invalid("Versions 5–10 require a variable declaration array.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;
@@ -214,7 +221,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -242,9 +249,12 @@ sealed class ClassicalCircuit {
    if(!Enum.TryParse(step.Kind,out kind) || kind.ToString()!=step.Kind || !Enum.IsDefined(typeof(NumericalSampling.Operation),kind))throw Invalid("Unknown operation kind.");
    if((kind==NumericalSampling.Operation.Break || kind==NumericalSampling.Operation.Continue) && version<8)throw Invalid("Loop transfers require circuit version 8.");
    if(kind==NumericalSampling.Operation.End && version<9)throw Invalid("Program termination requires circuit version 9.");
+   bool range=kind==NumericalSampling.Operation.ForRange;
+   if(range && version<10)throw Invalid("Runtime ranges require circuit version 10.");
+   if(range!=(step.Range!=null))throw Invalid("Only range loops require a Range object.");
    bool integer=kind==NumericalSampling.Operation.StoreInteger || kind==NumericalSampling.Operation.ClearInteger;
    if(integer && version<5)throw Invalid("Variables require circuit version 5.");
-   if(!integer && (step.VariableSlot.HasValue || step.IntegerValue!=null))throw Invalid("Only variable operations accept variable fields.");
+   if((!integer && step.IntegerValue!=null) || (!integer && !range && step.VariableSlot.HasValue))throw Invalid("Only variable operations accept integer values; variables and ranges accept target slots.");
    bool loop=kind==NumericalSampling.Operation.While;
    if(loop && version<7)throw Invalid("Runtime loops require circuit version 7.");
    bool expression=kind==NumericalSampling.Operation.Assign || kind==NumericalSampling.Operation.ExpressionBranch || loop;
@@ -255,6 +265,7 @@ sealed class ClassicalCircuit {
    if((kind==NumericalSampling.Operation.Measure || kind==NumericalSampling.Operation.Reset) && !String.IsNullOrEmpty(step.Expression))throw Invalid("Measurement and reset cannot contain matrix expressions.");
    var gate=new NumericalSampling.Gate {Kind=kind,Expression=step.Expression,Wires=step.Wires==null ? null : (int[])step.Wires.Clone(),ClassicalBit=step.ClassicalBit};
    if(integer){gate.VariableSlot=step.VariableSlot;if(step.IntegerValue!=null)gate.IntegerExpression=ConvertInteger(step.IntegerValue);}
+   if(range){gate.VariableSlot=step.VariableSlot;gate.Range=new NumericalSampling.IntegerRange(ConvertInteger(step.Range.Start),ConvertInteger(step.Range.Stop),ConvertInteger(step.Range.Step));}
    if(expression)gate.ClassicalExpression=ConvertExpression(step.ClassicalValue);
    if(condition) {gate.Mask=Condition(step.Mask);gate.Value=Condition(step.Value);}
    if(step.WhenTrue!=null)gate.WhenTrue=ConvertSteps(step.WhenTrue,version);

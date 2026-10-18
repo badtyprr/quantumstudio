@@ -12,7 +12,8 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool termination() const {return input.compare(0,8,"QEXACT8\n")==0;}
+ bool ranges() const {return input.compare(0,8,"QEXACT9\n")==0;}
+ bool termination() const {return input.compare(0,8,"QEXACT8\n")==0 || ranges();}
  bool transfers() const {return input.compare(0,8,"QEXACT7\n")==0 || termination();}
  bool loops() const {return input.compare(0,8,"QEXACT6\n")==0 || transfers();}
  bool bitExpressions() const {return input.compare(0,8,"QEXACT5\n")==0 || loops();}
@@ -21,7 +22,7 @@ public:
  bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1, QEXACT2, QEXACT3, QEXACT4, QEXACT5, QEXACT6, QEXACT7 or QEXACT8 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1, QEXACT2, QEXACT3, QEXACT4, QEXACT5, QEXACT6, QEXACT7, QEXACT8 or QEXACT9 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -66,10 +67,19 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
  unsigned &total,const EvaluationOptions &exact,const QuantumClassical::IntegerStorage *variables) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
  if(kind==12)return Step::breakLoop();
  if(kind==13)return Step::continueLoop();
  if(kind==14)return Step::endProgram();
+ if(kind==15) {
+  if(depth>=32)throw std::length_error("Circuit control flow exceeds 32 nesting levels.");
+  const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
+  auto range=QuantumClassicalRequest::range(reader,bits,*variables);
+  const unsigned count=static_cast<unsigned>(reader.integer(512-total));
+  std::vector<Step> body;body.reserve(count);
+  for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,bits,depth+1,total,exact,variables));
+  return Step::forRange(slot,range,body);
+ }
  if(kind==9 || kind==10) {
   const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
   if(kind==10)return Step::clearInteger(slot);

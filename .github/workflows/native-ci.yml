@@ -32,6 +32,10 @@ jobs:
       - name: Check integer arithmetic for undefined behavior
         run: |
           g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=undefined -I. \
+            src/quantum-classical-range-test.cc libqalculate/QuantumClassicalInteger.cc \
+            libqalculate/QuantumClassicalRange.cc -o /tmp/quantum-range-sanitizer
+          /tmp/quantum-range-sanitizer
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=undefined -I. \
             src/quantum-classical-integer-test.cc libqalculate/QuantumClassicalInteger.cc \
             -o /tmp/quantum-integer-sanitizer
           /tmp/quantum-integer-sanitizer
