@@ -2,11 +2,21 @@
 #include "QuantumAlgebra.h"
 #include "Calculator.h"
 #include "Function.h"
+#include "BuiltinFunctions.h"
 #include "Variable.h"
 #include <string>
 #include <utility>
 #include <set>
 namespace {
+// Reuse the ordinary constructors' argument validation and allocation limits,
+// but retain matrix shape at dimension one in quantum expressions.
+template<class Constructor> class QuantumMatrixConstructor: public Constructor {
+ public:
+ explicit QuantumMatrixConstructor(const char *name) {this->setName(name,1);}
+ int id() const {return 0;}
+ bool preservesSingletonMatrix() const {return true;}
+ ExpressionItem *copy() const {return new QuantumMatrixConstructor(*this);}
+};
 // An expression-level domain survives printing and a fresh calculator request.
 // Unlike changing the default assumptions, it does not change real angles.
 class QuantumComplexParameter: public MathFunction {
@@ -346,6 +356,8 @@ MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions
 }
 void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumComplexParameter());
+ calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
+ calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));

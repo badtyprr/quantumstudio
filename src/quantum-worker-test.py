@@ -22,6 +22,17 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Explicit quantum matrices retain shape even when both dimensions equal one.
+for flags in [(), ("--approx",)]:
+    for expression,expected in [('matrix(1,1,[5])',5),('matrix(2-1,2/2,[5])',5),('identity(1)',1)]:
+        value=data('quantum:'+expression,*flags)
+        assert value['rows']==value['columns']==1 and Decimal(value['cells'][0][0])==expected,value
+        copied=data('quantum:'+value['copy_text'],*flags)
+        assert copied['rows']==copied['columns']==1 and copied['cells']==value['cells'],copied
+        assert Decimal(data('quantum:Tr('+expression+')',*flags)['text'])==expected
+    for expression in ['Tr(5)','Tr(matrix(1,2,[1,2]))','matrix(0,1,[5])','matrix(1.5,1,[5])']:
+        run('quantum:'+expression,*flags,success=False)
+
 # A sum binds a bare phase-alias label, while explicit +i remains a state.
 for flags in [(), ("--approx",)]:
     for expression in ['norm(sum(|i>,0,1,i)-(|0>+|1>))','norm(vec(sum(|i><i|,0,1,i)-I))','norm(sum(|+i>,0,1,i)-2|+i>)','norm(|i>-|+i>)','norm(sum(sum(|i>,0,1,j),0,1,i)-2*(|0>+|1>))','norm(sum(sum(|i>,0,1,i),0,1,i)-2*(|0>+|1>))']:
