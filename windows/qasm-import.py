@@ -17,6 +17,8 @@ from pyqasm.transformer import Qasm3Transformer
 from pyqasm.validator import Qasm3Validator
 from pyqasm.elements import Context
 
+RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)
+
 
 def unroll_preserving_phase(module, primitives, preserve_branches=False):
     """Adapt the pinned compiler's controlled-gphase lowering.
@@ -33,7 +35,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
     runtime_integer_names={node.identifier.name for node in nodes(module.original_program)
-                           if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType))}
+                           if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
     def integers(visitor):
         return getattr(visitor, '_quantum_integer_names', set())
     def runtime(visitor,value):
@@ -47,6 +49,10 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if depth >= 32:
             raise ValueError('Classical expressions exceed 32 levels.')
         registers = visitor._global_creg_size_map
+        if isinstance(value,ast.Identifier) and value.name in getattr(visitor,'_quantum_boolean_names',set()):
+            result=ast.Cast(type=ast.BoolType(),argument=copy.deepcopy(value))
+            result._quantum_boolean_value=True
+            return result
         if isinstance(value, ast.Identifier) and (value.name in registers or value.name in integers(visitor)):
             return copy.deepcopy(value)
         if isinstance(value, ast.IndexedIdentifier):
@@ -120,8 +126,26 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         integer_target = name in integers(visitor)
         if name not in visitor._global_creg_size_map and not integer_target:
             return original_assignment(visitor,statement)
-        target = normalize(visitor,statement.lvalue)
+        boolean_target=name in getattr(visitor,'_quantum_boolean_names',set())
+        target = copy.deepcopy(statement.lvalue) if boolean_target else normalize(visitor,statement.lvalue)
         value = normalize(visitor,statement.rvalue,typed=integer_target)
+        if boolean_target:
+            if statement.op.name!='=':raise ValueError('Boolean compound assignments are not yet supported.')
+            def implicit_boolean(item):
+                if isinstance(item,ast.Identifier) and item.name in visitor._global_creg_size_map:
+                    return item.name in getattr(visitor,'_quantum_scalar_bits',set())
+                if isinstance(item,ast.BitstringLiteral):return False
+                if isinstance(item,ast.IndexExpression):
+                    return isinstance(item.index,list) and len(item.index)==1 and isinstance(item.index[0],ast.IntegerLiteral)
+                if isinstance(item,ast.BinaryExpression) and item.op.name in ('&','|','^','<<','>>'):
+                    return implicit_boolean(item.lhs) and (item.op.name in ('<<','>>') or implicit_boolean(item.rhs))
+                if isinstance(item,ast.UnaryExpression) and item.op.name=='~':return implicit_boolean(item.expression)
+                if isinstance(item,ast.FunctionCall) and item.name.name in ('rotl','rotr'):
+                    return bool(item.arguments) and implicit_boolean(item.arguments[0])
+                return True
+            if not implicit_boolean(value):raise ValueError('Convert bit-register values explicitly with bool(...) before Boolean assignment.')
+            converted=ast.Cast(type=ast.BoolType(),argument=value);converted._quantum_implicit_boolean=True
+            value=ast.Cast(type=ast.UintType(size=ast.IntegerLiteral(1)),argument=converted)
         if statement.op.name != '=':
             operation = statement.op.name[:-1]
             if operation not in (('+','-','*','/','%','**') if integer_target else ('&','|','^','<<','>>')):
@@ -131,8 +155,11 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def declaration(visitor, statement):
         if isinstance(statement.type,ast.BitType) and statement.type.size is None:
             visitor._quantum_scalar_bits=getattr(visitor,'_quantum_scalar_bits',set())|{statement.identifier.name}
-        if isinstance(statement.type,(ast.IntType,ast.UintType)) and statement.identifier.name in runtime_integer_names:
-            size = statement.type.size
+        if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
+            boolean=isinstance(statement.type,ast.BoolType)
+            if boolean and isinstance(statement.init_expression,ast.QuantumMeasurement):
+                raise ValueError('Measure into a bit first; direct Boolean measurement targets require additional lowering.')
+            size = ast.IntegerLiteral(1) if boolean else statement.type.size
             if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
             width = 0 if size is None else Qasm3ExprEvaluator.evaluate_expression(size, const_expr=True)[0]
             if type(width) is not int or not 0<=width<=64 or (width==0 and size is not None):raise ValueError('Integer width must be 1–64, or omitted.')
@@ -141,6 +168,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             # but keep the value undefined for the runtime interpreter.
             original_declaration(visitor,bare)
             visitor._quantum_integer_names=integers(visitor)|{statement.identifier.name}
+            if boolean:
+                visitor._quantum_boolean_names=getattr(visitor,'_quantum_boolean_names',set())|{statement.identifier.name}
+                bare.type=ast.UintType()
             bare.type.size=ast.IntegerLiteral(width)
             result=[] if visitor._check_only else [bare]
             if statement.init_expression is not None:
@@ -338,7 +368,7 @@ def resolve_integer_scopes(program):
     prevent capture; clear markers retain lifetime boundaries after that flattening.
     Markers are private AST attributes, never syntax accepted from input text.
     """
-    if not any(isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType)) for node in nodes(program)):return set()
+    if not any(isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES) for node in nodes(program)):return set()
     used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
     scoped=set();serial=0
     def fresh(name):
@@ -367,7 +397,7 @@ def resolve_integer_scopes(program):
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
                 name=statement.identifier.name
                 if name in declared:raise ValueError('Duplicate declaration in one scope: '+name)
-                declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType))
+                declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,RUNTIME_SCALAR_TYPES)
                 if depth and name in env and not integer:raise ValueError('Non-integer shadowing is not yet supported by the importer.')
                 expression(statement.type,env)
                 renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
@@ -391,11 +421,11 @@ def resolve_integer_scopes(program):
             elif isinstance(statement,ast.CompoundStatement):
                 block(statement.statements,env,depth+1);result.extend(statement.statements)
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
-                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(statement)):
+                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
                     raise ValueError('Integer declarations in subroutines require activation storage not yet supported.')
                 result.append(statement)
             else:
-                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(statement)):
+                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
                     raise ValueError('Integer declarations in this control structure are not yet supported.')
                 if isinstance(statement,ast.QuantumGate):
                     expression(statement.arguments,env);expression(statement.modifiers,env);expression(statement.qubits,env)
@@ -425,11 +455,11 @@ def convert(source, published_u=False, classical=False):
     if classical:resolve_integer_scopes(module.original_program)
     if classical:
         runtime_names={node.identifier.name for node in nodes(module.original_program)
-                   if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,ast.IntType,ast.UintType))}
+                   if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,)+RUNTIME_SCALAR_TYPES)}
         def runtime(value):
             return any(isinstance(item,ast.Identifier) and item.name in runtime_names for item in nodes(value))
         integer_names={node.identifier.name for node in module.original_program.statements
-                       if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.IntType,ast.UintType))}
+                       if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
         for node in nodes(module.original_program):
             if isinstance(node,ast.ForInLoop) and node.identifier.name in integer_names:
                 raise ValueError('Loop variables cannot yet shadow runtime integer variables.')
@@ -461,8 +491,8 @@ def convert(source, published_u=False, classical=False):
     # Reject these before compilation, rather than pretend their content ran.
     for node in nodes(module.original_program):
         if classical and isinstance(node, ast.ClassicalDeclaration):
-            if not isinstance(node.type, (ast.BitType,ast.IntType,ast.UintType)):
-                raise ValueError('Classical circuit import supports bit registers and integer variables; other classical declarations are not yet supported.')
+            if not isinstance(node.type, (ast.BitType,)+RUNTIME_SCALAR_TYPES):
+                raise ValueError('Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise ValueError('Only stdgates.inc and qelib1.inc includes are supported.')
         if getattr(node, 'annotations', None):
@@ -589,7 +619,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
     count=0
     arithmetic={'+':'Add','-':'Subtract','*':'Multiply','/':'Divide','%':'Remainder','**':'Power'}
     def integer_value(node):
-        return (isinstance(node,ast.Identifier) and node.name in variables or
+        return (getattr(node,'_quantum_boolean_value',False) or isinstance(node,ast.Identifier) and node.name in variables or
                 isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
                 isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic or
                 isinstance(node,ast.UnaryExpression) and node.op.name=='-')
@@ -605,6 +635,10 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
         if count>512 or depth>=32:raise ValueError('Classical expressions exceed 512 nodes or 32 levels.')
     def integer(node,depth):
         bound(depth)
+        if isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType):
+            child,size=build(node,None,depth+1)
+            if size!=1:raise ValueError('Boolean values require one bit.')
+            return {'Kind':'IntegerFromBits','Signedness':'Unsigned','Width':1,'Left':child}
         if isinstance(node,ast.Identifier) and node.name in variables:
             slot,sign,size=variables[node.name]
             return {'Kind':'IntegerVariable','Slot':slot,'Signedness':sign,'Width':size}
@@ -656,6 +690,8 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             if integer_value(node.argument):
                 return {'Kind':'IntegerCompare','Operator':'NotEqual','Left':integer(node.argument,depth+1),'Right':{'Kind':'IntegerConstant','Signedness':'Signed','Width':0,'Value':'0'}},1
             child,size=build(node.argument,None,depth+1)
+            if getattr(node,'_quantum_implicit_boolean',False) and size!=1 and not (isinstance(node.argument,ast.IntegerLiteral) or isinstance(node.argument,ast.FunctionCall) and node.argument.name.name=='popcount'):
+                raise ValueError('Convert bit expressions explicitly with bool(...) before Boolean assignment.')
             return {'Kind':'Binary','Operator':'NotEqual','Left':child,'Right':{'Kind':'Constant','Width':size,'Value':'0'}},1
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BitType):
             size=node.type.size.value;child=integer(node.argument,depth+1)
