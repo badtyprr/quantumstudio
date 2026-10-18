@@ -6,7 +6,8 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: windows-qasm-${{ github.event.pull_request.number || github.ref }}
+  # Deduplicate PR updates; delayed pushes must not cancel a different release SHA.
+  group: windows-qasm-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 jobs:
   compiler:
