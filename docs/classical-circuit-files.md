@@ -92,8 +92,8 @@ every loop-condition evaluation, including false conditions: sampling resets it
 per shot, while exact evaluation shares it across all measurement histories.
 Exhaustion reports an error, never partial results. A budget of zero can be used
 to prohibit executed loop conditions. OpenQASM `while` import preserves runtime conditions and scoped bodies. Imported
-loops use a default budget of 1,000,000, editable below. `break`, `continue` and
-`end` inside runtime loops are not yet supported.
+loops use a default budget of 1,000,000, editable below. `break` and `continue` targeting while loops use version 8, described below.
+Whole-program `end` is not yet supported.
 
 In the classical circuit editor, select **While expression**, enter a one-bit
 condition such as `counter > 0`, and add it to the selected body. Select its
@@ -125,4 +125,9 @@ expression or target is needed. The tree identifies the nearest-loop behavior.
 Transfers support replacement, deletion, undo/redo and save/reopen. Adding one
 outside a loop, discarding a populated body, or converting a loop in a way that
 would leave a transfer outside any loop is rejected without changing the circuit.
-OpenQASM transfer import remains separate integration work.
+OpenQASM import preserves transfers targeting a `while` loop, including inside
+branches, switch cases and nested scopes. Locals in every exited scope are
+cleared before the transfer; locals belonging to an outer loop remain live.
+Transfers targeting a `for` loop and whole-program `end` still require separate
+lowering and are rejected. A `while` loop with transfers may appear inside a
+statically expanded `for` loop.

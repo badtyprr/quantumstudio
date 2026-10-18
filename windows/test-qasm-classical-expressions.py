@@ -8,6 +8,16 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('transfer-break','bit c;while(true){c=1;break;c=0;}',{'1':'1'}),
+ ('transfer-continue','int n=3;bit c;while(n>0){n-=1;continue;c=1;}',{'0':'1'}),
+ ('transfer-shadow','int n=3;bit c;while(true){int n=9;{int k=2;c=n==9 && k==2;break;}}c=c && n==3;',{'1':'1'}),
+ ('transfer-nested','int n=2;bit c;while(n>0){int k=7;while(true){int a=1;break;}c=k==7;n-=1;}',{'1':'1'}),
+ ('transfer-continue-scope','int n=2;bit c;while(n>0){int k;n-=1;if(n==1){k=3;continue;}c=k==3;}',None),
+ ('transfer-branch','bit c;while(true){if(c==0){int a=3;c=a==3;break;}c=0;}',{'1':'1'}),
+ ('transfer-switch','int n=2;bit c;while(true){switch(n){case 2{int a=3;c=a==3;break;}default{c=0;}}c=0;}',{'1':'1'}),
+ ('transfer-measurement','qubit q;h q;bit c=measure q;while(true){if(c){break;}c=1;break;}',{'1':'1'}),
+ ('transfer-in-for','bit c;for int i in [0:1]{while(true){int a=2;c=i==1;break;}}',{'1':'1'}),
+ ('transfer-followed-loop','bit c;while(true){c=1;break;}while(false){}',{'1':'1'}),
  ('loop-countdown','int[8] n=3;bit c;while(n>0){n-=1;c=n==0;}',{'1':'1'}),
  ('loop-bit','qubit q;bit c=1;while(c==1){c=0;}',{'0':'1'}),
  ('loop-false-scope','bit c;while(false){int a=1;}',{'0':'1'}),
@@ -262,7 +272,7 @@ rejected += ['int n=1;switch(n){case 1{}case 2{bit c;c=missing;}}',
 rejected += ['bit c;switch(true){case 1{c=1;}}','bit c;switch(1==1){case 1{c=1;}}',
              'bit c;switch(1.5){case 1{c=1;}}','bit c;switch(0){case 1{}case 1{}}',
              'int n=1;bit c;switch(1){case n{c=1;}}']
-rejected += ['bit c;while(c){break;}','bit c;while(c){continue;}','bit c;while(c){end;}',
+rejected += ['bit c;break;','bit c;continue;','bit c;while(c){end;}',
              'bit c;while(c){int a=1;}c=a==1;', 'bit c;while(c){qubit q;}',
              'bit c;while(c){bit b;}', 'bit c;while(c){int a=1;int a=2;}']
 rejected += ['bit c;while(false){gate custom q {x q;}}',
@@ -309,6 +319,7 @@ def steps(body):
   elif kind in ('Branch','ExpressionBranch'):
    out+=(n(6,s['Mask'],s['Value']) if kind=='Branch' else n(8)+expression(s['ClassicalValue']))
    for key in ['WhenTrue','WhenFalse']:out+=n(len(s[key]))+steps(s[key])
+  elif kind in ('Break','Continue'):out+=n(12 if kind=='Break' else 13)
   elif kind=='While':out+=n(11)+expression(s['ClassicalValue'])+n(len(s['WhenTrue']))+steps(s['WhenTrue'])
   elif kind=='ClearInteger':out+=n(10,s['VariableSlot'])
   elif kind=='StoreInteger':out+=n(9,s['VariableSlot'])+integer_expression(s['IntegerValue'])
@@ -319,7 +330,11 @@ def steps(body):
  return out
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
- assert circuit['Version']==(7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ if name=='transfer-shadow':
+  sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
+  assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
+  checks+=1
+ assert circuit['Version']==(8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)
@@ -344,8 +359,8 @@ for name,body,expected in cases:
     protocol=b'QEXACT4\n' if exact else b'QSAMPLE5\n'
     if circuit['Version']>=6:protocol=b'QEXACT5\n' if exact else b'QSAMPLE6\n'
     declarations=n(len(circuit['Variables']))+b''.join(n(0 if v['Signedness']=='Signed' else 1,v['Width']) for v in circuit['Variables'])
-   if circuit['Version']==7:
-    protocol=b'QEXACT6\n' if exact else b'QSAMPLE7\n'
+   if circuit['Version']>=7:
+    protocol=(b'QEXACT7\n' if exact else b'QSAMPLE8\n') if circuit['Version']>=8 else (b'QEXACT6\n' if exact else b'QSAMPLE7\n')
     assert circuit['LoopConditionBudget']==1000000
     declarations+=n(32) # Bound intentionally nonterminating test programs.
    payload=protocol+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits)+declarations+n(len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
