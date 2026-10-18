@@ -100,3 +100,25 @@ In the classical circuit editor, enter casts directly, for example
 the cast width; `uint(popcount(c))` uses the 64-bit machine width. Save/reopen,
 selection, replacement, and undo/redo preserve these expressions. Editing variable
 declarations preserves the document version required by existing expressions.
+
+## Runtime loops
+
+`QSAMPLE7` and `QEXACT6` retain their preceding versions' fields and expression
+nodes, adding one LF-terminated unsigned loop-condition budget after the typed
+variable declarations and before the output-index count. The budget must be in
+0..1,000,000. Zero permits paths that never evaluate a loop condition. Older
+headers do not carry this field and continue to reject operation 11.
+
+Operation 11 is encoded as: condition expression, body-operation count, then
+that many operations. The condition must have width one. Both readers validate
+all bodies, including unreachable bodies, under the existing nesting, byte and
+static-operation limits. Each iteration tests the current classical and typed
+variable state before running the body. There is no implicit measurement.
+
+Sampling shares the condition budget across all loops in each shot, resetting
+it for the next shot. Exact evaluation shares it across the complete run,
+including all measurement histories. Each condition check, even a false one,
+uses a unit. Exhaustion produces an error with empty stdout, never partial
+counts or normalized partial probabilities. The native exact evaluator does
+not sum infinite iteration series. Responses retain their existing schemas.
+Circuit files, GUI adapters and OpenQASM import do not yet emit these versions.
