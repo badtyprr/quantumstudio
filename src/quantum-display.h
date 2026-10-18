@@ -22,6 +22,7 @@ struct Fragment {
 class Printer {
  const PrintOptions &options;
  unsigned nodes=0, collected=0;
+ bool lostBinding=false;
  std::set<std::string> names;
  std::vector<std::pair<MathStructure,std::string>> bindings;
  bool collect(const MathStructure &value,unsigned depth=0) {
@@ -48,10 +49,13 @@ class Printer {
   return value.precedence<precedence ? "("+value.text+")" : value.text;
  }
  static bool safeLabel(const std::string &value) {
-  return !value.empty() && value.find_first_of("|<>\r\n\"'")==std::string::npos &&
-   value.find("⟨")==std::string::npos && value.find("⟩")==std::string::npos;
+  if(value.empty())return false;
+  for(unsigned char c:value)if(c<128 && !std::isalnum(c) && c!='_' && c!=' ')return false;
+  for(const char *special:{"⟨","⟩","↑","↓","±","−","∑"})if(value.find(special)!=std::string::npos)return false;
+  return true;
  }
  Fragment fallback(const MathStructure &value) {
+  for(const auto &binding:bindings)if(value.contains(binding.first))lostBinding=true;
   int precedence=value.isAddition() ? 20 : value.isMultiplication() ? 40 : value.isPower() ? 80 : 100;
   if(value.isNumber() && value.number().isNegative())precedence=70;
   return Fragment(value.print(options),precedence);
@@ -70,8 +74,12 @@ class Printer {
   }
   if((name=="qketstate" || name=="qnamedket" || name=="qindexedket") && value.size()==1) {
    std::string label=value[0].isSymbolic() ? value[0].symbol() : render(value[0],depth+1).text;
-   if(safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
+   bool literalCollision=(value[0].isSymbolic() && label.size()==1) || label.find_first_not_of("0123456789 ")==std::string::npos;
+   if(!literalCollision && safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
   }
+  if(name=="qpower" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^"+grouped(render(value[1],depth+1),81),80);
+  if((name=="qsin" || name=="qcos" || name=="qtan" || name=="qasin" || name=="qacos" || name=="qatan") && value.size()==1)
+   return Fragment(name.substr(1)+"("+render(value[0],depth+1).text+")");
   if(name=="qfourier" && value.size()==1)return Fragment("QFT_"+grouped(render(value[0],depth+1),100));
   if(name=="qsum" && value.size()==4) {
    Fragment first=render(value[1],depth+1),last=render(value[2],depth+1);
@@ -102,7 +110,7 @@ class Printer {
   if(value.isMatrix() || value.isNumber())return value.print(options);
   if(!collect(value))return value.print(options);
   std::string text=render(value,0).text;
-  return text.size()<=131072 ? text : value.print(options);
+  return !lostBinding && text.size()<=131072 ? text : value.print(options);
  }
 };
 inline std::string print(const MathStructure &value,const PrintOptions &options) {return Printer(options).print(value);}
