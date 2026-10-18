@@ -141,8 +141,12 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  MathStructure ar,ac,br,bc;
  bool left=matrixShape(value[0],ar,ac,eo,depth+1),right=matrixShape(value[1],br,bc,eo,depth+1);
  if((name=="qadd" || name=="qsub") && left && right && ar.equals(br) && ac.equals(bc)) {rows=ar;columns=ac;return true;}
- if(name=="qmul") {
-  if(left && right && ac.equals(br)) {rows=ar;columns=bc;return true;}
+ if(name=="qmul" || name=="qadjacent") {
+  if(name=="qmul" && left && right && ac.equals(br)) {
+   // Row-column contraction has scalar semantics in quantum multiplication.
+   if(ar.isOne() && bc.isOne())return false;
+   rows=ar;columns=bc;return true;
+  }
   if(left && value[1].representsScalar()) {rows=ar;columns=ac;return true;}
   if(right && value[0].representsScalar()) {rows=br;columns=bc;return true;}
  }
@@ -161,6 +165,9 @@ class QuantumAlgebraFunction: public MathFunction {
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
   return op=="qtrace" || MathFunction::representsScalar(args);
+ }
+ bool representsNonMatrix(const MathStructure &args) const {
+  return op=="qtrace" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qfrequency") {
@@ -350,7 +357,24 @@ class QuantumAlgebraFunction: public MathFunction {
   // Keep the wrapper so a later substitution is checked for square shape.
   // Returning without a replacement retains the original ordered quantum AST,
   // including during clipboard serialization and subsequent substitutions.
-  if(op=="qtrace" && !a.isVector() && unresolvedMatrixOperand(a))return 0;
+  if(op=="qtrace" && !a.isVector() && unresolvedMatrixOperand(a)) {
+   MathStructure rows,columns;
+   if(a.isFunction() && a.size()==2 && matrixShape(a,rows,columns,eo) && rows.equals(columns)) {
+    const std::string &operation=a.function()->referenceName();
+    if(operation=="qadd" || operation=="qsub") {
+     MathStructure left,right;left.set(this,&a[0],NULL);right.set(this,&a[1],NULL);
+     out=left;if(operation=="qadd")out+=right;else out-=right;out.eval(eo);return 1;
+    }
+    if(operation=="qmul" || operation=="qadjacent") {
+     const int scalar=a[0].representsScalar() ? 0 : a[1].representsScalar() ? 1 : -1;
+     if(scalar>=0) {
+      MathStructure traced;traced.set(this,&a[1-scalar],NULL);
+      out=a[scalar];out*=traced;out.eval(eo);return 1;
+     }
+    }
+   }
+   return 0;
+  }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
    if(!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10) { CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL); return 0; }

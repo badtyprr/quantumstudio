@@ -22,6 +22,22 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Trace linearity applies only when declared square shapes justify it.
+for flags in [(), ("--approx",)]:
+    left='matrixparam(A,n,n)';right='matrixparam(B,n,n)'
+    source=r'replace(replace(\operatorname{Tr}(\alpha A+\beta B)-\alpha\operatorname{Tr}(A)-\beta\operatorname{Tr}(B),A,matrixparam(A,n,n)),B,matrixparam(B,n,n))'
+    assert Decimal(data('quantum:'+source,*flags)['text'])==0
+    for expression in ['Tr(α*'+left+'+β*'+right+')-α*Tr('+left+')-β*Tr('+right+')','Tr('+left+'-'+right+')-Tr('+left+')+Tr('+right+')','Tr(complexparam(z)*'+left+')-complexparam(z)*Tr('+left+')']:
+        assert Decimal(data('quantum:'+expression,*flags)['text'])==0,expression
+    symbolic=data('quantum:Tr(2*'+left+')',*flags)
+    assert data('quantum:'+symbolic['copy_text'],*flags)['copy_text']==symbolic['copy_text']
+    value=data('quantum:replace(replace('+symbolic['copy_text']+',n,2),A,identity(2))',*flags)
+    assert Decimal(value['text'])==4
+    for expression in ['Tr(matrixparam(A,n,n)+matrixparam(B,m,m))','Tr(matrixparam(A,1,2)*matrixparam(B,2,1)+matrixparam(C,1,2)*matrixparam(D,2,1))']:
+        assert 'qadd' in data('quantum:'+expression,*flags)['copy_text'],expression
+    for expression in ['Tr(0*matrixparam(A,2,3))','0*Tr(5)','Tr(5)-Tr(5)']:
+        run('quantum:'+expression,*flags,success=False)
+
 # Declared matrix shapes constrain operations before matrix values are known.
 for flags in [(), ("--approx",)]:
     for expression in ['Tr(matrixparam(A,2,3))','matrixparam(A,2,2)+matrixparam(B,3,3)','matrixparam(A,2,3)*matrixparam(B,2,2)','Tr(matrixparam(A,2,3)^T)','Tr(2*matrixparam(A,2,3))','Tr(matrixparam(A,2,3)*matrixparam(B,3,4))']:
