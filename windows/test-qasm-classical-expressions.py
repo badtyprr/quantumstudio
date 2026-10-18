@@ -8,6 +8,18 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('constant-switch-expression','bit c;switch(1+1){case 2{c=1;}}',{'1':'1'}),
+ ('constant-switch-negative','bit c;switch(-1){case -1{c=1;}}',{'1':'1'}),
+ ('constant-switch-cast','bit c;switch(int(true)){case 1{c=1;}}',{'1':'1'}),
+ ('constant-switch-default','bit c;switch(3){case 2{c=0;}default{c=1;}}',{'1':'1'}),
+ ('constant-switch-local','const int n=2;bit c;switch(n){case 2{const int k=1;c=k==1;}default{const int k=2;c=k==1;}}',{'1':'1'}),
+ ('variable-switch-constant-mutation','int n=1;bit c;switch(1){case 1{n=2;c=1;}case 2{c=0;}}c=c && n==2;',{'1':'1'}),
+ ('computed-switch-bool-add','bool b=true;bit c;switch(b+1){case 2{c=1;}}',{'1':'1'}),
+ ('computed-switch-bool-pair','bool b=true;bit c;switch(b+b){case 2{c=1;}}',{'1':'1'}),
+ ('computed-switch-bool-negative','bool b=true;bit c;switch(-b){case -1{c=1;}}',{'1':'1'}),
+ ('computed-switch-bool-compare','int n=2;bit c;switch((n==2)+1){case 2{c=1;}}',{'1':'1'}),
+ ('computed-switch-bool-guard','bool b;bit c;switch((false && b)+1){case 1{c=1;}}',{'1':'1'}),
+ ('computed-switch-bool-undefined','bool b;bit c;switch(b+1){case 1{c=1;}}',None),
  ('variable-switch-match','int n=2;bit c;switch(n){case 1{c=0;}case 2{c=1;}default{c=0;}}',{'1':'1'}),
  ('variable-switch-default','int n=9;bit c;switch(n){case 1{c=0;}default{c=1;}}',{'1':'1'}),
  ('variable-switch-no-default','int n=9;bit c=1;switch(n){case 1{c=0;}}',{'1':'1'}),
@@ -233,6 +245,9 @@ rejected += ['int n=1;switch(n){case 1,1{}}','int n=1;switch(n){case 1{}case 1{}
              'int n=1;switch(n){case 1{}case 2{int a=2;int a=3;}}']
 rejected += ['int n=1;switch(n){case 1{}case 2{bit c;c=missing;}}',
              'int n=1;\n@unsupported\nswitch(n){case 1{}}']
+rejected += ['bit c;switch(true){case 1{c=1;}}','bit c;switch(1==1){case 1{c=1;}}',
+             'bit c;switch(1.5){case 1{c=1;}}','bit c;switch(0){case 1{}case 1{}}',
+             'int n=1;bit c;switch(1){case n{c=1;}}']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1

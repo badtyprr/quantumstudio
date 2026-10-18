@@ -207,22 +207,38 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if not visitor._in_branching_statement:
                 visitor._update_branching_gate_depths()
     def switch(visitor, statement):
-        if not runtime(visitor,statement.target) and not bit_function(statement.target):
-            return original_switch(visitor,statement)
         target=normalize(visitor,statement.target)
-        def integer_target(value):
+        def boolean_expression(value):
+            return (isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
+                    isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||'))
+        def integer_target(value, promoted=False):
+            # Arithmetic promotes Boolean operands to integers, but a bare
+            # Boolean switch target still requires an explicit integer cast.
+            if promoted and (isinstance(value,ast.BooleanLiteral) or
+                             isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
+                             boolean_expression(value)):
+                return True
             if isinstance(value,ast.IntegerLiteral):return True
             if isinstance(value,ast.Identifier):
                 variable=visitor._scope_manager.get_from_visible_scope(value.name)
                 return variable is not None and isinstance(variable.base_type,(ast.IntType,ast.UintType))
             if isinstance(value,ast.Cast):return isinstance(value.type,(ast.IntType,ast.UintType))
-            if isinstance(value,ast.UnaryExpression):return value.op.name in ('-','~') and integer_target(value.expression)
+            if isinstance(value,ast.UnaryExpression):return value.op.name in ('-','~') and integer_target(value.expression,True)
             if isinstance(value,ast.BinaryExpression):
-                return value.op.name in ('+','-','*','/','%','**','<<','>>','&','|','^') and integer_target(value.lhs) and integer_target(value.rhs)
+                return value.op.name in ('+','-','*','/','%','**','<<','>>','&','|','^') and integer_target(value.lhs,True) and integer_target(value.rhs,True)
             if isinstance(value,ast.FunctionCall):
                 return value.name.name=='popcount' or value.name.name in ('rotl','rotr') and integer_target(value.arguments[0])
             return False
         if not integer_target(target):raise ValueError('Switch targets require an integer expression; use an explicit integer cast.')
+        def promote_operands(value):
+            # The integer evaluator represents predicates through a Boolean
+            # cast so it can preserve short-circuiting and undefined reads.
+            if boolean_expression(value):return ast.Cast(type=ast.BoolType(),argument=value)
+            if isinstance(value,ast.UnaryExpression):value.expression=promote_operands(value.expression)
+            elif isinstance(value,ast.BinaryExpression):
+                value.lhs=promote_operands(value.lhs);value.rhs=promote_operands(value.rhs)
+            return value
+        target=promote_operands(copy.deepcopy(statement.target))
         if not statement.cases:raise ValueError('Switch statements require at least one case.')
         seen=set();cases=[]
         for labels,body in statement.cases:
@@ -246,7 +262,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         for values,body in reversed(cases):
             condition=None
             for value in values:
-                match=ast.BinaryExpression(op=ast.BinaryOperator['=='],lhs=copy.deepcopy(statement.target),rhs=ast.IntegerLiteral(value))
+                match=ast.BinaryExpression(op=ast.BinaryOperator['=='],lhs=copy.deepcopy(target),rhs=ast.IntegerLiteral(value))
                 condition=match if condition is None else ast.BinaryExpression(op=ast.BinaryOperator['||'],lhs=condition,rhs=match)
             tail=[ast.BranchingStatement(condition=condition,if_block=body,else_block=tail)]
         return branch(visitor,tail[0])
