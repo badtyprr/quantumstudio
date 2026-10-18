@@ -22,6 +22,19 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Indexed matrix dimensions and paired coefficient labels survive substitution.
+for flags in [(), ("--approx",)]:
+    expression='qindexedmatrix("a_",m-1,n-1,1,1)'
+    symbolic=data('quantum:'+expression,*flags)
+    assert symbolic['rows']==symbolic['columns']==0
+    concrete=data('quantum:replace(replace('+expression+',m,3),n,2)',*flags)
+    assert concrete['rows']==3 and concrete['columns']==2
+    assert data('quantum:'+concrete['copy_text'],*flags)['cells']==concrete['cells']
+    cell=data('quantum:replace(qindexedmatrix("a_",0,0,0,0),"a_0,0",7)',*flags)
+    assert cell['rows']==cell['columns']==1 and Decimal(cell['cells'][0][0])==7
+    for bad in ['qindexedmatrix("a_",n,-1,0,0)','qindexedmatrix("a_",-1,n,0,0)','qindexedmatrix("a_",n,1024,0,0)','qindexedmatrix("a_",2,1/2,0,0)','qindexedmatrix("a_",n,2,0,3)','qindexedmatrix("a_",n,m,-1,0)']:
+        assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
+
 # Indexed column constraints must survive symbolic dimensions and substitution.
 for flags in [(), ("--approx",)]:
     symbolic=data('quantum:qindexedcolumn("alpha_",n-1,1)',*flags)
