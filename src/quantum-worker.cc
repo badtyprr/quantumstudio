@@ -5,6 +5,8 @@
 #include <libqalculate/Variable.h>
 #include <libqalculate/Unit.h>
 #include <libqalculate/QuantumIndexed.h>
+#include <libqalculate/QuantumNotation.h>
+#include <libqalculate/QuantumTeX.h>
 #include <stdexcept>
 #include "quantum-sampling-request.h"
 #include "quantum-exact-request.h"
@@ -187,6 +189,11 @@ int main(int argc,char **argv) {
  if(states)try {defineStates(calculator,input);}catch(const std::exception &error){std::cerr << error.what() << '\n';return 2;}
  EvaluationOptions eo;
  eo.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
+ std::vector<std::string> independentLines;
+ size_t quantumStart=quantumPrefixLength(input);
+ if(quantumStart && input.find("\\begin")!=std::string::npos)try {
+  quantumTeX(input.substr(quantumStart),&independentLines);
+ } catch(const std::exception &error) {std::cerr << error.what() << '\n';return 2;}
  MathStructure result=calculator.calculate(input,eo);
  bool failed=false;
  while(calculator.message()) {
@@ -194,21 +201,37 @@ int main(int argc,char **argv) {
   std::cerr << calculator.message()->message() << '\n'; calculator.nextMessage();
  }
  if(failed || result.isUndefined()) return 2;
+ bool multipleLines=independentLines.size()>1;
+ if(multipleLines && (!result.isVector() || result.size()!=independentLines.size())) {
+  std::cerr << "The calculation did not preserve the independent expressions.";return 2;
+ }
  PrintOptions po; po.use_unicode_signs=true;
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
  MathStructure display=result; display.format(po);
  if(!json) std::cout << display.print(po) << std::endl;
  else {
-  size_t rows=result.isMatrix() ? result.rows() : 0, cols=result.isMatrix() ? result.columns() : 0;
+  size_t rows=!multipleLines && result.isMatrix() ? result.rows() : 0, cols=!multipleLines && result.isMatrix() ? result.columns() : 0;
   std::cout << "{\"text\":"; jsonString(display.print(po));
-  std::cout << ",\"display_text\":"; jsonString(QuantumDisplay::print(display,po));
+  std::string shown;
+  if(multipleLines)for(size_t i=0;i<result.size();++i) {
+   MathStructure line=result[i];line.format(po);
+   if(i)shown+="\n\n";
+   shown+=std::to_string(i+1)+".  "+QuantumDisplay::print(line,po);
+  } else shown=QuantumDisplay::print(display,po);
+  std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long
   // denominators, so use unrestricted fractions for this serialization.
   PrintOptions copyOptions=po;
   copyOptions.number_fraction_format=FRACTION_FRACTIONAL;
   copyOptions.restrict_fraction_length=false;
-  std::cout << ",\"copy_text\":"; jsonString(copyText(result,copyOptions));
+  std::string copied;
+  if(multipleLines) {
+   copied="\\begin{gathered}";
+   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=copyText(result[i],copyOptions);}
+   copied+="\\end{gathered}";
+  } else copied=copyText(result,copyOptions);
+  std::cout << ",\"copy_text\":"; jsonString(copied);
   std::cout << ",\"approximate\":" << (result.isApproximate() ? "true" : "false") << ",\"rows\":" << rows << ",\"columns\":" << cols << ",\"cells\":[";
   if(rows*cols<=128) for(size_t r=0;r<rows;++r) {
    if(r) std::cout << ',';

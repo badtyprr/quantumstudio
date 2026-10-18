@@ -869,6 +869,29 @@ before a transfer. The native API does not infer source-language scopes.
 Semantics: [OpenQASM break and continue](https://openqasm.com/language/classical.html#breaking-and-continuing-loops).
 
 
+### Multi-line mathematical derivations
+
+Pasted `aligned`, `align`, `align*`, `gathered`, `gather`, `gather*`, and
+`split` fragments retain independent expressions. An indented row beginning
+with `=`, `<=`, `>=`, or `!=` continues the preceding expression in its column
+pair; indented arithmetic continuations append to that expression. Multiple
+column pairs are read in row order. `gather` variants do not accept `&` columns.
+TeX position hints and supported row-spacing annotations affect layout only.
+
+For example, `\begin{aligned}1+1&=2\\2+2&=5\end{aligned}` produces two
+results: `1` and `0`. The Windows result panel numbers independent results,
+including separate matrix results. Copy preserves the separate expressions
+in a `gathered` fragment so they can be evaluated again. An alignment embedded
+in another expression remains an ordinary mathematical vector operand.
+There are limits of 128 rows, 128 independent expressions, and 32 column pairs.
+
+Braces around a complete state label are accepted, including
+`\vert{+i}\rangle`. The easier keyboard form remains `|+i>`.
+The exact two-state derivation in IBM's
+[density matrix lesson](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics)
+is covered by a parser integration test; this does not establish coverage of
+every derivation in that lesson.
+
 ### Exact-history loop transfers
 
 `CircuitStep::breakLoop()` and `CircuitStep::continueLoop()` implement the same

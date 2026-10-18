@@ -15,6 +15,8 @@ class TeXReader {
  const std::string &input;
  size_t pos=0;
  unsigned depth=0;
+ std::string rootAlignment;
+ std::vector<std::string> rootLines;
  bool setBound=false;
  bool stateLabel=false;
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
@@ -299,6 +301,14 @@ class TeXReader {
   if(name=="begin") {
    auto env=nameGroup();
    if(env=="cases")return read(0,true,env);
+   if(env=="aligned" || env=="align" || env=="align*" || env=="gathered" || env=="gather" || env=="gather*" || env=="split") {
+    space();
+    if(pos<input.size() && input[pos]=='[') {
+     if(pos+2>=input.size() || input[pos+2]!=']' || (input[pos+1]!='t' && input[pos+1]!='c' && input[pos+1]!='b'))throw std::runtime_error(error("Alignment position must be t, c, or b"));
+     pos+=3;
+    }
+    return read(0,true,env);
+   }
    if(env!="matrix" && env!="pmatrix" && env!="bmatrix" && env!="Bmatrix" && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
    auto body=read(0,true,env); std::string m="["+body+"]";
    if(env=="vmatrix") return "det("+m+")";
@@ -335,6 +345,34 @@ class TeXReader {
  std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="") {
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
   std::string result; int norms=0; bool closed=false;
+  const bool alignment=environment=="aligned" || environment=="align" || environment=="align*" || environment=="gathered" || environment=="gather" || environment=="gather*" || environment=="split";
+  const bool gathered=environment=="gathered" || environment=="gather" || environment=="gather*";
+  std::vector<std::string> alignmentCells,expressions;
+  std::vector<size_t> preceding;
+  unsigned alignmentRows=0;
+  auto finishAlignment=[&]() {
+   if(++alignmentRows>128)throw std::runtime_error(error("Alignment is limited to 128 rows"));
+   alignmentCells.push_back(trim(result));result.clear();
+   for(size_t cell=0;cell<alignmentCells.size();cell+=2) {
+    std::string value=alignmentCells[cell];bool indented=value.empty() && cell+1<alignmentCells.size();
+    if(cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
+    value=trim(value);
+    if(value.empty())throw std::runtime_error(error("Empty aligned expression"));
+    size_t column=cell/2;
+    if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
+    bool relation=value[0]=='=' || value.compare(0,2,"<=")==0 || value.compare(0,2,">=")==0 || value.compare(0,2,"!=")==0;
+    bool operation=value[0]=='+' || value[0]=='-' || value[0]=='*' || value[0]=='/' || value[0]=='@' || value[0]=='#';
+    bool continuation=relation || (indented && operation && preceding[column]!=std::string::npos);
+    if(continuation) {
+     if(preceding[column]==std::string::npos)throw std::runtime_error(error("An aligned continuation requires a preceding expression"));
+     expressions[preceding[column]]+=" "+value;
+    } else {
+     if(expressions.size()>=128)throw std::runtime_error(error("Alignment is limited to 128 independent expressions"));
+     preceding[column]=expressions.size();expressions.push_back(value);
+    }
+   }
+   alignmentCells.clear();
+  };
   std::vector<std::pair<std::string,std::string>> branches;
   std::string caseValue;bool caseColumn=false;
   auto finishCase=[&]() {
@@ -360,7 +398,8 @@ class TeXReader {
    }
    else if(input[pos]=='\\') {
     std::string part=command(matrix,norms,environment=="cases");
-    if(environment=="cases" && part==";")finishCase();else result+=part;
+    if(environment=="cases" && part==";")finishCase();
+    else if(alignment && part==";")finishAlignment();else result+=part;
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
@@ -422,8 +461,15 @@ class TeXReader {
     size_t first=value.find_first_not_of(" \t\r\n"), last=value.find_last_not_of(" \t\r\n");
     if(first!=std::string::npos)value=value.substr(first,last-first+1);
     while(!result.empty() && std::isspace((unsigned char)result.back()))result.pop_back();
+    // Braces around an entire Dirac label are typesetting, not arithmetic.
+    size_t after=pos;while(after<input.size() && std::isspace((unsigned char)input[after]))++after;
+    bool ketLabel=!result.empty() && result.back()=='|' &&
+     (input.compare(after,7,"\\rangle")==0 || input.compare(after,1,">")==0);
+    bool braLabel=!result.empty() && result.back()=='<' &&
+     (input.compare(after,5,"\\vert")==0 || input.compare(after,6,"\\rvert")==0 || input.compare(after,1,"|")==0);
     // TeX power groups preserve postfix dagger and the tensor-power operator.
-    if(!result.empty() && result.back()=='^' && value=="~") { result.pop_back(); result+="~"; }
+    if(ketLabel || braLabel)result+=value;
+    else if(!result.empty() && result.back()=='^' && value=="~") { result.pop_back(); result+="~"; }
     else if(!result.empty() && result.back()=='^' && (value=="T" || value=="`")) { result.pop_back(); result+="`"; }
     else if(!result.empty() && result.back()=='^' && value=="*") { result.pop_back(); result+="?"; }
     else if(!result.empty() && result.back()=='^' && value.compare(0,2,"T_")==0) result+="%("+value.substr(2)+")";
@@ -432,7 +478,11 @@ class TeXReader {
    }
    else if(input[pos]=='}') throw std::runtime_error(error("Unexpected closing brace"));
    else if(input[pos]=='&') { if(!matrix) throw std::runtime_error(error("Alignment separator outside a matrix")); ++pos;
-    if(environment=="cases") {
+    if(alignment) {
+     if(gathered)throw std::runtime_error(error("Gathered expressions do not use alignment columns"));
+     if(alignmentCells.size()>=63)throw std::runtime_error(error("Alignment is limited to 32 column pairs"));
+     alignmentCells.push_back(trim(result));result.clear();
+    } else if(environment=="cases") {
      if(caseColumn)throw std::runtime_error(error("Each case has exactly two columns"));
      caseValue=result;result.clear();caseColumn=true;
     } else result+=",";
@@ -443,6 +493,15 @@ class TeXReader {
   }
   if((close || matrix || setClose || !roundClose.empty()) && !closed) throw std::runtime_error(error("Unclosed TeX group or environment"));
   if(norms) throw std::runtime_error(error("Unclosed norm delimiter"));
+  if(alignment) {
+   if(!alignmentCells.empty() || !trim(result).empty())finishAlignment();
+   if(expressions.empty())throw std::runtime_error(error("An alignment requires an expression"));
+   result=expressions.size()==1 ? "" : "vector(";
+   for(size_t i=0;i<expressions.size();++i) {if(i)result+=",";result+="("+expressions[i]+")";}
+   if(expressions.size()>1)result+=")";
+   if(result.size()>131072)throw std::runtime_error(error("Expanded TeX expression exceeds the size limit"));
+   if(depth==2) {rootAlignment=result;rootLines=expressions;}
+  }
   if(environment=="cases") {
    if(caseColumn || !trim(result).empty())finishCase();
    if(branches.empty())throw std::runtime_error(error("A cases environment cannot be empty"));
@@ -461,10 +520,18 @@ class TeXReader {
  }
  public:
  explicit TeXReader(const std::string &s):input(s) {}
- std::string run() { return read(); }
+ std::string run(std::vector<std::string> *lines) {
+  std::string result=read();
+  if(lines && !rootLines.empty() && trim(result)==rootAlignment)*lines=rootLines;
+  return result;
+ }
 };
 }
 std::string quantumTeX(const std::string &input) {
+ return quantumTeX(input,nullptr);
+}
+std::string quantumTeX(const std::string &input, std::vector<std::string> *lines) {
+ if(lines)lines->clear();
  // Strip only a complete paired math wrapper. A dollar inside an expression
  // remains an error in the quantum grammar.
  size_t first=input.find_first_not_of(" \t\r\n"), last=input.find_last_not_of(" \t\r\n");
@@ -499,5 +566,5 @@ std::string quantumTeX(const std::string &input) {
   }
   if(!matched)normalized+=s[k++];
  }
- return TeXReader(normalized).run();
+ return TeXReader(normalized).run(lines);
 }

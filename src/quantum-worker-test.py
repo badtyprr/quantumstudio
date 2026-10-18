@@ -22,6 +22,25 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# A derivation is a list of independent results, not one combined matrix.
+for flags in [(), ("--approx",)]:
+    for expression,expected in [
+        (r"\begin{aligned}1+1&=2\\2+2&=5\end{aligned}", "1.  1\n\n2.  0"),
+        (r"\begin{gathered}1+2\\3+4\end{gathered}", "1.  3\n\n2.  7"),
+        (r"\begin {gathered}1+2\\3+4\end {gathered}", "1.  3\n\n2.  7"),
+    ]:
+        value=data("quantum:"+expression,*flags)
+        assert value['display_text']==expected,value
+        assert value['rows']==value['columns']==0 and value['cells']==[],value
+        assert data("quantum:"+value['copy_text'],*flags)['display_text']==expected
+    value=data(r"quantum:\begin{gathered}|0>\\|1>\end{gathered}",*flags)
+    assert value['rows']==value['columns']==0 and value['cells']==[],value
+    assert value['display_text'].startswith('1.  ') and '\n\n2.  ' in value['display_text'],value
+    assert data("quantum:"+value['copy_text'],*flags)['display_text']==value['display_text']
+    single=data(r"quantum:\begin{aligned}|0>\end{aligned}",*flags)
+    assert single['rows']==2 and single['columns']==1,single
+    assert Decimal(data(r"quantum:\langle{+i}\vert Y\vert{+i}\rangle",*flags)['text'])==1
+
 # Human-readable presentation must leave canonical clipboard expressions intact.
 for expression,shown in [
     ("QFT_N|x>", "QFT_N |x⟩"),
