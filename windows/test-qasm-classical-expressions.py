@@ -8,6 +8,26 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('range-runtime-upper','int n=3;int total=0;bit c;for int i in [0:n]{total+=i;}c=total==6;',{'1':'1'}),
+ ('range-runtime-signed-limit','int n=9223372036854775807;int total=0;bit c;for int i in [9223372036854775806:n]{total+=1;}c=total==2;',{'1':'1'}),
+ ('range-runtime-unsigned-limit','uint n=18446744073709551615;int total=0;bit c;for uint i in [18446744073709551614:n]{total+=1;}c=total==2;',{'1':'1'}),
+ ('range-runtime-negative-limit','int n=-9223372036854775808;int total=0;bit c;for int i in [-9223372036854775807:-1:n]{total+=1;}c=total==2;',{'1':'1'}),
+ ('range-runtime-binding-width','int n=129;int total=0;bit c;for int[8] i in [127:n]{total+=i;}c=total==-128;',{'1':'1'}),
+ ('range-runtime-nested','int n=2;int total=0;bit c;for int i in [0:n]{for int j in [0:i]{total+=1;}}c=total==6;',{'1':'1'}),
+ ('range-runtime-in-static','int n=1;int total=0;bit c;for int j in [0:1]{for int i in [j:n]{total+=1;}}c=total==3;',{'1':'1'}),
+ ('range-runtime-static-in-body','int n=1;int total=0;bit c;for int i in [0:n]{for int j in [0:1]{total+=j;}}c=total==2;',{'1':'1'}),
+ ('range-runtime-local-lifetime','int n=1;bit c;for int i in [0:n]{int x;if(i==0){x=1;continue;}c=x==1;}',None),
+ ('range-runtime-capture','int n=3;int total=0;bit c;for int i in [0:n]{total+=i;n=0;}c=total==6;',{'1':'1'}),
+ ('range-runtime-binding-write','int n=2;int total=0;bit c;for int i in [0:n]{total+=i;i=9;}c=total==3;',{'1':'1'}),
+ ('range-runtime-shadow','int i=7;int n=2;int total=0;bit c;for int i in [0:n]{total+=i;}c=total==3 && i==7;',{'1':'1'}),
+ ('range-runtime-continue','int n=3;int total=0;bit c;for int i in [0:n]{if(i==1){continue;}total+=i;}c=total==5;',{'1':'1'}),
+ ('range-runtime-break','int n=3;int total=0;bit c;for int i in [0:n]{total+=i;break;}c=total==0;',{'1':'1'}),
+ ('range-runtime-end','int n=3;bit c;for int i in [0:n]{c=1;end;}c=0;',{'1':'1'}),
+ ('range-runtime-descending','int n=5;int step=-2;int total=0;bit c;for int i in [n:step:0]{total+=i;}c=total==9;',{'1':'1'}),
+ ('range-runtime-empty','int n=-1;bit c=1;for int i in [0:n]{c=0;}',{'1':'1'}),
+ ('range-runtime-zero-step','int n=1;bit c;for int i in [0:0:n]{c=1;}',None),
+ ('range-runtime-undefined','int n;bit c;for int i in [0:n]{c=1;}',None),
+ ('range-runtime-feedback','qubit q;h q;bit b=measure q;int n=int[1](b);int total=0;bit c;for int i in [0:n]{total+=1;}c=total==1;',{'01':'1/2','10':'1/2'}),
  ('variable-range-positive-boundary','int n=0;bit c;for int i in [0:2:5]{n+=i;}c=n==6;',{'1':'1'}),
  ('variable-range-negative-boundary','int n=0;bit c;for int i in [5:-2:0]{n+=i;}c=n==9;',{'1':'1'}),
  ('transfer-range-boundary','int n=0;bit c;for int i in [0:2:5]{n+=i;continue;}c=n==6;',{'1':'1'}),
@@ -307,6 +327,12 @@ rejected += ['bit c;while(false){gate custom q {x q;}}',
              'bit c;while(false){def f(){}}',
              'bit c;'+('while(false){'*33)+('}'*33),
              'bit c;while(false){c=missing;}']
+rejected += ['int n=2;bit c;for int i in [true:n]{c=1;}',
+             'bool b=true;int n=2;bit c;for int i in [b:n]{c=1;}',
+             'int n=2;bit c;for int i in [0:n>1]{c=1;}',
+             'int n=2;bit c;for int i in [0:n]{}c=i==0;',
+             'int n=2;qubit[3] q;for int i in [0:n]{x q[i];}',
+             'int n=2;qubit q;for int i in [0:n]{rx(i) q;}']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
@@ -350,6 +376,7 @@ def steps(body):
   elif kind=='End':out+=n(14)
   elif kind in ('Break','Continue'):out+=n(12 if kind=='Break' else 13)
   elif kind=='While':out+=n(11)+expression(s['ClassicalValue'])+n(len(s['WhenTrue']))+steps(s['WhenTrue'])
+  elif kind=='ForRange':out+=n(15,s['VariableSlot'])+b''.join(integer_expression(s['Range'][key]) for key in ['Start','Stop','Step'])+n(len(s['WhenTrue']))+steps(s['WhenTrue'])
   elif kind=='ClearInteger':out+=n(10,s['VariableSlot'])
   elif kind=='StoreInteger':out+=n(9,s['VariableSlot'])+integer_expression(s['IntegerValue'])
   elif kind=='Reset':out+=n(2,s['Wires'][0])
@@ -363,7 +390,7 @@ for name,body,expected in cases:
   sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
   assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
   checks+=1
- assert circuit['Version']==(9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)
@@ -393,6 +420,7 @@ for name,body,expected in cases:
     assert circuit['LoopConditionBudget']==1000000
     declarations+=n(32) # Bound intentionally nonterminating test programs.
    payload=protocol+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits)+declarations+n(len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
+   if circuit['Version']>=10:payload=(b'QEXACT9\n' if exact else b'QSAMPLE10\n')+payload[len(protocol):]
    run=subprocess.run([str(worker),'--exact-circuit' if exact else '--sample'],input=payload,capture_output=True,timeout=30,env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/'data')))
    if expected is None:
     assert run.returncode!=0 and run.stderr and not run.stdout,(name,run.stdout);checks+=1;continue

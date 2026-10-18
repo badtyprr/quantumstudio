@@ -127,3 +127,11 @@ for source in [header+'qubit q;for int i in [0:2:5]{x q;}',header+'qubit q;for i
     else:assert ':0:' not in source
     assert adapter.QasmVisitor._visit_forin_loop is original_for
 print('PASS: 2 range compiler-hook restoration checks.')
+
+for invalid in (False,True):
+    source=header+'int n=2;bit c;for int i in ['+('true' if invalid else '0')+':n]{c=1;}'
+    try:adapter.convert(source,classical=True)
+    except ValueError:assert invalid
+    else:assert not invalid
+    assert adapter.QasmVisitor._visit_forin_loop is original_for
+print('PASS: 2 runtime-range compiler-hook restoration checks.')
