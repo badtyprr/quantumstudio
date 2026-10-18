@@ -10,8 +10,18 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End }
- public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange }
+ public sealed class IntegerRange {
+  public readonly ClassicalIntegerExpression Start,Stop,Step;
+  public IntegerRange(ClassicalIntegerExpression start,ClassicalIntegerExpression stop,ClassicalIntegerExpression step) {
+   if(start==null || stop==null || step==null)throw new ArgumentException("A range requires start, stop and step expressions.");
+   Start=start;Stop=stop;Step=step;
+  }
+  internal void Write(Action<ulong> number,int bits,ClassicalIntegerType[] variables) {
+   foreach(var expression in new[]{Start,Stop,Step}) {expression.Validate(bits,variables);expression.WriteNode(number);}
+  }
+ }
+ public sealed class Gate {public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  public sealed class Readout {public string Expression;public int[] Bits;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
  public sealed class Result {
@@ -69,19 +79,22 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false,loopProtocol=loopBudget.HasValue,transferProtocol=false,terminationProtocol=false;
+  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false,loopProtocol=loopBudget.HasValue,transferProtocol=false,terminationProtocol=false,rangeProtocol=false;
   Action<Gate,int,int> write=null;
   write=delegate(Gate gate,int depth,int loopDepth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
    if(gate.ClassicalBit.HasValue && (!classicalBits.HasValue || gate.Kind!=Operation.Measure))throw new ArgumentException("A classical destination requires an explicit classical-output measurement.");
-   bool loop=gate.Kind==Operation.While;loopProtocol|=loop;
+   bool range=gate.Kind==Operation.ForRange;rangeProtocol|=range;
+   bool loop=gate.Kind==Operation.While || range;loopProtocol|=loop;
    bool branch=gate.Kind==Operation.Branch || gate.Kind==Operation.ExpressionBranch || loop;
-   bool expression=gate.Kind==Operation.Assign || gate.Kind==Operation.ExpressionBranch || loop;
+   bool expression=gate.Kind==Operation.Assign || gate.Kind==Operation.ExpressionBranch || gate.Kind==Operation.While;
    if(!branch && (gate.WhenTrue!=null || gate.WhenFalse!=null))throw new ArgumentException("Only a branch can contain operation bodies.");
    if(!expression && gate.ClassicalExpression!=null)throw new ArgumentException("Only assignments and expression branches accept classical expressions.");
    bool integer=gate.Kind==Operation.StoreInteger || gate.Kind==Operation.ClearInteger;
-   if(!integer && (gate.VariableSlot.HasValue || gate.IntegerExpression!=null))throw new ArgumentException("Only variable operations accept variable targets and integer expressions.");
+   if((!integer && gate.IntegerExpression!=null) || (!integer && !range && gate.VariableSlot.HasValue))throw new ArgumentException("Only variable operations accept integer expressions; variable operations and ranges accept variable targets.");
+   if(range!=(gate.Range!=null))throw new ArgumentException("Only range loops require range expressions.");
+   if(range && (!classicalBits.HasValue || variables==null || !gate.VariableSlot.HasValue || gate.VariableSlot.Value<0 || gate.VariableSlot.Value>=variables.Length || gate.Mask!=0 || gate.Value!=0))throw new ArgumentException("Range loops require explicit outputs, a declared binding slot and no condition mask.");
    if(gate.Kind==Operation.Break || gate.Kind==Operation.Continue || gate.Kind==Operation.End) {
     bool end=gate.Kind==Operation.End;
     if(!classicalBits.HasValue)throw new ArgumentException("Control transfers require explicit classical outputs.");
@@ -106,13 +119,17 @@ static class NumericalSampling {
     bitExpressionProtocol|=gate.ClassicalExpression.UsesBitExpressionProtocol;
    }
    if(dynamic)number((ulong)gate.Kind);
+   if(range) {
+    number((ulong)gate.VariableSlot.Value);gate.Range.Write(number,bits,variables);
+    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
+   }
    if(gate.Kind==Operation.Assign) {
     if(gate.Wires==null || gate.Wires.Length!=gate.ClassicalExpression.Width)throw new ArgumentException("Assignment width must match its targets.");
     wires(gate.Wires,bits,bits);gate.ClassicalExpression.Write(number,bits,variables);
     if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
     return;
    }
-   if(gate.Kind==Operation.ExpressionBranch || loop) {
+   if(gate.Kind==Operation.ExpressionBranch || gate.Kind==Operation.While) {
     if(gate.ClassicalExpression.Width!=1)throw new ArgumentException("A branch condition must be one bit.");
     gate.ClassicalExpression.Write(number,bits,variables);
     if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
@@ -158,7 +175,7 @@ static class NumericalSampling {
    string budget=(loopBudget ?? 1000000).ToString(CultureInfo.InvariantCulture)+"\n";
    if(variables==null)text.Insert(declarationPosition,"0\n"+budget);
    else text.Insert(budgetPosition,budget);
-   text.Remove(0,exact ? 8 : 9).Insert(0,terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
+   text.Remove(0,exact ? 8 : 9).Insert(0,rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
   }
   else if(bitExpressionProtocol) {
    if(variables==null)text.Insert(declarationPosition,"0\n");
