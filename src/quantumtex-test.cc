@@ -209,6 +209,8 @@ int main() {
   equal("[\"⋮\"]", "[\"⋮\"]");
   equal("[a_0; ⋮; a_(n/2+1)]", "qindexedcolumn(\"a_\",(n/2+1),0)");
   rejects("[ _0; ⋮; a_n]");
+  equal(R"(\begin{pmatrix}\alpha_0\\[1.5mm]\alpha_1\\[-.5 em]\vdots\\[+2pt]\alpha_{n-1}\end{pmatrix})", "qindexedcolumn(\"α_\",(n-1),1)");
+  rejects(R"(\begin{pmatrix}a_0\\[n mm]\vdots\\a_n\end{pmatrix})");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";

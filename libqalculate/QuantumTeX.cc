@@ -31,6 +31,12 @@ std::string indexedColumn(const std::string &raw, bool tex) {
  }
  if(!found)return "";
  rows.push_back(trim(raw.substr(start)));
+ // read() has already validated each optional TeX row-spacing dimension.
+ // Remove that presentation suffix before checking the coefficient pattern.
+ if(tex)for(size_t row=1;row<rows.size();++row)if(!rows[row].empty() && rows[row][0]=='[') {
+  size_t close=rows[row].find(']');
+  if(close!=std::string::npos)rows[row]=trim(rows[row].substr(close+1));
+ }
  auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
  if(rows.size()<3 || rows[rows.size()-2]!=marker || rows.size()>1027)invalid();
  std::string family, last;
