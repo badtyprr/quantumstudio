@@ -842,9 +842,25 @@ branch and when zero shots are requested. Operations after a transfer still
 undergo validation even though execution skips them. Cancellation and errors
 continue to throw without partial counts.
 
-This is native numerical support only. Exact histories, worker transport, saved
-files, GUI controls and OpenQASM lowering for these transfers remain unfinished.
+Worker transport, saved files, GUI controls and OpenQASM lowering for these
+transfers remain unfinished. Exact native support is described below.
 Callers that compile scoped variables must emit any required scope-exit clearing
 before a transfer. The native API does not infer source-language scopes.
 
 Semantics: [OpenQASM break and continue](https://openqasm.com/language/classical.html#breaking-and-continuing-loops).
+
+
+### Exact-history loop transfers
+
+`CircuitStep::breakLoop()` and `CircuitStep::continueLoop()` implement the same
+nearest-loop semantics in exact evaluation. Pending transfers are part of the
+history identity: histories with identical bits and variable values cannot
+merge if one still executes the body and another has already broken or continued.
+Only the enclosing loop consumes a transfer, preserving exact fractional and
+symbolic probability weights. A pending transfer skips later operations and
+nested loops without evaluating their conditions. Static validation still checks
+all operations and rejects transfers outside loops.
+
+The shared exact condition budget counts each active history. These factories
+extend the native API only; transport, saved-file, editor and import support for
+break/continue remain unfinished, along with compiler-managed scope cleanup.
