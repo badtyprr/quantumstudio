@@ -115,7 +115,13 @@ class Printer {
   }
   if((name=="qketstate" || name=="qnamedket" || name=="qindexedket") && value.size()==1) {
    std::string label=value[0].isSymbolic() ? value[0].symbol() : render(value[0],depth+1).text;
-   bool literalCollision=(value[0].isSymbolic() && label.size()==1) || label.find_first_not_of("0123456789 ")==std::string::npos;
+   // Bound labels must use the same fresh name as their displayed sum index.
+   // Unbound single-letter named kets still retain the canonical fallback.
+   bool bound=false;
+   for(auto i=bindings.rbegin();i!=bindings.rend();++i)if(value[0].equals(i->first)) {
+    label=i->second;bound=true;break;
+   }
+   bool literalCollision=!bound && ((value[0].isSymbolic() && label.size()==1) || label.find_first_not_of("0123456789 ")==std::string::npos);
    if(!literalCollision && safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
   }
   if(name=="qpower" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^"+grouped(render(value[1],depth+1),81),80);
