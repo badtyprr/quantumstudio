@@ -35,6 +35,19 @@ for flags in [(), ("--approx",)]:
     for bad in ['qindexedmatrix("a_",n,-1,0,0)','qindexedmatrix("a_",-1,n,0,0)','qindexedmatrix("a_",n,1024,0,0)','qindexedmatrix("a_",2,1/2,0,0)','qindexedmatrix("a_",n,2,0,3)','qindexedmatrix("a_",n,m,-1,0)']:
         assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
 
+# Natural and source-derived matrix patterns evaluate to the same indexed cells.
+for flags in [(), ("--approx",)]:
+    for expression in ['[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), ⋯, a_(m-1,n-1)]',r'\begin{pmatrix}a_{0,0}&\cdots&a_{0,n-1}\\[1mm]\vdots&\ddots&\vdots\\a_{m-1,0}&\cdots&a_{m-1,n-1}\end{pmatrix}']:
+        symbolic=data('quantum:'+expression,*flags)
+        concrete=data('quantum:replace(replace('+expression+',m,3),n,2)',*flags)
+        expected=data('quantum:qindexedmatrix("a_",2,1,0,0)',*flags)
+        assert concrete['rows']==3 and concrete['columns']==2 and concrete['cells']==expected['cells']
+        assert data('quantum:replace(replace('+symbolic['copy_text']+',m,3),n,2)',*flags)['cells']==expected['cells']
+        square='replace(replace('+expression+',m,2),n,2)'
+        trace=data('quantum:replace(replace(Tr('+square+'),"a_0,0",3),"a_1,1",5)',*flags)
+        assert Decimal(trace['text'])==8,trace
+        assert run('quantum:replace('+expression+',m,0)','--json',*flags,success=False).stdout==b''
+
 # Indexed column constraints must survive symbolic dimensions and substitution.
 for flags in [(), ("--approx",)]:
     symbolic=data('quantum:qindexedcolumn("alpha_",n-1,1)',*flags)
