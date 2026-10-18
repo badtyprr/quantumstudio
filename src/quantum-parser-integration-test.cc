@@ -21,6 +21,20 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ // A matrix-valued unknown must not be broadcast as a scalar while other
+ // substitutions in the same expression are still pending.
+ const std::string indexedMixture=R"(quantum: replace(replace(replace(replace(replace(\sum_{k=0}^{m-1} p_k \rho_k,m,2),p_0,1/2),p_1,1/2),\rho_0,density(|0>)),\rho_1,density(|+>)))";
+ MathStructure mixture=calculator.calculate(indexedMixture,eo);
+ if(!mixture.isMatrix() || mixture.rows()!=2 || mixture.columns()!=2)throw std::runtime_error("Indexed mixture has the wrong shape");
+ for(size_t row=1;row<=2;++row)for(size_t column=1;column<=2;++column) {
+  const MathStructure &cell=*mixture.getElement(row,column);
+  if(!cell.isNumber() || cell.number()!=Number(row==1 && column==1 ? 3 : 1,4))throw std::runtime_error("Indexed mixture requires scalar matrix entries");
+ }
+ ++checks;
+ equal("quantum: replace(replace(x,x,y+1),y,2)","3");
+ equal("quantum: replace(replace(x,x,x+1),x,2)","3");
+ equal("quantum: replace(x+y,[x,y],[1,2])","3");
+ equal("quantum: replace(x+x,x,2,1)","4");
  equal(R"(quantum: \sum_{k=0}^{1}{p_k})","quantum: p_0+p_1");
  equal(R"(quantum: \sum_{k=0}^{1}{\rho_k})","quantum: ρ_0+ρ_1");
  equal(R"(quantum: \sum_{j=0}^{1}{\sum_{k=0}^{1}{p_j_k}})","quantum: p_0_0+p_0_1+p_1_0+p_1_1");

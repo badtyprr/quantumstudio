@@ -1196,6 +1196,7 @@ class Parser {
      args[0]="vector("+body+")";
     }
     scopeIndex(name,args);
+    if(name=="replace" && args.size()==3)name="qreplace";
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
