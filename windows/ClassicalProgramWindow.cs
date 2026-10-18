@@ -83,7 +83,7 @@ sealed class ClassicalProgramWindow : Window {
   history.Edit(d=>{
    var previous=d.Variables ?? new ClassicalCircuit.Variable[0];
    for(int k=0;k<parsed.Length;k++){int old=Array.FindIndex(previous,v=>v.Name==parsed[k].Name);if(old>=0 && old!=k)throw new ArgumentException("Keep existing variables in their original order.");}
-   d.Version=5;d.Variables=parsed;
+   d.Version=Math.Max(5,d.Version);d.Variables=parsed;
   });
  }
  static bool IsBranch(string op) {return op=="Branch" || op=="ExpressionBranch";}
@@ -104,7 +104,7 @@ sealed class ClassicalProgramWindow : Window {
   }
   bool classical=op=="Assign" || op=="ExpressionBranch";
   if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
-  history.Edit(d=>{if(classical)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.ClassicalValue),d.Version);var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
+  history.Edit(d=>{if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {if(!branch && (old.WhenTrue.Length!=0 || old.WhenFalse.Length!=0))throw new ArgumentException("Delete the branch's children before changing it to another operation.");if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=old.WhenFalse;}}list[selected.Index]=step;}else list.Add(step);ReplaceBody(d,selected.Route,list.ToArray());});
  }
  void Delete() {var selected=Selected();if(selected.Index<0)throw new ArgumentException("Select an operation to delete.");history.Edit(d=>{var list=Body(d,selected.Route).ToList();list.RemoveAt(selected.Index);ReplaceBody(d,selected.Route,list.ToArray());});}
  void Refresh() {
@@ -189,6 +189,7 @@ sealed class ClassicalProgramWindow : Window {
   if(scroll.ScrollableHeight<=0)throw new Exception("Short editor did not make all controls scrollable.");
   scroll.ScrollToEnd();UpdateLayout();Capture(screenshot+".minimum.png");
   VerifyVariables(screenshot+".variables");
+  VerifyComputedCasts(screenshot+".computed-casts");
  }
  void VerifyVariables(string screenshot) {
   Width=980;Height=850;
@@ -213,6 +214,26 @@ sealed class ClassicalProgramWindow : Window {
   ((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(screenshot+".png");
   Width=MinWidth;Height=MinHeight;UpdateLayout();var scroll=(ScrollViewer)Content;
   if(scroll.ScrollableHeight<=0)throw new Exception("Variable controls do not scroll at minimum size.");scroll.ScrollToEnd();UpdateLayout();Capture(screenshot+".minimum.png");
+ }
+ void VerifyComputedCasts(string screenshot) {
+  Width=980;Height=850;
+  var initial=ClassicalCircuit.From(new ClassicalCircuit.Document{Version=2,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]}).Serialize();
+  history.Open(initial);Refresh();kind.SelectedValue="Assign";wires.Text="0";expression.Text="uint[1](c == 0) == 1";ChangeStep(false);Refresh();
+  if(history.Current.Snapshot().Version!=6 || history.Current.Snapshot().Variables.Length!=0)throw new Exception("Computed cast did not upgrade a variable-free circuit.");
+  string assigned=history.Current.Serialize();history.Undo();if(history.Current.Serialize()!=initial)throw new Exception("Computed cast undo changed the original document.");history.Redo();if(history.Current.Serialize()!=assigned)throw new Exception("Computed cast redo lost version 6.");
+  variables.Text="counter:uint[1]";ApplyVariables();Refresh();if(history.Current.Snapshot().Version!=6)throw new Exception("Variable edits downgraded computed casts.");
+  history.Open(initial);Refresh();variables.Text="counter:uint[1]";ApplyVariables();Refresh();
+  kind.SelectedValue="StoreInteger";variableTarget.Text="counter";expression.Text="uint[1](c == 0)";ChangeStep(false);Refresh();
+  if(history.Current.Snapshot().Version!=6)throw new Exception("Computed variable store did not upgrade the document.");
+  kind.SelectedValue="Assign";wires.Text="0";expression.Text="counter == 1";ChangeStep(false);Refresh();
+  string valid=history.Current.Serialize();var selected=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[0];selected.IsSelected=true;
+  ChangeStep(true);if(history.Current.Serialize()!=valid)throw new Exception("Computed cast formatting changed a selected store.");
+  expression.Text="uint[2](c == 0)";try{ChangeStep(true);throw new Exception("Mismatched computed cast accepted.");}catch(ArgumentException){}
+  if(history.Current.Serialize()!=valid)throw new Exception("Invalid computed cast changed the document.");
+  history.Open(valid);Refresh();if(history.Current.Serialize()!=valid)throw new Exception("Computed cast save/reopen changed the document.");
+  File.WriteAllText(screenshot+".qcircuit",valid);saved=valid;status.Text="Verified · Computed bit casts, declaration edits, selection, save/reopen and undo/redo.";
+  ((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(screenshot+".png");
+  Width=MinWidth;Height=MinHeight;UpdateLayout();((ScrollViewer)Content).ScrollToEnd();UpdateLayout();Capture(screenshot+".minimum.png");
  }
  void Capture(string path) {UpdateLayout();var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);bitmap.Render(this);var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder();encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));using(var file=File.Create(path))encoder.Save(file);}
 }
