@@ -144,6 +144,13 @@ static class ClassicalExpressionText {
  public static string Format(N value,ClassicalCircuit.Document context=null){return FormatNode(value,0,context);}
  static string FormatNode(N n,int depth,ClassicalCircuit.Document context) {
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
+  // bool(...) parses back to these exact canonical comparisons. Retain other
+  // zero types explicitly: changing signedness or width can change promotion.
+  // Validated bit comparisons already require equal operand widths.
+  if(n.Operator=="NotEqual" && n.Left!=null && n.Right!=null && n.Right.Value=="0" &&
+     ((n.Kind=="IntegerCompare" && IntegerValue(n.Left) && n.Right.Kind=="IntegerConstant" && n.Right.Signedness=="Signed" && n.Right.Width==0) ||
+      (n.Kind=="Binary" && !IntegerValue(n.Left) && n.Right.Kind=="Constant" && n.Right.Width>=1 && n.Right.Width<=64)))
+   return "bool("+FormatNode(n.Left,depth+1,context)+")";
   if(n.Kind=="IntegerVariable") {
    int slot=n.Slot.Value;
    if(context!=null && context.Variables!=null && slot>=0 && slot<context.Variables.Length) {
