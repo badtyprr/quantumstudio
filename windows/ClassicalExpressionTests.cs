@@ -22,6 +22,42 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void LoopChecks(string worker) {
+  Func<E,IList<G>,G> loop=(condition,body)=>new G{Kind=O.While,ClassicalExpression=condition,WhenTrue=body};
+  var no=E.Constant(1,0);var yes=E.Constant(1,1);
+  var steps=new[]{Assign(new[]{0},yes),loop(E.Read(0),new[]{Assign(new[]{0},no)})};
+  foreach(bool exact in new[]{false,true}) {
+   string payload=Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},steps));
+   Check(payload.StartsWith(exact ? "QEXACT6\n0\n1\n0\n1000000\n" : "QSAMPLE7\n0\n10000\n1731\n1\n0\n1000000\n"));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(E.Constant(2,0),new G[0])}));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(no,null)}));
+   var invalid=loop(no,new G[0]);invalid.WhenFalse=new G[0];Reject(()=>Request(exact,0,1,new[]{0},new[]{invalid}));
+   invalid=loop(no,new G[0]);invalid.Wires=new[]{0};Reject(()=>Request(exact,1,1,new[]{0},new[]{invalid}));
+   invalid=loop(no,new G[0]);invalid.Mask=1;Reject(()=>Request(exact,0,1,new[]{0},new[]{invalid}));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(no,new[]{Assign(new[]{1},yes)})}));
+   var body=new G[0];for(int k=0;k<32;k++)body=new[]{loop(no,body)};
+   Check(Request(exact,0,1,new[]{0},body).Length>0);
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{loop(no,body)}));
+   var type=T.Create(T.Sign.Unsigned,1);var types=new[]{type};
+   var withSlot=new[]{new G{Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=I.FromBits(type,yes)},
+    loop(E.FromInteger(I.Variable(type,0)),new[]{new G{Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=I.FromBits(type,no)},Assign(new[]{0},yes)})};
+   Check(Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},withSlot,types)).Contains("1\n1\n1\n1000000\n"));
+   if(worker!=null) {
+    var result=Evaluate(worker,exact,0,1,new[]{0},steps);Check(result.Count==1 && Convert.ToString(result["0"])==(exact ? "1" : "10000"));
+    result=Evaluate(worker,exact,0,1,new[]{0},withSlot,types);Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+    byte[] bounded=exact ? NumericalSampling.RequestExact(0,1,new[]{0},steps,null,1) : NumericalSampling.RequestClassical(0,1,10,7,new[]{0},steps,null,1);
+    bool failed=false;try{NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",bounded,CancellationToken.None,x=>x).GetAwaiter().GetResult();}catch(InvalidOperationException e){failed=e.Message.Contains("loop condition budget");}Check(failed);
+   }
+  }
+  Reject(()=>NumericalSampling.Request(1,1,0,new[]{0},new[]{loop(no,new G[0])}));
+  Reject(()=>NumericalSampling.RequestClassical(0,1,1,0,new[]{0},steps,null,-1));
+  Reject(()=>NumericalSampling.RequestExact(0,1,new[]{0},steps,null,1000001));
+  Check(Encoding.UTF8.GetString(NumericalSampling.RequestExact(0,0,new int[0],new G[0],null,0))=="QEXACT6\n0\n0\n0\n0\n0\n0\n");
+  if(worker!=null) {
+   bool failed=false;try{NumericalSampling.RunClassical(worker,0,1,10,7,new[]{0},new[]{loop(no,new G[0])},CancellationToken.None,null,0).GetAwaiter().GetResult();}catch(InvalidOperationException e){failed=e.Message.Contains("loop condition budget");}Check(failed);
+   var result=NumericalSampling.RunClassical(worker,0,1,10,7,new[]{0},steps,CancellationToken.None,null,2).GetAwaiter().GetResult();Check(result.counts["0"]==10);
+  }
+ }
  static void ComputedBitsChecks(string worker) {
   var u1=T.Create(T.Sign.Unsigned,1);var s8=T.Create(T.Sign.Signed,8);
   var truth=I.FromBits(u1,E.Constant(1,1));var result=E.FromInteger(truth);
@@ -262,6 +298,7 @@ static class ClassicalExpressionTests {
   IntegerBitChecks(args.Length>0 ? args[0] : null);
   PowerChecks(args.Length>0 ? args[0] : null);
   ComputedBitsChecks(args.Length>0 ? args[0] : null);
+  LoopChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
