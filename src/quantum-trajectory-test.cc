@@ -141,6 +141,37 @@ int main(){try {
  auto measured=sampleTrajectories(1,1,1000,42,{0},{Step::gate(H,{0}),Step::measure(0,0)},32);
  check(sampleTrajectories(1,1,1000,42,{0},{Step::whileLoop(yes,{Step::gate(H,{0}),Step::measure(0,0),Step::breakLoop(),Step::gate(X,{0})})},32)==measured);
  }
+ // Program termination crosses every branch/loop and ends only the current shot.
+ {
+ auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
+ auto end=Step::endProgram(),emit=Step::assign({0},yes),clear=Step::assign({0},no);
+ auto run=[&](const std::vector<Step> &program,std::size_t budget=0,unsigned shots=20) {
+  return sampleTrajectories(0,1,shots,7,{0},program,{},16,Cancellation(),budget);
+ };
+ check(run({end,emit}).at(0)==20);
+ check(run({emit,end,clear}).at(1)==20);
+ check(run({end},0,0).empty());
+ check(run({Step::branch(yes,{emit,end}),clear}).at(1)==20);
+ check(run({Step::branch(no,{}, {emit,end}),clear}).at(1)==20);
+ check(run({Step::branch(no,{end}),emit}).at(1)==20);
+ check(run({Step::whileLoop(yes,{emit,end,clear}),clear},1).at(1)==20);
+ check(run({Step::whileLoop(yes,{Step::whileLoop(yes,{emit,end}),clear}),clear},2).at(1)==20);
+ check(run({end,Step::whileLoop(yes,{})}).at(0)==20);
+ // End does not mask malformed unreachable operations, even with no shots.
+ rejects<std::out_of_range>([&]{run({end,Step::assign({1},yes)},0,0);});
+ rejects<std::invalid_argument>([&]{run({end,Step::breakLoop()},0,0);});
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{end})},0);});
+ // A runtime error in a skipped, structurally valid expression is not evaluated.
+ auto divideZero=Expr::binary(Int::Operation::Divide,literal(1),literal(0));
+ auto invalidValue=Step::assign({0},Bits::integerCompare(Op::Equal,divideZero,literal(0)));
+ check(run({end,invalidValue}).at(0)==20);
+ unsigned polls=0;
+ rejects<Cancelled>([&]{sampleTrajectories(0,0,1,7,{}, {end},{},16,[&]{return ++polls==4;},0);});
+ check(polls==4);
+ auto baseline=sampleTrajectories(1,1,1000,42,{0},{Step::gate(H,{0}),Step::measure(0,0)},32);
+ check(sampleTrajectories(1,1,1000,42,{0},{Step::gate(H,{0}),Step::measure(0,0),
+  Step::branch(Bits::read({0}),{end}),Step::gate(X,{0}),end,Step::measure(0,0)},32)==baseline);
+ }
  auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
  auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
  auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
