@@ -4,6 +4,7 @@
 #include <libqalculate/QuantumClassical.h>
 #include <libqalculate/QuantumClassicalIntegerExpression.h>
 #include <libqalculate/QuantumClassicalIntegerStorage.h>
+#include <libqalculate/QuantumClassicalRangeExpression.h>
 #include <limits>
 #include <stdexcept>
 
@@ -91,6 +92,14 @@ QuantumClassical::Bits read(Reader &reader,unsigned bits,bool typed=false,const 
  unsigned count=0;auto expression=node(reader,0,count,typed,variables!=nullptr,bitExpressions);
  if(variables)expression.validate(bits,*variables);else expression.validate(bits);
  return expression;
+}
+template<class Reader>
+QuantumClassical::RangeExpression range(Reader &reader,unsigned bits,const QuantumClassical::IntegerStorage &variables) {
+ unsigned count=0;auto start=integerNode(reader,0,count,true,true);
+ count=0;auto stop=integerNode(reader,0,count,true,true);
+ count=0;auto step=integerNode(reader,0,count,true,true);
+ QuantumClassical::RangeExpression result(start,stop,step);
+ result.validate(bits,variables);return result;
 }
 }
 #endif
