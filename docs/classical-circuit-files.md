@@ -93,7 +93,7 @@ per shot, while exact evaluation shares it across all measurement histories.
 Exhaustion reports an error, never partial results. A budget of zero can be used
 to prohibit executed loop conditions. OpenQASM `while` import preserves runtime conditions and scoped bodies. Imported
 loops use a default budget of 1,000,000, editable below. `break` and `continue` targeting while loops use version 8, described below.
-Whole-program `end` is not yet supported.
+Whole-program `end` is preserved in version 9 files.
 
 In the classical circuit editor, select **While expression**, enter a one-bit
 condition such as `counter > 0`, and add it to the selected body. Select its
@@ -138,7 +138,7 @@ The importer represents an active iteration with a one-pass loop and guards
 later iterations with a private Boolean variable. Each executed iteration uses
 one condition check from the saved budget. Nested loops retain their own transfer
 targets and scope cleanup. Expanded programs still obey the 512-operation and
-32-level limits. Runtime for ranges and whole-program `end` remain unsupported.
+32-level limits. Runtime for ranges remain unsupported.
 
 ## Version 9: program termination
 
@@ -149,5 +149,6 @@ Versions 2–8 reject End, including in unreachable bodies. The required Variabl
 array and LoopConditionBudget follow versions 7–8; a top-level End works with a
 zero condition budget. Canonical save/reopen retains version 9 and the step.
 The editor offers End program at any depth, disables payload fields, and preserves
-termination through undo/redo and save/reopen. OpenQASM import does not yet
-create termination steps.
+termination through undo/redo and save/reopen. OpenQASM import preserves `end;`
+at top level, in branches, in runtime while loops and in statically expanded for
+loops. No implicit final measurement is added; saved bits retain their values.

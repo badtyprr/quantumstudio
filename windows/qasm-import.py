@@ -33,6 +33,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_range = Qasm3Transformer.get_qubits_from_range_definition
     original_switch = QasmVisitor._visit_switch_statement
     original_branch = QasmVisitor._visit_branching_statement
+    original_visit_map = QasmVisitor._construct_visit_map
     original_break = QasmVisitor._visit_break
     original_continue = QasmVisitor._visit_continue
     original_while = QasmVisitor._visit_while_loop
@@ -209,6 +210,10 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             visitor._in_branching_statement -= 1
             if not visitor._in_branching_statement:
                 visitor._update_branching_gate_depths()
+    def visit_map(visitor):
+        mapping=original_visit_map(visitor)
+        mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
+        return mapping
     def transfer(visitor, statement):
         if not getattr(statement,"_quantum_loop_transfer",False):
             raise ValueError("A loop transfer must target a runtime while loop.")
@@ -216,8 +221,6 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def while_loop(visitor, statement):
         # Compile one body, never evaluate or unroll its runtime condition here.
         # Branch compilation supplies the same scoped block and gate bookkeeping.
-        if any(isinstance(item,(ast.EndStatement,)) for item in nodes(statement)):
-            raise ValueError('End inside runtime loops is not yet supported.')
         if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
             raise ValueError('Global declarations are not allowed in runtime loops.')
         proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
@@ -306,6 +309,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
+        QasmVisitor._construct_visit_map = visit_map
         QasmVisitor._visit_switch_statement = switch
         QasmVisitor._visit_branching_statement = branch
         QasmVisitor._visit_break = transfer
@@ -320,6 +324,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
         QasmVisitor._visit_switch_statement = original_switch
         QasmVisitor._visit_branching_statement = original_branch
+        QasmVisitor._construct_visit_map = original_visit_map
         QasmVisitor._visit_break = original_break
         QasmVisitor._visit_continue = original_continue
         QasmVisitor._visit_while_loop = original_while
@@ -1034,6 +1039,9 @@ def classical_circuit(statements, published_u, hidden_registers=None):
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
                 append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets),variables)})
+            elif isinstance(statement,ast.EndStatement):
+                version=max(version,9)
+                append({'Kind':'End'})
             elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
                 version=max(version,8)
                 append({'Kind':'Break' if isinstance(statement,ast.BreakStatement) else 'Continue'})

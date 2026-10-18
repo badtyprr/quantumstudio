@@ -101,3 +101,15 @@ for command in commands:
     run(command, header+'qubit[26] q;',
         diagnostic='The circuit editor currently supports 1–25 qubits.')
 print(f'PASS: {checks} source/frozen OpenQASM process checks.')
+
+# The termination dispatch adapter must not leak into subsequent imports.
+original_map=adapter.QasmVisitor._construct_visit_map
+for source in [header+'bit c;end;c=1;', header+'bit c;end;missing q;']:
+    try:
+        adapter.convert(source,classical=True)
+    except Exception:
+        assert 'missing' in source
+    else:
+        assert 'missing' not in source
+    assert adapter.QasmVisitor._construct_visit_map is original_map
+print('PASS: 2 termination compiler-hook restoration checks.')
