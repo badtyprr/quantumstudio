@@ -4,6 +4,38 @@ using System.IO;
 using System.Text;
 class ClassicalCircuitTests {
  static int checks;
+ static void Ranges(string worker) {
+  Func<ulong,ClassicalCircuit.ExpressionNode> literal=n=>new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value=n.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+  Func<int,ClassicalCircuit.ExpressionNode> variable=n=>new ClassicalCircuit.ExpressionNode{Kind="IntegerVariable",Signedness="Signed",Width=0,Slot=n};
+  var range=new ClassicalCircuit.Step{Kind="ForRange",VariableSlot=0,Range=new ClassicalCircuit.RangeNode{Start=literal(0),Stop=literal(2),Step=literal(1)},WhenTrue=new[]{new ClassicalCircuit.Step{Kind="StoreInteger",VariableSlot=1,IntegerValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerBinary",Operator="Add",Left=variable(1),Right=variable(0)}}}};
+  var doc=new ClassicalCircuit.Document{Version=10,LoopConditionBudget=4,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new[]{new ClassicalCircuit.Variable{Name="i",Signedness="Signed",Width=0},new ClassicalCircuit.Variable{Name="sum",Signedness="Signed",Width=0}},OutputBits=new[]{0},Steps=new[]{new ClassicalCircuit.Step{Kind="StoreInteger",VariableSlot=1,IntegerValue=literal(0)},range,new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerCompare",Operator="Equal",Left=variable(1),Right=literal(3)}}}};
+  var circuit=ClassicalCircuit.From(doc);var saved=circuit.Serialize();
+  for(int n=0;n<3;n++){circuit=ClassicalCircuit.Load(saved);Check(circuit.Serialize()==saved);Check(circuit.Snapshot().Version==10);}
+  var copy=circuit.Snapshot();copy.Steps[1].Range.Start.Value="99";copy.Steps[1].WhenTrue[0].IntegerValue.Left.Slot=0;Check(circuit.Serialize()==saved);
+  for(int version=2;version<=9;version++){copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
+  copy=circuit.Snapshot();copy.Version=11;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Variables=null;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(copy));
+  foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
+   s=>s.Range=null,s=>s.Range.Start=null,s=>s.Range.Stop=null,s=>s.Range.Step=null,
+   s=>s.VariableSlot=null,s=>s.VariableSlot=-1,s=>s.VariableSlot=2,s=>s.WhenTrue=null,
+   s=>s.WhenFalse=new ClassicalCircuit.Step[0],s=>s.Expression="X",s=>s.Wires=new[]{0},
+   s=>s.ClassicalBit=0,s=>s.Mask="0",s=>s.Value="0",s=>s.IntegerValue=literal(0),
+   s=>s.ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"},
+   s=>s.Range.Start=variable(2),s=>s.Range.Step.Kind="Constant",s=>s.Kind="ClearInteger"
+  }){copy=circuit.Snapshot();corrupt(copy.Steps[1]);Reject(()=>ClassicalCircuit.From(copy));}
+  var unknown=saved.Replace("\"Range\":{","\"Range\":{\"Unexpected\":0,");Check(unknown!=saved);Reject(()=>ClassicalCircuit.Load(unknown));
+  copy=circuit.Snapshot();copy.Steps[0].Range=copy.Steps[1].Range;Reject(()=>ClassicalCircuit.From(copy));
+  // A zero step is a runtime failure, so unreachable ranges can still be saved.
+  copy=circuit.Snapshot();copy.Steps[1].Range.Step.Value="0";Check(ClassicalCircuit.From(copy).Snapshot().Steps[1].Range.Step.Value=="0");
+  if(worker==null)return;
+  foreach(bool exact in new[]{false,true}) {
+   byte[] request=exact ? NumericalSampling.RequestExact(0,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget) : NumericalSampling.RequestClassical(0,1,10,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget);
+   Check(Encoding.UTF8.GetString(request).StartsWith(exact ? "QEXACT9\n" : "QSAMPLE10\n"));
+   string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,text=>text).GetAwaiter().GetResult();
+   Check(result.Contains(exact ? "\"1\":\"1\"" : "\"1\":10"));
+  }
+ }
  static void Termination(string worker) {
   var yes=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="1"};
   var doc=new ClassicalCircuit.Document{Version=9,LoopConditionBudget=0,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new ClassicalCircuit.Variable[0],OutputBits=new[]{0},Steps=new[]{new ClassicalCircuit.Step{Kind="End"},new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=yes}}};
@@ -323,6 +355,7 @@ class ClassicalCircuitTests {
   Loops(args.Length==0 ? null : args[0]);
   Transfers(args.Length==0 ? null : args[0]);
   Termination(args.Length==0 ? null : args[0]);
+  Ranges(args.Length==0 ? null : args[0]);
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }

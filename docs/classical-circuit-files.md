@@ -152,3 +152,22 @@ The editor offers End program at any depth, disables payload fields, and preserv
 termination through undo/redo and save/reopen. OpenQASM import preserves `end;`
 at top level, in branches, in runtime while loops and in statically expanded for
 loops. No implicit final measurement is added; saved bits retain their values.
+
+## Version 10: runtime integer ranges
+
+Version 10 adds `ForRange` with a required `VariableSlot`, a `Range` object
+containing `Start`, `Stop`, and `Step` integer-expression trees, and a required
+`WhenTrue` body. It has no condition, matrix, quantum targets, or `WhenFalse`
+body. Older versions reject this operation. Variables and LoopConditionBudget
+remain required, and the existing expression, step, nesting, and size limits apply.
+
+The worker captures the three expressions at loop entry. Endpoints are inclusive,
+and an independent cursor supplies each iteration's binding. Writing that binding
+does not affect the next value. The binding slot is cleared when the loop exits,
+including an empty range, break, or program termination. Each cursor check uses
+the shared loop budget, including the exhausted check. A zero step fails when
+executed; saving an unreachable zero-step range is allowed.
+
+Canonical save/reopen and deep snapshots retain all range fields and body steps.
+Requests use QSAMPLE10 or QEXACT9. This format support does not yet add range
+controls to the editor or runtime range lowering to the OpenQASM importer.
