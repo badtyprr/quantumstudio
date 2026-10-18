@@ -21,11 +21,14 @@ def loop(condition, *body):
 def gate(expression):
     value = expression.encode()
     return fields(0, 1, 0, len(value)) + value
-def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(), old=False, transfers=False):
+def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(), old=False, transfers=False, termination=False):
     header = ('QEXACT5' if old else 'QEXACT6') if exact else ('QSAMPLE6' if old else 'QSAMPLE7')
     if transfers:
         assert not old
         header='QEXACT7' if exact else 'QSAMPLE8'
+    if termination:
+        assert not old
+        header='QEXACT8' if exact else 'QSAMPLE9'
     result = fields(header, qubits, bits) if exact else fields(header, qubits, 100, 7, bits)
     result += fields(len(types)) + b''.join(fields(*t) for t in types)
     if not old:
@@ -123,4 +126,29 @@ for exact in (False, True):
     # Equal classical records retain different pending transfers after measurement.
     measured=[gate('H'),fields(1,0,0),loop(yes,branch(read(0),[assign(0,no),stop],[assign(0,no)]),gate('X'),fields(1,0,0),stop)]
     run(exact,new(measured,qubits=1),{'0':'1/2','1':'1/2'})
+for exact in (False, True):
+    def ended(body=(), **kwargs):
+        return request(exact, body, termination=True, **kwargs)
+    end=fields(14)
+    run(exact,ended([end,assign(0,yes)],budget=0),{'0':1})
+    run(exact,ended([assign(0,yes),end,assign(0,no)],budget=0),{'1':1})
+    run(exact,ended([branch(yes,[end]),assign(0,yes)],budget=0),{'0':1})
+    run(exact,ended([branch(no,[end]),assign(0,yes)],budget=0),{'1':1})
+    run(exact,ended([loop(yes,loop(yes,assign(0,yes),end)),assign(0,no)],budget=2),{'1':1})
+    run(exact,ended([end,loop(condition)],types=[(0,8)],budget=0),{'0':1})
+    run(exact,ended([loop(yes,end)],budget=0),error='loop condition budget')
+    run(exact,ended([end,assign(1,yes)]),error='')
+    run(exact,ended([end,fields(12)]),error='enclosing loop')
+    run(exact,ended([fields(15)]),error='')
+    # Termination preserves probability mass with matching classical records.
+    measured=[gate('H'),fields(1,0,0),branch(read(0),[assign(0,no),end],[assign(0,no)]),assign(0,yes)]
+    run(exact,ended(measured,qubits=1),{'0':'1/2','1':'1/2'})
+    payload=ended([end],budget=0)
+    for cut in range(len(payload)):
+        run(exact,payload[:cut],error='')
+    run(exact,payload+b'0\n',error='')
+    # Every earlier header rejects the new opcode instead of interpreting it.
+    for version in range(1,8 if exact else 9):
+        header=fields(('QEXACT' if exact else 'QSAMPLE')+str(version))
+        run(exact,header+payload.split(b'\n',1)[1],error='')
 print(f'PASS: {checks} runtime loop process checks.')
