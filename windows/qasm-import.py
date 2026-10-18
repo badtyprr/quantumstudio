@@ -592,14 +592,25 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
         if isinstance(node,ast.Identifier) and node.name in variables:
             slot,sign,size=variables[node.name]
             return {'Kind':'IntegerVariable','Slot':slot,'Signedness':sign,'Width':size}
-        if isinstance(node,ast.IntegerLiteral):
-            value=node.value
+        if isinstance(node,(ast.IntegerLiteral,ast.BooleanLiteral)):
+            value=int(node.value) if isinstance(node,ast.BooleanLiteral) else node.value
             if type(value) is not int or not -(1<<63)<=value<(1<<64):raise ValueError('Integer literal exceeds 64 bits.')
             return {'Kind':'IntegerConstant','Signedness':'Signed' if value<(1<<63) else 'Unsigned','Width':0,'Value':str(value&((1<<64)-1))}
         if isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)):
             size=node.type.size.value;storage=size or 64
             if type(size) is not int or not 0<=size<=64:raise ValueError('Invalid integer cast width.')
             sign='Signed' if isinstance(node.type,ast.IntType) else 'Unsigned'
+            boolean=(isinstance(node.argument,ast.Cast) and isinstance(node.argument.type,ast.BoolType) or
+                     isinstance(node.argument,ast.BinaryExpression) and node.argument.op.name in comparisons|{'&&','||'} or
+                     isinstance(node.argument,ast.UnaryExpression) and node.argument.op.name=='!')
+            if boolean:
+                # Booleans convert numerically (true -> +1), unlike bit-vector
+                # reinterpretation. Count the intermediate unsigned one-bit node.
+                bound(depth+1)
+                child,child_width=build(node.argument,1,depth+2)
+                if child_width!=1:raise ValueError('Boolean conversion requires one bit.')
+                return {'Kind':'IntegerCast','Signedness':sign,'Width':size,'Left':{
+                    'Kind':'IntegerFromBits','Signedness':'Unsigned','Width':1,'Left':child}}
             if isinstance(node.argument,(ast.Identifier,ast.IndexExpression)) and not integer_value(node.argument):
                 bits=classical_indices(node.argument,registers)
                 if len(bits)!=storage:raise ValueError('Bit-to-integer casts require matching widths.')
@@ -607,6 +618,10 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             if isinstance(node.argument,ast.BitstringLiteral):
                 if node.argument.width!=storage:raise ValueError('Bit-to-integer casts require matching widths.')
                 return {'Kind':'IntegerConstant','Signedness':sign,'Width':size,'Value':str(node.argument.value)}
+            if not integer_value(node.argument) and not isinstance(node.argument,(ast.IntegerLiteral,ast.BooleanLiteral)):
+                child,child_width=build(node.argument,storage,depth+1)
+                if child_width!=storage:raise ValueError('Bit-to-integer casts require matching widths.')
+                return {'Kind':'IntegerFromBits','Signedness':sign,'Width':size,'Left':child}
             return {'Kind':'IntegerCast','Signedness':sign,'Width':size,'Left':integer(node.argument,depth+1)}
         if isinstance(node,ast.UnaryExpression) and node.op.name=='-':
             if isinstance(node.expression,ast.IntegerLiteral):
@@ -735,7 +750,7 @@ def classical_circuit(statements, published_u):
     version = 5 if declarations else 2
     def expression_version(node):
         if not isinstance(node,dict):return 3
-        return max(4 if node.get('Kind')=='Logical' or node.get('Kind','').startswith('Integer') else 3,
+        return max(6 if node.get('Kind')=='IntegerFromBits' else 4 if node.get('Kind')=='Logical' or node.get('Kind','').startswith('Integer') else 3,
                    expression_version(node.get('Left')),expression_version(node.get('Right')))
     def lower(body, depth=0):
         nonlocal count,version
@@ -743,6 +758,7 @@ def classical_circuit(statements, published_u):
         def append(step):
             nonlocal count,version
             if 'ClassicalValue' in step:version=max(version,expression_version(step['ClassicalValue']))
+            if 'IntegerValue' in step:version=max(version,expression_version(step['IntegerValue']))
             count += 1
             if count > 512:
                 raise ValueError('Classical circuits support at most 512 total operations.')
@@ -824,7 +840,7 @@ def classical_circuit(statements, published_u):
         return result
     steps=lower(statements)
     result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(range(nc))), 'Steps': steps}
-    if declarations:result['Variables']=declarations
+    if declarations or version>=6:result['Variables']=declarations
     return result
 
 
