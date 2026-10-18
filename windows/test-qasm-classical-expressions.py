@@ -8,6 +8,14 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-scalar-widen','bit c=1;int[8] a=int[8](c);c=a==1;',{'1':'1'}),
+ ('computed-scalar-zero','bit c=0;uint a=uint(c);c=a==0;',{'1':'1'}),
+ ('computed-index-widen','bit[3] c="010";bit r;r=int[8](c[1])==1;',{'1010':'1'}),
+ ('computed-index-constant','const int k=1;bit[3] c="010";bit r;r=uint[8](c[k])==1;',{'1010':'1'}),
+ ('computed-scalar-history','qubit q;bit c;h q;c=measure q;int[8] a=int[8](c);c=0;c=a==1;',{'0':'1/2','1':'1/2'}),
+ ('computed-index-history','qubit q;bit[2] c;h q;c[1]=measure q;int[8] a=int[8](c[1]);c=0;c[0]=a==1;',{'00':'1/2','01':'1/2'}),
+ ('typed-one-register','bit[1] c="1";bit r;r=int[1](c)==-1;',{'11':'1'}),
+ ('typed-one-slice','bit[3] c="010";bit r;r=int[1](c[1:1])==-1;',{'1010':'1'}),
  ('computed-xor','bit[3] c;bit r;r=uint[3](c ^ "111")==7;',{'1000':'1'}),
  ('computed-negative','bit[3] c;bit r;r=int[3](~c)==-1;',{'1000':'1'}),
  ('computed-store','bit[3] c;int[8] a=uint[3](c ^ "111");bit r;r=a==7;',{'1000':'1'}),
@@ -138,6 +146,8 @@ rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;for i
 rejected += ['int '+('𝑎'*33)+';', 'int a=1;bit c;{const int a=2;c=a==2;}']
 rejected += ['bit[3] c;int a=uint[2](~c);','bit[3] c;int a=int[3](popcount(c));',
              'bit[3] c;int a=uint[3](c ^ "11");','bit[3] c;bit r;r=false && uint[2](~c)==0;']
+rejected += ['bit[1] c;int a=int[8](c);','bit[3] c;int a=int[8](c[1:1]);',
+             'bit[3] c;int a=int[8](c[{1}]);','bit[3] c;int a=int[8](c[3]);']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
@@ -191,7 +201,7 @@ def steps(body):
  return out
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
- assert circuit['Version']==(6 if name.startswith('computed-') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name=='scope-siblings':
   branch=next(step for step in circuit['Steps'] if step['Kind']=='Branch')
   assert branch['WhenTrue'][-1]['Kind']==branch['WhenFalse'][-1]['Kind']=='ClearInteger'

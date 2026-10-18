@@ -708,3 +708,10 @@ bit vector preserves its two's-complement sign. `uint(popcount(c))` converts the
 64-bit population count. Logical guards retain short-circuit evaluation, and
 invalid widths or references are rejected even inside an unselected branch.
 These rules follow the [OpenQASM casting specification](https://openqasm.com/language/types.html#casting-specifics).
+
+Scalar bits and single indexed bits convert numerically as well:
+`bit c=1; int[8] a=int[8](c);` gives `a=1`, and `int[8](c[0])`
+converts one bit of a register. Whole `bit[1]` registers and one-element
+slices remain bit vectors: `int[1]("1")` reinterprets the sign bit as -1,
+and widening a register requires a separate integer cast. This preserves
+the specification's distinction between scalar `bit` and register `bit[1]`.
