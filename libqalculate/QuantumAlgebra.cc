@@ -124,6 +124,33 @@ bool unresolvedMatrixOperand(const MathStructure &value,unsigned depth=0) {
   for(size_t i=0;i<value.size();++i)if(unresolvedMatrixOperand(value[i],depth+1))return true;
  return false;
 }
+// Infer only shapes justified by explicit declarations or concrete matrices.
+// Different unknown dimensions are not assumed unequal.
+bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &columns,const EvaluationOptions &eo,unsigned depth=0) {
+ if(depth>64)return false;
+ if(value.isMatrix()) {rows.set(Number(static_cast<long>(value.rows())));columns.set(Number(static_cast<long>(value.columns())));return true;}
+ if(!value.isFunction())return false;
+ const std::string &name=value.function()->referenceName();
+ if(name=="matrixparam" && value.size()==3) {
+  rows=value[1];columns=value[2];EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+  rows.eval(exact);columns.eval(exact);return true;
+ }
+ if((name=="qdag" || name=="qtranspose") && value.size()==1)
+  return matrixShape(value[0],columns,rows,eo,depth+1);
+ if(value.size()!=2)return false;
+ MathStructure ar,ac,br,bc;
+ bool left=matrixShape(value[0],ar,ac,eo,depth+1),right=matrixShape(value[1],br,bc,eo,depth+1);
+ if((name=="qadd" || name=="qsub") && left && right && ar.equals(br) && ac.equals(bc)) {rows=ar;columns=ac;return true;}
+ if(name=="qmul") {
+  if(left && right && ac.equals(br)) {rows=ar;columns=bc;return true;}
+  if(left && value[1].representsScalar()) {rows=ar;columns=ac;return true;}
+  if(right && value[0].representsScalar()) {rows=br;columns=bc;return true;}
+ }
+ return false;
+}
+bool unequalKnownDimensions(const MathStructure &a,const MathStructure &b) {
+ return a.isNumber() && b.isNumber() && a.number()!=b.number();
+}
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
@@ -204,6 +231,16 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   const MathStructure &a=args[0];
+  // Reject provably incompatible symbolic shapes before numerical expansion.
+  if(op=="qadd" || op=="qsub" || op=="qmul" || op=="qtrace") {
+   MathStructure ar,ac,br,bc;
+   if(matrixShape(a,ar,ac,eo)) {
+    bool mismatch=op=="qtrace" && unequalKnownDimensions(ar,ac);
+    if(op!="qtrace" && matrixShape(args[1],br,bc,eo))
+     mismatch=op=="qmul" ? unequalKnownDimensions(ac,br) : unequalKnownDimensions(ar,br) || unequalKnownDimensions(ac,bc);
+    if(mismatch) {CALCULATOR->error(true,"Quantum operation has incompatible declared matrix dimensions.",NULL);return 0;}
+   }
+  }
   if(op=="qadd" || op=="qsub") {
    const MathStructure &b=args[1];
    if(a.isVector() && b.isVector()) {
