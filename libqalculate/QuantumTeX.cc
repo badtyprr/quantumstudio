@@ -189,6 +189,12 @@ class TeXReader {
   if(name=="mid" && setExpressions)return ":";
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
+  if(name=="overline") {
+   if(stateLabel)throw std::runtime_error(error("Use conj around the whole ket or bra to conjugate a state"));
+   auto value=argument();
+   if(trim(value).empty())throw std::runtime_error(error("A conjugation overline requires an operand"));
+   return "(conj("+value+"))";
+  }
   if(name=="tilde" || name=="widetilde") {
    std::string value=trim(argument());
    if(value.empty() || std::isdigit((unsigned char)value[0]))throw std::runtime_error(error("A tilde requires a symbol name"));
