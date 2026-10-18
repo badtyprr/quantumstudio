@@ -21,6 +21,16 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \begin{aligned}1+1&=2\\&=4/2\end{aligned})","1");
+ equal(R"(quantum: \begin{aligned}1+1&=3\\&=6/2\end{aligned})","0");
+ equal(R"(quantum: \begin{split}2&=1\\&+1\end{split})","1");
+ {
+  const std::string lesson=R"(quantum: \begin{aligned}\vert {+i}\rangle&=\frac{1}{\sqrt{2}}\vert0\rangle+\frac{i}{\sqrt{2}}\vert1\rangle=\begin{pmatrix}\frac{1}{\sqrt{2}}\\[2mm]\frac{i}{\sqrt{2}}\end{pmatrix}\\[5mm]\vert{-i}\rangle&=\frac{1}{\sqrt{2}}\vert0\rangle-\frac{i}{\sqrt{2}}\vert1\rangle=\begin{pmatrix}\frac{1}{\sqrt{2}}\\[2mm]-\frac{i}{\sqrt{2}}\end{pmatrix}\end{aligned})";
+  MathStructure rows=calculator.calculate(lesson,eo);
+  if(!rows.isVector() || rows.size()!=2)throw std::runtime_error("Aligned lesson lost independent rows");
+  for(size_t i=0;i<rows.size();++i)if(!rows[i].isNumber() || !rows[i].number().isOne())throw std::runtime_error("Aligned lesson equality is not true");
+  ++checks;
+ }
  equal("quantum: ∑_{k=0}^{3} k^2","14");
  equal(R"(quantum: \overline{1+2i})","1-2i");
  equal(R"(quantum: 2\overline{1+i})","2-2i");

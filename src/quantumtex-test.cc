@@ -17,6 +17,27 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\vert{+i}\rangle)","|+i>");
+  equal(R"(\langle{-i}\vert)","<-i|");
+  equal(R"(\vert{1+2}\vert)","|(1+2)|");
+  {
+   std::vector<std::string> lines;
+   quantumTeX(R"($$\begin{aligned}1&=1\\2&=2\end{aligned}$$)",&lines);
+   if(lines!=std::vector<std::string>{"1 =1","2 =2"})throw std::runtime_error("Lost independent alignment metadata");
+   ++checks;
+   for(const char *input:{R"(2+\begin{aligned}1\\2\end{aligned})",R"((\begin{aligned}1\\2\end{aligned}))",R"(\begin{aligned}1\\2\end{aligned}+\begin{aligned}3\\4\end{aligned})","1+2",""}) {
+    quantumTeX(input,&lines);
+    if(!lines.empty())throw std::runtime_error("Embedded alignment leaked line metadata");
+    ++checks;
+   }
+  }
+  equal(R"(\begin{aligned}1+1&=2\\&=4/2\end{aligned})","(1+1 =2 =4/2)");
+  equal(R"(\begin{aligned}1&=1\\2&=3\end{aligned})","vector((1 =1),(2 =3))");
+  equal(R"(\begin{aligned}a&=b&c&=d\\&=e&&=f\end{aligned})","vector((a =b =e),(c =d =f))");
+  equal(R"(\begin{aligned}[t]1&=1\\[2mm]2&=2\end{aligned})","vector((1 =1),(2 =2))");
+  equal(R"(\begin{gathered}1+2\\3+4\end{gathered})","vector((1+2),(3+4))");
+  equal(R"(\begin{split}a&=b\\&+c\end{split})","(a =b +c)");
+  for(const char *s:{R"(\begin{aligned}\end{aligned})",R"(\begin{aligned}&=2\end{aligned})",R"(\begin{aligned}1&=1\end{gathered})",R"(\begin{gathered}1&=1\end{gathered})",R"(\begin{aligned}[x]1\end{aligned})",R"(\begin{aligned}1&=1\\\\2&=2\end{aligned})"})rejects(s);
   equal(R"(\overline{1+2i})","(conj(1+2i))");
   equal(R"(\overline\beta)","(conj(β))");
   equal(R"(\overline{\overline{1+i}})","(conj((conj(1+i))))");
