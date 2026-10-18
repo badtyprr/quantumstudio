@@ -56,6 +56,66 @@ int main(){try {
  auto variable=Expr::read(signedByte,{0,1,2,3,4,5,6,7});
  auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
  {
+ auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
+ auto slot=Expr::variable(signedByte,0);
+ auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
+ auto decrement=Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(1)));
+ auto emit=Step::assign({0},yes);
+ auto run=[&](const std::vector<Step> &program,std::size_t budget) {
+  return weights(evaluateCircuit(0,1,program,{signedByte},64,exact,budget),0,1,{0},64,exact);
+ };
+ auto countdown=Step::whileLoop(positive,{decrement,emit});
+ equal(run({Step::storeInteger(0,literal(3)),countdown},4).at(1),"1");
+ rejects<std::length_error>([&]{run({Step::storeInteger(0,literal(3)),countdown},3);});
+ equal(run({Step::storeInteger(0,literal(0)),countdown},1).at(0),"1");
+ equal(run({Step::whileLoop(no,{Step::storeInteger(0,slot)})},1).at(0),"1");
+ rejects<std::domain_error>([&]{run({countdown},4);});
+ rejects<std::domain_error>([&]{run({Step::storeInteger(0,literal(1)),Step::whileLoop(positive,{Step::clearInteger(0)})},4);});
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{})},3);});
+ rejects<std::length_error>([&]{run({Step::whileLoop(no,{})},0);});
+ equal(run({},0).at(0),"1");
+ equal(run({Step::branch(no,{Step::whileLoop(yes,{})})},0).at(0),"1");
+ auto nested=Step::whileLoop(positive,{Step::whileLoop(no,{}),decrement});
+ equal(run({Step::storeInteger(0,literal(2)),nested},5).at(0),"1");
+ rejects<std::length_error>([&]{run({Step::storeInteger(0,literal(2)),nested},4);});
+ rejects<std::out_of_range>([&]{run({Step::whileLoop(no,{Step::storeInteger(1,literal(0))})},1);});
+ rejects<std::invalid_argument>([&]{run({Step::whileLoop(Bits::constant(2,0),{})},1);});
+ rejects<std::out_of_range>([&]{run({Step::whileLoop(Bits::read({1}),{})},1);});
+ std::vector<Step> mutableBody={emit,Step::assign({1},no)};
+ auto snapshot=Step::whileLoop(Bits::read({1}),mutableBody);mutableBody.clear();
+ distribution(0,2,{0},{Step::assign({1},yes),snapshot},{{1,"1"}});
+ std::vector<Step> levels;
+ for(unsigned k=0;k<32;++k){std::vector<Step> next={Step::whileLoop(no,levels)};levels.swap(next);}
+ equal(run(levels,1).at(0),"1");
+ rejects<std::length_error>([&]{run({Step::branch(no,levels)},1);});
+ rejects<std::length_error>([&]{run({Step::whileLoop(no,std::vector<Step>(512,emit))},1);});
+ auto measured=Expr::read(Type::sized(Int::Signedness::Unsigned,1),{0});
+ // Histories leave the loop at different times. Matching output bits must not
+ // merge distinct live variable values before each history has finished.
+ std::vector<Step> history={Step::map(H,{0}),Step::measure(0,0),Step::storeInteger(0,measured),
+  Step::assign({0},no),Step::reset(0),Step::whileLoop(positive,{Step::map(X,{0}),decrement}),Step::measure(0,0)};
+ auto result=weights(evaluateCircuit(1,1,history,{signedByte},16,exact,3),1,1,{0},16,exact);
+ check(result.size()==2);equal(result.at(0),"1/2");equal(result.at(1),"1/2");
+ rejects<std::length_error>([&]{evaluateCircuit(1,1,history,{signedByte},16,exact,2);});
+ // New measurement histories inside the body are carried into the next test.
+ std::vector<Step> repeated={Step::storeInteger(0,literal(2)),Step::whileLoop(positive,
+  {Step::map(H,{0}),Step::measure(0,0),decrement})};
+ result=weights(evaluateCircuit(1,1,repeated,{signedByte},16,exact,5),1,1,{0},16,exact);
+ check(result.size()==2);equal(result.at(0),"1/2");equal(result.at(1),"1/2");
+ rejects<std::length_error>([&]{evaluateCircuit(1,1,repeated,{signedByte},16,exact,4);});
+ distribution(1,1,{0},{Step::assign({0},yes),Step::whileLoop(Bits::read({0}),
+  {Step::map(rotation,{0}),Step::assign({0},no)}),Step::measure(0,0)},{{0,"cos(x/2)^2"},{1,"sin(x/2)^2"}});
+ // Almost-sure termination has infinite exact support: never silently return
+ // the exited probability mass as a complete normalized result.
+ rejects<std::length_error>([&]{evaluateCircuit(1,1,{Step::whileLoop(Bits::complement(Bits::read({0})),
+  {Step::map(H,{0}),Step::measure(0,0)})},{},16,exact,8);});
+ calculator.startControl(20);
+ rejects<std::runtime_error>([&]{evaluateCircuit(0,0,{Step::whileLoop(yes,{})},{},1,exact,std::size_t(-1));});
+ calculator.stopControl();
+ equal(run({},0).at(0),"1");
+ }
+
+ {
  rejects<std::length_error>([&]{evaluateCircuit(0,0,{},std::vector<Type>(2,signedByte),1,exact);});
  rejects<std::length_error>([&]{evaluateCircuit(1,1,{Step::map(H,{0}),Step::measure(0,0)},std::vector<Type>(5,signedByte),8,exact);});
  std::vector<Type> types={signedByte};auto slot=Expr::variable(signedByte,0);

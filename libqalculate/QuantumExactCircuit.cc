@@ -33,15 +33,16 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(step.classicalBit>=bits)throw std::out_of_range("Measurement destination is outside the classical register");
   } else if(step.kind==Step::Kind::Readout) {
    for(unsigned bit:step.assignment->bits())if(bit>=bits)throw std::out_of_range("Readout target is outside the classical register");
-  } else if(step.kind==Step::Kind::Branch) {
+  } else if(step.kind==Step::Kind::Branch || step.kind==Step::Kind::While) {
    if(step.expression) {
-    if(step.expression->width()!=1)throw std::invalid_argument("Exact branch expressions must be one bit");
+    if(step.expression->width()!=1)throw std::invalid_argument("Exact control-flow conditions must be one bit");
     step.expression->validate(bits,variables);
    }
-   if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches");
+   if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches/loops");
    if((bits<64 && (step.mask>>bits)) || (step.value&~step.mask))
     throw std::invalid_argument("Branch mask/value is outside the classical register or mask");
-   validate(*step.whenTrue,qubits,bits,depth+1,count,variables);validate(*step.whenFalse,qubits,bits,depth+1,count,variables);
+   validate(*step.whenTrue,qubits,bits,depth+1,count,variables);
+   if(step.whenFalse)validate(*step.whenFalse,qubits,bits,depth+1,count,variables);
   }
  }
 }
@@ -97,8 +98,25 @@ public:
  }
 };
 RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,const std::vector<Step> &steps,
- std::size_t maxCells,const EvaluationOptions &exact) {
+ std::size_t maxCells,const EvaluationOptions &exact,std::size_t &loopConditionsLeft) {
  for(const auto &step:steps) {
+  if(step.kind==Step::Kind::While) {
+   RuntimeAccumulator finished(qubits,bits,maxCells,exact);
+   while(!records.empty()) {
+    checkpoint();RuntimeAccumulator active(qubits,bits,maxCells,exact);
+    for(const auto &record:records) {
+     checkpoint();
+     if(loopConditionsLeft==0)throw std::length_error("Exact loop condition budget exceeded");
+     --loopConditionsLeft;
+     auto &destination=step.expression->evaluate(record.bits,bits,record.variables) ? active : finished;
+     destination.add(record.bits,record.variables,record.density);
+    }
+    // Finished histories never re-enter the body. Active histories merge only
+    // at the same loop boundary and only with matching variable state.
+    records=execute(active.take(),qubits,bits,*step.whenTrue,maxCells,exact,loopConditionsLeft);
+   }
+   records=finished.take();continue;
+  }
   checkpoint();RuntimeAccumulator output(qubits,bits,maxCells,exact);
   for(const auto &record:records) {
    checkpoint();
@@ -108,7 +126,7 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
    } else if(step.kind==Step::Kind::Branch) {
     const bool selected=step.expression ? step.expression->evaluate(record.bits,bits,record.variables)!=0 : (record.bits&step.mask)==step.value;
     const auto &body=selected ? *step.whenTrue : *step.whenFalse;
-    for(const auto &result:execute({record},qubits,bits,body,maxCells,exact))
+    for(const auto &result:execute({record},qubits,bits,body,maxCells,exact,loopConditionsLeft))
      output.add(result.bits,result.variables,result.density);
    } else if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
     auto variables=record.variables;
@@ -146,6 +164,11 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector
 }
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
  const std::vector<QuantumClassical::IntegerType> &variableTypes,std::size_t maxCells,const EvaluationOptions &options) {
+ return evaluateCircuit(qubits,classicalBits,steps,variableTypes,maxCells,options,1000000);
+}
+Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
+ const std::vector<QuantumClassical::IntegerType> &variableTypes,std::size_t maxCells,const EvaluationOptions &options,
+ std::size_t maxLoopConditions) {
  checkpoint();RecordAccumulator initial(qubits,classicalBits,maxCells,options);
  if(variableTypes.size()>maxCells)throw std::length_error("Exact variable slot budget exceeded");
  const QuantumClassical::IntegerStorage variables(variableTypes);
@@ -156,7 +179,7 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector
  initial.add(0,rho);
  RuntimeRecords input;for(const auto &item:initial.take())input.push_back({item.first,variables,item.second});
  RecordAccumulator output(qubits,classicalBits,maxCells,exact);
- for(const auto &item:execute(std::move(input),qubits,classicalBits,steps,maxCells,exact))output.add(item.bits,item.density);
+ for(const auto &item:execute(std::move(input),qubits,classicalBits,steps,maxCells,exact,maxLoopConditions))output.add(item.bits,item.density);
  return output.take();
 }
 }
