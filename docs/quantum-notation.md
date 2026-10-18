@@ -760,8 +760,8 @@ cannot cause fall-through into another case.
 
 The compiler lowers selection to existing runtime branches, so the existing
 32-level branch and expression-size limits apply. Boolean and bit targets need
-explicit integer casts. Runtime loops and subroutine-local storage remain
-unsupported. These rules follow the
+explicit integer casts. Bounded runtime `while` loops can contain switches.
+Runtime `for` ranges and subroutine-local storage remain unsupported. These rules follow the
 [OpenQASM switch specification](https://openqasm.com/language/classical.html#the-switch-statement).
 
 Constant targets such as `switch(1+1)` and `switch(int(true))` use the same
