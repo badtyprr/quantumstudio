@@ -11,6 +11,10 @@ class IntegerStorage;
 // Immutable unsigned bit-vector expressions; not OpenQASM signed/float arithmetic.
 // Register/slice indices are least-significant first. Copies retain their value.
 class Bits {
+ friend class IntegerExpression;
+ unsigned depth() const;
+ unsigned count() const;
+ std::uint64_t references() const;
  void validateContext(unsigned registerBits,const IntegerStorage *storage) const;
  struct Node;
  std::shared_ptr<const Node> node_;

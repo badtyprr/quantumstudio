@@ -41,7 +41,7 @@ jobs:
           g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=undefined -I. \
             src/quantum-classical-integer-expression-test.cc libqalculate/QuantumClassicalInteger.cc \
             libqalculate/QuantumClassicalIntegerType.cc libqalculate/QuantumClassicalIntegerStorage.cc \
-            libqalculate/QuantumClassicalIntegerExpression.cc \
+            libqalculate/QuantumClassicalIntegerExpression.cc libqalculate/QuantumClassical.cc \
             -o /tmp/quantum-integer-expression-sanitizer
           /tmp/quantum-integer-expression-sanitizer
       - name: Configure
