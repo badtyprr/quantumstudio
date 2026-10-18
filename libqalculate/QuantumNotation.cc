@@ -72,6 +72,7 @@ std::string unicodeArithmetic(const std::string &input) {
  std::string out;char quoted=0;
  for(size_t p=0;p<input.size();) {
   if(input[p]=='"' || input[p]=='\'') {if(quoted==input[p])quoted=0;else if(!quoted)quoted=input[p];out+=input[p++];continue;}
+  if(!quoted && input.compare(p,3,"∑")==0) {out+="\\sum";p+=3;continue;}
   bool matched=false;
   if(!quoted)for(const auto &symbol:symbols)if(input.compare(p,symbol.first.size(),symbol.first)==0) {
    out+=symbol.second;p+=symbol.first.size();matched=true;break;

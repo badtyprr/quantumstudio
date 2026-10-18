@@ -133,7 +133,7 @@ quantum_negativity_test_LDADD = $(test_LDADD)
 quantum_parser_integration_test_SOURCES = quantum-parser-integration-test.cc
 quantum_parser_integration_test_LDADD = $(test_LDADD)
 
-quantum_worker_SOURCES = quantum-worker.cc quantum-sampling-request.cc quantum-sampling-request.h quantum-exact-request.cc quantum-exact-request.h quantum-classical-request.h
+quantum_worker_SOURCES = quantum-worker.cc quantum-display.h quantum-sampling-request.cc quantum-sampling-request.h quantum-exact-request.cc quantum-exact-request.h quantum-classical-request.h
 quantum_worker_LDADD = $(test_LDADD)
 TEST_EXTENSIONS = .py
 PY_LOG_COMPILER = python3
