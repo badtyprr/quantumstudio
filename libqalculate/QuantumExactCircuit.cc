@@ -12,6 +12,7 @@ void checkpoint() {if(CALCULATOR->aborted())throw std::runtime_error("Exact circ
 void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsigned depth,unsigned loopDepth,std::size_t &count,const QuantumClassical::IntegerStorage &variables) {
  for(const auto &step:steps) {
   checkpoint();if(++count>512)throw std::length_error("Exact circuits support at most 512 steps across all bodies");
+  if(step.kind==Step::Kind::End)continue;
   if(step.kind==Step::Kind::Break || step.kind==Step::Kind::Continue) {
    if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
    continue;
@@ -64,7 +65,7 @@ MathStructure apply(const MathStructure &rho,const Step &step,const EvaluationOp
  }
  sum.eval(exact);checkpoint();return sum;
 }
-enum class Flow { Normal, Break, Continue };
+enum class Flow { Normal, Break, Continue, End };
 struct RuntimeRecord {
  std::uint64_t bits;
  QuantumClassical::IntegerStorage variables;
@@ -126,6 +127,9 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
     auto body=execute(active.take(),qubits,bits,*step.whenTrue,maxCells,exact,loopConditionsLeft);
     RuntimeAccumulator next(qubits,bits,maxCells,exact);
     for(const auto &record:body) {
+     if(record.flow==Flow::End) {
+      finished.add(record.bits,record.variables,record.density,Flow::End);continue;
+     }
      // Only this loop consumes transfers from its own body. Continue and
      // fallthrough share the next condition boundary; break leaves the loop.
      auto &destination=record.flow==Flow::Break ? finished : next;
@@ -141,7 +145,9 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
    if(record.flow!=Flow::Normal) {
     output.add(record.bits,record.variables,record.density,record.flow);continue;
    }
-   if(step.kind==Step::Kind::Break || step.kind==Step::Kind::Continue) {
+   if(step.kind==Step::Kind::End) {
+    output.add(record.bits,record.variables,record.density,Flow::End);
+   } else if(step.kind==Step::Kind::Break || step.kind==Step::Kind::Continue) {
     output.add(record.bits,record.variables,record.density,step.kind==Step::Kind::Break ? Flow::Break : Flow::Continue);
    } else if(step.kind==Step::Kind::Measure) {
     for(const auto &outcome:measure({{record.bits,record.density}},qubits,bits,step.wires[0],step.classicalBit,maxCells,exact))

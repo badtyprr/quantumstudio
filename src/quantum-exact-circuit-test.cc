@@ -57,6 +57,38 @@ int main(){try {
  auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
  {
  auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
+ auto end=Step::endProgram(),emit=Step::assign({0},yes),clear=Step::assign({0},no);
+ auto run=[&](const std::vector<Step> &program,std::size_t budget=0) {
+  return weights(evaluateCircuit(0,1,program,{signedByte},64,exact,budget),0,1,{0},64,exact);
+ };
+ equal(run({end,emit}).at(0),"1");
+ equal(run({emit,end,clear}).at(1),"1");
+ equal(run({Step::branch(yes,{emit,end}),clear}).at(1),"1");
+ equal(run({Step::branch(no,{}, {emit,end}),clear}).at(1),"1");
+ equal(run({Step::branch(no,{end}),emit}).at(1),"1");
+ equal(run({Step::whileLoop(yes,{emit,end,clear}),clear},1).at(1),"1");
+ equal(run({Step::whileLoop(yes,{Step::whileLoop(yes,{emit,end}),clear}),clear},2).at(1),"1");
+ equal(run({end,Step::whileLoop(yes,{})}).at(0),"1");
+ rejects<std::out_of_range>([&]{run({end,Step::assign({1},yes)});});
+ rejects<std::invalid_argument>([&]{run({end,Step::breakLoop()});});
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{end})},0);});
+ auto undefined=Bits::integerCompare(Op::Equal,Expr::variable(signedByte,0),literal(0));
+ equal(run({Step::branch(yes,{end}),Step::whileLoop(undefined,{})}).at(0),"1");
+ // Histories with equal bits remain distinct while only one has terminated.
+ // Clear the measurement bit in both histories to exercise that identity.
+ distribution(1,1,{0},{Step::map(H,{0}),Step::measure(0,0),
+  Step::branch(Bits::read({0}),{clear,end},{clear}),emit},{{0,"1/2"},{1,"1/2"}});
+ distribution(1,1,{0},{Step::map(rotation,{0}),Step::measure(0,0),
+  Step::whileLoop(yes,{Step::branch(Bits::read({0}),{clear,end},{clear}),Step::breakLoop()}),
+  emit},{{0,"sin(x/2)^2"},{1,"cos(x/2)^2"}});
+ // Ended mass must cross both loops without being turned back into active mass.
+ distribution(1,1,{0},{Step::map(H,{0}),Step::measure(0,0),Step::whileLoop(yes,{
+  Step::whileLoop(yes,{Step::branch(Bits::read({0}),{clear,end},{clear}),Step::breakLoop()}),
+  Step::breakLoop()}),emit},{{0,"1/2"},{1,"1/2"}});
+ distribution(1,1,{0},{Step::map(H,{0}),Step::measure(0,0),end,clear},{{0,"1/2"},{1,"1/2"}});
+ }
+ {
+ auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
  auto emit=Step::assign({0},yes),clear=Step::assign({0},no);
  auto slot=Expr::variable(signedByte,0);
  auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
