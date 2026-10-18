@@ -30,6 +30,24 @@ static class ClassicalExpressionTextTests {
   Check(Format(ClassicalExpressionText.ParseInteger("uint[8](-1)",context))=="uint[8](255)");
   Reject(()=>ClassicalExpressionText.ParseInteger("int[8](-9223372036854775809)",context));
  }
+ static void BooleanDisplayChecks() {
+  var serializer=new System.Web.Script.Serialization.JavaScriptSerializer();
+  string[] source={"bool(c)","bool(int[3](c))","bool(popcount(c))","bool(bool(c))","bool(c == 4)","bool(c) && 6 / int[3](c) == 3"};
+  foreach(string text in source) {
+   N before=Parse(text,1);string shown=Format(before);
+   Check(shown.StartsWith("bool(") || shown.StartsWith("(bool("));
+   Check(serializer.Serialize(before)==serializer.Serialize(Parse(shown,1)));
+  }
+  foreach(string text in new[]{"int[3](c) != int[8](0)","int[3](c) != uint(0)","c != 1","c == 0"}) {
+   N before=Parse(text,1);string shown=Format(before);
+   Check(!shown.StartsWith("bool("));
+   Check(serializer.Serialize(before)==serializer.Serialize(Parse(shown,1)));
+  }
+  var context=Context();context.Version=6;context.Variables=new[]{new ClassicalCircuit.Variable{Name="ready",Signedness="Unsigned",Width=1}};
+  N value=ClassicalExpressionText.Parse("bool(ready)",context,1);
+  Check(ClassicalExpressionText.Format(value,context)=="bool(ready)");
+  Check(serializer.Serialize(value)==serializer.Serialize(ClassicalExpressionText.Parse("bool(ready)",context,1)));
+ }
  static void VariableChecks(string worker) {
   var context=Context();context.Version=5;context.Variables=new[]{new ClassicalCircuit.Variable{Name="counter",Signedness="Signed",Width=8}};
   string boundary="counter";for(int depth=1;depth<32;depth++)boundary="int("+boundary+")";
@@ -209,6 +227,7 @@ static class ClassicalExpressionTextTests {
   }
   BooleanChecks(args.Length>0 ? args[0] : null);
   SignedLiteralChecks();
+  BooleanDisplayChecks();
   ComputedCastChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;

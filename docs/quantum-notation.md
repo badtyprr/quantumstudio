@@ -770,3 +770,8 @@ while preserving short-circuit evaluation inside Boolean operands.
 A bare Boolean target such as `switch(n==2)` still needs an integer cast.
 This follows the standard-type arithmetic promotion rules in the
 [OpenQASM casting specification](https://openqasm.com/language/types.html#casting-specifics).
+
+The editor displays canonical nonzero tests as `bool(...)`, for example
+`bool(ready)` or `bool(read(0,1,2))`. This is editable syntax: formatting and
+reparsing preserve the stored expression. Comparisons with explicitly sized or
+unsigned integer zeros retain their explicit types rather than being shortened.
