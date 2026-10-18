@@ -36,11 +36,15 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  // never run. A tiny state checks local matrices without allocating 2^n here.
  const QuantumClassical::IntegerStorage declarations(variableTypes);
  unsigned totalSteps=0;
- std::function<void(const std::vector<TrajectoryStep>&,unsigned)> validate;
- validate=[&](const std::vector<TrajectoryStep> &block,unsigned depth) {
+ std::function<void(const std::vector<TrajectoryStep>&,unsigned,unsigned)> validate;
+ validate=[&](const std::vector<TrajectoryStep> &block,unsigned depth,unsigned loopDepth) {
  for(const auto &step:block) {
   cancel();
   if(++totalSteps>4096)throw std::length_error("Trajectory control flow exceeds 4096 total steps");
+  if(step.kind==TrajectoryStep::Kind::Break || step.kind==TrajectoryStep::Kind::Continue) {
+   if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
+   continue;
+  }
   if(step.kind==TrajectoryStep::Kind::StoreInteger || step.kind==TrajectoryStep::Kind::ClearInteger) {
    declarations.type(step.variableSlot); // Bounds-check targets even in untaken bodies.
    if(step.integerExpression)step.integerExpression->validate(classicalBits,declarations);
@@ -56,8 +60,8 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    }
    if(depth>=32)throw std::length_error("Trajectory control flow exceeds 32 nesting levels");
    if((step.mask&~allowed) || (step.value&~step.mask))throw std::invalid_argument("Invalid classical branch mask or value");
-   validate(*step.whenTrue,depth+1);
-   if(step.whenFalse)validate(*step.whenFalse,depth+1);
+   validate(*step.whenTrue,depth+1,loopDepth+(step.kind==TrajectoryStep::Kind::While));
+   if(step.whenFalse)validate(*step.whenFalse,depth+1,loopDepth);
    continue;
   }
   std::uint64_t wireMask=0;
@@ -83,29 +87,35 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    throw std::out_of_range("Measurement destination is outside the classical register");
  }
  };
- validate(steps,0);
+ validate(steps,0,0);
  std::mt19937_64 random(seed);
  auto draw=[&] {return (random()>>11)*(1.0/9007199254740992.0);};
  const std::vector<Complex> X={0,1,1,0};std::map<std::uint64_t,unsigned> counts;
  std::size_t loopConditionsLeft=0;
- std::function<void(const std::vector<TrajectoryStep>&,StateVector&,std::uint64_t&,QuantumClassical::IntegerStorage&)> execute;
- execute=[&](const std::vector<TrajectoryStep> &block,StateVector &state,std::uint64_t &bits,QuantumClassical::IntegerStorage &variables) {
+ enum class Flow { Normal, Break, Continue };
+ std::function<Flow(const std::vector<TrajectoryStep>&,StateVector&,std::uint64_t&,QuantumClassical::IntegerStorage&)> execute;
+ execute=[&](const std::vector<TrajectoryStep> &block,StateVector &state,std::uint64_t &bits,QuantumClassical::IntegerStorage &variables) -> Flow {
   for(const auto &step:block) {
    cancel();
+   if(step.kind==TrajectoryStep::Kind::Break)return Flow::Break;
+   if(step.kind==TrajectoryStep::Kind::Continue)return Flow::Continue;
    if(step.kind==TrajectoryStep::Kind::While) {
     for(;;) {
      cancel(); // Empty loop bodies must remain interruptible.
      if(loopConditionsLeft==0)throw std::length_error("Trajectory loop condition budget exceeded");
      --loopConditionsLeft;
      if(!step.expression->evaluate(bits,classicalBits,variables))break;
-     execute(*step.whenTrue,state,bits,variables);
+     if(execute(*step.whenTrue,state,bits,variables)==Flow::Break)break;
+     // Normal completion and continue both re-evaluate this loop condition.
     }
     continue;
    }
    if(step.kind==TrajectoryStep::Kind::Branch) {
     const bool condition=step.expression ? step.expression->evaluate(bits,classicalBits,variables)!=0 : (bits&step.mask)==step.value;
     const auto &selected=condition ? *step.whenTrue : *step.whenFalse;
-    execute(selected,state,bits,variables);continue;
+    const auto flow=execute(selected,state,bits,variables);
+    if(flow!=Flow::Normal)return flow;
+    continue;
    }
    if(step.kind==TrajectoryStep::Kind::StoreInteger)variables.write(step.variableSlot,step.integerExpression->evaluate(bits,classicalBits,variables));
    else if(step.kind==TrajectoryStep::Kind::ClearInteger)variables.clear(step.variableSlot);
@@ -120,6 +130,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
     bits=(bits&~bit)|(state.measure(step.wires[0],draw(),cancelled) ? bit : 0);
    } else if(state.measure(step.wires[0],draw(),cancelled))state.apply(X,step.wires,cancelled);
   }
+  return Flow::Normal;
  };
  for(unsigned shot=0;shot<shots;++shot) {
   cancel();StateVector state(qubits,byteBudget,cancelled);std::uint64_t bits=0;

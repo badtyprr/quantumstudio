@@ -828,3 +828,23 @@ measurement loop even if that loop terminates with probability one. `break`,
 `continue`, `end`, runtime for ranges, dynamic indices and runtime gate angles
 remain unsupported. Global declarations inside a loop are rejected, including
 inside an unreachable body.
+
+
+### Native trajectory loop transfers
+
+The numerical trajectory API provides `TrajectoryStep::breakLoop()` and
+`TrajectoryStep::continueLoop()`. Both propagate through if branches to the
+nearest enclosing while loop. Break resumes after that loop; continue skips the
+rest of its body and checks its condition again, consuming the usual condition
+budget. Inner-loop transfers never skip the rest of an outer-loop body.
+Validation rejects either transfer outside a loop, including in an unreachable
+branch and when zero shots are requested. Operations after a transfer still
+undergo validation even though execution skips them. Cancellation and errors
+continue to throw without partial counts.
+
+This is native numerical support only. Exact histories, worker transport, saved
+files, GUI controls and OpenQASM lowering for these transfers remain unfinished.
+Callers that compile scoped variables must emit any required scope-exit clearing
+before a transfer. The native API does not infer source-language scopes.
+
+Semantics: [OpenQASM break and continue](https://openqasm.com/language/classical.html#breaking-and-continuing-loops).
