@@ -131,3 +131,13 @@ cleared before the transfer; locals belonging to an outer loop remain live.
 Transfers targeting a `for` loop and whole-program `end` still require separate
 lowering and are rejected. A `while` loop with transfers may appear inside a
 statically expanded `for` loop.
+
+## Version 9: program termination
+
+Version 9 adds the payload-free step `{"Kind":"End"}` at any nesting depth.
+It ends the current shot or exact history, preserving saved output and probability
+weight. Later steps are skipped at runtime but remain structurally validated.
+Versions 2–8 reject End, including in unreachable bodies. The required Variables
+array and LoopConditionBudget follow versions 7–8; a top-level End works with a
+zero condition budget. Canonical save/reopen retains version 9 and the step.
+The editor and OpenQASM importer do not yet create termination steps.
