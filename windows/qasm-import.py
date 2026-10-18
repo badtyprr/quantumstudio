@@ -87,7 +87,15 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if value.type.size is not None and runtime(visitor,value.type.size):raise ValueError("Integer cast widths must be compile-time constants.")
             size=0 if value.type.size is None else Qasm3ExprEvaluator.evaluate_expression(value.type.size)[0]
             if type(size) is not int or not 0<=size<=64 or (size==0 and value.type.size is not None):raise ValueError('Integer cast width must be 1–64.')
-            return ast.Cast(type=type(value.type)(size=ast.IntegerLiteral(size)),argument=normalize(visitor,value.argument,depth+1,typed=typed))
+            argument=normalize(visitor,value.argument,depth+1,typed=typed)
+            scalar=(isinstance(argument,ast.Identifier) and argument.name in getattr(visitor,'_quantum_scalar_bits',set()) or
+                    isinstance(argument,ast.IndexExpression) and isinstance(argument.index,list) and
+                    len(argument.index)==1 and isinstance(argument.index[0],ast.IntegerLiteral))
+            if scalar and isinstance(value.type,(ast.IntType,ast.UintType)):
+                # Scalar bits are Boolean values; bit[1] and one-element slices
+                # remain registers and keep width-matched reinterpretation.
+                argument=ast.Cast(type=ast.BoolType(),argument=argument)
+            return ast.Cast(type=type(value.type)(size=ast.IntegerLiteral(size)),argument=argument)
         if isinstance(value, ast.BinaryExpression):
             if not typed and not runtime(visitor,value) and not bit_function(value) and not any(isinstance(item,ast.BitstringLiteral) for item in nodes(value)):
                 result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
@@ -121,6 +129,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             value = ast.BinaryExpression(op=ast.BinaryOperator[operation],lhs=copy.deepcopy(target),rhs=value)
         return [] if visitor._check_only else [ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=value)]
     def declaration(visitor, statement):
+        if isinstance(statement.type,ast.BitType) and statement.type.size is None:
+            visitor._quantum_scalar_bits=getattr(visitor,'_quantum_scalar_bits',set())|{statement.identifier.name}
         if isinstance(statement.type,(ast.IntType,ast.UintType)) and statement.identifier.name in runtime_integer_names:
             size = statement.type.size
             if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
