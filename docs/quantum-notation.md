@@ -931,3 +931,13 @@ all operations and rejects transfers outside loops.
 The shared exact condition budget counts each active history. These factories
 extend the native API only; transport, saved-file, editor and import support for
 break/continue remain unfinished, along with compiler-managed scope cleanup.
+
+### Contiguous indexed columns
+
+In Quantum Notation, `[alpha_0; alpha_1; ⋮; alpha_(n-1)]` denotes a column with entries from `alpha_0` through `alpha_(n-1)`. The dimension stays symbolic until supplied; replacing `n` with 3 produces a three-row column. Greek coefficient names and the corresponding TeX `pmatrix`/`bmatrix` with `\vdots` are accepted. Group a compound endpoint with parentheses or braces: `alpha_n - 1` means subtraction and is not an indexed endpoint.
+
+The leading entries must be consecutive from zero, the ellipsis must precede the endpoint, and every entry must use the same coefficient family. The retained minimum endpoint is the index of the last explicitly shown leading entry. Thus `[a_0; a_1; ⋮; a_(n-1)]` requires `n >= 2`; a degenerate endpoint equal to the last shown entry does not duplicate it. Expansion preserves column shape, including a permitted singleton, and is limited to 1024 rows. Invalid, fractional, negative, or too-small dimensions are rejected after substitution too. The internal representation is `qindexedcolumn("alpha_",n-1,1)`.
+
+Symbolic results display the bracket-and-ellipsis form when its endpoint can be entered again as simple arithmetic. More complex endpoints or more than 17 explicit leading entries retain the canonical function display; clipboard output always retains the canonical expression.
+
+This supports contiguous column families; arbitrary ellipsis patterns and two-index matrix ellipses remain unfinished.

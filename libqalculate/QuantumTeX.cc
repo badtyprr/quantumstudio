@@ -11,6 +11,56 @@ std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
 }
+// Infer only a contiguous, zero-based column family. Keep the raw subscript
+// groups: flattening alpha_{n-1} first would confuse it with alpha_n - 1.
+std::string indexedColumn(const std::string &raw, bool tex) {
+ const std::string marker=tex ? "\\vdots" : "⋮", separator=tex ? "\\\\" : ";";
+ std::vector<std::string> rows;
+ size_t start=0;unsigned nesting=0;char quote=0;bool found=false;
+ for(size_t i=0;i<raw.size();++i) {
+  char c=raw[i];
+  if(quote) {if(c==quote)quote=0;continue;}
+  if(c=='\'' || c=='"') {quote=c;continue;}
+  if(c=='(' || c=='[' || c=='{') {++nesting;continue;}
+  if(c==')' || c==']' || c=='}') {if(nesting)--nesting;continue;}
+  if(nesting)continue;
+  if(raw.compare(i,marker.size(),marker)==0)found=true;
+  if(raw.compare(i,separator.size(),separator)==0) {
+   rows.push_back(trim(raw.substr(start,i-start)));i+=separator.size()-1;start=i+1;
+  }
+ }
+ if(!found)return "";
+ rows.push_back(trim(raw.substr(start)));
+ // read() has already validated each optional TeX row-spacing dimension.
+ // Remove that presentation suffix before checking the coefficient pattern.
+ if(tex)for(size_t row=1;row<rows.size();++row)if(!rows[row].empty() && rows[row][0]=='[') {
+  size_t close=rows[row].find(']');
+  if(close!=std::string::npos)rows[row]=trim(rows[row].substr(close+1));
+ }
+ auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
+ if(rows.size()<3 || rows[rows.size()-2]!=marker || rows.size()>1027)invalid();
+ std::string family, last;
+ for(size_t row=0;row<rows.size();++row) {
+  if(row==rows.size()-2)continue;
+  const std::string &entry=rows[row];size_t sub=entry.find('_');
+  if(sub==std::string::npos || sub==0)invalid();
+  std::string name=trim(entry.substr(0,sub)), index=trim(entry.substr(sub+1));
+  if(name.empty())invalid();
+  size_t first=tex && name[0]=='\\' ? 1 : 0;
+  if(first==name.size())invalid();
+  for(size_t i=first;i<name.size();++i)if((unsigned char)name[i]<128 && !asciiLetter(name[i]))invalid();
+  if(family.empty())family=name;else if(family!=name)invalid();
+  bool grouped=index.size()>=2 && ((index.front()=='{' && index.back()=='}') || (index.front()=='(' && index.back()==')'));
+  if(grouped)index=trim(index.substr(1,index.size()-2));
+  if(index.empty())invalid();
+  // Endpoint arithmetic deliberately excludes separators, calls, and nested
+  // subscripts: those require a more explicit indexed construction.
+  for(unsigned char c:index)if(c<128 && !std::isalnum(c) && !std::isspace(c) && ( !grouped || (c!='+' && c!='-' && c!='*' && c!='/')))invalid();
+  if(row+1<rows.size()) {if(index!=std::to_string(row))invalid();}
+  else last=index;
+ }
+ return "qindexedcolumn(\""+quantumTeX(family)+"_\",("+last+"),"+std::to_string(rows.size()-3)+")";
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -310,11 +360,16 @@ class TeXReader {
     return read(0,true,env);
    }
    if(env!="matrix" && env!="pmatrix" && env!="bmatrix" && env!="Bmatrix" && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
-   auto body=read(0,true,env); std::string m="["+body+"]";
+   size_t bodyStart=pos;
+   auto body=read(0,true,env);
+   size_t bodyEnd=input.rfind("\\end",pos-1);
+   std::string m=indexedColumn(input.substr(bodyStart,bodyEnd-bodyStart),true);
+   if(m.empty())m="["+body+"]";
    if(env=="vmatrix") return "det("+m+")";
    if(env=="Vmatrix") return "norm("+m+closeNorm(true);
    return m;
   }
+  if(name=="vdots" && matrix)return "⋮";
   if(name=="lVert") { ++norms; return "norm("; }
   if(name=="rVert") { if(norms==0) throw std::runtime_error(error("Unmatched norm delimiter")); --norms; return closeNorm(); }
   if(name=="Vert") { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
@@ -403,7 +458,9 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
-    result+=open; result+=read(end); result+=end;
+    size_t bodyStart=pos;auto body=read(end);
+    std::string column=open=='[' ? indexedColumn(input.substr(bodyStart,pos-bodyStart-1),false) : "";
+    result+=column.empty() ? std::string(1,open)+body+end : column;
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
    else if(input[pos]=='_') {
