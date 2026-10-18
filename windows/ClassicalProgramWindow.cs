@@ -120,9 +120,12 @@ sealed class ClassicalProgramWindow : Window {
   }return node;
  }
  bool Discard() {return verifying || history.Current.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
- void Import(string path,bool published) {var next=ClassicalCircuit.Load(QasmImport.Compile(path,published,true)).Snapshot();history.Edit(d=>{d.Version=next.Version;d.Qubits=next.Qubits;d.Registers=next.Registers;d.Variables=next.Variables;d.OutputBits=next.OutputBits;d.Steps=next.Steps;});}
+ void Import(string path,bool published) {var next=ClassicalCircuit.Load(QasmImport.Compile(path,published,true)).Snapshot();history.Edit(d=>{d.Version=next.Version;d.LoopConditionBudget=next.LoopConditionBudget;d.Qubits=next.Qubits;d.Registers=next.Registers;d.Variables=next.Variables;d.OutputBits=next.OutputBits;d.Steps=next.Steps;});}
  public void VerifyImport(string path,string report) {
-  verifying=true;string before=history.Current.Serialize();Import(path,false);string imported=history.Current.Serialize();
+  verifying=true;
+  // Import replaces all metadata and undo restores even a loop-bearing document.
+  history.Edit(d=>{d.Version=7;d.Variables=new ClassicalCircuit.Variable[0];d.LoopConditionBudget=3;d.Steps=new[]{new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"},WhenTrue=new ClassicalCircuit.Step[0]}};});
+  string before=history.Current.Serialize();Import(path,false);string imported=history.Current.Serialize();
   history.Undo();if(history.Current.Serialize()!=before)throw new Exception("Import undo lost the previous circuit.");history.Redo();if(history.Current.Serialize()!=imported)throw new Exception("Import redo lost classical circuit data.");
   File.WriteAllText(report+".qcircuit",imported);Refresh();status.Text="Imported · Classical registers, saved measurements and branches preserved.";Capture(report+".png");
  }
