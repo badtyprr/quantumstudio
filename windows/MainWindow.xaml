@@ -76,6 +76,7 @@
         <Button x:Name="Run" Content="Calculate  →" Background="{DynamicResource Theme.Primary}" Foreground="{DynamicResource Theme.OnPrimary}" Padding="22,10" ToolTip="Enter or Ctrl+Enter calculates; Shift+Enter adds a new line"/>
         <Button x:Name="Cancel" Content="Stop" IsEnabled="False" ToolTip="Stop the current calculation"/>
         <Button x:Name="EditStates" Content="States · 0" ToolTip="Define named states such as Bell and after CZ"/>
+        <Button x:Name="EditMatrices" Content="Matrices · 0" ToolTip="Declare matrix symbols and their row and column dimensions"/>
         <ComboBox x:Name="TimeAllowance" SelectedIndex="0" Width="145" Margin="0,0,0,8" ToolTip="Calculation time allowance" AutomationProperties.Name="Calculation time allowance">
          <ComboBoxItem Content="15 seconds"/>
          <ComboBoxItem Content="1 minute"/>

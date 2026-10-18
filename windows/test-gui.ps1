@@ -61,6 +61,17 @@ if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests failed.' }
 $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
+$matrixGuiTest = Join-Path $validation 'matrix-declarations-gui-tests.exe'
+$matrixGuiArgs = @('/nologo', '/target:exe', '/platform:x64', "/out:$matrixGuiTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll", (Join-Path $PSScriptRoot 'MatrixDeclarationsGuiTests.cs'))
+& "$fx\csc.exe" @matrixGuiArgs
+if ($LASTEXITCODE -ne 0) { throw 'Matrix declaration GUI tests did not compile.' }
+$matrixGuiImage = Join-Path $validation 'matrix-declarations.png'
+$matrixGuiProcess = Start-Process -FilePath $matrixGuiTest -ArgumentList @(('"' + $app + '"'), ('"' + $matrixGuiImage + '"')) -WindowStyle Hidden -PassThru
+try {
+    if (-not $matrixGuiProcess.WaitForExit(30000)) { $matrixGuiProcess.Kill(); $matrixGuiProcess.WaitForExit(); throw 'Matrix declaration GUI tests timed out.' }
+    if ($matrixGuiProcess.ExitCode -ne 0) { throw 'Matrix declaration GUI tests failed.' }
+} finally { $matrixGuiProcess.Dispose() }
+
 $classicalReport = Join-Path $validation ('classical-editor-' + [Guid]::NewGuid().ToString('N') + '.txt')
 $classicalProcess = Start-Process -FilePath $app -ArgumentList @('--classical-editor-test', ('"' + $classicalReport + '"')) -WindowStyle Hidden -PassThru
 try {

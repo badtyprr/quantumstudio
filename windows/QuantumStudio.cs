@@ -23,7 +23,9 @@ class QuantumStudio {
  static ComboBox mode, evaluation, timeAllowance;
  static ListBox history;
  static StateDefinition[] states=new StateDefinition[0];
- static void RefreshStates() {Find<Button>("EditStates").Content="States · "+states.Length;}
+ static MatrixDeclaration[] matrices=new MatrixDeclaration[0];
+ static void RefreshStates() {Find<Button>("EditStates").Content="States · "+states.Length;Find<Button>("EditMatrices").Content="Matrices · "+matrices.Length;}
+ static Window MatrixEditor() {return MatrixDeclarationEditor.Create(window,matrices,delegate(MatrixDeclaration[] applied) {matrices=applied;RefreshStates();status.Text="Matrix dimensions updated · Calculate to evaluate; Save session to keep them.";});}
  static Window StateEditor() {
   return NamedStateEditor.Create(window,states,delegate(StateDefinition[] applied) {
    states=applied;RefreshStates();
@@ -105,6 +107,7 @@ class QuantumStudio {
   using(var reader=new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("examples.json"))) examples=new JavaScriptSerializer().Deserialize<ExampleEntry[]>(reader.ReadToEnd());
   Find<Button>("BrowseExamples").Click+=delegate {ExamplesWindow().ShowDialog();};
   Find<Button>("EditStates").Click+=delegate {if(run.IsEnabled)StateEditor().ShowDialog();};
+  Find<Button>("EditMatrices").Click+=delegate {if(run.IsEnabled)MatrixEditor().ShowDialog();};
   Find<Button>("ComposeCircuit").Click+=delegate {new CircuitComposer(window,delegate(string value) {mode.SelectedIndex=0;input.Text=value;input.Focus();}).ShowDialog();};
   run.Click += async delegate { await Calculate(); };
   input.PreviewKeyDown += async delegate(object sender, KeyEventArgs e) {
@@ -902,13 +905,13 @@ class QuantumStudio {
  static void Example(string name,string expression) { Find<Button>(name).Click += delegate { mode.SelectedIndex=0; input.Text=expression; input.Focus(); input.CaretIndex=input.Text.Length; }; }
  static ListBoxItem HistoryItem(SessionEntry record,bool saved) {
   var item=new ListBoxItem {Content=new TextBlock {Text=(saved ? "Saved · " : "")+record.Expression+"   =   "+record.Result,TextWrapping=TextWrapping.Wrap,FontSize=14,Margin=new Thickness(4,7,4,7)},Tag=record};
-  item.MouseDoubleClick+=delegate {states=SessionStore.CopyStates(record.States);RefreshStates();input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
+  item.MouseDoubleClick+=delegate {states=SessionStore.CopyStates(record.States);matrices=MatrixDeclarations.Copy(record.Matrices);RefreshStates();input.Text=record.Expression;mode.SelectedIndex=record.Mode;evaluation.SelectedIndex=record.Evaluation;input.Focus();};return item;
  }
  static CalculationSession CaptureSession() {
   var entries=new SessionEntry[history.Items.Count];for(int j=0;j<entries.Length;j++)entries[j]=(SessionEntry)((ListBoxItem)history.Items[j]).Tag;
   var snapshots=new SessionEntry[entries.Length];
-  for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States)};
-  return new CalculationSession {Version=2,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states)};
+  for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States),Matrices=MatrixDeclarations.Copy(entries[j].Matrices)};
+  return new CalculationSession {Version=3,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states),Matrices=MatrixDeclarations.Copy(matrices)};
  }
  static void CheckInvalidSessions(string path,string diagnostics,string expectedSnapshot) {
   var serializer=new JavaScriptSerializer();
@@ -932,9 +935,10 @@ class QuantumStudio {
  static void OpenSession(string path) {
   var session=SessionStore.Load(path);
   var restoredStates=SessionStore.CopyStates(session.States);
+  var restoredMatrices=MatrixDeclarations.Copy(session.Matrices);
   var items=new ListBoxItem[session.History.Length];for(int j=0;j<items.Length;j++)items[j]=HistoryItem(session.History[j],true);
   history.Items.Clear();foreach(var item in items)history.Items.Add(item);
-  states=restoredStates;
+  states=restoredStates;matrices=restoredMatrices;
   RefreshStates();
   input.Text=session.Expression;mode.SelectedIndex=session.Mode;evaluation.SelectedIndex=session.Evaluation;
   matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;
@@ -1054,7 +1058,10 @@ class QuantumStudio {
   string expression=input.Text.Trim();
   if(Encoding.UTF8.GetByteCount(expression)>32000) { status.Text="Please keep expressions below 32 KB."; return; }
   int calculationMode=mode.SelectedIndex, calculationEvaluation=evaluation.SelectedIndex;
-  string request=(calculationMode==0 ? "quantum:" : "")+expression;
+  var calculationMatrices=MatrixDeclarations.Copy(matrices);
+  string request;
+  try {request=calculationMode==0 ? "quantum:"+MatrixDeclarations.Apply(expression,calculationMatrices) : expression;}
+  catch(Exception ex) {copyText=null;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;output.Text=ex.Message;resultLabel.Text="CHECK YOUR EXPRESSION";status.Text="Edit the expression or matrix dimensions and try again.";return;}
   var calculationStates=SessionStore.CopyStates(states);
   byte[] requestBytes;
   try {requestBytes=calculationStates.Length==0 ? Encoding.UTF8.GetBytes(request) : SessionStore.StateRequest(calculationStates,request);}
@@ -1066,7 +1073,7 @@ class QuantumStudio {
   var cancellation=new CancellationTokenSource();calculationCancellation=cancellation;
   run.IsEnabled=false;cancel.IsEnabled=true;timeAllowance.IsEnabled=false; status.Text="Calculating… · "+seconds+" second allowance"; resultLabel.Text="RESULT";
   Find<Button>("OpenSession").IsEnabled=false;Find<Button>("SaveSession").IsEnabled=false;
-  Find<Button>("EditStates").IsEnabled=false;
+  Find<Button>("EditStates").IsEnabled=false;Find<Button>("EditMatrices").IsEnabled=false;
   try {
    runningWorker=Task.Run(async delegate {
     using(var process=new Process()) {
@@ -1099,12 +1106,12 @@ class QuantumStudio {
    status.Text=response[1].Length==0 ? (result.approximate ? "Complete · Approximate arithmetic" : "Complete · Exact arithmetic")+" · Leftmost qubit is subsystem 0" : response[1];
    string preview=result.display_text ?? result.text;
    if(preview.Length>32768){int end=32767;if(Char.IsHighSurrogate(preview[end-1]))end--;preview=preview.Substring(0,end)+"…";}
-   var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation,States=calculationStates},false);
+   var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation,States=calculationStates,Matrices=calculationMatrices},false);
    history.Items.Insert(0,entry); if(history.Items.Count>50) history.Items.RemoveAt(50);
   } catch(OperationCanceledException) {
    blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;
    copyText=null;resultLabel.Text="CANCELLED";output.Text="Calculation cancelled.";status.Text="Stopped · Your expression is ready to edit or run again.";
   } catch(Exception ex) { copyText=null;blochView.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;matrixView.Visibility=Visibility.Collapsed; matrixCaption.Visibility=Visibility.Collapsed; output.Visibility=Visibility.Visible; resultLabel.Text=ex is TimeoutException ? "TIME ALLOWANCE REACHED" : "CHECK YOUR EXPRESSION"; output.Text=ex.Message; status.Text="Calculation stopped. Edit the expression and try again."; }
-  finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true;Find<Button>("EditStates").IsEnabled=true; }
+  finally { active=null;runningWorker=null;calculationCancellation=null;cancellation.Dispose();cancel.IsEnabled=false;timeAllowance.IsEnabled=true; run.IsEnabled=true;Find<Button>("OpenSession").IsEnabled=true;Find<Button>("SaveSession").IsEnabled=true;Find<Button>("EditStates").IsEnabled=true;Find<Button>("EditMatrices").IsEnabled=true; }
  }
 }
