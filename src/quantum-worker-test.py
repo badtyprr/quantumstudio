@@ -78,6 +78,19 @@ for expression,shown in [
     assert data('quantum:'+value['copy_text'])['text']==value['text']
     assert data('quantum:'+shown)['text']==value['text']
 
+# Bound ket names follow the displayed binder and survive dimension substitution.
+for expression,shown in [
+    (r"\sum_{k=0}^{n-1}{alpha_k|k>}", "∑_{k=0}^{n − 1} (alpha_k |k⟩)"),
+    (r"\sum_{j=0}^{k}{|j>}", "∑_{j=0}^{k} (|j⟩)"),
+]:
+    value=data('quantum:'+expression)
+    assert value['display_text']==shown,value
+    assert data('quantum:'+value['copy_text'])['display_text']==shown
+    assert data('quantum:'+shown)['display_text']==shown
+source=r"\sum_{k=0}^{n-1}{alpha_k|k>}"
+shown=data('quantum:'+source)['display_text']
+assert data('quantum:replace('+source+',n,3)')['cells']==data('quantum:replace('+shown+',n,3)')['cells']
+
 # Human-readable presentation must leave canonical clipboard expressions intact.
 for expression,shown in [
     ("QFT_N|x>", "QFT_N |x⟩"),

@@ -21,6 +21,9 @@ state label is not inferred: apply `conj` to the whole ket or bra.
 The result display also uses `Tr(...)` inside scalar sums, powers, and comparisons,
 for example `Tr(A) + Tr(B)` and `Tr(A) = Tr(B)`. Grouping is preserved;
 Copy retains the canonical expression used for calculation.
+Kets and bras bound by a symbolic sum use that sum’s displayed index name.
+For example, a sum of `alpha_k|k>` displays `|k⟩`, with any index renaming
+applied consistently to the coefficient, ket and summation index.
 The result panel displays the trace notation, and Copy preserves the expression
 for re-entry. Repeated traces can combine as scalar terms. For example,
 `replace(Tr(QFT_N),N,4)` evaluates to `1+i`, and
