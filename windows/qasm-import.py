@@ -157,8 +157,6 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             visitor._quantum_scalar_bits=getattr(visitor,'_quantum_scalar_bits',set())|{statement.identifier.name}
         if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
             boolean=isinstance(statement.type,ast.BoolType)
-            if boolean and isinstance(statement.init_expression,ast.QuantumMeasurement):
-                raise ValueError('Measure into a bit first; direct Boolean measurement targets require additional lowering.')
             size = ast.IntegerLiteral(1) if boolean else statement.type.size
             if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
             width = 0 if size is None else Qasm3ExprEvaluator.evaluate_expression(size, const_expr=True)[0]
@@ -448,11 +446,52 @@ def number(value):
     return format(value.value, '.17g')
 
 
+def lower_boolean_measurements(program):
+    """Reuse one temporary measurement bit, copying each outcome into storage.
+
+    The temporary is omitted from published outputs; Boolean variables keep
+    independent values even after subsequent measurements overwrite the bit.
+    """
+    booleans={n.identifier.name for n in nodes(program) if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.BoolType)}
+    if not booleans:return set()
+    used={n.name for n in nodes(program) if isinstance(n,ast.Identifier)}
+    name='_boolean_measurement';serial=0
+    while name in used:serial+=1;name='_boolean_measurement_'+str(serial)
+    changed=False
+    def block(body):
+        nonlocal changed
+        result=[]
+        for statement in body:
+            target=None;measurement=None
+            if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,ast.BoolType) and isinstance(statement.init_expression,ast.QuantumMeasurement):
+                target=copy.deepcopy(statement.identifier)
+                measurement=ast.QuantumMeasurementStatement(measure=statement.init_expression,target=ast.Identifier(name))
+                statement.init_expression=None;result.append(statement)
+            elif isinstance(statement,ast.QuantumMeasurementStatement) and isinstance(statement.target,ast.Identifier) and statement.target.name in booleans:
+                target=copy.deepcopy(statement.target);measurement=copy.deepcopy(statement);measurement.target=ast.Identifier(name)
+            if measurement is not None:
+                changed=True;result.append(measurement)
+                result.append(ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=ast.Identifier(name)))
+                continue
+            if isinstance(statement,ast.BranchingStatement):block(statement.if_block);block(statement.else_block)
+            elif isinstance(statement,ast.ForInLoop):block(statement.block)
+            elif isinstance(statement,ast.CompoundStatement):block(statement.statements)
+            result.append(statement)
+        body[:]=result
+    block(program.statements)
+    if not changed:return set()
+    program.statements.insert(0,ast.ClassicalDeclaration(type=ast.BitType(),identifier=ast.Identifier(name)))
+    return {name}
+
+
 def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(source)
-    if classical:resolve_integer_scopes(module.original_program)
+    hidden_registers=set()
+    if classical:
+        resolve_integer_scopes(module.original_program)
+        hidden_registers=lower_boolean_measurements(module.original_program)
     if classical:
         runtime_names={node.identifier.name for node in nodes(module.original_program)
                    if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,)+RUNTIME_SCALAR_TYPES)}
@@ -504,7 +543,7 @@ def convert(source, published_u=False, classical=False):
     unroll_preserving_phase(module, primitives, preserve_branches=classical)
     statements = module.unrolled_ast.statements
     if classical:
-        return classical_circuit(statements, published_u)
+        return classical_circuit(statements, published_u, hidden_registers)
     registers, count = {}, 0
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
@@ -747,11 +786,15 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
     return result
 
 
-def classical_circuit(statements, published_u):
+def classical_circuit(statements, published_u, hidden_registers=None):
+    hidden_registers=hidden_registers or set()
     quantum, classical, named = {}, {}, []
     variables, declarations = {}, []
     nq = nc = 0
-    for statement in nodes(statements):
+    declarations_in_order=list(nodes(statements))
+    # Allocate generated bits last so original register indices do not move.
+    declarations_in_order.sort(key=lambda n:isinstance(n,ast.ClassicalDeclaration) and n.identifier.name in hidden_registers)
+    for statement in declarations_in_order:
         if isinstance(statement, ast.QubitDeclaration):
             size = 1 if statement.size is None else statement.size.value
             quantum[statement.qubit.name] = (nq, size)
@@ -898,7 +941,8 @@ def classical_circuit(statements, published_u):
                 raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
         return result
     steps=lower(statements)
-    result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(range(nc))), 'Steps': steps}
+    visible_bits=[bit for name,(start,size) in classical.items() if name not in hidden_registers for bit in range(start,start+size)]
+    result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(visible_bits)), 'Steps': steps}
     if declarations or version>=6:result['Variables']=declarations
     return result
 

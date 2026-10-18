@@ -8,6 +8,17 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-bmeasure-initializer','qubit q;h q;bool b=measure q;bit c;c=b;',{'0':'1/2','1':'1/2'}),
+ ('computed-bmeasure-assignment','qubit q;x q;bool b=false;b=measure q;bit c;c=b;',{'1':'1'}),
+ ('computed-bmeasure-history','qubit q;h q;bool b=measure q;reset q;bool a=measure q;bit c;c=b && !a;',{'0':'1/2','1':'1/2'}),
+ ('computed-bmeasure-feedback','qubit q;h q;bool b=measure q;if(b){x q;}bit c;c=measure q;',{'0':'1'}),
+ ('computed-bmeasure-loop','qubit q;x q;bit c;for int i in [0:1]{bool b=measure q;c=b;reset q;}',{'0':'1'}),
+ ('computed-bmeasure-shadow','qubit q;bool b=true;bit c;{bool b=measure q;c=!b;}c=c && b;',{'1':'1'}),
+ ('computed-bmeasure-skipped','qubit q;bool b;bit c;if(c){b=measure q;}c=b;',None),
+ ('computed-bmeasure-guard','qubit q;bool b;bit c;if(c){b=measure q;}c=false && b;',{'0':'1'}),
+ ('computed-bmeasure-empty','qubit q;h q;bool b=measure q;',{'':'1'}),
+ ('computed-bmeasure-collision','qubit q;bit _boolean_measurement=1;bool b=measure q;bit c;c=b;',{'01':'1'}),
+ ('computed-bmeasure-capacity','qubit q;x q;bit[63] c;bool b=measure q;c[0]=b;',{'0'*62+'1':'1'}),
  ('computed-bool-variable','bool b=true;bit c;c=b;',{'1':'1'}),
  ('computed-bool-toggle','bool b=false;bit c;b=!b;c=b;',{'1':'1'}),
  ('computed-bool-copy','bool a=true;bool b=a;a=false;bit c;c=b;',{'1':'1'}),
@@ -187,7 +198,8 @@ rejected += ['bit[1] c;bool b=c;','bit[3] c;bool b=c ^ "111";',
              'def f(){bool b=true;}f();']
 rejected += ['bit[1] c;bool b=c ^ "1";','bit[1] c;bool b=~c;',
              'bit[1] c;bool b=rotl(c,1);','bit[1] c;bool b=c << 1;']
-rejected += ['qubit q;bool b=measure q;','qubit q;bool b;b=measure q;']
+rejected += ['qubit q;bit[64] c;bool b=measure q;','qubit[2] q;bool b=measure q;',
+             'qubit q;bool b;b[0]=measure q;','qubit q;bool b;\n@unsupported\nb=measure q;']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
@@ -245,6 +257,10 @@ def steps(body):
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
  assert circuit['Version']==(6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ if name.startswith('computed-bmeasure-'):
+  total=sum(r['Size'] for r in circuit['Registers'])
+  assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)
+  checks+=1
  if name=='scope-siblings':
   branch=next(step for step in circuit['Steps'] if step['Kind']=='Branch')
   assert branch['WhenTrue'][-1]['Kind']==branch['WhenFalse'][-1]['Kind']=='ClearInteger'

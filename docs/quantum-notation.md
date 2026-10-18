@@ -734,6 +734,13 @@ The compiled circuit represents Boolean storage as `uint[1]` variables with
 explicit truth-value conversions on writes and reads. Integer assignments use
 the nonzero rule; bit registers, bit strings and slices require explicit
 `bool(...)` conversion. This follows the [OpenQASM Boolean casting rules](https://openqasm.com/language/types.html#casting-from-bool).
-Direct measurement into a Boolean, Boolean compound assignments, runtime loops,
-subroutine-local storage and floating-point conversions still require further
-lowering. Measure into a scalar bit, then assign that bit to a Boolean.
+Boolean compound assignments, runtime loops, subroutine-local storage and
+floating-point conversions still require further lowering.
+
+Measurement can directly initialize or update a Boolean:
+`bool result=measure q;` and `result=measure q;`. The compiler reuses one
+temporary classical bit and immediately copies each outcome into Boolean
+storage. Later measurements cannot overwrite a saved Boolean value. Original
+register indices and output order stay intact; the temporary bit is excluded
+from output counts but is visible in the compiled circuit. This requires one
+of the circuit's 64 classical bit slots, regardless of measurement count.
