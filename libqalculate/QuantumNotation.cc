@@ -13,6 +13,7 @@ namespace {
 // the translated expression reaches libqalculate.
 const char labelMarkerBegin='\x1e',labelMarkerEnd='\x1f';
 const char constantMarkerBegin='\x1c',constantMarkerEnd='\x1d';
+const char phaseKetMarker='\x1b';
 std::string indexableLabel(const std::string &label) {return std::string(1,labelMarkerBegin)+"\""+label+"\""+labelMarkerEnd;}
 std::string withoutLabelMarkers(std::string value) {
  value.erase(std::remove(value.begin(),value.end(),labelMarkerBegin),value.end());
@@ -152,7 +153,8 @@ std::string ket(const std::string &label, size_t dimension=0) {
  if(s.find("±")!=std::string::npos)throw std::runtime_error("Choose one state sign, + or -, rather than an ambiguous plus/minus label.");
  if(s == "+") return "(matrix(2,1,[1,1])/sqrt(2))";
  if(s == "-") return "(matrix(2,1,[1,-1])/sqrt(2))";
- if(s == "i" || s == "+i") return "(matrix(2,1,[1,i])/sqrt(2))";
+ if(s == "i") return std::string(1,phaseKetMarker);
+ if(s == "+i") return "(matrix(2,1,[1,i])/sqrt(2))";
  if(s == "-i") return "(matrix(2,1,[1,-i])/sqrt(2))";
  if(s.find("↑")!=std::string::npos || s.find("↓")!=std::string::npos) {
   replaceAll(s,"↑","0");replaceAll(s,"↓","1");
@@ -395,6 +397,16 @@ class Parser {
   // Keep the index as a separate expression so nested binders and later
   // substitutions can operate structurally without editing quoted names.
   const std::string labelIndex=plain ? original : original.substr(1,original.size()-2);
+  // Bare |i> remains undecided until its lexical binder is known. Explicit
+  // |+i> keeps the phase-state meaning even inside an i-indexed sum.
+  if(labelIndex=="i") {
+   size_t at=0;
+   while((at=args[body].find(phaseKetMarker,at))!=std::string::npos) {
+    if(++indexedReferences>128)throw std::runtime_error("Quantum expression exceeds 128 bound subscript references.");
+    const std::string state="qketstate("+symbol+")";
+    args[body].replace(at,1,state);at+=state.size();checkSize(args[body]);
+   }
+  }
   for(size_t start=0;start<args[body].size();++start) {
    if(args[body][start]!='"')continue;
    size_t end=args[body].find('"',start+1);if(end==std::string::npos)break;
@@ -1382,7 +1394,7 @@ class Parser {
  }
  public:
  explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
- std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); checkSize(out);return withoutLabelMarkers(out); }
+ std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
 };
 
 }
@@ -1427,7 +1439,7 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 }
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
- if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
+ if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
  std::string s=unicodeArithmetic(quantumWhitespace(expression));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
