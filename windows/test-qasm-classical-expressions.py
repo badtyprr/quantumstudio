@@ -6,7 +6,21 @@ root=Path(__file__).resolve().parent.parent
 p=argparse.ArgumentParser();p.add_argument('--worker',type=Path);p.add_argument('--source-only',action='store_true');a=p.parse_args()
 spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'windows/qasm-import.py');adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
 header='OPENQASM 3.0; include "stdgates.inc"; '
+unicode_name='𝑎'*31
 cases=[
+ ('scope-unicode','int '+unicode_name+'=1;bit c;{int '+unicode_name+'=2;c='+unicode_name+'==2;}c=c && '+unicode_name+'==1;',{'1':'1'}),
+ ('scope-shadow','int a=1; bit c; if(a==1){int a=2; c=a==2;} c=c && a==1;',{'1':'1'}),
+ ('scope-siblings','bit c=1; if(c){int a=2;c=a==2;}else{int a=3;c=a==2;}',{'1':'1'}),
+ ('scope-else','bit c; if(c){int a=2;c=a==3;}else{int a=3;c=a==3;}',{'1':'1'}),
+ ('scope-nested','int a=1; bit c; if(a==1){int a=2;if(a==2){int a=3;c=a==3;}c=c && a==2;}c=c && a==1;',{'1':'1'}),
+ ('scope-loop','int sum=0; bit c; for int i in [0:2]{int t=i;sum+=t;}c=sum==3;',{'1':'1'}),
+ ('scope-fresh','bit c; for int i in [0:1]{int t;if(i==0){t=7;}else{c=t==7;}}',None),
+ ('scope-loop-shadow','int i=7;bit c;for int i in [0:2]{c=i==2;}c=c && i==7;',{'1':'1'}),
+ ('scope-block','int a=1;bit c;{int a=2;c=a==2;}c=c && a==1;',{'1':'1'}),
+ ('scope-collision','int a_scope_1=9;bit c;{int a=2;c=a==2;}c=c && a_scope_1==9;',{'1':'1'}),
+ ('scope-constant-width','bit c=1;if(c){const uint n=8;int[n] t=7;c=t==7;}',{'1':'1'}),
+ ('scope-self-initializer','int a=1;bit c;{int a=a+1;c=a==2;}',None),
+ ('scope-measurement','qubit q;bit c;h q;c=measure q;if(c){int a=8;c=a==8;}else{int a=3;c=a==8;}',{'0':'1/2','1':'1/2'}),
  ('variable-arithmetic','int[8] counter=3; bit c; counter=counter**2-1; c=counter==8;',{'1':'1'}),
  ('variable-compound','int counter=3; bit c; counter+=2; counter*=3; counter-=1; counter/=2; counter%=4; c=counter==3;',{'1':'1'}),
  ('variable-undefined','int[8] counter; bit c; c=counter==0;',None),
@@ -107,9 +121,10 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
 rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
 rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
              'int a=1; qubit[2] q; x q[a];','int a=1; qubit q; rx(a) q;',
-             'int a=1; for int a in [0:2]{}','bit c; if(c){int a=1;}',
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
              'int a=1; bit[2] c; c[a]=1;','float a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
+rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;for int i in [0:2]{int a=1;break;}', 'bit c;for int i in [0:2]{int a=1;continue;}', 'bit c;while(false){int a=1;}', 'bit c;{int '+('a'*65)+';}']
+rejected += ['int '+('𝑎'*33)+';', 'int a=1;bit c;{const int a=2;c=a==2;}']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
@@ -152,6 +167,7 @@ def steps(body):
   elif kind in ('Branch','ExpressionBranch'):
    out+=(n(6,s['Mask'],s['Value']) if kind=='Branch' else n(8)+expression(s['ClassicalValue']))
    for key in ['WhenTrue','WhenFalse']:out+=n(len(s[key]))+steps(s[key])
+  elif kind=='ClearInteger':out+=n(10,s['VariableSlot'])
   elif kind=='StoreInteger':out+=n(9,s['VariableSlot'])+integer_expression(s['IntegerValue'])
   elif kind=='Reset':out+=n(2,s['Wires'][0])
   elif kind=='Measure':out+=n(1,s['Wires'][0],s['ClassicalBit'])
@@ -160,7 +176,11 @@ def steps(body):
  return out
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
- assert circuit['Version']==(5 if name.startswith('variable-') else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ if name=='scope-siblings':
+  branch=next(step for step in circuit['Steps'] if step['Kind']=='Branch')
+  assert branch['WhenTrue'][-1]['Kind']==branch['WhenFalse'][-1]['Kind']=='ClearInteger'
+  assert branch['WhenTrue'][-1]['VariableSlot']!=branch['WhenFalse'][-1]['VariableSlot']
  if name.startswith('classical-only-'):assert circuit['Qubits']==0,(name,circuit)
  # The overlap case must retain a simultaneous read of both old source bits.
  if name=='overlap':assert circuit['Steps'][1]=={'Kind':'Assign','Wires':[1,2],'ClassicalValue':{'Kind':'Read','Bits':[0,1]}}

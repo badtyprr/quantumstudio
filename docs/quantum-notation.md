@@ -685,8 +685,17 @@ fresh storage, and exact evaluation keeps distinct variable histories until they
 can safely merge. The importer preserves these semantics instead of evaluating
 mutable values while compiling. This follows the initialization and scope rules
 in the [OpenQASM type specification](https://openqasm.com/language/types.html).
-Scoped declarations, shadowing, variable references in subroutines, runtime
-loops, indices and gate parameters still require additional lowering and are
-rejected explicitly. Top-level integer variables may be updated inside an
-unrolled constant-bound loop. Variable names are limited to 64 characters and
-programs to 4096 integer declarations.
+Integer declarations also work inside branches, brace-delimited blocks and
+unrolled constant-bound loops. A local integer can shadow an outer variable:
+`int a=1; bit c; {int a=2; c=a==2;} c=c && a==1;` leaves `c` equal to one.
+The imported document gives locals unique names and clears their storage on
+entry and exit, so a later loop iteration cannot read a previous local value.
+Local constants can specify widths, but non-integer shadowing remains unsupported.
+
+Variable references and integer declarations in subroutines, runtime loops,
+indices and gate parameters still require additional lowering and are rejected
+explicitly. Programs combining scoped integers with `break` or `continue` are
+also rejected until jump-aware lifetime handling is available. Top-level integer
+variables may be updated inside an unrolled constant-bound loop. Variable names
+are limited to 64 UTF-16 code units, programs to 4096 integer declarations, and
+lexical scope nesting to 32 levels.
