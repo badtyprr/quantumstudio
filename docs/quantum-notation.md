@@ -202,7 +202,7 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 
 - Finish the lesson-by-lesson IBM audit and the qBraid generated-program and learning-content audits. Account-only qBook contents have not been inspected.
 - Resolve implicit register dimensions, general symbolic bit strings and sets, ensembles, general instruments, and automatic POVM/Naimark constructions.
-- Extend programming support beyond the bounded OpenQASM importer and its runtime bit-register operations. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs. General runtime integer arithmetic, data-dependent loops and dynamic wire indexing remain unsupported.
+- Extend programming support beyond the bounded OpenQASM importer. Runtime bit-register operations, typed integer arithmetic, scoped integer/Boolean storage and integer `switch` selection are implemented. Data-dependent loops, dynamic wire indexing, runtime gate parameters, and subroutine-local storage remain unsupported. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs.
 - Address scale separately from syntax. The circuit editor supports up to 25 qubits and 512 steps for numerical sampling, with exact state and density-matrix inspection limited to ten qubits; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
@@ -531,7 +531,8 @@ arithmetic and comparison first convert both operands to their common type.
 For example, `int[8](-1)` compares below `uint[8](255)`, while a signed machine
 -1 compares equal to the largest unsigned machine integer after conversion.
 This is an explicit target policy, not a claim that OpenQASM mandates 64-bit
-unspecified integers. Runtime import and typed circuit storage remain unfinished.
+unspecified integers. The worker, circuit storage, editor and importer use this
+same policy through the interfaces described below.
 
 The native `IntegerExpression` layer retains integer type identity across
 constants, packed-register reads, casts and arithmetic expressions. It validates
@@ -539,15 +540,16 @@ register references without evaluating an artificial record, so a runtime
 divisor is checked only when the expression executes. Expressions are immutable
 and limited to 32 levels and 512 expanded nodes. The caller supplies an already
 initialized record; declaration and initialization tracking are not supplied by
-this layer. This API is not yet connected to the worker wire protocol, circuit
-files, OpenQASM importer or editor.
+this layer alone. Worker protocols and circuit formats connect this API to the
+editor and OpenQASM importer; the later variable-storage layer tracks declaration
+and initialization state.
 
 `Bits::integerCompare` converts one of the six typed integer comparisons into a
 single-bit condition usable by native exact and trajectory circuits. Untaken
 branches are structurally checked without executing their arithmetic; an
 executed zero divisor raises an error. Combined bit/integer expression trees
-share the same depth and expanded-node limits. This native bridge does not yet
-add an integer expression encoding to the worker protocol or OpenQASM importer.
+share the same depth and expanded-node limits. The protocol and importer
+encodings described below expose this bridge to imported and edited circuits.
 
 ### Typed integer condition wire protocol
 
@@ -586,9 +588,10 @@ All fields are LF-terminated unsigned decimal integers. Integer and bit nodes
 share a 32-level/512-expanded-node budget, checked before descending. References
 are checked even in untaken branches, but arithmetic executes only when reached.
 A comparison produces one bit usable by the existing assignment and branch
-operations. These versions do not yet declare integer variables, track their
-initialization or persist their type in circuit files. The GUI and importer
-still emit the older bit-expression protocols.
+operations. `QEXACT3` and `QSAMPLE4` do not declare integer variables or track
+their initialization. Variable-bearing requests use the later protocol versions
+described below. Circuit version 4 persists typed expressions, and versions 5
+and 6 add variable storage and computed bit-to-integer conversions.
 
 The Windows request adapter now has immutable `ClassicalIntegerType` and
 `ClassicalIntegerExpression` objects and the `ClassicalExpression.IntegerCompare`
@@ -596,7 +599,7 @@ bridge. Requests containing these expressions select `QEXACT3` or `QSAMPLE4`,
 including expressions in nested or untaken branches. Ordinary bit requests
 retain their existing protocol versions. Construction and serialization check
 combined expression bounds and register references. Circuit-file persistence,
-text entry and OpenQASM import of integer expressions remain follow-up work.
+text entry and OpenQASM import use the same typed expression representation.
 
 ### Typed conditions in circuit files
 
@@ -611,8 +614,8 @@ both node families.
 Versions 2 and 3 reject typed expressions. Saving ordinary legacy circuits omits
 the new unused type field so older readers can still load them. Snapshots and
 undo/redo preserve version 4; ordinary bit-expression edits do not downgrade it.
-Typed conditions can be reopened and displayed in the editor. Entering/editing
-typed expression text and importing it from OpenQASM remain follow-up work.
+Typed conditions can be reopened, displayed and edited as expression text in
+the editor, and can be imported from OpenQASM.
 
 ### Integer conditions in the classical editor
 
@@ -636,9 +639,9 @@ left determines the result. `&` and `|` retain eager bitwise behavior. Invalid
 register references are rejected even in skipped operands. Integer and logical
 conditions are saved as circuit version 4 and survive formatting, reopening,
 and editing. Existing ordinary bit expressions retain their earlier format.
-Integer variable declarations are not yet exposed by this editor; integer casts
-currently accept integer expressions, bit constants and register reads, rather
-than arbitrary computed bit expressions.
+The editor's variable table declares typed integer storage. Version-6 documents
+also accept matching-width casts of computed bit expressions, such as
+`uint[3](c ^ "111")`; numeric Boolean conversions preserve zero or positive one.
 
 To store a computed integer in a bit register, use an explicit equal-width cast,
 for example `bit[3](int[3](int[3](c) + 1))`. The inner arithmetic uses integer
