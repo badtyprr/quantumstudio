@@ -11,7 +11,7 @@
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While };
  const Kind kind;
  const std::vector<unsigned> wires;
  const unsigned classicalBit;
@@ -44,6 +44,10 @@ public:
   return {Kind::Branch,{},0,0,0,{},{},std::make_shared<const std::vector<CircuitStep>>(yes),
    std::make_shared<const std::vector<CircuitStep>>(no),std::make_shared<const QuantumClassical::Bits>(condition)};
  }
+ // Each active measurement history rechecks the condition before each iteration.
+ static CircuitStep whileLoop(const QuantumClassical::Bits &condition,const std::vector<CircuitStep> &body) {
+  return {Kind::While,{},0,0,0,{},{},std::make_shared<const std::vector<CircuitStep>>(body),{},std::make_shared<const QuantumClassical::Bits>(condition)};
+ }
  static CircuitStep storeInteger(std::size_t slot,const QuantumClassical::IntegerExpression &value) {
   return {Kind::StoreInteger,{},0,0,0,{},{},{},{},{},slot,std::make_shared<const QuantumClassical::IntegerExpression>(value)};
  }
@@ -60,7 +64,7 @@ private:
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.
-// Limits: 10 qubits, 64 classical bits, 512 total steps, 32 nested branches.
+// Limits: 10 qubits, 64 classical bits, 512 total steps, 32 nested branches/loops.
 // maxCells bounds each record map; temporary matrices and symbolic expression
 // storage are additional. Cancellation/failure never returns partial records.
 // Certificates and expressions belong to the current Calculator context:
@@ -74,5 +78,13 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
  const std::vector<CircuitStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
  std::size_t maxCells,const EvaluationOptions &options);
+// Loop work is bounded across the entire evaluation, including all measurement
+// histories and nested loops. Every condition evaluation consumes one unit.
+// Existing overloads use 1,000,000 units. Exhaustion throws; no partial probability
+// distribution is returned or renormalized. An infinite-support loop may exceed
+// this budget even when a sampled trajectory would terminate almost surely.
+Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
+ const std::vector<CircuitStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
+ std::size_t maxCells,const EvaluationOptions &options,std::size_t maxLoopConditions);
 }
 #endif
