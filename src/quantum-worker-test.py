@@ -40,6 +40,8 @@ for flags in [(), ("--approx",)]:
     for expression in ['[alpha_0; alpha_1; ⋮; alpha_(n-1)]', r'\begin{pmatrix}\alpha_0\\\alpha_1\\\vdots\\\alpha_{n-1}\end{pmatrix}']:
         symbolic=data('quantum:'+expression,*flags)
         assert symbolic['rows']==symbolic['columns']==0
+        assert '⋮' in symbolic['display_text'] and 'qindexedcolumn' not in symbolic['display_text'],symbolic
+        assert data('quantum:'+symbolic['display_text'],*flags)['copy_text']==symbolic['copy_text']
         concrete=data('quantum:replace('+expression+',n,3)',*flags)
         assert concrete['rows']==3 and concrete['columns']==1,concrete
         assert data('quantum:replace('+symbolic['copy_text']+',n,3)',*flags)['cells']==concrete['cells']

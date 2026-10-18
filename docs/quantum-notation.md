@@ -938,4 +938,6 @@ In Quantum Notation, `[alpha_0; alpha_1; ⋮; alpha_(n-1)]` denotes a column wit
 
 The leading entries must be consecutive from zero, the ellipsis must precede the endpoint, and every entry must use the same coefficient family. The retained minimum endpoint is the index of the last explicitly shown leading entry. Thus `[a_0; a_1; ⋮; a_(n-1)]` requires `n >= 2`; a degenerate endpoint equal to the last shown entry does not duplicate it. Expansion preserves column shape, including a permitted singleton, and is limited to 1024 rows. Invalid, fractional, negative, or too-small dimensions are rejected after substitution too. The internal representation is `qindexedcolumn("alpha_",n-1,1)`.
 
+Symbolic results display the bracket-and-ellipsis form when its endpoint can be entered again as simple arithmetic. More complex endpoints or more than 17 explicit leading entries retain the canonical function display; clipboard output always retains the canonical expression.
+
 This supports contiguous column families; arbitrary ellipsis patterns and two-index matrix ellipses remain unfinished.

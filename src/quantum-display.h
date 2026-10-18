@@ -108,6 +108,20 @@ class Printer {
   }
   if(!value.isFunction())return fallback(value);
   const std::string name=value.function()->referenceName();
+  if(name=="qindexedcolumn" && value.size()==3 && value[0].isSymbolic() && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=16) {
+   const std::string prefix=value[0].symbol();
+   bool safe=prefix.size()>1 && prefix.back()=='_';
+   for(size_t i=0;i+1<prefix.size();++i)if((unsigned char)prefix[i]<128 && !std::isalpha((unsigned char)prefix[i]))safe=false;
+   const std::string endpoint=render(value[1],depth+1).text;
+   // Use the surface form only when it can be re-entered as an indexed column.
+   // Complex endpoints and long explicit prefixes keep the canonical fallback.
+   for(unsigned char c:endpoint)if(c<128 && !std::isalnum(c) && !std::isspace(c) && c!='+' && c!='-' && c!='*' && c!='/')safe=false;
+   if(safe && !endpoint.empty()) {
+    std::string text="[";
+    for(int row=0;row<=value[2].number().intValue();++row)text+=prefix+std::to_string(row)+"; ";
+    return Fragment(text+"⋮; "+prefix+"("+endpoint+")]");
+   }
+  }
   if(name=="qindexedlabel" && value.size()==3) {
    auto part=[&](const MathStructure &v){return v.isSymbolic() ? v.symbol() : render(v,depth+1).text;};
    Fragment index=render(value[1],depth+1);
