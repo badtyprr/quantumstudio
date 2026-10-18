@@ -967,3 +967,7 @@ An explicit arithmetic binder can use `i`, `e`, or `pi` as its local index: `sum
 Constants introduced by gate expansion remain constants. For example, `sum(i*Y,0,2,i)` is `3*Y`, including the imaginary entries of the Pauli-Y matrix. Likewise, `sum(P(i),0,1,i)` evaluates the phase gates at angles 0 and 1 without changing the imaginary unit in their exponential formulas. The displayed sum may rename its local index to avoid collisions; clipboard output preserves the scoped representation.
 
 Inside an explicit `i`-indexed sum, bare `|i>` and `<i|` refer to the local basis index: `sum(|i>,0,1,i)` gives `|0>+|1>`, and `sum(|i><i|,0,1,i)` gives the two-dimensional identity. Nested binders retain their own scopes. Outside such a binder, `|i>` remains the positive imaginary phase state; write `|+i>` explicitly to keep that phase-state meaning inside an indexed sum. Unbound scalar `i` still denotes the imaginary unit.
+
+### One-dimensional explicit matrices
+
+In quantum notation, `matrix(1,1,[5])` retains its 1×1 matrix shape, including when its dimensions are computed expressions. `Tr(matrix(1,1,[5]))` therefore gives 5, and `Tr(identity(1))` gives 1. Copying a matrix result and evaluating it again preserves its shape. A scalar such as `Tr(5)` remains invalid; the ordinary calculator mode retains its existing singleton behavior.

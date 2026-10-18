@@ -293,7 +293,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"qindexedcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
@@ -887,6 +887,8 @@ class Parser {
      for(char &axis:axes) axis=std::tolower((unsigned char)axis);
      if(axes=="x" || axes=="y" || axes=="z" || axes=="xx" || axes=="yy" || axes=="zz" || axes=="zx") name="R"+axes;
     }
+    if(name=="matrix")name="qmatrix";
+    if(name=="identity")name="qidentity";
     if(name=="tr" || name=="Tr" || name=="trace") name="qtrace";
     if(name=="tensor") name="qtensor";
     if(name=="bitdot" || name=="binarydot")name="qbitdot";
