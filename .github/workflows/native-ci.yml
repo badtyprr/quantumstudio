@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: native-ci-${{ github.event.pull_request.number || github.ref }}
+  # Deduplicate PR updates; delayed pushes must not cancel a different release SHA.
+  group: native-ci-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 jobs:
