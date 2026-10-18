@@ -42,6 +42,15 @@ static class ClassicalExpressionText {
  }
  static N Normalize(N n,int depth) {
   if(depth>=128)throw new ArgumentException("Expression nesting is too deep.");
+  if(n.Kind=="IntegerCast" && n.Left.Kind=="UnaryMinus" && n.Left.Left.Kind=="Constant" && !n.Left.Left.Width.HasValue) {
+   // A typed negative literal is a constant, just like int[8](127).
+   // Keep explicit nested casts as nodes so formatted documents round-trip.
+   ulong magnitude=UInt64.Parse(n.Left.Left.Value,CultureInfo.InvariantCulture);
+   if(magnitude>(1UL<<63))throw new ArgumentException("Negative literals must fit signed 64 bits.");
+   ulong bits=unchecked(0UL-magnitude);int width=n.Width==0 ? 64 : n.Width.Value;
+   if(width<64)bits&=(1UL<<width)-1;
+   return new N{Kind="IntegerConstant",Signedness=n.Signedness,Width=n.Width,Value=bits.ToString(CultureInfo.InvariantCulture)};
+  }
   if(n.Left!=null)n.Left=Normalize(n.Left,depth+1);if(n.Right!=null)n.Right=Normalize(n.Right,depth+1);
   if(n.Kind=="BooleanCast") {
    bool integer=IntegerValue(n.Left);
@@ -147,6 +156,10 @@ static class ClassicalExpressionText {
   if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast" || n.Kind=="IntegerFromBits") {
    string type=(n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width.Value.ToString(CultureInfo.InvariantCulture)+"]");
    string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1,context);
+   if(n.Kind=="IntegerConstant" && n.Signedness=="Signed") {
+    int shift=64-(n.Width==0 ? 64 : n.Width.Value);
+    operand=(unchecked((long)(UInt64.Parse(n.Value,CultureInfo.InvariantCulture)<<shift))>>shift).ToString(CultureInfo.InvariantCulture);
+   }
    return type+"("+operand+")";
   }
   if(n.Kind=="IntegerBinary") {
