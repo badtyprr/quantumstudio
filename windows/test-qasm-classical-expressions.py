@@ -8,6 +8,24 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('variable-switch-match','int n=2;bit c;switch(n){case 1{c=0;}case 2{c=1;}default{c=0;}}',{'1':'1'}),
+ ('variable-switch-default','int n=9;bit c;switch(n){case 1{c=0;}default{c=1;}}',{'1':'1'}),
+ ('variable-switch-no-default','int n=9;bit c=1;switch(n){case 1{c=0;}}',{'1':'1'}),
+ ('variable-switch-no-fallthrough','int n=1;bit c;switch(n){case 1{n=2;c=1;}case 2{c=0;}}',{'1':'1'}),
+ ('variable-switch-labels','const int k=2;int n=3;bit c;switch(n){case 0,k,k+1{c=1;}}',{'1':'1'}),
+ ('variable-switch-expression','int n=2;bit c;switch(n+1){case 3{c=1;}}',{'1':'1'}),
+ ('variable-switch-negative','int[8] n=-2;bit c;switch(n){case -2{c=1;}}',{'1':'1'}),
+ ('variable-switch-unsigned','uint n=18446744073709551615;bit c;switch(n){case 18446744073709551615{c=1;}}',{'1':'1'}),
+ ('variable-switch-nested','int n=2;int m=3;bit c;switch(n){case 2{switch(m){case 3{c=1;}}}}',{'1':'1'}),
+ ('variable-switch-scope','int n=2;bit c;switch(n){case 2{int n=3;c=n==3;}default{int n=4;c=n==3;}}c=c && n==2;',{'1':'1'}),
+ ('variable-switch-loop','bit c;for int i in [0:1]{int n=i;switch(n){case 1{c=1;}default{c=0;}}}',{'1':'1'}),
+ ('variable-switch-undefined','int n;bit c;switch(n){case 0{c=1;}default{c=0;}}',None),
+ ('variable-switch-skipped','int n;bit c;if(c){switch(n){case 0{c=1;}}}',{'0':'1'}),
+ ('variable-switch-popcount','int n=0;bit[3] c="101";switch(popcount(c)){case 2{c="111";}}',{'111':'1'}),
+ ('computed-switch-measurement','qubit q;h q;bool b=measure q;bit c;switch(int(b)){case 1{x q;}}c=measure q;',{'0':'1'}),
+ ('typed-switch-bitcast','bit[3] c="111";bit r;switch(int[3](c)){case -1{r=1;}}',{'1111':'1'}),
+ ('typed-switch-constants','bit[2] c="01";bit r;switch(int[2](c)){case 1{const int k=1;r=k==1;}default{const int k=2;r=k==1;}}',{'101':'1'}),
+ ('computed-switch-local-measurement','qubit q;int n=1;bit c;switch(n){case 1{bool b=measure q;c=!b;}}',{'1':'1'}),
  ('computed-bmeasure-initializer','qubit q;h q;bool b=measure q;bit c;c=b;',{'0':'1/2','1':'1/2'}),
  ('computed-bmeasure-assignment','qubit q;x q;bool b=false;b=measure q;bit c;c=b;',{'1':'1'}),
  ('computed-bmeasure-history','qubit q;h q;bool b=measure q;reset q;bool a=measure q;bit c;c=b && !a;',{'0':'1/2','1':'1/2'}),
@@ -207,6 +225,14 @@ rejected.append('bit c;int a=int(bool('+boolean_broad+'));') # Mixed Boolean/int
 integer_broad='n'
 for _ in range(8):integer_broad='('+integer_broad+' + '+integer_broad+')'
 rejected.append('int n=1;bit[3] c;c=rotl(c,'+integer_broad+');') # Rotation wrappers share the expression budget.
+rejected += ['int n=1;switch(n){case 1,1{}}','int n=1;switch(n){case 1{}case 1{}}',
+             'int n=1;int m=1;switch(n){case m{}}','int n=1;switch(n){case true{}}',
+             'bool n=true;switch(n){case 1{}}','bit n;switch(n){case 0{}}',
+             'int n=1;switch(n==1){case 1{}}','int n=1;switch(n){case 1{}default{qubit q;}}',
+             'int n=1;bit c;switch(n){case 1{int a=2;}}c=a==2;',
+             'int n=1;switch(n){case 1{}case 2{int a=2;int a=3;}}']
+rejected += ['int n=1;switch(n){case 1{}case 2{bit c;c=missing;}}',
+             'int n=1;\n@unsupported\nswitch(n){case 1{}}']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1

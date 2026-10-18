@@ -31,6 +31,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         raise ValueError('This compiler adapter requires PyQASM 1.0.4.')
     original = QasmVisitor._visit_phase_operation
     original_range = Qasm3Transformer.get_qubits_from_range_definition
+    original_switch = QasmVisitor._visit_switch_statement
     original_branch = QasmVisitor._visit_branching_statement
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
@@ -205,6 +206,50 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             visitor._in_branching_statement -= 1
             if not visitor._in_branching_statement:
                 visitor._update_branching_gate_depths()
+    def switch(visitor, statement):
+        if not runtime(visitor,statement.target) and not bit_function(statement.target):
+            return original_switch(visitor,statement)
+        target=normalize(visitor,statement.target)
+        def integer_target(value):
+            if isinstance(value,ast.IntegerLiteral):return True
+            if isinstance(value,ast.Identifier):
+                variable=visitor._scope_manager.get_from_visible_scope(value.name)
+                return variable is not None and isinstance(variable.base_type,(ast.IntType,ast.UintType))
+            if isinstance(value,ast.Cast):return isinstance(value.type,(ast.IntType,ast.UintType))
+            if isinstance(value,ast.UnaryExpression):return value.op.name in ('-','~') and integer_target(value.expression)
+            if isinstance(value,ast.BinaryExpression):
+                return value.op.name in ('+','-','*','/','%','**','<<','>>','&','|','^') and integer_target(value.lhs) and integer_target(value.rhs)
+            if isinstance(value,ast.FunctionCall):
+                return value.name.name=='popcount' or value.name.name in ('rotl','rotr') and integer_target(value.arguments[0])
+            return False
+        if not integer_target(target):raise ValueError('Switch targets require an integer expression; use an explicit integer cast.')
+        if not statement.cases:raise ValueError('Switch statements require at least one case.')
+        seen=set();cases=[]
+        for labels,body in statement.cases:
+            values=[]
+            for label in labels:
+                if runtime(visitor,label):raise ValueError('Switch case labels must be integer constants.')
+                value=Qasm3ExprEvaluator.evaluate_expression(label,const_expr=True,reqd_type=ast.IntType)[0]
+                if type(value) is not int:raise ValueError('Switch case labels must be integer constants.')
+                if value in seen:raise ValueError('Duplicate switch case value: '+str(value))
+                seen.add(value);values.append(value)
+            if not values:raise ValueError('Switch cases require at least one label.')
+            cases.append((values,body.statements))
+        bodies=[body for _,body in cases]+([] if statement.default is None else [statement.default.statements])
+        for body in bodies:
+            for item in body:
+                if isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) or isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,ast.ArrayType):
+                    raise ValueError('Global declarations are not allowed in switch cases.')
+        # A branch chooses exactly one body. Repeated target reads happen only
+        # while matching labels, before any selected body can change storage.
+        tail=[] if statement.default is None else statement.default.statements
+        for values,body in reversed(cases):
+            condition=None
+            for value in values:
+                match=ast.BinaryExpression(op=ast.BinaryOperator['=='],lhs=copy.deepcopy(statement.target),rhs=ast.IntegerLiteral(value))
+                condition=match if condition is None else ast.BinaryExpression(op=ast.BinaryOperator['||'],lhs=condition,rhs=match)
+            tail=[ast.BranchingStatement(condition=condition,if_block=body,else_block=tail)]
+        return branch(visitor,tail[0])
     def register_range(range_def, qreg_size, is_qubit_reg, op_node=None):
         # OpenQASM index ranges include their endpoint, unlike Python slices.
         start = 0 if range_def.start is None else Qasm3ExprEvaluator.evaluate_expression(range_def.start)[0]
@@ -228,6 +273,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
+        QasmVisitor._visit_switch_statement = switch
         QasmVisitor._visit_branching_statement = branch
         QasmVisitor._visit_classical_assignment = assignment
         QasmVisitor._visit_classical_declaration = declaration
@@ -236,6 +282,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     finally:
         QasmVisitor._visit_phase_operation = original
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
+        QasmVisitor._visit_switch_statement = original_switch
         QasmVisitor._visit_branching_statement = original_branch
         QasmVisitor._visit_classical_assignment = original_assignment
         QasmVisitor._visit_classical_declaration = original_declaration
@@ -366,7 +413,7 @@ def resolve_integer_scopes(program):
     prevent capture; clear markers retain lifetime boundaries after that flattening.
     Markers are private AST attributes, never syntax accepted from input text.
     """
-    if not any(isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES) for node in nodes(program)):return set()
+    if not any(isinstance(node,ast.SwitchStatement) or isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES) for node in nodes(program)):return set()
     used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
     scoped=set();serial=0
     def fresh(name):
@@ -410,6 +457,12 @@ def resolve_integer_scopes(program):
             elif isinstance(statement,ast.BranchingStatement):
                 expression(statement.condition,env)
                 block(statement.if_block,env,depth+1);block(statement.else_block,env,depth+1)
+                result.append(statement)
+            elif isinstance(statement,ast.SwitchStatement):
+                expression(statement.target,env)
+                for labels,case in statement.cases:
+                    expression(labels,env);block(case.statements,env,depth+1)
+                if statement.default is not None:block(statement.default.statements,env,depth+1)
                 result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
@@ -474,6 +527,9 @@ def lower_boolean_measurements(program):
                 result.append(ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=ast.Identifier(name)))
                 continue
             if isinstance(statement,ast.BranchingStatement):block(statement.if_block);block(statement.else_block)
+            elif isinstance(statement,ast.SwitchStatement):
+                for _,case in statement.cases:block(case.statements)
+                if statement.default is not None:block(statement.default.statements)
             elif isinstance(statement,ast.ForInLoop):block(statement.block)
             elif isinstance(statement,ast.CompoundStatement):block(statement.statements)
             result.append(statement)
@@ -513,9 +569,9 @@ def convert(source, published_u=False, classical=False):
                 raise ValueError('Classical aliases are not yet supported by the circuit importer.')
             control=(node.while_condition if isinstance(node,ast.WhileLoop) else
                      node.set_declaration if isinstance(node,ast.ForInLoop) else
-                     node.target if isinstance(node,ast.SwitchStatement) else None)
+                     None)
             if control is not None and runtime(control):
-                raise ValueError('Runtime loops and switch statements require control flow not yet supported by the circuit importer.')
+                raise ValueError('Runtime loops require control flow not yet supported by the circuit importer.')
             if isinstance(node,ast.QuantumGate) and runtime(node.arguments) or isinstance(node,ast.QuantumPhase) and runtime(node.argument):
                 raise ValueError('Runtime gate parameters are not yet supported by the circuit importer.')
             if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and runtime(node.arguments):
