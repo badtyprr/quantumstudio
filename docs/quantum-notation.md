@@ -824,9 +824,11 @@ cannot inherit a value from an earlier iteration.
 The imported version-7 file saves a 1,000,000 condition-check limit. Exact and
 sampling use the same loop body; exceeding the limit reports an error with no
 partial results. Exact evaluation can exhaust the limit for an infinite-support
-measurement loop even if that loop terminates with probability one. `break`,
-`continue`, `end`, runtime for ranges, dynamic indices and runtime gate angles
-remain unsupported. Global declarations inside a loop are rejected, including
+measurement loop even if that loop terminates with probability one. `break` and
+`continue` targeting a while loop are preserved in version 8 files, with explicit
+cleanup for every exited local scope. An inner-loop transfer preserves outer-loop
+locals. Transfers targeting a for loop, `end`, runtime for ranges, dynamic indices
+and runtime gate angles remain unsupported. Global declarations inside a loop are rejected, including
 inside an unreachable body.
 
 

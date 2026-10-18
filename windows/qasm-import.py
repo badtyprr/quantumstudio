@@ -33,6 +33,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_range = Qasm3Transformer.get_qubits_from_range_definition
     original_switch = QasmVisitor._visit_switch_statement
     original_branch = QasmVisitor._visit_branching_statement
+    original_break = QasmVisitor._visit_break
+    original_continue = QasmVisitor._visit_continue
     original_while = QasmVisitor._visit_while_loop
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
@@ -207,11 +209,15 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             visitor._in_branching_statement -= 1
             if not visitor._in_branching_statement:
                 visitor._update_branching_gate_depths()
+    def transfer(visitor, statement):
+        if not getattr(statement,"_quantum_loop_transfer",False):
+            raise ValueError("A loop transfer must target a runtime while loop.")
+        return [] if visitor._check_only else [copy.deepcopy(statement)]
     def while_loop(visitor, statement):
         # Compile one body, never evaluate or unroll its runtime condition here.
         # Branch compilation supplies the same scoped block and gate bookkeeping.
-        if any(isinstance(item,(ast.BreakStatement,ast.ContinueStatement,ast.EndStatement)) for item in nodes(statement)):
-            raise ValueError('Break, continue and end inside runtime loops are not yet supported.')
+        if any(isinstance(item,(ast.EndStatement,)) for item in nodes(statement)):
+            raise ValueError('End inside runtime loops is not yet supported.')
         if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
             raise ValueError('Global declarations are not allowed in runtime loops.')
         proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
@@ -302,6 +308,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     if preserve_branches:
         QasmVisitor._visit_switch_statement = switch
         QasmVisitor._visit_branching_statement = branch
+        QasmVisitor._visit_break = transfer
+        QasmVisitor._visit_continue = transfer
         QasmVisitor._visit_while_loop = while_loop
         QasmVisitor._visit_classical_assignment = assignment
         QasmVisitor._visit_classical_declaration = declaration
@@ -312,6 +320,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
         QasmVisitor._visit_switch_statement = original_switch
         QasmVisitor._visit_branching_statement = original_branch
+        QasmVisitor._visit_break = original_break
+        QasmVisitor._visit_continue = original_continue
         QasmVisitor._visit_while_loop = original_while
         QasmVisitor._visit_classical_assignment = original_assignment
         QasmVisitor._visit_classical_declaration = original_declaration
@@ -442,7 +452,6 @@ def resolve_integer_scopes(program):
     prevent capture; clear markers retain lifetime boundaries after that flattening.
     Markers are private AST attributes, never syntax accepted from input text.
     """
-    if not any(isinstance(node,ast.SwitchStatement) or isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES) for node in nodes(program)):return set()
     used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
     scoped=set();serial=0
     def fresh(name):
@@ -464,7 +473,7 @@ def resolve_integer_scopes(program):
         result=ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=ast.IntegerLiteral(0))
         result._quantum_clear=True
         return result
-    def block(body,parent,depth=0,declared=None):
+    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None):
         if depth>32:raise ValueError('Classical scopes exceed 32 levels.')
         env=dict(parent);declared=set() if declared is None else set(declared);local=[];result=[]
         for statement in body:
@@ -485,24 +494,31 @@ def resolve_integer_scopes(program):
                 result.append(statement)
             elif isinstance(statement,ast.BranchingStatement):
                 expression(statement.condition,env)
-                block(statement.if_block,env,depth+1);block(statement.else_block,env,depth+1)
+                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
                 result.append(statement)
             elif isinstance(statement,ast.SwitchStatement):
                 expression(statement.target,env)
                 for labels,case in statement.cases:
-                    expression(labels,env);block(case.statements,env,depth+1)
-                if statement.default is not None:block(statement.default.statements,env,depth+1)
+                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
                 result.append(statement)
             elif isinstance(statement,ast.WhileLoop):
                 expression(statement.while_condition,env)
-                block(statement.block,env,depth+1);result.append(statement)
+                block(statement.block,env,depth+1,loop_kind="while");result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
                 name=statement.identifier.name;renamed=fresh(name) if name in env else name
                 statement.identifier.name=renamed;inner=dict(env);inner[name]=renamed
-                block(statement.block,inner,depth+1,{name});result.append(statement)
+                block(statement.block,inner,depth+1,{name},loop_kind="for");result.append(statement)
+            elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
+                if loop_kind!="while":
+                    raise ValueError("Break and continue currently require an enclosing while loop; for-loop transfer lowering is not yet supported.")
+                # Clear only scopes crossed by the transfer, from inner to outer.
+                for scope in reversed(cleanup+(local,)):
+                    result.extend(clear(name) for name in reversed(scope))
+                statement._quantum_loop_transfer=True;result.append(statement)
             elif isinstance(statement,ast.CompoundStatement):
-                block(statement.statements,env,depth+1);result.extend(statement.statements)
+                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);result.extend(statement.statements)
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
                 if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
                     raise ValueError('Integer declarations in subroutines require activation storage not yet supported.')
@@ -518,8 +534,6 @@ def resolve_integer_scopes(program):
                 result.append(statement)
         result.extend(clear(name) for name in reversed(local));body[:]=result
     block(program.statements,{})
-    if scoped and any(isinstance(item,(ast.BreakStatement,ast.ContinueStatement)) for item in nodes(program)):
-        raise ValueError('Break and continue with scoped integers require lifetime-aware control flow not yet supported.')
     return scoped
 
 
@@ -972,9 +986,12 @@ def classical_circuit(statements, published_u, hidden_registers=None):
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
                 append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets),variables)})
+            elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
+                version=max(version,8)
+                append({'Kind':'Break' if isinstance(statement,ast.BreakStatement) else 'Continue'})
             elif isinstance(statement, ast.WhileLoop):
                 if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
-                version=7
+                version=max(version,7)
                 append({'Kind':'While','ClassicalValue':classical_expression(statement.while_condition,classical,1,variables),
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement, ast.BranchingStatement):

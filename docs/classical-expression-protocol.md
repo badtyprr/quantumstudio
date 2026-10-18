@@ -145,6 +145,8 @@ transfer. It rejects transfers outside loops, including unreachable branches,
 and rejects expression, target, condition, variable and body fields on transfers.
 Requests without transfers retain their existing header versions. Circuit file
 versions 1 through 7 continue to reject transfers; version 8 preserves them.
-The editor creates and preserves both transfers; OpenQASM import still needs integration.
+The editor creates and preserves both transfers. OpenQASM import preserves
+transfers targeting runtime while loops and emits scope-exit clears before them.
+For-loop transfers and whole-program termination remain unsupported.
 These transport versions do not infer or perform source-level
 scope cleanup; a compiler must emit the required clearing before a transfer.
