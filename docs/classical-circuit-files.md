@@ -119,5 +119,10 @@ bodies too. Versions 1–7 reject these steps.
 that loop's body and rechecks its condition, consuming the ordinary condition
 budget. Save/reopen preserves both operations; exact and sampling requests use
 `QEXACT7` and `QSAMPLE8`. Editing a loop or its budget preserves version 8.
-Creating transfers in the editor and importing them from OpenQASM remain
-separate integration work.
+In the editor, select a Loop body or a Then/Else body inside a loop, choose
+**Break loop** or **Continue loop**, and select **Add to selected body**. No
+expression or target is needed. The tree identifies the nearest-loop behavior.
+Transfers support replacement, deletion, undo/redo and save/reopen. Adding one
+outside a loop, discarding a populated body, or converting a loop in a way that
+would leave a transfer outside any loop is rejected without changing the circuit.
+OpenQASM transfer import remains separate integration work.
