@@ -21,8 +21,11 @@ def loop(condition, *body):
 def gate(expression):
     value = expression.encode()
     return fields(0, 1, 0, len(value)) + value
-def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(), old=False):
+def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(), old=False, transfers=False):
     header = ('QEXACT5' if old else 'QEXACT6') if exact else ('QSAMPLE6' if old else 'QSAMPLE7')
+    if transfers:
+        assert not old
+        header='QEXACT7' if exact else 'QSAMPLE8'
     result = fields(header, qubits, bits) if exact else fields(header, qubits, 100, 7, bits)
     result += fields(len(types)) + b''.join(fields(*t) for t in types)
     if not old:
@@ -90,4 +93,34 @@ for exact in (False, True):
         depth = loop(no, depth)
     run(exact, request(exact, [depth]), {'0': 1})
     run(exact, request(exact, [loop(no, depth)]), error='32')
+def branch(condition, yes_body, no_body=()):
+    return fields(8)+condition+fields(len(yes_body))+b''.join(yes_body)+fields(len(no_body))+b''.join(no_body)
+for exact in (False, True):
+    def new(body=(), **options):
+        return request(exact, body, transfers=True, **options)
+    stop, again = fields(12), fields(13)
+    run(exact,new(),{'0':1})
+    run(exact,new([loop(yes,stop,assign(0,yes))],budget=1),{'0':1})
+    run(exact,new([loop(yes,stop),assign(0,yes)],budget=1),{'1':1})
+    run(exact,new([loop(yes,stop)],budget=0),error='loop condition budget')
+    run(exact,new([loop(yes,branch(yes,[stop]),loop(yes))],budget=1),{'0':1})
+    once=loop(fields(2)+read(0),assign(0,yes),again,assign(0,no))
+    run(exact,new([once],budget=2),{'1':1})
+    run(exact,new([once],budget=1),error='loop condition budget')
+    run(exact,new([loop(yes,again)],budget=3),error='loop condition budget')
+    run(exact,new([fields(9,0)+integer(2),loop(condition,loop(yes,stop),decrement),assign(0,yes)],budget=5,types=[(0,8)]),{'1':1})
+    for transfer in [stop,again]:
+        run(exact,new([transfer]),error='enclosing loop')
+        run(exact,new([branch(no,[transfer])]),error='enclosing loop')
+        run(exact,request(exact,[loop(no,transfer)]),error='')
+        run(exact,request(exact,[transfer],old=True),error='')
+        run(exact,new([loop(no,transfer,assign(1,yes))]),error='')
+        payload=new([loop(yes,transfer)])
+        for cut in range(len(payload)):
+            run(exact,payload[:cut],error='')
+        run(exact,payload+b'0\n',error='')
+    run(exact,new([loop(no,fields(14))]),error='')
+    # Equal classical records retain different pending transfers after measurement.
+    measured=[gate('H'),fields(1,0,0),loop(yes,branch(read(0),[assign(0,no),stop],[assign(0,no)]),gate('X'),fields(1,0,0),stop)]
+    run(exact,new(measured,qubits=1),{'0':'1/2','1':'1/2'})
 print(f'PASS: {checks} runtime loop process checks.')

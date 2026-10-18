@@ -14,7 +14,8 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool loops() const {return input.compare(0,9,"QSAMPLE7\n")==0;}
+ bool transfers() const {return input.compare(0,9,"QSAMPLE8\n")==0;}
+ bool loops() const {return input.compare(0,9,"QSAMPLE7\n")==0 || transfers();}
  bool bitExpressions() const {return input.compare(0,9,"QSAMPLE6\n")==0 || loops();}
  bool variables() const {return input.compare(0,9,"QSAMPLE5\n")==0 || bitExpressions();}
  bool typed() const {return input.compare(0,9,"QSAMPLE4\n")==0 || variables();}
@@ -22,7 +23,7 @@ public:
  bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1, QSAMPLE2, QSAMPLE3, QSAMPLE4, QSAMPLE5, QSAMPLE6 or QSAMPLE7 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1, QSAMPLE2, QSAMPLE3, QSAMPLE4, QSAMPLE5, QSAMPLE6, QSAMPLE7 or QSAMPLE8 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -129,7 +130,9 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
 QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total,const QuantumClassical::IntegerStorage *variables) {
  using Step=QuantumNumerics::TrajectoryStep;
  if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==12)return Step::breakLoop();
+ if(kind==13)return Step::continueLoop();
  if(kind==9 || kind==10) {
   const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
   if(kind==10)return Step::clearInteger(slot);
