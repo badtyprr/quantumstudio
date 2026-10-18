@@ -39,7 +39,10 @@ for flags in [(), ("--approx",)]:
 for flags in [(), ("--approx",)]:
     for expression in ['[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), ⋯, a_(m-1,n-1)]',r'\begin{pmatrix}a_{0,0}&\cdots&a_{0,n-1}\\[1mm]\vdots&\ddots&\vdots\\a_{m-1,0}&\cdots&a_{m-1,n-1}\end{pmatrix}']:
         symbolic=data('quantum:'+expression,*flags)
+        assert '⋱' in symbolic['display_text'] and 'qindexedmatrix' not in symbolic['display_text'],symbolic
+        shown=data('quantum:replace(replace('+symbolic['display_text']+',m,3),n,2)',*flags)
         concrete=data('quantum:replace(replace('+expression+',m,3),n,2)',*flags)
+        assert shown['cells']==concrete['cells']
         expected=data('quantum:qindexedmatrix("a_",2,1,0,0)',*flags)
         assert concrete['rows']==3 and concrete['columns']==2 and concrete['cells']==expected['cells']
         assert data('quantum:replace(replace('+symbolic['copy_text']+',m,3),n,2)',*flags)['cells']==expected['cells']

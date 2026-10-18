@@ -948,4 +948,6 @@ Quantum Notation accepts `[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), �
 
 The internal form `qindexedmatrix("a_",m-1,n-1,0,0)` retains both endpoints and both minimum endpoints implied by the displayed leading entries. Unknown dimensions remain symbolic. Substitution validates every dimension, including an invalid known dimension alongside an unknown one. Each axis supports 1 through 1024 entries, matching the existing matrix allocation bound of 1,048,576 cells; expansion checks cancellation. A singleton remains a matrix. Generated coefficients have paired labels such as `"a_0,0"`, which can be replaced explicitly using `replace`. Trace and rectangular expansion are covered by worker tests.
 
+Symbolic matrices use a multiline bracket display with horizontal, vertical and diagonal ellipses when both endpoints are simple re-enterable arithmetic and each axis has at most five explicitly shown leading entries. Larger patterns and complex endpoints retain canonical function display. Clipboard output remains canonical in every case.
+
 General noncontiguous sequences, inferred formulas for arbitrary entries, and ellipses without this two-axis pattern remain unfinished.

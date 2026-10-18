@@ -108,18 +108,39 @@ class Printer {
   }
   if(!value.isFunction())return fallback(value);
   const std::string name=value.function()->referenceName();
-  if(name=="qindexedcolumn" && value.size()==3 && value[0].isSymbolic() && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=16) {
-   const std::string prefix=value[0].symbol();
+  if((name=="qindexedcolumn" && value.size()==3) || (name=="qindexedmatrix" && value.size()==5)) {
+   const bool matrix=name=="qindexedmatrix";
+   std::string prefix=value[0].isSymbolic() ? value[0].symbol() : "";
    bool safe=prefix.size()>1 && prefix.back()=='_';
    for(size_t i=0;i+1<prefix.size();++i)if((unsigned char)prefix[i]<128 && !std::isalpha((unsigned char)prefix[i]))safe=false;
-   const std::string endpoint=render(value[1],depth+1).text;
-   // Use the surface form only when it can be re-entered as an indexed column.
-   // Complex endpoints and long explicit prefixes keep the canonical fallback.
-   for(unsigned char c:endpoint)if(c<128 && !std::isalnum(c) && !std::isspace(c) && c!='+' && c!='-' && c!='*' && c!='/')safe=false;
-   if(safe && !endpoint.empty()) {
+   std::string endpoints[2];int minima[2]={0,0};
+   // Keep a bounded, re-enterable surface form. Complex endpoints or large
+   // explicit prefixes retain the library's canonical presentation.
+   for(int axis=0;axis<(matrix ? 2 : 1);++axis) {
+    const MathStructure &minimum=value[(matrix ? 3 : 2)+axis];
+    if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<0 || minimum.number()>(matrix ? 4 : 16))safe=false;
+    else minima[axis]=minimum.number().intValue();
+    endpoints[axis]=render(value[1+axis],depth+1).text;
+    if(endpoints[axis].empty())safe=false;
+    for(unsigned char c:endpoints[axis])if(c<128 && !std::isalnum(c) && !std::isspace(c) && c!='+' && c!='-' && c!='*' && c!='/')safe=false;
+   }
+   if(safe && !matrix) {
     std::string text="[";
-    for(int row=0;row<=value[2].number().intValue();++row)text+=prefix+std::to_string(row)+"; ";
-    return Fragment(text+"⋮; "+prefix+"("+endpoint+")]");
+    for(int row=0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
+    return Fragment(text+"⋮; "+prefix+"("+endpoints[0]+")]");
+   }
+   if(safe) {
+    std::string text="[";int height=minima[0]+3,width=minima[1]+3;
+    for(int row=0;row<height;++row) {
+     if(row)text+=";\n ";
+     for(int col=0;col<width;++col) {
+      if(col)text+=", ";
+      if(row==height-2)text+=col==width-2 ? "⋱" : "⋮";
+      else if(col==width-2)text+="⋯";
+      else text+=prefix+"("+(row==height-1 ? endpoints[0] : std::to_string(row))+","+(col==width-1 ? endpoints[1] : std::to_string(col))+")";
+     }
+    }
+    return Fragment(text+"]");
    }
   }
   if(name=="qindexedlabel" && value.size()==3) {
