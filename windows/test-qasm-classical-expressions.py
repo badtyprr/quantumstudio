@@ -8,6 +8,18 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('transfer-for-break','bit c;for int i in [0:2]{c=i==1;if(c){break;}}',{'1':'1'}),
+ ('transfer-for-continue','int n=0;bit c;for int i in [0:3]{if(i==1){continue;}n+=i;}c=n==5;',{'1':'1'}),
+ ('transfer-for-scoped-break','bit c;for int i in [0:2]{int a=3;c=a==3;break;}',{'1':'1'}),
+ ('transfer-for-scoped-continue','bit c;for int i in [0:2]{int a=3;continue;c=a==3;}',{'0':'1'}),
+ ('transfer-for-nested','int n=0;bit c;for int i in [0:1]{for int j in [0:2]{n+=1;break;}}c=n==2;',{'1':'1'}),
+ ('transfer-for-in-while','int n=2;bit c;while(n>0){for int i in [0:2]{c=i==0;break;}n-=1;}',{'1':'1'}),
+ ('transfer-for-while-ownership','int n=0;bit c;for int i in [0:2]{while(true){break;}n+=1;if(i==1){break;}}c=n==2;',{'1':'1'}),
+ ('transfer-for-collision','int _for_active_1=7;bit c;for int i in [0:2]{break;}c=_for_active_1==7;',{'1':'1'}),
+ ('transfer-for-fresh-local','bit c;for int i in [0:1]{int a;if(i==0){a=3;continue;}c=a==3;}',None),
+ ('transfer-for-measured','qubit q;h q;bit c=measure q;for int i in [0:2]{if(c){break;}c=1;}',{'1':'1'}),
+ ('transfer-for-wires','qubit[2] q;bit[2] c;for int i in [0:1]{x q[i];continue;x q[i];}c=measure q;',{'11':'1'}),
+ ('transfer-for-discrete','int n=0;bit c;for int i in {1,3,7}{n+=i;if(i==3){break;}}c=n==4;',{'1':'1'}),
  ('transfer-break','bit c;while(true){c=1;break;c=0;}',{'1':'1'}),
  ('transfer-continue','int n=3;bit c;while(n>0){n-=1;continue;c=1;}',{'0':'1'}),
  ('transfer-shadow','int n=3;bit c;while(true){int n=9;{int k=2;c=n==9 && k==2;break;}}c=c && n==3;',{'1':'1'}),
@@ -238,7 +250,7 @@ rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a
              'int a=1; qubit[2] q; x q[a];','int a=1; qubit q; rx(a) q;',
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
              'int a=1; bit[2] c; c[a]=1;','float a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
-rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;for int i in [0:2]{int a=1;break;}', 'bit c;for int i in [0:2]{int a=1;continue;}', 'bit c;{int '+('a'*65)+';}']
+rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;{int '+('a'*65)+';}']
 rejected += ['int '+('𝑎'*33)+';', 'int a=1;bit c;{const int a=2;c=a==2;}']
 rejected += ['bit[3] c;int a=uint[2](~c);','bit[3] c;int a=int[3](popcount(c));',
              'bit[3] c;int a=uint[3](c ^ "11");','bit[3] c;bit r;r=false && uint[2](~c)==0;']
