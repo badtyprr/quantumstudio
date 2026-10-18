@@ -759,3 +759,11 @@ The compiler lowers selection to existing runtime branches, so the existing
 explicit integer casts. Runtime loops and subroutine-local storage remain
 unsupported. These rules follow the
 [OpenQASM switch specification](https://openqasm.com/language/classical.html#the-switch-statement).
+
+Constant targets such as `switch(1+1)` and `switch(int(true))` use the same
+case validation as runtime targets. Integer arithmetic can promote Boolean
+operands, including comparisons: `switch((n==2)+1)` selects an integer case
+while preserving short-circuit evaluation inside Boolean operands.
+A bare Boolean target such as `switch(n==2)` still needs an integer cast.
+This follows the standard-type arithmetic promotion rules in the
+[OpenQASM casting specification](https://openqasm.com/language/types.html#casting-specifics).
