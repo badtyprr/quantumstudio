@@ -53,6 +53,58 @@ int main(){try {
  check(sampleTrajectories(0,0,10,1,{}, {Step::storeInteger(0,literal(3))},types,16).at(0)==10);
  rejects<Cancelled>([&]{sampleTrajectories(0,0,10,1,{}, {Step::storeInteger(0,literal(3))},types,16,[]{return true;});});
  }
+ // Runtime loops observe each write and each measurement, with one shared
+ // condition budget per shot rather than an independently reset nested cap.
+ {
+ auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
+ auto slot=Expr::variable(signedByte,0);
+ auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
+ auto decrement=Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(1)));
+ auto emit=Step::assign({0},Bits::constant(1,1));
+ auto run=[&](const std::vector<Step> &program,std::size_t budget,unsigned shots=20) {
+  return sampleTrajectories(0,1,shots,7,{0},program,{signedByte},16,Cancellation(),budget);
+ };
+ auto countdown=Step::whileLoop(positive,{decrement,emit});
+ check(run({Step::storeInteger(0,literal(3)),countdown},4).at(1)==20);
+ rejects<std::length_error>([&]{run({Step::storeInteger(0,literal(3)),countdown},3);});
+ check(run({Step::storeInteger(0,literal(0)),countdown},1).at(0)==20);
+ check(run({Step::whileLoop(no,{Step::storeInteger(0,slot)})},1).at(0)==20);
+ rejects<std::domain_error>([&]{run({countdown},4);});
+ rejects<std::domain_error>([&]{run({Step::storeInteger(0,literal(1)),Step::whileLoop(positive,{Step::clearInteger(0)})},4);});
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{})},3);});
+ rejects<std::length_error>([&]{run({Step::whileLoop(no,{})},0);});
+ check(run({},0).at(0)==20);
+ check(run({Step::branch(no,{Step::whileLoop(yes,{})})},0).at(0)==20);
+ check(run({Step::whileLoop(yes,{})},0,0).empty());
+ auto nested=Step::whileLoop(positive,{Step::whileLoop(no,{}),decrement});
+ check(run({Step::storeInteger(0,literal(2)),nested},5).at(0)==20);
+ rejects<std::length_error>([&]{run({Step::storeInteger(0,literal(2)),nested},4);});
+ rejects<std::out_of_range>([&]{run({Step::whileLoop(no,{Step::storeInteger(1,literal(0))})},1,0);});
+ rejects<std::invalid_argument>([&]{run({Step::whileLoop(Bits::constant(2,0),{})},1,0);});
+ rejects<std::out_of_range>([&]{run({Step::whileLoop(Bits::read({1}),{})},1,0);});
+ std::vector<Step> body={emit,Step::assign({1},no)};
+ auto snapshot=Step::whileLoop(Bits::read({1}),body);body.clear();
+ check(sampleTrajectories(0,2,10,7,{0},{Step::assign({1},yes),snapshot},16).at(1)==10);
+ std::vector<Step> levels;
+ for(unsigned k=0;k<32;++k){std::vector<Step> next={Step::whileLoop(no,levels)};levels.swap(next);}
+ check(run(levels,1).at(0)==20);
+ rejects<std::length_error>([&]{run({Step::branch(no,levels)},1,0);});
+ std::vector<Step> huge(4096,emit);
+ rejects<std::length_error>([&]{run({Step::whileLoop(no,huge)},1,0);});
+ // Repeated quantum measurement drives termination; a final reset must not
+ // erase the saved classical outcome used by the loop.
+ std::vector<Step> repeat={Step::whileLoop(Bits::complement(Bits::read({0})),
+  {Step::gate(H,{0}),Step::measure(0,0)}),Step::reset(0)};
+ check(sampleTrajectories(1,1,1000,42,{0},repeat,32).at(1)==1000);
+ // A loop with one mandatory iteration preserves the random stream exactly.
+ std::vector<Step> once={Step::assign({1},yes),Step::whileLoop(Bits::read({1}),
+  {Step::gate(H,{0}),Step::measure(0,0),Step::assign({1},no)})};
+ check(sampleTrajectories(1,2,1000,42,{0},once,32)==
+  sampleTrajectories(1,2,1000,42,{0},{Step::gate(H,{0}),Step::measure(0,0)},32));
+ unsigned polls=0;
+ rejects<Cancelled>([&]{sampleTrajectories(0,0,1,7,{}, {Step::whileLoop(yes,{})},{},16,[&]{return ++polls==20;},100);});
+ check(polls==20);
+ }
  auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
  auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
  auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
