@@ -799,3 +799,11 @@ probabilities. A repeat-until-success program with infinitely many possible
 iteration counts can therefore exceed the exact budget even when individual
 sampled runs terminate almost surely. Existing record-memory limits still apply;
 empty loop bodies remain cancellable.
+
+The Windows request adapter also accepts `NumericalSampling.Operation.While`,
+using `ClassicalExpression` for its one-bit condition and `WhenTrue` for its
+single body. `WhenFalse` must be absent. Explicit-output sampling and exact
+request methods accept an optional condition budget (0..1,000,000), defaulting
+to 1,000,000 when loops are present. They select `QSAMPLE7`/`QEXACT6` and retain
+older request versions when neither loops nor an explicit budget are used.
+Saved circuit files and the editor do not yet expose this adapter operation.
