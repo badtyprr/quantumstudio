@@ -9,6 +9,27 @@ static class ClassicalExpressionTextTests {
  static N Parse(string text,int width){return ClassicalExpressionText.Parse(text,Context(),width);}
  static string Format(N n){return ClassicalExpressionText.Format(n);}
  static void Roundtrip(N n,int width){string text=Format(n);Check(Format(Parse(text,width))==text);}
+ static void SignedLiteralChecks() {
+  var context=Context();context.Version=5;context.Variables=new ClassicalCircuit.Variable[0];
+  var serializer=new System.Web.Script.Serialization.JavaScriptSerializer();
+  var samples=new[]{
+   new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="18446744073709551615"},
+   new N{Kind="IntegerConstant",Signedness="Signed",Width=64,Value="9223372036854775808"},
+   new N{Kind="IntegerConstant",Signedness="Signed",Width=8,Value="128"},
+   new N{Kind="IntegerConstant",Signedness="Signed",Width=3,Value="7"},
+   new N{Kind="IntegerConstant",Signedness="Signed",Width=1,Value="1"},
+   new N{Kind="IntegerConstant",Signedness="Signed",Width=3,Value="3"},
+   new N{Kind="IntegerConstant",Signedness="Unsigned",Width=64,Value="18446744073709551615"}};
+  string[] expected={"int(-1)","int[64](-9223372036854775808)","int[8](-128)","int[3](-1)","int[1](-1)","int[3](3)","uint[64](18446744073709551615)"};
+  for(int i=0;i<samples.Length;i++) {
+   Check(Format(samples[i])==expected[i]);
+   Check(serializer.Serialize(ClassicalExpressionText.ParseInteger(expected[i],context))==serializer.Serialize(samples[i]));
+   var cast=new N{Kind="IntegerCast",Signedness="Signed",Width=8,Left=samples[i]};
+   Check(serializer.Serialize(ClassicalExpressionText.ParseInteger(Format(cast),context))==serializer.Serialize(cast));
+  }
+  Check(Format(ClassicalExpressionText.ParseInteger("uint[8](-1)",context))=="uint[8](255)");
+  Reject(()=>ClassicalExpressionText.ParseInteger("int[8](-9223372036854775809)",context));
+ }
  static void VariableChecks(string worker) {
   var context=Context();context.Version=5;context.Variables=new[]{new ClassicalCircuit.Variable{Name="counter",Signedness="Signed",Width=8}};
   string boundary="counter";for(int depth=1;depth<32;depth++)boundary="int("+boundary+")";
@@ -187,6 +208,7 @@ static class ClassicalExpressionTextTests {
    }
   }
   BooleanChecks(args.Length>0 ? args[0] : null);
+  SignedLiteralChecks();
   ComputedCastChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;

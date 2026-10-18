@@ -40,3 +40,8 @@ complement. Their decimal arguments default to 64 bits; quoted bit strings and
 registers retain their declared width. Formatting uses these explicit forms to
 preserve imported signed distances through editing. These names belong to the
 classical circuit editor, not the main mathematical calculator.
+
+Signed integer constants display as signed decimal values, for example
+`int(-1)` and `int[8](-128)`. Formatting and reparsing preserve the declared
+width, signedness and stored bits, including the minimum signed 64-bit value.
+Unsigned constants keep their nonnegative decimal representation.
