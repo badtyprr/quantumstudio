@@ -6,12 +6,13 @@
 #include "QuantumExactReadout.h"
 #include "QuantumClassical.h"
 #include "QuantumClassicalIntegerExpression.h"
+#include "QuantumClassicalRangeExpression.h"
 #include <memory>
 
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange };
  const Kind kind;
  const std::vector<unsigned> wires;
  const unsigned classicalBit;
@@ -22,6 +23,7 @@ public:
  const std::shared_ptr<const QuantumClassical::Bits> expression;
  const std::size_t variableSlot;
  const std::shared_ptr<const QuantumClassical::IntegerExpression> integerExpression;
+ const std::shared_ptr<const QuantumClassical::RangeExpression> rangeExpression;
  static CircuitStep map(const TracePreservingMap &op,const std::vector<unsigned> &wires) {
   return {Kind::Map,wires,0,0,0,std::make_shared<const TracePreservingMap>(op)};
  }
@@ -50,6 +52,11 @@ public:
  }
  // Only valid inside a loop; branches preserve the nearest-loop target.
  static CircuitStep breakLoop() {return {Kind::Break,{},0,0,0};}
+ // Bounds are captured per incoming history. The caller reserves a scoped
+ // binding slot; normal, empty, break and end exits clear it.
+ static CircuitStep forRange(std::size_t slot,const QuantumClassical::RangeExpression &range,const std::vector<CircuitStep> &body) {
+  return {Kind::ForRange,{},0,0,0,{},{},std::make_shared<const std::vector<CircuitStep>>(body),{},{},slot,{},std::make_shared<const QuantumClassical::RangeExpression>(range)};
+ }
  static CircuitStep continueLoop() {return {Kind::Continue,{},0,0,0};}
  // Terminate this history at any depth without discarding its probability mass.
  static CircuitStep endProgram() {return {Kind::End,{},0,0,0};}
@@ -64,8 +71,9 @@ private:
   std::shared_ptr<const TracePreservingMap> op={},std::shared_ptr<const ReadoutAssignment> a={},
   std::shared_ptr<const std::vector<CircuitStep>> yes={},std::shared_ptr<const std::vector<CircuitStep>> no={},
   std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,
-  std::shared_ptr<const QuantumClassical::IntegerExpression> integer={}):
-  kind(k),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer) {}
+  std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},
+  std::shared_ptr<const QuantumClassical::RangeExpression> range={}):
+  kind(k),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.
@@ -84,7 +92,8 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
  const std::vector<CircuitStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
  std::size_t maxCells,const EvaluationOptions &options);
 // Loop work is bounded across the entire evaluation, including all measurement
-// histories and nested loops. Every condition evaluation consumes one unit.
+// histories and nested loops. Every condition or range-cursor check consumes
+// one unit, including exhausted ranges.
 // Existing overloads use 1,000,000 units. Exhaustion throws; no partial probability
 // distribution is returned or renormalized. An infinite-support loop may exceed
 // this budget even when a sampled trajectory would terminate almost surely.
