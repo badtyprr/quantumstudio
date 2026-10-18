@@ -38,7 +38,10 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(step.classicalBit>=bits)throw std::out_of_range("Measurement destination is outside the classical register");
   } else if(step.kind==Step::Kind::Readout) {
    for(unsigned bit:step.assignment->bits())if(bit>=bits)throw std::out_of_range("Readout target is outside the classical register");
-  } else if(step.kind==Step::Kind::Branch || step.kind==Step::Kind::While) {
+  } else if(step.kind==Step::Kind::Branch || step.kind==Step::Kind::While || step.kind==Step::Kind::ForRange) {
+   if(step.rangeExpression) {
+    variables.type(step.variableSlot);step.rangeExpression->validate(bits,variables);
+   }
    if(step.expression) {
     if(step.expression->width()!=1)throw std::invalid_argument("Exact control-flow conditions must be one bit");
     step.expression->validate(bits,variables);
@@ -46,7 +49,7 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(depth>=32)throw std::length_error("Exact circuits support at most 32 nested branches/loops");
    if((bits<64 && (step.mask>>bits)) || (step.value&~step.mask))
     throw std::invalid_argument("Branch mask/value is outside the classical register or mask");
-   validate(*step.whenTrue,qubits,bits,depth+1,loopDepth+(step.kind==Step::Kind::While),count,variables);
+   validate(*step.whenTrue,qubits,bits,depth+1,loopDepth+(step.kind==Step::Kind::While || step.kind==Step::Kind::ForRange),count,variables);
    if(step.whenFalse)validate(*step.whenFalse,qubits,bits,depth+1,loopDepth,count,variables);
   }
  }
@@ -107,6 +110,43 @@ public:
 RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,const std::vector<Step> &steps,
  std::size_t maxCells,const EvaluationOptions &exact,std::size_t &loopConditionsLeft) {
  for(const auto &step:steps) {
+  if(step.kind==Step::Kind::ForRange) {
+   RuntimeAccumulator finished(qubits,bits,maxCells,exact);
+   // Different incoming histories may capture different ranges. Execute each
+   // cursor separately: merging their descendants early would lose hidden
+   // iteration state even when visible bits and variable slots match.
+   for(const auto &incoming:records) {
+    checkpoint();
+    if(incoming.flow!=Flow::Normal) {
+     finished.add(incoming.bits,incoming.variables,incoming.density,incoming.flow);continue;
+    }
+    auto cursor=step.rangeExpression->evaluate(incoming.bits,bits,incoming.variables);
+    RuntimeRecords pending={incoming};
+    while(!pending.empty()) {
+     RuntimeAccumulator active(qubits,bits,maxCells,exact);
+     for(const auto &record:pending) {
+      checkpoint();
+      if(loopConditionsLeft==0)throw std::length_error("Exact loop condition budget exceeded");
+      --loopConditionsLeft;
+      auto variables=record.variables;variables.clear(step.variableSlot);
+      if(!cursor.hasValue()) {finished.add(record.bits,variables,record.density);continue;}
+      variables.write(step.variableSlot,QuantumClassical::TypedInteger::fromBits(step.rangeExpression->type(),cursor.value().bits()));
+      active.add(record.bits,variables,record.density);
+     }
+     auto body=execute(active.take(),qubits,bits,*step.whenTrue,maxCells,exact,loopConditionsLeft);
+     RuntimeAccumulator next(qubits,bits,maxCells,exact);
+     for(const auto &record:body) {
+      if(record.flow==Flow::End || record.flow==Flow::Break) {
+       auto variables=record.variables;variables.clear(step.variableSlot);
+       finished.add(record.bits,variables,record.density,record.flow==Flow::End ? Flow::End : Flow::Normal);
+      } else next.add(record.bits,record.variables,record.density);
+     }
+     pending=next.take();
+     if(!pending.empty())cursor.advance();
+    }
+   }
+   records=finished.take();continue;
+  }
   if(step.kind==Step::Kind::While) {
    RuntimeAccumulator finished(qubits,bits,maxCells,exact);
    while(!records.empty()) {
