@@ -87,6 +87,12 @@ for command in commands:
     for count in (65, 512):
         run(command, header+f'qubit q; for int i in [0:{count-1}] {{x q;}}',
             {'Version': 1, 'Qubits': 1, 'Steps': [{'Gate': 'X', 'Angle': '', 'Wires': [0]}]*count})
+    for bounds,count in [('0:2:5',3),('5:-2:0',3),('0:2:4',3),('4:-2:0',3),
+                         ('0:5:1',1),('1:-5:0',1),('2:3:1',0),('1:-3:2',0),('2:2',1)]:
+        run(command,header+'qubit q;for int i in ['+bounds+']{x q;}',
+            {'Version':1,'Qubits':1,'Steps':[{'Gate':'X','Angle':'','Wires':[0]}]*count})
+    run(command,header+'qubit q;for int i in [0:0:3]{x q;}',diagnostic='For-loop range step must not be zero.')
+    run(command,header+'qubit q;for int i in [0:1000000000000]{x q;}',diagnostic='For-loop range exceeds the compiler iteration limit.')
     for width in (9, 10, 11, 25):
         run(command, header+f'qubit[{width}] q; x q[{width-1}];',
             {'Version': 1, 'Qubits': width, 'Steps': [{'Gate': 'X', 'Angle': '', 'Wires': [width-1]}]})
@@ -113,3 +119,11 @@ for source in [header+'bit c;end;c=1;', header+'bit c;end;missing q;']:
         assert 'missing' not in source
     assert adapter.QasmVisitor._construct_visit_map is original_map
 print('PASS: 2 termination compiler-hook restoration checks.')
+
+original_for=adapter.QasmVisitor._visit_forin_loop
+for source in [header+'qubit q;for int i in [0:2:5]{x q;}',header+'qubit q;for int i in [0:0:3]{x q;}']:
+    try:adapter.convert(source)
+    except ValueError:assert ':0:' in source
+    else:assert ':0:' not in source
+    assert adapter.QasmVisitor._visit_forin_loop is original_for
+print('PASS: 2 range compiler-hook restoration checks.')

@@ -8,6 +8,9 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('variable-range-positive-boundary','int n=0;bit c;for int i in [0:2:5]{n+=i;}c=n==6;',{'1':'1'}),
+ ('variable-range-negative-boundary','int n=0;bit c;for int i in [5:-2:0]{n+=i;}c=n==9;',{'1':'1'}),
+ ('transfer-range-boundary','int n=0;bit c;for int i in [0:2:5]{n+=i;continue;}c=n==6;',{'1':'1'}),
  ('end-for-after-continue','bit c;for int i in [0:2]{if(i==0){continue;}c=1;end;c=0;}c=0;',{'1':'1'}),
  ('end-for-before-break','bit c;for int i in [0:2]{c=1;end;break;}c=0;',{'1':'1'}),
  ('end-for-nested-transfer','bit c;for int i in [0:2]{for int j in [0:2]{break;}c=1;end;continue;}c=0;',{'1':'1'}),

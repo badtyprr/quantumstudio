@@ -36,11 +36,33 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_visit_map = QasmVisitor._construct_visit_map
     original_break = QasmVisitor._visit_break
     original_continue = QasmVisitor._visit_continue
+    original_for = QasmVisitor._visit_forin_loop
     original_while = QasmVisitor._visit_while_loop
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
     runtime_integer_names={node.identifier.name for node in nodes(module.original_program)
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
+    def for_loop(visitor, statement):
+        bounds=statement.set_declaration
+        if not isinstance(bounds,ast.RangeDefinition):
+            return original_for(visitor,statement)
+        start=Qasm3ExprEvaluator.evaluate_expression(bounds.start)[0]
+        stop=Qasm3ExprEvaluator.evaluate_expression(bounds.end)[0]
+        step=1 if bounds.step is None else Qasm3ExprEvaluator.evaluate_expression(bounds.step)[0]
+        if any(type(value) is not int for value in (start,stop,step)):
+            raise ValueError('For-loop range bounds and step must be integers.')
+        if step==0:raise ValueError('For-loop range step must not be zero.')
+        distance=(stop-start) if step>0 else (start-stop)
+        count=0 if distance<0 else distance//abs(step)+1
+        if count>visitor._loop_limit:
+            raise ValueError('For-loop range exceeds the compiler iteration limit.')
+        # The pinned compiler uses range(start, end + step, step). Align end to
+        # the last included value so a non-divisible range cannot overshoot.
+        # A copied node also keeps caller ASTs intact when compilation fails.
+        corrected=copy.copy(statement)
+        corrected.set_declaration=copy.copy(bounds)
+        corrected.set_declaration.end=ast.IntegerLiteral(start+(count-1)*step)
+        return original_for(visitor,corrected)
     def integers(visitor):
         return getattr(visitor, '_quantum_integer_names', set())
     def runtime(visitor,value):
@@ -306,6 +328,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             raise ValueError("Controlled global phase currently supports one or two controls.")
         return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
+    QasmVisitor._visit_forin_loop = for_loop
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
@@ -320,6 +343,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     try:
         module.unroll(max_loop_iters=4096, external_gates=list(primitives))
     finally:
+        QasmVisitor._visit_forin_loop = original_for
         QasmVisitor._visit_phase_operation = original
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
         QasmVisitor._visit_switch_statement = original_switch
