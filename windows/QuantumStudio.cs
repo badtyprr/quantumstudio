@@ -77,6 +77,7 @@ class QuantumStudio {
  }
  public class CalculationResult {
   public string text {get;set;}
+  public string display_text {get;set;}
   public string copy_text {get;set;}
   public bool approximate {get;set;}
   public int rows {get;set;}
@@ -1027,7 +1028,7 @@ class QuantumStudio {
  static void ShowResult(CalculationResult result) {
   ShowProbabilities(result);
   ShowBloch(result);
-  output.Text=result.text;
+  output.Text=result.display_text ?? result.text;
   copyText=result.copy_text ?? result.text;
   resultLabel.Text=result.approximate ? "APPROXIMATE RESULT" : "EXACT RESULT";
   matrixCells.Children.Clear(); matrixCells.RowDefinitions.Clear(); matrixCells.ColumnDefinitions.Clear();
@@ -1096,7 +1097,7 @@ class QuantumStudio {
    var result=new JavaScriptSerializer().Deserialize<CalculationResult>(response[0]);
    ShowResult(result);
    status.Text=response[1].Length==0 ? (result.approximate ? "Complete · Approximate arithmetic" : "Complete · Exact arithmetic")+" · Leftmost qubit is subsystem 0" : response[1];
-   string preview=result.text;
+   string preview=result.display_text ?? result.text;
    if(preview.Length>32768){int end=32767;if(Char.IsHighSurrogate(preview[end-1]))end--;preview=preview.Substring(0,end)+"…";}
    var entry=HistoryItem(new SessionEntry {Expression=expression,Result=preview,Mode=calculationMode,Evaluation=calculationEvaluation,States=calculationStates},false);
    history.Items.Insert(0,entry); if(history.Items.Count>50) history.Items.RemoveAt(50);

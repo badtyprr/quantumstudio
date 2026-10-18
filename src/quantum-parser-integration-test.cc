@@ -21,6 +21,7 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum: ∑_{k=0}^{3} k^2","14");
  // A matrix-valued unknown must not be broadcast as a scalar while other
  // substitutions in the same expression are still pending.
  const std::string indexedMixture=R"(quantum: replace(replace(replace(replace(replace(\sum_{k=0}^{m-1} p_k \rho_k,m,2),p_0,1/2),p_1,1/2),\rho_0,density(|0>)),\rho_1,density(|+>)))";

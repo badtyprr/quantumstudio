@@ -19,8 +19,27 @@ def run(expression, *flags, success=True):
 def data(expression, *flags):
     result = run(expression, "--json", *flags)
     value = json.loads(result.stdout.decode("utf-8"))
-    assert set(value) == {"text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
+    assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
+
+# Human-readable presentation must leave canonical clipboard expressions intact.
+for expression,shown in [
+    ("QFT_N|x>", "QFT_N |x⟩"),
+    ("<Bell|after CZ>", "⟨Bell|after CZ⟩"),
+    (r"\sum_{k=0}^{m-1} p_k \rho_k", "∑_{k=0}^{m − 1} (p_k · ρ_k)"),
+    (r"\sum_{j=0}^{k}{p_j}", "∑_{j=0}^{k} (p_j)"),
+    (r"\sum_{j=0}^{n}{p_k_j}", "∑_{j=0}^{n} (p_k_j)"),
+    (r"\sum_{k=0}^{n}{sin(k)}", "∑_{k=0}^{n} (sin(k))"),
+    (r"\sum_{k=0}^{n}{k^2}", "∑_{k=0}^{n} (k^2)"),
+]:
+    value=data("quantum:"+expression)
+    assert value['display_text']==shown,(expression,value)
+    assert data("quantum:"+value['copy_text'])['display_text']==shown
+    assert data("quantum:"+shown)['display_text']==shown
+assert data("quantum:∑_{k=0}^{3} k^2")['text']=='14'
+for label in ['a+b','0','i','x']:
+    value=data('quantum:qnamedket("'+label+'")')
+    assert value['display_text']==value['text'],value
 
 # Scalar products commute even when built-in and custom functions are mixed.
 for flags in [(), ("--approx",)]:

@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "quantum-sampling-request.h"
 #include "quantum-exact-request.h"
+#include "quantum-display.h"
 #include <set>
 #ifdef _WIN32
 #include <io.h>
@@ -200,6 +201,7 @@ int main(int argc,char **argv) {
  else {
   size_t rows=result.isMatrix() ? result.rows() : 0, cols=result.isMatrix() ? result.columns() : 0;
   std::cout << "{\"text\":"; jsonString(display.print(po));
+  std::cout << ",\"display_text\":"; jsonString(QuantumDisplay::print(display,po));
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long
   // denominators, so use unrestricted fractions for this serialization.
