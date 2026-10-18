@@ -23,7 +23,7 @@ static std::string basis(unsigned index,unsigned dimension) {
 }
 int main(){try {
  equal("|psi_{pi/8}>","qstatecall(\"psi\",(pi/(8)))");
- equal("|psi_(2)>","qnamedket(psi_2)");
+ equal("|psi_(2)>","qnamedket(\"psi_2\")");
  equal("|psi(pi/8)>","qstatecall(\"psi\",(pi/(8)))");
  equal("<psi(0)|psi(1)>","qmul(qdag(qstatecall(\"psi\",0)),qstatecall(\"psi\",1))");
  rejects("|psi()>");equal("|psi(1,2)>","qstatecalls(\"psi\",vector(1,2))");
@@ -126,6 +126,10 @@ int main(){try {
  expanded="1";for(unsigned k=0;k<14;++k)expanded="Rx("+expanded+")";
  rejects(expanded);
  rejects(std::string(32769,' '));
+ rejects(std::string(1,'\x1e')+"p_k");
+ rejects(std::string(1,'\x1f')+"p_k");
+ std::string repeatedIndex="p";for(unsigned k=0;k<129;++k)repeatedIndex+="_k";
+ rejects("sum("+repeatedIndex+",0,1,k)");
  rejects(std::string(300,'(')+"1"+std::string(300,')'));
  std::string many="1";for(unsigned i=0;i<600;++i)many+="+1";rejects(many);
  std::string excessiveSequence="sequence([";

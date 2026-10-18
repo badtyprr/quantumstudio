@@ -383,8 +383,7 @@ class TeXReader {
      while(pos<input.size() && std::isdigit((unsigned char)input[pos]))index+=input[pos++];
     }
     else if(pos<input.size() && std::isalnum((unsigned char)input[pos])) index+=input[pos++];
-    else if((stateSubscript || (!result.empty() && (result.back()=='>' || result.back()=='|'))) && pos<input.size() &&
-            (input[pos]=='\\' || (unsigned char)input[pos]>=128)) {grouped=true;index=argument();}
+    else if(pos<input.size() && (input[pos]=='\\' || (unsigned char)input[pos]>=128)) {grouped=true;index=argument();}
     else if((spin || bell) && pos<input.size() && (input[pos]=='+' || input[pos]=='-')) index+=input[pos++];
     else throw std::runtime_error(error("Expected a subscript"));
     if(stateSubscript && grouped && trim(index).empty())throw std::runtime_error(error("A state subscript cannot be empty"));

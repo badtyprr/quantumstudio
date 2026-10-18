@@ -101,6 +101,43 @@ class QuantumIndexedFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qindexedket") {
+   MathStructure label=raw[0];label.eval(eo);
+   if(!label.isSymbolic())return 0;
+   out.set(CALCULATOR->getFunction("qnamedket"),&label,NULL);out.eval(eo);return 1;
+  }
+  if(op=="qreplace") {
+   // Apply a chain of ordinary symbol substitutions before evaluating its
+   // partial results. Otherwise an as-yet unknown matrix can be broadcast as
+   // a scalar when an earlier replacement introduces the first matrix.
+   auto plain=[](const MathStructure &arguments) {
+    return (arguments[1].isSymbolic() || arguments[1].isVariable()) && !arguments[2].containsInterval(true,false,false,0,true);
+   };
+   if(!plain(raw)) {
+    MathStructure arguments=raw;arguments.addChild(m_zero);
+    return CALCULATOR->getFunction("replace")->calculate(out,arguments,eo);
+   }
+   std::vector<std::pair<MathStructure,MathStructure>> replacements;
+   replacements.push_back({raw[1],raw[2]});out=raw[0];
+   while(out.isFunction() && out.function()==this && out.size()==3 && plain(out)) {
+    replacements.push_back({out[1],out[2]});MathStructure body=out[0];out=body;
+   }
+   for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
+    if(CALCULATOR->aborted())return 0;
+    if(out.replace(at->first,at->second,false,false,at->first.containsUnknowns()))continue;
+    // Indexed labels may not exist until a finite sum has been expanded.
+    out.eval(eo);
+    if(!out.replace(at->first,at->second,false,false,at->first.containsUnknowns()))CALCULATOR->error(false,"Original value was not found during quantum substitution.",NULL);
+   }
+   return 1;
+  }
+  if(op=="qindexedlabel") {
+   MathStructure prefix=raw[0],index=raw[1],suffix=raw[2];
+   prefix.eval(eo);index.eval(eo);suffix.eval(eo);
+   if(!prefix.isSymbolic() || !suffix.isSymbolic() || !index.isNumber() || !index.number().isInteger())return 0;
+   PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
+   out.set(prefix.symbol()+index.print(print)+suffix.symbol(),true);return 1;
+  }
   if(op=="qstatecalls") {
    MathStructure arguments=raw[1];arguments.eval(eo);
    if(!arguments.isVector() || arguments.isMatrix() || arguments.size()<2 || arguments.size()>16) {CALCULATOR->error(true,"A state-family argument list requires 2 to 16 scalars.",NULL);return 0;}
@@ -375,6 +412,9 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
+ calculator.addFunction(new QuantumIndexedFunction("qreplace",3));
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));
