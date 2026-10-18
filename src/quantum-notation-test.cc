@@ -22,6 +22,10 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("2^Tr(A)","qpower(2,qtrace(A))");
+ equal("2^Tr(I)","qpower(2,qtrace([1,0;0,1]))");
+ equal("A^T","qtranspose(A)");
+ equal("A^T*B","qmul(qtranspose(A),B)");
  equal("|psi_{pi/8}>","qstatecall(\"psi\",(pi/(8)))");
  equal("|psi_(2)>","qnamedket(\"psi_2\")");
  equal("|psi(pi/8)>","qstatecall(\"psi\",(pi/(8)))");

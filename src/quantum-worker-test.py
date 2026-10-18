@@ -22,6 +22,11 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# A trace call after ^ is an exponent, not a transpose followed by r(...).
+for flags in [(), ("--approx",)]:
+    for expression,expected in [('2^Tr(I)',4),('2^Tr(X)',1),('2^Tr([1,0;0,2])',8),('norm(vec([1,2;3,4]^T-[1,3;2,4]))',0)]:
+        assert Decimal(data('quantum:'+expression,*flags)['text'])==expected,expression
+
 # A derivation is a list of independent results, not one combined matrix.
 for flags in [(), ("--approx",)]:
     for expression,expected in [

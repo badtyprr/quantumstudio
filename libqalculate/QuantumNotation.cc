@@ -1260,7 +1260,7 @@ class Parser {
     need('('); std::string indices=expression(); while(take(',')) indices+=","+expression(); need(')');
     a="qptranspose("+a+",vector("+indices+"))";
    }
-   else if(take('`') || take('T')) a="qtranspose("+a+")";
+   else if(take('`') || takeWord("T")) a="qtranspose("+a+")";
    else if(take('*')) a="qconj("+a+")";
    else if(a=="e") a="qexp("+unary()+")";
    else a="qpower("+a+","+unary()+")";

@@ -259,6 +259,10 @@ An unknown named ket such as `|x>` remains a state expression until its name is 
 
 ### Repeated adjoints, conjugations and transposes
 
+The transpose suffix `^T` requires a complete `T` token. A trace function in
+an exponent remains a function: `2^Tr(I)` evaluates to `4`. Use a separator
+when multiplying after a transpose, for example `A^T*B`.
+
 Applying an adjoint twice, conjugation twice, or transpose twice cancels symbolically, including for unresolved state and operator expressions. For example, `dagger(dagger(QFT_N))` reduces to `QFT_N`, and `dagger(dagger(|x>))` reduces to `|x>`. These identities do not assume normalization, reality or unitarity; they do not replace a single adjoint with an inverse.
 
 ## Named state labels
