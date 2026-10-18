@@ -21,7 +21,7 @@ def loop(condition, *body):
 def gate(expression):
     value = expression.encode()
     return fields(0, 1, 0, len(value)) + value
-def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(), old=False, transfers=False, termination=False):
+def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(), old=False, transfers=False, termination=False, ranges=False):
     header = ('QEXACT5' if old else 'QEXACT6') if exact else ('QSAMPLE6' if old else 'QSAMPLE7')
     if transfers:
         assert not old
@@ -29,6 +29,9 @@ def request(exact, body=(), budget=100, qubits=0, bits=1, output=(0,), types=(),
     if termination:
         assert not old
         header='QEXACT8' if exact else 'QSAMPLE9'
+    if ranges:
+        assert not old
+        header='QEXACT9' if exact else 'QSAMPLE10'
     result = fields(header, qubits, bits) if exact else fields(header, qubits, 100, 7, bits)
     result += fields(len(types)) + b''.join(fields(*t) for t in types)
     if not old:
@@ -151,4 +154,57 @@ for exact in (False, True):
     for version in range(1,8 if exact else 9):
         header=fields(('QEXACT' if exact else 'QSAMPLE')+str(version))
         run(exact,header+payload.split(b'\n',1)[1],error='')
+def span(slot, start, stop, stride, *body):
+    return fields(15, slot)+start+stop+stride+fields(len(body))+b''.join(body)
+
+def ivar(slot):
+    return fields(4,0,0,slot)
+
+for exact in (False,True):
+    def ranged(body=(), **options):
+        options.setdefault('types',[(0,0),(0,0)])
+        return request(exact,body,ranges=True,**options)
+    binding,total=ivar(0),ivar(1)
+    add=fields(9,1,3,0)+total+binding
+    def equals(n):
+        return assign(0,fields(6,0)+total+integer(n))
+    def sum_range(start,stop,stride,body=(add,)):
+        return [fields(9,1)+integer(0),span(0,integer(start),integer(stop),integer(stride),*body)]
+    run(exact,ranged(),{'0':1})
+    for start,stop,stride,expected in [(0,3,1,6),(0,5,2,6),(5,0,2**64-2,9),(3,0,1,0)]:
+        run(exact,ranged(sum_range(start,stop,stride)+[equals(expected)]),{'1':1})
+    run(exact,ranged(sum_range(0,3,1,(add,fields(9,0)+integer(99)))+[equals(6)]),{'1':1})
+    captured=[fields(9,1)+integer(0),fields(9,2)+integer(3),
+              span(0,integer(0),ivar(2),integer(1),add,fields(9,2)+integer(0)),equals(6)]
+    run(exact,ranged(captured,types=[(0,0)]*3),{'1':1})
+    negative=[fields(9,1)+integer(0),fields(9,2)+integer(2**64-2),
+              span(0,integer(5),integer(0),ivar(2),add,fields(9,2)+integer(1)),equals(9)]
+    run(exact,ranged(negative,types=[(0,0)]*3),{'1':1})
+    measured=span(0,integer(0),integer(2),integer(1),gate('H'),fields(1,0,0),branch(read(0),[fields(12)]))
+    run(exact,ranged([measured],qubits=1),{'0':'1/8','1':'7/8'})
+    skip=branch(fields(6,0)+binding+integer(1),[fields(13)])
+    run(exact,ranged(sum_range(0,3,1,(skip,add))+[equals(5)]),{'1':1})
+    run(exact,ranged(sum_range(0,3,1,(add,fields(12)))+[equals(0)],budget=1),{'1':1})
+    run(exact,ranged([span(0,integer(0),integer(3),integer(1),assign(0,yes),fields(14)),assign(0,no)],budget=1),{'1':1})
+    payload=ranged([span(0,integer(0),integer(2),integer(1))],budget=4)
+    run(exact,payload,{'0':1})
+    run(exact,ranged([span(0,integer(0),integer(2),integer(1))],budget=3),error='loop condition budget')
+    run(exact,ranged([span(0,integer(1),integer(0),integer(1))],budget=0),error='loop condition budget')
+    run(exact,ranged([span(0,integer(0),integer(1),integer(0))]),error='step must not be zero')
+    run(exact,ranged([branch(no,[span(0,integer(0),integer(1),integer(0))])],budget=0),{'0':1})
+    run(exact,ranged([span(2,integer(0),integer(1),integer(1))]),error='')
+    run(exact,ranged([span(0,ivar(5),integer(1),integer(1))]),error='')
+    run(exact,ranged([span(0,ivar(1),integer(1),integer(1))]),error='initialization')
+    run(exact,ranged([span(0,integer(0),integer(0),integer(1)),fields(9,1)+binding]),error='initialization')
+    run(exact,ranged([fields(16)]),error='')
+    for cut in range(len(payload)):
+        run(exact,payload[:cut],error='')
+    run(exact,payload+b'0\n',error='')
+    for version in range(1,9 if exact else 10):
+        old_header=fields(('QEXACT' if exact else 'QSAMPLE')+str(version))
+        run(exact,old_header+payload.split(b'\n',1)[1],error='')
+    depth=span(0,integer(1),integer(0),integer(1))
+    for _ in range(31):depth=span(0,integer(1),integer(0),integer(1),depth)
+    run(exact,ranged([depth]),{'0':1})
+    run(exact,ranged([span(0,integer(1),integer(0),integer(1),depth)]),error='32')
 print(f'PASS: {checks} runtime loop process checks.')

@@ -161,3 +161,25 @@ are skipped. Termination does not consume a loop-condition check, but entering a
 loop still does. Unreachable operations remain structurally validated. Earlier
 headers reject operation 14. Version 9 circuit files, the End program editor operation, and OpenQASM `end;`
 import expose this transport operation.
+## Runtime integer ranges
+
+`QSAMPLE10` and `QEXACT9` retain the preceding request fields and add opcode
+`15`: binding slot index, start integer-expression tree, stop integer-expression
+tree, step integer-expression tree, body operation count, then body operations.
+The sampling header now occupies ten bytes including LF; the exact header
+still occupies eight. Older versions reject opcode 15.
+
+Each expression uses the existing typed prefix encoding and independently
+retains its 32-level/512-node limit. Slots and expressions are validated even
+in unreachable bodies. At entry the engines evaluate all three inputs once,
+promote the endpoints to a common integer type, and reject a zero step. Bounds
+are inclusive; an oppositely directed range is empty. The caller reserves a
+scoped binding slot, cleared on every normal, empty, break or end exit.
+Assignments to the binding do not change the independent cursor.
+
+Each cursor check consumes the shared loop-condition budget, including the
+exhausted check. Break exits the nearest loop; continue advances its cursor;
+end terminates the history. Exact histories with different captured ranges
+remain separate until completion. Existing operation, nesting, memory and
+request-size limits still apply. This worker capability alone does not enable
+runtime range input in the GUI importer.
