@@ -138,7 +138,7 @@ The importer represents an active iteration with a one-pass loop and guards
 later iterations with a private Boolean variable. Each executed iteration uses
 one condition check from the saved budget. Nested loops retain their own transfer
 targets and scope cleanup. Expanded programs still obey the 512-operation and
-32-level limits. Runtime for ranges remain unsupported.
+32-level limits. Runtime for ranges use version 10, described below.
 
 ## Version 9: program termination
 
@@ -173,4 +173,23 @@ Requests use QSAMPLE10 or QEXACT9. In the editor, choose **For integer range**,
 select a declared binding variable, and enter the inclusive Start, Stop, and
 nonzero Step expressions. Select its Loop body to add operations. Replacing
 bounds preserves the body, and explicit integer widths survive editing.
-Runtime range lowering in the OpenQASM importer remains unfinished.
+OpenQASM import retains integer ranges whose bounds depend on runtime variables.
+For example, `int n=3; for int i in [0:n] { ... }` becomes one range operation,
+with a local binding slot and bounds captured at entry. Nested loops, local
+shadowing, `break`, `continue`, and `end` preserve their scope and control flow.
+Changing a bound or binding inside the body does not change the cursor.
+Binding assignment uses the existing integer conversion policy: retain the low
+bits at the declared width and interpret signed values as two's complement.
+For example, a machine-integer range visiting 127, 128, 129 with an `int[8]`
+binding supplies 127, -128, -127 without changing the iteration count.
+
+Compile-time ranges still expand during import, allowing static wire indices
+and gate parameters. Runtime register indices, runtime gate parameters, and
+runtime iteration over sets or arrays remain unsupported and produce errors.
+Boolean range bounds require an explicit integer cast. Zero steps and undefined
+bounds fail when executed, including empty ranges; unreachable loops are retained.
+
+References: [OpenQASM for loops](https://openqasm.com/language/classical.html#for-loops)
+and [integer conversions](https://openqasm.com/language/types.html#casting-from-int-uint).
+Capture-at-entry agrees with Amazon Braket's interpreter implementation; the
+OpenQASM loop section does not explicitly specify capture timing.
