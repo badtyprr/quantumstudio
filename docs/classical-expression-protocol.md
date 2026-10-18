@@ -147,7 +147,8 @@ Requests without transfers retain their existing header versions. Circuit file
 versions 1 through 7 continue to reject transfers; version 8 preserves them.
 The editor creates and preserves both transfers. OpenQASM import preserves
 transfers targeting runtime while loops and emits scope-exit clears before them.
-For-loop transfers remain unsupported. Whole-program termination uses the newer headers below.
+Static for-loop transfers lower to guarded, one-pass while bodies with explicit
+scope cleanup. Runtime for ranges remain unsupported. Whole-program termination uses the newer headers below.
 These transport versions do not infer or perform source-level
 scope cleanup; a compiler must emit the required clearing before a transfer.
 

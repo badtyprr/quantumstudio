@@ -591,12 +591,60 @@ def lower_boolean_measurements(program):
     return {name}
 
 
+def lower_for_transfers(program):
+    """Retain static iteration bindings while transfers execute at runtime.
+
+    Each active iteration runs in a one-pass while body. Continue exits that
+    body; break also clears a flag that guards all later unrolled iterations.
+    Scope resolution then inserts the normal lifetime cleanup for those exits.
+    Nested loops own their own transfers and are transformed independently.
+    """
+    used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
+    serial=0
+    def children(statement):
+        if isinstance(statement,ast.BranchingStatement):return [statement.if_block,statement.else_block]
+        if isinstance(statement,ast.CompoundStatement):return [statement.statements]
+        if isinstance(statement,ast.SwitchStatement):return [case.statements for _,case in statement.cases]+([] if statement.default is None else [statement.default.statements])
+        return []
+    def targets_this_loop(body):
+        return any(isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)) or
+                   any(targets_this_loop(child) for child in children(statement)) for statement in body)
+    def block(body,target=None):
+        nonlocal serial
+        result=[]
+        for statement in body:
+            if isinstance(statement,ast.ForInLoop):
+                if targets_this_loop(statement.block):
+                    while True:
+                        serial+=1;flag='_for_active_'+str(serial)
+                        if flag not in used:used.add(flag);break
+                    block(statement.block,flag)
+                    iteration=ast.WhileLoop(while_condition=ast.BooleanLiteral(True),block=statement.block+[ast.BreakStatement()])
+                    statement.block=[ast.BranchingStatement(condition=ast.Identifier(flag),if_block=[iteration],else_block=[])]
+                    declaration=ast.ClassicalDeclaration(type=ast.BoolType(),identifier=ast.Identifier(flag),init_expression=ast.BooleanLiteral(True))
+                    result.append(ast.CompoundStatement(statements=[declaration,statement]))
+                else:
+                    block(statement.block);result.append(statement)
+            elif isinstance(statement,ast.WhileLoop):
+                block(statement.block);result.append(statement)
+            elif target is not None and isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
+                if isinstance(statement,ast.BreakStatement):
+                    result.append(ast.ClassicalAssignment(lvalue=ast.Identifier(target),op=ast.AssignmentOperator['='],rvalue=ast.BooleanLiteral(False)))
+                result.append(ast.BreakStatement())
+            else:
+                for child in children(statement):block(child,target)
+                result.append(statement)
+        body[:]=result
+    block(program.statements)
+
+
 def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(source)
     hidden_registers=set()
     if classical:
+        lower_for_transfers(module.original_program)
         resolve_integer_scopes(module.original_program)
         hidden_registers=lower_boolean_measurements(module.original_program)
     if classical:
