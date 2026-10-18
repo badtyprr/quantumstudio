@@ -22,6 +22,19 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Indexed column constraints must survive symbolic dimensions and substitution.
+for flags in [(), ("--approx",)]:
+    symbolic=data('quantum:qindexedcolumn("alpha_",n-1,1)',*flags)
+    assert symbolic['rows']==symbolic['columns']==0
+    concrete=data('quantum:replace('+symbolic['copy_text']+',n,3)',*flags)
+    assert concrete['rows']==3 and concrete['columns']==1
+    assert data('quantum:'+concrete['copy_text'],*flags)['cells']==concrete['cells']
+    singleton=data('quantum:qindexedcolumn("alpha_",0,0)',*flags)
+    assert singleton['rows']==singleton['columns']==1
+    assert Decimal(data('quantum:replace(qindexedcolumn("alpha_",0,0),alpha_0,5)',*flags)['cells'][0][0])==5
+    for expression in ['replace(qindexedcolumn("alpha_",n-1,1),n,1)','qindexedcolumn("alpha_",-1,0)','qindexedcolumn("alpha_",1/2,0)','qindexedcolumn("alpha_",1024,0)','qindexedcolumn("alpha_",2,-1)','qindexedcolumn("bad+_",2,0)']:
+        assert run('quantum:'+expression,'--json',*flags,success=False).stdout==b''
+
 # A trace call after ^ is an exponent, not a transpose followed by r(...).
 for flags in [(), ("--approx",)]:
     for expression,expected in [('2^Tr(I)',4),('2^Tr(X)',1),('2^Tr([1,0;0,2])',8),('norm(vec([1,2;3,4]^T-[1,3;2,4]))',0)]:

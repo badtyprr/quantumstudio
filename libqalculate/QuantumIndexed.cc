@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 #include <stdexcept>
+#include <cctype>
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // These operations bind an index in their first argument only.
@@ -97,7 +98,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls")setArgumentDefinition(1,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn")setArgumentDefinition(1,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
@@ -128,6 +129,31 @@ class QuantumIndexedFunction: public MathFunction {
     // Indexed labels may not exist until a finite sum has been expanded.
     out.eval(eo);
     if(!out.replace(at->first,at->second,false,false,at->first.containsUnknowns()))CALCULATOR->error(false,"Original value was not found during quantum substitution.",NULL);
+   }
+   return 1;
+  }
+  if(op=="qindexedcolumn") {
+   // Preserve the endpoint and the minimum implied by explicitly shown rows.
+   // Recheck both after substitution; do not silently truncate a pattern.
+   if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed column requires a coefficient-name prefix.",NULL);return 0;}
+   const std::string prefix=raw[0].symbol();
+   bool valid=prefix.size()>=2 && prefix.size()<=128 && prefix.back()=='_';
+   for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
+   if(!valid) {CALCULATOR->error(true,"An indexed column prefix must be a name ending in an underscore.",NULL);return 0;}
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure last=raw[1],minimum=raw[2];last.eval(exact);minimum.eval(exact);
+   if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<0 || minimum.number()>1023) {
+    CALCULATOR->error(true,"An indexed column minimum must be an integer from 0 to 1023.",NULL);return 0;
+   }
+   if(!last.isNumber() && !last.isVector() && last.containsUnknowns())return 0;
+   if(!last.isNumber() || !last.number().isInteger() || last.number()<minimum.number() || last.number()>1023) {
+    CALCULATOR->error(true,"An indexed column endpoint must be an integer respecting its displayed entries and the 1024-row limit.",NULL);return 0;
+   }
+   const int rows=last.number().intValue()+1;
+   out.clearMatrix();out.resizeMatrix(rows,1,m_zero);
+   for(int row=0;row<rows;++row) {
+    if(CALCULATOR->aborted())return 0;
+    element(out,row,0).set(prefix+std::to_string(row),true);
    }
    return 1;
   }
@@ -413,6 +439,7 @@ class QuantumIndexedFunction: public MathFunction {
 }
 void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qreplace",3));
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
