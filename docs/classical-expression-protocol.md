@@ -121,5 +121,25 @@ including all measurement histories. Each condition check, even a false one,
 uses a unit. Exhaustion produces an error with empty stdout, never partial
 counts or normalized partial probabilities. The native exact evaluator does
 not sum infinite iteration series. Responses retain their existing schemas.
-Windows adapters and version 7 circuit files emit these versions. Loop-editing
-controls and OpenQASM loop import remain to be implemented.
+Windows adapters and version 7 circuit files emit these versions. The editor
+and OpenQASM importer support runtime while loops.
+
+
+## Loop transfers
+
+`QSAMPLE8` and `QEXACT7` retain the loop headers' fields, including the condition
+budget, and add two payload-free operations: 12 for break and 13 for continue.
+Earlier headers reject both opcodes, even inside an unreachable body. The new
+headers also accept programs that contain no transfers.
+
+Both engines validate that every transfer has an enclosing loop before any
+execution. Branches propagate the transfer; the nearest loop consumes it.
+Break resumes after that loop without another condition check. Continue skips
+the remainder of its body and checks that loop's condition again, using the
+ordinary budget. Exact histories keep pending transfers distinct until the loop
+consumes them. Response schemas, byte limits, nesting limits and operation limits
+are unchanged; malformed input and budget exhaustion return no partial result.
+
+Windows adapter, file-format, editor and OpenQASM break/continue support still
+need integration. These transport versions do not infer or perform source-level
+scope cleanup; a compiler must emit the required clearing before a transfer.
