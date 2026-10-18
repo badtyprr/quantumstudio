@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Web.Script.Serialization;
 
-// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts; version 7 adds loops and their budget.
+// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts; version 7 adds loops and their budget; version 8 adds loop transfers.
 // The editor receives copies; a validated program cannot change underneath a run.
 sealed class ClassicalCircuit {
  public sealed class Register {public string Name {get;set;}public int Size {get;set;}}
@@ -168,9 +168,9 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6 && version!=7)throw Invalid("Expected a version 2, 3, 4, 5, 6 or 7 classical circuit.");
+  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6 && version!=7 && version!=8)throw Invalid("Expected a version 2, 3, 4, 5, 6, 7 or 8 classical circuit.");
   object loopBudget;
-  if(version==7) {
+  if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
    if((int)loopBudget<0 || (int)loopBudget>1000000)throw Invalid("Loop condition budget must be 0–1,000,000.");
   } else if(root.TryGetValue("LoopConditionBudget",out loopBudget) && loopBudget!=null)throw Invalid("Loop budgets require circuit version 7.");
@@ -183,7 +183,7 @@ sealed class ClassicalCircuit {
     if(!(Required(fields,"Name") is string) || !(Required(fields,"Signedness") is string))throw Invalid("Variable names and signedness must be text.");
     Integer(Required(fields,"Width"));
    }
-  } else if(version>=5)throw Invalid("Versions 5–7 require a variable declaration array.");
+  } else if(version>=5)throw Invalid("Versions 5–8 require a variable declaration array.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;
@@ -240,7 +240,7 @@ sealed class ClassicalCircuit {
   foreach(var step in steps) {
    NumericalSampling.Operation kind;
    if(!Enum.TryParse(step.Kind,out kind) || kind.ToString()!=step.Kind || !Enum.IsDefined(typeof(NumericalSampling.Operation),kind))throw Invalid("Unknown operation kind.");
-   if(kind==NumericalSampling.Operation.Break || kind==NumericalSampling.Operation.Continue)throw Invalid("Loop transfers require a newer circuit file version.");
+   if((kind==NumericalSampling.Operation.Break || kind==NumericalSampling.Operation.Continue) && version<8)throw Invalid("Loop transfers require circuit version 8.");
    bool integer=kind==NumericalSampling.Operation.StoreInteger || kind==NumericalSampling.Operation.ClearInteger;
    if(integer && version<5)throw Invalid("Variables require circuit version 5.");
    if(!integer && (step.VariableSlot.HasValue || step.IntegerValue!=null))throw Invalid("Only variable operations accept variable fields.");

@@ -107,3 +107,17 @@ a loop requires an empty Else body, and changing a populated block into a
 non-block operation is rejected. These edits and the limit support undo/redo.
 Saving, reopening, Exact probabilities and Sample all use the same loop body
 and budget.
+
+## Version 8: loop transfers
+
+Version 8 retains the variable declarations and condition budget required by
+version 7. A `Break` or `Continue` step has no payload and must be inside a
+`While` body, possibly inside nested branches. Validation checks unreachable
+bodies too. Versions 1–7 reject these steps.
+
+`Break` exits the nearest enclosing loop. `Continue` skips the remainder of
+that loop's body and rechecks its condition, consuming the ordinary condition
+budget. Save/reopen preserves both operations; exact and sampling requests use
+`QEXACT7` and `QSAMPLE8`. Editing a loop or its budget preserves version 8.
+Creating transfers in the editor and importing them from OpenQASM remain
+separate integration work.

@@ -144,7 +144,7 @@ The Windows request adapter selects these headers when a loop contains a
 transfer. It rejects transfers outside loops, including unreachable branches,
 and rejects expression, target, condition, variable and body fields on transfers.
 Requests without transfers retain their existing header versions. Circuit file
-versions 1 through 7 continue to reject transfers; saved-file, editor and
-OpenQASM break/continue support still need integration.
+versions 1 through 7 continue to reject transfers; version 8 preserves them.
+Editor creation and OpenQASM break/continue support still need integration.
 These transport versions do not infer or perform source-level
 scope cleanup; a compiler must emit the required clearing before a transfer.
