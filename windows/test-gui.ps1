@@ -32,10 +32,15 @@ $historyTest = Join-Path $validation 'classical-history-tests.exe'
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests did not compile.' }
 & $historyTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests failed.' }
-& "$fx\csc.exe" /nologo /target:exe "/out:$sessionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'SessionStoreTests.cs')
+& "$fx\csc.exe" /nologo /target:exe "/out:$sessionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'SessionStoreTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Session tests did not compile.' }
 & $sessionTest
 if ($LASTEXITCODE -ne 0) { throw 'Session tests failed.' }
+$matrixTest = Join-Path $validation 'matrix-declarations-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$matrixTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'MatrixDeclarationsTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Matrix declaration tests did not compile.' }
+& $matrixTest
+if ($LASTEXITCODE -ne 0) { throw 'Matrix declaration tests failed.' }
 $qasmTest = Join-Path $validation 'qasm-input-tests.exe'
 & "$fx\csc.exe" /nologo /target:exe "/out:$qasmTest" (Join-Path $PSScriptRoot 'QasmImport.cs') (Join-Path $PSScriptRoot 'QasmImportTests.cs') (Join-Path $PSScriptRoot 'BoundedUtf8File.cs')
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
