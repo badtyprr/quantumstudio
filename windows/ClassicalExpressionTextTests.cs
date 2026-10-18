@@ -43,6 +43,29 @@ static class ClassicalExpressionTextTests {
    string text=ClassicalExpressionText.Format(node,context);Check(ClassicalExpressionText.ParseInteger(text,context).Slot==0);
   }
  }
+ static void ComputedCastChecks(string worker) {
+  foreach(string text in new[]{"int[3](~c) == -1","uint[3](c ^ \"111\") == 7","uint[1](c == 0) == 1","uint[1](true || int[3](c)/0 == 1) == 1","uint(popcount(c)) == 0","int(uint[3](c | \"100\")) == 4"}) {
+   var node=Parse(text,1);Check(ClassicalExpressionText.RequiredVersion(node)==6);Roundtrip(node,1);
+   var doc=Context();doc.Version=6;doc.Variables=new ClassicalCircuit.Variable[0];doc.OutputBits=new[]{3};
+   doc.Steps=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{3},ClassicalValue=node}};
+   var saved=ClassicalCircuit.From(doc);var reopened=ClassicalCircuit.Load(saved.Serialize());Check(reopened.Serialize()==saved.Serialize());
+   foreach(int version in new[]{2,3,4,5}){var old=reopened.Snapshot();old.Version=version;Reject(()=>ClassicalCircuit.From(old));}
+   var missing=reopened.Snapshot();missing.Variables=null;Reject(()=>ClassicalCircuit.From(missing));
+   if(worker==null)continue;
+   foreach(bool exact in new[]{true,false}) {
+    byte[] request=exact ? NumericalSampling.RequestExact(0,64,new[]{3},reopened.SamplingGates(),reopened.VariableTypes) : NumericalSampling.RequestClassical(0,64,10000,1731,new[]{3},reopened.SamplingGates(),reopened.VariableTypes);
+    Check(Encoding.UTF8.GetString(request).StartsWith(exact ? "QEXACT5\n" : "QSAMPLE6\n"));
+    string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,x=>x).GetAwaiter().GetResult();
+    var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+    Check(values.Count==1 && Convert.ToString(values["1"])==(exact ? "1" : "10000"));
+   }
+  }
+  var context=Context();var cast=ClassicalExpressionText.ParseInteger("uint[3](~c)",context);
+  Check(cast.Kind=="IntegerFromBits" && context.Version==3 && context.Variables==null);
+  Check(Format(ClassicalExpressionText.ParseInteger(Format(cast),context))==Format(cast));
+  foreach(string bad in new[]{"uint[2](~c)","uint[3](c == 0)","uint[1](read(64) == 0)"})Reject(()=>ClassicalExpressionText.ParseInteger(bad,context));
+ }
  static void BooleanChecks(string worker) {
   string[] expressions={"bool(c)","bool(int[3](c))","bool(uint[3](c))","bool(popcount(c))","bool(c == 4)","bool(bool(c))","bool(int[3](c) - int[3](c))","bool(~c)","bool(c) && 6 / int[3](c) == 3"};
   int[] initial={0,4,4,4,4,4,4,7,0},expected={0,1,1,1,1,1,0,0,0};
@@ -164,6 +187,7 @@ static class ClassicalExpressionTextTests {
    }
   }
   BooleanChecks(args.Length>0 ? args[0] : null);
+  ComputedCastChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression text checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}

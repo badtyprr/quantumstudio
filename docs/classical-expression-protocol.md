@@ -90,3 +90,13 @@ casts. One shared 512-node/32-level budget covers the entire alternating tree.
 Short-circuit evaluation skips undefined reads in unused operands; structural
 validation still rejects invalid references and mismatched variable types.
 Earlier protocol versions reject integer node 5. Result JSON is unchanged.
+
+Circuit documents use version 6 for these casts. `IntegerFromBits` has `Signedness`,
+`Width`, and a bit-expression `Left` child. Version 6 requires a `Variables` array,
+which may be empty. Older document versions reject the new node.
+
+In the classical circuit editor, enter casts directly, for example
+`uint[3](c ^ "111")`, `int[3](~c)`, or `uint[1](c == 0)`. Operand widths must match
+the cast width; `uint(popcount(c))` uses the 64-bit machine width. Save/reopen,
+selection, replacement, and undo/redo preserve these expressions. Editing variable
+declarations preserves the document version required by existing expressions.

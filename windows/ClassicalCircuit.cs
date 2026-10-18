@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Web.Script.Serialization;
 
-// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots.
+// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts.
 // The editor receives copies; a validated program cannot change underneath a run.
 sealed class ClassicalCircuit {
  public sealed class Register {public string Name {get;set;}public int Size {get;set;}}
@@ -62,13 +62,14 @@ sealed class ClassicalCircuit {
   var kind=Required(fields,"Kind") as string;string permitted;
   if(integer) {
    if(version<4)throw Invalid("Typed integer expressions require circuit version 4.");
-   if(kind=="IntegerConstant" || kind=="IntegerRead" || kind=="IntegerCast" || kind=="IntegerVariable") {
+   if(kind=="IntegerConstant" || kind=="IntegerRead" || kind=="IntegerCast" || kind=="IntegerVariable" || kind=="IntegerFromBits") {
     if(!(Required(fields,"Signedness") is string))throw Invalid("Integer signedness must be a name.");
     Integer(Required(fields,"Width"));
     permitted="Kind,Signedness,Width,"+(kind=="IntegerConstant" ? "Value" : kind=="IntegerRead" ? "Bits" : kind=="IntegerVariable" ? "Slot" : "Left");
     if(kind=="IntegerConstant" && !(Required(fields,"Value") is string))throw Invalid("Integer values must be raw unsigned decimal text.");
     if(kind=="IntegerVariable"){if(version<5)throw Invalid("Variables require circuit version 5.");Integer(Required(fields,"Slot"));}
     if(kind=="IntegerRead")IntegerArray(Required(fields,"Bits"));
+    if(kind=="IntegerFromBits"){if(version<6)throw Invalid("Computed bit casts require circuit version 6.");ExpressionFields(Required(fields,"Left"),depth+1,ref count,version);}
     if(kind=="IntegerCast")ExpressionFields(Required(fields,"Left"),depth+1,ref count,version,true);
    } else if(kind=="IntegerBinary") {
     permitted="Kind,Operator,Left,Right";if(!(Required(fields,"Operator") is string))throw Invalid("An integer operator must be a name.");
@@ -114,6 +115,7 @@ sealed class ClassicalCircuit {
   if(node.Kind=="IntegerConstant")return ClassicalIntegerExpression.Constant(type,Condition(node.Value));
   if(node.Kind=="IntegerVariable")return ClassicalIntegerExpression.Variable(type,node.Slot.Value);
   if(node.Kind=="IntegerRead")return ClassicalIntegerExpression.Read(type,node.Bits);
+  if(node.Kind=="IntegerFromBits")return ClassicalIntegerExpression.FromBits(type,ConvertExpression(node.Left));
   return ClassicalIntegerExpression.Cast(type,ConvertInteger(node.Left));
  }
  static ClassicalExpression ConvertExpression(ExpressionNode node) {
@@ -164,7 +166,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version!=2 && version!=3 && version!=4 && version!=5)throw Invalid("Expected a version 2, 3, 4 or 5 classical circuit.");
+  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6)throw Invalid("Expected a version 2, 3, 4, 5 or 6 classical circuit.");
   object declarations;
   if(root.TryGetValue("Variables",out declarations) && declarations!=null) {
    if(version<5)throw Invalid("Variables require circuit version 5.");
@@ -174,7 +176,7 @@ sealed class ClassicalCircuit {
     if(!(Required(fields,"Name") is string) || !(Required(fields,"Signedness") is string))throw Invalid("Variable names and signedness must be text.");
     Integer(Required(fields,"Width"));
    }
-  } else if(version==5)throw Invalid("Version 5 requires a variable declaration array.");
+  } else if(version>=5)throw Invalid("Versions 5 and 6 require a variable declaration array.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;

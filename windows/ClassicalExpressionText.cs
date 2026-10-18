@@ -19,14 +19,15 @@ static class ClassicalExpressionText {
   if(Resolve(value,width,0)!=width)throw new ArgumentException("Expression width must match the assignment or one-bit condition.");
   var step=width==1 ? new ClassicalCircuit.Step{Kind="ExpressionBranch",ClassicalValue=value,WhenTrue=new ClassicalCircuit.Step[0],WhenFalse=new ClassicalCircuit.Step[0]} :
    new ClassicalCircuit.Step{Kind="Assign",ClassicalValue=value,Wires=Enumerable.Range(0,width).ToArray()};
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new[]{step}});
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,Registers=context.Registers,Variables=context.Variables ?? (RequiredVersion(value)>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new[]{step}});
   return value;
  }
  public static N ParseInteger(string text,ClassicalCircuit.Document context) {
   if(context==null)throw new ArgumentNullException("context");
   var parser=new Parser(text,context.Registers,context.Variables);var value=parser.Expression(1,0);parser.End();
   value=AsInteger(Normalize(value,0));ResolveInteger(value,0);
-  ClassicalCircuit.ValidateIntegerExpression(value,context);
+  int version=Math.Max(context.Version,RequiredVersion(value));
+  ClassicalCircuit.ValidateIntegerExpression(value,new ClassicalCircuit.Document{Version=version,Qubits=0,Registers=context.Registers,Variables=context.Variables ?? (version>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]});
   return value;
  }
  static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
@@ -71,7 +72,7 @@ static class ClassicalExpressionText {
     ulong value=UInt64.Parse(n.Left.Value,CultureInfo.InvariantCulture);if(width<64)value&=(1UL<<width)-1;
     return new N{Kind="IntegerConstant",Signedness=n.Signedness,Width=n.Width,Value=value.ToString(CultureInfo.InvariantCulture)};
    }
-   throw new ArgumentException("Integer casts currently accept integer values, bit constants and register reads.");
+   return new N{Kind="IntegerFromBits",Signedness=n.Signedness,Width=n.Width,Left=n.Left};
   }
   if(n.Kind=="Binary" && (Arithmetic(n.Operator) || IntegerValue(n.Left) || IntegerValue(n.Right))) {
    if(!Arithmetic(n.Operator) && !Comparison(n.Operator))throw new ArgumentException("Use arithmetic or comparison operators with integers.");
@@ -82,11 +83,16 @@ static class ClassicalExpressionText {
  public static int RequiredVersion(N value){return RequiredVersion(value,0);}
  static int RequiredVersion(N n,int depth) {
   if(n==null)return 3;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
-  return Math.Max(n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
+  return Math.Max(n.Kind=="IntegerFromBits" ? 6 : n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
  }
  static void ResolveInteger(N n,int depth) {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
   if(!IntegerValue(n))throw new ArgumentException("Expected an integer expression.");
+  if(n.Kind=="IntegerFromBits") {
+   int width=n.Width==0 ? 64 : n.Width.Value;
+   if(Resolve(n.Left,width,depth+1)!=width)throw new ArgumentException("Bit-to-integer casts require matching widths.");
+   return;
+  }
   if(n.Left!=null)ResolveInteger(n.Left,depth+1);if(n.Right!=null)ResolveInteger(n.Right,depth+1);
  }
  static int? Known(N n) {
@@ -138,7 +144,7 @@ static class ClassicalExpressionText {
    return "variable("+slot.ToString(CultureInfo.InvariantCulture)+")";
   }
   if(n.Kind=="IntegerBits")return "bit["+n.Left.Width.Value.ToString(CultureInfo.InvariantCulture)+"]("+FormatNode(n.Left,depth+1,context)+")";
-  if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast") {
+  if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast" || n.Kind=="IntegerFromBits") {
    string type=(n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width.Value.ToString(CultureInfo.InvariantCulture)+"]");
    string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1,context);
    return type+"("+operand+")";
