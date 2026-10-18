@@ -22,6 +22,20 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Fourier sums display mathematical notation without changing canonical copy data.
+for flags in [(), ("--approx",)]:
+    for expression in ['QFT_N|x>_N','sum(exp(2*pi*i*x*k/N)*basis(k,N),0,N-1,k)/sqrt(N)','sum(exp(i*k)*basis(k,N),0,N-1,k)']:
+        result=data('quantum:'+expression,*flags)
+        assert not any(token in result['display_text'] for token in ['qsum','qexp','qbasis','qboundindex']), result
+        assert '⟩_{' in result['display_text'], result
+        assert data('quantum:'+result['copy_text'],*flags)['display_text']==result['display_text']
+        difference='replace(('+expression+')-('+result['copy_text']+'),N,4)'
+        difference='norm('+('replace('+difference+',x,1)' if 'x' in expression else difference)+')'
+        parts=data('quantum:'+difference,*flags)['text'].replace('−','-').split(' + ')
+        assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in parts)
+    result=data('quantum:basis(x,N)†',*flags)
+    assert 'N' in result['display_text'] and '†' in result['display_text'], result
+
 # Declared complex Gram matrices are PSD, but need not have full rank.
 for flags in [(), ("--approx",)]:
     for gram in ['M†*M','M*M†','M† M']:
