@@ -148,6 +148,8 @@ int main(){try {
   if(quantumPrefixLength(input)!=0)throw std::runtime_error("False quantum prefix");
   ++checks;
  }
+ rejects(std::string("1+")+char(0x1c)+"i");
+ rejects(std::string("1+")+char(0x1d)+"i");
  std::string nestedSums;
  for(unsigned k=0;k<300;++k)nestedSums+="qtexsum(0,1,k) ";
  rejects(nestedSums+"1");
