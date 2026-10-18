@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 #include <set>
+#include <cctype>
 namespace {
 // Reuse the ordinary constructors' argument validation and allocation limits,
 // but retain matrix shape at dimension one in quantum expressions.
@@ -46,6 +47,44 @@ class QuantumMatrixParameter: public MathFunction {
   }
   if(deferred)return 0;
   out=value;return 1;
+ }
+};
+// Apply declarations to free scalar symbols, never to text-valued labels.
+bool annotateMatrixSymbol(MathStructure &value,const MathStructure &symbol,const MathStructure &declaration,const std::string &declaredName,unsigned depth=0) {
+ if(CALCULATOR->aborted())return false;
+ if(depth>128) {CALCULATOR->error(true,"Matrix declaration expression is too deeply nested.",NULL);return false;}
+ if(value.isUnknown() && value.equals(symbol)) {value=declaration;return true;}
+ for(size_t i=0;i<value.size();++i) {
+  if(value.isFunction()) {
+   Argument *argument=value.function()->getArgumentDefinition(i+1);
+   if(argument && argument->type()==ARGUMENT_TYPE_TEXT)continue;
+   const std::string &name=value.function()->referenceName();
+   // Explicit domains and single-letter ket labels retain their meaning.
+   if((name=="matrixparam" || name=="qketstate") && i==0)continue;
+   // An inner declaration owns its body, but not its dimension expressions.
+   if(name=="matrixassume" && value.size()==4 && i==0 && value[1].isSymbolic() && value[1].symbol()==declaredName)continue;
+  }
+  if(!annotateMatrixSymbol(value[i],symbol,declaration,declaredName,depth+1))return false;
+ }
+ if(value.size())value.childrenUpdated();
+ return true;
+}
+class QuantumMatrixAssumption: public MathFunction {
+ public:
+ QuantumMatrixAssumption():MathFunction("matrixassume",4) {setArgumentDefinition(2,new TextArgument());}
+ ExpressionItem *copy() const {return new QuantumMatrixAssumption(*this);}
+ bool preservesSingletonMatrix() const {return true;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  const std::string name=raw[1].symbol();
+  bool valid=!name.empty() && name.size()<=128 && !(name[0]>='0' && name[0]<='9');
+  for(unsigned char c:name)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
+  if(!valid) {CALCULATOR->error(true,"A matrix declaration requires a single symbol name.",NULL);return 0;}
+  MathStructure symbol=CALCULATOR->calculate("quantum: "+name,eo);
+  if(!symbol.isUnknown()) {CALCULATOR->error(true,"Matrix names cannot override gates, constants, or existing values.",NULL);return 0;}
+  MathStructure declaration;declaration.set(CALCULATOR->getFunction("matrixparam"),&symbol,&raw[2],&raw[3],NULL);
+  declaration.eval(eo);out=raw[0];
+  if(!annotateMatrixSymbol(out,symbol,declaration,name))return 0;
+  out.eval(eo);return 1;
  }
 };
 // An expression-level domain survives printing and a fresh calculator request.
@@ -449,6 +488,7 @@ MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions
 void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumComplexParameter());
  calculator.addFunction(new QuantumMatrixParameter());
+ calculator.addFunction(new QuantumMatrixAssumption());
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));

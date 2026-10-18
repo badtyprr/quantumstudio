@@ -293,7 +293,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qindexrange",2},
