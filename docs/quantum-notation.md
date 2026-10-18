@@ -202,7 +202,7 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 
 - Finish the lesson-by-lesson IBM audit and the qBraid generated-program and learning-content audits. Account-only qBook contents have not been inspected.
 - Resolve implicit register dimensions, general symbolic bit strings and sets, ensembles, general instruments, and automatic POVM/Naimark constructions.
-- Extend programming support beyond the bounded OpenQASM importer. Runtime bit-register operations, typed integer arithmetic, scoped integer/Boolean storage, integer `switch` selection and bounded runtime `while` loops are implemented. Loop transfers and whole-program `end` are preserved, including inside statically expanded `for` loops. Runtime `for` ranges, dynamic wire indexing, runtime gate parameters, and subroutine-local storage remain unsupported. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs.
+- Extend programming support beyond the bounded OpenQASM importer. Runtime bit-register operations, typed integer arithmetic, scoped integer/Boolean storage, integer `switch` selection, bounded runtime `while` loops and integer `for` ranges are implemented. Loop transfers and whole-program `end` are preserved. Dynamic wire indexing, runtime gate parameters, runtime iteration over sets or arrays, and subroutine-local storage remain unsupported. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs.
 - Address scale separately from syntax. The circuit editor supports up to 25 qubits and 512 steps for numerical sampling, with exact state and density-matrix inspection limited to ten qubits; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
@@ -497,8 +497,8 @@ overlapping slices), initializers, bitwise operations, shifts, unsigned
 comparisons, `popcount`, `rotl` and `rotr`. Assignments evaluate the whole
 right-hand side before writing targets. Programs with no qubits can use these
 classical operations and both evaluation modes. Typed runtime integer arithmetic
-and bounded data-dependent `while` loops are supported as described below.
-Runtime `for` ranges, dynamic wire indexing and measurement-driven gate angles
+and bounded data-dependent `while` loops and integer `for` ranges are supported as described below.
+Dynamic wire indexing and measurement-driven gate angles
 remain unsupported and are rejected explicitly.
 
 
@@ -696,11 +696,11 @@ The imported document gives locals unique names and clears their storage on
 entry and exit, so a later loop iteration cannot read a previous local value.
 Local constants can specify widths, but non-integer shadowing remains unsupported.
 
-Variable references and integer declarations in subroutines, runtime for loops,
-indices and gate parameters still require additional lowering and are rejected
-explicitly. Programs combining scoped integers with `break` or `continue` are
-also rejected until jump-aware lifetime handling is available. Top-level integer
-variables may be updated inside an unrolled constant-bound loop. Variable names
+Variable references and integer declarations in subroutines, dynamic indices
+and runtime gate parameters still require additional lowering and are rejected
+explicitly. Scoped integers work with `break` and `continue`; each transfer clears
+the local scopes it exits. Integer variables may be updated inside runtime ranges
+or unrolled constant-bound loops. Variable names
 are limited to 64 UTF-16 code units, programs to 4096 integer declarations, and
 lexical scope nesting to 32 levels.
 
@@ -738,7 +738,7 @@ The compiled circuit represents Boolean storage as `uint[1]` variables with
 explicit truth-value conversions on writes and reads. Integer assignments use
 the nonzero rule; bit registers, bit strings and slices require explicit
 `bool(...)` conversion. This follows the [OpenQASM Boolean casting rules](https://openqasm.com/language/types.html#casting-from-bool).
-Boolean compound assignments, runtime for loops, subroutine-local storage and
+Boolean compound assignments, subroutine-local storage and
 floating-point conversions still require further lowering.
 
 Measurement can directly initialize or update a Boolean:
@@ -760,8 +760,8 @@ cannot cause fall-through into another case.
 
 The compiler lowers selection to existing runtime branches, so the existing
 32-level branch and expression-size limits apply. Boolean and bit targets need
-explicit integer casts. Bounded runtime `while` loops can contain switches.
-Runtime `for` ranges and subroutine-local storage remain unsupported. These rules follow the
+explicit integer casts. Bounded runtime `while` loops and integer `for` ranges can contain switches.
+Subroutine-local storage remains unsupported. These rules follow the
 [OpenQASM switch specification](https://openqasm.com/language/classical.html#the-switch-statement).
 
 Constant targets such as `switch(1+1)` and `switch(int(true))` use the same
@@ -831,8 +831,10 @@ cleanup for every exited local scope. An inner-loop transfer preserves outer-loo
 locals. Static for-loop transfers preserve iteration bindings through guarded,
 one-pass loops, consuming one condition check per executed iteration.
 Whole-program `end;` is preserved in version 9 circuit files, including inside
-branches and loops. Runtime for ranges, dynamic indices
-and runtime gate angles remain unsupported. Global declarations inside a loop are rejected, including
+branches and loops. Runtime integer ranges use version 10 files: their inclusive
+start, stop and step are captured at entry, and an independent cursor assigns
+each iteration's local binding. Writing the binding does not change the cursor.
+Dynamic indices and runtime gate angles remain unsupported. Global declarations inside a loop are rejected, including
 inside an unreachable body.
 
 

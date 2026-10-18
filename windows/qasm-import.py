@@ -44,6 +44,20 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
     def for_loop(visitor, statement):
         bounds=statement.set_declaration
+        if getattr(statement,'_quantum_runtime_for',False):
+            if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
+                raise ValueError('Global declarations are not allowed in runtime loops.')
+            captured=ast.RangeDefinition(start=normalize(visitor,bounds.start,typed=True),
+                                        end=normalize(visitor,bounds.end,typed=True),
+                                        step=normalize(visitor,bounds.step or ast.IntegerLiteral(1),typed=True))
+            for value in (captured.start,captured.end,captured.step):
+                if (isinstance(value,ast.BooleanLiteral) or isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
+                    isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
+                    isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
+                    raise ValueError('For-loop range bounds and step require integers; cast Boolean values explicitly.')
+            proxy=ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=statement.block,else_block=[])
+            compiled=branch(visitor,proxy,force=True)
+            return [ast.ForInLoop(type=statement.type,identifier=statement.identifier,set_declaration=captured,block=item.if_block) for item in compiled]
         if not isinstance(bounds,ast.RangeDefinition):
             return original_for(visitor,statement)
         start=Qasm3ExprEvaluator.evaluate_expression(bounds.start)[0]
@@ -536,6 +550,16 @@ def resolve_integer_scopes(program):
                 block(statement.block,env,depth+1,loop_kind="while");result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
+                if getattr(statement,'_quantum_runtime_for',False):
+                    # A real local declaration gives the binding its own slot.
+                    # The engine owns the independent cursor and clears the slot
+                    # on loop exit; ordinary scope cleanup handles body locals.
+                    binding=ast.ClassicalDeclaration(type=copy.deepcopy(statement.type),identifier=copy.deepcopy(statement.identifier))
+                    binding._quantum_for_binding=True
+                    statement.block.insert(0,binding)
+                    block(statement.block,env,depth+1,loop_kind="while")
+                    statement.identifier=copy.deepcopy(binding.identifier)
+                    result.append(statement);continue
                 name=statement.identifier.name;renamed=fresh(name) if name in env else name
                 statement.identifier.name=renamed;inner=dict(env);inner[name]=renamed
                 block(statement.block,inner,depth+1,{name},loop_kind="for");result.append(statement)
@@ -615,6 +639,34 @@ def lower_boolean_measurements(program):
     return {name}
 
 
+def mark_runtime_ranges(program):
+    """Classify bounds lexically before static transfer lowering changes scopes."""
+    def runtime(value,env):
+        return any(isinstance(n,ast.Identifier) and env.get(n.name,False) for n in nodes(value))
+    def block(body,parent):
+        env=dict(parent)
+        for statement in body:
+            if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
+                env[statement.identifier.name]=isinstance(statement,ast.ClassicalDeclaration)
+            elif isinstance(statement,ast.ForInLoop):
+                dynamic=runtime(statement.set_declaration,env)
+                if dynamic:
+                    if not isinstance(statement.set_declaration,ast.RangeDefinition) or not isinstance(statement.type,(ast.IntType,ast.UintType)):
+                        raise ValueError('Runtime for loops currently require an integer binding and a range.')
+                    if statement.set_declaration.start is None or statement.set_declaration.end is None:
+                        raise ValueError('For-loop ranges require both endpoints.')
+                    statement._quantum_runtime_for=True
+                inner=dict(env);inner[statement.identifier.name]=dynamic
+                block(statement.block,inner)
+            elif isinstance(statement,ast.WhileLoop):block(statement.block,env)
+            elif isinstance(statement,ast.BranchingStatement):block(statement.if_block,env);block(statement.else_block,env)
+            elif isinstance(statement,ast.CompoundStatement):block(statement.statements,env)
+            elif isinstance(statement,ast.SwitchStatement):
+                for _,case in statement.cases:block(case.statements,env)
+                if statement.default is not None:block(statement.default.statements,env)
+    block(program.statements,{})
+
+
 def lower_for_transfers(program):
     """Retain static iteration bindings while transfers execute at runtime.
 
@@ -638,7 +690,9 @@ def lower_for_transfers(program):
         result=[]
         for statement in body:
             if isinstance(statement,ast.ForInLoop):
-                if targets_this_loop(statement.block):
+                if getattr(statement,'_quantum_runtime_for',False):
+                    block(statement.block);result.append(statement)
+                elif targets_this_loop(statement.block):
                     while True:
                         serial+=1;flag='_for_active_'+str(serial)
                         if flag not in used:used.add(flag);break
@@ -668,6 +722,7 @@ def convert(source, published_u=False, classical=False):
     module = pyqasm.loads(source)
     hidden_registers=set()
     if classical:
+        mark_runtime_ranges(module.original_program)
         lower_for_transfers(module.original_program)
         resolve_integer_scopes(module.original_program)
         hidden_registers=lower_boolean_measurements(module.original_program)
@@ -691,7 +746,7 @@ def convert(source, published_u=False, classical=False):
             if isinstance(node,ast.AliasStatement) and runtime(node.value):
                 raise ValueError('Classical aliases are not yet supported by the circuit importer.')
             control=node.set_declaration if isinstance(node,ast.ForInLoop) else None
-            if control is not None and runtime(control):
+            if control is not None and runtime(control) and not getattr(node,'_quantum_runtime_for',False):
                 raise ValueError('Runtime loops require control flow not yet supported by the circuit importer.')
             if isinstance(node,ast.QuantumGate) and runtime(node.arguments) or isinstance(node,ast.QuantumPhase) and runtime(node.argument):
                 raise ValueError('Runtime gate parameters are not yet supported by the circuit importer.')
@@ -1046,7 +1101,7 @@ def classical_circuit(statements, published_u, hidden_registers=None):
             if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
                 continue
             if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType)):
-                if getattr(statement,'_quantum_scoped',False):append({'Kind':'ClearInteger','VariableSlot':variables[statement.identifier.name][0]})
+                if getattr(statement,'_quantum_scoped',False) and not getattr(statement,'_quantum_for_binding',False):append({'Kind':'ClearInteger','VariableSlot':variables[statement.identifier.name][0]})
                 continue
             if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
                 if depth:
@@ -1073,6 +1128,13 @@ def classical_circuit(statements, published_u, hidden_registers=None):
                 if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
                 version=max(version,7)
                 append({'Kind':'While','ClassicalValue':classical_expression(statement.while_condition,classical,1,variables),
+                        'WhenTrue':lower(statement.block,depth+1)})
+            elif isinstance(statement,ast.ForInLoop):
+                if depth>=32:raise ValueError('Classical circuits support at most 32 nested blocks.')
+                version=max(version,10);bounds=statement.set_declaration
+                append({'Kind':'ForRange','VariableSlot':variables[statement.identifier.name][0],
+                        'Range':{key:classical_expression(value,classical,variables=variables,integer_only=True)
+                                 for key,value in [('Start',bounds.start),('Stop',bounds.end),('Step',bounds.step)]},
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement, ast.BranchingStatement):
                 if depth >= 32:
