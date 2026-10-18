@@ -91,5 +91,17 @@ The exact and sampling windows forward that budget to their workers. It counts
 every loop-condition evaluation, including false conditions: sampling resets it
 per shot, while exact evaluation shares it across all measurement histories.
 Exhaustion reports an error, never partial results. A budget of zero can be used
-to prohibit executed loop conditions. This format support does not yet provide
-loop editing controls or OpenQASM loop import.
+to prohibit executed loop conditions. OpenQASM loop import is not yet supported.
+
+In the classical circuit editor, select **While expression**, enter a one-bit
+condition such as `counter > 0`, and add it to the selected body. Select its
+**Loop body** to add operations that run repeatedly. The condition is checked
+again after each iteration, so changes to variables and measured bits take
+effect immediately. **Apply loop limit** saves the condition-check budget with
+the circuit; adding the first loop uses 1,000,000 unless a limit is already saved.
+
+Replacing a loop with an if expression preserves its body. Converting an if to
+a loop requires an empty Else body, and changing a populated block into a
+non-block operation is rejected. These edits and the limit support undo/redo.
+Saving, reopening, Exact probabilities and Sample all use the same loop body
+and budget.
