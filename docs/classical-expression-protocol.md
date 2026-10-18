@@ -151,3 +151,13 @@ Static for-loop transfers lower to guarded, one-pass while bodies with explicit
 scope cleanup. Runtime for ranges and whole-program termination remain unsupported.
 These transport versions do not infer or perform source-level
 scope cleanup; a compiler must emit the required clearing before a transfer.
+
+## Program termination
+
+`QSAMPLE9` and `QEXACT8` retain the preceding fields and add operation `14`
+with no payload. It terminates the current shot or exact history at any nesting
+depth. Saved classical output and probability mass are retained; later operations
+are skipped. Termination does not consume a loop-condition check, but entering a
+loop still does. Unreachable operations remain structurally validated. Earlier
+headers reject operation 14. Circuit files, GUI controls and OpenQASM import do
+not yet expose this transport operation.
