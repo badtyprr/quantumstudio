@@ -247,4 +247,39 @@ for exact in (True,False):
     # New nodes are unavailable in the preceding protocol, even if untaken.
     run(exact,payload(exact,0,1,[0],[branch(const(1,0),[branch(positive,[])])],typed=True))
     run(exact,payload(exact,0,1,[0],[store(0,one)],typed=True))
+def from_bits(sign,width,value):return n(5,sign,width)+value
+for exact in (True,False):
+    def computed(steps,bits=1,expected=None,types=((1,1),),q=0):
+        data=payload(exact,q,bits,list(reversed(range(bits))),steps,variables=types)
+        return data.replace(b'QEXACT4\n',b'QEXACT5\n',1).replace(b'QSAMPLE5\n',b'QSAMPLE6\n',1)
+    v=variable(1,1,0)
+    emit=assign([0],integer_bits(v))
+    truth=from_bits(1,1,const(1,1))
+    run(exact,computed([store(0,truth),emit]),{'1':1})
+    # A computed predicate can retain measurement history after the record changes.
+    run(exact,computed([gate('H',0),n(1,0,0),store(0,from_bits(1,1,read(0))),assign([0],const(1,0)),n(2,0),emit],q=1),{'0':Fraction(1,2),'1':Fraction(1,2)})
+    byte=from_bits(0,8,n(2)+const(8,0))
+    run(exact,computed([store(0,byte),assign([0],compare(2,variable(0,8,0),integer_constant(0,0,0)))],types=[(0,8)]),{'1':1})
+    # Lazy false avoids an undefined read, but validation still sees bad types/references.
+    undefined=compare(0,v,integer_constant(1,1,0))
+    lazy=from_bits(1,1,n(7,0)+const(1,0)+undefined)
+    run(exact,computed([store(0,lazy),emit]),{'0':1})
+    run(exact,computed([store(0,from_bits(1,1,undefined)),emit]))
+    for bad in [from_bits(1,8,const(1,1)),from_bits(1,1,read(1)),
+                from_bits(1,1,n(7,0)+const(1,0)+compare(0,variable(0,1,0),integer_constant(0,1,0))),
+                n(6,1,1),from_bits(1,1,n(9)),from_bits(2,1,const(1,0))]:
+        run(exact,computed([store(0,bad)]))
+    nested=const(1,0)
+    for _ in range(15):nested=integer_bits(from_bits(1,1,nested))
+    run(exact,computed([store(0,from_bits(1,1,nested)),emit]),{'0':1})
+    run(exact,computed([store(0,from_bits(1,1,integer_bits(from_bits(1,1,nested))))]))
+    broad=const(1,0)
+    for _ in range(8):broad=binary(1,broad,broad)
+    run(exact,computed([store(0,from_bits(1,1,broad)),emit]),{'0':1})
+    run(exact,computed([store(0,from_bits(1,1,n(2)+broad))]))
+    valid=computed([store(0,truth),emit])
+    for end in range(len(valid)):run(exact,valid[:end])
+    run(exact,valid+b'\n')
+    run(exact,payload(exact,0,1,[0],[store(0,truth),emit],variables=[(1,1)]))
+    run(exact,payload(exact,0,1,[0],[assign([0],integer_bits(truth))],typed=True))
 print('PASS: '+str(checks)+' classical expression process checks.')

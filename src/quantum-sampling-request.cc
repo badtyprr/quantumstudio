@@ -14,13 +14,14 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool variables() const {return input.compare(0,9,"QSAMPLE5\n")==0;}
+ bool bitExpressions() const {return input.compare(0,9,"QSAMPLE6\n")==0;}
+ bool variables() const {return input.compare(0,9,"QSAMPLE5\n")==0 || bitExpressions();}
  bool typed() const {return input.compare(0,9,"QSAMPLE4\n")==0 || variables();}
  bool classical() const {return input.compare(0,9,"QSAMPLE3\n")==0 || typed();}
  bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1, QSAMPLE2, QSAMPLE3, QSAMPLE4 or QSAMPLE5 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1, QSAMPLE2, QSAMPLE3, QSAMPLE4, QSAMPLE5 or QSAMPLE6 request.");
  }
  std::uint64_t integer(std::uint64_t maximum) {
   std::uint64_t value=0;size_t start=position;
@@ -131,18 +132,18 @@ QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,u
  if(kind==9 || kind==10) {
   const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
   if(kind==10)return Step::clearInteger(slot);
-  unsigned nodes=0;auto value=QuantumClassicalRequest::integerNode(reader,0,nodes,true);
+  unsigned nodes=0;auto value=QuantumClassicalRequest::integerNode(reader,0,nodes,true,reader.bitExpressions());
   value.validate(classicalBits,*variables);return Step::storeInteger(slot,value);
  }
  if(kind==7) {
   auto targets=reader.wires(classicalBits,classicalBits);
-  return Step::assign(targets,QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables));
+  return Step::assign(targets,QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions()));
  }
  if(kind==6 || kind==8) {
   if(depth>=32)throw std::length_error("Sampling branches exceed 32 nesting levels.");
   std::uint64_t mask=0,value=0;
   if(kind==6) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
-  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables) : QuantumClassical::Bits::constant(1,0);
+  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions()) : QuantumClassical::Bits::constant(1,0);
   std::vector<Step> bodies[2];
   for(auto &body:bodies) {
    const unsigned count=static_cast<unsigned>(reader.integer(4096-total));
