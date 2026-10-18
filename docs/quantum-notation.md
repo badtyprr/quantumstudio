@@ -971,3 +971,9 @@ Inside an explicit `i`-indexed sum, bare `|i>` and `<i|` refer to the local basi
 ### One-dimensional explicit matrices
 
 In quantum notation, `matrix(1,1,[5])` retains its 1×1 matrix shape, including when its dimensions are computed expressions. `Tr(matrix(1,1,[5]))` therefore gives 5, and `Tr(identity(1))` gives 1. Copying a matrix result and evaluating it again preserves its shape. A scalar such as `Tr(5)` remains invalid; the ordinary calculator mode retains its existing singleton behavior.
+
+### Matrix parameter domains
+
+`matrixparam(A,rows,columns)` declares a single unknown symbol as a matrix with the stated dimensions. The declaration remains in canonical copy output until both the matrix and its dimensions are supplied. Dimensions must be positive integers; each known axis is validated even while the other remains symbolic. Substituting a scalar or a matrix with a different shape is rejected. For example, `replace(matrixparam(A,2,2),A,X)` evaluates to the Pauli-X matrix. Symbolic dimensions can be supplied before or after the matrix value.
+
+This expression-level domain is the foundation for dimension-aware symbolic identities. It does not yet distribute trace over abstract matrix sums or add a GUI declaration editor.

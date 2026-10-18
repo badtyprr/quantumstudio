@@ -17,6 +17,37 @@ template<class Constructor> class QuantumMatrixConstructor: public Constructor {
  bool preservesSingletonMatrix() const {return true;}
  ExpressionItem *copy() const {return new QuantumMatrixConstructor(*this);}
 };
+// A matrix domain is retained until both its value and shape are known.
+// This keeps substitution checks local instead of changing global assumptions.
+class QuantumMatrixParameter: public MathFunction {
+ public:
+ QuantumMatrixParameter():MathFunction("matrixparam",3) {}
+ ExpressionItem *copy() const {return new QuantumMatrixParameter(*this);}
+ bool representsScalar(const MathStructure&) const {return false;}
+ bool representsNonMatrix(const MathStructure&) const {return false;}
+ bool preservesSingletonMatrix() const {return true;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+  MathStructure dimensions[2]={raw[1],raw[2]};bool deferred=false;
+  for(auto &dimension:dimensions) {
+   dimension.eval(exact);
+   if(!dimension.isNumber() && !dimension.isVector() && dimension.containsUnknowns()) {deferred=true;continue;}
+   if(!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<=0) {
+    CALCULATOR->error(true,"Matrix dimensions must be positive integers.",NULL);return 0;
+   }
+  }
+  MathStructure value=raw[0];value.eval(eo);
+  if(value.isUnknown())return 0;
+  if(!value.isMatrix()) {CALCULATOR->error(true,"A matrix parameter requires a matrix substitution.",NULL);return 0;}
+  for(unsigned axis=0;axis<2;++axis) {
+   if(dimensions[axis].isNumber() && dimensions[axis].number()!=Number(static_cast<long>(axis ? value.columns() : value.rows()))) {
+    CALCULATOR->error(true,"Matrix substitution does not match its declared dimensions.",NULL);return 0;
+   }
+  }
+  if(deferred)return 0;
+  out=value;return 1;
+ }
+};
 // An expression-level domain survives printing and a fresh calculator request.
 // Unlike changing the default assumptions, it does not change real angles.
 class QuantumComplexParameter: public MathFunction {
@@ -356,6 +387,7 @@ MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions
 }
 void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumComplexParameter());
+ calculator.addFunction(new QuantumMatrixParameter());
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));

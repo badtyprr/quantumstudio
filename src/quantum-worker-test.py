@@ -22,6 +22,19 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Matrix domains survive serialization and validate each substituted axis.
+for flags in [(), ("--approx",)]:
+    symbolic=data('quantum:matrixparam(A,n,n)',*flags)
+    assert 'matrixparam' in symbolic['copy_text'],symbolic
+    assert data('quantum:'+symbolic['copy_text'],*flags)['copy_text']==symbolic['copy_text']
+    for expression in ['replace(matrixparam(A,2,2),A,X)','replace(replace(matrixparam(A,n,n),n,2),A,X)','replace(replace(matrixparam(A,n,n),A,X),n,2)']:
+        value=data('quantum:'+expression,*flags)
+        assert value['rows']==value['columns']==2 and value['cells']==[['0','1'],['1','0']],value
+    scalar=data('quantum:Tr(replace(matrixparam(A,1,1),A,matrix(1,1,[5])))',*flags)
+    assert Decimal(scalar['text'])==5
+    for expression in ['matrixparam(A,0,n)','matrixparam(A,n,-1)','matrixparam(A,1.5,2)','replace(matrixparam(A,2,2),A,5)','replace(matrixparam(A,2,2),A,matrix(2,1,[1,0]))','matrixparam(X,n,3)']:
+        run('quantum:'+expression,*flags,success=False)
+
 # Explicit quantum matrices retain shape even when both dimensions equal one.
 for flags in [(), ("--approx",)]:
     for expression,expected in [('matrix(1,1,[5])',5),('matrix(2-1,2/2,[5])',5),('identity(1)',1)]:
