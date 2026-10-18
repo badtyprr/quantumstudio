@@ -128,6 +128,14 @@ would leave a transfer outside any loop is rejected without changing the circuit
 OpenQASM import preserves transfers targeting a `while` loop, including inside
 branches, switch cases and nested scopes. Locals in every exited scope are
 cleared before the transfer; locals belonging to an outer loop remain live.
-Transfers targeting a `for` loop and whole-program `end` still require separate
-lowering and are rejected. A `while` loop with transfers may appear inside a
-statically expanded `for` loop.
+Transfers targeting static `for` loops are also preserved. For example,
+`int n=0; bit c; for int i in [0:3]{if(i==1){continue;}n+=i;}c=n==5;`
+produces output 1. Each iteration keeps its compile-time binding, so wire indices
+and gate parameters may use that binding. Runtime `break` skips subsequent
+iterations; `continue` skips only the rest of the current iteration.
+
+The importer represents an active iteration with a one-pass loop and guards
+later iterations with a private Boolean variable. Each executed iteration uses
+one condition check from the saved budget. Nested loops retain their own transfer
+targets and scope cleanup. Expanded programs still obey the 512-operation and
+32-level limits. Runtime for ranges and whole-program `end` remain unsupported.
