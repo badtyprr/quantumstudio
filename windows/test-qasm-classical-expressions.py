@@ -8,6 +8,19 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('variable-rotate','int n=1;bit[3] c="001";c=rotl(c,n);',{'010':'1'}),
+ ('variable-rotate-negative','int[8] n=-1;bit[3] c="001";c=rotl(c,n);',{'100':'1'}),
+ ('variable-rotate-arithmetic','int n=1;bit[3] c="001";c=rotr(c,n+1);',{'010':'1'}),
+ ('variable-rotate-min','int n=-9223372036854775808;bit[3] c="001";c=rotl(c,n);',{'010':'1'}),
+ ('variable-rotate-unsigned','uint n=18446744073709551615;bit[3] c="001";c=rotl(c,n);',{'001':'1'}),
+ ('variable-rotate-unsigned-arithmetic','uint n=18446744073709551615;bit[3] c="001";c=rotl(c,n+0);',{'001':'1'}),
+ ('variable-rotate-undefined','int n;bit[3] c="001";c=rotl(c,n);',None),
+ ('variable-rotate-overflow','int n=9223372036854775807;bit[3] c="001";c=rotl(c,n+1);',None),
+ ('variable-rotate-guard','int n;bit[3] c="001";if(c==0){c=rotl(c,n);}',{'001':'1'}),
+ ('computed-rotate-scalar','bit c=1;bit[3] r="001";r=rotl(r,int[8](c));',{'0101':'1'}),
+ ('computed-rotate-expression','bit[3] c="001";c=rotl(c,uint[3](c ^ "111"));',{'001':'1'}),
+ ('computed-rotate-measurement','qubit q;bit[3] c="001";bit m;h q;m=measure q;int n=int(m);c=rotl(c,n);',{'0001':'1/2','1010':'1/2'}),
+ ('typed-rotate-nested','bit[3] c="111";bit[3] r="001";r=rotl(r,int[8](int[3](c)));',{'100111':'1'}),
  ('computed-scalar-widen','bit c=1;int[8] a=int[8](c);c=a==1;',{'1':'1'}),
  ('computed-scalar-zero','bit c=0;uint a=uint(c);c=a==0;',{'1':'1'}),
  ('computed-index-widen','bit[3] c="010";bit r;r=int[8](c[1])==1;',{'1010':'1'}),
@@ -148,10 +161,15 @@ rejected += ['bit[3] c;int a=uint[2](~c);','bit[3] c;int a=int[3](popcount(c));'
              'bit[3] c;int a=uint[3](c ^ "11");','bit[3] c;bit r;r=false && uint[2](~c)==0;']
 rejected += ['bit[1] c;int a=int[8](c);','bit[3] c;int a=int[8](c[1:1]);',
              'bit[3] c;int a=int[8](c[{1}]);','bit[3] c;int a=int[8](c[3]);']
+rejected += ['bit[3] c; c=rotl(c,c);','bit[3] c;c=rotr(c,bool(c));',
+             'bit[3] c;c=rotl(c,int[2](c ^ "111"));']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
 rejected.append('bit c;int a=int(bool('+boolean_broad+'));') # Mixed Boolean/integer tree shares one budget.
+integer_broad='n'
+for _ in range(8):integer_broad='('+integer_broad+' + '+integer_broad+')'
+rejected.append('int n=1;bit[3] c;c=rotl(c,'+integer_broad+');') # Rotation wrappers share the expression budget.
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
