@@ -75,3 +75,18 @@ over variable histories. Classical bit outputs and JSON responses are unchanged.
 Existing request-size, expression-depth and operation-count limits still apply.
 Exact execution also limits the total stored variable slots across histories to
 its cell-budget value (1,048,576 for worker requests), independently of matrix cells.
+
+## Computed bit casts: QEXACT5 and QSAMPLE6
+
+These versions retain the declaration table and operations of QEXACT4/QSAMPLE5.
+Integer node 5 contains signedness, width and a complete bit-expression node.
+The operand width must match the integer width (64 for machine-sized types).
+The bits are reinterpreted, so a signed 8-bit operand `11111111` becomes -1.
+To preserve Boolean true as positive one, use unsigned width 1 and then cast to
+the desired integer type.
+
+The operand can contain integer comparisons, logical operations or integer-to-bit
+casts. One shared 512-node/32-level budget covers the entire alternating tree.
+Short-circuit evaluation skips undefined reads in unused operands; structural
+validation still rejects invalid references and mismatched variable types.
+Earlier protocol versions reject integer node 5. Result JSON is unchanged.
