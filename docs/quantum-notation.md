@@ -941,3 +941,13 @@ The leading entries must be consecutive from zero, the ellipsis must precede the
 Symbolic results display the bracket-and-ellipsis form when its endpoint can be entered again as simple arithmetic. More complex endpoints or more than 17 explicit leading entries retain the canonical function display; clipboard output always retains the canonical expression.
 
 This supports contiguous column families; arbitrary ellipsis patterns and two-index matrix ellipses remain unfinished.
+
+### Contiguous two-index matrices
+
+Quantum Notation accepts `[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), ⋯, a_(m-1,n-1)]` and corresponding TeX matrices with grouped paired subscripts, `\cdots`, `\vdots`, and `\ddots`. Rows and columns each begin at index zero. Explicit leading indices must be consecutive, and the penultimate row and column must contain the indicated ellipses. All entries must use one coefficient family and consistent endpoint expressions. Validated optional TeX row spacing is ignored.
+
+The internal form `qindexedmatrix("a_",m-1,n-1,0,0)` retains both endpoints and both minimum endpoints implied by the displayed leading entries. Unknown dimensions remain symbolic. Substitution validates every dimension, including an invalid known dimension alongside an unknown one. Each axis supports 1 through 1024 entries, matching the existing matrix allocation bound of 1,048,576 cells; expansion checks cancellation. A singleton remains a matrix. Generated coefficients have paired labels such as `"a_0,0"`, which can be replaced explicitly using `replace`. Trace and rectangular expansion are covered by worker tests.
+
+Symbolic matrices use a multiline bracket display with horizontal, vertical and diagonal ellipses when both endpoints are simple re-enterable arithmetic and each axis has at most five explicitly shown leading entries. Larger patterns and complex endpoints retain canonical function display. Clipboard output remains canonical in every case.
+
+General noncontiguous sequences, inferred formulas for arbitrary entries, and ellipses without this two-axis pattern remain unfinished.

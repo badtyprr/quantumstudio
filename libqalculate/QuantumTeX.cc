@@ -61,6 +61,69 @@ std::string indexedColumn(const std::string &raw, bool tex) {
  }
  return "qindexedcolumn(\""+quantumTeX(family)+"_\",("+last+"),"+std::to_string(rows.size()-3)+")";
 }
+// Split only at the current matrix level; commas in grouped paired indices
+// and delimiters in quoted labels must not create extra cells.
+std::vector<std::string> indexedParts(const std::string &raw,const std::string &separator) {
+ std::vector<std::string> parts;size_t start=0;unsigned nesting=0;char quote=0;
+ for(size_t i=0;i<raw.size();++i) {
+  char c=raw[i];if(quote){if(c==quote)quote=0;continue;}
+  if(c=='\'' || c=='"'){quote=c;continue;}
+  if(c=='(' || c=='[' || c=='{'){++nesting;continue;}
+  if(c==')' || c==']' || c=='}'){if(nesting)--nesting;continue;}
+  if(!nesting && raw.compare(i,separator.size(),separator)==0) {
+   parts.push_back(trim(raw.substr(start,i-start)));i+=separator.size()-1;start=i+1;
+  }
+ }
+ parts.push_back(trim(raw.substr(start)));return parts;
+}
+std::string indexedMatrix(const std::string &raw,bool tex) {
+ const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
+ auto rows=indexedParts(raw,tex ? "\\\\" : ";");
+ std::vector<std::vector<std::string>> cells;bool found=false;
+ for(size_t r=0;r<rows.size();++r) {
+  if(tex && r && !rows[r].empty() && rows[r][0]=='[') {
+   size_t end=rows[r].find(']');if(end!=std::string::npos)rows[r]=trim(rows[r].substr(end+1));
+  }
+  cells.push_back(indexedParts(rows[r],tex ? "&" : ","));
+  for(const auto &cell:cells.back())if(cell==diagonal)found=true;
+ }
+ if(!found)return "";
+ auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
+ const size_t height=cells.size(),width=cells[0].size();
+ if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ std::string family,lastRow,lastColumn;
+ for(size_t r=0;r<height;++r) {
+  if(cells[r].size()!=width)invalid();
+  for(size_t c=0;c<width;++c) {
+   const std::string &cell=cells[r][c];
+   if(r==height-2 || c==width-2) {
+    if(cell!=(r==height-2 ? (c==width-2 ? diagonal : vertical) : horizontal))invalid();
+    continue;
+   }
+   size_t sub=cell.find('_');if(sub==std::string::npos || !sub)invalid();
+   std::string name=trim(cell.substr(0,sub)),indices=trim(cell.substr(sub+1));
+   if(name.empty() || indices.size()<3 || !((indices.front()=='{' && indices.back()=='}') || (indices.front()=='(' && indices.back()==')')))invalid();
+   size_t first=tex && name[0]=='\\' ? 1 : 0;if(first==name.size())invalid();
+   for(size_t i=first;i<name.size();++i)if((unsigned char)name[i]<128 && !asciiLetter(name[i]))invalid();
+   if(family.empty())family=name;else if(family!=name)invalid();
+   auto pair=indexedParts(indices.substr(1,indices.size()-2),",");if(pair.size()!=2)invalid();
+   for(auto &index:pair) {
+    std::string compact;
+    for(unsigned char ch:index) {
+     if(std::isspace(ch)) {compact+=ch;continue;}
+     if(ch<128 && !std::isalnum(ch) && ch!='+' && ch!='-' && ch!='*' && ch!='/')invalid();
+     compact+=ch;
+    }
+    if(compact.empty())invalid();index=compact;
+   }
+   if(r<height-2) {if(pair[0]!=std::to_string(r))invalid();}
+   else {if(lastRow.empty())lastRow=pair[0];else if(lastRow!=pair[0])invalid();}
+   if(c<width-2) {if(pair[1]!=std::to_string(c))invalid();}
+   else {if(lastColumn.empty())lastColumn=pair[1];else if(lastColumn!=pair[1])invalid();}
+  }
+ }
+ return "qindexedmatrix(\""+quantumTeX(family)+"_\",("+lastRow+"),("+lastColumn+"),"+std::to_string(height-3)+","+std::to_string(width-3)+")";
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -363,13 +426,17 @@ class TeXReader {
    size_t bodyStart=pos;
    auto body=read(0,true,env);
    size_t bodyEnd=input.rfind("\\end",pos-1);
-   std::string m=indexedColumn(input.substr(bodyStart,bodyEnd-bodyStart),true);
+   std::string raw=input.substr(bodyStart,bodyEnd-bodyStart);
+   std::string m=indexedMatrix(raw,true);
+   if(m.empty())m=indexedColumn(raw,true);
    if(m.empty())m="["+body+"]";
    if(env=="vmatrix") return "det("+m+")";
    if(env=="Vmatrix") return "norm("+m+closeNorm(true);
    return m;
   }
   if(name=="vdots" && matrix)return "⋮";
+  if(name=="cdots" && matrix)return "⋯";
+  if(name=="ddots" && matrix)return "⋱";
   if(name=="lVert") { ++norms; return "norm("; }
   if(name=="rVert") { if(norms==0) throw std::runtime_error(error("Unmatched norm delimiter")); --norms; return closeNorm(); }
   if(name=="Vert") { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
@@ -459,7 +526,9 @@ class TeXReader {
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
     size_t bodyStart=pos;auto body=read(end);
-    std::string column=open=='[' ? indexedColumn(input.substr(bodyStart,pos-bodyStart-1),false) : "";
+    std::string raw=input.substr(bodyStart,pos-bodyStart-1);
+    std::string column=open=='[' ? indexedMatrix(raw,false) : "";
+    if(column.empty() && open=='[')column=indexedColumn(raw,false);
     result+=column.empty() ? std::string(1,open)+body+end : column;
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));

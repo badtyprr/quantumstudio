@@ -211,6 +211,14 @@ int main() {
   rejects("[ _0; ⋮; a_n]");
   equal(R"(\begin{pmatrix}\alpha_0\\[1.5mm]\alpha_1\\[-.5 em]\vdots\\[+2pt]\alpha_{n-1}\end{pmatrix})", "qindexedcolumn(\"α_\",(n-1),1)");
   rejects(R"(\begin{pmatrix}a_0\\[n mm]\vdots\\a_n\end{pmatrix})");
+  equal("[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), ⋯, a_(m-1,n-1)]", "qindexedmatrix(\"a_\",(m-1),(n-1),0,0)");
+  equal(R"(\begin{pmatrix}\alpha_{0,0}&\alpha_{0,1}&\cdots&\alpha_{0,n-1}\\[1.5mm]\alpha_{1,0}&\alpha_{1,1}&\cdots&\alpha_{1,n-1}\\[1.5mm]\vdots&\vdots&\ddots&\vdots\\[1.5mm]\alpha_{n-1,0}&\alpha_{n-1,1}&\cdots&\alpha_{n-1,n-1}\end{pmatrix})", "qindexedmatrix(\"α_\",(n-1),(n-1),1,1)");
+  rejects("[a_(0,0), ⋯, a_(0,n); ⋮, ⋱, ⋮; a_(m,1), ⋯, a_(m,n)]");
+  rejects("[a_(0,0), ⋯, a_(0,n); ⋮, ⋱, ⋮; a_(m,0), ⋯, b_(m,n)]");
+  rejects("[a_(0,0), ⋯, a_(0,n); ⋮, ⋱, ⋯; a_(m,0), ⋯, a_(m,n)]");
+  rejects("[a_(0,0), ⋯, a_(0,n); ⋮, ⋱, ⋮; a_(m,0), ⋯, a_(m,n+1)]");
+  equal("[\"⋱\"]", "[\"⋱\"]");
+  equal("[a_(0,0), ⋯, a_(0,n n); ⋮, ⋱, ⋮; a_(m,0), ⋯, a_(m,n n)]", "qindexedmatrix(\"a_\",(m),(n n),0,0)");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";
