@@ -17,6 +17,13 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\overline{1+2i})","(conj(1+2i))");
+  equal(R"(\overline\beta)","(conj(β))");
+  equal(R"(\overline{\overline{1+i}})","(conj((conj(1+i))))");
+  equal(R"(\overline{1+i}^2)","(conj(1+i))^2");
+  equal(R"(\overline{\begin{pmatrix}1&i\\-i&2\end{pmatrix}})","(conj([1,i;-i,2]))");
+  equal(R"(a\overline{b})","a(conj(b))");
+  for(const char *s:{R"(\overline{})",R"(\overline)",R"(\overline{1+i)",R"(\ket{\overline{psi}})"})rejects(s);
   equal("|psi_{pi/8}>","|psi_{pi/8}>");
   equal("|psi_{a+b}>","|psi_{a+b}>");
   equal("|psi_a+b>","|psi_a+b>");

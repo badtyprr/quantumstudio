@@ -4,6 +4,17 @@ The project goal is broad quantum-computing and quantum-programming notation sup
 
 This note accompanies the executable. Its build revision is recorded in `build-manifest.json`. The offline `Notation-guide.html` describes implemented operations and their input limits. The source archive contains the corresponding implementation and tests.
 
+## Complex conjugation overlines
+
+The [IBM density-matrix basics lesson](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics)
+uses an overline for complex conjugation in scalar products and density-matrix
+entries. Quantum Notation accepts `\overline{1+2i}`, giving `1-2i`, and nested
+overlines. For keyboard entry, `conj(1+2i)` has the same meaning. On a matrix,
+conjugation acts on each entry without transposing it; the dagger remains the
+conjugate transpose. Existing variable assumptions apply, including explicit
+`complexparam(z)` for an unresolved complex parameter. Conjugation inside a
+state label is not inferred: apply `conj` to the whole ket or bra.
+
 ## Sources and audit method
 
 The [IBM course catalog](https://quantum.cloud.ibm.com/learning/en/courses), checked on 2026-10-15, lists 15 courses. Discovering those courses is only an inventory step. Each lesson still needs its mathematical expressions, assumptions, register conventions, and executable code classified separately. The public qBraid notebook audit uses [qbraid-lab-demo revision 86787e1](https://github.com/qBraid/qbraid-lab-demo/tree/86787e1ba372facc224f925189755e69c479828b); it does not imply that the app executes the notebooks or their SDK calls.

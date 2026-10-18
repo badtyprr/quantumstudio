@@ -22,6 +22,18 @@ int main(){try {
 #endif
  eo.approximation=APPROXIMATION_EXACT;
  equal("quantum: ∑_{k=0}^{3} k^2","14");
+ equal(R"(quantum: \overline{1+2i})","1-2i");
+ equal(R"(quantum: 2\overline{1+i})","2-2i");
+ equal(R"(quantum: replace(a\overline{1+i},a,3))","3-3i");
+ equal(R"(quantum: \overline{\overline{1+i}})","1+i");
+ equal(R"(quantum: \overline{1+i}^2)","-2i");
+ equal(R"(quantum: replace(\overline{complexparam(z)},z,1+i))","1-i");
+ {
+  MathStructure residual=calculator.calculate(R"(quantum: \overline{\begin{pmatrix}1&i\\-i&2\end{pmatrix}}-[1,-i;i,2])",eo);
+  if(!residual.isMatrix() || residual.rows()!=2 || residual.columns()!=2)throw std::runtime_error("Conjugation overline changed matrix shape");
+  for(size_t r=1;r<=2;++r)for(size_t c=1;c<=2;++c)if(!residual.getElement(r,c)->isNumber() || !residual.getElement(r,c)->isZero())throw std::runtime_error("Conjugation overline transposed or changed a matrix entry");
+  ++checks;
+ }
  // A matrix-valued unknown must not be broadcast as a scalar while other
  // substitutions in the same expression are still pending.
  const std::string indexedMixture=R"(quantum: replace(replace(replace(replace(replace(\sum_{k=0}^{m-1} p_k \rho_k,m,2),p_0,1/2),p_1,1/2),\rho_0,density(|0>)),\rho_1,density(|+>)))";
