@@ -15,12 +15,15 @@ sealed class ClassicalExpression {
  public ClassicalExpression Left {get;private set;}public ClassicalExpression Right {get;private set;}
  public ClassicalIntegerExpression IntegerLeft {get;private set;}public ClassicalIntegerExpression IntegerRight {get;private set;}
  public bool UsesTypedProtocol {get;private set;}
+ public bool UsesBitExpressionProtocol {get;private set;}
+ internal int Depth {get{return depth;}}internal int Count {get{return count;}}internal ulong References {get{return references;}}
  readonly int[] indices;readonly ulong references;readonly int depth,count;
  public int[] Indices {get{return indices==null ? null : (int[])indices.Clone();}}
  ClassicalExpression(NodeKind kind,int width,ulong value,int[] bits,Operator operation,ClassicalExpression left,ClassicalExpression right,ClassicalIntegerExpression integerLeft=null,ClassicalIntegerExpression integerRight=null) {
   if(width<1 || width>64)throw new ArgumentException("Classical expressions need 1–64 bits.");
   Kind=kind;Width=width;Value=value;Operation=operation;Left=left;Right=right;
   IntegerLeft=integerLeft;IntegerRight=integerRight;
+  UsesBitExpressionProtocol=(left!=null && left.UsesBitExpressionProtocol)||(right!=null && right.UsesBitExpressionProtocol)||(integerLeft!=null && integerLeft.UsesBitExpressionProtocol)||(integerRight!=null && integerRight.UsesBitExpressionProtocol);
   UsesTypedProtocol=kind==NodeKind.Logical || kind==NodeKind.IntegerCompare || kind==NodeKind.IntegerBits || (left!=null && left.UsesTypedProtocol) || (right!=null && right.UsesTypedProtocol);
   depth=1+Math.Max(Math.Max(left==null ? 0 : left.depth,right==null ? 0 : right.depth),Math.Max(integerLeft==null ? 0 : integerLeft.Depth,integerRight==null ? 0 : integerRight.Depth));
   count=1+(left==null ? 0 : left.count)+(right==null ? 0 : right.count)+(integerLeft==null ? 0 : integerLeft.Count)+(integerRight==null ? 0 : integerRight.Count);
@@ -84,11 +87,11 @@ sealed class ClassicalExpression {
   ValidateVariables(registerBits,variables);
   WriteNode(number);
  }
- void ValidateVariables(int bits,IList<ClassicalIntegerType> variables) {
+ internal void ValidateVariables(int bits,IList<ClassicalIntegerType> variables) {
   if(IntegerLeft!=null)IntegerLeft.Validate(bits,variables);if(IntegerRight!=null)IntegerRight.Validate(bits,variables);
   if(Left!=null)Left.ValidateVariables(bits,variables);if(Right!=null)Right.ValidateVariables(bits,variables);
  }
- void WriteNode(Action<ulong> number) {
+ internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
   if(Kind==NodeKind.IntegerCompare){number((ulong)((int)Operation-5));IntegerLeft.WriteNode(number);IntegerRight.WriteNode(number);}
   else if(Kind==NodeKind.IntegerBits)IntegerLeft.WriteNode(number);
@@ -118,21 +121,24 @@ sealed class ClassicalIntegerType {
  internal void Write(Action<ulong> number){number((ulong)Signedness);number((ulong)DeclaredWidth);}
 }
 sealed class ClassicalIntegerExpression {
- public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4 }
+ public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public int Slot {get;private set;}
  public ClassicalIntegerType Type {get;private set;}public ulong Value {get;private set;}
  public ClassicalIntegerExpression Left {get;private set;}public ClassicalIntegerExpression Right {get;private set;}
+ public ClassicalExpression BitOperand {get;private set;}
+ public bool UsesBitExpressionProtocol {get;private set;}
  internal int Depth {get;private set;}internal int Count {get;private set;}internal ulong References {get;private set;}
  readonly int[] indices;public int[] Indices {get{return indices==null ? null : (int[])indices.Clone();}}
- ClassicalIntegerExpression(NodeKind kind,ClassicalIntegerType type,ulong value,int[] bits,Operator operation,ClassicalIntegerExpression left,ClassicalIntegerExpression right) {
+ ClassicalIntegerExpression(NodeKind kind,ClassicalIntegerType type,ulong value,int[] bits,Operator operation,ClassicalIntegerExpression left,ClassicalIntegerExpression right,ClassicalExpression bitOperand=null) {
   if(type==null)throw new ArgumentNullException("type");
   Kind=kind;Type=type;Value=value;Operation=operation;Left=left;Right=right;
-  Depth=1+Math.Max(left==null ? 0 : left.Depth,right==null ? 0 : right.Depth);
-  Count=1+(left==null ? 0 : left.Count)+(right==null ? 0 : right.Count);
+  BitOperand=bitOperand;UsesBitExpressionProtocol=bitOperand!=null || (left!=null && left.UsesBitExpressionProtocol)||(right!=null && right.UsesBitExpressionProtocol);
+  Depth=1+Math.Max(bitOperand==null ? 0 : bitOperand.Depth,Math.Max(left==null ? 0 : left.Depth,right==null ? 0 : right.Depth));
+  Count=1+(left==null ? 0 : left.Count)+(right==null ? 0 : right.Count)+(bitOperand==null ? 0 : bitOperand.Count);
   if(Depth>32 || Count>512)throw new ArgumentException("Integer expressions allow 32 levels and 512 nodes.");
-  References=(left==null ? 0 : left.References)|(right==null ? 0 : right.References);
+  References=(left==null ? 0 : left.References)|(right==null ? 0 : right.References)|(bitOperand==null ? 0 : bitOperand.References);
   if(bits!=null) {indices=(int[])bits.Clone();foreach(int bit in indices){if(bit<0 || bit>=64)throw new ArgumentException("Integer indices must be 0–63.");References|=1UL<<bit;}}
  }
  public static ClassicalIntegerExpression Constant(ClassicalIntegerType type,ulong value) {
@@ -149,6 +155,11 @@ sealed class ClassicalIntegerExpression {
   if(slot<0 || slot>=4096)throw new ArgumentException("Variable slots must be 0-4095.");
   return new ClassicalIntegerExpression(NodeKind.Variable,type,0,null,0,null,null) {Slot=slot};
  }
+ public static ClassicalIntegerExpression FromBits(ClassicalIntegerType type,ClassicalExpression operand) {
+  if(type==null || operand==null)throw new ArgumentNullException("type or operand");
+  if(type.Width!=operand.Width)throw new ArgumentException("Bit expression width must match its integer type.");
+  return new ClassicalIntegerExpression(NodeKind.BitExpression,type,0,null,0,null,null,operand);
+ }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
   if(bits<0 || bits>64 || (bits<64 && (References>>bits)!=0))throw new ArgumentException("Integer expression reads outside the classical register.");
   if(Kind==NodeKind.Variable) {
@@ -156,6 +167,7 @@ sealed class ClassicalIntegerExpression {
     throw new ArgumentException("Variable slot or declared type does not match the circuit.");
   }
   if(Left!=null)Left.Validate(bits,variables);if(Right!=null)Right.Validate(bits,variables);
+  if(BitOperand!=null)BitOperand.ValidateVariables(bits,variables);
  }
  public static ClassicalIntegerExpression Cast(ClassicalIntegerType type,ClassicalIntegerExpression operand) {
   if(operand==null)throw new ArgumentNullException("operand");
@@ -173,6 +185,7 @@ sealed class ClassicalIntegerExpression {
   if(Kind==NodeKind.Constant)number(Value);
   else if(Kind==NodeKind.Read){foreach(int bit in indices)number((ulong)bit);}
   else if(Kind==NodeKind.Variable)number((ulong)Slot);
+  else if(Kind==NodeKind.BitExpression)BitOperand.WriteNode(number);
   else Left.WriteNode(number);
  }
 }

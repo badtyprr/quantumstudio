@@ -22,6 +22,39 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void ComputedBitsChecks(string worker) {
+  var u1=T.Create(T.Sign.Unsigned,1);var s8=T.Create(T.Sign.Signed,8);
+  var truth=I.FromBits(u1,E.Constant(1,1));var result=E.FromInteger(truth);
+  Check(truth.UsesBitExpressionProtocol && result.UsesBitExpressionProtocol);
+  Reject(()=>I.FromBits(null,E.Constant(1,1)));Reject(()=>I.FromBits(u1,null));
+  Reject(()=>I.FromBits(s8,E.Constant(1,1)));
+  Reject(()=>Encode(E.FromInteger(I.FromBits(u1,E.Read(1))),1));
+  var deep=E.Constant(1,0);for(int k=0;k<15;k++)deep=E.FromInteger(I.FromBits(u1,deep));
+  var limit=I.FromBits(u1,deep);Check(limit.Depth==32);
+  Reject(()=>E.FromInteger(limit));
+  var broad=E.Constant(1,0);for(int k=0;k<8;k++)broad=E.Binary(E.Operator.Or,broad,broad);
+  var wide=I.FromBits(u1,broad);Check(wide.Count==512);Reject(()=>I.Cast(u1,wide));
+  foreach(bool exact in new[]{true,false}) {
+   var plain=new[]{Assign(new[]{0},result)};
+   Check(Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},plain)).StartsWith(exact ? "QEXACT5\n0\n1\n0\n" : "QSAMPLE6\n0\n10000\n1731\n1\n0\n"));
+   var types=new[]{u1};var v=I.Variable(u1,0);
+   var store=new G{Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=truth};
+   var nested=new[]{Branch(E.Constant(1,1),new[]{store,Assign(new[]{0},E.FromInteger(v))})};
+   Check(Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},nested,types)).StartsWith(exact ? "QEXACT5\n" : "QSAMPLE6\n"));
+   var invalid=I.FromBits(u1,E.IntegerCompare(E.Operator.Equal,I.Variable(s8,0),I.Constant(s8,0)));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{new G{Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=invalid}},types));
+   var lazy=I.FromBits(u1,E.Logical(E.Operator.And,E.Constant(1,0),E.IntegerCompare(E.Operator.Equal,v,I.Constant(u1,0))));
+   var guarded=new[]{new G{Kind=O.StoreInteger,VariableSlot=0,IntegerExpression=lazy},Assign(new[]{0},E.FromInteger(v))};
+   var negative=E.IntegerCompare(E.Operator.Less,I.FromBits(s8,E.Complement(E.Constant(8,0))),I.Constant(s8,0));
+   if(worker==null)continue;
+   foreach(var program in new[]{plain,nested,new[]{Assign(new[]{0},negative)}}) {
+    var values=Evaluate(worker,exact,0,1,new[]{0},program,Object.ReferenceEquals(program,nested) ? types : null);
+    Check(values.Count==1 && Convert.ToString(values["1"])==(exact ? "1" : "10000"));
+   }
+   var zero=Evaluate(worker,exact,0,1,new[]{0},guarded,types);
+   Check(zero.Count==1 && Convert.ToString(zero["0"])==(exact ? "1" : "10000"));
+  }
+ }
  static void VariableChecks(string worker) {
   var type=T.Create(T.Sign.Signed,8);var types=new[]{type};var value=I.Variable(type,0);
   var three=I.Constant(type,3);var positive=E.IntegerCompare(E.Operator.Greater,value,I.Constant(type,0));
@@ -228,6 +261,7 @@ static class ClassicalExpressionTests {
   LogicalChecks(args.Length>0 ? args[0] : null);
   IntegerBitChecks(args.Length>0 ? args[0] : null);
   PowerChecks(args.Length>0 ? args[0] : null);
+  ComputedBitsChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}

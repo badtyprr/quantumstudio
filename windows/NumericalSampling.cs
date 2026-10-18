@@ -44,6 +44,7 @@ static class NumericalSampling {
   var text=new StringBuilder(exact ? "QEXACT1\n" : dynamic ? "QSAMPLE2\n" : "QSAMPLE1\n");
   Action<ulong> number=value=>text.Append(value.ToString(CultureInfo.InvariantCulture)).Append('\n');
   number((ulong)qubits);if(!exact){number((ulong)shots);number(seed);}if(dynamic)number((ulong)bits);
+  int declarationPosition=text.Length;
   if(variables!=null){number((ulong)variables.Length);foreach(var type in variables)type.Write(number);}
   Action<int[],int,int> wires=delegate(int[] values,int maximum,int registerSize) {
    if(values==null || values.Length>maximum)throw new ArgumentException("Invalid sampling wire list.");
@@ -66,7 +67,7 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  int total=0;bool expressions=false,typedProtocol=false;
+  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false;
   Action<Gate,int> write=null;
   write=delegate(Gate gate,int depth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
@@ -84,13 +85,14 @@ static class NumericalSampling {
      throw new ArgumentException("Invalid variable operation fields or slot.");
     if((gate.Kind==Operation.StoreInteger)!=(gate.IntegerExpression!=null))throw new ArgumentException("Only variable stores require an integer expression.");
     number((ulong)gate.Kind);number((ulong)gate.VariableSlot.Value);
-    if(gate.IntegerExpression!=null){gate.IntegerExpression.Validate(bits,variables);gate.IntegerExpression.WriteNode(number);}
+    if(gate.IntegerExpression!=null){gate.IntegerExpression.Validate(bits,variables);gate.IntegerExpression.WriteNode(number);bitExpressionProtocol|=gate.IntegerExpression.UsesBitExpressionProtocol;}
     if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
     return;
    }
    if(expression) {
     if(!classicalBits.HasValue || gate.ClassicalExpression==null || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Classical expressions require explicit outputs and cannot include matrices or masks.");
     expressions=true;typedProtocol|=gate.ClassicalExpression.UsesTypedProtocol;
+    bitExpressionProtocol|=gate.ClassicalExpression.UsesBitExpressionProtocol;
    }
    if(dynamic)number((ulong)gate.Kind);
    if(gate.Kind==Operation.Assign) {
@@ -141,7 +143,11 @@ static class NumericalSampling {
    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
   };
   foreach(var operation in operations)write(operation,0);
-  if(variables!=null)text.Remove(0,exact ? 8 : 9).Insert(0,exact ? "QEXACT4\n" : "QSAMPLE5\n");
+  if(bitExpressionProtocol) {
+   if(variables==null)text.Insert(declarationPosition,"0\n");
+   text.Remove(0,exact ? 8 : 9).Insert(0,exact ? "QEXACT5\n" : "QSAMPLE6\n");
+  }
+  else if(variables!=null)text.Remove(0,exact ? 8 : 9).Insert(0,exact ? "QEXACT4\n" : "QSAMPLE5\n");
   else if(expressions)text.Remove(0,exact ? 8 : 9).Insert(0,typedProtocol ? (exact ? "QEXACT3\n" : "QSAMPLE4\n") : (exact ? "QEXACT2\n" : "QSAMPLE3\n"));
   byte[] bytes=new UTF8Encoding(false,true).GetBytes(text.ToString());
   if(bytes.Length>1100000)throw new ArgumentException("Sampling request is too large.");
