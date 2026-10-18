@@ -121,4 +121,5 @@ including all measurement histories. Each condition check, even a false one,
 uses a unit. Exhaustion produces an error with empty stdout, never partial
 counts or normalized partial probabilities. The native exact evaluator does
 not sum infinite iteration series. Responses retain their existing schemas.
-Circuit files, GUI adapters and OpenQASM import do not yet emit these versions.
+Windows adapters and version 7 circuit files emit these versions. Loop-editing
+controls and OpenQASM loop import remain to be implemented.

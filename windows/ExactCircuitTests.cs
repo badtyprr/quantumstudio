@@ -13,6 +13,13 @@ static class ExactCircuitTests {
    new ClassicalCircuit.Step {Kind="Measure",Wires=new[]{0},ClassicalBit=0}}});
  }
  static int Main(string[] args) {try {
+  var loop=ClassicalCircuit.From(new ClassicalCircuit.Document{Version=7,LoopConditionBudget=0,Qubits=0,Registers=new ClassicalCircuit.Register[0],Variables=new ClassicalCircuit.Variable[0],OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"},WhenTrue=new ClassicalCircuit.Step[0]}}});
+  Check(Encoding.UTF8.GetString(ExactCircuit.Request(loop)).StartsWith("QEXACT6\n0\n0\n0\n0\n"));
+  if(args.Length>0) {
+   bool exhausted=false;try{ExactCircuit.Run(args[0],loop,CancellationToken.None).GetAwaiter().GetResult();}catch(InvalidOperationException e){exhausted=e.Message.Contains("loop condition budget");}Check(exhausted);
+   var allowed=loop.Snapshot();allowed.LoopConditionBudget=1;
+   Check(ExactCircuit.Run(args[0],ClassicalCircuit.From(allowed),CancellationToken.None).GetAwaiter().GetResult().probabilities[""]=="1");
+  }
   var circuit=Circuit();
   Check(Encoding.UTF8.GetString(ExactCircuit.Request(circuit))=="QEXACT1\n1\n1\n1\n0\n2\n0\n1\n0\n1\nH1\n0\n0\n");
   string valid="{\"qubits\":1,\"classical_bits\":1,\"bits\":[0],\"probabilities\":{\"0\":\"1/3\",\"1\":\"2/3\"}}";

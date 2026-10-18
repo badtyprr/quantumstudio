@@ -786,8 +786,8 @@ budget overload can change it. Budget exhaustion and cancellation throw without
 returning partial counts, including for empty loop bodies. This implements the
 [OpenQASM while condition semantics](https://openqasm.com/language/classical.html#while-loops)
 in the native numerical and exact APIs. Worker transport now exposes loops via
-`QSAMPLE7` and `QEXACT6`; circuit storage, the editor, OpenQASM import, and
-`break`/`continue` support still need integration.
+`QSAMPLE7` and `QEXACT6`; version 7 files preserve loops and their budgets.
+Editor controls, OpenQASM import, and `break`/`continue` still need integration.
 
 `CircuitStep::whileLoop` preserves exact probability weights as histories enter
 and leave the loop at different iterations. Only histories with equal classical
@@ -806,4 +806,6 @@ single body. `WhenFalse` must be absent. Explicit-output sampling and exact
 request methods accept an optional condition budget (0..1,000,000), defaulting
 to 1,000,000 when loops are present. They select `QSAMPLE7`/`QEXACT6` and retain
 older request versions when neither loops nor an explicit budget are used.
-Saved circuit files and the editor do not yet expose this adapter operation.
+Version 7 saved circuit files preserve this operation and its explicit loop
+condition budget. Exact and sampling evaluation forward that saved budget;
+loop editing controls and OpenQASM import remain to be implemented.

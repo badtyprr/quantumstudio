@@ -74,3 +74,22 @@ cast explicitly. General runtime integer variables and arithmetic remain
 separate work. These rules follow the OpenQASM 3.0 built-in functions and
 bit-to-integer cast definitions:
 https://openqasm.com/versions/3.0/language/types.html
+
+## Version 7: runtime loops
+
+Version 7 requires `Variables` (possibly empty) and an integer
+`LoopConditionBudget` in 0..1,000,000. Earlier versions reject non-null budgets
+and loop operations, and their canonical JSON omits the new field. A `While`
+step uses a one-bit `ClassicalValue` condition and a required `WhenTrue` array
+for its body; `WhenFalse` must be absent or null. The body may be empty.
+Matrix expressions, quantum targets, masks and variable-write fields are not
+allowed on the loop itself. Existing 512-step, 32-level and 256-KiB file limits
+still apply, including all bodies and unreachable operations.
+
+Save/reopen and immutable snapshots preserve the budget and complete loop body.
+The exact and sampling windows forward that budget to their workers. It counts
+every loop-condition evaluation, including false conditions: sampling resets it
+per shot, while exact evaluation shares it across all measurement histories.
+Exhaustion reports an error, never partial results. A budget of zero can be used
+to prohibit executed loop conditions. This format support does not yet provide
+loop editing controls or OpenQASM loop import.

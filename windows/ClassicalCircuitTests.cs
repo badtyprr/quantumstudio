@@ -6,6 +6,36 @@ class ClassicalCircuitTests {
  static int checks;
  static void Check(bool ok) {if(!ok)throw new Exception("Check failed: "+checks);checks++;}
  static void Reject(Action action) {try {action();}catch(ArgumentException){checks++;return;}catch(InvalidDataException){checks++;return;}throw new Exception("Invalid circuit accepted: "+checks);}
+ static void Loops(string worker) {
+  var yes=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="1"};
+  var no=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"};
+  var doc=new ClassicalCircuit.Document{Version=7,LoopConditionBudget=2,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new ClassicalCircuit.Variable[0],OutputBits=new[]{0},Steps=new[]{
+   new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=yes},
+   new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Read",Bits=new[]{0}},WhenTrue=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=no}}}}};
+  var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  Check(circuit.LoopConditionBudget==2 && ClassicalCircuit.Load(saved).Serialize()==saved);
+  Check(circuit.Snapshot().Steps[1].WhenFalse==null);
+  var copy=circuit.Snapshot();copy.LoopConditionBudget=0;copy.Steps[1].WhenTrue[0].ClassicalValue.Value="1";
+  Check(circuit.LoopConditionBudget==2 && circuit.Serialize()==saved);
+  foreach(int version in new[]{2,3,4,5,6}) {var bad=circuit.Snapshot();bad.Version=version;Reject(()=>ClassicalCircuit.From(bad));bad.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(bad));}
+  foreach(int budget in new[]{-1,1000001}){var bad=circuit.Snapshot();bad.LoopConditionBudget=budget;Reject(()=>ClassicalCircuit.From(bad));}
+  copy=circuit.Snapshot();copy.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Variables=null;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Steps[1].WhenFalse=new ClassicalCircuit.Step[0];Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Steps[1].WhenTrue=null;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Steps[1].ClassicalValue=yes;copy.Steps[1].ClassicalValue.Width=2;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Steps[1].WhenTrue[0].Wires=new[]{1};Reject(()=>ClassicalCircuit.From(copy));
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"LoopConditionBudget\":2","\"LoopConditionBudget\":\"2\"")));
+  foreach(int budget in new[]{0,1000000}){copy=circuit.Snapshot();copy.LoopConditionBudget=budget;Check(ClassicalCircuit.From(copy).LoopConditionBudget==budget);}
+  if(worker!=null)foreach(bool exact in new[]{true,false}) {
+   var opened=ClassicalCircuit.Load(saved);
+   byte[] request=exact ? NumericalSampling.RequestExact(0,1,new[]{0},opened.SamplingGates(),opened.VariableTypes,opened.LoopConditionBudget) : NumericalSampling.RequestClassical(0,1,10,1,new[]{0},opened.SamplingGates(),opened.VariableTypes,opened.LoopConditionBudget);
+   string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,text=>text).GetAwaiter().GetResult();
+   var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+   var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+   Check(values.Count==1 && Convert.ToString(values["0"])==(exact ? "1" : "10"));
+  }
+ }
  static void Variables(string worker) {
   var constant=new ClassicalCircuit.ExpressionNode {Kind="IntegerConstant",Signedness="Signed",Width=8,Value="3"};
   var variable=new ClassicalCircuit.ExpressionNode {Kind="IntegerVariable",Signedness="Signed",Width=8,Slot=0};
@@ -138,7 +168,7 @@ class ClassicalCircuitTests {
     var opened=ClassicalCircuit.Load(saved);Check(opened.Serialize()==saved);
     Check(Convert.ToBase64String(NumericalSampling.RequestExact(0,1,new[]{0},initial.SamplingGates()))==Convert.ToBase64String(NumericalSampling.RequestExact(0,1,new[]{0},opened.SamplingGates())));
    }
-   Check(!saved.Contains("Signedness"));
+   Check(!saved.Contains("Signedness") && !saved.Contains("LoopConditionBudget"));
    Console.WriteLine("PASS: "+checks+" cold legacy circuit checks.");return;
   }
   ImportedCanonicalChecks();
@@ -221,6 +251,7 @@ class ClassicalCircuitTests {
   TypedChecks();
   BitCastChecks();
   Variables(args.Length==0 ? null : args[0]);
+  Loops(args.Length==0 ? null : args[0]);
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }
