@@ -127,6 +127,10 @@ static class ClassicalExpressionTextTests {
   Check(ClassicalExpressionText.RequiredVersion(Parse("bool(int[3](c))",1))==4);
  }
  static int Main(string[] args){try {
+  var loopContext=new ClassicalCircuit.Document{Version=7,LoopConditionBudget=3,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new[]{new ClassicalCircuit.Variable{Name="n",Signedness="Signed",Width=8}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]};
+  Check(ClassicalExpressionText.Parse("c == 0",loopContext,1).Kind=="Binary");
+  Check(ClassicalExpressionText.ParseInteger("n + 1",loopContext).Kind=="IntegerBinary");
+
   Check(Format(Parse("rotl(c, -1)",3))=="rotl_signed(read(0,1,2), -1)");
   Check(Format(Parse("rotl_signed(c, 1)",3))=="rotl_signed(read(0,1,2), 1)");
   Check(Format(Parse("popcount(c) == 1",1))=="(popcount(read(0,1,2)) == 1)");

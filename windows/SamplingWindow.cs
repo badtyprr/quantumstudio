@@ -49,7 +49,7 @@ sealed class SamplingWindow : Window {
    readout.IsEnabled=false;cancellation=new CancellationTokenSource();status.Text="Sampling… · Up to five minutes · Cancel is available.";
    try {
     string worker=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"quantum-worker.exe");
-    result=classical==null ? await NumericalSampling.Run(worker,qubits,shotCount,seedValue,Enumerable.Range(0,qubits).ToArray(),gates,cancellation.Token,model) : await NumericalSampling.RunClassical(worker,qubits,classical.ClassicalBits,shotCount,seedValue,classical.OutputBits,gates,cancellation.Token,classical.VariableTypes);
+    result=classical==null ? await NumericalSampling.Run(worker,qubits,shotCount,seedValue,Enumerable.Range(0,qubits).ToArray(),gates,cancellation.Token,model) : await NumericalSampling.RunClassical(worker,qubits,classical.ClassicalBits,shotCount,seedValue,classical.OutputBits,gates,cancellation.Token,classical.VariableTypes,classical.LoopConditionBudget);
     resultReadout=model;
     Render();save.IsEnabled=true;
    } catch(OperationCanceledException) {status.Text="Sampling cancelled. Change the settings or run again.";}

@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Web.Script.Serialization;
 
-// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts.
+// Versions 2-4 store saved bits and expressions; version 5 adds typed variable slots; version 6 adds computed bit casts; version 7 adds loops and their budget.
 // The editor receives copies; a validated program cannot change underneath a run.
 sealed class ClassicalCircuit {
  public sealed class Register {public string Name {get;set;}public int Size {get;set;}}
@@ -27,6 +27,7 @@ sealed class ClassicalCircuit {
   public int? VariableSlot {get;set;}public ExpressionNode IntegerValue {get;set;}
  }
  public sealed class Document {
+  public int? LoopConditionBudget {get;set;}
   public int Version {get;set;}public int Qubits {get;set;}public Register[] Registers {get;set;}
   public int[] OutputBits {get;set;}public Step[] Steps {get;set;}
   public Variable[] Variables {get;set;}
@@ -36,6 +37,7 @@ sealed class ClassicalCircuit {
  static JavaScriptSerializer Serializer() {return new JavaScriptSerializer {MaxJsonLength=MaxBytes,RecursionLimit=128};}
  ClassicalCircuit(Document value,string text,int bits) {document=value;json=text;classicalBits=bits;}
  public int Qubits {get{return document.Qubits;}}
+ public int? LoopConditionBudget {get{return document.LoopConditionBudget;}}
  public int ClassicalBits {get{return classicalBits;}}
  public int[] OutputBits {get{return (int[])document.OutputBits.Clone();}}
  public ClassicalIntegerType[] VariableTypes {get{return Types(document.Variables);}}
@@ -99,7 +101,7 @@ sealed class ClassicalCircuit {
   foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected field for classical expression: "+field.Key);
  }
  internal static void ValidateIntegerExpression(ExpressionNode node,Document context) {
-  var definitions=From(new Document {Version=context.Version,Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new Step[0]});
+  var definitions=From(new Document {Version=context.Version,LoopConditionBudget=context.LoopConditionBudget,Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new Step[0]});
   int nodes=0;ExpressionFields(Serializer().DeserializeObject(Serializer().Serialize(node)),0,ref nodes,Math.Max(4,context.Version),true);
   ConvertInteger(node).Validate(definitions.ClassicalBits,definitions.VariableTypes);
  }
@@ -160,13 +162,18 @@ sealed class ClassicalCircuit {
  }
  public static ClassicalCircuit Load(string text) {
   if(text==null || text.Length>MaxBytes || Encoding.UTF8.GetByteCount(text)>MaxBytes)throw Invalid("Circuit data exceeds 256 KiB.");
-  var serializer=Serializer();var root=Fields(serializer.DeserializeObject(text),"Version,Qubits,Registers,OutputBits,Steps,Variables");
+  var serializer=Serializer();var root=Fields(serializer.DeserializeObject(text),"Version,Qubits,Registers,OutputBits,Steps,Variables,LoopConditionBudget");
   Integer(Required(root,"Version"));Integer(Required(root,"Qubits"));IntegerArray(Required(root,"OutputBits"));
   foreach(object item in ArrayValue(Required(root,"Registers"))) {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6)throw Invalid("Expected a version 2, 3, 4, 5 or 6 classical circuit.");
+  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6 && version!=7)throw Invalid("Expected a version 2, 3, 4, 5, 6 or 7 classical circuit.");
+  object loopBudget;
+  if(version==7) {
+   loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
+   if((int)loopBudget<0 || (int)loopBudget>1000000)throw Invalid("Loop condition budget must be 0–1,000,000.");
+  } else if(root.TryGetValue("LoopConditionBudget",out loopBudget) && loopBudget!=null)throw Invalid("Loop budgets require circuit version 7.");
   object declarations;
   if(root.TryGetValue("Variables",out declarations) && declarations!=null) {
    if(version<5)throw Invalid("Variables require circuit version 5.");
@@ -176,7 +183,7 @@ sealed class ClassicalCircuit {
     if(!(Required(fields,"Name") is string) || !(Required(fields,"Signedness") is string))throw Invalid("Variable names and signedness must be text.");
     Integer(Required(fields,"Width"));
    }
-  } else if(version>=5)throw Invalid("Versions 5 and 6 require a variable declaration array.");
+  } else if(version>=5)throw Invalid("Versions 5–7 require a variable declaration array.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;
@@ -193,7 +200,7 @@ sealed class ClassicalCircuit {
   var types=Types(value.Variables);
   var gates=ConvertSteps(value.Steps,version);
   // Reuse the worker adapter's bounds, destinations, masks and payload checks.
-  NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates,types);
+  NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates,types,value.LoopConditionBudget);
   var canonicalObject=serializer.DeserializeObject(serializer.Serialize(value));
   string canonical=serializer.Serialize(CanonicalFields(canonicalObject));
   if(Encoding.UTF8.GetByteCount(canonical)>MaxBytes)throw Invalid("Canonical circuit data exceeds 256 KiB.");
@@ -207,7 +214,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -236,7 +243,9 @@ sealed class ClassicalCircuit {
    bool integer=kind==NumericalSampling.Operation.StoreInteger || kind==NumericalSampling.Operation.ClearInteger;
    if(integer && version<5)throw Invalid("Variables require circuit version 5.");
    if(!integer && (step.VariableSlot.HasValue || step.IntegerValue!=null))throw Invalid("Only variable operations accept variable fields.");
-   bool expression=kind==NumericalSampling.Operation.Assign || kind==NumericalSampling.Operation.ExpressionBranch;
+   bool loop=kind==NumericalSampling.Operation.While;
+   if(loop && version<7)throw Invalid("Runtime loops require circuit version 7.");
+   bool expression=kind==NumericalSampling.Operation.Assign || kind==NumericalSampling.Operation.ExpressionBranch || loop;
    if(expression && version<3)throw Invalid("Classical expressions require circuit version 3 or 4.");
    if(!expression && step.ClassicalValue!=null)throw Invalid("Only assignments and expression branches have classical expressions.");
    bool condition=kind==NumericalSampling.Operation.Conditional || kind==NumericalSampling.Operation.Branch;
