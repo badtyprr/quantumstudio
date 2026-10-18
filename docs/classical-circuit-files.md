@@ -139,3 +139,13 @@ later iterations with a private Boolean variable. Each executed iteration uses
 one condition check from the saved budget. Nested loops retain their own transfer
 targets and scope cleanup. Expanded programs still obey the 512-operation and
 32-level limits. Runtime for ranges and whole-program `end` remain unsupported.
+
+## Version 9: program termination
+
+Version 9 adds the payload-free step `{"Kind":"End"}` at any nesting depth.
+It ends the current shot or exact history, preserving saved output and probability
+weight. Later steps are skipped at runtime but remain structurally validated.
+Versions 2–8 reject End, including in unreachable bodies. The required Variables
+array and LoopConditionBudget follow versions 7–8; a top-level End works with a
+zero condition budget. Canonical save/reopen retains version 9 and the step.
+The editor and OpenQASM importer do not yet create termination steps.

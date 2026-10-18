@@ -4,6 +4,37 @@ using System.IO;
 using System.Text;
 class ClassicalCircuitTests {
  static int checks;
+ static void Termination(string worker) {
+  var yes=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="1"};
+  var doc=new ClassicalCircuit.Document{Version=9,LoopConditionBudget=0,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new ClassicalCircuit.Variable[0],OutputBits=new[]{0},Steps=new[]{new ClassicalCircuit.Step{Kind="End"},new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=yes}}};
+  var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  Check(ClassicalCircuit.Load(saved).Serialize()==saved);
+  var copy=circuit.Snapshot();copy.Steps[0].Kind="Break";Check(circuit.Serialize()==saved);
+  for(int version=2;version<=8;version++) {copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
+  copy=circuit.Snapshot();copy.Variables=null;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(copy));
+  foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
+   s=>s.Expression="X",s=>s.Wires=new[]{0},s=>s.ClassicalBit=0,s=>s.Mask="0",s=>s.Value="0",s=>s.ClassicalValue=yes,
+   s=>s.VariableSlot=0,s=>s.IntegerValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Unsigned",Width=1,Value="0"},
+   s=>s.WhenTrue=new ClassicalCircuit.Step[0],s=>s.WhenFalse=new ClassicalCircuit.Step[0]
+  }) {copy=circuit.Snapshot();corrupt(copy.Steps[0]);Reject(()=>ClassicalCircuit.From(copy));}
+  copy=circuit.Snapshot();copy.Steps[1].Wires=new[]{1};Reject(()=>ClassicalCircuit.From(copy));
+  foreach(bool nested in new[]{false,true}) {
+   copy=circuit.Snapshot();
+   if(nested) {copy.LoopConditionBudget=1;copy.Steps=new[]{new ClassicalCircuit.Step{Kind="While",ClassicalValue=yes,WhenTrue=copy.Steps},copy.Steps[1]};}
+   var reopened=ClassicalCircuit.Load(ClassicalCircuit.From(copy).Serialize());
+   Check(reopened.Snapshot().Version==9);
+   if(worker==null)continue;
+   foreach(bool exact in new[]{true,false}) {
+    byte[] request=exact ? NumericalSampling.RequestExact(0,1,new[]{0},reopened.SamplingGates(),reopened.VariableTypes,reopened.LoopConditionBudget) : NumericalSampling.RequestClassical(0,1,10,1,new[]{0},reopened.SamplingGates(),reopened.VariableTypes,reopened.LoopConditionBudget);
+    Check(Encoding.UTF8.GetString(request).StartsWith(exact ? "QEXACT8\n" : "QSAMPLE9\n"));
+    string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,text=>text).GetAwaiter().GetResult();
+    var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+    Check(values.Count==1 && Convert.ToString(values["0"])==(exact ? "1" : "10"));
+   }
+  }
+ }
  static void Transfers(string worker) {
   var yes=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="1"};
   var no=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"};
@@ -291,6 +322,7 @@ class ClassicalCircuitTests {
   Variables(args.Length==0 ? null : args[0]);
   Loops(args.Length==0 ? null : args[0]);
   Transfers(args.Length==0 ? null : args[0]);
+  Termination(args.Length==0 ? null : args[0]);
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }
