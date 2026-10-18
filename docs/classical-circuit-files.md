@@ -148,4 +148,6 @@ weight. Later steps are skipped at runtime but remain structurally validated.
 Versions 2–8 reject End, including in unreachable bodies. The required Variables
 array and LoopConditionBudget follow versions 7–8; a top-level End works with a
 zero condition budget. Canonical save/reopen retains version 9 and the step.
-The editor and OpenQASM importer do not yet create termination steps.
+The editor offers End program at any depth, disables payload fields, and preserves
+termination through undo/redo and save/reopen. OpenQASM import does not yet
+create termination steps.
