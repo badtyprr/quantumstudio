@@ -202,7 +202,7 @@ Entropy uses numerical state validation with tolerance 1e-12 and reports about 1
 
 - Finish the lesson-by-lesson IBM audit and the qBraid generated-program and learning-content audits. Account-only qBook contents have not been inspected.
 - Resolve implicit register dimensions, general symbolic bit strings and sets, ensembles, general instruments, and automatic POVM/Naimark constructions.
-- Extend programming support beyond the bounded OpenQASM importer. Runtime bit-register operations, typed integer arithmetic, scoped integer/Boolean storage and integer `switch` selection are implemented. Data-dependent loops, dynamic wire indexing, runtime gate parameters, and subroutine-local storage remain unsupported. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs.
+- Extend programming support beyond the bounded OpenQASM importer. Runtime bit-register operations, typed integer arithmetic, scoped integer/Boolean storage, integer `switch` selection and bounded runtime `while` loops are implemented. Loop transfers and whole-program `end` are preserved, including inside statically expanded `for` loops. Runtime `for` ranges, dynamic wire indexing, runtime gate parameters, and subroutine-local storage remain unsupported. The app does not execute arbitrary Python, Qiskit or qBraid SDK programs, QIR, cloud jobs, or pulse/timing programs.
 - Address scale separately from syntax. The circuit editor supports up to 25 qubits and 512 steps for numerical sampling, with exact state and density-matrix inspection limited to ten qubits; dense mathematical operations have their own limits. Accepting a notation does not make utility-scale simulation feasible.
 
 The released executable can lag newly merged source changes until the next reviewed packaging run. Use the manifest revision to identify the actual build, rather than assuming that the latest repository feature is already installed.
@@ -496,9 +496,10 @@ levels. Supported runtime bit operations include assignments (including
 overlapping slices), initializers, bitwise operations, shifts, unsigned
 comparisons, `popcount`, `rotl` and `rotr`. Assignments evaluate the whole
 right-hand side before writing targets. Programs with no qubits can use these
-classical operations and both evaluation modes. General runtime integer
-arithmetic, data-dependent loops, dynamic wire indexing and measurement-driven
-gate angles remain unsupported and are rejected explicitly.
+classical operations and both evaluation modes. Typed runtime integer arithmetic
+and bounded data-dependent `while` loops are supported as described below.
+Runtime `for` ranges, dynamic wire indexing and measurement-driven gate angles
+remain unsupported and are rejected explicitly.
 
 
 ### Native integer value groundwork
