@@ -567,6 +567,14 @@ class TeXReader {
      else if(pos<input.size() && input[pos]=='(') { ++pos; body=read(')'); }
      else throw std::runtime_error(error("A subscripted trace requires a parenthesized or braced operand"));
      result.resize(result.size()-2); result+="ptrace("+body+",vector("+index+"))";
+    } else if(!stateSubscript && grouped && indexedParts(index,",").size()>1) {
+     auto pair=indexedParts(index,",");
+     if(pair.size()!=2 || pair[0].empty() || pair[1].empty())throw std::runtime_error(error("A paired coefficient subscript requires two indices"));
+     size_t start=result.size();
+     while(start && ((unsigned char)result[start-1]>=128 || std::isalnum((unsigned char)result[start-1]) || result[start-1]=='_'))--start;
+     std::string name=result.substr(start);
+     if(name.empty() || ((unsigned char)name[0]<128 && !asciiLetter(name[0])))throw std::runtime_error(error("A paired coefficient subscript requires a name"));
+     result.resize(start);result+="qindexedcoefficient(\""+name+"_\",("+pair[0]+"),("+pair[1]+"))";
     } else if(spin) {
      size_t first=index.find_first_not_of(" \t\r\n"), last=index.find_last_not_of(" \t\r\n");
      if(first!=std::string::npos)index=index.substr(first,last-first+1);

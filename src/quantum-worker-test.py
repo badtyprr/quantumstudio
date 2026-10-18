@@ -22,6 +22,21 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# A comma inside a paired coefficient subscript is not a matrix separator.
+for flags in [(), ("--approx",)]:
+    source=r'\begin{pmatrix}\alpha_{0,0}&\alpha_{0,1}\\\alpha_{1,0}&\alpha_{1,1}\end{pmatrix}'
+    matrix=data('quantum:'+source,*flags)
+    expected=data('quantum:qindexedmatrix("α_",1,1,0,0)',*flags)
+    assert matrix['rows']==matrix['columns']==2 and matrix['cells']==expected['cells'],matrix
+    assert data('quantum:'+matrix['copy_text'],*flags)['cells']==matrix['cells']
+    replaced=data('quantum:replace('+source+r',\alpha_{0,1},7)',*flags)
+    assert replaced['rows']==replaced['columns']==2 and Decimal(replaced['cells'][0][1])==7,replaced
+    symbolic=data('quantum:a_(k,l+1)',*flags)
+    concrete=data('quantum:replace(replace('+symbolic['copy_text']+',k,2),l,3)',*flags)
+    assert concrete['copy_text']==data('quantum:a_(2,4)',*flags)['copy_text']
+    for bad in ['a_(0,1/2)','a_(k,1/2)','a_([0,1],2)']:
+        assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
+
 # Indexed matrix dimensions and paired coefficient labels survive substitution.
 for flags in [(), ("--approx",)]:
     expression='qindexedmatrix("a_",m-1,n-1,1,1)'
