@@ -7,6 +7,7 @@
 #include <cstddef>
 namespace QuantumClassical {
 class IntegerStorage;
+class Bits;
 // Immutable expressions over a packed record and optional typed variable slots.
 // Register declarations/initialization and protocol decoding belong to callers.
 class IntegerExpression {
@@ -22,6 +23,9 @@ public:
  static IntegerExpression constant(const TypedInteger &value);
  // indices[k] supplies bit k of the declared integer, in little-endian order.
  static IntegerExpression read(IntegerType type,const std::vector<unsigned> &indices);
+ // Reinterpret a complete bit expression with matching width, preserving lazy
+ // evaluation and undefined-variable errors. Boolean values use unsigned width 1.
+ static IntegerExpression fromBits(IntegerType type,const Bits &operand);
  static IntegerExpression variable(IntegerType type,std::size_t index);
  static IntegerExpression cast(IntegerType type,const IntegerExpression &operand);
  static IntegerExpression binary(Integer::Operation operation,const IntegerExpression &left,const IntegerExpression &right);

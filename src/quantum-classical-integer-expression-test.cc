@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "libqalculate/QuantumClassicalIntegerExpression.h"
 #include "libqalculate/QuantumClassicalIntegerStorage.h"
+#include "libqalculate/QuantumClassical.h"
 #include <iostream>
 #include <stdexcept>
 using namespace QuantumClassical;
@@ -11,6 +12,37 @@ int main(){try {
  auto machine=IntegerType::machine(Sign::Signed),s8=IntegerType::sized(Sign::Signed,8),u8=IntegerType::sized(Sign::Unsigned,8);
  auto constant=[&](std::uint64_t value){return Expr::constant(TypedInteger::fromBits(machine,value));};
  auto byte=Expr::read(s8,{0,1,2,3,4,5,6,7});
+ auto invert=Expr::fromBits(s8,Bits::complement(Bits::read({0,1,2,3,4,5,6,7})));
+ for(unsigned value=0;value<256;++value) {
+  check(invert.evaluate(value,8).value().bits()==(255^value));
+  check(invert.evaluate(value,8).value().negative()==(value<128));
+ }
+ reject<std::invalid_argument>([&]{Expr::fromBits(s8,Bits::constant(1,1));});
+ reject<std::out_of_range>([&]{invert.validate(7);});
+ reject<std::out_of_range>([&]{invert.evaluate(256,8);});
+ auto u1=IntegerType::sized(Sign::Unsigned,1);
+ auto flag=Expr::fromBits(u1,Bits::constant(1,1));
+ check(Expr::cast(machine,flag).evaluate(0,0).value().bits()==1);
+ auto high=Expr::fromBits(IntegerType::sized(Sign::Unsigned,64),Bits::read({63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0}));
+ check(high.evaluate(1,64).value().bits()==(std::uint64_t(1)<<63));
+ auto guarded=Bits::logical(Bits::Binary::And,Bits::constant(1,0),
+  Bits::integerCompare(Bits::Binary::Equal,Expr::variable(s8,0),constant(0)));
+ IntegerStorage undefined({s8});
+ auto lazy=Expr::fromBits(u1,guarded);
+ lazy.validate(0,undefined);check(lazy.evaluate(0,0,undefined).value().bits()==0);
+ reject<std::invalid_argument>([&]{lazy.validate(0);});
+ IntegerStorage wrongType({u8});reject<std::invalid_argument>([&]{lazy.validate(0,wrongType);});
+ auto strict=Expr::fromBits(u1,Bits::integerCompare(Bits::Binary::Equal,Expr::variable(s8,0),constant(0)));
+ reject<std::domain_error>([&]{strict.evaluate(0,0,undefined);});
+ undefined.write(0,TypedInteger::fromBits(s8,0));check(strict.evaluate(0,0,undefined).value().bits()==1);
+ auto depthBits=Bits::constant(1,0);
+ for(unsigned n=0;n<15;++n)depthBits=Bits::fromInteger(Expr::fromBits(u1,depthBits));
+ auto depthLimit=Expr::fromBits(u1,depthBits);check(depthLimit.evaluate(0,0).value().bits()==0);
+ reject<std::length_error>([&]{Bits::fromInteger(depthLimit);});
+ auto broad=Bits::constant(1,0);
+ for(unsigned n=0;n<8;++n)broad=Bits::binary(Bits::Binary::Or,broad,broad);
+ auto countLimit=Expr::fromBits(u1,broad);check(countLimit.evaluate(0,0).value().bits()==0);
+ reject<std::length_error>([&]{Bits::fromInteger(countLimit);});
  IntegerStorage storage({s8,machine});auto variable=Expr::variable(s8,0);
  variable.validate(0,storage);check(true); // An uninitialized slot is structurally valid.
  reject<std::domain_error>([&]{variable.evaluate(0,0,storage);});

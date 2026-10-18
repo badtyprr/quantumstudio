@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumClassicalIntegerExpression.h"
 #include "QuantumClassicalIntegerStorage.h"
+#include "QuantumClassical.h"
 #include <algorithm>
 #include <stdexcept>
 namespace QuantumClassical {
@@ -18,11 +19,12 @@ void checkOperation(Integer::Operation operation) {
 }
 }
 struct IntegerExpression::Node {
- enum class Kind { Constant, Read, Cast, Binary, Variable };
+ enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression };
  Kind kind;IntegerType type;Integer::Operation operation=Integer::Operation::Add;
  std::uint64_t value=0,references=0;unsigned depth=1,count=1;
  std::vector<unsigned> indices;std::shared_ptr<const Node> left,right;
  std::size_t slot=0;
+ std::shared_ptr<const Bits> bits;
  Node(Kind kind,IntegerType type):kind(kind),type(type) {}
  void bound() {
   depth=1+std::max(left ? left->depth : 0,right ? right->depth : 0);
@@ -31,6 +33,9 @@ struct IntegerExpression::Node {
   if(depth>32 || count>512)throw std::length_error("Integer expression exceeds 32 levels or 512 expanded nodes");
  }
  void validateVariables(const IntegerStorage *storage) const {
+  if(bits) {
+   if(storage)bits->validate(64,*storage);else bits->validate(64);
+  }
   if(kind==Kind::Variable) {
    if(!storage)throw std::invalid_argument("Integer variable requires runtime storage");
    if(storage->type(slot)!=type)throw std::invalid_argument("Integer variable type does not match its declaration");
@@ -39,6 +44,8 @@ struct IntegerExpression::Node {
   if(right)right->validateVariables(storage);
  }
  TypedInteger evaluate(std::uint64_t record,const IntegerStorage *storage) const {
+  if(kind==Kind::BitExpression)return TypedInteger::fromBits(type,
+   storage ? bits->evaluate(record,64,*storage) : bits->evaluate(record,64));
   if(kind==Kind::Variable) {
    if(!storage)throw std::invalid_argument("Integer variable requires runtime storage");
    return storage->read(slot);
@@ -68,6 +75,13 @@ IntegerExpression IntegerExpression::read(IntegerType type,const std::vector<uns
 }
 IntegerExpression IntegerExpression::cast(IntegerType type,const IntegerExpression &operand) {
  auto n=std::make_shared<Node>(Node::Kind::Cast,type);n->left=operand.node_;n->bound();return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::fromBits(IntegerType type,const Bits &operand) {
+ if(type.width()!=operand.width())throw std::invalid_argument("Bit expression width must match its integer type");
+ auto n=std::make_shared<Node>(Node::Kind::BitExpression,type);
+ n->depth=1+operand.depth();n->count=1+operand.count();n->references=operand.references();
+ if(n->depth>32 || n->count>512)throw std::length_error("Integer expression exceeds 32 levels or 512 expanded nodes");
+ n->bits=std::make_shared<const Bits>(operand);return IntegerExpression(n);
 }
 IntegerExpression IntegerExpression::variable(IntegerType type,std::size_t index) {
  auto n=std::make_shared<Node>(Node::Kind::Variable,type);n->slot=index;return IntegerExpression(n);

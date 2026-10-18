@@ -156,6 +156,9 @@ Bits Bits::rotate(Direction direction,const Bits &operand,const Bits &distance,D
  node->left=operand.node_;node->right=distance.node_;node->bound();return Bits(node);
 }
 unsigned Bits::width() const {return node_->width;}
+unsigned Bits::depth() const {return node_->depth;}
+unsigned Bits::count() const {return node_->count;}
+std::uint64_t Bits::references() const {return node_->references;}
 void Bits::validateContext(unsigned registerBits,const IntegerStorage *storage) const {
  if(node_->references&~mask(registerBits))throw std::out_of_range("Classical record or expression exceeds its register");
  node_->validateVariables(registerBits,storage);
