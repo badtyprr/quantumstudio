@@ -22,6 +22,41 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void TransferChecks(string worker) {
+  Func<E,IList<G>,G> loop=(condition,body)=>new G{Kind=O.While,ClassicalExpression=condition,WhenTrue=body};
+  var yes=E.Constant(1,1);var no=E.Constant(1,0);
+  foreach(bool exact in new[]{false,true}) foreach(O kind in new[]{O.Break,O.Continue}) {
+   var transfer=new G{Kind=kind};
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{transfer}));
+   Reject(()=>Request(exact,0,1,new[]{0},new[]{Branch(no,new[]{transfer})}));
+   var steps=new[]{loop(no,new[]{transfer})};
+   string payload=Encoding.UTF8.GetString(Request(exact,0,1,new[]{0},steps));
+   Check(payload.StartsWith(exact ? "QEXACT7\n" : "QSAMPLE8\n"));
+   Check(payload.EndsWith("1\n"+((int)kind)+"\n"));
+   foreach(Action<G> corrupt in new Action<G>[] {
+    g=>g.Wires=new[]{0},g=>g.Expression="X",g=>g.Mask=1,g=>g.Value=1,
+    g=>g.ClassicalBit=0,g=>g.WhenTrue=new G[0],g=>g.WhenFalse=new G[0],
+    g=>g.ClassicalExpression=yes,g=>g.VariableSlot=0,g=>g.IntegerExpression=I.Constant(T.Create(T.Sign.Unsigned,1),0)
+   }) {var invalid=new G{Kind=kind};corrupt(invalid);Reject(()=>Request(exact,1,1,new[]{0},new[]{loop(no,new[]{invalid})}));}
+   Reject(()=>NumericalSampling.Request(1,1,0,new[]{0},steps));
+   if(worker==null)continue;
+   // Both transfers skip the suffix. Continue must recheck the cleared condition.
+   var once=new[]{Assign(new[]{0},yes),loop(E.Read(0),new[]{Assign(new[]{0},no),Branch(yes,new[]{transfer}),Assign(new[]{0},yes)})};
+   var result=Evaluate(worker,exact,0,1,new[]{0},once);
+   Check(result.Count==1 && Convert.ToString(result["0"])==(exact ? "1" : "10000"));
+   foreach(int budget in new[]{1,2}) {
+    byte[] bounded=exact ? NumericalSampling.RequestExact(0,1,new[]{0},once,null,budget) : NumericalSampling.RequestClassical(0,1,10,7,new[]{0},once,null,budget);
+    bool failed=false;try{NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",bounded,CancellationToken.None,x=>x).GetAwaiter().GetResult();}catch(InvalidOperationException e){failed=e.Message.Contains("loop condition budget");}
+    Check(failed==(kind==O.Continue && budget==1));
+   }
+  }
+  if(worker!=null)foreach(bool exact in new[]{false,true}) {
+   // An inner break must leave the rest of the outer body executable.
+   var nested=new[]{loop(yes,new[]{loop(yes,new[]{new G{Kind=O.Break}}),Assign(new[]{0},yes),new G{Kind=O.Break}})};
+   var result=Evaluate(worker,exact,0,1,new[]{0},nested);
+   Check(result.Count==1 && Convert.ToString(result["1"])==(exact ? "1" : "10000"));
+  }
+ }
  static void LoopChecks(string worker) {
   Func<E,IList<G>,G> loop=(condition,body)=>new G{Kind=O.While,ClassicalExpression=condition,WhenTrue=body};
   var no=E.Constant(1,0);var yes=E.Constant(1,1);
@@ -299,6 +334,7 @@ static class ClassicalExpressionTests {
   PowerChecks(args.Length>0 ? args[0] : null);
   ComputedBitsChecks(args.Length>0 ? args[0] : null);
   LoopChecks(args.Length>0 ? args[0] : null);
+  TransferChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}

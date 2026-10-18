@@ -240,6 +240,7 @@ sealed class ClassicalCircuit {
   foreach(var step in steps) {
    NumericalSampling.Operation kind;
    if(!Enum.TryParse(step.Kind,out kind) || kind.ToString()!=step.Kind || !Enum.IsDefined(typeof(NumericalSampling.Operation),kind))throw Invalid("Unknown operation kind.");
+   if(kind==NumericalSampling.Operation.Break || kind==NumericalSampling.Operation.Continue)throw Invalid("Loop transfers require a newer circuit file version.");
    bool integer=kind==NumericalSampling.Operation.StoreInteger || kind==NumericalSampling.Operation.ClearInteger;
    if(integer && version<5)throw Invalid("Variables require circuit version 5.");
    if(!integer && (step.VariableSlot.HasValue || step.IntegerValue!=null))throw Invalid("Only variable operations accept variable fields.");
