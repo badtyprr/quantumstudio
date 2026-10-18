@@ -25,6 +25,8 @@ def data(expression, *flags):
 # Trace linearity applies only when declared square shapes justify it.
 for flags in [(), ("--approx",)]:
     left='matrixparam(A,n,n)';right='matrixparam(B,n,n)'
+    source=r'replace(replace(\operatorname{Tr}(\alpha A+\beta B)-\alpha\operatorname{Tr}(A)-\beta\operatorname{Tr}(B),A,matrixparam(A,n,n)),B,matrixparam(B,n,n))'
+    assert Decimal(data('quantum:'+source,*flags)['text'])==0
     for expression in ['Tr(α*'+left+'+β*'+right+')-α*Tr('+left+')-β*Tr('+right+')','Tr('+left+'-'+right+')-Tr('+left+')+Tr('+right+')','Tr(complexparam(z)*'+left+')-complexparam(z)*Tr('+left+')']:
         assert Decimal(data('quantum:'+expression,*flags)['text'])==0,expression
     symbolic=data('quantum:Tr(2*'+left+')',*flags)

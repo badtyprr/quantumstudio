@@ -141,8 +141,8 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  MathStructure ar,ac,br,bc;
  bool left=matrixShape(value[0],ar,ac,eo,depth+1),right=matrixShape(value[1],br,bc,eo,depth+1);
  if((name=="qadd" || name=="qsub") && left && right && ar.equals(br) && ac.equals(bc)) {rows=ar;columns=ac;return true;}
- if(name=="qmul") {
-  if(left && right && ac.equals(br)) {
+ if(name=="qmul" || name=="qadjacent") {
+  if(name=="qmul" && left && right && ac.equals(br)) {
    // Row-column contraction has scalar semantics in quantum multiplication.
    if(ar.isOne() && bc.isOne())return false;
    rows=ar;columns=bc;return true;
@@ -365,7 +365,7 @@ class QuantumAlgebraFunction: public MathFunction {
      MathStructure left,right;left.set(this,&a[0],NULL);right.set(this,&a[1],NULL);
      out=left;if(operation=="qadd")out+=right;else out-=right;out.eval(eo);return 1;
     }
-    if(operation=="qmul") {
+    if(operation=="qmul" || operation=="qadjacent") {
      const int scalar=a[0].representsScalar() ? 0 : a[1].representsScalar() ? 1 : -1;
      if(scalar>=0) {
       MathStructure traced;traced.set(this,&a[1-scalar],NULL);
