@@ -695,7 +695,7 @@ The imported document gives locals unique names and clears their storage on
 entry and exit, so a later loop iteration cannot read a previous local value.
 Local constants can specify widths, but non-integer shadowing remains unsupported.
 
-Variable references and integer declarations in subroutines, runtime loops,
+Variable references and integer declarations in subroutines, runtime for loops,
 indices and gate parameters still require additional lowering and are rejected
 explicitly. Programs combining scoped integers with `break` or `continue` are
 also rejected until jump-aware lifetime handling is available. Top-level integer
@@ -737,7 +737,7 @@ The compiled circuit represents Boolean storage as `uint[1]` variables with
 explicit truth-value conversions on writes and reads. Integer assignments use
 the nonzero rule; bit registers, bit strings and slices require explicit
 `bool(...)` conversion. This follows the [OpenQASM Boolean casting rules](https://openqasm.com/language/types.html#casting-from-bool).
-Boolean compound assignments, runtime loops, subroutine-local storage and
+Boolean compound assignments, runtime for loops, subroutine-local storage and
 floating-point conversions still require further lowering.
 
 Measurement can directly initialize or update a Boolean:
@@ -787,7 +787,7 @@ returning partial counts, including for empty loop bodies. This implements the
 [OpenQASM while condition semantics](https://openqasm.com/language/classical.html#while-loops)
 in the native numerical and exact APIs. Worker transport now exposes loops via
 `QSAMPLE7` and `QEXACT6`; version 7 files preserve loops and their budgets.
-Editor controls, OpenQASM import, and `break`/`continue` still need integration.
+Editor controls and OpenQASM while import are available; `break`/`continue` still need integration.
 
 `CircuitStep::whileLoop` preserves exact probability weights as histories enter
 and leave the loop at different iterations. Only histories with equal classical
@@ -808,4 +808,23 @@ to 1,000,000 when loops are present. They select `QSAMPLE7`/`QEXACT6` and retain
 older request versions when neither loops nor an explicit budget are used.
 Version 7 saved circuit files preserve this operation and its explicit loop
 condition budget. Exact and sampling evaluation forward that saved budget;
-loop editing controls and OpenQASM import remain to be implemented.
+the editor can modify loops and their limits, and OpenQASM while import uses this format.
+
+
+### OpenQASM runtime while import
+
+The classical importer preserves `while (condition) { ... }` as a runtime loop.
+For example, `int n=3; bit c; while(n>0){n-=1;c=n==0;}` produces output 1.
+Conditions are checked before every iteration, including the first. Measurement
+results can control subsequent iterations. Nested loops, if/switch branches,
+static for loops, and scoped integer/Boolean variables retain their execution
+order. Local variables are cleared on each entry, so an uninitialized local
+cannot inherit a value from an earlier iteration.
+
+The imported version-7 file saves a 1,000,000 condition-check limit. Exact and
+sampling use the same loop body; exceeding the limit reports an error with no
+partial results. Exact evaluation can exhaust the limit for an infinite-support
+measurement loop even if that loop terminates with probability one. `break`,
+`continue`, `end`, runtime for ranges, dynamic indices and runtime gate angles
+remain unsupported. Global declarations inside a loop are rejected, including
+inside an unreachable body.

@@ -91,7 +91,9 @@ The exact and sampling windows forward that budget to their workers. It counts
 every loop-condition evaluation, including false conditions: sampling resets it
 per shot, while exact evaluation shares it across all measurement histories.
 Exhaustion reports an error, never partial results. A budget of zero can be used
-to prohibit executed loop conditions. OpenQASM loop import is not yet supported.
+to prohibit executed loop conditions. OpenQASM `while` import preserves runtime conditions and scoped bodies. Imported
+loops use a default budget of 1,000,000, editable below. `break`, `continue` and
+`end` inside runtime loops are not yet supported.
 
 In the classical circuit editor, select **While expression**, enter a one-bit
 condition such as `counter > 0`, and add it to the selected body. Select its
