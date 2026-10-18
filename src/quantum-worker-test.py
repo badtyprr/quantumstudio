@@ -41,6 +41,19 @@ for flags in [(), ("--approx",)]:
     assert single['rows']==2 and single['columns']==1,single
     assert Decimal(data(r"quantum:\langle{+i}\vert Y\vert{+i}\rangle",*flags)['text'])==1
 
+for expression,shown in [('Tr(A)','Tr(A)'),('Tr(QFT_N)','Tr(QFT_N)')]:
+    value=data('quantum:'+expression)
+    assert value['display_text']==shown,value
+    assert data('quantum:'+value['copy_text'])['display_text']==shown
+    assert data('quantum:'+shown)['display_text']==shown
+ordered=data('quantum:Tr(A*C*B)')
+assert ordered['display_text']=='Tr(A · C · B)',ordered
+substituted=data('quantum:replace(replace(replace('+ordered['copy_text']+',A,X),B,Y),C,Z)')
+assert substituted['text'].replace('−','-')=='-2i',substituted
+assert data('quantum:Tr(X*Z*Y)')['text']==substituted['text']
+for expression in ['Tr(2)','Tr([1,2;3,4;5,6])','replace(Tr(A),A,2)','replace(Tr(A),A,[1;2])','Tr(Tr(A))','Tr(2*Tr(A))','Tr(sin(x))','Tr(sin(x)+cos(x))','Tr(2^x)']:
+    assert run('quantum:'+expression,'--json',success=False).stdout==b''
+
 # Human-readable presentation must leave canonical clipboard expressions intact.
 for expression,shown in [
     ("QFT_N|x>", "QFT_N |x⟩"),

@@ -15,6 +15,21 @@ conjugate transpose. Existing variable assumptions apply, including explicit
 `complexparam(z)` for an unresolved complex parameter. Conjugation inside a
 state label is not inferred: apply `conj` to the whole ket or bra.
 
+## Unresolved traces
+
+`Tr(A)` and `Tr(QFT_N)` remain symbolic until their operands are known.
+The result panel displays the trace notation, and Copy preserves the expression
+for re-entry. Repeated traces can combine as scalar terms. For example,
+`replace(Tr(QFT_N),N,4)` evaluates to `1+i`, and
+`replace(Tr(A),A,[1,2;3,4])` evaluates to `5`.
+
+A substitution must still produce a square matrix. Known scalar and non-square
+operands are rejected, including a trace of another trace. Ordered products
+such as `Tr(A*C*B)` remain symbolic; Copy preserves their original multiplication
+order for later substitution. This does not infer matrix dimensions or distribute
+a trace over arbitrary unknown products; those operations need compatible matrix
+domains, which bare symbol names do not establish.
+
 ## Sources and audit method
 
 The [IBM course catalog](https://quantum.cloud.ibm.com/learning/en/courses), checked on 2026-10-15, lists 15 courses. Discovering those courses is only an inventory step. Each lesson still needs its mathematical expressions, assumptions, register conventions, and executable code classified separately. The public qBraid notebook audit uses [qbraid-lab-demo revision 86787e1](https://github.com/qBraid/qbraid-lab-demo/tree/86787e1ba372facc224f925189755e69c479828b); it does not imply that the app executes the notebooks or their SDK calls.

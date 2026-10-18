@@ -31,6 +31,10 @@ int main(){try {
   for(size_t i=0;i<rows.size();++i)if(!rows[i].isNumber() || !rows[i].number().isOne())throw std::runtime_error("Aligned lesson equality is not true");
   ++checks;
  }
+ equal("quantum: Tr(A)+Tr(A)","quantum: 2*Tr(A)");
+ equal("quantum: replace(Tr(A),A,[1,2;3,4])","5");
+ equal("quantum: replace(Tr(QFT_N),N,2)","0");
+ equal("quantum: replace(Tr(QFT_N),N,4)","1+i");
  equal("quantum: ∑_{k=0}^{3} k^2","14");
  equal(R"(quantum: \overline{1+2i})","1-2i");
  equal(R"(quantum: 2\overline{1+i})","2-2i");
