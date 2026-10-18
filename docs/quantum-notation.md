@@ -715,3 +715,10 @@ converts one bit of a register. Whole `bit[1]` registers and one-element
 slices remain bit vectors: `int[1]("1")` reinterprets the sign bit as -1,
 and widening a register requires a separate integer cast. This preserves
 the specification's distinction between scalar `bit` and register `bit[1]`.
+
+Bit rotations accept runtime integer distances and arithmetic, for example
+`int n=1; bit[3] c="001"; c=rotl(c,n+1);` produces `"100"`.
+Distances retain their signedness, including negative distances and unsigned
+64-bit values. The distance is evaluated when the rotation executes, so
+measurement-dependent values and guarded undefined variables retain their
+runtime behavior. This extends the [OpenQASM circular-shift operations](https://openqasm.com/language/classical.html#classical-bits-and-registers).

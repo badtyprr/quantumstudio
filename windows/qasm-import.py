@@ -593,6 +593,12 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
                 isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
                 isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic or
                 isinstance(node,ast.UnaryExpression) and node.op.name=='-')
+    def integer_type(node):
+        if node['Kind']!='IntegerBinary':return node['Signedness'],node['Width']
+        # Match the runtime's arithmetic promotion: only unsigned 64-bit
+        # operands require an unsigned machine result; narrower values fit int.
+        operands=[integer_type(node[key]) for key in ('Left','Right')]
+        return ('Unsigned' if any(sign=='Unsigned' and (size or 64)==64 for sign,size in operands) else 'Signed'),0
     def bound(depth):
         nonlocal count
         count+=1
@@ -672,13 +678,20 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             if isinstance(distance,ast.IntegerLiteral):
                 if not -(1<<63)<=distance.value<(1<<63):raise ValueError('Rotation distance must fit signed 64 bits.')
                 encoded,dw=build(ast.IntegerLiteral(distance.value&((1<<64)-1)),64,depth+1);signed='Signed'
-            elif isinstance(distance,ast.Cast) and isinstance(distance.type,(ast.IntType,ast.UintType)):
+            elif (isinstance(distance,ast.Cast) and isinstance(distance.type,(ast.IntType,ast.UintType)) and
+                  isinstance(distance.argument,(ast.Identifier,ast.IndexExpression,ast.BitstringLiteral)) and not integer_value(distance.argument)):
                 encoded,dw=build(distance.argument,None,depth+1)
                 if distance.type.size.value!=dw:raise ValueError('Bit-to-integer casts require matching widths.')
                 signed='Signed' if isinstance(distance.type,ast.IntType) else 'Unsigned'
+            elif integer_value(distance):
+                # The bit-rotation engine consumes a bit pattern plus sign.
+                # Explicitly size the value without changing its numeric value.
+                bound(depth+1);bound(depth+2)
+                child=integer(distance,depth+3);signed,_=integer_type(child)
+                encoded={'Kind':'IntegerBits','Left':{'Kind':'IntegerCast','Signedness':signed,'Width':64,'Left':child}}
             elif isinstance(distance,ast.FunctionCall) and distance.name.name=='popcount':
                 encoded,dw=build(distance,None,depth+1);signed='Unsigned'
-            else:raise ValueError('Rotation distance requires an integer, popcount, or an explicit width-matched integer cast.')
+            else:raise ValueError('Rotation distance requires an integer expression, popcount, or an explicit integer cast.')
             return {'Kind':'Rotate','RotationDirection':'Left' if name=='rotl' else 'Right','DistanceInterpretation':signed,'Left':operand,'Right':encoded},size
         if isinstance(node,ast.UnaryExpression) and node.op.name in ('~','!'):
             operand,size=build(node.expression,hint,depth+1)
