@@ -101,6 +101,18 @@ class QuantumIndexedFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qindexedket") {
+   MathStructure label=raw[0];label.eval(eo);
+   if(!label.isSymbolic())return 0;
+   out.set(CALCULATOR->getFunction("qnamedket"),&label,NULL);out.eval(eo);return 1;
+  }
+  if(op=="qindexedlabel") {
+   MathStructure prefix=raw[0],index=raw[1],suffix=raw[2];
+   prefix.eval(eo);index.eval(eo);suffix.eval(eo);
+   if(!prefix.isSymbolic() || !suffix.isSymbolic() || !index.isNumber() || !index.number().isInteger())return 0;
+   PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
+   out.set(prefix.symbol()+index.print(print)+suffix.symbol(),true);return 1;
+  }
   if(op=="qstatecalls") {
    MathStructure arguments=raw[1];arguments.eval(eo);
    if(!arguments.isVector() || arguments.isMatrix() || arguments.size()<2 || arguments.size()>16) {CALCULATOR->error(true,"A state-family argument list requires 2 to 16 scalars.",NULL);return 0;}
@@ -375,6 +387,8 @@ class QuantumIndexedFunction: public MathFunction {
 };
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));

@@ -8,6 +8,15 @@
 #include <algorithm>
 #include <vector>
 namespace {
+// Translation-only provenance: distinguish mathematical labels from explicit
+// quoted literals. These delimiters are rejected in input and removed before
+// the translated expression reaches libqalculate.
+const char labelMarkerBegin='\x1e',labelMarkerEnd='\x1f';
+std::string indexableLabel(const std::string &label) {return std::string(1,labelMarkerBegin)+"\""+label+"\""+labelMarkerEnd;}
+std::string withoutLabelMarkers(std::string value) {
+ value.erase(std::remove(value.begin(),value.end(),labelMarkerBegin),value.end());
+ value.erase(std::remove(value.begin(),value.end(),labelMarkerEnd),value.end());return value;
+}
 size_t quantumSpaceLength(const std::string &s,size_t p) {
  if(p>=s.size())return 0;
  unsigned char c=s[p];if(c==' ' || (c>=9 && c<=13))return 1;
@@ -166,7 +175,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
  // or reinterpret a state name such as psi as a calculator function.
  if(s.size()>1) {
   size_t first=label.find_first_not_of(" \t\r\n"),last=label.find_last_not_of(" \t\r\n");
-  return "qnamedket("+label.substr(first,last-first+1)+")";
+  return "qnamedket("+indexableLabel(label.substr(first,last-first+1))+")";
  }
  return "qketstate(" + s + ")";
 }
@@ -354,7 +363,7 @@ class Parser {
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
- unsigned nextBoundIndex=0;
+ unsigned nextBoundIndex=0,indexedReferences=0;
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="select") && args.size()==3) ? 2 :
    ((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
@@ -363,6 +372,8 @@ class Parser {
   std::string original=args[index];
   while(original.size()>2 && original.front()=='(' && original.back()==')')
    original=original.substr(1,original.size()-2);
+  const std::string occurrence=original;
+  original=withoutLabelMarkers(original);
   bool plain=(name=="qsumset" || name=="sum" || name=="qsum" || name=="product" || name=="select") && !original.empty() && original!="pi" && original!="i" && original!="e";
   for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
   if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
@@ -374,17 +385,39 @@ class Parser {
    used=s.find(symbol.substr(1,symbol.size()-2))!=std::string::npos;
    for(const auto &arg:args)if(arg.find(symbol)!=std::string::npos)used=true;
   } while(used);
+  // A subscript that names this binder is a reference, not an opaque label.
+  // Keep the index as a separate expression so nested binders and later
+  // substitutions can operate structurally without editing quoted names.
+  const std::string labelIndex=plain ? original : original.substr(1,original.size()-2);
+  for(size_t start=0;start<args[body].size();++start) {
+   if(args[body][start]!='"')continue;
+   size_t end=args[body].find('"',start+1);if(end==std::string::npos)break;
+   if(start==0 || args[body][start-1]!=labelMarkerBegin || end+1>=args[body].size() || args[body][end+1]!=labelMarkerEnd) {start=end;continue;}
+   std::string label=args[body].substr(start+1,end-start-1);
+   const std::string needle="_"+labelIndex;
+   size_t part=label.find(needle);
+   while(part!=std::string::npos && part+needle.size()!=label.size() && label[part+needle.size()]!='_')part=label.find(needle,part+1);
+   if(part==std::string::npos) {start=end;continue;}
+   if(++indexedReferences>128)throw std::runtime_error("Quantum expression exceeds 128 bound subscript references.");
+   if(start>=11 && args[body].compare(start-11,10,"qnamedket(")==0) {
+    args[body].replace(start-11,9,"qindexedket");start+=2;end+=2;
+   }
+   std::string reference="qindexedlabel("+indexableLabel(label.substr(0,part+1))+","+symbol+","+indexableLabel(label.substr(part+needle.size()))+")";
+   args[body].replace(start-1,end-start+3,reference);checkSize(args[body]);
+   // Scan the new prefix and suffix too: a label may contain several indices.
+   --start;
+  }
   // Nested calls are already scoped. Rename only this body and declaration;
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
-  while((at=args[body].find(original,at))!=std::string::npos) {
+  while((at=args[body].find(occurrence,at))!=std::string::npos) {
    if(plain) {
     auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
     char quoted=0;for(size_t k=0;k<at;++k) {char c=args[body][k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;}}
     if(quoted || (at && identifier(args[body][at-1])) ||
        (at+original.size()<args[body].size() && identifier(args[body][at+original.size()]))) {at+=original.size();continue;}
    }
-   args[body].replace(at,original.size(),symbol);at+=symbol.size();checkSize(args[body]);
+   args[body].replace(at,occurrence.size(),symbol);at+=symbol.size();checkSize(args[body]);
   }
   args[index]=symbol;
  }
@@ -1181,7 +1214,7 @@ class Parser {
     // Greek scalar letters denote unknown parameters in quantum notation.
     // Pi stays numerical, and explicit function calls take the path above.
     // Subscripted identifiers remain atomic instead of becoming products.
-    else if(!numericToken && a.find('_')!=std::string::npos) a="\""+a+"\"";
+    else if(!numericToken && a.find('_')!=std::string::npos) a=indexableLabel(a);
     else if(!numericToken) {
      static const std::string letters="αβγδεζηθικλμνξορςστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϑϕϖϱϵ";
      std::string product;size_t begin=0,factors=0;
@@ -1340,7 +1373,7 @@ class Parser {
  }
  public:
  explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
- std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); checkSize(out);return out; }
+ std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); checkSize(out);return withoutLabelMarkers(out); }
 };
 
 }
@@ -1385,6 +1418,7 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 }
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
+ if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
  std::string s=unicodeArithmetic(quantumWhitespace(expression));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);

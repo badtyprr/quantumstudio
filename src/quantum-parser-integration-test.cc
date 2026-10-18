@@ -11,7 +11,7 @@ static EvaluationOptions eo;
 static void equal(const std::string &expression,const std::string &expected) {
  MathStructure value=CALCULATOR->calculate(expression,eo),reference=CALCULATOR->calculate(expected,eo);
  value.transform(COMPARISON_EQUALS,reference);value.eval(eo);
- if(!value.isNumber() || !value.number().isOne())throw std::runtime_error("Mismatch: "+expression+" vs "+expected);
+ if(!value.isNumber() || !value.number().isOne())throw std::runtime_error("Mismatch: "+expression+" vs "+expected+" -> "+value.print());
  ++checks;
 }
 int main(){try {
@@ -21,6 +21,44 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \sum_{k=0}^{1}{p_k})","quantum: p_0+p_1");
+ equal(R"(quantum: \sum_{k=0}^{1}{\rho_k})","quantum: ρ_0+ρ_1");
+ equal(R"(quantum: \sum_{j=0}^{1}{\sum_{k=0}^{1}{p_j_k}})","quantum: p_0_0+p_0_1+p_1_0+p_1_1");
+ equal(R"(quantum: \sum_{k=0}^{1}{\sum_{k=0}^{1}{p_k}})","quantum: 2*(p_0+p_1)");
+ equal(R"(quantum: \sum_{k=0}^{1}{p_j})","quantum: 2*p_j");
+ equal(R"(quantum: \sum_{k=0}^{1}{p_kk})","quantum: 2*p_kk");
+ equal(R"(quantum: \sum_{k=0}^{1}{"p_k"})",R"(2*"p_k")");
+ equal(R"(quantum: \sum_{k=0}^{1}{p_k+"p_k"})",R"(quantum: p_0+p_1+2*"p_k")");
+ equal(R"(quantum: \sum_{k=0}^{1}{p_k_k})","quantum: p_0_0+p_1_1");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{p_k},N,2))","quantum: p_0+p_1");
+ equal(R"(quantum: \sum_{\alpha=0}^{1}{p_\alpha})","quantum: p_0+p_1");
+ equal(R"(quantum: \sum_{a_0=0}^{1}{p_{a_0}})","quantum: p_0+p_1");
+ equal(R"(quantum: \sum_{j=0}^{1}{\sum_{k=0}^{j}{p_j_k}})","quantum: p_0_0+p_1_0+p_1_1");
+ equal(R"(quantum: \sum_{k\in\{0,1\}}{p_k})","quantum: p_0+p_1");
+ equal(R"(quantum: \sum_{k=-1}^{0}{p_k})",R"("p_-1"+"p_0")");
+ equal(R"(quantum: \sum_{k\in\{1000000000000000000000000000000\}}{p_k})",R"("p_1000000000000000000000000000000")");
+ defineQuantumStateFamily(calculator,"family_k",calculator.parse("[1;x]"),calculator.parse("x"));
+ equal(R"(quantum: \sum_{k=0}^{1}{|family_k(k)>})","[2;1]");
+ MathStructure deferredEnsemble=calculator.calculate(R"(quantum: \sum_{k=0}^{1}{|ensemble_k><ensemble_k|})",eo);
+ const std::string copiedEnsemble=deferredEnsemble.print();
+ calculator.addVariable(new KnownVariable("","ensemble_0",std::string("[1;0]")));
+ calculator.addVariable(new KnownVariable("","ensemble_1",std::string("[0;1]")));
+ defineQuantumStateFamily(calculator,"ensemble",calculator.parse("[1;x]"),calculator.parse("x"));
+ deferredEnsemble.eval(eo);
+ deferredEnsemble.transform(COMPARISON_EQUALS,calculator.calculate("identity(2)",eo));deferredEnsemble.eval(eo);
+ if(!deferredEnsemble.isNumber() || !deferredEnsemble.number().isOne())throw std::runtime_error("Deferred indexed states did not resolve after definition");
+ ++checks;
+ equal("quantum: "+copiedEnsemble,"identity(2)");
+ equal(R"(quantum: \sum_{k=0}^{1}{|ensemble_k><ensemble_k|})","quantum: |ensemble_0><ensemble_0|+|ensemble_1><ensemble_1|");
+ equal(R"(quantum: replace(\sum_{k=0}^{N-1}{|ensemble_k><ensemble_k|},N,2))","quantum: |ensemble_0><ensemble_0|+|ensemble_1><ensemble_1|");
+ equal(R"(quantum: \sum_{k=0}^{1}{|ensemble_k><ensemble_k|}/2)","identity(2)/2");
+ eo.approximation=APPROXIMATION_APPROXIMATE;
+ equal(R"(quantum: \sum_{k=0}^{1}{|ensemble_k><ensemble_k|}/2)","identity(2)/2");
+ eo.approximation=APPROXIMATION_EXACT;
+ while(calculator.message()) {
+  if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error("Indexed labels emitted an evaluation error");
+  calculator.nextMessage();
+ }
  equal("quantum: sqrt(8*25GHz*0.5GHz)-0.5GHz","9.5 GHz");
  equal("quantum: (1GHz)/(1MHz)","1000");
  equal("quantum: (1mHz)/(1Hz)","1/1000");
