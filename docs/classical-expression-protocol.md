@@ -147,7 +147,7 @@ Requests without transfers retain their existing header versions. Circuit file
 versions 1 through 7 continue to reject transfers; version 8 preserves them.
 The editor creates and preserves both transfers. OpenQASM import preserves
 transfers targeting runtime while loops and emits scope-exit clears before them.
-For-loop transfers and whole-program termination remain unsupported.
+For-loop transfers remain unsupported. Whole-program termination uses the newer headers below.
 These transport versions do not infer or perform source-level
 scope cleanup; a compiler must emit the required clearing before a transfer.
 
@@ -158,5 +158,5 @@ with no payload. It terminates the current shot or exact history at any nesting
 depth. Saved classical output and probability mass are retained; later operations
 are skipped. Termination does not consume a loop-condition check, but entering a
 loop still does. Unreachable operations remain structurally validated. Earlier
-headers reject operation 14. Circuit files, GUI controls and OpenQASM import do
-not yet expose this transport operation.
+headers reject operation 14. Version 9 circuit files, the End program editor operation, and OpenQASM `end;`
+import expose this transport operation.
