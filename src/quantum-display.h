@@ -56,8 +56,9 @@ class Printer {
  }
  Fragment fallback(const MathStructure &value) {
   for(const auto &binding:bindings)if(value.contains(binding.first))lostBinding=true;
-  int precedence=value.isAddition() ? 20 : value.isMultiplication() ? 40 : value.isPower() ? 80 : 100;
+  int precedence=value.isComparison() ? 5 : value.isAddition() ? 20 : value.isMultiplication() || value.isInverse() || value.isDivision() ? 40 : value.isNegate() ? 70 : value.isPower() ? 80 : 100;
   if(value.isNumber() && value.number().isNegative())precedence=70;
+  if(value.isNumber() && value.number().isComplex())precedence=20;
   return Fragment(value.print(options),precedence);
  }
  Fragment render(const MathStructure &value,unsigned depth) {
@@ -65,6 +66,46 @@ class Printer {
   for(auto i=bindings.rbegin();i!=bindings.rend();++i)if(value.equals(i->first))return Fragment(i->second);
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
+  // Evaluation can turn scalar quantum operations into ordinary arithmetic.
+  // Recurse through that arithmetic without changing its order or clipboard AST.
+  if(value.isAddition() || value.isMultiplication() || value.isPower() || value.isComparison() || value.isNegate() || value.isInverse() || value.isDivision()) {
+   std::vector<Fragment> children;bool changed=false;
+   for(size_t i=0;i<value.size();++i) {
+    children.push_back(render(value[i],depth+1));
+    changed=changed || children.back().text!=value[i].print(options);
+   }
+   if(!changed)return fallback(value);
+   if(value.isNegate() && children.size()==1)return Fragment("−"+grouped(children[0],70),70);
+   if(value.isDivision() && children.size()==2)return Fragment(grouped(children[0],40)+" / "+grouped(children[1],41),40);
+   if(value.isInverse() && children.size()==1)return Fragment("1 / "+grouped(children[0],41),40);
+   if(value.isAddition() || value.isMultiplication()) {
+    int level=value.isAddition() ? 20 : 40;std::string text;
+    for(size_t i=0;i<children.size();++i) {
+     const auto &child=children[i];
+     if(i && value.isAddition() && value[i].isNegate() && child.text.compare(0,3,"−")==0) {
+      text+=" − "+child.text.substr(3);
+     } else {
+      if(i)text+=value.isAddition() ? " + " : " · ";
+      text+=grouped(child,level);
+     }
+    }
+    return Fragment(text,level);
+   }
+   if(value.isPower() && children.size()==2)
+    return Fragment(grouped(children[0],81)+"^"+grouped(children[1],81),80);
+   if(value.isComparison() && children.size()==2) {
+    const char *op=nullptr;
+    switch(value.comparisonType()) {
+     case COMPARISON_EQUALS:op=" = ";break;
+     case COMPARISON_NOT_EQUALS:op=" ≠ ";break;
+     case COMPARISON_LESS:op=" < ";break;
+     case COMPARISON_GREATER:op=" > ";break;
+     case COMPARISON_EQUALS_LESS:op=" ≤ ";break;
+     case COMPARISON_EQUALS_GREATER:op=" ≥ ";break;
+    }
+    if(op)return Fragment(grouped(children[0],6)+op+grouped(children[1],6),5);
+   }
+  }
   if(!value.isFunction())return fallback(value);
   const std::string name=value.function()->referenceName();
   if(name=="qindexedlabel" && value.size()==3) {

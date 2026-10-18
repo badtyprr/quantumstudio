@@ -18,6 +18,9 @@ state label is not inferred: apply `conj` to the whole ket or bra.
 ## Unresolved traces
 
 `Tr(A)` and `Tr(QFT_N)` remain symbolic until their operands are known.
+The result display also uses `Tr(...)` inside scalar sums, powers, and comparisons,
+for example `Tr(A) + Tr(B)` and `Tr(A) = Tr(B)`. Grouping is preserved;
+Copy retains the canonical expression used for calculation.
 The result panel displays the trace notation, and Copy preserves the expression
 for re-entry. Repeated traces can combine as scalar terms. For example,
 `replace(Tr(QFT_N),N,4)` evaluates to `1+i`, and
