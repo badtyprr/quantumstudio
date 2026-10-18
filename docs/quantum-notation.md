@@ -744,3 +744,18 @@ storage. Later measurements cannot overwrite a saved Boolean value. Original
 register indices and output order stay intact; the temporary bit is excluded
 from output counts but is visible in the compiled circuit. This requires one
 of the circuit's 64 classical bit slots, regardless of measurement count.
+
+Runtime `switch` selection is preserved during classical import. For example,
+`switch(int(result)){case 0 {x q;} case 1 {z q;}}` selects one case using the
+saved measurement value. Integer variables, explicit integer casts, arithmetic,
+and population counts can supply the target; case labels must be integer
+constants. Multiple labels, negative values, nested switches, optional defaults,
+and case-local integer or Boolean variables are supported. An unmatched switch
+without a default does nothing, and changing the target inside a selected case
+cannot cause fall-through into another case.
+
+The compiler lowers selection to existing runtime branches, so the existing
+32-level branch and expression-size limits apply. Boolean and bit targets need
+explicit integer casts. Runtime loops and subroutine-local storage remain
+unsupported. These rules follow the
+[OpenQASM switch specification](https://openqasm.com/language/classical.html#the-switch-statement).
