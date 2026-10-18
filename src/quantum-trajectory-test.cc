@@ -105,6 +105,42 @@ int main(){try {
  rejects<Cancelled>([&]{sampleTrajectories(0,0,1,7,{}, {Step::whileLoop(yes,{})},{},16,[&]{return ++polls==20;},100);});
  check(polls==20);
  }
+ // Loop transfers propagate through branches, but are consumed by the nearest loop.
+ {
+ auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
+ auto emit=Step::assign({0},yes),clear=Step::assign({0},no);
+ auto slot=Expr::variable(signedByte,0);
+ auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
+ auto decrement=Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(1)));
+ auto run=[&](const std::vector<Step> &program,std::size_t budget=8,unsigned shots=20) {
+  return sampleTrajectories(0,1,shots,7,{0},program,{signedByte},16,Cancellation(),budget);
+ };
+ for(auto transfer:{Step::breakLoop(),Step::continueLoop()}) {
+  rejects<std::invalid_argument>([&]{run({transfer});});
+  rejects<std::invalid_argument>([&]{run({Step::branch(no,{transfer})},0,0);});
+  rejects<std::out_of_range>([&]{run({Step::whileLoop(no,{transfer,Step::storeInteger(1,literal(0))})},1,0);});
+ }
+ check(run({Step::whileLoop(yes,{Step::breakLoop(),emit})},1).at(0)==20);
+ check(run({Step::whileLoop(yes,{Step::breakLoop()}),emit},1).at(1)==20);
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{Step::breakLoop()})},0);});
+ check(run({Step::whileLoop(yes,{Step::branch(yes,{Step::branch(no,{}, {Step::breakLoop()})}),emit})},1).at(0)==20);
+ auto once=Step::whileLoop(Bits::complement(Bits::read({0})),{emit,Step::continueLoop(),clear});
+ check(run({once},2).at(1)==20);
+ rejects<std::length_error>([&]{run({once},1);});
+ check(run({Step::storeInteger(0,literal(3)),Step::whileLoop(positive,{decrement,Step::branch(yes,{Step::continueLoop()}),emit})},4).at(0)==20);
+ auto innerBreak=Step::whileLoop(yes,{Step::breakLoop()});
+ check(run({Step::storeInteger(0,literal(2)),Step::whileLoop(positive,{innerBreak,decrement}),
+  Step::assign({0},Bits::integerCompare(Op::Equal,slot,literal(0)))},5).at(1)==20);
+ // Continue in the inner loop must not skip the rest of the outer body.
+ check(run({Step::storeInteger(0,literal(1)),Step::whileLoop(positive,{once,decrement,clear})},4).at(0)==20);
+ check(run({Step::whileLoop(no,{Step::breakLoop()}),emit},1).at(1)==20);
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{Step::continueLoop()})},3);});
+ unsigned polls=0;
+ rejects<Cancelled>([&]{sampleTrajectories(0,0,1,7,{}, {Step::whileLoop(yes,{Step::continueLoop()})},{},16,[&]{return ++polls==30;},100);});
+ check(polls==30);
+ auto measured=sampleTrajectories(1,1,1000,42,{0},{Step::gate(H,{0}),Step::measure(0,0)},32);
+ check(sampleTrajectories(1,1,1000,42,{0},{Step::whileLoop(yes,{Step::gate(H,{0}),Step::measure(0,0),Step::breakLoop(),Step::gate(X,{0})})},32)==measured);
+ }
  auto negative=Bits::integerCompare(Op::Less,variable,literal(0));
  auto quotient=Expr::binary(Int::Operation::Divide,literal(6),variable);
  auto isThree=Bits::integerCompare(Op::Equal,quotient,literal(3));
