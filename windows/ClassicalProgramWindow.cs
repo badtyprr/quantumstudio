@@ -92,7 +92,7 @@ sealed class ClassicalProgramWindow : Window {
  }
  void ApplyLoopLimit() {
   int limit=Int(loopLimit.Text);
-  history.Edit(d=>{d.Version=7;d.LoopConditionBudget=limit;if(d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];});
+  history.Edit(d=>{d.Version=Math.Max(7,d.Version);d.LoopConditionBudget=limit;if(d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];});
  }
  static bool IsBranch(string op) {return op=="Branch" || op=="ExpressionBranch" || op=="While";}
  void SetFields() {string op=kind.SelectedItem==null ? null : ((OperationChoice)kind.SelectedItem).Key;bool branch=IsBranch(op),condition=op=="Branch" || op=="Conditional";variableTarget.IsEnabled=op=="StoreInteger" || op=="ClearInteger";expression.IsEnabled=op=="StoreInteger" || op=="Assign" || op=="ExpressionBranch" || op=="While" || op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout";wires.IsEnabled=!branch && op!="StoreInteger" && op!="ClearInteger";destination.IsEnabled=op=="Measure";mask.IsEnabled=value.IsEnabled=condition;}
@@ -112,7 +112,7 @@ sealed class ClassicalProgramWindow : Window {
   }
   bool classical=op=="Assign" || op=="ExpressionBranch" || op=="While";
   if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
-  history.Edit(d=>{if(op=="While"){d.Version=7;if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {
+  history.Edit(d=>{if(op=="While"){d.Version=Math.Max(7,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {
     var otherwise=old.WhenFalse ?? new ClassicalCircuit.Step[0];
     if((!branch && old.WhenTrue.Length!=0) || ((!branch || op=="While") && otherwise.Length!=0))throw new ArgumentException("Delete the body's children before a change that would discard them.");
     if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=op=="While" ? null : otherwise;}
@@ -242,6 +242,12 @@ sealed class ClassicalProgramWindow : Window {
   if(history.Current.Serialize()!=valid)throw new Exception("Safe branch/loop conversion changed children.");
   history.Undo();history.Redo();if(history.Current.Serialize()!=valid)throw new Exception("Loop undo/redo changed program.");
   history.Open(valid);Refresh();if(history.Current.Serialize()!=valid)throw new Exception("Loop save/reopen changed program.");
+  history.Edit(d=>{d.Version=8;var body=d.Steps[1].WhenTrue.ToList();body.Add(new ClassicalCircuit.Step{Kind="Break"});d.Steps[1].WhenTrue=body.ToArray();});Refresh();
+  loopLimit.Text="9";ApplyLoopLimit();Refresh();
+  if(history.Current.Snapshot().Version!=8 || history.Current.LoopConditionBudget!=9)throw new Exception("Budget edit downgraded transfer file.");
+  selectLoop();ChangeStep(true);Refresh();
+  if(history.Current.Snapshot().Version!=8 || history.Current.Snapshot().Steps[1].WhenTrue.Last().Kind!="Break")throw new Exception("Loop edit lost transfer file version or body.");
+  history.Open(valid);Refresh();
   saved=valid;File.WriteAllText(screenshot+".qcircuit",valid);status.Text="Verified · Nested loops, safe body conversion, limits, saved files and undo/redo.";
   ((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(screenshot+".png");
   Width=MinWidth;Height=MinHeight;UpdateLayout();var scroll=(ScrollViewer)Content;

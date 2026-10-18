@@ -4,6 +4,39 @@ using System.IO;
 using System.Text;
 class ClassicalCircuitTests {
  static int checks;
+ static void Transfers(string worker) {
+  var yes=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="1"};
+  var no=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"};
+  foreach(string kind in new[]{"Break","Continue"}) {
+   var doc=new ClassicalCircuit.Document{Version=8,LoopConditionBudget=2,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new ClassicalCircuit.Variable[0],OutputBits=new[]{0},Steps=new[]{
+    new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=yes},
+    new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Read",Bits=new[]{0}},WhenTrue=new[]{
+     new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=no},new ClassicalCircuit.Step{Kind=kind},new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=yes}}}}};
+   var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+   Check(ClassicalCircuit.Load(saved).Serialize()==saved);
+   var copy=circuit.Snapshot();copy.Steps[1].WhenTrue[1].Kind="Reset";Check(circuit.Serialize()==saved);
+   foreach(int version in new[]{2,3,4,5,6,7}) {copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
+   copy=circuit.Snapshot();copy.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(copy));
+   copy=circuit.Snapshot();copy.Variables=null;Reject(()=>ClassicalCircuit.From(copy));
+   foreach(int budget in new[]{-1,1000001}) {copy=circuit.Snapshot();copy.LoopConditionBudget=budget;Reject(()=>ClassicalCircuit.From(copy));}
+   foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
+    s=>s.Expression="X",s=>s.Wires=new[]{0},s=>s.ClassicalBit=0,s=>s.Mask="0",s=>s.Value="0",s=>s.ClassicalValue=yes,
+    s=>s.VariableSlot=0,s=>s.IntegerValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Unsigned",Width=1,Value="0"},
+    s=>s.WhenTrue=new ClassicalCircuit.Step[0],s=>s.WhenFalse=new ClassicalCircuit.Step[0]
+   }) {copy=circuit.Snapshot();corrupt(copy.Steps[1].WhenTrue[1]);Reject(()=>ClassicalCircuit.From(copy));}
+   copy=circuit.Snapshot();copy.Steps=new[]{new ClassicalCircuit.Step{Kind=kind}};Reject(()=>ClassicalCircuit.From(copy));
+   copy=circuit.Snapshot();copy.Steps=new[]{new ClassicalCircuit.Step{Kind="ExpressionBranch",ClassicalValue=no,WhenTrue=new[]{new ClassicalCircuit.Step{Kind=kind}},WhenFalse=new ClassicalCircuit.Step[0]}};Reject(()=>ClassicalCircuit.From(copy));
+   if(worker!=null)foreach(bool exact in new[]{true,false}) {
+    var opened=ClassicalCircuit.Load(saved);
+    byte[] request=exact ? NumericalSampling.RequestExact(0,1,new[]{0},opened.SamplingGates(),opened.VariableTypes,opened.LoopConditionBudget) : NumericalSampling.RequestClassical(0,1,10,1,new[]{0},opened.SamplingGates(),opened.VariableTypes,opened.LoopConditionBudget);
+    Check(Encoding.UTF8.GetString(request).StartsWith(exact ? "QEXACT7\n" : "QSAMPLE8\n"));
+    string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,text=>text).GetAwaiter().GetResult();
+    var root=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<System.Collections.Generic.Dictionary<string,object>>(result);
+    var values=(System.Collections.Generic.Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
+    Check(values.Count==1 && Convert.ToString(values["0"])==(exact ? "1" : "10"));
+   }
+  }
+ }
  static void Check(bool ok) {if(!ok)throw new Exception("Check failed: "+checks);checks++;}
  static void Reject(Action action) {try {action();}catch(ArgumentException){checks++;return;}catch(InvalidDataException){checks++;return;}throw new Exception("Invalid circuit accepted: "+checks);}
  static void Loops(string worker) {
@@ -257,6 +290,7 @@ class ClassicalCircuitTests {
   BitCastChecks();
   Variables(args.Length==0 ? null : args[0]);
   Loops(args.Length==0 ? null : args[0]);
+  Transfers(args.Length==0 ? null : args[0]);
   Console.WriteLine("PASS: "+checks+" classical circuit storage checks.");
  }
 }
