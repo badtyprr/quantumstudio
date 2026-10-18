@@ -219,6 +219,11 @@ int main() {
   rejects("[a_(0,0), ⋯, a_(0,n); ⋮, ⋱, ⋮; a_(m,0), ⋯, a_(m,n+1)]");
   equal("[\"⋱\"]", "[\"⋱\"]");
   equal("[a_(0,0), ⋯, a_(0,n n); ⋮, ⋱, ⋮; a_(m,0), ⋯, a_(m,n n)]", "qindexedmatrix(\"a_\",(m),(n n),0,0)");
+  equal("a_(0,1)", "qindexedcoefficient(\"a_\",(0),(1))");
+  equal(R"(\alpha_{k,l+1})", "qindexedcoefficient(\"α_\",(k),(l+1))");
+  equal(R"(\begin{pmatrix}a_{0,0}&a_{0,1}\\a_{1,0}&a_{1,1}\end{pmatrix})", "[qindexedcoefficient(\"a_\",(0),(0)),qindexedcoefficient(\"a_\",(0),(1));qindexedcoefficient(\"a_\",(1),(0)),qindexedcoefficient(\"a_\",(1),(1))]");
+  rejects("a_(0,1,2)");rejects("a_(0,)");
+  equal("2a_(0,1)", "2qindexedcoefficient(\"a_\",(0),(1))");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";

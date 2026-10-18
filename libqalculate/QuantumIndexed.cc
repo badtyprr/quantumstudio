@@ -98,7 +98,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix")setArgumentDefinition(1,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient")setArgumentDefinition(1,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
@@ -131,6 +131,22 @@ class QuantumIndexedFunction: public MathFunction {
     if(!out.replace(at->first,at->second,false,false,at->first.containsUnknowns()))CALCULATOR->error(false,"Original value was not found during quantum substitution.",NULL);
    }
    return 1;
+  }
+  if(op=="qindexedcoefficient") {
+   if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed coefficient requires a name prefix.",NULL);return 0;}
+   const std::string prefix=raw[0].symbol();bool valid=prefix.size()>1 && prefix.size()<=128 && prefix.back()=='_';
+   for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
+   if(!valid) {CALCULATOR->error(true,"An indexed coefficient prefix must be a name ending in an underscore.",NULL);return 0;}
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure indices[2]={raw[1],raw[2]};bool deferred=false;
+   for(auto &index:indices) {
+    index.eval(exact);
+    if(!index.isNumber() && !index.isVector() && index.containsUnknowns()) {deferred=true;continue;}
+    if(!index.isNumber() || !index.number().isInteger()) {CALCULATOR->error(true,"A coefficient index must be an integer.",NULL);return 0;}
+   }
+   if(deferred)return 0;
+   PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
+   out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
   if(op=="qindexedcolumn" || op=="qindexedmatrix") {
    const bool matrix=op=="qindexedmatrix";
@@ -446,6 +462,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qreplace",3));
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
