@@ -951,3 +951,11 @@ The internal form `qindexedmatrix("a_",m-1,n-1,0,0)` retains both endpoints and 
 Symbolic matrices use a multiline bracket display with horizontal, vertical and diagonal ellipses when both endpoints are simple re-enterable arithmetic and each axis has at most five explicitly shown leading entries. Larger patterns and complex endpoints retain canonical function display. Clipboard output remains canonical in every case.
 
 General noncontiguous sequences, inferred formulas for arbitrary entries, and ellipses without this two-axis pattern remain unfinished.
+
+### Paired coefficient subscripts
+
+Use `a_(0,1)` or TeX `\alpha_{0,1}` for one scalar coefficient with two indices. The grouped comma stays inside the coefficient in finite matrices and function arguments. For example, `replace([a_(0,0),a_(0,1);a_(1,0),a_(1,1)],a_(0,1),7)` remains a 2×2 matrix and changes only the upper-right entry. `2a_(0,1)` is accepted as implicit multiplication.
+
+Unknown indices stay symbolic: `a_(k,l+1)` resolves to the coefficient `"a_2,4"` after replacing `k` with 2 and `l` with 3. Numeric indices must be integers; fractional and vector indices are rejected. Symbolic results use paired-subscript display, while clipboard output retains the canonical representation. The internal function is `qindexedcoefficient("a_",row,column)`.
+
+The reserved imaginary unit `i` still conflicts with its use as an unbound index name; use another index name pending that separate notation fix.
