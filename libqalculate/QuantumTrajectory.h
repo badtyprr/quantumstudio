@@ -5,12 +5,13 @@
 #include "QuantumReadout.h"
 #include "QuantumClassical.h"
 #include "QuantumClassicalIntegerExpression.h"
+#include "QuantumClassicalRangeExpression.h"
 #include <memory>
 
 namespace QuantumNumerics {
 class TrajectoryStep {
 public:
- enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End };
+ enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange };
  const Kind kind;
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
@@ -22,6 +23,7 @@ public:
  const std::shared_ptr<const QuantumClassical::Bits> expression;
  const std::size_t variableSlot;
  const std::shared_ptr<const QuantumClassical::IntegerExpression> integerExpression;
+ const std::shared_ptr<const QuantumClassical::RangeExpression> rangeExpression;
  static TrajectoryStep gate(const std::vector<Complex> &m,const std::vector<unsigned> &w) {return {Kind::Gate,m,w,0,0,0};}
  static TrajectoryStep measure(unsigned wire,unsigned bit) {return {Kind::Measure,{}, {wire},bit,0,0};}
  static TrajectoryStep reset(unsigned wire) {return {Kind::Reset,{}, {wire},0,0,0};}
@@ -46,6 +48,12 @@ public:
  }
  // Transfer to the nearest enclosing loop; rejected outside loops, even if unreachable.
  static TrajectoryStep breakLoop() {return {Kind::Break,{},{},0,0,0};}
+ // The caller reserves a scoped slot for the binding. It is cleared on exit,
+ // including empty ranges, break and program termination. Body writes to the
+ // binding do not alter the independent cursor's next value.
+ static TrajectoryStep forRange(std::size_t slot,const QuantumClassical::RangeExpression &range,const std::vector<TrajectoryStep> &body) {
+  return {Kind::ForRange,{},{},0,0,0,{},{},std::make_shared<const std::vector<TrajectoryStep>>(body),{},{},slot,{},std::make_shared<const QuantumClassical::RangeExpression>(range)};
+ }
  static TrajectoryStep continueLoop() {return {Kind::Continue,{},{},0,0,0};}
  // Stop this shot at any nesting depth, preserving its saved classical results.
  static TrajectoryStep endProgram() {return {Kind::End,{},{},0,0,0};}
@@ -58,7 +66,7 @@ public:
   return {Kind::ClearInteger,{},{},0,0,0,{},{},{},{},{},slot};
  }
 private:
- TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer) {}
+ TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Each shot starts in |0...0> with zero classical memory. Conditions read saved
 // measurement bits, not the current quantum wires. Limits: 25 qubits, 64
@@ -81,10 +89,10 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  unsigned shots,std::uint64_t seed,const std::vector<unsigned> &outputBits,
  const std::vector<TrajectoryStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
  std::size_t byteBudget,const Cancellation &cancelled=Cancellation());
-// A shared per-shot budget counts every while-condition evaluation, including
-// false conditions and nested loops. Exhaustion throws without partial counts.
+// A shared per-shot budget counts every while-condition or range-cursor check, including
+// false conditions, exhausted ranges and nested loops. Exhaustion throws without partial counts.
 // Existing overloads allow 1,000,000 evaluations per shot. Zero permits only
-// paths that never reach a while condition. The body remains immutable.
+// paths that never reach a loop check. The body remains immutable.
 std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned classicalBits,
  unsigned shots,std::uint64_t seed,const std::vector<unsigned> &outputBits,
  const std::vector<TrajectoryStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,

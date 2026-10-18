@@ -54,14 +54,18 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
   if(step.kind==TrajectoryStep::Kind::Assign) {
    QuantumClassical::validateAssignment(classicalBits,step.wires,*step.expression,declarations);continue;
   }
-  if(step.kind==TrajectoryStep::Kind::Branch || step.kind==TrajectoryStep::Kind::While) {
+  if(step.kind==TrajectoryStep::Kind::Branch || step.kind==TrajectoryStep::Kind::While || step.kind==TrajectoryStep::Kind::ForRange) {
+   if(step.rangeExpression) {
+    declarations.type(step.variableSlot);
+    step.rangeExpression->validate(classicalBits,declarations);
+   }
    if(step.expression) {
     if(step.expression->width()!=1)throw std::invalid_argument("Trajectory control-flow conditions must be one bit");
     step.expression->validate(classicalBits,declarations);
    }
    if(depth>=32)throw std::length_error("Trajectory control flow exceeds 32 nesting levels");
    if((step.mask&~allowed) || (step.value&~step.mask))throw std::invalid_argument("Invalid classical branch mask or value");
-   validate(*step.whenTrue,depth+1,loopDepth+(step.kind==TrajectoryStep::Kind::While));
+   validate(*step.whenTrue,depth+1,loopDepth+(step.kind==TrajectoryStep::Kind::While || step.kind==TrajectoryStep::Kind::ForRange));
    if(step.whenFalse)validate(*step.whenFalse,depth+1,loopDepth);
    continue;
   }
@@ -101,6 +105,23 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    if(step.kind==TrajectoryStep::Kind::Break)return Flow::Break;
    if(step.kind==TrajectoryStep::Kind::Continue)return Flow::Continue;
    if(step.kind==TrajectoryStep::Kind::End)return Flow::End;
+   if(step.kind==TrajectoryStep::Kind::ForRange) {
+    auto cursor=step.rangeExpression->evaluate(bits,classicalBits,variables);
+    variables.clear(step.variableSlot);
+    for(;;) {
+     cancel();
+     if(loopConditionsLeft==0)throw std::length_error("Trajectory loop condition budget exceeded");
+     --loopConditionsLeft;
+     if(!cursor.hasValue())break;
+     variables.write(step.variableSlot,QuantumClassical::TypedInteger::fromBits(step.rangeExpression->type(),cursor.value().bits()));
+     const auto flow=execute(*step.whenTrue,state,bits,variables);
+     if(flow==Flow::End) {variables.clear(step.variableSlot);return flow;}
+     if(flow==Flow::Break)break;
+     cursor.advance(); // Continue also advances, even if the body rewrote its binding.
+    }
+    variables.clear(step.variableSlot);
+    continue;
+   }
    if(step.kind==TrajectoryStep::Kind::While) {
     for(;;) {
      cancel(); // Empty loop bodies must remain interruptible.

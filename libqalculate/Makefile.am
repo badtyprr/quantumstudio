@@ -60,6 +60,7 @@ libqalculate_la_SOURCES = \
 	QuantumClassical.cc \
 	QuantumClassicalInteger.cc \
 	QuantumClassicalRange.cc \
+	QuantumClassicalRangeExpression.cc \
 	QuantumClassicalIntegerType.cc \
 	QuantumClassicalIntegerStorage.cc \
 	QuantumClassicalIntegerExpression.cc \
@@ -111,3 +112,4 @@ noinst_HEADERS += QuantumClassical.h QuantumClassicalInteger.h QuantumClassicalI
 
 noinst_HEADERS += QuantumClassicalIntegerExpression.h
 noinst_HEADERS += QuantumClassicalRange.h
+noinst_HEADERS += QuantumClassicalRangeExpression.h

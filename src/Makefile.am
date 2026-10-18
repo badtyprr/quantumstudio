@@ -187,6 +187,11 @@ TESTS += quantum-classical-range-test
 quantum_classical_range_test_SOURCES = quantum-classical-range-test.cc
 quantum_classical_range_test_LDADD = $(test_LDADD)
 
+check_PROGRAMS += quantum-trajectory-range-test
+TESTS += quantum-trajectory-range-test
+quantum_trajectory_range_test_SOURCES = quantum-trajectory-range-test.cc
+quantum_trajectory_range_test_LDADD = $(test_LDADD)
+
 check_PROGRAMS += quantum-classical-integer-type-test
 TESTS += quantum-classical-integer-type-test
 quantum_classical_integer_type_test_SOURCES = quantum-classical-integer-type-test.cc
