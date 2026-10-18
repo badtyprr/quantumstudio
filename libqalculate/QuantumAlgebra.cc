@@ -81,6 +81,10 @@ class QuantumMatrixAssumption: public MathFunction {
   if(!valid) {CALCULATOR->error(true,"A matrix declaration requires a single symbol name.",NULL);return 0;}
   MathStructure symbol=CALCULATOR->calculate("quantum: "+name,eo);
   if(!symbol.isUnknown()) {CALCULATOR->error(true,"Matrix names cannot override gates, constants, or existing values.",NULL);return 0;}
+  // Parsing must preserve the declared name: for example M1 simplifies to M.
+  if((symbol.isSymbolic() && symbol.symbol()!=name) || (symbol.isVariable() && symbol.variable()->referenceName()!=name)) {
+   CALCULATOR->error(true,"Matrix names must parse as the same symbol. Use an underscore before an index (for example M_1).",NULL);return 0;
+  }
   MathStructure declaration;declaration.set(CALCULATOR->getFunction("matrixparam"),&symbol,&raw[2],&raw[3],NULL);
   declaration.eval(eo);out=raw[0];
   if(!annotateMatrixSymbol(out,symbol,declaration,name))return 0;

@@ -29,6 +29,8 @@ for flags in [(), ("--approx",)]:
     assert Decimal(data('quantum:matrixassume(sum(A,0,2,A),A,2,2)',*flags)['text'])==3
     for original in ['|A>','<A|A>','matrixparam(A,3,3)']:
         assert data('quantum:matrixassume('+original+',A,2,2)',*flags)['copy_text']==data('quantum:'+original,*flags)['copy_text']
+    run('quantum:matrixassume(Tr(M),M1,2,2)',*flags,success=False)
+    assert 'M_1' in data('quantum:matrixassume(Tr(M_1),M_1,2,2)',*flags)['copy_text']
     symbolic=data('quantum:matrixassume(Tr(A),A,n,n)',*flags)
     assert data('quantum:matrixassume('+symbolic['copy_text']+',A,n,n)',*flags)['copy_text']==symbolic['copy_text']
     for expression in ['matrixassume(Tr(A),A,2,3)','matrixassume(1,A,0,2)','matrixassume(Tr(X),X,2,2)','matrixassume(i,i,2,2)','matrixassume(matrixassume(Tr(A),A,2,3),A,2,2)','matrixassume(matrixassume(Tr(n),n,2,3),n,2,2)']:

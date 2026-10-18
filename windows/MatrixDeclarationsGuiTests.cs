@@ -26,7 +26,10 @@ class MatrixDeclarationsGuiTests {
    Window window=null,editor=null;
    try {
     window=(Window)Field("window");var input=(TextBox)Field("input");var mode=(ComboBox)Field("mode");
-    editor=(Window)Call("MatrixEditor");editor.Show();Click(editor,"AddPair");Click(editor,"Cancel");
+    editor=(Window)Call("MatrixEditor");editor.Show();Click(editor,"Add");
+    var initialDraft=(IList)((DataGrid)editor.FindName("Definitions")).ItemsSource;
+    Require((string)initialDraft[0].GetType().GetProperty("Name").GetValue(initialDraft[0],null)=="M_1","Default name is not an unambiguous indexed symbol");
+    Click(editor,"Cancel");
     Require(((Array)Field("matrices")).Length==0,"Cancel published draft dimensions");
     editor=(Window)Call("MatrixEditor");editor.Show();Click(editor,"AddPair");
     var draft=(IList)((DataGrid)editor.FindName("Definitions")).ItemsSource;
