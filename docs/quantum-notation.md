@@ -699,3 +699,12 @@ also rejected until jump-aware lifetime handling is available. Top-level integer
 variables may be updated inside an unrolled constant-bound loop. Variable names
 are limited to 64 UTF-16 code units, programs to 4096 integer declarations, and
 lexical scope nesting to 32 levels.
+
+Computed bit expressions can be cast to matching-width integers during import,
+for example `uint[3](c ^ "111")` or `int[3](~c)`. These expressions produce
+version-6 circuit documents. Boolean predicates convert numerically, so
+`int[8](c == 0)` produces zero or positive one, while reinterpreting a signed
+bit vector preserves its two's-complement sign. `uint(popcount(c))` converts the
+64-bit population count. Logical guards retain short-circuit evaluation, and
+invalid widths or references are rejected even inside an unselected branch.
+These rules follow the [OpenQASM casting specification](https://openqasm.com/language/types.html#casting-specifics).

@@ -8,6 +8,17 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-xor','bit[3] c;bit r;r=uint[3](c ^ "111")==7;',{'1000':'1'}),
+ ('computed-negative','bit[3] c;bit r;r=int[3](~c)==-1;',{'1000':'1'}),
+ ('computed-store','bit[3] c;int[8] a=uint[3](c ^ "111");bit r;r=a==7;',{'1000':'1'}),
+ ('computed-predicate','bit c;int[8] a=int[8](c==0);c=a==1;',{'1':'1'}),
+ ('computed-guard','int a;bit c;int[8] b=int[8](true || a==0);c=b==1;',{'1':'1'}),
+ ('computed-undefined','int a;bit c;int[8] b=int[8](a==0);c=b==0;',None),
+ ('computed-not','bit c;int[8] a=int[8](!c);c=a==1;',{'1':'1'}),
+ ('computed-bool','int a=-2;int[8] b=int[8](bool(a));bit c;c=b==1;',{'1':'1'}),
+ ('computed-popcount','bit[3] c="101";uint n=uint(popcount(c));bit r;r=n==2;',{'1101':'1'}),
+ ('computed-measurement','qubit q;bit c;h q;c=measure q;int[8] a=int[8](c==1);c=0;c=a==1;',{'0':'1/2','1':'1/2'}),
+ ('variable-boolean-literal','int[8] a=int[8](true);bit c;c=a==1;',{'1':'1'}),
  ('scope-unicode','int '+unicode_name+'=1;bit c;{int '+unicode_name+'=2;c='+unicode_name+'==2;}c=c && '+unicode_name+'==1;',{'1':'1'}),
  ('scope-shadow','int a=1; bit c; if(a==1){int a=2; c=a==2;} c=c && a==1;',{'1':'1'}),
  ('scope-siblings','bit c=1; if(c){int a=2;c=a==2;}else{int a=3;c=a==2;}',{'1':'1'}),
@@ -125,9 +136,12 @@ rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a
              'int a=1; bit[2] c; c[a]=1;','float a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
 rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;for int i in [0:2]{int a=1;break;}', 'bit c;for int i in [0:2]{int a=1;continue;}', 'bit c;while(false){int a=1;}', 'bit c;{int '+('a'*65)+';}']
 rejected += ['int '+('𝑎'*33)+';', 'int a=1;bit c;{const int a=2;c=a==2;}']
+rejected += ['bit[3] c;int a=uint[2](~c);','bit[3] c;int a=int[3](popcount(c));',
+             'bit[3] c;int a=uint[3](c ^ "11");','bit[3] c;bit r;r=false && uint[2](~c)==0;']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
+rejected.append('bit c;int a=int(bool('+boolean_broad+'));') # Mixed Boolean/integer tree shares one budget.
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
@@ -153,6 +167,7 @@ def integer_expression(e):
  k=e['Kind']
  if k=='IntegerBinary':return n(3,['Add','Subtract','Multiply','Divide','Remainder','Power'].index(e['Operator']))+integer_expression(e['Left'])+integer_expression(e['Right'])
  t=n(0 if e['Signedness']=='Signed' else 1,e['Width'])
+ if k=='IntegerFromBits':return n(5)+t+expression(e['Left'])
  if k=='IntegerConstant':return n(0)+t+n(e['Value'])
  if k=='IntegerRead':return n(1)+t+n(*e['Bits'])
  if k=='IntegerVariable':return n(4)+t+n(e['Slot'])
@@ -176,7 +191,7 @@ def steps(body):
  return out
 for name,body,expected in cases:
  source=header+body;circuit=adapter.convert(source,classical=True)
- assert circuit['Version']==(5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(6 if name.startswith('computed-') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name=='scope-siblings':
   branch=next(step for step in circuit['Steps'] if step['Kind']=='Branch')
   assert branch['WhenTrue'][-1]['Kind']==branch['WhenFalse'][-1]['Kind']=='ClearInteger'
@@ -193,8 +208,9 @@ for name,body,expected in cases:
   for exact in (True,False):
    protocol=(b'QEXACT3\n' if exact else b'QSAMPLE4\n') if circuit['Version']==4 else (b'QEXACT2\n' if exact else b'QSAMPLE3\n')
    declarations=b''
-   if circuit['Version']==5:
+   if circuit['Version']>=5:
     protocol=b'QEXACT4\n' if exact else b'QSAMPLE5\n'
+    if circuit['Version']==6:protocol=b'QEXACT5\n' if exact else b'QSAMPLE6\n'
     declarations=n(len(circuit['Variables']))+b''.join(n(0 if v['Signedness']=='Signed' else 1,v['Width']) for v in circuit['Variables'])
    payload=protocol+n(circuit['Qubits'])+(b'' if exact else n(10000,1731))+n(bits)+declarations+n(len(output),*output,len(circuit['Steps']))+steps(circuit['Steps'])
    run=subprocess.run([str(worker),'--exact-circuit' if exact else '--sample'],input=payload,capture_output=True,timeout=30,env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/'data')))
