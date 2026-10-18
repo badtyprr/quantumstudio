@@ -959,3 +959,11 @@ Use `a_(0,1)` or TeX `\alpha_{0,1}` for one scalar coefficient with two indices.
 Unknown indices stay symbolic: `a_(k,l+1)` resolves to the coefficient `"a_2,4"` after replacing `k` with 2 and `l` with 3. Numeric indices must be integers; fractional and vector indices are rejected. Symbolic results use paired-subscript display, while clipboard output retains the canonical representation. The internal function is `qindexedcoefficient("a_",row,column)`.
 
 The reserved imaginary unit `i` still conflicts with its use as an unbound index name; use another index name pending that separate notation fix.
+
+### Constant names as local arithmetic indices
+
+An explicit arithmetic binder can use `i`, `e`, or `pi` as its local index: `sum(i,0,2,i)` gives 3. Typed occurrences in the body refer to that local index; occurrences outside it retain their normal constant meaning. Nested binders keep separate scopes, and bounds may refer to an enclosing index. This also applies to paired coefficients such as `sum(a_(i,0),0,n,i)`, which stays symbolic until `n` is supplied.
+
+Constants introduced by gate expansion remain constants. For example, `sum(i*Y,0,2,i)` is `3*Y`, including the imaginary entries of the Pauli-Y matrix. Likewise, `sum(P(i),0,1,i)` evaluates the phase gates at angles 0 and 1 without changing the imaginary unit in their exponential formulas. The displayed sum may rename its local index to avoid collisions; clipboard output preserves the scoped representation.
+
+The collision between the special ket alias `|i>` and a locally bound index remains unfinished. Use an explicit basis constructor such as `basis(i,2)` for that indexed state while this separate notation case is being resolved. Unbound `i` still denotes the imaginary unit.
