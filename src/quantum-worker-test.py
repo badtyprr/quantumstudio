@@ -54,6 +54,25 @@ assert data('quantum:Tr(X*Z*Y)')['text']==substituted['text']
 for expression in ['Tr(2)','Tr([1,2;3,4;5,6])','replace(Tr(A),A,2)','replace(Tr(A),A,[1;2])','Tr(Tr(A))','Tr(2*Tr(A))','Tr(sin(x))','Tr(sin(x)+cos(x))','Tr(2^x)']:
     assert run('quantum:'+expression,'--json',success=False).stdout==b''
 
+# Scalar evaluation nodes must still present nested quantum functions naturally.
+for expression,shown in [
+    ('Tr(A)=Tr(B)', 'Tr(A) = Tr(B)'),
+    ('Tr(A)+Tr(B)', 'Tr(A) + Tr(B)'),
+    ('Tr(A)-Tr(B)', 'Tr(A) − Tr(B)'),
+    ('Tr(A)^2', 'Tr(A)^2'),
+    ('2*Tr(A)', '2 · Tr(A)'),
+    ('(1+i)*Tr(A)', '(1 + i) · Tr(A)'),
+    ('Tr(A)<=Tr(B)', 'Tr(A) ≤ Tr(B)'),
+    ('Tr(A)!=Tr(B)', 'Tr(A) ≠ Tr(B)'),
+    ('1/Tr(A)', '1 / Tr(A)'),
+    ('Tr(A)/(Tr(B)+Tr(C))', 'Tr(A) / (Tr(B) + Tr(C))'),
+    ('-(Tr(A)+Tr(B))', '−Tr(A) − Tr(B)'),
+]:
+    value=data('quantum:'+expression)
+    assert value['display_text']==shown,(expression,value)
+    assert data('quantum:'+value['copy_text'])['text']==value['text']
+    assert data('quantum:'+shown)['text']==value['text']
+
 # Human-readable presentation must leave canonical clipboard expressions intact.
 for expression,shown in [
     ("QFT_N|x>", "QFT_N |x⟩"),
