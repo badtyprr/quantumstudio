@@ -13,6 +13,11 @@ class ClassicalCircuitTests {
    new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=yes},
    new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Read",Bits=new[]{0}},WhenTrue=new[]{new ClassicalCircuit.Step{Kind="Assign",Wires=new[]{0},ClassicalValue=no}}}}};
   var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  foreach(string transfer in new[]{"Break","Continue"}) {
+   var invalid=circuit.Snapshot();invalid.Steps[1].WhenTrue=new[]{new ClassicalCircuit.Step{Kind=transfer}};
+   Reject(()=>ClassicalCircuit.From(invalid));
+   Reject(()=>ClassicalCircuit.Load(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(invalid)));
+  }
   Check(circuit.LoopConditionBudget==2 && ClassicalCircuit.Load(saved).Serialize()==saved);
   Check(circuit.Snapshot().Steps[1].WhenFalse==null);
   var copy=circuit.Snapshot();copy.LoopConditionBudget=0;copy.Steps[1].WhenTrue[0].ClassicalValue.Value="1";
