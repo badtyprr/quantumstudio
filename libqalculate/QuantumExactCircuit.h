@@ -11,7 +11,7 @@
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue };
  const Kind kind;
  const std::vector<unsigned> wires;
  const unsigned classicalBit;
@@ -48,6 +48,9 @@ public:
  static CircuitStep whileLoop(const QuantumClassical::Bits &condition,const std::vector<CircuitStep> &body) {
   return {Kind::While,{},0,0,0,{},{},std::make_shared<const std::vector<CircuitStep>>(body),{},std::make_shared<const QuantumClassical::Bits>(condition)};
  }
+ // Only valid inside a loop; branches preserve the nearest-loop target.
+ static CircuitStep breakLoop() {return {Kind::Break,{},0,0,0};}
+ static CircuitStep continueLoop() {return {Kind::Continue,{},0,0,0};}
  static CircuitStep storeInteger(std::size_t slot,const QuantumClassical::IntegerExpression &value) {
   return {Kind::StoreInteger,{},0,0,0,{},{},{},{},{},slot,std::make_shared<const QuantumClassical::IntegerExpression>(value)};
  }

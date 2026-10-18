@@ -57,6 +57,47 @@ int main(){try {
  auto literal=[&](std::uint64_t n){return Expr::constant(QuantumClassical::TypedInteger::fromBits(machine,n));};
  {
  auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
+ auto emit=Step::assign({0},yes),clear=Step::assign({0},no);
+ auto slot=Expr::variable(signedByte,0);
+ auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
+ auto decrement=Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(1)));
+ auto run=[&](const std::vector<Step> &program,std::size_t budget=8) {
+  return weights(evaluateCircuit(0,1,program,{signedByte},64,exact,budget),0,1,{0},64,exact);
+ };
+ for(auto transfer:{Step::breakLoop(),Step::continueLoop()}) {
+  rejects<std::invalid_argument>([&]{run({transfer});});
+  rejects<std::invalid_argument>([&]{run({Step::branch(no,{transfer})},0);});
+  rejects<std::out_of_range>([&]{run({Step::whileLoop(no,{transfer,Step::storeInteger(1,literal(0))})},1);});
+ }
+ equal(run({Step::whileLoop(yes,{Step::breakLoop(),emit})},1).at(0),"1");
+ equal(run({Step::whileLoop(yes,{Step::breakLoop()}),emit},1).at(1),"1");
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{Step::breakLoop()})},0);});
+ equal(run({Step::whileLoop(yes,{Step::branch(yes,{Step::breakLoop()}),Step::whileLoop(yes,{})})},1).at(0),"1");
+ auto once=Step::whileLoop(Bits::complement(Bits::read({0})),{emit,Step::continueLoop(),clear});
+ equal(run({once},2).at(1),"1");
+ rejects<std::length_error>([&]{run({once},1);});
+ equal(run({Step::storeInteger(0,literal(3)),Step::whileLoop(positive,{decrement,Step::branch(yes,{Step::continueLoop()}),emit})},4).at(0),"1");
+ equal(run({Step::storeInteger(0,literal(2)),Step::whileLoop(positive,{Step::whileLoop(yes,{Step::breakLoop()}),decrement}),emit},5).at(1),"1");
+ equal(run({Step::storeInteger(0,literal(1)),Step::whileLoop(positive,{once,decrement,clear})},4).at(0),"1");
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{Step::continueLoop()})},3);});
+ // Matching classical bits and variables must not merge pending break with
+ // fallthrough. Each half of this measured mixture follows a different suffix.
+ distribution(1,1,{0},{Step::map(H,{0}),Step::measure(0,0),Step::whileLoop(yes,{
+  Step::branch(Bits::read({0}),{clear,Step::breakLoop()},{clear}),
+  Step::map(X,{0}),Step::measure(0,0),Step::breakLoop()})},{{0,"1/2"},{1,"1/2"}});
+ distribution(1,1,{0},{Step::map(rotation,{0}),Step::measure(0,0),Step::whileLoop(yes,{
+  Step::branch(Bits::read({0}),{clear,Step::breakLoop()},{clear}),
+  Step::map(X,{0}),Step::measure(0,0),Step::breakLoop()})},{{0,"sin(x/2)^2"},{1,"cos(x/2)^2"}});
+ auto mixed=evaluateCircuit(1,1,{Step::storeInteger(0,literal(1)),Step::map(H,{0}),Step::measure(0,0),
+  Step::whileLoop(positive,{decrement,Step::branch(Bits::read({0}),{clear,Step::continueLoop()},{clear}),emit})},
+  {signedByte},64,exact,4);
+ auto outcome=weights(mixed,1,1,{0},64,exact);check(outcome.size()==2);
+ equal(outcome.at(0),"1/2");equal(outcome.at(1),"1/2");
+ // Pending transfers bypass even a nested loop's undefined condition.
+ rejects<std::length_error>([&]{run({Step::whileLoop(yes,{Step::branch(yes,{Step::continueLoop()}),Step::whileLoop(positive,{})})},2);});
+ }
+ {
+ auto yes=Bits::constant(1,1),no=Bits::constant(1,0);
  auto slot=Expr::variable(signedByte,0);
  auto positive=Bits::integerCompare(Op::Greater,slot,literal(0));
  auto decrement=Step::storeInteger(0,Expr::binary(Int::Operation::Subtract,slot,literal(1)));
@@ -217,4 +258,4 @@ int main(){try {
  rejects<std::runtime_error>([&]{accumulator.add(0,cancellationDensity);});calculator.stopControl();
  equal(weights(accumulator.take(),1,1,{},4,exact).at(0),"1");
  std::cout<<"PASS: "<<checks<<" exact circuit checks.\n";return 0;
- }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}
+ }catch(const std::exception &e){std::cerr<<"After "<<checks<<" checks: "<<e.what()<<'\n';return 1;}}
