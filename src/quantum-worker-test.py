@@ -22,6 +22,16 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Declared matrix shapes constrain operations before matrix values are known.
+for flags in [(), ("--approx",)]:
+    for expression in ['Tr(matrixparam(A,2,3))','matrixparam(A,2,2)+matrixparam(B,3,3)','matrixparam(A,2,3)*matrixparam(B,2,2)','Tr(matrixparam(A,2,3)^T)','Tr(2*matrixparam(A,2,3))','Tr(matrixparam(A,2,3)*matrixparam(B,3,4))']:
+        run('quantum:'+expression,*flags,success=False)
+    for expression in ['Tr(matrixparam(A,n,n))','matrixparam(A,n,n)+matrixparam(B,m,m)','matrixparam(A,2,3)*matrixparam(B,3,2)']:
+        value=data('quantum:'+expression,*flags)
+        assert 'matrixparam' in value['copy_text'],value
+    value=data('quantum:replace(replace(matrixparam(A,2,2)*matrixparam(B,2,2),A,X),B,X)',*flags)
+    assert value['cells']==[['1','0'],['0','1']],value
+
 # Matrix domains survive serialization and validate each substituted axis.
 for flags in [(), ("--approx",)]:
     symbolic=data('quantum:matrixparam(A,n,n)',*flags)
