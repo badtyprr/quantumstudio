@@ -41,6 +41,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  for(const auto &step:block) {
   cancel();
   if(++totalSteps>4096)throw std::length_error("Trajectory control flow exceeds 4096 total steps");
+  if(step.kind==TrajectoryStep::Kind::End)continue;
   if(step.kind==TrajectoryStep::Kind::Break || step.kind==TrajectoryStep::Kind::Continue) {
    if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
    continue;
@@ -92,20 +93,23 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  auto draw=[&] {return (random()>>11)*(1.0/9007199254740992.0);};
  const std::vector<Complex> X={0,1,1,0};std::map<std::uint64_t,unsigned> counts;
  std::size_t loopConditionsLeft=0;
- enum class Flow { Normal, Break, Continue };
+ enum class Flow { Normal, Break, Continue, End };
  std::function<Flow(const std::vector<TrajectoryStep>&,StateVector&,std::uint64_t&,QuantumClassical::IntegerStorage&)> execute;
  execute=[&](const std::vector<TrajectoryStep> &block,StateVector &state,std::uint64_t &bits,QuantumClassical::IntegerStorage &variables) -> Flow {
   for(const auto &step:block) {
    cancel();
    if(step.kind==TrajectoryStep::Kind::Break)return Flow::Break;
    if(step.kind==TrajectoryStep::Kind::Continue)return Flow::Continue;
+   if(step.kind==TrajectoryStep::Kind::End)return Flow::End;
    if(step.kind==TrajectoryStep::Kind::While) {
     for(;;) {
      cancel(); // Empty loop bodies must remain interruptible.
      if(loopConditionsLeft==0)throw std::length_error("Trajectory loop condition budget exceeded");
      --loopConditionsLeft;
      if(!step.expression->evaluate(bits,classicalBits,variables))break;
-     if(execute(*step.whenTrue,state,bits,variables)==Flow::Break)break;
+     const auto flow=execute(*step.whenTrue,state,bits,variables);
+     if(flow==Flow::End)return flow; // Program termination crosses every loop.
+     if(flow==Flow::Break)break;
      // Normal completion and continue both re-evaluate this loop condition.
     }
     continue;

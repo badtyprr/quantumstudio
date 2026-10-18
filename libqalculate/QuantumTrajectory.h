@@ -10,7 +10,7 @@
 namespace QuantumNumerics {
 class TrajectoryStep {
 public:
- enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue };
+ enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End };
  const Kind kind;
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
@@ -47,6 +47,8 @@ public:
  // Transfer to the nearest enclosing loop; rejected outside loops, even if unreachable.
  static TrajectoryStep breakLoop() {return {Kind::Break,{},{},0,0,0};}
  static TrajectoryStep continueLoop() {return {Kind::Continue,{},{},0,0,0};}
+ // Stop this shot at any nesting depth, preserving its saved classical results.
+ static TrajectoryStep endProgram() {return {Kind::End,{},{},0,0,0};}
  // Slot identities are resolved by the caller. Store evaluates before conversion/write.
  static TrajectoryStep storeInteger(std::size_t slot,const QuantumClassical::IntegerExpression &value) {
   return {Kind::StoreInteger,{},{},0,0,0,{},{},{},{},{},slot,std::make_shared<const QuantumClassical::IntegerExpression>(value)};
