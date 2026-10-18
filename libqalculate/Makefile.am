@@ -59,6 +59,7 @@ libqalculate_la_SOURCES = \
 	QuantumExactCircuit.cc \
 	QuantumClassical.cc \
 	QuantumClassicalInteger.cc \
+	QuantumClassicalRange.cc \
 	QuantumClassicalIntegerType.cc \
 	QuantumClassicalIntegerStorage.cc \
 	QuantumClassicalIntegerExpression.cc \
@@ -109,3 +110,4 @@ noinst_HEADERS += QuantumExactCircuit.h
 noinst_HEADERS += QuantumClassical.h QuantumClassicalInteger.h QuantumClassicalIntegerType.h QuantumClassicalIntegerStorage.h
 
 noinst_HEADERS += QuantumClassicalIntegerExpression.h
+noinst_HEADERS += QuantumClassicalRange.h
