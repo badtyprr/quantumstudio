@@ -722,3 +722,18 @@ Distances retain their signedness, including negative distances and unsigned
 64-bit values. The distance is evaluated when the rotation executes, so
 measurement-dependent values and guarded undefined variables retain their
 runtime behavior. This extends the [OpenQASM circular-shift operations](https://openqasm.com/language/classical.html#classical-bits-and-registers).
+
+Mutable Boolean variables are preserved during classical import. For example,
+`bool ready=false; ready=!ready; if(ready){x q;}` evaluates the condition at
+runtime. A Boolean may copy a measured scalar bit, retain that value after the
+bit changes, participate in integer arithmetic, and shadow an outer variable
+inside a block. Uninitialized reads fail when executed; short-circuit guards
+and fresh local storage retain the same behavior as integer variables.
+
+The compiled circuit represents Boolean storage as `uint[1]` variables with
+explicit truth-value conversions on writes and reads. Integer assignments use
+the nonzero rule; bit registers, bit strings and slices require explicit
+`bool(...)` conversion. This follows the [OpenQASM Boolean casting rules](https://openqasm.com/language/types.html#casting-from-bool).
+Direct measurement into a Boolean, Boolean compound assignments, runtime loops,
+subroutine-local storage and floating-point conversions still require further
+lowering. Measure into a scalar bit, then assign that bit to a Boolean.

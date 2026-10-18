@@ -8,6 +8,24 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-bool-variable','bool b=true;bit c;c=b;',{'1':'1'}),
+ ('computed-bool-toggle','bool b=false;bit c;b=!b;c=b;',{'1':'1'}),
+ ('computed-bool-copy','bool a=true;bool b=a;a=false;bit c;c=b;',{'1':'1'}),
+ ('computed-bool-logical','bool a=true;bool b=false;bit c;c=a && !b;',{'1':'1'}),
+ ('computed-bool-integer','int n=-2;bool b=n;bit c;c=b;',{'1':'1'}),
+ ('computed-bool-zero','int n=0;bool b=n;bit c;c=!b;',{'1':'1'}),
+ ('computed-bool-literal','bool b=2;bit c;c=b;',{'1':'1'}),
+ ('computed-bool-popcount','bit[3] c="111";bool b=popcount(c);c[0]=!b;',{'110':'1'}),
+ ('computed-bool-scalar-bits','bit a=1;bit c=0;bool b=a ^ c;c=b;',{'11':'1'}),
+ ('computed-bool-compare','bool b=true;bit c;c=b==2;',{'0':'1'}),
+ ('computed-bool-promote','bool a=true;bool b=true;int n=a+b;bit c;c=n==2;',{'1':'1'}),
+ ('computed-bool-array-cast','bit[3] c="010";bool b=bool(c);c[0]=b;',{'011':'1'}),
+ ('computed-bool-measurement','qubit q;bit c;h q;c=measure q;bool b=c;c=0;c=b;',{'0':'1/2','1':'1/2'}),
+ ('computed-bool-feedback','qubit q;bit c;h q;c=measure q;bool b=c;if(b){x q;}c=measure q;',{'0':'1'}),
+ ('computed-bool-shadow','bool b=true;bit c;{bool b=false;c=!b;}c=c && b;',{'1':'1'}),
+ ('computed-bool-fresh','bit c;for int i in [0:1]{bool b;if(i==0){b=true;}else{c=b;}}',None),
+ ('variable-boolean-uninitialized','bool b;bit c;c=b;',None),
+ ('variable-boolean-guard','bool b;bit c;c=false && b;',{'0':'1'}),
  ('variable-rotate','int n=1;bit[3] c="001";c=rotl(c,n);',{'010':'1'}),
  ('variable-rotate-negative','int[8] n=-1;bit[3] c="001";c=rotl(c,n);',{'100':'1'}),
  ('variable-rotate-arithmetic','int n=1;bit[3] c="001";c=rotr(c,n+1);',{'010':'1'}),
@@ -163,6 +181,13 @@ rejected += ['bit[1] c;int a=int[8](c);','bit[3] c;int a=int[8](c[1:1]);',
              'bit[3] c;int a=int[8](c[{1}]);','bit[3] c;int a=int[8](c[3]);']
 rejected += ['bit[3] c; c=rotl(c,c);','bit[3] c;c=rotr(c,bool(c));',
              'bit[3] c;c=rotl(c,int[2](c ^ "111"));']
+rejected += ['bit[1] c;bool b=c;','bit[3] c;bool b=c ^ "111";',
+             'bit[3] c;bool b=c[0:0];','bool b="1";','bool b=false;b+=1;',
+             'bit c;{bool b=true;}c=b;','bool b=true;bool b=false;',
+             'def f(){bool b=true;}f();']
+rejected += ['bit[1] c;bool b=c ^ "1";','bit[1] c;bool b=~c;',
+             'bit[1] c;bool b=rotl(c,1);','bit[1] c;bool b=c << 1;']
+rejected += ['qubit q;bool b=measure q;','qubit q;bool b;b=measure q;']
 boolean_broad='c'
 for _ in range(8):boolean_broad='('+boolean_broad+' | '+boolean_broad+')'
 rejected.append('bit c; bit r; r=bool('+boolean_broad+');') # Comparison plus zero exceeds 512 nodes.
