@@ -10,7 +10,7 @@
 namespace QuantumNumerics {
 class TrajectoryStep {
 public:
- enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger };
+ enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While };
  const Kind kind;
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
@@ -40,6 +40,10 @@ public:
  static TrajectoryStep branch(const QuantumClassical::Bits &condition,const std::vector<TrajectoryStep> &yes,const std::vector<TrajectoryStep> &no={}) {
   return {Kind::Branch,{},{},0,0,0,{},{},std::make_shared<const std::vector<TrajectoryStep>>(yes),std::make_shared<const std::vector<TrajectoryStep>>(no),std::make_shared<const QuantumClassical::Bits>(condition)};
  }
+ // The condition is re-evaluated before every iteration, including the first.
+ static TrajectoryStep whileLoop(const QuantumClassical::Bits &condition,const std::vector<TrajectoryStep> &body) {
+  return {Kind::While,{},{},0,0,0,{},{},std::make_shared<const std::vector<TrajectoryStep>>(body),{},std::make_shared<const QuantumClassical::Bits>(condition)};
+ }
  // Slot identities are resolved by the caller. Store evaluates before conversion/write.
  static TrajectoryStep storeInteger(std::size_t slot,const QuantumClassical::IntegerExpression &value) {
   return {Kind::StoreInteger,{},{},0,0,0,{},{},{},{},{},slot,std::make_shared<const QuantumClassical::IntegerExpression>(value)};
@@ -54,7 +58,7 @@ private:
 // Each shot starts in |0...0> with zero classical memory. Conditions read saved
 // measurement bits, not the current quantum wires. Limits: 25 qubits, 64
 // classical bits, 4096 total steps (including both branch bodies), 32 nested
-// branches and 1000000 shots. byteBudget limits one state;
+// branches/loops and 1000000 shots. byteBudget limits one state;
 // caller-owned steps and returned counts require additional storage.
 // Channels sample Kraus branches without changing classical memory.
 // Readout assignments change recorded classical bits without measuring or
@@ -72,5 +76,13 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  unsigned shots,std::uint64_t seed,const std::vector<unsigned> &outputBits,
  const std::vector<TrajectoryStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
  std::size_t byteBudget,const Cancellation &cancelled=Cancellation());
+// A shared per-shot budget counts every while-condition evaluation, including
+// false conditions and nested loops. Exhaustion throws without partial counts.
+// Existing overloads allow 1,000,000 evaluations per shot. Zero permits only
+// paths that never reach a while condition. The body remains immutable.
+std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned classicalBits,
+ unsigned shots,std::uint64_t seed,const std::vector<unsigned> &outputBits,
+ const std::vector<TrajectoryStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
+ std::size_t byteBudget,const Cancellation &cancelled,std::size_t maxLoopConditions);
 }
 #endif

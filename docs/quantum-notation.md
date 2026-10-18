@@ -775,3 +775,15 @@ The editor displays canonical nonzero tests as `bool(...)`, for example
 `bool(ready)` or `bool(read(0,1,2))`. This is editable syntax: formatting and
 reparsing preserve the stored expression. Comparisons with explicitly sized or
 unsigned integer zeros retain their explicit types rather than being shortened.
+
+The native numerical trajectory API now provides `TrajectoryStep::whileLoop`
+for measurement-driven repetition. Its one-bit condition is evaluated before
+every iteration against current classical bits and typed variables. All loop
+bodies are validated even when the condition is false. Branches and loops share
+the existing 32-level nesting and 4096-static-step limits. A separate limit of
+1,000,000 condition evaluations per shot is shared across all loops; the explicit
+budget overload can change it. Budget exhaustion and cancellation throw without
+returning partial counts, including for empty loop bodies. This implements the
+[OpenQASM while condition semantics](https://openqasm.com/language/classical.html#while-loops)
+in the numerical API only. Exact evaluation, worker transport, circuit storage,
+the editor, OpenQASM import, and `break`/`continue` support still need integration.
