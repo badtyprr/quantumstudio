@@ -34,6 +34,18 @@ int main(){try {
  auto rotation=S::rotate(RuntimeRotation(A::Y,theta),0);
  auto counts=sample({S::storeInteger(0,literal(0)),rotation,S::storeInteger(0,literal(1)),rotation,S::measure(0,0)});
  check(counts.size()==1 && counts[2]==1000);
+ // The same gate inside a loop reads each new binding: Ry(0) then Ry(pi).
+ auto range=RangeExpression(literal(0),literal(1),literal(1));
+ counts=sample({S::forRange(0,range,{rotation}),S::measure(0,0)});
+ check(counts.size()==1 && counts[2]==1000);
+ // A reached branch uses the current record and preserves feedback correlation.
+ auto branchCounts=sample({S::gate(H,{0}),S::measure(0,0),S::branch(1,1,{S::rotate(RuntimeRotation(A::Y,measured),1)}),S::measure(1,1)},10000);
+ check(branchCounts.size()==2 && branchCounts[0]+branchCounts[3]==10000);
+ check(std::abs(int(branchCounts[0])-5000)<250);
+ // Scope exit clears a loop binding before any subsequent gate can read it.
+ reject<std::domain_error>([&]{sample({S::forRange(0,range,{rotation}),rotation});});
+ // Sampling never returns partial counts on cancellation.
+ reject<Cancelled>([&]{sampleTrajectories(2,2,1000,731,{0,1},{rotation},{type},1024,[]{return true;});});
  // Rz(pi) between Hadamards changes |0> to |1>.
  counts=sample({S::storeInteger(0,literal(1)),S::gate(H,{0}),S::rotate(RuntimeRotation(A::Z,theta),0),S::gate(H,{0}),S::measure(0,0)});
  check(counts.size()==1 && counts[2]==1000);
