@@ -57,6 +57,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM protocol tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-classical-expressions.py
           if ($LASTEXITCODE -ne 0) { throw 'Classical expression import tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-angles.py
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime angle import tests failed.' }
           $expressionCases = Join-Path $env:RUNNER_TEMP 'expression-qasm-cases.json'
           & windows/test-classical-expression-qasm.ps1 -CasesPath $expressionCases
           & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $expressionCases
