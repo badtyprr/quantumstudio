@@ -174,6 +174,7 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  if(value.isMatrix()) {rows.set(Number(static_cast<long>(value.rows())));columns.set(Number(static_cast<long>(value.columns())));return true;}
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
+ if(name=="qfourierdomain" && value.size()==3) {rows=value[2];columns=m_one;return true;}
  if(name=="matrixparam" && value.size()==3) {
   rows=value[1];columns=value[2];EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
   rows.eval(exact);columns.eval(exact);return true;
@@ -213,6 +214,48 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qfourierdomain") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure index=raw[1],dimension=raw[2];index.eval(exact);dimension.eval(exact);
+   bool unknownIndex=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
+   bool unknownDimension=!dimension.isNumber() && dimension.representsScalar() && dimension.containsUnknowns();
+   if((!unknownIndex && (!index.isNumber() || !index.number().isInteger() || index.number()<0)) ||
+      (!unknownDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<1 || dimension.number()>64)) ||
+      (!unknownIndex && !unknownDimension && index.number()>=dimension.number())) {
+    CALCULATOR->error(true,"Fourier basis expansion requires integer dimension 1 to 64 and a zero-based index in range.",NULL);return 0;
+   }
+   // Keep the guard and actual sum together until substitution validates both
+   // parameters. Periodic exponentials alone cannot enforce basis membership.
+   if(unknownIndex || unknownDimension)return 0;
+   out=raw[0];out.eval(eo);
+   if(!out.isMatrix() || out.columns()!=1 || out.rows()!=size_t(dimension.number().intValue())) {
+    CALCULATOR->error(true,"A Fourier basis expansion must produce a column with the declared dimension.",NULL);return 0;
+   }
+   return 1;
+  }
+  if((op=="qmul" || op=="qadjacent") && raw.size()==2 && raw[1].isFunction() && raw[1].size()==2 && raw[1].function()->referenceName()=="qbasis") {
+   const MathStructure *gate=&raw[0];bool inverse=false;
+   if(gate->isFunction() && gate->size()==1 && gate->function()->referenceName()=="qdag") {inverse=true;gate=&(*gate)[0];}
+   else if(gate->isFunction() && gate->size()==2 && gate->function()->referenceName()=="qpower") {
+    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+    MathStructure power=(*gate)[1];power.eval(exact);
+    if(power.isNumber() && power.number()==-1) {inverse=true;gate=&(*gate)[0];}
+   }
+   if(gate->isFunction() && gate->size()==1 && gate->function()->referenceName()=="qfourier" && (*gate)[0].equals(raw[1][1]) &&
+      (raw[1][0].containsUnknowns() || raw[1][1].containsUnknowns())) {
+    const MathStructure &index=raw[1][0],&dimension=raw[1][1];
+    unsigned serial=0;MathStructure bound;
+    do {bound=MathStructure("qboundindex_fourier_"+std::to_string(serial++),true);}while(raw.contains(bound));
+    MathStructure exponent=CALCULATOR->calculate("2*pi*i",eo);exponent*=index;exponent*=bound;exponent/=dimension;if(inverse)exponent.negate();
+    MathStructure phase,ket,term,upper=dimension,sum,normalization=dimension,expanded;
+    phase.set(CALCULATOR->getFunction("qexp"),&exponent,NULL);
+    ket.set(CALCULATOR->getFunction("qbasis"),&bound,&dimension,NULL);
+    term.set(CALCULATOR->getFunction("qmul"),&phase,&ket,NULL);
+    upper-=m_one;sum.set(CALCULATOR->getFunction("qsum"),&term,&m_zero,&upper,&bound,NULL);
+    normalization.raise(Number(-1,2));expanded.set(CALCULATOR->getFunction("qmul"),&normalization,&sum,NULL);
+    out.set(CALCULATOR->getFunction("qfourierdomain"),&expanded,&index,&dimension,NULL);out.eval(eo);return 1;
+   }
+  }
   if(op=="qfrequency") {
    const std::string name=raw[0].symbol();
    Unit *hertz=CALCULATOR->getActiveUnit("Hz");
@@ -504,6 +547,6 @@ void registerQuantumAlgebra(Calculator &calculator) {
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }

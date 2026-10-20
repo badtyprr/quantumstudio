@@ -23,6 +23,40 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Fourier basis action becomes a finite sum without discarding its domain.
+for flags in [(), ("--approx",)]:
+    for operator in ['QFT_N','QFT_N†','QFT_N^(-1)']:
+        expanded=data('quantum:'+operator+'|x>_N',*flags)
+        assert 'qfourierdomain' in expanded['copy_text'] and 'qsum(' in expanded['copy_text']
+        assert '∑' in expanded['display_text'] and '∈ ℤ' in expanded['display_text']
+        copied=data('quantum:'+expanded['copy_text'],*flags)
+        assert '∑' in copied['display_text'] and '∈ ℤ' in copied['display_text']
+        for n,x in [(1,0),(2,1),(3,2),(4,1)]:
+            substituted='replace(replace(('+expanded['copy_text']+'),N,'+str(n)+'),x,'+str(x)+')'
+            reference=operator.replace('_N','_'+str(n))+'|'+str(x)+'>_'+str(n)
+            residual=data('quantum:norm(('+substituted+')-('+reference+'))',*flags)['text'].replace('−','-')
+            assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in residual.split(' + '))
+        for n,x in [('4','4'),('4','-1'),('4','1/2'),('0','0'),('65','0'),('4','i')]:
+            rejected=run('quantum:replace(replace(('+expanded['copy_text']+'),N,'+n+'),x,'+x+')','--json',*flags,success=False)
+            assert rejected.returncode==2 and not rejected.stdout and rejected.stderr
+    free=data('quantum:QFT_N|k>_N',*flags)
+    for expression in ['norm(replace(replace(('+free['copy_text']+'),N,4),k,1)-QFT_4|1>_4)',
+                       'norm(replace(sum(QFT_N|x>_N,0,N-1,x),N,4)-2*|0>_4)']:
+        residual=data('quantum:'+expression,*flags)['text'].replace('−','-')
+        assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in residual.split(' + '))
+    for expression in ['0*(QFT_N|x>_N)','(QFT_N|x>_N)-(QFT_N|x>_N)','QFT_N|qboundindex_fourier_0>_N']:
+        guarded=data('quantum:'+expression,*flags)
+        symbol='qboundindex_fourier_0' if 'qboundindex_fourier_0' in expression else 'x'
+        invalid='replace(replace(('+guarded['copy_text']+'),N,4),'+symbol+',4)'
+        rejected=run('quantum:'+invalid,'--json',*flags,success=False)
+        assert rejected.returncode==2 and not rejected.stdout and b'index in range' in rejected.stderr
+        if symbol!='x':
+            residual=data('quantum:norm(replace(replace(('+guarded['copy_text']+'),N,4),'+symbol+',1)-QFT_4|1>_4)',*flags)['text'].replace('−','-')
+            assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in residual.split(' + '))
+    assert 'qfourierdomain' not in data('quantum:QFT_N|x>',*flags)['copy_text']
+    rejected=run('quantum:qfourierdomain(1,0,2)','--json',*flags,success=False)
+    assert rejected.returncode==2 and not rejected.stdout and rejected.stderr
+
 # IBM's Fourier definition uses juxtaposed bound indices in its phase.
 for flags in [(), ("--approx",)]:
     rejected=run("quantum:qtexgroupsum(0,1,x,"+"x"*600+")", "--json", *flags, success=False)
@@ -54,7 +88,11 @@ for flags in [(), ("--approx",)]:
         result=data('quantum:'+expression,*flags)
         assert not any(token in result['display_text'] for token in ['qsum','qexp','qbasis','qboundindex']), result
         assert '⟩_{' in result['display_text'], result
-        assert data('quantum:'+result['copy_text'],*flags)['display_text']==result['display_text']
+        copied=data('quantum:'+result['copy_text'],*flags)
+        if expression=='QFT_N|x>_N':
+            assert '∑' in copied['display_text'] and '∈ ℤ' in copied['display_text']
+        else:
+            assert copied['display_text']==result['display_text']
         difference='replace(('+expression+')-('+result['copy_text']+'),N,4)'
         difference='norm('+('replace('+difference+',x,1)' if re.search(r'\bx\b',expression) else difference)+')'
         parts=data('quantum:'+difference,*flags)['text'].replace('−','-').split(' + ')
@@ -433,7 +471,14 @@ for flags in [(), ("--approx",)]:
 for flags in [(), ("--approx",)]:
     for expression in ["QFT_N|x>_N", "|high>", r"\alpha|0>+\beta|1>"]:
         first = data("quantum: " + expression, *flags)
-        assert data("quantum: " + first["text"], *flags) == first
+        copied=data("quantum: " + first["text"], *flags)
+        if expression=="QFT_N|x>_N":
+            # Canonical parsing can rename a generated sum index.
+            assert '∑' in copied['display_text'] and '∈ ℤ' in copied['display_text']
+            residual=data('quantum:norm(replace(replace(('+first['copy_text']+')-('+copied['copy_text']+'),N,4),x,1))',*flags)['text'].replace('−','-')
+            assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in residual.split(' + '))
+        else:
+            assert copied==first
     for expression, symbol, value in [(r"\sum_{k=0}^{N-1}{|k>}", "N", "3"),
                                       (r"1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}", r"\Sigma", "bitstrings(1)")]:
         first = data("quantum: " + expression, *flags)
