@@ -58,7 +58,7 @@ Without this flag, strict textual include behavior applies.
 The unchanged QB-004 `oracle.qasm` and `bernvaz.qasm` fixtures compile through
 this mode to the same circuit documents as explicitly inlined definitions
 (three and ten operations respectively). This does not establish notebook or
-GUI import coverage. The six file-import test methods also run against the
+GUI import coverage. The eight file-import test methods also run against the
 frozen compiler in CI and packaging.
 
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.

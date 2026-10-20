@@ -99,6 +99,24 @@ class FileImportTests(unittest.TestCase):
             self.assertEqual(result["Circuit"], self.run_import(command, ["--classical"], main.read_text()))
             self.assertIn("Registers", result["Circuit"])
 
+    def test_published_u_file_contract(self):
+        text = "OPENQASM 3; qubit q; U(pi/2,pi/3,pi/7) q;"
+        main = self.put("main.qasm", text)
+        for command in COMMANDS:
+            result = self.run_import(command, ["--source-file", str(main), "--published-u"])
+            self.assertEqual(result["Circuit"], self.run_import(command, ["--published-u"], text))
+            self.assertNotEqual(result["Circuit"], self.run_import(command, source=text))
+
+    def test_module_mode_keeps_custom_duplicate_errors(self):
+        self.put("module.inc", "OPENQASM 3.0; gate g q { x q; }")
+        main = self.put("main.qasm", 'OPENQASM 3; include "module.inc"; qubit q; g q;')
+        for command in COMMANDS:
+            result = self.run_import(command, ["--source-file", str(main), "--module-headers"])
+            self.assertEqual(result["Circuit"]["Steps"][0]["Gate"], "X")
+        self.put("main.qasm", 'OPENQASM 3; include "module.inc"; include "module.inc"; qubit q; g q;')
+        for command in COMMANDS:
+            self.run_import(command, ["--source-file", str(main), "--module-headers"], success=False)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
