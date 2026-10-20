@@ -121,7 +121,7 @@ try {
     if ($samplingProcess.ExitCode -ne 0 -or !(Get-Content -LiteralPath $samplingReport -Raw).StartsWith('PASS:')) { throw 'Packaged sampling GUI failed.' }
     Get-Content -LiteralPath $samplingReport
 } finally { $samplingProcess.Dispose() }
-& (Join-Path $PSScriptRoot 'test-sampling-shutdown.ps1') -Distribution $output -ReportDirectory (Join-Path $repo 'dist\sampling-shutdown')
+& (Join-Path $PSScriptRoot 'test-sampling-shutdown-observation.ps1') -Distribution $output -ReportDirectory (Join-Path $repo 'dist\sampling-shutdown')
 Assert-UnchangedSources
 if (!$Candidate) {
     Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null
