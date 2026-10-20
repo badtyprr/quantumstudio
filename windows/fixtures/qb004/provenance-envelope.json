@@ -1,0 +1,63 @@
+{
+  "Version": 1,
+  "Circuit": {
+    "Version": 1,
+    "Qubits": 4,
+    "Steps": [
+      {
+        "Gate": "CNOT",
+        "Angle": "",
+        "Wires": [
+          0,
+          3
+        ]
+      },
+      {
+        "Gate": "CNOT",
+        "Angle": "",
+        "Wires": [
+          1,
+          3
+        ]
+      },
+      {
+        "Gate": "CNOT",
+        "Angle": "",
+        "Wires": [
+          2,
+          3
+        ]
+      }
+    ]
+  },
+  "Source": {
+    "Version": 1,
+    "Root": "C:/nonexistent/QuantumStudio source fixture",
+    "Entry": "\u03ba-source.qasm",
+    "ModuleHeaders": true,
+    "Files": [
+      {
+        "Name": "\u03ba-source.qasm",
+        "Sha256": "07ade1fe741a68600ca2ab2ae39779b57a4b245353a3a659dfe5918ff9495215",
+        "Text": "OPENQASM 3.0;\n// \u03c8 Unicode source\ninclude \"oracle.qasm\";\nqubit[3] q; qubit[1] a; oracle(q,a);\n",
+        "Bom": true
+      },
+      {
+        "Name": "oracle.qasm",
+        "Sha256": "00ca08a9b091c46c942bc1f1878ccc69e922a0500b61c79a11b87c8c4debc4b1",
+        "Text": "OPENQASM 3.0;\r\ninclude \"stdgates.inc\";\r\n\r\ndef oracle(qubit[3] q, qubit[1] ancilla) {\r\n    int[32] s = 7;\r\n    int[16] n = 3;\r\n    for int i in [0:n - 1] {\r\n        if ((s >> i) & 1) {\r\n            cx q[i], ancilla[0];\r\n        }\r\n    }\r\n}\r\n",
+        "Bom": false
+      }
+    ],
+    "Bindings": [
+      {
+        "Path": "\u03ba-source.qasm",
+        "Target": "\u03ba-source.qasm"
+      },
+      {
+        "Path": "oracle.qasm",
+        "Target": "oracle.qasm"
+      }
+    ]
+  }
+}

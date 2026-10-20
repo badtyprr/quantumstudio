@@ -61,6 +61,30 @@ this mode to the same circuit documents as explicitly inlined definitions
 GUI import coverage. The eight file-import test methods also run against the
 frozen compiler in CI and packaging.
 
+## Saved-document model (not yet connected to the editors)
+
+`SourceCircuitDocument` is an immutable C# wrapper for the circuit and its source
+snapshot. The editor must provide its circuit validator/normalizer; the wrapper
+invokes it during import, loading and every circuit replacement. The wrapper
+validates snapshot fields, relative dependency paths, targets, UTF-8 byte
+limits, BOM flags and source hashes. It performs no filesystem access:
+the stored root is provenance metadata, not authorization to read that path.
+
+Saved documents carry `Format: "QuantumStudio.SourceCircuit"`, `Version: 1`,
+`Circuit`, `Source`, `PublishedU`, `Classical` and `OriginalCircuitSha256`.
+The original fingerprint detects changes to the normalized circuit JSON after
+import, independent of object-key ordering. It is informational metadata, not
+a signature or a proof that the circuit was compiled from those sources.
+Source text and hashes remain unchanged when the circuit is edited.
+
+The document limits are 4 MiB for saved JSON, 256 KiB for normalized circuit
+JSON, and 256 KiB total captured source bytes, with 64 files/bindings. Invalid
+or unsavable replacements reject before returning a new object; the previous
+document remains intact. Future editor wiring must use this wrapper for
+save/load and history while keeping runtime circuit requests separate.
+Changed-file checks, source diagnostic mapping, GUI integration and standalone
+export verification remain unfinished.
+
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
 UTF-8/BOM, missing/cyclic files, path boundaries and link retargeting, limits,

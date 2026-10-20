@@ -4,6 +4,11 @@ $repo = Split-Path $PSScriptRoot -Parent
 $validation = Join-Path $repo 'dist\gui-validation'
 New-Item -ItemType Directory -Force $validation | Out-Null
 $fx = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
+$sourceDocumentTest = Join-Path $validation 'source-circuit-document-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$sourceDocumentTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SourceCircuitDocument.cs') (Join-Path $PSScriptRoot 'SourceCircuitDocumentTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Source circuit document tests did not compile.' }
+& $sourceDocumentTest (Join-Path $PSScriptRoot 'fixtures/qb004/provenance-envelope.json')
+if ($LASTEXITCODE -ne 0) { throw 'Source circuit document tests failed.' }
 $textTest = Join-Path $validation 'classical-expression-text-tests.exe'
 & "$fx\csc.exe" /nologo /target:exe "/out:$textTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalExpressionText.cs') (Join-Path $PSScriptRoot 'ClassicalExpressionTextTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Classical expression text tests did not compile.' }

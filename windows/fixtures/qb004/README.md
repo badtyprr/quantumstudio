@@ -9,3 +9,10 @@ the output of `save_to_qasm("011")`. The generated files retain their version
 headers and standard include directives. They are local import fixtures;
 provider initialization, notebook execution inside QuantumStudio, and cloud
 results are not claimed. See `docs/learning-evidence/QB-004.md`.
+
+`provenance-envelope.json` was captured from the frozen compiler's file-import
+route using `oracle.qasm` and a Unicode/BOM entry file. Only its host-specific
+root directory was normalized to a nonexistent placeholder. The original
+source bytes, BOM flags, relative bindings and hashes remain intact, allowing
+the C# document model to validate a real protocol response without reading
+source files or requiring a compiler installation in the GUI test job.
