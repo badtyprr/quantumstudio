@@ -913,10 +913,38 @@ class QuantumStudio {
   for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States),Matrices=MatrixDeclarations.Copy(entries[j].Matrices)};
   return new CalculationSession {Version=3,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states),Matrices=MatrixDeclarations.Copy(matrices)};
  }
+ static bool SameSnapshotValue(object left,object right) {
+  var leftObject=left as System.Collections.Generic.IDictionary<string,object>;var rightObject=right as System.Collections.Generic.IDictionary<string,object>;
+  if(leftObject!=null || rightObject!=null) {
+   if(leftObject==null || rightObject==null || leftObject.Count!=rightObject.Count)return false;
+   foreach(var entry in leftObject) {object value;if(!rightObject.TryGetValue(entry.Key,out value) || !SameSnapshotValue(entry.Value,value))return false;}
+   return true;
+  }
+  var leftArray=left as System.Collections.IList;var rightArray=right as System.Collections.IList;
+  if(leftArray!=null || rightArray!=null) {
+   if(leftArray==null || rightArray==null || leftArray.Count!=rightArray.Count)return false;
+   for(int i=0;i<leftArray.Count;i++)if(!SameSnapshotValue(leftArray[i],rightArray[i]))return false;
+   return true;
+  }
+  return Object.Equals(left,right);
+ }
+ static bool SameSessionSnapshot(string left,string right) {
+  // Serializer reflection order can change after allocation/GC. Object key
+  // order is not session state; history, declaration and array order still is.
+  var serializer=new JavaScriptSerializer();
+  return SameSnapshotValue(serializer.DeserializeObject(left),serializer.DeserializeObject(right));
+ }
  static void CheckInvalidSessions(string path,string diagnostics,string expectedSnapshot) {
+  const string fixture="{\"Expression\":\"draft\",\"History\":[{\"Result\":\"1\",\"States\":[]},{\"Result\":\"2\",\"States\":[]}]}";
+  const string reordered="{\"History\":[{\"States\":[],\"Result\":\"1\"},{\"States\":[],\"Result\":\"2\"}],\"Expression\":\"draft\"}";
+  if(!SameSessionSnapshot(fixture,reordered) || SameSessionSnapshot(fixture,reordered.Replace("draft","changed")) ||
+     SameSessionSnapshot(fixture,"{\"Expression\":\"draft\",\"History\":[{\"Result\":\"2\",\"States\":[]},{\"Result\":\"1\",\"States\":[]}]}") ||
+     SameSessionSnapshot(fixture,"{\"Expression\":\"draft\",\"History\":[]}") ||
+     SameSessionSnapshot("{\"States\":null}","{\"States\":[]}"))
+   throw new Exception("Session snapshot comparison lost values or array order.");
   var serializer=new JavaScriptSerializer();
   string before=serializer.Serialize(CaptureSession());
-  if(before!=expectedSnapshot) {
+  if(!SameSessionSnapshot(before,expectedSnapshot)) {
    File.WriteAllText(diagnostics+".before.json",expectedSnapshot);File.WriteAllText(diagnostics+".after.json",before);
    throw new Exception("Workspace differed before invalid-session attempts.");
   }
@@ -925,9 +953,10 @@ class QuantumStudio {
    File.WriteAllText(path,bad);Exception rejected=null;
    try {OpenSession(path);}catch(Exception ex) {rejected=ex;}
    string after=serializer.Serialize(CaptureSession());
-   if(rejected==null || after!=before) {
+   bool unchanged=SameSessionSnapshot(after,before);
+   if(rejected==null || !unchanged) {
     File.WriteAllText(diagnostics+".before.json",before);File.WriteAllText(diagnostics+".after.json",after);
-    throw new Exception("Invalid-session case "+index+" ("+bad.Length+" characters): rejected="+(rejected!=null)+", workspace unchanged="+(after==before)+". Rejection: "+(rejected==null ? "none" : rejected.GetType().Name));
+    throw new Exception("Invalid-session case "+index+" ("+bad.Length+" characters): rejected="+(rejected!=null)+", workspace unchanged="+unchanged+". Rejection: "+(rejected==null ? "none" : rejected.GetType().Name));
    }
    ++index;
   }
