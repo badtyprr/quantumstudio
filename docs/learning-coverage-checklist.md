@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; then DEV-02/03/05 and the reproduced DEV-16 include gap, followed by DEV-04/06/07/08. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
+Recommended order: finish REL-03 publication; run AUD-01 and AUD-02 alongside code work; then finish DEV-05 and the reproduced DEV-16 include gap, followed by the remaining DEV-03/04/06/07/08 work. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -27,7 +27,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 | [DEV-13](#dev-13) | P2 | L | Discovery needed | AUD-02 | Python/SDK notebook execution route |
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
-| [DEV-16](#dev-16) | P1 | M | Reproduced; not implemented | None | Local OpenQASM include dependencies |
+| [DEV-16](#dev-16) | P1 | M | Implementation in review | None | Local OpenQASM include dependencies |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
 | [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
@@ -36,8 +36,9 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 ## Release queue
 
 - [x] REL-01: Release `92f80696`: 70 packaged audit groups, 262 verified visual captures, 340 manifest files. ZIP SHA-256 `d621438711c3ff6a58f819b3c3d559db547b187d3b2c5f5f099e87c71bdb3323`.
-- [ ] REL-02: Deliver the merged #287–#290 features (matrix declarations/assumptions, Gram positivity, Fourier display) in a new verified package. Merge status and release status are separate.
-- [ ] REL-03: Deliver DEV-01 after exact-head review, CI and merged-artifact validation.
+- [x] REL-02: Published [checkpoint `14ed45e2`](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-14ed45e2), including matrix declarations/assumptions, Gram positivity, Fourier display and the package-smoke repair. Validation: 74 packaged audit groups, 266 verified visual captures, 340 manifest files. ZIP SHA-256 `6b1a7e5df9d40904ff5ce4d26367a67c24c55741db631f325ebb4aa3122e5f4d`.
+- [ ] REL-03: Publish merged revision `d7acc12b39c729b3c460ccbe3c224c02c19ed393` after artifact verification. Includes [#292](https://github.com/badtyprr/quantumstudio/pull/292), [#293](https://github.com/badtyprr/quantumstudio/pull/293), [#295](https://github.com/badtyprr/quantumstudio/pull/295), [#296](https://github.com/badtyprr/quantumstudio/pull/296), [#297](https://github.com/badtyprr/quantumstudio/pull/297) and built-in `|GHZ>` in [#298](https://github.com/badtyprr/quantumstudio/pull/298). Required merged-tip CI passed. Package build/audit progress does not establish publication.
+- [ ] REL-04: Integrate and release the reviewed symbolic-label and local-include changes after REL-03. [#299](https://github.com/badtyprr/quantumstudio/pull/299) has passed required CI; [#300](https://github.com/badtyprr/quantumstudio/pull/300) and [#301](https://github.com/badtyprr/quantumstudio/pull/301) remain gated on their exact commits' checks. None is included in REL-02 or REL-03.
 
 ## Acceptance criteria by development item
 
@@ -46,21 +47,21 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 - [ ] **Compact bound-index products** — P1; Implemented; release pending; size S; dependencies: None.
 - Source focus: Fundamentals: phase estimation; IBM Fourier double sum. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Finish xy parsing without changing quoted names, pi or nested index declarations. Verify QFT residuals for N=1..4 in exact/approximate modes and symbolic copy round trips.
-- Evidence: IBM Fourier double-sum reproduction; implementation on `codex/tex-index-products`, not yet merged/released. Nested index declarations, lexical constants and parser complexity limits have regression coverage. Tests: `src/quantum-worker-test.py`, `src/quantum-notation-test.cc`. Owner: unassigned. PR: pending.
+- Evidence: IBM Fourier double-sum reproduction; [#292](https://github.com/badtyprr/quantumstudio/pull/292) merged as `48115b3ca953f80747df0e05df478c1a92788666`; release pending in REL-03. Nested index declarations, lexical constants and parser complexity limits have regression coverage. Tests: `src/quantum-worker-test.py`, `src/quantum-notation-test.cc`. Owner: unassigned.
 
 ### DEV-02
 
 - [ ] **Domain-preserving symbolic Fourier expansion** — P1; Implemented; release pending; size L; dependencies: DEV-01.
 - Source focus: Fundamentals: phase estimation and factoring. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Simplify QFT_N|x>_N to a capture-free normalized Fourier sum with IBM positive phase. Preserve integer/range constraints after substitution: x=N, fractional x and invalid N must still reject. Test inverse and N=1.
-- Evidence: `codex/fourier-action`; regression coverage in `src/quantum-worker-test.py` and `src/quantum-algebra-test.cc`; forward/inverse sums, invalid substitution, cancellation, fresh indices and canonical copy. Not yet merged/released. Owner: unassigned. PR: pending.
+- Evidence: [#293](https://github.com/badtyprr/quantumstudio/pull/293) merged as `61e04203bbfecb606dea1ea68352cdada6786f29`; release pending in REL-03. Regression coverage in `src/quantum-worker-test.py` and `src/quantum-algebra-test.cc`: forward/inverse sums, invalid substitution, cancellation, fresh indices and canonical copy. Owner: unassigned.
 
 ### DEV-03
 
 - [ ] **Declared orthonormal bases** — P1; Partial; size L; dependencies: None.
 - Source focus: Basics and general formulation: states and measurements. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Declare a named basis and dimension; reduce inner products to Kronecker delta and complete projector sums to identity. Unknown bases must stay unresolved. Verify declarations survive save/load and copy.
-- In progress: `codex/orthonormal-basis` adds scoped finite named declarations and within-basis contractions; `codex/basis-completeness` adds full finite projector sums. Distinct bases retain unknown overlaps; symbolic families and dedicated editing remain outstanding. This work is not merged or released.
+- Merged, release pending in REL-03: [#295](https://github.com/badtyprr/quantumstudio/pull/295) adds scoped finite named declarations and within-basis contractions; [#296](https://github.com/badtyprr/quantumstudio/pull/296) adds full finite projector sums. Distinct bases retain unknown overlaps; symbolic families and dedicated editing remain outstanding. The full DEV-03 item remains partial.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
 
 ### DEV-04
@@ -75,6 +76,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 - [ ] **Register dimensions and symbolic bit strings** — P1; Partial; size M; dependencies: None.
 - Source focus: Fundamentals: query algorithms and Fourier algorithms. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Carry widths through tensor products, basis labels and bit operations. Test leading zeros, empty registers, concatenation, indexed registers, and contradictory dimensions; ambiguous widths remain symbolic.
+- In review: [#299](https://github.com/badtyprr/quantumstudio/pull/299) preserves typed symbolic binary labels through operations, set kets and copy/substitution, including deferred cardinality when labels may become equal. Required CI passed; 1,540 worker checks and 18 GUI checks passed locally. Not merged or released. Indexed-register concatenation, general symbolic domains and widths beyond the finite limit remain outstanding.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
 
 ### DEV-06
@@ -149,11 +151,13 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 
 ### DEV-16
 
-- [ ] **Local OpenQASM include dependencies** — P1; Reproduced; not implemented; size M; dependencies: None.
+- [ ] **Local OpenQASM include dependencies** — P1; Implementation in review; size M; dependencies: None.
 - Source: [QB-004 evidence](learning-evidence/QB-004.md), generated oracle and algorithm subroutine instructions. Direct includes fail while explicit inlining imports successfully.
 - Acceptance: Resolve dependencies relative to a selected source file with an explicit policy for external paths and paste-only input. Preserve standard includes; diagnose missing files, cycles and duplicate declarations with file/line context. Bound depth and total bytes; preserve dependency identity through save/load/export and detect changed dependencies. Verify both generated subroutines and numerical equivalence to inlining, nested includes and paths containing spaces.
 - Priority rationale: This blocks a demonstrated local circuit workflow. Select after the queued Fourier/basis release and DEV-05; it does not depend on runtime wire indexing or cloud access. Source-aware import context is part of this task.
-- Evidence: release `92f80696` importer reproduction; recurring regression fixture and implementation pending. Owner: unassigned. PR: unassigned.
+- In review: [#300](https://github.com/badtyprr/quantumstudio/pull/300) captures bounded dependency snapshots; [#301](https://github.com/badtyprr/quantumstudio/pull/301) adds the source-aware compiler CLI and generated-module adapter. Both unchanged QB-004 subroutine fixtures match explicitly inlined circuit documents in Python and the frozen compiler. Neither change is merged or released.
+- Still required: retain source identity in both editors and undo/history; surface changed dependencies; map compiler diagnostics to original source; verify save/load, standalone export and failure recovery. The CLI route alone does not close DEV-16 or QB-004.
+- Evidence: release `92f80696` importer reproduction in `docs/learning-evidence/QB-004.md`; proposed tests `windows/test-qasm-source-bundle.py` and `windows/test-qasm-file-import.py`. Owner: unassigned.
 
 ### AUD-01
 
