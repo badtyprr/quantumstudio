@@ -8,6 +8,11 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('typed-shift-unsigned-left','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[8]("00000001");',{'0000001010000001':'1'}),
+ ('typed-shift-unsigned-right','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c>>uint[8]("00000001");',{'0100000010000001':'1'}),
+ ('variable-shift-unsigned-count','qubit q;x q;bit[8] c="10000000";c[0]=measure q;uint[8] n=uint[8](c);bit[8] out;out=c<<n;',{'0000000010000001':'1'}),
+ ('typed-shift-unsigned-max','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[64](18446744073709551615);',{'0000000010000001':'1'}),
+ ('computed-shift-unsigned-bits','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[8](c & "00000001");',{'0000001010000001':'1'}),
  ('boolean-bitcast-measured','qubit q;h q;bit c=measure q;bit d;d=bit[1](c=="1");',{'00':'1/2','11':'1/2'}),
  ('boolean-bitcast-negated','qubit q;h q;bit c=measure q;bit d;d=bit[1](!(c=="1"));',{'01':'1/2','10':'1/2'}),
  ('computed-boolean-bitcast-integer','qubit q;h q;bit c=measure q;bit d;d=bit[1](int[1](c)<0);',{'00':'1/2','11':'1/2'}),
@@ -349,6 +354,9 @@ rejected += ['int n=2;bit c;for int i in [true:n]{c=1;}',
              'int n=2;bit c;for int i in [0:n]{}c=i==0;',
              'int n=2;qubit[3] q;for int i in [0:n]{x q[i];}',
              'int n=2;qubit q;for int i in [0:n]{rx(i) q;}']
+rejected += ['qubit q;bit[8] c;c[0]=measure q;c=c<<int[8](c);',
+             'qubit q;bit[8] c;c[0]=measure q;int[8] n=int[8](c);c=c>>n;',
+             'qubit q;bit[8] c;c[0]=measure q;c=c<<uint[7](c);']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1

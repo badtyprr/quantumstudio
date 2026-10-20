@@ -1040,7 +1040,18 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             op=node.op.name;shift=op in ('<<','>>');logical=op in ('&&','||')
             size=1 if logical else width(node.lhs) or (None if shift else width(node.rhs)) or (None if op in comparisons else hint)
             left,lw=build(node.lhs,size,depth+1)
-            right,rw=build(node.rhs,None if shift else lw,depth+1)
+            if shift and integer_value(node.rhs):
+                # Standard OpenQASM shift counts are unsigned integers. Keep
+                # their full value: narrowing to the left width could turn an
+                # out-of-range shift (zero result) into a nonzero shift.
+                bound(depth+1);bound(depth+2)
+                child=integer(node.rhs,depth+3)
+                sign,_=integer_type(child)
+                if sign!='Unsigned':raise ValueError('Shift distance requires an unsigned integer.')
+                right={'Kind':'IntegerBits','Left':{'Kind':'IntegerCast','Signedness':'Unsigned','Width':64,'Left':child}}
+                rw=64
+            else:
+                right,rw=build(node.rhs,None if shift else lw,depth+1)
             if (not shift and lw!=rw) or (logical and lw!=1):raise ValueError('Classical operands have incompatible widths.')
             return {'Kind':'Logical' if logical else 'Binary','Operator':operations[op],'Left':left,'Right':right},1 if op in comparisons else lw
         raise ValueError('Unsupported classical bit expression: '+type(node).__name__)
