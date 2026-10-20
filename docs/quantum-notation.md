@@ -773,8 +773,13 @@ Classical OpenQASM import accepts top-level `output bit result;` and
 those registers appear in the result; ordinary bit registers remain available
 as working storage. Within the selected registers, results retain the existing
 reverse-declaration, most-significant-bit-first display order. Without explicit
-outputs, all visible bit registers remain results. This follows the
-[OpenQASM 3 input/output selection rule](https://openqasm.com/versions/3.0/language/directives.html#input-output).
+outputs, all program-scope bit registers remain results. Local bit storage
+inside blocks or subroutines is excluded, even when compilation hoists its
+storage. A program with only local bit storage has an empty output bit string;
+its operations still execute. Non-integer shadowing remains unsupported.
+This follows the
+[OpenQASM 3 input/output selection rule](https://openqasm.com/versions/3.0/language/directives.html#input-output)
+and [variable lifetimes](https://openqasm.com/versions/3.0/language/scope.html).
 Runtime `input` parameters and non-bit outputs still require separate support.
 Numerical-composer import rejects explicit input/output declarations rather
 than discarding their result semantics.
