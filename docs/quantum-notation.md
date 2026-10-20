@@ -548,6 +548,11 @@ comparisons, `popcount`, `rotl` and `rotr`. Assignments evaluate the whole
 right-hand side before writing targets. Programs with no qubits can use these
 classical operations and both evaluation modes. Typed runtime integer arithmetic
 and bounded data-dependent `while` loops and integer `for` ranges are supported as described below.
+Shift counts also accept unsigned integer variables and explicit casts, such as
+`c << uint[8](distance)`, following the
+[OpenQASM unsigned shift-count rule](https://openqasm.com/versions/3.0/language/classical.html#classical-bits-and-registers).
+Counts retain their full value; shifting by at least the operand width yields
+zero. Signed integer counts require an explicit unsigned conversion.
 Dynamic wire indexing and measurement-driven gate angles
 remain unsupported and are rejected explicitly.
 
