@@ -1204,13 +1204,8 @@ if __name__ == '__main__':
     sys.stdout.reconfigure(encoding='utf-8')
     sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     try:
-        source_bytes = sys.stdin.buffer.read(262145)
-        if len(source_bytes) > 262144:
-            raise ValueError('OpenQASM input must be at most 256 KB.')
-        source = source_bytes.decode('utf-8-sig')
-        if len(set(sys.argv[1:])) != len(sys.argv[1:]) or any(arg not in ('--published-u', '--classical') for arg in sys.argv[1:]):
-            raise ValueError('Usage: qasm-import.exe [--published-u] [--classical] (OpenQASM on stdin)')
-        result = convert(source, published_u='--published-u' in sys.argv[1:], classical='--classical' in sys.argv[1:])
+        from qasm_import_request import import_request
+        result = import_request(sys.argv[1:], sys.stdin.buffer, convert)
         sys.stdout.write(json.dumps(result))
     except Exception as error:
         sys.stderr.write(str(error)[:4096] + '\n')
