@@ -107,6 +107,11 @@ been edited since import. Undo/redo includes source and import options, and
 the unsaved-changes check compares the complete saved document. The numerical
 composer's import route has not yet been migrated.
 
+`windows/test-source-import-bridge.ps1` runs six checks against the frozen
+compiler through the C# bridge, including Unicode/spaced paths, BOM,
+local includes, the explicit module-header option, and unchanged history after
+rejected imports. Both OpenQASM CI and packaging run this small integration test.
+
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
 UTF-8/BOM, missing/cyclic files, path boundaries and link retargeting, limits,

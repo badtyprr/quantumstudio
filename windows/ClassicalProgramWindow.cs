@@ -169,8 +169,13 @@ sealed class ClassicalProgramWindow : Window {
   if(history.Serialize()!=full || saved!=full)throw new Exception("Source document save/reopen changed data.");
   history.Edit(d=>d.Steps=new ClassicalCircuit.Step[0]);
   if(history.Current.Serialize()!=imported && (!history.Source.CircuitEdited || history.Source.SourceJson!=originalSource))throw new Exception("Circuit edit lost source identity.");
+  string edited=history.Serialize();
+  try{history.Open("{");throw new Exception("Malformed source document accepted.");}catch(InvalidDataException){}
+  if(history.Serialize()!=edited)throw new Exception("Invalid open changed the current source document.");
+  Refresh();Capture(report+".edited.png");
   history.Open(full);
   File.WriteAllText(report+".qcircuit",imported);Refresh();status.Text="Imported · Classical registers, saved measurements and branches preserved.";Capture(report+".png");
+  Width=MinWidth;Height=MinHeight;UpdateLayout();((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(report+".minimum.png");
  }
  void Open() {var picker=new Microsoft.Win32.OpenFileDialog {Filter="Classical circuits (*.qcircuit)|*.qcircuit|JSON (*.json)|*.json"};if(picker.ShowDialog(this)!=true)return;string text=new UTF8Encoding(false,true).GetString(BoundedUtf8File.Read(picker.FileName,SourceCircuitDocument.MaxDocumentBytes,"Classical circuit"));var next=new ClassicalProgramHistory(history.Current);next.Open(text);if(!Discard())return;history.Open(next.Serialize());saved=history.Serialize();}
  void Save() {var picker=new Microsoft.Win32.SaveFileDialog {Filter="Classical circuit (*.qcircuit)|*.qcircuit",DefaultExt=".qcircuit",AddExtension=true,OverwritePrompt=true};if(picker.ShowDialog(this)!=true)return;SaveTo(picker.FileName);}
