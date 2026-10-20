@@ -150,6 +150,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
   return "qbasis("+std::to_string(index)+","+std::to_string(dimension)+")";
  }
  std::string bell=bellState(s);if(!bell.empty())return bell;
+ if(s=="GHZ")return "(matrix(8,1,[1,0,0,0,0,0,0,1])/sqrt(2))";
  if(s.find("±")!=std::string::npos)throw std::runtime_error("Choose one state sign, + or -, rather than an ambiguous plus/minus label.");
  if(s == "+") return "(matrix(2,1,[1,1])/sqrt(2))";
  if(s == "-") return "(matrix(2,1,[1,-1])/sqrt(2))";

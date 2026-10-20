@@ -276,6 +276,12 @@ Applying an adjoint twice, conjugation twice, or transpose twice cancels symboli
 
 ## Named state labels
 
+`|GHZ>` (or `|GHZ⟩`) is built in: it means the normalized three-qubit state
+`(|000>+|111>)/sqrt(2)`. No entry in **States** is required. `<GHZ|` is its
+bra, `<GHZ|GHZ>` gives `1`, and measuring all three qubits gives `000` or
+`111` with probability one half each. The name is case-sensitive and reserved;
+use a different name for a custom state or a GHZ state with another qubit count.
+
 Multi-character ket and bra labels are preserved as single names, including `|Bell>`, `|psi>` and `|after CZ>`. An undefined label stays symbolic; it is not interpreted as multiplied letters or a calculator function. Names with internal spaces remain distinct from names without spaces. Explicit variables registered through the library API are resolved as states and must satisfy the existing column-vector or binary-label-set checks. In the GUI, choose **States** beside Calculate to define named column vectors.
 
 `Bell` is not a predefined alias or a normalization assumption. Use `<Phi+|Phi+>` for the built-in normalized Bell-state overlap (1), and `<Phi+|CZ|Phi+>` for its overlap after CZ (0).

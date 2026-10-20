@@ -24,6 +24,29 @@ def data(expression, *flags):
     return value
 
 
+# The built-in GHZ label is the normalized, positive-phase three-qubit state.
+for flags in ((), ("--approx",)):
+    ghz = data("quantum:|GHZ>", *flags)
+    assert (ghz["rows"], ghz["columns"]) == (8, 1)
+    for expression, expected in [
+        ("<GHZ|GHZ>", "1"),
+        ("norm(vec(|GHZ>-(|000>+|111>)/sqrt(2)))", "0"),
+        ("norm(vec(|GHZ><GHZ|-density((|000>+|111>)/sqrt(2))))", "0"),
+        ("|<000|GHZ>|^2", "0.5"),
+        ("|<111|GHZ>|^2", "0.5"),
+        ("<001|GHZ>", "0"),
+        ("norm(vec(<GHZ|-qdag((|000>+|111>)/sqrt(2))))", "0"),
+    ]:
+        value = data("quantum:" + expression, *flags)
+        if flags:
+            assert abs(Decimal(value["text"].replace("−", "-")) - Decimal(expected)) < Decimal("1e-12")
+        elif expected == "0.5":
+            assert value["text"] in ("0.5", "1/2", "1 ∕ 2")
+        else:
+            assert value["text"] == expected, (expression, flags, value)
+    assert data("quantum:" + ghz["copy_text"], *flags)["cells"] == ghz["cells"]
+    assert data("quantum:|GHZ⟩", *flags)["cells"] == ghz["cells"]
+
 # Complete declared-basis projector sums are identity; subsets are not.
 def basis_completeness_result(expression,approx=False,reject=False):
     flags=("--approx",) if approx else ()
@@ -835,7 +858,7 @@ for invalid_definitions in [
     [("Bell", "|Bell>")], [("Bell", "|missing>")],
     [("Bell", "1")], [("Bell", "[1,0;0,1]")],
     [("Bell", "[infinity;0]")], [("Bell", "[undefined;0]")],
-    [("0", "|1>")], [("Phi+", "|0>")], [("today", "|0>")],
+    [("0", "|1>")], [("Phi+", "|0>")], [("GHZ", "|0>")], [("today", "|0>")],
     [(" Bell", "|0>")], [("Bell ", "|0>")], [("bad\nname", "|0>")],
     [("bad|name", "|0>")], [("bad\x00name", "|0>")],
     [("Bell", "|0>\x00ignored")],

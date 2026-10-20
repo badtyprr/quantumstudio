@@ -24,6 +24,8 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("|GHZ>","(matrix(8,1,[1,0,0,0,0,0,0,1])/sqrt(2))");
+ equal("<GHZ|","qdag((matrix(8,1,[1,0,0,0,0,0,0,1])/sqrt(2)))");
  equal("2^Tr(A)","qpower(2,qtrace(A))");
  equal("2^Tr(I)","qpower(2,qtrace([1,0;0,1]))");
  equal("A^T","qtranspose(A)");
