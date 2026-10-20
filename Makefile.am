@@ -50,6 +50,10 @@ EXTRA_DIST = config.rpath  \
 	windows/QasmImportTests.cs \
 	windows/QuantumStudio.cs \
 	windows/SessionStore.cs \
+	windows/MatrixDeclarations.cs \
+	windows/MatrixDeclarationEditor.cs \
+	windows/MatrixDeclarationsTests.cs \
+	windows/MatrixDeclarationsGuiTests.cs \
 	windows/NamedStateEditor.cs \
 	windows/WorkspaceTheme.cs \
 	windows/WorkspaceTheme.xaml \

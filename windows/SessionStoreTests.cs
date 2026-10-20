@@ -19,7 +19,7 @@ class SessionStoreTests {
    string path=Path.Combine(directory,"roundtrip.qsession");var expected=Valid();SessionStore.Save(path,expected);
    var actual=SessionStore.Load(path);Require(actual.Expression==expected.Expression && actual.History[0].Result==expected.History[0].Result,"Unicode roundtrip failed");
    expected.Expression="replacement";SessionStore.Save(path,expected);Require(SessionStore.Load(path).Expression=="replacement","Atomic replacement failed");
-   string before=File.ReadAllText(path);expected.Version=3;Reject(delegate {SessionStore.Save(path,expected);});Require(File.ReadAllText(path)==before,"Invalid save damaged destination");
+   string before=File.ReadAllText(path);expected.Version=4;Reject(delegate {SessionStore.Save(path,expected);});Require(File.ReadAllText(path)==before,"Invalid save damaged destination");
    expected=Valid();expected.History=new SessionEntry[51];Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Expression=new string('x',32001);Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Expression=new string('界',10667);Reject(delegate {SessionStore.Validate(expected);});

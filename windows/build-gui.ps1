@@ -9,6 +9,8 @@ $compilerArgs = @('/nologo', '/target:winexe', '/platform:x64', "/out:$output\Qu
     "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll",
     "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll", "$PSScriptRoot\QuantumStudio.cs", "$PSScriptRoot\CircuitComposer.cs", "$PSScriptRoot\QasmAngle.cs")
 $compilerArgs += "$PSScriptRoot\SessionStore.cs"
+$compilerArgs += "$PSScriptRoot\MatrixDeclarations.cs"
+$compilerArgs += "$PSScriptRoot\MatrixDeclarationEditor.cs"
 $compilerArgs += "$PSScriptRoot\NumericalSampling.cs"
 $compilerArgs += "$PSScriptRoot\ClassicalExpression.cs"
 $compilerArgs += "$PSScriptRoot\ClassicalExpressionText.cs"
