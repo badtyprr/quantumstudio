@@ -120,6 +120,46 @@ sealed class ClassicalIntegerType {
  }
  internal void Write(Action<ulong> number){number((ulong)Signedness);number((ulong)DeclaredWidth);}
 }
+// Immutable binary64 expression trees. Evaluation belongs to the worker so
+// both execution modes use the current classical record and variable storage.
+sealed class ClassicalRealExpression {
+ public enum NodeKind { Constant=0, Integer=1, Binary=2 }
+ public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3 }
+ public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
+ public double Value {get;private set;}public ClassicalIntegerExpression Integer {get;private set;}
+ public ClassicalRealExpression Left {get;private set;}public ClassicalRealExpression Right {get;private set;}
+ internal int Depth {get;private set;}internal int Count {get;private set;}
+ ClassicalRealExpression(NodeKind kind,double value,ClassicalIntegerExpression integer,Operator operation,ClassicalRealExpression left,ClassicalRealExpression right) {
+  Kind=kind;Value=value;Integer=integer;Operation=operation;Left=left;Right=right;
+  Depth=1+Math.Max(integer==null ? 0 : integer.Depth,Math.Max(left==null ? 0 : left.Depth,right==null ? 0 : right.Depth));
+  Count=1+(integer==null ? 0 : integer.Count)+(left==null ? 0 : left.Count)+(right==null ? 0 : right.Count);
+  if(Depth>32 || Count>512)throw new ArgumentException("Real expressions allow 32 levels and 512 nodes.");
+ }
+ public static ClassicalRealExpression Constant(double value) {
+  if(Double.IsNaN(value) || Double.IsInfinity(value))throw new ArgumentException("Real constants must be finite.");
+  return new ClassicalRealExpression(NodeKind.Constant,value,null,0,null,null);
+ }
+ public static ClassicalRealExpression FromInteger(ClassicalIntegerExpression value) {
+  if(value==null)throw new ArgumentNullException("value");
+  return new ClassicalRealExpression(NodeKind.Integer,0,value,0,null,null);
+ }
+ public static ClassicalRealExpression Binary(Operator operation,ClassicalRealExpression left,ClassicalRealExpression right) {
+  if(left==null || right==null)throw new ArgumentNullException("operand");
+  if(!Enum.IsDefined(typeof(Operator),operation))throw new ArgumentException("Unknown real operator.");
+  return new ClassicalRealExpression(NodeKind.Binary,0,null,operation,left,right);
+ }
+ internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+  if(bits<0 || bits>64)throw new ArgumentException("Classical register size must be 0-64.");
+  if(Integer!=null)Integer.Validate(bits,variables);
+  if(Left!=null)Left.Validate(bits,variables);if(Right!=null)Right.Validate(bits,variables);
+ }
+ internal void WriteNode(Action<ulong> number) {
+  number((ulong)Kind);
+  if(Kind==NodeKind.Constant)number(unchecked((ulong)BitConverter.DoubleToInt64Bits(Value)));
+  else if(Kind==NodeKind.Integer)Integer.WriteNode(number);
+  else {number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);}
+ }
+}
 sealed class ClassicalIntegerExpression {
  public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }

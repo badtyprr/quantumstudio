@@ -22,6 +22,47 @@ static class ClassicalExpressionTests {
   var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);
   return (Dictionary<string,object>)root[exact ? "probabilities" : "counts"];
  }
+ static void RotationChecks(string worker) {
+  var zero=ClassicalRealExpression.Constant(0);
+  Func<G> rotation=()=>new G{Kind=O.Rotation,Wires=new[]{0},Axis=NumericalSampling.RotationAxis.Y,Angle=zero};
+  Reject(()=>ClassicalRealExpression.Constant(Double.NaN));Reject(()=>ClassicalRealExpression.Constant(Double.PositiveInfinity));
+  Reject(()=>ClassicalRealExpression.FromInteger(null));
+  Reject(()=>ClassicalRealExpression.Binary((ClassicalRealExpression.Operator)99,zero,zero));
+  Reject(()=>ClassicalRealExpression.Binary(ClassicalRealExpression.Operator.Add,null,zero));
+  var deep=zero;for(int n=1;n<32;++n)deep=ClassicalRealExpression.Binary(ClassicalRealExpression.Operator.Add,deep,zero);
+  Reject(()=>ClassicalRealExpression.Binary(ClassicalRealExpression.Operator.Add,deep,zero));
+  var wide=zero;for(int n=0;n<8;++n)wide=ClassicalRealExpression.Binary(ClassicalRealExpression.Operator.Add,wide,wide);
+  Reject(()=>ClassicalRealExpression.Binary(ClassicalRealExpression.Operator.Add,wide,wide));
+  foreach(bool exact in new[]{false,true}) {
+   string payload=Encoding.UTF8.GetString(Request(exact,1,1,new[]{0},new[]{rotation()}));
+   Check(payload.StartsWith(exact ? "QEXACT10\n" : "QSAMPLE11\n"));Check(payload.EndsWith("16\n0\n1\n0\n0\n"));
+   var negative=rotation();negative.Angle=ClassicalRealExpression.Constant(-1);
+   Check(Encoding.UTF8.GetString(Request(exact,1,1,new[]{0},new[]{negative})).EndsWith("0\n13830554455654793216\n"));
+   foreach(Action<G> corrupt in new Action<G>[] {
+    g=>g.Angle=null,g=>g.Axis=null,g=>g.Axis=(NumericalSampling.RotationAxis)9,
+    g=>g.Wires=new[]{1},g=>g.Wires=new int[0],g=>g.Wires=new[]{0,0},
+    g=>g.Expression="X",g=>g.ClassicalBit=0,g=>g.Mask=1,g=>g.Value=1,
+    g=>g.WhenTrue=new G[0],g=>g.WhenFalse=new G[0],g=>g.VariableSlot=0,
+    g=>g.ClassicalExpression=E.Constant(1,0),
+    g=>g.IntegerExpression=I.Constant(T.Create(T.Sign.Signed),0)
+   }) {var invalid=rotation();corrupt(invalid);Reject(()=>Request(exact,1,1,new[]{0},new[]{invalid}));}
+   var foreign=new G{Kind=O.Gate,Expression="X",Wires=new[]{0},Angle=zero};Reject(()=>Request(exact,1,1,new[]{0},new[]{foreign}));
+   var type=T.Create(T.Sign.Signed);var variable=rotation();variable.Angle=ClassicalRealExpression.FromInteger(I.Variable(type,0));
+   Reject(()=>Request(exact,1,1,new[]{0},new[]{variable}));
+   Check(Request(exact,1,1,new[]{0},new[]{variable},new[]{type}).Length>0);
+   if(worker!=null) {
+    var result=Evaluate(worker,exact,1,1,new[]{0},new[]{rotation(),new G{Kind=O.Measure,Wires=new[]{0},ClassicalBit=0}});
+    Check(result.Count==1 && result["0"].ToString()==(exact ? "1" : "10000"));
+    var feedback=rotation();feedback.Wires=new[]{1};
+    feedback.Angle=ClassicalRealExpression.Binary(ClassicalRealExpression.Operator.Multiply,
+     ClassicalRealExpression.Constant(Math.PI),ClassicalRealExpression.FromInteger(I.Read(T.Create(T.Sign.Unsigned,1),0)));
+    var steps=new[]{new G{Kind=O.Gate,Wires=new[]{0},Expression="H"},new G{Kind=O.Measure,Wires=new[]{0},ClassicalBit=0},feedback,new G{Kind=O.Measure,Wires=new[]{1},ClassicalBit=1}};
+    result=Evaluate(worker,exact,2,2,new[]{0,1},steps);
+    if(exact)Check(result.ContainsKey("00") && result.ContainsKey("11"));
+    else Check(result.Count==2 && Convert.ToInt32(result["00"])+Convert.ToInt32(result["11"])==10000);
+   }
+  }
+ }
  static void RangeChecks(string worker) {
   var type=T.Create(T.Sign.Signed,0);var types=new[]{type,type,type};
   Func<ulong,I> literal=n=>I.Constant(type,n);
@@ -414,6 +455,7 @@ static class ClassicalExpressionTests {
   TransferChecks(args.Length>0 ? args[0] : null);
   TerminationChecks(args.Length>0 ? args[0] : null);
   RangeChecks(args.Length>0 ? args[0] : null);
+  RotationChecks(args.Length>0 ? args[0] : null);
   VariableChecks(args.Length>0 ? args[0] : null);
   Console.WriteLine("PASS: "+checks+" classical expression adapter checks.");return 0;
  }catch(Exception e){Console.Error.WriteLine(e);return 1;}}
