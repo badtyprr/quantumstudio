@@ -77,13 +77,6 @@ class SourceBundle:
     def changed_files(self):
         """Compare captured bytes with disk; never change the captured program."""
         changed = []
-        for name, target in self.bindings:
-            try:
-                current = _inside(self.root / name, self.root).relative_to(self.root).as_posix()
-            except (OSError, SourceError):
-                current = None
-            if current != target:
-                changed.append(name)
         for source in self.files:
             try:
                 path = _inside(self.root / source.name, self.root)
@@ -92,6 +85,13 @@ class SourceBundle:
                 digest = None
             if digest != source.sha256 and source.name not in changed:
                 changed.append(source.name)
+        for name, target in self.bindings:
+            try:
+                current = _inside(self.root / name, self.root).relative_to(self.root).as_posix()
+            except (OSError, SourceError):
+                current = None
+            if current != target and target not in changed and name not in changed:
+                changed.append(name)
         return tuple(changed)
 
 
@@ -138,7 +138,9 @@ def capture_source(entry, *, root=None):
         requested_path = Path(os.path.normpath(path))
         if not requested_path.is_relative_to(root):
             raise SourceError("Include path is outside the selected source root.")
-        requested = requested_path.relative_to(root).as_posix()
+        # Keep the original path for later identity checks: lexically collapsing
+        # link/../file can select a different file than filesystem resolution.
+        requested = path.relative_to(root).as_posix()
         path = _inside(path, root)
         name = path.relative_to(root).as_posix()
         bindings[requested] = name

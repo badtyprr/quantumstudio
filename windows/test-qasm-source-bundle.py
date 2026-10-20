@@ -139,6 +139,22 @@ class SourceBundleTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             compiler.convert(capture_source(main).expanded)
 
+    def test_parent_after_directory_link_keeps_identity(self):
+        self.put("sub/deep/unused", "")
+        self.put("sub/module.inc", "// selected")
+        self.put("module.inc", "// different")
+        link = self.root / "alias"
+        try:
+            link.symlink_to(self.root / "sub/deep", target_is_directory=True)
+        except OSError as error:
+            self.skipTest(f"Directory symlink creation unavailable: {error}")
+        main = self.put("main.qasm", 'include "alias/../module.inc";')
+        bundle = capture_source(main)
+        self.assertEqual(bundle.changed_files(), ())
+        # Windows and POSIX may resolve parent traversal across links differently.
+        selected = (link / "../module.inc").resolve()
+        self.assertIn(selected.read_text(encoding="utf-8"), bundle.expanded)
+
 
 if __name__ == "__main__":
     unittest.main()
