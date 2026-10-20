@@ -107,7 +107,7 @@ been edited since import. Undo/redo includes source and import options, and
 the unsaved-changes check compares the complete saved document. The numerical
 composer also uses the source-bearing document model as described below.
 
-`windows/test-source-import-bridge.ps1` runs eleven checks against the frozen
+`windows/test-source-import-bridge.ps1` runs thirteen checks against the frozen
 compiler through the C# bridge, including Unicode/spaced paths, BOM,
 local includes, the explicit module-header option, and unchanged history after
 rejected imports. Both OpenQASM CI and packaging run this small integration test.
@@ -208,3 +208,7 @@ pinned compiler and its single-request process. Stdin-only compilation retains
 its existing diagnostics. An error without a usable location names the entry
 file without inventing a line; adapter errors that do not yet carry spans remain
 a DEV-16d gap. Full source diagnostic coverage is not complete.
+
+Frozen C# bridge checks verify that parser and semantic dependency errors reach
+the Windows import boundary with original coordinates and leave existing
+classical history unchanged.

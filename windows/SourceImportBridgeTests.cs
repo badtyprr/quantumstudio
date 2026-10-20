@@ -39,6 +39,13 @@ class SourceImportBridgeTests {
   File.WriteAllText(nestedEntry,"OPENQASM 3.0; include \"../helper.qasm\"; qubit q; flip q;",new UTF8Encoding(false));
   string nestedResult=QasmImport.CompileSource(nestedEntry,false,true,true,folder);
   Check(nestedResult.Contains("sub dir/entry.qasm") && nestedResult.Contains("helper.qasm"));
+  File.WriteAllText(entry,"OPENQASM 3; include \"helper.qasm\"; qubit q; flip q;",new UTF8Encoding(false));
+  File.WriteAllText(helper,"// line one\ngate flip a { x a }\n",new UTF8Encoding(false));
+  try{QasmImport.CompileSource(entry);throw new Exception("Malformed dependency accepted.");}
+  catch(InvalidDataException error){Check(error.Message.Contains("helper.qasm:2:19:") && error.Message.Contains("Unexpected token") && history.Serialize()==imported);}
+  File.WriteAllText(helper,"// line one\ngate flip a { undefined_gate a; }\n",new UTF8Encoding(false));
+  try{history.ImportSource(QasmImport.CompileSource(entry,false,true),false);throw new Exception("Undefined dependency gate accepted.");}
+  catch(InvalidDataException error){Check(error.Message.Contains("helper.qasm:2:") && error.Message.Contains("Unsupported / undeclared QASM operation") && history.Serialize()==imported);}
   Console.WriteLine("PASS: "+checks+" frozen source-import bridge checks.");
  }
 }
