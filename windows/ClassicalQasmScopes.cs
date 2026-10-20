@@ -49,6 +49,11 @@ sealed class ClassicalQasmScopes {
    }
    foreach(var clear in clears[slot]) {
     if(!Inside(clear.Scope,owner))throw Unsupported(slot);
+    // The importer emits a clear at lexical entry as well as exit. A new
+    // declaration supplies that undefined entry value before any instruction.
+    bool entry=clear.Scope==owner;
+    for(int i=0;i<clear.Index && entry;i++)entry=clear.Scope.Body[i].Kind==O.ClearInteger;
+    if(entry)continue;
     int next=clear.Index+1;
     while(next<clear.Scope.Body.Count && clear.Scope.Body[next].Kind==O.ClearInteger)next++;
     if(next==clear.Scope.Body.Count) {
