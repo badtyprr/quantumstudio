@@ -575,13 +575,16 @@ exact and sampled outcomes.
 that serializer. Selected outputs occupy an explicit `output bit` register in
 the requested order; working bits occupy separate scratch storage without
 duplicating the bit bank. Assignments evaluate their complete right-hand side
-before changing any target. Six generated programs check overlapping writes,
-repeated reads, output order, and the 64-bit boundary in exact and sampled
-execution. This requires the explicit-output importer support.
+before changing any target. Ten generated programs check overlapping writes,
+repeated reads, output order, empty results, and the 64-bit boundary in exact
+and sampled execution. An undefined-read case verifies that empty results do
+not suppress execution errors. This requires the explicit-output and local-scope
+importer support.
 
-This component is not yet connected to whole-program export. A circuit with
-working bits but no selected outputs is explicitly rejected; empty storage is
-allowed. Expanded expressions remain subject to the importer's complexity
+This component is not yet connected to whole-program export. With working bits
+but no selected outputs, it places storage and operations in a local block so
+the scratch bits do not become program results. Empty storage is also allowed.
+Expanded expressions remain subject to the importer's complexity
 limits. Control flow, integer lifetimes, and the editor export command remain
 unfinished.
 

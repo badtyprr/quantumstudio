@@ -41,6 +41,10 @@ for case in cases:
         payload = protocol+n(circuit["Qubits"])+(b"" if exact else n(10000,1731))+n(sum(r["Size"] for r in circuit["Registers"]))+declarations+n(len(outputs),*outputs,len(circuit["Steps"]))+steps(circuit["Steps"])
         result = subprocess.run([str(worker), "--exact-circuit" if exact else "--sample"], input=payload, capture_output=True, timeout=30,
                                 env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
+        if case.get("runtime_error", False):
+            assert result.returncode != 0 and result.stderr and not result.stdout, (case["name"], result.stdout, result.stderr)
+            checks += 1
+            continue
         assert result.returncode == 0 and not result.stderr, (case["name"],result.stderr)
         value = json.loads(result.stdout)
         if exact:

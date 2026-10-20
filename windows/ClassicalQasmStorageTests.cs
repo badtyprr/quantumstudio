@@ -18,9 +18,10 @@ static class ClassicalQasmStorageTests {
  static void Case(string name,int bits,int[] outputs,ulong initial,int[] reads,int[] targets,string expected) {
   var storage=new ClassicalQasmStorage(bits,outputs);
   var source=new StringBuilder("OPENQASM 3; include \"stdgates.inc\"; qubit q; reset q;\n");
-  source.Append(storage.Declarations());
-  for(int i=0;i<bits;i++)source.Append(storage.Bit(i)+" = "+((initial>>i)&1)+";\n");
-  if(reads!=null)source.Append(storage.Assign(targets,E.Read(reads)));
+  var operations=new StringBuilder();
+  for(int i=0;i<bits;i++)operations.Append(storage.Bit(i)+" = "+((initial>>i)&1)+";\n");
+  if(reads!=null)operations.Append(storage.Assign(targets,E.Read(reads)));
+  source.Append(storage.ProgramBody(operations.ToString()));
   cases.Add(new {name=name,source=source.ToString(),expected=expected});
  }
  static void Main(string[] args) {
@@ -28,7 +29,6 @@ static class ClassicalQasmStorageTests {
   Reject(()=>new ClassicalQasmStorage(-1,new int[0]));
   Reject(()=>new ClassicalQasmStorage(65,new int[0]));
   Reject(()=>new ClassicalQasmStorage(1,null));
-  Reject(()=>new ClassicalQasmStorage(1,new int[0]));
   Reject(()=>new ClassicalQasmStorage(2,new[]{0,0}));
   Reject(()=>new ClassicalQasmStorage(2,new[]{2}));
   var s=new ClassicalQasmStorage(4,new[]{0,3});
@@ -41,7 +41,8 @@ static class ClassicalQasmStorageTests {
   var variables=new List<ClassicalIntegerType>();
   for(int i=0;i<4096;i++)variables.Add(ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned,1));
   Reject(()=>s.Assign(new[]{0},E.Read(0),variables));
-  if(new ClassicalQasmStorage(0,new int[0]).Declarations()!="")throw new Exception("Empty storage declares bits.");
+  Reject(()=>s.ProgramBody(null));
+  if(new ClassicalQasmStorage(0,new int[0]).ProgramBody("")!="")throw new Exception("Empty storage declares bits.");
   var outputs=new[]{0,3};var copied=new ClassicalQasmStorage(4,outputs);outputs[0]=2;
   if(copied.Bit(0)!="result[1]" || copied.Bit(3)!="result[0]")throw new Exception("Output ordering or ownership changed.");
   Case("overlapping-permutation",4,new[]{0,3},5,new[]{3,0,2},new[]{0,1,3},"01");
@@ -49,10 +50,19 @@ static class ClassicalQasmStorageTests {
   Case("output-order",4,new[]{0,3,1},9,null,null,"110");
   Case("all-output",4,new[]{0,1,2,3},5,new[]{3,2,1,0},new[]{0,1,2,3},"0101");
   Case("single-bit",1,new[]{0},1,new[]{0},new[]{0},"1");
+  Case("empty-storage",0,new int[0],0,null,null,"");
+  Case("empty-output",4,new int[0],5,new[]{3,0,2},new[]{0,1,3},"");
   int[] odd=new int[32],reverse=new int[64],all=new int[64];
   for(int i=0;i<32;i++)odd[i]=63-2*i;
   for(int i=0;i<64;i++){reverse[i]=63-i;all[i]=i;}
   Case("full-storage-boundary",64,odd,0xCCCCCCCCCCCCCCCCUL,reverse,all,"01010101010101010101010101010101");
+  Case("empty-output-wide",64,new int[0],0xCCCCCCCCCCCCCCCCUL,reverse,all,"");
+  // Empty output equality alone cannot prove that operations were executed.
+  // An undefined read must still fail rather than disappear with the output.
+  var empty=new ClassicalQasmStorage(1,new int[0]);
+  var type=ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned,1);
+  string undefined="uint[1] v0;\n"+empty.Assign(new[]{0},E.FromInteger(ClassicalIntegerExpression.Variable(type,0)),new[]{type});
+  cases.Add(new {name="empty-output-undefined-read",source="OPENQASM 3;\n"+empty.ProgramBody(undefined),expected="",runtime_error=true});
   File.WriteAllText(args[0],new JavaScriptSerializer().Serialize(cases));
   Console.WriteLine("PASS: "+cases.Count+" storage cases; "+rejected+" invalid contexts rejected.");
  }

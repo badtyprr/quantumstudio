@@ -16,8 +16,6 @@ sealed class ClassicalQasmStorage {
  static string Number(int value){return value.ToString(CultureInfo.InvariantCulture);}
  public ClassicalQasmStorage(int bits,int[] outputs) {
   if(bits<0 || bits>64 || outputs==null || outputs.Length>bits)throw new ArgumentException("Invalid classical export storage.");
-  if(bits>0 && outputs.Length==0)
-   throw new InvalidDataException("OpenQASM export cannot yet hide every working bit when the circuit has no outputs.");
   names=new string[bits];offsets=new int[bits];outputCount=outputs.Length;
   for(int i=0;i<outputs.Length;i++) {
    int bit=outputs[i];
@@ -27,12 +25,20 @@ sealed class ClassicalQasmStorage {
   int next=0;
   for(int bit=0;bit<bits;bit++)if(names[bit]==null){names[bit]="scratch";offsets[bit]=next++;}
  }
- public string Declarations() {
+ string Declarations() {
   if(BitCount==0)return "";
-  var result=new StringBuilder("output bit["+Number(outputCount)+"] result;\n");
+  var result=new StringBuilder();
+  if(outputCount>0)result.Append("output bit["+Number(outputCount)+"] result;\n");
   if(BitCount>outputCount)result.Append("bit["+Number(BitCount-outputCount)+"] scratch;\n");
   result.Append("uint[64] "+Temporary+";\n");
   return result.ToString();
+ }
+ // Keep storage and operations in the same scope. Without explicit outputs,
+ // program-scope bits would otherwise become results on reimport.
+ public string ProgramBody(string operations) {
+  if(operations==null)throw new ArgumentNullException("operations");
+  string body=Declarations()+operations;
+  return BitCount>0 && outputCount==0 ? "if (true) {\n"+body+"\n}\n" : body;
  }
  public string Bit(int index) {
   if(index<0 || index>=BitCount)throw new ArgumentException("Classical bit is outside the register.");
