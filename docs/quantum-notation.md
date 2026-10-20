@@ -200,6 +200,20 @@ bit substitutions reject. This follows the register ordering in
 The existing ten-qubit limit remains; symbolic-length ellipses and general
 register-shape inference are not added by this support.
 
+Explicit basis dimensions also constrain unresolved register operations.
+For example, `|x_1 x_0>` has four rows, so `H|x_1 x_0>`,
+`|x_1 x_0>+|0>` and `trace(|x_1 x_0>)` reject before either bit is supplied.
+`tensor(H,H)|x_1 x_0>` remains valid and symbolic. Tensor products multiply
+the known dimensions; adjoints exchange rows and columns. Adjacent kets
+such as `|x_1>_2|0>` still concatenate as a tensor product, as do adjacent
+bras.
+
+Unknown dimensions are not assumed incompatible: `|k>_n+|0>` remains
+unresolved. Substituting `n=4` rejects the addition, whereas supplying `n=2`
+and a valid basis index evaluates it. These checks use explicit basis and
+matrix declarations; they do not infer dimensions for arbitrary named states
+or solve general equations between unknown dimensions.
+
 Cardinality bars around an explicit finite set, such as `|\{0,1,1\}|` or `\lvert\{0,1,1\}\rvert`, give `2`. Empty sets count as zero. Ranges and filtering comprehensions also work: `|\{k\in\{0,\ldots,7\}:k>3\}|` gives `4`. Use `cardinality(S)` for a named finite flat scalar collection.
 
 An unspecified domain in `\sum_{a\in\Sigma}{|a>}` remains symbolic as `qsumset`. Bars around a bare unknown remain `qbars`, so substitution can select scalar magnitude or distinct-member cardinality. For example, `replace(|S|,S,-3)` gives `3`, while `replace(|S|,S,vector(2,3,3))` gives `2`. IBM's uniform-state expression `1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}` stays symbolic; substituting `bitstrings(1)` for `\Sigma` gives `|+>`. Concrete domains still require at most 1024 scalar or typed binary-string entries. This does not infer dimensions for arbitrary scalar basis labels or implement arbitrary symbolic set operations.

@@ -24,6 +24,41 @@ def data(expression, *flags):
     return value
 
 
+# Known register shapes reject contradictions before symbolic bits are bound.
+for flags in ((), ("--approx",)):
+    for expression in (
+        "H|x_1 x_0>", "H*|x_1 x_0>", "|x_1 x_0>+|0>",
+        "<0|x_1 x_0>", "trace(|x_1 x_0>)",
+        "H*(|x_1>_2|0>)",
+        "replace(|k>_n+|0>,n,4)",
+    ):
+        rejected = run("quantum:" + expression, "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+        assert b"incompatible declared matrix dimensions" in rejected.stderr
+    for expression in (
+        "tensor(H,H)|x_1 x_0>", "|x_1>_2|0>", "<x_1|_2<0|",
+        "|x_1 x_0><0|", "|k>_n+|0>",
+    ):
+        symbolic = data("quantum:" + expression, *flags)
+        assert symbolic["copy_text"]
+        copied = data("quantum:" + symbolic["copy_text"], *flags)
+        # Re-entry may normalize constructor names; compare the resolved shape
+        # and values rather than requiring identical serialization.
+        bound = lambda value: "replace(replace(replace(replace((" + value + "),x_1,1),x_0,0),n,2),k,1)"
+        actual = data("quantum:" + bound(copied["copy_text"]), *flags)
+        expected = data("quantum:" + bound(expression), *flags)
+        assert (actual["rows"], actual["columns"], actual["cells"]) == (
+            expected["rows"], expected["columns"], expected["cells"]
+        ), (expression, flags, actual, expected)
+    for expression in (
+        "norm(vec(replace(tensor(H,H)|x_1 0>,x_1,1)-tensor(H,H)|10>))",
+        "norm(vec(replace(|x_1>_2|0>,x_1,1)-|10>))",
+        "norm(vec(replace(<x_1|_2<0|,x_1,1)-<10|))",
+        "norm(vec(replace(replace(|k>_n+|0>,n,2),k,1)-(|1>+|0>)))",
+    ):
+        value = data("quantum:" + expression, *flags)["text"]
+        assert Decimal(value.replace("−", "-")) == 0, (expression, flags, value)
+
 # Copying deferred functions must preserve nested matrix/vector separators.
 for flags in ((), ("--approx",)):
     for expression in (
