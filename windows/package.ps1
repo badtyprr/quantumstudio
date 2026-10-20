@@ -47,6 +47,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Source archive verification failed.' }
 Copy-Item -LiteralPath $archives[0].FullName -Destination (Join-Path $repo 'dist\QuantumStudio-source.tar.gz')
 & (Join-Path $PSScriptRoot 'test-gui.ps1')
 & (Join-Path $PSScriptRoot 'build-qasm-import.ps1') -PythonPath $PythonPath
+& $PythonPath (Join-Path $PSScriptRoot 'test-qasm-file-import.py') --frozen (Join-Path $output 'qasm-import/qasm-import.exe')
+if ($LASTEXITCODE -ne 0) { throw 'OpenQASM file import tests failed.' }
 & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-protocol.py')
 if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM process contract tests failed.' }
 $nativeBin = Join-Path $MsysRoot 'ucrt64\bin'

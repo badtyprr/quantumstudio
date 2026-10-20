@@ -1,8 +1,8 @@
 # Local OpenQASM source bundles (DEV-16 prerequisite)
 
 `windows/qasm_source_bundle.py` captures a selected source file and relative
-include dependencies into an immutable snapshot. It is not yet connected to
-the importer or editors; local-file include support remains incomplete.
+include dependencies into an immutable snapshot. The compiler CLI supports it;
+editor integration and persistence remain incomplete.
 
 The selected source directory is the default root. A caller can explicitly
 choose a wider root. Includes resolve against the including file's resolved
@@ -30,13 +30,36 @@ This is a local-file snapshot, not a sandbox for a filesystem being concurrently
 modified by an adversary. Capturing and later checking changes are distinct
 operations; no atomic multi-file snapshot is claimed.
 
-Remaining DEV-16 work: define the import protocol, persist source/dependency
+Remaining DEV-16 work: persist source/dependency
 identity in both editors and history, surface changed dependencies, map compiler
 errors to original files, and verify standalone export and failure recovery.
-The QB-004 generated modules contain their own version headers; decide and test
-compatible module-header handling explicitly before claiming those imports
-work. This component preserves those headers rather than silently deleting them.
 No notebook execution or provider compatibility is established by this change.
+
+## Source-aware compiler CLI
+
+`qasm-import.exe --source-file "path/to/main.qasm"` reads the selected file with
+its relative dependencies. `--source-root "path"` explicitly selects a wider
+allowed root. These options do not consume stdin. The JSON response is an
+envelope with `Version: 1`, `Circuit` (the existing compiled circuit document),
+and `Source` (the versioned source snapshot). The snapshot includes root, entry,
+dependency bindings, original UTF-8 text, BOM flags and hashes. The editor must
+retain this provenance before this route replaces its current import path.
+Stdin-only imports retain the existing circuit response and reject unresolved
+local includes.
+
+`--module-headers` explicitly enables a generated-module adapter: included
+version headers must match the entry file's explicit major/minor version;
+matching included headers and repeated standard-library includes are omitted
+from the expanded compilation text. Original source remains in the snapshot.
+Only `stdgates.inc` and `qelib1.inc` are treated as repeatable libraries in this
+mode; custom declarations and repeated custom includes are never deduplicated.
+Without this flag, strict textual include behavior applies.
+
+The unchanged QB-004 `oracle.qasm` and `bernvaz.qasm` fixtures compile through
+this mode to the same circuit documents as explicitly inlined definitions
+(three and ten operations respectively). This does not establish notebook or
+GUI import coverage. The six file-import test methods also run against the
+frozen compiler in CI and packaging.
 
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,

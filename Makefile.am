@@ -18,6 +18,11 @@ EXTRA_DIST = config.rpath  \
 	windows/build-qasm-import.ps1 \
 	windows/qasm-import-requirements.txt \
 	windows/qasm-import.py \
+	windows/qasm_import_request.py \
+	windows/test-qasm-file-import.py \
+	windows/fixtures/qb004/README.md \
+	windows/fixtures/qb004/oracle.qasm \
+	windows/fixtures/qb004/bernvaz.qasm \
 	windows/test-qasm-import.py \
 	windows/test-qasm-protocol.py \
 	windows/test-qasm-classical-expressions.py \
