@@ -195,6 +195,16 @@ retain their original coordinates. Inserted separator newlines point to the
 include directive with `synthetic=True`; invalid coordinates reject rather than
 being attributed to nearby code.
 
-This is the mapping prerequisite for DEV-16d. Compiler error routing still needs
-to consume it; this change alone does not improve the displayed error messages
-or complete source diagnostic coverage.
+File imports now route grammar-error tokens, AST validation locations and the
+pinned compiler's semantic-error spans through this map. Displayed locations
+use `filename:line:column`, with both numbers starting at one. For example, an
+invalid operation in a nested include names the included file rather than an
+expanded-program line. The compiler bridge already displays stderr, so both
+editors receive the mapped diagnostics through the existing import failure path.
+
+The PyQASM adapter temporarily filters its span-bearing log records and restores
+the filter state after success or failure. This contract is specific to the
+pinned compiler and its single-request process. Stdin-only compilation retains
+its existing diagnostics. An error without a usable location names the entry
+file without inventing a line; adapter errors that do not yet carry spans remain
+a DEV-16d gap. Full source diagnostic coverage is not complete.
