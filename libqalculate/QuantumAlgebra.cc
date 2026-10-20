@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumAlgebra.h"
+#include "QuantumIndexed.h"
 #include "Calculator.h"
 #include "Function.h"
 #include "BuiltinFunctions.h"
@@ -516,25 +517,30 @@ class QuantumAlgebraFunction: public MathFunction {
   if(op=="qketstate") {
    if(a.isUnknown())return 0;
    if(a.isVector() && !a.isMatrix() && a.size()>0 && a.size()<=1024) {
-    std::set<int> indices;int registerWidth=-1;
+    std::set<int> indices;int registerWidth=-1;bool deferred=false;
     for(size_t k=0;k<a.size();++k) {
      if(CALCULATOR->aborted())return 0;
      const MathStructure &label=a[k];
      if(!label.isFunction() || label.function()->referenceName()!="qbitlabel" || label.size()!=2) {CALCULATOR->error(true,"A set ket requires binary-string labels of one width.",NULL);return 0;}
-     EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
-     MathStructure index=label[0],width=label[1];index.eval(exact);width.eval(exact);
-     if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue())) {CALCULATOR->error(true,"Invalid binary-string basis label.",NULL);return 0;}
-     if(registerWidth>=0 && registerWidth!=width.number().intValue()) {CALCULATOR->error(true,"A set ket requires binary-string labels of one width.",NULL);return 0;}
-     registerWidth=width.number().intValue();indices.insert(index.number().intValue());
+     MathStructure index=label[0],width=label[1];
+     QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
+     if(state==QuantumBitLabelState::Invalid)return 0;
+     if(width.isNumber()) {
+      if(registerWidth>=0 && registerWidth!=width.number().intValue()) {CALCULATOR->error(true,"A set ket requires binary-string labels of one width.",NULL);return 0;}
+      registerWidth=width.number().intValue();
+     }
+     if(state==QuantumBitLabelState::Symbolic)deferred=true;
+     else indices.insert(index.number().intValue());
     }
+    if(deferred)return 0;
     MathStructure amplitude(static_cast<int>(indices.size()));amplitude.raise(Number(-1,2));amplitude.eval(eo);
     out.clearMatrix();out.resizeMatrix(1<<registerWidth,1,m_zero);
     for(int index:indices)element(out,index,0)=amplitude;
     return 1;
    }
    if(a.isFunction() && a.function()->referenceName()=="qbitlabel" && a.size()==2) {
-    MathStructure index=a[0],width=a[1];index.eval(eo);width.eval(eo);
-    if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue())) {CALCULATOR->error(true,"Invalid binary-string basis label.",NULL);return 0;}
+    MathStructure index=a[0],width=a[1];
+    if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return 0;
     int dimension=1<<width.number().intValue();out.clearMatrix();out.resizeMatrix(dimension,1,m_zero);
     element(out,index.number().intValue(),0)=m_one;return 1;
    }
