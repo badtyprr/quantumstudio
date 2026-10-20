@@ -3,8 +3,9 @@ from pathlib import Path
 import importlib.util
 import tempfile
 import unittest
+from pyqasm import ValidationError
 
-from qasm_source_bundle import capture_source, SourceError, MAX_BYTES, MAX_DEPTH
+from qasm_source_bundle import capture_source, SourceError, MAX_BYTES, MAX_DEPTH, MAX_FILES
 
 
 class SourceBundleTests(unittest.TestCase):
@@ -16,7 +17,7 @@ class SourceBundleTests(unittest.TestCase):
     def put(self, name, text):
         path = self.root / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+        path.write_text(text, encoding="utf-8", newline="")
         return path
 
     def test_nested_spaces_and_snapshot(self):
@@ -44,6 +45,13 @@ class SourceBundleTests(unittest.TestCase):
         self.assertEqual(len(bundle.files), 2)
         self.assertEqual(bundle.expanded.count("gate g"), 2)
         self.assertIn("// trailing comment\n", bundle.expanded)
+
+    def test_non_qasm_text_is_not_an_include(self):
+        for text in ['pragma include "absent.inc";\n', 'cal { include "absent.inc"; }']:
+            with self.subTest(text=text):
+                bundle = capture_source(self.put("main.qasm", text))
+                self.assertEqual(len(bundle.files), 1)
+                self.assertEqual(bundle.expanded, text)
 
     def test_missing_cycle_and_malformed(self):
         for text, expected in [
@@ -86,6 +94,14 @@ class SourceBundleTests(unittest.TestCase):
         self.put("large.inc", "//" + "x" * (MAX_BYTES // 2))
         with self.assertRaisesRegex(SourceError, "Expanded source"):
             capture_source(self.put("repeat.qasm", 'include "large.inc"; include "large.inc";'))
+        self.put("large2.inc", "//" + "y" * (MAX_BYTES // 2))
+        with self.assertRaisesRegex(SourceError, "Source bundle exceeds"):
+            capture_source(self.put("total.qasm", 'include "large.inc"; include "large2.inc";'))
+        for k in range(MAX_FILES):
+            self.put(f"leaf{k}.inc", "")
+        main = self.put("files.qasm", "".join(f'include "leaf{k}.inc";' for k in range(MAX_FILES)))
+        with self.assertRaisesRegex(SourceError, "exceeds 64"):
+            capture_source(main)
 
     def test_link_boundary_and_retarget(self):
         a = self.put("a.inc", "// first")
@@ -120,7 +136,7 @@ class SourceBundleTests(unittest.TestCase):
         main = self.put("main.qasm", header + 'include "module.inc";' + call)
         self.assertEqual(compiler.convert(capture_source(main).expanded), compiler.convert(header + module + call))
         self.put("main.qasm", header + 'include "module.inc"; include "module.inc";' + call)
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             compiler.convert(capture_source(main).expanded)
 
 
