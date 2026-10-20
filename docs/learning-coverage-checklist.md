@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-10-19. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-10-20. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; then DEV-02/03/05, followed by DEV-04/06/07/08. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
+Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; then DEV-02/03/05 and the reproduced DEV-16 include gap, followed by DEV-04/06/07/08. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -27,6 +27,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 | [DEV-13](#dev-13) | P2 | L | Discovery needed | AUD-02 | Python/SDK notebook execution route |
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
+| [DEV-16](#dev-16) | P1 | M | Reproduced; not implemented | None | Local OpenQASM include dependencies |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
 | [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
@@ -145,6 +146,14 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 - Source focus: qBraid Runtime/Provider-Jobs; IBM utility-scale courses. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Separate local mathematical semantics from credentials, hardware jobs and pulse/timing dependencies. Define tested adapters and observable unsupported cases; use deterministic offline fixtures, and record any required external verification.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+
+### DEV-16
+
+- [ ] **Local OpenQASM include dependencies** — P1; Reproduced; not implemented; size M; dependencies: None.
+- Source: [QB-004 evidence](learning-evidence/QB-004.md), generated oracle and algorithm subroutine instructions. Direct includes fail while explicit inlining imports successfully.
+- Acceptance: Resolve dependencies relative to a selected source file with an explicit policy for external paths and paste-only input. Preserve standard includes; diagnose missing files, cycles and duplicate declarations with file/line context. Bound depth and total bytes; preserve dependency identity through save/load/export and detect changed dependencies. Verify both generated subroutines and numerical equivalence to inlining, nested includes and paths containing spaces.
+- Priority rationale: This blocks a demonstrated local circuit workflow. Select after the queued Fourier/basis release and DEV-05; it does not depend on runtime wire indexing or cloud access. Source-aware import context is part of this task.
+- Evidence: release `92f80696` importer reproduction; recurring regression fixture and implementation pending. Owner: unassigned. PR: unassigned.
 
 ### AUD-01
 
@@ -370,7 +379,7 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **QB-001** [PyQASM-Examples/deutsch_josza_unroll.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **QB-002** [PyQASM-Examples/qasm_processing.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_processing.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **QB-003** [PyQASM-Examples/qasm_unroll.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **QB-004** [qBraid-Algorithms/bernstein_vazirani.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
+- [ ] **QB-004** [qBraid-Algorithms/bernstein_vazirani.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb) — P1 / AUD-01; partial cell audit; includes blocked by DEV-16; notebook/cloud execution remains DEV-13/15; [evidence](learning-evidence/QB-004.md).
 - [ ] **QB-005** [qBraid-Algorithms/qft.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qft.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **QB-006** [qBraid-Algorithms/qpe.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **QB-007** [qBraid-Algorithms/cirq_vqe.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
