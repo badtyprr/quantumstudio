@@ -52,6 +52,7 @@ class SourceFile:
     name: str
     sha256: str
     text: str
+    bom: bool = False
 
 
 @dataclass(frozen=True)
@@ -69,10 +70,19 @@ class SourceBundle:
     files: tuple[SourceFile, ...]
     pieces: tuple[SourcePiece, ...]
     bindings: tuple[tuple[str, str], ...]
+    module_headers: bool = False
 
     @property
     def expanded(self):
         return "".join(piece.text for piece in self.pieces)
+
+    def snapshot(self):
+        """JSON-compatible provenance; text and BOM reconstruct the hashed bytes."""
+        return {"Version": 1, "Root": str(self.root), "Entry": self.entry,
+                "ModuleHeaders": self.module_headers,
+                "Files": [{"Name": f.name, "Sha256": f.sha256, "Text": f.text, "Bom": f.bom}
+                          for f in self.files],
+                "Bindings": [{"Path": name, "Target": target} for name, target in self.bindings]}
 
     def changed_files(self):
         """Compare captured bytes with disk; never change the captured program."""
@@ -112,7 +122,7 @@ def _read(path):
     return data
 
 
-def capture_source(entry, *, root=None):
+def capture_source(entry, *, root=None, module_headers=False):
     """Capture a selected file and its relative includes, with bounded expansion.
 
     A caller may explicitly select a wider root; absolute include paths remain
@@ -124,6 +134,24 @@ def capture_source(entry, *, root=None):
     root = Path(root).resolve(strict=True) if root is not None else entry.parent.resolve(strict=True)
     files, pieces, bindings = {}, [], {}
     total_bytes = expanded_bytes = 0
+    root_version = None
+    standard_includes = set()
+
+    def header(text, name):
+        lexer = qasm3Lexer(InputStream(text))
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(_LexerErrors(name))
+        tokens = [t for t in lexer.getAllTokens() if t.channel == Token.DEFAULT_CHANNEL]
+        versions = [i for i, token in enumerate(tokens) if token.type == qasm3Lexer.OPENQASM]
+        if not versions:
+            return None
+        if versions != [0] or len(tokens) < 3 or tokens[2].type != qasm3Lexer.SEMICOLON:
+            raise SourceError(f"{name}: A version header must occur once, at the start.")
+        parts = tokens[1].text.split(".")
+        if not 1 <= len(parts) <= 2 or not all(part.isascii() and part.isdigit() for part in parts):
+            raise SourceError(f"{name}: Invalid OpenQASM version header.")
+        version = (int(parts[0]), int(parts[1]) if len(parts) == 2 else 0)
+        return version, tokens[0].start, tokens[2].stop + 1
 
     def append(name, line, text):
         nonlocal expanded_bytes
@@ -134,7 +162,7 @@ def capture_source(entry, *, root=None):
             pieces.append(SourcePiece(name, line, text))
 
     def visit(path, active):
-        nonlocal total_bytes
+        nonlocal total_bytes, root_version
         requested_path = Path(os.path.normpath(path))
         if not requested_path.is_relative_to(root):
             raise SourceError("Include path is outside the selected source root.")
@@ -161,11 +189,27 @@ def capture_source(entry, *, root=None):
                 text = data.decode("utf-8-sig")
             except UnicodeDecodeError as error:
                 raise SourceError(f"{name}: Source must be valid UTF-8.") from error
-            files[name] = SourceFile(name, hashlib.sha256(data).hexdigest(), text)
+            files[name] = SourceFile(name, hashlib.sha256(data).hexdigest(), text, data.startswith(b"\xef\xbb\xbf"))
         text = files[name].text
+        if module_headers:
+            declaration = header(text, name)
+            if not active:
+                root_version = declaration[0] if declaration else None
+            elif declaration:
+                if root_version is None or declaration[0] != root_version:
+                    raise SourceError(f"{name}: Included module version must match the entry file's explicit version.")
+                # An explicit adapter extension for generated standalone modules.
+                # Preserve original source and line offsets in the snapshot.
+                _, start, end = declaration
+                text = text[:start] + "".join(c if c in "\r\n" else " " for c in text[start:end]) + text[end:]
         cursor = 0
         for start, end, line, filename in _includes(text, name):
             if filename in STANDARD_INCLUDES:
+                if module_headers and filename in standard_includes:
+                    append(name, text.count("\n", 0, cursor) + 1, text[cursor:start])
+                    append(name, line, "".join(c if c in "\r\n" else " " for c in text[start:end]))
+                    cursor = end
+                standard_includes.add(filename)
                 continue
             append(name, text.count("\n", 0, cursor) + 1, text[cursor:start])
             # Interpret portable relative filenames only. Windows drive-relative
@@ -183,4 +227,4 @@ def capture_source(entry, *, root=None):
         append(name, text.count("\n", 0, cursor) + 1, text[cursor:])
 
     visit(entry, ())
-    return SourceBundle(root, entry.relative_to(root).as_posix(), tuple(files.values()), tuple(pieces), tuple(bindings.items()))
+    return SourceBundle(root, entry.relative_to(root).as_posix(), tuple(files.values()), tuple(pieces), tuple(bindings.items()), module_headers)
