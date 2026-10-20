@@ -42,6 +42,9 @@ EXTRA_DIST = config.rpath  \
 	windows/ClassicalQasmStorage.cs \
 	windows/ClassicalQasmStorageTests.cs \
 	windows/test-classical-storage-qasm.ps1 \
+	windows/ClassicalProgramQasm.cs \
+	windows/ClassicalProgramQasmTests.cs \
+	windows/test-classical-program-qasm.ps1 \
 	windows/ClassicalExpressionQasmTests.cs \
 	windows/test-classical-expression-qasm.ps1 \
 	windows/test-classical-expression-qasm.py \
