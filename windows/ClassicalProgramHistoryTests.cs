@@ -36,6 +36,30 @@ class ClassicalProgramHistoryTests {
   Check(history.Current.Serialize()==typed && history.CanRedo);
   history.Redo();Check(history.Current.Snapshot().Steps[0].ClassicalValue.Left.Signedness=="Unsigned");
   history.Open(typed);Check(history.Current.Serialize()==typed && !history.CanUndo);
+  string envelope="{\"Version\":1,\"Circuit\":"+initial.Serialize()+",\"Source\":{\"Version\":1,\"Root\":\"C:/not-read\",\"Entry\":\"main.qasm\",\"ModuleHeaders\":false,\"Files\":[{\"Name\":\"main.qasm\",\"Sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"Text\":\"\",\"Bom\":false}],\"Bindings\":[{\"Path\":\"main.qasm\",\"Target\":\"main.qasm\"}]}}";
+  history.ImportSource(envelope,true);string imported=history.Serialize();
+  Check(history.Source!=null && history.Source.PublishedU && !history.Source.CircuitEdited && history.CanUndo);
+  Check(history.Current.Serialize()==initial.Serialize() && history.Serialize()!=history.Current.Serialize());
+  history.Edit(d=>d.Qubits=2);string changed=history.Serialize();
+  Check(history.Source.CircuitEdited && history.Source.SourceJson.Contains("main.qasm"));
+  history.Undo();Check(history.Serialize()==imported && !history.Source.CircuitEdited && history.CanRedo);
+  history.Edit(d=>{});Check(history.CanRedo && history.Serialize()==imported);
+  try{history.ImportSource(envelope.Replace("\"Bom\":false","\"Bom\":true"),false);throw new Exception("Invalid source import accepted");}catch(System.IO.InvalidDataException){}
+  Check(history.Serialize()==imported && history.CanRedo);
+  history.Redo();Check(history.Serialize()==changed && history.Source.CircuitEdited);
+  history.Undo();history.Undo();Check(history.Source==null && history.Current.Serialize()==typed);
+  history.Redo();Check(history.Serialize()==imported);
+  history.ImportSource(envelope,true);Check(history.CanRedo && history.Serialize()==imported);
+  history.ImportSource(envelope,false);Check(!history.CanRedo && !history.Source.PublishedU);
+  history.Undo();Check(history.Serialize()==imported && history.Source.PublishedU);
+  history.Open(changed);Check(history.Serialize()==changed && history.Source.CircuitEdited && !history.CanUndo && !history.CanRedo);
+  try{history.Open(changed.Replace("\"Classical\":true","\"Classical\":false"));throw new Exception("Wrong document kind accepted");}catch(System.IO.InvalidDataException){}
+  Check(history.Serialize()==changed && !history.CanUndo);
+  history.Open(initial.Serialize());Check(history.Source==null && history.Serialize()==initial.Serialize());
+  history.ImportSource(envelope,false);
+  for(int i=0;i<70;i++)history.Edit(d=>d.Qubits=d.Qubits==1 ? 2 : 1);
+  count=0;while(history.CanUndo){history.Undo();Check(history.Source!=null);count++;}
+  Check(count==64);
   Console.WriteLine("PASS: "+checks+" atomic classical edit and history checks.");
  }
 }

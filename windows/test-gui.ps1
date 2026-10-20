@@ -33,7 +33,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Classical circuit tests failed.' }
 & $classicalTest --legacy-cold
 if ($LASTEXITCODE -ne 0) { throw 'Cold legacy circuit tests failed.' }
 $historyTest = Join-Path $validation 'classical-history-tests.exe'
-& "$fx\csc.exe" /nologo /target:exe "/out:$historyTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistory.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistoryTests.cs')
+& "$fx\csc.exe" /nologo /target:exe "/out:$historyTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistory.cs') (Join-Path $PSScriptRoot 'SourceCircuitDocument.cs') (Join-Path $PSScriptRoot 'ClassicalProgramHistoryTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests did not compile.' }
 & $historyTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests failed.' }
@@ -53,14 +53,14 @@ if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests did not compile.' }
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $circuitTest = Join-Path $validation 'circuit-file-tests.exe'
 $circuitArgs = @('/nologo', '/target:exe', "/out:$circuitTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('CircuitFileTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','ClassicalExpressionText.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('CircuitFileTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','SourceCircuitDocument.cs','ClassicalProgramWindow.cs','ClassicalExpressionText.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @circuitArgs
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests did not compile.' }
 & $circuitTest
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests failed.' }
 $samplingTest = Join-Path $validation 'sampling-tests.exe'
 $samplingArgs = @('/nologo', '/target:exe', "/out:$samplingTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
-foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','ClassicalProgramWindow.cs','ClassicalExpressionText.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
+foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','SourceCircuitDocument.cs','ClassicalProgramWindow.cs','ClassicalExpressionText.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
 & "$fx\csc.exe" @samplingArgs
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest
