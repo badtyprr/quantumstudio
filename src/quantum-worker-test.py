@@ -24,6 +24,30 @@ def data(expression, *flags):
     return value
 
 
+# Copying deferred functions must preserve nested matrix/vector separators.
+for flags in ((), ("--approx",)):
+    for expression in (
+        "tensor(H,H)|x_1 x_0>",
+        "|x_1>_2|0>",
+        "<x_1|_2<0|",
+        "|x_1 x_0><0|",
+        "|k>_n+|0>",
+    ):
+        original = data("quantum:" + expression, *flags)
+        copied = data("quantum:" + original["copy_text"], *flags)
+        # Compare evaluated values, not spelling: canonical wrappers can change
+        # on re-entry without changing the state or its basis constraints.
+        substitutions = lambda value: "replace(replace(replace(replace((" + value + "),x_1,1),x_0,0),n,2),k,1)"
+        expected = data("quantum:" + substitutions(expression), *flags)
+        actual = data("quantum:" + substitutions(copied["copy_text"]), *flags)
+        assert (actual["rows"], actual["columns"], actual["cells"]) == (
+            expected["rows"], expected["columns"], expected["cells"]
+        ), (expression, flags, actual, expected)
+        bad = "replace((" + copied["copy_text"] + ")," + ("k" if expression.startswith("|k>") else "x_1") + ",-1)"
+        rejected = run("quantum:" + bad, "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+        assert b"basis(index,dimension)" in rejected.stderr
+
 # Indexed register factors stay symbolic without losing their one-bit domains.
 for flags in ((), ("--approx",)):
     for expression in ("|x_1 x_0>", r"\vert x_1 x_0\rangle",

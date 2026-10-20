@@ -34,9 +34,10 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
  // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
  // for implicit multiplication by the quantum parser.
  if(!result.isMatrix()) {
-  // Typed labels can occur in a nested symbolic set ket. Preserve commas in
-  // those nested vectors as well as at the top level.
-  if(result.isFunction() && result.containsFunction(CALCULATOR->getFunction("qbitlabel"))>0) {
+  // Deferred operations retain nested vectors and matrix constructors.
+  // Serialize every function argument recursively so their separators survive
+  // copy/re-entry even when no typed binary label occurs in the expression.
+  if(result.isFunction()) {
    std::string text=result.function()->referenceName()+"(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
    return text+")";
