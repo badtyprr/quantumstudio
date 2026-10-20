@@ -2,8 +2,13 @@
 
 `QEXACT10` extends `QEXACT9`; `QSAMPLE11` extends `QSAMPLE10`. All earlier fields,
 variable declarations, loop budgets, operation codes and limits remain unchanged.
-Earlier versions reject the new operation. This worker interface does not yet
-provide importer, saved-circuit or GUI support.
+Earlier versions reject the new operation. The associated version-11 circuit
+model preserves rotation axes and real expression trees through save/load.
+The importer supports unmodified `rx`, `ry`, and `rz` outside subroutines; export
+uses explicit `float[64]` conversion where integer values become real operands.
+See DEV-06 in `learning-coverage-checklist.md` for integration/release status and
+the remaining editor, gate and type coverage. This protocol alone does not
+establish that those user-facing paths have shipped.
 
 Operation `16` is a runtime rotation. Its fields are the target quantum wire,
 axis (`0` = Rx, `1` = Ry, `2` = Rz), and one real-expression tree. All scalar

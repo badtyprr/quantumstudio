@@ -17,7 +17,7 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 | [DEV-03](#dev-03) | P1 | L | Partial | None | Declared orthonormal bases |
 | [DEV-04](#dev-04) | P1 | L | Partial | DEV-03 | Symbolic operator assumptions and identities |
 | [DEV-05](#dev-05) | P1 | M | Partial | None | Register dimensions and symbolic bit strings |
-| [DEV-06](#dev-06) | P1 | L | Not implemented | None | Runtime gate parameters |
+| [DEV-06](#dev-06) | P1 | L | In progress; runtime rotations not released | None | Runtime gate parameters |
 | [DEV-07](#dev-07) | P1 | L | Not implemented | None | Dynamic wire indexing |
 | [DEV-08](#dev-08) | P1 | L | Compile-time subset released in REL-07 | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage |
 | [DEV-09](#dev-09) | P2 | L | Partial | DEV-03 | Symbolic ensembles, instruments and POVMs |
@@ -99,10 +99,17 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 
 ### DEV-06
 
-- [ ] **Runtime gate parameters** — P1; Not implemented; size L; dependencies: None.
+- [ ] **Runtime gate parameters** — P1; In progress; size L; dependencies: None. The overall item remains open; implemented prerequisites do not establish whole-notebook coverage.
 - Source focus: qBraid PyQASM examples and algorithm notebooks. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Preserve a supported runtime arithmetic angle through importer, circuit model, save/load and executor. Compare small numerical circuits with a reference; reject unavailable types and invalid angles clearly.
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+- Work in priority order:
+  - [x] **DEV-06a — Execution and worker protocol:** PRs [#338](https://github.com/badtyprr/quantumstudio/pull/338), [#339](https://github.com/badtyprr/quantumstudio/pull/339), [#340](https://github.com/badtyprr/quantumstudio/pull/340), and [#341](https://github.com/badtyprr/quantumstudio/pull/341) merged. Bounded binary64 arithmetic over current integer/measurement values; Rx/Ry/Rz execution in exact and sampled modes. Exact gates preserve the binary64 angle as a rational, without snapping approximate pi. **Release pending.**
+  - [ ] **DEV-06b — Integrate and release the end-to-end path:** adapter [#342](https://github.com/badtyprr/quantumstudio/pull/342), saved circuits [#343](https://github.com/badtyprr/quantumstudio/pull/343), importer [#344](https://github.com/badtyprr/quantumstudio/pull/344), export [#345](https://github.com/badtyprr/quantumstudio/pull/345). Merge only after exact-head review and required CI; build the merged tip, audit the package, and publish the identical tested ZIP. Attach the released revision here.
+  - [ ] **DEV-06c — Editor interaction:** display the rotation axis and angle; allow creating and editing expressions without JSON; preserve integer versus real division. Test selection, replacement, invalid input, undo/redo, save/reopen, and execution in both modes. Imported operations must not appear as an unlabeled generic rotation.
+  - [ ] **DEV-06d — Broaden gate coverage:** prioritize source-backed examples requiring phase, controlled rotations, gate modifiers, or multi-parameter gates. Preserve global/relative phase, parameter evaluation order, broadcasting and runtime errors. Current importer support is unmodified `rx`, `ry`, `rz` outside subroutines.
+  - [ ] **DEV-06e — Broaden runtime arithmetic/types:** runtime floating-point variables, mathematical functions, modular angle values and narrower float casts need explicit semantics and tests. Current expressions use finite binary64 constants, integer leaves and `+`, `-`, `*`, `/`; integer arithmetic finishes before conversion. Subroutine activation storage remains DEV-08b, rather than being silently treated as implemented here.
+  - [ ] **DEV-06f — Attach lesson evidence:** pin the actual IBM/qBraid source section or notebook cell, execute an unchanged minimal example against a suitable reference, and link the regression, reviewed head, CI and release. Authored analytical probes are useful regression tests but do not satisfy this source-coverage audit.
+- Regression evidence: `src/quantum-runtime-rotation-test.cc`, `src/quantum-exact-runtime-rotation-test.cc`, `src/quantum-runtime-angle-request-test.py`, `windows/ClassicalExpressionTests.cs`, `windows/ClassicalCircuitTests.cs`, and `windows/test-qasm-runtime-angles.py`. The export branch passed 125 source/frozen/import-export/worker checks, including feedback, mutation, integer/real division, broadcasting, phase interference, branch-local variables and runtime ranges. These are development checks, not a released-artifact claim.
 
 ### DEV-07
 
