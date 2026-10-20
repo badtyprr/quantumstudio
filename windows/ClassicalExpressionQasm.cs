@@ -79,7 +79,9 @@ sealed class ClassicalExpressionQasm {
    case E.NodeKind.Constant:return Literal(value.Width,value.Value);
    case E.NodeKind.Read:return Read(value.Indices);
    case E.NodeKind.Complement:return "(~"+BitNode(value.Left)+")";
-   case E.NodeKind.IntegerBits:return Cast(BitType(value.Width),IntegerNode(value.IntegerLeft));
+   // Unrolling can replace a typed iterator with an untyped literal. Retain
+   // its declared width at the integer-to-register boundary.
+   case E.NodeKind.IntegerBits:return Cast(BitType(value.Width),Cast(TypeName(value.IntegerLeft.Type),IntegerNode(value.IntegerLeft)));
    case E.NodeKind.PopulationCount:
     return Cast("bit[64]",Cast("uint[64]","popcount("+BitNode(value.Left)+")"));
    case E.NodeKind.Rotate:

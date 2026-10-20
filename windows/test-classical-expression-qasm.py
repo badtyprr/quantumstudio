@@ -25,7 +25,9 @@ for case in cases:
     run = subprocess.run([str(args.compiler.resolve()), "--classical"], input=case["source"].encode(), capture_output=True, timeout=30)
     assert run.returncode == 0, (case["name"], run.stderr.decode("utf-8",errors="replace"), case["source"])
     circuit = json.loads(run.stdout)
-    assert 2 <= circuit["Version"] <= 9
+    assert 2 <= circuit["Version"] <= 10
+    if case.get("runtime_range", False):
+        assert circuit["Version"] == 10 and any(s["Kind"] == "ForRange" for s in circuit["Steps"]), (case["name"], circuit)
     assert len(circuit["OutputBits"]) == len(case["expected"])
     checks += 1
     if args.worker is None:
@@ -41,6 +43,8 @@ for case in cases:
             protocol = (b"QEXACT8\n" if exact else b"QSAMPLE9\n") if circuit["Version"] >= 9 else (b"QEXACT7\n" if exact else b"QSAMPLE8\n") if circuit["Version"] >= 8 else (b"QEXACT6\n" if exact else b"QSAMPLE7\n")
             assert circuit["LoopConditionBudget"] == 1000000
             declarations += n(32)
+        if circuit["Version"] >= 10:
+            protocol = b"QEXACT9\n" if exact else b"QSAMPLE10\n"
         outputs = circuit["OutputBits"]
         payload = protocol+n(circuit["Qubits"])+(b"" if exact else n(10000,1731))+n(sum(r["Size"] for r in circuit["Registers"]))+declarations+n(len(outputs),*outputs,len(circuit["Steps"]))+steps(circuit["Steps"])
         result = subprocess.run([str(worker), "--exact-circuit" if exact else "--sample"], input=payload, capture_output=True, timeout=30,
@@ -53,7 +57,18 @@ for case in cases:
         assert result.returncode == 0 and not result.stderr, (case["name"],result.stderr)
         value = json.loads(result.stdout)
         if exact:
-            assert {k:Fraction(v) for k,v in value["probabilities"].items()} == {case["expected"]:Fraction(1)}, (case["name"],value)
+            if case.get("approximate_probabilities", False):
+                # The pinned compiler lowers gate angles numerically. Exact
+                # execution can retain exponential expressions in probabilities.
+                for key in set(value["probabilities"]) | {case["expected"]}:
+                    expression = "abs((" + value["probabilities"].get(key, "0") + ")-" + ("1" if key == case["expected"] else "0") + ")"
+                    evaluated = subprocess.run([str(worker), "--json", "--approx"], input=expression.encode("utf-8"), capture_output=True, timeout=30,
+                                               env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
+                    assert evaluated.returncode == 0 and not evaluated.stderr, (case["name"], evaluated.stderr)
+                    error = float(json.loads(evaluated.stdout)["copy_text"].replace("\u2212", "-"))
+                    assert 0 <= error < 1e-10, (case["name"], key, error)
+            else:
+                assert {k:Fraction(v) for k,v in value["probabilities"].items()} == {case["expected"]:Fraction(1)}, (case["name"],value)
         else:
             assert value["counts"] == {case["expected"]:10000}, (case["name"],value)
         checks += 1
