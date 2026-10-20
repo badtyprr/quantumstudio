@@ -63,6 +63,9 @@ static class ClassicalQasmStorageTests {
   var type=ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned,1);
   string undefined="uint[1] v0;\n"+empty.Assign(new[]{0},E.FromInteger(ClassicalIntegerExpression.Variable(type,0)),new[]{type});
   cases.Add(new {name="empty-output-undefined-read",source="OPENQASM 3;\n"+empty.ProgramBody(undefined),expected="",runtime_error=true});
+  cases.Add(new {name="empty-output-end",source="OPENQASM 3;\n"+empty.ProgramBody("end;\n"+undefined),expected=""});
+  var selected=new ClassicalQasmStorage(2,new[]{1});
+  cases.Add(new {name="selected-output-end",source="OPENQASM 3;\n"+selected.ProgramBody(selected.Bit(1)+" = 1;\nend;\n"+selected.Bit(1)+" = 0;\n"),expected="1"});
   File.WriteAllText(args[0],new JavaScriptSerializer().Serialize(cases));
   Console.WriteLine("PASS: "+cases.Count+" storage cases; "+rejected+" invalid contexts rejected.");
  }

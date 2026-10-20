@@ -59,5 +59,5 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Typed OpenQASM expression tests failed.' }
           $storageCases = Join-Path $env:RUNNER_TEMP 'storage-qasm-cases.json'
           & windows/test-classical-storage-qasm.ps1 -CasesPath $storageCases
-          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $storageCases --expected-cases 10
+          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $storageCases --expected-cases 12
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM storage tests failed.' }

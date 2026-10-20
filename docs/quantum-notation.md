@@ -575,8 +575,8 @@ exact and sampled outcomes.
 that serializer. Selected outputs occupy an explicit `output bit` register in
 the requested order; working bits occupy separate scratch storage without
 duplicating the bit bank. Assignments evaluate their complete right-hand side
-before changing any target. Ten generated programs check overlapping writes,
-repeated reads, output order, empty results, and the 64-bit boundary in exact
+before changing any target. Twelve generated programs check overlapping writes,
+repeated reads, output order, empty results, early termination, and the 64-bit boundary in exact
 and sampled execution. An undefined-read case verifies that empty results do
 not suppress execution errors. This requires the explicit-output and local-scope
 importer support.
