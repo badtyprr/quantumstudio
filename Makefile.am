@@ -24,6 +24,9 @@ EXTRA_DIST = config.rpath  \
 	windows/fixtures/qb004/oracle.qasm \
 	windows/fixtures/qb004/bernvaz.qasm \
 	windows/qasm_source_bundle.py \
+	windows/SourceCircuitDocument.cs \
+	windows/SourceCircuitDocumentTests.cs \
+	windows/fixtures/qb004/provenance-envelope.json \
 	windows/test-qasm-source-bundle.py \
 	docs/qasm-source-bundles.md \
 	windows/test-qasm-import.py \
