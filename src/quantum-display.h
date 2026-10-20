@@ -168,7 +168,11 @@ class Printer {
    if(!literalCollision && safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
   }
   if(name=="qpower" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^"+grouped(render(value[1],depth+1),81),80);
-  if((name=="qsin" || name=="qcos" || name=="qtan" || name=="qasin" || name=="qacos" || name=="qatan") && value.size()==1)
+  // Keep the basis dimension explicit; treating this as an ordinary named ket
+  // would let bra/ket composition accidentally omit that dimension.
+  if(name=="qbasis" && value.size()==2)
+   return Fragment("|"+render(value[0],depth+1).text+"⟩_{"+render(value[1],depth+1).text+"}");
+  if((name=="qsin" || name=="qcos" || name=="qtan" || name=="qasin" || name=="qacos" || name=="qatan" || name=="qexp") && value.size()==1)
    return Fragment(name.substr(1)+"("+render(value[0],depth+1).text+")");
   if(name=="qfourier" && value.size()==1)return Fragment("QFT_"+grouped(render(value[0],depth+1),100));
   if(name=="qtrace" && value.size()==1)return Fragment("Tr("+render(value[0],depth+1).text+")");

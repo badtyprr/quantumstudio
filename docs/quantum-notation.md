@@ -996,3 +996,6 @@ For example, `matrixassume(matrixassume(Tr(A+B)-Tr(A)-Tr(B),A,n,n),B,n,n)` gives
 With M declared as a complex matrix, `M†*M >= 0` and `M*M† >= 0` simplify to true (1), including rectangular M. The reversed comparisons `0 <= M†*M` and `0 <= M*M†` do the same; strict negative-definiteness comparisons return false (0). For example, `matrixassume(M†*M>=0,M,2,3)` returns 1. The Matrices editor supplies this declaration without changing the typed formula.
 
 Strict positivity and equality to zero remain unresolved without rank or value information. Transpose products and products with a different factor do not receive this proof. This follows the positive-semidefinite definition in [IBM Quantum Learning: Density matrix basics](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics); it is not a general symbolic inequality solver.
+
+
+Symbolic dimensioned basis states display as `|x⟩_{N}`, retaining their dimension through adjoints. Exponentials inside Fourier sums display as `exp(...)`; the sum index uses the same displayed name in the exponential and ket. Copy result continues to use the canonical expression, preserving evaluation and binder scope. This presentation does not automatically expand `QFT_N|x⟩_{N}` into a Fourier sum.
