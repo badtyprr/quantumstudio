@@ -220,3 +220,25 @@ therefore identify their original dependency location. This changes diagnostics,
 not which programs the adapter supports. The message text for stdin-only
 compilation remains unchanged. Missing or invalid spans still fall back to the
 entry filename; errors in later lowering/emission stages need separate coverage.
+
+## Subroutine locals resolved during compilation
+
+Classical import can now use the pinned compiler's own local scopes when a
+subroutine's classical values can be evaluated during compilation. This includes
+the unchanged QB-004 `oracle.qasm` and `bernvaz.qasm` fixtures: both import through
+the file route with `--module-headers`, producing the same gate order and wires
+as numerical import. The adapter keeps its runtime-variable transformations out
+of those function scopes.
+
+Repeated and nested calls have independent compiler-local values. Local and
+parameter names may shadow outer names; references to mutable global variables
+are rejected even in unused function definitions. Omitted integer parameter
+widths use the pinned compiler's 32-bit declaration default. Explicit widths are
+preserved. Expansion is limited to 32 nested calls and 4096 total calls per
+compiler visitor, in addition to the existing loop and circuit limits.
+
+This does not implement runtime classical arguments, measurement-dependent local
+storage, or complete subroutine/array support. Those remain DEV-08 work. The
+classical GUI persistence/export acceptance for the QB-004 subroutines still
+requires merged-artifact validation; successful compilation alone is not that
+acceptance.

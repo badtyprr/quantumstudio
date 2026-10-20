@@ -97,6 +97,12 @@ class FileImportTests(unittest.TestCase):
                     result = self.run_import(command, ["--source-file", str(main), "--module-headers"])
                     self.assertEqual(result["Circuit"], self.run_import(command, source=inline))
                     self.assertEqual(len(result["Circuit"]["Steps"]), count)
+                    classical = self.run_import(command, ["--source-file", str(main), "--module-headers", "--classical"])
+                    self.assertEqual(classical["Circuit"]["Steps"],
+                                     [{"Kind": "Gate", "Expression": step["Gate"], "Wires": step["Wires"]}
+                                      for step in result["Circuit"]["Steps"]])
+                    self.assertEqual(classical["Circuit"]["Qubits"], 4)
+                    self.assertEqual(classical["Source"], result["Source"])
                     self.assertTrue(result["Source"]["ModuleHeaders"])
                     self.assertEqual(len(result["Source"]["Files"]), 2)
                     for file in result["Source"]["Files"]:

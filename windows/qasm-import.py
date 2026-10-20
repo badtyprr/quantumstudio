@@ -17,6 +17,7 @@ from pyqasm.transformer import Qasm3Transformer
 from pyqasm.validator import Qasm3Validator
 from pyqasm.elements import Context
 from qasm_source_diagnostics import error_at
+from qasm_subroutine_scope import prepare_subroutine_scope
 
 RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)
 
@@ -41,8 +42,21 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_while = QasmVisitor._visit_while_loop
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
-    runtime_integer_names={node.identifier.name for node in nodes(module.original_program)
+    original_function = QasmVisitor._visit_function_call
+    runtime_integer_names={node.identifier.name for node in nodes(module.original_program,True)
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
+    def in_function(visitor):
+        # PyQASM pushes one mapping per activation, including {} for a call
+        # with no quantum arguments. Nested block scopes retain this stack.
+        return bool(visitor._function_qreg_size_map)
+    def function_call(visitor, statement):
+        depth=getattr(visitor,'_quantum_call_depth',0)
+        calls=getattr(visitor,'_quantum_call_count',0)+1
+        if depth>=32:raise error_at(statement,'Subroutine call nesting exceeds 32 levels.')
+        if calls>4096:raise error_at(statement,'Subroutine expansion exceeds 4096 calls.')
+        visitor._quantum_call_depth=depth+1;visitor._quantum_call_count=calls
+        try:return original_function(visitor,statement)
+        finally:visitor._quantum_call_depth=depth
     def for_loop(visitor, statement):
         bounds=statement.set_declaration
         if getattr(statement,'_quantum_runtime_for',False):
@@ -161,6 +175,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             raise ValueError('Classical bit expressions require integer or Boolean values.')
         return ast.IntegerLiteral(int(result))
     def assignment(visitor, statement):
+        if in_function(visitor):return original_assignment(visitor,statement)
         if getattr(statement,"_quantum_clear",False):
             return [] if visitor._check_only else [copy.deepcopy(statement)]
         name = statement.lvalue.name
@@ -195,6 +210,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             value = ast.BinaryExpression(op=ast.BinaryOperator[operation],lhs=copy.deepcopy(target),rhs=value)
         return [] if visitor._check_only else [ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=value)]
     def declaration(visitor, statement):
+        if in_function(visitor):return original_declaration(visitor,statement)
         if isinstance(statement.type,ast.BitType) and statement.type.size is None:
             visitor._quantum_scalar_bits=getattr(visitor,'_quantum_scalar_bits',set())|{statement.identifier.name}
         if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
@@ -223,6 +239,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         initial = ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression)
         return result+assignment(visitor,initial)
     def branch(visitor, statement, force=False):
+        if in_function(visitor):return original_branch(visitor,statement)
         if not force and not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
             return original_branch(visitor, statement)
         # Preserve the expression and choose the body only during execution.
@@ -252,10 +269,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
         return mapping
     def transfer(visitor, statement):
+        if in_function(visitor):return (original_break if isinstance(statement,ast.BreakStatement) else original_continue)(visitor,statement)
         if not getattr(statement,"_quantum_loop_transfer",False):
             raise ValueError("A loop transfer must target a runtime while loop.")
         return [] if visitor._check_only else [copy.deepcopy(statement)]
     def while_loop(visitor, statement):
+        if in_function(visitor):return original_while(visitor,statement)
         # Compile one body, never evaluate or unroll its runtime condition here.
         # Branch compilation supplies the same scoped block and gate bookkeeping.
         if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
@@ -264,6 +283,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         compiled=branch(visitor,proxy,force=True)
         return [ast.WhileLoop(while_condition=item.condition,block=item.if_block) for item in compiled]
     def switch(visitor, statement):
+        if in_function(visitor):return original_switch(visitor,statement)
         target=normalize(visitor,statement.target)
         def boolean_expression(value):
             return (isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
@@ -347,6 +367,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
+        QasmVisitor._visit_function_call = function_call
         QasmVisitor._construct_visit_map = visit_map
         QasmVisitor._visit_switch_statement = switch
         QasmVisitor._visit_branching_statement = branch
@@ -369,6 +390,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         QasmVisitor._visit_while_loop = original_while
         QasmVisitor._visit_classical_assignment = original_assignment
         QasmVisitor._visit_classical_declaration = original_declaration
+        QasmVisitor._visit_function_call = original_function
 
 
 GATES = {name.lower(): name for name in (
@@ -478,15 +500,16 @@ def gate_steps(statement, wire, published_u=False):
     return prefix + operations + suffix
 
 
-def nodes(value):
+def nodes(value, skip_definitions=False):
     if is_dataclass(value):
         yield value
+        if skip_definitions and isinstance(value,(ast.SubroutineDefinition,ast.QuantumGateDefinition)):return
         for field in fields(value):
             if field.name not in ('span', 'annotations'):
-                yield from nodes(getattr(value, field.name))
+                yield from nodes(getattr(value, field.name),skip_definitions)
     elif isinstance(value, (list, tuple)):
         for item in value:
-            yield from nodes(item)
+            yield from nodes(item,skip_definitions)
 
 
 def resolve_integer_scopes(program):
@@ -574,8 +597,6 @@ def resolve_integer_scopes(program):
             elif isinstance(statement,ast.CompoundStatement):
                 block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);result.extend(statement.statements)
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
-                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
-                    raise ValueError('Integer declarations in subroutines require activation storage not yet supported.')
                 result.append(statement)
             else:
                 if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
@@ -723,22 +744,21 @@ def convert(source, published_u=False, classical=False):
     module = pyqasm.loads(source)
     hidden_registers=set()
     if classical:
+        prepare_subroutine_scope(module.original_program)
         mark_runtime_ranges(module.original_program)
         lower_for_transfers(module.original_program)
         resolve_integer_scopes(module.original_program)
         hidden_registers=lower_boolean_measurements(module.original_program)
     if classical:
-        runtime_names={node.identifier.name for node in nodes(module.original_program)
+        runtime_names={node.identifier.name for node in nodes(module.original_program,True)
                    if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,)+RUNTIME_SCALAR_TYPES)}
         def runtime(value):
             return any(isinstance(item,ast.Identifier) and item.name in runtime_names for item in nodes(value))
         integer_names={node.identifier.name for node in module.original_program.statements
                        if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
-        for node in nodes(module.original_program):
+        for node in nodes(module.original_program,True):
             if isinstance(node,ast.ForInLoop) and node.identifier.name in integer_names:
                 raise error_at(node, 'Loop variables cannot yet shadow runtime integer variables.')
-            if isinstance(node,ast.SubroutineDefinition) and any(isinstance(item,ast.Identifier) and item.name in integer_names for item in nodes(node)):
-                raise error_at(node, 'Runtime integer variables in subroutines require scoped lowering not yet supported.')
             index=(node.indices if isinstance(node,ast.IndexedIdentifier) else node.index if isinstance(node,ast.IndexExpression) else None)
             if index is not None and runtime(index):
                 raise error_at(node, 'Runtime register indices are not yet supported by the circuit importer.')
@@ -761,12 +781,13 @@ def convert(source, published_u=False, classical=False):
         raise error_at(module.original_program, 'The published OpenQASM 3 U convention requires an OpenQASM 3 program.')
     # PyQASM recognizes built-in includes but does not resolve arbitrary files.
     # Reject these before compilation, rather than pretend their content ran.
-    for node in nodes(module.original_program):
+    for node in nodes(module.original_program,True):
         if classical and isinstance(node, ast.ClassicalDeclaration):
             if not isinstance(node.type, (ast.BitType,)+RUNTIME_SCALAR_TYPES):
                 raise error_at(node, 'Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise error_at(node, 'Only stdgates.inc and qelib1.inc includes are supported.')
+    for node in nodes(module.original_program):
         if getattr(node, 'annotations', None):
             raise error_at(node, 'Annotated operations require semantics the editor does not support.')
     # Preserve primitive gates: generic decomposition may preserve a unitary
