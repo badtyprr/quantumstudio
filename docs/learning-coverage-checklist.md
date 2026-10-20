@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: finish REL-06 publication, then integrate and publish REL-07; run AUD-01 and AUD-02 alongside code work; then finish DEV-05 and the reproduced DEV-16 include gap, followed by the remaining DEV-03/04/06/07/08 work. For DEV-16, use the ordered steps below to finish editor preservation before changed-dependency and diagnostic work. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
+Recommended order: finish REL-06 publication, then integrate and publish REL-07; run AUD-01 and AUD-02 alongside code work. Finish DEV-16 diagnostic integration, then prioritize DEV-08's reproduced subroutine-local storage gap blocking classical QB-004 imports. Continue DEV-05 and the remaining DEV-03/04/06/07/08 work. For DEV-16, use the ordered steps below; local include resolution alone does not complete the classical-editor workflow. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -19,7 +19,7 @@ Recommended order: finish REL-06 publication, then integrate and publish REL-07;
 | [DEV-05](#dev-05) | P1 | M | Partial | None | Register dimensions and symbolic bit strings |
 | [DEV-06](#dev-06) | P1 | L | Not implemented | None | Runtime gate parameters |
 | [DEV-07](#dev-07) | P1 | L | Not implemented | None | Dynamic wire indexing |
-| [DEV-08](#dev-08) | P1 | L | Not implemented | DEV-07 | Array/set iteration and subroutine-local storage |
+| [DEV-08](#dev-08) | P1 | L | Not implemented | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage; QB-004 classical blocker |
 | [DEV-09](#dev-09) | P2 | L | Partial | DEV-03 | Symbolic ensembles, instruments and POVMs |
 | [DEV-10](#dev-10) | P2 | L | Partial | DEV-05 | Symbolic domains, sets and indexed families |
 | [DEV-11](#dev-11) | P2 | L | Partial | DEV-04 | Error-correction lesson operations |
@@ -98,9 +98,10 @@ Recommended order: finish REL-06 publication, then integrate and publish REL-07;
 
 ### DEV-08
 
-- [ ] **Array/set iteration and subroutine-local storage** — P1; Not implemented; size L; dependencies: DEV-07.
-- Source focus: qBraid PyQASM examples. These are audit targets, not a claim that every page has the same gap.
-- Acceptance: Implement one supported construct per PR: bounded arrays/set loops, then local lifetimes and shadowing. Test nested calls, loop transfers, cleanup, serialization, and resource limits.
+- [ ] **Array/set iteration and subroutine-local storage** — P1; Not implemented; size L; dependencies: DEV-07 for dynamic indexing, not for the reproduced constant-index subroutine case.
+- Source focus: qBraid PyQASM examples and the unchanged QB-004 generated `oracle.qasm` and `bernvaz.qasm` fixtures.
+- Reproduced blocker: the published REL-05 compiler resolves both local includes with `--module-headers`, but `--classical` rejects both fixtures' local integer declarations. Numerical import produces three and ten operations respectively. See [QB-004 follow-up evidence](learning-evidence/QB-004.md#follow-up-local-includes-and-classical-subroutine-storage).
+- Acceptance: Implement one supported construct per PR. Prioritize subroutine-local lifetimes and shadowing for QB-004, then bounded arrays/set loops. Test repeated/nested calls, distinct activations, loop transfers, cleanup, serialization and resource limits. Do not change the generated fixtures to inline or remove their local variables to claim acceptance.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
 
 ### DEV-09
@@ -163,8 +164,8 @@ Recommended order: finish REL-06 publication, then integrate and publish REL-07;
   - [x] DEV-16a: Released classical-editor source preservation through import, save/reopen and undo/redo in REL-05. Validation includes 49 document checks, 99 history checks, six frozen C# bridge checks, and a packaged GUI round-trip with two byte-verified source files and three inspected layouts. These are scoped checks, not whole-notebook coverage.
   - [ ] DEV-16b: Publish the numerical composer migration to the same source-bearing document model (REL-06). Merged implementation preserves provenance through edits, history and failures while keeping runtime requests circuit-only. Validation includes 17 source-preservation checks, 102 circuit-file checks, and three frozen-compiler GUI import/export cases.
   - [ ] DEV-16c: Publish explicit changed/missing-dependency checks and reimport (REL-07). PR #308 requires a newly selected source root, reports dependency status without mutating the saved snapshot, and provides atomic reimport with undo. A saved source root must not silently authorize filesystem reads. Validation includes 15 source-bundle tests, nine file-import test methods, 11 frozen C# bridge checks and both editors' GUI workflows; merged-artifact validation remains pending.
-  - [ ] DEV-16d: Map compiler diagnostics to the original dependency file and line, including module-header adaptation.
-  - [ ] DEV-16e: Verify standalone export and numerical equivalence for both unchanged QB-004 generated subroutines through both editors, including nested includes, spaces, Unicode and failure recovery.
+  - [ ] DEV-16d: Map compiler diagnostics to the original dependency file and line, including module-header adaptation. PRs [#310](https://github.com/badtyprr/quantumstudio/pull/310), [#311](https://github.com/badtyprr/quantumstudio/pull/311) and [#312](https://github.com/badtyprr/quantumstudio/pull/312) cover source coordinates, compiler diagnostics and adapter preflight failures; all remain unmerged. Later lowering/emission errors without spans still need coverage.
+  - [ ] DEV-16e: Verify standalone export and numerical equivalence for both unchanged QB-004 generated subroutines through both editors, including nested includes, spaces, Unicode and failure recovery. Numerical-composer acceptance is in REL-06. Classical import currently fails on subroutine-local integers and depends on DEV-08; do not mark this step complete from numerical-only results.
 - Evidence: original reproduction in `docs/learning-evidence/QB-004.md`; released tests `windows/test-qasm-source-bundle.py` and `windows/test-qasm-file-import.py`; REL-05 adds `windows/test-source-import-bridge.ps1`. DEV-16 and QB-004 remain incomplete. Owner: unassigned.
 
 ### AUD-01
