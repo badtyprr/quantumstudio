@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumBinary.h"
+#include "QuantumIndexed.h"
 #include "Calculator.h"
 #include "Function.h"
 #include <string>
@@ -112,6 +113,8 @@ class QuantumBinaryFunction: public MathFunction {
    return 1;
   }
   if(op=="qbitdot" || op=="qbitxor" || op=="qbitvalue") {
+   bool symbolicLabel=false;
+   int knownWidths[2]={-1,-1};
    std::vector<MathStructure> bits[2];
    bool labels[2]={false,false};
    for(size_t j=0;j<(op=="qbitvalue" ? 1U : 2U);++j) {
@@ -120,8 +123,10 @@ class QuantumBinaryFunction: public MathFunction {
     if(labels[j]) {
      if(value.size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
      MathStructure index=value[0],width=value[1];
-     EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;index.eval(exact);width.eval(exact);
-     if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue())) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
+     QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
+     if(state==QuantumBitLabelState::Invalid)return 0;
+     if(width.isNumber())knownWidths[j]=width.number().intValue();
+     if(state==QuantumBitLabelState::Symbolic) {symbolicLabel=true;continue;}
      for(int k=width.number().intValue()-1;k>=0;--k)bits[j].push_back((index.number().intValue()>>k)&1 ? m_one : m_zero);
     } else if(value.isMatrix()) {
      if(value.rows()!=1 && value.columns()!=1) {CALCULATOR->error(true,"Binary bit operations require vectors, not multi-row matrices.",NULL);return 0;}
@@ -133,7 +138,11 @@ class QuantumBinaryFunction: public MathFunction {
     } else bits[j].push_back(value);
     if(bits[j].empty() && !labels[j]) {CALCULATOR->error(true,"Binary bit operations require nonempty bit vectors.",NULL);return 0;}
     for(const auto &bit:bits[j])if(!bit.isNumber() || (!bit.number().isZero() && !bit.number().isOne())) {CALCULATOR->error(true,"Binary bit operations require each entry to be 0 or 1.",NULL);return 0;}
+    knownWidths[j]=static_cast<int>(bits[j].size());
    }
+   if(op!="qbitvalue" && knownWidths[0]>=0 && knownWidths[1]>=0 && knownWidths[0]!=knownWidths[1]) {CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;}
+   // Retain both operands so later substitutions still check their domains.
+   if(symbolicLabel)return 0;
    if(op=="qbitvalue") {
     Number value(0);
     for(const auto &bit:bits[0]) {value.multiply(2);if(bit.number().isOne())value.add(1);}
