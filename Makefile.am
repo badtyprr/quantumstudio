@@ -22,6 +22,8 @@ EXTRA_DIST = config.rpath  \
 	windows/ClassicalRealExpressionText.cs \
 	windows/ClassicalRealExpressionTextTests.cs \
 	windows/test-real-expression-text.ps1 \
+	windows/test-runtime-angle-editor.ps1 \
+	windows/test-runtime-angle-editor.py \
 	windows/qasm-import-requirements.txt \
 	windows/qasm-import.py \
 	windows/qasm_import_request.py \
