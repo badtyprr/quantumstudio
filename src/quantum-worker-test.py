@@ -24,6 +24,22 @@ def data(expression, *flags):
     return value
 
 
+# Indexed register factors stay symbolic without losing their one-bit domains.
+for flags in ((), ("--approx",)):
+    for expression in ("|x_1 x_0>", r"\vert x_1 x_0\rangle",
+                       "|0 x_1 x_0>", "<x_1 x_0|"):
+        symbolic = data("quantum:" + expression, *flags)
+        copied = data("quantum:" + symbolic["copy_text"], *flags)
+        assert "qbasis" in copied["copy_text"] and "qtensor" in copied["copy_text"]
+        resolved = "replace(replace((" + copied["copy_text"] + "),x_1,1),x_0,0)"
+        expected = "<10|" if expression.startswith("<") else "|010>" if expression.startswith("|0 ") else "|10>"
+        assert data("quantum:norm(vec((" + resolved + ")-(" + expected + ")))", *flags)["text"] == "0"
+        for invalid in ("-1", "2", "1/2"):
+            run("quantum:replace((" + copied["copy_text"] + "),x_1," + invalid + ")",
+                "--json", *flags, success=False)
+    for expression in ("tensor(basis(x_1,2),2)", "tensor(2,basis(x_1,2))"):
+        run("quantum:" + expression, "--json", *flags, success=False)
+
 # Symbolic binary labels retain validation until values and widths are supplied.
 for flags in ((), ("--approx",)):
     for expression in [

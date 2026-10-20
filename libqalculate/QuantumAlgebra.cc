@@ -639,6 +639,16 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 0;
   }
+  if(op=="qtensor" &&
+     ((!a.isVector() && unresolvedMatrixOperand(a)) ||
+      (!args[1].isVector() && unresolvedMatrixOperand(args[1])))) {
+   // Indexed register bits retain their basis constraints until substitution.
+   // A symbolic factor must not hide a concrete invalid scalar factor.
+   for(size_t j=0;j<2;++j)if(!args[j].isMatrix() && !unresolvedMatrixOperand(args[j])) {
+    CALCULATOR->error(true,"Quantum operation requires two matrices.",NULL);return 0;
+   }
+   return 0;
+  }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
    if(!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10) { CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL); return 0; }
