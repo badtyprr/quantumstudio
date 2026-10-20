@@ -1,11 +1,12 @@
 """Source dependency boundaries and deterministic expansion, without GUI or cloud."""
 from pathlib import Path
+import copy
 import importlib.util
 import tempfile
 import unittest
 from pyqasm import ValidationError
 
-from qasm_source_bundle import capture_source, SourceError, MAX_BYTES, MAX_DEPTH, MAX_FILES
+from qasm_source_bundle import capture_source, check_snapshot, SourceError, MAX_BYTES, MAX_DEPTH, MAX_FILES
 
 
 class SourceBundleTests(unittest.TestCase):
@@ -154,6 +155,70 @@ class SourceBundleTests(unittest.TestCase):
         # Windows and POSIX may resolve parent traversal across links differently.
         selected = (link / "../module.inc").resolve()
         self.assertIn(selected.read_text(encoding="utf-8"), bundle.expanded)
+
+    def test_saved_snapshot_checks_explicit_root_and_preserves_snapshot(self):
+        main = self.put("main.qasm", '\ufeffinclude "sub dir/λ.inc";')
+        dependency = self.put("sub dir/λ.inc", "// original")
+        snapshot = capture_source(main).snapshot()
+        snapshot["Root"] = "Z:/nonexistent/untrusted-saved-root"
+        original = copy.deepcopy(snapshot)
+        result = check_snapshot(snapshot, root=self.root)
+        self.assertTrue(result["Unchanged"])
+        dependency.write_text("// changed", encoding="utf-8")
+        result = check_snapshot(snapshot, root=self.root)
+        self.assertEqual([r["Status"] for r in result["Files"]], ["unchanged", "changed"])
+        dependency.unlink()
+        result = check_snapshot(snapshot, root=self.root)
+        self.assertEqual([r["Status"] for r in result["Files"]], ["unchanged", "missing"])
+        self.assertEqual(snapshot, original)
+
+    def test_snapshot_rejects_invalid_paths_and_hashes_before_disk_reads(self):
+        from unittest.mock import patch
+        snapshot = capture_source(self.put("main.qasm", "// original")).snapshot()
+        malformed = []
+        for name in ("../escape", "a/../../escape", "C:/secret", "/secret", "a\\b", "a:stream"):
+            candidate = copy.deepcopy(snapshot)
+            candidate["Bindings"][0]["Path"] = name
+            malformed.append(candidate)
+        for field, value in (("Sha256", "0" * 64), ("Text", "\ud800"), ("Bom", 1)):
+            candidate = copy.deepcopy(snapshot)
+            candidate["Files"][0][field] = value
+            malformed.append(candidate)
+        candidate = copy.deepcopy(snapshot)
+        candidate["Version"] = True
+        malformed.append(candidate)
+        for candidate in malformed:
+            with self.subTest(candidate=repr(candidate)), patch.object(Path, "resolve", side_effect=AssertionError("unexpected filesystem access")):
+                with self.assertRaises(SourceError):
+                    check_snapshot(candidate, root=self.root)
+
+    def test_snapshot_reports_retargeted_and_escaped_links_without_reading_them(self):
+        a = self.put("a.inc", "// same")
+        b = self.put("b.inc", "// same")
+        link = self.root / "link.inc"
+        try:
+            link.symlink_to(a)
+        except OSError as error:
+            self.skipTest(f"Symlink creation unavailable: {error}")
+        snapshot = capture_source(self.put("main.qasm", 'include "link.inc";')).snapshot()
+        link.unlink()
+        link.symlink_to(b)
+        result = check_snapshot(snapshot, root=self.root)
+        self.assertEqual(result["Files"][1]["Status"], "retargeted")
+        with tempfile.TemporaryDirectory() as outside:
+            external = Path(outside) / "secret"
+            external.write_text("// same", encoding="utf-8")
+            link.unlink()
+            link.symlink_to(external)
+            result = check_snapshot(snapshot, root=self.root)
+            self.assertEqual(result["Files"][1]["Status"], "unavailable")
+
+    def test_snapshot_reports_oversized_files_without_changing_captured_bytes(self):
+        main = self.put("main.qasm", "// original")
+        snapshot = capture_source(main).snapshot()
+        main.write_bytes(b" " * (MAX_BYTES + 1))
+        self.assertEqual(check_snapshot(snapshot, root=self.root)["Files"][0]["Status"], "unavailable")
+        self.assertEqual(snapshot["Files"][0]["Text"], "// original")
 
 
 if __name__ == "__main__":
