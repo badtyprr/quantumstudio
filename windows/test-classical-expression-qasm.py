@@ -53,7 +53,18 @@ for case in cases:
         assert result.returncode == 0 and not result.stderr, (case["name"],result.stderr)
         value = json.loads(result.stdout)
         if exact:
-            assert {k:Fraction(v) for k,v in value["probabilities"].items()} == {case["expected"]:Fraction(1)}, (case["name"],value)
+            if case.get("approximate_probabilities", False):
+                # The pinned compiler lowers gate angles numerically. Exact
+                # execution can retain exponential expressions in probabilities.
+                for key in set(value["probabilities"]) | {case["expected"]}:
+                    expression = "abs((" + value["probabilities"].get(key, "0") + ")-" + ("1" if key == case["expected"] else "0") + ")"
+                    evaluated = subprocess.run([str(worker), "--json", "--approx"], input=expression.encode("utf-8"), capture_output=True, timeout=30,
+                                               env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
+                    assert evaluated.returncode == 0 and not evaluated.stderr, (case["name"], evaluated.stderr)
+                    error = float(json.loads(evaluated.stdout)["copy_text"].replace("\u2212", "-"))
+                    assert 0 <= error < 1e-10, (case["name"], key, error)
+            else:
+                assert {k:Fraction(v) for k,v in value["probabilities"].items()} == {case["expected"]:Fraction(1)}, (case["name"],value)
         else:
             assert value["counts"] == {case["expected"]:10000}, (case["name"],value)
         checks += 1
