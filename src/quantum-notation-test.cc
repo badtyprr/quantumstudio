@@ -3,6 +3,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
+#include <utility>
 static unsigned checks=0;
 static void equal(const std::string &input,const std::string &expected) {
  auto actual=translateQuantum(input);
@@ -151,6 +153,22 @@ int main(){try {
  rejects(std::string("1+")+char(0x1c)+"i");
  rejects(std::string("1+")+char(0x1d)+"i");
  rejects(std::string("1+")+char(0x1b)+"i");
+
+ // Compact products bind to the surrounding mathematical sum indices.
+ for(const auto &pair:std::vector<std::pair<std::string,std::string>>{
+  {R"(\sum_{x=0}^{1}\sum_{y=0}^{1} xy)",R"(\sum_{x=0}^{1}\sum_{y=0}^{1} x*y)"},
+  {R"(\sum_{x=0}^{1}{\sum_{y=0}^{1}{xy}})",R"(\sum_{x=0}^{1}{\sum_{y=0}^{1}{x*y}})"},
+  {"∑_{x=0}^{1}{∑_{y=0}^{1}{xy}}","∑_{x=0}^{1}{∑_{y=0}^{1}{x*y}}"},
+  {R"(\sum_{x=0}^{2}{xxx})",R"(\sum_{x=0}^{2}{x*x*x})"},
+  {R"(\sum_{p=0}^{1}{\sum_{i=0}^{1}{pi}})",R"(sum(sum(pi,0,1,i),0,1,p))"},
+  {R"(\sum_{i=0}^{2}{ii})",R"(\sum_{i=0}^{2}{i*i})"},
+  {R"(\sum_{x=0}^{1}{xy})",R"(sum(xy,0,1,x))"},
+  {R"(\sum_{x=0}^{1}{\sum_{y=0}^{1}{"xy"}})",R"(sum(sum("xy",0,1,y),0,1,x))"},
+  {R"(\sum_{xy=0}^{2}{xy})",R"(sum(xy,0,2,xy))"},
+  {R"(\sum_{x=0}^{1}{xx}+xx)",R"(sum(x*x,0,1,x)+xx)"}
+ })equal(pair.first,translateQuantum(pair.second));
+ rejects("qtexgroupsum(0,1,x,"+std::string(600,'x')+")");
+ equal("qtexgroupsum(0,1,x,"+std::string(600,'x')+"z)",translateQuantum("sum("+std::string(600,'x')+"z,0,1,x)"));
  std::string nestedSums;
  for(unsigned k=0;k<300;++k)nestedSums+="qtexsum(0,1,k) ";
  rejects(nestedSums+"1");

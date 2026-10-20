@@ -362,8 +362,10 @@ class TeXReader {
     return "qtex"+name+"("+startValue+","+upper+","+variable+") ";
    }
    auto body=group();
-   if(setSum)return "sumset("+body+","+startValue+","+variable+")";
-   return (name=="sum" ? "sum(" : name=="prod" ? "product(" : name=="bigoplus" ? "blocksum(" : "tensorproduct(")+body+","+startValue+","+upper+","+variable+")";
+   // Bounds precede the body so its lexical index context is known while
+   // parsing compact products, including inside nested braced sums.
+   if(setSum)return "qtexgroupsumset("+startValue+","+variable+","+body+")";
+   return "qtexgroup"+name+"("+startValue+","+upper+","+variable+","+body+")";
   }
   bool expectation=name=="expectationvalue" || name=="expval" || name=="ev";
   bool matrixElement=name=="matrixelement" || name=="matrixel" || name=="mel";

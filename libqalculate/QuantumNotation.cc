@@ -371,6 +371,30 @@ class Parser {
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned nextBoundIndex=0,indexedReferences=0;
+ // TeX binds single-letter indices before parsing its body. Only products
+ // composed entirely of these indices are implicit; quoted names stay atomic.
+ std::vector<std::string> texIndices;
+ bool texIndexDeclaration=false;
+ std::string texIndexProduct(const std::string &name) {
+  if(texIndexDeclaration || name.size()<2 || name=="pi" || gates.count(name) || (name.size()>=2 && name.compare(name.size()-2,2,"Hz")==0))return name;
+  for(const auto &index:texIndices)if(name==index)return name;
+  for(char c:name) {
+   bool bound=false;
+   for(const auto &index:texIndices)if(index==std::string(1,c))bound=true;
+   if(!bound)return name;
+  }
+  // Implicit factors must obey the same complexity budget as explicit ones.
+  if(name.size()-1>nodeLimit-nodes)throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
+  nodes+=name.size()-1;
+  std::string result;
+  for(char c:name) {
+   const std::string factor=(c=='i' || c=='e') ? std::string(1,constantMarkerBegin)+c+constantMarkerEnd : std::string(1,c);
+   result=result.empty() ? factor : "qmul("+result+","+factor+")";
+   checkSize(result);
+  }
+  return result;
+ }
+
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="select") && args.size()==3) ? 2 :
    ((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
@@ -1044,6 +1068,24 @@ class Parser {
     } else if(name=="cardinality") {
      std::string collection=expression();need(')');
      a="qsumset(1,"+collection+",'__cardinality_index')";
+    } else if(name=="qtexgroupsum" || name=="qtexgroupprod" || name=="qtexgroupbigotimes" || name=="qtexgroupbigoplus" || name=="qtexgroupsumset" ||
+              name=="qtexsum" || name=="qtexprod" || name=="qtexbigotimes" || name=="qtexbigoplus" || name=="qtexsumset") {
+     const bool grouped=name.compare(0,9,"qtexgroup")==0;
+     const std::string operation=name.substr(grouped ? 9 : 4);
+     std::vector<std::string> args;
+     args.push_back(expression());need(',');
+     if(operation!="sumset"){args.push_back(expression());need(',');}
+     // A new multi-letter binder is a declaration, even if its letters are
+     // indices in an enclosing sum. Its body then shadows those spellings.
+     texIndexDeclaration=true;args.push_back(expression());texIndexDeclaration=false;
+     need(grouped ? ',' : ')');
+     texIndices.push_back(withoutLabelMarkers(args.back()));
+     std::string body=grouped ? expression() : product();texIndices.pop_back();
+     if(grouped)need(')');
+     args.insert(args.begin(),body);
+     name=operation=="sum" ? "sum" : operation=="prod" ? "product" : operation=="bigotimes" ? "qtensorproduct" : operation=="bigoplus" ? "qblocksum" : "qsumset";
+     scopeIndex(name,args);if(name=="sum")name="qsum";
+     a=name+"(";for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
     } else if(name=="qnorm") {
      std::string operand=expression();
      if(take(','))a="qschatten("+operand+","+expression()+")";else a="qnorm("+operand+")";
@@ -1196,15 +1238,6 @@ class Parser {
     } else {
     std::vector<std::string> args;
     if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
-    if(name=="qtexsumset") {
-     if(args.size()!=2)throw std::runtime_error("A set sum requires a collection and index.");
-     name="qsumset";args.insert(args.begin(),product());
-    }
-    if(name=="qtexsum" || name=="qtexprod" || name=="qtexbigotimes" || name=="qtexbigoplus") {
-     if(args.size()!=3)throw std::runtime_error("A finite sum/product requires lower bound, upper bound and index.");
-     name=name=="qtexsum" ? "sum" : name=="qtexprod" ? "product" : name=="qtexbigotimes" ? "qtensorproduct" : "qblocksum";
-     args.insert(args.begin(),product());
-    }
     if(name=="qsequence" && args.size()==3 && args[0].size()>=2 && args[0].front()=='[' && args[0].back()==']') {
      // Preserve singleton lists: libqalculate otherwise collapses [step] to step.
      std::string body=args[0].substr(1,args[0].size()-2);int nesting=0;char quoted=0;
@@ -1224,7 +1257,9 @@ class Parser {
     if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }
    } else {
-    auto it=gates.find(a); if(it!=gates.end()) a=it->second;
+    const std::string indexProduct=texIndexProduct(a);
+    auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
+    else if(it!=gates.end()) a=it->second;
     // Keep lexical constants distinct from constants introduced by gate
     // expansion. An explicit local binder may rename only the former.
     else if(a=="i" || a=="e" || a=="pi")a=std::string(1,constantMarkerBegin)+a+constantMarkerEnd;
