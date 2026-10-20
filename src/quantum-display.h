@@ -156,6 +156,8 @@ class Printer {
    Fragment index=render(value[1],depth+1);
    return Fragment(part(value[0])+grouped(index,100)+part(value[2]));
   }
+  if(name=="qorthoket" && value.size()==3 && value[0].isSymbolic() && value[1].isSymbolic())
+   return Fragment("|"+value[0].symbol()+"⟩ (basis "+value[1].symbol()+")");
   if((name=="qketstate" || name=="qnamedket" || name=="qindexedket") && value.size()==1) {
    std::string label=value[0].isSymbolic() ? value[0].symbol() : render(value[0],depth+1).text;
    // Bound labels must use the same fresh name as their displayed sum index.

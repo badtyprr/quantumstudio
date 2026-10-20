@@ -9,6 +9,115 @@
 #include <set>
 #include <cctype>
 namespace {
+bool orthonormalList(const MathStructure &raw,MathStructure &list) {
+ list.clearVector();
+ if(raw.isMatrix()) {
+  if(raw.rows()!=1 && raw.columns()!=1)return false;
+  for(size_t r=1;r<=raw.rows();++r)for(size_t c=1;c<=raw.columns();++c)list.addChild(*raw.getElement(r,c));
+ } else if(raw.isVector() || (raw.isFunction() &&
+            (raw.function()->referenceName()=="vector" || raw.function()->referenceName()=="horzcat" ||
+             raw.function()->referenceName()=="vertcat"))) {
+  for(size_t i=0;i<raw.size();++i)list.addChild(raw[i]);
+ } else return false;
+ return true;
+}
+// Named orthonormal vectors carry their declaration instead of choosing
+// computational coordinates. Different bases therefore keep unknown overlaps.
+bool orthonormalLabels(const MathStructure &labels) {
+ if(!labels.isVector() || labels.isMatrix() || labels.size()==0 || labels.size()>1024)return false;
+ std::set<std::string> names;
+ for(size_t i=0;i<labels.size();++i)
+  if(!labels[i].isSymbolic() || labels[i].symbol().empty() ||
+     !names.insert(labels[i].symbol()).second)return false;
+ return true;
+}
+MathStructure storedOrthonormalLabels(const MathStructure &labels) {
+ // Keep a constructor in the symbolic AST so clipboard printing emits commas,
+ // rather than the library's space-separated display form of a raw vector.
+ MathStructure stored(CALCULATOR->getFunction("vector"),static_cast<MathStructure*>(NULL));
+ for(size_t i=0;i<labels.size();++i)stored.addChild(labels[i]);
+ return stored;
+}
+class QuantumOrthonormalKet: public MathFunction {
+ public:
+ QuantumOrthonormalKet():MathFunction("qorthoket",3) {
+  setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());
+ }
+ ExpressionItem *copy() const {return new QuantumOrthonormalKet(*this);}
+ bool representsScalar(const MathStructure&) const {return false;}
+ bool representsNonMatrix(const MathStructure&) const {return false;}
+ bool preservesSingletonMatrix() const {return true;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions&) {
+  MathStructure labels;
+  bool found=false;
+  if(orthonormalList(raw[2],labels) && orthonormalLabels(labels))
+   for(size_t i=0;i<labels.size();++i)found=found || raw[0].equals(labels[i]);
+  if(raw[1].symbol().empty() || !found) {
+   CALCULATOR->error(true,"An orthonormal ket requires a named basis and membership in its distinct finite labels.",NULL);
+   return 0;
+  }
+  MathStructure stored=storedOrthonormalLabels(labels);
+  if(!stored.equals(raw[2])) {out.set(this,&raw[0],&raw[1],&stored,NULL);return 1;}
+  return 0;
+ }
+};
+bool annotateOrthonormalKets(MathStructure &value,const MathStructure &name,const MathStructure &labels,unsigned depth=0) {
+ if(CALCULATOR->aborted())return false;
+ if(depth>128) {CALCULATOR->error(true,"Orthonormal declaration expression is too deeply nested.",NULL);return false;}
+ if(value.isFunction()) {
+  const std::string &op=value.function()->referenceName();
+  if(op=="orthobasis" || op=="qorthoket")return true;
+  if((op=="qnamedket" || op=="qketstate") && value.size()==1) {
+   std::string label=value[0].isSymbolic() ? value[0].symbol() :
+    value[0].isVariable() ? value[0].variable()->referenceName() : "";
+   for(size_t i=0;i<labels.size();++i)if(labels[i].symbol()==label) {
+    MathStructure text(label,true),stored=storedOrthonormalLabels(labels);
+    value.set(CALCULATOR->getFunction("qorthoket"),&text,&name,&stored,NULL);return true;
+   }
+   return true;
+  }
+ }
+ for(size_t i=0;i<value.size();++i) {
+  if(value.isFunction()) {
+   Argument *argument=value.function()->getArgumentDefinition(i+1);
+   if(argument && argument->type()==ARGUMENT_TYPE_TEXT)continue;
+  }
+  if(!annotateOrthonormalKets(value[i],name,labels,depth+1))return false;
+ }
+ if(value.size())value.childrenUpdated();
+ return true;
+}
+class QuantumOrthonormalBasis: public MathFunction {
+ public:
+ QuantumOrthonormalBasis():MathFunction("orthobasis",3) {setArgumentDefinition(2,new TextArgument());}
+ ExpressionItem *copy() const {return new QuantumOrthonormalBasis(*this);}
+ bool preservesSingletonMatrix() const {return true;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  MathStructure labels,kets;labels.clearVector();
+  if(orthonormalList(raw[2],kets))for(size_t i=0;i<kets.size();++i) {
+   const MathStructure &ket=kets[i];
+   if(!ket.isFunction() || ket.size()!=1 ||
+      (ket.function()->referenceName()!="qnamedket" && ket.function()->referenceName()!="qketstate"))break;
+   std::string label=ket[0].isSymbolic() ? ket[0].symbol() :
+    ket[0].isVariable() ? ket[0].variable()->referenceName() : "";
+   Variable *existing=CALCULATOR->getActiveVariable(label);
+   bool defined=existing && !existing->isBuiltin() && existing->isKnown();
+   size_t split=label.rfind('_');
+   while(split!=std::string::npos && split>0) {
+    if(split+1<label.size() && CALCULATOR->getFunction("__qstate_family_"+label.substr(0,split)))defined=true;
+    split=label.rfind('_',split-1);
+   }
+   if(defined) {CALCULATOR->error(true,"An orthonormal declaration cannot override an existing state definition.",NULL);return 0;}
+   labels.addChild(MathStructure(label,true));
+  }
+  if(raw[1].symbol().empty() || labels.size()!=kets.size() || !orthonormalLabels(labels)) {
+   CALCULATOR->error(true,"orthobasis(expression,name,[|label>,...]) requires distinct named kets.",NULL);return 0;
+  }
+  out=raw[0];
+  if(!annotateOrthonormalKets(out,raw[1],labels))return 0;
+  out.eval(eo);return 1;
+ }
+};
 // Reuse the ordinary constructors' argument validation and allocation limits,
 // but retain matrix shape at dimension one in quantum expressions.
 template<class Constructor> class QuantumMatrixConstructor: public Constructor {
@@ -174,6 +283,11 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  if(value.isMatrix()) {rows.set(Number(static_cast<long>(value.rows())));columns.set(Number(static_cast<long>(value.columns())));return true;}
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
+ if(name=="qorthoket" && value.size()==3) {
+  MathStructure labels;
+  if(orthonormalList(value[2],labels) && orthonormalLabels(labels)) {rows.set(Number(static_cast<long>(labels.size())));columns=m_one;return true;}
+  return false;
+ }
  if(name=="qfourierdomain" && value.size()==3) {rows=value[2];columns=m_one;return true;}
  if(name=="matrixparam" && value.size()==3) {
   rows=value[1];columns=value[2];EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
@@ -314,6 +428,13 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   for(size_t j=0;j<args.size();++j)args[j].eval(eo);
+  // Retain evaluated basis declarations even when the surrounding operation
+  // must remain symbolic (for example, an overlap between distinct bases).
+  if(!args.equals(raw) && args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0) {
+   out=MathStructure(this,static_cast<MathStructure*>(NULL));
+   for(size_t j=0;j<args.size();++j)out.addChild(args[j]);
+   return 1;
+  }
   if(op=="qtensor" || op=="qadjacent" || op=="qtensorpow" || op=="qdag" || op=="qtranspose")for(size_t j=0;j<((op=="qtensor" || op=="qadjacent") ? 2U : 1U);++j) {
    if(!args[j].isVector() || args[j].isMatrix())continue;
    bool flat=true;for(size_t k=0;k<args[j].size();++k)if(args[j][k].isVector())flat=false;
@@ -432,6 +553,16 @@ class QuantumAlgebraFunction: public MathFunction {
    return out.isMatrix() || out.isVector() ? 1 : 0;
   }
   if(op=="qmul" || op=="qadjacent") {
+   const MathStructure &b=args[1];
+   if(a.isFunction() && a.function()->referenceName()=="qdag" && a.size()==1 &&
+      a[0].isFunction() && a[0].function()->referenceName()=="qorthoket" &&
+      b.isFunction() && b.function()->referenceName()=="qorthoket") {
+    const MathStructure &left=a[0];
+    if(left[1].equals(b[1])) {
+     if(!left[2].equals(b[2])) {CALCULATOR->error(true,"Conflicting declarations for the same orthonormal basis.",NULL);return 0;}
+     out=left[0].equals(b[0]) ? m_one : m_zero;return 1;
+    }
+   }
    // Retain operand order until symbolic operators and states have dimensions.
    if((!a.isVector() && !a.representsScalar()) || (!args[1].isVector() && !args[1].representsScalar()))return 0;
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
@@ -536,6 +667,8 @@ bool quantumMatrixShape(const MathStructure &value, MathStructure &rows, MathStr
  return matrixShape(value,rows,columns,options);
 }
 void registerQuantumAlgebra(Calculator &calculator) {
+ calculator.addFunction(new QuantumOrthonormalKet());
+ calculator.addFunction(new QuantumOrthonormalBasis());
  calculator.addFunction(new QuantumComplexParameter());
  calculator.addFunction(new QuantumMatrixParameter());
  calculator.addFunction(new QuantumMatrixAssumption());
