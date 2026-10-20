@@ -32,6 +32,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency installation failed.' }
           & .tools/qasm-venv/Scripts/python.exe -m pip check
           if ($LASTEXITCODE -ne 0) { throw 'Compiler dependencies are inconsistent.' }
+      - name: Validate local source bundles
+        shell: powershell
+        run: |
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-source-bundle.py
+          if ($LASTEXITCODE -ne 0) { throw 'OpenQASM source bundle tests failed.' }
       - name: Build and validate packaged compiler
         shell: powershell
         run: |
