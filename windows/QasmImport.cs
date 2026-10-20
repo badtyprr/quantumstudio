@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 static class QasmImport {
  internal static byte[] ReadSource(string path) {return BoundedUtf8File.Read(path,262144,"OpenQASM source");}
  public static string Compile(string path,bool publishedU=false,bool classical=false) {
-  byte[] source=ReadSource(path);
+  return CompileBytes(ReadSource(path),publishedU,classical);
+ }
+ internal static string CompileBytes(byte[] source,bool publishedU=false,bool classical=false) {
+  if(source==null)throw new ArgumentNullException("source");
+  if(source.Length>262144)throw new InvalidDataException("OpenQASM source must be at most 256 KB.");
   return Run((publishedU ? "--published-u " : "")+(classical ? "--classical" : ""),source,262144);
  }
  // File import lets the compiler capture local dependencies and their original
