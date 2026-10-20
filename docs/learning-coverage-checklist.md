@@ -75,6 +75,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 - [ ] **Register dimensions and symbolic bit strings** — P1; Partial; size M; dependencies: None.
 - Source focus: Fundamentals: query algorithms and Fourier algorithms. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Carry widths through tensor products, basis labels and bit operations. Test leading zeros, empty registers, concatenation, indexed registers, and contradictory dimensions; ambiguous widths remain symbolic.
+- In progress: `codex/symbolic-width-label` preserves unresolved typed bit labels, binary operations and set kets with substitution checks. Indexed-register concatenation, general symbolic domains and widths beyond the current finite limit remain outstanding. Not merged or released.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
 
 ### DEV-06

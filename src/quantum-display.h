@@ -158,6 +158,25 @@ class Printer {
   }
   if(name=="qorthoket" && value.size()==3 && value[0].isSymbolic() && value[1].isSymbolic())
    return Fragment("|"+value[0].symbol()+"⟩ (basis "+value[1].symbol()+")");
+  if(name=="qbitlabel" && value.size()==2)
+   return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if((name=="qbitvalue" && value.size()==1) || ((name=="qbitxor" || name=="qbitdot") && value.size()==2)) {
+   std::string text=name.substr(1)+"(";
+   for(size_t i=0;i<value.size();++i) {if(i)text+=", ";text+=render(value[i],depth+1).text;}
+   return Fragment(text+")");
+  }
+  if(name=="qketstate" && value.size()==1 && value[0].isFunction() &&
+     value[0].function()->referenceName()=="qbitlabel" && value[0].size()==2)
+   return Fragment("|"+render(value[0][0],depth+1).text+"⟩_{2^("+render(value[0][1],depth+1).text+")}");
+  if(name=="qketstate" && value.size()==1 && value[0].isVector() && !value[0].isMatrix()) {
+   bool labels=value[0].size()>0;std::string text="uniform({";
+   for(size_t i=0;i<value[0].size();++i) {
+    const MathStructure &label=value[0][i];
+    labels=labels && label.isFunction() && label.function()->referenceName()=="qbitlabel";
+    if(i)text+=", ";text+=render(label,depth+1).text;
+   }
+   if(labels)return Fragment(text+"})");
+  }
   if((name=="qketstate" || name=="qnamedket" || name=="qindexedket") && value.size()==1) {
    std::string label=value[0].isSymbolic() ? value[0].symbol() : render(value[0],depth+1).text;
    // Bound labels must use the same fresh name as their displayed sum index.

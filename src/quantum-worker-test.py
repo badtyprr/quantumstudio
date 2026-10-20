@@ -24,6 +24,42 @@ def data(expression, *flags):
     return value
 
 
+# Symbolic binary labels retain validation until values and widths are supplied.
+for flags in ((), ("--approx",)):
+    for expression in [
+        "bitstring(x,n)", "bitvalue(bitstring(x,n))",
+        "qketstate(bitstring(x,n))",
+        "bitxor(bitstring(x,n),bitstring(y,n))",
+        "bitdot(bitstring(x,n),bitstring(y,n))",
+        "qketstate(vector(bitstring(x,n),bitstring(y,n)))",
+        "qketstate(bitstring(x,n))-qketstate(bitstring(x,n))",
+    ]:
+        value=data("quantum:"+expression,*flags)
+        assert "qbitlabel" in value["copy_text"]
+        assert "qbitlabel" not in value["display_text"]
+        copied=data("quantum:"+value["copy_text"],*flags)
+        assert "qbitlabel" in copied["copy_text"]
+        run("quantum:replace(replace(("+copied["copy_text"]+"),x,8),n,2)","--json",*flags,success=False)
+    for expression in [
+        "bitstring(-1,n)", "bitstring(1/2,n)", "bitstring(x,-1)",
+        "bitstring(x,1/2)", "bitstring(x,11)", "bitstring(1,0)",
+        "bitxor(bitstring(x,2),bitstring(y,3))",
+        "bitdot(bitstring(x,2),bitstring(y,3))",
+        "bitxor(bitstring(x,n),[0,2])",
+        "qketstate(vector(bitstring(x,2),bitstring(y,3)))",
+    ]:
+        run("quantum:"+expression,"--json",*flags,success=False)
+    for expression in [
+        "norm(vec(replace(replace(qketstate(bitstring(x,n)),x,1),n,3)-|001>))",
+        "replace(replace(bitvalue(bitstring(x,n)),x,1),n,3)-1",
+        "norm(vec(replace(replace(replace(qketstate(bitxor(bitstring(x,n),bitstring(y,n))),x,1),y,2),n,2)-|11>))",
+        "replace(replace(replace(bitdot(bitstring(x,n),bitstring(y,n)),x,1),y,3),n,2)-1",
+        "norm(vec(replace(replace(replace(qketstate(vector(bitstring(x,n),bitstring(y,n))),x,0),y,3),n,2)-|Phi+>))",
+        "replace(replace(bitvalue(bitstring(x,n)),x,0),n,0)",
+    ]:
+        value=data("quantum:"+expression,*flags)
+        assert abs(Decimal(value["text"].replace("−","-")))<Decimal("1e-12"),(expression,value)
+
 # The built-in GHZ label is the normalized, positive-phase three-qubit state.
 for flags in ((), ("--approx",)):
     ghz = data("quantum:|GHZ>", *flags)

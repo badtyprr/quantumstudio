@@ -8,6 +8,19 @@
 #include <vector>
 #include <stdexcept>
 #include <cctype>
+QuantumBitLabelState validateQuantumBitLabel(MathStructure &index,MathStructure &width,const EvaluationOptions &eo) {
+ EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+ index.eval(exact);width.eval(exact);
+ bool symbolicIndex=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
+ bool symbolicWidth=!width.isNumber() && width.representsScalar() && width.containsUnknowns();
+ if((!symbolicWidth && (!width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10)) ||
+    (!symbolicIndex && (!index.isNumber() || !index.number().isInteger() || index.number()<0)) ||
+    (!symbolicIndex && !symbolicWidth && index.number()>=Number(1<<width.number().intValue()))) {
+  CALCULATOR->error(true,"Binary-string labels require integer width 0 to 10 and a nonnegative integer value fitting that width.",NULL);
+  return QuantumBitLabelState::Invalid;
+ }
+ return symbolicIndex || symbolicWidth ? QuantumBitLabelState::Symbolic : QuantumBitLabelState::Concrete;
+}
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // These operations bind an index in their first argument only.
@@ -236,16 +249,16 @@ class QuantumIndexedFunction: public MathFunction {
    return sum->calculate(out,parameters,eo);
   }
   if(op=="qbitstrings" || op=="qbitlabel") {
+   if(op=="qbitlabel") {
+    MathStructure index=raw[0],width=raw[1];
+    validateQuantumBitLabel(index,width,eo);
+    // Retain the descriptor and its constraints until all fields are concrete.
+    return 0;
+   }
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure width=raw[op=="qbitlabel" ? 1 : 0];width.eval(exact);
    if(!width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10) {CALCULATOR->error(true,"Binary-string widths must be integers from 0 to 10.",NULL);return 0;}
    int count=1<<width.number().intValue();
-   if(op=="qbitlabel") {
-    MathStructure index=raw[0];index.eval(exact);
-    if(!index.isNumber() || !index.number().isInteger() || index.number()<0 || index.number()>=count)CALCULATOR->error(true,"Binary-string value is outside its width.",NULL);
-    // Preserve a typed label instead of collapsing it to an integer or ket.
-    return 0;
-   }
    auto label=CALCULATOR->getFunction("qbitlabel");if(!label)return 0;
    out.clearVector();
    for(int k=0;k<count;++k) {
