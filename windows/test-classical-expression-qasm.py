@@ -26,6 +26,8 @@ for case in cases:
     assert run.returncode == 0, (case["name"], run.stderr.decode("utf-8",errors="replace"), case["source"])
     circuit = json.loads(run.stdout)
     assert 2 <= circuit["Version"] <= 10
+    if case.get("runtime_range", False):
+        assert circuit["Version"] == 10 and any(s["Kind"] == "ForRange" for s in circuit["Steps"]), (case["name"], circuit)
     assert len(circuit["OutputBits"]) == len(case["expected"])
     checks += 1
     if args.worker is None:

@@ -18,8 +18,8 @@ static class ClassicalProgramQasmTests {
    Registers=bits==0 ? new ClassicalCircuit.Register[0] : new[]{new ClassicalCircuit.Register{Name="c",Size=bits}},
    Variables=variables??new ClassicalCircuit.Variable[0],OutputBits=outputs,Steps=steps,LoopConditionBudget=budget});
  }
- static void Case(string name,ClassicalCircuit circuit,string expected,bool error=false,bool approximate=false) {
-  cases.Add(new {name=name,source=ClassicalProgramQasm.Export(circuit),expected=expected,runtime_error=error,approximate_probabilities=approximate});
+ static void Case(string name,ClassicalCircuit circuit,string expected,bool error=false,bool approximate=false,bool runtimeRange=false) {
+  cases.Add(new {name=name,source=ClassicalProgramQasm.Export(circuit),expected=expected,runtime_error=error,approximate_probabilities=approximate,runtime_range=runtimeRange});
  }
  static void Reject(ClassicalCircuit circuit,string expected) {
   try {ClassicalProgramQasm.Export(circuit);}
@@ -75,6 +75,19 @@ static class ClassicalProgramQasmTests {
   Case("range-break",Circuit(0,2,new[]{1,0},new[]{new S{Kind="ForRange",VariableSlot=0,Range=new ClassicalCircuit.RangeNode{Start=I(1),Stop=I(2),Step=I(1)},WhenTrue=new[]{rangeAssign,new S{Kind="Break"}}}},rangeType,1000000,10),"01");
   Case("range-empty",Circuit(0,2,new[]{1,0},new[]{new S{Kind="ForRange",VariableSlot=0,Range=new ClassicalCircuit.RangeNode{Start=I(2),Stop=I(1),Step=I(1)},WhenTrue=new[]{rangeAssign}}},rangeType,1000000,10),"00");
   Reject(Circuit(0,2,new[]{1,0},new[]{range,rangeAssign},rangeType,1000000,10),"lifetime");
+  var twoTypes=new[]{rangeType[0],new ClassicalCircuit.Variable{Name="bound",Signedness="Unsigned",Width=2}};
+  var boundRead=new N{Kind="IntegerVariable",Signedness="Unsigned",Width=2,Slot=1};
+  var measuredBound=new S{Kind="StoreInteger",VariableSlot=1,IntegerValue=new N{Kind="IntegerCast",Signedness="Unsigned",Width=2,Left=new N{Kind="IntegerRead",Signedness="Unsigned",Width=1,Bits=new[]{2}}}};
+  var dynamicBounds=new ClassicalCircuit.RangeNode{Start=I(0),Stop=boundRead,Step=I(1)};
+  Case("runtime-range-bound",Circuit(1,3,new[]{1,0},new[]{Gate("X",0),Measure(0,2),measuredBound,new S{Kind="ForRange",VariableSlot=0,Range=dynamicBounds,WhenTrue=new[]{rangeAssign}}},twoTypes,1000000,10),"01",runtimeRange:true);
+  Case("runtime-range-snapshot",Circuit(1,3,new[]{1,0},new[]{Gate("X",0),Measure(0,2),measuredBound,new S{Kind="ForRange",VariableSlot=0,Range=dynamicBounds,WhenTrue=new[]{rangeAssign,new S{Kind="StoreInteger",VariableSlot=1,IntegerValue=I(0)}}}},twoTypes,1000000,10),"01",runtimeRange:true);
+  var innerRange=new S{Kind="ForRange",VariableSlot=1,Range=new ClassicalCircuit.RangeNode{Start=I(0),Stop=rangeRead,Step=I(1)},WhenTrue=new[]{new S{Kind="Assign",Wires=new[]{0,1},ClassicalValue=new N{Kind="IntegerBits",Left=boundRead}}}};
+  Case("nested-ranges",Circuit(0,2,new[]{1,0},new[]{new S{Kind="ForRange",VariableSlot=0,Range=new ClassicalCircuit.RangeNode{Start=I(0),Stop=I(1),Step=I(1)},WhenTrue=new[]{innerRange}}},twoTypes,1000000,10),"01");
+  Case("nested-local-continue",Circuit(0,1,new[]{0},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,new S{Kind="ExpressionBranch",ClassicalValue=Read(0),WhenTrue=new[]{stop,clear,new S{Kind="Continue"}},WhenFalse=new S[0]},clear}}},variable),"0");
+  var innerBreak=new S{Kind="While",ClassicalValue=Constant(1,"1"),WhenTrue=new[]{new S{Kind="Break"}}};
+  var keep=new S{Kind="Assign",Wires=new[]{1},ClassicalValue=new N{Kind="IntegerBits",Left=read}};
+  Case("inner-break-keeps-outer-local",Circuit(0,2,new[]{1},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,innerBreak,keep,stop,clear}}},variable),"1");
+  Reject(Circuit(0,2,new[]{1},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,new S{Kind="While",ClassicalValue=Constant(1,"1"),WhenTrue=new[]{clear,new S{Kind="Break"}}},keep,stop,clear}}},variable),"lifetime");
   File.WriteAllText(args[0],new JavaScriptSerializer().Serialize(cases));
   Console.WriteLine("PASS: "+cases.Count+" program cases; "+rejected+" unsupported programs rejected.");
  }
