@@ -28,6 +28,7 @@ static class ClassicalProgramQasmTests {
  }
  static void Main(string[] args) {
   if(args.Length!=1 || File.Exists(args[0]))throw new ArgumentException("Pass a fresh case path.");
+  RuntimeAngles();
   Case("zero-initial-bits",Circuit(0,3,new[]{2,0,1},new S[0]),"000");
   Case("empty-program",Circuit(0,0,new int[0],new S[0]),"");
   Case("version-two-without-variables",ClassicalCircuit.From(new ClassicalCircuit.Document{Version=2,Qubits=1,
@@ -94,4 +95,28 @@ static class ClassicalProgramQasmTests {
   Console.WriteLine("PASS: "+cases.Count+" program cases; "+rejected+" unsupported programs rejected.");
  }
  static N I(int value){return new N{Kind="IntegerConstant",Signedness="Unsigned",Width=2,Value=value.ToString()};}
+ static void RuntimeAngles() {
+  var variables=new[]{new ClassicalCircuit.Variable{Name="angle",Signedness="Unsigned",Width=2}};
+  var read=new N{Kind="IntegerVariable",Signedness="Unsigned",Width=2,Slot=0};
+  var angle=new ClassicalCircuit.RealNode{Kind="Binary",Operator="Divide",
+   Left=new ClassicalCircuit.RealNode{Kind="Integer",IntegerValue=read},
+   Right=new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="4611686018427387904"}};
+  foreach(string axis in new[]{"X","Y","Z"}) {
+   var rotation=new S{Kind="Rotation",Axis=axis,Angle=angle,Wires=new[]{0}};
+   var circuit=Circuit(1,0,new int[0],new[]{rotation},variables,1000000,11);
+   string source=ClassicalProgramQasm.Export(circuit);
+   if(!source.Contains("r"+axis.ToLowerInvariant()+"((float[64](v0) / (2.0))) q[0];"))
+    throw new Exception("Runtime angle lost real division: "+source);
+   // A use after a lexical clear must not be moved into the earlier scope.
+   var clear=new S{Kind="ClearInteger",VariableSlot=0};
+   Reject(Circuit(1,0,new int[0],new[]{new S{Kind="Branch",Mask="0",Value="0",WhenTrue=new[]{clear},WhenFalse=new S[0]},rotation},variables,1000000,11),"lifetime");
+  }
+  var expressions=new ClassicalExpressionQasm(0);
+  if(expressions.Real(ClassicalRealExpression.Constant(BitConverter.Int64BitsToDouble(long.MinValue)))!="(-0.0)")throw new Exception("Signed zero changed.");
+  foreach(double value in new[]{0.0,1.0,-1.0,0.1,double.Epsilon,double.MaxValue}) {
+   string text=expressions.Real(ClassicalRealExpression.Constant(value));
+   double parsed=Double.Parse(text.Substring(1,text.Length-2),System.Globalization.CultureInfo.InvariantCulture);
+   if(BitConverter.DoubleToInt64Bits(parsed)!=BitConverter.DoubleToInt64Bits(value))throw new Exception("Binary64 export changed a constant.");
+  }
+ }
 }

@@ -49,6 +49,11 @@ sealed class ClassicalQasmScopes {
    }
    foreach(var clear in clears[slot]) {
     if(!Inside(clear.Scope,owner))throw Unsupported(slot);
+    // The importer emits a clear at lexical entry as well as exit. A new
+    // declaration supplies that undefined entry value before any instruction.
+    bool entry=clear.Scope==owner;
+    for(int i=0;i<clear.Index && entry;i++)entry=clear.Scope.Body[i].Kind==O.ClearInteger;
+    if(entry)continue;
     int next=clear.Index+1;
     while(next<clear.Scope.Body.Count && clear.Scope.Body[next].Kind==O.ClearInteger)next++;
     if(next==clear.Scope.Body.Count) {
@@ -89,12 +94,16 @@ sealed class ClassicalQasmScopes {
   Bits(expression.Left,scope);Bits(expression.Right,scope);
   Integer(expression.IntegerLeft,scope);Integer(expression.IntegerRight,scope);
  }
+ void Real(ClassicalRealExpression expression,Scope scope) {
+  if(expression==null)return;
+  Integer(expression.Integer,scope);Real(expression.Left,scope);Real(expression.Right,scope);
+ }
  Scope Scan(IList<G> body,Scope parent,bool loop) {
   var scope=new Scope{Body=body,Parent=parent};scope.Loop=loop ? scope : parent==null ? null : parent.Loop;
   scopes.Add(body,scope);
   for(int i=0;i<body.Count;i++) {
    var gate=body[i];var site=new Site{Scope=scope,Index=i,Gate=gate};
-   Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);
+   Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);Real(gate.Angle,scope);
    if(gate.Kind==O.StoreInteger)uses[gate.VariableSlot.Value].Add(scope);
    if(gate.Kind==O.ClearInteger)clears[gate.VariableSlot.Value].Add(site);
    if(gate.Kind==O.Break || gate.Kind==O.Continue || gate.Kind==O.End)transfers.Add(site);

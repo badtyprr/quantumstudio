@@ -58,25 +58,43 @@ if args.adapter:
   ('int n=1;qubit q;ry(float[64](n)/2) q;bit c=measure q;',{'0':math.cos(.25)**2,'1':math.sin(.25)**2}),
   ('int n=0;qubit q;ry(pi*n) q;n=1;ry(pi*n) q;bit c=measure q;',{'1':1}),
   ('int n=1;qubit[2] q;ry(pi*n) q;bit[2] c=measure q;',{'11':1}),
+  ('int n=1;qubit q;rx(pi*n) q;bit c=measure q;',{'1':1}),
+  ('int n=1;qubit q;h q;rz(pi*n) q;h q;bit c=measure q;',{'1':1}),
+  ('qubit q;bit c=0;if(c==0){int n=1;ry(pi*n) q;}c=measure q;',{'1':1}),
+  ('int bound=1;qubit q;for int n in [0:bound]{ry(pi*n) q;}bit c=measure q;',{'1':1}),
  ):
   circuit=compile(source)
   p=subprocess.run([str(args.adapter.resolve())],input=json.dumps(circuit).encode(),capture_output=True,timeout=30)
   assert p.returncode==0,(source,p.stderr);payloads=json.loads(p.stdout.decode('utf-8-sig'));checks+=1
-  for exact in (True,False):
-   payload=base64.b64decode(payloads['exact' if exact else 'sampled'])
-   assert payload.startswith(b'QEXACT10\n' if exact else b'QSAMPLE11\n')
-   if not args.worker:continue
-   env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(args.worker.resolve().parent/'data'))
-   p=subprocess.run([str(args.worker.resolve()),'--exact-circuit' if exact else '--sample'],input=payload,capture_output=True,timeout=30,env=env)
-   assert p.returncode==0,(source,p.stderr);result=json.loads(p.stdout)
-   if exact:
-    actual={}
-    for key,value in result['probabilities'].items():
-     p=subprocess.run([str(args.worker.resolve()),'--json','--approx'],input=value.encode(),capture_output=True,timeout=30,env=env)
-     assert p.returncode==0,p.stderr
-     actual[key]=float(json.loads(p.stdout)['text'].replace('\u2212','-'))
-   else:actual={key:value/10000 for key,value in result['counts'].items()}
-   tolerance=1e-10 if exact else .02
-   assert all(abs(actual.get(k,0)-expected.get(k,0))<tolerance for k in set(actual)|set(expected)),(source,exact,actual,expected)
+  # Recompile the actual exported program, preserving the float/integer boundary.
+  exported=payloads['source']
+  reimported=adapter.convert(exported,classical=True);checks+=1
+  if args.frozen:
+   p=subprocess.run([str(args.frozen.resolve()),'--classical'],input=exported.encode(),capture_output=True,timeout=30)
+   assert p.returncode==0,(exported,p.stderr)
+   assert json.loads(p.stdout)==reimported
    checks+=1
+  p=subprocess.run([str(args.adapter.resolve())],input=json.dumps(reimported).encode(),capture_output=True,timeout=30)
+  assert p.returncode==0,(exported,p.stderr)
+  roundtrip=json.loads(p.stdout.decode('utf-8-sig'));checks+=1
+  # Export adds reset/initialization instructions, so compare execution results,
+  # not serialized instruction bytes.
+  for payloads in (payloads,roundtrip):
+   for exact in (True,False):
+    payload=base64.b64decode(payloads['exact' if exact else 'sampled'])
+    assert payload.startswith(b'QEXACT10\n' if exact else b'QSAMPLE11\n')
+    if not args.worker:continue
+    env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(args.worker.resolve().parent/'data'))
+    p=subprocess.run([str(args.worker.resolve()),'--exact-circuit' if exact else '--sample'],input=payload,capture_output=True,timeout=30,env=env)
+    assert p.returncode==0,(source,p.stderr);result=json.loads(p.stdout)
+    if exact:
+     actual={}
+     for key,value in result['probabilities'].items():
+      p=subprocess.run([str(args.worker.resolve()),'--json','--approx'],input=value.encode(),capture_output=True,timeout=30,env=env)
+      assert p.returncode==0,p.stderr
+      actual[key]=float(json.loads(p.stdout)['text'].replace('\u2212','-'))
+    else:actual={key:value/10000 for key,value in result['counts'].items()}
+    tolerance=1e-10 if exact else .02
+    assert all(abs(actual.get(k,0)-expected.get(k,0))<tolerance for k in set(actual)|set(expected)),(source,exact,actual,expected)
+    checks+=1
 print(f'PASS: {checks} runtime angle import checks.')
