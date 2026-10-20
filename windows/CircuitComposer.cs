@@ -20,6 +20,7 @@ class CircuitComposer : Window {
  readonly ComboBox qubits=new ComboBox(), gate=new ComboBox();
  readonly TextBox wires=new TextBox {Text="0",Width=95}, angle=new TextBox {Text="pi/2",Width=130};
  readonly TextBlock status=new TextBlock {TextWrapping=TextWrapping.Wrap};
+ readonly TextBlock sourceStatus=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Visibility=Visibility.Collapsed};
  readonly TextBlock parameterHelp=new TextBlock {FontSize=12,TextWrapping=TextWrapping.Wrap};
  readonly ComboBox resultView=new ComboBox {Width=180};
  readonly TextBlock partitionHelp=new TextBlock {Text="Side A: comma-separated wires, e.g. 0,2. All other wires form side B. Pure circuits only.",TextWrapping=TextWrapping.Wrap,FontSize=12,Visibility=Visibility.Collapsed};
@@ -40,6 +41,7 @@ class CircuitComposer : Window {
  readonly Button undoChange=new Button {Content="Undo"}, redoChange=new Button {Content="Redo"};
  readonly List<string> past=new List<string>(), future=new List<string>();
  string snapshot;
+ SourceCircuitDocument sourceDocument;
  bool restoring, batch;
  int editing=-1;
  int Count {get{return qubits.SelectedIndex+1;}}
@@ -98,6 +100,8 @@ class CircuitComposer : Window {
   var importQiskit=new MenuItem {Header="IBM / Qiskit U convention…"};
   var importPublished=new MenuItem {Header="Published OpenQASM 3 U convention…"};
   import.Items.Add(importQiskit);import.Items.Add(importPublished);
+  var moduleHeaders=new MenuItem {Header="Allow generated module headers",IsCheckable=true};
+  import.Items.Add(new Separator());import.Items.Add(moduleHeaders);top.Children.Add(sourceStatus);
   var bottom=new StackPanel();Grid.SetRow(bottom,2);root.Children.Add(bottom);
   bottom.Children.Add(status);expression.Margin=new Thickness(0,8,0,0);expressionDetails.Content=expression;bottom.Children.Add(expressionDetails);
   var outputOptions=new WrapPanel {Margin=new Thickness(0,8,0,0)};bottom.Children.Add(outputOptions);
@@ -172,8 +176,9 @@ class CircuitComposer : Window {
    if(picker.ShowDialog(this)!=true)return;
    IsEnabled=false;status.Text="Compiling OpenQASM…";
    try {
-    string circuit=await System.Threading.Tasks.Task.Run(()=>QasmImport.Compile(picker.FileName,publishedU));
-    LoadCircuit(circuit);
+    bool modules=moduleHeaders.IsChecked;
+    string circuit=await System.Threading.Tasks.Task.Run(()=>QasmImport.CompileSource(picker.FileName,publishedU,false,modules));
+    ImportSource(circuit,publishedU);
     status.Text="Imported OpenQASM · U uses "+(publishedU ? "the published OpenQASM 3 matrix" : "the IBM/Qiskit matrix")+" · registers follow declaration order · angles are numeric · measurements discard outcomes; inspect probabilities for the distribution.";
    } catch(Exception ex) {status.Text="Could not import: "+ex.Message;}
    finally {IsEnabled=true;}
@@ -334,7 +339,7 @@ class CircuitComposer : Window {
   } return result.ToString();
  }
  public void SaveCircuit(string path) {
-  string text=new JavaScriptSerializer().Serialize(new CircuitFile {Version=1,Qubits=Count,Steps=steps.ToArray()});
+  string text=Snapshot();
   string temporary=path+"."+Guid.NewGuid().ToString("N")+".tmp";
   try {
    File.WriteAllText(temporary,text,new UTF8Encoding(false));
@@ -350,11 +355,16 @@ class CircuitComposer : Window {
    }
   } finally {if(File.Exists(temporary))File.Delete(temporary);}
  }
- string Snapshot() {return new JavaScriptSerializer().Serialize(new CircuitFile {Version=1,Qubits=Count,Steps=steps.ToArray()});}
+ string Snapshot() {
+  string text=new JavaScriptSerializer().Serialize(new CircuitFile {Version=1,Qubits=Count,Steps=steps.ToArray()});
+  if(sourceDocument==null)return text;
+  var next=sourceDocument.WithCircuit(text);
+  string saved=next.Serialize();sourceDocument=next;return saved;
+ }
  void Restore(string text) {
-  var file=new JavaScriptSerializer().Deserialize<CircuitFile>(text);
+  SourceCircuitDocument source;var file=ReadDocument(text,out source);
   restoring=true;
-  try {editing=-1;qubits.SelectedIndex=file.Qubits-1;steps.Clear();steps.AddRange(file.Steps);gate.SelectedIndex=0;wires.Text="0";angle.Text="pi/2";snapshot=text;Refresh();}
+  try {sourceDocument=source;editing=-1;qubits.SelectedIndex=file.Qubits-1;steps.Clear();steps.AddRange(file.Steps);gate.SelectedIndex=0;wires.Text="0";angle.Text="pi/2";snapshot=text;Refresh();}
   finally {restoring=false;}
  }
  public bool Undo() {
@@ -366,9 +376,33 @@ class CircuitComposer : Window {
   string next=future[future.Count-1];future.RemoveAt(future.Count-1);past.Add(snapshot);Restore(next);return true;
  }
  public void OpenCircuit(string path) {
-  LoadCircuit(Encoding.UTF8.GetString(BoundedUtf8File.Read(path,262144,"Circuit")));
+  LoadCircuit(Encoding.UTF8.GetString(BoundedUtf8File.Read(path,SourceCircuitDocument.MaxDocumentBytes,"Circuit")));
  }
  public void LoadCircuit(string text) {
+  SourceCircuitDocument source;var file=ReadDocument(text,out source);
+  ApplyDocument(file,source);
+ }
+ public void ImportSource(string envelope,bool publishedU=false) {
+  var source=SourceCircuitDocument.FromCompiler(envelope,publishedU,false,NormalizeCircuit);
+  ApplyDocument(ValidateCircuit(source.CircuitJson),source);
+ }
+ CircuitFile ReadDocument(string text,out SourceCircuitDocument source) {
+  source=null;
+  if(text==null || text.Length>SourceCircuitDocument.MaxDocumentBytes)throw new InvalidDataException("Circuit data is too large.");
+  Dictionary<string,object> fields;
+  try {fields=new JavaScriptSerializer {MaxJsonLength=SourceCircuitDocument.MaxDocumentBytes,RecursionLimit=128}.DeserializeObject(text) as Dictionary<string,object>;}
+  catch(ArgumentException error) {throw new InvalidDataException("Invalid circuit JSON.",error);}
+  catch(InvalidOperationException error) {throw new InvalidDataException("Invalid circuit JSON.",error);}
+  if(fields!=null && fields.ContainsKey("Format")) {
+   source=SourceCircuitDocument.Load(text,NormalizeCircuit);return ValidateCircuit(source.CircuitJson);
+  }
+  return ValidateCircuit(text);
+ }
+ string NormalizeCircuit(string text,bool classical) {
+  if(classical)throw new InvalidDataException("This composer requires a numerical circuit document.");
+  return new JavaScriptSerializer().Serialize(ValidateCircuit(text));
+ }
+ CircuitFile ValidateCircuit(string text) {
   if(text==null || text.Length>262144)throw new InvalidDataException("Circuit data is too large.");
   var file=new JavaScriptSerializer().Deserialize<CircuitFile>(text);
   if(file==null || file.Version!=1 || file.Qubits<1 || file.Qubits>MaxQubits || file.Steps==null || file.Steps.Length>MaxSteps) throw new InvalidDataException("Expected a version 1 circuit with 1–25 qubits and at most 512 steps.");
@@ -383,10 +417,14 @@ class CircuitComposer : Window {
    step.Angle=NeedsAngle(step.Gate) ? step.Angle.Trim() : "";
    if(ParityRotation(step.Gate) || step.Gate=="R" || step.Gate=="fSim" || step.Gate=="U3" || Noise(step.Gate))GateAngles(step.Gate,step.Angle);
   }
+  return file;
+ }
+ void ApplyDocument(CircuitFile file,SourceCircuitDocument source) {
   batch=true;
+  sourceDocument=source;
   try {editing=-1;qubits.SelectedIndex=file.Qubits-1;steps.Clear();steps.AddRange(file.Steps);}
   finally {batch=false;}
-  Refresh();
+  if(!Refresh())throw new InvalidDataException("Circuit replacement could not be saved.");
  }
  public bool AddGate(string name,string selectedWires,string parameter) {
   return WriteGate(-1,name,selectedWires,parameter);
@@ -406,13 +444,13 @@ class CircuitComposer : Window {
   if(editing==index)editing=destination;
   else if(index<editing && destination>=editing)editing--;
   else if(index>editing && destination<=editing)editing++;
-  Refresh();return true;
+  return Refresh();
  }
  public bool DeleteStep(int index) {
   if(index<0 || index>=steps.Count)return false;
   steps.RemoveAt(index);
   if(editing==index)editing=-1;else if(editing>index)editing--;
-  Refresh();return true;
+  return Refresh();
  }
  bool WriteGate(int index,string name,string selectedWires,string parameter) {
   int required=WireCount(name);
@@ -425,7 +463,7 @@ class CircuitComposer : Window {
   if(ParityRotation(name) || name=="R" || name=="fSim" || name=="U3" || Noise(name))try {GateAngles(name,parameter);} catch(InvalidDataException ex){status.Text=ex.Message;return false;}
   var replacement=new Step {Gate=name,Angle=NeedsAngle(name) ? parameter.Trim() : "",Wires=targets};
   if(index<0)steps.Add(replacement);else steps[index]=replacement;
-  editing=-1;Refresh(); return true;
+  editing=-1;return Refresh();
  }
  void Bell() {BellState(0);}
  public void BellState(int index) {
@@ -788,14 +826,22 @@ class CircuitComposer : Window {
  }
  void Line(double x1,double y1,double x2,double y2,Brush color,double width,bool dashed=false) {diagram.Children.Add(new Line {X1=x1,Y1=y1,X2=x2,Y2=y2,Stroke=color,StrokeThickness=width,StrokeDashArray=dashed ? new DoubleCollection {3,2} : null});}
  void Label(string text,double x,double y,double width) {var label=new TextBlock {Text=text,Width=width,TextAlignment=TextAlignment.Center,FontSize=14,TextTrimming=TextTrimming.CharacterEllipsis,ToolTip=text}; Canvas.SetLeft(label,x); Canvas.SetTop(label,y); diagram.Children.Add(label);}
- void Refresh() {
+ bool Refresh() {
+  if(batch)return true;
   if(!restoring && !batch) {
-   string current=Snapshot();
+   string current;
+   try {current=Snapshot();}
+   catch(InvalidDataException error) {
+    if(snapshot==null)throw;
+    Restore(snapshot);status.Text="Change not applied: "+error.Message;return false;
+   }
    if(snapshot!=current) {
     if(snapshot!=null) {past.Add(snapshot);if(past.Count>100)past.RemoveAt(0);}
     future.Clear();snapshot=current;
    }
   }
+  sourceStatus.Visibility=sourceDocument==null ? Visibility.Collapsed : Visibility.Visible;
+  sourceStatus.Text=sourceDocument==null ? "" : "Original OpenQASM source retained · "+(sourceDocument.CircuitEdited ? "Circuit edited since import" : "Circuit matches imported snapshot")+" · "+(sourceDocument.PublishedU ? "Published OpenQASM 3 U" : "IBM / Qiskit U");
   use.IsEnabled=Count<=MaxExactQubits;
   use.ToolTip=Count>MaxExactQubits ? "Use Sample circuit for this register. Exact state and density-matrix inspection is limited to 10 qubits." : null;
   undoChange.IsEnabled=past.Count>0;redoChange.IsEnabled=future.Count>0;
@@ -843,5 +889,6 @@ class CircuitComposer : Window {
    }
    if(NeedsAngle(step.Gate)) Label(step.Angle,x-40,45+65*high+20,80);
   }
+  return true;
  }
 }

@@ -105,6 +105,8 @@ class CircuitFileTests {
     bool rejected=false;try {composer.LoadCircuit(serializer.Serialize(invalidFile));}catch(InvalidDataException){rejected=true;}
     Check(rejected);Check(composer.Expression()==tenQubitExpression);
    }
+   int sourceChecks=ComposerSourceTests.Run(composer,path);
+   Console.WriteLine("PASS: "+sourceChecks+" composer source preservation checks.");
    Console.WriteLine("PASS: "+checks+" circuit file and state preservation checks");return 0;
   }catch(Exception error){Console.Error.WriteLine(error);return 1;}
   finally {composer.Close();owner.Close();if(File.Exists(path))File.Delete(path);}
