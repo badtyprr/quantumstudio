@@ -58,6 +58,7 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm_source_diagnostics.py \
 	windows/qasm_subroutine_scope.py \
 	windows/test-composer-source-import.py \
+	windows/test-classical-module-import.py \
 	windows/test-source-files-ui.py \
 	windows/CssCircuitTests.cs \
 	windows/CssEncoderCircuitTests.cs \
