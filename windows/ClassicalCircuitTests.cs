@@ -4,6 +4,42 @@ using System.IO;
 using System.Text;
 class ClassicalCircuitTests {
  static int checks;
+ static void Rotations(string worker) {
+  var angle=new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="13830554455654793216"};
+  var doc=new ClassicalCircuit.Document{Version=11,LoopConditionBudget=1000,Qubits=1,
+   Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new ClassicalCircuit.Variable[0],OutputBits=new[]{0},
+   Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=angle,Wires=new[]{0}}}};
+  var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  for(int n=0;n<3;++n){circuit=ClassicalCircuit.Load(saved);Check(circuit.Serialize()==saved);Check(circuit.SamplingGates()[0].Angle.Value==-1);}
+  var copy=circuit.Snapshot();copy.Steps[0].Angle.ValueBits="0";Check(circuit.Serialize()==saved);
+  foreach(bool exact in new[]{true,false}) {
+   var bytes=exact ? NumericalSampling.RequestExact(1,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget) :
+    NumericalSampling.RequestClassical(1,1,100,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget);
+   Check(Encoding.UTF8.GetString(bytes).EndsWith("16\n0\n1\n0\n13830554455654793216\n"));
+  }
+  for(int version=2;version<11;++version){copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
+  foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
+   s=>s.Axis=null,s=>s.Axis="1",s=>s.Axis="y",s=>s.Angle=null,s=>s.Kind="Gate",s=>s.Expression="X",
+   s=>s.Angle.ValueBits="NaN",s=>s.Angle.ValueBits="-1",s=>s.Angle.ValueBits="9218868437227405312",
+   s=>s.Angle.Operator="Add",s=>s.Angle.Left=angle,s=>s.Angle.Kind="Unknown",
+   s=>s.Angle=new ClassicalCircuit.RealNode{Kind="Integer",IntegerValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerVariable",Signedness="Signed",Width=0,Slot=0}}
+  }) {copy=circuit.Snapshot();corrupt(copy.Steps[0]);Reject(()=>ClassicalCircuit.From(copy));}
+  copy=circuit.Snapshot();copy.Steps[0].Angle=new ClassicalCircuit.RealNode{Kind="Binary",Operator="Multiply",Left=angle,
+   Right=new ClassicalCircuit.RealNode{Kind="Integer",IntegerValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerRead",Signedness="Unsigned",Width=1,Bits=new[]{0}}}};
+  var feedback=ClassicalCircuit.From(copy);Check(ClassicalCircuit.Load(feedback.Serialize()).Serialize()==feedback.Serialize());
+  Check(feedback.SamplingGates()[0].Angle.Right.Integer.Indices[0]==0);
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"ValueBits\":\"13830554455654793216\"","\"ValueBits\":1")));
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"ValueBits\":","\"Unexpected\":0,\"ValueBits\":")));
+  if(worker!=null)foreach(bool exact in new[]{true,false}) {
+   copy=circuit.Snapshot();copy.Steps[0].Angle.ValueBits="0";
+   copy.Steps=new[]{copy.Steps[0],new ClassicalCircuit.Step{Kind="Measure",Wires=new[]{0},ClassicalBit=0}};
+   var loaded=ClassicalCircuit.Load(ClassicalCircuit.From(copy).Serialize());
+   var payload=exact ? NumericalSampling.RequestExact(1,1,new[]{0},loaded.SamplingGates(),loaded.VariableTypes,loaded.LoopConditionBudget) :
+    NumericalSampling.RequestClassical(1,1,100,1,new[]{0},loaded.SamplingGates(),loaded.VariableTypes,loaded.LoopConditionBudget);
+   string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",payload,System.Threading.CancellationToken.None,s=>s).GetAwaiter().GetResult();
+   Check(result.Contains(exact ? "\"0\":\"1\"" : "\"0\":100"));
+  }
+ }
  static void Ranges(string worker) {
   Func<ulong,ClassicalCircuit.ExpressionNode> literal=n=>new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value=n.ToString(System.Globalization.CultureInfo.InvariantCulture)};
   Func<int,ClassicalCircuit.ExpressionNode> variable=n=>new ClassicalCircuit.ExpressionNode{Kind="IntegerVariable",Signedness="Signed",Width=0,Slot=n};
@@ -13,7 +49,7 @@ class ClassicalCircuitTests {
   for(int n=0;n<3;n++){circuit=ClassicalCircuit.Load(saved);Check(circuit.Serialize()==saved);Check(circuit.Snapshot().Version==10);}
   var copy=circuit.Snapshot();copy.Steps[1].Range.Start.Value="99";copy.Steps[1].WhenTrue[0].IntegerValue.Left.Slot=0;Check(circuit.Serialize()==saved);
   for(int version=2;version<=9;version++){copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
-  copy=circuit.Snapshot();copy.Version=11;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Version=12;Reject(()=>ClassicalCircuit.From(copy));
   copy=circuit.Snapshot();copy.Variables=null;Reject(()=>ClassicalCircuit.From(copy));
   copy=circuit.Snapshot();copy.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(copy));
   foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
@@ -261,6 +297,7 @@ class ClassicalCircuitTests {
   limit.Steps[1].ClassicalValue.Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerCast",Signedness="Signed",Width=8,Left=child};Reject(()=>ClassicalCircuit.From(limit));
  }
  static void Main(string[] args) {
+  Rotations(args.Length>0 ? args[0] : null);
   if(args.Length>0 && args[0]=="--legacy-cold") {
    // The first load in this process must exercise legacy expression metadata.
    var source=@"{""Version"":3,""Qubits"":0,""Registers"":[{""Name"":""r"",""Size"":1}],""OutputBits"":[0],""Steps"":[{""Kind"":""Assign"",""Wires"":[0],""ClassicalValue"":{""Kind"":""Binary"",""Operator"":""NotEqual"",""Left"":{""Kind"":""Constant"",""Width"":2,""Value"":""2""},""Right"":{""Kind"":""Constant"",""Width"":2,""Value"":""0""}}}]}";
