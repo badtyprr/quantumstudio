@@ -26,7 +26,7 @@ def data(expression, *flags):
 
 # A register family preserves bit substitutions before its width is supplied.
 for flags in ((), ("--approx",)):
-    family = 'qregisterfamily("x_",n-1,0,vector())'
+    family = '|x_(n-1) ... x_0>'
     symbolic = data("quantum:" + family, *flags)
     copied = data("quantum:" + symbolic["copy_text"], *flags)
     assert copied["copy_text"] == symbolic["copy_text"]
@@ -34,6 +34,7 @@ for flags in ((), ("--approx",)):
         ("replace(replace(replace(" + family + ",x_0,1),x_1,0),n,2)", "|01>"),
         ("replace(replace(replace(" + family + ",n,2),x_0,1),x_1,0)", "|01>"),
         ("replace(replace(replace(" + family + ",x_0,x_0+1),x_0,0),n,1)", "|1>"),
+        ("replace(replace(replace(|x_(n-1) ... x_1 x_0>,x_1,0),x_0,1),n,2)", "|01>"),
     ):
         actual = data("quantum:" + expression, *flags)
         reference = data("quantum:" + expected, *flags)
@@ -45,6 +46,8 @@ for flags in ((), ("--approx",)):
         "replace(" + family + ",n,0)",
         "replace(" + family + ",n,11)",
         "replace(replace(" + family + ",x_2,1),n,2)",
+        "replace(|x_(n-1) ... x_1 x_0>,n,1)",
+        "|x_1 ... x_2 x_1 x_0>",
     ):
         rejected = run("quantum:" + expression, "--json", *flags, success=False)
         assert rejected.returncode == 2 and not rejected.stdout

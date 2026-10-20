@@ -528,7 +528,59 @@ class Parser {
   size_t mark=label.find_first_not_of(" \t\r\n",first+1);
   return mark!=std::string::npos && label[mark]=='^' ? mark : std::string::npos;
  }
+ std::string registerFamily(const std::string &label,const std::string &dimension) {
+  std::string expanded=label;replaceAll(expanded,"⋯","...");replaceAll(expanded,"…","...");
+  size_t dots=expanded.find("...");
+  if(dots!=std::string::npos) {
+   if(!dimension.empty() || expanded.find("...",dots+3)!=std::string::npos)
+    throw std::runtime_error("Use one ellipsis in an indexed qubit register without an overall dimension.");
+   // Parse endpoints as indexed names, retaining compound bounds as expressions.
+   // Explicit trailing indices are redundant notation and must be consecutive.
+   auto trim=[](const std::string &value) {size_t a=value.find_first_not_of(" \t\r\n"),b=value.find_last_not_of(" \t\r\n");return a==std::string::npos ? std::string() : value.substr(a,b-a+1);};
+   auto indexed=[&](std::string value,std::string &prefix)->std::string {
+    value=trim(value);size_t mark=value.find('_');
+    if(mark==std::string::npos || !mark || mark+1==value.size())throw std::runtime_error("An ellipsis register requires indexed bit names, such as x_(n-1) ... x_0.");
+    std::string name=value.substr(0,mark+1);
+    if(std::isdigit((unsigned char)name.front()))throw std::runtime_error("An indexed register requires a name before the subscript.");
+    for(unsigned char c:name)if(c<128 && !std::isalnum(c) && c!='_')throw std::runtime_error("Invalid indexed register name.");
+    if(!prefix.empty() && prefix!=name)throw std::runtime_error("All bits in an ellipsis register must have the same name.");
+    prefix=name;std::string bound=trim(value.substr(mark+1));
+    if(bound.size()>1 && ((bound.front()=='(' && bound.back()==')') || (bound.front()=='{' && bound.back()=='}')))bound=bound.substr(1,bound.size()-2);
+    std::string outer=s;size_t outerPosition=p;s=bound;p=0;
+    std::string result=expression();ws();if(p!=s.size())throw std::runtime_error("Invalid register index expression.");
+    s=outer;p=outerPosition;return result;
+   };
+   std::string prefix,first=indexed(expanded.substr(0,dots),prefix);
+   std::string tail=trim(expanded.substr(dots+3)),last;
+   std::vector<std::string> suffix;size_t begin=0;int nesting=0;
+   for(size_t k=0;k<=tail.size();++k) {
+    if(k<tail.size() && (tail[k]=='(' || tail[k]=='{'))++nesting;
+    if(k<tail.size() && (tail[k]==')' || tail[k]=='}'))--nesting;
+    if(k==tail.size() || (!nesting && std::isspace((unsigned char)tail[k]))) {
+     if(k>begin)suffix.push_back(indexed(tail.substr(begin,k-begin),prefix));begin=k+1;
+    }
+   }
+   if(suffix.empty())throw std::runtime_error("An ellipsis register requires a final indexed bit.");
+   if(suffix.size()>10)throw std::runtime_error("Too many explicit register indices.");
+   for(size_t k=0;k+1<suffix.size();++k) {
+    auto integer=[](const std::string &v)->long {if(v.empty() || v.size()>7)return -1;long n=0;for(char c:v){if(c<'0'||c>'9')return -1;n=n*10+c-'0';}return n;};
+    long a=integer(suffix[k]),b=integer(suffix[k+1]);
+    if(a<0 || b<0 || a!=b+1)throw std::runtime_error("Explicit trailing register indices must be consecutive descending integers.");
+   }
+   // Identity assignments preserve the existence constraints of explicitly
+   // written trailing bits even when the leading bound is still symbolic.
+   std::string bindings;
+   for(size_t k=0;k+1<suffix.size();++k) {
+    if(k)bindings+=",";
+    bindings+=suffix[k]+","+indexableLabel(prefix+suffix[k]);
+   }
+   return "qregisterfamily(\""+prefix+"\","+first+","+suffix.back()+",vector("+bindings+"))";
+  }
+  return "";
+ }
  std::string basisState(const std::string &label,const std::string &dimension="") {
+  std::string registerState=registerFamily(label,dimension);
+  if(!registerState.empty())return registerState;
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
   if(dimension.empty() && familyOpen!=std::string::npos) {
    std::string outer=s;size_t outerPosition=p;s=familyLabel.substr(familyOpen+1,familyLabel.size()-familyOpen-2);p=0;
