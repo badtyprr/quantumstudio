@@ -20,6 +20,7 @@ sealed class ClassicalCircuit {
   public ExpressionNode Left {get;set;}public ExpressionNode Right {get;set;}
  }
  public sealed class Step {
+  public string Axis {get;set;}public RealNode Angle {get;set;}
   public string Kind {get;set;}public string Expression {get;set;}public int[] Wires {get;set;}
   public int? ClassicalBit {get;set;}public string Mask {get;set;}public string Value {get;set;}
   public Step[] WhenTrue {get;set;}public Step[] WhenFalse {get;set;}
@@ -28,6 +29,10 @@ sealed class ClassicalCircuit {
   public RangeNode Range {get;set;}
  }
  public sealed class RangeNode {public ExpressionNode Start {get;set;}public ExpressionNode Stop {get;set;}public ExpressionNode Step {get;set;}}
+ public sealed class RealNode {
+  public string Kind {get;set;}public string ValueBits {get;set;}public string Operator {get;set;}
+  public ExpressionNode IntegerValue {get;set;}public RealNode Left {get;set;}public RealNode Right {get;set;}
+ }
  public sealed class Document {
   public int? LoopConditionBudget {get;set;}
   public int Version {get;set;}public int Qubits {get;set;}public Register[] Registers {get;set;}
@@ -141,10 +146,42 @@ sealed class ClassicalCircuit {
   if(node.Kind=="Logical")return ClassicalExpression.Logical(operation,ConvertExpression(node.Left),ConvertExpression(node.Right));
   return ClassicalExpression.Binary(operation,ConvertExpression(node.Left),ConvertExpression(node.Right));
  }
+ static void RealFields(object value,int depth,ref int count,int version) {
+  if(version<11)throw Invalid("Runtime angles require circuit version 11.");
+  if(depth>=32 || ++count>512)throw Invalid("Real expressions allow 32 levels and 512 nodes.");
+  var fields=Fields(value,"Kind,ValueBits,Operator,IntegerValue,Left,Right");
+  var kind=Required(fields,"Kind") as string;string permitted;
+  if(kind=="Constant") {
+   permitted="Kind,ValueBits";
+   if(!(Required(fields,"ValueBits") is string))throw Invalid("Real constant bits must be unsigned decimal text.");
+  } else if(kind=="Integer") {
+   permitted="Kind,IntegerValue";ExpressionFields(Required(fields,"IntegerValue"),depth+1,ref count,version,true);
+  } else if(kind=="Binary") {
+   permitted="Kind,Operator,Left,Right";
+   if(!(Required(fields,"Operator") is string))throw Invalid("A real operator must be a name.");
+   RealFields(Required(fields,"Left"),depth+1,ref count,version);RealFields(Required(fields,"Right"),depth+1,ref count,version);
+  } else throw Invalid("Unknown real expression kind.");
+  var allowed=new HashSet<string>(permitted.Split(','),StringComparer.Ordinal);
+  foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected real expression field: "+field.Key);
+ }
+ static ClassicalRealExpression ConvertReal(RealNode node) {
+  if(node.Kind=="Constant") {
+   ulong raw;if(!UInt64.TryParse(node.ValueBits,NumberStyles.None,CultureInfo.InvariantCulture,out raw))throw Invalid("Invalid binary64 constant bits.");
+   return ClassicalRealExpression.Constant(BitConverter.Int64BitsToDouble(unchecked((long)raw)));
+  }
+  if(node.Kind=="Integer")return ClassicalRealExpression.FromInteger(ConvertInteger(node.IntegerValue));
+  ClassicalRealExpression.Operator operation;
+  if(!Enum.TryParse(node.Operator,out operation) || operation.ToString()!=node.Operator || !Enum.IsDefined(typeof(ClassicalRealExpression.Operator),operation))throw Invalid("Unknown real operator.");
+  return ClassicalRealExpression.Binary(operation,ConvertReal(node.Left),ConvertReal(node.Right));
+ }
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle");
+   if(fields.ContainsKey("Axis") && fields["Axis"]!=null) {
+    if(version<11 || !(fields["Axis"] is string))throw Invalid("Runtime rotation axes require version 11 and a name.");
+   }
+   if(fields.ContainsKey("Angle") && fields["Angle"]!=null) {int nodes=0;RealFields(fields["Angle"],0,ref nodes,version);}
    if(!(Required(fields,"Kind") is string))throw Invalid("A step kind must be a name.");
    foreach(string name in new[]{"Expression","Mask","Value"})if(fields.ContainsKey(name) && fields[name]!=null && !(fields[name] is string))throw Invalid(name+" must be text.");
    if(fields.ContainsKey("Wires") && fields["Wires"]!=null)IntegerArray(fields["Wires"]);
@@ -175,7 +212,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version!=2 && version!=3 && version!=4 && version!=5 && version!=6 && version!=7 && version!=8 && version!=9 && version!=10)throw Invalid("Expected a version 2, 3, 4, 5, 6, 7, 8, 9 or 10 classical circuit.");
+  if(version<2 || version>11)throw Invalid("Expected a version 2 through 11 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -190,7 +227,7 @@ sealed class ClassicalCircuit {
     if(!(Required(fields,"Name") is string) || !(Required(fields,"Signedness") is string))throw Invalid("Variable names and signedness must be text.");
     Integer(Required(fields,"Width"));
    }
-  } else if(version>=5)throw Invalid("Versions 5–10 require a variable declaration array.");
+  } else if(version>=5)throw Invalid("Versions 5–11 require a variable declaration array.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;
@@ -221,7 +258,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -264,6 +301,13 @@ sealed class ClassicalCircuit {
    if(!condition && (step.Mask!=null || step.Value!=null))throw Invalid("Only conditions have a mask and value.");
    if((kind==NumericalSampling.Operation.Measure || kind==NumericalSampling.Operation.Reset) && !String.IsNullOrEmpty(step.Expression))throw Invalid("Measurement and reset cannot contain matrix expressions.");
    var gate=new NumericalSampling.Gate {Kind=kind,Expression=step.Expression,Wires=step.Wires==null ? null : (int[])step.Wires.Clone(),ClassicalBit=step.ClassicalBit};
+   bool rotation=kind==NumericalSampling.Operation.Rotation;
+   if(rotation) {
+    if(version<11 || step.Axis==null || step.Angle==null)throw Invalid("Runtime rotations require version 11, an axis and an angle.");
+    NumericalSampling.RotationAxis axis;
+    if(!Enum.TryParse(step.Axis,out axis) || axis.ToString()!=step.Axis || !Enum.IsDefined(typeof(NumericalSampling.RotationAxis),axis))throw Invalid("Unknown runtime rotation axis.");
+    gate.Axis=axis;gate.Angle=ConvertReal(step.Angle);
+   } else if(step.Axis!=null || step.Angle!=null)throw Invalid("Only runtime rotations accept an axis and angle.");
    if(integer){gate.VariableSlot=step.VariableSlot;if(step.IntegerValue!=null)gate.IntegerExpression=ConvertInteger(step.IntegerValue);}
    if(range){gate.VariableSlot=step.VariableSlot;gate.Range=new NumericalSampling.IntegerRange(ConvertInteger(step.Range.Start),ConvertInteger(step.Range.Stop),ConvertInteger(step.Range.Step));}
    if(expression)gate.ClassicalExpression=ConvertExpression(step.ClassicalValue);
