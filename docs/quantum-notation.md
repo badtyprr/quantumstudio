@@ -736,6 +736,17 @@ runtime arithmetic errors, while invalid references and cast widths are always
 rejected. Machine-width casts use 64 bits. Fully static expressions still use
 the pinned compiler's constant evaluator.
 
+Classical OpenQASM import accepts top-level `output bit result;` and
+`output bit[n] result;` declarations. When any explicit outputs exist, only
+those registers appear in the result; ordinary bit registers remain available
+as working storage. Within the selected registers, results retain the existing
+reverse-declaration, most-significant-bit-first display order. Without explicit
+outputs, all visible bit registers remain results. This follows the
+[OpenQASM 3 input/output selection rule](https://openqasm.com/versions/3.0/language/directives.html#input-output).
+Runtime `input` parameters and non-bit outputs still require separate support.
+Numerical-composer import rejects explicit input/output declarations rather
+than discarding their result semantics.
+
 Top-level `int` and `uint` declarations now import as version-5 runtime variables,
 with explicit widths from 1 to 64 or an omitted width for machine-sized integers.
 For example, `int[8] counter=3; bit c; counter=counter**2-1; c=counter==8;`
