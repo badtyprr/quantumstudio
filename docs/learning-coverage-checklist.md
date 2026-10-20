@@ -59,6 +59,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 - [ ] **Declared orthonormal bases** — P1; Partial; size L; dependencies: None.
 - Source focus: Basics and general formulation: states and measurements. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Declare a named basis and dimension; reduce inner products to Kronecker delta and complete projector sums to identity. Unknown bases must stay unresolved. Verify declarations survive save/load and copy.
+- In progress: `codex/orthonormal-basis` adds scoped finite named declarations and within-basis contractions. Distinct bases retain unknown overlaps; symbolic families, completeness and dedicated editing remain outstanding. This work is not merged or released.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
 
 ### DEV-04

@@ -57,6 +57,36 @@ for flags in [(), ("--approx",)]:
     rejected=run('quantum:qfourierdomain(1,0,2)','--json',*flags,success=False)
     assert rejected.returncode==2 and not rejected.stdout and rejected.stderr
 
+# Named orthonormal bases justify only within-basis contractions.
+for flags in [(), ("--approx",)]:
+    for expression,expected in [
+        ("orthobasis(<red|red>,B,[|red>,|blue>])","1"),
+        ("orthobasis(<red|blue>,B,[|red>,|blue>])","0"),
+        ("orthobasis(<blue|red>,B,[|red>,|blue>])","0"),
+        ("orthobasis(<blue|blue>,B,[|red>,|blue>])","1"),
+        ("orthobasis(<x|x>,B,[|x>])","1"),
+    ]:
+        assert data("quantum:"+expression,*flags)["text"]==expected
+    for expression in [
+        "orthobasis(|red>,B,[|red>,|blue>])",
+        "orthobasis(|red>,B,[|red>,|blue>])†*orthobasis(|red>,C,[|red>,|blue>])",
+        "<red|red>",
+    ]:
+        result=data("quantum:"+expression,*flags)
+        assert result["rows"]==0 and result["text"] not in ("0","1")
+        assert data("quantum:"+result["copy_text"],*flags)["copy_text"]==result["copy_text"]
+        if expression.startswith("orthobasis"):
+            assert "basis B" in result["display_text"] and "qorthoket" not in result["display_text"]
+    for expression in [
+        "orthobasis(<red|red>,B,[|red>,|red>])",
+        "orthobasis(<red|red>,B,[])",
+        "orthobasis(<red|red>,B,[1,2])",
+        "orthobasis(|red>,B,[|red>,|blue>])†*orthobasis(|red>,B,[|red>,|green>])",
+        'qorthoket("missing","B",vector("red","blue"))',
+    ]:
+        rejected=run("quantum:"+expression,"--json",*flags,success=False)
+        assert rejected.returncode==2 and not rejected.stdout and rejected.stderr
+
 # IBM's Fourier definition uses juxtaposed bound indices in its phase.
 for flags in [(), ("--approx",)]:
     rejected=run("quantum:qtexgroupsum(0,1,x,"+"x"*600+")", "--json", *flags, success=False)
@@ -637,6 +667,13 @@ def state_request(definitions, expression):
     for name, definition in definitions:
         value += f"{len(name.encode('utf-8'))}\n{len(definition.encode('utf-8'))}\n{name}{definition}"
     return value + expression
+
+for definitions,expression in [
+    ([("red","2|0>")],"orthobasis(<red|red>,B,[|red>])"),
+    ([("psi(t)","[1;t]")],"orthobasis(<psi_1|psi_1>,B,[|psi_1>])"),
+]:
+    rejected=run(state_request(definitions,"quantum:"+expression),"--states","--json",success=False)
+    assert rejected.returncode==2 and not rejected.stdout and b"cannot override" in rejected.stderr
 
 
 # Complex declarations apply before evaluation and survive later substitution.
