@@ -58,6 +58,25 @@ sealed class ClassicalExpressionQasm {
   value.Validate(bits,variables);
   return IntegerNode(value);
  }
+ public string Real(ClassicalRealExpression value) {
+  if(value==null)throw new ArgumentNullException("value");
+  value.Validate(bits,variables);
+  return RealNode(value);
+ }
+ string RealNode(ClassicalRealExpression value) {
+  if(value.Kind==ClassicalRealExpression.NodeKind.Integer)
+   return Cast("float[64]",IntegerNode(value.Integer));
+  if(value.Kind==ClassicalRealExpression.NodeKind.Constant) {
+   // Round-trip binary64 values, including signed zero, without turning an
+   // integral-valued real into an OpenQASM integer operand.
+   if(value.Value==0 && BitConverter.DoubleToInt64Bits(value.Value)<0)return "(-0.0)";
+   string text=value.Value.ToString("R",CultureInfo.InvariantCulture);
+   if(text.IndexOf('.')<0 && text.IndexOf('E')<0 && text.IndexOf('e')<0)text+=".0";
+   return "("+text+")";
+  }
+  string[] operators={"+","-","*","/"};
+  return Binary(RealNode(value.Left),operators[(int)value.Operation],RealNode(value.Right));
+ }
  static string BitOperator(E.Operator op) {
   switch(op) {
    case E.Operator.And:return "&";case E.Operator.Or:return "|";case E.Operator.Xor:return "^";

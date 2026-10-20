@@ -82,6 +82,8 @@ sealed class ClassicalProgramQasm {
   foreach(var gate in gates) {
    switch(gate.Kind) {
     case NumericalSampling.Operation.Gate:Gate(text,gate);break;
+    case NumericalSampling.Operation.Rotation:
+     text.Append("r"+gate.Axis.Value.ToString().ToLowerInvariant()+"("+expressions.Real(gate.Angle)+") q["+Number(gate.Wires[0])+"];\n");break;
     case NumericalSampling.Operation.Measure:
      text.Append(storage.Bit(gate.ClassicalBit.Value)+" = measure q["+Number(gate.Wires[0])+"];\n");break;
     case NumericalSampling.Operation.Reset:

@@ -89,12 +89,16 @@ sealed class ClassicalQasmScopes {
   Bits(expression.Left,scope);Bits(expression.Right,scope);
   Integer(expression.IntegerLeft,scope);Integer(expression.IntegerRight,scope);
  }
+ void Real(ClassicalRealExpression expression,Scope scope) {
+  if(expression==null)return;
+  Integer(expression.Integer,scope);Real(expression.Left,scope);Real(expression.Right,scope);
+ }
  Scope Scan(IList<G> body,Scope parent,bool loop) {
   var scope=new Scope{Body=body,Parent=parent};scope.Loop=loop ? scope : parent==null ? null : parent.Loop;
   scopes.Add(body,scope);
   for(int i=0;i<body.Count;i++) {
    var gate=body[i];var site=new Site{Scope=scope,Index=i,Gate=gate};
-   Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);
+   Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);Real(gate.Angle,scope);
    if(gate.Kind==O.StoreInteger)uses[gate.VariableSlot.Value].Add(scope);
    if(gate.Kind==O.ClearInteger)clears[gate.VariableSlot.Value].Add(site);
    if(gate.Kind==O.Break || gate.Kind==O.Continue || gate.Kind==O.End)transfers.Add(site);
