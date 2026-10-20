@@ -250,6 +250,12 @@ unknown expression. Ordinary unwrapped symbols retain the calculator's
 existing assumptions. This helper does not yet provide a symbol-declaration
 editor or automatically infer domains from lesson notation.
 
+### Products of summation indices
+
+In TeX or Unicode sums, adjacent letters multiply when every letter names an active single-letter index: `∑_{x=0}^{2}{∑_{y=0}^{3}{xy}}` evaluates to `18`. This also supports the `xy` exponent in IBM's double-sum Fourier definition, braced and unbraced bodies, finite set sums, and products. Nested index declarations retain their own scope, including a multi-letter index named `xy`.
+
+Use a quoted name such as `"xy"` for one named variable inside these sums. Ordinary `sum(...)` input retains its existing identifier rules. Function names, gates, `pi`, frequency units, subscripts, and quoted state labels are not split. A token containing a letter that is not an active index remains a named variable; use `x*y` when the intended multiplication is otherwise ambiguous.
+
 ## Symbolic Fourier operators
 
 `QFT_N` and `fourier(N)` use dimension N, following [IBM's definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). `qft(n)` and `QFT(n)` instead take a qubit count. Unknown scalar dimensions remain symbolic in exact and approximate modes; substituting a numeric dimension evaluates the matrix and applies the existing numeric limits. This does not yet provide symbolic basis kets, Fourier-sum expansion, or general symbolic operator identities.

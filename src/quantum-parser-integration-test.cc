@@ -21,6 +21,13 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal(R"(quantum: \sum_{x=0}^{2}\sum_{y=0}^{3} xy)","18");
+ equal(R"(quantum: \sum_{x=0}^{2}{\sum_{y=0}^{3}{xy}})","18");
+ equal("quantum: ∑_{x=0}^{2}{∑_{y=0}^{3}{xy}}","18");
+ equal(R"(quantum: \sum_{i=0}^{2}{ii})","5");
+ equal(R"(quantum: \sum_{x=0}^{2}{xx+\sum_{x=0}^{1}{xx}})","8");
+ equal(R"(quantum: \sum_{x=0}^{1}{\sum_{y=0}^{1}{"xy"}})","quantum: 4*\"xy\"");
+
  equal(R"(quantum: \begin{aligned}1+1&=2\\&=4/2\end{aligned})","1");
  equal(R"(quantum: \begin{aligned}1+1&=3\\&=6/2\end{aligned})","0");
  equal(R"(quantum: \begin{split}2&=1\\&+1\end{split})","1");

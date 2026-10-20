@@ -117,7 +117,7 @@ int main() {
 
   rejects(R"(\sum_{k\in\{0,1}{k})");
   rejects(R"(\prod_{k\in\{0,1\}}{k})");
-  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","sumset(k^2,unique(vector(0,2,5)),k)");
+  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","qtexgroupsumset(unique(vector(0,2,5)),k,k^2)");
   equal(R"(\sum_{k\in S_0} k+1)","qtexsumset( S_0,k) k+1");
   rejects(R"(\sum^{2}_{k\in S_0}{k})");
   rejects(R"(\sum_{k\in}{k})");
@@ -160,14 +160,14 @@ int main() {
   equal(R"(\norm{X}_1)","norm(X,1)");
   equal(R"(\norm{X}^{2}_F)","norm(X,2)^(2)");
   equal(R"(\lVert X\rVert_2)","norm( X,2)");
-  equal(R"(\sum_{k=0}^{2}{k})","sum(k,0,2,k)");
-  equal(R"(\sum_{a_0=0}^{2}{a_0})","sum(a_0,0,2,a_0)");
-  equal(R"(\sum_{a_{10}=0}^{2}{a_{10}})","sum(a_10,0,2,a_10)");
+  equal(R"(\sum_{k=0}^{2}{k})","qtexgroupsum(0,2,k,k)");
+  equal(R"(\sum_{a_0=0}^{2}{a_0})","qtexgroupsum(0,2,a_0,a_0)");
+  equal(R"(\sum_{a_{10}=0}^{2}{a_{10}})","qtexgroupsum(0,2,a_10,a_10)");
   equal(R"(\sum_{k=0}^{2} k+1)","qtexsum(0,2,k) k+1");
-  equal(R"(\prod^{2}_{k=0}{k})","product(k,0,2,k)");
-  equal(R"(\bigotimes_{k=0}^{2}{X})","tensorproduct(X,0,2,k)");
-  equal(R"(\bigoplus_{k=0}^{2}{X})","blocksum(X,0,2,k)");
-  equal("∑_{k=0}^{2}{k}","sum(k,0,2,k)");
+  equal(R"(\prod^{2}_{k=0}{k})","qtexgroupprod(0,2,k,k)");
+  equal(R"(\bigotimes_{k=0}^{2}{X})","qtexgroupbigotimes(0,2,k,X)");
+  equal(R"(\bigoplus_{k=0}^{2}{X})","qtexgroupbigoplus(0,2,k,X)");
+  equal("∑_{k=0}^{2}{k}","qtexgroupsum(0,2,k,k)");
   equal(R"(\begin{pmatrix}1&2\\[1mm]3&4\end{pmatrix})","[1,2;3,4]");
   equal(R"(\begin{bmatrix}1\\[-.5 em]2\\[+2pt]3\end{bmatrix})","[1;2;3]");
   equal(R"(\mathrm{QFT}_{16})"," qfourier(16)");

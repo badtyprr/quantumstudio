@@ -12,7 +12,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
-| [DEV-01](#dev-01) | P1 | S | In validation | None | Compact bound-index products |
+| [DEV-01](#dev-01) | P1 | S | Implemented; release pending | None | Compact bound-index products |
 | [DEV-02](#dev-02) | P1 | L | Not implemented | DEV-01 | Domain-preserving symbolic Fourier expansion |
 | [DEV-03](#dev-03) | P1 | L | Partial | None | Declared orthonormal bases |
 | [DEV-04](#dev-04) | P1 | L | Partial | DEV-03 | Symbolic operator assumptions and identities |
@@ -42,10 +42,10 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 
 ### DEV-01
 
-- [ ] **Compact bound-index products** — P1; In validation; size S; dependencies: None.
+- [ ] **Compact bound-index products** — P1; Implemented; release pending; size S; dependencies: None.
 - Source focus: Fundamentals: phase estimation; IBM Fourier double sum. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Finish xy parsing without changing quoted names, pi or nested index declarations. Verify QFT residuals for N=1..4 in exact/approximate modes and symbolic copy round trips.
-- Evidence: IBM Fourier double-sum reproduction; implementation on `codex/tex-index-products`, not yet merged/released. Tests: `src/quantum-worker-test.py`, `src/quantum-notation-test.cc`. Owner: unassigned. PR: pending.
+- Evidence: IBM Fourier double-sum reproduction; implementation on `codex/tex-index-products`, not yet merged/released. Nested index declarations, lexical constants and parser complexity limits have regression coverage. Tests: `src/quantum-worker-test.py`, `src/quantum-notation-test.cc`. Owner: unassigned. PR: pending.
 
 ### DEV-02
 

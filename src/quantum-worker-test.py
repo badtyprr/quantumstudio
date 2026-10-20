@@ -23,6 +23,31 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# IBM's Fourier definition uses juxtaposed bound indices in its phase.
+for flags in [(), ("--approx",)]:
+    rejected=run("quantum:qtexgroupsum(0,1,x,"+"x"*600+")", "--json", *flags, success=False)
+    assert rejected.returncode==2 and rejected.stdout==b"" and b"complexity limit" in rejected.stderr
+
+for flags in [(), ("--approx",)]:
+    for expression, expected in [
+        (r'\sum_{x=0}^{2}\sum_{y=0}^{3} xy',18),
+        (r'\sum_{x=0}^{2}{\sum_{y=0}^{3}{xy}}',18),
+        ('∑_{x=0}^{2}{∑_{y=0}^{3}{xy}}',18),
+        (r'\sum_{i=0}^{2}{ii}',5),
+        (r'\sum_{x=0}^{1}{\sum_{y=0}^{1}{\sum_{xy=0}^{2}{xy}}}',12),
+        (r'\sum_{x=0}^{1}\sum_{y=0}^{1}\sum_{xy=0}^{2} xy',12),
+        (r'\sum_{x=0}^{2}{xx+\sum_{x=0}^{1}{xx}}',8),
+        (r'\prod_{x=1}^{3}{xx}',36),
+        (r'\sum_{x\in\{0,2,5\}}{xx}',29),
+    ]:
+        assert Decimal(data('quantum:'+expression,*flags)['text'])==expected
+    formula=r'\frac{1}{\sqrt{N}}\sum_{x=0}^{N-1}\sum_{y=0}^{N-1}\omega_N^{xy}|x\rangle\langle y|'
+    for dimension in range(1,5):
+        expression='frobeniusnorm(replace(replace(('+formula+'),ω_N,exp(2*pi*i/N)),N,'+str(dimension)+')-QFT_'+str(dimension)+')'
+        assert abs(Decimal(data('quantum:'+expression,*flags)['text'].replace('−','-')))<Decimal('1e-25')
+    symbolic=data(r'quantum:\sum_{x=0}^{N}{xx}',*flags)
+    assert Decimal(data('quantum:replace(('+symbolic['copy_text']+'),N,3)',*flags)['text'])==14
+
 # Fourier sums display mathematical notation without changing canonical copy data.
 for flags in [(), ("--approx",)]:
     for expression in ['QFT_N|x>_N','sum(exp(2*pi*i*x*k/N)*basis(k,N),0,N-1,k)/sqrt(N)','sum(exp(i*k)*basis(k,N),0,N-1,k)']:
