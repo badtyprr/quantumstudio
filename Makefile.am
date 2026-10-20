@@ -65,6 +65,7 @@ EXTRA_DIST = config.rpath  \
 	windows/MainWindow.xaml \
 	windows/Notation-guide.html \
 	windows/QasmAngle.cs \
+	windows/QasmGateSerializer.cs \
 	windows/QasmImport.cs \
 	windows/SourceFilesWindow.cs \
 	windows/QasmImportTests.cs \

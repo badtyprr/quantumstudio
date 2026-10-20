@@ -275,10 +275,10 @@ class CircuitComposer : Window {
   encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
   using(var file=File.Create(path))encoder.Save(file);
  }
- static bool ControlledAngle(string name) {return name=="CP" || name=="CRx" || name=="CRy" || name=="CRz";}
- static bool ParityRotation(string name) {return name=="XXPlusYY" || name=="XXMinusYY";}
- static bool Interaction(string name) {return name=="Rxx" || name=="Ryy" || name=="Rzz" || name=="Rzx";}
- static bool Noise(string name) {return name=="AD" || name=="GAD" || name=="PD" || name=="PAD" || name=="Depol" || name=="Thermal";}
+ static bool ControlledAngle(string name) {return QasmGateSerializer.ControlledAngle(name);}
+ static bool ParityRotation(string name) {return QasmGateSerializer.ParityRotation(name);}
+ static bool Interaction(string name) {return QasmGateSerializer.Interaction(name);}
+ static bool Noise(string name) {return QasmGateSerializer.Noise(name);}
  void UpdateParameterHelp() {
   string name=(string)gate.SelectedItem;
   parameterHelp.Text=name=="GPhase" ? "GPhase multiplies the entire state by exp(iθ). Choose any one wire; its choice does not change the result." : name=="AD" ? "AD · amplitude damping: probability p in [0,1]. Relaxes toward |0⟩." : name=="GAD" ? "GAD · generalized amplitude damping: p, equilibrium excited population. Both in [0,1]." : name=="PD" ? "PD · phase damping: p in [0,1]. Coherence is multiplied by √(1−p)." : name=="PAD" ? "PAD · combined damping: amplitude, phase, excited population. Each in [0,1]; amplitude + phase ≤ 1." : name=="Depol" ? "Depol · depolarizing λ in [0,4/3]. λ=1 completely mixes the selected qubit." : "Angles in radians: XXPlusYY/XXMinusYY take θ, β; fSim takes θ, φ; U3 takes θ, φ, λ. Separate parameters with commas.";
@@ -287,92 +287,18 @@ class CircuitComposer : Window {
   if(Noise(name))parameterHelp.Text+=" Noise returns a density matrix; save as .qcircuit (OpenQASM export is unavailable).";
   angle.ToolTip=parameterHelp.Text;
  }
- static bool NeedsAngle(string name) {return name=="GPhase" || ParityRotation(name) || Noise(name) || Interaction(name) || name=="R" || name=="U3" || name=="fSim" || ControlledAngle(name) || name=="Rx" || name=="Ry" || name=="Rz" || name=="P";}
- static string[] GateAngles(string name,string value) {
-  var parts=new List<string>(); int depth=0, start=0;
-  for(int j=0;j<value.Length;j++) {
-   if(value[j]=='(')depth++; else if(value[j]==')')depth--;
-   if(depth<0)throw new InvalidDataException("Unbalanced angle parentheses.");
-   if(value[j]==',' && depth==0){parts.Add(value.Substring(start,j-start).Trim());start=j+1;}
-  }
-  parts.Add(value.Substring(start).Trim());
-  int count=name=="Thermal" ? 4 : name=="U3" || name=="PAD" ? 3 : ParityRotation(name) || name=="R" || name=="fSim" || name=="GAD" ? 2 : 1;
-  if(depth!=0 || parts.Count!=count || parts.Exists(String.IsNullOrWhiteSpace))throw new InvalidDataException(name+" needs "+count+" parameter expressions, separated by commas, with balanced parentheses.");
-  return parts.ToArray();
- }
- static bool Feedback(string name) {return name!=null && (name=="M0-X" || name=="M1-X" || name=="M0-Z" || name=="M1-Z" || name=="M00-X" || name=="M01-X" || name=="M10-X" || name=="M11-X" || name=="M00-Z" || name=="M01-Z" || name=="M10-Z" || name=="M11-Z");}
- static string FeedbackBits(string name) {return name.Substring(1,name.IndexOf('-')-1);}
- static char FeedbackGate(string name) {return name[name.Length-1];}
- static int WireCount(string name) {return Feedback(name) ? FeedbackBits(name).Length+1 : name=="CCX" || name=="CCZ" || name=="CSWAP" ? 3 : ParityRotation(name) || Interaction(name) || name=="ECR" || name=="FSWAP" || name=="fSim" || ControlledAngle(name) || name=="CNOT" || name=="CZ" || name=="CY" || name=="CH" || name=="SWAP" || name=="iSWAP" ? 2 : 1;}
- static void PauliRotation(StringBuilder result,string axes,string theta,int[] wires) {
-  string a="q["+wires[0]+"]", b="q["+wires[1]+"]";
-  for(int k=0;k<2;k++) {
-   string wire=k==0 ? a : b;
-   if(axes[k]=='x')result.Append("h "+wire+";\n");
-   if(axes[k]=='y')result.Append("rx(pi/2.0) "+wire+";\n");
-  }
-  result.Append("cx "+a+", "+b+";\nrz("+theta+") "+b+";\ncx "+a+", "+b+";\n");
-  for(int k=0;k<2;k++) {
-   string wire=k==0 ? a : b;
-   if(axes[k]=='x')result.Append("h "+wire+";\n");
-   if(axes[k]=='y')result.Append("rx(-pi/2.0) "+wire+";\n");
-  }
- }
+ static bool NeedsAngle(string name) {return QasmGateSerializer.NeedsAngle(name);}
+ static string[] GateAngles(string name,string value) {return QasmGateSerializer.GateAngles(name,value);}
+ static bool Feedback(string name) {return QasmGateSerializer.Feedback(name);}
+ static string FeedbackBits(string name) {return QasmGateSerializer.FeedbackBits(name);}
+ static char FeedbackGate(string name) {return QasmGateSerializer.FeedbackGate(name);}
+ static int WireCount(string name) {return QasmGateSerializer.WireCount(name);}
  public string OpenQasm() {
   foreach(var step in steps)if(Noise(step.Gate))throw new InvalidDataException("OpenQASM export does not support noise channels ("+step.Gate+"). Save this circuit as .qcircuit to preserve its noise operations.");
   var result=new StringBuilder("OPENQASM 3.0;\ninclude \"stdgates.inc\";\n// Composer wire q0 maps to q[0]. Gates retain their original order.\nqubit["+Count+"] q;\nreset q;\n");
   int classical=0;
-  foreach(var step in steps) {
-   if(step.Gate=="GPhase") {result.Append("gphase("+QasmAngle.Translate(step.Angle)+");\n");continue;}
-   if(Interaction(step.Gate)) {PauliRotation(result,step.Gate.Substring(1),QasmAngle.Translate(step.Angle),step.Wires);continue;}
-   if(step.Gate=="U3") {
-    string[] angles=Array.ConvertAll(GateAngles(step.Gate,step.Angle),QasmAngle.Translate); string wire="q["+step.Wires[0]+"]";
-    result.Append("p("+angles[2]+") "+wire+";\nry("+angles[0]+") "+wire+";\np("+angles[1]+") "+wire+";\n");continue;
-   }
-   if(step.Gate=="R") {
-    string[] angles=Array.ConvertAll(GateAngles(step.Gate,step.Angle),QasmAngle.Translate);string wire="q["+step.Wires[0]+"]";
-    result.Append("rz(-("+angles[1]+")) "+wire+";\nrx("+angles[0]+") "+wire+";\nrz("+angles[1]+") "+wire+";\n");continue;
-   }
-   if(ParityRotation(step.Gate)) {
-    string[] angles=Array.ConvertAll(GateAngles(step.Gate,step.Angle),QasmAngle.Translate);
-    bool plus=step.Gate=="XXPlusYY";string wire="q["+step.Wires[plus ? 0 : 1]+"]", beta="("+angles[1]+")", half="("+angles[0]+")/2.0";
-    result.Append("rz("+(plus ? beta : "-"+beta)+") "+wire+";\n");
-    PauliRotation(result,"xx",half,step.Wires);PauliRotation(result,"yy",plus ? half : "-("+half+")",step.Wires);
-    result.Append("rz("+(plus ? "-"+beta : beta)+") "+wire+";\n");continue;
-   }
-   if(step.Gate=="fSim") {
-    string[] angles=GateAngles(step.Gate,step.Angle); string theta=QasmAngle.Translate(angles[0]), phi=QasmAngle.Translate(angles[1]);
-    string a="q["+step.Wires[0]+"]", b="q["+step.Wires[1]+"]";
-    // Commuting XX and YY rotations, followed by the negative controlled phase.
-    PauliRotation(result,"xx",theta,step.Wires);PauliRotation(result,"yy",theta,step.Wires);
-    result.Append("cp(-("+phi+")) "+a+", "+b+";\n"); continue;
-   }
-   if(step.Gate=="ECR") {
-    string a="q["+step.Wires[0]+"]", b="q["+step.Wires[1]+"]";
-    // Preserve the matrix's global phase, including for future controlled use.
-    result.Append("gphase(-pi/4.0);\ns "+a+";\nsx "+b+";\ncx "+a+", "+b+";\nx "+a+";\n");continue;
-   }
-   if(step.Gate=="FSWAP") {
-    string a="q["+step.Wires[0]+"]", b="q["+step.Wires[1]+"]";
-    result.Append("swap "+a+", "+b+";\ncz "+a+", "+b+";\n");continue;
-   }
-   if(step.Gate=="iSWAP") {
-    string a="q["+step.Wires[0]+"]", b="q["+step.Wires[1]+"]";
-    result.Append("swap "+a+", "+b+";\ns "+a+";\ns "+b+";\ncz "+a+", "+b+";\n"); continue;
-   }
-   if(Feedback(step.Gate)) {
-    string bits=FeedbackBits(step.Gate);var conditions=new List<string>();
-    for(int k=0;k<bits.Length;k++) {
-     string bit="m"+(classical++);
-     result.Append("bit "+bit+";\n"+bit+" = measure q["+step.Wires[k]+"];\n");conditions.Add(bit+" == "+bits[k]);
-    }
-    result.Append("if ("+String.Join(" && ",conditions)+") {\n  "+Char.ToLowerInvariant(FeedbackGate(step.Gate))+" q["+step.Wires[bits.Length]+"];\n}\n");
-    continue;
-   }
-   string name=step.Gate=="CNOT" ? "cx" : step.Gate=="CCZ" ? "ctrl(2) @ z" : step.Gate=="SXdg" ? "inv @ sx" : step.Gate.ToLowerInvariant();
-   result.Append(name); if(NeedsAngle(step.Gate))result.Append("("+QasmAngle.Translate(step.Angle)+")");
-   result.Append(" "); result.Append(String.Join(", ",Array.ConvertAll(step.Wires,n=>"q["+n+"]"))); result.Append(";\n");
-  } return result.ToString();
+  foreach(var step in steps)QasmGateSerializer.Append(result,step.Gate,step.Angle,step.Wires,ref classical);
+  return result.ToString();
  }
  public void SaveCircuit(string path) {
   string text=Snapshot();
