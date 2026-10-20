@@ -80,7 +80,14 @@ class FileImportTests(unittest.TestCase):
         self.put("parameters.inc", 'OPENQASM 3;\ninclude "stdgates.inc";\nbit b;\nqubit q;\nrx(b) q;')
         for command in COMMANDS:
             message = self.run_import(command, ["--source-file", str(main), "--module-headers", "--classical"], success=False)
-            self.assertEqual(message.strip(), "parameters.inc:5:1: Runtime gate parameters are not yet supported by the circuit importer.")
+            self.assertEqual(message.strip(), "parameters.inc:5:1: Cast bit operands explicitly before integer arithmetic.")
+
+    def test_runtime_angle_cast_location(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "parameters.inc";')
+        self.put("parameters.inc", 'int n = 1;\nqubit q;\nrx(float[32](n)) q;')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
+            self.assertEqual(message.strip(), "parameters.inc:3:1: Runtime real casts currently require float[64].")
 
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:

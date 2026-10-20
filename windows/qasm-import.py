@@ -126,13 +126,18 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             return original_gate(visitor,operation,ctrls)
         if operation.name.name not in ('rx','ry','rz') or len(operation.arguments)!=1 or operation.modifiers or ctrls or in_function(visitor):
             raise error_at(operation,'Runtime angles currently require unmodified rx, ry or rz outside subroutines.')
-        angle=real_angle(visitor,operation.arguments[0])
+        try:
+            angle=real_angle(visitor,operation.arguments[0])
+        except ValueError as error:
+            raise error_at(operation,str(error)) from error
         proxy=copy.deepcopy(operation);proxy.arguments=[ast.FloatLiteral(0.0)]
         expanded=original_gate(visitor,proxy,ctrls)
         for item in expanded:
             if not isinstance(item,ast.QuantumGate) or item.name.name!=operation.name.name or len(item.qubits)!=1:
                 raise error_at(operation,'Runtime rotation expansion changed its gate semantics.')
             item._quantum_runtime_angle=copy.deepcopy(angle)
+            # Compiler expansion may discard spans; retain the user's gate location.
+            item.span=copy.deepcopy(operation.span)
         return expanded
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
@@ -1306,7 +1311,11 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                         if value['Kind']=='Constant':return {'Kind':'Constant','ValueBits':value['ValueBits']}
                         return {'Kind':'Binary','Operator':value['Operator'],'Left':lower_angle(value['Left']),'Right':lower_angle(value['Right'])}
                     version=max(version,11)
-                    append({'Kind':'Rotation','Axis':statement.name.name[-1].upper(),'Angle':lower_angle(statement._quantum_runtime_angle),'Wires':[reference(statement.qubits[0],quantum)]})
+                    try:
+                        angle=lower_angle(statement._quantum_runtime_angle)
+                    except ValueError as error:
+                        raise error_at(statement,str(error)) from error
+                    append({'Kind':'Rotation','Axis':statement.name.name[-1].upper(),'Angle':angle,'Wires':[reference(statement.qubits[0],quantum)]})
                     continue
                 for step in gate_steps(statement, lambda q: reference(q, quantum), published_u):
                     name, angle = step['Gate'], step['Angle']
