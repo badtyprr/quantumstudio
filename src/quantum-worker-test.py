@@ -30,6 +30,14 @@ for flags in ((), ("--approx",)):
     symbolic = data("quantum:" + family, *flags)
     copied = data("quantum:" + symbolic["copy_text"], *flags)
     assert copied["copy_text"] == symbolic["copy_text"]
+    assert "qregisterfamily" not in symbolic["display_text"] and "⋯" in symbolic["display_text"]
+    assert data(r"quantum:\vert x_{n-1}\cdots x_0\rangle", *flags)["copy_text"] == symbolic["copy_text"]
+    annotated = data("quantum:replace(|x_(n-1) ... x_1 x_0>,x_0,1)", *flags)
+    assert "x_1 present" in annotated["display_text"] and "x_0 = 1" in annotated["display_text"]
+    roundtrip = data("quantum:" + annotated["copy_text"], *flags)
+    assert roundtrip["display_text"] == annotated["display_text"]
+    bra = data("quantum:replace(<x_(n-1) ... x_1 x_0|,x_0,1)", *flags)
+    assert "x_0 = 1" in bra["display_text"] and "x_1 present" in bra["display_text"]
     for expression, expected in (
         ("replace(replace(replace(" + family + ",x_0,1),x_1,0),n,2)", "|01>"),
         ("replace(replace(replace(" + family + ",n,2),x_0,1),x_1,0)", "|01>"),
@@ -51,6 +59,14 @@ for flags in ((), ("--approx",)):
     ):
         rejected = run("quantum:" + expression, "--json", *flags, success=False)
         assert rejected.returncode == 2 and not rejected.stdout
+
+    # Independent two-bit Hadamard amplitudes: (-1)^(x dot y) / 2.
+    for x in range(4):
+        expression = "replace(replace(replace(H^{\\otimes n}|x_(n-1) ... x_0>,n,2),x_1," + str(x >> 1) + "),x_0," + str(x & 1) + ")"
+        actual = data("quantum:" + expression, *flags)
+        expected = [[Decimal("-0.5" if ((x & y).bit_count() % 2) else "0.5")] for y in range(4)]
+        cells = [[Decimal(cell.replace("−", "-")) for cell in row] for row in actual["cells"]]
+        assert (actual["rows"], actual["columns"], cells) == (4, 1, expected), (expression, actual, expected)
 
 # Tensor powers retain their matrix and count constraints until substitution.
 for flags in ((), ("--approx",)):

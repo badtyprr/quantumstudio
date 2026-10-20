@@ -206,6 +206,24 @@ class Printer {
    bool literalCollision=!bound && ((value[0].isSymbolic() && label.size()==1) || label.find_first_not_of("0123456789 ")==std::string::npos);
    if(!literalCollision && safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
   }
+  if(name=="qregisterfamily" && value.size()==4 && value[0].isSymbolic() && value[3].isVector() && value[3].size()%2==0) {
+   const std::string prefix=value[0].symbol();
+   std::string label=prefix+grouped(render(value[1],depth+1),100)+" ⋯ "+prefix+grouped(render(value[2],depth+1),100);
+   std::string text="|"+label+"⟩";
+   if(!value[3].size())return Fragment(text,100,Ket,label);
+   // Keep assignments and explicit-bit existence constraints outside the ket.
+   // Mark the result as an annotated expression so bra composition cannot
+   // discard these conditions by using only the label.
+   text+="  (";
+   for(size_t k=0;k<value[3].size();k+=2) {
+    if(k)text+=", ";
+    std::string bit=prefix+render(value[3][k],depth+1).text;
+    text+=bit;
+    if(value[3][k+1].isSymbolic() && value[3][k+1].symbol()==bit)text+=" present";
+    else text+=" = "+render(value[3][k+1],depth+1).text;
+   }
+   return Fragment(text+")",10);
+  }
   if(name=="qpower" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^"+grouped(render(value[1],depth+1),81),80);
   if(name=="qtensorpow" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^{⊗ "+render(value[1],depth+1).text+"}",80);
   // Keep the basis dimension explicit; treating this as an ordinary named ket
