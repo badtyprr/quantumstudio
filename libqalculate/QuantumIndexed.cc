@@ -8,6 +8,19 @@
 #include <vector>
 #include <stdexcept>
 #include <cctype>
+QuantumBitLabelState validateQuantumBitLabel(MathStructure &index,MathStructure &width,const EvaluationOptions &eo) {
+ EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+ index.eval(exact);width.eval(exact);
+ bool symbolicIndex=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
+ bool symbolicWidth=!width.isNumber() && width.representsScalar() && width.containsUnknowns();
+ if((!symbolicWidth && (!width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10)) ||
+    (!symbolicIndex && (!index.isNumber() || !index.number().isInteger() || index.number()<0)) ||
+    (!symbolicIndex && !symbolicWidth && index.number()>=Number(1<<width.number().intValue()))) {
+  CALCULATOR->error(true,"Binary-string labels require integer width 0 to 10 and a nonnegative integer value fitting that width.",NULL);
+  return QuantumBitLabelState::Invalid;
+ }
+ return symbolicIndex || symbolicWidth ? QuantumBitLabelState::Symbolic : QuantumBitLabelState::Concrete;
+}
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // These operations bind an index in their first argument only.
@@ -236,16 +249,16 @@ class QuantumIndexedFunction: public MathFunction {
    return sum->calculate(out,parameters,eo);
   }
   if(op=="qbitstrings" || op=="qbitlabel") {
+   if(op=="qbitlabel") {
+    MathStructure index=raw[0],width=raw[1];
+    validateQuantumBitLabel(index,width,eo);
+    // Retain the descriptor and its constraints until all fields are concrete.
+    return 0;
+   }
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure width=raw[op=="qbitlabel" ? 1 : 0];width.eval(exact);
    if(!width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10) {CALCULATOR->error(true,"Binary-string widths must be integers from 0 to 10.",NULL);return 0;}
    int count=1<<width.number().intValue();
-   if(op=="qbitlabel") {
-    MathStructure index=raw[0];index.eval(exact);
-    if(!index.isNumber() || !index.number().isInteger() || index.number()<0 || index.number()>=count)CALCULATOR->error(true,"Binary-string value is outside its width.",NULL);
-    // Preserve a typed label instead of collapsing it to an integer or ket.
-    return 0;
-   }
    auto label=CALCULATOR->getFunction("qbitlabel");if(!label)return 0;
    out.clearVector();
    for(int k=0;k<count;++k) {
@@ -317,12 +330,31 @@ class QuantumIndexedFunction: public MathFunction {
    // symbolic singleton collections above before deferring an unknown domain.
    if(op=="qsumset" && (members.isSymbolic() || (members.isVariable() && !members.variable()->isKnown())))return 0;
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
+   // Distinct symbolic labels may become equal after substitution. Do not
+   // count, deduplicate, or test membership before their domains are known.
+   bool deferredLabels=false;
+   auto validateLabel=[&](const MathStructure &value)->bool {
+    if(!value.isFunction() || value.function()->referenceName()!="qbitlabel")return value.representsScalar();
+    if(value.size()!=2)return false;
+    MathStructure index=value[0],width=value[1];
+    QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
+    deferredLabels=deferredLabels || state==QuantumBitLabelState::Symbolic;
+    return state!=QuantumBitLabelState::Invalid;
+   };
+   for(size_t k=0;k<members.size();++k)if(!validateLabel(members[k])) {
+    CALCULATOR->error(true,"Set entries must be scalars or valid binary-string labels.",NULL);return 0;
+   }
+   if(op=="qmember") {
+    MathStructure probe=raw[0];probe.eval(exact);
+    if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
+   }
+   if(deferredLabels)return 0;
    if(op=="qmember") {
     auto canonical=[&](MathStructure &value)->bool {
      if(value.isFunction() && value.function()->referenceName()=="qbitlabel") {
       if(value.size()!=2)return false;
-      MathStructure index=value[0],width=value[1];index.eval(exact);width.eval(exact);
-      if(!index.isNumber() || !index.number().isInteger() || !width.isNumber() || !width.number().isInteger() || width.number()<0 || width.number()>10 || index.number()<0 || index.number()>=Number(1<<width.number().intValue()))return false;
+      MathStructure index=value[0],width=value[1];
+      if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return false;
       auto function=value.function();value.set(function,&index,&width,NULL);return true;
      }
      return value.representsScalar();
