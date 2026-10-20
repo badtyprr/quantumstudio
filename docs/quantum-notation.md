@@ -983,3 +983,9 @@ Declared dimensions also reject provably incompatible additions, subtractions, e
 ### Trace linearity with declared matrices
 
 Trace distributes over sums and differences when declared dimensions establish matching square matrices. It also extracts scalar factors from a declared square matrix, whether multiplication uses `*` or adjacency such as `α A`. Thus, for `U=matrixparam(A,n,n)` and `V=matrixparam(B,n,n)`, the expression `Tr(α*U+β*V)-α*Tr(U)-β*Tr(V)` simplifies to zero after substituting those declarations for U and V. Complex scalar parameters are supported. Unknown or unmatched dimensions retain the original trace expression until resolved; rectangular traces still reject, including when multiplied by zero. These simplifications are under the supplied matrix-domain assumptions.
+
+### Applying matrix declarations to an expression
+
+`matrixassume(expression,A,rows,columns)` annotates free occurrences of A with a matrix domain before evaluating the expression. Text-valued state labels such as `|A>` and local summation indices are preserved. Existing `matrixparam` annotations take precedence, allowing canonical results to be evaluated again without nested annotations. Nested declarations own their bodies; dimensions are still checked, including for an unused declaration. Gates, constants, and already-valued symbols cannot be redefined as matrix names.
+
+For example, `matrixassume(matrixassume(Tr(A+B)-Tr(A)-Tr(B),A,n,n),B,n,n)` gives zero. This operation supports a forthcoming matrix-declarations editor; the editor and session integration are not yet implemented.
