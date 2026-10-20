@@ -61,7 +61,7 @@ this mode to the same circuit documents as explicitly inlined definitions
 GUI import coverage. The eight file-import test methods also run against the
 frozen compiler in CI and packaging.
 
-## Saved-document model (not yet connected to the editors)
+## Saved documents and the classical editor
 
 `SourceCircuitDocument` is an immutable C# wrapper for the circuit and its source
 snapshot. The editor must provide its circuit validator/normalizer; the wrapper
@@ -82,8 +82,8 @@ JSON, and 256 KiB total captured source bytes, with 64 files/bindings. Invalid
 or unsavable replacements reject before returning a new object; the previous
 document remains intact. Future editor wiring must use this wrapper for
 save/load and history while keeping runtime circuit requests separate.
-Changed-file checks, source diagnostic mapping, GUI integration and standalone
-export verification remain unfinished.
+Changed-file checks, source diagnostic mapping, numerical composer integration
+and standalone export verification remain unfinished.
 
 `ClassicalProgramHistory` now retains the source wrapper with each history
 entry. `ImportSource` validates a compiler envelope before creating an undo
@@ -91,8 +91,26 @@ step; `Serialize` writes the full saved document, while `Current.Serialize()`
 continues to provide only the runtime circuit. Ordinary edits preserve source,
 and undo/redo restores circuit, source and import options together. `Open`
 accepts both legacy circuits and the saved wrapper and resets history only
-after validation succeeds. The GUI import and save/load controls are not yet
-connected to these new APIs.
+after validation succeeds.
+
+The classical editor imports through the file-based compiler route, using the
+selected file's directory as the source root. Relative includes must remain in
+that directory tree. The optional **Generated module headers** checkbox enables
+the matching-header adapter described above; strict mode is the default.
+Save retains the circuit and original sources together in `.qcircuit` files;
+Open accepts these documents and legacy circuit-only files. Neither opening nor
+saving reads the recorded source root. Sampling and exact evaluation continue
+to receive the current circuit only.
+
+The editor displays whether the circuit matches the imported snapshot or has
+been edited since import. Undo/redo includes source and import options, and
+the unsaved-changes check compares the complete saved document. The numerical
+composer's import route has not yet been migrated.
+
+`windows/test-source-import-bridge.ps1` runs six checks against the frozen
+compiler through the C# bridge, including Unicode/spaced paths, BOM,
+local includes, the explicit module-header option, and unchanged history after
+rejected imports. Both OpenQASM CI and packaging run this small integration test.
 
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,

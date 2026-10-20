@@ -41,6 +41,7 @@ jobs:
         shell: powershell
         run: |
           & windows/build-qasm-import.ps1
+          & windows/test-source-import-bridge.ps1
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-file-import.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM file import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-protocol.py

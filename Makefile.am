@@ -26,6 +26,8 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm_source_bundle.py \
 	windows/SourceCircuitDocument.cs \
 	windows/SourceCircuitDocumentTests.cs \
+	windows/SourceImportBridgeTests.cs \
+	windows/test-source-import-bridge.ps1 \
 	windows/fixtures/qb004/provenance-envelope.json \
 	windows/test-qasm-source-bundle.py \
 	docs/qasm-source-bundles.md \

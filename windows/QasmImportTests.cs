@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 class QasmImportTests {
  static int checks;
+ static void Quote(string input,string expected) {
+  if(QasmImport.QuoteArgument(input)!=expected)throw new Exception("Compiler path quoting failed.");++checks;
+ }
  static void Same(byte[] expected,byte[] actual) {
   if(Convert.ToBase64String(expected)!=Convert.ToBase64String(actual))throw new Exception("Source bytes changed.");
   ++checks;
@@ -17,6 +20,12 @@ class QasmImportTests {
  static int Main() {
   string path=Path.Combine(Path.GetTempPath(),"quantum-qasm-"+Guid.NewGuid().ToString("N")+".qasm");
   try {
+   Quote("","\"\"");
+   Quote("C:\\Unicode \u03ba\\main.qasm","\"C:\\Unicode \u03ba\\main.qasm\"");
+   Quote("C:\\directory\\","\"C:\\directory\\\\\"");
+   Quote("a\"b","\"a\\\"b\"");
+   Quote("a\\\"b","\"a\\\\\\\"b\"");
+   try{QasmImport.QuoteArgument("a\0b");throw new Exception("NUL argument accepted");}catch(ArgumentException){++checks;}
    byte[] valid=Encoding.UTF8.GetBytes("OPENQASM 3.0; // Unicode: \u03c0\n");
    File.WriteAllBytes(path,valid);Same(valid,QasmImport.ReadSource(path));
    byte[] bom=new byte[valid.Length+3];bom[0]=0xef;bom[1]=0xbb;bom[2]=0xbf;valid.CopyTo(bom,3);
