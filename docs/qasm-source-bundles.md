@@ -212,3 +212,11 @@ a DEV-16d gap. Full source diagnostic coverage is not complete.
 Frozen C# bridge checks verify that parser and semantic dependency errors reach
 the Windows import boundary with original coordinates and leave existing
 classical history unchanged.
+
+Adapter preflight rejections also retain the offending AST node's span.
+Unsupported classical declarations, runtime gate parameters, dynamic register
+indices/sizes, aliases, runtime function arguments and annotated operations can
+therefore identify their original dependency location. This changes diagnostics,
+not which programs the adapter supports. The message text for stdin-only
+compilation remains unchanged. Missing or invalid spans still fall back to the
+entry filename; errors in later lowering/emission stages need separate coverage.

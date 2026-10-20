@@ -12,6 +12,19 @@ _AST_LOCATION = re.compile(r"^L(\d+):C(\d+): (.*)", re.DOTALL)
 _COMPILER_LOCATION = re.compile(r"^Error at line (\d+), column (\d+) in QASM file")
 
 
+class LocatedError(ValueError):
+    """An adapter failure with optional parser coordinates, separate from prose."""
+    def __init__(self, message, span):
+        super().__init__(message)
+        self.line = getattr(span, "start_line", None)
+        self.column = getattr(span, "start_column", None)
+
+
+def error_at(node, message):
+    # Keep str(error) unchanged for stdin-only clients.
+    return LocatedError(message, getattr(node, "span", None))
+
+
 def _parser_location(error):
     """Use typed parser failures; never guess coordinates from user messages."""
     pending, seen = [error], set()
@@ -20,6 +33,8 @@ def _parser_location(error):
         if id(current) in seen:
             continue
         seen.add(id(current))
+        if isinstance(current, LocatedError) and type(current.line) is int and type(current.column) is int:
+            return current.line, current.column, str(current)
         if isinstance(current, RecognitionException):
             token = current.offendingToken
             if token is not None:

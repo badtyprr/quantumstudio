@@ -8,7 +8,7 @@ import unittest
 from pyqasm import ValidationError
 
 from qasm_source_bundle import capture_source, check_snapshot, SourceError, MAX_BYTES, MAX_DEPTH, MAX_FILES
-from qasm_source_diagnostics import compile_source
+from qasm_source_diagnostics import compile_source, error_at
 
 
 class SourceBundleTests(unittest.TestCase):
@@ -119,6 +119,22 @@ class SourceBundleTests(unittest.TestCase):
             logging.getLogger("pyqasm").error("Error at line 99, column 0 in QASM file")
             raise ValueError("Missing usable source span.")
         with self.assertRaisesRegex(SourceError, "^main.qasm: Missing usable source span."):
+            compile_source(bundle, failure)
+
+    def test_adapter_location_without_span_does_not_guess(self):
+        bundle = capture_source(self.put("main.qasm", "OPENQASM 3; qubit q;"))
+        def failure(source, **options):
+            raise error_at(object(), "No original AST span.")
+        with self.assertRaisesRegex(SourceError, "^main.qasm: No original AST span."):
+            compile_source(bundle, failure)
+
+    def test_adapter_location_with_invalid_span_does_not_guess(self):
+        from types import SimpleNamespace
+        bundle = capture_source(self.put("main.qasm", "OPENQASM 3; qubit q;"))
+        node = SimpleNamespace(span=SimpleNamespace(start_line=999, start_column=0))
+        def failure(source, **options):
+            raise error_at(node, "Invalid original AST span.")
+        with self.assertRaisesRegex(SourceError, "^main.qasm: Invalid original AST span."):
             compile_source(bundle, failure)
 
     def test_nested_spaces_and_snapshot(self):

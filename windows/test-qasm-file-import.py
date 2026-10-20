@@ -64,6 +64,24 @@ class FileImportTests(unittest.TestCase):
             self.assertIn("helper.inc:3:12:", message)
             self.assertIn("qubit declarations must be global", message)
 
+    def test_adapter_declaration_location_and_unchanged_stdin_message(self):
+        dependency = "// original configuration\nfloat[64] theta = 0.5;\n"
+        main = self.put("main.qasm", 'OPENQASM 3; include "settings.inc"; qubit q;')
+        self.put("settings.inc", dependency)
+        expected = "Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported."
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
+            self.assertEqual(message.strip(), "settings.inc:2:1: " + expected)
+            message = self.run_import(command, ["--classical"], source="OPENQASM 3;\n" + dependency + "qubit q;", success=False)
+            self.assertEqual(message.strip(), expected)
+
+    def test_adapter_runtime_gate_location_after_module_adaptation(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "parameters.inc";')
+        self.put("parameters.inc", 'OPENQASM 3;\ninclude "stdgates.inc";\nbit b;\nqubit q;\nrx(b) q;')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--module-headers", "--classical"], success=False)
+            self.assertEqual(message.strip(), "parameters.inc:5:1: Runtime gate parameters are not yet supported by the circuit importer.")
+
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:
             module = (HERE / "fixtures/qb004" / (name + ".qasm")).read_text(encoding="utf-8")
