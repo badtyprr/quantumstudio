@@ -19,6 +19,9 @@ EXTRA_DIST = config.rpath  \
 	windows/build-runtime-angle-import-test.ps1 \
 	windows/RuntimeAngleImportTests.cs \
 	windows/test-qasm-runtime-angles.py \
+	windows/ClassicalRealExpressionText.cs \
+	windows/ClassicalRealExpressionTextTests.cs \
+	windows/test-real-expression-text.ps1 \
 	windows/qasm-import-requirements.txt \
 	windows/qasm-import.py \
 	windows/qasm_import_request.py \
