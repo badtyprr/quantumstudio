@@ -38,6 +38,10 @@ EXTRA_DIST = config.rpath  \
 	windows/CircuitComposer.cs \
 	windows/NumericalSampling.cs \
 	windows/ClassicalExpression.cs \
+	windows/ClassicalExpressionQasm.cs \
+	windows/ClassicalExpressionQasmTests.cs \
+	windows/test-classical-expression-qasm.ps1 \
+	windows/test-classical-expression-qasm.py \
 	windows/ClassicalExpressionTests.cs \
 	windows/ClassicalExpressionText.cs \
 	windows/ClassicalExpressionTextTests.cs \
@@ -85,6 +89,7 @@ EXTRA_DIST = config.rpath  \
 	windows/test-gui.ps1 \
 	windows/test-keyboard.ps1 \
 	windows/test-sampling-shutdown.ps1 \
+	windows/test-sampling-shutdown-observation.ps1 \
 	windows/package.ps1 \
 	windows/README.txt \
 	windows/test-package.py \

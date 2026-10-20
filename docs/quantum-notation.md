@@ -556,6 +556,21 @@ zero. Signed integer counts require an explicit unsigned conversion.
 Dynamic wire indexing and measurement-driven gate angles
 remain unsupported and are rejected explicitly.
 
+### Classical-expression export groundwork
+
+`ClassicalExpressionQasm` serializes the immutable bit and integer expression
+models to standard OpenQASM 3 syntax. It validates register bounds and integer
+slot types before producing text, using canonical storage names `c` and `vN`.
+Machine-sized integers are emitted as explicit 64-bit types to preserve
+QuantumStudio's semantics across targets. Arithmetic and comparisons retain the
+model's promotion rules; bit selections retain their order and repeated indices.
+
+This is an internal component, not a classical-editor export command. Full
+program export still needs declarations, control flow, variable lifetimes,
+output ordering, and explicit handling of unsupported operations. Tests generate
+39 expressions for frozen-compiler validation; packaged tests also check their
+exact and sampled outcomes.
+
 
 ### Native integer value groundwork
 

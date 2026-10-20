@@ -110,6 +110,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM numeric tests failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-classical-expressions.py') --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM classical expression tests failed.' }
+    $expressionCases = Join-Path $repo ('dist/expression-qasm/' + [Guid]::NewGuid().ToString('N') + '/cases.json')
+    & (Join-Path $PSScriptRoot 'test-classical-expression-qasm.ps1') -CasesPath $expressionCases
+    & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $expressionCases --worker (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged typed OpenQASM expression tests failed.' }
     & (Join-Path $PSScriptRoot 'test-keyboard.ps1') -Distribution $output
 } finally { $env:QALCULATE_DEFINITIONS_DIR = $oldDefinitions }
 $smoke = Join-Path $repo 'dist\package-smoke.png'
@@ -125,7 +129,7 @@ try {
     if ($samplingProcess.ExitCode -ne 0 -or !(Get-Content -LiteralPath $samplingReport -Raw).StartsWith('PASS:')) { throw 'Packaged sampling GUI failed.' }
     Get-Content -LiteralPath $samplingReport
 } finally { $samplingProcess.Dispose() }
-& (Join-Path $PSScriptRoot 'test-sampling-shutdown.ps1') -Distribution $output -ReportDirectory (Join-Path $repo 'dist\sampling-shutdown')
+& (Join-Path $PSScriptRoot 'test-sampling-shutdown-observation.ps1') -Distribution $output -ReportDirectory (Join-Path $repo 'dist\sampling-shutdown')
 Assert-UnchangedSources
 if (!$Candidate) {
     Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null
