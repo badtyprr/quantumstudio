@@ -16,6 +16,7 @@ from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.transformer import Qasm3Transformer
 from pyqasm.validator import Qasm3Validator
 from pyqasm.elements import Context
+from qasm_source_diagnostics import error_at
 
 RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)
 
@@ -735,39 +736,39 @@ def convert(source, published_u=False, classical=False):
                        if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
         for node in nodes(module.original_program):
             if isinstance(node,ast.ForInLoop) and node.identifier.name in integer_names:
-                raise ValueError('Loop variables cannot yet shadow runtime integer variables.')
+                raise error_at(node, 'Loop variables cannot yet shadow runtime integer variables.')
             if isinstance(node,ast.SubroutineDefinition) and any(isinstance(item,ast.Identifier) and item.name in integer_names for item in nodes(node)):
-                raise ValueError('Runtime integer variables in subroutines require scoped lowering not yet supported.')
+                raise error_at(node, 'Runtime integer variables in subroutines require scoped lowering not yet supported.')
             index=(node.indices if isinstance(node,ast.IndexedIdentifier) else node.index if isinstance(node,ast.IndexExpression) else None)
             if index is not None and runtime(index):
-                raise ValueError('Runtime register indices are not yet supported by the circuit importer.')
+                raise error_at(node, 'Runtime register indices are not yet supported by the circuit importer.')
             if isinstance(node,(ast.QubitDeclaration,ast.BitType)) and node.size is not None and runtime(node.size):
-                raise ValueError('Runtime register sizes are not yet supported by the circuit importer.')
+                raise error_at(node, 'Runtime register sizes are not yet supported by the circuit importer.')
             if isinstance(node,ast.AliasStatement) and runtime(node.value):
-                raise ValueError('Classical aliases are not yet supported by the circuit importer.')
+                raise error_at(node, 'Classical aliases are not yet supported by the circuit importer.')
             control=node.set_declaration if isinstance(node,ast.ForInLoop) else None
             if control is not None and runtime(control) and not getattr(node,'_quantum_runtime_for',False):
-                raise ValueError('Runtime loops require control flow not yet supported by the circuit importer.')
+                raise error_at(node, 'Runtime loops require control flow not yet supported by the circuit importer.')
             if isinstance(node,ast.QuantumGate) and runtime(node.arguments) or isinstance(node,ast.QuantumPhase) and runtime(node.argument):
-                raise ValueError('Runtime gate parameters are not yet supported by the circuit importer.')
+                raise error_at(node, 'Runtime gate parameters are not yet supported by the circuit importer.')
             if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and runtime(node.arguments):
-                raise ValueError('Runtime function arguments are not yet supported by the circuit importer.')
+                raise error_at(node, 'Runtime function arguments are not yet supported by the circuit importer.')
             targets=(node.qubits if isinstance(node,(ast.QuantumGate,ast.QuantumPhase,ast.QuantumReset,ast.QuantumBarrier)) else
                      node.qubit if isinstance(node,ast.QuantumMeasurement) else None)
             if targets is not None and runtime(targets):
-                raise ValueError('Runtime quantum targets are not yet supported by the circuit importer.')
+                raise error_at(node, 'Runtime quantum targets are not yet supported by the circuit importer.')
     if published_u and not str(module.original_program.version).startswith('3'):
-        raise ValueError('The published OpenQASM 3 U convention requires an OpenQASM 3 program.')
+        raise error_at(module.original_program, 'The published OpenQASM 3 U convention requires an OpenQASM 3 program.')
     # PyQASM recognizes built-in includes but does not resolve arbitrary files.
     # Reject these before compilation, rather than pretend their content ran.
     for node in nodes(module.original_program):
         if classical and isinstance(node, ast.ClassicalDeclaration):
             if not isinstance(node.type, (ast.BitType,)+RUNTIME_SCALAR_TYPES):
-                raise ValueError('Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported.')
+                raise error_at(node, 'Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
-            raise ValueError('Only stdgates.inc and qelib1.inc includes are supported.')
+            raise error_at(node, 'Only stdgates.inc and qelib1.inc includes are supported.')
         if getattr(node, 'annotations', None):
-            raise ValueError('Annotated operations require semantics the editor does not support.')
+            raise error_at(node, 'Annotated operations require semantics the editor does not support.')
     # Preserve primitive gates: generic decomposition may preserve a unitary
     # only up to global phase. The calculator exposes exact state amplitudes.
     defined = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGateDefinition)}
