@@ -220,6 +220,14 @@ class SourceBundleTests(unittest.TestCase):
         self.assertEqual(check_snapshot(snapshot, root=self.root)["Files"][0]["Status"], "unavailable")
         self.assertEqual(snapshot["Files"][0]["Text"], "// original")
 
+    def test_snapshot_empty_root_never_defaults_to_working_directory(self):
+        from unittest.mock import patch
+        snapshot = capture_source(self.put("main.qasm", "// original")).snapshot()
+        for root in (None, "", "   "):
+            with self.subTest(root=root), patch.object(Path, "resolve", side_effect=AssertionError("unexpected filesystem access")):
+                with self.assertRaisesRegex(SourceError, "Select a source root"):
+                    check_snapshot(snapshot, root=root)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -189,6 +189,8 @@ def check_snapshot(snapshot, *, root):
     if entry not in bindings or set(bindings.values()) != set(files):
         raise SourceError("Source entry or dependency identity is missing.")
 
+    if root is None or not os.fspath(root).strip():
+        raise SourceError("Select a source root directory.")
     selected = Path(root).resolve(strict=True)
     if not selected.is_dir():
         raise SourceError("Select a source root directory.")

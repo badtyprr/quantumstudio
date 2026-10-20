@@ -75,7 +75,7 @@ class FileImportTests(unittest.TestCase):
             self.assertEqual(result["Files"][1]["Status"], "changed")
             dependency.unlink()
             self.assertEqual(self.run_import(command, args, source)["Files"][1]["Status"], "missing")
-            for invalid in (["--check-source"], [*args, "--classical"],
+            for invalid in (["--check-source"], ["--check-source", "--source-root", ""], [*args, "--classical"],
                             [*args, "--source-file", str(main)]):
                 self.run_import(command, invalid, source, success=False)
 
