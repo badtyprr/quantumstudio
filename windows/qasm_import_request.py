@@ -1,6 +1,7 @@
 """Explicit source context for the compiler CLI; stdin retains its old contract."""
 import json
 from qasm_source_bundle import capture_source, check_snapshot, MAX_BYTES
+from qasm_source_diagnostics import compile_source
 
 
 def import_request(arguments, stdin, convert):
@@ -31,7 +32,7 @@ def import_request(arguments, stdin, convert):
     if "--source-file" in values:
         bundle = capture_source(values["--source-file"], root=values.get("--source-root"),
                                 module_headers="--module-headers" in flags)
-        circuit = convert(bundle.expanded, **options)
+        circuit = compile_source(bundle, convert, **options)
         return {"Version": 1, "Circuit": circuit, "Source": bundle.snapshot()}
     if "--source-root" in values or "--module-headers" in flags:
         raise ValueError("Source root and module headers require --source-file.")

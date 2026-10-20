@@ -30,6 +30,40 @@ class FileImportTests(unittest.TestCase):
         self.assertEqual(result.returncode == 0, success, result.stderr.decode("utf-8", errors="replace"))
         return json.loads(result.stdout) if success else result.stderr.decode("utf-8")
 
+    def test_dependency_parser_diagnostic(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/helper.inc"; qubit q;')
+        self.put("nested κ/helper.inc", '// comment\r\ngate bad a { x a }\r\n')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main)], success=False)
+            self.assertIn("nested κ/helper.inc:2:18:", message)
+            self.assertIn("Unexpected token", message)
+
+    def test_entry_suffix_parser_diagnostic(self):
+        text = 'OPENQASM 3; include "helper.inc"; qubit q x q;'
+        main = self.put("main.qasm", text)
+        self.put("helper.inc", "// several\n// inserted\n// lines\n")
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main)], success=False)
+            self.assertIn(f"main.qasm:1:{text.index('x q') + 1}:", message)
+
+    def test_dependency_semantic_diagnostic(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "helper.inc"; g q;')
+        self.put("helper.inc", "// original\nqubit q;\ngate g a { undefined_gate a; }\n")
+        for command in COMMANDS:
+            for mode in ([], ["--classical"]):
+                message = self.run_import(command, ["--source-file", str(main), *mode], success=False)
+                self.assertIn("helper.inc:3:", message)
+                self.assertIn("Unsupported / undeclared QASM operation", message)
+                self.assertNotIn("Error at line", message)
+
+    def test_module_header_ast_diagnostic(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "helper.inc";')
+        self.put("helper.inc", 'OPENQASM 3;\r\ninclude "stdgates.inc";\r\nif(true) { qubit q; }\r\n')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--module-headers"], success=False)
+            self.assertIn("helper.inc:3:12:", message)
+            self.assertIn("qubit declarations must be global", message)
+
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:
             module = (HERE / "fixtures/qb004" / (name + ".qasm")).read_text(encoding="utf-8")
