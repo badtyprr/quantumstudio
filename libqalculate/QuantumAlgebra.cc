@@ -308,11 +308,27 @@ bool unresolvedMatrixOperand(const MathStructure &value,unsigned depth=0) {
 }
 // Infer only shapes justified by explicit declarations or concrete matrices.
 // Different unknown dimensions are not assumed unequal.
+bool adjacentStateShapes(const MathStructure &ar,const MathStructure &ac,const MathStructure &br,const MathStructure &bc) {
+ return (ac.isOne() && bc.isOne()) || (ar.isOne() && br.isOne());
+}
 bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &columns,const EvaluationOptions &eo,unsigned depth=0) {
  if(depth>64)return false;
  if(value.isMatrix()) {rows.set(Number(static_cast<long>(value.rows())));columns.set(Number(static_cast<long>(value.columns())));return true;}
+ if(value.isVector() && value.size()>0) {
+  for(size_t i=0;i<value.size();++i)if(!value[i].representsScalar())return false;
+  rows=m_one;columns.set(Number(static_cast<long>(value.size())));return true;
+ }
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
+ if(name=="matrix") {
+  // Deferred tensors retain their original arguments, which may include a
+  // concrete constructor. Reuse its validation before trusting its shape.
+  MathStructure concrete=value;concrete.eval(eo);
+  if(!concrete.isMatrix())return false;
+  rows.set(Number(static_cast<long>(concrete.rows())));
+  columns.set(Number(static_cast<long>(concrete.columns())));return true;
+ }
+ if(name=="qbasis" && value.size()==2) {rows=value[1];columns=m_one;return true;}
  if(name=="qorthoket" && value.size()==3) {
   MathStructure labels;
   if(orthonormalList(value[2],labels) && orthonormalLabels(labels)) {rows.set(Number(static_cast<long>(labels.size())));columns=m_one;return true;}
@@ -328,9 +344,14 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  if(value.size()!=2)return false;
  MathStructure ar,ac,br,bc;
  bool left=matrixShape(value[0],ar,ac,eo,depth+1),right=matrixShape(value[1],br,bc,eo,depth+1);
+ if(left && right && (name=="qtensor" || (name=="qadjacent" && adjacentStateShapes(ar,ac,br,bc)))) {
+  rows=ar;rows*=br;columns=ac;columns*=bc;
+  EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+  rows.eval(exact);columns.eval(exact);return true;
+ }
  if((name=="qadd" || name=="qsub") && left && right && ar.equals(br) && ac.equals(bc)) {rows=ar;columns=ac;return true;}
  if(name=="qmul" || name=="qadjacent") {
-  if(name=="qmul" && left && right && ac.equals(br)) {
+  if(left && right && ac.equals(br)) {
    // Row-column contraction has scalar semantics in quantum multiplication.
    if(ar.isOne() && bc.isOne())return false;
    rows=ar;columns=bc;return true;
@@ -488,12 +509,15 @@ class QuantumAlgebraFunction: public MathFunction {
    out.set(CALCULATOR->getFunction("qmul"),&a,&bra,NULL);out.eval(eo);return 1;
   }
   // Reject provably incompatible symbolic shapes before numerical expansion.
-  if(op=="qadd" || op=="qsub" || op=="qmul" || op=="qtrace") {
+  if(op=="qadd" || op=="qsub" || op=="qmul" || op=="qadjacent" || op=="qtrace") {
    MathStructure ar,ac,br,bc;
    if(matrixShape(a,ar,ac,eo)) {
     bool mismatch=op=="qtrace" && unequalKnownDimensions(ar,ac);
-    if(op!="qtrace" && matrixShape(args[1],br,bc,eo))
-     mismatch=op=="qmul" ? unequalKnownDimensions(ac,br) : unequalKnownDimensions(ar,br) || unequalKnownDimensions(ac,bc);
+    if(op!="qtrace" && matrixShape(args[1],br,bc,eo)) {
+     if(op=="qmul" || op=="qadjacent")
+      mismatch=!(op=="qadjacent" && adjacentStateShapes(ar,ac,br,bc)) && unequalKnownDimensions(ac,br);
+     else mismatch=unequalKnownDimensions(ar,br) || unequalKnownDimensions(ac,bc);
+    }
     if(mismatch) {CALCULATOR->error(true,"Quantum operation has incompatible declared matrix dimensions.",NULL);return 0;}
    }
   }
