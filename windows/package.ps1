@@ -114,6 +114,10 @@ try {
     & (Join-Path $PSScriptRoot 'test-classical-expression-qasm.ps1') -CasesPath $expressionCases
     & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $expressionCases --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged typed OpenQASM expression tests failed.' }
+    $storageCases = Join-Path $repo ('dist/storage-qasm/' + [Guid]::NewGuid().ToString('N') + '/cases.json')
+    & (Join-Path $PSScriptRoot 'test-classical-storage-qasm.ps1') -CasesPath $storageCases
+    & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $storageCases --expected-cases 6 --worker (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM storage tests failed.' }
     & (Join-Path $PSScriptRoot 'test-keyboard.ps1') -Distribution $output
 } finally { $env:QALCULATE_DEFINITIONS_DIR = $oldDefinitions }
 $smoke = Join-Path $repo 'dist\package-smoke.png'

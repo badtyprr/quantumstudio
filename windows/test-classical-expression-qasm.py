@@ -8,9 +8,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--cases", type=Path, required=True)
 parser.add_argument("--compiler", type=Path, default=root/"dist/QuantumStudio/qasm-import/qasm-import.exe")
 parser.add_argument("--worker", type=Path)
+parser.add_argument("--expected-cases", type=int, default=39)
 args = parser.parse_args()
 cases = json.loads(args.cases.read_text(encoding="utf-8-sig"))
-assert len(cases) == 39 and len({r["name"] for r in cases}) == 39
+assert len(cases) == args.expected_cases and len({r["name"] for r in cases}) == args.expected_cases
 # Share the existing test protocol encoders without executing its independent suite.
 tree = ast.parse((root/"windows/test-qasm-classical-expressions.py").read_text(encoding="utf-8"))
 nodes = [n for n in tree.body if (isinstance(n, ast.FunctionDef) and n.name in ("n", "expression", "integer_expression", "steps"))

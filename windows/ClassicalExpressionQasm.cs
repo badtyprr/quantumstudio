@@ -11,10 +11,13 @@ using T=ClassicalIntegerType;
 sealed class ClassicalExpressionQasm {
  readonly int bits;
  readonly IList<T> variables;
- public ClassicalExpressionQasm(int registerBits,IList<T> variableTypes=null) {
+ readonly ClassicalQasmStorage storage;
+ public ClassicalExpressionQasm(int registerBits,IList<T> variableTypes=null,ClassicalQasmStorage mappedStorage=null) {
   if(registerBits<0 || registerBits>64)throw new ArgumentException("Use 0–64 classical bits.");
   if(variableTypes!=null && variableTypes.Count>4096)throw new ArgumentException("Too many integer variables.");
   bits=registerBits;
+  if(mappedStorage!=null && mappedStorage.BitCount!=registerBits)throw new ArgumentException("Export storage must match the expression register.");
+  storage=mappedStorage;
   variables=variableTypes==null ? new T[0] : new List<T>(variableTypes).ToArray();
  }
  static string Number(int value){return value.ToString(CultureInfo.InvariantCulture);}
@@ -38,7 +41,8 @@ sealed class ClassicalExpressionQasm {
   for(int i=0;i<width;i++)result[width-i]=(value&(1UL<<i))==0 ? '0' : '1';
   return new string(result);
  }
- static string Read(int[] indices) {
+ string Read(int[] indices) {
+  if(storage!=null)return storage.Read(indices);
   string[] values=Array.ConvertAll(indices,Number);
   // A discrete selection preserves ordering and repeated indices, including
   // the one-bit register type required by explicit integer casts.
@@ -65,12 +69,12 @@ sealed class ClassicalExpressionQasm {
   }
  }
  static string Binary(string left,string op,string right){return "("+left+" "+op+" "+right+")";}
- static string Compare(E value) {
+ string Compare(E value) {
   T common=T.Common(value.IntegerLeft.Type,value.IntegerRight.Type);
   return Binary(Cast(TypeName(common),IntegerNode(value.IntegerLeft)),BitOperator(value.Operation),
                 Cast(TypeName(common),IntegerNode(value.IntegerRight)));
  }
- static string BitNode(E value) {
+ string BitNode(E value) {
   switch(value.Kind) {
    case E.NodeKind.Constant:return Literal(value.Width,value.Value);
    case E.NodeKind.Read:return Read(value.Indices);
@@ -93,7 +97,7 @@ sealed class ClassicalExpressionQasm {
    default:throw new ArgumentException("Unsupported bit expression.");
   }
  }
- static string IntegerNode(I value) {
+ string IntegerNode(I value) {
   switch(value.Kind) {
    case I.NodeKind.Constant:return Cast(TypeName(value.Type),IntegerLiteral(value));
    case I.NodeKind.Read:return Cast(TypeName(value.Type),Read(value.Indices));

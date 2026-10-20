@@ -571,6 +571,20 @@ output ordering, and explicit handling of unsupported operations. Tests generate
 39 expressions for frozen-compiler validation; packaged tests also check their
 exact and sampled outcomes.
 
+`ClassicalQasmStorage` adds an optional logical-to-physical bit mapping for
+that serializer. Selected outputs occupy an explicit `output bit` register in
+the requested order; working bits occupy separate scratch storage without
+duplicating the bit bank. Assignments evaluate their complete right-hand side
+before changing any target. Six generated programs check overlapping writes,
+repeated reads, output order, and the 64-bit boundary in exact and sampled
+execution. This requires the explicit-output importer support.
+
+This component is not yet connected to whole-program export. A circuit with
+working bits but no selected outputs is explicitly rejected; empty storage is
+allowed. Expanded expressions remain subject to the importer's complexity
+limits. Control flow, integer lifetimes, and the editor export command remain
+unfinished.
+
 
 ### Native integer value groundwork
 
