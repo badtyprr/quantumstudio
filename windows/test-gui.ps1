@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+& (Join-Path $PSScriptRoot 'test-real-expression-text.ps1')
 $repo = Split-Path $PSScriptRoot -Parent
 & (Join-Path $PSScriptRoot 'build-gui.ps1')
 $validation = Join-Path $repo 'dist\gui-validation'
