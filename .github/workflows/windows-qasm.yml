@@ -43,6 +43,10 @@ jobs:
           & windows/build-qasm-import.ps1
           & windows/test-source-import-bridge.ps1
           & windows/build-gui.ps1
+          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-module-export.py
+          if ($LASTEXITCODE -ne 0) { throw 'Classical module export validation failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-export-ui.py
+          if ($LASTEXITCODE -ne 0) { throw 'Classical export GUI validation failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-composer-source-import.py
           if ($LASTEXITCODE -ne 0) { throw 'Composer source import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-source-files-ui.py
