@@ -82,8 +82,8 @@ JSON, and 256 KiB total captured source bytes, with 64 files/bindings. Invalid
 or unsavable replacements reject before returning a new object; the previous
 document remains intact. Future editor wiring must use this wrapper for
 save/load and history while keeping runtime circuit requests separate.
-Changed-file checks, source diagnostic mapping, numerical composer integration
-and standalone export verification remain unfinished.
+Changed-file checks, source diagnostic mapping and standalone export acceptance
+for both QB-004 generated subroutines remain unfinished.
 
 `ClassicalProgramHistory` now retains the source wrapper with each history
 entry. `ImportSource` validates a compiler envelope before creating an undo
@@ -102,15 +102,42 @@ Open accepts these documents and legacy circuit-only files. Neither opening nor
 saving reads the recorded source root. Sampling and exact evaluation continue
 to receive the current circuit only.
 
-The editor displays whether the circuit matches the imported snapshot or has
+The classical editor displays whether the circuit matches the imported snapshot or has
 been edited since import. Undo/redo includes source and import options, and
 the unsaved-changes check compares the complete saved document. The numerical
-composer's import route has not yet been migrated.
+composer also uses the source-bearing document model as described below.
 
 `windows/test-source-import-bridge.ps1` runs six checks against the frozen
 compiler through the C# bridge, including Unicode/spaced paths, BOM,
 local includes, the explicit module-header option, and unchanged history after
 rejected imports. Both OpenQASM CI and packaging run this small integration test.
+
+## Numerical circuit composer
+
+The composer's OpenQASM import menu uses the file-aware compiler route and offers
+an explicit **Allow generated module headers** option. Imported source and U
+convention remain attached through edits, save/open and undo/redo. Opening a
+legacy circuit detaches the current source; undo restores the previous document.
+State inspection, sampling and OpenQASM export use the current circuit.
+
+Saved documents are validated before replacing controls. If an edit would exceed
+the source-document save limit, the composer restores the previous snapshot and
+reports that the change was not applied. No undo step is created by that rejected
+edit. The source status distinguishes the original circuit from later edits.
+
+Seventeen source-preservation checks run with the 102 existing circuit-file
+checks, including wrong document kinds, source hash failures, legacy loading,
+source-bearing save/reopen, and an edit against a document one byte below the
+4 MiB limit. Packaged GUI validation and publication of this composer change
+remain separate release gates.
+
+`windows/test-composer-source-import.py` exercises the actual GUI with the frozen
+compiler for a strict local include and both unchanged QB-004 generated
+subroutines. It verifies original bytes/hashes, save/reopen and history, and
+recompiles standalone exports. Export comparison requires the explicit initial
+reset of each qubit followed by identical operations and wire order; it does not
+ignore arbitrary reset differences. OpenQASM CI and packaging run these three
+cases. This remains scoped circuit coverage, not a complete notebook audit.
 
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
