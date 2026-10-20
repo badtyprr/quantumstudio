@@ -174,7 +174,7 @@ Recommended order: implement classical-editor OpenQASM export in the DEV-16e del
 #### Classical-editor export delivery steps
 
 Keep DEV-16e unchecked until the complete editor workflow is released.
-REL-07 is published; integrate the reviewed follow-ups next. Each row below is P1;
+REL-07 is published; publish the merged prerequisites, then continue e.5. Each row below is P1;
 work in dependency order, keeping compiler support, serialization and GUI
 integration in separate scoped PRs.
 
@@ -183,13 +183,13 @@ integration in separate scoped PRs.
 | DEV-16e.1 | S | Merged [#318](https://github.com/badtyprr/quantumstudio/pull/318); not yet released | Accept unsigned typed shift counts without narrowing the count to the shifted register width; reject signed counts and width mismatches. Development validation: 1,332 source/frozen/worker checks. |
 | DEV-16e.2 | S | Merged [#319](https://github.com/badtyprr/quantumstudio/pull/319); not yet released | Serialize all existing typed bit/integer expression nodes with explicit width, signedness and promotion. Development validation: 39 generated expressions, 117 compiler/exact/sampled checks and four invalid-context checks. This is an internal component, not an export command. |
 | DEV-16e.3 | S | Merged [#320](https://github.com/badtyprr/quantumstudio/pull/320) and [#322](https://github.com/badtyprr/quantumstudio/pull/322); not yet released | Preserve explicit `output bit`/`output bit[n]` selection on import while retaining ordinary registers as working storage. Exclude local bit storage from program results, including empty outputs. Development validation: 1,404 source/frozen/worker checks. Runtime inputs and non-bit outputs remain separate gaps. |
-| DEV-16e.4 | M | Draft [#323](https://github.com/badtyprr/quantumstudio/pull/323); required CI pending | Map saved output indices to exported storage without changing ordering or adding final measurements. Twelve generated programs passed 36 compiler/exact/sampled checks, covering empty/subset/permuted outputs, overlapping assignments, all 64 storage bits, undefined reads and early `end`; 13 invalid contexts rejected. No duplicate bit bank or final output copy. |
+| DEV-16e.4 | M | Merged [#323](https://github.com/badtyprr/quantumstudio/pull/323); not yet released | Map saved output indices to exported storage without changing ordering or adding final measurements. Twelve generated programs passed 36 compiler/exact/sampled checks, covering empty/subset/permuted outputs, overlapping assignments, all 64 storage bits, undefined reads and early `end`; 13 invalid contexts rejected. No duplicate bit bank or final output copy. |
 | DEV-16e.5 | M | Not implemented; depends on e.4 | Emit declarations and program statements, preserving branch/loop behavior, variable lifetimes, simultaneous assignments and early termination. Cover undefined reads, clear operations, loop limits and transfers. Any unsupported matrix, noise or control semantics must produce a specific error before writing a file; never silently drop an operation. |
 | DEV-16e.6 | S | Not implemented; depends on e.5 | Add the classical editor's export action. Export the current edited circuit, retain its original source snapshot, preserve the file on validation/write failure, and expose unsupported-operation errors. Verify normal/minimum layouts and undo/save/reopen behavior. |
 | DEV-16e.7 | M | Not implemented; depends on e.6 | Import each unchanged QB-004 module, export from the classical editor, reimport with the frozen compiler, and compare independently expected exact and sampled outcomes. Use test preparations and observations that exercise the oracle and algorithm; equality of empty-output results cannot prove circuit equivalence. Include nested includes, spaces/Unicode, edits, failure recovery, selected outputs and early termination. Keep source/module acceptance distinct from whole-notebook execution. |
 | DEV-16e.8 | S | Not released; depends on e.7 | Merge reviewed exact heads after required CI, validate the merged Windows package and its captures, then publish the exact tested ZIP. Attach the release revision and artifact digest before completing DEV-16e. |
 
-PRs #318–#320 and #322 are merged; #323 awaits CI. All are **unreleased**.
+PRs #318–#320, #322 and #323 are merged after required CI. All are **unreleased**.
 Their component checks do not prove a released
 program exporter. The remaining rows are delivery requirements, not claims of
 implemented behavior.
@@ -198,7 +198,8 @@ Design evidence: [OpenQASM output declarations](https://openqasm.com/versions/3.
 select returned variables; [register concatenation and slicing](https://openqasm.com/versions/3.0/language/types.html#register-concatenation-and-slicing)
 refer to existing storage. The current importer still rejects classical aliases,
 and direct concatenation in an assignment failed the pinned parser probe.
-Choose and test a storage representation before committing to an export format.
+The storage component uses explicit outputs and local scratch blocks; retain
+those semantics when adding whole-program serialization.
 
 ### AUD-01
 
