@@ -8,6 +8,13 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('local-output-empty','if(true){bit[2] scratch;scratch="11";}',{'':'1'}),
+ ('local-output-global','bit result;if(true){bit[2] scratch;scratch="11";result=scratch[0];}',{'1':'1'}),
+ ('local-output-measurement','qubit q;h q;bit result;if(true){bit scratch=measure q;result=scratch;}',{'0':'1/2','1':'1/2'}),
+ ('local-output-wide','if(true){bit[64] scratch;scratch="1'+('0'*63)+'";}',{'':'1'}),
+ ('local-output-subroutine','def run(){bit[2] scratch;scratch="11";}run();',{'':'1'}),
+ ('local-output-nested','bit result;if(true){bit a="1";if(true){bit b="1";result=a & b;}}',{'1':'1'}),
+ ('local-output-explicit','output bit result;bit other="1";if(true){bit scratch="1";result=scratch;}',{'1':'1'}),
  ('explicit-output-selection','output bit[2] result;bit[3] c="100";result=c[{2,0}];',{'01':'1'}),
  ('explicit-output-many','output bit a;bit[2] scratch="11";output bit[2] b;a="1";b="10";',{'101':'1'}),
  ('explicit-output-measured','qubit q;h q;bit scratch=measure q;output bit result;result=~scratch;',{'0':'1/2','1':'1/2'}),
@@ -435,7 +442,7 @@ for name,body,expected in cases:
   sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
   assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
   checks+=1
- assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') or name=='local-output-subroutine' else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)

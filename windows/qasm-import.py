@@ -762,7 +762,12 @@ def lower_output_declarations(program, classical):
             declaration.span = node.span
             declaration.annotations = node.annotations
             program.statements[i] = declaration
-    return outputs
+    # Locals cease to exist when their scope exits. PyQASM can hoist their
+    # storage while unrolling, so capture the public interface before lowering.
+    return outputs or {
+        node.identifier.name for node in program.statements
+        if isinstance(node, ast.ClassicalDeclaration) and isinstance(node.type, ast.BitType)
+    }
 
 
 def convert(source, published_u=False, classical=False):
@@ -1263,7 +1268,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
         return result
     steps=lower(statements)
     visible_bits=[bit for name,(start,size) in classical.items()
-                  if name not in hidden_registers and (not output_registers or name in output_registers)
+                  if name not in hidden_registers and (output_registers is None or name in output_registers)
                   for bit in range(start,start+size)]
     result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(visible_bits)), 'Steps': steps}
     if declarations or version>=6:result['Variables']=declarations
