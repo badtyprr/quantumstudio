@@ -7,6 +7,7 @@ import json
 import math
 import sys
 import copy
+import struct
 from dataclasses import fields, is_dataclass
 
 import openqasm3.ast as ast
@@ -43,6 +44,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_assignment = QasmVisitor._visit_classical_assignment
     original_declaration = QasmVisitor._visit_classical_declaration
     original_function = QasmVisitor._visit_function_call
+    original_gate = QasmVisitor._visit_generic_gate_operation
     runtime_integer_names={node.identifier.name for node in nodes(module.original_program,True)
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
     def in_function(visitor):
@@ -96,6 +98,47 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return getattr(visitor, '_quantum_integer_names', set())
     def runtime(visitor,value):
         return any(isinstance(item,ast.Identifier) and (item.name in visitor._global_creg_size_map or item.name in integers(visitor)) for item in nodes(value))
+    def real_angle(visitor,value,depth=0):
+        if depth>=32:raise ValueError('Runtime angles exceed 32 levels.')
+        def integer():return {'Kind':'Integer','IntegerValue':normalize(visitor,value,typed=True)}
+        if not runtime(visitor,value):
+            result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
+            if type(result) is int:return integer()
+            if type(result) is not float or not math.isfinite(result):raise ValueError('Runtime angles require finite real values.')
+            return {'Kind':'Constant','ValueBits':str(struct.unpack('>Q',struct.pack('>d',result))[0])}
+        if isinstance(value,ast.Cast) and isinstance(value.type,ast.FloatType):
+            if value.type.size is not None and Qasm3ExprEvaluator.evaluate_expression(value.type.size)[0]!=64:
+                raise ValueError('Runtime real casts currently require float[64].')
+            result=real_angle(visitor,value.argument,depth+1)
+            result['_quantum_float']=True
+            return result
+        if isinstance(value,ast.BinaryExpression) and value.op.name in ('+','-','*','/'):
+            left=real_angle(visitor,value.lhs,depth+1);right=real_angle(visitor,value.rhs,depth+1)
+            if left['Kind']=='Integer' and right['Kind']=='Integer' and not left.get('_quantum_float') and not right.get('_quantum_float'):return integer()
+            return {'Kind':'Binary','Operator':{'+':'Add','-':'Subtract','*':'Multiply','/':'Divide'}[value.op.name],'Left':left,'Right':right}
+        if isinstance(value,ast.UnaryExpression) and value.op.name=='-':
+            operand=real_angle(visitor,value.expression,depth+1)
+            if operand['Kind']=='Integer' and not operand.get('_quantum_float'):return integer()
+            return {'Kind':'Binary','Operator':'Multiply','Left':{'Kind':'Constant','ValueBits':'13830554455654793216'},'Right':operand}
+        return integer()
+    def gate(visitor,operation,ctrls=None):
+        if not isinstance(operation,ast.QuantumGate) or not runtime(visitor,operation.arguments):
+            return original_gate(visitor,operation,ctrls)
+        if operation.name.name not in ('rx','ry','rz') or len(operation.arguments)!=1 or operation.modifiers or ctrls or in_function(visitor):
+            raise error_at(operation,'Runtime angles currently require unmodified rx, ry or rz outside subroutines.')
+        try:
+            angle=real_angle(visitor,operation.arguments[0])
+        except ValueError as error:
+            raise error_at(operation,str(error)) from error
+        proxy=copy.deepcopy(operation);proxy.arguments=[ast.FloatLiteral(0.0)]
+        expanded=original_gate(visitor,proxy,ctrls)
+        for item in expanded:
+            if not isinstance(item,ast.QuantumGate) or item.name.name!=operation.name.name or len(item.qubits)!=1:
+                raise error_at(operation,'Runtime rotation expansion changed its gate semantics.')
+            item._quantum_runtime_angle=copy.deepcopy(angle)
+            # Compiler expansion may discard spans; retain the user's gate location.
+            item.span=copy.deepcopy(operation.span)
+        return expanded
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
     def bitstring_boolean(value):
@@ -367,6 +410,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
+        QasmVisitor._visit_generic_gate_operation = gate
         QasmVisitor._visit_function_call = function_call
         QasmVisitor._construct_visit_map = visit_map
         QasmVisitor._visit_switch_statement = switch
@@ -379,6 +423,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     try:
         module.unroll(max_loop_iters=4096, external_gates=list(primitives))
     finally:
+        QasmVisitor._visit_generic_gate_operation = original_gate
         QasmVisitor._visit_forin_loop = original_for
         QasmVisitor._visit_phase_operation = original
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
@@ -802,8 +847,11 @@ def convert(source, published_u=False, classical=False):
             control=node.set_declaration if isinstance(node,ast.ForInLoop) else None
             if control is not None and runtime(control) and not getattr(node,'_quantum_runtime_for',False):
                 raise error_at(node, 'Runtime loops require control flow not yet supported by the circuit importer.')
-            if isinstance(node,ast.QuantumGate) and runtime(node.arguments) or isinstance(node,ast.QuantumPhase) and runtime(node.argument):
-                raise error_at(node, 'Runtime gate parameters are not yet supported by the circuit importer.')
+            if isinstance(node,ast.QuantumGate) and runtime(node.arguments):
+                if node.name.name not in ('rx','ry','rz') or node.modifiers:
+                    raise error_at(node, 'Runtime gate parameters currently support unmodified rx, ry and rz.')
+            if isinstance(node,ast.QuantumPhase) and runtime(node.argument):
+                raise error_at(node, 'Runtime global-phase parameters are not yet supported.')
             if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and runtime(node.arguments):
                 raise error_at(node, 'Runtime function arguments are not yet supported by the circuit importer.')
             targets=(node.qubits if isinstance(node,(ast.QuantumGate,ast.QuantumPhase,ast.QuantumReset,ast.QuantumBarrier)) else
@@ -1257,6 +1305,18 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.QuantumGate):
                 if statement.duration is not None:
                     raise ValueError('Timed gates are not supported.')
+                if hasattr(statement,'_quantum_runtime_angle'):
+                    def lower_angle(value):
+                        if value['Kind']=='Integer':return {'Kind':'Integer','IntegerValue':classical_expression(value['IntegerValue'],classical,None,variables,True)}
+                        if value['Kind']=='Constant':return {'Kind':'Constant','ValueBits':value['ValueBits']}
+                        return {'Kind':'Binary','Operator':value['Operator'],'Left':lower_angle(value['Left']),'Right':lower_angle(value['Right'])}
+                    version=max(version,11)
+                    try:
+                        angle=lower_angle(statement._quantum_runtime_angle)
+                    except ValueError as error:
+                        raise error_at(statement,str(error)) from error
+                    append({'Kind':'Rotation','Axis':statement.name.name[-1].upper(),'Angle':angle,'Wires':[reference(statement.qubits[0],quantum)]})
+                    continue
                 for step in gate_steps(statement, lambda q: reference(q, quantum), published_u):
                     name, angle = step['Gate'], step['Angle']
                     expression = '(exp(i*('+angle+'))*I)' if name == 'GPhase' else name+('('+angle+')' if angle else '')
