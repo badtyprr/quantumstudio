@@ -2,11 +2,13 @@
 from pathlib import Path
 import copy
 import importlib.util
+import logging
 import tempfile
 import unittest
 from pyqasm import ValidationError
 
 from qasm_source_bundle import capture_source, check_snapshot, SourceError, MAX_BYTES, MAX_DEPTH, MAX_FILES
+from qasm_source_diagnostics import compile_source
 
 
 class SourceBundleTests(unittest.TestCase):
@@ -91,6 +93,33 @@ class SourceBundleTests(unittest.TestCase):
                              (3, 0), (1, 4), (2, 4), (1000000000, 0)):
             with self.subTest(line=line, column=column), self.assertRaises(ValueError):
                 bundle.location(line, column)
+
+    def test_diagnostic_scope_restores_logger_and_preserves_options(self):
+        bundle = capture_source(self.put("main.qasm", "OPENQASM 3; qubit q;"))
+        logger = logging.getLogger("pyqasm")
+        filters, handlers, propagate = list(logger.filters), list(logger.handlers), logger.propagate
+        expected = object()
+        def success(source, **options):
+            self.assertEqual(source, bundle.expanded)
+            self.assertEqual(options, {"classical": True, "published_u": False})
+            return expected
+        self.assertIs(compile_source(bundle, success, classical=True, published_u=False), expected)
+        def failure(source, **options):
+            raise ValueError("A location-free adapter error.")
+        with self.assertRaisesRegex(SourceError, "^main.qasm: A location-free adapter error."):
+            compile_source(bundle, failure)
+        self.assertEqual(logger.filters, filters)
+        self.assertEqual(logger.handlers, handlers)
+        self.assertEqual(logger.propagate, propagate)
+        self.assertEqual(bundle.expanded, "OPENQASM 3; qubit q;")
+
+    def test_invalid_compiler_span_does_not_invent_location(self):
+        bundle = capture_source(self.put("main.qasm", "OPENQASM 3; qubit q;"))
+        def failure(source, **options):
+            logging.getLogger("pyqasm").error("Error at line 99, column 0 in QASM file")
+            raise ValueError("Missing usable source span.")
+        with self.assertRaisesRegex(SourceError, "^main.qasm: Missing usable source span."):
+            compile_source(bundle, failure)
 
     def test_nested_spaces_and_snapshot(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc";\ninclude "sub dir/gate.inc";\nqubit q; g q;')

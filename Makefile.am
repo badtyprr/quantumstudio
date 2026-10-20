@@ -55,6 +55,7 @@ EXTRA_DIST = config.rpath  \
 	windows/SamplingReadout.cs \
 	windows/CircuitFileTests.cs \
 	windows/ComposerSourceTests.cs \
+	windows/qasm_source_diagnostics.py \
 	windows/test-composer-source-import.py \
 	windows/test-source-files-ui.py \
 	windows/CssCircuitTests.cs \
