@@ -31,7 +31,9 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(targets&(1U<<wire))throw std::invalid_argument("Exact circuit wires must be distinct");
    targets|=1U<<wire;
   }
-  if(step.kind==Step::Kind::Map) {
+  if(step.kind==Step::Kind::Rotation) {
+   step.rotation->validate(bits,variables);
+  } else if(step.kind==Step::Kind::Map) {
    if(step.operation->dimension()!=(std::size_t(1)<<step.wires.size()))
     throw std::invalid_argument("Exact operation dimensions do not match its target wires");
   } else if(step.kind==Step::Kind::Measure) {
@@ -53,6 +55,25 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(step.whenFalse)validate(*step.whenFalse,qubits,bits,depth+1,loopDepth,count,variables);
   }
  }
+}
+TracePreservingMap runtimeRotation(const QuantumNumerics::RuntimeRotation &rotation,std::uint64_t record,
+ unsigned bits,const QuantumClassical::IntegerStorage &variables,const EvaluationOptions &exact) {
+ // QASM runtime arithmetic is binary64 in both backends. Preserve that value
+ // exactly as a dyadic rational, then use symbolic trigonometry. Rounding a
+ // numerical matrix and treating it as certified would violate trace preservation.
+ const double value=rotation.angle(record,bits,variables);
+ mpq_t rational;mpq_init(rational);mpq_set_d(rational,value);
+ std::string text;
+ try {
+  std::vector<char> buffer(mpz_sizeinbase(mpq_numref(rational),10)+mpz_sizeinbase(mpq_denref(rational),10)+4);
+  mpq_get_str(buffer.data(),10,rational);text=buffer.data();
+ } catch(...) {mpq_clear(rational);throw;}
+ mpq_clear(rational);
+ using Axis=QuantumNumerics::RuntimeRotation::Axis;
+ const char *name=rotation.axis()==Axis::X ? "Rx" : rotation.axis()==Axis::Y ? "Ry" : "Rz";
+ EvaluationOptions options=exact;options.approximation=APPROXIMATION_EXACT;
+ auto matrix=CALCULATOR->calculate(std::string("quantum:")+name+"("+text+")",options);
+ return TracePreservingMap({matrix},4,options);
 }
 MathStructure apply(const MathStructure &rho,const Step &step,const EvaluationOptions &exact) {
  if(step.operation->dimension()==1)return rho; // A complete scalar channel is identity on the state.
@@ -214,6 +235,9 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
      }
      output.add(outcome.first,record.variables,rho);
     }
+   } else if(step.kind==Step::Kind::Rotation) {
+    const auto map=runtimeRotation(*step.rotation,record.bits,bits,record.variables,exact);
+    output.add(record.bits,record.variables,apply(record.density,Step::map(map,step.wires),exact));
    } else if(step.kind==Step::Kind::Map) output.add(record.bits,record.variables,apply(record.density,step,exact));
    else {
     auto reset=CALCULATOR->getFunction("qreset");if(!reset)throw std::runtime_error("Exact reset is unavailable");

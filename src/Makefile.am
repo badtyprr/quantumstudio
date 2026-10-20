@@ -197,6 +197,11 @@ TESTS += quantum-runtime-rotation-test
 quantum_runtime_rotation_test_SOURCES = quantum-runtime-rotation-test.cc
 quantum_runtime_rotation_test_LDADD = $(test_LDADD)
 
+check_PROGRAMS += quantum-exact-runtime-rotation-test
+TESTS += quantum-exact-runtime-rotation-test
+quantum_exact_runtime_rotation_test_SOURCES = quantum-exact-runtime-rotation-test.cc
+quantum_exact_runtime_rotation_test_LDADD = $(test_LDADD)
+
 check_PROGRAMS += quantum-trajectory-range-test
 TESTS += quantum-trajectory-range-test
 quantum_trajectory_range_test_SOURCES = quantum-trajectory-range-test.cc
