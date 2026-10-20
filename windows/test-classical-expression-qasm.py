@@ -43,6 +43,7 @@ for case in cases:
                                 env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
         if case.get("runtime_error", False):
             assert result.returncode != 0 and result.stderr and not result.stdout, (case["name"], result.stdout, result.stderr)
+            assert b"Integer variable read before initialization" in result.stderr, (case["name"], result.stderr)
             checks += 1
             continue
         assert result.returncode == 0 and not result.stderr, (case["name"],result.stderr)
