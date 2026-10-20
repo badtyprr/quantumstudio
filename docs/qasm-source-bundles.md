@@ -178,3 +178,23 @@ Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environme
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
 UTF-8/BOM, missing/cyclic files, path boundaries and link retargeting, limits,
 snapshot stability, and equivalence to explicitly inlined gate definitions.
+
+## Original source coordinates
+
+OpenQASM's [include semantics](https://openqasm.com/versions/3.0/language/comments.html#included-files)
+insert dependency content at the include site. The expanded text therefore needs
+a source map before compiler locations can be shown as original filenames.
+`SourceBundle.location(line, column)` maps one-based lines and zero-based Unicode
+character columns to immutable `SourceLocation` values. It reads the captured
+fragments only, so later edits or missing files cannot change the mapping.
+
+Fragments retain their starting column as well as their line. This matters for
+code following an include on the same line. Nested and repeated includes,
+CRLF text, Unicode, BOM input and the explicit generated-module-header adapter
+retain their original coordinates. Inserted separator newlines point to the
+include directive with `synthetic=True`; invalid coordinates reject rather than
+being attributed to nearby code.
+
+This is the mapping prerequisite for DEV-16d. Compiler error routing still needs
+to consume it; this change alone does not improve the displayed error messages
+or complete source diagnostic coverage.

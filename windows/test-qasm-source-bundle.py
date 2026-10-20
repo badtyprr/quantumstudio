@@ -21,6 +21,77 @@ class SourceBundleTests(unittest.TestCase):
         path.write_text(text, encoding="utf-8", newline="")
         return path
 
+    def mapped_token(self, bundle, token, name, original, occurrence=0):
+        offset = -1
+        for _ in range(occurrence + 1):
+            offset = bundle.expanded.index(token, offset + 1)
+        line = bundle.expanded.count("\n", 0, offset) + 1
+        column = offset - bundle.expanded.rfind("\n", 0, offset) - 1
+        where = bundle.location(line, column)
+        original_offset = original.index(token)
+        self.assertEqual((where.name, where.line, where.column, where.synthetic),
+                         (name, original.count("\n", 0, original_offset) + 1,
+                          original_offset - original.rfind("\n", 0, original_offset) - 1, False))
+
+    def test_source_map_nested_inline_and_unicode(self):
+        main_text = 'OPENQASM 3; /* κ */ include "sub dir/g.inc"; qubit q;\nouter q;'
+        child_text = '// α\r\ninclude "../h.inc"; gate outer a { inner a; }'
+        helper_text = '// β\r\ngate inner b { x b; }'
+        main = self.put("main κ.qasm", main_text)
+        self.put("sub dir/g.inc", child_text)
+        helper = self.put("h.inc", helper_text)
+        bundle = capture_source(main)
+        self.mapped_token(bundle, "qubit q", "main κ.qasm", main_text)
+        self.mapped_token(bundle, "outer q", "main κ.qasm", main_text)
+        self.mapped_token(bundle, "gate outer", "sub dir/g.inc", child_text)
+        self.mapped_token(bundle, "x b", "h.inc", helper_text)
+        helper.unlink()
+        self.mapped_token(bundle, "x b", "h.inc", helper_text)
+
+    def test_source_map_repeated_include_and_separators(self):
+        text = 'include "g.inc"; include "g.inc";'
+        main = self.put("main.qasm", text)
+        source = "gate g q { x q; }"
+        self.put("g.inc", source)
+        bundle = capture_source(main)
+        for occurrence in (0, 1):
+            self.mapped_token(bundle, "x q", "g.inc", source, occurrence)
+        self.assertEqual(bundle.location(1, 0).name, "main.qasm")
+        self.assertTrue(bundle.location(1, 0).synthetic)
+        # The separator after the first dependency belongs to that include.
+        where = bundle.location(2, len(source))
+        self.assertEqual((where.name, where.line, where.column, where.synthetic),
+                         ("main.qasm", 1, 0, True))
+
+    def test_source_map_adapted_headers_and_standard_includes(self):
+        main_text = 'OPENQASM 3; include "stdgates.inc"; include "g.inc"; qubit q; g q;'
+        child_text = 'OPENQASM 3;\r\ninclude "stdgates.inc"; gate g a { x a; }'
+        main = self.put("main.qasm", main_text)
+        self.put("g.inc", child_text)
+        bundle = capture_source(main, module_headers=True)
+        self.mapped_token(bundle, "gate g", "g.inc", child_text)
+        self.mapped_token(bundle, "x a", "g.inc", child_text)
+        self.mapped_token(bundle, "qubit q", "main.qasm", main_text)
+        self.assertEqual(bundle.expanded.count('include "stdgates.inc";'), 1)
+
+    def test_source_map_empty_and_eof(self):
+        main = self.put("main.qasm", "")
+        bundle = capture_source(main)
+        self.assertEqual((bundle.location(1, 0).line, bundle.location(1, 0).column), (1, 0))
+        main.write_bytes(b"\xef\xbb\xbf// Unicode \xce\xba\r\n")
+        bundle = capture_source(main)
+        where = bundle.location(2, 0)
+        self.assertEqual((where.name, where.line, where.column, where.synthetic),
+                         ("main.qasm", 2, 0, False))
+        self.assertTrue(bundle.files[0].bom)
+
+    def test_source_map_rejects_invalid_coordinates(self):
+        bundle = capture_source(self.put("main.qasm", "//a\n//b"))
+        for line, column in ((0, 0), (1, -1), (True, 0), (1, False), (1.0, 0),
+                             (3, 0), (1, 4), (2, 4), (1000000000, 0)):
+            with self.subTest(line=line, column=column), self.assertRaises(ValueError):
+                bundle.location(line, column)
+
     def test_nested_spaces_and_snapshot(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc";\ninclude "sub dir/gate.inc";\nqubit q; g q;')
         self.put("sub dir/gate.inc", 'include "../helper.inc"; gate g q { h q; }')
