@@ -604,8 +604,12 @@ Use **Export OpenQASM…** in the classical circuit editor to export the current
 edited program. The bundled compiler validates it before the save dialog opens.
 If validation fails, the destination stays untouched; if the circuit changes during
 validation, export again. Export preserves the original imported source, undo
-history, and unsaved-change marker. The resulting `.qasm` is standalone. Broader
-qBraid module export/reimport equivalence checks remain unfinished.
+history, and unsaved-change marker. The resulting `.qasm` is standalone. A focused qBraid module test imports unchanged `oracle.qasm` and `bernvaz.qasm`
+through nested includes, exports original and edited circuits through the editor,
+and recompiles the standalone results. Four oracle basis preparations distinguish
+its controls; Bernstein–Vazirani observes its secret, and another case checks
+early termination. Twelve exports have independently expected exact and sampled
+outputs. This covers those module probes, not complete notebook execution.
 
 ### Native integer value groundwork
 
