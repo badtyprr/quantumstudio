@@ -12,6 +12,7 @@ class Bits;
 // Register declarations/initialization and protocol decoding belong to callers.
 class IntegerExpression {
  friend class Bits;
+ friend class RealExpression;
  unsigned depth() const;
  unsigned count() const;
  std::uint64_t references() const;
