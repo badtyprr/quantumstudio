@@ -223,8 +223,26 @@ Kets and bras also support repetition, and Copy preserves their constraints.
 Numerical counts must be integers from zero through ten; a scalar cannot be
 used as the matrix operand, even for zero repetitions. An unresolved basis
 index remains subject to its basis bounds after the repetition count is
-supplied. This does not expand variable-length indexed ellipses or infer
-general equations between symbolic register widths.
+supplied. General equations between symbolic register widths are not inferred.
+
+Variable-length indexed qubit registers accept `|x_(n-1) ... x_0>` and
+`<x_(n-1) ... x_0|`. Unicode `⋯` or `…` can replace the three dots; pasted
+TeX such as `\vert x_{n-1}\cdots x_1 x_0\rangle` also works. The family
+retains its descending, inclusive index bounds until they are supplied.
+For example, `replace(replace(replace(|x_(n-1) ... x_0>,x_0,1),x_1,0),n,2)`
+gives `|01>`. Supplying the width before the bits gives the same result.
+Copy preserves both unresolved bounds and previously supplied bit values.
+
+All indexed bits in one family must share a name. Explicit trailing indices,
+such as `x_1 x_0`, must be consecutive descending integers; every explicitly
+written bit must exist after the bounds resolve. Thus substituting `n=1`
+into `|x_(n-1) ... x_1 x_0>` rejects instead of discarding `x_1`.
+The display marks unresolved explicit-bit constraints as `x_1 present` and
+supplied values as, for example, `x_0 = 1`.
+Indices must resolve to integers from zero through 1,000,000, with a concrete
+register length of one through ten qubits. Every bit must resolve to zero or
+one. This implements descending indexed qubit families, not arbitrary
+ellipsis patterns or symbolic equations between different register widths.
 
 Cardinality bars around an explicit finite set, such as `|\{0,1,1\}|` or `\lvert\{0,1,1\}\rvert`, give `2`. Empty sets count as zero. Ranges and filtering comprehensions also work: `|\{k\in\{0,\ldots,7\}:k>3\}|` gives `4`. Use `cardinality(S)` for a named finite flat scalar collection.
 

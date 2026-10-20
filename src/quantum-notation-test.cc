@@ -24,6 +24,15 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ for(const std::string &input:{"|x_(n-1) ... x_0>","|x_(n-1) ⋯ x_0>","|x_(n-1) … x_0>"})
+  equal(input,translateQuantum("qregisterfamily(\"x_\",n-1,0,vector())"));
+ equal("|x_{n-1} ... x_1 x_0>",translateQuantum("qregisterfamily(\"x_\",n-1,0,vector(1,x_1))"));
+ for(const std::string &input:{R"(\vert x_{n-1}\cdots x_1 x_0\rangle)",R"(\ket{x_{n-1}\ldots x_1 x_0})",R"(|x_{n-1}\dots x_1 x_0>)"})
+  equal(input,translateQuantum("|x_(n-1) ... x_1 x_0>"));
+ equal(R"(\bra{x_{n-1}\cdots x_0})",translateQuantum("<x_(n-1) ... x_0|"));
+ rejects(R"(x_3\cdots x_0)");
+ equal("<x_(n-1) ... x_0|",translateQuantum("qdag(qregisterfamily(\"x_\",n-1,0,vector()))"));
+ for(const std::string &input:{"|x_3 ... y_0>","|x_3 ... x_2 x_0>","|x_3 ...>","|... x_0>","|x_3 ... x_1 ... x_0>","|x_3 ... x_0>_2"})rejects(input);
  equal("|GHZ>","(matrix(8,1,[1,0,0,0,0,0,0,1])/sqrt(2))");
  equal("<GHZ|","qdag((matrix(8,1,[1,0,0,0,0,0,0,1])/sqrt(2)))");
  equal("2^Tr(A)","qpower(2,qtrace(A))");

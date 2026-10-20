@@ -23,6 +23,36 @@ QuantumBitLabelState validateQuantumBitLabel(MathStructure &index,MathStructure 
 }
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
+// A register family retains bit assignments made before its width is known.
+// The flat binding list contains alternating numeric indices and bit values.
+// Numeric keys cannot be accidentally replaced along with a symbolic bit.
+bool registerBitIndex(const MathStructure &label,const std::string &prefix,long &index) {
+ if(!label.isSymbolic() || label.symbol().compare(0,prefix.size(),prefix)!=0)return false;
+ std::string suffix=label.symbol().substr(prefix.size());
+ if(suffix.empty() || suffix.size()>7)return false;
+ index=0;for(char c:suffix) {if(c<'0' || c>'9')return false;index=index*10+c-'0';}
+ return index<=1000000 && suffix==std::to_string(index);
+}
+bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathStructure &bit) {
+ bool changed=false;
+ if(value.isFunction() && value.function()->referenceName()=="qregisterfamily" && value.size()==4 && value[0].isSymbolic()) {
+  long index;
+  if(registerBitIndex(label,value[0].symbol(),index) && value[3].isVector() && value[3].size()%2==0) {
+   // Do not claim an unrelated label when concrete bounds already exclude it.
+   if(value[1].isNumber() && value[2].isNumber() &&
+      (Number(index)>value[1].number() || Number(index)<value[2].number()))return false;
+   for(size_t k=0;k<value[3].size();k+=2)if(value[3][k].isNumber() && value[3][k].number()==Number(index)) {
+    // This label was already substituted. Later replacements act only on
+    // free occurrences in its stored value, not on this metadata key.
+    return false;
+   }
+   if(value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
+   value[3].addChild(MathStructure(Number(index)));value[3].addChild(bit);value.childrenUpdated();return true;
+  }
+ }
+ for(size_t k=0;k<value.size();++k)changed=bindRegisterBit(value[k],label,bit) || changed;
+ if(changed)value.childrenUpdated();return changed;
+}
 // These operations bind an index in their first argument only.
 int quantumBinderPosition(const MathStructure &value) {
  int bound=-1;
@@ -111,10 +141,58 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient")setArgumentDefinition(1,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qregisterfamily") {
+   if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"A register family requires an indexed name prefix.",NULL);return 0;}
+   const std::string prefix=raw[0].symbol();
+   bool valid=prefix.size()>1 && prefix.size()<=128 && prefix.back()=='_' && !std::isdigit((unsigned char)prefix.front());
+   for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
+   if(!valid || !raw[3].isVector() || raw[3].size()%2 || raw[3].size()>256) {
+    CALCULATOR->error(true,"Invalid register family prefix or bit assignments.",NULL);return 0;
+   }
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure first=raw[1],last=raw[2],bindings=raw[3];first.eval(exact);last.eval(exact);
+   bool deferred=false;
+   for(const auto *bound:{&first,&last}) {
+    if(!bound->isNumber() && bound->representsScalar() && bound->containsUnknowns()) {deferred=true;continue;}
+    if(!bound->isNumber() || !bound->number().isInteger() || bound->number()<0 || bound->number()>1000000) {
+     CALCULATOR->error(true,"Register indices require integers from 0 to 1000000.",NULL);return 0;
+    }
+   }
+   for(size_t k=0;k<bindings.size();k+=2) {
+    if(!bindings[k].isNumber() || !bindings[k].number().isInteger() || bindings[k].number()<0 || bindings[k].number()>1000000) {CALCULATOR->error(true,"Invalid register bit index.",NULL);return 0;}
+    long index=bindings[k].number().intValue();
+    for(size_t j=0;j<k;j+=2)if(bindings[j].equals(bindings[k])) {CALCULATOR->error(true,"Duplicate register bit assignment.",NULL);return 0;}
+    bindings[k+1].eval(exact);const MathStructure &bit=bindings[k+1];
+    if(!(bit.isNumber() && (bit.isZero() || bit.isOne())) &&
+       !(!bit.isNumber() && bit.representsScalar() && bit.containsUnknowns())) {
+     CALCULATOR->error(true,"Register bits must be zero or one.",NULL);return 0;
+    }
+    if(!deferred && (Number(index)>first.number() || Number(index)<last.number())) {
+     CALCULATOR->error(true,"Supplied bit lies outside the register bounds.",NULL);return 0;
+    }
+   }
+   if(deferred) {
+    if(!first.equals(raw[1]) || !last.equals(raw[2]) || !bindings.equals(raw[3])) {
+     out.set(this,&raw[0],&first,&last,NULL);out.addChild(bindings);return 1;
+    }
+    return 0;
+   }
+   Number span=first.number();span-=last.number();
+   if(span<0 || span>9) {CALCULATOR->error(true,"A descending register family requires 1 to 10 bits.",NULL);return 0;}
+   bool initial=true;
+   for(long index=first.number().intValue();index>=last.number().intValue();--index) {
+    MathStructure bit(prefix+std::to_string(index),true),dimension(2);
+    for(size_t k=0;k<bindings.size();k+=2)if(bindings[k].number()==Number(index)) {bit=bindings[k+1];break;}
+    MathStructure factor(CALCULATOR->getFunction("qbasis"),&bit,&dimension,NULL);
+    if(initial) {out=factor;initial=false;}
+    else {MathStructure previous=out;out.set(CALCULATOR->getFunction("qtensor"),&previous,&factor,NULL);}
+   }
+   out.eval(eo);return 1;
+  }
   if(op=="qindexedket") {
    MathStructure label=raw[0];label.eval(eo);
    if(!label.isSymbolic())return 0;
@@ -138,7 +216,11 @@ class QuantumIndexedFunction: public MathFunction {
    }
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;
-    if(out.replace(at->first,at->second,false,false,at->first.containsUnknowns()))continue;
+    // Replace existing occurrences before storing a new assignment: otherwise
+    // x_0 -> x_0+1 would be applied twice inside the newly stored value.
+    bool replaced=out.replace(at->first,at->second,false,false,at->first.containsUnknowns());
+    bool bound=bindRegisterBit(out,at->first,at->second);
+    if(replaced || bound)continue;
     // Indexed labels may not exist until a finite sum has been expanded.
     out.eval(eo);
     if(!out.replace(at->first,at->second,false,false,at->first.containsUnknowns()))CALCULATOR->error(false,"Original value was not found during quantum substitution.",NULL);
@@ -496,6 +578,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
+ calculator.addFunction(new QuantumIndexedFunction("qregisterfamily",4));
  calculator.addFunction(new QuantumIndexedFunction("qreplace",3));
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));

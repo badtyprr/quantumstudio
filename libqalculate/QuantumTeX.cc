@@ -190,7 +190,7 @@ class TeXReader {
   if(required && order.empty())throw std::runtime_error(error("Matrix norms require an explicit norm convention"));
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
- std::string command(bool matrix, int &norms, bool cases=false) {
+ std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
@@ -303,6 +303,7 @@ class TeXReader {
   if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
   if(name=="mid" && setExpressions)return ":";
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
+  if((stateLabel || registerLabel) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="overline") {
    if(stateLabel)throw std::runtime_error(error("Use conj around the whole ket or bra to conjugate a state"));
@@ -521,7 +522,12 @@ class TeXReader {
     if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
    }
    else if(input[pos]=='\\') {
-    std::string part=command(matrix,norms,environment=="cases");
+    // Delimiter-form kets (\\vert ... \\rangle) do not enter stateGroup.
+    // Keep ellipses contextual; the notation parser validates their bounds.
+    size_t delimiter=result.find_last_of("|<>");
+    bool registerLabel=delimiter!=std::string::npos && result[delimiter]!='>' &&
+     result.find('_',delimiter+1)!=std::string::npos;
+    std::string part=command(matrix,norms,environment=="cases",registerLabel);
     if(environment=="cases" && part==";")finishCase();
     else if(alignment && part==";")finishAlignment();else result+=part;
    }
