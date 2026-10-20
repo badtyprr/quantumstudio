@@ -706,6 +706,11 @@ computed assignments and casts of measurement-dependent values. Cast widths
 must be compile-time constants. Entirely static expressions still use the
 pinned PyQASM constant evaluator.
 
+OpenQASM import accepts `bit[1](c == "1")` and other Boolean-to-bit casts,
+including negation, logical combinations and typed integer comparisons.
+False and true become zero and one; a Boolean cannot be cast to a wider bit
+vector. This follows the [OpenQASM 3.0 Boolean casting rule](https://openqasm.com/versions/3.0/language/types.html#casting-from-bool).
+
 The classical editor and OpenQASM importer also accept `bool(...)` on bit and
 integer expressions. Zero becomes false and any nonzero value, including a
 negative integer, becomes true. For example, `bool(c)` tests a whole register,

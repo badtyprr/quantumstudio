@@ -893,6 +893,10 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
                 '==':'Equal','!=':'NotEqual','<':'Less','<=':'LessEqual','>':'Greater','>=':'GreaterEqual',
                 '&&':'And','||':'Or'}
     comparisons={'==','!=','<','<=','>','>='}
+    def boolean_value(node):
+        return (isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType) or
+                isinstance(node,ast.BinaryExpression) and node.op.name in comparisons|{'&&','||'} or
+                isinstance(node,ast.UnaryExpression) and node.op.name=='!')
     def width(node):
         if isinstance(node,ast.Identifier) and node.name in variables:
             raise ValueError("Convert integer variables explicitly with bool(...) or bit[n](...) before using them as bits.")
@@ -943,9 +947,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             size=node.type.size.value;storage=size or 64
             if type(size) is not int or not 0<=size<=64:raise ValueError('Invalid integer cast width.')
             sign='Signed' if isinstance(node.type,ast.IntType) else 'Unsigned'
-            boolean=(isinstance(node.argument,ast.Cast) and isinstance(node.argument.type,ast.BoolType) or
-                     isinstance(node.argument,ast.BinaryExpression) and node.argument.op.name in comparisons|{'&&','||'} or
-                     isinstance(node.argument,ast.UnaryExpression) and node.argument.op.name=='!')
+            boolean=boolean_value(node.argument)
             if boolean:
                 # Booleans convert numerically (true -> +1), unlike bit-vector
                 # reinterpretation. Count the intermediate unsigned one-bit node.
@@ -987,7 +989,15 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
                 raise ValueError('Convert bit expressions explicitly with bool(...) before Boolean assignment.')
             return {'Kind':'Binary','Operator':'NotEqual','Left':child,'Right':{'Kind':'Constant','Width':size,'Value':'0'}},1
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BitType):
-            size=node.type.size.value;child=integer(node.argument,depth+1)
+            size=node.type.size.value
+            if boolean_value(node.argument) or isinstance(node.argument,ast.BooleanLiteral):
+                # OpenQASM permits bool -> bit[1], preserving false/true as 0/1.
+                # The runtime already stores predicates as one-bit expressions.
+                if type(size) is not int or size!=1:raise ValueError('Boolean-to-bit casts require one bit.')
+                child,width_=build(node.argument,None,depth+1)
+                if width_!=1:raise ValueError('Boolean values require one bit.')
+                return child,1
+            child=integer(node.argument,depth+1)
             if type(size) is not int or not 1<=size<=64 or child.get('Width')!=size:raise ValueError('Integer-to-bit casts require equal explicit widths.')
             return {'Kind':'IntegerBits','Left':child},size
         if isinstance(node,ast.BinaryExpression) and node.op.name in comparisons and (integer_value(node.lhs) or integer_value(node.rhs)):

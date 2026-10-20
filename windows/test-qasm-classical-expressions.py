@@ -8,6 +8,10 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('boolean-bitcast-measured','qubit q;h q;bit c=measure q;bit d;d=bit[1](c=="1");',{'00':'1/2','11':'1/2'}),
+ ('boolean-bitcast-negated','qubit q;h q;bit c=measure q;bit d;d=bit[1](!(c=="1"));',{'01':'1/2','10':'1/2'}),
+ ('computed-boolean-bitcast-integer','qubit q;h q;bit c=measure q;bit d;d=bit[1](int[1](c)<0);',{'00':'1/2','11':'1/2'}),
+ ('computed-boolean-bitcast-logical','qubit q;h q;bit c=measure q;bit d;d=bit[1]((c=="1") || (int[1](c)==0));',{'10':'1/2','11':'1/2'}),
  ('subroutine-local-bool','def f(qubit a){bool b=true;if(b){x a;}}qubit q;f(q);bit c=measure q;',{'1':'1'}),
  ('subroutine-local-repeat','def f(qubit a){int n=1;n+=1;if(n==2){x a;}}qubit q;f(q);f(q);bit c=measure q;',{'0':'1'}),
  ('subroutine-local-shadow','int n=3;def f(qubit a){int n=1;if(n==1){x a;}}qubit q;f(q);bit c=measure q;bit d=n==3;',{'11':'1'}),
@@ -287,6 +291,8 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
           'qubit q; bit[2] c; let d=c; d=1;',
           'qubit q; bit c; c+=1;', 'qubit q; bit[2] c; if(c>4) x q;']
 rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
+rejected += ['qubit q;bit c=measure q;bit[2] d;d=bit[2](c=="1");',
+             'qubit q;bit c=measure q;bit[2] d;d=bit[2](!(c=="1"));']
 rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
              'int a=1; qubit[2] q; x q[a];','int a=1; qubit q; rx(a) q;',
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
