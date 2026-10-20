@@ -22,6 +22,7 @@ sealed class ClassicalProgramWindow : Window {
  readonly TextBox rangeStart=new TextBox {Text="0"},rangeStop=new TextBox {Text="3"},rangeStep=new TextBox {Text="1"};
  readonly TextBox expression=new TextBox {Text="H"},wires=new TextBox {Text="0"},destination=new TextBox {Text="0"},mask=new TextBox {Text="1"},value=new TextBox {Text="1"};
  readonly TextBlock status=new TextBlock {TextWrapping=TextWrapping.Wrap};
+ readonly TextBlock sourceStatus=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,4,0,4)};
  readonly Button undo=new Button {Content="Undo"},redo=new Button {Content="Redo"};
  string saved;
  bool verifying;
@@ -29,7 +30,7 @@ sealed class ClassicalProgramWindow : Window {
   Owner=owner;Resources=owner.Resources;Title="Classical circuit editor";Width=980;Height=920;MinWidth=720;MinHeight=550;
   Background=WorkspaceTheme.Background;Foreground=WorkspaceTheme.Text;FontFamily=new FontFamily("Segoe UI");WindowStartupLocation=WindowStartupLocation.CenterOwner;
   history=new ClassicalProgramHistory(ClassicalCircuit.From(new ClassicalCircuit.Document {Version=2,Qubits=1,Registers=new[]{new ClassicalCircuit.Register {Name="c",Size=1}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]}));
-  saved=history.Current.Serialize();Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e) {if(!Discard())e.Cancel=true;};
+  saved=history.Serialize();Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e) {if(!Discard())e.Cancel=true;};
   var root=new DockPanel {Margin=new Thickness(20)};Content=new ScrollViewer {Content=root,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
   tree.Height=140;SizeChanged+=delegate {tree.Height=Math.Max(140,ActualHeight-760);};
   var top=new StackPanel();DockPanel.SetDock(top,Dock.Top);root.Children.Add(top);
@@ -39,7 +40,9 @@ sealed class ClassicalProgramWindow : Window {
   Button(commands,"Open…",Open);Button(commands,"Save…",Save);Button(commands,"Sample…",()=>new SamplingWindow(this,history.Current).Show());
   Button(commands,"Exact probabilities…",()=>new ExactCircuitWindow(this,history.Current).Show());
   var convention=new ComboBox {Width=180,VerticalAlignment=VerticalAlignment.Center};convention.Items.Add("IBM / Qiskit U");convention.Items.Add("Published OpenQASM 3 U");convention.SelectedIndex=0;commands.Children.Add(convention);System.Windows.Automation.AutomationProperties.SetName(convention,"Imported U gate convention");
-  Button(commands,"Import OpenQASM…",()=>{var picker=new Microsoft.Win32.OpenFileDialog {Filter="OpenQASM (*.qasm)|*.qasm|All files (*.*)|*.*"};if(picker.ShowDialog(this)==true)Import(picker.FileName,convention.SelectedIndex==1);});
+  var moduleHeaders=new CheckBox {Content="Generated module headers",VerticalAlignment=VerticalAlignment.Center,ToolTip="Allow matching version headers and repeated standard-library includes in generated modules."};commands.Children.Add(moduleHeaders);
+  Button(commands,"Import OpenQASM…",()=>{var picker=new Microsoft.Win32.OpenFileDialog {Filter="OpenQASM (*.qasm)|*.qasm|All files (*.*)|*.*"};if(picker.ShowDialog(this)==true)Import(picker.FileName,convention.SelectedIndex==1,moduleHeaders.IsChecked==true);});
+  top.Children.Add(sourceStatus);
   commands.Children.Add(undo);commands.Children.Add(redo);undo.Click+=delegate {history.Undo();Refresh();};redo.Click+=delegate {history.Redo();Refresh();};
   var settings=new WrapPanel();top.Children.Add(settings);Field(settings,"Qubits",qubits,65);Field(settings,"Registers · name:size, …",registers,260);Field(settings,"Output bit indices · left to right",outputs,200);
   Button(settings,"Apply registers",()=>history.Edit(d=>{d.Qubits=Int(qubits.Text);d.Registers=ParseRegisters(registers.Text);d.OutputBits=Indices(outputs.Text);}));
@@ -137,6 +140,7 @@ sealed class ClassicalProgramWindow : Window {
  }
  void Delete() {var selected=Selected();if(selected.Index<0)throw new ArgumentException("Select an operation to delete.");history.Edit(d=>{var list=Body(d,selected.Route).ToList();list.RemoveAt(selected.Index);ReplaceBody(d,selected.Route,list.ToArray());});}
  void Refresh() {
+  sourceStatus.Text=history.Source==null ? "" : "Original OpenQASM source retained · "+(history.Source.CircuitEdited ? "Circuit edited since import" : "Circuit matches imported snapshot")+" · "+(history.Source.PublishedU ? "Published OpenQASM 3 U" : "IBM / Qiskit U");
   var doc=history.Current.Snapshot();qubits.Text=doc.Qubits.ToString(CultureInfo.InvariantCulture);registers.Text=String.Join(", ",doc.Registers.Select(r=>r.Name+":"+r.Size.ToString(CultureInfo.InvariantCulture)));outputs.Text=String.Join(",",doc.OutputBits);
   loopLimit.Text=(doc.LoopConditionBudget ?? 1000000).ToString(CultureInfo.InvariantCulture);
   variables.Text=String.Join(", ",(doc.Variables ?? new ClassicalCircuit.Variable[0]).Select(v=>v.Name+":"+(v.Signedness=="Unsigned" ? "uint" : "int")+(v.Width==0 ? "" : "["+v.Width.ToString(CultureInfo.InvariantCulture)+"]")));
@@ -149,18 +153,28 @@ sealed class ClassicalProgramWindow : Window {
    if(IsBranch(step.Kind)) {child.Items.Add(BodyNode(IsLoop(step.Kind) ? "Loop body" : "Then",step.WhenTrue,route.Concat(new[]{i,0}).ToArray(),context));if(!IsLoop(step.Kind))child.Items.Add(BodyNode("Else",step.WhenFalse,route.Concat(new[]{i,1}).ToArray(),context));}
   }return node;
  }
- bool Discard() {return verifying || history.Current.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
- void Import(string path,bool published) {var next=ClassicalCircuit.Load(QasmImport.Compile(path,published,true)).Snapshot();history.Edit(d=>{d.Version=next.Version;d.LoopConditionBudget=next.LoopConditionBudget;d.Qubits=next.Qubits;d.Registers=next.Registers;d.Variables=next.Variables;d.OutputBits=next.OutputBits;d.Steps=next.Steps;});}
+ bool Discard() {return verifying || history.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
+ void Import(string path,bool published,bool moduleHeaders=false) {history.ImportSource(QasmImport.CompileSource(path,published,true,moduleHeaders),published);}
  public void VerifyImport(string path,string report) {
   verifying=true;
   // Import replaces all metadata and undo restores even a loop-bearing document.
   history.Edit(d=>{d.Version=7;d.Variables=new ClassicalCircuit.Variable[0];d.LoopConditionBudget=3;d.Steps=new[]{new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"},WhenTrue=new ClassicalCircuit.Step[0]}};});
   string before=history.Current.Serialize();Import(path,false);string imported=history.Current.Serialize();
+  if(history.Source==null || history.Source.CircuitEdited)throw new Exception("Import lost original source.");
+  string originalSource=history.Source.SourceJson,full=history.Serialize();
   history.Undo();if(history.Current.Serialize()!=before)throw new Exception("Import undo lost the previous circuit.");history.Redo();if(history.Current.Serialize()!=imported)throw new Exception("Import redo lost classical circuit data.");
+  if(history.Serialize()!=full)throw new Exception("Import redo lost source metadata.");
+  SaveTo(report+".source.qcircuit");
+  history.Open(File.ReadAllText(report+".source.qcircuit",new UTF8Encoding(false,true)));
+  if(history.Serialize()!=full || saved!=full)throw new Exception("Source document save/reopen changed data.");
+  history.Edit(d=>d.Steps=new ClassicalCircuit.Step[0]);
+  if(history.Current.Serialize()!=imported && (!history.Source.CircuitEdited || history.Source.SourceJson!=originalSource))throw new Exception("Circuit edit lost source identity.");
+  history.Open(full);
   File.WriteAllText(report+".qcircuit",imported);Refresh();status.Text="Imported · Classical registers, saved measurements and branches preserved.";Capture(report+".png");
  }
- void Open() {var picker=new Microsoft.Win32.OpenFileDialog {Filter="Classical circuits (*.qcircuit)|*.qcircuit|JSON (*.json)|*.json"};if(picker.ShowDialog(this)!=true)return;string text=new UTF8Encoding(false,true).GetString(BoundedUtf8File.Read(picker.FileName,262144,"Classical circuit"));var next=ClassicalCircuit.Load(text);if(!Discard())return;history.Open(next.Serialize());saved=history.Current.Serialize();}
- void Save() {var picker=new Microsoft.Win32.SaveFileDialog {Filter="Classical circuit (*.qcircuit)|*.qcircuit",DefaultExt=".qcircuit",AddExtension=true,OverwritePrompt=true};if(picker.ShowDialog(this)!=true)return;string temp=picker.FileName+"."+Guid.NewGuid().ToString("N")+".tmp";try {File.WriteAllText(temp,history.Current.Serialize(),new UTF8Encoding(false));if(File.Exists(picker.FileName))File.Replace(temp,picker.FileName,null);else File.Move(temp,picker.FileName);saved=history.Current.Serialize();}finally {if(File.Exists(temp))File.Delete(temp);}}
+ void Open() {var picker=new Microsoft.Win32.OpenFileDialog {Filter="Classical circuits (*.qcircuit)|*.qcircuit|JSON (*.json)|*.json"};if(picker.ShowDialog(this)!=true)return;string text=new UTF8Encoding(false,true).GetString(BoundedUtf8File.Read(picker.FileName,SourceCircuitDocument.MaxDocumentBytes,"Classical circuit"));var next=new ClassicalProgramHistory(history.Current);next.Open(text);if(!Discard())return;history.Open(next.Serialize());saved=history.Serialize();}
+ void Save() {var picker=new Microsoft.Win32.SaveFileDialog {Filter="Classical circuit (*.qcircuit)|*.qcircuit",DefaultExt=".qcircuit",AddExtension=true,OverwritePrompt=true};if(picker.ShowDialog(this)!=true)return;SaveTo(picker.FileName);}
+ void SaveTo(string path) {string text=history.Serialize(),temp=path+"."+Guid.NewGuid().ToString("N")+".tmp";try {File.WriteAllText(temp,text,new UTF8Encoding(false));if(File.Exists(path))File.Replace(temp,path,null);else File.Move(temp,path);saved=text;}finally {if(File.Exists(temp))File.Delete(temp);}}
  public void VerifyEditing(string screenshot) {
   verifying=true;
   history.Edit(d=>{d.Qubits=2;d.Registers=ParseRegisters("c:2");d.OutputBits=new[]{1,0};});Refresh();
