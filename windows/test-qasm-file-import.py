@@ -59,6 +59,26 @@ class FileImportTests(unittest.TestCase):
             self.assertNotIn("Source", result)
             self.assertIn("includes", self.run_import(command, source='OPENQASM 3; include "local.inc"; qubit q;', success=False))
 
+    def test_explicit_saved_source_check(self):
+        dependency = self.put("module.inc", "gate g q { x q; }")
+        main = self.put("main.qasm", 'OPENQASM 3; include "module.inc"; qubit q; g q;')
+        for command in COMMANDS:
+            dependency.write_text("gate g q { x q; }", encoding="utf-8")
+            snapshot = self.run_import(command, ["--source-file", str(main)])["Source"]
+            snapshot["Root"] = "Z:/saved/root/is/not/permission"
+            source = json.dumps(snapshot)
+            args = ["--check-source", "--source-root", str(self.root)]
+            self.assertTrue(self.run_import(command, args, source)["Unchanged"])
+            dependency.write_text("gate g q { h q; }", encoding="utf-8")
+            result = self.run_import(command, args, source)
+            self.assertFalse(result["Unchanged"])
+            self.assertEqual(result["Files"][1]["Status"], "changed")
+            dependency.unlink()
+            self.assertEqual(self.run_import(command, args, source)["Files"][1]["Status"], "missing")
+            for invalid in (["--check-source"], ["--check-source", "--source-root", ""], [*args, "--classical"],
+                            [*args, "--source-file", str(main)]):
+                self.run_import(command, invalid, source, success=False)
+
     def test_explicit_root_and_utf8_snapshot(self):
         self.put("λ.inc", "\ufeffgate g q { x q; }")
         main = self.put("sub dir/main.qasm", 'OPENQASM 3; include "../λ.inc"; qubit q; g q;')

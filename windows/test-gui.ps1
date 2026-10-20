@@ -54,6 +54,7 @@ if ($LASTEXITCODE -ne 0) { throw 'OpenQASM input tests failed.' }
 $circuitTest = Join-Path $validation 'circuit-file-tests.exe'
 $circuitArgs = @('/nologo', '/target:exe', "/out:$circuitTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
 foreach ($source in @('CircuitFileTests.cs','ComposerSourceTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','SourceCircuitDocument.cs','ClassicalProgramWindow.cs','ClassicalExpressionText.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $circuitArgs += Join-Path $PSScriptRoot $source }
+$circuitArgs += @((Join-Path $PSScriptRoot 'SourceFilesWindow.cs'), "/reference:$fx\System.Windows.Forms.dll")
 & "$fx\csc.exe" @circuitArgs
 if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests did not compile.' }
 & $circuitTest
@@ -61,6 +62,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Circuit file tests failed.' }
 $samplingTest = Join-Path $validation 'sampling-tests.exe'
 $samplingArgs = @('/nologo', '/target:exe', "/out:$samplingTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll")
 foreach ($source in @('SamplingTests.cs','NumericalSampling.cs','ClassicalExpression.cs','ClassicalCircuit.cs','ClassicalProgramHistory.cs','SourceCircuitDocument.cs','ClassicalProgramWindow.cs','ClassicalExpressionText.cs','ExactCircuit.cs','ExactCircuitWindow.cs','SamplingWindow.cs','SamplingReadout.cs','CircuitComposer.cs','WorkspaceTheme.cs','QasmAngle.cs','QasmImport.cs','BoundedUtf8File.cs')) { $samplingArgs += Join-Path $PSScriptRoot $source }
+$samplingArgs += @((Join-Path $PSScriptRoot 'SourceFilesWindow.cs'), "/reference:$fx\System.Windows.Forms.dll")
 & "$fx\csc.exe" @samplingArgs
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest

@@ -284,6 +284,24 @@ class QuantumStudio {
     finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
    };
   }
+  if(args.Length==3 && args[0]=="--source-files-test") {
+   window.Loaded+=async delegate {
+    CircuitComposer composer=null;ClassicalProgramWindow editor=null;
+    try {
+     string folder=Path.GetFullPath(args[1]);Directory.CreateDirectory(folder);
+     string entry=Path.Combine(folder,"main.qasm"),helper=Path.Combine(folder,"helper.qasm");
+     File.WriteAllText(entry,"OPENQASM 3; include \"stdgates.inc\"; include \"helper.qasm\"; qubit q; flip q;",new System.Text.UTF8Encoding(true));
+     File.WriteAllText(helper,"gate flip a { x a; }\n",new System.Text.UTF8Encoding(false));
+     composer=new CircuitComposer(window,delegate(string value){});composer.Show();
+     await composer.VerifySourceFiles(entry,args[2]+".composer");composer.Close();composer=null;
+     File.WriteAllText(helper,"gate flip a { x a; }\n",new System.Text.UTF8Encoding(false));
+     editor=new ClassicalProgramWindow(window);editor.Show();
+     await editor.VerifySourceFiles(entry,args[2]+".classical");
+     File.WriteAllText(args[2],"PASS: both editors check unchanged/changed/missing files; failed reimport preserves document; successful reimport is undoable.");
+    } catch(Exception error) {File.WriteAllText(args[2],"FAIL: "+error);Environment.ExitCode=1;}
+    finally {if(editor!=null)editor.Close();if(composer!=null)composer.Close();window.Close();}
+   };
+  }
   if((args.Length==3 || args.Length==4) && args[0]=="--composer-source-qasm-test") {
    window.Loaded+=delegate {
     CircuitComposer composer=null;

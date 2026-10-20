@@ -80,9 +80,9 @@ Source text and hashes remain unchanged when the circuit is edited.
 The document limits are 4 MiB for saved JSON, 256 KiB for normalized circuit
 JSON, and 256 KiB total captured source bytes, with 64 files/bindings. Invalid
 or unsavable replacements reject before returning a new object; the previous
-document remains intact. Future editor wiring must use this wrapper for
-save/load and history while keeping runtime circuit requests separate.
-Changed-file checks, source diagnostic mapping and standalone export acceptance
+document remains intact. Both editors use this wrapper for save/load and history
+while keeping runtime circuit requests separate.
+Source diagnostic mapping and standalone export acceptance
 for both QB-004 generated subroutines remain unfinished.
 
 `ClassicalProgramHistory` now retains the source wrapper with each history
@@ -107,10 +107,45 @@ been edited since import. Undo/redo includes source and import options, and
 the unsaved-changes check compares the complete saved document. The numerical
 composer also uses the source-bearing document model as described below.
 
-`windows/test-source-import-bridge.ps1` runs six checks against the frozen
+`windows/test-source-import-bridge.ps1` runs eleven checks against the frozen
 compiler through the C# bridge, including Unicode/spaced paths, BOM,
 local includes, the explicit module-header option, and unchanged history after
 rejected imports. Both OpenQASM CI and packaging run this small integration test.
+
+## Checking and reimporting retained source
+
+In the numerical composer, choose **Import OpenQASM → Check / reimport source
+files…**. In the classical editor, choose **Source files…**. These actions require
+a circuit with retained source, imported or reopened from a source-bearing
+`.qcircuit` document.
+
+Select or enter the source folder containing the displayed entry path. The folder
+starts blank: opening a saved document never grants access to its recorded root.
+**Check files** reports each retained dependency as unchanged, changed, missing,
+retargeted, or unavailable. It compares original bytes, including a UTF-8 BOM,
+and dependency identity. It never changes the circuit, saved source, or history.
+Unavailable includes inaccessible files, oversized files, and links outside the
+selected folder. Checks are a point-in-time comparison, not a filesystem watch
+or an atomic guarantee against concurrent file changes.
+
+**Reimport from folder** compiles the current files with the original U convention,
+module-header option, and editor mode. It replaces the current circuit only after
+successful compilation and document validation. This intentionally replaces
+circuit edits made since import; **Undo** restores the prior circuit and sources.
+A failed reimport leaves them intact. Closing the dialog without reimporting
+also preserves the current document. Reimport resolves the current include graph,
+so new dependencies are captured even though a check compares only retained paths.
+
+The equivalent compiler check is `qasm-import.exe --check-source --source-root
+SELECTED_FOLDER`, with the saved `Source` object as UTF-8 JSON on stdin. It accepts
+at most 4 MiB of JSON, validates all snapshot paths and hashes before filesystem
+access, and returns a versioned report. Compilation flags cannot be combined with
+checking. The selected folder, never the saved `Root`, supplies the read boundary.
+
+`windows/test-source-files-ui.py` exercises both real editor dialogs with the
+frozen compiler: blank selection, unchanged/changed/missing files, failed
+reimport preservation, and undo after successful reimport. CI and packaging run
+it and retain six screenshots; generating screenshots alone is not visual review.
 
 ## Numerical circuit composer
 
