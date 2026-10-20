@@ -297,7 +297,6 @@ class ClassicalCircuitTests {
   limit.Steps[1].ClassicalValue.Left=new ClassicalCircuit.ExpressionNode{Kind="IntegerCast",Signedness="Signed",Width=8,Left=child};Reject(()=>ClassicalCircuit.From(limit));
  }
  static void Main(string[] args) {
-  Rotations(args.Length>0 ? args[0] : null);
   if(args.Length>0 && args[0]=="--legacy-cold") {
    // The first load in this process must exercise legacy expression metadata.
    var source=@"{""Version"":3,""Qubits"":0,""Registers"":[{""Name"":""r"",""Size"":1}],""OutputBits"":[0],""Steps"":[{""Kind"":""Assign"",""Wires"":[0],""ClassicalValue"":{""Kind"":""Binary"",""Operator"":""NotEqual"",""Left"":{""Kind"":""Constant"",""Width"":2,""Value"":""2""},""Right"":{""Kind"":""Constant"",""Width"":2,""Value"":""0""}}}]}";
@@ -309,6 +308,7 @@ class ClassicalCircuitTests {
    Check(!saved.Contains("Signedness") && !saved.Contains("LoopConditionBudget"));
    Console.WriteLine("PASS: "+checks+" cold legacy circuit checks.");return;
   }
+  Rotations(args.Length>0 ? args[0] : null);
   ImportedCanonicalChecks();
   var draft=Program();var circuit=ClassicalCircuit.From(draft);var text=circuit.Serialize();
   Check(circuit.ClassicalBits==64 && circuit.Qubits==1);
