@@ -102,6 +102,12 @@ class CircuitComposer : Window {
   import.Items.Add(importQiskit);import.Items.Add(importPublished);
   var moduleHeaders=new MenuItem {Header="Allow generated module headers",IsCheckable=true};
   import.Items.Add(new Separator());import.Items.Add(moduleHeaders);top.Children.Add(sourceStatus);
+  var sourceFiles=new MenuItem {Header="Check / reimport source files…"};
+  import.Items.Add(new Separator());import.Items.Add(sourceFiles);
+  sourceFiles.Click+=delegate {
+   try {var window=new SourceFilesWindow(this,sourceDocument,envelope=>ImportSource(envelope,sourceDocument.PublishedU));window.ShowDialog();if(window.Imported)status.Text="Reimported current source files. Undo restores the previous circuit.";}
+   catch(Exception error) {status.Text=error.Message;}
+  };
   var bottom=new StackPanel();Grid.SetRow(bottom,2);root.Children.Add(bottom);
   bottom.Children.Add(status);expression.Margin=new Thickness(0,8,0,0);expressionDetails.Content=expression;bottom.Children.Add(expressionDetails);
   var outputOptions=new WrapPanel {Margin=new Thickness(0,8,0,0)};bottom.Children.Add(outputOptions);
@@ -257,6 +263,10 @@ class CircuitComposer : Window {
   File.WriteAllText(report+".expression.txt",Expression(),new UTF8Encoding(false));
   FitWires();CaptureSource(report+".png");
   Width=MinWidth;Height=MinHeight;UpdateLayout();page.ScrollToTop();FitWires();CaptureSource(report+".minimum.png");
+ }
+ public async System.Threading.Tasks.Task VerifySourceFiles(string path,string report) {
+  ImportSource(QasmImport.CompileSource(path));
+  await SourceFilesWindow.Verify(this,sourceDocument,Path.GetDirectoryName(path),report,envelope=>ImportSource(envelope),()=>Snapshot(),()=>Undo());
  }
  void CaptureSource(string path) {
   UpdateLayout();

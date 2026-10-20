@@ -45,6 +45,9 @@ jobs:
           & windows/build-gui.ps1
           & .tools/qasm-venv/Scripts/python.exe windows/test-composer-source-import.py
           if ($LASTEXITCODE -ne 0) { throw 'Composer source import tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-source-files-ui.py
+          if ($LASTEXITCODE -ne 0) { throw 'Source check/reimport GUI tests failed.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Composer source import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-file-import.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM file import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-protocol.py

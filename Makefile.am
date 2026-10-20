@@ -56,12 +56,14 @@ EXTRA_DIST = config.rpath  \
 	windows/CircuitFileTests.cs \
 	windows/ComposerSourceTests.cs \
 	windows/test-composer-source-import.py \
+	windows/test-source-files-ui.py \
 	windows/CssCircuitTests.cs \
 	windows/CssEncoderCircuitTests.cs \
 	windows/MainWindow.xaml \
 	windows/Notation-guide.html \
 	windows/QasmAngle.cs \
 	windows/QasmImport.cs \
+	windows/SourceFilesWindow.cs \
 	windows/QasmImportTests.cs \
 	windows/QuantumStudio.cs \
 	windows/SessionStore.cs \
