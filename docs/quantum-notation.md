@@ -548,8 +548,45 @@ comparisons, `popcount`, `rotl` and `rotr`. Assignments evaluate the whole
 right-hand side before writing targets. Programs with no qubits can use these
 classical operations and both evaluation modes. Typed runtime integer arithmetic
 and bounded data-dependent `while` loops and integer `for` ranges are supported as described below.
+Shift counts also accept unsigned integer variables and explicit casts, such as
+`c << uint[8](distance)`, following the
+[OpenQASM unsigned shift-count rule](https://openqasm.com/versions/3.0/language/classical.html#classical-bits-and-registers).
+Counts retain their full value; shifting by at least the operand width yields
+zero. Signed integer counts require an explicit unsigned conversion.
 Dynamic wire indexing and measurement-driven gate angles
 remain unsupported and are rejected explicitly.
+
+### Classical-expression export groundwork
+
+`ClassicalExpressionQasm` serializes the immutable bit and integer expression
+models to standard OpenQASM 3 syntax. It validates register bounds and integer
+slot types before producing text, using canonical storage names `c` and `vN`.
+Machine-sized integers are emitted as explicit 64-bit types to preserve
+QuantumStudio's semantics across targets. Arithmetic and comparisons retain the
+model's promotion rules; bit selections retain their order and repeated indices.
+
+This is an internal component, not a classical-editor export command. Full
+program export still needs declarations, control flow, variable lifetimes,
+output ordering, and explicit handling of unsupported operations. Tests generate
+39 expressions for frozen-compiler validation; packaged tests also check their
+exact and sampled outcomes.
+
+`ClassicalQasmStorage` adds an optional logical-to-physical bit mapping for
+that serializer. Selected outputs occupy an explicit `output bit` register in
+the requested order; working bits occupy separate scratch storage without
+duplicating the bit bank. Assignments evaluate their complete right-hand side
+before changing any target. Twelve generated programs check overlapping writes,
+repeated reads, output order, empty results, early termination, and the 64-bit boundary in exact
+and sampled execution. An undefined-read case verifies that empty results do
+not suppress execution errors. This requires the explicit-output and local-scope
+importer support.
+
+This component is not yet connected to whole-program export. With working bits
+but no selected outputs, it places storage and operations in a local block so
+the scratch bits do not become program results. Empty storage is also allowed.
+Expanded expressions remain subject to the importer's complexity
+limits. Control flow, integer lifetimes, and the editor export command remain
+unfinished.
 
 
 ### Native integer value groundwork
@@ -730,6 +767,22 @@ including checked signed overflow and narrowing to low bits. Guards may skip
 runtime arithmetic errors, while invalid references and cast widths are always
 rejected. Machine-width casts use 64 bits. Fully static expressions still use
 the pinned compiler's constant evaluator.
+
+Classical OpenQASM import accepts top-level `output bit result;` and
+`output bit[n] result;` declarations. When any explicit outputs exist, only
+those registers appear in the result; ordinary bit registers remain available
+as working storage. Within the selected registers, results retain the existing
+reverse-declaration, most-significant-bit-first display order. Without explicit
+outputs, all program-scope bit registers remain results. Local bit storage
+inside blocks or subroutines is excluded, even when compilation hoists its
+storage. A program with only local bit storage has an empty output bit string;
+its operations still execute. Non-integer shadowing remains unsupported.
+This follows the
+[OpenQASM 3 input/output selection rule](https://openqasm.com/versions/3.0/language/directives.html#input-output)
+and [variable lifetimes](https://openqasm.com/versions/3.0/language/scope.html).
+Runtime `input` parameters and non-bit outputs still require separate support.
+Numerical-composer import rejects explicit input/output declarations rather
+than discarding their result semantics.
 
 Top-level `int` and `uint` declarations now import as version-5 runtime variables,
 with explicit widths from 1 to 64 or an omitted width for machine-sized integers.

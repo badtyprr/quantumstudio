@@ -8,6 +8,24 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('local-output-empty','if(true){bit[2] scratch;scratch="11";}',{'':'1'}),
+ ('local-output-global','bit result;if(true){bit[2] scratch;scratch="11";result=scratch[0];}',{'1':'1'}),
+ ('local-output-measurement','qubit q;h q;bit result;if(true){bit scratch=measure q;result=scratch;}',{'0':'1/2','1':'1/2'}),
+ ('local-output-wide','if(true){bit[64] scratch;scratch="1'+('0'*63)+'";}',{'':'1'}),
+ ('local-output-subroutine','def run(){bit[2] scratch;scratch="11";}run();',{'':'1'}),
+ ('local-output-nested','bit result;if(true){bit a="1";if(true){bit b="1";result=a & b;}}',{'1':'1'}),
+ ('local-output-explicit','output bit result;bit other="1";if(true){bit scratch="1";result=scratch;}',{'1':'1'}),
+ ('explicit-output-selection','output bit[2] result;bit[3] c="100";result=c[{2,0}];',{'01':'1'}),
+ ('explicit-output-many','output bit a;bit[2] scratch="11";output bit[2] b;a="1";b="10";',{'101':'1'}),
+ ('explicit-output-measured','qubit q;h q;bit scratch=measure q;output bit result;result=~scratch;',{'0':'1/2','1':'1/2'}),
+ ('explicit-output-early-declaration','bit[2] scratch="11";output bit result;result="0";',{'0':'1'}),
+ ('explicit-output-default','output bit result;bit scratch="1";',{'0':'1'}),
+ ('explicit-output-wide','output bit[64] result;result="1'+('0'*63)+'";',{'1'+('0'*63):'1'}),
+ ('typed-shift-unsigned-left','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[8]("00000001");',{'0000001010000001':'1'}),
+ ('typed-shift-unsigned-right','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c>>uint[8]("00000001");',{'0100000010000001':'1'}),
+ ('variable-shift-unsigned-count','qubit q;x q;bit[8] c="10000000";c[0]=measure q;uint[8] n=uint[8](c);bit[8] out;out=c<<n;',{'0000000010000001':'1'}),
+ ('typed-shift-unsigned-max','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[64](18446744073709551615);',{'0000000010000001':'1'}),
+ ('computed-shift-unsigned-bits','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[8](c & "00000001");',{'0000001010000001':'1'}),
  ('boolean-bitcast-measured','qubit q;h q;bit c=measure q;bit d;d=bit[1](c=="1");',{'00':'1/2','11':'1/2'}),
  ('boolean-bitcast-negated','qubit q;h q;bit c=measure q;bit d;d=bit[1](!(c=="1"));',{'01':'1/2','10':'1/2'}),
  ('computed-boolean-bitcast-integer','qubit q;h q;bit c=measure q;bit d;d=bit[1](int[1](c)<0);',{'00':'1/2','11':'1/2'}),
@@ -277,6 +295,13 @@ cases=[
 ]
 checks=0
 hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement','_visit_function_call'])
+for body in ('qubit q;output bit r;', 'qubit q;input bit r;'):
+ try:adapter.convert(header+body)
+ except ValueError as error:assert 'require classical circuit import' in str(error);checks+=1
+ else:raise AssertionError('Numerical import discarded explicit IO: '+body)
+ if not a.source_only:
+  result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe')],input=(header+body).encode(),capture_output=True,timeout=30)
+  assert result.returncode!=0 and b'require classical circuit import' in result.stderr and not result.stdout;checks+=1
 rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7](c)<0){r=1;}', 'bit[8] c; bit r; if(int[8](c)+c>0){r=1;}', 'bit[8] c; bit r; if(int[0](c)<0){r=1;}', 'bit[8] c; bit r; if(int[8](c)<-9223372036854775809){r=1;}', 'qubit q; bit[3] c; c=rotl(c);',
           'qubit q; bit[3] c; c=rotr(c,1,2);',
           'qubit q; bit[3] c; c=rotl(c,-9223372036854775809);',
@@ -349,6 +374,17 @@ rejected += ['int n=2;bit c;for int i in [true:n]{c=1;}',
              'int n=2;bit c;for int i in [0:n]{}c=i==0;',
              'int n=2;qubit[3] q;for int i in [0:n]{x q[i];}',
              'int n=2;qubit q;for int i in [0:n]{rx(i) q;}']
+rejected += ['qubit q;bit[8] c;c[0]=measure q;c=c<<int[8](c);',
+             'qubit q;bit[8] c;c[0]=measure q;int[8] n=int[8](c);c=c>>n;',
+             'qubit q;bit[8] c;c[0]=measure q;c=c<<uint[7](c);']
+rejected += ['output bit r;output bit r;',
+             'bit r;output bit r;',
+             'output int[8] r;',
+             'input bit r;',
+             'bit c;if(c){output bit r;}',
+             'output bit[65] r;',
+             'output bit[0] r;']
+rejected += ['@unsupported\noutput bit r;']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
@@ -406,7 +442,7 @@ for name,body,expected in cases:
   sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
   assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
   checks+=1
- assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') or name=='local-output-subroutine' else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)

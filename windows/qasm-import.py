@@ -738,10 +738,43 @@ def lower_for_transfers(program):
     block(program.statements)
 
 
+def lower_output_declarations(program, classical):
+    """Retain explicit result selection while PyQASM lowers ordinary storage."""
+    outputs = set()
+    top_level = {id(statement) for statement in program.statements}
+    for node in nodes(program):
+        if not isinstance(node, ast.IODeclaration):
+            continue
+        if not classical:
+            raise error_at(node, 'Explicit input/output declarations require classical circuit import.')
+        if node.io_identifier != ast.IOKeyword.output:
+            raise error_at(node, 'Runtime input parameters are not yet supported by the circuit importer.')
+        if id(node) not in top_level:
+            raise error_at(node, 'Output declarations must be at program scope.')
+        if not isinstance(node.type, ast.BitType):
+            raise error_at(node, 'Explicit circuit outputs currently require bit or bit[n] declarations.')
+        if node.identifier.name in outputs:
+            raise error_at(node, 'Duplicate output declaration.')
+        outputs.add(node.identifier.name)
+    for i, node in enumerate(program.statements):
+        if isinstance(node, ast.IODeclaration):
+            declaration = ast.ClassicalDeclaration(type=node.type, identifier=node.identifier)
+            declaration.span = node.span
+            declaration.annotations = node.annotations
+            program.statements[i] = declaration
+    # Locals cease to exist when their scope exits. PyQASM can hoist their
+    # storage while unrolling, so capture the public interface before lowering.
+    return outputs or {
+        node.identifier.name for node in program.statements
+        if isinstance(node, ast.ClassicalDeclaration) and isinstance(node.type, ast.BitType)
+    }
+
+
 def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(source)
+    output_registers = lower_output_declarations(module.original_program, classical)
     hidden_registers=set()
     if classical:
         prepare_subroutine_scope(module.original_program)
@@ -797,7 +830,7 @@ def convert(source, published_u=False, classical=False):
     unroll_preserving_phase(module, primitives, preserve_branches=classical)
     statements = module.unrolled_ast.statements
     if classical:
-        return classical_circuit(statements, published_u, hidden_registers)
+        return classical_circuit(statements, published_u, hidden_registers, output_registers)
     registers, count = {}, 0
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
@@ -1040,7 +1073,18 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             op=node.op.name;shift=op in ('<<','>>');logical=op in ('&&','||')
             size=1 if logical else width(node.lhs) or (None if shift else width(node.rhs)) or (None if op in comparisons else hint)
             left,lw=build(node.lhs,size,depth+1)
-            right,rw=build(node.rhs,None if shift else lw,depth+1)
+            if shift and integer_value(node.rhs):
+                # Standard OpenQASM shift counts are unsigned integers. Keep
+                # their full value: narrowing to the left width could turn an
+                # out-of-range shift (zero result) into a nonzero shift.
+                bound(depth+1);bound(depth+2)
+                child=integer(node.rhs,depth+3)
+                sign,_=integer_type(child)
+                if sign!='Unsigned':raise ValueError('Shift distance requires an unsigned integer.')
+                right={'Kind':'IntegerBits','Left':{'Kind':'IntegerCast','Signedness':'Unsigned','Width':64,'Left':child}}
+                rw=64
+            else:
+                right,rw=build(node.rhs,None if shift else lw,depth+1)
             if (not shift and lw!=rw) or (logical and lw!=1):raise ValueError('Classical operands have incompatible widths.')
             return {'Kind':'Logical' if logical else 'Binary','Operator':operations[op],'Left':left,'Right':right},1 if op in comparisons else lw
         raise ValueError('Unsupported classical bit expression: '+type(node).__name__)
@@ -1050,7 +1094,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
     return result
 
 
-def classical_circuit(statements, published_u, hidden_registers=None):
+def classical_circuit(statements, published_u, hidden_registers=None, output_registers=None):
     hidden_registers=hidden_registers or set()
     quantum, classical, named = {}, {}, []
     variables, declarations = {}, []
@@ -1223,7 +1267,9 @@ def classical_circuit(statements, published_u, hidden_registers=None):
                 raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
         return result
     steps=lower(statements)
-    visible_bits=[bit for name,(start,size) in classical.items() if name not in hidden_registers for bit in range(start,start+size)]
+    visible_bits=[bit for name,(start,size) in classical.items()
+                  if name not in hidden_registers and (output_registers is None or name in output_registers)
+                  for bit in range(start,start+size)]
     result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(visible_bits)), 'Steps': steps}
     if declarations or version>=6:result['Variables']=declarations
     if version>=7:result['LoopConditionBudget']=1000000

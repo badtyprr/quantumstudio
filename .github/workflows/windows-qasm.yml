@@ -53,3 +53,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM protocol tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-classical-expressions.py
           if ($LASTEXITCODE -ne 0) { throw 'Classical expression import tests failed.' }
+          $expressionCases = Join-Path $env:RUNNER_TEMP 'expression-qasm-cases.json'
+          & windows/test-classical-expression-qasm.ps1 -CasesPath $expressionCases
+          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $expressionCases
+          if ($LASTEXITCODE -ne 0) { throw 'Typed OpenQASM expression tests failed.' }
+          $storageCases = Join-Path $env:RUNNER_TEMP 'storage-qasm-cases.json'
+          & windows/test-classical-storage-qasm.ps1 -CasesPath $storageCases
+          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $storageCases --expected-cases 12
+          if ($LASTEXITCODE -ne 0) { throw 'OpenQASM storage tests failed.' }

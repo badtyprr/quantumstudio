@@ -19,6 +19,8 @@ $expressionTest = Join-Path $validation 'classical-expression-tests.exe'
 if ($LASTEXITCODE -ne 0) { throw 'Classical expression adapter tests did not compile.' }
 & $expressionTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical expression adapter tests failed.' }
+& (Join-Path $PSScriptRoot 'test-classical-expression-qasm.ps1')
+& (Join-Path $PSScriptRoot 'test-classical-storage-qasm.ps1')
 $exactTest = Join-Path $validation 'exact-circuit-tests.exe'
 & "$fx\csc.exe" /nologo /target:exe "/out:$exactTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'NumericalSampling.cs') (Join-Path $PSScriptRoot 'ClassicalExpression.cs') (Join-Path $PSScriptRoot 'ClassicalCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuit.cs') (Join-Path $PSScriptRoot 'ExactCircuitTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Exact circuit adapter tests did not compile.' }
