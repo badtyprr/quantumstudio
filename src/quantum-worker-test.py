@@ -24,6 +24,31 @@ def data(expression, *flags):
     return value
 
 
+# A register family preserves bit substitutions before its width is supplied.
+for flags in ((), ("--approx",)):
+    family = 'qregisterfamily("x_",n-1,0,vector())'
+    symbolic = data("quantum:" + family, *flags)
+    copied = data("quantum:" + symbolic["copy_text"], *flags)
+    assert copied["copy_text"] == symbolic["copy_text"]
+    for expression, expected in (
+        ("replace(replace(replace(" + family + ",x_0,1),x_1,0),n,2)", "|01>"),
+        ("replace(replace(replace(" + family + ",n,2),x_0,1),x_1,0)", "|01>"),
+        ("replace(replace(replace(" + family + ",x_0,x_0+1),x_0,0),n,1)", "|1>"),
+    ):
+        actual = data("quantum:" + expression, *flags)
+        reference = data("quantum:" + expected, *flags)
+        assert (actual["rows"], actual["columns"], actual["cells"]) == (
+            reference["rows"], reference["columns"], reference["cells"]
+        ), (expression, flags, actual, reference)
+    for expression in (
+        "replace(" + family + ",x_0,2)",
+        "replace(" + family + ",n,0)",
+        "replace(" + family + ",n,11)",
+        "replace(replace(" + family + ",x_2,1),n,2)",
+    ):
+        rejected = run("quantum:" + expression, "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+
 # Tensor powers retain their matrix and count constraints until substitution.
 for flags in ((), ("--approx",)):
     for expression, resolved, expected in (
