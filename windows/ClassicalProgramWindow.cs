@@ -315,6 +315,7 @@ sealed class ClassicalProgramWindow : Window {
   VerifyTermination(screenshot+".termination");
   VerifyRanges(screenshot+".ranges");
   VerifyRotations(screenshot+".rotations");
+  WriteRotationExecutionCases(screenshot+".rotations");
  }
  void VerifyRotations(string screenshot) {
   Width=980;Height=920;
@@ -338,6 +339,20 @@ sealed class ClassicalProgramWindow : Window {
   status.Text="Verified · Runtime rotation axis, real/integer arithmetic, replacement, invalid edits, undo/redo and save/reopen.";
   ((ScrollViewer)Content).ScrollToEnd();UpdateLayout();Capture(screenshot+".png");
   Width=MinWidth;Height=MinHeight;UpdateLayout();((ScrollViewer)Content).ScrollToEnd();UpdateLayout();Capture(screenshot+".minimum.png");
+ }
+ void WriteRotationExecutionCases(string prefix) {
+  history.Open(ClassicalCircuit.From(new ClassicalCircuit.Document{Version=2,Qubits=1,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]}).Serialize());Refresh();
+  variables.Text="n:int";ApplyVariables();Refresh();
+  for(int n=0;n<2;n++) {
+   ((TreeViewItem)tree.Items[0]).IsSelected=true;kind.SelectedValue="StoreInteger";variableTarget.Text="n";expression.Text=n.ToString(CultureInfo.InvariantCulture);ChangeStep(false);Refresh();
+   ((TreeViewItem)tree.Items[0]).IsSelected=true;kind.SelectedValue="Rotation";rotationAxis.SelectedItem="Y";rotationAngle.Text="pi*n";wires.Text="0";ChangeStep(false);Refresh();
+  }
+  ((TreeViewItem)tree.Items[0]).IsSelected=true;kind.SelectedValue="Measure";wires.Text="0";destination.Text="0";ChangeStep(false);Refresh();
+  File.WriteAllText(prefix+".real.qcircuit",history.Current.Serialize());
+  ((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[3]).IsSelected=true;
+  rotationAngle.Text="pi*float(n/2)";ChangeStep(true);Refresh();
+  File.WriteAllText(prefix+".integer.qcircuit",history.Current.Serialize());
+  saved=history.Serialize();
  }
  void VerifyRanges(string screenshot) {
   Width=980;Height=920;
