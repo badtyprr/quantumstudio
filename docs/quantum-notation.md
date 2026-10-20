@@ -214,6 +214,18 @@ and a valid basis index evaluates it. These checks use explicit basis and
 matrix declarations; they do not infer dimensions for arbitrary named states
 or solve general equations between unknown dimensions.
 
+An unresolved tensor repetition can be entered as `tensorpow(H,n)` or
+`H^{\otimes n}`. It keeps the operator and count symbolic until values are
+supplied, matching the repeated Hadamard layer in the
+[Deutsch–Jozsa analysis](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm).
+For example, `replace(tensorpow(H,n),n,2)` evaluates to `tensor(H,H)`.
+Kets and bras also support repetition, and Copy preserves their constraints.
+Numerical counts must be integers from zero through ten; a scalar cannot be
+used as the matrix operand, even for zero repetitions. An unresolved basis
+index remains subject to its basis bounds after the repetition count is
+supplied. This does not expand variable-length indexed ellipses or infer
+general equations between symbolic register widths.
+
 Cardinality bars around an explicit finite set, such as `|\{0,1,1\}|` or `\lvert\{0,1,1\}\rvert`, give `2`. Empty sets count as zero. Ranges and filtering comprehensions also work: `|\{k\in\{0,\ldots,7\}:k>3\}|` gives `4`. Use `cardinality(S)` for a named finite flat scalar collection.
 
 An unspecified domain in `\sum_{a\in\Sigma}{|a>}` remains symbolic as `qsumset`. Bars around a bare unknown remain `qbars`, so substitution can select scalar magnitude or distinct-member cardinality. For example, `replace(|S|,S,-3)` gives `3`, while `replace(|S|,S,vector(2,3,3))` gives `2`. IBM's uniform-state expression `1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}` stays symbolic; substituting `bitstrings(1)` for `\Sigma` gives `|+>`. Concrete domains still require at most 1024 scalar or typed binary-string entries. This does not infer dimensions for arbitrary scalar basis labels or implement arbitrary symbolic set operations.

@@ -673,9 +673,18 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 0;
   }
+  if(op=="qtensorpow") {
+   // Preserve both operands until substitution can validate the repeat count
+   // and the matrix domain, including when the eventual count is zero.
+   bool unknownCount=!args[1].isNumber() && args[1].representsScalar() && args[1].containsUnknowns();
+   if(!unknownCount && (!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10)) {
+    CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL);return 0;
+   }
+   if(!a.isMatrix() && unresolvedMatrixOperand(a))return 0;
+   if(a.isMatrix() && unknownCount)return 0;
+  }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
-   if(!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10) { CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL); return 0; }
    int count=args[1].number().intValue(); out.setToIdentityMatrix(1);
    for(int k=0;k<count;++k) {
     MathStructure previous=out; out.set(CALCULATOR->getFunction("qtensor"), &previous, &a, NULL); out.eval(eo);
