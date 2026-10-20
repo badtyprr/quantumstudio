@@ -489,6 +489,9 @@ class QuantumAlgebraFunction: public MathFunction {
 MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions &options) {
  return dagger(value,options);
 }
+bool quantumMatrixShape(const MathStructure &value, MathStructure &rows, MathStructure &columns, const EvaluationOptions &options) {
+ return matrixShape(value,rows,columns,options);
+}
 void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumComplexParameter());
  calculator.addFunction(new QuantumMatrixParameter());

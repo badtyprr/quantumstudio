@@ -2,7 +2,22 @@
 #include "QuantumOrder.h"
 #include "Calculator.h"
 #include "Function.h"
+#include "QuantumAlgebra.h"
 namespace {
+// For every complex matrix M, M†M and MM† are positive semidefinite,
+// including rectangular and rank-deficient M. This does not prove strictness.
+bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
+ if(!value.isFunction() || value.size()!=2)return false;
+ const std::string &name=value.function()->referenceName();
+ if(name!="qmul" && name!="qadjacent")return false;
+ for(unsigned i=0;i<2;++i) {
+  const MathStructure &adjoint=value[i],&factor=value[1-i];
+  if(!adjoint.isFunction() || adjoint.function()->referenceName()!="qdag" || adjoint.size()!=1 || !adjoint[0].equals(factor))continue;
+  MathStructure rows,columns;
+  if(quantumMatrixShape(factor,rows,columns,eo))return true;
+ }
+ return false;
+}
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // Hermitian Loewner order via exact Schur complements. A zero diagonal in a
 // PSD matrix must have a zero row; testing this also handles singular matrices
@@ -66,6 +81,9 @@ class QuantumOrderFunction: public MathFunction {
     CALCULATOR->error(true,"Invalid quantum comparison kind.",NULL);return 0;
    }
    static const ComparisonType kinds[]={COMPARISON_LESS,COMPARISON_GREATER,COMPARISON_EQUALS_LESS,COMPARISON_EQUALS_GREATER,COMPARISON_EQUALS,COMPARISON_NOT_EQUALS};
+   int kind=args[2].number().intValue();
+   if(args[1].isZero() && symbolicGram(args[0],eo) && (kind==0 || kind==3)) {out=kind==3 ? 1 : 0;return 1;}
+   if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
    if(args[2].number()<4 && (args[0].containsType(STRUCT_VECTOR,true)>0 || args[1].containsType(STRUCT_VECTOR,true)>0))
     return quantumMatrixOrder(out,raw[0],raw[1],args[2].number().intValue(),eo) ? 1 : 0;
    out=args[0];out.transform(kinds[args[2].number().intValue()],args[1]);out.eval(eo);return 1;

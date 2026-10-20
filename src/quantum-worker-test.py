@@ -22,6 +22,20 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+# Declared complex Gram matrices are PSD, but need not have full rank.
+for flags in [(), ("--approx",)]:
+    for gram in ['M†*M','M*M†','M† M']:
+        for shape in ['n,n','2,3','3,1']:
+            assert Decimal(data('quantum:matrixassume('+gram+'>=0,M,'+shape+')',*flags)['text'])==1
+    for expression in ['0<=M†*M','0<=M*M†']:
+        assert Decimal(data('quantum:matrixassume('+expression+',M,2,3)',*flags)['text'])==1
+    for expression in ['M†*M<0','0>M*M†']:
+        assert Decimal(data('quantum:matrixassume('+expression+',M,2,3)',*flags)['text'])==0
+    for expression in ['M†*M>0','M†*M<=0','M^T*M>=0','M†*N>=0']:
+        result=data('quantum:matrixassume(matrixassume('+expression+',M,2,2),N,2,2)',*flags)
+        assert result['text'] not in ('0','1'), result
+    assert Decimal(data('quantum:[i,0;0,i]^T*[i,0;0,i]>=0',*flags)['text'])==0
+
 # Workspace matrix declarations must not rewrite labels or local indices.
 for flags in [(), ("--approx",)]:
     identity='Tr(α A+β B)-α Tr(A)-β Tr(B)'
