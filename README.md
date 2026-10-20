@@ -7,16 +7,14 @@ exact symbolic results and state visualizations.
 
 ## Development status
 
-QuantumStudio is under active development. The Windows application and extended
-calculator are available in a tested development checkpoint; they are being split
-into scoped, reviewed changes before release. **There is no published QuantumStudio
-release yet, and `master` does not yet contain the complete Windows application.**
+QuantumStudio is under active development. `master` contains the Windows application,
+extended quantum calculator, and native/Windows CI. Verified Windows bundles are
+built from reviewed merged commits; feature coverage remains incomplete.
 
-The default branch currently includes the standalone TeX translator and native CI.
-For the full development application, use the
-[pinned development checkpoint](https://github.com/badtyprr/quantumstudio/tree/9c7dc9ded4260ecaee490414e9980311b1943485).
-It is a test candidate, not an approved release. The feature descriptions and
-Windows build instructions below refer to that checkpoint.
+Use the [prioritized development and learning checklist](docs/learning-coverage-checklist.md)
+to choose the next code task and track IBM Quantum Learning and qBraid audits.
+It separates implementation, release status, and whole-source verification, with
+acceptance criteria and dependencies for each development item.
 
 ## Explore quantum computing
 
@@ -29,7 +27,7 @@ Windows build instructions below refer to that checkpoint.
   Bernstein–Vazirani and Simon's algorithm.
 - **Visual results:** formatted matrices, probability charts, Bloch vectors and
   Schmidt-coefficient inspection.
-- **OpenQASM:** export circuits and import a bounded static subset of OpenQASM 2/3
+- **OpenQASM:** export circuits and import supported bounded OpenQASM 2/3 programs
   through the bundled qBraid PyQASM helper.
 - **Everyday calculations:** retain libqalculate's arithmetic, symbolic expressions
   and unit conversion through the ordinary calculator mode.
