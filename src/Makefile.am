@@ -139,6 +139,8 @@ TEST_EXTENSIONS = .py
 PY_LOG_COMPILER = python3
 EXTRA_DIST = quantum-worker-test.py quantum-sampling-request-test.py quantum-exact-request-test.py quantum-exact-fixtures.json quantum-classical-request-test.py
 TESTS += quantum-exact-request-test.py quantum-classical-request-test.py
+EXTRA_DIST += quantum-runtime-angle-request-test.py
+TESTS += quantum-runtime-angle-request-test.py
 
 quantum_numerical_state_test_SOURCES = quantum-numerical-state-test.cc
 quantum_numerical_state_test_LDADD = ../libqalculate/libqalculate.la

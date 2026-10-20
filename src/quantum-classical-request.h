@@ -5,6 +5,8 @@
 #include <libqalculate/QuantumClassicalIntegerExpression.h>
 #include <libqalculate/QuantumClassicalIntegerStorage.h>
 #include <libqalculate/QuantumClassicalRangeExpression.h>
+#include <libqalculate/QuantumRuntimeRotation.h>
+#include <cstring>
 #include <limits>
 #include <stdexcept>
 
@@ -100,6 +102,32 @@ QuantumClassical::RangeExpression range(Reader &reader,unsigned bits,const Quant
  count=0;auto step=integerNode(reader,0,count,true,true);
  QuantumClassical::RangeExpression result(start,stop,step);
  result.validate(bits,variables);return result;
+}
+
+// Constants travel as unsigned IEEE-754 bit patterns, avoiding locale-dependent
+// decimal parsing and preserving the binary64 value across both backends.
+template<class Reader>
+QuantumClassical::RealExpression realNode(Reader &reader,unsigned depth,unsigned &count) {
+ using R=QuantumClassical::RealExpression;
+ if(depth>=32 || ++count>512)throw std::length_error("Real expression exceeds 32 levels or 512 nodes.");
+ const auto kind=reader.integer(2);
+ if(kind==0) {
+  static_assert(sizeof(double)==sizeof(std::uint64_t),"Binary64 protocol requires 64-bit double");
+  const std::uint64_t raw=reader.integer(std::numeric_limits<std::uint64_t>::max());
+  double value;std::memcpy(&value,&raw,sizeof(value));return R::constant(value);
+ }
+ if(kind==1)return R::fromInteger(integerNode(reader,depth+1,count,true,true));
+ const R::Operation operations[]={R::Operation::Add,R::Operation::Subtract,R::Operation::Multiply,R::Operation::Divide};
+ const auto operation=operations[reader.integer(3)];
+ auto left=realNode(reader,depth+1,count);auto right=realNode(reader,depth+1,count);
+ return R::binary(operation,left,right);
+}
+template<class Reader>
+QuantumNumerics::RuntimeRotation rotation(Reader &reader,unsigned bits,const QuantumClassical::IntegerStorage &variables) {
+ using Rotation=QuantumNumerics::RuntimeRotation;
+ const Rotation::Axis axes[]={Rotation::Axis::X,Rotation::Axis::Y,Rotation::Axis::Z};
+ const auto axis=axes[reader.integer(2)];unsigned count=0;
+ Rotation result(axis,realNode(reader,0,count));result.validate(bits,variables);return result;
 }
 }
 #endif
