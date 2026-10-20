@@ -192,6 +192,11 @@ TESTS += quantum-classical-real-expression-test
 quantum_classical_real_expression_test_SOURCES = quantum-classical-real-expression-test.cc
 quantum_classical_real_expression_test_LDADD = $(test_LDADD)
 
+check_PROGRAMS += quantum-runtime-rotation-test
+TESTS += quantum-runtime-rotation-test
+quantum_runtime_rotation_test_SOURCES = quantum-runtime-rotation-test.cc
+quantum_runtime_rotation_test_LDADD = $(test_LDADD)
+
 check_PROGRAMS += quantum-trajectory-range-test
 TESTS += quantum-trajectory-range-test
 quantum_trajectory_range_test_SOURCES = quantum-trajectory-range-test.cc
