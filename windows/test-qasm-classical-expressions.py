@@ -8,6 +8,12 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('explicit-output-selection','output bit[2] result;bit[3] c="100";result=c[{2,0}];',{'01':'1'}),
+ ('explicit-output-many','output bit a;bit[2] scratch="11";output bit[2] b;a="1";b="10";',{'101':'1'}),
+ ('explicit-output-measured','qubit q;h q;bit scratch=measure q;output bit result;result=~scratch;',{'0':'1/2','1':'1/2'}),
+ ('explicit-output-early-declaration','bit[2] scratch="11";output bit result;result="0";',{'0':'1'}),
+ ('explicit-output-default','output bit result;bit scratch="1";',{'0':'1'}),
+ ('explicit-output-wide','output bit[64] result;result="1'+('0'*63)+'";',{'1'+('0'*63):'1'}),
  ('typed-shift-unsigned-left','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c<<uint[8]("00000001");',{'0000001010000001':'1'}),
  ('typed-shift-unsigned-right','qubit q;x q;bit[8] c="10000000";c[0]=measure q;bit[8] out;out=c>>uint[8]("00000001");',{'0100000010000001':'1'}),
  ('variable-shift-unsigned-count','qubit q;x q;bit[8] c="10000000";c[0]=measure q;uint[8] n=uint[8](c);bit[8] out;out=c<<n;',{'0000000010000001':'1'}),
@@ -282,6 +288,13 @@ cases=[
 ]
 checks=0
 hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement','_visit_function_call'])
+for body in ('qubit q;output bit r;', 'qubit q;input bit r;'):
+ try:adapter.convert(header+body)
+ except ValueError as error:assert 'require classical circuit import' in str(error);checks+=1
+ else:raise AssertionError('Numerical import discarded explicit IO: '+body)
+ if not a.source_only:
+  result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe')],input=(header+body).encode(),capture_output=True,timeout=30)
+  assert result.returncode!=0 and b'require classical circuit import' in result.stderr and not result.stdout;checks+=1
 rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7](c)<0){r=1;}', 'bit[8] c; bit r; if(int[8](c)+c>0){r=1;}', 'bit[8] c; bit r; if(int[0](c)<0){r=1;}', 'bit[8] c; bit r; if(int[8](c)<-9223372036854775809){r=1;}', 'qubit q; bit[3] c; c=rotl(c);',
           'qubit q; bit[3] c; c=rotr(c,1,2);',
           'qubit q; bit[3] c; c=rotl(c,-9223372036854775809);',
@@ -357,6 +370,14 @@ rejected += ['int n=2;bit c;for int i in [true:n]{c=1;}',
 rejected += ['qubit q;bit[8] c;c[0]=measure q;c=c<<int[8](c);',
              'qubit q;bit[8] c;c[0]=measure q;int[8] n=int[8](c);c=c>>n;',
              'qubit q;bit[8] c;c[0]=measure q;c=c<<uint[7](c);']
+rejected += ['output bit r;output bit r;',
+             'bit r;output bit r;',
+             'output int[8] r;',
+             'input bit r;',
+             'bit c;if(c){output bit r;}',
+             'output bit[65] r;',
+             'output bit[0] r;']
+rejected += ['@unsupported\noutput bit r;']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
