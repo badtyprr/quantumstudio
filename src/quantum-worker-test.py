@@ -23,6 +23,39 @@ def data(expression, *flags):
     assert set(value) == {"text", "display_text", "copy_text", "approximate", "rows", "columns", "cells", "probabilities", "bloch"}
     return value
 
+
+# Complete declared-basis projector sums are identity; subsets are not.
+def basis_completeness_result(expression,approx=False,reject=False):
+    flags=("--approx",) if approx else ()
+    if reject:
+        rejected=run("quantum:"+expression,"--json",*flags,success=False)
+        assert rejected.returncode==2 and not rejected.stdout and rejected.stderr
+        return None
+    return data("quantum:"+expression,*flags)
+
+for approx in (False,True):
+    for n in range(1,5):
+        labels=["state_"+str(k) for k in range(n)]
+        declaration="["+",".join("|"+label+">" for label in labels)+"]"
+        body="+".join("|"+label+"><"+label+"|" for label in reversed(labels))
+        value=basis_completeness_result("orthobasis("+body+",B,"+declaration+")",approx)
+        assert value["cells"]==[["1" if i==j else "0" for j in range(n)] for i in range(n)]
+        assert basis_completeness_result(value["copy_text"],approx)["cells"]==value["cells"]
+    value=basis_completeness_result("orthobasis(density(|red>)+density(|blue>),B,[|red>,|blue>])",approx)
+    assert value["cells"]==[["1","0"],["0","1"]]
+    for body,labels in [
+        ("|red><red|","[|red>,|blue>]"),
+        ("|red><red|+|red><red|","[|red>,|blue>]"),
+        ("|red><blue|+|blue><red|","[|red>,|blue>]"),
+        ("2*|red><red|+|blue><blue|","[|red>,|blue>]"),
+        ("|red><red|+|blue><blue|","[|red>,|blue>,|green>]"),
+    ]:
+        value=basis_completeness_result("orthobasis("+body+",B,"+labels+")",approx);assert value["rows"]==0
+        assert basis_completeness_result(value["copy_text"],approx)["copy_text"]==value["copy_text"]
+    value=basis_completeness_result("orthobasis(|red><red|,B,[|red>,|blue>])+orthobasis(|blue><blue|,C,[|red>,|blue>])",approx)
+    assert value["rows"]==0
+    basis_completeness_result("orthobasis(|red><red|,B,[|red>,|blue>])+orthobasis(|green><green|,B,[|red>,|green>])",approx,True)
+
 # Fourier basis action becomes a finite sum without discarding its domain.
 for flags in [(), ("--approx",)]:
     for operator in ['QFT_N','QFT_N†','QFT_N^(-1)']:

@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 #include <set>
+#include <vector>
 #include <cctype>
 namespace {
 bool orthonormalList(const MathStructure &raw,MathStructure &list) {
@@ -37,6 +38,34 @@ MathStructure storedOrthonormalLabels(const MathStructure &labels) {
  MathStructure stored(CALCULATOR->getFunction("vector"),static_cast<MathStructure*>(NULL));
  for(size_t i=0;i<labels.size();++i)stored.addChild(labels[i]);
  return stored;
+}
+bool completeOrthonormalProjectors(const MathStructure &expression,MathStructure &dimension) {
+ std::vector<const MathStructure*> pending(1,&expression);
+ const MathStructure *basis=NULL;std::set<std::string> seen;
+ while(!pending.empty()) {
+  if(CALCULATOR->aborted())return false;
+  const MathStructure &term=*pending.back();pending.pop_back();
+  if(!term.isFunction())return false;
+  const std::string &op=term.function()->referenceName();
+  if(op=="qadd" && term.size()==2) {pending.push_back(&term[0]);pending.push_back(&term[1]);continue;}
+  const MathStructure *ket=NULL;
+  if(op=="qdensity" && term.size()==1)ket=&term[0];
+  else if((op=="qmul" || op=="qadjacent") && term.size()==2 &&
+          term[1].isFunction() && term[1].function()->referenceName()=="qdag" && term[1].size()==1 &&
+          term[0].equals(term[1][0]))ket=&term[0];
+  if(!ket || !ket->isFunction() || ket->function()->referenceName()!="qorthoket" || ket->size()!=3)return false;
+  if(!basis)basis=ket;
+  else if(!(*basis)[1].equals((*ket)[1]))return false;
+  else if(!(*basis)[2].equals((*ket)[2])) {
+   CALCULATOR->error(true,"Conflicting declarations for the same orthonormal basis.",NULL);return false;
+  }
+  if(!(*ket)[0].isSymbolic() || !seen.insert((*ket)[0].symbol()).second)return false;
+ }
+ if(!basis)return false;
+ MathStructure labels;
+ if(!orthonormalList((*basis)[2],labels) || !orthonormalLabels(labels) || seen.size()!=labels.size())return false;
+ for(size_t i=0;i<labels.size();++i)if(!seen.count(labels[i].symbol()))return false;
+ dimension.set(Number(static_cast<long>(labels.size())));return true;
 }
 class QuantumOrthonormalKet: public MathFunction {
  public:
@@ -445,6 +474,18 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   const MathStructure &a=args[0];
+  if((op=="qadd" || op=="qmul" || op=="qadjacent" || op=="qdensity") &&
+     args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0) {
+   MathStructure expression(this,static_cast<MathStructure*>(NULL)),dimension;
+   for(size_t j=0;j<args.size();++j)expression.addChild(args[j]);
+   if(completeOrthonormalProjectors(expression,dimension)) {
+    out.set(CALCULATOR->getFunction("qidentity"),&dimension,NULL);out.eval(eo);return 1;
+   }
+  }
+  if(op=="qdensity" && a.isFunction() && a.function()->referenceName()=="qorthoket") {
+   MathStructure bra;bra.set(CALCULATOR->getFunction("qdag"),&a,NULL);
+   out.set(CALCULATOR->getFunction("qmul"),&a,&bra,NULL);out.eval(eo);return 1;
+  }
   // Reject provably incompatible symbolic shapes before numerical expansion.
   if(op=="qadd" || op=="qsub" || op=="qmul" || op=="qtrace") {
    MathStructure ar,ac,br,bc;
