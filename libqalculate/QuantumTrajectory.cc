@@ -81,7 +81,9 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    if(wireMask&bit)throw std::invalid_argument("Trajectory gate wires must be distinct");
    wireMask|=bit;
   }
-  if(step.kind==TrajectoryStep::Kind::Gate || step.kind==TrajectoryStep::Kind::Conditional || step.kind==TrajectoryStep::Kind::Channel) {
+  if(step.kind==TrajectoryStep::Kind::Rotation) {
+   step.rotation->validate(classicalBits,declarations);
+  } else if(step.kind==TrajectoryStep::Kind::Gate || step.kind==TrajectoryStep::Kind::Conditional || step.kind==TrajectoryStep::Kind::Channel) {
    if(step.wires.empty() || step.wires.size()>3)throw std::invalid_argument("Trajectory gate needs one to three wires");
    StateVector probe(step.wires.size(),8*sizeof(Complex));std::vector<unsigned> local;
    for(unsigned k=0;k<step.wires.size();++k)local.push_back(k);
@@ -146,6 +148,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    else if(step.kind==TrajectoryStep::Kind::ClearInteger)variables.clear(step.variableSlot);
    else if(step.kind==TrajectoryStep::Kind::Assign)bits=QuantumClassical::assign(bits,classicalBits,step.wires,*step.expression,variables);
    else if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,step.wires,cancelled);
+   else if(step.kind==TrajectoryStep::Kind::Rotation)state.apply(step.rotation->matrix(bits,classicalBits,variables),step.wires,cancelled);
    else if(step.kind==TrajectoryStep::Kind::Conditional) {
     if((bits&step.mask)==step.value)state.apply(step.matrix,step.wires,cancelled);
    } else if(step.kind==TrajectoryStep::Kind::Channel)state.channel(step.kraus,step.wires,draw(),cancelled);
