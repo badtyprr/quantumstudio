@@ -35,10 +35,14 @@ for flags in ((), ("--approx",)):
         expected = "<10|" if expression.startswith("<") else "|010>" if expression.startswith("|0 ") else "|10>"
         assert data("quantum:norm(vec((" + resolved + ")-(" + expected + ")))", *flags)["text"] == "0"
         for invalid in ("-1", "2", "1/2"):
-            run("quantum:replace((" + copied["copy_text"] + "),x_1," + invalid + ")",
-                "--json", *flags, success=False)
+            rejected = run("quantum:replace((" + copied["copy_text"] + "),x_1," + invalid + ")",
+                           "--json", *flags, success=False)
+            assert rejected.returncode == 2 and not rejected.stdout
+            assert b"basis(index,dimension)" in rejected.stderr
     for expression in ("tensor(basis(x_1,2),2)", "tensor(2,basis(x_1,2))"):
-        run("quantum:" + expression, "--json", *flags, success=False)
+        rejected = run("quantum:" + expression, "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+        assert b"Quantum operation requires two matrices." in rejected.stderr
 
 # Symbolic binary labels retain validation until values and widths are supplied.
 for flags in ((), ("--approx",)):
