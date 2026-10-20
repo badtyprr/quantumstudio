@@ -85,6 +85,15 @@ save/load and history while keeping runtime circuit requests separate.
 Changed-file checks, source diagnostic mapping, GUI integration and standalone
 export verification remain unfinished.
 
+`ClassicalProgramHistory` now retains the source wrapper with each history
+entry. `ImportSource` validates a compiler envelope before creating an undo
+step; `Serialize` writes the full saved document, while `Current.Serialize()`
+continues to provide only the runtime circuit. Ordinary edits preserve source,
+and undo/redo restores circuit, source and import options together. `Open`
+accepts both legacy circuits and the saved wrapper and resets history only
+after validation succeeds. The GUI import and save/load controls are not yet
+connected to these new APIs.
+
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
 UTF-8/BOM, missing/cyclic files, path boundaries and link retargeting, limits,
