@@ -8,9 +8,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--cases", type=Path, required=True)
 parser.add_argument("--compiler", type=Path, default=root/"dist/QuantumStudio/qasm-import/qasm-import.exe")
 parser.add_argument("--worker", type=Path)
+parser.add_argument("--expected-cases", type=int, default=39)
 args = parser.parse_args()
 cases = json.loads(args.cases.read_text(encoding="utf-8-sig"))
-assert len(cases) == 39 and len({r["name"] for r in cases}) == 39
+assert len(cases) == args.expected_cases and len({r["name"] for r in cases}) == args.expected_cases
 # Share the existing test protocol encoders without executing its independent suite.
 tree = ast.parse((root/"windows/test-qasm-classical-expressions.py").read_text(encoding="utf-8"))
 nodes = [n for n in tree.body if (isinstance(n, ast.FunctionDef) and n.name in ("n", "expression", "integer_expression", "steps"))
@@ -24,7 +25,7 @@ for case in cases:
     run = subprocess.run([str(args.compiler.resolve()), "--classical"], input=case["source"].encode(), capture_output=True, timeout=30)
     assert run.returncode == 0, (case["name"], run.stderr.decode("utf-8",errors="replace"), case["source"])
     circuit = json.loads(run.stdout)
-    assert 2 <= circuit["Version"] <= 6
+    assert 2 <= circuit["Version"] <= 9
     assert len(circuit["OutputBits"]) == len(case["expected"])
     checks += 1
     if args.worker is None:
@@ -36,10 +37,19 @@ for case in cases:
         if circuit["Version"] >= 5:
             protocol = (b"QEXACT5\n" if exact else b"QSAMPLE6\n") if circuit["Version"] == 6 else (b"QEXACT4\n" if exact else b"QSAMPLE5\n")
             declarations = n(len(circuit["Variables"])) + b"".join(n(0 if v["Signedness"] == "Signed" else 1,v["Width"]) for v in circuit["Variables"])
+        if circuit["Version"] >= 7:
+            protocol = (b"QEXACT8\n" if exact else b"QSAMPLE9\n") if circuit["Version"] >= 9 else (b"QEXACT7\n" if exact else b"QSAMPLE8\n") if circuit["Version"] >= 8 else (b"QEXACT6\n" if exact else b"QSAMPLE7\n")
+            assert circuit["LoopConditionBudget"] == 1000000
+            declarations += n(32)
         outputs = circuit["OutputBits"]
         payload = protocol+n(circuit["Qubits"])+(b"" if exact else n(10000,1731))+n(sum(r["Size"] for r in circuit["Registers"]))+declarations+n(len(outputs),*outputs,len(circuit["Steps"]))+steps(circuit["Steps"])
         result = subprocess.run([str(worker), "--exact-circuit" if exact else "--sample"], input=payload, capture_output=True, timeout=30,
                                 env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
+        if case.get("runtime_error", False):
+            assert result.returncode != 0 and result.stderr and not result.stdout, (case["name"], result.stdout, result.stderr)
+            assert b"Integer variable read before initialization" in result.stderr, (case["name"], result.stderr)
+            checks += 1
+            continue
         assert result.returncode == 0 and not result.stderr, (case["name"],result.stderr)
         value = json.loads(result.stdout)
         if exact:
