@@ -8,6 +8,7 @@ $compilerArgs = @('/nologo', '/target:winexe', '/platform:x64', "/out:$output\Qu
     "/resource:$PSScriptRoot\examples.json,examples.json",
     "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll",
     "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll", "$PSScriptRoot\QuantumStudio.cs", "$PSScriptRoot\CircuitComposer.cs", "$PSScriptRoot\QasmAngle.cs")
+$compilerArgs += "$PSScriptRoot\QasmGateSerializer.cs"
 $compilerArgs += "$PSScriptRoot\SessionStore.cs"
 $compilerArgs += "$PSScriptRoot\MatrixDeclarations.cs"
 $compilerArgs += "$PSScriptRoot\MatrixDeclarationEditor.cs"
