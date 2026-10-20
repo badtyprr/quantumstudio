@@ -172,7 +172,16 @@ int main(){try {
  equal("quantum: |x>_θ",R"(qbasis(x,"θ"))");
 
  equal("quantum: |x>_N","quantum: |x>_{N}");
- equal("quantum: QFT_N|x>_N","quantum: QFT_N|x>_{N}");
+ {
+  // Compare the parsed symbolic values, not an unconditional equality:
+  // expanding Fourier introduces 1/sqrt(N), whose domain excludes N=0.
+  MathStructure plain=calculator.calculate("quantum: QFT_N|x>_N",eo);
+  MathStructure braced=calculator.calculate("quantum: QFT_N|x>_{N}",eo);
+  if(!plain.equals(braced) || !plain.isFunction() ||
+     plain.function()->referenceName()!="qfourierdomain")
+   throw std::runtime_error("Braced Fourier basis dimension changed the guarded symbolic value");
+  ++checks;
+ }
  calculator.addVariable(new KnownVariable("","registerdim",std::string("3")));
  equal("quantum: |1>_registerdim","[0;1;0]");
  equal("quantum: <1|_registerdim","[0,1,0]");
