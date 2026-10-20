@@ -284,6 +284,18 @@ class QuantumStudio {
     finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
    };
   }
+  if((args.Length==3 || args.Length==4) && args[0]=="--composer-source-qasm-test") {
+   window.Loaded+=delegate {
+    CircuitComposer composer=null;
+    try {
+     if(args.Length==4 && args[3]!="modules")throw new InvalidDataException("Unknown source import test mode.");
+     composer=new CircuitComposer(window,delegate(string value){});composer.Show();
+     composer.VerifySourceImport(args[1],args[2],args.Length==4);
+     File.WriteAllText(args[2],"PASS: frozen numerical composer source import, undo/edit/save/reopen and standalone export.");
+    } catch(Exception ex) {File.WriteAllText(args[2],"FAIL: "+ex);Environment.ExitCode=1;}
+    finally {if(composer!=null)composer.Close();window.Close();}
+   };
+  }
   if(args.Length==3 && args[0]=="--classical-qasm-test") {
    window.Loaded+=delegate {
     ClassicalProgramWindow editor=null;

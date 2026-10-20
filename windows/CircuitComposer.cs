@@ -239,6 +239,32 @@ class CircuitComposer : Window {
   }
   Restore(original);resultView.SelectedIndex=0;Width=1040;Height=780;helpDetails.IsExpanded=false;expressionDetails.IsExpanded=false;zoom.Value=1;page.ScrollToTop();UpdateLayout();
  }
+ public void VerifySourceImport(string path,string report,bool modules) {
+  string before=Snapshot();
+  ImportSource(QasmImport.CompileSource(path,false,false,modules));
+  string imported=Snapshot(),expectedExpression=Expression();
+  if(sourceDocument==null || sourceDocument.CircuitEdited)throw new Exception("Composer import lost original source.");
+  if(!Undo() || Snapshot()!=before || !Redo() || Snapshot()!=imported)throw new Exception("Composer source import history changed data.");
+  SaveCircuit(report+".qcircuit");
+  if(!AddGate("X","0","") || !sourceDocument.CircuitEdited)throw new Exception("Composer source edit was not recorded.");
+  FitWires();CaptureSource(report+".edited.png");
+  if(!Undo() || Snapshot()!=imported)throw new Exception("Composer edit undo lost source.");
+  OpenCircuit(report+".qcircuit");
+  if(Snapshot()!=imported || Expression()!=expectedExpression)throw new Exception("Composer source save/reopen changed data.");
+  try {LoadCircuit("{");throw new Exception("Malformed source document accepted.");}catch(InvalidDataException){}
+  if(Snapshot()!=imported)throw new Exception("Invalid open changed composer source.");
+  File.WriteAllText(report+".qasm",OpenQasm(),new UTF8Encoding(false));
+  File.WriteAllText(report+".expression.txt",Expression(),new UTF8Encoding(false));
+  FitWires();CaptureSource(report+".png");
+  Width=MinWidth;Height=MinHeight;UpdateLayout();page.ScrollToTop();FitWires();CaptureSource(report+".minimum.png");
+ }
+ void CaptureSource(string path) {
+  UpdateLayout();
+  var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);
+  bitmap.Render(this);var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder();
+  encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
+  using(var file=File.Create(path))encoder.Save(file);
+ }
  static bool ControlledAngle(string name) {return name=="CP" || name=="CRx" || name=="CRy" || name=="CRz";}
  static bool ParityRotation(string name) {return name=="XXPlusYY" || name=="XXMinusYY";}
  static bool Interaction(string name) {return name=="Rxx" || name=="Ryy" || name=="Rzz" || name=="Rzx";}

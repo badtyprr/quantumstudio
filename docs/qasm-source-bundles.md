@@ -131,6 +131,14 @@ source-bearing save/reopen, and an edit against a document one byte below the
 4 MiB limit. Packaged GUI validation and publication of this composer change
 remain separate release gates.
 
+`windows/test-composer-source-import.py` exercises the actual GUI with the frozen
+compiler for a strict local include and both unchanged QB-004 generated
+subroutines. It verifies original bytes/hashes, save/reopen and history, and
+recompiles standalone exports. Export comparison requires the explicit initial
+reset of each qubit followed by identical operations and wire order; it does not
+ignore arbitrary reset differences. OpenQASM CI and packaging run these three
+cases. This remains scoped circuit coverage, not a complete notebook audit.
+
 Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environment.
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
 UTF-8/BOM, missing/cyclic files, path boundaries and link retargeting, limits,
