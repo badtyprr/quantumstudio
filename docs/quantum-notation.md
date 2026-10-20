@@ -593,14 +593,16 @@ unfinished.
 It resets qubits and explicitly initializes bit storage, while leaving integer
 variables undefined until assigned. It emits recognized named gates,
 measurements, resets, masked and expression branches, simultaneous bit
-assignments, integer stores, standard-budget while loops, break/continue, and
+assignments, integer stores, standard-budget while/range loops, break/continue, and
 whole-program end. It builds the complete text before returning it to a caller.
 
-Fourteen generated programs exercise compiler, exact and sampled behavior.
+Twenty-five generated programs exercise compiler, exact and sampled behavior.
 Parameterized phase checks evaluate symbolic exact probabilities numerically;
 rational cases keep strict comparisons. Unsupported matrix gate expressions,
-noise, custom loop budgets, integer clears and range loops are rejected explicitly.
-Integer-lifetime reconstruction and the editor's export action remain unfinished;
+noise, custom loop budgets and non-lexical integer lifetimes are rejected explicitly.
+Lexical integer lifetimes are reconstructed only when clear placement and loop
+transfers prove that leaving the scope preserves undefined-variable behavior.
+The editor's export action and broader program equivalence checks remain unfinished;
 this component does not add an export command to the GUI.
 
 ### Native integer value groundwork

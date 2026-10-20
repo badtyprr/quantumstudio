@@ -9,7 +9,7 @@ if (Test-Path -LiteralPath $CasesPath) { throw 'Select a fresh program-case path
 New-Item -ItemType Directory -Force -Path (Split-Path $CasesPath -Parent) | Out-Null
 $fx = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319'
 $test = Join-Path $repo 'dist/ClassicalProgramQasmTests.exe'
-$sources = @('ClassicalProgramQasm.cs', 'ClassicalProgramQasmTests.cs', 'ClassicalCircuit.cs',
+$sources = @('ClassicalProgramQasm.cs', 'ClassicalQasmScopes.cs', 'ClassicalProgramQasmTests.cs', 'ClassicalCircuit.cs',
     'NumericalSampling.cs', 'ClassicalExpression.cs', 'ClassicalExpressionQasm.cs',
     'ClassicalQasmStorage.cs', 'QasmGateSerializer.cs', 'QasmAngle.cs') |
     ForEach-Object { Join-Path $PSScriptRoot $_ }

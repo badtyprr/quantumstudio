@@ -25,7 +25,7 @@ for case in cases:
     run = subprocess.run([str(args.compiler.resolve()), "--classical"], input=case["source"].encode(), capture_output=True, timeout=30)
     assert run.returncode == 0, (case["name"], run.stderr.decode("utf-8",errors="replace"), case["source"])
     circuit = json.loads(run.stdout)
-    assert 2 <= circuit["Version"] <= 9
+    assert 2 <= circuit["Version"] <= 10
     assert len(circuit["OutputBits"]) == len(case["expected"])
     checks += 1
     if args.worker is None:
@@ -41,6 +41,8 @@ for case in cases:
             protocol = (b"QEXACT8\n" if exact else b"QSAMPLE9\n") if circuit["Version"] >= 9 else (b"QEXACT7\n" if exact else b"QSAMPLE8\n") if circuit["Version"] >= 8 else (b"QEXACT6\n" if exact else b"QSAMPLE7\n")
             assert circuit["LoopConditionBudget"] == 1000000
             declarations += n(32)
+        if circuit["Version"] >= 10:
+            protocol = b"QEXACT9\n" if exact else b"QSAMPLE10\n"
         outputs = circuit["OutputBits"]
         payload = protocol+n(circuit["Qubits"])+(b"" if exact else n(10000,1731))+n(sum(r["Size"] for r in circuit["Registers"]))+declarations+n(len(outputs),*outputs,len(circuit["Steps"]))+steps(circuit["Steps"])
         result = subprocess.run([str(worker), "--exact-circuit" if exact else "--sample"], input=payload, capture_output=True, timeout=30,

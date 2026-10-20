@@ -13,6 +13,7 @@ sealed class ClassicalProgramQasm {
  readonly ClassicalQasmStorage storage;
  readonly ClassicalExpressionQasm expressions;
  readonly ClassicalIntegerType[] variables;
+ ClassicalQasmScopes scopes;
  static readonly HashSet<string> Gates=new HashSet<string>(
   ("H X Y Z S T Sdg Tdg SX SXdg Rx Ry Rz P CNOT CZ SWAP CCX CY CH CCZ CSWAP "+
    "CP CRx CRy CRz Rxx Ryy Rzz Rzx R U3 fSim ECR FSWAP iSWAP XXPlusYY XXMinusYY").Split(' '));
@@ -32,14 +33,15 @@ sealed class ClassicalProgramQasm {
   return new ClassicalProgramQasm(value).Build();
  }
  string Build() {
+  var steps=circuit.SamplingGates();
+  scopes=new ClassicalQasmScopes(steps,variables.Length);
   var prefix=new StringBuilder("OPENQASM 3.0;\ninclude \"stdgates.inc\";\n");
   if(circuit.Qubits>0)prefix.Append("qubit["+Number(circuit.Qubits)+"] q;\nreset q;\n");
   var body=new StringBuilder();
   // QuantumStudio starts bits at zero. OpenQASM declarations alone do not
   // promise that value. Integer variables deliberately remain undefined.
   for(int i=0;i<storage.BitCount;i++)body.Append(storage.Bit(i)+" = 0;\n");
-  for(int i=0;i<variables.Length;i++)body.Append(Type(variables[i])+" v"+Number(i)+";\n");
-  Statements(body,circuit.SamplingGates());
+  Statements(body,steps);
   prefix.Append(storage.ProgramBody(body.ToString()));
   string source=prefix.ToString();
   if(Encoding.UTF8.GetByteCount(source)>262144)
@@ -76,6 +78,7 @@ sealed class ClassicalProgramQasm {
   if(no!=null && no.Count>0){text.Append("else {\n");Statements(text,no);text.Append("}\n");}
  }
  void Statements(StringBuilder text,IList<NumericalSampling.Gate> gates) {
+  foreach(int slot in scopes.Declarations(gates))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
   foreach(var gate in gates) {
    switch(gate.Kind) {
     case NumericalSampling.Operation.Gate:Gate(text,gate);break;
@@ -101,9 +104,14 @@ sealed class ClassicalProgramQasm {
     case NumericalSampling.Operation.Break:text.Append("break;\n");break;
     case NumericalSampling.Operation.Continue:text.Append("continue;\n");break;
     case NumericalSampling.Operation.End:text.Append("end;\n");break;
-    case NumericalSampling.Operation.ClearInteger:
+    case NumericalSampling.Operation.ClearInteger:break; // Proven lexical exit.
     case NumericalSampling.Operation.ForRange:
-     throw new InvalidDataException("OpenQASM export requires integer-lifetime reconstruction for "+gate.Kind+".");
+     if(circuit.LoopConditionBudget!=1000000)
+      throw new InvalidDataException("OpenQASM export requires the standard 1000000-condition loop budget.");
+     int iterator=gate.VariableSlot.Value;
+     text.Append("for "+Type(variables[iterator])+" v"+Number(iterator)+" in ["+
+      expressions.Integer(gate.Range.Start)+":"+expressions.Integer(gate.Range.Step)+":"+expressions.Integer(gate.Range.Stop)+"] {\n");
+     Statements(text,gate.WhenTrue);text.Append("}\n");break;
     case NumericalSampling.Operation.Channel:
     case NumericalSampling.Operation.Readout:
      throw new InvalidDataException("OpenQASM export does not support "+gate.Kind+" noise operations.");

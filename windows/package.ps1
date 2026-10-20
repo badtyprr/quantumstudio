@@ -120,7 +120,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM storage tests failed.' }
     $programCases = Join-Path $repo ('dist/program-qasm/' + [Guid]::NewGuid().ToString('N') + '/cases.json')
     & (Join-Path $PSScriptRoot 'test-classical-program-qasm.ps1') -CasesPath $programCases
-    & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $programCases --expected-cases 14 --worker (Join-Path $output 'quantum-worker.exe')
+    & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $programCases --expected-cases 25 --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM program tests failed.' }
     & (Join-Path $PSScriptRoot 'test-keyboard.ps1') -Distribution $output
 } finally { $env:QALCULATE_DEFINITIONS_DIR = $oldDefinitions }
