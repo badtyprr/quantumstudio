@@ -103,6 +103,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged classical expression tests failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-loop-request-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged runtime loop checks failed.' }
+    & $PythonPath (Join-Path $repo 'src\quantum-runtime-angle-request-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged runtime angle checks failed.' }
     & (Join-Path $repo 'dist\gui-validation\classical-expression-tests.exe') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged classical expression adapter tests failed.' }
     & (Join-Path $repo 'dist\gui-validation\exact-circuit-tests.exe') (Join-Path $output 'quantum-worker.exe')
