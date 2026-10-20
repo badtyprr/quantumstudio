@@ -44,6 +44,9 @@ EXTRA_DIST = config.rpath  \
 	windows/test-classical-storage-qasm.ps1 \
 	windows/ClassicalProgramQasm.cs \
 	windows/ClassicalQasmScopes.cs \
+	windows/ClassicalQasmExport.cs \
+	windows/ClassicalQasmExportTests.cs \
+	windows/test-classical-export.ps1 \
 	windows/ClassicalProgramQasmTests.cs \
 	windows/test-classical-program-qasm.ps1 \
 	windows/ClassicalExpressionQasmTests.cs \
@@ -68,6 +71,8 @@ EXTRA_DIST = config.rpath  \
 	windows/ComposerSourceTests.cs \
 	windows/qasm_source_diagnostics.py \
 	windows/qasm_subroutine_scope.py \
+	windows/test-classical-module-export.py \
+	windows/test-classical-export-ui.py \
 	windows/test-composer-source-import.py \
 	windows/test-classical-module-import.py \
 	windows/test-source-files-ui.py \

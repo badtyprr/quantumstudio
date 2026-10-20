@@ -24,6 +24,7 @@ sealed class ClassicalProgramWindow : Window {
  readonly TextBlock status=new TextBlock {TextWrapping=TextWrapping.Wrap};
  readonly TextBlock sourceStatus=new TextBlock {TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted,Margin=new Thickness(0,4,0,4)};
  readonly Button undo=new Button {Content="Undo"},redo=new Button {Content="Redo"};
+ readonly Button export=new Button {Content="Export OpenQASM…"};
  string saved;
  bool verifying;
  public ClassicalProgramWindow(Window owner) {
@@ -37,7 +38,9 @@ sealed class ClassicalProgramWindow : Window {
   top.Children.Add(new TextBlock {Text="Quantum circuit · classical control",FontSize=26,FontWeight=FontWeights.SemiBold});
   top.Children.Add(new TextBlock {Text="Measurements save into registers. Variables hold typed values; if chooses once, while repeats while its condition is true; for visits an inclusive integer range.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,6,0,12)});
   var commands=new WrapPanel();top.Children.Add(commands);
-  Button(commands,"Open…",Open);Button(commands,"Save…",Save);Button(commands,"Sample…",()=>new SamplingWindow(this,history.Current).Show());
+  Button(commands,"Open…",Open);Button(commands,"Save…",Save);
+  commands.Children.Add(export);export.Click+=async delegate {await Export();};
+  Button(commands,"Sample…",()=>new SamplingWindow(this,history.Current).Show());
   Button(commands,"Exact probabilities…",()=>new ExactCircuitWindow(this,history.Current).Show());
   var convention=new ComboBox {Width=180,VerticalAlignment=VerticalAlignment.Center};convention.Items.Add("IBM / Qiskit U");convention.Items.Add("Published OpenQASM 3 U");convention.SelectedIndex=0;commands.Children.Add(convention);System.Windows.Automation.AutomationProperties.SetName(convention,"Imported U gate convention");
   var moduleHeaders=new CheckBox {Content="Generated module headers",VerticalAlignment=VerticalAlignment.Center,ToolTip="Allow matching version headers and repeated standard-library includes in generated modules."};commands.Children.Add(moduleHeaders);
@@ -184,6 +187,58 @@ sealed class ClassicalProgramWindow : Window {
  }
  void Open() {var picker=new Microsoft.Win32.OpenFileDialog {Filter="Classical circuits (*.qcircuit)|*.qcircuit|JSON (*.json)|*.json"};if(picker.ShowDialog(this)!=true)return;string text=new UTF8Encoding(false,true).GetString(BoundedUtf8File.Read(picker.FileName,SourceCircuitDocument.MaxDocumentBytes,"Classical circuit"));var next=new ClassicalProgramHistory(history.Current);next.Open(text);if(!Discard())return;history.Open(next.Serialize());saved=history.Serialize();}
  void Save() {var picker=new Microsoft.Win32.SaveFileDialog {Filter="Classical circuit (*.qcircuit)|*.qcircuit",DefaultExt=".qcircuit",AddExtension=true,OverwritePrompt=true};if(picker.ShowDialog(this)!=true)return;SaveTo(picker.FileName);}
+ async System.Threading.Tasks.Task<ClassicalQasmExport> PrepareExport() {
+  string before=history.Serialize();var snapshot=history.Current;
+  var prepared=await System.Threading.Tasks.Task.Run(()=>ClassicalQasmExport.Prepare(snapshot));
+  if(history.Serialize()!=before)throw new InvalidDataException("The circuit changed while checking the export. Export again to use the current circuit.");
+  return prepared;
+ }
+ async System.Threading.Tasks.Task Export() {
+  if(!export.IsEnabled)return;
+  export.IsEnabled=false;status.Text="Checking OpenQASM export…";
+  try {
+   string before=history.Serialize();
+   var prepared=await PrepareExport();
+   if(!IsVisible)return;
+   var picker=new Microsoft.Win32.SaveFileDialog {Filter="OpenQASM 3 (*.qasm)|*.qasm",DefaultExt=".qasm",AddExtension=true,FileName="My classical circuit.qasm",OverwritePrompt=true};
+   if(picker.ShowDialog(this)!=true){status.Text="Export canceled.";return;}
+   if(history.Serialize()!=before)throw new InvalidDataException("The circuit changed. Export again to use the current circuit.");
+   prepared.SaveTo(picker.FileName);
+   status.Text="Exported OpenQASM · "+Path.GetFileName(picker.FileName);
+  } catch(Exception error) {status.Text=error.Message;}
+  finally {export.IsEnabled=true;}
+ }
+ public async System.Threading.Tasks.Task VerifyExport(string path,string report,bool modules=false) {
+  verifying=true;Import(path,false,modules);Refresh();
+  if(history.Current.Qubits<1)throw new ArgumentException("Export GUI fixture needs a qubit.");
+  string originalSource=history.Source.SourceJson;
+  var originalExport=await PrepareExport();originalExport.SaveTo(report+".original.qasm");
+  history.Edit(d=>{var edit=new[]{new ClassicalCircuit.Step{Kind="Gate",Expression="X",Wires=new[]{0}}};
+   d.Steps=modules?edit.Concat(d.Steps).ToArray():d.Steps.Concat(edit).ToArray();});
+  Refresh();string before=history.Serialize(),savedBefore=saved;
+  bool undoBefore=history.CanUndo,redoBefore=history.CanRedo;
+  var prepared=await PrepareExport();string target=report+".qasm";
+  File.WriteAllText(target,"existing export",new UTF8Encoding(false));
+  prepared.SaveTo(target);string exported=File.ReadAllText(target,new UTF8Encoding(false,true));
+  if(exported!=ClassicalProgramQasm.Export(history.Current) || history.Serialize()!=before || saved!=savedBefore ||
+   history.CanUndo!=undoBefore || history.CanRedo!=redoBefore || history.Source.SourceJson!=originalSource || !history.Source.CircuitEdited)
+   throw new Exception("Export changed history/source metadata or ignored edits.");
+  status.Text="Exported OpenQASM · "+Path.GetFileName(target);Capture(report+".png");
+  foreach(string bad in new[]{"matrix(2,2,[0,1,1,0])","Rx(1/0)"}) {
+   history.Edit(d=>d.Steps=d.Steps.Concat(new[]{new ClassicalCircuit.Step{Kind="Gate",Expression=bad,Wires=new[]{0}}}).ToArray());
+   string invalid=history.Serialize();bool failed=false;
+   try {var rejected=await PrepareExport();rejected.SaveTo(target);}
+   catch(InvalidDataException error){failed=true;status.Text=error.Message;}
+   if(!failed || history.Serialize()!=invalid || saved!=savedBefore || File.ReadAllText(target)!=exported)
+    throw new Exception("Rejected export changed the document or destination.");
+   if(bad.StartsWith("matrix"))Capture(report+".rejected.png");
+   history.Undo();if(history.Serialize()!=before)throw new Exception("Export failure damaged undo.");
+  }
+  SaveTo(report+".qcircuit");history.Open(File.ReadAllText(report+".qcircuit",new UTF8Encoding(false,true)));
+  if(history.Serialize()!=before || history.Source.SourceJson!=originalSource)throw new Exception("Export changed save/reopen behavior.");
+  Refresh();status.Text="Exported OpenQASM · "+Path.GetFileName(target);
+  Width=MinWidth;Height=MinHeight;UpdateLayout();((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(report+".minimum.png");
+ }
  void SaveTo(string path) {string text=history.Serialize(),temp=path+"."+Guid.NewGuid().ToString("N")+".tmp";try {File.WriteAllText(temp,text,new UTF8Encoding(false));if(File.Exists(path))File.Replace(temp,path,null);else File.Move(temp,path);saved=text;}finally {if(File.Exists(temp))File.Delete(temp);}}
  public void VerifyEditing(string screenshot) {
   verifying=true;

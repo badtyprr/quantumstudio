@@ -565,9 +565,7 @@ Machine-sized integers are emitted as explicit 64-bit types to preserve
 QuantumStudio's semantics across targets. Arithmetic and comparisons retain the
 model's promotion rules; bit selections retain their order and repeated indices.
 
-This is an internal component, not a classical-editor export command. Full
-program export still needs declarations, control flow, variable lifetimes,
-output ordering, and explicit handling of unsupported operations. Tests generate
+The program exporter below uses this component for typed expressions. Tests generate
 39 expressions for frozen-compiler validation; packaged tests also check their
 exact and sampled outcomes.
 
@@ -581,15 +579,14 @@ and sampled execution. An undefined-read case verifies that empty results do
 not suppress execution errors. This requires the explicit-output and local-scope
 importer support.
 
-This component is not yet connected to whole-program export. With working bits
+With working bits
 but no selected outputs, it places storage and operations in a local block so
 the scratch bits do not become program results. Empty storage is also allowed.
 Expanded expressions remain subject to the importer's complexity
-limits. Control flow, integer lifetimes, and the editor export command remain
-unfinished.
+limits.
 
 
-`ClassicalProgramQasm` is an internal program serializer under development.
+`ClassicalProgramQasm` serializes the complete classical program.
 It resets qubits and explicitly initializes bit storage, while leaving integer
 variables undefined until assigned. It emits recognized named gates,
 measurements, resets, masked and expression branches, simultaneous bit
@@ -603,8 +600,16 @@ rational cases keep strict comparisons. Unsupported matrix gate expressions,
 noise, custom loop budgets and non-lexical integer lifetimes are rejected explicitly.
 Lexical integer lifetimes are reconstructed only when clear placement and loop
 transfers prove that leaving the scope preserves undefined-variable behavior.
-The editor's export action and broader program equivalence checks remain unfinished;
-this component does not add an export command to the GUI.
+Use **Export OpenQASM…** in the classical circuit editor to export the current
+edited program. The bundled compiler validates it before the save dialog opens.
+If validation fails, the destination stays untouched; if the circuit changes during
+validation, export again. Export preserves the original imported source, undo
+history, and unsaved-change marker. The resulting `.qasm` is standalone. A focused qBraid module test imports unchanged `oracle.qasm` and `bernvaz.qasm`
+through nested includes, exports original and edited circuits through the editor,
+and recompiles the standalone results. Four oracle basis preparations distinguish
+its controls; Bernstein–Vazirani observes its secret, and another case checks
+early termination. Twelve exports have independently expected exact and sampled
+outputs. This covers those module probes, not complete notebook execution.
 
 ### Native integer value groundwork
 
