@@ -10,7 +10,7 @@ void RuntimeRotation::validate(unsigned bits,const QuantumClassical::IntegerStor
  angle_.validate(bits,storage);
 }
 std::vector<Complex> RuntimeRotation::matrix(std::uint64_t record,unsigned bits,const QuantumClassical::IntegerStorage &storage) const {
- const double half=angle_.evaluate(record,bits,storage)/2;
+ const double half=angle(record,bits,storage)/2;
  const double c=std::cos(half),s=std::sin(half);
  switch(axis_) {
   case Axis::X:return {c,Complex(0,-s),Complex(0,-s),c};

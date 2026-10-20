@@ -7,13 +7,18 @@
 #include "QuantumClassical.h"
 #include "QuantumClassicalIntegerExpression.h"
 #include "QuantumClassicalRangeExpression.h"
+#include "QuantumRuntimeRotation.h"
 #include <memory>
 
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation };
  const Kind kind;
+ const std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation;
+ static CircuitStep rotate(const QuantumNumerics::RuntimeRotation &operation,unsigned wire) {
+  return {Kind::Rotation,{wire},0,0,0,{},{},{},{},{},0,{},{},std::make_shared<const QuantumNumerics::RuntimeRotation>(operation)};
+ }
  const std::vector<unsigned> wires;
  const unsigned classicalBit;
  const std::uint64_t mask,value;
@@ -72,8 +77,9 @@ private:
   std::shared_ptr<const std::vector<CircuitStep>> yes={},std::shared_ptr<const std::vector<CircuitStep>> no={},
   std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,
   std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},
-  std::shared_ptr<const QuantumClassical::RangeExpression> range={}):
-  kind(k),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
+  std::shared_ptr<const QuantumClassical::RangeExpression> range={},
+  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={}):
+  kind(k),rotation(rotation_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.
