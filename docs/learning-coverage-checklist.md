@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: finish REL-04 integration/publication; run AUD-01 and AUD-02 alongside code work; then finish DEV-05 and the reproduced DEV-16 include gap, followed by the remaining DEV-03/04/06/07/08 work. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
+Recommended order: finish REL-05 integration/publication; run AUD-01 and AUD-02 alongside code work; then finish DEV-05 and the reproduced DEV-16 include gap, followed by the remaining DEV-03/04/06/07/08 work. For DEV-16, use the ordered steps below to finish editor preservation before changed-dependency and diagnostic work. Choose the first ready P1 item supported by a failing source fixture. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -38,7 +38,8 @@ Recommended order: finish REL-04 integration/publication; run AUD-01 and AUD-02 
 - [x] REL-01: Release `92f80696`: 70 packaged audit groups, 262 verified visual captures, 340 manifest files. ZIP SHA-256 `d621438711c3ff6a58f819b3c3d559db547b187d3b2c5f5f099e87c71bdb3323`.
 - [x] REL-02: Published [checkpoint `14ed45e2`](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-14ed45e2), including matrix declarations/assumptions, Gram positivity, Fourier display and the package-smoke repair. Validation: 74 packaged audit groups, 266 verified visual captures, 340 manifest files. ZIP SHA-256 `6b1a7e5df9d40904ff5ce4d26367a67c24c55741db631f325ebb4aa3122e5f4d`.
 - [x] REL-03: Published [checkpoint `d7acc12b`](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-d7acc12b). Includes [#292](https://github.com/badtyprr/quantumstudio/pull/292), [#293](https://github.com/badtyprr/quantumstudio/pull/293), [#295](https://github.com/badtyprr/quantumstudio/pull/295), [#296](https://github.com/badtyprr/quantumstudio/pull/296), [#297](https://github.com/badtyprr/quantumstudio/pull/297) and built-in `|GHZ>` in [#298](https://github.com/badtyprr/quantumstudio/pull/298). Required merged-tip CI, 79 packaged audit groups and 271 visual captures passed. ZIP SHA-256 `cb0b035a17da593f22ef056481cba05c903f4c34cd2a3df00a62f8a7e9241af4`.
-- [ ] REL-04: Publish the symbolic-label and local-include changes in [#299](https://github.com/badtyprr/quantumstudio/pull/299), [#300](https://github.com/badtyprr/quantumstudio/pull/300) and [#301](https://github.com/badtyprr/quantumstudio/pull/301) after exact-head review, CI and merged-artifact validation. None is included in REL-02 or REL-03. Their prerequisite implementation does not complete DEV-05 or DEV-16.
+- [x] REL-04: Published [checkpoint `0e52ca9e`](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-0e52ca9e), including symbolic binary labels and the local-include compiler CLI in [#299](https://github.com/badtyprr/quantumstudio/pull/299), [#300](https://github.com/badtyprr/quantumstudio/pull/300) and [#301](https://github.com/badtyprr/quantumstudio/pull/301). Required CI, 81 packaged audit groups, 272 visual captures and 340 payload hashes passed. Native suite: 48 passed, one existing thread test skipped, zero failures. ZIP SHA-256 `10f70826ee1c77e0579be98df87ee2ef78d6c504d7dbab713c751f8f7900b2ff`. This does not complete DEV-05 or DEV-16.
+- [ ] REL-05: Integrate and publish the source-document model, classical history and editor controls in [#303](https://github.com/badtyprr/quantumstudio/pull/303), [#304](https://github.com/badtyprr/quantumstudio/pull/304) and [#305](https://github.com/badtyprr/quantumstudio/pull/305), after exact-head review, required CI and merged-artifact validation. These changes are not included in REL-04.
 
 ## Acceptance criteria by development item
 
@@ -76,7 +77,7 @@ Recommended order: finish REL-04 integration/publication; run AUD-01 and AUD-02 
 - [ ] **Register dimensions and symbolic bit strings** — P1; Partial; size M; dependencies: None.
 - Source focus: Fundamentals: query algorithms and Fourier algorithms. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Carry widths through tensor products, basis labels and bit operations. Test leading zeros, empty registers, concatenation, indexed registers, and contradictory dimensions; ambiguous widths remain symbolic.
-- Implemented portion, release pending in REL-04: [#299](https://github.com/badtyprr/quantumstudio/pull/299) preserves typed symbolic binary labels through operations, set kets and copy/substitution, including deferred cardinality when labels may become equal. Required CI passed; 1,540 worker checks and 18 GUI checks passed locally. Indexed-register concatenation, general symbolic domains and widths beyond the finite limit remain outstanding.
+- Released portion in REL-04: [#299](https://github.com/badtyprr/quantumstudio/pull/299) preserves typed symbolic binary labels through operations, set kets and copy/substitution, including deferred cardinality when labels may become equal. Required CI and packaged validation passed, including 1,540 worker checks and 18 symbolic-label GUI checks. Indexed-register concatenation, general symbolic domains and widths beyond the finite limit remain outstanding.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
 
 ### DEV-06
@@ -152,12 +153,17 @@ Recommended order: finish REL-04 integration/publication; run AUD-01 and AUD-02 
 ### DEV-16
 
 - [ ] **Local OpenQASM include dependencies** — P1; Partial; size M; dependencies: None.
-- Source: [QB-004 evidence](learning-evidence/QB-004.md), generated oracle and algorithm subroutine instructions. Direct includes fail while explicit inlining imports successfully.
+- Source: [QB-004 evidence](learning-evidence/QB-004.md), generated oracle and algorithm subroutine instructions. The original reproduction showed direct includes failing while explicit inlining imported successfully; REL-04 resolves the compiler CLI portion.
 - Acceptance: Resolve dependencies relative to a selected source file with an explicit policy for external paths and paste-only input. Preserve standard includes; diagnose missing files, cycles and duplicate declarations with file/line context. Bound depth and total bytes; preserve dependency identity through save/load/export and detect changed dependencies. Verify both generated subroutines and numerical equivalence to inlining, nested includes and paths containing spaces.
-- Priority rationale: This blocks a demonstrated local circuit workflow. Select after the queued Fourier/basis release and DEV-05; it does not depend on runtime wire indexing or cloud access. Source-aware import context is part of this task.
-- Implemented portions, release pending in REL-04: [#300](https://github.com/badtyprr/quantumstudio/pull/300) captures bounded dependency snapshots; [#301](https://github.com/badtyprr/quantumstudio/pull/301) adds the source-aware compiler CLI and generated-module adapter. Both unchanged QB-004 subroutine fixtures match explicitly inlined circuit documents in Python and the frozen compiler.
-- Still required: retain source identity in both editors and undo/history; surface changed dependencies; map compiler diagnostics to original source; verify save/load, standalone export and failure recovery. The CLI route alone does not close DEV-16 or QB-004.
-- Evidence: release `92f80696` importer reproduction in `docs/learning-evidence/QB-004.md`; proposed tests `windows/test-qasm-source-bundle.py` and `windows/test-qasm-file-import.py`. Owner: unassigned.
+- Priority rationale: This blocks a demonstrated local circuit workflow and does not depend on runtime wire indexing or cloud access. Source-aware import context is part of this task.
+- Released in REL-04: [#300](https://github.com/badtyprr/quantumstudio/pull/300) captures bounded dependency snapshots; [#301](https://github.com/badtyprr/quantumstudio/pull/301) adds the source-aware compiler CLI and generated-module adapter. Both unchanged QB-004 subroutine fixtures match explicitly inlined circuit documents in Python and the frozen compiler.
+- Ordered remaining steps:
+  - [ ] DEV-16a: Release classical-editor source preservation through import, save/reopen and undo/redo (REL-05). Implementation validation: 49 document checks, 99 history checks, six frozen C# bridge checks, real GUI round-trip with two byte-verified source files, and three inspected layouts. These are scoped checks, not whole-notebook coverage.
+  - [ ] DEV-16b: Migrate the numerical composer to the same source-bearing document model. Preserve provenance through edits, history and failures; keep runtime requests circuit-only.
+  - [ ] DEV-16c: Surface changed or missing dependencies with an explicit check/reimport action. A saved source root must not silently authorize filesystem reads.
+  - [ ] DEV-16d: Map compiler diagnostics to the original dependency file and line, including module-header adaptation.
+  - [ ] DEV-16e: Verify standalone export and numerical equivalence for both unchanged QB-004 generated subroutines through both editors, including nested includes, spaces, Unicode and failure recovery.
+- Evidence: original reproduction in `docs/learning-evidence/QB-004.md`; released tests `windows/test-qasm-source-bundle.py` and `windows/test-qasm-file-import.py`; REL-05 adds `windows/test-source-import-bridge.ps1`. DEV-16 and QB-004 remain incomplete. Owner: unassigned.
 
 ### AUD-01
 
