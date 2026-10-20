@@ -63,6 +63,15 @@ class Printer {
  }
  Fragment render(const MathStructure &value,unsigned depth) {
   if(depth>128 || ++nodes>2048)return fallback(value);
+  if(value.isVector() && !value.isMatrix() && value.size()>0) {
+   bool labels=true;
+   for(size_t i=0;i<value.size();++i)labels=labels && value[i].isFunction() && value[i].function()->referenceName()=="qbitlabel";
+   if(labels) {
+    std::string text="{";
+    for(size_t i=0;i<value.size();++i) {if(i)text+=", ";text+=render(value[i],depth+1).text;}
+    return Fragment(text+"}");
+   }
+  }
   for(auto i=bindings.rbegin();i!=bindings.rend();++i)if(value.equals(i->first))return Fragment(i->second);
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
@@ -160,6 +169,15 @@ class Printer {
    return Fragment("|"+value[0].symbol()+"⟩ (basis "+value[1].symbol()+")");
   if(name=="qbitlabel" && value.size()==2)
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qmember" && value.size()==2)
+   return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
+  if(name=="qsumset" && value.size()==3) {
+   Fragment domain=render(value[1],depth+1);std::string index=fresh();
+   bindings.push_back({value[2],index});Fragment body=render(value[0],depth+1);bindings.pop_back();
+   return Fragment("∑_{"+index+" ∈ "+domain.text+"} ("+body.text+")",10);
+  }
+  if(name=="qbars" && value.size()==1)
+   return Fragment("|"+render(value[0],depth+1).text+"|");
   if((name=="qbitvalue" && value.size()==1) || ((name=="qbitxor" || name=="qbitdot") && value.size()==2)) {
    std::string text=name.substr(1)+"(";
    for(size_t i=0;i<value.size();++i) {if(i)text+=", ";text+=render(value[i],depth+1).text;}

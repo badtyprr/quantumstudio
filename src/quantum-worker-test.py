@@ -33,6 +33,9 @@ for flags in ((), ("--approx",)):
         "bitdot(bitstring(x,n),bitstring(y,n))",
         "qketstate(vector(bitstring(x,n),bitstring(y,n)))",
         "qketstate(bitstring(x,n))-qketstate(bitstring(x,n))",
+        "cardinality(vector(bitstring(x,n),bitstring(y,n)))",
+        "member(bitstring(x,n),vector(bitstring(y,n)))",
+        "qsumset(1,vector(bitstring(x,n),bitstring(y,n)),k)",
     ]:
         value=data("quantum:"+expression,*flags)
         assert "qbitlabel" in value["copy_text"]
@@ -59,6 +62,11 @@ for flags in ((), ("--approx",)):
     ]:
         value=data("quantum:"+expression,*flags)
         assert abs(Decimal(value["text"].replace("−","-")))<Decimal("1e-12"),(expression,value)
+
+    for expression in ["cardinality(vector(bitstring(x,n),bitstring(y,n)))", "member(bitstring(x,n),vector(bitstring(y,n)))", "qsumset(1,vector(bitstring(x,n),bitstring(y,n)),k)"]:
+        copied=data("quantum:"+expression,*flags)["copy_text"]
+        value=data("quantum:replace(replace(replace(("+copied+"),x,1),y,1),n,2)",*flags)
+        assert Decimal(value["text"])==1
 
 # The built-in GHZ label is the normalized, positive-phase three-qubit state.
 for flags in ((), ("--approx",)):
