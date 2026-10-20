@@ -22,7 +22,7 @@ sealed class ClassicalProgramQasm {
   return (value.Signedness==ClassicalIntegerType.Sign.Signed ? "int[" : "uint[")+Number(value.Width)+"]";
  }
  ClassicalProgramQasm(ClassicalCircuit value) {
-  circuit=value;variables=value.VariableTypes;
+  circuit=value;variables=value.VariableTypes??new ClassicalIntegerType[0];
   storage=new ClassicalQasmStorage(value.ClassicalBits,value.OutputBits);
   expressions=new ClassicalExpressionQasm(value.ClassicalBits,variables,storage);
   if(storage.BitCount>0 && variables.Length>=4096)

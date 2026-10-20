@@ -30,6 +30,8 @@ static class ClassicalProgramQasmTests {
   if(args.Length!=1 || File.Exists(args[0]))throw new ArgumentException("Pass a fresh case path.");
   Case("zero-initial-bits",Circuit(0,3,new[]{2,0,1},new S[0]),"000");
   Case("empty-program",Circuit(0,0,new int[0],new S[0]),"");
+  Case("version-two-without-variables",ClassicalCircuit.From(new ClassicalCircuit.Document{Version=2,Qubits=1,
+   Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},OutputBits=new[]{0},Steps=new[]{Gate("X",0),Measure(0,0)}}),"1");
   Case("measured-x",Circuit(1,1,new[]{0},new[]{Gate("X",0),Measure(0,0)}),"1");
   Case("reset",Circuit(1,1,new[]{0},new[]{Gate("X",0),new S{Kind="Reset",Wires=new[]{0}},Measure(0,0)}),"0");
   Case("phase-interference",Circuit(1,1,new[]{0},new[]{Gate("H",0),Gate("P(pi)",0),Gate("H",0),Measure(0,0)}),"1",false,true);

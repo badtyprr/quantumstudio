@@ -596,7 +596,7 @@ measurements, resets, masked and expression branches, simultaneous bit
 assignments, integer stores, standard-budget while/range loops, break/continue, and
 whole-program end. It builds the complete text before returning it to a caller.
 
-Thirty generated programs exercise compiler, exact and sampled behavior,
+Thirty-one generated programs exercise compiler, exact and sampled behavior,
 including measured range bounds, range snapshots and nested loop transfers.
 Parameterized phase checks evaluate symbolic exact probabilities numerically;
 rational cases keep strict comparisons. Unsupported matrix gate expressions,
