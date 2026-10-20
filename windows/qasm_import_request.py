@@ -1,5 +1,6 @@
 """Explicit source context for the compiler CLI; stdin retains its old contract."""
-from qasm_source_bundle import capture_source, MAX_BYTES
+import json
+from qasm_source_bundle import capture_source, check_snapshot, MAX_BYTES
 
 
 def import_request(arguments, stdin, convert):
@@ -9,7 +10,7 @@ def import_request(arguments, stdin, convert):
         arg = arguments[index]
         if arg in flags or arg in values:
             raise ValueError("Duplicate OpenQASM option: " + arg)
-        if arg in ("--published-u", "--classical", "--module-headers"):
+        if arg in ("--published-u", "--classical", "--module-headers", "--check-source"):
             flags.add(arg)
         elif arg in ("--source-file", "--source-root"):
             index += 1
@@ -19,6 +20,13 @@ def import_request(arguments, stdin, convert):
         else:
             raise ValueError("Unknown OpenQASM option: " + arg)
         index += 1
+    if "--check-source" in flags:
+        if flags != {"--check-source"} or set(values) != {"--source-root"}:
+            raise ValueError("Source checking requires only --check-source and an explicit --source-root.")
+        source = stdin.read(4194305)
+        if len(source) > 4194304:
+            raise ValueError("Source snapshot must be at most 4 MB.")
+        return check_snapshot(json.loads(source.decode("utf-8-sig")), root=values["--source-root"])
     options = dict(published_u="--published-u" in flags, classical="--classical" in flags)
     if "--source-file" in values:
         bundle = capture_source(values["--source-file"], root=values.get("--source-root"),
