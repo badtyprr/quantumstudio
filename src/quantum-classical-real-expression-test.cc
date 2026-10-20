@@ -42,7 +42,7 @@ int main() {try {
  IntegerStorage storage({signed64});
  auto variable=R::fromInteger(I::variable(signed64,0));
  variable.validate(0,storage); // Undefined is legal until the gate executes.
- reject<std::logic_error>([&]{variable.evaluate(0,0,storage);});
+ reject<std::domain_error>([&]{variable.evaluate(0,0,storage);});
  storage.write(0,TypedInteger::fromBits(signed64,3));check(variable.evaluate(0,0,storage)==3);
  auto fork=storage;storage.write(0,TypedInteger::fromBits(signed64,5));
  check(variable.evaluate(0,0,storage)==5);check(variable.evaluate(0,0,fork)==3);
@@ -50,6 +50,21 @@ int main() {try {
  IntegerStorage wrong({unsigned64});
  reject<std::invalid_argument>([&]{variable.validate(0,wrong);});
  auto zero=R::constant(0),one=R::constant(1);
+ // Integer operations must finish in their declared type before conversion.
+ auto three=I::constant(TypedInteger::fromBits(signed64,3));
+ auto two=I::constant(TypedInteger::fromBits(signed64,2));
+ check(evaluate(R::fromInteger(I::binary(Integer::Operation::Divide,three,two)))==1);
+ check(evaluate(R::binary(Op::Divide,R::fromInteger(three),R::fromInteger(two)))==1.5);
+ auto maximum=I::constant(TypedInteger::fromBits(signed64,(1ull<<63)-1));
+ reject<std::overflow_error>([&]{evaluate(R::fromInteger(I::binary(Integer::Operation::Add,maximum,two)));});
+ // Validation cannot read or precompute even an invalid runtime division.
+ auto divisor=R::binary(Op::Divide,one,variable);
+ storage.clear(0);divisor.validate(0,storage);
+ reject<std::domain_error>([&]{divisor.evaluate(0,0,storage);});
+ storage.write(0,TypedInteger::fromBits(signed64,0));
+ reject<std::domain_error>([&]{divisor.evaluate(0,0,storage);});
+ storage.write(0,TypedInteger::fromBits(signed64,2));
+ check(divisor.evaluate(0,0,storage)==0.5);
  reject<std::domain_error>([&]{R::constant(std::numeric_limits<double>::infinity());});
  reject<std::domain_error>([&]{R::constant(std::numeric_limits<double>::quiet_NaN());});
  reject<std::domain_error>([&]{evaluate(R::binary(Op::Divide,one,zero));});

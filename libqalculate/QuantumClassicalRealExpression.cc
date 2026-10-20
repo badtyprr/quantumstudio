@@ -3,9 +3,13 @@
 #include "QuantumClassicalIntegerStorage.h"
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 namespace QuantumClassical {
 namespace {
+static_assert(std::numeric_limits<double>::is_iec559 &&
+ std::numeric_limits<double>::digits==53 && std::numeric_limits<double>::max_exponent==1024,
+ "Runtime real expressions require IEEE 754 binary64 double");
 double finite(double value) {
  if(!std::isfinite(value))throw std::domain_error("Runtime real expression must be finite");
  return value;
