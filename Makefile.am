@@ -55,13 +55,19 @@ EXTRA_DIST = config.rpath  \
 	windows/SamplingReadout.cs \
 	windows/CircuitFileTests.cs \
 	windows/ComposerSourceTests.cs \
+	windows/qasm_source_diagnostics.py \
+	windows/qasm_subroutine_scope.py \
 	windows/test-composer-source-import.py \
+	windows/test-classical-module-import.py \
+	windows/test-source-files-ui.py \
 	windows/CssCircuitTests.cs \
 	windows/CssEncoderCircuitTests.cs \
 	windows/MainWindow.xaml \
 	windows/Notation-guide.html \
 	windows/QasmAngle.cs \
+	windows/QasmGateSerializer.cs \
 	windows/QasmImport.cs \
+	windows/SourceFilesWindow.cs \
 	windows/QasmImportTests.cs \
 	windows/QuantumStudio.cs \
 	windows/SessionStore.cs \
@@ -79,6 +85,7 @@ EXTRA_DIST = config.rpath  \
 	windows/test-gui.ps1 \
 	windows/test-keyboard.ps1 \
 	windows/test-sampling-shutdown.ps1 \
+	windows/test-sampling-shutdown-observation.ps1 \
 	windows/package.ps1 \
 	windows/README.txt \
 	windows/test-package.py \

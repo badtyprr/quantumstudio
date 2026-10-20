@@ -80,9 +80,9 @@ Source text and hashes remain unchanged when the circuit is edited.
 The document limits are 4 MiB for saved JSON, 256 KiB for normalized circuit
 JSON, and 256 KiB total captured source bytes, with 64 files/bindings. Invalid
 or unsavable replacements reject before returning a new object; the previous
-document remains intact. Future editor wiring must use this wrapper for
-save/load and history while keeping runtime circuit requests separate.
-Changed-file checks, source diagnostic mapping and standalone export acceptance
+document remains intact. Both editors use this wrapper for save/load and history
+while keeping runtime circuit requests separate.
+Source diagnostic mapping and standalone export acceptance
 for both QB-004 generated subroutines remain unfinished.
 
 `ClassicalProgramHistory` now retains the source wrapper with each history
@@ -107,10 +107,45 @@ been edited since import. Undo/redo includes source and import options, and
 the unsaved-changes check compares the complete saved document. The numerical
 composer also uses the source-bearing document model as described below.
 
-`windows/test-source-import-bridge.ps1` runs six checks against the frozen
+`windows/test-source-import-bridge.ps1` runs thirteen checks against the frozen
 compiler through the C# bridge, including Unicode/spaced paths, BOM,
 local includes, the explicit module-header option, and unchanged history after
 rejected imports. Both OpenQASM CI and packaging run this small integration test.
+
+## Checking and reimporting retained source
+
+In the numerical composer, choose **Import OpenQASM → Check / reimport source
+files…**. In the classical editor, choose **Source files…**. These actions require
+a circuit with retained source, imported or reopened from a source-bearing
+`.qcircuit` document.
+
+Select or enter the source folder containing the displayed entry path. The folder
+starts blank: opening a saved document never grants access to its recorded root.
+**Check files** reports each retained dependency as unchanged, changed, missing,
+retargeted, or unavailable. It compares original bytes, including a UTF-8 BOM,
+and dependency identity. It never changes the circuit, saved source, or history.
+Unavailable includes inaccessible files, oversized files, and links outside the
+selected folder. Checks are a point-in-time comparison, not a filesystem watch
+or an atomic guarantee against concurrent file changes.
+
+**Reimport from folder** compiles the current files with the original U convention,
+module-header option, and editor mode. It replaces the current circuit only after
+successful compilation and document validation. This intentionally replaces
+circuit edits made since import; **Undo** restores the prior circuit and sources.
+A failed reimport leaves them intact. Closing the dialog without reimporting
+also preserves the current document. Reimport resolves the current include graph,
+so new dependencies are captured even though a check compares only retained paths.
+
+The equivalent compiler check is `qasm-import.exe --check-source --source-root
+SELECTED_FOLDER`, with the saved `Source` object as UTF-8 JSON on stdin. It accepts
+at most 4 MiB of JSON, validates all snapshot paths and hashes before filesystem
+access, and returns a versioned report. Compilation flags cannot be combined with
+checking. The selected folder, never the saved `Root`, supplies the read boundary.
+
+`windows/test-source-files-ui.py` exercises both real editor dialogs with the
+frozen compiler: blank selection, unchanged/changed/missing files, failed
+reimport preservation, and undo after successful reimport. CI and packaging run
+it and retain six screenshots; generating screenshots alone is not visual review.
 
 ## Numerical circuit composer
 
@@ -143,3 +178,67 @@ Run `python windows/test-qasm-source-bundle.py` in the pinned compiler environme
 Tests cover nested and repeated includes, comments, spaces and Unicode paths,
 UTF-8/BOM, missing/cyclic files, path boundaries and link retargeting, limits,
 snapshot stability, and equivalence to explicitly inlined gate definitions.
+
+## Original source coordinates
+
+OpenQASM's [include semantics](https://openqasm.com/versions/3.0/language/comments.html#included-files)
+insert dependency content at the include site. The expanded text therefore needs
+a source map before compiler locations can be shown as original filenames.
+`SourceBundle.location(line, column)` maps one-based lines and zero-based Unicode
+character columns to immutable `SourceLocation` values. It reads the captured
+fragments only, so later edits or missing files cannot change the mapping.
+
+Fragments retain their starting column as well as their line. This matters for
+code following an include on the same line. Nested and repeated includes,
+CRLF text, Unicode, BOM input and the explicit generated-module-header adapter
+retain their original coordinates. Inserted separator newlines point to the
+include directive with `synthetic=True`; invalid coordinates reject rather than
+being attributed to nearby code.
+
+File imports now route grammar-error tokens, AST validation locations and the
+pinned compiler's semantic-error spans through this map. Displayed locations
+use `filename:line:column`, with both numbers starting at one. For example, an
+invalid operation in a nested include names the included file rather than an
+expanded-program line. The compiler bridge already displays stderr, so both
+editors receive the mapped diagnostics through the existing import failure path.
+
+The PyQASM adapter temporarily filters its span-bearing log records and restores
+the filter state after success or failure. This contract is specific to the
+pinned compiler and its single-request process. Stdin-only compilation retains
+its existing diagnostics. An error without a usable location names the entry
+file without inventing a line; adapter errors that do not yet carry spans remain
+a DEV-16d gap. Full source diagnostic coverage is not complete.
+
+Frozen C# bridge checks verify that parser and semantic dependency errors reach
+the Windows import boundary with original coordinates and leave existing
+classical history unchanged.
+
+Adapter preflight rejections also retain the offending AST node's span.
+Unsupported classical declarations, runtime gate parameters, dynamic register
+indices/sizes, aliases, runtime function arguments and annotated operations can
+therefore identify their original dependency location. This changes diagnostics,
+not which programs the adapter supports. The message text for stdin-only
+compilation remains unchanged. Missing or invalid spans still fall back to the
+entry filename; errors in later lowering/emission stages need separate coverage.
+
+## Subroutine locals resolved during compilation
+
+Classical import can now use the pinned compiler's own local scopes when a
+subroutine's classical values can be evaluated during compilation. This includes
+the unchanged QB-004 `oracle.qasm` and `bernvaz.qasm` fixtures: both import through
+the file route with `--module-headers`, producing the same gate order and wires
+as numerical import. The adapter keeps its runtime-variable transformations out
+of those function scopes.
+
+Repeated and nested calls have independent compiler-local values. Local and
+parameter names may shadow outer names; references to mutable global variables
+are rejected even in unused function definitions. Omitted integer parameter
+widths use the pinned compiler's 32-bit declaration default. Explicit widths are
+preserved. Expansion is limited to 32 nested calls and 4096 total calls per
+compiler visitor, in addition to the existing loop and circuit limits.
+
+This does not implement runtime classical arguments, measurement-dependent local
+storage, or complete subroutine/array support. Those remain DEV-08 work. The
+classical GUI persistence/export acceptance for the QB-004 subroutines still
+requires merged-artifact validation; successful compilation alone is not that
+acceptance.

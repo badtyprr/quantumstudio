@@ -43,6 +43,7 @@ sealed class ClassicalProgramWindow : Window {
   var moduleHeaders=new CheckBox {Content="Generated module headers",VerticalAlignment=VerticalAlignment.Center,ToolTip="Allow matching version headers and repeated standard-library includes in generated modules."};commands.Children.Add(moduleHeaders);
   Button(commands,"Import OpenQASM…",()=>{var picker=new Microsoft.Win32.OpenFileDialog {Filter="OpenQASM (*.qasm)|*.qasm|All files (*.*)|*.*"};if(picker.ShowDialog(this)==true)Import(picker.FileName,convention.SelectedIndex==1,moduleHeaders.IsChecked==true);});
   top.Children.Add(sourceStatus);
+  Button(commands,"Source files…",()=>new SourceFilesWindow(this,history.Source,envelope=>history.ImportSource(envelope,history.Source.PublishedU)).ShowDialog());
   commands.Children.Add(undo);commands.Children.Add(redo);undo.Click+=delegate {history.Undo();Refresh();};redo.Click+=delegate {history.Redo();Refresh();};
   var settings=new WrapPanel();top.Children.Add(settings);Field(settings,"Qubits",qubits,65);Field(settings,"Registers · name:size, …",registers,260);Field(settings,"Output bit indices · left to right",outputs,200);
   Button(settings,"Apply registers",()=>history.Edit(d=>{d.Qubits=Int(qubits.Text);d.Registers=ParseRegisters(registers.Text);d.OutputBits=Indices(outputs.Text);}));
@@ -155,11 +156,15 @@ sealed class ClassicalProgramWindow : Window {
  }
  bool Discard() {return verifying || history.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
  void Import(string path,bool published,bool moduleHeaders=false) {history.ImportSource(QasmImport.CompileSource(path,published,true,moduleHeaders),published);}
- public void VerifyImport(string path,string report) {
+ public async System.Threading.Tasks.Task VerifySourceFiles(string path,string report) {
+  verifying=true;Import(path,false);Refresh();
+  await SourceFilesWindow.Verify(this,history.Source,Path.GetDirectoryName(path),report,envelope=>history.ImportSource(envelope,false),()=>history.Serialize(),()=>history.Undo());
+ }
+ public void VerifyImport(string path,string report,bool moduleHeaders=false) {
   verifying=true;
   // Import replaces all metadata and undo restores even a loop-bearing document.
   history.Edit(d=>{d.Version=7;d.Variables=new ClassicalCircuit.Variable[0];d.LoopConditionBudget=3;d.Steps=new[]{new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"},WhenTrue=new ClassicalCircuit.Step[0]}};});
-  string before=history.Current.Serialize();Import(path,false);string imported=history.Current.Serialize();
+  string before=history.Current.Serialize();Import(path,false,moduleHeaders);string imported=history.Current.Serialize();
   if(history.Source==null || history.Source.CircuitEdited)throw new Exception("Import lost original source.");
   string originalSource=history.Source.SourceJson,full=history.Serialize();
   history.Undo();if(history.Current.Serialize()!=before)throw new Exception("Import undo lost the previous circuit.");history.Redo();if(history.Current.Serialize()!=imported)throw new Exception("Import redo lost classical circuit data.");

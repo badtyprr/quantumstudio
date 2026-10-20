@@ -30,6 +30,58 @@ class FileImportTests(unittest.TestCase):
         self.assertEqual(result.returncode == 0, success, result.stderr.decode("utf-8", errors="replace"))
         return json.loads(result.stdout) if success else result.stderr.decode("utf-8")
 
+    def test_dependency_parser_diagnostic(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/helper.inc"; qubit q;')
+        self.put("nested κ/helper.inc", '// comment\r\ngate bad a { x a }\r\n')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main)], success=False)
+            self.assertIn("nested κ/helper.inc:2:18:", message)
+            self.assertIn("Unexpected token", message)
+
+    def test_entry_suffix_parser_diagnostic(self):
+        text = 'OPENQASM 3; include "helper.inc"; qubit q x q;'
+        main = self.put("main.qasm", text)
+        self.put("helper.inc", "// several\n// inserted\n// lines\n")
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main)], success=False)
+            self.assertIn(f"main.qasm:1:{text.index('x q') + 1}:", message)
+
+    def test_dependency_semantic_diagnostic(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "helper.inc"; g q;')
+        self.put("helper.inc", "// original\nqubit q;\ngate g a { undefined_gate a; }\n")
+        for command in COMMANDS:
+            for mode in ([], ["--classical"]):
+                message = self.run_import(command, ["--source-file", str(main), *mode], success=False)
+                self.assertIn("helper.inc:3:", message)
+                self.assertIn("Unsupported / undeclared QASM operation", message)
+                self.assertNotIn("Error at line", message)
+
+    def test_module_header_ast_diagnostic(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "helper.inc";')
+        self.put("helper.inc", 'OPENQASM 3;\r\ninclude "stdgates.inc";\r\nif(true) { qubit q; }\r\n')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--module-headers"], success=False)
+            self.assertIn("helper.inc:3:12:", message)
+            self.assertIn("qubit declarations must be global", message)
+
+    def test_adapter_declaration_location_and_unchanged_stdin_message(self):
+        dependency = "// original configuration\nfloat[64] theta = 0.5;\n"
+        main = self.put("main.qasm", 'OPENQASM 3; include "settings.inc"; qubit q;')
+        self.put("settings.inc", dependency)
+        expected = "Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported."
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
+            self.assertEqual(message.strip(), "settings.inc:2:1: " + expected)
+            message = self.run_import(command, ["--classical"], source="OPENQASM 3;\n" + dependency + "qubit q;", success=False)
+            self.assertEqual(message.strip(), expected)
+
+    def test_adapter_runtime_gate_location_after_module_adaptation(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "parameters.inc";')
+        self.put("parameters.inc", 'OPENQASM 3;\ninclude "stdgates.inc";\nbit b;\nqubit q;\nrx(b) q;')
+        for command in COMMANDS:
+            message = self.run_import(command, ["--source-file", str(main), "--module-headers", "--classical"], success=False)
+            self.assertEqual(message.strip(), "parameters.inc:5:1: Runtime gate parameters are not yet supported by the circuit importer.")
+
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:
             module = (HERE / "fixtures/qb004" / (name + ".qasm")).read_text(encoding="utf-8")
@@ -45,6 +97,12 @@ class FileImportTests(unittest.TestCase):
                     result = self.run_import(command, ["--source-file", str(main), "--module-headers"])
                     self.assertEqual(result["Circuit"], self.run_import(command, source=inline))
                     self.assertEqual(len(result["Circuit"]["Steps"]), count)
+                    classical = self.run_import(command, ["--source-file", str(main), "--module-headers", "--classical"])
+                    self.assertEqual(classical["Circuit"]["Steps"],
+                                     [{"Kind": "Gate", "Expression": step["Gate"], "Wires": step["Wires"]}
+                                      for step in result["Circuit"]["Steps"]])
+                    self.assertEqual(classical["Circuit"]["Qubits"], 4)
+                    self.assertEqual(classical["Source"], result["Source"])
                     self.assertTrue(result["Source"]["ModuleHeaders"])
                     self.assertEqual(len(result["Source"]["Files"]), 2)
                     for file in result["Source"]["Files"]:
@@ -58,6 +116,26 @@ class FileImportTests(unittest.TestCase):
             self.assertEqual(result["Steps"][0]["Gate"], "X")
             self.assertNotIn("Source", result)
             self.assertIn("includes", self.run_import(command, source='OPENQASM 3; include "local.inc"; qubit q;', success=False))
+
+    def test_explicit_saved_source_check(self):
+        dependency = self.put("module.inc", "gate g q { x q; }")
+        main = self.put("main.qasm", 'OPENQASM 3; include "module.inc"; qubit q; g q;')
+        for command in COMMANDS:
+            dependency.write_text("gate g q { x q; }", encoding="utf-8")
+            snapshot = self.run_import(command, ["--source-file", str(main)])["Source"]
+            snapshot["Root"] = "Z:/saved/root/is/not/permission"
+            source = json.dumps(snapshot)
+            args = ["--check-source", "--source-root", str(self.root)]
+            self.assertTrue(self.run_import(command, args, source)["Unchanged"])
+            dependency.write_text("gate g q { h q; }", encoding="utf-8")
+            result = self.run_import(command, args, source)
+            self.assertFalse(result["Unchanged"])
+            self.assertEqual(result["Files"][1]["Status"], "changed")
+            dependency.unlink()
+            self.assertEqual(self.run_import(command, args, source)["Files"][1]["Status"], "missing")
+            for invalid in (["--check-source"], ["--check-source", "--source-root", ""], [*args, "--classical"],
+                            [*args, "--source-file", str(main)]):
+                self.run_import(command, invalid, source, success=False)
 
     def test_explicit_root_and_utf8_snapshot(self):
         self.put("λ.inc", "\ufeffgate g q { x q; }")

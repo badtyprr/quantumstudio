@@ -61,6 +61,17 @@ class SourcePiece:
     name: str
     line: int
     text: str
+    column: int = 0
+    synthetic: bool = False
+
+
+@dataclass(frozen=True)
+class SourceLocation:
+    """Original character coordinates: one-based line, zero-based column."""
+    name: str
+    line: int
+    column: int
+    synthetic: bool = False
 
 
 @dataclass(frozen=True)
@@ -75,6 +86,43 @@ class SourceBundle:
     @property
     def expanded(self):
         return "".join(piece.text for piece in self.pieces)
+
+    def location(self, line, column):
+        """Map parser coordinates without consulting source files on disk.
+
+        Columns count Unicode characters, matching the pinned ANTLR parser.
+        An inserted separator points to its include directive and is marked
+        synthetic, so a caller cannot mistake it for original source text.
+        Invalid coordinates reject rather than inventing a nearby location.
+        """
+        if type(line) is not int or type(column) is not int or line < 1 or column < 0:
+            raise ValueError("Expected a positive source line and nonnegative column.")
+        text = self.expanded
+        start = 0
+        for _ in range(line - 1):
+            newline = text.find("\n", start)
+            if newline < 0:
+                raise ValueError("Expanded source line is out of range.")
+            start = newline + 1
+        end = text.find("\n", start)
+        if end < 0:
+            end = len(text)
+        if column > end - start:
+            raise ValueError("Expanded source column is out of range.")
+        offset = start + column
+        if not self.pieces:
+            return SourceLocation(self.entry, 1, 0)
+        position = 0
+        for index, piece in enumerate(self.pieces):
+            stop = position + len(piece.text)
+            if offset < stop or index == len(self.pieces) - 1:
+                if piece.synthetic:
+                    return SourceLocation(piece.name, piece.line, piece.column, True)
+                prefix = piece.text[:offset - position]
+                newlines = prefix.count("\n")
+                original_column = len(prefix) - prefix.rfind("\n") - 1 if newlines else piece.column + len(prefix)
+                return SourceLocation(piece.name, piece.line + newlines, original_column)
+            position = stop
 
     def snapshot(self):
         """JSON-compatible provenance; text and BOM reconstruct the hashed bytes."""
@@ -122,6 +170,100 @@ def _read(path):
     return data
 
 
+def check_snapshot(snapshot, *, root):
+    """Check saved provenance only beneath a root explicitly selected now.
+
+    Root in the saved JSON is descriptive metadata, never filesystem authority.
+    Validate every name and hash before touching disk, and leave the snapshot
+    unchanged even when a dependency is missing or its link has been retargeted.
+    """
+    def fields(value, names):
+        if not isinstance(value, dict) or set(value) != set(names.split()):
+            raise SourceError("Invalid source snapshot fields.")
+        return value
+
+    def relative(value, canonical):
+        if (not isinstance(value, str) or not value or len(value) > 32768
+                or value.startswith("/") or any(c in value for c in "\\:\0")):
+            raise SourceError("Source paths must be relative and use '/' separators.")
+        depth = 0
+        for part in value.split("/"):
+            if part in ("", "."):
+                raise SourceError("Empty or dot source path component.")
+            if part == "..":
+                depth -= 1
+                if canonical or depth < 0:
+                    raise SourceError("Source path escapes its root.")
+            else:
+                depth += 1
+        if not depth:
+            raise SourceError("Source path must identify a file.")
+        return value
+
+    fields(snapshot, "Version Root Entry ModuleHeaders Files Bindings")
+    if type(snapshot["Version"]) is not int or snapshot["Version"] != 1:
+        raise SourceError("Expected source snapshot version 1.")
+    if (not isinstance(snapshot["Root"], str) or not snapshot["Root"]
+            or len(snapshot["Root"]) > 32768 or "\0" in snapshot["Root"]
+            or type(snapshot["ModuleHeaders"]) is not bool):
+        raise SourceError("Invalid source snapshot metadata.")
+    entry = relative(snapshot["Entry"], True)
+    for name in ("Files", "Bindings"):
+        if not isinstance(snapshot[name], list) or not 1 <= len(snapshot[name]) <= MAX_FILES:
+            raise SourceError("Source snapshots require 1 to 64 files and dependency paths.")
+    files, bindings, total = {}, {}, 0
+    for item in snapshot["Files"]:
+        fields(item, "Name Sha256 Text Bom")
+        name = relative(item["Name"], True)
+        if name in files or not isinstance(item["Text"], str) or type(item["Bom"]) is not bool:
+            raise SourceError("Invalid or duplicate source file.")
+        try:
+            data = (b"\xef\xbb\xbf" if item["Bom"] else b"") + item["Text"].encode("utf-8")
+        except UnicodeEncodeError as error:
+            raise SourceError("Source snapshot contains invalid Unicode.") from error
+        total += len(data)
+        if total > MAX_BYTES:
+            raise SourceError("Source snapshot exceeds 262144 bytes.")
+        digest = item["Sha256"]
+        if not isinstance(digest, str) or hashlib.sha256(data).hexdigest() != digest.lower():
+            raise SourceError("Source hash mismatch: " + name)
+        files[name] = digest.lower()
+    for item in snapshot["Bindings"]:
+        fields(item, "Path Target")
+        name, target = relative(item["Path"], False), relative(item["Target"], True)
+        if name in bindings or target not in files:
+            raise SourceError("Duplicate or unresolved source dependency binding.")
+        bindings[name] = target
+    if entry not in bindings or set(bindings.values()) != set(files):
+        raise SourceError("Source entry or dependency identity is missing.")
+
+    if root is None or not os.fspath(root).strip():
+        raise SourceError("Select a source root directory.")
+    selected = Path(root).resolve(strict=True)
+    if not selected.is_dir():
+        raise SourceError("Select a source root directory.")
+    results = []
+    for name, expected_target in bindings.items():
+        row = {"Path": name, "Target": expected_target}
+        try:
+            path = _inside(selected / name, selected)
+            actual_target = path.relative_to(selected).as_posix()
+            if actual_target != expected_target:
+                row.update(Status="retargeted", CurrentTarget=actual_target)
+            else:
+                digest = hashlib.sha256(_read(path)).hexdigest()
+                row["Status"] = "unchanged" if digest == files[expected_target] else "changed"
+        except FileNotFoundError:
+            row["Status"] = "missing"
+        except (OSError, SourceError):
+            # Includes escaped links, directories, inaccessible and oversized
+            # files. Do not read escaped targets or expose their contents.
+            row["Status"] = "unavailable"
+        results.append(row)
+    return {"Version": 1, "Root": str(selected), "Files": results,
+            "Unchanged": all(row["Status"] == "unchanged" for row in results)}
+
+
 def capture_source(entry, *, root=None, module_headers=False):
     """Capture a selected file and its relative includes, with bounded expansion.
 
@@ -153,13 +295,13 @@ def capture_source(entry, *, root=None, module_headers=False):
         version = (int(parts[0]), int(parts[1]) if len(parts) == 2 else 0)
         return version, tokens[0].start, tokens[2].stop + 1
 
-    def append(name, line, text):
+    def append(name, line, text, column=0, synthetic=False):
         nonlocal expanded_bytes
         expanded_bytes += len(text.encode("utf-8"))
         if expanded_bytes > MAX_BYTES:
             raise SourceError(f"{name}:{line}: Expanded source exceeds {MAX_BYTES} bytes.")
         if text:
-            pieces.append(SourcePiece(name, line, text))
+            pieces.append(SourcePiece(name, line, text, column, synthetic))
 
     def visit(path, active):
         nonlocal total_bytes, root_version
@@ -203,28 +345,33 @@ def capture_source(entry, *, root=None, module_headers=False):
                 _, start, end = declaration
                 text = text[:start] + "".join(c if c in "\r\n" else " " for c in text[start:end]) + text[end:]
         cursor = 0
+        def fragment(start, end):
+            append(name, text.count("\n", 0, start) + 1, text[start:end],
+                   start - text.rfind("\n", 0, start) - 1)
         for start, end, line, filename in _includes(text, name):
             if filename in STANDARD_INCLUDES:
                 if module_headers and filename in standard_includes:
-                    append(name, text.count("\n", 0, cursor) + 1, text[cursor:start])
-                    append(name, line, "".join(c if c in "\r\n" else " " for c in text[start:end]))
+                    fragment(cursor, start)
+                    append(name, line, "".join(c if c in "\r\n" else " " for c in text[start:end]),
+                           start - text.rfind("\n", 0, start) - 1)
                     cursor = end
                 standard_includes.add(filename)
                 continue
-            append(name, text.count("\n", 0, cursor) + 1, text[cursor:start])
+            fragment(cursor, start)
             # Interpret portable relative filenames only. Windows drive-relative
             # paths, UNC paths and alternate data streams are never implicit roots.
             if (not filename or filename.startswith("/") or "\\" in filename or ":" in filename
                     or Path(filename).is_absolute() or PureWindowsPath(filename).drive):
                 raise SourceError(f"{name}:{line}: Include requires a relative filename using '/' separators.")
-            append(name, line, "\n")
+            include_column = start - text.rfind("\n", 0, start) - 1
+            append(name, line, "\n", include_column, True)
             try:
                 visit(path.parent / filename, (*active, name))
             except (OSError, SourceError) as error:
                 raise SourceError(f'{name}:{line}: include "{filename}": {error}') from error
-            append(name, line, "\n")
+            append(name, line, "\n", include_column, True)
             cursor = end
-        append(name, text.count("\n", 0, cursor) + 1, text[cursor:])
+        fragment(cursor, len(text))
 
     visit(entry, ())
     return SourceBundle(root, entry.relative_to(root).as_posix(), tuple(files.values()), tuple(pieces), tuple(bindings.items()), module_headers)

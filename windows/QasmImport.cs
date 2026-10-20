@@ -12,11 +12,20 @@ static class QasmImport {
   return Run((publishedU ? "--published-u " : "")+(classical ? "--classical" : ""),source,262144);
  }
  // File import lets the compiler capture local dependencies and their original
- // bytes. The selected file's directory is the compiler's bounded source root.
- public static string CompileSource(string path,bool publishedU=false,bool classical=false,bool moduleHeaders=false) {
+ // bytes. Defaults to the file's directory; callers can explicitly select a
+ // wider root when reopening a snapshot whose entry lives in a subdirectory.
+ public static string CompileSource(string path,bool publishedU=false,bool classical=false,bool moduleHeaders=false,string selectedRoot=null) {
   string full=Path.GetFullPath(path);
   return Run("--source-file "+QuoteArgument(full)+(publishedU ? " --published-u" : "")+
-   (classical ? " --classical" : "")+(moduleHeaders ? " --module-headers" : ""),null,4194304);
+   (classical ? " --classical" : "")+(moduleHeaders ? " --module-headers" : "")+
+   (selectedRoot==null ? "" : " --source-root "+QuoteArgument(Path.GetFullPath(selectedRoot))),null,4194304);
+ }
+ public static string CheckSource(string snapshot,string selectedRoot) {
+  if(String.IsNullOrWhiteSpace(selectedRoot))throw new ArgumentException("Select a source root directory.");
+  if(snapshot==null)throw new ArgumentNullException("snapshot");
+  byte[] bytes=new UTF8Encoding(false,true).GetBytes(snapshot);
+  if(bytes.Length>4194304)throw new InvalidDataException("Source snapshot is too large.");
+  return Run("--check-source --source-root "+QuoteArgument(Path.GetFullPath(selectedRoot)),bytes,4194304);
  }
  internal static string QuoteArgument(string value) {
   if(value==null || value.IndexOf('\0')>=0)throw new ArgumentException("Invalid compiler argument.");

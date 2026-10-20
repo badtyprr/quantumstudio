@@ -8,6 +8,15 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('boolean-bitcast-measured','qubit q;h q;bit c=measure q;bit d;d=bit[1](c=="1");',{'00':'1/2','11':'1/2'}),
+ ('boolean-bitcast-negated','qubit q;h q;bit c=measure q;bit d;d=bit[1](!(c=="1"));',{'01':'1/2','10':'1/2'}),
+ ('computed-boolean-bitcast-integer','qubit q;h q;bit c=measure q;bit d;d=bit[1](int[1](c)<0);',{'00':'1/2','11':'1/2'}),
+ ('computed-boolean-bitcast-logical','qubit q;h q;bit c=measure q;bit d;d=bit[1]((c=="1") || (int[1](c)==0));',{'10':'1/2','11':'1/2'}),
+ ('subroutine-local-bool','def f(qubit a){bool b=true;if(b){x a;}}qubit q;f(q);bit c=measure q;',{'1':'1'}),
+ ('subroutine-local-repeat','def f(qubit a){int n=1;n+=1;if(n==2){x a;}}qubit q;f(q);f(q);bit c=measure q;',{'0':'1'}),
+ ('subroutine-local-shadow','int n=3;def f(qubit a){int n=1;if(n==1){x a;}}qubit q;f(q);bit c=measure q;bit d=n==3;',{'11':'1'}),
+ ('subroutine-local-nested','def inner(qubit a){int n=1;if(n==1){x a;}}def outer(qubit a){int n=2;inner(a);if(n==2){x a;}}qubit q;outer(q);bit c=measure q;',{'0':'1'}),
+ ('subroutine-local-parameter','def f(int n,qubit a){n+=1;if(n==2){x a;}}qubit q;f(1,q);bit c=measure q;',{'1':'1'}),
  ('range-runtime-upper','int n=3;int total=0;bit c;for int i in [0:n]{total+=i;}c=total==6;',{'1':'1'}),
  ('range-runtime-signed-limit','int n=9223372036854775807;int total=0;bit c;for int i in [9223372036854775806:n]{total+=1;}c=total==2;',{'1':'1'}),
  ('range-runtime-unsigned-limit','uint n=18446744073709551615;int total=0;bit c;for uint i in [18446744073709551614:n]{total+=1;}c=total==2;',{'1':'1'}),
@@ -267,7 +276,7 @@ cases=[
  ('registers','qubit q; bit[2] c="10"; bit[2] d="10"; if(c==d){c=0;}',{'1000':'1'}),
 ]
 checks=0
-hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement'])
+hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement','_visit_function_call'])
 rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7](c)<0){r=1;}', 'bit[8] c; bit r; if(int[8](c)+c>0){r=1;}', 'bit[8] c; bit r; if(int[0](c)<0){r=1;}', 'bit[8] c; bit r; if(int[8](c)<-9223372036854775809){r=1;}', 'qubit q; bit[3] c; c=rotl(c);',
           'qubit q; bit[3] c; c=rotr(c,1,2);',
           'qubit q; bit[3] c; c=rotl(c,-9223372036854775809);',
@@ -282,6 +291,8 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
           'qubit q; bit[2] c; let d=c; d=1;',
           'qubit q; bit c; c+=1;', 'qubit q; bit[2] c; if(c>4) x q;']
 rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
+rejected += ['qubit q;bit c=measure q;bit[2] d;d=bit[2](c=="1");',
+             'qubit q;bit c=measure q;bit[2] d;d=bit[2](!(c=="1"));']
 rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
              'int a=1; qubit[2] q; x q[a];','int a=1; qubit q; rx(a) q;',
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
@@ -296,8 +307,13 @@ rejected += ['bit[3] c; c=rotl(c,c);','bit[3] c;c=rotr(c,bool(c));',
              'bit[3] c;c=rotl(c,int[2](c ^ "111"));']
 rejected += ['bit[1] c;bool b=c;','bit[3] c;bool b=c ^ "111";',
              'bit[3] c;bool b=c[0:0];','bool b="1";','bool b=false;b+=1;',
-             'bit c;{bool b=true;}c=b;','bool b=true;bool b=false;',
-             'def f(){bool b=true;}f();']
+             'bit c;{bool b=true;}c=b;','bool b=true;bool b=false;']
+rejected += ['int n=1;def f(){if(true){int n=2;}int x=n;}',
+             'int n=1;def f(){int x=n;int n=2;}',
+             'int n=1;def f(){for int n in [0:1]{}int x=n;}',
+             'def f(qubit a){\n@custom\nx a;}qubit q;f(q);',
+             'def f(){f();}f();']
+rejected += ['def f0(){}'+''.join('def f'+str(i)+'(){f'+str(i-1)+'();f'+str(i-1)+'();}' for i in range(1,13))+'f12();']
 rejected += ['bit[1] c;bool b=c ^ "1";','bit[1] c;bool b=~c;',
              'bit[1] c;bool b=rotl(c,1);','bit[1] c;bool b=c << 1;']
 rejected += ['qubit q;bit[64] c;bool b=measure q;','qubit[2] q;bool b=measure q;',
@@ -337,7 +353,7 @@ for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
  else:raise AssertionError('Unsupported or invalid source was accepted: '+body)
- assert tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement'])==hooks
+ assert tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement','_visit_function_call'])==hooks
  if not a.source_only:
   result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe'),'--classical'],input=(header+body).encode(),capture_output=True,timeout=30)
   assert result.returncode!=0 and result.stderr and not result.stdout,(body,result.stdout);checks+=1
@@ -390,7 +406,7 @@ for name,body,expected in cases:
   sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
   assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
   checks+=1
- assert circuit['Version']==(10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)

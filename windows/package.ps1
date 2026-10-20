@@ -49,7 +49,11 @@ Copy-Item -LiteralPath $archives[0].FullName -Destination (Join-Path $repo 'dist
 & (Join-Path $PSScriptRoot 'build-qasm-import.ps1') -PythonPath $PythonPath
 & (Join-Path $PSScriptRoot 'test-source-import-bridge.ps1') -Distribution $output
 & $PythonPath (Join-Path $PSScriptRoot 'test-composer-source-import.py') --package $output
-if ($LASTEXITCODE -ne 0) { throw 'Packaged composer source import tests failed.' }
+if ($LASTEXITCODE -ne 0) { throw 'Composer source import validation failed.' }
+& $PythonPath (Join-Path $PSScriptRoot 'test-classical-module-import.py') --package $output
+if ($LASTEXITCODE -ne 0) { throw 'Classical module import validation failed.' }
+& $PythonPath (Join-Path $PSScriptRoot 'test-source-files-ui.py') --package $output
+if ($LASTEXITCODE -ne 0) { throw 'Source check/reimport GUI tests failed.' }
 & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-file-import.py') --frozen (Join-Path $output 'qasm-import/qasm-import.exe')
 if ($LASTEXITCODE -ne 0) { throw 'OpenQASM file import tests failed.' }
 & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-protocol.py')
@@ -121,7 +125,7 @@ try {
     if ($samplingProcess.ExitCode -ne 0 -or !(Get-Content -LiteralPath $samplingReport -Raw).StartsWith('PASS:')) { throw 'Packaged sampling GUI failed.' }
     Get-Content -LiteralPath $samplingReport
 } finally { $samplingProcess.Dispose() }
-& (Join-Path $PSScriptRoot 'test-sampling-shutdown.ps1') -Distribution $output -ReportDirectory (Join-Path $repo 'dist\sampling-shutdown')
+& (Join-Path $PSScriptRoot 'test-sampling-shutdown-observation.ps1') -Distribution $output -ReportDirectory (Join-Path $repo 'dist\sampling-shutdown')
 Assert-UnchangedSources
 if (!$Candidate) {
     Invoke-SourceGit -Arguments @('fetch','origin','master') | Out-Null
