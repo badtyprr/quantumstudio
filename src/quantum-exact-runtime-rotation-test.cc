@@ -39,6 +39,13 @@ int main(){try {
  // 0.1 must retain its binary64 value, not become the decimal rational 1/10.
  result=run({S::rotate(Rotation(Axis::Y,R::constant(0.1)),0),S::measure(0,0)});
  equal(result.at(2),"sin(3602879701896397/72057594037927936)^2");
+ // Calculator entry preferences must not reinterpret generated internal numbers.
+ auto preferences=exact;preferences.parse_options.base=16;
+ preferences.parse_options.angle_unit=ANGLE_UNIT_DEGREES;
+ auto records=evaluateCircuit(2,2,{S::rotate(Rotation(Axis::Y,R::constant(10)),0),S::measure(0,0)},
+  {type},65536,preferences);
+ auto preferred=weights(records,2,2,{0,1},65536,exact);
+ equal(preferred.at(2),"sin(5)^2");
  reject<std::domain_error>([&]{run({rotation});});
  result=run({S::branch(1,1,{rotation})});equal(result.at(0),"1");
  auto absent=R::fromInteger(IntegerExpression::variable(type,1));

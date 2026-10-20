@@ -72,6 +72,8 @@ TracePreservingMap runtimeRotation(const QuantumNumerics::RuntimeRotation &rotat
  using Axis=QuantumNumerics::RuntimeRotation::Axis;
  const char *name=rotation.axis()==Axis::X ? "Rx" : rotation.axis()==Axis::Y ? "Ry" : "Rz";
  EvaluationOptions options=exact;options.approximation=APPROXIMATION_EXACT;
+ // Internal decimal integers and radians are independent of entry preferences.
+ options.parse_options=ParseOptions();options.parse_options.angle_unit=ANGLE_UNIT_RADIANS;
  auto matrix=CALCULATOR->calculate(std::string("quantum:")+name+"("+text+")",options);
  return TracePreservingMap({matrix},4,options);
 }
