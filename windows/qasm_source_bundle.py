@@ -61,6 +61,17 @@ class SourcePiece:
     name: str
     line: int
     text: str
+    column: int = 0
+    synthetic: bool = False
+
+
+@dataclass(frozen=True)
+class SourceLocation:
+    """Original character coordinates: one-based line, zero-based column."""
+    name: str
+    line: int
+    column: int
+    synthetic: bool = False
 
 
 @dataclass(frozen=True)
@@ -75,6 +86,43 @@ class SourceBundle:
     @property
     def expanded(self):
         return "".join(piece.text for piece in self.pieces)
+
+    def location(self, line, column):
+        """Map parser coordinates without consulting source files on disk.
+
+        Columns count Unicode characters, matching the pinned ANTLR parser.
+        An inserted separator points to its include directive and is marked
+        synthetic, so a caller cannot mistake it for original source text.
+        Invalid coordinates reject rather than inventing a nearby location.
+        """
+        if type(line) is not int or type(column) is not int or line < 1 or column < 0:
+            raise ValueError("Expected a positive source line and nonnegative column.")
+        text = self.expanded
+        start = 0
+        for _ in range(line - 1):
+            newline = text.find("\n", start)
+            if newline < 0:
+                raise ValueError("Expanded source line is out of range.")
+            start = newline + 1
+        end = text.find("\n", start)
+        if end < 0:
+            end = len(text)
+        if column > end - start:
+            raise ValueError("Expanded source column is out of range.")
+        offset = start + column
+        if not self.pieces:
+            return SourceLocation(self.entry, 1, 0)
+        position = 0
+        for index, piece in enumerate(self.pieces):
+            stop = position + len(piece.text)
+            if offset < stop or index == len(self.pieces) - 1:
+                if piece.synthetic:
+                    return SourceLocation(piece.name, piece.line, piece.column, True)
+                prefix = piece.text[:offset - position]
+                newlines = prefix.count("\n")
+                original_column = len(prefix) - prefix.rfind("\n") - 1 if newlines else piece.column + len(prefix)
+                return SourceLocation(piece.name, piece.line + newlines, original_column)
+            position = stop
 
     def snapshot(self):
         """JSON-compatible provenance; text and BOM reconstruct the hashed bytes."""
@@ -247,13 +295,13 @@ def capture_source(entry, *, root=None, module_headers=False):
         version = (int(parts[0]), int(parts[1]) if len(parts) == 2 else 0)
         return version, tokens[0].start, tokens[2].stop + 1
 
-    def append(name, line, text):
+    def append(name, line, text, column=0, synthetic=False):
         nonlocal expanded_bytes
         expanded_bytes += len(text.encode("utf-8"))
         if expanded_bytes > MAX_BYTES:
             raise SourceError(f"{name}:{line}: Expanded source exceeds {MAX_BYTES} bytes.")
         if text:
-            pieces.append(SourcePiece(name, line, text))
+            pieces.append(SourcePiece(name, line, text, column, synthetic))
 
     def visit(path, active):
         nonlocal total_bytes, root_version
@@ -297,28 +345,33 @@ def capture_source(entry, *, root=None, module_headers=False):
                 _, start, end = declaration
                 text = text[:start] + "".join(c if c in "\r\n" else " " for c in text[start:end]) + text[end:]
         cursor = 0
+        def fragment(start, end):
+            append(name, text.count("\n", 0, start) + 1, text[start:end],
+                   start - text.rfind("\n", 0, start) - 1)
         for start, end, line, filename in _includes(text, name):
             if filename in STANDARD_INCLUDES:
                 if module_headers and filename in standard_includes:
-                    append(name, text.count("\n", 0, cursor) + 1, text[cursor:start])
-                    append(name, line, "".join(c if c in "\r\n" else " " for c in text[start:end]))
+                    fragment(cursor, start)
+                    append(name, line, "".join(c if c in "\r\n" else " " for c in text[start:end]),
+                           start - text.rfind("\n", 0, start) - 1)
                     cursor = end
                 standard_includes.add(filename)
                 continue
-            append(name, text.count("\n", 0, cursor) + 1, text[cursor:start])
+            fragment(cursor, start)
             # Interpret portable relative filenames only. Windows drive-relative
             # paths, UNC paths and alternate data streams are never implicit roots.
             if (not filename or filename.startswith("/") or "\\" in filename or ":" in filename
                     or Path(filename).is_absolute() or PureWindowsPath(filename).drive):
                 raise SourceError(f"{name}:{line}: Include requires a relative filename using '/' separators.")
-            append(name, line, "\n")
+            include_column = start - text.rfind("\n", 0, start) - 1
+            append(name, line, "\n", include_column, True)
             try:
                 visit(path.parent / filename, (*active, name))
             except (OSError, SourceError) as error:
                 raise SourceError(f'{name}:{line}: include "{filename}": {error}') from error
-            append(name, line, "\n")
+            append(name, line, "\n", include_column, True)
             cursor = end
-        append(name, text.count("\n", 0, cursor) + 1, text[cursor:])
+        fragment(cursor, len(text))
 
     visit(entry, ())
     return SourceBundle(root, entry.relative_to(root).as_posix(), tuple(files.values()), tuple(pieces), tuple(bindings.items()), module_headers)
