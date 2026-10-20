@@ -35,6 +35,8 @@ for flags in ((), ("--approx",)):
         assert "qtensorpow" in symbolic["copy_text"]
         assert "qtensorpow" not in symbolic["display_text"]
         copied = data("quantum:" + symbolic["copy_text"], *flags)
+        assert copied["display_text"] == symbolic["display_text"], (expression, flags, symbolic, copied)
+        assert "qmatrix" not in copied["display_text"] and "qpower" not in copied["display_text"]
         actual = data("quantum:replace((" + copied["copy_text"] + ")," + resolved + ")", *flags)
         reference = data("quantum:" + expected, *flags)
         assert (actual["rows"], actual["columns"], actual["cells"]) == (

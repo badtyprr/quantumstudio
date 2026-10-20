@@ -680,8 +680,16 @@ class QuantumAlgebraFunction: public MathFunction {
    if(!unknownCount && (!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10)) {
     CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL);return 0;
    }
-   if(!a.isMatrix() && unresolvedMatrixOperand(a))return 0;
-   if(a.isMatrix() && unknownCount)return 0;
+   if((!a.isMatrix() && unresolvedMatrixOperand(a)) || (a.isMatrix() && unknownCount)) {
+    // Retain evaluated constructors so copying and re-entry display the same
+    // matrix, while the tensor-power wrapper keeps its deferred constraints.
+    if(!args.equals(raw)) {
+     out=MathStructure(this,static_cast<MathStructure*>(NULL));
+     for(size_t j=0;j<args.size();++j)out.addChild(args[j]);
+     return 1;
+    }
+    return 0;
+   }
   }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
