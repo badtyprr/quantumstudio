@@ -24,6 +24,51 @@ def data(expression, *flags):
     return value
 
 
+# Tensor powers retain their matrix and count constraints until substitution.
+for flags in ((), ("--approx",)):
+    for expression, resolved, expected in (
+        (r"H^{\otimes n}", "n,2", "tensor(H,H)"),
+        ("tensorpow(|0>,n)", "n,2", "|00>"),
+        ("tensorpow(<0|,n)", "n,2", "<00|"),
+    ):
+        symbolic = data("quantum:" + expression, *flags)
+        assert "qtensorpow" in symbolic["copy_text"]
+        assert "qtensorpow" not in symbolic["display_text"]
+        copied = data("quantum:" + symbolic["copy_text"], *flags)
+        assert copied["display_text"] == symbolic["display_text"], (expression, flags, symbolic, copied)
+        assert "qmatrix" not in copied["display_text"] and "qpower" not in copied["display_text"]
+        actual = data("quantum:replace((" + copied["copy_text"] + ")," + resolved + ")", *flags)
+        reference = data("quantum:" + expected, *flags)
+        assert (actual["rows"], actual["columns"], actual["cells"]) == (
+            reference["rows"], reference["columns"], reference["cells"]
+        ), (expression, flags, actual, reference)
+        for invalid in ("-1", "1/2", "11"):
+            rejected = run("quantum:replace((" + copied["copy_text"] + "),n," + invalid + ")",
+                           "--json", *flags, success=False)
+            assert rejected.returncode == 2 and not rejected.stdout
+            assert b"Tensor power requires an integer exponent" in rejected.stderr
+    for expression in ("tensorpow(2,n)", "tensorpow(2,0)"):
+        rejected = run("quantum:" + expression, "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+        assert b"requires a matrix" in rejected.stderr
+    for expression in ("tensorpow(basis(x,2),-1)", "tensorpow(H,[1,2])"):
+        rejected = run("quantum:" + expression, "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+        assert b"Tensor power requires an integer exponent" in rejected.stderr
+    for count, expected in (("0", "matrix(1,1,[1])"), ("1", "|1>"), ("2", "|11>")):
+        symbolic = data("quantum:tensorpow(basis(x,2),n)", *flags)
+        copied = data("quantum:" + symbolic["copy_text"], *flags)
+        resolved = "replace(replace((" + copied["copy_text"] + "),n," + count + "),x,1)"
+        value = data("quantum:" + resolved, *flags)
+        reference = data("quantum:" + expected, *flags)
+        assert (value["rows"], value["columns"], value["cells"]) == (
+            reference["rows"], reference["columns"], reference["cells"]
+        ), (count, flags, value, reference)
+        rejected = run("quantum:replace(replace((" + copied["copy_text"] + "),n," + count + "),x,2)",
+                       "--json", *flags, success=False)
+        assert rejected.returncode == 2 and not rejected.stdout
+        assert b"basis(index,dimension)" in rejected.stderr
+
 # Known register shapes reject contradictions before symbolic bits are bound.
 for flags in ((), ("--approx",)):
     for expression in (

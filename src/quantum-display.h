@@ -207,6 +207,7 @@ class Printer {
    if(!literalCollision && safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
   }
   if(name=="qpower" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^"+grouped(render(value[1],depth+1),81),80);
+  if(name=="qtensorpow" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^{⊗ "+render(value[1],depth+1).text+"}",80);
   // Keep the basis dimension explicit; treating this as an ordinary named ket
   // would let bra/ket composition accidentally omit that dimension.
   if(name=="qbasis" && value.size()==2)
