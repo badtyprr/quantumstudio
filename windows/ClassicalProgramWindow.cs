@@ -208,11 +208,13 @@ sealed class ClassicalProgramWindow : Window {
   } catch(Exception error) {status.Text=error.Message;}
   finally {export.IsEnabled=true;}
  }
- public async System.Threading.Tasks.Task VerifyExport(string path,string report) {
-  verifying=true;Import(path,false);Refresh();
+ public async System.Threading.Tasks.Task VerifyExport(string path,string report,bool modules=false) {
+  verifying=true;Import(path,false,modules);Refresh();
   if(history.Current.Qubits<1)throw new ArgumentException("Export GUI fixture needs a qubit.");
   string originalSource=history.Source.SourceJson;
-  history.Edit(d=>d.Steps=d.Steps.Concat(new[]{new ClassicalCircuit.Step{Kind="Gate",Expression="X",Wires=new[]{0}}}).ToArray());
+  var originalExport=await PrepareExport();originalExport.SaveTo(report+".original.qasm");
+  history.Edit(d=>{var edit=new[]{new ClassicalCircuit.Step{Kind="Gate",Expression="X",Wires=new[]{0}}};
+   d.Steps=modules?edit.Concat(d.Steps).ToArray():d.Steps.Concat(edit).ToArray();});
   Refresh();string before=history.Serialize(),savedBefore=saved;
   bool undoBefore=history.CanUndo,redoBefore=history.CanRedo;
   var prepared=await PrepareExport();string target=report+".qasm";
