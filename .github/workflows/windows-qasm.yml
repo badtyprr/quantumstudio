@@ -32,10 +32,17 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency installation failed.' }
           & .tools/qasm-venv/Scripts/python.exe -m pip check
           if ($LASTEXITCODE -ne 0) { throw 'Compiler dependencies are inconsistent.' }
+      - name: Validate local source bundles
+        shell: powershell
+        run: |
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-source-bundle.py
+          if ($LASTEXITCODE -ne 0) { throw 'OpenQASM source bundle tests failed.' }
       - name: Build and validate packaged compiler
         shell: powershell
         run: |
           & windows/build-qasm-import.ps1
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-file-import.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe
+          if ($LASTEXITCODE -ne 0) { throw 'OpenQASM file import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-protocol.py
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM protocol tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-classical-expressions.py
