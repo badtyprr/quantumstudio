@@ -277,7 +277,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qmodmul",2},
  {"qmul",2},
  {"qadd",2},{"qsub",2},
- {"qadjacent",2},
+ {"qadjacent",2},{"qfourierdomain",3},
  {"qspinadd",2},
  {"qnorm",1},
  {"qschatten",2},

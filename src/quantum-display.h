@@ -174,6 +174,10 @@ class Printer {
    return Fragment("|"+render(value[0],depth+1).text+"⟩_{"+render(value[1],depth+1).text+"}");
   if((name=="qsin" || name=="qcos" || name=="qtan" || name=="qasin" || name=="qacos" || name=="qatan" || name=="qexp") && value.size()==1)
    return Fragment(name.substr(1)+"("+render(value[0],depth+1).text+")");
+  if(name=="qfourierdomain" && value.size()==3) {
+   Fragment body=render(value[0],depth+1),index=render(value[1],depth+1),dimension=render(value[2],depth+1);
+   return Fragment(body.text+"  (0 ≤ "+index.text+" < "+dimension.text+"; "+index.text+", "+dimension.text+" ∈ ℤ)",10);
+  }
   if(name=="qfourier" && value.size()==1)return Fragment("QFT_"+grouped(render(value[0],depth+1),100));
   if(name=="qtrace" && value.size()==1)return Fragment("Tr("+render(value[0],depth+1).text+")");
   if(name=="qsum" && value.size()==4) {

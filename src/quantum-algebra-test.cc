@@ -2,6 +2,7 @@
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
 #include "Variable.h"
+#include "Function.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -92,7 +93,9 @@ int main(){try {
  }
  MathStructure symbolicX=calculator.calculate("x",eo),symbolicY=calculator.calculate("y",eo);
  for(const char *source:{"qmul(qfourier(x),qbasis(1,x))","qadjacent(qfourier(x),qbasis(1,x))"}) {
-  MathStructure value=calculator.calculate(source,eo);value.replace(symbolicX,MathStructure(4));value.eval(eo);
+  MathStructure value=calculator.calculate(source,eo);
+  if(!value.isFunction() || value.function()->referenceName()!="qfourierdomain" || !value.containsFunction(calculator.getFunction("qsum")))throw std::runtime_error("Fourier action did not retain a guarded finite sum");++checks;
+  value.replace(symbolicX,MathStructure(4));value.eval(eo);
   MathStructure expected=calculator.calculate("[1;i;-1;-i]/2",eo);value.transform(COMPARISON_EQUALS,expected);value.eval(eo);
   if(!value.isNumber() || !value.number().isOne())throw std::runtime_error("Symbolic Fourier application substitution failed");++checks;
  }

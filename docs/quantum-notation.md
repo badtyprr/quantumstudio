@@ -258,7 +258,7 @@ Use a quoted name such as `"xy"` for one named variable inside these sums. Ordin
 
 ## Symbolic Fourier operators
 
-`QFT_N` and `fourier(N)` use dimension N, following [IBM's definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). `qft(n)` and `QFT(n)` instead take a qubit count. Unknown scalar dimensions remain symbolic in exact and approximate modes; substituting a numeric dimension evaluates the matrix and applies the existing numeric limits. This does not yet provide symbolic basis kets, Fourier-sum expansion, or general symbolic operator identities.
+`QFT_N` and `fourier(N)` use dimension N, following [IBM's definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). `qft(n)` and `QFT(n)` instead take a qubit count. Unknown scalar dimensions remain symbolic in exact and approximate modes; substituting a numeric dimension evaluates the matrix and applies the existing numeric limits. Explicitly dimensioned symbolic basis actions expand as described below; general symbolic operator identities remain unfinished.
 
 
 ### Symbolic states and application
@@ -444,7 +444,7 @@ Supply the chosen coordinates by replacing whole kets, for example `replace(|\cl
 
 ### Symbolic adjoint composition
 
-Transpose, entrywise conjugation and adjoint compose symbolically: transpose followed by conjugation is adjoint, adjoint followed by conjugation is transpose, and adjoint followed by transpose is conjugation. These pairs commute, and applying any one operation twice returns its operand. For example, `(QFT_N^*)^T` reduces to the adjoint of `QFT_N` without supplying N. The underlying expression remains present, so substituting an invalid Fourier dimension still rejects it. This does not yet simplify general symbolic unitary products or expand `QFT_N|x>_N` into a Fourier sum.
+Transpose, entrywise conjugation and adjoint compose symbolically: transpose followed by conjugation is adjoint, adjoint followed by conjugation is transpose, and adjoint followed by transpose is conjugation. These pairs commute, and applying any one operation twice returns its operand. For example, `(QFT_N^*)^T` reduces to the adjoint of `QFT_N` without supplying N. The underlying expression remains present, so substituting an invalid Fourier dimension still rejects it. General symbolic unitary-product simplification remains unfinished; explicitly dimensioned Fourier basis actions expand as described below.
 
 
 The native trajectory API additionally supports `TrajectoryStep::branch(mask,
@@ -1004,4 +1004,13 @@ With M declared as a complex matrix, `M†*M >= 0` and `M*M† >= 0` simplify to
 Strict positivity and equality to zero remain unresolved without rank or value information. Transpose products and products with a different factor do not receive this proof. This follows the positive-semidefinite definition in [IBM Quantum Learning: Density matrix basics](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics); it is not a general symbolic inequality solver.
 
 
-Symbolic dimensioned basis states display as `|x⟩_{N}`, retaining their dimension through adjoints. Exponentials inside Fourier sums display as `exp(...)`; the sum index uses the same displayed name in the exponential and ket. Copy result continues to use the canonical expression, preserving evaluation and binder scope. This presentation does not automatically expand `QFT_N|x⟩_{N}` into a Fourier sum.
+Symbolic dimensioned basis states display as `|x⟩_{N}`, retaining their dimension through adjoints. Exponentials inside Fourier sums display as `exp(...)`; the sum index uses the same displayed name in the exponential and ket. Copy result continues to use the canonical expression, preserving evaluation and binder scope. The Fourier basis-action rule below expands `QFT_N|x⟩_{N}` while retaining its domain.
+
+
+## Domain-preserving Fourier basis actions
+
+`QFT_N|x>_N`, `QFT_N†|x>_N`, and `QFT_N^(-1)|x>_N` expand into an actual finite sum when the index or dimension is symbolic and the operator and basis dimensions match. The forward sum uses `exp(2*pi*i*x*k/N)/sqrt(N)` and the inverse uses the negative phase, following [IBM's Fourier definition](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure). A fresh sum index avoids capture by surrounding sums or free symbols.
+
+The result displays its integer-index conditions. Copy result retains both the sum and its domain in the canonical `qfourierdomain` expression. Substituting numerical parameters validates the index and dimension before evaluating the sum: dimensions must be integers from 1 through 64, and the index must be an integer from 0 through N−1. For example, supplying N=4 and x=1 gives `[1;i;-1;-i]/2`; x=4 is rejected rather than being accepted through periodicity of the exponential. Dimension one remains a 1-by-1 column matrix. Unknown parameters stay symbolic in both arithmetic modes.
+
+Copy/re-entry may normalize equivalent scalar formatting, such as `1/sqrt(N)` to `1/N^0.5`; it preserves evaluation and domain checks. Use Copy result for re-entry of the full conditional expression. A bare named ket such as `QFT_N|x>` does not declare x to be an integer basis index and is not expanded by this rule. General Fourier identities and unspecified basis declarations remain separate work.

@@ -13,7 +13,7 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
 | [DEV-01](#dev-01) | P1 | S | Implemented; release pending | None | Compact bound-index products |
-| [DEV-02](#dev-02) | P1 | L | Not implemented | DEV-01 | Domain-preserving symbolic Fourier expansion |
+| [DEV-02](#dev-02) | P1 | L | Implemented; release pending | DEV-01 | Domain-preserving symbolic Fourier expansion |
 | [DEV-03](#dev-03) | P1 | L | Partial | None | Declared orthonormal bases |
 | [DEV-04](#dev-04) | P1 | L | Partial | DEV-03 | Symbolic operator assumptions and identities |
 | [DEV-05](#dev-05) | P1 | M | Partial | None | Register dimensions and symbolic bit strings |
@@ -49,10 +49,10 @@ Recommended order: finish DEV-01; run AUD-01 and AUD-02 alongside code work; the
 
 ### DEV-02
 
-- [ ] **Domain-preserving symbolic Fourier expansion** — P1; Not implemented; size L; dependencies: DEV-01.
+- [ ] **Domain-preserving symbolic Fourier expansion** — P1; Implemented; release pending; size L; dependencies: DEV-01.
 - Source focus: Fundamentals: phase estimation and factoring. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Simplify QFT_N|x>_N to a capture-free normalized Fourier sum with IBM positive phase. Preserve integer/range constraints after substitution: x=N, fractional x and invalid N must still reject. Test inverse and N=1.
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+- Evidence: `codex/fourier-action`; regression coverage in `src/quantum-worker-test.py` and `src/quantum-algebra-test.cc`; forward/inverse sums, invalid substitution, cancellation, fresh indices and canonical copy. Not yet merged/released. Owner: unassigned. PR: pending.
 
 ### DEV-03
 
