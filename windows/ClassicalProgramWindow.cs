@@ -160,11 +160,11 @@ sealed class ClassicalProgramWindow : Window {
   verifying=true;Import(path,false);Refresh();
   await SourceFilesWindow.Verify(this,history.Source,Path.GetDirectoryName(path),report,envelope=>history.ImportSource(envelope,false),()=>history.Serialize(),()=>history.Undo());
  }
- public void VerifyImport(string path,string report) {
+ public void VerifyImport(string path,string report,bool moduleHeaders=false) {
   verifying=true;
   // Import replaces all metadata and undo restores even a loop-bearing document.
   history.Edit(d=>{d.Version=7;d.Variables=new ClassicalCircuit.Variable[0];d.LoopConditionBudget=3;d.Steps=new[]{new ClassicalCircuit.Step{Kind="While",ClassicalValue=new ClassicalCircuit.ExpressionNode{Kind="Constant",Width=1,Value="0"},WhenTrue=new ClassicalCircuit.Step[0]}};});
-  string before=history.Current.Serialize();Import(path,false);string imported=history.Current.Serialize();
+  string before=history.Current.Serialize();Import(path,false,moduleHeaders);string imported=history.Current.Serialize();
   if(history.Source==null || history.Source.CircuitEdited)throw new Exception("Import lost original source.");
   string originalSource=history.Source.SourceJson,full=history.Serialize();
   history.Undo();if(history.Current.Serialize()!=before)throw new Exception("Import undo lost the previous circuit.");history.Redo();if(history.Current.Serialize()!=imported)throw new Exception("Import redo lost classical circuit data.");
