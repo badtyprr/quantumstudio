@@ -21,11 +21,14 @@ static class ClassicalQasmLifetimes {
   if(node==null)return;
   Expression(node.IntegerValue,visit);Real(node.Left,visit);Real(node.Right,visit);
  }
- static void Visit(ClassicalCircuit.Step step,Action<ClassicalCircuit.Step> instruction,Action<ClassicalCircuit.ExpressionNode> expression) {
+ static void Visit(ClassicalCircuit.Step step,Action<ClassicalCircuit.Step> instruction,Action<ClassicalCircuit.ExpressionNode> expression,int depth=0) {
+  // Recovery adds blocks before the final model validation. Bound each walk
+  // too, so intermediate trees cannot exhaust the stack while being rebuilt.
+  if(depth>=32)throw new InvalidDataException("OpenQASM export local lifetimes exceed 32 levels of nesting.");
   instruction(step);Expression(step.ClassicalValue,expression);Expression(step.IntegerValue,expression);Real(step.Angle,expression);
   if(step.Range!=null){Expression(step.Range.Start,expression);Expression(step.Range.Stop,expression);Expression(step.Range.Step,expression);}
-  if(step.WhenTrue!=null)foreach(var child in step.WhenTrue)Visit(child,instruction,expression);
-  if(step.WhenFalse!=null)foreach(var child in step.WhenFalse)Visit(child,instruction,expression);
+  if(step.WhenTrue!=null)foreach(var child in step.WhenTrue)Visit(child,instruction,expression,depth+1);
+  if(step.WhenFalse!=null)foreach(var child in step.WhenFalse)Visit(child,instruction,expression,depth+1);
  }
  static int References(ClassicalCircuit.Step step,int slot) {
   int count=0;

@@ -66,6 +66,11 @@ static class ClassicalProgramQasmTests {
   if(nested.Serialize()!=unchanged)throw new Exception("Export mutated the input circuit.");
   Reject(Circuit(0,1,new[]{0},new[]{clear,store,innerClear,innerStore,clear,innerAssign,innerClear},nestedTypes),"lifetime");
   Reject(Circuit(0,1,new[]{0},new[]{clear,store,assign,clear,assign},variable),"lifetime");
+  var deepTypes=new List<ClassicalCircuit.Variable>();var deepSteps=new List<S>();
+  for(int i=0;i<40;i++){deepTypes.Add(new ClassicalCircuit.Variable{Name="local"+i,Signedness="Unsigned",Width=1});deepSteps.Add(new S{Kind="ClearInteger",VariableSlot=i});}
+  for(int i=39;i>=0;i--)deepSteps.Add(new S{Kind="ClearInteger",VariableSlot=i});
+  deepSteps.Add(new S{Kind="Assign",Wires=new[]{0},ClassicalValue=Constant(1,"1")});
+  Reject(Circuit(0,1,new[]{0},deepSteps.ToArray(),deepTypes.ToArray()),"32");
   Reject(Circuit(0,1,new[]{0},new[]{store,clear,assign},variable),"lifetime");
   Reject(Circuit(0,1,new[]{0},new[]{loop},null,12),"loop budget");
   Case("branch-local",Circuit(0,1,new[]{0},new[]{new S{Kind="ExpressionBranch",ClassicalValue=Constant(1,"1"),WhenTrue=new[]{store,assign,clear},WhenFalse=new S[0]}},variable),"1");
