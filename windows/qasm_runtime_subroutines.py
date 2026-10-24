@@ -13,6 +13,7 @@ from qasm_source_diagnostics import error_at
 
 def lower_runtime_subroutines(program):
     scalar = (ast.IntType, ast.UintType, ast.BoolType)
+    values = scalar + (ast.BitType,)
 
     def walk(value):
         if is_dataclass(value):
@@ -29,6 +30,7 @@ def lower_runtime_subroutines(program):
     used = {node.name for node in walk(program) if isinstance(node, ast.Identifier)}
     runtime = set()
     registers = {}
+    bit_storage = []
     serial = calls = expanded = copied_nodes = 0
 
     def fresh():
@@ -52,7 +54,7 @@ def lower_runtime_subroutines(program):
             if copied_nodes > 65536:
                 raise error_at(value, 'Runtime subroutine binding expansion exceeds 65536 AST nodes.')
             return copy.deepcopy(bound)
-        if isinstance(value, ast.IndexedIdentifier) and value.name.name in bindings:
+        if isinstance(value, ast.IndexedIdentifier) and isinstance(bindings.get(value.name.name), ast.IndexedIdentifier):
             raise error_at(value, 'Runtime calls currently require scalar quantum parameters without indexing.')
         if isinstance(value, list):
             return [rewrite(item, bindings, lexical) for item in value]
@@ -128,23 +130,38 @@ def lower_runtime_subroutines(program):
                     raise error_at(call, 'Quantum subroutine arguments must not overlap.')
                 qubits.add(key)
                 bindings[name] = ast.IndexedIdentifier(name=ast.Identifier(key[0]), indices=[[ast.IntegerLiteral(key[1])]])
-            elif isinstance(formal, ast.ClassicalArgument) and isinstance(formal.type, scalar):
+            elif isinstance(formal, ast.ClassicalArgument) and isinstance(formal.type, values):
                 if formal.access is not None:
                     raise error_at(formal, 'Runtime scalar arguments are passed by value.')
                 slot = ast.Identifier(fresh())
                 # Actual expressions stay in the caller environment; never bind
                 # an initializer to the newly introduced formal of the same name.
                 declared_type = rewrite(formal.type, constant_bindings, lexical=True)
-                declarations.append(ast.ClassicalDeclaration(type=declared_type, identifier=slot, init_expression=copy.deepcopy(actual)))
+                declaration = ast.ClassicalDeclaration(type=declared_type, identifier=slot, init_expression=copy.deepcopy(actual))
+                declarations.append(bit_declaration(declaration) if isinstance(declared_type, ast.BitType) else declaration)
                 bindings[name] = slot
             else:
-                raise error_at(formal, 'Runtime call arguments currently support scalar integers and Booleans.')
+                raise error_at(formal, 'Runtime call arguments currently support integers, Booleans and bit registers.')
         activations.append(visibility[call.name.name])
         try:
             body = block(definition.body, bindings, True, depth + 1, parameters)
         finally:
             activations.pop()
         return ast.CompoundStatement(statements=declarations + body)
+
+    def bit_declaration(declaration):
+        # Allocate storage once, but initialize on every activation, including
+        # runtime-loop re-entry. Generated bits are never implicit outputs.
+        bare = copy.deepcopy(declaration); bare.init_expression = None
+        bit_storage.append(bare)
+        initial = declaration.init_expression
+        if isinstance(initial, ast.QuantumMeasurement):
+            return ast.QuantumMeasurementStatement(measure=initial, target=declaration.identifier)
+        if initial is None:
+            target_type = copy.deepcopy(declaration.type)
+            if target_type.size is None: target_type.size = ast.IntegerLiteral(1)
+            initial = ast.Cast(type=target_type, argument=ast.IntegerLiteral(0))
+        return ast.ClassicalAssignment(lvalue=declaration.identifier, op=ast.AssignmentOperator['='], rvalue=initial)
 
     def block(body, parent, active=False, depth=0, declared=None):
         env = dict(parent); declared = set() if declared is None else set(declared)
@@ -159,15 +176,19 @@ def lower_runtime_subroutines(program):
                 if active and name in declared:
                     raise error_at(node, 'Duplicate declaration in one subroutine scope: ' + name)
                 declared.add(name)
-                if active and isinstance(node, ast.ClassicalDeclaration) and not isinstance(node.type, scalar):
-                    raise error_at(node, 'Runtime subroutine locals currently support scalar integers and Booleans.')
+                if active and isinstance(node, ast.ClassicalDeclaration) and not isinstance(node.type, values):
+                    raise error_at(node, 'Runtime subroutine locals currently support integers, Booleans and bit registers.')
                 value = copy.copy(node)
                 value.type = rewrite(node.type, env)
                 if active:
                     env[name] = ast.Identifier(fresh())
                 value.identifier = rewrite(node.identifier, env)
                 value.init_expression = rewrite(node.init_expression, env)
-                result.append(value)
+                if active and isinstance(node, ast.ConstantDeclaration):
+                    # Hoisted bit-storage widths must carry their lexical
+                    # constants, not refer back into the activation body.
+                    env[name] = ast.Cast(type=copy.deepcopy(value.type), argument=copy.deepcopy(value.init_expression))
+                result.append(bit_declaration(value) if active and isinstance(value, ast.ClassicalDeclaration) and isinstance(value.type, ast.BitType) else value)
                 if isinstance(node, ast.ClassicalDeclaration) and isinstance(node.type, (ast.BitType,) + scalar):
                     runtime.add(value.identifier.name)
                 continue
@@ -226,4 +247,5 @@ def lower_runtime_subroutines(program):
             if size is None or isinstance(size, ast.IntegerLiteral):
                 registers[node.qubit.name] = 1 if size is None else size.value
         result.extend(block([node], {}))
-    program.statements[:] = result
+    program.statements[:] = bit_storage + result
+    return {declaration.identifier.name for declaration in bit_storage}

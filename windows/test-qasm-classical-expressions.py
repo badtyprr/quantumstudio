@@ -8,6 +8,11 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('call-bit-measured','def f(bit value,qubit q){if(value==1){x q;}}qubit[2] q;bit m;output bit[2] r;h q[0];m=measure q[0];f(m,q[1]);r=measure q;',{'00':'1/2','11':'1/2'}),
+ ('call-bit-snapshot','def f(bit value){value=0;}bit m=1;f(m);',{'1':'1'}),
+ ('call-bit-local-width','def f(bit value){const int width=2;bit[width] local;local[0]=value;}bit m=1;f(m);',{'1':'1'}),
+ ('call-bit-register','def f(bit[2] value,qubit q){value[0]=0;if(value=="10"){x q;}}qubit q;bit[2] m="11";output bit r;f(m,q);r=measure q;',{'1':'1'}),
+ ('loop-call-bit-reset','def f(bit flag,qubit q){bit local;if(flag==1){local=1;}if(local==1){x q;}}qubit q;bit again=1;bit flag=1;output bit r;while(again==1){reset q;f(flag,q);if(flag==0){again=0;}flag=0;}r=measure q;',{'0':'1'}),
  ('computed-call-lexical-constant', 'const int k=1;def f(int n,qubit q){if(k==1){x q;}}qubit q;bit m;output bit r;m=measure q;{int k=0;f(int[32](m),q);}r=measure q;', {'1': '1'}),
  ('computed-call-lexical-width', 'const int width=8;def f(uint[width] n,qubit q){if(n==0){x q;}}qubit q;bit m;output bit r;m=measure q;{int width=1;f(uint[8](m),q);}r=measure q;', {'1': '1'}),
  ('computed-call-bool', 'def f(bool b,qubit target){if(b){x target;}}qubit[2] q;bit m;output bit r;x q[0];m=measure q[0];f(bool(int[32](m)),q[1]);r=measure q[1];', {'1': '1'}),
@@ -393,7 +398,7 @@ rejected += ['output bit r;output bit r;',
              'output bit[65] r;',
              'output bit[0] r;']
 rejected += ['@unsupported\noutput bit r;']
-rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){bit b;}qubit q;bit c;f(int(c),q);']
+rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){array[int[8],2] b;}qubit q;bit c;f(int(c),q);']
 rejected += ['def f(int n,qubit q){g(n,q);}def g(int n,qubit q){}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;\n@custom\nf(int(c),q);']
 rejected += ['def f(int n,qubit q){if(missing==1){x q;}}qubit q;bit m;{int missing=1;f(int(m),q);}', 'def f(int n,qubit q){if(later==1){x q;}}const int later=1;qubit q;bit m;f(int(m),q);']
 # Expansion and lexical-binding budgets must reject before allocating unbounded ASTs.
