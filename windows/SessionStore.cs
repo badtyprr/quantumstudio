@@ -69,15 +69,18 @@ static class SessionStore {
  static void ValidateMatrices(MatrixDeclaration[] matrices,int version) {
   if(version<3) {
    if(matrices!=null && matrices.Length!=0)throw new InvalidDataException("Matrix declarations require a version 3 session.");
-  } else MatrixDeclarations.Validate(matrices);
+  } else {
+   MatrixDeclarations.Validate(matrices);
+   if(version<4)foreach(var matrix in matrices)if(MatrixDeclarations.PropertyOf(matrix)!="General")throw new InvalidDataException("Operator properties require a version 4 session.");
+  }
  }
  static void ValidateExpression(string expression,int mode,int evaluation) {
   if(expression==null || StrictUtf8.GetByteCount(expression)>32000 || mode<0 || mode>1 || evaluation<0 || evaluation>1)
    throw new InvalidDataException("Session expressions must be at most 32 KB and use valid notation and evaluation modes.");
  }
  public static void Validate(CalculationSession session) {
-  if(session==null || (session.Version!=1 && session.Version!=2 && session.Version!=3) || session.History==null || session.History.Length>50)
-   throw new InvalidDataException("Expected a version 1, 2 or 3 calculation session with at most 50 history entries.");
+  if(session==null || session.Version<1 || session.Version>4 || session.History==null || session.History.Length>50)
+   throw new InvalidDataException("Expected a version 1, 2, 3 or 4 calculation session with at most 50 history entries.");
   ValidateSessionStates(session.States,session.Version);
   ValidateMatrices(session.Matrices,session.Version);
   ValidateExpression(session.Expression,session.Mode,session.Evaluation);
