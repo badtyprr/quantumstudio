@@ -16,6 +16,8 @@ EXTRA_DIST = config.rpath  \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
 	windows/build-qasm-import.ps1 \
+	windows/test-qasm-arrays.py \
+	windows/fixtures/qb-arrays/ripple-carry.qasm \
 	windows/build-runtime-angle-import-test.ps1 \
 	windows/RuntimeAngleImportTests.cs \
 	windows/test-qasm-runtime-angles.py \

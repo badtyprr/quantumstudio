@@ -22,3 +22,5 @@ foreach ($metadata in Get-ChildItem -LiteralPath $site -Directory -Filter '*.dis
 }
 $pythonLicense = & $python -c "import sys; from pathlib import Path; print(Path(sys.base_prefix)/'LICENSE.txt')"
 Copy-Item -LiteralPath $pythonLicense -Destination (Join-Path $licenses 'Python-LICENSE.txt') -Force
+& $python (Join-Path $PSScriptRoot 'test-qasm-arrays.py') --frozen (Join-Path $repo 'dist/QuantumStudio/qasm-import/qasm-import.exe')
+if ($LASTEXITCODE -ne 0) { throw 'Compile-time array source/frozen checks failed.' }

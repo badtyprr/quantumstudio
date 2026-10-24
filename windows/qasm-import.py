@@ -217,7 +217,17 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if type(result) not in (int,bool):
             raise ValueError('Classical bit expressions require integer or Boolean values.')
         return ast.IntegerLiteral(int(result))
+    def require_compile_time_array(visitor, statement, value):
+        # Preserved branches are emitted, not executed. Letting the compiler
+        # mutate array storage here would leak one branch's value into another.
+        if getattr(visitor,'_quantum_runtime_branch_depth',0) or runtime(visitor,value) or any(isinstance(item,ast.QuantumMeasurement) for item in nodes(value)):
+            raise error_at(statement,'Compile-time arrays cannot depend on runtime values or be modified in runtime control flow.')
     def assignment(visitor, statement):
+        name=statement.lvalue.name
+        name=name.name if isinstance(name,ast.Identifier) else name
+        variable=visitor._scope_manager.get_from_visible_scope(name)
+        if variable is not None and getattr(variable,'dims',None) and not isinstance(variable.base_type,ast.BitType):
+            require_compile_time_array(visitor,statement,[statement.lvalue,statement.rvalue])
         if in_function(visitor):return original_assignment(visitor,statement)
         if getattr(statement,"_quantum_clear",False):
             return [] if visitor._check_only else [copy.deepcopy(statement)]
@@ -253,6 +263,18 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             value = ast.BinaryExpression(op=ast.BinaryOperator[operation],lhs=copy.deepcopy(target),rhs=value)
         return [] if visitor._check_only else [ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=value)]
     def declaration(visitor, statement):
+        if isinstance(statement.type,ast.ArrayType):
+            require_compile_time_array(visitor,statement,[statement.type,statement.init_expression])
+            count=1
+            for dimension in statement.type.dimensions:
+                size=Qasm3ExprEvaluator.evaluate_expression(dimension,const_expr=True)[0]
+                if type(size) is not int or size<=0:
+                    raise error_at(statement,'Compile-time array dimensions must be positive integers.')
+                count*=size
+                if count>65536:raise error_at(statement,'Compile-time arrays exceed the 65536-element compilation budget.')
+            retained=getattr(visitor,'_quantum_array_elements',0)+count
+            if retained>65536:raise error_at(statement,'Compile-time arrays exceed the 65536-element compilation budget.')
+            visitor._quantum_array_elements=retained
         if in_function(visitor):return original_declaration(visitor,statement)
         if isinstance(statement.type,ast.BitType) and statement.type.size is None:
             visitor._quantum_scalar_bits=getattr(visitor,'_quantum_scalar_bits',set())|{statement.identifier.name}
@@ -296,11 +318,13 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         visitor._scope_manager.push_scope({})
         visitor._scope_manager.increment_scope_level()
         visitor._in_branching_statement += 1
+        visitor._quantum_runtime_branch_depth=getattr(visitor,'_quantum_runtime_branch_depth',0)+1
         try:
             yes = visitor.visit_basic_block(statement.if_block)
             no = visitor.visit_basic_block(statement.else_block)
             return [] if visitor._check_only else [ast.BranchingStatement(condition=condition, if_block=yes, else_block=no)]
         finally:
+            visitor._quantum_runtime_branch_depth-=1
             visitor._scope_manager.decrement_scope_level()
             visitor._scope_manager.pop_scope()
             visitor._scope_manager.restore_context()
@@ -864,8 +888,8 @@ def convert(source, published_u=False, classical=False):
     # Reject these before compilation, rather than pretend their content ran.
     for node in nodes(module.original_program,True):
         if classical and isinstance(node, ast.ClassicalDeclaration):
-            if not isinstance(node.type, (ast.BitType,)+RUNTIME_SCALAR_TYPES):
-                raise error_at(node, 'Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported.')
+            if not isinstance(node.type, (ast.BitType,ast.ArrayType)+RUNTIME_SCALAR_TYPES):
+                raise error_at(node, 'Classical circuit import supports bit registers, integer/Boolean variables and compile-time arrays; other classical declarations are not yet supported.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise error_at(node, 'Only stdgates.inc and qelib1.inc includes are supported.')
     for node in nodes(module.original_program):

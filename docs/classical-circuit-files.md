@@ -1,5 +1,32 @@
 # Classical circuit files
 
+## Arrays resolved during OpenQASM import
+
+Classical import accepts arrays that the pinned compiler can resolve before
+execution, including Boolean inputs to the qBraid ripple-carry adder. Their
+declarations and constant-index operations are lowered to ordinary circuit
+steps; they do not introduce an array storage type in saved circuit files.
+Compilation permits at most 65,536 array elements in total, with positive
+compile-time dimensions. Static Boolean, integer, unsigned-integer and float
+array examples, multidimensional reads and constant-loop writes have tests.
+
+Runtime-dependent initialization and writes in runtime branches or loops are
+rejected. This includes writes through subroutine reference arguments: executing
+them during compilation would incorrectly change gates outside the branch.
+Dynamic indices and runtime array storage remain separate unfinished work.
+Array syntax and operations otherwise retain the pinned compiler's limitations;
+this is not complete OpenQASM array support. For example, indexed compound
+assignment and Boolean array reference parameters remain unsupported upstream.
+
+The unchanged fixture `windows/fixtures/qb-arrays/ripple-carry.qasm` comes from
+qBraid's `qasm_unroll.ipynb` at revision
+`86787e1ba372facc224f925189755e69c479828b`. Its array ordering sets `a[3]`, so
+the measured record is `10111` (8 + 15), despite the source comment saying
+`a = 0001`. The fixture is not rewritten to fit that comment. Source and frozen
+importer checks exercise it in `windows/test-qasm-arrays.py`.
+
+## Version 2 and version 3
+
 Version 2 records saved classical bits and structured branches. Version 3 retains
 that layout and adds `Assign` and `ExpressionBranch` steps. Files declare their
 version explicitly; version 2 rejects non-null classical expressions and the new
