@@ -11,6 +11,7 @@ static void equal(const std::string &expression,const std::string &expected) {
  MathStructure value=CALCULATOR->calculate("("+expression+")==("+expected+")",eo);
  if(!value.isNumber() || !value.number().isOne())throw std::runtime_error("Mismatch: "+expression+" vs "+expected);
  ++checks;
+
 }
 int main(){try {
  Calculator calculator;if(!calculator.loadGlobalDefinitions())throw std::runtime_error("Definitions unavailable");
@@ -18,6 +19,34 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ for(const char *source:{"qmul(qdag(operatorparam(\"A\",2,unitary)),operatorparam(\"A\",2,unitary))",
+                         "qmul(operatorparam(\"A\",2,unitary),qdag(operatorparam(\"A\",2,unitary)))"}) {
+  MathStructure guarded=calculator.calculate(source,eo);
+  if(!guarded.isFunction() || guarded.function()->referenceName()!="qunitaryidentity")throw std::runtime_error("Unitary product did not retain a guarded identity");++checks;
+  MathStructure valid=guarded;valid.replace(MathStructure("A",true),calculator.calculate("[0,1;1,0]",eo));valid.eval(eo);
+  valid.transform(COMPARISON_EQUALS,calculator.calculate("identity(2)",eo));valid.eval(eo);
+  if(!valid.isOne())throw std::runtime_error("Guard rejected a valid unitary replacement");++checks;
+  for(const char *replacement:{"[1,0;0,2]","identity(3)"}) {
+   while(calculator.message())calculator.nextMessage();MathStructure invalid=guarded;
+   invalid.replace(MathStructure("A",true),calculator.calculate(replacement,eo));invalid.eval(eo);bool error=false;
+   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+   if(!error)throw std::runtime_error("Unitary simplification lost its substitution constraint");++checks;
+  }
+ }
+ for(const char *property:{"hermitian","projector"}) {
+  std::string domain=std::string("operatorparam(\"A\",2,")+property+")";
+  MathStructure expected=calculator.calculate(domain,eo),adjoint=calculator.calculate("qdag("+domain+")",eo);
+  if(!adjoint.equals(expected))throw std::runtime_error("Declared Hermitian adjoint did not simplify");++checks;
+ }
+ MathStructure projector=calculator.calculate("operatorparam(\"A\",2,projector)",eo);
+ MathStructure squared=calculator.calculate("qmul(operatorparam(\"A\",2,projector),operatorparam(\"A\",2,projector))",eo);
+ if(!squared.equals(projector))throw std::runtime_error("Declared projector square did not simplify");++checks;
+ for(const char *source:{"qmul(operatorparam(\"A\",2,hermitian),operatorparam(\"A\",2,hermitian))",
+   "qmul(operatorparam(\"A\",2,projector),operatorparam(\"B\",2,projector))",
+   "qmul(qdag(matrixparam(\"A\",2,2)),matrixparam(\"A\",2,2))"}) {
+  MathStructure retained=calculator.calculate(source,eo);
+  if(!retained.isFunction() || retained.function()->referenceName()!="qmul")throw std::runtime_error("Unjustified operator identity applied");++checks;
+ }
  // Operator properties are explicit domains, not inferred from symbol names.
  equal("operatorparam([0,1;1,0],2,unitary)","[0,1;1,0]");
  equal("operatorparam([1,i;-i,2],2,hermitian)","[1,i;-i,2]");

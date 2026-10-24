@@ -1141,8 +1141,18 @@ must match the dimension and satisfy the declared property: unitarity,
 Hermiticity, or both Hermiticity and idempotence for an orthogonal projector.
 An unresolved domain remains in the expression until validation is possible;
 operator names alone imply no property. Validation uses exact arithmetic.
-This domain constructor does not yet add symbolic cancellation rules or GUI
-property controls. Generic matrix declarations below remain unchanged.
+For a declared unitary U, adjacent `adjoint(U)*U` and `U*adjoint(U)` simplify
+to a dimensioned identity with its unitary premise shown. Canonical copy retains
+`qunitaryidentity(A,n)`, which revalidates A and n after substitution; an invalid
+replacement cannot bypass validation because the displayed product disappeared.
+For a declared Hermitian operator, the adjoint returns that operator; for a
+declared orthogonal projector, the adjoint and square return that projector.
+Unrelated projectors do not acquire orthogonality or commutativity, and a generic
+Hermitian square remains unresolved. These are the conditional identities in
+[IBM's unitary operations](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/quantum-information#unitary-operations)
+and [projection matrices](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections#projection-matrices).
+Dedicated GUI property controls remain unfinished. Generic matrix declarations
+below remain unchanged.
 
 `matrixassume(expression,A,rows,columns)` annotates free occurrences of A with a matrix domain before evaluating the expression. Text-valued state labels such as `|A>` and local summation indices are preserved. Existing `matrixparam` annotations take precedence, allowing canonical results to be evaluated again without nested annotations. Nested declarations own their bodies; dimensions are still checked, including for an unused declaration. Gates, constants, and already-valued symbols cannot be redefined as matrix names.
 

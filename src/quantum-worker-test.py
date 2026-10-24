@@ -46,6 +46,37 @@ for flags in ((), ("--approx",)):
     run("quantum:replace(" + delayed["copy_text"] + ",x,2)", "--json", *flags, success=False)
     assert data("quantum:replace(" + delayed["copy_text"] + ",x,1)", *flags)["cells"] == [["1", "0"], ["0", "1"]]
 
+# Simplified unitary identities keep their premise through copy/substitution.
+for flags in ((), ("--approx",)):
+    domain = "operatorparam(A,2,unitary)"
+    for expression in ("adjoint(" + domain + ")*" + domain,
+                       domain + "*adjoint(" + domain + ")"):
+        result = data("quantum:" + expression, *flags)
+        assert "qunitaryidentity" in result["copy_text"]
+        assert result["display_text"] == "I_{2}  (A unitary; dimension 2)"
+        copied = data("quantum:" + result["copy_text"], *flags)
+        assert copied["copy_text"] == result["copy_text"]
+        for invalid in ("[1,0;0,2]", "identity(3)"):
+            run("quantum:replace(" + copied["copy_text"] + ",A," + invalid + ")", "--json", *flags, success=False)
+        assert data("quantum:replace(" + copied["copy_text"] + ",A,[0,1;1,0])", *flags)["cells"] == [["1", "0"], ["0", "1"]]
+    for property_name in ("hermitian", "projector"):
+        domain = "operatorparam(A,2," + property_name + ")"
+        assert data("quantum:adjoint(" + domain + ")", *flags)["copy_text"] == data("quantum:" + domain, *flags)["copy_text"]
+    projector = "operatorparam(A,2,projector)"
+    square = data("quantum:" + projector + "*" + projector, *flags)
+    assert square["copy_text"] == data("quantum:" + projector, *flags)["copy_text"]
+    run("quantum:replace(" + square["copy_text"] + ",A,[1,0;0,2])", "--json", *flags, success=False)
+    symbolic = data("quantum:adjoint(operatorparam(A,n,unitary))*operatorparam(A,n,unitary)", *flags)
+    assert "qunitaryidentity" in symbolic["copy_text"] and "dimension n" in symbolic["display_text"]
+    for invalid_dimension in ("0", "-1", "1/2"):
+        run("quantum:replace(" + symbolic["copy_text"] + ",n," + invalid_dimension + ")", "--json", *flags, success=False)
+    singleton = data("quantum:adjoint(operatorparam(A,1,unitary))*operatorparam(A,1,unitary)", *flags)
+    assert "qunitaryidentity" in singleton["copy_text"]
+    assert data("quantum:replace(" + singleton["copy_text"] + ",A,identity(1))", *flags)["cells"] == [["1"]]
+    middle = data("quantum:adjoint(operatorparam(A,2,unitary))*matrixparam(B,2,2)*operatorparam(A,2,unitary)", *flags)
+    assert "qunitaryidentity" not in middle["copy_text"] and "'B'" in middle["copy_text"]
+    run("quantum:adjoint(operatorparam(A,2,unitary))*operatorparam(A,3,unitary)", "--json", *flags, success=False)
+
 # .NET Framework may prepend a UTF-8 BOM when opening redirected stdin.
 # Accept one transport preamble, not repeated or truncated protocol prefixes.
 for mode, request in (("--exact-circuit", "QEXACT1\n0\n0\n0\n0\n"),
