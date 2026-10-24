@@ -19,6 +19,7 @@ from pyqasm.validator import Qasm3Validator
 from pyqasm.elements import Context
 from qasm_source_diagnostics import error_at
 from qasm_subroutine_scope import prepare_subroutine_scope
+from qasm_runtime_subroutines import lower_runtime_subroutines
 
 RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)
 
@@ -847,6 +848,7 @@ def convert(source, published_u=False, classical=False):
     hidden_registers=set()
     if classical:
         prepare_subroutine_scope(module.original_program)
+        lower_runtime_subroutines(module.original_program)
         mark_runtime_ranges(module.original_program)
         lower_for_transfers(module.original_program)
         resolve_integer_scopes(module.original_program)
