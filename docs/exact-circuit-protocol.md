@@ -54,3 +54,24 @@ Response fields are `qubits`, `classical_bits`, `bits` (selected indices), and
 strings to preserve symbolic formulas and rational values without JSON number
 rounding. For example, measuring a Hadamard-prepared qubit returns
 `{"qubits":1,"classical_bits":1,"bits":[0],"probabilities":{"0":"0.5","1":"0.5"}}`.
+
+Certified unitary circuits followed only by computational measurements can use
+bounded exact phase arithmetic instead of density-matrix expansion. Unsupported
+gate expressions, channels, resets, intermediate measurements and control flow
+retain the general evaluator. This selection does not add implicit measurements
+or change classical bit ordering or overwrite semantics.
+
+The phase route retains literal rational angles and coefficients exactly; it
+does not snap decimal angles to multiples of pi. Large probabilities may be
+returned as sums of `abs(exact_amplitude)^2` factors. These are exact scalar
+expressions, not numerical estimates. Small rational results retain terminating
+decimal text such as `0.5`; nonterminating rational results retain fractions.
+Exact text is serialized without precision-dependent display formatting.
+
+The phase route bounds each compiled plan and live state at 262,144 terms,
+individual rational numerator/denominator sizes at 4,096 bits, and cumulative
+arithmetic work at 100,000,000 charged operations. At most two states coexist
+during a gate; compiled gate storage is separate. Probability text is limited
+to 1,000,000 characters per outcome and 4,000,000 characters in total. Resource
+or cancellation failures produce no partial result and do not retry through an
+unbounded route. Callers still need the process timeout described above.

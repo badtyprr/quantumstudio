@@ -214,6 +214,13 @@ TESTS += quantum-exact-phase-expression-test
 quantum_exact_phase_expression_test_SOURCES = quantum-exact-phase-expression-test.cc
 quantum_exact_phase_expression_test_LDADD = $(test_LDADD)
 
+check_PROGRAMS += quantum-exact-phase-circuit-test
+TESTS += quantum-exact-phase-circuit-test
+quantum_exact_phase_circuit_test_SOURCES = quantum-exact-phase-circuit-test.cc
+quantum_exact_phase_circuit_test_LDADD = $(test_LDADD)
+TESTS += quantum-phase-circuit-request-test.py
+EXTRA_DIST += quantum-phase-circuit-request-test.py quantum-phase-iqft.qasm
+
 check_PROGRAMS += quantum-trajectory-range-test
 TESTS += quantum-trajectory-range-test
 quantum_trajectory_range_test_SOURCES = quantum-trajectory-range-test.cc
