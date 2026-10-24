@@ -66,6 +66,16 @@ for flags in ((), ("--approx",)):
     square = data("quantum:" + projector + "*" + projector, *flags)
     assert square["copy_text"] == data("quantum:" + projector, *flags)["copy_text"]
     run("quantum:replace(" + square["copy_text"] + ",A,[1,0;0,2])", "--json", *flags, success=False)
+    symbolic = data("quantum:adjoint(operatorparam(A,n,unitary))*operatorparam(A,n,unitary)", *flags)
+    assert "qunitaryidentity" in symbolic["copy_text"] and "dimension n" in symbolic["display_text"]
+    for invalid_dimension in ("0", "-1", "1/2"):
+        run("quantum:replace(" + symbolic["copy_text"] + ",n," + invalid_dimension + ")", "--json", *flags, success=False)
+    singleton = data("quantum:adjoint(operatorparam(A,1,unitary))*operatorparam(A,1,unitary)", *flags)
+    assert "qunitaryidentity" in singleton["copy_text"]
+    assert data("quantum:replace(" + singleton["copy_text"] + ",A,identity(1))", *flags)["cells"] == [["1"]]
+    middle = data("quantum:adjoint(operatorparam(A,2,unitary))*matrixparam(B,2,2)*operatorparam(A,2,unitary)", *flags)
+    assert "qunitaryidentity" not in middle["copy_text"] and "'B'" in middle["copy_text"]
+    run("quantum:adjoint(operatorparam(A,2,unitary))*operatorparam(A,3,unitary)", "--json", *flags, success=False)
 
 # .NET Framework may prepend a UTF-8 BOM when opening redirected stdin.
 # Accept one transport preamble, not repeated or truncated protocol prefixes.
