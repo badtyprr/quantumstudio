@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-10-20. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-10-23. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -28,6 +28,7 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
+| [DEV-17](#dev-17) | P2 | M | Not implemented | None; explicit subsystem mapping required | Named subsystem partial traces |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
 | [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
@@ -224,6 +225,16 @@ and direct concatenation in an assignment failed the pinned parser probe.
 The storage component uses explicit outputs and local scratch blocks; retain
 those semantics when adding whole-program serialization.
 
+### DEV-17
+
+- [ ] **Named subsystem partial traces** — P2; Not implemented; size M. Numeric partial traces already provide the arithmetic baseline; define explicit subsystem names, order and dimensions before implementing named syntax.
+- Source and reproduction: [IBM-005 evidence](learning-evidence/IBM-005.md), published revision `3254e5d4`. With the explicit matrix `R` in that evidence, `ptrace(R,1)` returns `identity(2)/2`, while `\operatorname{Tr}_{\mathsf{B}}(R)` rejects its named subscript. This is a literal source operator prefix with an adapted operand, not a whole-lesson compatibility test.
+- [ ] DEV-17a: Define how users bind ordered subsystem labels and dimensions to an expression. Document scope, persistence and conflicts. Never guess positions from alphabetical names; distinguish the factors being traced out from the factors retained.
+- [ ] DEV-17b: Accept human-entered named trace syntax and the source TeX form using that mapping. Compare full exact matrices for Bell marginals, the asymmetric IBM mixture and a product-state ordering control. Unknown or duplicate labels and incompatible dimensions must produce specific errors.
+- [ ] DEV-17c: Cover unequal dimensions `[2,3]`, a middle factor in three systems, and tracing multiple factors. Preserve remaining-factor order. Test renamed/permuted labels so accidental A-to-0/B-to-1 assumptions cannot pass.
+- [ ] DEV-17d: Verify GUI entry, copied expressions and saved/reopened declarations retain the same mapping and result. Attach exact-head tests, required CI and the tested release revision before marking this feature released.
+- Boundaries: Symbolic dimension identities, set-indexed sums, block matrices and the linked notebook remain separate unverified IBM-005 coverage. Successful numeric adaptations cannot complete that lesson. Owner: unassigned; implementation PR: unassigned.
+
 ### AUD-01
 
 - [ ] **Audit algorithms first** — P1; Pending; size M; dependencies: None.
@@ -268,7 +279,7 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-002** [density-matrices/density-matrix-basics](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-003** [density-matrices/convex-combinations](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-004** [density-matrices/bloch-sphere](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-005** [density-matrices/multiple-systems](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-005** [density-matrices/multiple-systems](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems) — P1 / AUD-01; partial audit: five adapted numeric probes passed on published `3254e5d4`; named trace rejection tracked in DEV-17. Full lesson/notebook coverage remains open; [evidence](learning-evidence/IBM-005.md).
 - [ ] **IBM-006** [quantum-channels/introduction](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/introduction) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-007** [quantum-channels/quantum-channel-basics](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-008** [quantum-channels/representations-of-channels](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
