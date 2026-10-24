@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumAlgebra.h"
+#include "QuantumOperatorDomain.h"
 #include "QuantumIndexed.h"
 #include "Calculator.h"
 #include "Function.h"
@@ -339,6 +340,7 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
   rows=value[1];columns=value[2];EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
   rows.eval(exact);columns.eval(exact);return true;
  }
+ if(quantumOperatorDimension(value,rows,eo)) {columns=rows;return true;}
  if((name=="qdag" || name=="qtranspose") && value.size()==1)
   return matrixShape(value[0],columns,rows,eo,depth+1);
  if(value.size()!=2)return false;
@@ -765,6 +767,7 @@ bool quantumMatrixShape(const MathStructure &value, MathStructure &rows, MathStr
  return matrixShape(value,rows,columns,options);
 }
 void registerQuantumAlgebra(Calculator &calculator) {
+ registerQuantumOperatorDomain(calculator);
  calculator.addFunction(new QuantumOrthonormalKet());
  calculator.addFunction(new QuantumOrthonormalBasis());
  calculator.addFunction(new QuantumComplexParameter());
