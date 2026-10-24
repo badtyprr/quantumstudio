@@ -1134,6 +1134,16 @@ Trace distributes over sums and differences when declared dimensions establish m
 
 ### Applying matrix declarations to an expression
 
+`operatorparam(A,n,unitary)`, `operatorparam(A,n,hermitian)` and
+`operatorparam(A,n,projector)` retain an explicit square-operator domain.
+The dimension must be a positive integer when resolved. Concrete substitutions
+must match the dimension and satisfy the declared property: unitarity,
+Hermiticity, or both Hermiticity and idempotence for an orthogonal projector.
+An unresolved domain remains in the expression until validation is possible;
+operator names alone imply no property. Validation uses exact arithmetic.
+This domain constructor does not yet add symbolic cancellation rules or GUI
+property controls. Generic matrix declarations below remain unchanged.
+
 `matrixassume(expression,A,rows,columns)` annotates free occurrences of A with a matrix domain before evaluating the expression. Text-valued state labels such as `|A>` and local summation indices are preserved. Existing `matrixparam` annotations take precedence, allowing canonical results to be evaluated again without nested annotations. Nested declarations own their bodies; dimensions are still checked, including for an unused declaration. Gates, constants, and already-valued symbols cannot be redefined as matrix names.
 
 For example, `matrixassume(matrixassume(Tr(A+B)-Tr(A)-Tr(B),A,n,n),B,n,n)` gives zero. The Windows Matrices editor applies these declarations without adding function syntax to the input. Declare A and B with rows and columns n, then enter `Tr(A+B)-Tr(A)-Tr(B)` directly. Declarations apply only in Quantum notation. Each history entry keeps its own dimensions; session version 3 saves the workspace and history declarations. Older sessions load with no matrix declarations. The editor checks names and dimension syntax; Calculate checks positive integer dimensions and reserved symbols. Use an underscore for indexed names, such as `M_1`: a declaration such as `M1` is rejected when parsing would simplify it to the different symbol `M`.

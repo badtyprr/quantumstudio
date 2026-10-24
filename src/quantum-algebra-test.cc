@@ -18,6 +18,31 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ // Operator properties are explicit domains, not inferred from symbol names.
+ equal("operatorparam([0,1;1,0],2,unitary)","[0,1;1,0]");
+ equal("operatorparam([1,i;-i,2],2,hermitian)","[1,i;-i,2]");
+ equal("operatorparam([1,0;0,0],2,projector)","[1,0;0,0]");
+ equal("operatorparam([1,1;1,1]/2,2,projector)","[1,1;1,1]/2");
+ equal("operatorparam(qidentity(1),1,unitary)","qidentity(1)");
+ equal("operatorparam(qidentity(1),1,projector)","qidentity(1)");
+ equal("replace(operatorparam([0,1;1,0],n,unitary),n,2)","[0,1;1,0]");
+ equal("replace(operatorparam(\"A\",2,unitary),\"A\",[0,i;i,0])","[0,i;i,0]");
+ for(const char *source:{"operatorparam([1,0;0,2],2,unitary)",
+      "operatorparam([1,0;0,2],2,projector)","operatorparam([1,1;0,1],2,hermitian)",
+      "operatorparam([1,0,0;0,1,0],2,unitary)","operatorparam(identity(3),2,unitary)",
+      "operatorparam(\"A\",0,unitary)","operatorparam(\"A\",1/2,unitary)",
+      "operatorparam(\"A\",2,unknown)",
+      "replace(operatorparam([0,1;1,0],n,unitary),n,3)",
+      "replace(operatorparam(\"A\",2,unitary),\"A\",[1,0;0,2])"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(source,eo);bool error=false;
+  while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid operator domain accepted: ")+source);++checks;
+ }
+ MathStructure operatorDomain=calculator.calculate("operatorparam(\"A\",2,unitary)",eo),operatorRows,operatorColumns;
+ if(!operatorDomain.isFunction() || operatorDomain.function()->referenceName()!="operatorparam" ||
+    !quantumMatrixShape(operatorDomain,operatorRows,operatorColumns,eo) ||
+    !operatorRows.equals(Number(2)) || !operatorColumns.equals(Number(2)))throw std::runtime_error("Operator domain lost its shape");
+ ++checks;
  // Custom functions (id zero) must sort consistently against built-ins.
  for(const char *component:{"re","im","abs"}) {
   std::string part=std::string(component)+"(complexparam(x))";
