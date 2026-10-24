@@ -8,6 +8,10 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-result-logical-and-skip', 'def flip(qubit q)->bool{x q;return true;}qubit q;bool take=false;output bit r;bool ignored=take&&flip(q);r=measure q;', {'0': '1'}),
+ ('computed-result-logical-or-skip', 'def flip(qubit q)->bool{x q;return false;}qubit q;bool take=true;output bit r;bool ignored=take||flip(q);r=measure q;', {'0': '1'}),
+ ('computed-result-logical-and-run', 'def flip(qubit q)->bool{x q;return true;}qubit q;bool take=true;output bit r;bool ignored=take&&flip(q);r=measure q;', {'1': '1'}),
+ ('computed-result-logical-skip-undefined', 'def f(bit b)->bool{if(b==1){return true;}}bit b;output bit r;bool ok=false&&f(b);r=ok;', {'0': '1'}),
  ('computed-result-measured-parity', 'const int n=2;def parity(bit[n] cin)->bit{bit c;for int i in [0:n-1]{c^=cin[i];}return c;}qubit[2] q;bit[2] m;output bit r;x q[0];m=measure q;r=parity(m);', {'1': '1'}),
  ('computed-result-runtime-integer', 'def addone(int[8] v)->int[8]{return v+1;}qubit q;bit m;output bit r;m=measure q;int[8] value=addone(int[8](m));r=value==1;', {'1': '1'}),
  ('transfer-result-early-loop', 'def f(bit b)->bit{while(b==1){return b;}return 0;}bit m=1;output bit r;r=f(m);', {'1': '1'}),

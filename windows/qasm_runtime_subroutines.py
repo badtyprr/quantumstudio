@@ -258,6 +258,24 @@ def lower_runtime_subroutines(program):
             return prefix, result
         if not isinstance(value, ast.Expression):
             return prefix, value
+        if isinstance(value, ast.BinaryExpression) and value.op.name in ('&&', '||'):
+            left_effects, left = expression_calls(value.lhs, active, depth)
+            right_effects, right = expression_calls(value.rhs, active, depth)
+            if right_effects:
+                # Keep the worker's short-circuit semantics when the RHS has
+                # statements: skipped operands must not measure or change qubits.
+                slot = ast.Identifier(fresh()); runtime.add(slot.name)
+                declaration = ast.ClassicalDeclaration(type=ast.BoolType(), identifier=slot,
+                    init_expression=ast.Cast(type=ast.BoolType(), argument=left))
+                condition = copy.deepcopy(slot)
+                if value.op.name == '||':
+                    condition = ast.UnaryExpression(op=ast.UnaryOperator['!'], expression=condition)
+                assignment = ast.ClassicalAssignment(lvalue=copy.deepcopy(slot), op=ast.AssignmentOperator['='],
+                    rvalue=ast.Cast(type=ast.BoolType(), argument=right))
+                branch = ast.BranchingStatement(condition=condition, if_block=right_effects + [assignment], else_block=[])
+                return left_effects + [declaration, branch], copy.deepcopy(slot)
+            result = copy.copy(value); result.lhs = left; result.rhs = right
+            return left_effects, result
         result = copy.copy(value)
         for field in fields(value):
             if field.name in ('span', 'annotations', 'name'):
