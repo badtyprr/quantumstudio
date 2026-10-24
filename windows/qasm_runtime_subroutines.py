@@ -247,6 +247,16 @@ def lower_runtime_subroutines(program):
             initial = ast.Cast(type=target_type, argument=ast.IntegerLiteral(0))
         return ast.ClassicalAssignment(lvalue=declaration.identifier, op=ast.AssignmentOperator['='], rvalue=initial)
 
+    def runtime_call(call, active):
+        definition = functions[call.name.name]
+        if active or any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(call.arguments)):
+            return True
+        if definition.return_type is not None:
+            return any(isinstance(a, ast.QuantumArgument) for a in definition.arguments)
+        # An explicit void return needs structured exit lowering even when the
+        # signature contains no classical arguments (or no arguments at all).
+        return any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body))
+
     def expression_calls(value, active, depth):
         """Return effects in evaluation order and the expression that uses them."""
         prefix = []
@@ -283,10 +293,7 @@ def lower_runtime_subroutines(program):
             effects, rewritten = expression_calls(getattr(value, field.name), active, depth)
             prefix.extend(effects); setattr(result, field.name, rewritten)
         if isinstance(result, ast.FunctionCall) and result.name.name in functions:
-            definition = functions[result.name.name]
-            needs_runtime = active or any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(result.arguments))
-            needs_runtime |= definition.return_type is not None and any(isinstance(a, ast.QuantumArgument) for a in definition.arguments)
-            if needs_runtime:
+            if runtime_call(result, active):
                 effects, replacement = activate(result, depth)
                 if replacement is None:
                     raise error_at(value, 'A void subroutine cannot be used as a value.')
@@ -369,10 +376,7 @@ def lower_runtime_subroutines(program):
             if isinstance(call, ast.FunctionCall) and call.name.name in functions:
                 effects, call.arguments = expression_calls(call.arguments, active, depth)
                 result.extend(effects)
-                definition = functions[call.name.name]
-                needs_runtime = active or any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(call.arguments))
-                needs_runtime |= definition.return_type is not None and any(isinstance(a, ast.QuantumArgument) for a in definition.arguments)
-                if needs_runtime:
+                if runtime_call(call, active):
                     effects, _ = activate(call, depth)
                     result.extend(effects)
                     continue
