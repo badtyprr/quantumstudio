@@ -8,6 +8,16 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-result-measured-parity', 'const int n=2;def parity(bit[n] cin)->bit{bit c;for int i in [0:n-1]{c^=cin[i];}return c;}qubit[2] q;bit[2] m;output bit r;x q[0];m=measure q;r=parity(m);', {'1': '1'}),
+ ('computed-result-runtime-integer', 'def addone(int[8] v)->int[8]{return v+1;}qubit q;bit m;output bit r;m=measure q;int[8] value=addone(int[8](m));r=value==1;', {'1': '1'}),
+ ('transfer-result-early-loop', 'def f(bit b)->bit{while(b==1){return b;}return 0;}bit m=1;output bit r;r=f(m);', {'1': '1'}),
+ ('transfer-result-condition-reevaluation', 'def flipmeasure(qubit q)->bit{x q;return measure q;}qubit q;output bit r;while(flipmeasure(q)==1){}r=measure q;', {'0': '1'}),
+ ('computed-result-nested-result', 'def readout(qubit q)->bit{return measure q;}def copied(bit v)->bit{return v;}qubit q;output bit r;x q;r=copied(readout(q));', {'1': '1'}),
+ ('computed-result-xmeasure', '// Subroutine unchanged from the OpenQASM specification; driver added here.\ndef xmeasure(qubit q) -> bit { h q; return measure q; }\nqubit q;\noutput bit result;\nresult = xmeasure(q);', {'0': '1/2', '1': '1/2'}),
+ ('computed-result-missing', 'def f(bit b)->bit{if(b==1){return b;}}bit b;output bit r;r=f(b);', None),
+ ('computed-result-missing-discarded', 'def f(bit b)->bit{if(b==1){return b;}}bit b;output bit r;f(b);', None),
+ ('computed-result-bool', 'def f(bit b)->bool{return b==1;}bit b=1;output bit r;r=f(b);', {'1': '1'}),
+ ('computed-result-register', 'def f(bit[2] b)->bit[2]{return b;}bit[2] b="10";output bit[2] r;r=f(b);', {'10': '1'}),
  ('computed-return-early-void', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
  ('computed-return-fallthrough', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit m;output bit r;f(m,q);r=measure q;', {'1': '1'}),
  ('transfer-return-nested-loops', 'def f(bit b,qubit q){while(b==1){for int i in [0:1]{return;}x q;}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
