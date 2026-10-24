@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 sealed class ExactCircuitWindow : Window {
+ const int PreviewCharacters=512;
  readonly ClassicalCircuit circuit;
  readonly Button run=new Button {Content="Calculate exact",IsDefault=true,Background=WorkspaceTheme.Primary,Foreground=WorkspaceTheme.OnPrimary};
  readonly Button cancel=new Button {Content="Cancel",IsEnabled=false},copy=new Button {Content="Copy results",IsEnabled=false},save=new Button {Content="Save results…",IsEnabled=false};
@@ -56,8 +57,17 @@ sealed class ExactCircuitWindow : Window {
   rows.Children.Clear();
   foreach(var item in result.probabilities.OrderBy(pair=>pair.Key,StringComparer.Ordinal).Take(128)) {
    var row=new StackPanel {Margin=new Thickness(0,0,0,16)};
-   row.Children.Add(new TextBlock {Text=item.Key.Length==0 ? "Total probability" : "Record "+item.Key,Foreground=WorkspaceTheme.Muted,TextWrapping=TextWrapping.Wrap});
-   row.Children.Add(new TextBox {Text=item.Value,IsReadOnly=true,TextWrapping=TextWrapping.Wrap,FontFamily=new FontFamily("Cambria Math"),FontSize=23,BorderThickness=new Thickness(0),Background=Brushes.Transparent,Foreground=WorkspaceTheme.Text,Padding=new Thickness(0,5,0,5)});
+   // WPF lays out even off-screen text. Bound the preview; retain full expressions in result.
+   bool preview=item.Value.Length>PreviewCharacters;
+   row.Children.Add(new TextBlock {Text=(item.Key.Length==0 ? "Total probability" : "Record "+item.Key)+(preview ? " · expression preview" : ""),Foreground=WorkspaceTheme.Muted,TextWrapping=TextWrapping.Wrap});
+   row.Children.Add(new TextBox {Text=preview ? item.Value.Substring(0,PreviewCharacters)+"…" : item.Value,IsReadOnly=true,TextWrapping=TextWrapping.Wrap,MaxHeight=144,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,FontFamily=new FontFamily("Cambria Math"),FontSize=23,BorderThickness=new Thickness(0),Background=Brushes.Transparent,Foreground=WorkspaceTheme.Text,Padding=new Thickness(0,5,0,5)});
+   if(preview) {
+    row.Children.Add(new TextBlock {Text="Preview: first "+PreviewCharacters+" of "+item.Value.Length+" characters. Copy or save to get the full exact expression.",TextWrapping=TextWrapping.Wrap,Foreground=WorkspaceTheme.Muted});
+    string fullExpression=item.Value;
+    var copyExpression=new Button {Content="Copy full expression",HorizontalAlignment=HorizontalAlignment.Left};
+    copyExpression.Click+=delegate {try {Clipboard.SetText(fullExpression);status.Text="Copied the full exact expression ("+fullExpression.Length+" characters).";}catch(Exception error){status.Text="Could not copy expression: "+error.Message;}};
+    row.Children.Add(copyExpression);
+   }
    rows.Children.Add(row);
   }
   status.Text=result.probabilities.Count+" exact outcomes · "+(result.probabilities.Count>128 ? "Showing the first 128. Copy or save includes all outcomes." : "Symbolic parameters remain unevaluated; proven zero outcomes are omitted.");
@@ -80,7 +90,17 @@ sealed class ExactCircuitWindow : Window {
   Width=MinWidth;Height=MinHeight;Capture(report+".minimum.png");
  }
  void Capture(string path) {
-  UpdateLayout();var image=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);image.Render(this);
+  UpdateLayout();
+  var expected=result.probabilities.OrderBy(pair=>pair.Key,StringComparer.Ordinal).Take(128).ToArray();
+  for(int index=0;index<rows.Children.Count;index++) {
+   var row=(StackPanel)rows.Children[index];var expression=(TextBox)row.Children[1];
+   string fullExpression=expected[index].Value;
+   string preview=fullExpression.Length>PreviewCharacters ? fullExpression.Substring(0,PreviewCharacters)+"…" : fullExpression;
+   if(expression.Text!=preview || expression.ActualHeight>144.5 || expression.VerticalScrollBarVisibility!=ScrollBarVisibility.Auto ||
+      (fullExpression.Length>PreviewCharacters && (row.Children.Count!=4 || !((TextBlock)row.Children[0]).Text.EndsWith("expression preview") || !((TextBlock)row.Children[2]).Text.StartsWith("Preview:"))))
+    throw new Exception("Exact expression preview lost its label or exceeded its bounds.");
+  }
+  var image=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);image.Render(this);
   var encoder=new System.Windows.Media.Imaging.PngBitmapEncoder();encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image));using(var file=File.Create(path))encoder.Save(file);
  }
 }
