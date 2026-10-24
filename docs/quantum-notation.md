@@ -1191,3 +1191,14 @@ Copy result preserves the declaration through a canonical `qorthoket` expression
 A sum containing each declared basis projector exactly once reduces to the identity in that dimension. For example, `orthobasis(|red><red|+|blue><blue|,B,[|red>,|blue>])` gives `[1,0;0,1]`. The same rule accepts `density(|red>)+density(|blue>)` inside the declaration. A single declared vector in dimension one gives a 1-by-1 identity matrix. This is the completeness condition used in [IBM's projective measurements discussion](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections).
 
 Partial sums, repeated projectors, off-diagonal dyads and mixed-basis sums are not treated as complete bases by this rule; other valid simplifications may still apply. Weighted terms do not receive the completeness proof. Conflicting declarations of the same basis are rejected. The rule uses explicit finite declarations; it does not infer that an undeclared set of vectors is complete.
+
+
+### Runtime scalar subroutine arguments
+
+Classical OpenQASM import can lower standalone void subroutine calls with runtime `int`, `uint`, or `bool` arguments. Scalar parameters are copied before the body runs; changing a parameter does not change the caller. Integer/Boolean locals have separate scope and are initialized again when a call repeats in a loop. Nested calls preserve their caller's parameter values. Constants and parameter widths retain the routine's lexical bindings even when the caller shadows their names.
+
+Quantum parameters in this path are scalar references. Pass a scalar qubit or a literal indexed element such as `q[1]`; distinct quantum arguments must not overlap. This bounded path does not yet accept register-valued parameters, computed quantum indices, return values, explicit `return`, or local bit-register/array declarations. Existing compile-time subroutine lowering remains available for calls without runtime arguments. Runtime expansion is limited to 32 nesting levels, 4,096 calls, and 65,536 AST nodes, with a separate 65,536-node binding-copy budget and 32-level constant-binding depth; existing variable and execution budgets also apply.
+
+For example, after measuring into `m`, `feedback(int[32](m), q[1]);` can call `def feedback(int[32] value, qubit target) { int[32] local = value; value = 0; if (local == 1) { x target; } }`. The scalar copy preserves the measured decision while allowing local mutation.
+
+This is infrastructure toward DEV-08b. The [OpenQASM subroutine specification](https://openqasm.com/language/subroutines.html) also demonstrates measured bit-register arguments and return values; that complete example remains outside this scalar/void slice. Adapted regression probes do not establish unchanged qBraid notebook coverage.

@@ -5,6 +5,99 @@ using System.IO;
 using G=NumericalSampling.Gate;
 using O=NumericalSampling.Operation;
 
+// Flattened subroutine activations can reuse a slot in disjoint lexical
+// lifetimes. Recover only paired, non-crossing intervals containing every
+// reference to that slot. Work on a snapshot so export never edits the circuit.
+static class ClassicalQasmLifetimes {
+ sealed class Interval {
+  public ClassicalCircuit.Step[] Body;
+  public int Start,End;
+ }
+ static void Expression(ClassicalCircuit.ExpressionNode node,Action<ClassicalCircuit.ExpressionNode> visit) {
+  if(node==null)return;
+  visit(node);Expression(node.Left,visit);Expression(node.Right,visit);
+ }
+ static void Real(ClassicalCircuit.RealNode node,Action<ClassicalCircuit.ExpressionNode> visit) {
+  if(node==null)return;
+  Expression(node.IntegerValue,visit);Real(node.Left,visit);Real(node.Right,visit);
+ }
+ static void Visit(ClassicalCircuit.Step step,Action<ClassicalCircuit.Step> instruction,Action<ClassicalCircuit.ExpressionNode> expression,int depth=0) {
+  // Recovery adds blocks before the final model validation. Bound each walk
+  // too, so intermediate trees cannot exhaust the stack while being rebuilt.
+  if(depth>=32)throw new InvalidDataException("OpenQASM export local lifetimes exceed 32 levels of nesting.");
+  instruction(step);Expression(step.ClassicalValue,expression);Expression(step.IntegerValue,expression);Real(step.Angle,expression);
+  if(step.Range!=null){Expression(step.Range.Start,expression);Expression(step.Range.Stop,expression);Expression(step.Range.Step,expression);}
+  if(step.WhenTrue!=null)foreach(var child in step.WhenTrue)Visit(child,instruction,expression,depth+1);
+  if(step.WhenFalse!=null)foreach(var child in step.WhenFalse)Visit(child,instruction,expression,depth+1);
+ }
+ static int References(ClassicalCircuit.Step step,int slot) {
+  int count=0;
+  Visit(step,s=>{if(s.VariableSlot==slot)count++;},e=>{if(e.Kind=="IntegerVariable" && e.Slot==slot)count++;});
+  return count;
+ }
+ static void Find(ClassicalCircuit.Step[] body,int slot,List<Interval> intervals) {
+  if(body==null)return;
+  for(int i=0;i<body.Length;i++) {
+   if(body[i].Kind=="ClearInteger" && body[i].VariableSlot==slot) {
+    int end=i+1;
+    while(end<body.Length && !(body[end].Kind=="ClearInteger" && body[end].VariableSlot==slot))end++;
+    if(end<body.Length){intervals.Add(new Interval{Body=body,Start=i,End=end});i=end;continue;}
+   }
+   Find(body[i].WhenTrue,slot,intervals);Find(body[i].WhenFalse,slot,intervals);
+  }
+ }
+ static ClassicalCircuit.Step[] Wrap(ClassicalCircuit.Step[] body,Dictionary<ClassicalCircuit.Step,ClassicalCircuit.Step> starts,Dictionary<ClassicalCircuit.Step,int> lengths) {
+  if(body==null)return null;
+  var result=new List<ClassicalCircuit.Step>();
+  for(int i=0;i<body.Length;i++) {
+   ClassicalCircuit.Step wrapper;
+   if(starts.TryGetValue(body[i],out wrapper)){result.Add(wrapper);i+=lengths[body[i]]-1;}
+   else {
+    body[i].WhenTrue=Wrap(body[i].WhenTrue,starts,lengths);
+    body[i].WhenFalse=Wrap(body[i].WhenFalse,starts,lengths);result.Add(body[i]);
+   }
+  }
+  return result.ToArray();
+ }
+ public static ClassicalCircuit Prepare(ClassicalCircuit circuit) {
+  var document=circuit.Snapshot();
+  if(document.Variables==null || document.Variables.Length==0)return circuit;
+  var variables=new List<ClassicalCircuit.Variable>(document.Variables);
+  bool changed=false;
+  for(int slot=0;slot<document.Variables.Length;slot++) {
+   int total=0;bool range=false;
+   foreach(var step in document.Steps) {
+    total+=References(step,slot);
+    Visit(step,s=>{if(s.Kind=="ForRange" && s.VariableSlot==slot)range=true;},e=>{});
+   }
+   if(range || total==0)continue;
+   var intervals=new List<Interval>();Find(document.Steps,slot,intervals);
+   int covered=0;
+   foreach(var interval in intervals)for(int i=interval.Start;i<=interval.End;i++)covered+=References(interval.Body[i],slot);
+   if(covered!=total || intervals.Count==0)continue;
+   var starts=new Dictionary<ClassicalCircuit.Step,ClassicalCircuit.Step>();
+   var lengths=new Dictionary<ClassicalCircuit.Step,int>();
+   for(int index=0;index<intervals.Count;index++) {
+    var interval=intervals[index];int target=slot;
+    if(index>0) {
+     if(variables.Count>=4096)throw new InvalidDataException("OpenQASM export exceeds the 4096-variable limit while separating local lifetimes.");
+     target=variables.Count;var type=document.Variables[slot];
+     variables.Add(new ClassicalCircuit.Variable{Name="export_local_"+target,Signedness=type.Signedness,Width=type.Width});
+    }
+    var body=new ClassicalCircuit.Step[interval.End-interval.Start+1];
+    Array.Copy(interval.Body,interval.Start,body,0,body.Length);
+    if(target!=slot)foreach(var step in body)Visit(step,s=>{if(s.VariableSlot==slot)s.VariableSlot=target;},e=>{if(e.Kind=="IntegerVariable" && e.Slot==slot)e.Slot=target;});
+    starts.Add(body[0],new ClassicalCircuit.Step{Kind="Branch",Mask="0",Value="0",WhenTrue=body,WhenFalse=new ClassicalCircuit.Step[0]});
+    lengths.Add(body[0],body.Length);
+   }
+   document.Steps=Wrap(document.Steps,starts,lengths);changed=true;
+  }
+  if(!changed)return circuit;
+  document.Variables=variables.ToArray();
+  return ClassicalCircuit.From(document);
+ }
+}
+
 // Recover lexical lifetimes only when the validated instruction tree proves
 // them. A clear in the middle of a live scope cannot be replaced by zero.
 sealed class ClassicalQasmScopes {

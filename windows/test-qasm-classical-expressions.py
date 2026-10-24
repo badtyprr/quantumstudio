@@ -8,6 +8,15 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-call-lexical-constant', 'const int k=1;def f(int n,qubit q){if(k==1){x q;}}qubit q;bit m;output bit r;m=measure q;{int k=0;f(int[32](m),q);}r=measure q;', {'1': '1'}),
+ ('computed-call-lexical-width', 'const int width=8;def f(uint[width] n,qubit q){if(n==0){x q;}}qubit q;bit m;output bit r;m=measure q;{int width=1;f(uint[8](m),q);}r=measure q;', {'1': '1'}),
+ ('computed-call-bool', 'def f(bool b,qubit target){if(b){x target;}}qubit[2] q;bit m;output bit r;x q[0];m=measure q[0];f(bool(int[32](m)),q[1]);r=measure q[1];', {'1': '1'}),
+ ('loop-call-reinitialize', 'def f(int[32] n,qubit target){int[32] k=n;if(k==1){x target;}}qubit[2] q;bit m;output bit r;h q[0];m=measure q[0];int count=2;while(count>0){f(int[32](m),q[1]);count-=1;}r=measure q[1];', {'0': '1'}),
+ ('computed-call-nested', 'def feedback(int[32] value, qubit target) {\n    int[32] local = value;\n    value = 0;\n    if (local == 1) { x target; }\n}\ndef pair(int[32] value, qubit target) {\n    feedback(value, target);\n    if (value == 1) { x target; }\n}\nqubit[4] q;\nbit m;\noutput bit[4] result;\nint[32] local = 7;\nh q[0];\nm = measure q[0];\nfeedback(int[32](m), q[1]);\nfor int i in [0:1] { pair(int[32](m), q[2]); }\nif (local == 7) { x q[3]; }\nresult = measure q;\n', {'1000': '1/2', '1011': '1/2'}),
+ ('computed-call-snapshot', 'def f(int[32] n,qubit target){n=0;} qubit q;bit m;output bit r;x q;m=measure q;int[32] n=int[32](m);f(n,q);r=n==1;', {'1': '1'}),
+ ('computed-call-alternating', 'def f(int[32] n,qubit target){int[32] local=n;if(local==1){x target;}} qubit[2] q;bit m;output bit r;h q[0];m=measure q[0];int[32] n=int[32](m);f(n,q[1]);f(1-n,q[1]);r=measure q[1];', {'1': '1'}),
+ ('computed-call-switch', 'def f(int[32] n,qubit target){switch(n){case 0{int[32] n=1;if(n==1){x target;}}default{int[32] n=2;if(n==2){x target;}}}} qubit[2] q;bit m;output bit r;h q[0];m=measure q[0];f(int[32](m),q[1]);r=measure q[1];', {'1': '1'}),
+ ('computed-call-fresh-local', 'def f(int[32] n,qubit target){int[32] value;if(n==1){value=1;}if(value==1){x target;}}qubit[2] q;bit m;output bit r;x q[0];m=measure q[0];f(int[32](m),q[1]);f(int[32](m)-1,q[1]);r=measure q[1];', None),
  ('local-output-empty','if(true){bit[2] scratch;scratch="11";}',{'':'1'}),
  ('local-output-global','bit result;if(true){bit[2] scratch;scratch="11";result=scratch[0];}',{'1':'1'}),
  ('local-output-measurement','qubit q;h q;bit result;if(true){bit scratch=measure q;result=scratch;}',{'0':'1/2','1':'1/2'}),
@@ -384,6 +393,12 @@ rejected += ['output bit r;output bit r;',
              'output bit[65] r;',
              'output bit[0] r;']
 rejected += ['@unsupported\noutput bit r;']
+rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){bit b;}qubit q;bit c;f(int(c),q);']
+rejected += ['def f(int n,qubit q){g(n,q);}def g(int n,qubit q){}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;\n@custom\nf(int(c),q);']
+rejected += ['def f(int n,qubit q){if(missing==1){x q;}}qubit q;bit m;{int missing=1;f(int(m),q);}', 'def f(int n,qubit q){if(later==1){x q;}}const int later=1;qubit q;bit m;f(int(m),q);']
+# Expansion and lexical-binding budgets must reject before allocating unbounded ASTs.
+rejected += ['def f(int n){}int n=1;'+('f(n);'*4097)]
+rejected += ['const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(int n){if(a20>0){n=0;}}int n=1;f(n);']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
