@@ -8,14 +8,14 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. Run AUD-01 and AUD-02 alongside code work, then choose the first ready P1 item supported by a failing source fixture among the remaining DEV-03/04/06/07/08 work. The demonstrated QB-005 inverse-QFT exact-execution and large-result display gap is resolved in REL-13; do not prioritize its historical timeout as unfinished implementation. Its remaining notebook/provider acceptance stays open. Compiler-resolved arrays shipped in REL-14. Runtime subroutine storage, runtime arrays and dynamic indices remain separate gaps. Promote newly discovered widespread failures above isolated features.
+Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. Run AUD-01 and AUD-02 alongside code work, then choose the first ready P1 item supported by a failing source fixture among the remaining DEV-03/06/07/08 work. The demonstrated QB-005 inverse-QFT exact-execution and large-result display gap is resolved in REL-13; do not prioritize its historical timeout as unfinished implementation. Its remaining notebook/provider acceptance stays open. Compiler-resolved arrays shipped in REL-14. Runtime subroutine storage, runtime arrays and dynamic indices remain separate gaps. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
 | [DEV-01](#dev-01) | P1 | S | Released | None | Compact bound-index products |
 | [DEV-02](#dev-02) | P1 | L | Released | DEV-01 | Domain-preserving symbolic Fourier expansion |
 | [DEV-03](#dev-03) | P1 | L | Partial | None | Declared orthonormal bases |
-| [DEV-04](#dev-04) | P1 | L | Partial | DEV-03 | Symbolic operator assumptions and identities |
+| [DEV-04](#dev-04) | P1 | L | Released | DEV-03 | Symbolic operator assumptions and identities |
 | [DEV-05](#dev-05) | P1 | M | Partial | None | Register dimensions and symbolic bit strings |
 | [DEV-06](#dev-06) | P1 | L | Partial; runtime Rx/Ry/Rz released in REL-12 | None | Runtime gate parameters |
 | [DEV-07](#dev-07) | P1 | L | Not implemented | None | Dynamic wire indexing |
@@ -57,6 +57,7 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 - [x] REL-13: Bounded exact phase execution and large-result previews from PRs #352–#355 shipped in [checkpoint-66a5dd79](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-66a5dd79), revision `66a5dd790022ed2673632647b064e2de8f5fef58`. All three merged-tip CI checks passed. Windows native suite: 56 passed, one existing thread-test skip, zero failures/errors. The normal package regression pipeline passed; the full pinned 55-gate inverse-QFT source then passed frozen import, exact worker execution (6.297 seconds, eight outcomes), GUI display and complete JSON/TSV checks. Eight affected/smoke captures were visually inspected, and all 340 payload hashes and 341 ZIP entries verified. Published ZIP SHA-256: `3a507a09285a7c0194a42d7edc8499520e71f44303a464a11c3b21b93fe0cde6`. Two scoped self-review rounds each for the worker integration and GUI follow-up resolved one medium and two minor findings in total; no outstanding findings in those changes. This was not independent review. Full QB-005 notebook/provider coverage remains unchecked; [scope and evidence](learning-evidence/QB-005.md#shipped-exact-execution-and-result-display).
 
 - [x] REL-14: Compiler-resolved array import from [#357](https://github.com/badtyprr/quantumstudio/pull/357) shipped in [checkpoint-982e5abe](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-982e5abe), revision `982e5abe1b08b0ca48bd48fbb8339b91a1a1f934`. Three merged-tip CI checks passed; native tests: 56 passed, one existing thread skip, zero failures/errors. Full packaging, 46 source/frozen array checks, unchanged-adder editor/sampling acceptance, five inspected GUI captures and all 341 ZIP entries passed. Published ZIP SHA-256: `96af6246a93ad010e23d19c08e70c5c68b9890b5deac203a968f04bf9e2e1202`. Three scoped self-reviews resolved one high-severity prototype issue and one minor CI expectation issue; no outstanding findings. Runtime arrays and full notebook coverage remain open; [evidence](learning-evidence/QB-003.md).
+- [x] REL-15: Published [checkpoint `a1d85f61`](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-a1d85f61). Explicit unitary/Hermitian/projector domains, guarded identities and natural matrix-property controls in [#360](https://github.com/badtyprr/quantumstudio/pull/360), [#361](https://github.com/badtyprr/quantumstudio/pull/361), and [#362](https://github.com/badtyprr/quantumstudio/pull/362). Required CI and the merged-tip package pipeline passed; 1,992 worker checks, packaged property-editor interaction/session/history checks, three inspected captures and 340 payload hashes verified. Native: 56 passed, one existing thread-test skip, zero failures/errors. ZIP SHA-256 `1cb453630fb0a2798860f8c481b2b6b5608276782666f9105b32c305d007c488`. [DEV-04 evidence](learning-evidence/DEV-04.md).
 
 ## Acceptance criteria by development item
 
@@ -84,10 +85,10 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 
 ### DEV-04
 
-- [ ] **Symbolic operator assumptions and identities** — P1; Partial; size L; dependencies: DEV-03.
+- [x] **Symbolic operator assumptions and identities** — P1; Released in REL-15; size L; dependencies: DEV-03.
 - Source focus: General formulation: unitary operations and channels. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Add explicit unitary/Hermitian/projector assumptions with dimension checks; simplify U†U and projector products only when justified. Reject incompatible substitutions and preserve noncommuting order.
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+- Implementation: [#360](https://github.com/badtyprr/quantumstudio/pull/360), [#361](https://github.com/badtyprr/quantumstudio/pull/361), and [#362](https://github.com/badtyprr/quantumstudio/pull/362). [Source and acceptance evidence](learning-evidence/DEV-04.md) maps assumptions, guarded identities, incompatible substitutions and noncommuting order to regressions. Released in REL-15 with all explicit acceptance criteria verified. This does not claim complete lesson/channel coverage.
 
 ### DEV-05
 
