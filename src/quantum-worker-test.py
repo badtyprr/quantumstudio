@@ -24,6 +24,28 @@ def data(expression, *flags):
     return value
 
 
+# Explicit operator domains survive canonical copy and delayed substitution.
+for flags in ((), ("--approx",)):
+    for property_name, valid, invalid in (
+        ("unitary", "[0,i;i,0]", "[1,0;0,2]"),
+        ("hermitian", "[1,i;-i,2]", "[1,1;0,1]"),
+        ("projector", "[1,1;1,1]/2", "[1,0;0,2]"),
+    ):
+        original = data("quantum:operatorparam(A,2," + property_name + ")", *flags)
+        copied = data("quantum:" + original["copy_text"], *flags)
+        assert copied["copy_text"] == original["copy_text"]
+        assert "operatorparam" in copied["copy_text"]
+        for expression in ("operatorparam(A,2," + property_name + ")", copied["copy_text"]):
+            actual = data("quantum:replace(" + expression + ",A," + valid + ")", *flags)
+            expected = data("quantum:" + valid, *flags)
+            assert actual["cells"] == expected["cells"] and actual["rows"] == 2
+            run("quantum:replace(" + expression + ",A," + invalid + ")", "--json", *flags, success=False)
+            run("quantum:replace(" + expression + ",A,identity(3))", "--json", *flags, success=False)
+    delayed = data("quantum:operatorparam([x,0;0,1],2,unitary)", *flags)
+    assert "operatorparam" in delayed["copy_text"]
+    run("quantum:replace(" + delayed["copy_text"] + ",x,2)", "--json", *flags, success=False)
+    assert data("quantum:replace(" + delayed["copy_text"] + ",x,1)", *flags)["cells"] == [["1", "0"], ["0", "1"]]
+
 # .NET Framework may prepend a UTF-8 BOM when opening redirected stdin.
 # Accept one transport preamble, not repeated or truncated protocol prefixes.
 for mode, request in (("--exact-circuit", "QEXACT1\n0\n0\n0\n0\n"),
