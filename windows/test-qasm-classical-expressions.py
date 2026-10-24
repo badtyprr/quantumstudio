@@ -8,6 +8,10 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('call-bit-nested', 'def inner(bit[2] v){v="00";}def outer(bit[2] v,qubit q){inner(v);if(v=="11"){x q;}}qubit q;bit[2] m="11";output bit r;outer(m,q);r=measure q;', {'1': '1'}),
+ ('call-bit-local-measure', 'def f(bit v,qubit q){bit saved=measure q;if(saved==v){x q;}}qubit q;bit m=1;output bit r;x q;f(m,q);r=measure q;', {'0': '1'}),
+ ('call-bit-local-shadow', 'def f(bit v,qubit q){bit local=v;{bit local=0;}if(local==1){x q;}}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'1': '1'}),
+ ('scope-call-bit-width-shadow', 'const int width=2;def f(bit[width] v,qubit q){if(v=="11"){x q;}}qubit q;bit[2] m="11";output bit r;{int width=1;f(m,q);}r=measure q;', {'1': '1'}),
  ('call-bit-measured','def f(bit value,qubit q){if(value==1){x q;}}qubit[2] q;bit m;output bit[2] r;h q[0];m=measure q[0];f(m,q[1]);r=measure q;',{'00':'1/2','11':'1/2'}),
  ('call-bit-snapshot','def f(bit value){value=0;}bit m=1;f(m);',{'1':'1'}),
  ('call-bit-local-width','def f(bit value){const int width=2;bit[width] local;local[0]=value;}bit m=1;f(m);',{'1':'1'}),
@@ -329,6 +333,7 @@ rejected=['bit[8] c=8; bit r; if(int[c](c)<0){r=1;}','bit[8] c; bit r; if(int[7]
           'qubit q; bit[2] c; bit d=1; c[d]=measure q;',
           'qubit q; bit[2] c; let d=c; d=1;',
           'qubit q; bit c; c+=1;', 'qubit q; bit[2] c; if(c>4) x q;']
+rejected += ['def f(bit v){const int n=int(v)+1;bit[n] local;}bit m=1;f(m);', 'def f(bit[2] v){v[2]=0;}bit[2] m;f(m);', 'def f(bit[64] v){}bit[64] m;f(m);', 'def f(bit v){bit[0] local;}bit m;f(m);', 'def f(bit v,qubit q){x q[0];}qubit q;bit m;f(m,q);']
 rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','bit[3] c; c=bit[2](int[3](c));','bit[3] c; c=bit[c](int[3](c));','bit[3] c; c=bit[0](int[3](c));','bit[64] c; c=bit[64](int(c));']
 rejected += ['qubit q;bit c=measure q;bit[2] d;d=bit[2](c=="1");',
              'qubit q;bit c=measure q;bit[2] d;d=bit[2](!(c=="1"));']
