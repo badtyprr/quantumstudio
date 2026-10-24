@@ -68,7 +68,7 @@ class FileImportTests(unittest.TestCase):
         dependency = "// original configuration\nfloat[64] theta = 0.5;\n"
         main = self.put("main.qasm", 'OPENQASM 3; include "settings.inc"; qubit q;')
         self.put("settings.inc", dependency)
-        expected = "Classical circuit import supports bit registers and integer/Boolean variables; other classical declarations are not yet supported."
+        expected = "Classical circuit import supports bit registers, integer/Boolean variables and compile-time arrays; other classical declarations are not yet supported."
         for command in COMMANDS:
             message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
             self.assertEqual(message.strip(), "settings.inc:2:1: " + expected)
