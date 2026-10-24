@@ -1151,12 +1151,15 @@ Unrelated projectors do not acquire orthogonality or commutativity, and a generi
 Hermitian square remains unresolved. These are the conditional identities in
 [IBM's unitary operations](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/quantum-information#unitary-operations)
 and [projection matrices](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections#projection-matrices).
-Dedicated GUI property controls remain unfinished. Generic matrix declarations
-below remain unchanged.
+In the Windows **Matrices** editor, choose **General**, **Unitary**,
+**Hermitian**, or **Projector**. Operator properties require the same dimension
+expression in Rows and Columns. You can then type `A†A` or `A*A` directly;
+the editor supplies scoped declarations without changing the typed expression.
+General matrix declarations below remain unchanged.
 
 `matrixassume(expression,A,rows,columns)` annotates free occurrences of A with a matrix domain before evaluating the expression. Text-valued state labels such as `|A>` and local summation indices are preserved. Existing `matrixparam` annotations take precedence, allowing canonical results to be evaluated again without nested annotations. Nested declarations own their bodies; dimensions are still checked, including for an unused declaration. Gates, constants, and already-valued symbols cannot be redefined as matrix names.
 
-For example, `matrixassume(matrixassume(Tr(A+B)-Tr(A)-Tr(B),A,n,n),B,n,n)` gives zero. The Windows Matrices editor applies these declarations without adding function syntax to the input. Declare A and B with rows and columns n, then enter `Tr(A+B)-Tr(A)-Tr(B)` directly. Declarations apply only in Quantum notation. Each history entry keeps its own dimensions; session version 3 saves the workspace and history declarations. Older sessions load with no matrix declarations. The editor checks names and dimension syntax; Calculate checks positive integer dimensions and reserved symbols. Use an underscore for indexed names, such as `M_1`: a declaration such as `M1` is rejected when parsing would simplify it to the different symbol `M`.
+For example, `matrixassume(matrixassume(Tr(A+B)-Tr(A)-Tr(B),A,n,n),B,n,n)` gives zero. The Windows Matrices editor applies these declarations without adding function syntax to the input. Declare A and B with rows and columns n, then enter `Tr(A+B)-Tr(A)-Tr(B)` directly. Declarations apply only in Quantum notation. Each history entry keeps its own dimensions; session version 4 saves workspace and history dimensions and operator properties. Versions 1 and 2 load with no matrix declarations; version 3 retains general matrix dimensions. Older builds reject version 4 instead of silently dropping operator properties. The editor checks names and dimension syntax; Calculate checks positive integer dimensions and reserved symbols. Use an underscore for indexed names, such as `M_1`: a declaration such as `M1` is rejected when parsing would simplify it to the different symbol `M`.
 
 
 ### Symbolic Gram-matrix positivity

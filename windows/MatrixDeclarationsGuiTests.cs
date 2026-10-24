@@ -18,6 +18,17 @@ class MatrixDeclarationsGuiTests {
  static object Call(string name,params object[] args) {return app.GetMethod(name,flags).Invoke(null,args);}
  static void Click(Window editor,string name) {((Button)editor.FindName(name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));}
  static void Require(bool value,string message) {if(!value)throw new Exception(message);}
+ static T Child<T>(DependencyObject parent) where T:DependencyObject {
+  for(int i=0;i<VisualTreeHelper.GetChildrenCount(parent);i++) {
+   var child=VisualTreeHelper.GetChild(parent,i);var found=child as T;
+   if(found!=null)return found;found=Child<T>(child);if(found!=null)return found;
+  }
+  return null;
+ }
+ static void Capture(Window window,string path) {
+  window.UpdateLayout();var image=new RenderTargetBitmap((int)window.ActualWidth,(int)window.ActualHeight,96,96,PixelFormats.Pbgra32);image.Render(window);
+  var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(image));using(var stream=File.Create(path))encoder.Save(stream);
+ }
  [STAThread] static int Main(string[] args) {
   var assembly=Assembly.LoadFrom(args[0]);app=assembly.GetType("QuantumStudio");
   app.GetField("root",flags).SetValue(null,Path.GetDirectoryName(args[0]));int code=1;
@@ -54,7 +65,12 @@ class MatrixDeclarationsGuiTests {
     var propertyGrid=(DataGrid)editor.FindName("Definitions");
     Require(propertyGrid.Columns.Count==4 && propertyGrid.Columns[3] is DataGridComboBoxColumn,"Operator property choice is missing");
     var propertyDraft=(IList)propertyGrid.ItemsSource;
-    propertyDraft[0].GetType().GetProperty("Property").SetValue(propertyDraft[0],"Unitary",null);Click(editor,"Apply");
+    propertyGrid.SelectedItem=propertyDraft[0];propertyGrid.CurrentCell=new DataGridCellInfo(propertyDraft[0],propertyGrid.Columns[3]);
+    propertyGrid.ScrollIntoView(propertyDraft[0],propertyGrid.Columns[3]);propertyGrid.UpdateLayout();Require(propertyGrid.BeginEdit(),"Cannot edit property choice");propertyGrid.UpdateLayout();
+    var row=(DataGridRow)propertyGrid.ItemContainerGenerator.ContainerFromItem(propertyDraft[0]);var choice=Child<ComboBox>(row);
+    Require(choice!=null,"Property dropdown was not created");choice.SelectedItem="Unitary";
+    Require(propertyGrid.CommitEdit(DataGridEditingUnit.Cell,true) && propertyGrid.CommitEdit(DataGridEditingUnit.Row,true),"Property selection did not commit");
+    Require((string)propertyDraft[0].GetType().GetProperty("Property").GetValue(propertyDraft[0],null)=="Unitary","Dropdown did not update the declaration");Click(editor,"Apply");
     Require(!editor.IsVisible,"Valid unitary declaration did not apply");
     input.Text="A†A";
     if(args.Length>2) {
@@ -77,8 +93,7 @@ class MatrixDeclarationsGuiTests {
     bool rejected=false;try {Call("OpenSession",path);}catch(TargetInvocationException){rejected=true;}
     Require(rejected && serializer.Serialize(Call("CaptureSession"))==before,"Invalid session mutated workspace");
     editor=(Window)Call("MatrixEditor");editor.Show();editor.UpdateLayout();
-    var image=new RenderTargetBitmap((int)editor.ActualWidth,(int)editor.ActualHeight,96,96,PixelFormats.Pbgra32);image.Render(editor);
-    var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(image));using(var stream=File.Create(args[1]))encoder.Save(stream);
+    Capture(editor,args[1]);editor.Width=editor.MinWidth;editor.Height=editor.MinHeight;Capture(editor,args[1]+".minimum.png");
     Click(editor,"Cancel");
     File.WriteAllText(path,"{\"Version\":1,\"Expression\":\"1\",\"Mode\":0,\"Evaluation\":0,\"History\":[]}");Call("OpenSession",path);
     Require(((Array)Field("matrices")).Length==0,"Legacy session retained unrelated matrix assumptions");
