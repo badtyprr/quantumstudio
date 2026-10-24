@@ -397,7 +397,21 @@ static class ClassicalExpressionTests {
    }
   }
  }
+ static void EncodingChecks(string worker) {
+  if(worker==null)return;
+  var original=Console.InputEncoding;
+  try {
+   foreach(var encoding in new Encoding[]{Encoding.GetEncoding(437),new UTF8Encoding(false),new UTF8Encoding(true)}) {
+    Console.InputEncoding=encoding;
+    foreach(bool exact in new[]{false,true}) {
+     var result=Evaluate(worker,exact,0,1,new[]{0},new[]{Assign(new[]{0},E.Constant(1,1))});
+     Check(result.Count==1 && result["1"].ToString()==(exact ? "1" : "10000"));
+    }
+   }
+  } finally {Console.InputEncoding=original;}
+ }
  static int Main(string[] args){try {
+  EncodingChecks(args.Length>0 ? args[0] : null);
   var countValue=E.PopulationCount(E.Constant(64,UInt64.MaxValue));Check(countValue.Width==64);
   Check(Encode(countValue,0)=="4\n0\n64\n18446744073709551615\n");
   var rotatedValue=E.Rotate(E.Direction.Left,E.Constant(4,9),E.Constant(8,255),E.Distance.Signed);Check(rotatedValue.Width==4);
