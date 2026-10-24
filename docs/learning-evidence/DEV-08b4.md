@@ -41,3 +41,11 @@ The retained `windows/fixtures/runtime-subroutines/measured-parity.qasm` preserv
 The frozen compiler built from 7d2ec34d (merged as abb947c0) rejects this program with `Failed to parse OpenQASM string`. This is a retained failing acceptance fixture, not a passing regression test. Parsing/concatenated runtime argument support remains to implement; do not replace the concatenation to claim DEV-08b4 complete. The existing returned-register parity test still covers its narrower adapted program.
 
 The unchanged pinned PyQASM `test_function_call_from_within_fn` string also rejects in classical mode: checkpoint9975e211 reports unsupported noninteger classical declarations, while the return candidate reports nonscalar quantum parameters. This comparison does not establish a new classical-import regression. Numerical-mode acceptance and the other unchanged controls remain to test.
+
+## Compatibility extension and executable completion
+
+The [live grammar](https://openqasm.com/grammar/index.html) permits `DOUBLE_PLUS` in `aliasExpression` but omits it from `expression`, whereas the subroutine page uses `parity(c ++ c2)`. Accepting this example is a QuantumStudio compatibility extension, not proof that the reference parser violates its grammar. The extension gives `++` lower precedence than ordinary expression operators; parentheses override this grouping. Concatenation copies values in register index order, with the left operand occupying lower indices. An asymmetric two-bit/three-bit probe checks this project-defined ordering; parity alone cannot distinguish reversed operands.
+
+The [types page](https://openqasm.com/language/types.html) describes uninitialized classical values as undefined. The executable fixture therefore now explicitly initializes the parity accumulator with `bit c = 0`; this addition is disclosed instead of claiming a fully unchanged definition. The invocation and parity operations remain intact. Header/include, typed n=2, missing declarations, output selection and H/H preparation are also additions.
+
+The source compiler prototype accepts the concatenated invocation. Nine exact-worker probes cover four basis inputs, H/H, mixed-width and computed/literal operands, and precedence. These are development checks, not release or full-notebook acceptance. Frozen compiler, GUI export/reimport and final review remain pending.

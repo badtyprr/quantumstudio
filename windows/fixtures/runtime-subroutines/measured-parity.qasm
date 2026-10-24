@@ -2,7 +2,7 @@ OPENQASM 3.0;
 include "stdgates.inc";
 const int n = 2;
 def parity(bit[n] cin) -> bit {
-  bit c;
+  bit c = 0;
   for int i in [0: n - 1] {
     c ^= cin[i];
   }
