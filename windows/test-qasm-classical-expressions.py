@@ -8,6 +8,31 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('range-runtime-returned-range', 'def bound(bit b)->int{return int(b)+1;}qubit q;bit b=1;output bit r;for int i in [0:bound(b)]{x q;}r=measure q;', {'1': '1'}),
+ ('transfer-returned-condition-continue', 'def flip(qubit q)->bit{x q;return measure q;}qubit q;output bit r;while(flip(q)==1){continue;}r=measure q;', {'0': '1'}),
+ ('computed-result-void-quantum-only', 'def f(qubit q){bit b=measure q;if(b==1){return;}x q;}qubit q;output bit r;x q;f(q);r=measure q;', {'1': '1'}),
+ ('computed-result-void-no-arguments', 'def f(){return;}output bit r;f();', {'0': '1'}),
+ ('computed-result-logical-and-skip', 'def flip(qubit q)->bool{x q;return true;}qubit q;bool take=false;output bit r;bool ignored=take&&flip(q);r=measure q;', {'0': '1'}),
+ ('computed-result-logical-or-skip', 'def flip(qubit q)->bool{x q;return false;}qubit q;bool take=true;output bit r;bool ignored=take||flip(q);r=measure q;', {'0': '1'}),
+ ('computed-result-logical-and-run', 'def flip(qubit q)->bool{x q;return true;}qubit q;bool take=true;output bit r;bool ignored=take&&flip(q);r=measure q;', {'1': '1'}),
+ ('computed-result-logical-skip-undefined', 'def f(bit b)->bool{if(b==1){return true;}}bit b;output bit r;bool ok=false&&f(b);r=ok;', {'0': '1'}),
+ ('computed-result-measured-parity', 'const int n=2;def parity(bit[n] cin)->bit{bit c;for int i in [0:n-1]{c^=cin[i];}return c;}qubit[2] q;bit[2] m;output bit r;x q[0];m=measure q;r=parity(m);', {'1': '1'}),
+ ('computed-result-runtime-integer', 'def addone(int[8] v)->int[8]{return v+1;}qubit q;bit m;output bit r;m=measure q;int[8] value=addone(int[8](m));r=value==1;', {'1': '1'}),
+ ('transfer-result-early-loop', 'def f(bit b)->bit{while(b==1){return b;}return 0;}bit m=1;output bit r;r=f(m);', {'1': '1'}),
+ ('transfer-result-condition-reevaluation', 'def flipmeasure(qubit q)->bit{x q;return measure q;}qubit q;output bit r;while(flipmeasure(q)==1){}r=measure q;', {'0': '1'}),
+ ('computed-result-nested-result', 'def readout(qubit q)->bit{return measure q;}def copied(bit v)->bit{return v;}qubit q;output bit r;x q;r=copied(readout(q));', {'1': '1'}),
+ ('computed-result-xmeasure', '// Subroutine unchanged from the OpenQASM specification; driver added here.\ndef xmeasure(qubit q) -> bit { h q; return measure q; }\nqubit q;\noutput bit result;\nresult = xmeasure(q);', {'0': '1/2', '1': '1/2'}),
+ ('computed-result-missing', 'def f(bit b)->bit{if(b==1){return b;}}bit b;output bit r;r=f(b);', None),
+ ('computed-result-missing-discarded', 'def f(bit b)->bit{if(b==1){return b;}}bit b;output bit r;f(b);', None),
+ ('computed-result-bool', 'def f(bit b)->bool{return b==1;}bit b=1;output bit r;r=f(b);', {'1': '1'}),
+ ('computed-result-register', 'def f(bit[2] b)->bit[2]{return b;}bit[2] b="10";output bit[2] r;r=f(b);', {'10': '1'}),
+ ('computed-return-early-void', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
+ ('computed-return-fallthrough', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit m;output bit r;f(m,q);r=measure q;', {'1': '1'}),
+ ('transfer-return-nested-loops', 'def f(bit b,qubit q){while(b==1){for int i in [0:1]{return;}x q;}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
+ ('computed-return-nested-call', 'def inner(bit b,qubit q){if(b==1){return;}x q;}def outer(bit b,qubit q){inner(b,q);x q;}qubit q;bit m=1;output bit r;outer(m,q);r=measure q;', {'1': '1'}),
+ ('loop-return-reinitialize', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit again=1;bit flag=1;output bit r;while(again==1){f(flag,q);if(flag==0){again=0;}flag=0;}r=measure q;', {'1': '1'}),
+ ('computed-return-local-before-return', 'def f(bit b,qubit q){int n=1;if(b==1){return;}if(n==1){x q;}}qubit q;bit m;output bit r;f(m,q);r=measure q;', {'1': '1'}),
+ ('computed-return-switch-return', 'def f(bit b,qubit q){switch(int(b)){case 1{return;}default{x q;}}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
  ('call-bit-nested', 'def inner(bit[2] v){v="00";}def outer(bit[2] v,qubit q){inner(v);if(v=="11"){x q;}}qubit q;bit[2] m="11";output bit r;outer(m,q);r=measure q;', {'1': '1'}),
  ('call-bit-local-measure', 'def f(bit v,qubit q){bit saved=measure q;if(saved==v){x q;}}qubit q;bit m=1;output bit r;x q;f(m,q);r=measure q;', {'0': '1'}),
  ('call-bit-local-shadow', 'def f(bit v,qubit q){bit local=v;{bit local=0;}if(local==1){x q;}}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'1': '1'}),
@@ -403,9 +428,11 @@ rejected += ['output bit r;output bit r;',
              'output bit[65] r;',
              'output bit[0] r;']
 rejected += ['@unsupported\noutput bit r;']
-rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){array[int[8],2] b;}qubit q;bit c;f(int(c),q);']
+rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return 1;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){array[int[8],2] b;}qubit q;bit c;f(int(c),q);']
 rejected += ['def f(int n,qubit q){g(n,q);}def g(int n,qubit q){}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;\n@custom\nf(int(c),q);']
 rejected += ['def f(int n,qubit q){if(missing==1){x q;}}qubit q;bit m;{int missing=1;f(int(m),q);}', 'def f(int n,qubit q){if(later==1){x q;}}const int later=1;qubit q;bit m;f(int(m),q);']
+rejected += ['def f(int n){return;return 1;}int n=0;f(n);',
+             'def f(int n){return;if(n==0){return 1;}}int n=0;f(n);']
 # Expansion and lexical-binding budgets must reject before allocating unbounded ASTs.
 rejected += ['def f(int n){}int n=1;'+('f(n);'*4097)]
 rejected += ['const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(int n){if(a20>0){n=0;}}int n=1;f(n);']
