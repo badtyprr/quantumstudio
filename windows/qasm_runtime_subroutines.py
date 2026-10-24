@@ -110,7 +110,12 @@ def lower_runtime_subroutines(program):
             raise error_at(call, 'Runtime subroutine expansion exceeds 65536 AST nodes.')
         if definition.return_type is not None:
             raise error_at(call, 'Runtime subroutines with return values are not yet supported.')
-        has_return = any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body))
+        returns = [n for n in walk(definition.body) if isinstance(n, ast.ReturnStatement)]
+        # Validate before control-flow lowering drops unreachable tails.
+        for statement in returns:
+            if statement.expression is not None:
+                raise error_at(statement, 'A void subroutine cannot return a value.')
+        has_return = bool(returns)
         if len(call.arguments) != len(definition.arguments):
             raise error_at(call, 'Subroutine argument count does not match its declaration.')
         references = {n.name for n in walk(definition) if isinstance(n, ast.Identifier)}

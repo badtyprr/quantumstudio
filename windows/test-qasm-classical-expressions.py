@@ -413,6 +413,8 @@ rejected += ['@unsupported\noutput bit r;']
 rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return 1;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){array[int[8],2] b;}qubit q;bit c;f(int(c),q);']
 rejected += ['def f(int n,qubit q){g(n,q);}def g(int n,qubit q){}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;\n@custom\nf(int(c),q);']
 rejected += ['def f(int n,qubit q){if(missing==1){x q;}}qubit q;bit m;{int missing=1;f(int(m),q);}', 'def f(int n,qubit q){if(later==1){x q;}}const int later=1;qubit q;bit m;f(int(m),q);']
+rejected += ['def f(int n){return;return 1;}int n=0;f(n);',
+             'def f(int n){return;if(n==0){return 1;}}int n=0;f(n);']
 # Expansion and lexical-binding budgets must reject before allocating unbounded ASTs.
 rejected += ['def f(int n){}int n=1;'+('f(n);'*4097)]
 rejected += ['const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(int n){if(a20>0){n=0;}}int n=1;f(n);']
