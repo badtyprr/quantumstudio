@@ -30,11 +30,15 @@ sealed class ClassicalProgramQasm {
  }
  public static string Export(ClassicalCircuit value) {
   if(value==null)throw new ArgumentNullException("value");
-  return new ClassicalProgramQasm(value).Build();
+  return new ClassicalProgramQasm(value).Build(true);
  }
- string Build() {
+ string Build(bool recoverLifetimes=false) {
   var steps=circuit.SamplingGates();
-  scopes=new ClassicalQasmScopes(steps,variables.Length);
+  try {scopes=new ClassicalQasmScopes(steps,variables.Length);}
+  catch(InvalidDataException) {
+   if(!recoverLifetimes)throw;
+   return new ClassicalProgramQasm(ClassicalQasmLifetimes.Prepare(circuit)).Build();
+  }
   var prefix=new StringBuilder("OPENQASM 3.0;\ninclude \"stdgates.inc\";\n");
   if(circuit.Qubits>0)prefix.Append("qubit["+Number(circuit.Qubits)+"] q;\nreset q;\n");
   var body=new StringBuilder();
