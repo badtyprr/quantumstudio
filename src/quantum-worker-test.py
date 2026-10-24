@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+# .NET Framework may prepend a UTF-8 BOM when opening redirected stdin.
+# Accept one transport preamble, not repeated or truncated protocol prefixes.
+for mode, request in (("--exact-circuit", "QEXACT1\n0\n0\n0\n0\n"),
+                      ("--sample", "QSAMPLE2\n0\n10\n1731\n0\n0\n0\n")):
+    plain = run(request, mode)
+    assert run("\ufeff" + request, mode).stdout == plain.stdout
+    assert not run("\ufeff\ufeff" + request, mode, success=False).stdout
+    assert not run("\ufeff" + request[:5], mode, success=False).stdout
+
 # A register family preserves bit substitutions before its width is supplied.
 for flags in ((), ("--approx",)):
     family = '|x_(n-1) ... x_0>'

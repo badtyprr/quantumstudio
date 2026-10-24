@@ -181,10 +181,16 @@ int main(int argc,char **argv) {
 #ifdef _WIN32
  if((states || sample || exactCircuit) && _setmode(_fileno(stdin),_O_BINARY)==-1) {std::cerr << "Cannot open binary state input.";return 2;}
 #endif
- std::string input;input.reserve(32768);char byte;
+ std::string input;input.reserve(32768);char byte;bool prefixChecked=false;
  while(std::cin.get(byte)) {
   if(input.size()==((states || sample || exactCircuit) ? 1100000U : 32768U)) {std::cerr << ((states || sample || exactCircuit) ? "Structured request exceeds 1100000 bytes." : "Input exceeds 32768 bytes.");return 2;}
   input.push_back(byte);
+  // .NET Framework's redirected stdin writer can emit a UTF-8 preamble.
+  // Remove it only at the transport boundary, before applying payload limits.
+  if(!prefixChecked && input.size()==3) {
+   prefixChecked=true;
+   if(input.compare(0,3,"\xEF\xBB\xBF")==0)input.clear();
+  }
  }
  if(std::cin.bad()) {std::cerr << "Cannot read expression from stdin.";return 2;}
  Calculator calculator;
