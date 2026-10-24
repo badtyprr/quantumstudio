@@ -236,6 +236,10 @@ class Printer {
    Fragment body=render(value[0],depth+1),index=render(value[1],depth+1),dimension=render(value[2],depth+1);
    return Fragment(body.text+"  (0 ≤ "+index.text+" < "+dimension.text+"; "+index.text+", "+dimension.text+" ∈ ℤ)",10);
   }
+  if(name=="qunitaryidentity" && value.size()==2) {
+   std::string dimension=render(value[1],depth+1).text;
+   return Fragment("I_{"+dimension+"}  ("+render(value[0],depth+1).text+" unitary; dimension "+dimension+")",10);
+  }
   if(name=="qfourier" && value.size()==1)return Fragment("QFT_"+grouped(render(value[0],depth+1),100));
   if(name=="qtrace" && value.size()==1)return Fragment("Tr("+render(value[0],depth+1).text+")");
   if(name=="qsum" && value.size()==4) {

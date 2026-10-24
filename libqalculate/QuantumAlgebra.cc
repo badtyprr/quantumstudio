@@ -614,6 +614,7 @@ class QuantumAlgebraFunction: public MathFunction {
     out.eval(eo);return 1;
    }
   }
+  if(op=="qdag" && quantumOperatorAdjoint(a,out))return 1;
   if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
   if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) transposeQuantumMatrix(out); return 1; }
@@ -627,6 +628,7 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qmul" || op=="qadjacent") {
    const MathStructure &b=args[1];
+   if(quantumOperatorProduct(a,b,out)) {out.eval(eo);return 1;}
    if(a.isFunction() && a.function()->referenceName()=="qdag" && a.size()==1 &&
       a[0].isFunction() && a[0].function()->referenceName()=="qorthoket" &&
       b.isFunction() && b.function()->referenceName()=="qorthoket") {

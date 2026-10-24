@@ -8,4 +8,7 @@ struct EvaluationOptions;
 void registerQuantumOperatorDomain(Calculator &calculator);
 bool quantumOperatorDimension(const MathStructure &value, MathStructure &dimension,
                               const EvaluationOptions &options);
+bool quantumOperatorAdjoint(const MathStructure &value, MathStructure &result);
+bool quantumOperatorProduct(const MathStructure &left, const MathStructure &right,
+                            MathStructure &result);
 #endif

@@ -4,6 +4,10 @@
 #include "Function.h"
 
 namespace {
+bool hasProperty(const MathStructure &value,const char *property) {
+ return value.isFunction() && value.function()->referenceName()=="operatorparam" &&
+        value.size()==3 && value[2].isSymbolic() && value[2].symbol()==property;
+}
 class QuantumOperatorParameter: public MathFunction {
 public:
  QuantumOperatorParameter():MathFunction("operatorparam",3) {
@@ -51,9 +55,43 @@ public:
   out=value;return 1;
  }
 };
+// Retain the operator even though its displayed product becomes identity.
+// Substitution must still validate the premise of unitary cancellation.
+class QuantumUnitaryIdentity: public MathFunction {
+public:
+ QuantumUnitaryIdentity():MathFunction("qunitaryidentity",2) {}
+ ExpressionItem *copy() const {return new QuantumUnitaryIdentity(*this);}
+ bool representsScalar(const MathStructure&) const {return false;}
+ bool representsNonMatrix(const MathStructure&) const {return false;}
+ bool preservesSingletonMatrix() const {return true;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &options) {
+  MathStructure property("unitary",true),domain;
+  domain.set(CALCULATOR->getFunction("operatorparam"),&raw[0],&raw[1],&property,NULL);
+  domain.eval(options);
+  if(!domain.isMatrix())return 0;
+  out.set(CALCULATOR->getFunction("qidentity"),&raw[1],NULL);out.eval(options);return 1;
+ }
+};
 }
 bool quantumOperatorDimension(const MathStructure &value,MathStructure &dimension,const EvaluationOptions &options) {
- if(!value.isFunction() || value.function()->referenceName()!="operatorparam" || value.size()!=3)return false;
+ if(!value.isFunction())return false;
+ const std::string &name=value.function()->referenceName();
+ if(!((name=="operatorparam" && value.size()==3) || (name=="qunitaryidentity" && value.size()==2)))return false;
  dimension=value[1];EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;dimension.eval(exact);return true;
 }
-void registerQuantumOperatorDomain(Calculator &calculator) {calculator.addFunction(new QuantumOperatorParameter());}
+bool quantumOperatorAdjoint(const MathStructure &value,MathStructure &result) {
+ if(!hasProperty(value,"hermitian") && !hasProperty(value,"projector"))return false;
+ result=value;return true;
+}
+bool quantumOperatorProduct(const MathStructure &left,const MathStructure &right,MathStructure &result) {
+ if(hasProperty(left,"projector") && left.equals(right)) {result=left;return true;}
+ const MathStructure *domain=NULL;
+ if(left.isFunction() && left.function()->referenceName()=="qdag" && left.size()==1 && left[0].equals(right))domain=&right;
+ else if(right.isFunction() && right.function()->referenceName()=="qdag" && right.size()==1 && right[0].equals(left))domain=&left;
+ if(!domain || !hasProperty(*domain,"unitary"))return false;
+ result.set(CALCULATOR->getFunction("qunitaryidentity"),&(*domain)[0],&(*domain)[1],NULL);return true;
+}
+void registerQuantumOperatorDomain(Calculator &calculator) {
+ calculator.addFunction(new QuantumOperatorParameter());
+ calculator.addFunction(new QuantumUnitaryIdentity());
+}
