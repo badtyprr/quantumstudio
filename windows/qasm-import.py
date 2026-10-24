@@ -848,11 +848,11 @@ def convert(source, published_u=False, classical=False):
     hidden_registers=set()
     if classical:
         prepare_subroutine_scope(module.original_program)
-        lower_runtime_subroutines(module.original_program)
+        hidden_registers=lower_runtime_subroutines(module.original_program)
         mark_runtime_ranges(module.original_program)
         lower_for_transfers(module.original_program)
         resolve_integer_scopes(module.original_program)
-        hidden_registers=lower_boolean_measurements(module.original_program)
+        hidden_registers|=lower_boolean_measurements(module.original_program)
     if classical:
         runtime_names={node.identifier.name for node in nodes(module.original_program,True)
                    if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,)+RUNTIME_SCALAR_TYPES)}
