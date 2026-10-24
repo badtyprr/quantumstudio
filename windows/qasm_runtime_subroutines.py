@@ -108,8 +108,9 @@ def lower_runtime_subroutines(program):
         expanded += sum(1 for _ in walk(definition.body))
         if expanded > 65536:
             raise error_at(call, 'Runtime subroutine expansion exceeds 65536 AST nodes.')
-        if definition.return_type is not None or any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body)):
-            raise error_at(call, 'Runtime subroutines with return values or explicit returns are not yet supported.')
+        if definition.return_type is not None:
+            raise error_at(call, 'Runtime subroutines with return values are not yet supported.')
+        has_return = any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body))
         if len(call.arguments) != len(definition.arguments):
             raise error_at(call, 'Subroutine argument count does not match its declaration.')
         references = {n.name for n in walk(definition) if isinstance(n, ast.Identifier)}
@@ -147,7 +148,54 @@ def lower_runtime_subroutines(program):
             body = block(definition.body, bindings, True, depth + 1, parameters)
         finally:
             activations.pop()
+        if has_return:
+            returned = ast.Identifier(fresh())
+            declarations.append(ast.ClassicalDeclaration(type=ast.BoolType(), identifier=returned, init_expression=ast.BooleanLiteral(False)))
+            body, _ = return_control(body, returned)
         return ast.CompoundStatement(statements=declarations + body)
+
+    def return_control(body, returned, level=0):
+        """Exit an activation without introducing an extra budgeted loop.
+
+        Keep each remaining tail together under its guard, so declarations in
+        that tail stay visible to later statements. Loop transfers and integer
+        cleanup are subsequently handled by their existing lowering passes.
+        """
+        if level >= 32:
+            raise error_at(returned, 'Return control exceeds 32 levels of nesting.')
+        result = []
+        for index, node in enumerate(body):
+            if isinstance(node, ast.ReturnStatement):
+                if node.expression is not None:
+                    raise error_at(node, 'A void subroutine cannot return a value.')
+                result.append(ast.ClassicalAssignment(lvalue=copy.deepcopy(returned), op=ast.AssignmentOperator['='], rvalue=ast.BooleanLiteral(True)))
+                return result, True
+            may_return = False
+            if isinstance(node, ast.BranchingStatement):
+                node.if_block, left = return_control(node.if_block, returned, level + 1)
+                node.else_block, right = return_control(node.else_block, returned, level + 1)
+                may_return = left or right
+            elif isinstance(node, ast.CompoundStatement):
+                node.statements, may_return = return_control(node.statements, returned, level + 1)
+            elif isinstance(node, ast.SwitchStatement):
+                for _, case in node.cases:
+                    case.statements, child = return_control(case.statements, returned, level + 1)
+                    may_return |= child
+                if node.default is not None:
+                    node.default.statements, child = return_control(node.default.statements, returned, level + 1)
+                    may_return |= child
+            elif isinstance(node, (ast.ForInLoop, ast.WhileLoop)):
+                node.block, may_return = return_control(node.block, returned, level + 1)
+                if may_return:
+                    node.block.append(ast.BranchingStatement(condition=copy.deepcopy(returned), if_block=[ast.BreakStatement()], else_block=[]))
+            result.append(node)
+            if may_return:
+                tail, _ = return_control(body[index + 1:], returned, level + 1)
+                if tail:
+                    condition = ast.UnaryExpression(op=ast.UnaryOperator['!'], expression=copy.deepcopy(returned))
+                    result.append(ast.BranchingStatement(condition=condition, if_block=tail, else_block=[]))
+                return result, True
+        return result, False
 
     def bit_declaration(declaration):
         # Allocate storage once, but initialize on every activation, including

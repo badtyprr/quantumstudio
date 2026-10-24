@@ -8,6 +8,13 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-return-early-void', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
+ ('computed-return-fallthrough', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit m;output bit r;f(m,q);r=measure q;', {'1': '1'}),
+ ('transfer-return-nested-loops', 'def f(bit b,qubit q){while(b==1){for int i in [0:1]{return;}x q;}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
+ ('computed-return-nested-call', 'def inner(bit b,qubit q){if(b==1){return;}x q;}def outer(bit b,qubit q){inner(b,q);x q;}qubit q;bit m=1;output bit r;outer(m,q);r=measure q;', {'1': '1'}),
+ ('loop-return-reinitialize', 'def f(bit b,qubit q){if(b==1){return;}x q;}qubit q;bit again=1;bit flag=1;output bit r;while(again==1){f(flag,q);if(flag==0){again=0;}flag=0;}r=measure q;', {'1': '1'}),
+ ('computed-return-local-before-return', 'def f(bit b,qubit q){int n=1;if(b==1){return;}if(n==1){x q;}}qubit q;bit m;output bit r;f(m,q);r=measure q;', {'1': '1'}),
+ ('computed-return-switch-return', 'def f(bit b,qubit q){switch(int(b)){case 1{return;}default{x q;}}x q;}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'0': '1'}),
  ('call-bit-nested', 'def inner(bit[2] v){v="00";}def outer(bit[2] v,qubit q){inner(v);if(v=="11"){x q;}}qubit q;bit[2] m="11";output bit r;outer(m,q);r=measure q;', {'1': '1'}),
  ('call-bit-local-measure', 'def f(bit v,qubit q){bit saved=measure q;if(saved==v){x q;}}qubit q;bit m=1;output bit r;x q;f(m,q);r=measure q;', {'0': '1'}),
  ('call-bit-local-shadow', 'def f(bit v,qubit q){bit local=v;{bit local=0;}if(local==1){x q;}}qubit q;bit m=1;output bit r;f(m,q);r=measure q;', {'1': '1'}),
@@ -403,7 +410,7 @@ rejected += ['output bit r;output bit r;',
              'output bit[65] r;',
              'output bit[0] r;']
 rejected += ['@unsupported\noutput bit r;']
-rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){array[int[8],2] b;}qubit q;bit c;f(int(c),q);']
+rejected += ['def f(int n,qubit a,qubit b){} qubit q;bit c;f(int(c),q,q);', 'def f(int n,qubit q){return 1;}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;f(int(c));', 'def f(int n,qubit q){f(n,q);}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){array[int[8],2] b;}qubit q;bit c;f(int(c),q);']
 rejected += ['def f(int n,qubit q){g(n,q);}def g(int n,qubit q){}qubit q;bit c;f(int(c),q);', 'def f(int n,qubit q){}qubit q;bit c;\n@custom\nf(int(c),q);']
 rejected += ['def f(int n,qubit q){if(missing==1){x q;}}qubit q;bit m;{int missing=1;f(int(m),q);}', 'def f(int n,qubit q){if(later==1){x q;}}const int later=1;qubit q;bit m;f(int(m),q);']
 # Expansion and lexical-binding budgets must reject before allocating unbounded ASTs.
