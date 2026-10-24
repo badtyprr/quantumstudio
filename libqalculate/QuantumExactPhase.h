@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <functional>
 #include <map>
+#include <string>
+class MathStructure;
 
 namespace QuantumExact {
 // Shared across an execution, so many individually small operations cannot
@@ -39,6 +41,14 @@ public:
  PhasePolynomial plus(const PhasePolynomial &other,PhaseBudget &budget) const;
  PhasePolynomial times(const PhasePolynomial &other,PhaseBudget &budget) const;
  PhasePolynomial conjugated(PhaseBudget &budget) const;
+ // Converts already-evaluated scalar expressions, without evaluating unknown
+ // functions or guessing implicit angle units. Unsupported returns false and
+ // leaves output intact; resource/cancellation failures throw. Work is not refunded.
+ static bool tryFromExpression(const MathStructure &value,PhasePolynomial &output,PhaseBudget &budget);
+ // Builds an exact AST without expanding/evaluating its phase expressions.
+ // General display formatting may round it; use toExactString for lossless copy.
+ MathStructure toExpression(PhaseBudget &budget) const;
+ std::string toExactString(PhaseBudget &budget,std::size_t maxCharacters) const;
  bool operator==(const PhasePolynomial &other) const;
  std::size_t termCount() const {return terms_.size();}
 };

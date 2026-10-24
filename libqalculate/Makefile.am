@@ -58,6 +58,7 @@ libqalculate_la_SOURCES = \
 	QuantumExactReadout.cc \
 	QuantumExactCircuit.cc \
 	QuantumExactPhase.cc \
+	QuantumExactPhaseExpression.cc \
 	QuantumClassical.cc \
 	QuantumClassicalInteger.cc \
 	QuantumClassicalRange.cc \
