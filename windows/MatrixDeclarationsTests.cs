@@ -16,6 +16,14 @@ class MatrixDeclarationsTests {
    Require(MatrixDeclarations.Copy(null).Length==0,"Legacy declarations not empty");
    Require(MatrixDeclarations.Apply("Tr(A)",new[]{M("A","n","n")})=="matrixassume((Tr(A)),\"A\",(n),(n))","Unexpected request framing");
    Require(MatrixDeclarations.Apply("1",new MatrixDeclaration[0])=="1","Empty declarations change expression");
+   foreach(string property in new[]{"Unitary","Hermitian","Projector"}) {
+    var declared=M("A","n","n");declared.Property=property;
+    Require(MatrixDeclarations.Apply("A",new[]{declared})=="operatorassume((A),\"A\",(n),\""+property.ToLowerInvariant()+"\")","Operator request lost its property");
+    var preserved=MatrixDeclarations.Copy(new[]{declared});declared.Property="General";
+    Require(preserved[0].Property==property,"History shares mutable operator properties");
+    declared.Property=property;declared.Columns="2";Reject(delegate {MatrixDeclarations.Validate(new[]{declared});});
+   }
+   var badProperty=M("A","2","2");badProperty.Property="unitary\")";Reject(delegate {MatrixDeclarations.Validate(new[]{badProperty});});
    MatrixDeclarations.Validate(new[]{M("Ω","max(2,n)","2^k")});checks++;
    foreach(var invalid in new MatrixDeclaration[][] {
     null,new MatrixDeclaration[33],new MatrixDeclaration[]{null},new[]{M("","2","2")},
@@ -40,6 +48,11 @@ class MatrixDeclarationsTests {
    string path=Path.Combine(directory,"session.qsession");var original=Session();SessionStore.Save(path,original);
    var loaded=SessionStore.Load(path);
    Require(loaded.Version==3 && loaded.Matrices[0].Rows=="n" && loaded.History[0].Matrices[0].Rows=="2","Session lost distinct history dimensions");
+   var properties=Session();properties.Version=4;properties.Matrices[0].Property="Unitary";properties.History[0].Matrices[0].Property="Projector";
+   SessionStore.Save(path,properties);var restored=SessionStore.Load(path);
+   Require(restored.Version==4 && restored.Matrices[0].Property=="Unitary" && restored.History[0].Matrices[0].Property=="Projector","Session lost distinct operator properties");
+   properties.Version=3;Reject(delegate {SessionStore.Validate(properties);});
+   properties.Matrices[0].Property="General";Reject(delegate {SessionStore.Validate(properties);});
    string before=File.ReadAllText(path);original.Matrices[0].Name="bad\"";
    Reject(delegate {SessionStore.Save(path,original);});Require(File.ReadAllText(path)==before,"Invalid save damaged existing session");
    foreach(int version in new[]{1,2}) {

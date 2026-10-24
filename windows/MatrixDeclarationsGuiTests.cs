@@ -50,7 +50,20 @@ class MatrixDeclarationsGuiTests {
      rows.SetValue(declared.GetValue(0),"n",null);input.Text="Tr(2*A+3*B)-2*Tr(A)-3*Tr(B)";
      await (Task)Call("Calculate",new object[]{null});Require(((TextBox)Field("output")).Text=="0","Could not recover from invalid dimensions");
     }
+    editor=(Window)Call("MatrixEditor");editor.Show();
+    var propertyGrid=(DataGrid)editor.FindName("Definitions");
+    Require(propertyGrid.Columns.Count==4 && propertyGrid.Columns[3] is DataGridComboBoxColumn,"Operator property choice is missing");
+    var propertyDraft=(IList)propertyGrid.ItemsSource;
+    propertyDraft[0].GetType().GetProperty("Property").SetValue(propertyDraft[0],"Unitary",null);Click(editor,"Apply");
+    Require(!editor.IsVisible,"Valid unitary declaration did not apply");
+    input.Text="A†A";
+    if(args.Length>2) {
+     await (Task)Call("Calculate",new object[]{null});
+     Require(((TextBox)Field("output")).Text.StartsWith("I_{n}"),"Natural unitary product did not simplify");
+     Require(input.Text=="A†A" && ((string)Field("copyText")).Contains("qunitaryidentity"),"Natural input or guarded copy was lost");
+    }
     var serializer=new JavaScriptSerializer();string snapshot=serializer.Serialize(Call("CaptureSession"));
+    Require(snapshot.Contains("\"Version\":4") && snapshot.Contains("\"Property\":\"Unitary\""),"Session omitted operator properties");
     string path=Path.Combine(directory,"matrices.qsession");File.WriteAllText(path,snapshot);Call("OpenSession",path);
     Require(serializer.Serialize(Call("CaptureSession"))==snapshot,"Session capture/restore changed assumptions");
     var matrices=(Array)Field("matrices");matrices.GetValue(0).GetType().GetProperty("Rows").SetValue(matrices.GetValue(0),"3",null);

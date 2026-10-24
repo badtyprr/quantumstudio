@@ -954,7 +954,7 @@ class QuantumStudio {
   var entries=new SessionEntry[history.Items.Count];for(int j=0;j<entries.Length;j++)entries[j]=(SessionEntry)((ListBoxItem)history.Items[j]).Tag;
   var snapshots=new SessionEntry[entries.Length];
   for(int j=0;j<entries.Length;j++)snapshots[j]=new SessionEntry {Expression=entries[j].Expression,Result=entries[j].Result,Mode=entries[j].Mode,Evaluation=entries[j].Evaluation,States=SessionStore.CopyStates(entries[j].States),Matrices=MatrixDeclarations.Copy(entries[j].Matrices)};
-  return new CalculationSession {Version=3,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states),Matrices=MatrixDeclarations.Copy(matrices)};
+  return new CalculationSession {Version=4,Expression=input.Text,Mode=mode.SelectedIndex,Evaluation=evaluation.SelectedIndex,History=snapshots,States=SessionStore.CopyStates(states),Matrices=MatrixDeclarations.Copy(matrices)};
  }
  static bool SameSnapshotValue(object left,object right) {
   var leftObject=left as System.Collections.Generic.IDictionary<string,object>;var rightObject=right as System.Collections.Generic.IDictionary<string,object>;

@@ -77,6 +77,19 @@ for flags in ((), ("--approx",)):
     assert "qunitaryidentity" not in middle["copy_text"] and "'B'" in middle["copy_text"]
     run("quantum:adjoint(operatorparam(A,2,unitary))*operatorparam(A,3,unitary)", "--json", *flags, success=False)
 
+# The editor can declare properties without rewriting typed symbol occurrences.
+for flags in ((), ("--approx",)):
+    unitary = data("quantum:operatorassume(adjoint(A)*A,A,2,unitary)", *flags)
+    assert "qunitaryidentity" in unitary["copy_text"]
+    assert data("quantum:operatorassume(adjoint(A),A,2,hermitian)", *flags)["copy_text"] == data("quantum:operatorparam(A,2,hermitian)", *flags)["copy_text"]
+    assert data("quantum:operatorassume(A*A,A,2,projector)", *flags)["copy_text"] == data("quantum:operatorparam(A,2,projector)", *flags)["copy_text"]
+    for body in ("|A>", "<A|A>", "operatorparam(A,3,hermitian)", "matrixparam(A,3,3)"):
+        assert data("quantum:operatorassume(" + body + ",A,2,unitary)", *flags)["copy_text"] == data("quantum:" + body, *flags)["copy_text"]
+    inner = "operatorassume(adjoint(A),A,2,hermitian)"
+    assert data("quantum:operatorassume(" + inner + ",A,2,unitary)", *flags)["copy_text"] == data("quantum:" + inner, *flags)["copy_text"]
+    for expression in ("operatorassume(1,A,0,unitary)", "operatorassume(1,A,2,invalid)", "operatorassume(1,H,2,unitary)"):
+        run("quantum:" + expression, "--json", *flags, success=False)
+
 # .NET Framework may prepend a UTF-8 BOM when opening redirected stdin.
 # Accept one transport preamble, not repeated or truncated protocol prefixes.
 for mode, request in (("--exact-circuit", "QEXACT1\n0\n0\n0\n0\n"),

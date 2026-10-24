@@ -200,9 +200,9 @@ bool annotateMatrixSymbol(MathStructure &value,const MathStructure &symbol,const
    if(argument && argument->type()==ARGUMENT_TYPE_TEXT)continue;
    const std::string &name=value.function()->referenceName();
    // Explicit domains and single-letter ket labels retain their meaning.
-   if((name=="matrixparam" || name=="qketstate") && i==0)continue;
+   if((name=="matrixparam" || name=="operatorparam" || name=="qunitaryidentity" || name=="qketstate") && i==0)continue;
    // An inner declaration owns its body, but not its dimension expressions.
-   if(name=="matrixassume" && value.size()==4 && i==0 && value[1].isSymbolic() && value[1].symbol()==declaredName)continue;
+   if((name=="matrixassume" || name=="operatorassume") && value.size()==4 && i==0 && value[1].isSymbolic() && value[1].symbol()==declaredName)continue;
   }
   if(!annotateMatrixSymbol(value[i],symbol,declaration,declaredName,depth+1))return false;
  }
@@ -210,8 +210,12 @@ bool annotateMatrixSymbol(MathStructure &value,const MathStructure &symbol,const
  return true;
 }
 class QuantumMatrixAssumption: public MathFunction {
+ bool operatorProperty;
  public:
- QuantumMatrixAssumption():MathFunction("matrixassume",4) {setArgumentDefinition(2,new TextArgument());}
+ explicit QuantumMatrixAssumption(bool property=false):MathFunction(property ? "operatorassume" : "matrixassume",4),operatorProperty(property) {
+  setArgumentDefinition(2,new TextArgument());
+  if(property)setArgumentDefinition(4,new TextArgument());
+ }
  ExpressionItem *copy() const {return new QuantumMatrixAssumption(*this);}
  bool preservesSingletonMatrix() const {return true;}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
@@ -225,7 +229,7 @@ class QuantumMatrixAssumption: public MathFunction {
   if((symbol.isSymbolic() && symbol.symbol()!=name) || (symbol.isVariable() && symbol.variable()->referenceName()!=name)) {
    CALCULATOR->error(true,"Matrix names must parse as the same symbol. Use an underscore before an index (for example M_1).",NULL);return 0;
   }
-  MathStructure declaration;declaration.set(CALCULATOR->getFunction("matrixparam"),&symbol,&raw[2],&raw[3],NULL);
+  MathStructure declaration;declaration.set(CALCULATOR->getFunction(operatorProperty ? "operatorparam" : "matrixparam"),&symbol,&raw[2],&raw[3],NULL);
   declaration.eval(eo);out=raw[0];
   if(!annotateMatrixSymbol(out,symbol,declaration,name))return 0;
   out.eval(eo);return 1;
@@ -775,6 +779,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumComplexParameter());
  calculator.addFunction(new QuantumMatrixParameter());
  calculator.addFunction(new QuantumMatrixAssumption());
+ calculator.addFunction(new QuantumMatrixAssumption(true));
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
