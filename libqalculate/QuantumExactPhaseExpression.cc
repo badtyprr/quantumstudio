@@ -146,6 +146,10 @@ std::string PhasePolynomial::toExactString(PhaseBudget &budget,std::size_t maxCh
   result+=text;
  };
  if(terms_.empty())append("0");
+ else if(terms_.size()==1 && terms_.begin()->first.isZero() && terms_.begin()->second.b.isZero() &&
+         terms_.begin()->second.a.isReal()) {
+  append(rationalText(terms_.begin()->second.a));return result;
+ }
  bool first=true;
  for(const auto &term:terms_) {
   budget.charge();if(!first)append("+");first=false;

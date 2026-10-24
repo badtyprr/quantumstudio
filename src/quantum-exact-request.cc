@@ -3,6 +3,7 @@
 #include "quantum-classical-request.h"
 #include <libqalculate/Calculator.h>
 #include <libqalculate/QuantumExactCircuit.h>
+#include <libqalculate/QuantumExactPhaseCircuit.h>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -165,9 +166,16 @@ std::string quantumExactRequest(Calculator &calculator,const std::string &input)
  unsigned count=static_cast<unsigned>(reader.integer(512)),total=0;std::vector<Step> steps;
  for(unsigned k=0;k<count;++k)steps.push_back(readStep(calculator,reader,qubits,bits,0,total,exact,reader.variables()?&declarations:nullptr));
  reader.end();
- auto records=QuantumExact::evaluateCircuit(qubits,bits,steps,types,1048576,exact,loopBudget);
- auto probabilities=QuantumExact::weights(records,qubits,bits,selected,1048576,exact);
  PrintOptions print;print.use_unicode_signs=false;print.number_fraction_format=FRACTION_DECIMAL_EXACT;
+ std::map<std::uint64_t,std::string> probabilities;
+ QuantumExact::PhaseBudget phaseBudget(262144,4096,100000000,[&]{return calculator.aborted();});
+ if(!QuantumExact::tryPhaseCircuitWeights(qubits,bits,steps,selected,probabilities,phaseBudget,{262144,1000000,4000000})) {
+  auto records=QuantumExact::evaluateCircuit(qubits,bits,steps,types,1048576,exact,loopBudget);
+  auto weights=QuantumExact::weights(records,qubits,bits,selected,1048576,exact);
+  for(const auto &entry:weights) {
+   MathStructure value=entry.second;value.format(print);probabilities.emplace(entry.first,value.print(print));
+  }
+ }
  std::ostringstream output;output<<"{\"qubits\":"<<qubits<<",\"classical_bits\":"<<bits<<",\"bits\":[";
  for(size_t k=0;k<selected.size();++k){if(k)output<<',';output<<selected[k];}
  output<<"],\"probabilities\":{";bool first=true;
@@ -175,7 +183,7 @@ std::string quantumExactRequest(Calculator &calculator,const std::string &input)
   if(!first)output<<',';first=false;
   std::string label;for(size_t k=selected.size();k>0;--k)label+=((entry.first>>(k-1))&1)?'1':'0';
   jsonString(output,label);output<<':';
-  MathStructure value=entry.second;value.format(print);jsonString(output,value.print(print));
+  jsonString(output,entry.second);
  }
  output<<"}}";return output.str();
 }

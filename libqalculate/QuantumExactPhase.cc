@@ -85,4 +85,10 @@ bool PhasePolynomial::operator==(const PhasePolynomial &other) const {
   if(left->first!=right->first || left->second.a!=right->second.a || left->second.b!=right->second.b)return false;
  return true;
 }
+bool PhasePolynomial::rationalConstant(Number &value) const {
+ if(terms_.empty()){value=0;return true;}
+ if(terms_.size()!=1 || !terms_.begin()->first.isZero() || !terms_.begin()->second.b.isZero() ||
+    !terms_.begin()->second.a.isReal())return false;
+ value=terms_.begin()->second.a;return true;
+}
 }

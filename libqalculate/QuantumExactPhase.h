@@ -49,6 +49,8 @@ public:
  // General display formatting may round it; use toExactString for lossless copy.
  MathStructure toExpression(PhaseBudget &budget) const;
  std::string toExactString(PhaseBudget &budget,std::size_t maxCharacters) const;
+ // Leaves value unchanged when this is not a real rational constant.
+ bool rationalConstant(Number &value) const;
  bool operator==(const PhasePolynomial &other) const;
  std::size_t termCount() const {return terms_.size();}
 };
