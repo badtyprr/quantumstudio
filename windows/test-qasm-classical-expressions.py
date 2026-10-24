@@ -8,6 +8,8 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('range-runtime-returned-range', 'def bound(bit b)->int{return int(b)+1;}qubit q;bit b=1;output bit r;for int i in [0:bound(b)]{x q;}r=measure q;', {'1': '1'}),
+ ('transfer-returned-condition-continue', 'def flip(qubit q)->bit{x q;return measure q;}qubit q;output bit r;while(flip(q)==1){continue;}r=measure q;', {'0': '1'}),
  ('computed-result-logical-and-skip', 'def flip(qubit q)->bool{x q;return true;}qubit q;bool take=false;output bit r;bool ignored=take&&flip(q);r=measure q;', {'0': '1'}),
  ('computed-result-logical-or-skip', 'def flip(qubit q)->bool{x q;return false;}qubit q;bool take=true;output bit r;bool ignored=take||flip(q);r=measure q;', {'0': '1'}),
  ('computed-result-logical-and-run', 'def flip(qubit q)->bool{x q;return true;}qubit q;bool take=true;output bit r;bool ignored=take&&flip(q);r=measure q;', {'1': '1'}),

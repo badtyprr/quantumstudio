@@ -256,7 +256,7 @@ def lower_runtime_subroutines(program):
                 effects, rewritten = expression_calls(item, active, depth)
                 prefix.extend(effects); result.append(rewritten)
             return prefix, result
-        if not isinstance(value, ast.Expression):
+        if not isinstance(value, (ast.Expression, ast.RangeDefinition, ast.DiscreteSet)):
             return prefix, value
         if isinstance(value, ast.BinaryExpression) and value.op.name in ('&&', '||'):
             left_effects, left = expression_calls(value.lhs, active, depth)
@@ -336,6 +336,8 @@ def lower_runtime_subroutines(program):
                 value = copy.copy(node); inner = dict(env)
                 if isinstance(node, ast.ForInLoop):
                     value.type = rewrite(node.type, env); value.set_declaration = rewrite(node.set_declaration, env)
+                    effects, value.set_declaration = expression_calls(value.set_declaration, active, depth)
+                    result.extend(effects)
                     if active: inner[node.identifier.name] = ast.Identifier(fresh())
                     value.identifier = rewrite(node.identifier, inner)
                 else:
