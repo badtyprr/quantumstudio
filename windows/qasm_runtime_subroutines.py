@@ -7,6 +7,7 @@ scope-exit cleanup, including a call repeated inside a runtime loop.
 import copy
 from dataclasses import fields, is_dataclass
 import openqasm3.ast as ast
+from pyqasm.maps.expressions import CONSTANTS_MAP
 from qasm_source_diagnostics import error_at
 
 
@@ -24,10 +25,11 @@ def lower_runtime_subroutines(program):
                 yield from walk(item)
 
     functions = {}; visibility = {}; activations = []
+    constants = {}; constant_cache = {}
     used = {node.name for node in walk(program) if isinstance(node, ast.Identifier)}
     runtime = set()
     registers = {}
-    serial = calls = expanded = 0
+    serial = calls = expanded = copied_nodes = 0
 
     def fresh():
         nonlocal serial
@@ -38,23 +40,46 @@ def lower_runtime_subroutines(program):
                 used.add(name)
                 return name
 
-    def rewrite(value, bindings):
+    def rewrite(value, bindings, lexical=None):
+        nonlocal copied_nodes
+        if lexical is None:
+            lexical = bool(activations)
         if isinstance(value, ast.Identifier):
-            return copy.deepcopy(bindings.get(value.name, value))
+            if lexical and value.name not in bindings and value.name not in CONSTANTS_MAP:
+                raise error_at(value, 'Name is not visible in this subroutine scope: ' + value.name)
+            bound = bindings.get(value.name, value)
+            copied_nodes += sum(1 for _ in walk(bound))
+            if copied_nodes > 65536:
+                raise error_at(value, 'Runtime subroutine binding expansion exceeds 65536 AST nodes.')
+            return copy.deepcopy(bound)
         if isinstance(value, ast.IndexedIdentifier) and value.name.name in bindings:
             raise error_at(value, 'Runtime calls currently require scalar quantum parameters without indexing.')
         if isinstance(value, list):
-            return [rewrite(item, bindings) for item in value]
+            return [rewrite(item, bindings, lexical) for item in value]
         if isinstance(value, tuple):
-            return tuple(rewrite(item, bindings) for item in value)
+            return tuple(rewrite(item, bindings, lexical) for item in value)
         if is_dataclass(value):
             result = copy.copy(value)
             for field in fields(value):
                 if field.name in ('span', 'annotations') or (field.name == 'name' and isinstance(value, (ast.FunctionCall, ast.QuantumGate))):
                     continue
-                setattr(result, field.name, rewrite(getattr(value, field.name), bindings))
+                setattr(result, field.name, rewrite(getattr(value, field.name), bindings, lexical))
             return result
         return value
+
+    def constant_value(name, depth=0):
+        if name in constant_cache:
+            return constant_cache[name]
+        if depth >= 32:
+            raise error_at(constants[name][1], 'Runtime constant bindings exceed 32 nesting levels.')
+        position, declaration = constants[name]
+        dependencies = {n.name for n in walk(declaration) if isinstance(n, ast.Identifier)}
+        bindings = {key: constant_value(key, depth + 1) for key in dependencies
+                    if key in constants and constants[key][0] < position}
+        result = ast.Cast(type=rewrite(declaration.type, bindings, lexical=True),
+                          argument=rewrite(declaration.init_expression, bindings, lexical=True))
+        constant_cache[name] = result
+        return result
 
     def quantum_key(value):
         if isinstance(value, ast.IndexExpression) and isinstance(value.collection, ast.Identifier):
@@ -70,7 +95,7 @@ def lower_runtime_subroutines(program):
 
     def activate(call, depth):
         nonlocal calls, expanded
-        if activations and call.name.name not in activations[-1]:
+        if activations and visibility[call.name.name] > activations[-1]:
             raise error_at(call, 'A subroutine can only call previously declared routines or itself.')
         if depth >= 32:
             raise error_at(call, 'Subroutine call nesting exceeds 32 levels.')
@@ -85,11 +110,16 @@ def lower_runtime_subroutines(program):
             raise error_at(call, 'Runtime subroutines with return values or explicit returns are not yet supported.')
         if len(call.arguments) != len(definition.arguments):
             raise error_at(call, 'Subroutine argument count does not match its declaration.')
-        bindings = {}; declarations = []; qubits = set()
+        references = {n.name for n in walk(definition) if isinstance(n, ast.Identifier)}
+        constant_bindings = {name: constant_value(name) for name in references
+                             if name in constants and constants[name][0] < visibility[call.name.name]}
+        bindings = dict(constant_bindings)
+        parameters = set(); declarations = []; qubits = set()
         for formal, actual in zip(definition.arguments, call.arguments):
             name = formal.name.name
-            if name in bindings:
+            if name in parameters:
                 raise error_at(formal, 'Duplicate subroutine parameter: ' + name)
+            parameters.add(name)
             if isinstance(formal, ast.QuantumArgument):
                 if formal.size is not None:
                     raise error_at(formal, 'Runtime calls currently require scalar quantum parameters.')
@@ -104,13 +134,14 @@ def lower_runtime_subroutines(program):
                 slot = ast.Identifier(fresh())
                 # Actual expressions stay in the caller environment; never bind
                 # an initializer to the newly introduced formal of the same name.
-                declarations.append(ast.ClassicalDeclaration(type=copy.deepcopy(formal.type), identifier=slot, init_expression=copy.deepcopy(actual)))
+                declared_type = rewrite(formal.type, constant_bindings, lexical=True)
+                declarations.append(ast.ClassicalDeclaration(type=declared_type, identifier=slot, init_expression=copy.deepcopy(actual)))
                 bindings[name] = slot
             else:
                 raise error_at(formal, 'Runtime call arguments currently support scalar integers and Booleans.')
         activations.append(visibility[call.name.name])
         try:
-            body = block(definition.body, bindings, True, depth + 1, set(bindings))
+            body = block(definition.body, bindings, True, depth + 1, parameters)
         finally:
             activations.pop()
         return ast.CompoundStatement(statements=declarations + body)
@@ -178,12 +209,18 @@ def lower_runtime_subroutines(program):
 
     # Process in source order so a forward declaration cannot become visible.
     result = []
-    for node in program.statements:
+    for position, node in enumerate(program.statements):
+        if isinstance(node, ast.ConstantDeclaration):
+            if node.identifier.name in constants:
+                raise error_at(node, 'Duplicate constant declaration: ' + node.identifier.name)
+            # Expand only constants used by runtime calls, under a copy budget.
+            # Static-only programs retain the compiler's existing evaluator.
+            constants[node.identifier.name] = (position, node)
         if isinstance(node, ast.SubroutineDefinition):
             if node.name.name in functions:
                 raise error_at(node, 'Duplicate subroutine definition: ' + node.name.name)
             functions[node.name.name] = node
-            visibility[node.name.name] = set(functions)
+            visibility[node.name.name] = position
         if isinstance(node, ast.QubitDeclaration):
             size = node.size
             if size is None or isinstance(size, ast.IntegerLiteral):
