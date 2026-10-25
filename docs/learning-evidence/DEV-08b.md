@@ -1,6 +1,6 @@
 # DEV-08b: runtime subroutine activations
 
-Status: **partial**, with scalar runtime calls released in [checkpoint-96595d01](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-96595d01). This does not complete DEV-08b or any whole IBM/qBraid source row.
+Status: **partial**, with scalar runtime calls released in [checkpoint-96595d01](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-96595d01), bit arguments/local storage in [checkpoint-9975e211](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-9975e211), and typed returns/early exits in [checkpoint-abb947c0](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-abb947c0). This does not complete DEV-08b or any whole IBM/qBraid source row.
 
 ## Source and scope
 
@@ -18,7 +18,7 @@ The released engineering fixture adapts the measured-argument pattern: measure a
 - `windows/ClassicalProgramQasmTests.cs` covers mid-body and repeated local lifetimes, undefined locals, interleaved declarations and input immutability. Crossing/escaped lifetimes and excessive nesting are rejected.
 - Export reconstructs only proven scopes on a copy. The existing path remains first; export does not modify the saved circuit or replace undefined values with zero.
 
-Remaining work is prioritized as DEV-08b2–b5 in the [development checklist](../learning-coverage-checklist.md#dev-08): bit-register arguments/local storage, returned values and early return, source acceptance, and other parameter forms. Runtime arrays/dynamic indexing remain coordinated with DEV-08c/DEV-07.
+Remaining source acceptance and parameter work is prioritized as DEV-08b4–b5 in the [development checklist](../learning-coverage-checklist.md#dev-08): complete source acceptance and other parameter forms. Bit-register storage and integer/Boolean/bit returns are now released; floating-point/angle returns remain open. Runtime arrays/dynamic indexing remain coordinated with DEV-08c/DEV-07.
 
 ## Implementation, review and CI
 
@@ -36,3 +36,15 @@ Required reviewed-head checks: [native](https://github.com/badtyprr/quantumstudi
 - Package checks: 1,992 worker, 568 sampling, 71 exact-circuit, 1,576 classical-expression and 1,458 compiler checks passed. Export validation passed 35 cases, 13 expected rejections and 105 compiler/exact/sample checks.
 - Actual packaged GUI export/reimport, file preservation, source/history and save/reopen checks passed. Exported feedback retained the exact expected distribution. Normal, minimum-size and rejection captures were inspected.
 - All 340 payload files matched the manifest and tested ZIP; all 341 ZIP entries were verified. GitHub's uploaded asset hash and size matched. No rebuild occurred between testing and publication.
+
+## Bit and return release evidence (REL-17 / REL-18)
+
+PR [#366](https://github.com/badtyprr/quantumstudio/pull/366) merged as `9975e211e3fcabcac501fe1ae87f3a609957bca0`. Two scoped self-review rounds resolved one medium and one minor finding. The released package passed 1,504 compiler checks, two GUI exports and four exact input/export distributions, including nested bit activations and repeated-loop initialization. Six captures were inspected. All 340 payload hashes and 341 ZIP entries matched; the uploaded asset digest was verified. ZIP SHA-256: `6e25ed7b7d06c13cb2a0d8a164a75ae1137d8acdb80fabbd8d653fa15b21ba62`.
+
+PR [#367](https://github.com/badtyprr/quantumstudio/pull/367), reviewed head `7d2ec34d5dabf83ea83614f6f67fef7124a6a443`, merged as `abb947c0e45219b2511cd42b334b5570025d7567`. Five scoped self-review rounds resolved one high and three medium findings, with none outstanding. These were self-reviews, not independent reviews. Actual merge parents/tree and branch deletion were verified. All three required reviewed-head and merged-tip CI checks passed. The immutable package passed 1,608 compiler checks; three actual GUI exports and six exact original/exported distributions covered measurement returns, repeated while-condition calls and returned range bounds. Nine normal/rejected/minimum captures were inspected. The initial returned-range GUI run failed with an IOException replacing an existing export; an identical targeted rerun on the same package, fixture and destination passed. The original failure is retained; its cause is unconfirmed. All 340 payload hashes and 341 ZIP entries matched. Uploaded asset digest/size and tag were verified. ZIP SHA-256: `802ad97058b477ee8a2fbc5e805d315ad6304b385c2cfe42ba2ce77498ed1065`.
+
+Both packages passed 1,992 worker checks and native tests (56 passed, one existing thread skip, zero failures/errors). Each published ZIP is the exact tested artifact, without rebuilding after validation.
+
+The return release supports int/uint/bool/bit results, measurement returns, missing-return errors even when discarded, nested calls, short-circuit effects, returned loop conditions/bounds and void early returns. Quantum-register/array parameters, computed quantum indices, runtime floating-point/angle returns and full source-example/notebook acceptance remain open. The measured-parity concatenated invocation requires separately reviewed compatibility work; the adapted released register fixture does not establish that source-call acceptance. Keep DEV-08b, DEV-08b4 and whole IBM/qBraid rows open.
+
+Open reliability follow-up: diagnose the intermittent existing-destination export replacement failure. The targeted passing rerun permits recording the successful artifact checks but does not prove the failure mechanism repaired. Preserve the failing export report when investigating file contention or filesystem behavior.
