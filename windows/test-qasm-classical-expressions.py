@@ -8,6 +8,16 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-qloop-result-indices','def f(qubit a)->bool{x a;return true;}qubit[2] q;output bit[2] c;output bit[2] r;for int i in [0:1]{bool ok=f(q[i]);c[i]=1;r[i]=measure q[i];}',{'1111':'1'}),
+ ('variable-qloop-static-shadow','const int M=1;const int N=1;def f(qubit a,int n){x a;}qubit[2] q;for int i in [0:M]{f(q[i],N);{int N=2;}}output bit[2] r;r=measure q;',{'11':'1'}),
+ ('computed-qloop-local-actual','def f(qubit a,int n){if(n==1){x a;}}qubit[2] q;for int i in [0:1]{int n=1;f(q[i],n);}output bit[2] r;r=measure q;',{'11':'1'}),
+ ('computed-qloop-forward','def f(qubit a,int i)->int{x a;return i+1;}qubit[3] q;int n=0;for int i in [0:2]{n=f(q[i],i);}output bit[3] r;output bit ok;r=measure q;ok=n==3;',{'1111':'1'}),
+ ('computed-qloop-descending','def f(qubit a)->bool{x a;return true;}qubit[3] q;for int i in [2:-1:0]{bool ok=f(q[i]);}output bit[3] r;r=measure q;',{'111':'1'}),
+ ('computed-qloop-stride','def f(qubit a)->bool{x a;return true;}qubit[4] q;for int i in [0:2:3]{bool ok=f(q[i]);}output bit[4] r;r=measure q;',{'0101':'1'}),
+ ('qloop-empty','def f(qubit a)->bool{x a;return true;}qubit q;for int i in [1:0]{bool ok=f(q[i]);}output bit r;r=measure q;',{'0':'1'}),
+ ('computed-qloop-outer-shadow','def f(qubit a,int i)->int{x a;return i;}qubit[2] q;int i=7;for int i in [0:1]{int n=f(q[i],i);}output bit[2] r;output bit ok;r=measure q;ok=i==7;',{'111':'1'}),
+ ('computed-qloop-nested','def f(qubit a,qubit b)->bool{x a;x b;return true;}qubit[2] q;qubit[2] p;for int i in [0:1]{for int j in [0:1]{bool ok=f(q[i],p[j]);}}output bit[2] r;r=measure q;',{'00':'1'}),
+ ('computed-qloop-activation','def f(qubit a)->bool{x a;return true;}def g(qubit[2] q)->bool{for int i in [0:1]{bool ok=f(q[i]);}return true;}qubit[2] q;bool done=g(q);output bit[2] r;r=measure q;',{'11':'1'}),
  ('computed-qwidth-spec', 'const uint SIZE=4;qubit[SIZE] q2;def flip(qubit[SIZE] r)->bool{x r;return true;}output bit[4] r;bool ok=flip(q2);r=measure q2;', {'1111':'1'}),
  ('computed-qwidth-arithmetic', 'const int BASE=2;const uint SIZE=BASE+1;def f(qubit[2*BASE-1] q)->bool{x q[2];return true;}qubit[SIZE] q;output bit[3] r;bool ok=f(q);r=measure q;', {'100':'1'}),
  ('computed-qwidth-caller-shadow', 'const int N=2;def f(qubit[N] a)->bool{x a[1];return true;}qubit[N] q;output bit[2] r;{int N=1;bool ok=f(q);}r=measure q;', {'10':'1'}),
@@ -363,6 +373,16 @@ cases=[
  ('registers','qubit q; bit[2] c="10"; bit[2] d="10"; if(c==d){c=0;}',{'1000':'1'}),
 ]
 checks=0
+loop_fixture=(root/'windows/fixtures/runtime-subroutines/qbraid-loop-index.qasm').read_bytes()
+loop_circuit=adapter.convert(loop_fixture.decode(),classical=True)
+assert adapter.convert(loop_fixture.decode())=={'Version':1,'Qubits':4,'Steps':[{'Gate':gate,'Angle':'','Wires':[wire]} for gate,wire in [('H',0),('H',1),('H',2),('H',3),('X',3),('H',0)]]}
+checks+=2
+if not a.source_only:
+ result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe'),'--classical'],input=loop_fixture,capture_output=True,timeout=30)
+ assert result.returncode==0 and json.loads(result.stdout)==loop_circuit,result.stderr
+ checks+=1
+# Authored measurement/assertion extension; upstream source bytes stay separate.
+cases.append(('computed-qloop-upstream-driver',loop_fixture.decode().split('include "stdgates.inc";',1)[1]+'output bit[4] measured;output bit ok;measured=measure q;ok=new_var==4;',{'1'+format(i,'03b')+'0':'1/8' for i in range(8)}))
 # Unchanged pinned PyQASM source: the upstream oracle is four H gates.
 source_fixture=(root/'windows/fixtures/runtime-subroutines/qbraid-register-return.qasm').read_bytes()
 def gates_in(value):
@@ -546,6 +566,22 @@ rejected.append('def f(qubit['+width_broad+'] a)->bool{return true;}qubit[2] q;b
 rejected.append('def f(qubit['+('-('*33)+'2'+(')'*33)+'] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
 rejected.append('const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(qubit[a20] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
 rejected.append('const int a0=2;'+''.join('const int a'+str(i)+'=a'+str(i-1)+';' for i in range(1,34))+'def f(qubit[a33] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
+loop_prefix='def f(qubit a)->bool{x a;return true;}qubit[2] q;'
+rejected += [loop_prefix+body for body in [
+ 'for int i in [0:1]{i=1;bool ok=f(q[i]);}',
+ 'for int i in [0:1]{{int i=0;bool ok=f(q[i]);}}',
+ 'for int i in [0:1]{bool ok=f(q[i]);break;}',
+ 'for int i in [0:1]{bool ok=f(q[i]);continue;}',
+ 'int n=1;for int i in [0:n]{bool ok=f(q[i]);}',
+ 'for int i in [0:0:1]{bool ok=f(q[i]);}',
+ 'for int i in [0:2]{bool ok=f(q[i]);}',
+ 'for int i in [0:1]{bool ok=f(q[i+0]);}',
+ 'for uint[1] i in [0:2]{bool ok=f(q[i]);}',
+ 'for int i in [0:4096]{bool ok=f(q[i]);}',
+ 'for int i in [0:18446744073709551616]{bool ok=f(q[i]);}',
+ 'for int i in [0:1]{for int i in [0:1]{bool ok=f(q[i]);}}',
+]]
+rejected.append('def f(qubit a,qubit b)->bool{return true;}qubit[2] q;for int i in [0:1]{bool ok=f(q[i],q[i]);}')
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
@@ -603,7 +639,7 @@ for name,body,expected in cases:
   sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
   assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
   checks+=1
- assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') or name=='local-output-subroutine' else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name in ('subroutine-local-shadow','computed-qloop-local-actual') else 2 if name.startswith('subroutine-local-') or name in ('local-output-subroutine','qloop-empty') else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)
