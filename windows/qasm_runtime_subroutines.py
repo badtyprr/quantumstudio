@@ -8,6 +8,8 @@ import copy
 from dataclasses import fields, is_dataclass
 import openqasm3.ast as ast
 from pyqasm.maps.expressions import CONSTANTS_MAP
+from pyqasm.expressions import Qasm3ExprEvaluator
+from pyqasm.exceptions import ValidationError
 from qasm_source_diagnostics import error_at
 
 
@@ -30,6 +32,7 @@ def lower_runtime_subroutines(program):
     used = {node.name for node in walk(program) if isinstance(node, ast.Identifier)}
     runtime = set()
     registers = {}
+    register_declarations = {}
     register_arrays = set()
     classical_scopes = [set()]
     bit_storage = []
@@ -85,14 +88,61 @@ def lower_runtime_subroutines(program):
         constant_cache[name] = result
         return result
 
+    def quantum_width(expression, bindings):
+        """Evaluate a closed, bounded integer subset before allocating qubits.
+
+        The pinned evaluator owns cast/range semantics. Preflight excludes its
+        unbounded powers/shifts and visitor-dependent identifier/function paths.
+        With 512 nodes and 64-bit leaves, even intermediate products are bounded.
+        """
+        closed = rewrite(expression, bindings, lexical=True)
+        pending = [(closed, 0)]; count = 0
+        while pending:
+            node, depth = pending.pop(); count += 1
+            if count > 512 or depth >= 32:
+                raise error_at(expression, 'Quantum-register widths exceed 512 expression nodes or 32 nesting levels.')
+            if isinstance(node, ast.IntegerLiteral):
+                if type(node.value) is not int or node.value.bit_length() > 64:
+                    raise error_at(expression, 'Quantum-register width literals must fit in 64 bits.')
+            elif isinstance(node, ast.UnaryExpression) and node.op.name == '-':
+                pending.append((node.expression, depth + 1))
+            elif isinstance(node, ast.BinaryExpression) and node.op.name in ('+', '-', '*'):
+                pending.extend([(node.lhs, depth + 1), (node.rhs, depth + 1)])
+            elif isinstance(node, ast.Cast) and isinstance(node.type, (ast.IntType, ast.UintType)):
+                size = node.type.size
+                if size is not None and (not isinstance(size, ast.IntegerLiteral) or
+                                         type(size.value) is not int or not 1 <= size.value <= 64):
+                    raise error_at(expression, 'Quantum-register width integer casts require literal sizes from 1 to 64.')
+                pending.append((node.argument, depth + 1))
+            else:
+                raise error_at(expression, 'Quantum-register widths support integer constants, integer casts, unary minus and +, -, * only.')
+        try:
+            value, statements = Qasm3ExprEvaluator.evaluate_expression(closed, const_expr=True)
+        except (ValidationError, ArithmeticError, ValueError) as error:
+            raise error_at(expression, 'Invalid quantum-register width: ' + str(error)) from error
+        if type(value) is not int or statements:
+            raise error_at(expression, 'Quantum-register widths must be compile-time integers.')
+        if not 1 <= value <= 25:
+            raise error_at(expression, 'Supported quantum-register widths are from 1 to 25.')
+        return value
+
+    def register_size(name):
+        if name not in registers and name in register_declarations:
+            declaration, position = register_declarations[name]
+            references = {n.name for n in walk(declaration.size) if isinstance(n, ast.Identifier)}
+            bindings = {key: constant_value(key) for key in references
+                        if key in constants and constants[key][0] < position}
+            registers[name] = quantum_width(declaration.size, bindings)
+        return registers.get(name)
+
     def quantum_key(value):
         if isinstance(value, ast.IndexExpression) and isinstance(value.collection, ast.Identifier):
             value = ast.IndexedIdentifier(name=value.collection, indices=[value.index])
-        if isinstance(value, ast.Identifier) and registers.get(value.name) == 1:
+        if isinstance(value, ast.Identifier) and register_size(value.name) == 1:
             return value.name, 0
         if isinstance(value, ast.IndexedIdentifier) and len(value.indices) == 1 and len(value.indices[0]) == 1:
             index = value.indices[0][0]
-            size = registers.get(value.name.name)
+            size = register_size(value.name.name)
             if isinstance(index, ast.IntegerLiteral) and size is not None and 0 <= index.value < size:
                 return value.name.name, index.value
         raise error_at(value, 'Runtime call quantum arguments require a scalar qubit or a fixed literal register index.')
@@ -106,7 +156,7 @@ def lower_runtime_subroutines(program):
         if isinstance(reference, ast.Identifier) and any(reference.name in scope for scope in classical_scopes):
             raise error_at(value, 'A classical caller binding cannot be used as a quantum argument.')
 
-    def quantum_binding(formal, actual):
+    def quantum_binding(formal, actual, constant_bindings):
         """Return the caller reference and its identities for one overlap check.
 
         Whole-register references keep their AST shape so the existing unroller
@@ -116,12 +166,11 @@ def lower_runtime_subroutines(program):
         if formal.size is None:
             key = quantum_key(actual)
             return ast.IndexedIdentifier(name=ast.Identifier(key[0]), indices=[[ast.IntegerLiteral(key[1])]]), {key}
-        if not isinstance(formal.size, ast.IntegerLiteral) or not 1 <= formal.size.value <= 25:
-            raise error_at(formal, 'Runtime quantum-register parameters require a literal width from 1 to 25.')
+        width = quantum_width(formal.size, constant_bindings)
         if not isinstance(actual, ast.Identifier) or actual.name not in register_arrays:
             raise error_at(actual, 'Runtime quantum-register arguments currently require a whole declared register.')
-        size = registers.get(actual.name)
-        if size != formal.size.value:
+        size = register_size(actual.name)
+        if size != width:
             raise error_at(actual, 'Quantum-register argument width does not match its parameter.')
         return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
 
@@ -159,9 +208,9 @@ def lower_runtime_subroutines(program):
             name = formal.name.name
             if name in parameters:
                 raise error_at(formal, 'Duplicate subroutine parameter: ' + name)
-            parameters.add(name)
             if isinstance(formal, ast.QuantumArgument):
-                binding, identities = quantum_binding(formal, actual)
+                width_bindings = {key: value for key, value in constant_bindings.items() if key not in parameters}
+                binding, identities = quantum_binding(formal, actual, width_bindings)
                 if qubits.intersection(identities):
                     raise error_at(call, 'Quantum subroutine arguments must not overlap.')
                 qubits.update(identities)
@@ -178,6 +227,7 @@ def lower_runtime_subroutines(program):
                 bindings[name] = slot
             else:
                 raise error_at(formal, 'Runtime call arguments currently support integers, Booleans and bit registers.')
+            parameters.add(name)
         result_slot = None; result_type = None; prefix = []
         if definition.return_type is not None:
             result_type = rewrite(definition.return_type, constant_bindings, lexical=True)
@@ -446,10 +496,11 @@ def lower_runtime_subroutines(program):
             visibility[node.name.name] = position
         if isinstance(node, ast.QubitDeclaration):
             size = node.size
+            register_declarations[node.qubit.name] = (node, position)
+            if size is not None:
+                register_arrays.add(node.qubit.name)
             if size is None or isinstance(size, ast.IntegerLiteral):
                 registers[node.qubit.name] = 1 if size is None else size.value
-                if size is not None:
-                    register_arrays.add(node.qubit.name)
         result.extend(block([node], {}))
     program.statements[:] = bit_storage + result
     return {declaration.identifier.name for declaration in bit_storage}

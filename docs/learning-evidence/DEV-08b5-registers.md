@@ -55,3 +55,15 @@ Three packaged GUI export/save/reopen checks passed. Six exact results, covering
 All 340 payload hashes and 341 ZIP entries matched the tested package. The uploaded asset size, digest and tag revision were verified. ZIP SHA-256: `f439732f52a4b9f1331a932123e4ced564b7c95edea5ea1fd9f27def5e8148fc`.
 
 This releases the fixed-register subset. DEV-08b5 remains open for other parameter forms; constant-expression widths are next. The prior intermittent export file-replacement IOException remains unresolved; this audit passed without reproducing it.
+
+## Next subset: constant quantum-register widths
+
+The runtime call binder now resolves quantum-formal widths against earlier global integer constants at the subroutine definition. Actual register sizes resolve against constants visible at their declaration. A caller's same-named local does not change either size; an earlier classical formal shadows a same-named global constant and cannot supply a compile-time width. Whole-register references, exact size matching, overlap rejection and scalar/register distinctions remain in force.
+
+The supported width expression subset is integer literals (at most 64 bits), earlier integer constants, integer casts with omitted size or a literal size from 1 to 64, unary minus, addition, subtraction and multiplication. The pinned evaluator retains integer cast/range validation. Before evaluation, the expanded expression is checked against 512 expression nodes and 32 nesting levels; existing constant-binding expansion also retains its 65,536-node budget. Powers, shifts, division/remainder, calls, indexing, Boolean/float expressions and computed cast sizes are unsupported in this subset. The final supported size remains 1–25; zero-sized registers are outside this product subset, though the language permits non-negative sizes.
+
+This validation is applied to widths needed by lowered runtime quantum calls. Unrelated static-only programs retain the compiler's existing evaluator. It adds no runtime register allocation, array references, dynamic indices or protocol change.
+
+The [OpenQASM qubit examples](https://openqasm.com/language/types.html#qubits) supply `const uint SIZE = 4; qubit[SIZE] q2;`. The `computed-qwidth-spec` test preserves that declaration example and adds a Boolean-returning flip subroutine, call and output measurement as an authored driver. It is not an unchanged full source program. The [scope rules](https://openqasm.com/language/scope.html#subroutine-and-gate-scope) require definition-visible constants and source-order visibility.
+
+Source regressions cover constants/dependencies, arithmetic, casts, nested forwarding, caller shadowing, scalar element references, width boundaries, mismatches/overlaps, nonconstant/forward names and bounded-expression failures. Evaluator tripwires ensure expensive powers, shifts and cast sizes reject before arithmetic. Nine authored drivers have independently specified exact and sampled worker outcomes. Frozen compilation, final review, CI and package publication for this new subset remain pending.

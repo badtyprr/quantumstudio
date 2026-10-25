@@ -8,6 +8,15 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-qwidth-spec', 'const uint SIZE=4;qubit[SIZE] q2;def flip(qubit[SIZE] r)->bool{x r;return true;}output bit[4] r;bool ok=flip(q2);r=measure q2;', {'1111':'1'}),
+ ('computed-qwidth-arithmetic', 'const int BASE=2;const uint SIZE=BASE+1;def f(qubit[2*BASE-1] q)->bool{x q[2];return true;}qubit[SIZE] q;output bit[3] r;bool ok=f(q);r=measure q;', {'100':'1'}),
+ ('computed-qwidth-caller-shadow', 'const int N=2;def f(qubit[N] a)->bool{x a[1];return true;}qubit[N] q;output bit[2] r;{int N=1;bool ok=f(q);}r=measure q;', {'10':'1'}),
+ ('computed-qwidth-nested', 'const int N=2;def inner(qubit[N] a)->bool{x a[0];return true;}def outer(qubit[1+1] b)->bool{return inner(b);}qubit[2*N-2] q;output bit[2] r;bool ok=outer(q);r=measure q;', {'01':'1'}),
+ ('computed-qwidth-cast', 'const uint[3] N=2;def f(qubit[int[4](N)] a)->bool{x a;return true;}qubit[uint[4](2)] q;output bit[2] r;bool ok=f(q);r=measure q;', {'11':'1'}),
+ ('computed-qwidth-one', 'const int N=1;def f(qubit[N] a)->bool{x a;return true;}qubit[N] q;output bit r;bool ok=f(q);r=measure q;', {'1':'1'}),
+ ('computed-qwidth-element', 'const int N=2;def f(qubit a)->bool{x a;return true;}qubit[N] q;output bit[2] r;bool ok=f(q[1]);r=measure q;', {'10':'1'}),
+ ('computed-qwidth-negative-intermediate', 'def f(qubit[3+(-1)] a)->bool{x a;return true;}qubit[2] q;output bit[2] r;bool ok=f(q);r=measure q;', {'11':'1'}),
+ ('computed-qwidth-minimum-constant', 'const int N=2;def f(qubit[N] a)->bool{return true;}qubit[2] q;output bit r;r=f(q);', {'1':'1'}),
  ('computed-qregister-index', 'def f(qubit[3] q)->bool{x q[1];return true;}qubit[3] q;output bit[3] r;bool ok=f(q);r=measure q;', {'010':'1'}),
  ('computed-qregister-nested', 'def g(qubit q)->bool{x q;return true;}def f(qubit[3] a)->bool{return g(a[2]);}def outer(qubit[3] a)->bool{return f(a);}qubit[3] q;output bit[3] r;bool ok=outer(q);r=measure q;', {'100':'1'}),
  ('computed-qregister-repeat', 'def f(qubit[2] a)->bool{x a;return true;}qubit[2] q;output bit[2] r;bool ok=f(q);ok=f(q);r=measure q;', {'00':'1'}),
@@ -370,6 +379,28 @@ if not a.source_only:
  assert result.returncode==0 and json.loads(result.stdout)==upstream_circuit,result.stderr
  checks+=1
 hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement','_visit_function_call'])
+# Compiler-only boundary cases avoid allocating a 25-qubit simulation state.
+width_boundary='0'
+for _ in range(8): width_boundary='('+width_boundary+'+'+width_boundary+')'
+width_boundary=width_boundary.replace('0','2',1)  # 511 nodes, exactly two.
+for width in ('25', 'uint[64](25)', 'int('+width_boundary+')', '-('*30+'2'+')'*30):
+ source=header+'def f(qubit['+width+'] a)->bool{return true;}qubit['+('25' if '25' in width else '2')+'] q;bool ok=f(q);'
+ circuit=adapter.convert(source,classical=True)
+ assert circuit['Qubits']==(25 if '25' in width else 2),circuit
+ checks+=1
+ if not a.source_only:
+  result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe'),'--classical'],input=source.encode(),capture_output=True,timeout=30)
+  assert result.returncode==0 and json.loads(result.stdout)==circuit,result.stderr;checks+=1
+
+# An evaluator tripwire proves costly syntax is rejected before arithmetic.
+from unittest.mock import patch
+from qasm_source_diagnostics import LocatedError
+for width in ('2**(2**32)', '1<<1000000000', 'int[1000000000](2)', 'int[1<<30](2)', '0*(1<<1000000000)+2'):
+ program=adapter.pyqasm.loads(header+'def f(qubit['+width+'] a)->bool{return true;}qubit[2] q;bool ok=f(q);').original_program
+ with patch.object(adapter.Qasm3ExprEvaluator,'evaluate_expression',side_effect=AssertionError('Width preflight reached arithmetic')):
+  try:adapter.lower_runtime_subroutines(program)
+  except LocatedError:checks+=1
+  else:raise AssertionError('Expensive width was accepted')
 for body in ('qubit q;output bit r;', 'qubit q;input bit r;'):
  try:adapter.convert(header+body)
  except ValueError as error:assert 'require classical circuit import' in str(error);checks+=1
@@ -482,12 +513,39 @@ rejected += [
  'def f(qubit a)->bool{x a[0];return true;}qubit q;bool ok=f(q);',
  'def f(qubit[2] a)->bool{return true;}qubit[3] q;bool ok=f(q[0:1]);',
  'def f(qubit[2] a)->bool{return true;}qubit[2] q;let b=q;bool ok=f(b);',
- 'const int N=2;def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
  'def f(qubit[1] a)->bool{return true;}qubit q;bool ok=f(q);',
  'def f(qubit[1] a,qubit[2] b)->bool{cx a,b;return true;}qubit[1] a;qubit[2] b;bool ok=f(a,b);',
  # Mixed scalar/register gate broadcasting is a separate unroller limitation.
  'def f(qubit control,qubit[2] targets)->bool{cx control,targets;return true;}qubit c;qubit[2] q;bool ok=f(c,q);',
 ]
+# Width rejection happens before the pinned evaluator sees expensive operators.
+width_bad = ['0', '-1', '26', '1.5', 'true', 'int(true)', 'int(2.5)', '1==1',
+             '2/1', '2%1', '2**(2**32)', '1<<1000000000', 'int[1000000000](2)',
+             'int[0](2)', 'int[65](2)', 'int[2](2)', 'uint[2](-1)', str(1<<64)]
+for width in width_bad:
+ rejected.append('def f(qubit['+width+'] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
+ rejected.append('def f(qubit[2] a)->bool{return true;}qubit['+width+'] q;bool ok=f(q);')
+rejected += [
+ 'int N=2;def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+ 'def f(qubit[N] a)->bool{return true;}const int N=2;qubit[2] q;bool ok=f(q);',
+ 'qubit[N] q;const int N=2;def f(qubit[2] a)->bool{return true;}bool ok=f(q);',
+ 'const int N=2;def f(int N,qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(2,q);',
+ 'def f(int N,qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(2,q);',
+ 'const int N=2;def f(qubit[N] a)->bool{return true;}qubit[3] q;bool ok=f(q);',
+ 'const int N=1;def f(qubit[N] a)->bool{return true;}qubit q;bool ok=f(q);',
+ 'const int N=2;def f(qubit[N] a,qubit[N] b)->bool{return true;}qubit[N] q;bool ok=f(q,q);',
+ 'const int N=later;const int later=2;def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+ 'int value=2;const int N=value;def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+ 'def value()->int{return 2;}const int N=value();def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+ 'const bool N=true;def f(qubit[N] a)->bool{return true;}qubit[1] q;bool ok=f(q);',
+ 'const int[2] N=2;def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+]
+width_broad='1'
+for _ in range(9): width_broad='('+width_broad+'+'+width_broad+')'
+rejected.append('def f(qubit['+width_broad+'] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
+rejected.append('def f(qubit['+('-('*33)+'2'+(')'*33)+'] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
+rejected.append('const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(qubit[a20] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
+rejected.append('const int a0=2;'+''.join('const int a'+str(i)+'=a'+str(i-1)+';' for i in range(1,34))+'def f(qubit[a33] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
