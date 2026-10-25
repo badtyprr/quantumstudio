@@ -8,6 +8,7 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('variable-qloop-static-shadow','const int M=1;const int N=1;def f(qubit a,int n){x a;}qubit[2] q;for int i in [0:M]{f(q[i],N);{int N=2;}}output bit[2] r;r=measure q;',{'11':'1'}),
  ('computed-qloop-local-actual','def f(qubit a,int n){if(n==1){x a;}}qubit[2] q;for int i in [0:1]{int n=1;f(q[i],n);}output bit[2] r;r=measure q;',{'11':'1'}),
  ('computed-qloop-forward','def f(qubit a,int i)->int{x a;return i+1;}qubit[3] q;int n=0;for int i in [0:2]{n=f(q[i],i);}output bit[3] r;output bit ok;r=measure q;ok=n==3;',{'1111':'1'}),
  ('computed-qloop-descending','def f(qubit a)->bool{x a;return true;}qubit[3] q;for int i in [2:-1:0]{bool ok=f(q[i]);}output bit[3] r;r=measure q;',{'111':'1'}),

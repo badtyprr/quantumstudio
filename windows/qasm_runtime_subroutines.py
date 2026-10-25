@@ -343,24 +343,48 @@ def lower_runtime_subroutines(program):
         """
         nonlocal expanded
         name = node.identifier.name
-        # Body declarations have not yet been visited by block_body. Their
-        # actuals will require runtime binding when that later traversal runs.
-        body_runtime = {n.identifier.name for n in walk(node.block)
-                        if isinstance(n, ast.ClassicalDeclaration) and isinstance(n.type, values)}
-        needed = False
-        for call in walk(node.block):
-            if not isinstance(call, ast.FunctionCall) or call.name.name not in functions:
-                continue
-            local_actual = any(isinstance(n, ast.Identifier) and n.name in body_runtime for n in walk(call.arguments))
-            if not runtime_call(call, active or local_actual):
-                continue
-            for formal, actual in zip(functions[call.name.name].arguments, call.arguments):
-                if isinstance(formal, ast.QuantumArgument):
-                    for index in walk(actual):
-                        if isinstance(index, (ast.IndexExpression, ast.IndexedIdentifier)):
-                            indices = index.index if isinstance(index, ast.IndexExpression) else index.indices
-                            needed |= any(isinstance(n, ast.Identifier) and n.name == name for n in walk(indices))
-        if not needed:
+        def needs_index(items, visible):
+            # Match declaration order and block visibility before block_body
+            # has registered the local runtime actuals. A later sibling local
+            # must not turn a call using a global constant into a runtime call.
+            visible = set(visible)
+            for item in items:
+                if isinstance(item, (ast.SubroutineDefinition, ast.QuantumGateDefinition)):
+                    continue
+                children = []
+                if isinstance(item, ast.BranchingStatement):
+                    children = [item.if_block, item.else_block]
+                elif isinstance(item, (ast.ForInLoop, ast.WhileLoop)):
+                    children = [item.block]
+                elif isinstance(item, ast.CompoundStatement):
+                    children = [item.statements]
+                elif isinstance(item, ast.SwitchStatement):
+                    children = [case.statements for _, case in item.cases]
+                    if item.default is not None: children.append(item.default.statements)
+                expressions = [getattr(item, field.name) for field in fields(item)
+                               if field.name not in ('span', 'annotations', 'block', 'if_block', 'else_block', 'statements', 'cases', 'default')]
+                for call in walk(expressions):
+                    if not isinstance(call, ast.FunctionCall) or call.name.name not in functions:
+                        continue
+                    local_actual = any(isinstance(n, ast.Identifier) and n.name in visible for n in walk(call.arguments))
+                    if not runtime_call(call, active or local_actual):
+                        continue
+                    for formal, actual in zip(functions[call.name.name].arguments, call.arguments):
+                        if isinstance(formal, ast.QuantumArgument):
+                            for index in walk(actual):
+                                if isinstance(index, (ast.IndexExpression, ast.IndexedIdentifier)):
+                                    indices = index.index if isinstance(index, ast.IndexExpression) else index.indices
+                                    if any(isinstance(n, ast.Identifier) and n.name == name for n in walk(indices)):
+                                        return True
+                if any(needs_index(child, visible) for child in children):
+                    return True
+                if isinstance(item, ast.ClassicalDeclaration) and isinstance(item.type, values):
+                    visible.add(item.identifier.name)
+                elif isinstance(item, ast.ConstantDeclaration):
+                    visible.discard(item.identifier.name)
+            return False
+
+        if not needs_index(node.block, set()):
             return None
 
         def literal(value):
