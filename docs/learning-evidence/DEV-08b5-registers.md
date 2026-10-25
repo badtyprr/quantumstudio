@@ -54,9 +54,9 @@ Three packaged GUI export/save/reopen checks passed. Six exact results, covering
 
 All 340 payload hashes and 341 ZIP entries matched the tested package. The uploaded asset size, digest and tag revision were verified. ZIP SHA-256: `f439732f52a4b9f1331a932123e4ced564b7c95edea5ea1fd9f27def5e8148fc`.
 
-This releases the fixed-register subset. DEV-08b5 remains open for other parameter forms; constant-expression widths are next. The prior intermittent export file-replacement IOException remains unresolved; this audit passed without reproducing it.
+REL-20 releases the fixed-register subset. DEV-08b5 remains open; the subsequent constant-expression implementation and pending release are recorded below. The prior intermittent export file-replacement IOException remains unresolved; this audit passed without reproducing it.
 
-## Next subset: constant quantum-register widths
+## Constant quantum-register widths: merged, release pending
 
 The runtime call binder now resolves quantum-formal widths against earlier global integer constants at the subroutine definition. Actual register sizes resolve against constants visible at their declaration. A caller's same-named local does not change either size; an earlier classical formal shadows a same-named global constant and cannot supply a compile-time width. Whole-register references, exact size matching, overlap rejection and scalar/register distinctions remain in force.
 
@@ -66,4 +66,17 @@ This validation is applied to widths needed by lowered runtime quantum calls. Un
 
 The [OpenQASM qubit examples](https://openqasm.com/language/types.html#qubits) supply `const uint SIZE = 4; qubit[SIZE] q2;`. The `computed-qwidth-spec` test preserves that declaration example and adds a Boolean-returning flip subroutine, call and output measurement as an authored driver. It is not an unchanged full source program. The [scope rules](https://openqasm.com/language/scope.html#subroutine-and-gate-scope) require definition-visible constants and source-order visibility.
 
-Source regressions cover constants/dependencies, arithmetic, casts, nested forwarding, caller shadowing, scalar element references, width boundaries, mismatches/overlaps, nonconstant/forward names and bounded-expression failures. Evaluator tripwires ensure expensive powers, shifts and cast sizes reject before arithmetic. Nine authored drivers have independently specified exact and sampled worker outcomes. Frozen compilation, final review, CI and package publication for this new subset remain pending.
+Source regressions cover constants/dependencies, arithmetic, casts, nested forwarding, caller shadowing, scalar element references, width boundaries, mismatches/overlaps, nonconstant/forward names and bounded-expression failures. Evaluator tripwires ensure expensive powers, shifts and cast sizes reject before arithmetic. Nine authored drivers have independently specified exact and sampled worker outcomes. Frozen compilation, final review and CI passed as recorded below. Package publication remains pending.
+
+
+### Implementation validation and package blocker
+
+PR [#373](https://github.com/badtyprr/quantumstudio/pull/373), exact reviewed head `ab5abae367c47a34ef666d5f861aa08672f09003`, merged as `0eba610564b0d4fdd783a209aa1a6cf4cf2a0e5d` with tree `4cec98159e44b28a92c40783198f1c230ff5b9d5`. Independent Standards review: zero breaches/actionable heuristics. Independent Spec review: zero findings. Both reviewers confirmed the rebase preserved the reviewed tree and diff. Required Native, Windows GUI and Windows OpenQASM CI passed on both the reviewed head and merged tip.
+
+Local source validation passed 588 checks. Source/frozen comparison passed 1,159 checks, and the frozen compiler passed 46 array checks. Nine new authored drivers passed exact and sampled outcomes using the previously published worker. An explicitly marked integration candidate combined that worker/GUI with the reviewed frozen compiler; three GUI exports, six original/exported exact results and nine inspected captures passed. These results do not replace an audit of the eventual clean release payload.
+
+The clean local native build passed 56 tests, with one existing thread skip and zero failures/errors. The retained source archive matched all 261 checked inputs byte for byte. The package stopped at the existing circuit-layout GUI test's 120-second timeout. An isolated current-app run and the previous published app both reproduced the timeout. A subsequent isolated current-app run passed every layout assertion in about 94 seconds. Resuming from the unchanged GUI suite, with the original deadline and every remaining package gate retained, hit the same layout timeout again. No source or test-deadline changes were made. This is an unresolved intermittent timeout, not a diagnosed root-cause fix.
+
+REL-21 is not published. Final importer/package tests, actual release-payload GUI/exact audit, archive hashing and upload remain pending. Keep REL-20 as the last verified downloadable checkpoint. The previous export file-replacement IOException also remains unresolved.
+
+After the release gate is resolved, the next source-led candidate is bounded literal-range loop specialization for quantum-call indices. Preserve lexical loop bindings, mutation/transfer restrictions and aggregate expansion budgets; general dynamic indices and runtime float/array parameters remain separate work. This candidate is researched, not implemented.
