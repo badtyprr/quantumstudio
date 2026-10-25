@@ -1,6 +1,6 @@
 # DEV-08b4: return/bit source acceptance audit
 
-Audit date: 2026-10-24. Research only; no compiler execution, build, or application edits performed here.
+Initial research audit: 2026-10-24. The chronological sections below retain the initial failures and candidate evidence; the final release section records the subsequently verified result.
 
 ## Source boundary
 
@@ -49,3 +49,19 @@ The [live grammar](https://openqasm.com/grammar/index.html) permits `DOUBLE_PLUS
 The [types page](https://openqasm.com/language/types.html) describes uninitialized classical values as undefined. The executable fixture therefore now explicitly initializes the parity accumulator with `bit c = 0`; this addition is disclosed instead of claiming a fully unchanged definition. The invocation and parity operations remain intact. Header/include, typed n=2, missing declarations, output selection and H/H preparation are also additions.
 
 The source compiler prototype accepts the concatenated invocation. Nine exact-worker probes cover four basis inputs, H/H, mixed-width and computed/literal operands, and precedence. These are development checks, not release or full-notebook acceptance. At implementation commit `979447eb`, the frozen compiler passed the same nine exact-worker probes, and 12 parser controls checked aliases, comments, strings, precedence, parentheses and malformed syntax. Two candidate-GUI export/reimport checks retained source/history/save behavior and matched four original/exported distributions (parity: one half each; asymmetric concatenation: 10110 with certainty). The mixed-width GUI fixture adds an unused qubit required by the existing export test harness; its initial harness rejection is not counted as a successful test. Six normal/minimum/rejected screenshots were inspected. The candidate combines the published `9975e211` GUI/worker with the new frozen compiler; it is not a released package. Final exact-commit review, CI and release remain pending.
+
+## Released bounded source acceptance (REL-19)
+
+PR [#368](https://github.com/badtyprr/quantumstudio/pull/368), exact reviewed head `a0dbb22158b771746fa9f4b353d6cf4999674f5e`, merged as `3663fa58cb17965b8d3c65da1a00340748bc1404`. Actual merge parents/tree and fresh remote master were verified; the merged branch was deleted. All three required Native/GUI/OpenQASM checks passed on the reviewed head and merged tip. The [published Windows checkpoint](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-3663fa58) is the exact tested ZIP.
+
+Separate Standards and Spec reviews covered two scoped change rounds and final integration confirmation (three rounds). Initial Native CI found one high source-distribution omission: the new parser and two fixtures were absent from the source archive. The manifest fix passed 260 byte-for-byte archive input checks. Final Standards review found no documented-standard breaches and deferred one minor duplicate-test heuristic; final Spec review had no findings. No correctness finding remained open.
+
+The clean release package passed 1,992 worker checks, 1,648 compiler checks and native tests (56 passed, one existing thread skip, zero failures/errors). Two actual GUI export/reimport checks covered measured parity and asymmetric bit ordering; four original/exported exact distributions matched the independently expected one-half/one-half parity and certain 10110 result. Six normal/minimum/rejected screenshots were inspected. Source bytes, history and save/reopen checks passed.
+
+Three unchanged QASM literals from pinned PyQASM `167cff141b270cae023137971e716d5fec68e9f0` were statically extracted and tested against the released compiler. Numerical output matched both the earlier frozen compiler and the upstream gate/wire/angle oracles: `test_function_call_in_expression` (four H), `test_classical_quantum_function` (five H and one X), and `test_function_call_from_within_fn` (three H and three Rx(3.14) on qubit one). Their three existing classical-mode rejections also matched. These are compiler/oracle checks, not Python, notebook, provider or simulator execution of the unchanged programs.
+
+The measured-parity fixture remains an executable completion with disclosed header/include, n=2, declarations/output, H/H preparation and explicit zero initialization of the accumulator. Its source invocation and parity operations are retained. The asymmetric GUI fixture adds an unused qubit for the existing export harness. Concatenation remains a documented extension of the reference expression grammar, bounded to explicitly sized bit values and at most 64 total bits, with the left operand in lower register indices.
+
+This completes the bounded DEV-08b4 audit. Quantum-register/array parameters, dynamic quantum indices, runtime float/angle forms, complete source-example acceptance and whole notebook rows remain open. The prior release's intermittent export replacement IOException remains an unresolved reliability follow-up; the passing identical retry is not a root-cause fix.
+
+All 340 payload hashes and archive contents matched; the uploaded digest, size and release tag were verified. ZIP SHA-256: `6511b256872342df2ab5be0374e889bc9b0537625177e1e15598b509b2dca63c`.
