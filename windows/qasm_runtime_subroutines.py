@@ -31,6 +31,7 @@ def lower_runtime_subroutines(program):
     runtime = set()
     registers = {}
     register_arrays = set()
+    classical_scopes = [set()]
     bit_storage = []
     serial = calls = expanded = copied_nodes = 0
 
@@ -96,12 +97,22 @@ def lower_runtime_subroutines(program):
                 return value.name.name, index.value
         raise error_at(value, 'Runtime call quantum arguments require a scalar qubit or a fixed literal register index.')
 
+    def check_quantum_name(value):
+        reference = value
+        if isinstance(reference, ast.IndexExpression):
+            reference = reference.collection
+        if isinstance(reference, ast.IndexedIdentifier):
+            reference = reference.name
+        if isinstance(reference, ast.Identifier) and any(reference.name in scope for scope in classical_scopes):
+            raise error_at(value, 'A classical caller binding cannot be used as a quantum argument.')
+
     def quantum_binding(formal, actual):
         """Return the caller reference and its identities for one overlap check.
 
         Whole-register references keep their AST shape so the existing unroller
         owns gate broadcasting and literal indexing. No quantum state is copied.
         """
+        check_quantum_name(actual)
         if formal.size is None:
             key = quantum_key(actual)
             return ast.IndexedIdentifier(name=ast.Identifier(key[0]), indices=[[ast.IntegerLiteral(key[1])]]), {key}
@@ -317,7 +328,16 @@ def lower_runtime_subroutines(program):
                 return prefix + effects, replacement
         return prefix, result
 
-    def block(body, parent, active=False, depth=0, declared=None):
+    def block(body, parent, active=False, depth=0, declared=None, classical_names=()):
+        # Call actuals are resolved before expansion, even for unused formals.
+        # Keep caller shadowing lexical; leaving a block restores the register.
+        classical_scopes.append(set(classical_names))
+        try:
+            return block_body(body, parent, active, depth, declared)
+        finally:
+            classical_scopes.pop()
+
+    def block_body(body, parent, active=False, depth=0, declared=None):
         env = dict(parent); declared = set() if declared is None else set(declared)
         result = []
         for node in body:
@@ -337,6 +357,7 @@ def lower_runtime_subroutines(program):
                 if active:
                     env[name] = ast.Identifier(fresh())
                 value.identifier = rewrite(node.identifier, env)
+                classical_scopes[-1].add(value.identifier.name)
                 value.init_expression = rewrite(node.init_expression, env)
                 effects, value.init_expression = expression_calls(value.init_expression, active, depth)
                 if effects and isinstance(node, ast.ConstantDeclaration):
@@ -366,7 +387,8 @@ def lower_runtime_subroutines(program):
                     value.identifier = rewrite(node.identifier, inner)
                 else:
                     value.while_condition = rewrite(node.while_condition, env)
-                value.block = block(node.block, inner, active, depth)
+                value.block = block(node.block, inner, active, depth,
+                    classical_names=(value.identifier.name,) if isinstance(node, ast.ForInLoop) else ())
                 if isinstance(node, ast.WhileLoop):
                     effects, condition = expression_calls(value.while_condition, active, depth)
                     if effects:
@@ -409,6 +431,8 @@ def lower_runtime_subroutines(program):
     # Process in source order so a forward declaration cannot become visible.
     result = []
     for position, node in enumerate(program.statements):
+        if isinstance(node, (ast.ClassicalDeclaration, ast.ConstantDeclaration)):
+            classical_scopes[0].add(node.identifier.name)
         if isinstance(node, ast.ConstantDeclaration):
             if node.identifier.name in constants:
                 raise error_at(node, 'Duplicate constant declaration: ' + node.identifier.name)

@@ -14,6 +14,7 @@ cases=[
  ('computed-qregister-measure-reset', 'def f(qubit[2] a)->bit[2]{bit[2] m=measure a;reset a;return m;}qubit[2] q;output bit[4] r;x q[0];r[0:1]=f(q);r[2:3]=measure q;', {'0001':'1'}),
  ('computed-qregister-collision', 'def f(qubit[2] a)->bool{x a[1];return true;}qubit[2] a;qubit[2] b;output bit[4] r;bool ok=f(b);r[0:1]=measure a;r[2:3]=measure b;', {'1000':'1'}),
  ('computed-qregister-width-one', 'def f(qubit[1] a)->bool{x a;return true;}qubit[1] q;output bit r;bool ok=f(q);r=measure q;', {'1':'1'}),
+ ('computed-qregister-scope-restore', 'def f(qubit[2] a)->bool{x a[1];return true;}qubit[2] q;output bit[2] r;if(true){int q=1;r[0]=q==1;}bool ok=f(q);r=measure q;', {'10':'1'}),
  ('computed-concat-parity-hh', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\nh q;\nh r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1/2', '1': '1/2'}),
  ('computed-concat-parity-00', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\n\n\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1'}),
  ('computed-concat-parity-01', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\n\nx r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'1': '1'}),
@@ -469,6 +470,9 @@ rejected += ['def f(int n){}int n=1;'+('f(n);'*4097)]
 rejected += ['const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(int n){if(a20>0){n=0;}}int n=1;f(n);']
 rejected += ['output bit r;r=1 ++ 0;', 'output bit[64] r;r="'+('0'*33)+'" ++ "'+('0'*32)+'";']
 rejected += [
+ 'def f(qubit[2] a)->bool{return true;}qubit[2] q;output bit r;if(true){int q=1;bool ok=f(q);r=ok;}',
+ 'def f(qubit[2] a)->bool{return true;}qubit[2] q;for int q in [0:1]{bool ok=f(q);}',
+ 'def f(qubit a)->bool{return true;}qubit q;if(true){int q=1;bool ok=f(q);}',
  'def f(qubit[3] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
  'def f(qubit[2] a,qubit[2] b)->bool{return true;}qubit[2] q;bool ok=f(q,q);',
  'def f(qubit[2] a,qubit b)->bool{return true;}qubit[2] q;bool ok=f(q,q[1]);',

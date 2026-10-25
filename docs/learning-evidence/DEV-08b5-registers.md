@@ -32,7 +32,14 @@ limitation and rejects; this change does not claim the full
 The two other unchanged qBraid controls retain their dynamic-index/float gaps.
 DEV-08b5 and the whole notebook checklist rows remain open.
 
-Validation before review: 514 source checks passed. The six new authored execution
+Validation after the first review fix: 518 source checks passed. The seven new authored execution
 drivers passed exact and sampled checks using the already published return worker;
 the source suite also checks width/overlap/index errors and unsupported forms.
 Frozen artifact, exact-commit review, CI, merge and publication remain pending.
+
+The first independent Spec review found one medium caller-scope validation bug:
+an unused quantum formal could erase an invalid call with a same-named local
+integer actual. Lexical caller-binding checks now reject that case, including
+loop-variable and scalar-qubit variants, and restore register visibility after
+leaving the shadowing block. The regression covers an unused formal so downstream
+gate validation cannot mask the error.
