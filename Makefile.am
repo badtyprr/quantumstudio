@@ -18,6 +18,8 @@ EXTRA_DIST = config.rpath  \
 	windows/build-qasm-import.ps1 \
 	windows/test-qasm-arrays.py \
 	windows/fixtures/qb-arrays/ripple-carry.qasm \
+	windows/fixtures/runtime-subroutines/README.md \
+	windows/fixtures/runtime-subroutines/measured-parity.qasm \
 	windows/build-runtime-angle-import-test.ps1 \
 	windows/RuntimeAngleImportTests.cs \
 	windows/test-qasm-runtime-angles.py \
@@ -82,6 +84,7 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm_source_diagnostics.py \
 	windows/qasm_subroutine_scope.py \
 	windows/qasm_runtime_subroutines.py \
+	windows/qasm_concat_parser.py \
 	windows/test-classical-module-export.py \
 	windows/test-classical-export-ui.py \
 	windows/test-composer-source-import.py \

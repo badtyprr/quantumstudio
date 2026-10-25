@@ -19,6 +19,7 @@ from pyqasm.validator import Qasm3Validator
 from pyqasm.elements import Context
 from qasm_source_diagnostics import error_at
 from qasm_subroutine_scope import prepare_subroutine_scope
+from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
 
 RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)
@@ -202,6 +203,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 # remain registers and keep width-matched reinterpretation.
                 argument=ast.Cast(type=ast.BoolType(),argument=argument)
             return ast.Cast(type=type(value.type)(size=ast.IntegerLiteral(size)),argument=argument)
+        if isinstance(value, ast.Concatenation):
+            return ast.Concatenation(lhs=normalize(visitor,value.lhs,depth+1), rhs=normalize(visitor,value.rhs,depth+1))
         if isinstance(value, ast.BinaryExpression):
             if not typed and not runtime(visitor,value) and not bit_function(value) and not any(isinstance(item,ast.BitstringLiteral) for item in nodes(value)):
                 result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
@@ -843,7 +846,7 @@ def lower_output_declarations(program, classical):
 def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
-    module = pyqasm.loads(source)
+    module = pyqasm.loads(concatenation_program(source) or source)
     output_registers = lower_output_declarations(module.original_program, classical)
     hidden_registers=set()
     if classical:
@@ -1005,6 +1008,11 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
                 isinstance(node,ast.BinaryExpression) and node.op.name in comparisons|{'&&','||'} or
                 isinstance(node,ast.UnaryExpression) and node.op.name=='!')
     def width(node):
+        if isinstance(node,ast.Concatenation):
+            left,right=width(node.lhs),width(node.rhs)
+            if left is None or right is None:raise ValueError('Concatenation requires explicitly sized bit operands.')
+            if left+right>64:raise ValueError('Concatenation exceeds 64 bits.')
+            return left+right
         if isinstance(node,ast.Identifier) and node.name in variables:
             raise ValueError("Convert integer variables explicitly with bool(...) or bit[n](...) before using them as bits.")
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType):return 1
@@ -1086,6 +1094,22 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
         raise ValueError('Cast bit operands explicitly before integer arithmetic.')
     def build(node,hint=None,depth=0):
         bound(depth)
+        if isinstance(node,ast.Concatenation):
+            size=width(node)
+            left,lw=build(node.lhs,None,depth+4)
+            right,rw=build(node.rhs,None,depth+5)
+            if lw+rw!=size:raise ValueError('Inconsistent concatenation operand widths.')
+            if left['Kind']==right['Kind']=='Read':
+                return {'Kind':'Read','Bits':left['Bits']+right['Bits']},size
+            # Register index order: the left sequence occupies the low indices.
+            # Reuse existing widening/shift/or nodes rather than a new protocol.
+            for extra in (1,2,3,1,2,3,4,2):bound(depth+extra)
+            def widen(value,bits):
+                return {'Kind':'IntegerBits','Left':{'Kind':'IntegerCast','Signedness':'Unsigned','Width':size,
+                    'Left':{'Kind':'IntegerFromBits','Signedness':'Unsigned','Width':bits,'Left':value}}}
+            shifted={'Kind':'Binary','Operator':'ShiftLeft','Left':widen(right,rw),
+                'Right':{'Kind':'Constant','Width':size,'Value':str(lw)}}
+            return {'Kind':'Binary','Operator':'Or','Left':widen(left,lw),'Right':shifted},size
         if isinstance(node,ast.Cast) and isinstance(node.type,ast.BoolType):
             # Expand into the existing comparison model; count the added zero.
             bound(depth+1)

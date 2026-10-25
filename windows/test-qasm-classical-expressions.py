@@ -8,6 +8,16 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-concat-parity-hh', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\nh q;\nh r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1/2', '1': '1/2'}),
+ ('computed-concat-parity-00', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\n\n\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1'}),
+ ('computed-concat-parity-01', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\n\nx r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'1': '1'}),
+ ('computed-concat-parity-10', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\nx q;\n\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'1': '1'}),
+ ('computed-concat-parity-11', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\nx q;\nx r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1'}),
+ ('concat-mixed-width', 'bit[2] a="10";bit[3] b="101";output bit[5] r;r=a ++ b;', {'10110': '1'}),
+ ('computed-concat-computed-operands', 'bit[2] a="10";bit[3] b="101";output bit[5] r;r=(a^"01") ++ (b&"011");', {'00111': '1'}),
+ ('computed-concat-literal-operands', 'output bit[5] r;r="10" ++ "101";', {'10110': '1'}),
+ ('computed-concat-precedence', 'bit a=1;bit b=0;bit c=1;output bit[2] r;r=a ++ b || c;', {'11': '1'}),
+
  ('range-runtime-returned-range', 'def bound(bit b)->int{return int(b)+1;}qubit q;bit b=1;output bit r;for int i in [0:bound(b)]{x q;}r=measure q;', {'1': '1'}),
  ('transfer-returned-condition-continue', 'def flip(qubit q)->bit{x q;return measure q;}qubit q;output bit r;while(flip(q)==1){continue;}r=measure q;', {'0': '1'}),
  ('computed-result-void-quantum-only', 'def f(qubit q){bit b=measure q;if(b==1){return;}x q;}qubit q;output bit r;x q;f(q);r=measure q;', {'1': '1'}),
@@ -436,6 +446,7 @@ rejected += ['def f(int n){return;return 1;}int n=0;f(n);',
 # Expansion and lexical-binding budgets must reject before allocating unbounded ASTs.
 rejected += ['def f(int n){}int n=1;'+('f(n);'*4097)]
 rejected += ['const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(int n){if(a20>0){n=0;}}int n=1;f(n);']
+rejected += ['output bit r;r=1 ++ 0;', 'output bit[64] r;r="'+('0'*33)+'" ++ "'+('0'*32)+'";']
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
