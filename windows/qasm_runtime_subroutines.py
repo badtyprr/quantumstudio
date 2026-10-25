@@ -343,11 +343,16 @@ def lower_runtime_subroutines(program):
         """
         nonlocal expanded
         name = node.identifier.name
+        # Body declarations have not yet been visited by block_body. Their
+        # actuals will require runtime binding when that later traversal runs.
+        body_runtime = {n.identifier.name for n in walk(node.block)
+                        if isinstance(n, ast.ClassicalDeclaration) and isinstance(n.type, values)}
         needed = False
         for call in walk(node.block):
             if not isinstance(call, ast.FunctionCall) or call.name.name not in functions:
                 continue
-            if not runtime_call(call, active):
+            local_actual = any(isinstance(n, ast.Identifier) and n.name in body_runtime for n in walk(call.arguments))
+            if not runtime_call(call, active or local_actual):
                 continue
             for formal, actual in zip(functions[call.name.name].arguments, call.arguments):
                 if isinstance(formal, ast.QuantumArgument):

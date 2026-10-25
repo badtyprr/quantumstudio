@@ -8,6 +8,7 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-qloop-local-actual','def f(qubit a,int n){if(n==1){x a;}}qubit[2] q;for int i in [0:1]{int n=1;f(q[i],n);}output bit[2] r;r=measure q;',{'11':'1'}),
  ('computed-qloop-forward','def f(qubit a,int i)->int{x a;return i+1;}qubit[3] q;int n=0;for int i in [0:2]{n=f(q[i],i);}output bit[3] r;output bit ok;r=measure q;ok=n==3;',{'1111':'1'}),
  ('computed-qloop-descending','def f(qubit a)->bool{x a;return true;}qubit[3] q;for int i in [2:-1:0]{bool ok=f(q[i]);}output bit[3] r;r=measure q;',{'111':'1'}),
  ('computed-qloop-stride','def f(qubit a)->bool{x a;return true;}qubit[4] q;for int i in [0:2:3]{bool ok=f(q[i]);}output bit[4] r;r=measure q;',{'0101':'1'}),
@@ -372,7 +373,7 @@ cases=[
 checks=0
 loop_fixture=(root/'windows/fixtures/runtime-subroutines/qbraid-loop-index.qasm').read_bytes()
 loop_circuit=adapter.convert(loop_fixture.decode(),classical=True)
-assert adapter.convert(loop_fixture.decode())['Qubits']==4
+assert adapter.convert(loop_fixture.decode())=={'Version':1,'Qubits':4,'Steps':[{'Gate':gate,'Angle':'','Wires':[wire]} for gate,wire in [('H',0),('H',1),('H',2),('H',3),('X',3),('H',0)]]}
 checks+=2
 if not a.source_only:
  result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe'),'--classical'],input=loop_fixture,capture_output=True,timeout=30)
@@ -636,7 +637,7 @@ for name,body,expected in cases:
   sequence=circuit['Steps'][1]['WhenTrue'];index=next(i for i,s in enumerate(sequence) if s['Kind']=='Break')
   assert sequence[index-2:index]==[{'Kind':'ClearInteger','VariableSlot':2},{'Kind':'ClearInteger','VariableSlot':1}],sequence
   checks+=1
- assert circuit['Version']==(5 if name=='subroutine-local-shadow' else 2 if name.startswith('subroutine-local-') or name in ('local-output-subroutine','qloop-empty') else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
+ assert circuit['Version']==(5 if name in ('subroutine-local-shadow','computed-qloop-local-actual') else 2 if name.startswith('subroutine-local-') or name in ('local-output-subroutine','qloop-empty') else 10 if name.startswith('range-runtime-') else 9 if name.startswith('end-') else 8 if name.startswith('transfer-') else 7 if name.startswith('loop-') else 6 if name.startswith('computed-') or name in ('variable-measurement','typed-measurement','typed-power-measure','typed-bitcast-measure') else 5 if name.startswith(('variable-','scope-')) else 4 if name.startswith('typed-') or name in ('comparison','logical-assignment','logical-nested','logical-and-or') else 3),(name,circuit)
  if name.startswith('computed-bmeasure-'):
   total=sum(r['Size'] for r in circuit['Registers'])
   assert circuit['Registers'][-1]['Size']==1 and circuit['OutputBits']==list(reversed(range(total-1))),(name,circuit)
