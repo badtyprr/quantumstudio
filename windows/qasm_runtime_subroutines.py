@@ -335,6 +335,71 @@ def lower_runtime_subroutines(program):
         # signature contains no classical arguments (or no arguments at all).
         return any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body))
 
+    def specialize_loop(node, env, active, depth):
+        """Expand literal ranges needed by quantum call indices before binding.
+
+        Each iteration remains a lexical block. Reject binding mutation and
+        shadowing rather than substituting a literal into a mutable binding.
+        """
+        nonlocal expanded
+        name = node.identifier.name
+        needed = False
+        for call in walk(node.block):
+            if not isinstance(call, ast.FunctionCall) or call.name.name not in functions:
+                continue
+            if not runtime_call(call, active):
+                continue
+            for formal, actual in zip(functions[call.name.name].arguments, call.arguments):
+                if isinstance(formal, ast.QuantumArgument):
+                    for index in walk(actual):
+                        if isinstance(index, (ast.IndexExpression, ast.IndexedIdentifier)):
+                            indices = index.index if isinstance(index, ast.IndexExpression) else index.indices
+                            needed |= any(isinstance(n, ast.Identifier) and n.name == name for n in walk(indices))
+        if not needed:
+            return None
+
+        def literal(value):
+            sign = 1
+            if isinstance(value, ast.UnaryExpression) and value.op.name == '-':
+                sign = -1; value = value.expression
+            if not isinstance(value, ast.IntegerLiteral) or type(value.value) is not int or value.value.bit_length() > 64:
+                raise error_at(node, 'Quantum-call loop ranges require literal integers of at most 64 bits.')
+            return sign * value.value
+
+        domain = node.set_declaration
+        if not isinstance(domain, ast.RangeDefinition) or not isinstance(node.type, (ast.IntType, ast.UintType)):
+            raise error_at(node, 'Quantum-call index loops require integer literal ranges.')
+        start, stop = literal(domain.start), literal(domain.end)
+        step = 1 if domain.step is None else literal(domain.step)
+        if step == 0:
+            raise error_at(node, 'Quantum-call index loop step must be nonzero.')
+        size = node.type.size
+        if size is not None and (not isinstance(size, ast.IntegerLiteral) or not 1 <= size.value <= 64):
+            raise error_at(node, 'Quantum-call index loop types require literal widths from 1 to 64.')
+        width = 32 if size is None else size.value
+        minimum = -(1 << (width - 1)) if isinstance(node.type, ast.IntType) else 0
+        maximum = (1 << (width - (1 if isinstance(node.type, ast.IntType) else 0))) - 1
+        count = max(0, (stop - start) // step + 1)
+        if count and not (minimum <= start <= maximum and minimum <= start + (count - 1) * step <= maximum):
+            raise error_at(node, 'Quantum-call loop values do not fit their declared integer type.')
+        for child in walk(node.block):
+            if isinstance(child, (ast.BreakStatement, ast.ContinueStatement, ast.ReturnStatement)):
+                raise error_at(child, 'Specialized quantum-call loops do not support control transfers.')
+            if isinstance(child, (ast.ClassicalDeclaration, ast.ConstantDeclaration, ast.ForInLoop)) and child.identifier.name == name:
+                raise error_at(child, 'Specialized quantum-call loop bindings must not be shadowed.')
+            target = child.lvalue if isinstance(child, ast.ClassicalAssignment) else child.target if isinstance(child, ast.QuantumMeasurementStatement) else None
+            if any(isinstance(n, ast.Identifier) and n.name == name for n in walk(target)):
+                raise error_at(child, 'Specialized quantum-call loop bindings must not be assigned.')
+        cost = count * sum(1 for _ in walk(node.block))
+        if count > 4096 or expanded + cost > 65536:
+            raise error_at(node, 'Quantum-call loop expansion exceeds 4096 iterations or 65536 AST nodes.')
+        expanded += cost
+        result = []
+        for iteration in range(count):
+            inner = dict(env); inner[name] = ast.IntegerLiteral(start + iteration * step)
+            result.append(ast.CompoundStatement(statements=block(node.block, inner, active, depth)))
+        return result
+
     def expression_calls(value, active, depth):
         """Return effects in evaluation order and the expression that uses them."""
         prefix = []
@@ -428,6 +493,11 @@ def lower_runtime_subroutines(program):
                 value.if_block = block(node.if_block, env, active, depth)
                 value.else_block = block(node.else_block, env, active, depth)
             elif isinstance(node, (ast.ForInLoop, ast.WhileLoop)):
+                if isinstance(node, ast.ForInLoop):
+                    specialized = specialize_loop(node, env, active, depth)
+                    if specialized is not None:
+                        result.extend(specialized)
+                        continue
                 value = copy.copy(node); inner = dict(env)
                 if isinstance(node, ast.ForInLoop):
                     value.type = rewrite(node.type, env); value.set_declaration = rewrite(node.set_declaration, env)

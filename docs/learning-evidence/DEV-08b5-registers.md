@@ -80,3 +80,19 @@ The clean local native build passed 56 tests, with one existing thread skip and 
 REL-21 is not published. Final importer/package tests, actual release-payload GUI/exact audit, archive hashing and upload remain pending. Keep REL-20 as the last verified downloadable checkpoint. The previous export file-replacement IOException also remains unresolved.
 
 After the release gate is resolved, the next source-led candidate is bounded literal-range loop specialization for quantum-call indices. Preserve lexical loop bindings, mutation/transfer restrictions and aggregate expansion budgets; general dynamic indices and runtime float/array parameters remain separate work. This candidate is researched, not implemented.
+
+### Subsequent local GUI verification
+
+The unchanged isolated circuit-layout test subsequently passed in 60.1 seconds, within its original 120-second deadline. The complete unchanged GUI suite then passed, including that layout test. No application source or deadline was changed for these runs. This completes the failed test's rerun, but does not establish the intermittent timeout's root cause or complete release packaging/publication.
+
+## Next increment: bounded quantum-call loop indices
+
+Literal-range integer loops whose binding is needed in a quantum-call argument are specialized before runtime subroutine binding. Each iteration retains a lexical block; classical call arguments still use the existing value snapshots, and quantum arguments retain their reference/overlap checks. The unchanged pinned `test_classical_quantum_function` fixture now passes source classical import as well as its existing numerical path. See the [fixture provenance](../../windows/fixtures/runtime-subroutines/README.md).
+
+The initial subset accepts signed integer literal endpoints and a nonzero literal step, with at most 64-bit literal magnitude. Loop types are int/uint with omitted size or literal widths 1–64; emitted values must fit the declared type. Ranges include the final reachable value and support descending, non-divisible and empty ranges. Only literal indices after substitution are accepted; arithmetic indices and runtime bounds remain outside this subset. Loops not needed by runtime quantum calls retain their existing path.
+
+The selected binding may not be assigned or shadowed anywhere in its body. Break, continue and return statements anywhere in the specialized body are rejected, including transfers belonging to nested loops; this conservative restriction is narrower than the language. Calls to subroutines with returns remain supported. Expanded loops are limited to 4,096 iterations each and share the existing aggregate 65,536-node expansion budget with calls. Existing call-count, call-depth and binding-copy budgets remain active across iterations.
+
+Source checks cover ascending/descending/non-divisible/empty ranges, caller shadowing, nested indices and activation-local loops. Rejections cover mutation, body shadowing, transfers, runtime bounds, zero steps, type/index overflow, arithmetic indices, huge ranges and overlapping quantum actuals. The upstream program is kept byte-for-byte; an authored measurement/assertion extension separately checks all eight `1abc0` results at probability 1/8. These probabilities follow from H twice on q[0], one H on each remaining qubit, X preserving the plus state, and the last return value equalling four.
+
+Initial local validation: 611 source checks and 38 focused execution/control checks passed using the previous published worker. Standalone importer comparison, independent review, CI and release publication remain pending for this increment.

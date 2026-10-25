@@ -1,5 +1,7 @@
 # Runtime subroutine source fixtures
 
+`qbraid-loop-index.qasm` preserves the bytes of `test_classical_quantum_function`'s QASM string from [PyQASM test_subroutines.py at 167cff141b270cae023137971e716d5fec68e9f0](https://github.com/qBraid/pyqasm/blob/167cff141b270cae023137971e716d5fec68e9f0/tests/qasm3/subroutines/test_subroutines.py#L134), including leading/trailing whitespace. SHA-256: `24bae658779666513bd57e9418af572ae07e2360247de4694e76a7d0e9f88048`. The unchanged source is tested for numerical and classical import. A separately labeled authored driver appends measurement and an assertion of `new_var == 4`; its output is `1abc0`, for all eight three-bit values `abc`, each with probability 1/8. This is source-level acceptance, not notebook or provider execution.
+
 `measured-parity.qasm` retains the OpenQASM specification's parity operations and `parity(c ++ c2)` call. Disclosed completions: header/include, typed n=2, missing bit declarations, explicit result output, H/H preparation, and explicit zero initialization of the parity accumulator. Expected parity probabilities: 0=1/2 and 1=1/2.
 
 The pinned/reference grammar does not accept concatenation inside call arguments. QuantumStudio adds a compatibility extension for this documented example: `++` has the lowest expression precedence and copies the left sequence into lower register indices. See [DEV-08b4 evidence](../../../docs/learning-evidence/DEV-08b4.md). Source-prototype checks pass; packaged acceptance remains pending. This is not an unchanged full source program or notebook.

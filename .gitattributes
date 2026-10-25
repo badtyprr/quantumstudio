@@ -1,1 +1,2 @@
 /windows/build-native.sh text eol=lf
+/windows/fixtures/runtime-subroutines/qbraid-loop-index.qasm -text -whitespace
