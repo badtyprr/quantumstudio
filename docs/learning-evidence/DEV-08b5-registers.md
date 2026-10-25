@@ -35,7 +35,7 @@ DEV-08b5 and the whole notebook checklist rows remain open.
 Validation after the first review fix: 518 source checks passed. The seven new authored execution
 drivers passed exact and sampled checks using the already published return worker;
 the source suite also checks width/overlap/index errors and unsupported forms.
-Frozen artifact, exact-commit review, CI, merge and publication remain pending.
+The release evidence below records the subsequent frozen validation, review, CI, merge and publication.
 
 The first independent Spec review found one medium caller-scope validation bug:
 an unused quantum formal could erase an invalid call with a same-named local
@@ -43,3 +43,15 @@ integer actual. Lexical caller-binding checks now reject that case, including
 loop-variable and scalar-qubit variants, and restore register visibility after
 leaving the shadowing block. The regression covers an unused formal so downstream
 gate validation cannot mask the error.
+
+## Published fixed-register subset (REL-20)
+
+PR [#370](https://github.com/badtyprr/quantumstudio/pull/370), exact reviewed head `f79ed62fe35d7b6fc84f311e8b60e92988fbe486`, merged as `266febf0fbb5e39ffc3b96a7e78020f2351e7e15`. Two independent Standards/Spec review rounds completed; the caller-shadowing finding above was fixed and both final reviews had no outstanding findings. Source/frozen comparison passed 1,024 checks. All three required Native/GUI/OpenQASM checks passed on the reviewed head. Native CI also verified 261 source-archive inputs byte for byte.
+
+The [published Windows checkpoint](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-b4cc7ee0) was built from `b4cc7ee04dcac71cc307420499e5bad171414c52`, which additionally includes the separately self-reviewed concatenation release documentation in #371. All three merged-tip CI checks passed. The clean package passed 1,992 worker and 1,710 compiler checks; native tests had 56 passes, one existing thread skip and zero failures/errors.
+
+Three packaged GUI export/save/reopen checks passed. Six exact results, covering both input and exported source, matched probability one for nested forwarding (`100`), measurement/reset (`0001`) and caller-scope restoration (`10`). Nine normal, deliberate-rejection and minimum-window captures were inspected. The six unchanged-source controls retained the expected numerical outputs and classical diagnostics: the four-H Boolean-return fixture now also passes classical import; the other two classical controls still reject dynamic indexing and float parameters. This is bounded compiler acceptance, not whole-notebook or provider execution.
+
+All 340 payload hashes and 341 ZIP entries matched the tested package. The uploaded asset size, digest and tag revision were verified. ZIP SHA-256: `f439732f52a4b9f1331a932123e4ced564b7c95edea5ea1fd9f27def5e8148fc`.
+
+This releases the fixed-register subset. DEV-08b5 remains open for other parameter forms; constant-expression widths are next. The prior intermittent export file-replacement IOException remains unresolved; this audit passed without reproducing it.
