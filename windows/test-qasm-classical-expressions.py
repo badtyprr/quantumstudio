@@ -8,6 +8,13 @@ spec=importlib.util.spec_from_file_location('qasm_expression_adapter',root/'wind
 header='OPENQASM 3.0; include "stdgates.inc"; '
 unicode_name='𝑎'*31
 cases=[
+ ('computed-qregister-index', 'def f(qubit[3] q)->bool{x q[1];return true;}qubit[3] q;output bit[3] r;bool ok=f(q);r=measure q;', {'010':'1'}),
+ ('computed-qregister-nested', 'def g(qubit q)->bool{x q;return true;}def f(qubit[3] a)->bool{return g(a[2]);}def outer(qubit[3] a)->bool{return f(a);}qubit[3] q;output bit[3] r;bool ok=outer(q);r=measure q;', {'100':'1'}),
+ ('computed-qregister-repeat', 'def f(qubit[2] a)->bool{x a;return true;}qubit[2] q;output bit[2] r;bool ok=f(q);ok=f(q);r=measure q;', {'00':'1'}),
+ ('computed-qregister-measure-reset', 'def f(qubit[2] a)->bit[2]{bit[2] m=measure a;reset a;return m;}qubit[2] q;output bit[4] r;x q[0];r[0:1]=f(q);r[2:3]=measure q;', {'0001':'1'}),
+ ('computed-qregister-collision', 'def f(qubit[2] a)->bool{x a[1];return true;}qubit[2] a;qubit[2] b;output bit[4] r;bool ok=f(b);r[0:1]=measure a;r[2:3]=measure b;', {'1000':'1'}),
+ ('computed-qregister-width-one', 'def f(qubit[1] a)->bool{x a;return true;}qubit[1] q;output bit r;bool ok=f(q);r=measure q;', {'1':'1'}),
+ ('computed-qregister-scope-restore', 'def f(qubit[2] a)->bool{x a[1];return true;}qubit[2] q;output bit[2] r;if(true){int q=1;r[0]=q==1;}bool ok=f(q);r=measure q;', {'10':'1'}),
  ('computed-concat-parity-hh', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\nh q;\nh r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1/2', '1': '1/2'}),
  ('computed-concat-parity-00', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\n\n\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'0': '1'}),
  ('computed-concat-parity-01', '\nconst int n = 2;\ndef parity(bit[n] cin) -> bit {\n  bit c = 0;\n  for int i in [0: n - 1] {\n    c ^= cin[i];\n  }\n  return c;\n}\nqubit q;\nqubit r;\nbit c;\nbit c2;\noutput bit result;\n\nx r;\nc = measure q;\nc2 = measure r;\nresult = parity(c ++ c2);\n', {'1': '1'}),
@@ -347,6 +354,21 @@ cases=[
  ('registers','qubit q; bit[2] c="10"; bit[2] d="10"; if(c==d){c=0;}',{'1000':'1'}),
 ]
 checks=0
+# Unchanged pinned PyQASM source: the upstream oracle is four H gates.
+source_fixture=(root/'windows/fixtures/runtime-subroutines/qbraid-register-return.qasm').read_bytes()
+def gates_in(value):
+ if isinstance(value,dict):
+  if value.get('Kind')=='Gate':yield value
+  for child in value.values():yield from gates_in(child)
+ elif isinstance(value,list):
+  for child in value:yield from gates_in(child)
+upstream_circuit=adapter.convert(source_fixture.decode(),classical=True)
+assert [(g['Expression'],g['Wires']) for g in gates_in(upstream_circuit)]==[('H',[i]) for i in range(4)]
+checks+=1
+if not a.source_only:
+ result=subprocess.run([str(root/'dist/QuantumStudio/qasm-import/qasm-import.exe'),'--classical'],input=source_fixture,capture_output=True,timeout=30)
+ assert result.returncode==0 and json.loads(result.stdout)==upstream_circuit,result.stderr
+ checks+=1
 hooks=tuple(getattr(adapter.QasmVisitor,name) for name in ['_visit_classical_assignment','_visit_classical_declaration','_visit_branching_statement','_visit_function_call'])
 for body in ('qubit q;output bit r;', 'qubit q;input bit r;'):
  try:adapter.convert(header+body)
@@ -447,6 +469,25 @@ rejected += ['def f(int n){return;return 1;}int n=0;f(n);',
 rejected += ['def f(int n){}int n=1;'+('f(n);'*4097)]
 rejected += ['const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(int n){if(a20>0){n=0;}}int n=1;f(n);']
 rejected += ['output bit r;r=1 ++ 0;', 'output bit[64] r;r="'+('0'*33)+'" ++ "'+('0'*32)+'";']
+rejected += [
+ 'def f(qubit[2] a)->bool{return true;}qubit[2] q;output bit r;if(true){int q=1;bool ok=f(q);r=ok;}',
+ 'def f(qubit[2] a)->bool{return true;}qubit[2] q;for int q in [0:1]{bool ok=f(q);}',
+ 'def f(qubit a)->bool{return true;}qubit q;if(true){int q=1;bool ok=f(q);}',
+ 'def f(qubit[3] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+ 'def f(qubit[2] a,qubit[2] b)->bool{return true;}qubit[2] q;bool ok=f(q,q);',
+ 'def f(qubit[2] a,qubit b)->bool{return true;}qubit[2] q;bool ok=f(q,q[1]);',
+ 'def f(qubit b,qubit[2] a)->bool{return true;}qubit[2] q;bool ok=f(q[1],q);',
+ 'def f(qubit[2] a)->bool{x a[2];return true;}qubit[2] q;bool ok=f(q);',
+ 'def f(qubit[2] a,int i)->bool{x a[i];return true;}qubit[2] q;int i=1;bool ok=f(q,i);',
+ 'def f(qubit a)->bool{x a[0];return true;}qubit q;bool ok=f(q);',
+ 'def f(qubit[2] a)->bool{return true;}qubit[3] q;bool ok=f(q[0:1]);',
+ 'def f(qubit[2] a)->bool{return true;}qubit[2] q;let b=q;bool ok=f(b);',
+ 'const int N=2;def f(qubit[N] a)->bool{return true;}qubit[2] q;bool ok=f(q);',
+ 'def f(qubit[1] a)->bool{return true;}qubit q;bool ok=f(q);',
+ 'def f(qubit[1] a,qubit[2] b)->bool{cx a,b;return true;}qubit[1] a;qubit[2] b;bool ok=f(a,b);',
+ # Mixed scalar/register gate broadcasting is a separate unroller limitation.
+ 'def f(qubit control,qubit[2] targets)->bool{cx control,targets;return true;}qubit c;qubit[2] q;bool ok=f(c,q);',
+]
 for body in rejected:
  try:adapter.convert(header+body,classical=True)
  except Exception:checks+=1
