@@ -417,7 +417,9 @@ def lower_runtime_subroutines(program):
             if isinstance(child, (ast.ClassicalDeclaration, ast.ConstantDeclaration, ast.ForInLoop)) and child.identifier.name == name:
                 raise error_at(child, 'Specialized quantum-call loop bindings must not be shadowed.')
             target = child.lvalue if isinstance(child, ast.ClassicalAssignment) else child.target if isinstance(child, ast.QuantumMeasurementStatement) else None
-            if any(isinstance(n, ast.Identifier) and n.name == name for n in walk(target)):
+            if isinstance(target, ast.IndexedIdentifier): target = target.name
+            if isinstance(target, ast.IndexExpression): target = target.collection
+            if isinstance(target, ast.Identifier) and target.name == name:
                 raise error_at(child, 'Specialized quantum-call loop bindings must not be assigned.')
         cost = count * sum(1 for _ in walk(node.block))
         if count > 4096 or expanded + cost > 65536:
