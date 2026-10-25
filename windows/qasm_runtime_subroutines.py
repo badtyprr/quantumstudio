@@ -30,6 +30,7 @@ def lower_runtime_subroutines(program):
     used = {node.name for node in walk(program) if isinstance(node, ast.Identifier)}
     runtime = set()
     registers = {}
+    register_arrays = set()
     bit_storage = []
     serial = calls = expanded = copied_nodes = 0
 
@@ -95,6 +96,24 @@ def lower_runtime_subroutines(program):
                 return value.name.name, index.value
         raise error_at(value, 'Runtime call quantum arguments require a scalar qubit or a fixed literal register index.')
 
+    def quantum_binding(formal, actual):
+        """Return the caller reference and its identities for one overlap check.
+
+        Whole-register references keep their AST shape so the existing unroller
+        owns gate broadcasting and literal indexing. No quantum state is copied.
+        """
+        if formal.size is None:
+            key = quantum_key(actual)
+            return ast.IndexedIdentifier(name=ast.Identifier(key[0]), indices=[[ast.IntegerLiteral(key[1])]]), {key}
+        if not isinstance(formal.size, ast.IntegerLiteral) or not 1 <= formal.size.value <= 25:
+            raise error_at(formal, 'Runtime quantum-register parameters require a literal width from 1 to 25.')
+        if not isinstance(actual, ast.Identifier) or actual.name not in register_arrays:
+            raise error_at(actual, 'Runtime quantum-register arguments currently require a whole declared register.')
+        size = registers.get(actual.name)
+        if size != formal.size.value:
+            raise error_at(actual, 'Quantum-register argument width does not match its parameter.')
+        return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
+
     def activate(call, depth):
         nonlocal calls, expanded
         if activations and visibility[call.name.name] > activations[-1]:
@@ -131,13 +150,11 @@ def lower_runtime_subroutines(program):
                 raise error_at(formal, 'Duplicate subroutine parameter: ' + name)
             parameters.add(name)
             if isinstance(formal, ast.QuantumArgument):
-                if formal.size is not None:
-                    raise error_at(formal, 'Runtime calls currently require scalar quantum parameters.')
-                key = quantum_key(actual)
-                if key in qubits:
+                binding, identities = quantum_binding(formal, actual)
+                if qubits.intersection(identities):
                     raise error_at(call, 'Quantum subroutine arguments must not overlap.')
-                qubits.add(key)
-                bindings[name] = ast.IndexedIdentifier(name=ast.Identifier(key[0]), indices=[[ast.IntegerLiteral(key[1])]])
+                qubits.update(identities)
+                bindings[name] = binding
             elif isinstance(formal, ast.ClassicalArgument) and isinstance(formal.type, values):
                 if formal.access is not None:
                     raise error_at(formal, 'Runtime scalar arguments are passed by value.')
@@ -407,6 +424,8 @@ def lower_runtime_subroutines(program):
             size = node.size
             if size is None or isinstance(size, ast.IntegerLiteral):
                 registers[node.qubit.name] = 1 if size is None else size.value
+                if size is not None:
+                    register_arrays.add(node.qubit.name)
         result.extend(block([node], {}))
     program.statements[:] = bit_storage + result
     return {declaration.identifier.name for declaration in bit_storage}

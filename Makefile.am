@@ -20,6 +20,7 @@ EXTRA_DIST = config.rpath  \
 	windows/fixtures/qb-arrays/ripple-carry.qasm \
 	windows/fixtures/runtime-subroutines/README.md \
 	windows/fixtures/runtime-subroutines/measured-parity.qasm \
+	windows/fixtures/runtime-subroutines/qbraid-register-return.qasm \
 	windows/build-runtime-angle-import-test.ps1 \
 	windows/RuntimeAngleImportTests.cs \
 	windows/test-qasm-runtime-angles.py \
