@@ -47,6 +47,13 @@ static class ClassicalQasmExportTests {
    catch(IOException){checks++;}
   }
   Check(File.ReadAllText(path)=="keep these bytes");
+  // A transient external lock must recover without discarding the validated
+  // snapshot. The permanent-lock case above still must fail without truncation.
+  var transient=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.None);
+  var release=new System.Threading.Thread(delegate() {System.Threading.Thread.Sleep(100);transient.Dispose();});
+  release.Start();
+  try {prepared.SaveTo(path);}finally {release.Join();transient.Dispose();}
+  Check(File.ReadAllText(path)==source);
   string directory=Path.Combine(args[0],"directory");Directory.CreateDirectory(directory);
   try {prepared.SaveTo(directory);throw new Exception("Directory destination accepted.");}
   catch(IOException){Check(Directory.Exists(directory));}

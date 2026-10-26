@@ -27,8 +27,17 @@ sealed class ClassicalQasmExport {
    using(var file=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None)) {
     file.Write(source,0,source.Length);file.Flush(true);
    }
-   if(File.Exists(target))File.Replace(temporary,target,null);
-   else File.Move(temporary,target);
+   for(int attempt=0;;attempt++) {
+    try {if(File.Exists(target))File.Replace(temporary,target,null);else File.Move(temporary,target);break;}
+    catch(IOException ex) {
+     // Sharing/lock violations and ERROR_UNABLE_TO_REMOVE_REPLACED leave
+     // both names intact. Keep the flushed snapshot for a bounded retry.
+     // Do not retry 1176/1177: those can partially rename the files.
+     int code=ex.HResult & 0xffff;
+     if((code!=32 && code!=33 && code!=1175) || attempt>=5)throw;
+     System.Threading.Thread.Sleep(200);
+    }
+   }
   } finally {
    if(File.Exists(temporary))File.Delete(temporary);
   }
