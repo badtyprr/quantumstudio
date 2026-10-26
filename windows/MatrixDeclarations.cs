@@ -18,6 +18,7 @@ static class MatrixDeclarations {
  static readonly UTF8Encoding Utf8=new UTF8Encoding(false,true);
  static readonly Regex Identifier=new Regex(@"\A[\p{L}_][\p{L}\p{N}_]*\z",RegexOptions.CultureInvariant);
  static readonly Regex Tokens=new Regex(@"[\p{L}_][\p{L}\p{N}_]*",RegexOptions.CultureInvariant);
+ internal static void ValidateDimension(string text) {Dimension(text,new HashSet<string>(StringComparer.Ordinal));}
  static void Dimension(string text,HashSet<string> names) {
   if(String.IsNullOrWhiteSpace(text) || Utf8.GetByteCount(text)>256)throw new InvalidDataException("Dimensions need an expression of at most 256 UTF-8 bytes.");
   int depth=0;

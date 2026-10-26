@@ -104,6 +104,10 @@ EXTRA_DIST = config.rpath  \
 	windows/QuantumStudio.cs \
 	windows/SessionStore.cs \
 	windows/MatrixDeclarations.cs \
+	windows/BasisDeclarations.cs \
+	windows/BasisDeclarationEditor.cs \
+	windows/BasisDeclarationsTests.cs \
+	windows/BasisDeclarationsGuiTests.cs \
 	windows/MatrixDeclarationEditor.cs \
 	windows/MatrixDeclarationsTests.cs \
 	windows/MatrixDeclarationsGuiTests.cs \

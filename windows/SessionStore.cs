@@ -11,6 +11,7 @@ public class StateDefinition {
 }
 
 public class SessionEntry {
+ public BasisDeclaration[] Bases {get;set;}
  public string Expression {get;set;}
  public string Result {get;set;}
  public int Mode {get;set;}
@@ -19,6 +20,7 @@ public class SessionEntry {
  public MatrixDeclaration[] Matrices {get;set;}
 }
 public class CalculationSession {
+ public BasisDeclaration[] Bases {get;set;}
  public int Version {get;set;}
  public string Expression {get;set;}
  public int Mode {get;set;}
@@ -78,9 +80,14 @@ static class SessionStore {
   if(expression==null || StrictUtf8.GetByteCount(expression)>32000 || mode<0 || mode>1 || evaluation<0 || evaluation>1)
    throw new InvalidDataException("Session expressions must be at most 32 KB and use valid notation and evaluation modes.");
  }
+ static void ValidateBases(BasisDeclaration[] bases,int version) {
+  if(version<5) {if(bases!=null && bases.Length!=0)throw new InvalidDataException("Basis declarations require a version 5 session.");}
+  else BasisDeclarations.Validate(bases);
+ }
  public static void Validate(CalculationSession session) {
-  if(session==null || session.Version<1 || session.Version>4 || session.History==null || session.History.Length>50)
-   throw new InvalidDataException("Expected a version 1, 2, 3 or 4 calculation session with at most 50 history entries.");
+  if(session==null || session.Version<1 || session.Version>5 || session.History==null || session.History.Length>50)
+   throw new InvalidDataException("Expected a version 1 through 5 calculation session with at most 50 history entries.");
+  ValidateBases(session.Bases,session.Version);
   ValidateSessionStates(session.States,session.Version);
   ValidateMatrices(session.Matrices,session.Version);
   ValidateExpression(session.Expression,session.Mode,session.Evaluation);
@@ -89,6 +96,7 @@ static class SessionStore {
    StrictUtf8.GetByteCount(entry.Result);
    ValidateSessionStates(entry.States,session.Version);
    ValidateMatrices(entry.Matrices,session.Version);
+   ValidateBases(entry.Bases,session.Version);
    ValidateExpression(entry.Expression,entry.Mode,entry.Evaluation);
    if(String.IsNullOrWhiteSpace(entry.Expression))throw new InvalidDataException("History expressions cannot be empty.");
   }

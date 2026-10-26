@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumIndexed.h"
+#include "QuantumBasisDomain.h"
 #include "Calculator.h"
 #include "Function.h"
 #include "Variable.h"
@@ -305,6 +306,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure first=raw[1],last=raw[2];first.eval(exact);last.eval(exact);
+   if(quantumBasisSum(raw[0],first,last,raw[3],out,eo))return 1;
    bool pending=false;
    for(const MathStructure *bound:{&first,&last}) {
     if(bound->isNumber() && bound->number().isInteger())continue;

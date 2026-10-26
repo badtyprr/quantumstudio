@@ -79,7 +79,7 @@ class MatrixDeclarationsGuiTests {
      Require(input.Text=="A†A" && ((string)Field("copyText")).Contains("qunitaryidentity"),"Natural input or guarded copy was lost");
     }
     var serializer=new JavaScriptSerializer();string snapshot=serializer.Serialize(Call("CaptureSession"));
-    Require(snapshot.Contains("\"Version\":4") && snapshot.Contains("\"Property\":\"Unitary\""),"Session omitted operator properties");
+    Require(snapshot.Contains("\"Version\":5") && snapshot.Contains("\"Property\":\"Unitary\""),"Session omitted operator properties");
     string path=Path.Combine(directory,"matrices.qsession");File.WriteAllText(path,snapshot);Call("OpenSession",path);
     Require(serializer.Serialize(Call("CaptureSession"))==snapshot,"Session capture/restore changed assumptions");
     var matrices=(Array)Field("matrices");matrices.GetValue(0).GetType().GetProperty("Rows").SetValue(matrices.GetValue(0),"3",null);

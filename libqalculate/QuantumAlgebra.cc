@@ -1,6 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumAlgebra.h"
 #include "QuantumOperatorDomain.h"
+#include "QuantumBasisDomain.h"
 #include "QuantumIndexed.h"
 #include "Calculator.h"
 #include "Function.h"
@@ -97,7 +98,19 @@ bool annotateOrthonormalKets(MathStructure &value,const MathStructure &name,cons
  if(depth>128) {CALCULATOR->error(true,"Orthonormal declaration expression is too deeply nested.",NULL);return false;}
  if(value.isFunction()) {
   const std::string &op=value.function()->referenceName();
-  if(op=="orthobasis" || op=="qorthoket")return true;
+  if(op=="qorthoket" || op=="qorthofamilyket")return true;
+  if(op=="orthobasis" && value.size()==3) {
+   if(value[1].equals(name))return true;
+   MathStructure inner,visible;visible.clearVector();
+   if(!orthonormalList(value[2],inner))return true;
+   for(size_t i=0;i<labels.size();++i) {
+    bool shadowed=false;
+    for(size_t k=0;k<inner.size();++k)if(inner[k].isFunction() && inner[k].size()==1 && inner[k][0].equals(labels[i]))shadowed=true;
+    if(!shadowed)visible.addChild(labels[i]);
+   }
+   if(!annotateOrthonormalKets(value[0],name,visible,depth+1))return false;
+   value.childrenUpdated();return true;
+  }
   if((op=="qnamedket" || op=="qketstate") && value.size()==1) {
    std::string label=value[0].isSymbolic() ? value[0].symbol() :
     value[0].isVariable() ? value[0].variable()->referenceName() : "";
@@ -334,6 +347,8 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
   columns.set(Number(static_cast<long>(concrete.columns())));return true;
  }
  if(name=="qbasis" && value.size()==2) {rows=value[1];columns=m_one;return true;}
+ if(name=="qorthofamilyket" && value.size()==4) {rows=value[3];columns=m_one;return true;}
+ if(name=="qorthoidentity" && value.size()==1) {rows=value[0];columns=rows;return true;}
  if(name=="qorthoket" && value.size()==3) {
   MathStructure labels;
   if(orthonormalList(value[2],labels) && orthonormalLabels(labels)) {rows.set(Number(static_cast<long>(labels.size())));columns=m_one;return true;}
@@ -487,7 +502,8 @@ class QuantumAlgebraFunction: public MathFunction {
   for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   // Retain evaluated basis declarations even when the surrounding operation
   // must remain symbolic (for example, an overlap between distinct bases).
-  if(!args.equals(raw) && args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0) {
+  if(!args.equals(raw) && (args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0 ||
+     args.containsFunction(CALCULATOR->getFunction("qorthofamilyket"))>0)) {
    out=MathStructure(this,static_cast<MathStructure*>(NULL));
    for(size_t j=0;j<args.size();++j)out.addChild(args[j]);
    return 1;
@@ -633,6 +649,7 @@ class QuantumAlgebraFunction: public MathFunction {
   if(op=="qmul" || op=="qadjacent") {
    const MathStructure &b=args[1];
    if(quantumOperatorProduct(a,b,out)) {out.eval(eo);return 1;}
+   if(quantumBasisProduct(a,b,out)) {out.eval(eo);return 1;}
    if(a.isFunction() && a.function()->referenceName()=="qdag" && a.size()==1 &&
       a[0].isFunction() && a[0].function()->referenceName()=="qorthoket" &&
       b.isFunction() && b.function()->referenceName()=="qorthoket") {
@@ -774,6 +791,7 @@ bool quantumMatrixShape(const MathStructure &value, MathStructure &rows, MathStr
 }
 void registerQuantumAlgebra(Calculator &calculator) {
  registerQuantumOperatorDomain(calculator);
+ registerQuantumBasisDomain(calculator);
  calculator.addFunction(new QuantumOrthonormalKet());
  calculator.addFunction(new QuantumOrthonormalBasis());
  calculator.addFunction(new QuantumComplexParameter());

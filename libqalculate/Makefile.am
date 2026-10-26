@@ -31,6 +31,7 @@ libqalculateinclude_HEADERS = \
 noinst_HEADERS = QuantumReadout.h QuantumTrajectory.h QuantumNumericalState.h QuantumNegativity.h QuantumCSS.h QuantumStabilizer.h QuantumIndexed.h QuantumOrder.h QuantumBinary.h QuantumEvolution.h QuantumHellinger.h QuantumChannelRepresentations.h QuantumSuperoperators.h QuantumGeometry.h QuantumReset.h QuantumNoise.h QuantumOperators.h QuantumSubsystem.h QuantumGates.h QuantumMeasurement.h QuantumMatrixPower.h QuantumMatrixExp.h QuantumAlgebra.h QuantumOperatorDomain.h QuantumStateFunctions.h QuantumNotation.h QuantumStateMetrics.h QuantumTeX.h QuantumSingular.h MathStructure-support.h Calculator_p.h ExpressionItem_p.h MathStructure_p.h bernoulli_numbers.h primes.h $(libqalculate_compiled_def_headers)
 
 libqalculate_la_SOURCES = \
+	QuantumBasisDomain.cc \
 	QuantumMatrixPower.cc \
 	QuantumMatrixExp.cc \
 	QuantumMeasurement.cc \
@@ -92,6 +93,7 @@ libqalculate_la_SOURCES = \
 	MathStructure-convert.cc MathStructure-decompose.cc MathStructure-limit.cc
 
 nodist_libqalculate_la_SOURCES = $(libqalculate_compiled_def_sources)
+noinst_HEADERS += QuantumBasisDomain.h
 
 libqalculate_la_LDFLAGS = -version-info $(QALCULATE_CURRENT):$(QALCULATE_REVISION):$(QALCULATE_AGE) -no-undefined
 

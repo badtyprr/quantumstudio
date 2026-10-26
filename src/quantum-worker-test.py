@@ -24,6 +24,66 @@ def data(expression, *flags):
     return value
 
 
+# Indexed orthonormal families retain their integer domains through copy.
+for flags in ((), ("--approx",)):
+    def basis_value(expression):
+        return data("quantum:" + expression, *flags)
+
+    for body, expected in (("<b(0)|b(0)>", "1"), ("<b(0)|b(2)>", "0")):
+        assert basis_value("orthofamily(" + body + ",B,b,3)")["text"] == expected
+    assert basis_value("orthofamily(<b_0|b_2>,B,b,3)")["text"] == "0"
+    for expression in (
+        "orthofamily(orthobasis(<red|blue>,Colors,[|red>,|blue>]),B,b,n)",
+        "orthobasis(orthofamily(<b(0)|b(1)>,B,b,3),Colors,[|red>,|blue>])",
+        "orthobasis(orthobasis(<red|blue>,Other,[|green>,|yellow>]),Colors,[|red>,|blue>])",
+        "orthofamily(orthofamily(<b(0)|b(1)>,C,c,3),B,b,3)",
+    ):
+        assert basis_value(expression)["text"] == "0"
+    for vectors in (("[1;0;0]", "[0;1;0]", "[0;0;1]"),
+                    ("[1;1]/sqrt(2)", "[1;-1]/sqrt(2)"),
+                    ("[1;i]/sqrt(2)", "[1;-i]/sqrt(2)")):
+        size = len(vectors)
+        complete = basis_value("+".join("density(" + v + ")" for v in vectors))
+        assert complete["cells"] == basis_value("qidentity(" + str(size) + ")")["cells"]
+        for j, left in enumerate(vectors):
+            for k, right in enumerate(vectors):
+                assert basis_value("(" + left + ")†*(" + right + ")")["text"] == ("1" if j == k else "0")
+    for body in ("<b(j)|b(k)>", "<b(j)|b(j)>", "|b(j)>"):
+        original = basis_value("orthofamily(" + body + ",B,b,n)")
+        copied = basis_value(original["copy_text"])
+        assert copied["copy_text"] == original["copy_text"]
+        assert "qortho" not in copied["display_text"]
+        for replacement in ("n,0", "n,-1", "n,3/2", "j,-1", "j,1/2", "j,[0;1]"):
+            run("quantum:replace(" + copied["copy_text"] + "," + replacement + ")", "--json", *flags, success=False)
+        bounded = basis_value("replace(" + copied["copy_text"] + ",n,3)")["copy_text"]
+        run("quantum:replace(" + bounded + ",j,3)", "--json", *flags, success=False)
+    delta = basis_value("orthofamily(<b(j)|b(k)>,B,b,n)")["copy_text"]
+    assert "qorthodelta" in delta
+    assert basis_value("replace(replace(replace(" + delta + ",j,1),k,1),n,3)")["text"] == "1"
+    assert basis_value("replace(replace(replace(" + delta + ",j,1),k,2),n,3)")["text"] == "0"
+    for body in ("|b(j)><b(j)|", "density(|b(j)>)", "|b_j><b_j|"):
+        identity = basis_value("orthofamily(sum(" + body + ",0,n-1,j),B,b,n)")
+        assert identity["copy_text"] == "qorthoidentity(n)"
+        assert basis_value(identity["copy_text"])["copy_text"] == identity["copy_text"]
+        for size in (1, 3):
+            actual = basis_value("replace(" + identity["copy_text"] + ",n," + str(size) + ")")
+            expected = basis_value("qidentity(" + str(size) + ")")
+            assert actual["cells"] == expected["cells"] and actual["rows"] == actual["columns"] == size
+        run("quantum:replace(" + identity["copy_text"] + ",n,0)", "--json", *flags, success=False)
+    for body, upper in (("|b(j)><b(j)|", "n-2"), ("2|b(j)><b(j)|", "n-1"),
+                        ("|b(j)><b(k)|", "n-1"), ("|b(0)><b(0)|", "n-1")):
+        result = basis_value("orthofamily(sum(" + body + ",0," + upper + ",j),B,b,n)")
+        assert "qorthoidentity" not in result["copy_text"]
+    cross = basis_value("orthofamily(|b(j)>,B,b,n)†*orthofamily(|b(j)>,C,b,n)")
+    assert "qorthofamilyket" in cross["copy_text"] and "qorthodelta" not in cross["copy_text"]
+    assert basis_value(cross["copy_text"])["copy_text"] == cross["copy_text"]
+    for expression in (
+        "orthofamily(|b(j)>,B,b,0)", "orthofamily(|b(-1)>,B,b,n)",
+        "orthofamily(|b(j)>,B,b,n)†*orthofamily(|b(j)>,B,b,3)",
+        "orthofamily(|b(j)>,B,b,n)†*orthofamily(|c(j)>,B,c,n)",
+    ):
+        run("quantum:" + expression, "--json", *flags, success=False)
+
 # Explicit operator domains survive canonical copy and delayed substitution.
 for flags in ((), ("--approx",)):
     for property_name, valid, invalid in (
