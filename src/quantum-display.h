@@ -167,6 +167,14 @@ class Printer {
   }
   if(name=="qorthoket" && value.size()==3 && value[0].isSymbolic() && value[1].isSymbolic())
    return Fragment("|"+value[0].symbol()+"⟩ (basis "+value[1].symbol()+")");
+  if(name=="qorthofamilyket" && value.size()==4 && value[1].isSymbolic() && value[2].isSymbolic())
+   return Fragment("|"+value[2].symbol()+"("+render(value[0],depth+1).text+")⟩ (basis "+value[1].symbol()+", dimension "+render(value[3],depth+1).text+")");
+  if(name=="qorthoidentity" && value.size()==1)
+   return Fragment("I_("+render(value[0],depth+1).text+") (positive integer dimension)");
+  if(name=="qorthodelta" && value.size()==3) {
+   std::string a=render(value[0],depth+1).text,b=render(value[1],depth+1).text,n=render(value[2],depth+1).text;
+   return Fragment((value[0].equals(value[1]) ? "1" : "δ_("+a+", "+b+")")+" (integer indices 0 ≤ "+a+", "+b+" < "+n+")");
+  }
   if(name=="qbitlabel" && value.size()==2)
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qmember" && value.size()==2)

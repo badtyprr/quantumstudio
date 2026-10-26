@@ -42,12 +42,17 @@ $historyTest = Join-Path $validation 'classical-history-tests.exe'
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests did not compile.' }
 & $historyTest
 if ($LASTEXITCODE -ne 0) { throw 'Classical history tests failed.' }
-& "$fx\csc.exe" /nologo /target:exe "/out:$sessionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'SessionStoreTests.cs')
+& "$fx\csc.exe" /nologo /target:exe "/out:$sessionTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'BasisDeclarations.cs') (Join-Path $PSScriptRoot 'SessionStoreTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Session tests did not compile.' }
 & $sessionTest
 if ($LASTEXITCODE -ne 0) { throw 'Session tests failed.' }
 $matrixTest = Join-Path $validation 'matrix-declarations-tests.exe'
-& "$fx\csc.exe" /nologo /target:exe "/out:$matrixTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'MatrixDeclarationsTests.cs')
+$basisTest = Join-Path $validation 'basis-declarations-tests.exe'
+& "$fx\csc.exe" /nologo /target:exe "/out:$basisTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'BasisDeclarations.cs') (Join-Path $PSScriptRoot 'BasisDeclarationsTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Basis declaration tests did not compile.' }
+& $basisTest
+if ($LASTEXITCODE -ne 0) { throw 'Basis declaration tests failed.' }
+& "$fx\csc.exe" /nologo /target:exe "/out:$matrixTest" "/reference:$fx\System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'SessionStore.cs') (Join-Path $PSScriptRoot 'MatrixDeclarations.cs') (Join-Path $PSScriptRoot 'BasisDeclarations.cs') (Join-Path $PSScriptRoot 'MatrixDeclarationsTests.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Matrix declaration tests did not compile.' }
 & $matrixTest
 if ($LASTEXITCODE -ne 0) { throw 'Matrix declaration tests failed.' }
@@ -77,6 +82,16 @@ if ($LASTEXITCODE -ne 0) { throw 'Sampling tests did not compile.' }
 & $samplingTest
 if ($LASTEXITCODE -ne 0) { throw 'Sampling tests failed.' }
 $app = Join-Path $repo 'dist\QuantumStudio\QuantumStudio.exe'
+$basisGuiTest = Join-Path $validation 'basis-declarations-gui-tests.exe'
+$basisGuiArgs = @('/nologo', '/target:exe', '/platform:x64', "/out:$basisGuiTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll", (Join-Path $PSScriptRoot 'BasisDeclarationsGuiTests.cs'))
+& "$fx\csc.exe" @basisGuiArgs
+if ($LASTEXITCODE -ne 0) { throw 'Basis declaration GUI tests did not compile.' }
+$basisGuiImage = Join-Path $validation 'basis-declarations.png'
+$basisGuiProcess = Start-Process -FilePath $basisGuiTest -ArgumentList @(('"' + $app + '"'), ('"' + $basisGuiImage + '"')) -WindowStyle Hidden -PassThru
+try {
+    if (-not $basisGuiProcess.WaitForExit(30000)) { $basisGuiProcess.Kill(); $basisGuiProcess.WaitForExit(); throw 'Basis declaration GUI tests timed out.' }
+    if ($basisGuiProcess.ExitCode -ne 0) { throw 'Basis declaration GUI tests failed.' }
+} finally { $basisGuiProcess.Dispose() }
 $matrixGuiTest = Join-Path $validation 'matrix-declarations-gui-tests.exe'
 $matrixGuiArgs = @('/nologo', '/target:exe', '/platform:x64', "/out:$matrixGuiTest", "/reference:$fx\WPF\PresentationFramework.dll", "/reference:$fx\WPF\PresentationCore.dll", "/reference:$fx\WPF\WindowsBase.dll", "/reference:$fx\System.Xaml.dll", "/reference:$fx\System.Web.Extensions.dll", (Join-Path $PSScriptRoot 'MatrixDeclarationsGuiTests.cs'))
 & "$fx\csc.exe" @matrixGuiArgs

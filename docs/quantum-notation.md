@@ -1186,12 +1186,22 @@ Use `orthobasis(expression,B,[|red>,|blue>])` to declare the listed named kets a
 
 The declaration carries its basis name and complete ordered label list in each unresolved ket. It does not choose computational coordinates. An overlap between B and a different basis C stays symbolic, even when the displayed state labels match. Conflicting ordered label lists for the same named basis are rejected when contracted. Duplicate labels, empty lists and non-ket list entries are rejected. Existing coordinate-defined states and state families cannot be overridden by an orthonormal declaration. A declaration has expression scope; an inner declaration owns its own expression.
 
-Copy result preserves the declaration through a canonical `qorthoket` expression. Undeclared named kets retain their existing unresolved behavior. Symbolic indexed basis families and dedicated basis editing remain unfinished.
+Copy result preserves the declaration through a canonical `qorthoket` expression. Undeclared named kets retain their existing unresolved behavior.
 
 A sum containing each declared basis projector exactly once reduces to the identity in that dimension. For example, `orthobasis(|red><red|+|blue><blue|,B,[|red>,|blue>])` gives `[1,0;0,1]`. The same rule accepts `density(|red>)+density(|blue>)` inside the declaration. A single declared vector in dimension one gives a 1-by-1 identity matrix. This is the completeness condition used in [IBM's projective measurements discussion](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections).
 
 Partial sums, repeated projectors, off-diagonal dyads and mixed-basis sums are not treated as complete bases by this rule; other valid simplifications may still apply. Weighted terms do not receive the completeness proof. Conflicting declarations of the same basis are rejected. The rule uses explicit finite declarations; it does not infer that an undeclared set of vectors is complete.
 
+
+## Indexed orthonormal bases and workspace declarations
+
+Use `orthofamily(expression,B,b,n)` for the basis B with vectors `|b(j)>`, where n is a positive finite integer and j is an integer in `0..n-1`. Both may remain symbolic. `orthofamily(<b(j)|b(k)>,B,b,n)` reduces to a Kronecker delta with those domain constraints; equal symbolic indices display 1 while retaining the constraints for later substitution. For example, substituting j=3 into a dimension-three result is an error. Numeric indices give 1 when equal and 0 otherwise. Subscript notation `|b_j>` is also accepted; functional notation makes expressions such as `|b(j+1)>` explicit.
+
+`orthofamily(sum(|b(j)><b(j)|,0,n-1,j),B,b,n)` reduces to identity in dimension n without expanding n vectors. The same applies to `density(|b(j)>)`. Copy result retains the positive integer dimension, and substituting n=1 yields a 1-by-1 identity. Partial, repeated, weighted, and off-diagonal sums do not receive this completeness proof. Different basis names retain unknown overlaps. Matching basis names with conflicting families or dimensions are rejected when contracted. Inner declarations take precedence in their scope. Existing coordinate-defined state families cannot be overridden.
+
+Choose **Bases** in the workspace to add, edit, or remove declarations. A named basis has comma-separated labels, whose count determines its dimension. An indexed family has a family symbol and a dimension expression; indices start at zero. Labels and families must belong to only one workspace basis. **Cancel** discards edits; **Apply bases** updates the workspace. Calculations in Quantum notation use these declarations automatically. Ordinary calculator mode does not apply them.
+
+Save session stores basis declarations and a separate snapshot for each history entry. Opening an older session clears declarations absent from that file. Double-clicking history restores the declarations used by that calculation. Version 5 sessions require an application that understands basis declarations; older versions reject them. Copy result is independently usable in an empty workspace: canonical `qorthofamilyket`, `qorthodelta`, and `qorthoidentity` forms preserve the constraints needed by unresolved results.
 
 ### Runtime subroutine arguments and returns
 
