@@ -1,6 +1,6 @@
 # DEV-03: declared orthonormal bases
 
-Acceptance: declare a named basis and dimension; reduce inner products to Kronecker delta and complete projector sums to identity; leave unknown bases unresolved; preserve declarations through save/load and copy. Symbolic families and a dedicated editor are included in this scope. Release verification remains pending until the reviewed implementation is merged and packaged.
+Acceptance: declare a named basis and dimension; reduce inner products to Kronecker delta and complete projector sums to identity; leave unknown bases unresolved; preserve declarations through save/load and copy. Symbolic families and a dedicated editor are included in this scope. Released and package-verified in [e9e01c5a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e9e01c5a).
 
 ## Primary sources
 
@@ -27,4 +27,18 @@ The coordinate oracle is independent of named basis metadata: standard coordinat
 
 ## Delivery evidence
 
-Reviewed head, CI jobs, packaged audit, and released revision: pending. This file does not mark DEV-03 complete before those gates pass.
+Implementation [PR #376](https://github.com/badtyprr/quantumstudio/pull/376) reviewed at `f4ea596dc4daa87a620837227fae469d8d72c52a`; implementation merged revision `26bed7a5da1a03b44b6e715dcffd39a4b77590e6`. Independent Standards and Spec reviews have no outstanding findings. Review found and fixed mixed finite/indexed declaration capture, with independent exact/approximate nesting and copy probes.
+
+Required reviewed-head CI:
+
+- [Native build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40266046626/job/121388597936): passed.
+- [Windows GUI build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40266046648/job/121388598652): passed.
+- [Windows OpenQASM build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40266046628/job/121388597859): passed.
+
+The clean package passed all native, worker, GUI, importer/export and portable-archive gates. The 2,178 worker checks include the declared-basis cases and coordinate oracles; 22 declaration/storage checks cover persistence. The actual packaged GUI passed basis editing, calculations, cancel/apply/removal, save/open, and history restoration, with normal and minimum-size screenshots inspected. All payload hashes matched the immutable ZIP before publication.
+
+Release: [e9e01c5a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e9e01c5a). ZIP SHA-256: `4dc6ab77e5b551efc7d3721d93a5a39bf9776a6f9e64bc5260f33c30db066419`.
+
+The first clean package failed at transient export replacement error 1175. [PR #377](https://github.com/badtyprr/quantumstudio/pull/377) adds bounded retries for recoverable Windows errors while retaining atomic replacement and persistent-error reporting. The real temporary-lock regression, 18 atomic checks, 1,000 probe attempts without failure, and six module export cases passed. The fresh release package passed all gates. See [export recovery evidence](EXPORT-RETRY.md); the underlying filesystem cause remains unidentified.
+
+All explicit DEV-03 requirements are verified. This completion does not imply complete IBM lesson coverage or completion of unrelated roadmap items.
