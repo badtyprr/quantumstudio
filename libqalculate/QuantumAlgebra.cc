@@ -99,6 +99,15 @@ bool annotateOrthonormalKets(MathStructure &value,const MathStructure &name,cons
  if(value.isFunction()) {
   const std::string &op=value.function()->referenceName();
   if(op=="qorthoket" || op=="qorthofamilyket")return true;
+  if(op=="orthofamily" && value.size()==4) {
+   if(value[1].equals(name))return true;
+   MathStructure visible;visible.clearVector();
+   const std::string prefix=value[2].isSymbolic() ? value[2].symbol()+"_" : "";
+   for(size_t i=0;i<labels.size();++i)
+    if(prefix.empty() || labels[i].symbol().compare(0,prefix.size(),prefix)!=0)visible.addChild(labels[i]);
+   if(!annotateOrthonormalKets(value[0],name,visible,depth+1))return false;
+   value.childrenUpdated();return true;
+  }
   if(op=="orthobasis" && value.size()==3) {
    if(value[1].equals(name))return true;
    MathStructure inner,visible;visible.clearVector();

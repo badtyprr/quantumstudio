@@ -3,6 +3,7 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "Variable.h"
+#include <set>
 
 namespace {
 bool function(const MathStructure &value,const char *name,size_t size) {
@@ -56,18 +57,29 @@ public:
   out.set(this,static_cast<MathStructure*>(NULL));for(size_t k=0;k<args.size();++k)out.addChild(args[k]);return 1;
  }
 };
-bool annotate(MathStructure &value,const MathStructure &basis,const MathStructure &family,const MathStructure &dimension,unsigned depth=0) {
+bool annotate(MathStructure &value,const MathStructure &basis,const MathStructure &family,const MathStructure &dimension,unsigned depth=0,const std::set<std::string> &hidden=std::set<std::string>()) {
  if(CALCULATOR->aborted())return false;
  if(depth>128) {CALCULATOR->error(true,"Orthonormal declaration expression is too deeply nested.",NULL);return false;}
  if(function(value,"qorthofamilyket",4) || function(value,"qorthoket",3))return true;
  if(function(value,"orthofamily",4)) {
   if(value[1].equals(basis) || value[2].equals(family))return true;
-  if(!annotate(value[0],basis,family,dimension,depth+1))return false;
+  if(!annotate(value[0],basis,family,dimension,depth+1,hidden))return false;
   value.childrenUpdated();return true;
  }
  if(function(value,"orthobasis",3)) {
   if(value[1].equals(basis))return true;
-  if(!annotate(value[0],basis,family,dimension,depth+1))return false;
+  std::set<std::string> scoped=hidden;
+  // The inner finite declaration owns its labels, including labels that
+  // resemble an outer indexed family's subscripts.
+  std::vector<const MathStructure*> pendingLabels(1,&value[2]);
+  while(!pendingLabels.empty()) {
+   const MathStructure &label=*pendingLabels.back();pendingLabels.pop_back();
+   if(function(label,"qnamedket",1) || function(label,"qketstate",1)) {
+    if(label[0].isSymbolic())scoped.insert(label[0].symbol());
+    else if(label[0].isVariable())scoped.insert(label[0].variable()->referenceName());
+   } else for(size_t k=0;k<label.size();++k)pendingLabels.push_back(&label[k]);
+  }
+  if(!annotate(value[0],basis,family,dimension,depth+1,scoped))return false;
   value.childrenUpdated();return true;
  }
  MathStructure index;bool matched=false;
@@ -75,7 +87,7 @@ bool annotate(MathStructure &value,const MathStructure &basis,const MathStructur
  if(function(value,"qnamedket",1) || function(value,"qketstate",1)) {
   const std::string label=value[0].isSymbolic() ? value[0].symbol() : value[0].isVariable() ? value[0].variable()->referenceName() : "";
   const std::string prefix=family.symbol()+"_";
-  if(label.compare(0,prefix.size(),prefix)==0 && label.size()>prefix.size()) {
+  if(!hidden.count(label) && label.compare(0,prefix.size(),prefix)==0 && label.size()>prefix.size()) {
    Variable *existing=CALCULATOR->getActiveVariable(label);
    if(existing && !existing->isBuiltin() && existing->isKnown()) {CALCULATOR->error(true,"An orthonormal declaration cannot override an existing state definition.",NULL);return false;}
    std::string suffix=label.substr(prefix.size());bool digits=true;
@@ -93,7 +105,7 @@ bool annotate(MathStructure &value,const MathStructure &basis,const MathStructur
  for(size_t k=0;k<value.size();++k) {
   Argument *argument=value.isFunction() ? value.function()->getArgumentDefinition(k+1) : NULL;
   if(argument && argument->type()==ARGUMENT_TYPE_TEXT)continue;
-  if(!annotate(value[k],basis,family,dimension,depth+1))return false;
+  if(!annotate(value[k],basis,family,dimension,depth+1,hidden))return false;
  }
  if(value.size())value.childrenUpdated();return true;
 }

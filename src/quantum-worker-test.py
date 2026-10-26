@@ -44,10 +44,15 @@ for flags in ((), ("--approx",)):
                     ("[1;i]/sqrt(2)", "[1;-i]/sqrt(2)")):
         size = len(vectors)
         complete = basis_value("+".join("density(" + v + ")" for v in vectors))
-        assert complete["cells"] == basis_value("qidentity(" + str(size) + ")")["cells"]
+        assert complete["rows"] == complete["columns"] == size
+        assert [[complex(cell.replace("i", "j").replace("−", "-")) for cell in row] for row in complete["cells"]] == [[int(j == k) for k in range(size)] for j in range(size)]
         for j, left in enumerate(vectors):
             for k, right in enumerate(vectors):
-                assert basis_value("(" + left + ")†*(" + right + ")")["text"] == ("1" if j == k else "0")
+                assert complex(basis_value("(" + left + ")†*(" + right + ")")["text"].replace("i", "j").replace("−", "-")) == int(j == k)
+    inner_finite = basis_value("orthofamily(orthobasis(|b_1>,C,[|b_0>,|b_1>]),B,b,1)")
+    assert "qorthoket" in inner_finite["copy_text"] and "qorthofamilyket" not in inner_finite["copy_text"]
+    inner_indexed = basis_value("orthobasis(orthofamily(|b_1>,B,b,3),C,[|b_0>,|b_1>])")
+    assert "qorthofamilyket" in inner_indexed["copy_text"] and "qorthoket" not in inner_indexed["copy_text"]
     for body in ("<b(j)|b(k)>", "<b(j)|b(j)>", "|b(j)>"):
         original = basis_value("orthofamily(" + body + ",B,b,n)")
         copied = basis_value(original["copy_text"])
