@@ -14,4 +14,12 @@ Acceptance: retain the flushed temporary snapshot and retry sharing violations (
 
 `windows/ClassicalQasmExportTests.cs` retains the persistent exclusive-lock and invalid-destination checks, and adds a temporary exclusive lock released by another thread. The temporary-lock test failed against the original implementation before adding the retry. This exercises the real save path and file-sharing behavior, not a mocked retry counter.
 
-After the fix, all 18 atomic export checks passed, including persistent-lock preservation and temporary-lock recovery. The same minimized 1,000-attempt probe reported zero failures. Full GUI/module-export validation, scoped review, CI and a fresh release package remain delivery gates; a passing probe does not identify or repair the underlying source of transient filesystem refusal.
+After the fix, all 18 atomic export checks passed, including persistent-lock preservation and temporary-lock recovery. The same minimized 1,000-attempt probe reported zero failures. The full GUI suite passed. Six module GUI exports and twelve compiler round trips passed, including 24 exact/sample checks and 36 typed-expression checks. Independent Standards and Spec reviews cleared exact head `99c47751472ce18bb53b4d503eb7994307171f17` in [PR #377](https://github.com/badtyprr/quantumstudio/pull/377). A passing probe does not identify or repair the underlying source of transient filesystem refusal.
+
+Required reviewed-head CI:
+
+- [Native build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40270168559/job/121401059932): passed.
+- [Windows GUI build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40270168602/job/121401059868): passed.
+- [Windows OpenQASM build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40270168524/job/121401059703): passed.
+
+Merged as `e9e01c5a68703f822775fee6bed2f9d786cb0670`. A fresh clean package passed all unmodified gates and the packaged basis/circuit audits. Published [e9e01c5a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e9e01c5a). ZIP SHA-256: `4dc6ab77e5b551efc7d3721d93a5a39bf9776a6f9e64bc5260f33c30db066419`. The earlier failed package and its failure report are retained in local build evidence.
