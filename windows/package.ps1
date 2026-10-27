@@ -116,6 +116,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged runtime gate import checks failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-numeric.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import validation failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-dev06-source-evidence.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'DEV-06 pinned source evidence failed.' }
     & (Join-Path $PSScriptRoot 'test-runtime-angle-editor.ps1') -Distribution $output -PythonPath $PythonPath
     & (Join-Path $repo 'dist\gui-validation\classical-expression-tests.exe') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged classical expression adapter tests failed.' }
