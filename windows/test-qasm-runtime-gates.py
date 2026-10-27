@@ -64,6 +64,7 @@ cases=[
  ('qubit[2] q; h q[0]; bit c=measure q[0]; u3(pi*uint[1](c),.3,.7) q[1]; bit d=measure q[1];',{'00':.5,'11':.5}),
  ('int n=1; qubit q; u3(float(n),.3,.7) q; bit c=measure q;',{'0':math.cos(.5)**2,'1':math.sin(.5)**2}),
  ('int n=1; qubit q; u3(float(n),.3,.7) q; inv @ u3(float(n),.3,.7) q; bit c=measure q;',{'0':1}),
+ ('def f(int x,qubit q){p(pi*x) q;return;} int n=0; qubit q; h q; f(n,q); n=1; f(n,q); h q; bit c=measure q;',{'1':1}),
  ('int n=1; qubit[2] q; h q[0]; ctrl @ u3(float(n),.3,.7) q[0],q[1]; h q[0]; bit c=measure q[0];',{'0':(1+math.cos(.5))/2,'1':(1-math.cos(.5))/2}),
 ]
 for source,expected in cases:
@@ -84,6 +85,20 @@ original=bridge(compile(header+source,True))
 execute(original,expected)
 for published in (True,False):
     execute(bridge(compile(original['source'],published)),expected)
+
+if args.worker:
+    for source,message in (
+        ('int missing; int zero=0; qubit q; pow(1/zero) @ U(1.0,float(missing),0) q;', 'Integer variable read before initialization'),
+        ('int missing; qubit q; pow(0) @ U(1.0,0,float(missing)) q;', 'Integer variable read before initialization'),
+        ('int zero=0; qubit q; pow(1/zero) @ U(1.0,.3,.7) q;', 'Integer division by zero'),
+    ):
+        original=bridge(compile(header+source,True))
+        restored=bridge(compile(original['source']))
+        for payloads in (original,restored):
+            for exact in (True,False):
+                result=subprocess.run([str(args.worker.resolve()),'--exact-circuit' if exact else '--sample'],input=base64.b64decode(payloads['exact' if exact else 'sampled']),capture_output=True,env=env,timeout=30)
+                assert result.returncode!=0 and not result.stdout and message in result.stderr.decode(),result.stderr
+                checks+=1
 
 for source in (
  'int n=1; qubit[2] q; ctrl @ p(n) q[0],q[0];',

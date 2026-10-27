@@ -92,12 +92,15 @@ sealed class ClassicalProgramQasm {
   string name=gate.Kind==NumericalSampling.ParameterGateKind.Phase ? "p" :
    gate.Kind==NumericalSampling.ParameterGateKind.GlobalPhase ? "gphase" :
    gate.Kind==NumericalSampling.ParameterGateKind.U3 || gate.Kind==NumericalSampling.ParameterGateKind.PublishedU ? "u3" : "r"+gate.Kind.ToString().ToLowerInvariant();
+  // U3 first preserves theta, phi, lambda, power error order. The commuting
+  // correction repeats only pure, already-validated expressions without any
+  // intervening storage mutation; halving a finite theta cannot overflow.
+  text.Append(modifiers+name+"("+String.Join(", ",parameters)+")"+suffix);
   // Explicit phase makes the chosen U convention independent of the importer setting.
   if(gate.Kind==NumericalSampling.ParameterGateKind.PublishedU) {
    var controls=targets.GetRange(0,gate.Controls);
    text.Append(modifiers+"gphase(("+parameters[0]+") / 2.0)"+(controls.Count==0 ? ";\n" : " "+String.Join(", ",controls)+";\n"));
   }
-  text.Append(modifiers+name+"("+String.Join(", ",parameters)+")"+suffix);
  }
  void Statements(StringBuilder text,IList<NumericalSampling.Gate> gates) {
   foreach(int slot in scopes.Declarations(gates))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");

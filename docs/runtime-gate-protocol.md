@@ -58,10 +58,17 @@ Version 11 rotations remain supported without migration.
 The runtime gate editor exposes each U parameter, control-state pattern and
 integer power. Selection, replacement, invalid edits, undo/redo and save/reopen
 are tested. Export uses explicit modifiers and U3; published U adds an explicit
-controlled phase so re-importing under either U convention retains its meaning.
+controlled phase after U3 so re-importing under either U convention retains its
+meaning and first-error order. U3 evaluates all parameters before the power;
+the correction repeats only pure expressions already validated by that first
+instruction, with no intervening storage mutation. Side-effectful expressions
+are not supported.
 Import broadcasts static wire selections lane by lane, checks size agreement and
 wire collisions, and preserves runtime expressions rather than compiler initial
-values. Runtime custom-gate/subroutine parameters remain explicitly unsupported.
+values. Previously supported integer subroutine arguments use their existing
+activation slots after lowering; repeated calls retain separate lifetimes.
+Runtime custom-gate parameters and additional subroutine parameter/storage types
+remain outside this increment.
 
 ## Regression locations
 
