@@ -21,7 +21,9 @@ sealed class ClassicalCircuit {
   public string RotationDirection {get;set;}public string DistanceInterpretation {get;set;}
   public ExpressionNode Left {get;set;}public ExpressionNode Right {get;set;}
  }
+ public sealed class WireTargetNode {public int[] Candidates {get;set;}public ExpressionNode Index {get;set;}}
  public sealed class Step {
+  public WireTargetNode[] WireTargets {get;set;}public string WireSource {get;set;}
   public RealNode NumericValue {get;set;}
   public ParameterGateNode ParameterGate {get;set;}
   public string Axis {get;set;}public RealNode Angle {get;set;}
@@ -228,7 +230,13 @@ sealed class ClassicalCircuit {
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue,WireTargets,WireSource");
+   if(fields.ContainsKey("WireTargets") && fields["WireTargets"]!=null) {
+    if(version<14)throw Invalid("Runtime wire targets require circuit version 14.");
+    var targets=ArrayValue(fields["WireTargets"]);if(targets.Length<1 || targets.Length>3)throw Invalid("Use 1–3 runtime wire targets.");
+    if(!(Required(fields,"WireSource") is string))throw Invalid("Runtime wires require source context.");
+    foreach(var itemTarget in targets){var target=Fields(itemTarget,"Candidates,Index");IntegerArray(Required(target,"Candidates"));int nodes=0;ExpressionFields(Required(target,"Index"),0,ref nodes,version,true);}
+   } else if(fields.ContainsKey("WireSource") && fields["WireSource"]!=null)throw Invalid("Wire source context requires runtime wire targets.");
    if(fields.ContainsKey("ParameterGate") && fields["ParameterGate"]!=null) {
     if(version<12)throw Invalid("Parameterized gates require circuit version 12.");
     var parameter=Fields(fields["ParameterGate"],"Gate,Controls,ControlState,Parameters,Power");
@@ -273,7 +281,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version<2 || version>13)throw Invalid("Expected a version 2 through 13 classical circuit.");
+  if(version<2 || version>14)throw Invalid("Expected a version 2 through 14 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -329,7 +337,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="WireTargets" || field.Key=="WireSource" || field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -375,6 +383,11 @@ sealed class ClassicalCircuit {
    if(!condition && (step.Mask!=null || step.Value!=null))throw Invalid("Only conditions have a mask and value.");
    if((kind==NumericalSampling.Operation.Measure || kind==NumericalSampling.Operation.Reset) && !String.IsNullOrEmpty(step.Expression))throw Invalid("Measurement and reset cannot contain matrix expressions.");
    var gate=new NumericalSampling.Gate {Kind=kind,Expression=step.Expression,Wires=step.Wires==null ? null : (int[])step.Wires.Clone(),ClassicalBit=step.ClassicalBit};
+   if(step.WireTargets!=null) {
+    var targets=new List<NumericalSampling.WireTarget>();
+    foreach(var target in step.WireTargets)targets.Add(new NumericalSampling.WireTarget(target.Candidates,ConvertInteger(target.Index)));
+    gate.SelectedWires=new NumericalSampling.WireSelection(targets,step.WireSource);
+   }
    bool rotation=kind==NumericalSampling.Operation.Rotation;
    if(rotation) {
     if(version<11 || step.Axis==null || step.Angle==null)throw Invalid("Runtime rotations require version 11, an axis and an angle.");

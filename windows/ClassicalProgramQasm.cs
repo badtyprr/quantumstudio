@@ -14,6 +14,7 @@ sealed class ClassicalProgramQasm {
  readonly ClassicalExpressionQasm expressions;
  readonly ClassicalIntegerType[] variables;
  ClassicalQasmScopes scopes,numericScopes;
+ int nextWireAlias;
  readonly ClassicalNumericType[] numericTypes;readonly RuntimeDeclarations declarations;
  static readonly HashSet<string> Gates=new HashSet<string>(
   ("H X Y Z S T Sdg Tdg SX SXdg Rx Ry Rz P CNOT CZ SWAP CCX CY CH CCZ CSWAP "+
@@ -61,9 +62,24 @@ sealed class ClassicalProgramQasm {
    terms.Add(storage.Bit(bit)+" == "+(((value>>bit)&1)==0 ? "0" : "1"));
   return String.Join(" && ",terms);
  }
+ string[] Targets(StringBuilder text,NumericalSampling.Gate gate) {
+  if(gate.SelectedWires==null)return Array.ConvertAll(gate.Wires,n=>"q["+Number(n)+"]");
+  var targets=new List<string>();
+  foreach(var target in gate.SelectedWires.Targets) {
+   string name="_qw"+Number(nextWireAlias++);
+   text.Append("let "+name+" = q[{"+String.Join(",",Array.ConvertAll(target.Candidates,Number))+"}];\n");
+   targets.Add(name+"["+expressions.Integer(target.Index)+"]");
+  }
+  return targets.ToArray();
+ }
  void Gate(StringBuilder text,NumericalSampling.Gate gate) {
   string expression=gate.Expression.Trim();
-  if(expression=="I" && gate.Wires.Length==1)return;
+  var targets=Targets(text,gate);
+  string identity="I";for(int k=1;k<gate.Wires.Length;k++)identity="kron(I,"+identity+")";
+  if(expression==identity) {
+   if(gate.SelectedWires!=null)text.Append((targets.Length==1 ? "id" : targets.Length==2 ? "pow(0) @ cx" : "pow(0) @ ccx")+" "+String.Join(", ",targets)+";\n");
+   return;
+  }
   // The importer uses this exact scalar-times-identity form for static gphase.
   var phase=Regex.Match(expression,@"\A\(exp\(i\*\(([+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?)\)\)\*I\)\z");
   if(phase.Success && gate.Wires.Length==1) {
@@ -81,7 +97,7 @@ sealed class ClassicalProgramQasm {
    throw new InvalidDataException("Gate parameters or wire count do not match "+name+".");
   string angle=parameterized ? match.Groups[2].Value : "";
   if(parameterized)QasmGateSerializer.GateAngles(name,angle);
-  int unused=0;QasmGateSerializer.Append(text,name,angle,gate.Wires,ref unused);
+  int unused=0;QasmGateSerializer.AppendTargets(text,name,angle,targets,ref unused);
   if(unused!=0)throw new InvalidDataException("Gate export unexpectedly allocated measurement storage.");
  }
  void Block(StringBuilder text,string condition,IList<NumericalSampling.Gate> yes,IList<NumericalSampling.Gate> no) {
@@ -94,7 +110,7 @@ sealed class ClassicalProgramQasm {
   for(int i=0;i<gate.Controls;i++)modifiers.Append(((gate.ControlState>>(gate.Controls-1-i))&1)==0 ? "negctrl @ " : "ctrl @ ");
   modifiers.Append("pow("+expressions.Integer(gate.Power)+") @ ");
   var parameters=new List<string>();foreach(var value in gate.Parameters)parameters.Add(expressions.Real(value));
-  var targets=new List<string>();foreach(int wire in step.Wires)targets.Add("q["+Number(wire)+"]");
+  var targets=new List<string>(Targets(text,step));
   string suffix=targets.Count==0 ? ";\n" : " "+String.Join(", ",targets)+";\n";
   string name=gate.Kind==NumericalSampling.ParameterGateKind.Phase ? "p" :
    gate.Kind==NumericalSampling.ParameterGateKind.GlobalPhase ? "gphase" :
@@ -123,11 +139,11 @@ sealed class ClassicalProgramQasm {
     case NumericalSampling.Operation.Gate:Gate(text,gate);break;
     case NumericalSampling.Operation.ParameterGate:ParameterGate(text,gate);break;
     case NumericalSampling.Operation.Rotation:
-     text.Append("r"+gate.Axis.Value.ToString().ToLowerInvariant()+"("+expressions.Real(gate.Angle)+") q["+Number(gate.Wires[0])+"];\n");break;
+     text.Append("r"+gate.Axis.Value.ToString().ToLowerInvariant()+"("+expressions.Real(gate.Angle)+") "+Targets(text,gate)[0]+";\n");break;
     case NumericalSampling.Operation.Measure:
-     text.Append(storage.Bit(gate.ClassicalBit.Value)+" = measure q["+Number(gate.Wires[0])+"];\n");break;
+     text.Append(storage.Bit(gate.ClassicalBit.Value)+" = measure "+Targets(text,gate)[0]+";\n");break;
     case NumericalSampling.Operation.Reset:
-     text.Append("reset q["+Number(gate.Wires[0])+"];\n");break;
+     text.Append("reset "+Targets(text,gate)[0]+";\n");break;
     case NumericalSampling.Operation.Conditional:
      text.Append("if ("+MaskCondition(gate.Mask,gate.Value)+") {\n");Gate(text,gate);text.Append("}\n");break;
     case NumericalSampling.Operation.Branch:

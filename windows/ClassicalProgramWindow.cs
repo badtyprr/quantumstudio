@@ -75,7 +75,7 @@ sealed class ClassicalProgramWindow : Window {
   string[] keys={"Gate","Measure","Reset","Conditional","Channel","Readout","Branch","Assign","ExpressionBranch","StoreInteger","ClearInteger","While","Break","Continue","End","ForRange","Rotation","ParameterGate","StoreNumeric","ClearNumeric"};
   string[] labels={"Gate","Measure","Reset","Conditional gate","Noise channel","Readout error","If mask","Assign bits","If expression","Assign variable","Clear variable","While expression","Break loop","Continue loop","End program","For integer range","Runtime rotation","Runtime gate","Assign numeric","Clear numeric"};
   for(int i=0;i<keys.Length;i++)kind.Items.Add(new OperationChoice {Key=keys[i],Label=labels[i]});kind.SelectedValue="Gate";
-  Field(editor,"Operation",kind,150);Field(editor,"Expression / matrix / channel",expression,240);Field(editor,"Target wires / bits",wires,120);Field(editor,"Save to classical bit",destination,120);
+  Field(editor,"Operation",kind,150);Field(editor,"Expression / matrix / channel",expression,240);Field(editor,"Target wires / bits",wires,240);Field(editor,"Save to classical bit",destination,120);
   Field(editor,"Variable name",variableTarget,170);
   Field(editor,"Condition mask · decimal",mask,170);Field(editor,"Condition value · decimal",value,170);
   bottom.Children.Add(rangeFields);Field(rangeFields,"Start · inclusive",rangeStart,170);Field(rangeFields,"Stop · inclusive",rangeStop,170);Field(rangeFields,"Step · nonzero",rangeStep,170);
@@ -98,8 +98,25 @@ sealed class ClassicalProgramWindow : Window {
   tree.Resources[SystemColors.InactiveSelectionHighlightBrushKey]=WorkspaceTheme.Selection;
   tree.Resources[SystemColors.InactiveSelectionHighlightTextBrushKey]=WorkspaceTheme.Text;
   tree.Background=WorkspaceTheme.Surface;tree.Foreground=WorkspaceTheme.Text;tree.Margin=new Thickness(0,8,0,12);root.Children.Add(tree);
-  tree.SelectedItemChanged+=delegate {var node=tree.SelectedItem as TreeViewItem;var selected=node==null ? null : node.Tag as Selection;if(selected==null || selected.Index<0)return;var doc=history.Current.Snapshot();var step=Body(doc,selected.Route)[selected.Index];kind.SelectedValue=step.Kind;SelectParameterGate(step,doc);rotationAxis.SelectedItem=step.Axis ?? "Y";rotationAngle.Text=step.Angle==null ? "pi/2" : ClassicalRealExpressionText.Format(step.Angle,doc);rangeStart.Text=step.Range==null ? "0" : RangeText(step.Range.Start,doc);rangeStop.Text=step.Range==null ? "3" : RangeText(step.Range.Stop,doc);rangeStep.Text=step.Range==null ? "1" : RangeText(step.Range.Step,doc);expression.Text=step.NumericValue!=null ? ClassicalRealExpressionText.Format(step.NumericValue,doc) : step.IntegerValue!=null ? ClassicalExpressionText.Format(step.IntegerValue,doc) : step.ClassicalValue==null ? step.Expression ?? "" : ClassicalExpressionText.Format(step.ClassicalValue,doc);variableTarget.Text=step.VariableSlot.HasValue ? (step.Kind=="StoreNumeric" || step.Kind=="ClearNumeric" ? doc.NumericVariables[step.VariableSlot.Value].Name : doc.Variables[step.VariableSlot.Value].Name) : "";wires.Text=String.Join(",",step.Wires ?? new int[0]);destination.Text=step.ClassicalBit.HasValue ? step.ClassicalBit.Value.ToString(CultureInfo.InvariantCulture) : "";mask.Text=step.Mask ?? "1";value.Text=step.Value ?? "1";};
+  wires.ToolTip="Fixed wires: 0,1. Runtime wires: q[i]; q[{2,0}][j]. Separate runtime operands with semicolons.";
+  tree.SelectedItemChanged+=delegate {var node=tree.SelectedItem as TreeViewItem;var selected=node==null ? null : node.Tag as Selection;if(selected==null || selected.Index<0)return;var doc=history.Current.Snapshot();var step=Body(doc,selected.Route)[selected.Index];kind.SelectedValue=step.Kind;SelectParameterGate(step,doc);rotationAxis.SelectedItem=step.Axis ?? "Y";rotationAngle.Text=step.Angle==null ? "pi/2" : ClassicalRealExpressionText.Format(step.Angle,doc);rangeStart.Text=step.Range==null ? "0" : RangeText(step.Range.Start,doc);rangeStop.Text=step.Range==null ? "3" : RangeText(step.Range.Stop,doc);rangeStep.Text=step.Range==null ? "1" : RangeText(step.Range.Step,doc);expression.Text=step.NumericValue!=null ? ClassicalRealExpressionText.Format(step.NumericValue,doc) : step.IntegerValue!=null ? ClassicalExpressionText.Format(step.IntegerValue,doc) : step.ClassicalValue==null ? step.Expression ?? "" : ClassicalExpressionText.Format(step.ClassicalValue,doc);variableTarget.Text=step.VariableSlot.HasValue ? (step.Kind=="StoreNumeric" || step.Kind=="ClearNumeric" ? doc.NumericVariables[step.VariableSlot.Value].Name : doc.Variables[step.VariableSlot.Value].Name) : "";wires.Text=WireText(step,doc);destination.Text=step.ClassicalBit.HasValue ? step.ClassicalBit.Value.ToString(CultureInfo.InvariantCulture) : "";mask.Text=step.Mask ?? "1";value.Text=step.Value ?? "1";};
   Refresh();
+ }
+ static string WireText(ClassicalCircuit.Step step,ClassicalCircuit.Document context) {
+  if(step.WireTargets==null)return String.Join(",",step.Wires ?? new int[0]);
+  return String.Join("; ",step.WireTargets.Select(target=>
+   (target.Candidates.SequenceEqual(Enumerable.Range(0,context.Qubits)) ? "q" : "q[{"+String.Join(",",target.Candidates)+"}]")+"["+ClassicalExpressionText.Format(target.Index,context)+"]"));
+ }
+ static ClassicalCircuit.WireTargetNode[] ParseWireTargets(string text,ClassicalCircuit.Document context) {
+  var result=new List<ClassicalCircuit.WireTargetNode>();
+  foreach(string item in text.Split(';')) {
+   var match=System.Text.RegularExpressions.Regex.Match(item.Trim(),@"\Aq(?:\[\{([0-9, ]+)\}\])?\[(.+)\]\z");
+   if(!match.Success)throw new ArgumentException("Use q[index] or q[{2,0}][index], separated by semicolons.");
+   int[] candidates=match.Groups[1].Success ? Indices(match.Groups[1].Value) : Enumerable.Range(0,context.Qubits).ToArray();
+   result.Add(new ClassicalCircuit.WireTargetNode{Candidates=candidates,Index=ClassicalExpressionText.ParseInteger(match.Groups[2].Value,context)});
+  }
+  if(result.Count<1 || result.Count>3)throw new ArgumentException("Use one to three runtime target wires.");
+  return result.ToArray();
  }
  static int Int(string text) {int result;if(!Int32.TryParse(text.Trim(),NumberStyles.None,CultureInfo.InvariantCulture,out result))throw new ArgumentException("Enter nonnegative integer indices and sizes.");return result;}
  static int[] Indices(string text) {return String.IsNullOrWhiteSpace(text) ? new int[0] : text.Split(',').Select(Int).ToArray();}
@@ -132,7 +149,7 @@ sealed class ClassicalProgramWindow : Window {
   history.Edit(d=>{
    var previous=d.NumericVariables??new ClassicalCircuit.NumericVariable[0];
    for(int k=0;k<parsed.Length;k++){int old=Array.FindIndex(previous,v=>v.Name==parsed[k].Name);if(old>=0 && old!=k)throw new ArgumentException("Keep existing numeric variables in their original order.");}
-   d.Version=13;d.NumericVariables=parsed;if(d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;
+   d.Version=Math.Max(13,d.Version);d.NumericVariables=parsed;if(d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;
   });
  }
  static bool NumericReal(ClassicalCircuit.RealNode node) {
@@ -169,7 +186,7 @@ sealed class ClassicalProgramWindow : Window {
  }
  static string ParameterDescription(ClassicalCircuit.Step step,ClassicalCircuit.Document doc) {
   var gate=step.ParameterGate;return gate.Gate+"("+String.Join(", ",gate.Parameters.Select(p=>ClassicalRealExpressionText.Format(p,doc)))+") · power "+RangeText(gate.Power,doc)+
-   (gate.Controls==0 ? "" : " · controls "+Convert.ToString((long)UInt64.Parse(gate.ControlState,CultureInfo.InvariantCulture),2).PadLeft(gate.Controls,'0'))+" ["+String.Join(",",step.Wires)+"]";
+   (gate.Controls==0 ? "" : " · controls "+Convert.ToString((long)UInt64.Parse(gate.ControlState,CultureInfo.InvariantCulture),2).PadLeft(gate.Controls,'0'))+" ["+WireText(step,doc)+"]";
  }
  void SetFields() {string op=kind.SelectedItem==null ? null : ((OperationChoice)kind.SelectedItem).Key;bool branch=IsBranch(op),condition=op=="Branch" || op=="Conditional";parameterFields.Visibility=op=="ParameterGate" ? Visibility.Visible : Visibility.Collapsed;bool multi=(string)parameterKind.SelectedItem=="U3" || (string)parameterKind.SelectedItem=="PublishedU";((FrameworkElement)parameterPhi.Parent).Visibility=((FrameworkElement)parameterLambda.Parent).Visibility=multi ? Visibility.Visible : Visibility.Collapsed;rotationFields.Visibility=op=="Rotation" ? Visibility.Visible : Visibility.Collapsed;rangeFields.Visibility=op=="ForRange" ? Visibility.Visible : Visibility.Collapsed;foreach(Control unused in new Control[]{expression,wires,destination,mask,value})((FrameworkElement)unused.Parent).Visibility=op=="ForRange" ? Visibility.Collapsed : Visibility.Visible;variableTarget.IsEnabled=op=="StoreNumeric" || op=="ClearNumeric" || op=="StoreInteger" || op=="ClearInteger" || op=="ForRange";expression.IsEnabled=op=="StoreNumeric" || op=="StoreInteger" || op=="Assign" || op=="ExpressionBranch" || op=="While" || op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout";wires.IsEnabled=!branch && op!="End" && !IsTransfer(op) && op!="StoreInteger" && op!="ClearInteger" && op!="StoreNumeric" && op!="ClearNumeric";destination.IsEnabled=op=="Measure";mask.IsEnabled=value.IsEnabled=condition;((FrameworkElement)variableTarget.Parent).Visibility=(op=="Rotation" || op=="ParameterGate") ? Visibility.Collapsed : Visibility.Visible;if(op=="Rotation" || op=="ParameterGate")foreach(Control unused in new Control[]{expression,destination,mask,value})((FrameworkElement)unused.Parent).Visibility=Visibility.Collapsed;}
  static void Field(Panel panel,string label,Control control,int width) {var group=new StackPanel {Margin=new Thickness(0,6,12,6)};group.Children.Add(new TextBlock {Text=label});control.Width=width;group.Children.Add(control);panel.Children.Add(group);System.Windows.Automation.AutomationProperties.SetName(control,label);}
@@ -185,7 +202,11 @@ sealed class ClassicalProgramWindow : Window {
    for(int i=0;i<selected.Route.Length;i+=2) {var parent=body[selected.Route[i]];insideLoop|=IsLoop(parent.Kind);body=selected.Route[i+1]==0 ? parent.WhenTrue : parent.WhenFalse;}
    if(!insideLoop)throw new ArgumentException("Select a body inside a loop before adding Break or Continue.");
   }
-  var step=new ClassicalCircuit.Step {Kind=op,Expression=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout" ? expression.Text.Trim() : null,Wires=branch || integer || numeric || IsTransfer(op) || op=="End" ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch && !IsLoop(op) ? new ClassicalCircuit.Step[0] : null};
+  var step=new ClassicalCircuit.Step {Kind=op,Expression=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout" ? expression.Text.Trim() : null,Wires=branch || integer || numeric || IsTransfer(op) || op=="End" ? null : wires.Text.Contains("q[") ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch && !IsLoop(op) ? new ClassicalCircuit.Step[0] : null};
+  if(!branch && !integer && !numeric && !IsTransfer(op) && op!="End" && wires.Text.Contains("q[")) {
+   var doc=history.Current.Snapshot();step.WireTargets=ParseWireTargets(wires.Text,doc);step.Wires=Enumerable.Range(0,step.WireTargets.Length).ToArray();step.WireSource="Editor";
+   if(replace) {var old=Body(doc,selected.Route)[selected.Index];if(old.WireTargets!=null && WireText(old,doc)==wires.Text)step.WireSource=old.WireSource;}
+  }
   if(integer || range) {
    var doc=history.Current.Snapshot();int slot=Array.FindIndex(doc.Variables ?? new ClassicalCircuit.Variable[0],v=>v.Name==variableTarget.Text.Trim());
    if(slot<0)throw new ArgumentException("Declare the target variable first.");step.VariableSlot=slot;
@@ -201,7 +222,7 @@ sealed class ClassicalProgramWindow : Window {
   if(op=="ParameterGate")step.ParameterGate=ReadParameterGate();
   bool classical=op=="Assign" || op=="ExpressionBranch" || op=="While";
   if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
-  history.Edit(d=>{if(numeric || NumericReal(step.Angle) || (step.ParameterGate!=null && (step.ParameterGate.Parameters.Any(NumericReal) || ClassicalExpressionText.RequiredVersion(step.ParameterGate.Power)>=13)) || (step.Range!=null && new[]{step.Range.Start,step.Range.Stop,step.Range.Step}.Any(e=>ClassicalExpressionText.RequiredVersion(e)>=13)))d.Version=13;if(op=="ParameterGate"){d.Version=Math.Max(12,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="Rotation"){d.Version=Math.Max(11,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(range){d.Version=Math.Max(10,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="End"){d.Version=Math.Max(9,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(IsTransfer(op))d.Version=Math.Max(8,d.Version);if(op=="While"){d.Version=Math.Max(7,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=13){if(d.NumericVariables==null)d.NumericVariables=new ClassicalCircuit.NumericVariable[0];if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {
+  history.Edit(d=>{if(step.WireTargets!=null)d.Version=Math.Max(14,d.Version);if(numeric || NumericReal(step.Angle) || (step.ParameterGate!=null && (step.ParameterGate.Parameters.Any(NumericReal) || ClassicalExpressionText.RequiredVersion(step.ParameterGate.Power)>=13)) || (step.Range!=null && new[]{step.Range.Start,step.Range.Stop,step.Range.Step}.Any(e=>ClassicalExpressionText.RequiredVersion(e)>=13)))d.Version=Math.Max(13,d.Version);if(op=="ParameterGate"){d.Version=Math.Max(12,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="Rotation"){d.Version=Math.Max(11,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(range){d.Version=Math.Max(10,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="End"){d.Version=Math.Max(9,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(IsTransfer(op))d.Version=Math.Max(8,d.Version);if(op=="While"){d.Version=Math.Max(7,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=13){if(d.NumericVariables==null)d.NumericVariables=new ClassicalCircuit.NumericVariable[0];if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {
     var otherwise=old.WhenFalse ?? new ClassicalCircuit.Step[0];
     if((!branch && old.WhenTrue.Length!=0) || ((!branch || IsLoop(op)) && otherwise.Length!=0))throw new ArgumentException("Delete the body's children before a change that would discard them.");
     if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=IsLoop(op) ? null : otherwise;}
@@ -218,7 +239,7 @@ sealed class ClassicalProgramWindow : Window {
  }
  static TreeViewItem BodyNode(string title,ClassicalCircuit.Step[] body,int[] route,ClassicalCircuit.Document context) {
   var node=new TreeViewItem {Header=title,IsExpanded=true,Tag=new Selection {Route=route,Index=-1}};
-  for(int i=0;i<body.Length;i++) {var step=body[i];string description=step.Kind=="StoreNumeric" ? context.NumericVariables[step.VariableSlot.Value].Name+" = "+ClassicalRealExpressionText.Format(step.NumericValue,context) : step.Kind=="ClearNumeric" ? "Clear "+context.NumericVariables[step.VariableSlot.Value].Name : step.Kind=="ParameterGate" ? ParameterDescription(step,context) : step.Kind=="Rotation" ? "R"+step.Axis+"("+ClassicalRealExpressionText.Format(step.Angle,context)+") ["+String.Join(",",step.Wires)+"]" : step.Kind=="ForRange" ? "For "+context.Variables[step.VariableSlot.Value].Name+" in ["+RangeText(step.Range.Start,context)+" : "+RangeText(step.Range.Step,context)+" : "+RangeText(step.Range.Stop,context)+"]" : step.Kind=="End" ? "End program · keep saved results" : IsTransfer(step.Kind) ? (step.Kind=="Break" ? "Break nearest loop" : "Continue nearest loop") : step.Kind=="StoreInteger" ? context.Variables[step.VariableSlot.Value].Name+" = "+ClassicalExpressionText.Format(step.IntegerValue,context) : step.Kind=="ClearInteger" ? "Clear "+context.Variables[step.VariableSlot.Value].Name : step.Kind=="Assign" ? "Assign ["+String.Join(",",step.Wires)+"] ← "+ClassicalExpressionText.Format(step.ClassicalValue,context) : (step.Kind=="ExpressionBranch" || step.Kind=="While") ? (step.Kind=="While" ? "While " : "If ")+ClassicalExpressionText.Format(step.ClassicalValue,context) : step.Kind=="Branch" ? "If (record & "+step.Mask+") = "+step.Value : step.Kind+" "+(step.Expression ?? "")+" ["+String.Join(",",step.Wires ?? new int[0])+"]"+(step.ClassicalBit.HasValue ? " → bit "+step.ClassicalBit : "")+(step.Kind=="Conditional" ? " if (record & "+step.Mask+") = "+step.Value : "");
+  for(int i=0;i<body.Length;i++) {var step=body[i];string description=step.Kind=="StoreNumeric" ? context.NumericVariables[step.VariableSlot.Value].Name+" = "+ClassicalRealExpressionText.Format(step.NumericValue,context) : step.Kind=="ClearNumeric" ? "Clear "+context.NumericVariables[step.VariableSlot.Value].Name : step.Kind=="ParameterGate" ? ParameterDescription(step,context) : step.Kind=="Rotation" ? "R"+step.Axis+"("+ClassicalRealExpressionText.Format(step.Angle,context)+") ["+WireText(step,context)+"]" : step.Kind=="ForRange" ? "For "+context.Variables[step.VariableSlot.Value].Name+" in ["+RangeText(step.Range.Start,context)+" : "+RangeText(step.Range.Step,context)+" : "+RangeText(step.Range.Stop,context)+"]" : step.Kind=="End" ? "End program · keep saved results" : IsTransfer(step.Kind) ? (step.Kind=="Break" ? "Break nearest loop" : "Continue nearest loop") : step.Kind=="StoreInteger" ? context.Variables[step.VariableSlot.Value].Name+" = "+ClassicalExpressionText.Format(step.IntegerValue,context) : step.Kind=="ClearInteger" ? "Clear "+context.Variables[step.VariableSlot.Value].Name : step.Kind=="Assign" ? "Assign ["+String.Join(",",step.Wires)+"] ← "+ClassicalExpressionText.Format(step.ClassicalValue,context) : (step.Kind=="ExpressionBranch" || step.Kind=="While") ? (step.Kind=="While" ? "While " : "If ")+ClassicalExpressionText.Format(step.ClassicalValue,context) : step.Kind=="Branch" ? "If (record & "+step.Mask+") = "+step.Value : step.Kind+" "+(step.Expression ?? "")+" ["+WireText(step,context)+"]"+(step.ClassicalBit.HasValue ? " → bit "+step.ClassicalBit : "")+(step.Kind=="Conditional" ? " if (record & "+step.Mask+") = "+step.Value : "");
    var child=new TreeViewItem {Header=new TextBlock {Text=description,TextWrapping=TextWrapping.Wrap,FontFamily=new FontFamily("Consolas")},IsExpanded=true,Tag=new Selection {Route=route,Index=i}};node.Items.Add(child);
    if(IsBranch(step.Kind)) {child.Items.Add(BodyNode(IsLoop(step.Kind) ? "Loop body" : "Then",step.WhenTrue,route.Concat(new[]{i,0}).ToArray(),context));if(!IsLoop(step.Kind))child.Items.Add(BodyNode("Else",step.WhenFalse,route.Concat(new[]{i,1}).ToArray(),context));}
   }return node;
@@ -376,6 +397,36 @@ sealed class ClassicalProgramWindow : Window {
   WriteRotationExecutionCases(screenshot+".rotations");
   VerifyParameterGates(screenshot+".parameter-gates");
   VerifyNumerics(screenshot+".rotations");
+  VerifyRuntimeWires(screenshot+".rotations.wires");
+ }
+ void VerifyRuntimeWires(string prefix) {
+  Width=980;Height=920;
+  history.Open(ClassicalCircuit.From(new ClassicalCircuit.Document{Version=2,Qubits=2,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=2}},OutputBits=new[]{1,0},Steps=new ClassicalCircuit.Step[0]}).Serialize());Refresh();
+  variables.Text="i:int";ApplyVariables();Refresh();
+  kind.SelectedValue="StoreInteger";variableTarget.Text="i";expression.Text="1";ChangeStep(false);Refresh();
+  ((TreeViewItem)tree.Items[0]).IsSelected=true;kind.SelectedValue="Gate";expression.Text="X";wires.Text="q[i]";ChangeStep(false);Refresh();
+  Func<TreeViewItem> selected=()=> (TreeViewItem)((TreeViewItem)tree.Items[0]).Items[1];selected().IsSelected=true;
+  string original=history.Current.Serialize();
+  if(wires.Text!="q[i]" || !((TextBlock)selected().Header).Text.Contains("q[i]"))throw new Exception("Runtime wire selection is hidden behind placeholders.");
+  ChangeStep(true);if(history.Current.Serialize()!=original)throw new Exception("Unchanged runtime wire edit changed the circuit.");
+  wires.Text="q[{1,0}][i]";ChangeStep(true);Refresh();string edited=history.Current.Serialize();
+  history.Undo();if(history.Current.Serialize()!=original)throw new Exception("Runtime wire undo failed.");
+  history.Redo();if(history.Current.Serialize()!=edited)throw new Exception("Runtime wire redo failed.");Refresh();selected().IsSelected=true;
+  wires.Text="q[unknown]";try{ChangeStep(true);throw new Exception("Undefined wire expression accepted.");}catch(ArgumentException){}
+  if(history.Current.Serialize()!=edited)throw new Exception("Invalid runtime target changed history.");
+  wires.Text="q[{2,0}][i]";try{ChangeStep(true);throw new Exception("Out-of-range wire candidates accepted.");}catch(ArgumentException){}
+  if(history.Current.Serialize()!=edited)throw new Exception("Invalid alias map changed history.");
+  wires.Text="q[i]";ChangeStep(true);Refresh();
+  for(int wire=0;wire<2;wire++){((TreeViewItem)tree.Items[0]).IsSelected=true;kind.SelectedValue="Measure";wires.Text=wire.ToString(CultureInfo.InvariantCulture);destination.Text=wire.ToString(CultureInfo.InvariantCulture);ChangeStep(false);Refresh();}
+  string complete=history.Current.Serialize();history.Open(complete);Refresh();selected().IsSelected=true;
+  if(history.Current.Serialize()!=complete || !ClassicalProgramQasm.Export(history.Current).Contains("[v0]"))throw new Exception("Runtime targets lost save/reopen/export semantics.");
+  // Numeric editing must not downgrade a document containing wire selectors.
+  numericVariables.Text="f:float[32]";ApplyNumericVariables();Refresh();
+  if(history.Current.Snapshot().Version!=14)throw new Exception("Numeric declarations downgraded dynamic wires.");
+  history.Open(complete);Refresh();selected().IsSelected=true;
+  File.WriteAllText(prefix+".qcircuit",complete,new UTF8Encoding(false));status.Text="Verified · Runtime wire expressions, alias order, replacement, invalid edits, undo/redo and save/reopen.";
+  ((ScrollViewer)Content).ScrollToEnd();UpdateLayout();Capture(prefix+".png");
+  Width=MinWidth;Height=MinHeight;UpdateLayout();((ScrollViewer)Content).ScrollToEnd();UpdateLayout();Capture(prefix+".minimum.png");
  }
  void VerifyNumerics(string prefix) {
   Width=980;Height=920;

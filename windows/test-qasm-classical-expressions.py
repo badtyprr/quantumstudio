@@ -446,7 +446,7 @@ rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','b
 rejected += ['qubit q;bit c=measure q;bit[2] d;d=bit[2](c=="1");',
              'qubit q;bit c=measure q;bit[2] d;d=bit[2](!(c=="1"));']
 rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
-             'int a=1; qubit[2] q; x q[a];',
+             'int a=1; bit[2] c; c[a]=1;', # Quantum targets are covered by test-qasm-runtime-wires.py.
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
              'int a=1; bit[2] c; c[a]=1;','float[16] a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
 rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;{int '+('a'*65)+';}']

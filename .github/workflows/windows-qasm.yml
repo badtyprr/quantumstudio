@@ -64,6 +64,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Runtime gate import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-numeric.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-wires.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime wire import checks failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-dev07-source-evidence.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { throw 'DEV-07 pinned source evidence failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-dev06-source-evidence.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'DEV-06 pinned source evidence failed.' }
           $expressionCases = Join-Path $env:RUNNER_TEMP 'expression-qasm-cases.json'

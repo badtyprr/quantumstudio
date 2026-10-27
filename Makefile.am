@@ -30,6 +30,9 @@ EXTRA_DIST = config.rpath  \
 	windows/fixtures/dev06-upstream.json \
 	windows/fixtures/pyqasm-LICENSE.txt \
 	windows/test-qasm-runtime-angles.py \
+	windows/test-qasm-runtime-wires.py \
+	windows/test-dev07-source-evidence.py \
+	windows/fixtures/dev07-upstream.json \
 	windows/test-qasm-runtime-gates.py \
 	windows/ClassicalRealExpressionText.cs \
 	windows/ClassicalRealExpressionTextTests.cs \
@@ -93,6 +96,7 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm_subroutine_scope.py \
 	windows/qasm_runtime_subroutines.py \
 	windows/qasm_runtime_numeric.py \
+	windows/qasm_runtime_wires.py \
 	windows/qasm_concat_parser.py \
 	windows/test-classical-module-export.py \
 	windows/test-classical-export-ui.py \
