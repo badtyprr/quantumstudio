@@ -22,6 +22,14 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(step.integerExpression)step.integerExpression->validate(bits,variables);
    continue;
   }
+  if(step.kind==Step::Kind::StoreNumeric || step.kind==Step::Kind::ClearNumeric) {
+   const auto target=variables.numeric().type(step.variableSlot);
+   if(step.numericExpression) {
+    step.numericExpression->validate(bits,variables);
+    if(step.numericExpression->type().kind()==QuantumClassical::NumericType::Kind::Angle && target.kind()!=QuantumClassical::NumericType::Kind::Angle)throw std::invalid_argument("Angles cannot be stored in float variables");
+   }
+   continue;
+  }
   if(step.kind==Step::Kind::Assign) {
    QuantumClassical::validateAssignment(bits,step.wires,*step.expression,variables);continue;
   }
@@ -60,17 +68,8 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
 }
 TracePreservingMap runtimeRotation(const QuantumNumerics::RuntimeRotation &rotation,std::uint64_t record,
  unsigned bits,const QuantumClassical::IntegerStorage &variables,const EvaluationOptions &exact) {
- // QASM runtime arithmetic is binary64 in both backends. Preserve that value
- // exactly as a dyadic rational, then use symbolic trigonometry. Rounding a
- // numerical matrix and treating it as certified would violate trace preservation.
- const double value=rotation.angle(record,bits,variables);
- mpq_t rational;mpq_init(rational);mpq_set_d(rational,value);
- std::string text;
- try {
-  std::vector<char> buffer(mpz_sizeinbase(mpq_numref(rational),10)+mpz_sizeinbase(mpq_denref(rational),10)+4);
-  mpq_get_str(buffer.data(),10,rational);text=buffer.data();
- } catch(...) {mpq_clear(rational);throw;}
- mpq_clear(rational);
+ // Floats retain their exact dyadic value; modular angles retain rational pi.
+ const std::string text=rotation.typedAngle(record,bits,variables).exactRadians();
  using Axis=QuantumNumerics::RuntimeRotation::Axis;
  const char *name=rotation.axis()==Axis::X ? "Rx" : rotation.axis()==Axis::Y ? "Ry" : "Rz";
  EvaluationOptions options=exact;options.approximation=APPROXIMATION_EXACT;
@@ -128,6 +127,10 @@ public:
    const bool initialized=variables.initialized(slot);key.push_back(initialized);
    key.push_back(initialized ? variables.read(slot).value().bits() : 0);
   }
+  for(std::size_t slot=0;slot<variables.numeric().size();++slot) {
+   const bool initialized=variables.numeric().initialized(slot);key.push_back(initialized);
+   key.push_back(initialized ? variables.numeric().read(slot).bits() : 0);
+  }
   auto found=records_.find(key);
   RecordAccumulator sum(qubits_,bits_,maxCells_,exact_);
   if(found!=records_.end())sum.add(bits,found->second.density);
@@ -135,7 +138,7 @@ public:
   if(merged.empty())return;
   if(found==records_.end()) {
    const std::size_t cells=(std::size_t(1)<<qubits_)*(std::size_t(1)<<qubits_);
-   if(records_.size()>=maxCells_/cells || (variables.size() && records_.size()>=maxCells_/variables.size()))throw std::length_error("Exact variable record cell budget exceeded");
+   if(records_.size()>=maxCells_/cells || (variables.totalSize() && records_.size()>=maxCells_/variables.totalSize()))throw std::length_error("Exact variable record cell budget exceeded");
    records_.emplace(std::move(key),RuntimeRecord{bits,variables,merged.begin()->second,flow});
   } else found->second.density=merged.begin()->second;
  }
@@ -240,6 +243,11 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
     if(step.kind==Step::Kind::ClearInteger)variables.clear(step.variableSlot);
     else variables.write(step.variableSlot,step.integerExpression->evaluate(record.bits,bits,record.variables));
     output.add(record.bits,variables,record.density);
+   } else if(step.kind==Step::Kind::StoreNumeric || step.kind==Step::Kind::ClearNumeric) {
+    auto variables=record.variables;
+    if(step.kind==Step::Kind::ClearNumeric)variables.numeric().clear(step.variableSlot);
+    else variables.numeric().write(step.variableSlot,step.numericExpression->evaluateTyped(record.bits,bits,record.variables));
+    output.add(record.bits,variables,record.density);
    } else if(step.kind==Step::Kind::Assign) {
     output.add(QuantumClassical::assign(record.bits,bits,step.wires,*step.expression,record.variables),record.variables,record.density);
    } else if(step.kind==Step::Kind::Readout) {
@@ -287,10 +295,10 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector
 }
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
  const std::vector<QuantumClassical::IntegerType> &variableTypes,std::size_t maxCells,const EvaluationOptions &options,
- std::size_t maxLoopConditions) {
+ std::size_t maxLoopConditions,const std::vector<QuantumClassical::NumericType> &numericTypes) {
  checkpoint();RecordAccumulator initial(qubits,classicalBits,maxCells,options);
- if(variableTypes.size()>maxCells)throw std::length_error("Exact variable slot budget exceeded");
- const QuantumClassical::IntegerStorage variables(variableTypes);
+ if(variableTypes.size()>maxCells || numericTypes.size()>maxCells-variableTypes.size())throw std::length_error("Exact variable slot budget exceeded");
+ const QuantumClassical::IntegerStorage variables(variableTypes,numericTypes);
  std::size_t count=0;validate(steps,qubits,classicalBits,0,0,count,variables);
  EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
  const std::size_t n=std::size_t(1)<<qubits;

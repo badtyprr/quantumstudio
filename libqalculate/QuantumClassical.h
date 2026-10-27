@@ -7,11 +7,13 @@
 
 namespace QuantumClassical {
 class IntegerExpression;
-class IntegerStorage;
+class RuntimeStorage;
+using IntegerStorage=RuntimeStorage;
 // Immutable unsigned bit-vector expressions; not OpenQASM signed/float arithmetic.
 // Register/slice indices are least-significant first. Copies retain their value.
 class Bits {
  friend class IntegerExpression;
+ friend class RealExpression;
  unsigned depth() const;
  unsigned count() const;
  std::uint64_t references() const;

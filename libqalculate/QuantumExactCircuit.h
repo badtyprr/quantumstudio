@@ -14,10 +14,15 @@
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric };
  const Kind kind;
  const std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation;
  const std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate;
+ const std::shared_ptr<const QuantumClassical::RealExpression> numericExpression;
+ static CircuitStep storeNumeric(std::size_t slot,const QuantumClassical::RealExpression &value) {
+  return {Kind::StoreNumeric,{},0,0,0,{},{},{},{},{},slot,{},{},{},{},std::make_shared<const QuantumClassical::RealExpression>(value)};
+ }
+ static CircuitStep clearNumeric(std::size_t slot){return {Kind::ClearNumeric,{},0,0,0,{},{},{},{},{},slot};}
  static CircuitStep parameterized(const QuantumNumerics::RuntimeGate &operation,const std::vector<unsigned> &wires) {
   if(wires.size()!=operation.wireCount())throw std::invalid_argument("Runtime gate wire count does not match controls and target");
   return {Kind::ParameterGate,wires,0,0,0,{},{},{},{},{},0,{},{},{},std::make_shared<const QuantumNumerics::RuntimeGate>(operation)};
@@ -84,8 +89,8 @@ private:
   std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,
   std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},
   std::shared_ptr<const QuantumClassical::RangeExpression> range={},
-  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={}):
-  kind(k),rotation(rotation_),parameterGate(parameterGate_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
+  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={}):
+  kind(k),rotation(rotation_),parameterGate(parameterGate_),numericExpression(numeric_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.
@@ -111,6 +116,7 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
 // this budget even when a sampled trajectory would terminate almost surely.
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,
  const std::vector<CircuitStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
- std::size_t maxCells,const EvaluationOptions &options,std::size_t maxLoopConditions);
+ std::size_t maxCells,const EvaluationOptions &options,std::size_t maxLoopConditions,
+ const std::vector<QuantumClassical::NumericType> &numericTypes={});
 }
 #endif

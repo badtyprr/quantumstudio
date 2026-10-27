@@ -14,7 +14,8 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool parameterGates() const {return input.compare(0,10,"QSAMPLE12\n")==0;}
+ bool numeric() const {return input.compare(0,10,"QSAMPLE13\n")==0;}
+ bool parameterGates() const {return input.compare(0,10,"QSAMPLE12\n")==0 || numeric();}
  bool rotations() const {return input.compare(0,10,"QSAMPLE11\n")==0 || parameterGates();}
  bool ranges() const {return input.compare(0,10,"QSAMPLE10\n")==0 || rotations();}
  bool termination() const {return input.compare(0,9,"QSAMPLE9\n")==0 || ranges();}
@@ -27,7 +28,7 @@ public:
  bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE12 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE13 request.");
   if(ranges())position=10;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -135,15 +136,21 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
 QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total,const QuantumClassical::IntegerStorage *variables) {
  using Step=QuantumNumerics::TrajectoryStep;
  if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==18 || kind==19) {
+  const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->numeric().type(slot);
+  if(kind==19)return Step::clearNumeric(slot);
+  unsigned nodes=0;auto value=QuantumClassicalRequest::realNode(reader,0,nodes,true);
+  value.validate(classicalBits,*variables);return Step::storeNumeric(slot,value);
+ }
  if(kind==17) {
   auto wires=reader.wires(qubits,3);
-  return Step::parameterized(QuantumClassicalRequest::parameterGate(reader,classicalBits,*variables),wires);
+  return Step::parameterized(QuantumClassicalRequest::parameterGate(reader,classicalBits,*variables,reader.numeric()),wires);
  }
  if(kind==16) {
   if(!qubits)throw std::out_of_range("Runtime rotation needs a quantum wire.");
   const auto wire=static_cast<unsigned>(reader.integer(qubits-1));
-  return Step::rotate(QuantumClassicalRequest::rotation(reader,classicalBits,*variables),wire);
+  return Step::rotate(QuantumClassicalRequest::rotation(reader,classicalBits,*variables,reader.numeric()),wire);
  }
  if(kind==12)return Step::breakLoop();
  if(kind==13)return Step::continueLoop();
@@ -151,7 +158,7 @@ QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,u
  if(kind==15) {
   if(depth>=32)throw std::length_error("Circuit control flow exceeds 32 nesting levels.");
   const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
-  auto range=QuantumClassicalRequest::range(reader,classicalBits,*variables);
+  auto range=QuantumClassicalRequest::range(reader,classicalBits,*variables,reader.numeric());
   const unsigned count=static_cast<unsigned>(reader.integer(4096-total));
   std::vector<Step> body;body.reserve(count);
   for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,classicalBits,depth+1,total,variables));
@@ -160,12 +167,12 @@ QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,u
  if(kind==9 || kind==10) {
   const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->type(slot);
   if(kind==10)return Step::clearInteger(slot);
-  unsigned nodes=0;auto value=QuantumClassicalRequest::integerNode(reader,0,nodes,true,reader.bitExpressions());
+  unsigned nodes=0;auto value=QuantumClassicalRequest::integerNode(reader,0,nodes,true,reader.bitExpressions(),reader.numeric());
   value.validate(classicalBits,*variables);return Step::storeInteger(slot,value);
  }
  if(kind==11) {
   if(depth>=32)throw std::length_error("Circuit control flow exceeds 32 nesting levels.");
-  auto condition=QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions());
+  auto condition=QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions(),reader.numeric());
   const unsigned count=static_cast<unsigned>(reader.integer(4096-total));
   std::vector<Step> body;body.reserve(count);
   for(unsigned k=0;k<count;++k)body.push_back(readStep(calculator,reader,qubits,classicalBits,depth+1,total,variables));
@@ -173,13 +180,13 @@ QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,u
  }
  if(kind==7) {
   auto targets=reader.wires(classicalBits,classicalBits);
-  return Step::assign(targets,QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions()));
+  return Step::assign(targets,QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions(),reader.numeric()));
  }
  if(kind==6 || kind==8) {
   if(depth>=32)throw std::length_error("Sampling branches exceed 32 nesting levels.");
   std::uint64_t mask=0,value=0;
   if(kind==6) {mask=reader.integer(std::numeric_limits<std::uint64_t>::max());value=reader.integer(std::numeric_limits<std::uint64_t>::max());}
-  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions()) : QuantumClassical::Bits::constant(1,0);
+  auto condition=kind==8 ? QuantumClassicalRequest::read(reader,classicalBits,reader.typed(),variables,reader.bitExpressions(),reader.numeric()) : QuantumClassical::Bits::constant(1,0);
   std::vector<Step> bodies[2];
   for(auto &body:bodies) {
    const unsigned count=static_cast<unsigned>(reader.integer(4096-total));
@@ -219,8 +226,13 @@ std::string quantumSamplingRequest(Calculator &calculator,const std::string &inp
   const auto slots=reader.integer(4096);
   for(std::uint64_t slot=0;slot<slots;++slot)types.push_back(QuantumClassicalRequest::integerType(reader));
  }
+ std::vector<QuantumClassical::NumericType> numericTypes;
+ if(reader.numeric()) {
+  const auto slots=reader.integer(4096-types.size());
+  for(std::uint64_t slot=0;slot<slots;++slot)numericTypes.push_back(QuantumClassicalRequest::numericType(reader));
+ }
  const std::size_t loopBudget=reader.loops()?static_cast<std::size_t>(reader.integer(1000000)):1000000;
- const QuantumClassical::IntegerStorage declarations(types);
+ const QuantumClassical::IntegerStorage declarations(types,numericTypes);
  std::vector<unsigned> measured=reader.wires(reader.dynamic()?classicalBits:qubits,reader.dynamic()?classicalBits:qubits);
  unsigned count=static_cast<unsigned>(reader.integer(4096));
  std::vector<Gate> gates;gates.reserve(count);
@@ -232,7 +244,7 @@ std::string quantumSamplingRequest(Calculator &calculator,const std::string &inp
  }
  reader.end();
  std::map<std::uint64_t,unsigned> counts;
- if(reader.dynamic())counts=QuantumNumerics::sampleTrajectories(qubits,classicalBits,shots,seed,measured,steps,types,size_t(512)*1024*1024,QuantumNumerics::Cancellation(),loopBudget);
+ if(reader.dynamic())counts=QuantumNumerics::sampleTrajectories(qubits,classicalBits,shots,seed,measured,steps,types,size_t(512)*1024*1024,QuantumNumerics::Cancellation(),loopBudget,numericTypes);
  else {
   QuantumNumerics::StateVector state(qubits,size_t(512)*1024*1024);
   for(const Gate &gate:gates)state.apply(gate.matrix,gate.wires);

@@ -139,3 +139,5 @@ docs:
 	$(MAKE) -C $(top_srcdir)/docs/reference docs
 
 endif
+
+EXTRA_DIST += docs/runtime-numeric-protocol.md

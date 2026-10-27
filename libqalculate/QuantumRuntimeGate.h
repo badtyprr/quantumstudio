@@ -13,9 +13,9 @@ public:
  enum class Kind { X, Y, Z, Phase, GlobalPhase, U3, PublishedU };
  class Value {
   friend class RuntimeGate;
-  Kind kind_;std::vector<double> parameters_;
+  Kind kind_;std::vector<QuantumClassical::NumericValue> parameters_;
   unsigned controls_;std::uint64_t controlState_;int power_;
-  Value(Kind kind,const std::vector<double> &parameters,unsigned controls,std::uint64_t state,int power);
+  Value(Kind kind,const std::vector<QuantumClassical::NumericValue> &parameters,unsigned controls,std::uint64_t state,int power);
  public:
   unsigned targetCount() const;
   unsigned wireCount() const {return controls_+targetCount();}

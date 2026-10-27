@@ -256,3 +256,12 @@ quantum_runtime_gate_test_LDADD = $(test_LDADD)
 
 EXTRA_DIST += quantum-runtime-gate-request-test.py
 TESTS += quantum-runtime-gate-request-test.py
+
+check_PROGRAMS += quantum-classical-numeric-test quantum-runtime-numeric-test
+TESTS += quantum-classical-numeric-test quantum-runtime-numeric-test
+quantum_classical_numeric_test_SOURCES = quantum-classical-numeric-test.cc
+quantum_classical_numeric_test_LDADD = $(test_LDADD)
+quantum_runtime_numeric_test_SOURCES = quantum-runtime-numeric-test.cc
+quantum_runtime_numeric_test_LDADD = $(test_LDADD)
+EXTRA_DIST += quantum-runtime-numeric-request-test.py
+TESTS += quantum-runtime-numeric-request-test.py
