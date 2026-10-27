@@ -58,7 +58,7 @@ static class ClassicalExpressionText {
  }
  public static bool NeedsNumeric(string text,ClassicalCircuit.Document context) {
   if(text==null)return false;
-  if(Regex.IsMatch(text,@"\b(?:float|angle)\s*\[|\b(?:sin|cos|tan|arcsin|arccos|arctan|exp|log|sqrt|floor|ceiling|mod|compare|anglebits|numeric)\s*\("))return true;
+  if(Regex.IsMatch(text,@"\b(?:float|angle)\s*\[|\b(?:sin|cos|tan|arcsin|arccos|arctan|exp|log|sqrt|floor|ceiling|mod|compare|anglebits|numeric|angle)\s*\("))return true;
   return (context.NumericVariables??new ClassicalCircuit.NumericVariable[0]).Any(v=>Regex.IsMatch(text,@"(?<![\w])"+Regex.Escape(v.Name)+@"(?![\w])"));
  }
  public static R ParseNumeric(string text,ClassicalCircuit.Document context,int targetWidth=64) {

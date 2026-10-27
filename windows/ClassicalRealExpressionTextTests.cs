@@ -23,7 +23,7 @@ static class ClassicalRealExpressionTextTests {
   for(int i=1;i<32;i++)deep=new ClassicalCircuit.RealNode{Kind="Binary",Operator="Add",Left=deep,Right=new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="0"}};
   Check(json.Serialize(deep)==json.Serialize(ClassicalRealExpressionText.Parse(ClassicalRealExpressionText.Format(deep,context),context)));
   context.Version=13;context.Registers[0].Size=8;context.NumericVariables=new[]{new ClassicalCircuit.NumericVariable{Name="f",NumericKind="Float",Width=32},new ClassicalCircuit.NumericVariable{Name="a",NumericKind="Angle",Width=8}};
-  foreach(string source in new[]{"f+1","sin(f)","sqrt(float[32](9.0))","float[32](n/2)","float[64](f)","mod(f,2.0)","f**2.0","angle[8](\"10000000\")","a+angle[8](pi)","-a","~a","a / uint[8](2)","a << uint[8](1)","float[32](-0.0)"}) {
+  foreach(string source in new[]{"f+1","sin(f)","sqrt(float[32](9.0))","float[32](n/2)","float[64](f)","mod(f,2.0)","f**2.0","angle[8](\"10000000\")","a+angle[8](pi)","-a","~a","a / uint[8](2)","a << uint[8](1)","float[32](-0.0)","angle(1.0)"}) {
    var node=ClassicalRealExpressionText.Parse(source,context);
    string formatted=ClassicalRealExpressionText.Format(node,context);
    var again=ClassicalRealExpressionText.Parse(formatted,context);

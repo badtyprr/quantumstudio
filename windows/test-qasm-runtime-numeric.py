@@ -33,6 +33,14 @@ def run(payload,exact):
   probabilities[k]=float(json.loads(p.stdout)['text'].replace('\u2212','-'))
  return probabilities
 cases=[
+ ('angle[8] a=angle[8]("10000000");bool c=bool(bit[8](a));bit b=bit[1](c);',{'1':1}),
+ ('float f=1;qubit q;gphase(pi/4);bit c=measure q;',{'0':1}),
+ ('float f=1;bit c=bit(bool(f));',{'1':1}),
+ ('float f=1;bit c=bit(f==1);',{'1':1}),
+ ('angle[1] a=angle[1]("1");bit c=bit(a);',{'1':1}),
+ ('float f=1;bit[64] c=bit[64](uint(f));',{'0'*63+'1':1}),
+ ('float f=1;bit c;if(f==1){c=1;}',{'1':1}),
+ ('float f=1;bit c;if(f!=0){c=1;}',{'1':1}),
  ('float[32] f=16777216;f+=1;bit[8] c=bit[8](uint[8](f-16777216.0));',{'00000000':1}),
  ('float[64] f=16777216;f+=1;bit[8] c=bit[8](uint[8](f-16777216.0));',{'00000001':1}),
  ('angle[8] a=angle[8]("11111010");a+=angle[8]("00001010");bit[8] c=bit[8](a);',{'00000100':1}),

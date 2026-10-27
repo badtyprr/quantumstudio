@@ -64,6 +64,12 @@ sealed class ClassicalProgramQasm {
  void Gate(StringBuilder text,NumericalSampling.Gate gate) {
   string expression=gate.Expression.Trim();
   if(expression=="I" && gate.Wires.Length==1)return;
+  // The importer uses this exact scalar-times-identity form for static gphase.
+  var phase=Regex.Match(expression,@"\A\(exp\(i\*\(([+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?)\)\)\*I\)\z");
+  if(phase.Success && gate.Wires.Length==1) {
+   QasmGateSerializer.GateAngles("P",phase.Groups[1].Value);
+   text.Append("gphase("+phase.Groups[1].Value+");\n");return;
+  }
   // Only recognized named gates reach the shared serializer. Matrix-valued
   // calculator expressions require a separate decomposition, never a guess.
   var match=Regex.Match(expression,@"\A([A-Za-z][A-Za-z0-9]*)(?:\((.*)\))?\z");

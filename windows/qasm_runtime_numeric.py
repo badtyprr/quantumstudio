@@ -34,13 +34,15 @@ def lower_numeric(value,variables,integer,bit,mode='Real',expected_width=None,ta
         raise ValueError('Cast bit operands explicitly before numeric arithmetic.')
     def zero(kind,width):
         return {'Kind':'TypedConstant','NumericKind':kind,'Width':width,'ValueBits':'0'}
-    def truth(item):
+    def truth(item,explicit=False):
         node,kind,width=item
         if kind in ('Float','Angle'):
             comparison={'Kind':'NumericCompare','RealLeft':node,'RealRight':zero(kind,width)}
             return {'Kind':'IntegerCompare','Operator':'NotEqual','Left':comparison,'Right':{'Kind':'IntegerConstant','Signedness':'Signed','Width':0,'Value':'0'}},'Bits',1
         if kind=='Integer':return {'Kind':'IntegerCompare','Operator':'NotEqual','Left':node,'Right':{'Kind':'IntegerConstant','Signedness':'Signed','Width':0,'Value':'0'}},'Bits',1
-        if width!=1:raise ValueError('Boolean conversion of bit registers requires an explicit cast.')
+        if width!=1:
+            if not explicit:raise ValueError('Boolean conversion of bit registers requires an explicit cast.')
+            return {'Kind':'Binary','Operator':'NotEqual','Left':node,'Right':{'Kind':'Constant','Width':width,'Value':'0'}},'Bits',1
         return item
     def parse(node,depth=0):
         if depth>=32:raise ValueError('Numeric expressions exceed 32 levels.')
@@ -62,7 +64,7 @@ def lower_numeric(value,variables,integer,bit,mode='Real',expected_width=None,ta
                 return result,'Bits',width
         if isinstance(node,ast.Cast):
             operand,kind,width=child(node.argument)
-            size=(64 if node.type.size is None else node.type.size.value) if hasattr(node.type,'size') else None
+            size=((1 if isinstance(node.type,ast.BitType) else 64) if node.type.size is None else node.type.size.value) if hasattr(node.type,'size') else None
             if isinstance(node.type,NUMERIC_TYPES):
                 target='Float' if isinstance(node.type,ast.FloatType) else 'Angle'
                 if type(size) is not int or (size not in (32,64) if target=='Float' else not 1<=size<=64):raise ValueError('Use float32/64 or angle widths 1–64.')
@@ -72,7 +74,7 @@ def lower_numeric(value,variables,integer,bit,mode='Real',expected_width=None,ta
                 operand,kind,width=real(operand,kind,width,size if target=='Float' else 64)
                 if kind=='Angle' and target=='Float':raise ValueError('Angles cannot be cast to float.')
                 return {'Kind':'Cast','NumericKind':target,'Width':size,'Left':operand},target,size
-            if isinstance(node.type,ast.BoolType):return truth((operand,kind,width))
+            if isinstance(node.type,ast.BoolType):return truth((operand,kind,width),explicit=True)
             if isinstance(node.type,(ast.IntType,ast.UintType)):
                 size=0 if node.type.size is None else node.type.size.value
                 sign='Signed' if isinstance(node.type,ast.IntType) else 'Unsigned'
@@ -88,7 +90,9 @@ def lower_numeric(value,variables,integer,bit,mode='Real',expected_width=None,ta
                 if kind=='Angle':
                     if width!=size:raise ValueError('Angle-to-bit casts require matching widths.')
                     return {'Kind':'IntegerBits','Left':{'Kind':'AngleBits','RealLeft':operand}},'Bits',size
-                if kind=='Integer' and width==size:return {'Kind':'IntegerBits','Left':operand},'Bits',size
+                if kind=='Integer' and (width or 64)==size:
+                    if width==0:operand={'Kind':'IntegerCast','Signedness':type_of_integer(operand)[0],'Width':64,'Left':operand}
+                    return {'Kind':'IntegerBits','Left':operand},'Bits',size
                 raise ValueError('Bit casts require equal-width integer or angle operands.')
         if isinstance(node,ast.FunctionCall) and node.name.name in FUNCTIONS:
             name=node.name.name

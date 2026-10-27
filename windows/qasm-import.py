@@ -1424,7 +1424,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 simple = (isinstance(condition,(ast.Identifier,ast.IndexExpression)) or
                           isinstance(condition,ast.UnaryExpression) and condition.op.name=='!' or
                           isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
-                simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition))
+                simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition)) and not contains_numeric(condition,numeric_variables)
                 if not simple:
                     append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
