@@ -9,6 +9,7 @@
 #include "QuantumClassicalRangeExpression.h"
 #include "QuantumRuntimeRotation.h"
 #include "QuantumRuntimeGate.h"
+#include "QuantumWireSelection.h"
 #include <memory>
 
 namespace QuantumExact {
@@ -29,6 +30,15 @@ public:
  }
  static CircuitStep rotate(const QuantumNumerics::RuntimeRotation &operation,unsigned wire) {
   return {Kind::Rotation,{wire},0,0,0,{},{},{},{},{},0,{},{},std::make_shared<const QuantumNumerics::RuntimeRotation>(operation)};
+ }
+ const std::shared_ptr<const QuantumClassical::WireSelection> wireSelection;
+ // Replace fixed targets with a validated runtime selection of the same arity.
+ CircuitStep selectWires(const QuantumClassical::WireSelection &selection) const {
+  if(!(kind==Kind::Map || kind==Kind::Measure || kind==Kind::Reset || kind==Kind::Rotation || kind==Kind::ParameterGate))throw std::invalid_argument("Only quantum operations accept runtime wire selectors");
+  if(wireSelection)throw std::invalid_argument("Nested wire selections are not supported");
+  for(unsigned k=0;k<wires.size();++k)if(wires[k]!=k)throw std::invalid_argument("Runtime wire operation must use local ordinal targets");
+  if(selection.size()!=wires.size())throw std::invalid_argument("Wire selector count differs from operation arity");
+  return CircuitStep(*this,std::make_shared<const QuantumClassical::WireSelection>(selection));
  }
  const std::vector<unsigned> wires;
  const unsigned classicalBit;
@@ -83,14 +93,16 @@ public:
   return {Kind::ClearInteger,{},0,0,0,{},{},{},{},{},slot};
  }
 private:
+ CircuitStep(const CircuitStep &other,std::shared_ptr<const QuantumClassical::WireSelection> selection):
+  CircuitStep(other.kind,other.wires,other.classicalBit,other.mask,other.value,other.operation,other.assignment,other.whenTrue,other.whenFalse,other.expression,other.variableSlot,other.integerExpression,other.rangeExpression,other.rotation,other.parameterGate,other.numericExpression,selection) {}
  CircuitStep(Kind k,const std::vector<unsigned> &w,unsigned bit,std::uint64_t m,std::uint64_t v,
   std::shared_ptr<const TracePreservingMap> op={},std::shared_ptr<const ReadoutAssignment> a={},
   std::shared_ptr<const std::vector<CircuitStep>> yes={},std::shared_ptr<const std::vector<CircuitStep>> no={},
   std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,
   std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},
   std::shared_ptr<const QuantumClassical::RangeExpression> range={},
-  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={}):
-  kind(k),rotation(rotation_),parameterGate(parameterGate_),numericExpression(numeric_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
+  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={},std::shared_ptr<const QuantumClassical::WireSelection> selection={}):
+  kind(k),wireSelection(selection),rotation(rotation_),parameterGate(parameterGate_),numericExpression(numeric_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.

@@ -77,6 +77,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    if(step.whenFalse)validate(*step.whenFalse,depth+1,loopDepth);
    continue;
   }
+  if(step.wireSelection)step.wireSelection->validate(qubits,classicalBits,declarations);
   std::uint64_t wireMask=0;
   if(step.kind==TrajectoryStep::Kind::Readout) {
    for(unsigned bit:step.wires)if(bit>=classicalBits)
@@ -154,25 +155,26 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
     if(flow!=Flow::Normal)return flow;
     continue;
    }
+   const auto wires=step.wireSelection ? step.wireSelection->evaluate(bits,classicalBits,variables) : step.wires;
    if(step.kind==TrajectoryStep::Kind::StoreInteger)variables.write(step.variableSlot,step.integerExpression->evaluate(bits,classicalBits,variables));
    else if(step.kind==TrajectoryStep::Kind::ClearInteger)variables.clear(step.variableSlot);
    else if(step.kind==TrajectoryStep::Kind::StoreNumeric)variables.numeric().write(step.variableSlot,step.numericExpression->evaluateTyped(bits,classicalBits,variables));
    else if(step.kind==TrajectoryStep::Kind::ClearNumeric)variables.numeric().clear(step.variableSlot);
-   else if(step.kind==TrajectoryStep::Kind::Assign)bits=QuantumClassical::assign(bits,classicalBits,step.wires,*step.expression,variables);
-   else if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,step.wires,cancelled);
+   else if(step.kind==TrajectoryStep::Kind::Assign)bits=QuantumClassical::assign(bits,classicalBits,wires,*step.expression,variables);
+   else if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,wires,cancelled);
    else if(step.kind==TrajectoryStep::Kind::ParameterGate) {
     auto value=step.parameterGate->evaluate(bits,classicalBits,variables);
-    if(value.wireCount())state.apply(value.matrix(),step.wires,cancelled);
+    if(value.wireCount())state.apply(value.matrix(),wires,cancelled);
    }
-   else if(step.kind==TrajectoryStep::Kind::Rotation)state.apply(step.rotation->matrix(bits,classicalBits,variables),step.wires,cancelled);
+   else if(step.kind==TrajectoryStep::Kind::Rotation)state.apply(step.rotation->matrix(bits,classicalBits,variables),wires,cancelled);
    else if(step.kind==TrajectoryStep::Kind::Conditional) {
-    if((bits&step.mask)==step.value)state.apply(step.matrix,step.wires,cancelled);
-   } else if(step.kind==TrajectoryStep::Kind::Channel)state.channel(step.kraus,step.wires,draw(),cancelled);
+    if((bits&step.mask)==step.value)state.apply(step.matrix,wires,cancelled);
+   } else if(step.kind==TrajectoryStep::Kind::Channel)state.channel(step.kraus,wires,draw(),cancelled);
    else if(step.kind==TrajectoryStep::Kind::Readout)bits=step.assignment->apply(bits,draw());
    else if(step.kind==TrajectoryStep::Kind::Measure) {
     const std::uint64_t bit=std::uint64_t(1)<<step.classicalBit;
-    bits=(bits&~bit)|(state.measure(step.wires[0],draw(),cancelled) ? bit : 0);
-   } else if(state.measure(step.wires[0],draw(),cancelled))state.apply(X,step.wires,cancelled);
+    bits=(bits&~bit)|(state.measure(wires[0],draw(),cancelled) ? bit : 0);
+   } else if(state.measure(wires[0],draw(),cancelled))state.apply(X,wires,cancelled);
   }
   return Flow::Normal;
  };

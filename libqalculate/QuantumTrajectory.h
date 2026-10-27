@@ -8,6 +8,7 @@
 #include "QuantumClassicalRangeExpression.h"
 #include "QuantumRuntimeRotation.h"
 #include "QuantumRuntimeGate.h"
+#include "QuantumWireSelection.h"
 #include <memory>
 
 namespace QuantumNumerics {
@@ -22,6 +23,15 @@ public:
  static TrajectoryStep clearNumeric(std::size_t slot){return {Kind::ClearNumeric,{},{},0,0,0,{},{},{},{},{},slot};}
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
+ const std::shared_ptr<const QuantumClassical::WireSelection> wireSelection;
+ // Replace fixed targets with a validated runtime selection of the same arity.
+ TrajectoryStep selectWires(const QuantumClassical::WireSelection &selection) const {
+  if(!(kind==Kind::Gate || kind==Kind::Conditional || kind==Kind::Channel || kind==Kind::Measure || kind==Kind::Reset || kind==Kind::Rotation || kind==Kind::ParameterGate))throw std::invalid_argument("Only quantum operations accept runtime wire selectors");
+  if(wireSelection)throw std::invalid_argument("Nested wire selections are not supported");
+  for(unsigned k=0;k<wires.size();++k)if(wires[k]!=k)throw std::invalid_argument("Runtime wire operation must use local ordinal targets");
+  if(selection.size()!=wires.size())throw std::invalid_argument("Wire selector count differs from operation arity");
+  return TrajectoryStep(*this,std::make_shared<const QuantumClassical::WireSelection>(selection));
+ }
  const std::vector<unsigned> wires;
  const unsigned classicalBit;
  const std::uint64_t mask,value;
@@ -82,7 +92,9 @@ public:
   return {Kind::ClearInteger,{},{},0,0,0,{},{},{},{},{},slot};
  }
 private:
- TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={},std::shared_ptr<const RuntimeRotation> rotation_={},std::shared_ptr<const RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={}):kind(k),numericExpression(numeric_),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range),rotation(rotation_),parameterGate(parameterGate_) {}
+ TrajectoryStep(const TrajectoryStep &other,std::shared_ptr<const QuantumClassical::WireSelection> selection):
+  TrajectoryStep(other.kind,other.matrix,other.wires,other.classicalBit,other.mask,other.value,other.kraus,other.assignment,other.whenTrue,other.whenFalse,other.expression,other.variableSlot,other.integerExpression,other.rangeExpression,other.rotation,other.parameterGate,other.numericExpression,selection) {}
+ TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={},std::shared_ptr<const RuntimeRotation> rotation_={},std::shared_ptr<const RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={},std::shared_ptr<const QuantumClassical::WireSelection> selection={}):kind(k),wireSelection(selection),numericExpression(numeric_),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range),rotation(rotation_),parameterGate(parameterGate_) {}
 };
 // Each shot starts in |0...0> with zero classical memory. Conditions read saved
 // measurement bits, not the current quantum wires. Limits: 25 qubits, 64

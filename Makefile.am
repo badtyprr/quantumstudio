@@ -146,3 +146,5 @@ docs:
 endif
 
 EXTRA_DIST += docs/runtime-numeric-protocol.md docs/learning-evidence/DEV-06.md
+
+EXTRA_DIST += docs/runtime-wire-protocol.md
