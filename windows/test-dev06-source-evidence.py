@@ -79,6 +79,11 @@ def observe(doc,name):
  # Trusted observation is appended to a COPY of the imported model. The source
  # fixture and its separately executed program remain byte-for-byte unchanged.
  result=copy.deepcopy(doc);values={'angle-bits':{'ang1':4,'ang2':120,'ang3':12,'ang4':8,'ang5':96,'ang6':32},'float-casts':{'f':1.5585244804918115,'b':1,'i':1,'u':1},'integer-casts':{'x':-3,'b':1,'ux':253,'f':-3.0}}[name]
+ integer_types={'angle-bits':{},'float-casts':{'b':('Unsigned',1),'i':('Signed',0),'u':('Unsigned',0)},'integer-casts':{'x':('Signed',4),'b':('Unsigned',1),'ux':('Unsigned',8)}}[name]
+ numeric_types={'angle-bits':{'ang1':('Angle',4),'ang2':('Angle',8),'ang3':('Angle',4),'ang4':('Angle',4),'ang5':('Angle',8),'ang6':('Angle',8)},'float-casts':{'f':('Float',64)},'integer-casts':{'f':('Float',32)}}[name]
+ for key,kind,expected in [('Variables','Signedness',integer_types),('NumericVariables','NumericKind',numeric_types)]:
+  actual=doc.get(key,[])
+  assert len(actual)==len(expected) and {v['Name']:(v[kind],v['Width']) for v in actual}==expected,(name,key,actual,expected)
  offset=sum(r['Size'] for r in doc['Registers']);tests=[]
  for slot,var in enumerate(doc.get('Variables',[])):
   width=var['Width'] or 64;value=values[var['Name']]&((1<<width)-1)
@@ -118,11 +123,16 @@ for fixture in manifest['fixtures']:
  if a.frozen:
   assert process([a.frozen.resolve(),'--classical'],source.encode())==doc;checks+=1
  restored=compiler.convert(payload['source'],classical=True);again=bridge(restored);checks+=1
- name=fixture['id'];expected=reference(name,doc['Qubits'])
+ name=fixture['id']
+ qubits={'broadcast-u3':2,'controlled-u3':2,'global-phase':2,'powers':1,'inverses':3,'negative-control':2,'controlled-global-phase':1,'phase':1,'angle-bits':0,'integer-casts':0,'float-casts':0}[name]
+ assert doc['Qubits']==restored['Qubits']==qubits,(name,doc['Qubits'],restored['Qubits'])
+ expected=reference(name,qubits)
  if expected is not None:
   if a.worker:
    for candidate,exported in ((doc,False),(restored,True)):
-    actual=operator(candidate,exported);error=max(abs(x-y) for ar,er in zip(actual,expected) for x,y in zip(ar,er));assert error<2e-12,(name,error);checks+=1
+    actual=operator(candidate,exported)
+    assert len(actual)==len(expected)==1<<qubits and all(len(row)==1<<qubits for row in actual+expected)
+    error=max(abs(x-y) for ar,er in zip(actual,expected) for x,y in zip(ar,er));assert error<2e-12,(name,error);checks+=1
   run(payload,'');run(again,'')
  else:
   run(payload,'1101' if name=='integer-casts' else '');run(again,'1101' if name=='integer-casts' else '')
