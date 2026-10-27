@@ -10,8 +10,34 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation }
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate }
  public enum RotationAxis { X=0, Y=1, Z=2 }
+ public enum ParameterGateKind { X, Y, Z, Phase, GlobalPhase, U3, PublishedU }
+ public sealed class ParameterizedGate {
+  public ParameterGateKind Kind {get;private set;}
+  public int Controls {get;private set;}public ulong ControlState {get;private set;}
+  public IList<ClassicalRealExpression> Parameters {get;private set;}
+  public ClassicalIntegerExpression Power {get;private set;}
+  public int TargetCount {get{return Kind==ParameterGateKind.GlobalPhase ? 0 : 1;}}
+  public int WireCount {get{return Controls+TargetCount;}}
+  public ParameterizedGate(ParameterGateKind kind,IList<ClassicalRealExpression> parameters,int controls,ulong state,ClassicalIntegerExpression power) {
+   if(!Enum.IsDefined(typeof(ParameterGateKind),kind))throw new ArgumentException("Unknown runtime gate.");
+   Kind=kind;Controls=controls;ControlState=state;Power=power;
+   if(controls<0 || controls>3-TargetCount || state>=(1UL<<controls))throw new ArgumentException("Runtime gate controls exceed three wires or their state.");
+   int count=kind==ParameterGateKind.U3 || kind==ParameterGateKind.PublishedU ? 3 : 1;
+   if(parameters==null || parameters.Count!=count || power==null)throw new ArgumentException("Incorrect runtime gate parameters or power.");
+   var copy=new ClassicalRealExpression[count];
+   for(int i=0;i<count;i++){if(parameters[i]==null)throw new ArgumentException("Missing runtime gate parameter.");copy[i]=parameters[i];}
+   Parameters=Array.AsReadOnly(copy);
+  }
+  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+   foreach(var parameter in Parameters)parameter.Validate(bits,variables);Power.Validate(bits,variables);
+  }
+  internal void WriteNode(Action<ulong> number) {
+   number((ulong)Kind);number((ulong)Controls);number(ControlState);number((ulong)Parameters.Count);
+   foreach(var parameter in Parameters)parameter.WriteNode(number);Power.WriteNode(number);
+  }
+ }
  public sealed class IntegerRange {
   public readonly ClassicalIntegerExpression Start,Stop,Step;
   public IntegerRange(ClassicalIntegerExpression start,ClassicalIntegerExpression stop,ClassicalIntegerExpression step) {
@@ -22,7 +48,7 @@ static class NumericalSampling {
    foreach(var expression in new[]{Start,Stop,Step}) {expression.Validate(bits,variables);expression.WriteNode(number);}
   }
  }
- public sealed class Gate {public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
+ public sealed class Gate {public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  public sealed class Readout {public string Expression;public int[] Bits;}
  public static bool IsDynamic(IList<Gate> gates) {foreach(var gate in gates)if(gate!=null && gate.Kind!=Operation.Gate)return true;return false;}
  public sealed class Result {
@@ -80,7 +106,7 @@ static class NumericalSampling {
    foreach(int bit in error.Bits)if(Array.IndexOf(measured,bit)<0)throw new ArgumentException("Final readout targets must be measured bits.");
    operations.Add(new Gate {Kind=Operation.Readout,Wires=error.Bits,Expression=error.Expression});
   }
-  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false,loopProtocol=loopBudget.HasValue,transferProtocol=false,terminationProtocol=false,rangeProtocol=false,rotationProtocol=false;
+  int total=0;bool expressions=false,typedProtocol=false,bitExpressionProtocol=false,loopProtocol=loopBudget.HasValue,transferProtocol=false,terminationProtocol=false,rangeProtocol=false,rotationProtocol=false,parameterGateProtocol=false;
   Action<Gate,int,int> write=null;
   write=delegate(Gate gate,int depth,int loopDepth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
@@ -95,6 +121,16 @@ static class NumericalSampling {
    bool integer=gate.Kind==Operation.StoreInteger || gate.Kind==Operation.ClearInteger;
    if((!integer && gate.IntegerExpression!=null) || (!integer && !range && gate.VariableSlot.HasValue))throw new ArgumentException("Only variable operations accept integer expressions; variable operations and ranges accept variable targets.");
    if(range!=(gate.Range!=null))throw new ArgumentException("Only range loops require range expressions.");
+   bool parameterGate=gate.Kind==Operation.ParameterGate;
+   if(parameterGate!=(gate.ParameterGate!=null))throw new ArgumentException("Only parameterized gates require a runtime gate value.");
+   if(parameterGate) {
+    if(!classicalBits.HasValue || gate.Axis.HasValue || gate.Angle!=null || gate.Wires==null || gate.Wires.Length!=gate.ParameterGate.WireCount ||
+       !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Invalid parameterized gate fields.");
+    var used=new HashSet<int>();foreach(int wire in gate.Wires)if(wire<0 || wire>=qubits || !used.Add(wire))throw new ArgumentException("Runtime gate wires must be distinct and in range.");
+    gate.ParameterGate.Validate(bits,variables);number(17);number((ulong)gate.Wires.Length);foreach(int wire in gate.Wires)number((ulong)wire);gate.ParameterGate.WriteNode(number);
+    parameterGateProtocol=true;loopProtocol=true;
+    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");return;
+   }
    bool rotation=gate.Kind==Operation.Rotation;
    if(!rotation && (gate.Axis.HasValue || gate.Angle!=null))throw new ArgumentException("Only runtime rotations accept an axis and angle.");
    if(rotation) {
@@ -188,7 +224,7 @@ static class NumericalSampling {
    string budget=(loopBudget ?? 1000000).ToString(CultureInfo.InvariantCulture)+"\n";
    if(variables==null)text.Insert(declarationPosition,"0\n"+budget);
    else text.Insert(budgetPosition,budget);
-   text.Remove(0,exact ? 8 : 9).Insert(0,rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
+   text.Remove(0,exact ? 8 : 9).Insert(0,parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
   }
   else if(bitExpressionProtocol) {
    if(variables==null)text.Insert(declarationPosition,"0\n");

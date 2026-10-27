@@ -124,22 +124,61 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             return {'Kind':'Binary','Operator':'Multiply','Left':{'Kind':'Constant','ValueBits':'13830554455654793216'},'Right':operand}
         return integer()
     def gate(visitor,operation,ctrls=None):
-        if not isinstance(operation,ast.QuantumGate) or not runtime(visitor,operation.arguments):
+        phase_gate=isinstance(operation,ast.QuantumPhase)
+        arguments=[operation.argument] if phase_gate else operation.arguments
+        if not runtime(visitor,arguments) and not runtime(visitor,operation.modifiers):
             return original_gate(visitor,operation,ctrls)
-        if operation.name.name not in ('rx','ry','rz') or len(operation.arguments)!=1 or operation.modifiers or ctrls or in_function(visitor):
-            raise error_at(operation,'Runtime angles currently require unmodified rx, ry or rz outside subroutines.')
+        name='gphase' if phase_gate else operation.name.name
+        kinds={'rx':'X','ry':'Y','rz':'Z','p':'Phase','phase':'Phase','u1':'Phase','gphase':'GlobalPhase',
+               'u':'U3','U':'U3','u3':'U3','cp':'Phase','crx':'X','cry':'Y','crz':'Z'}
+        if name not in kinds or name in visitor._custom_gates or ctrls or in_function(visitor):
+            raise error_at(operation,'Runtime parameters require a supported primitive gate outside subroutines.')
+        if len(arguments)!=(3 if kinds[name]=='U3' else 1):
+            raise error_at(operation,'Incorrect number of runtime gate parameters.')
+        if getattr(operation,'duration',None) is not None:raise error_at(operation,'Timed gates are not supported.')
         try:
-            angle=real_angle(visitor,operation.arguments[0])
+            parameters=[real_angle(visitor,value) for value in arguments]
+            controls=[];power=ast.IntegerLiteral(1)
+            for modifier in operation.modifiers:
+                kind=modifier.modifier.name
+                if kind in ('ctrl','negctrl'):
+                    if runtime(visitor,modifier.argument):raise ValueError('Control counts must be compile-time constants.')
+                    count=1 if modifier.argument is None else Qasm3ExprEvaluator.evaluate_expression(modifier.argument)[0]
+                    if type(count) is not int or not 1<=count<=3:raise ValueError('Control counts must be 1–3.')
+                    controls.extend([kind=='ctrl']*count)
+                elif kind in ('inv','pow'):
+                    factor=ast.IntegerLiteral(-1) if kind=='inv' else normalize(visitor,modifier.argument,typed=True)
+                    power=ast.BinaryExpression(op=ast.BinaryOperator['*'],lhs=power,rhs=factor)
+                else:raise ValueError('Unsupported runtime gate modifier.')
+            if name in ('cp','crx','cry','crz'):controls.append(True)
+            count=len(controls)+(0 if phase_gate else 1)
+            if count>3:raise ValueError('Runtime gates support at most three wires.')
+            operands=operation.qubits or []
+            if len(operands)!=count:raise ValueError('Incorrect number of runtime gate operands.')
+            groups=[]
+            for operand in operands:
+                proxy=ast.QuantumGate(modifiers=[],name=ast.Identifier('id'),arguments=[],qubits=[operand])
+                groups.append(visitor._get_op_bits(proxy,qubits=True))
+            size=max([len(group) for group in groups] or [1])
+            if any(len(group) not in (1,size) for group in groups):raise ValueError('Broadcast register sizes must agree.')
+            state=0
+            for positive in controls:state=(state<<1)|int(positive)
+            expanded=[]
+            for index in range(size):
+                targets=[group[0 if len(group)==1 else index] for group in groups]
+                keys=[(target.name.name,target.indices[0][0].value) for target in targets]
+                if len(set(keys))!=len(keys):raise ValueError('Runtime gate wires must be distinct.')
+                item=ast.QuantumGate(modifiers=[],name=ast.Identifier(name),arguments=[],qubits=targets)
+                item.span=copy.deepcopy(operation.span)
+                # Keep the established version-11 representation for simple rotations.
+                if name in ('rx','ry','rz') and not operation.modifiers:
+                    item._quantum_runtime_angle=copy.deepcopy(parameters[0])
+                else:
+                    item._quantum_runtime_gate={'Gate':kinds[name],'Controls':len(controls),'ControlState':str(state),
+                                                'Parameters':copy.deepcopy(parameters),'Power':copy.deepcopy(power),'PublishedU':name=='U'}
+                expanded.append(item)
         except ValueError as error:
             raise error_at(operation,str(error)) from error
-        proxy=copy.deepcopy(operation);proxy.arguments=[ast.FloatLiteral(0.0)]
-        expanded=original_gate(visitor,proxy,ctrls)
-        for item in expanded:
-            if not isinstance(item,ast.QuantumGate) or item.name.name!=operation.name.name or len(item.qubits)!=1:
-                raise error_at(operation,'Runtime rotation expansion changed its gate semantics.')
-            item._quantum_runtime_angle=copy.deepcopy(angle)
-            # Compiler expansion may discard spans; retain the user's gate location.
-            item.span=copy.deepcopy(operation.span)
         return expanded
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
@@ -876,11 +915,6 @@ def convert(source, published_u=False, classical=False):
             control=node.set_declaration if isinstance(node,ast.ForInLoop) else None
             if control is not None and runtime(control) and not getattr(node,'_quantum_runtime_for',False):
                 raise error_at(node, 'Runtime loops require control flow not yet supported by the circuit importer.')
-            if isinstance(node,ast.QuantumGate) and runtime(node.arguments):
-                if node.name.name not in ('rx','ry','rz') or node.modifiers:
-                    raise error_at(node, 'Runtime gate parameters currently support unmodified rx, ry and rz.')
-            if isinstance(node,ast.QuantumPhase) and runtime(node.argument):
-                raise error_at(node, 'Runtime global-phase parameters are not yet supported.')
             if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and runtime(node.arguments):
                 raise error_at(node, 'Runtime function arguments are not yet supported by the circuit importer.')
             targets=(node.qubits if isinstance(node,(ast.QuantumGate,ast.QuantumPhase,ast.QuantumReset,ast.QuantumBarrier)) else
@@ -1355,16 +1389,25 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.QuantumGate):
                 if statement.duration is not None:
                     raise ValueError('Timed gates are not supported.')
-                if hasattr(statement,'_quantum_runtime_angle'):
+                if hasattr(statement,'_quantum_runtime_angle') or hasattr(statement,'_quantum_runtime_gate'):
                     def lower_angle(value):
                         if value['Kind']=='Integer':return {'Kind':'Integer','IntegerValue':classical_expression(value['IntegerValue'],classical,None,variables,True)}
                         if value['Kind']=='Constant':return {'Kind':'Constant','ValueBits':value['ValueBits']}
                         return {'Kind':'Binary','Operator':value['Operator'],'Left':lower_angle(value['Left']),'Right':lower_angle(value['Right'])}
-                    version=max(version,11)
                     try:
+                        if hasattr(statement,'_quantum_runtime_gate'):
+                            value=statement._quantum_runtime_gate
+                            node={'Gate':'PublishedU' if published_u and value['PublishedU'] else value['Gate'],
+                                  'Controls':value['Controls'],'ControlState':value['ControlState'],
+                                  'Parameters':[lower_angle(parameter) for parameter in value['Parameters']],
+                                  'Power':classical_expression(value['Power'],classical,None,variables,True)}
+                            version=max(version,12)
+                            append({'Kind':'ParameterGate','ParameterGate':node,'Wires':[reference(q,quantum) for q in statement.qubits]})
+                            continue
                         angle=lower_angle(statement._quantum_runtime_angle)
                     except ValueError as error:
                         raise error_at(statement,str(error)) from error
+                    version=max(version,11)
                     append({'Kind':'Rotation','Axis':statement.name.name[-1].upper(),'Angle':angle,'Wires':[reference(statement.qubits[0],quantum)]})
                     continue
                 for step in gate_steps(statement, lambda q: reference(q, quantum), published_u):

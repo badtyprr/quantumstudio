@@ -20,6 +20,7 @@ sealed class ClassicalCircuit {
   public ExpressionNode Left {get;set;}public ExpressionNode Right {get;set;}
  }
  public sealed class Step {
+  public ParameterGateNode ParameterGate {get;set;}
   public string Axis {get;set;}public RealNode Angle {get;set;}
   public string Kind {get;set;}public string Expression {get;set;}public int[] Wires {get;set;}
   public int? ClassicalBit {get;set;}public string Mask {get;set;}public string Value {get;set;}
@@ -29,6 +30,10 @@ sealed class ClassicalCircuit {
   public RangeNode Range {get;set;}
  }
  public sealed class RangeNode {public ExpressionNode Start {get;set;}public ExpressionNode Stop {get;set;}public ExpressionNode Step {get;set;}}
+ public sealed class ParameterGateNode {
+  public string Gate {get;set;}public int Controls {get;set;}public string ControlState {get;set;}
+  public RealNode[] Parameters {get;set;}public ExpressionNode Power {get;set;}
+ }
  public sealed class RealNode {
   public string Kind {get;set;}public string ValueBits {get;set;}public string Operator {get;set;}
   public ExpressionNode IntegerValue {get;set;}public RealNode Left {get;set;}public RealNode Right {get;set;}
@@ -177,7 +182,16 @@ sealed class ClassicalCircuit {
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate");
+   if(fields.ContainsKey("ParameterGate") && fields["ParameterGate"]!=null) {
+    if(version<12)throw Invalid("Parameterized gates require circuit version 12.");
+    var parameter=Fields(fields["ParameterGate"],"Gate,Controls,ControlState,Parameters,Power");
+    if(!(Required(parameter,"Gate") is string) || !(Required(parameter,"ControlState") is string))throw Invalid("Runtime gate name and control state must be text.");
+    Integer(Required(parameter,"Controls"));
+    var angles=ArrayValue(Required(parameter,"Parameters"));if(angles.Length>3)throw Invalid("Runtime gates have at most three parameters.");
+    foreach(var angle in angles){int nodes=0;RealFields(angle,0,ref nodes,version);}
+    int powerNodes=0;ExpressionFields(Required(parameter,"Power"),0,ref powerNodes,version,true);
+   }
    if(fields.ContainsKey("Axis") && fields["Axis"]!=null) {
     if(version<11 || !(fields["Axis"] is string))throw Invalid("Runtime rotation axes require version 11 and a name.");
    }
@@ -212,7 +226,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version<2 || version>11)throw Invalid("Expected a version 2 through 11 classical circuit.");
+  if(version<2 || version>12)throw Invalid("Expected a version 2 through 12 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -308,6 +322,14 @@ sealed class ClassicalCircuit {
     if(!Enum.TryParse(step.Axis,out axis) || axis.ToString()!=step.Axis || !Enum.IsDefined(typeof(NumericalSampling.RotationAxis),axis))throw Invalid("Unknown runtime rotation axis.");
     gate.Axis=axis;gate.Angle=ConvertReal(step.Angle);
    } else if(step.Axis!=null || step.Angle!=null)throw Invalid("Only runtime rotations accept an axis and angle.");
+   if(kind==NumericalSampling.Operation.ParameterGate) {
+    if(version<12 || step.ParameterGate==null)throw Invalid("Parameterized gates require version 12 and a gate value.");
+    var value=step.ParameterGate;NumericalSampling.ParameterGateKind gateKind;ulong controlState;
+    if(!Enum.TryParse(value.Gate,out gateKind) || gateKind.ToString()!=value.Gate || !Enum.IsDefined(typeof(NumericalSampling.ParameterGateKind),gateKind))throw Invalid("Unknown runtime gate.");
+    if(!UInt64.TryParse(value.ControlState,NumberStyles.None,CultureInfo.InvariantCulture,out controlState))throw Invalid("Invalid runtime control state.");
+    var parameters=new List<ClassicalRealExpression>();foreach(var parameter in value.Parameters)parameters.Add(ConvertReal(parameter));
+    gate.ParameterGate=new NumericalSampling.ParameterizedGate(gateKind,parameters,value.Controls,controlState,ConvertInteger(value.Power));
+   } else if(step.ParameterGate!=null)throw Invalid("Only parameterized gates accept a runtime gate value.");
    if(integer){gate.VariableSlot=step.VariableSlot;if(step.IntegerValue!=null)gate.IntegerExpression=ConvertInteger(step.IntegerValue);}
    if(range){gate.VariableSlot=step.VariableSlot;gate.Range=new NumericalSampling.IntegerRange(ConvertInteger(step.Range.Start),ConvertInteger(step.Range.Stop),ConvertInteger(step.Range.Step));}
    if(expression)gate.ClassicalExpression=ConvertExpression(step.ClassicalValue);

@@ -81,11 +81,30 @@ sealed class ClassicalProgramQasm {
   text.Append("if ("+condition+") {\n");Statements(text,yes);text.Append("}\n");
   if(no!=null && no.Count>0){text.Append("else {\n");Statements(text,no);text.Append("}\n");}
  }
+ void ParameterGate(StringBuilder text,NumericalSampling.Gate step) {
+  var gate=step.ParameterGate;
+  var modifiers=new StringBuilder();
+  for(int i=0;i<gate.Controls;i++)modifiers.Append(((gate.ControlState>>(gate.Controls-1-i))&1)==0 ? "negctrl @ " : "ctrl @ ");
+  modifiers.Append("pow("+expressions.Integer(gate.Power)+") @ ");
+  var parameters=new List<string>();foreach(var value in gate.Parameters)parameters.Add(expressions.Real(value));
+  var targets=new List<string>();foreach(int wire in step.Wires)targets.Add("q["+Number(wire)+"]");
+  string suffix=targets.Count==0 ? ";\n" : " "+String.Join(", ",targets)+";\n";
+  string name=gate.Kind==NumericalSampling.ParameterGateKind.Phase ? "p" :
+   gate.Kind==NumericalSampling.ParameterGateKind.GlobalPhase ? "gphase" :
+   gate.Kind==NumericalSampling.ParameterGateKind.U3 || gate.Kind==NumericalSampling.ParameterGateKind.PublishedU ? "u3" : "r"+gate.Kind.ToString().ToLowerInvariant();
+  // Explicit phase makes the chosen U convention independent of the importer setting.
+  if(gate.Kind==NumericalSampling.ParameterGateKind.PublishedU) {
+   var controls=targets.GetRange(0,gate.Controls);
+   text.Append(modifiers+"gphase(("+parameters[0]+") / 2.0)"+(controls.Count==0 ? ";\n" : " "+String.Join(", ",controls)+";\n"));
+  }
+  text.Append(modifiers+name+"("+String.Join(", ",parameters)+")"+suffix);
+ }
  void Statements(StringBuilder text,IList<NumericalSampling.Gate> gates) {
   foreach(int slot in scopes.Declarations(gates))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
   foreach(var gate in gates) {
    switch(gate.Kind) {
     case NumericalSampling.Operation.Gate:Gate(text,gate);break;
+    case NumericalSampling.Operation.ParameterGate:ParameterGate(text,gate);break;
     case NumericalSampling.Operation.Rotation:
      text.Append("r"+gate.Axis.Value.ToString().ToLowerInvariant()+"("+expressions.Real(gate.Angle)+") q["+Number(gate.Wires[0])+"];\n");break;
     case NumericalSampling.Operation.Measure:

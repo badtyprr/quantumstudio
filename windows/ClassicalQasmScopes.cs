@@ -26,6 +26,7 @@ static class ClassicalQasmLifetimes {
   // too, so intermediate trees cannot exhaust the stack while being rebuilt.
   if(depth>=32)throw new InvalidDataException("OpenQASM export local lifetimes exceed 32 levels of nesting.");
   instruction(step);Expression(step.ClassicalValue,expression);Expression(step.IntegerValue,expression);Real(step.Angle,expression);
+  if(step.ParameterGate!=null){foreach(var angle in step.ParameterGate.Parameters)Real(angle,expression);Expression(step.ParameterGate.Power,expression);}
   if(step.Range!=null){Expression(step.Range.Start,expression);Expression(step.Range.Stop,expression);Expression(step.Range.Step,expression);}
   if(step.WhenTrue!=null)foreach(var child in step.WhenTrue)Visit(child,instruction,expression,depth+1);
   if(step.WhenFalse!=null)foreach(var child in step.WhenFalse)Visit(child,instruction,expression,depth+1);
@@ -197,6 +198,7 @@ sealed class ClassicalQasmScopes {
   for(int i=0;i<body.Count;i++) {
    var gate=body[i];var site=new Site{Scope=scope,Index=i,Gate=gate};
    Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);Real(gate.Angle,scope);
+   if(gate.ParameterGate!=null){foreach(var parameter in gate.ParameterGate.Parameters)Real(parameter,scope);Integer(gate.ParameterGate.Power,scope);}
    if(gate.Kind==O.StoreInteger)uses[gate.VariableSlot.Value].Add(scope);
    if(gate.Kind==O.ClearInteger)clears[gate.VariableSlot.Value].Add(site);
    if(gate.Kind==O.Break || gate.Kind==O.Continue || gate.Kind==O.End)transfers.Add(site);

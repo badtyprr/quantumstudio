@@ -4,6 +4,30 @@ using System.IO;
 using System.Text;
 class ClassicalCircuitTests {
  static int checks;
+ static void ParameterGates() {
+  var doc=new ClassicalCircuit.Document{Version=12,Qubits=3,LoopConditionBudget=1000,Registers=new ClassicalCircuit.Register[0],Variables=new ClassicalCircuit.Variable[0],OutputBits=new int[0],
+   Steps=new[]{new ClassicalCircuit.Step{Kind="ParameterGate",Wires=new[]{2,0,1},ParameterGate=new ClassicalCircuit.ParameterGateNode{Gate="U3",Controls=2,ControlState="1",
+    Parameters=new[]{new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="0"},new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="4607182418800017408"},new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="4611686018427387904"}},
+    Power=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="1"}}}}};
+  var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  Check(ClassicalCircuit.Load(saved).Serialize()==saved);
+  Check(circuit.SamplingGates()[0].ParameterGate.ControlState==1);
+  foreach(bool exact in new[]{true,false}) {
+   var payload=exact ? NumericalSampling.RequestExact(3,0,new int[0],circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget) : NumericalSampling.RequestClassical(3,0,10,1,new int[0],circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget);
+   Check(Encoding.UTF8.GetString(payload).StartsWith(exact ? "QEXACT11\n" : "QSAMPLE12\n"));
+  }
+  for(int version=2;version<12;version++){var copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
+  foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
+   s=>s.ParameterGate=null,s=>s.ParameterGate.Gate="6",s=>s.ParameterGate.Gate="Unknown",s=>s.ParameterGate.Controls=-1,
+   s=>s.ParameterGate.Controls=3,s=>s.ParameterGate.ControlState="4",s=>s.ParameterGate.ControlState="-1",
+   s=>s.ParameterGate.Parameters=null,s=>s.ParameterGate.Parameters=new ClassicalCircuit.RealNode[0],
+   s=>s.ParameterGate.Parameters[1]=null,s=>s.ParameterGate.Power=null,
+   s=>s.Wires=new[]{0,0,1},s=>s.Wires=new[]{0,1},s=>s.Expression="H",s=>s.Axis="X",s=>s.Kind="Gate",
+   s=>s.ParameterGate.Parameters[2].ValueBits="9218868437227405312"
+  }){var copy=circuit.Snapshot();corrupt(copy.Steps[0]);Reject(()=>ClassicalCircuit.From(copy));}
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"ControlState\":\"1\"","\"ControlState\":1")));
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"ParameterGate\":{","\"ParameterGate\":{\"Unexpected\":0,")));
+ }
  static void Rotations(string worker) {
   var angle=new ClassicalCircuit.RealNode{Kind="Constant",ValueBits="13830554455654793216"};
   var doc=new ClassicalCircuit.Document{Version=11,LoopConditionBudget=1000,Qubits=1,
@@ -49,7 +73,7 @@ class ClassicalCircuitTests {
   for(int n=0;n<3;n++){circuit=ClassicalCircuit.Load(saved);Check(circuit.Serialize()==saved);Check(circuit.Snapshot().Version==10);}
   var copy=circuit.Snapshot();copy.Steps[1].Range.Start.Value="99";copy.Steps[1].WhenTrue[0].IntegerValue.Left.Slot=0;Check(circuit.Serialize()==saved);
   for(int version=2;version<=9;version++){copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
-  copy=circuit.Snapshot();copy.Version=12;Reject(()=>ClassicalCircuit.From(copy));
+  copy=circuit.Snapshot();copy.Version=13;Reject(()=>ClassicalCircuit.From(copy));
   copy=circuit.Snapshot();copy.Variables=null;Reject(()=>ClassicalCircuit.From(copy));
   copy=circuit.Snapshot();copy.LoopConditionBudget=null;Reject(()=>ClassicalCircuit.From(copy));
   foreach(Action<ClassicalCircuit.Step> corrupt in new Action<ClassicalCircuit.Step>[] {
@@ -309,6 +333,7 @@ class ClassicalCircuitTests {
    Console.WriteLine("PASS: "+checks+" cold legacy circuit checks.");return;
   }
   Rotations(args.Length>0 ? args[0] : null);
+  ParameterGates();
   ImportedCanonicalChecks();
   var draft=Program();var circuit=ClassicalCircuit.From(draft);var text=circuit.Serialize();
   Check(circuit.ClassicalBits==64 && circuit.Qubits==1);

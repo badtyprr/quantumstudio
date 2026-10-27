@@ -248,3 +248,11 @@ quantum_classical_integer_storage_test_LDADD = $(test_LDADD)
 
 EXTRA_DIST += quantum-loop-request-test.py
 TESTS += quantum-loop-request-test.py
+
+check_PROGRAMS += quantum-runtime-gate-test
+TESTS += quantum-runtime-gate-test
+quantum_runtime_gate_test_SOURCES = quantum-runtime-gate-test.cc
+quantum_runtime_gate_test_LDADD = $(test_LDADD)
+
+EXTRA_DIST += quantum-runtime-gate-request-test.py
+TESTS += quantum-runtime-gate-request-test.py

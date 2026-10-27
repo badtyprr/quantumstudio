@@ -7,12 +7,13 @@
 #include "QuantumClassicalIntegerExpression.h"
 #include "QuantumClassicalRangeExpression.h"
 #include "QuantumRuntimeRotation.h"
+#include "QuantumRuntimeGate.h"
 #include <memory>
 
 namespace QuantumNumerics {
 class TrajectoryStep {
 public:
- enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation };
+ enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate };
  const Kind kind;
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
@@ -26,6 +27,11 @@ public:
  const std::shared_ptr<const QuantumClassical::IntegerExpression> integerExpression;
  const std::shared_ptr<const QuantumClassical::RangeExpression> rangeExpression;
  const std::shared_ptr<const RuntimeRotation> rotation;
+ const std::shared_ptr<const RuntimeGate> parameterGate;
+ static TrajectoryStep parameterized(const RuntimeGate &operation,const std::vector<unsigned> &wires) {
+  if(wires.size()!=operation.wireCount())throw std::invalid_argument("Runtime gate wire count does not match controls and target");
+  return {Kind::ParameterGate,{},wires,0,0,0,{},{},{},{},{},0,{},{},{},std::make_shared<const RuntimeGate>(operation)};
+ }
  static TrajectoryStep rotate(const RuntimeRotation &operation,unsigned wire) {
   return {Kind::Rotation,{}, {wire},0,0,0,{},{},{},{},{},0,{},{},std::make_shared<const RuntimeRotation>(operation)};
  }
@@ -71,7 +77,7 @@ public:
   return {Kind::ClearInteger,{},{},0,0,0,{},{},{},{},{},slot};
  }
 private:
- TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={},std::shared_ptr<const RuntimeRotation> rotation_={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range),rotation(rotation_) {}
+ TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={},std::shared_ptr<const RuntimeRotation> rotation_={},std::shared_ptr<const RuntimeGate> parameterGate_={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range),rotation(rotation_),parameterGate(parameterGate_) {}
 };
 // Each shot starts in |0...0> with zero classical memory. Conditions read saved
 // measurement bits, not the current quantum wires. Limits: 25 qubits, 64

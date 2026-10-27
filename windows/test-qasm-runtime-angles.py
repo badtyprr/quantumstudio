@@ -43,10 +43,7 @@ for expression,kind in (('n/2','Integer'),('float[64](n)/2','Binary'),('n/2.0','
 for _ in range(3):
  result=compile('int n=1;qubit q;ry(n) q;n=2;ry(n) q;')
  r=rotations(result);assert len(r)==2 and r[0]['Angle']==r[1]['Angle']
-for source in ('int n=1;qubit q;inv @ ry(n) q;',
- 'int n=1;qubit q;p(n) q;',
- 'int n=1;qubit q;gphase(n);',
- 'int n=1;qubit q;ry(float[32](n)) q;',
+for source in ('int n=1;qubit q;ry(float[32](n)) q;',
  'int n=1;qubit q;ry(sin(n)) q;'):
  try:adapter.convert(header+source,classical=True)
  except Exception:checks+=1

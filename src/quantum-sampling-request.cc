@@ -14,7 +14,8 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool rotations() const {return input.compare(0,10,"QSAMPLE11\n")==0;}
+ bool parameterGates() const {return input.compare(0,10,"QSAMPLE12\n")==0;}
+ bool rotations() const {return input.compare(0,10,"QSAMPLE11\n")==0 || parameterGates();}
  bool ranges() const {return input.compare(0,10,"QSAMPLE10\n")==0 || rotations();}
  bool termination() const {return input.compare(0,9,"QSAMPLE9\n")==0 || ranges();}
  bool transfers() const {return input.compare(0,9,"QSAMPLE8\n")==0 || termination();}
@@ -26,7 +27,7 @@ public:
  bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE11 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE12 request.");
   if(ranges())position=10;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -134,7 +135,11 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
 QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total,const QuantumClassical::IntegerStorage *variables) {
  using Step=QuantumNumerics::TrajectoryStep;
  if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==17) {
+  auto wires=reader.wires(qubits,3);
+  return Step::parameterized(QuantumClassicalRequest::parameterGate(reader,classicalBits,*variables),wires);
+ }
  if(kind==16) {
   if(!qubits)throw std::out_of_range("Runtime rotation needs a quantum wire.");
   const auto wire=static_cast<unsigned>(reader.integer(qubits-1));

@@ -8,14 +8,20 @@
 #include "QuantumClassicalIntegerExpression.h"
 #include "QuantumClassicalRangeExpression.h"
 #include "QuantumRuntimeRotation.h"
+#include "QuantumRuntimeGate.h"
 #include <memory>
 
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate };
  const Kind kind;
  const std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation;
+ const std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate;
+ static CircuitStep parameterized(const QuantumNumerics::RuntimeGate &operation,const std::vector<unsigned> &wires) {
+  if(wires.size()!=operation.wireCount())throw std::invalid_argument("Runtime gate wire count does not match controls and target");
+  return {Kind::ParameterGate,wires,0,0,0,{},{},{},{},{},0,{},{},{},std::make_shared<const QuantumNumerics::RuntimeGate>(operation)};
+ }
  static CircuitStep rotate(const QuantumNumerics::RuntimeRotation &operation,unsigned wire) {
   return {Kind::Rotation,{wire},0,0,0,{},{},{},{},{},0,{},{},std::make_shared<const QuantumNumerics::RuntimeRotation>(operation)};
  }
@@ -78,8 +84,8 @@ private:
   std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,
   std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},
   std::shared_ptr<const QuantumClassical::RangeExpression> range={},
-  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={}):
-  kind(k),rotation(rotation_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
+  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={}):
+  kind(k),rotation(rotation_),parameterGate(parameterGate_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.
