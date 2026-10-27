@@ -48,13 +48,37 @@ static class NumericalSampling {
    foreach(var expression in new[]{Start,Stop,Step}) {expression.Validate(bits,variables);expression.WriteNode(number);}
   }
  }
- public sealed class Gate {public ClassicalRealExpression NumericExpression;public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
+ public sealed class WireTarget {
+  public readonly int[] Candidates;public readonly ClassicalIntegerExpression Index;
+  public WireTarget(int[] candidates,ClassicalIntegerExpression index) {
+   if(candidates==null || candidates.Length<1 || candidates.Length>25 || index==null)throw new ArgumentException("A wire target requires 1–25 candidates and an integer index.");
+   Candidates=(int[])candidates.Clone();Index=index;
+  }
+ }
+ public sealed class WireSelection {
+  public readonly IList<WireTarget> Targets;public readonly string Source;
+  public WireSelection(IList<WireTarget> targets,string source) {
+   if(targets==null || targets.Count<1 || targets.Count>3)throw new ArgumentException("A dynamic operation requires 1–3 wire targets.");
+   if(String.IsNullOrWhiteSpace(source) || Encoding.UTF8.GetByteCount(source)>512 || source.IndexOf('\0')>=0)throw new ArgumentException("Wire source context must fit 512 UTF-8 bytes.");
+   var copy=new WireTarget[targets.Count];for(int k=0;k<copy.Length;k++){if(targets[k]==null)throw new ArgumentException("Missing wire target.");copy[k]=new WireTarget(targets[k].Candidates,targets[k].Index);}
+   Targets=Array.AsReadOnly(copy);Source=source;
+  }
+  internal void Write(Action<ulong> number,StringBuilder text,int qubits,int bits,IList<ClassicalIntegerType> variables) {
+   number((ulong)Encoding.UTF8.GetByteCount(Source));text.Append(Source);number((ulong)Targets.Count);
+   foreach(var target in Targets) {
+    number((ulong)target.Candidates.Length);
+    foreach(int wire in target.Candidates){if(wire<0 || wire>=qubits)throw new ArgumentException("Wire candidate is outside the quantum register.");number((ulong)wire);}
+    target.Index.Validate(bits,variables);target.Index.WriteNode(number);
+   }
+  }
+ }
+ public sealed class Gate {public WireSelection SelectedWires;public ClassicalRealExpression NumericExpression;public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  static bool UsesNumeric(IList<Gate> gates,int depth=0) {
   if(gates==null)return false;
   if(depth>32)throw new ArgumentException("Circuit nesting exceeds 32 levels.");
   foreach(var gate in gates) {
    if(gate==null)continue;
-   if(gate.Kind==Operation.StoreNumeric || gate.Kind==Operation.ClearNumeric || gate.NumericExpression!=null ||
+   if(gate.SelectedWires!=null || gate.Kind==Operation.StoreNumeric || gate.Kind==Operation.ClearNumeric || gate.NumericExpression!=null ||
       (gate.Angle!=null && gate.Angle.UsesNumericProtocol) || (gate.IntegerExpression!=null && gate.IntegerExpression.UsesNumericProtocol) ||
       (gate.ClassicalExpression!=null && gate.ClassicalExpression.UsesNumericProtocol))return true;
    if(gate.ParameterGate!=null) {
@@ -91,6 +115,7 @@ static class NumericalSampling {
    variables=new List<ClassicalIntegerType>(variableTypes);
    foreach(var type in variables)if(type==null)throw new ArgumentException("Variable declarations require integer types.");
   }
+  bool wireProtocol=false;
   bool numericProtocol=numericTypes!=null || UsesNumeric(gates);
   if(numericProtocol) {
    if(!classicalBits.HasValue)throw new ArgumentException("Numeric expressions require explicit classical outputs.");
@@ -137,6 +162,13 @@ static class NumericalSampling {
   write=delegate(Gate gate,int depth,int loopDepth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
+   if(gate.SelectedWires!=null) {
+    if(!classicalBits.HasValue || depth>=32 || ++total>maxSteps)throw new ArgumentException("Runtime wires require explicit outputs and available nesting/step budget.");
+    if(gate.Kind!=Operation.Gate && gate.Kind!=Operation.Channel && gate.Kind!=Operation.Measure && gate.Kind!=Operation.Reset && gate.Kind!=Operation.Rotation && gate.Kind!=Operation.ParameterGate)throw new ArgumentException("Only quantum operations accept runtime wire targets; use a surrounding branch for conditions.");
+    if(gate.Wires==null || gate.Wires.Length!=gate.SelectedWires.Targets.Count)throw new ArgumentException("Wire target count differs from operation arity.");
+    for(int k=0;k<gate.Wires.Length;k++)if(gate.Wires[k]!=k)throw new ArgumentException("Runtime operations require local ordinal wires.");
+    wireProtocol=true;number(20);gate.SelectedWires.Write(number,text,qubits,bits,variables);
+   }
    if(gate.ClassicalBit.HasValue && (!classicalBits.HasValue || gate.Kind!=Operation.Measure))throw new ArgumentException("A classical destination requires an explicit classical-output measurement.");
    bool range=gate.Kind==Operation.ForRange;rangeProtocol|=range;
    bool loop=gate.Kind==Operation.While || range;loopProtocol|=loop;
@@ -266,7 +298,7 @@ static class NumericalSampling {
    string budget=(loopBudget ?? 1000000).ToString(CultureInfo.InvariantCulture)+"\n";
    if(variables==null)text.Insert(declarationPosition,"0\n"+budget);
    else text.Insert(budgetPosition,budget);
-   text.Remove(0,exact ? 8 : 9).Insert(0,numericProtocol ? (exact ? "QEXACT12\n" : "QSAMPLE13\n") : parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
+   text.Remove(0,exact ? 8 : 9).Insert(0,wireProtocol ? (exact ? "QEXACT13\n" : "QSAMPLE14\n") : numericProtocol ? (exact ? "QEXACT12\n" : "QSAMPLE13\n") : parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
   }
   else if(bitExpressionProtocol) {
    if(variables==null)text.Insert(declarationPosition,"0\n");

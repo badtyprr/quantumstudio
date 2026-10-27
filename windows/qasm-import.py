@@ -21,6 +21,7 @@ from qasm_source_diagnostics import error_at
 from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
+from qasm_runtime_wires import RuntimeWires
 
 from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, contains_numeric, lower_numeric
 
@@ -49,6 +50,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_declaration = QasmVisitor._visit_classical_declaration
     original_function = QasmVisitor._visit_function_call
     original_gate = QasmVisitor._visit_generic_gate_operation
+    original_measurement = QasmVisitor._visit_measurement
+    original_reset = QasmVisitor._visit_reset
     runtime_integer_names={node.identifier.name for node in nodes(module.original_program,True)
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
     def in_function(visitor):
@@ -184,6 +187,15 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         except ValueError as error:
             raise error_at(operation,str(error)) from error
         return expanded
+    wire_adapter=RuntimeWires(runtime,lambda visitor,value,typed=False: normalize(visitor,value,typed=typed))
+    def indexed_gate(visitor,operation,ctrls=None):
+        if ctrls and any(wire_adapter.dynamic(visitor,operand) for operand in operation.qubits or []):
+            raise error_at(operation,'Runtime indexed custom-gate controls are not supported.')
+        return wire_adapter.gate(visitor,operation,lambda proxy:gate(visitor,proxy,ctrls))
+    def indexed_measurement(visitor,operation):
+        return wire_adapter.measurement(visitor,operation,lambda proxy:original_measurement(visitor,proxy))
+    def indexed_reset(visitor,operation):
+        return wire_adapter.reset(visitor,operation,lambda proxy:original_reset(visitor,proxy))
     def bit_function(value):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
     def bitstring_boolean(value):
@@ -521,7 +533,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     QasmVisitor._visit_phase_operation = phase
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
-        QasmVisitor._visit_generic_gate_operation = gate
+        QasmVisitor._visit_generic_gate_operation = indexed_gate
+        QasmVisitor._visit_measurement = indexed_measurement
+        QasmVisitor._visit_reset = indexed_reset
         QasmVisitor._visit_function_call = function_call
         QasmVisitor._construct_visit_map = visit_map
         QasmVisitor._visit_switch_statement = switch
@@ -535,6 +549,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         module.unroll(max_loop_iters=4096, external_gates=list(primitives))
     finally:
         QasmVisitor._visit_generic_gate_operation = original_gate
+        QasmVisitor._visit_measurement = original_measurement
+        QasmVisitor._visit_reset = original_reset
         QasmVisitor._visit_forin_loop = original_for
         QasmVisitor._visit_phase_operation = original
         Qasm3Transformer.get_qubits_from_range_definition = staticmethod(original_range)
@@ -946,11 +962,14 @@ def convert(source, published_u=False, classical=False):
             return any(isinstance(item,ast.Identifier) and item.name in runtime_names for item in nodes(value))
         integer_names={node.identifier.name for node in module.original_program.statements
                        if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
+        quantum_names={node.qubit.name for node in nodes(module.original_program,True) if isinstance(node,ast.QubitDeclaration)}
+        quantum_names.update(node.target.name for node in nodes(module.original_program,True) if isinstance(node,ast.AliasStatement))
         for node in nodes(module.original_program,True):
             if isinstance(node,ast.ForInLoop) and node.identifier.name in integer_names:
                 raise error_at(node, 'Loop variables cannot yet shadow runtime integer variables.')
             index=(node.indices if isinstance(node,ast.IndexedIdentifier) else node.index if isinstance(node,ast.IndexExpression) else None)
-            if index is not None and runtime(index):
+            indexed_name=node.name.name if isinstance(node,ast.IndexedIdentifier) else node.collection.name if isinstance(node,ast.IndexExpression) and isinstance(node.collection,ast.Identifier) else None
+            if index is not None and runtime(index) and indexed_name not in quantum_names:
                 raise error_at(node, 'Runtime register indices are not yet supported by the circuit importer.')
             if isinstance(node,(ast.QubitDeclaration,ast.BitType)) and node.size is not None and runtime(node.size):
                 raise error_at(node, 'Runtime register sizes are not yet supported by the circuit importer.')
@@ -963,7 +982,7 @@ def convert(source, published_u=False, classical=False):
                 raise error_at(node, 'Runtime function arguments are not yet supported by the circuit importer.')
             targets=(node.qubits if isinstance(node,(ast.QuantumGate,ast.QuantumPhase,ast.QuantumReset,ast.QuantumBarrier)) else
                      node.qubit if isinstance(node,ast.QuantumMeasurement) else None)
-            if targets is not None and runtime(targets):
+            if targets is not None and runtime(targets) and isinstance(node,ast.QuantumBarrier):
                 raise error_at(node, 'Runtime quantum targets are not yet supported by the circuit importer.')
     if published_u and not str(module.original_program.version).startswith('3'):
         raise error_at(module.original_program, 'The published OpenQASM 3 U convention requires an OpenQASM 3 program.')
@@ -1366,6 +1385,19 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
         result = []
         def append(step):
             nonlocal count,version
+            context=getattr(statement,'_quantum_wire_targets',None)
+            if context is not None:
+                by_wire={reference(ast.IndexedIdentifier(name=ast.Identifier(name),indices=[[ast.IntegerLiteral(index)]]),quantum):target for (name,index),target in context.items()}
+                chosen=[]
+                for wire in step.get('Wires',[]):
+                    if wire not in by_wire:raise error_at(statement,'Lowered gate lost its runtime wire mapping.')
+                    target=by_wire[wire]
+                    chosen.append({'Candidates':[reference(value,quantum) for value in target['Candidates']],
+                                   'Index':classical_value(target['Index'],classical,variables=variables,integer_only=True)})
+                span=statement.span
+                step['WireTargets']=chosen
+                step['WireSource']='OpenQASM:'+str(getattr(span,'start_line',0))+':'+str((getattr(span,'start_column',0) or 0)+1)
+                step['Wires']=list(range(len(chosen)));version=max(version,14)
             if 'ClassicalValue' in step:version=max(version,expression_version(step['ClassicalValue']))
             if 'IntegerValue' in step:version=max(version,expression_version(step['IntegerValue']))
             count += 1
@@ -1460,6 +1492,11 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.QuantumReset):
                 append({'Kind': 'Reset', 'Wires': [reference(statement.qubits, quantum)]})
             elif isinstance(statement, ast.QuantumGate):
+                if getattr(statement,'_quantum_wire_preflight',False):
+                    identity='I'
+                    for _ in range(len(statement.qubits)-1):identity='kron(I,'+identity+')'
+                    append({'Kind':'Gate','Expression':identity,'Wires':[reference(value,quantum) for value in statement.qubits]})
+                    continue
                 if statement.duration is not None:
                     raise ValueError('Timed gates are not supported.')
                 if hasattr(statement,'_quantum_runtime_angle') or hasattr(statement,'_quantum_runtime_gate'):

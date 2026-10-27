@@ -88,7 +88,22 @@ def compile_source(bundle, convert, **options):
     locations = _CompilerLocations(bundle)
     logger.addFilter(locations)
     try:
-        return convert(bundle.expanded, **options)
+        result = convert(bundle.expanded, **options)
+        def locations_in(value):
+            if isinstance(value, dict):
+                context = value.get('WireSource')
+                match = re.fullmatch(r'OpenQASM:(\d+):(\d+)', context or '')
+                if match:
+                    label = _label(bundle, int(match[1]), int(match[2])-1)
+                    if label is not None:
+                        if len(label.encode('utf-8')) > 512:
+                            raise SourceError('Runtime wire source location exceeds 512 UTF-8 bytes.')
+                        value['WireSource'] = label
+                for item in value.values(): locations_in(item)
+            elif isinstance(value, list):
+                for item in value: locations_in(item)
+        locations_in(result)
+        return result
     except Exception as error:
         parser = _parser_location(error)
         label = locations.last_label

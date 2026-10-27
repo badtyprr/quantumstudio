@@ -58,3 +58,35 @@ sampled results for mutation, measured feedback, alias ordering, dynamic reset,
 measurement destination overwrite, controlled gates and runtime parameters. It
 also checks undefined/negative/large indices, divide-by-zero, operand collisions,
 untaken branches, invalid maps/arity/operation kinds, truncation and old versions.
+
+## Application contract (model 14)
+
+The classical importer accepts scalar integer wire indices into declared registers
+and existing fixed aliases, including ordered static sets and slices. Gates,
+measurement sources and reset resolve the selection at each executed operation.
+All broadcast lanes are preflighted before effects. Bare Boolean and floating
+indices are rejected; explicit integer casts use the existing typed arithmetic.
+Negative indices are outside this product subset, including negative-relative
+alias indexing shown in some OpenQASM examples.
+
+Model 14 stores `WireTargets` (ordered `Candidates` and typed `Index`) and
+`WireSource` on quantum steps. `Wires` contains local ordinals. Imported source
+bundles map diagnostics back to their original file and position. The editor
+shows `q[i]` or `q[{2,0}][i]`, with semicolons separating operands. Save/reopen,
+undo/redo and export retain selectors; export emits static aliases and runtime
+indices, including identity preflights for elided or broadcast operations.
+
+Dynamic alias creation (`let a=q[i]`), runtime-selected subroutine arguments,
+runtime-sized slices/sets, dynamic classical destinations and barriers remain
+unsupported. Subroutine binding forms remain tracked under DEV-08b; this milestone
+covers runtime indexing of existing fixed aliases, not every OpenQASM alias form.
+
+`windows/test-qasm-runtime-wires.py` checks import, frozen parity, model validation,
+execution and export/reimport. `windows/test-dev07-source-evidence.py` checks three
+unchanged PyQASM loop literals pinned in `windows/fixtures/dev07-upstream.json`.
+Continue/break distributions follow direct H-gate reasoning. The unmeasured H/CX
+program is separately observed on a copy of the model with its independently
+derived inverse and terminal measurements: all-zero probability one verifies its
+pure state up to global phase. Its empty original output is only a smoke check.
+The fourth fixture preserves the deferred alias/subroutine rejection. Upstream
+fixture licensing is retained in `windows/fixtures/pyqasm-LICENSE.txt`.

@@ -26,6 +26,7 @@ static class ClassicalQasmLifetimes {
   // too, so intermediate trees cannot exhaust the stack while being rebuilt.
   if(depth>=32)throw new InvalidDataException("OpenQASM export local lifetimes exceed 32 levels of nesting.");
   instruction(step);Expression(step.ClassicalValue,expression,numeric);Expression(step.IntegerValue,expression,numeric);Real(step.Angle,expression,numeric);Real(step.NumericValue,expression,numeric);
+  if(step.WireTargets!=null)foreach(var target in step.WireTargets)Expression(target.Index,expression,numeric);
   if(step.ParameterGate!=null){foreach(var angle in step.ParameterGate.Parameters)Real(angle,expression,numeric);Expression(step.ParameterGate.Power,expression,numeric);}
   if(step.Range!=null){Expression(step.Range.Start,expression,numeric);Expression(step.Range.Stop,expression,numeric);Expression(step.Range.Step,expression,numeric);}
   if(step.WhenTrue!=null)foreach(var child in step.WhenTrue)Visit(child,instruction,expression,numeric,depth+1);
@@ -205,6 +206,7 @@ sealed class ClassicalQasmScopes {
   for(int i=0;i<body.Count;i++) {
    var gate=body[i];var site=new Site{Scope=scope,Index=i,Gate=gate};
    Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);Real(gate.Angle,scope);Real(gate.NumericExpression,scope);
+   if(gate.SelectedWires!=null)foreach(var target in gate.SelectedWires.Targets)Integer(target.Index,scope);
    if(gate.ParameterGate!=null){foreach(var parameter in gate.ParameterGate.Parameters)Real(parameter,scope);Integer(gate.ParameterGate.Power,scope);}
    if(gate.Kind==(numeric ? O.StoreNumeric : O.StoreInteger))uses[gate.VariableSlot.Value].Add(scope);
    if(OwnClear(gate))clears[gate.VariableSlot.Value].Add(site);

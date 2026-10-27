@@ -1,0 +1,39 @@
+{
+  "repository": "https://github.com/qBraid/pyqasm",
+  "revision": "167cff141b270cae023137971e716d5fec68e9f0",
+  "fixtures": [
+    {
+      "name": "test_while_loop_with_continue",
+      "path": "tests/qasm3/test_while.py",
+      "line": 30,
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    qubit[3] q;\n    bit[3] c;\n    int i = 0;\n    while (i < 3) {\n        if (i == 1) {\n            i += 1;\n            continue;\n        }\n        h q[i];\n        i += 1;\n    }\n    measure q -> c;\n\n    ",
+      "sha256": "4922eeaddcdba52dc1edb274a7baf618dd77c03d811f44a7c73849f749362ef6",
+      "accepted": true
+    },
+    {
+      "name": "test_while_loop_with_break",
+      "path": "tests/qasm3/test_while.py",
+      "line": 55,
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    qubit[3] q;\n    bit[3] c;\n    int i = 0;\n    while (i < 3) {\n        if (i == 1) {\n            break;\n        }\n        h q[i];\n        i += 1;\n    }\n    measure q -> c;\n    ",
+      "sha256": "4e87fd48982690460b076dc929d376b89b652a17376056c97fb65286dcb727d8",
+      "accepted": true
+    },
+    {
+      "name": "test_while_loop_unroll_qasm_output",
+      "path": "tests/qasm3/test_while.py",
+      "line": 79,
+      "source": "\n    OPENQASM 3.0;\n    qubit[4] q;\n    int i = 0;\n    while (i < 3) {\n        h q[i];\n        cx q[i], q[i+1];\n        i += 1;\n    }\n\n    ",
+      "sha256": "1b6f6359b61e450df819cc3c166520bcb0c2786f2fa312095f0cc7876cabda1f",
+      "accepted": true
+    },
+    {
+      "name": "test_alias_arg_from_loop_validates",
+      "path": "tests/qasm3/subroutines/test_subroutines.py",
+      "line": 203,
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    qubit[4] q;\n\n    def dummy(qubit[1] q_arg) -> bool { \n        h q_arg;\n        return true;\n    }\n\n    for int i in [0:2]\n    {\n       let new_q = q[i];\n       dummy(new_q);\n    }\n    for int i in [0:2]\n    {\n       let new_q = q[i+1];\n       dummy(new_q);\n    }\n    ",
+      "sha256": "497ec30f4e7d7c608909b2f96d8e50654162d87620663b81006f5e51c2d372e5",
+      "accepted": false,
+      "diagnostic": "Runtime quantum-register arguments currently require a whole declared register."
+    }
+  ]
+}
