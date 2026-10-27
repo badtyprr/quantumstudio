@@ -10,6 +10,7 @@ EXTRA_DIST = config.rpath  \
 	docs/quantum-notation.md \
 	docs/exact-circuit-protocol.md \
 	docs/classical-expression-protocol.md \
+	docs/runtime-gate-protocol.md \
 	docs/classical-circuit-files.md \
 	docs/classical-expression-text.md \
 	docs/learning-source-inventory.json \
@@ -25,6 +26,7 @@ EXTRA_DIST = config.rpath  \
 	windows/build-runtime-angle-import-test.ps1 \
 	windows/RuntimeAngleImportTests.cs \
 	windows/test-qasm-runtime-angles.py \
+	windows/test-qasm-runtime-gates.py \
 	windows/ClassicalRealExpressionText.cs \
 	windows/ClassicalRealExpressionTextTests.cs \
 	windows/test-real-expression-text.ps1 \
