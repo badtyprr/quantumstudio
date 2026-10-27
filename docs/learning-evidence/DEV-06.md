@@ -89,10 +89,39 @@ angle-bit assignment and power512 are also outside the finite DEV-06 contract.
 Runtime subroutine activation parameter forms remain DEV-08b; dynamic wire indices
 remain DEV-07. See `runtime-numeric-protocol.md` for the implemented value contract.
 
-## Acceptance status
+## Reviewed implementation and released acceptance
 
-The implementation is split across DEV-06d gate coverage (#379), DEV-06e native
-values (#380), and DEV-06e application integration (#381). This evidence increment
-adds source hashes, independent references and automated package checks. Reviewed
-head, CI and final released revision will be reconciled after the clean merged-tip
-package and payload GUI audit. DEV-06 is not marked complete by this document alone.
+| Increment | PR | Reviewed head | Merge |
+| --- | --- | --- | --- |
+| Broader gates | [#379](https://github.com/badtyprr/quantumstudio/pull/379) | `0f6ac6b5e2bc23fa26eecfdf1913ac5cf16b018d` | `44d7bddabf8c2249a90317a8f59ea7f0ff7c1436` |
+| Native numeric core | [#380](https://github.com/badtyprr/quantumstudio/pull/380) | `bc6ef112dbe67d4e59622b298a773590131350f1` | `6c1f6050a28c5ed87a5d37528738b20a4f6734ac` |
+| Application integration | [#381](https://github.com/badtyprr/quantumstudio/pull/381) | `eadc0a43fed6e98f0132b22b95d7dc78c0806d45` | `b0befb7c0e5293f816d1b6cd27409ad975420833` |
+| Pinned source audit | [#382](https://github.com/badtyprr/quantumstudio/pull/382) | `988745b703dccc151cec5df0cc5a4ec6448ce2f6` | `1666b09a4e326f6b30a8df6aa33b11ad1ead0424` |
+
+Released [checkpoint 1666b09a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-1666b09a) from `1666b09a4e326f6b30a8df6aa33b11ad1ead0424`. ZIP SHA-256
+`d9679429503ed9a08e981b25ad1f53f42360696b0ca1b77300e3436387635c26`. The clean source checkout produced the package and source archive;
+the manifest, extracted payload and uploaded asset hashes match the tested files.
+The [source archive](https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-1666b09a/QuantumStudio-source.tar.gz) has SHA-256
+`53bfe29e0e114ceab027b449676f3fa68fd083f20e341580dcd1931d55c3bd40`.
+
+- [Native build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40448000042/job/122003755119): passed on the merged release revision.
+- [Windows GUI build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40447999974/job/122003754564): passed on the merged release revision.
+- [Windows OpenQASM build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/40448000106/job/122003755037): passed on the merged release revision.
+
+Exact-head Standards and Spec reviews have no outstanding findings. Review found
+and resolved numeric condition/cast routing issues and two source-oracle gaps;
+the final oracle independently pins declaration schemas and operator dimensions.
+
+The clean build passes 61 native tests with one existing thread skip and no
+failures/errors; all 285 required source inputs match the generated archive. The
+portable worker passes 2,178 process checks. The released payload passes 340 numeric protocol, 197 gate protocol, 337 numeric
+import/model/export and 128 pinned-source checks. A separate local extraction run
+passes 143 checks, including all fifteen original source re-extractions. Nine
+editor-created save/load/execution checks pass against the packaged worker. Five
+actual-payload screenshots verify numeric declarations, numeric assignment and
+controlled multi-parameter gate editing at normal/minimum window sizes. The full
+package workflow also runs existing native, worker, importer, export and GUI gates.
+
+DEV-06d/e/f and their parent are complete for this finite contract. The exclusions
+above remain explicit; this release does not complete an entire IBM/qBraid notebook,
+all OpenQASM constructs, DEV-07 or the remaining DEV-08b parameter forms.
