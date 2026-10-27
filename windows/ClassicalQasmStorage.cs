@@ -69,7 +69,7 @@ sealed class ClassicalQasmStorage {
   if(value==null || targets==null || targets.Length!=value.Width)throw new ArgumentException("Assignment width must match its targets.");
   var seen=new HashSet<int>();
   foreach(int target in targets){Bit(target);if(!seen.Add(target))throw new ArgumentException("Assignment targets must be distinct.");}
-  if(variables!=null && variables.Count>=4096)throw new InvalidDataException("Export needs one integer temporary within the 4096-variable limit.");
+  if(variables!=null && variables.Count+(variables is RuntimeDeclarations ? ((RuntimeDeclarations)variables).Numeric.Count : 0)>=4096)throw new InvalidDataException("Export needs one integer temporary within the 4096-variable limit.");
   string expression=new ClassicalExpressionQasm(BitCount,variables,this).Bits(value);
   // Evaluate before any write, preserving overlapping reads and error behavior.
   var result=new StringBuilder(Temporary+" = uint["+Number(value.Width)+"]("+expression+");\n");

@@ -18,7 +18,7 @@ sealed class ClassicalExpressionQasm {
   bits=registerBits;
   if(mappedStorage!=null && mappedStorage.BitCount!=registerBits)throw new ArgumentException("Export storage must match the expression register.");
   storage=mappedStorage;
-  variables=variableTypes==null ? new T[0] : new List<T>(variableTypes).ToArray();
+  variables=variableTypes is RuntimeDeclarations ? (IList<T>)new RuntimeDeclarations(variableTypes,((RuntimeDeclarations)variableTypes).Numeric) : variableTypes==null ? new T[0] : new List<T>(variableTypes).ToArray();
  }
  static string Number(int value){return value.ToString(CultureInfo.InvariantCulture);}
  static string TypeName(T type) {
@@ -63,7 +63,30 @@ sealed class ClassicalExpressionQasm {
   value.Validate(bits,variables);
   return RealNode(value);
  }
+ internal static string NumericTypeName(ClassicalNumericType type){return (type.Kind==ClassicalNumericType.NumericKind.Float ? "float[" : "angle[")+Number(type.Width)+"]";}
+ static string FloatLiteral(double number) {
+  if(number==0 && BitConverter.DoubleToInt64Bits(number)<0)return "(-0.0)";
+  string text=number.ToString("R",CultureInfo.InvariantCulture);
+  if(text.IndexOf('.')<0 && text.IndexOf('E')<0 && text.IndexOf('e')<0)text+=".0";
+  return "("+text+")";
+ }
  string RealNode(ClassicalRealExpression value) {
+  switch(value.Kind) {
+   case ClassicalRealExpression.NodeKind.Variable:return "n"+Number(value.Slot);
+   case ClassicalRealExpression.NodeKind.TypedConstant:
+    if(value.Type.Kind==ClassicalNumericType.NumericKind.Angle)return Cast(NumericTypeName(value.Type),Literal(value.Type.Width,value.Raw));
+    double number=value.Type.Width==64 ? BitConverter.Int64BitsToDouble(unchecked((long)value.Raw)) : BitConverter.ToSingle(BitConverter.GetBytes((uint)value.Raw),0);
+    return Cast(NumericTypeName(value.Type),FloatLiteral(number));
+   case ClassicalRealExpression.NodeKind.TypedInteger:return Cast(NumericTypeName(value.Type),IntegerNode(value.Integer));
+   case ClassicalRealExpression.NodeKind.Cast:return Cast(NumericTypeName(value.Type),RealNode(value.Left));
+   case ClassicalRealExpression.NodeKind.Bits:return Cast(NumericTypeName(value.Type),BitNode(value.BitOperand));
+   case ClassicalRealExpression.NodeKind.Function:
+    if(value.FunctionCode==ClassicalRealExpression.FunctionKind.Negate)return "(-"+RealNode(value.Left)+")";
+    if(value.FunctionCode==ClassicalRealExpression.FunctionKind.Complement)return "(~"+RealNode(value.Left)+")";
+    return value.FunctionCode.ToString().ToLowerInvariant()+"("+RealNode(value.Left)+")";
+   case ClassicalRealExpression.NodeKind.Scale:
+    return Binary(RealNode(value.Left),new[]{"*","/","<<",">>"}[(int)value.ScaleCode],IntegerNode(value.Integer));
+  }
   if(value.Kind==ClassicalRealExpression.NodeKind.Integer)
    return Cast("float[64]",IntegerNode(value.Integer));
   if(value.Kind==ClassicalRealExpression.NodeKind.Constant) {
@@ -74,7 +97,8 @@ sealed class ClassicalExpressionQasm {
    if(text.IndexOf('.')<0 && text.IndexOf('E')<0 && text.IndexOf('e')<0)text+=".0";
    return "("+text+")";
   }
-  string[] operators={"+","-","*","/"};
+  if(value.Operation==ClassicalRealExpression.Operator.Mod)return "mod("+RealNode(value.Left)+", "+RealNode(value.Right)+")";
+  string[] operators={"+","-","*","/","**","","&","|","^"};
   return Binary(RealNode(value.Left),operators[(int)value.Operation],RealNode(value.Right));
  }
  static string BitOperator(E.Operator op) {
@@ -120,6 +144,11 @@ sealed class ClassicalExpressionQasm {
  }
  string IntegerNode(I value) {
   switch(value.Kind) {
+   case I.NodeKind.NumericCast:return Cast(TypeName(value.Type),RealNode(value.NumericLeft));
+   case I.NodeKind.AngleRatio:return Binary(RealNode(value.NumericLeft),"/",RealNode(value.NumericRight));
+   case I.NodeKind.AngleBits:return Cast(TypeName(value.Type),Cast(BitType(value.Type.Width),RealNode(value.NumericLeft)));
+   case I.NodeKind.NumericCompare:
+    return Binary(Cast("int[64]",Binary(RealNode(value.NumericLeft),">",RealNode(value.NumericRight))),"-",Cast("int[64]",Binary(RealNode(value.NumericLeft),"<",RealNode(value.NumericRight))));
    case I.NodeKind.Constant:return Cast(TypeName(value.Type),IntegerLiteral(value));
    case I.NodeKind.Read:return Cast(TypeName(value.Type),Read(value.Indices));
    case I.NodeKind.Variable:return "v"+Number(value.Slot);

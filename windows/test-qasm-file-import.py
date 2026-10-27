@@ -65,10 +65,10 @@ class FileImportTests(unittest.TestCase):
             self.assertIn("qubit declarations must be global", message)
 
     def test_adapter_declaration_location_and_unchanged_stdin_message(self):
-        dependency = "// original configuration\nfloat[64] theta = 0.5;\n"
+        dependency = "// original configuration\nduration elapsed = 1ns;\n"
         main = self.put("main.qasm", 'OPENQASM 3; include "settings.inc"; qubit q;')
         self.put("settings.inc", dependency)
-        expected = "Classical circuit import supports bit registers, integer/Boolean variables and compile-time arrays; other classical declarations are not yet supported."
+        expected = "Classical circuit import supports bit registers, integer/Boolean, float32/64, angle variables and compile-time arrays; other classical declarations are not yet supported."
         for command in COMMANDS:
             message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
             self.assertEqual(message.strip(), "settings.inc:2:1: " + expected)
@@ -84,10 +84,10 @@ class FileImportTests(unittest.TestCase):
 
     def test_runtime_angle_cast_location(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "parameters.inc";')
-        self.put("parameters.inc", 'int n = 1;\nqubit q;\nrx(float[32](n)) q;')
+        self.put("parameters.inc", 'int n = 1;\nqubit q;\nrx(float[16](n)) q;')
         for command in COMMANDS:
             message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
-            self.assertEqual(message.strip(), "parameters.inc:3:1: Runtime real casts currently require float[64].")
+            self.assertEqual(message.strip(), "parameters.inc:3:1: Use float32/64 or angle widths 1–64.")
 
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:

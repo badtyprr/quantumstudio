@@ -1,8 +1,8 @@
-# Runtime numeric core (DEV-06e implementation increment)
+# Runtime numeric values and application contract (DEV-06e)
 
-This increment supplies native typed values, expressions, per-history storage and
-worker decoding. Application model/editor/import/export integration and DEV-06f
-source-example evidence remain required before DEV-06 is complete.
+Typed values, expressions and per-history storage are shared by exact and sampled
+execution. The application imports, edits, saves and exports these expressions.
+DEV-06f source evidence and the final release remain separate acceptance gates.
 
 ## Finite value contract
 
@@ -71,3 +71,38 @@ Older headers reject these extensions. Existing headers and payloads remain
 supported. Native value, integration and worker protocol regressions are in
 `src/quantum-classical-numeric-test.cc`, `src/quantum-runtime-numeric-test.cc`
 and `src/quantum-runtime-numeric-request-test.py`.
+
+## Saved model, import, editor and export
+
+Saved circuit version 13 adds the required `NumericVariables` array, with name,
+`NumericKind` (`Float` or `Angle`) and width. Numeric slots are separate from the
+integer list but share its 4096-variable budget. `StoreNumeric` holds
+`VariableSlot` and `NumericValue`; `ClearNumeric` returns a slot to undefined.
+Real nodes mirror the worker tree: `TypedConstant`, `Variable`, `Cast`, `Function`,
+`Scale`, `Bits` and `TypedInteger`. Cross-domain integer nodes are `NumericCast`,
+`NumericCompare`, `AngleRatio` and `AngleBits`. Existing model versions and worker
+headers remain available for programs that do not need the extensions.
+
+OpenQASM float declarations default to width 64. Runtime float/angle declarations,
+assignments, branch/loop mutation and lexical cleanup retain their declared types.
+Integer-to-float conversion uses the destination precision directly. Gate arguments
+and powers are evaluated before application. Real math and numeric comparisons use
+the typed tree; logical expressions retain short-circuit evaluation. Runtime custom
+subroutine activation storage is tracked separately under DEV-08b.
+
+The editor has numeric declarations and assignment/clear operations. Gate and
+expression fields accept typed casts, math functions and numeric variable names.
+`numeric(slot)` is the editor fallback for names that cannot be typed unambiguously;
+`anglebits(a)` exposes the unsigned angle pattern and `compare(a,b)` produces the
+three-way integer comparison. These two helpers are editor notation; OpenQASM
+export emits standard casts/comparisons instead. Invalid edits fail before replacing
+the current document. Save/reopen, selection/replacement and undo/redo use the same
+validated model.
+
+Export retains precision and scope, including independently reused integer/numeric
+slot indices. Modular constants use exact bit strings. Published-U export needs the
+extra half-angle phase without truncating an odd modular angle: it emits U3 followed
+by P(theta) and inverse Rz(theta), with the same controls and power. Their product
+contributes exp(i theta/2). Floating arguments retain the existing gphase form.
+Exact runtime gates keep rational-pi phases in exponential form during completeness
+validation so conjugate factors cancel without an approximate proof.

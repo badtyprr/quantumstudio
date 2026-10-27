@@ -448,7 +448,7 @@ rejected += ['qubit q;bit c=measure q;bit[2] d;d=bit[2](c=="1");',
 rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
              'int a=1; qubit[2] q; x q[a];',
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
-             'int a=1; bit[2] c; c[a]=1;','float a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
+             'int a=1; bit[2] c; c[a]=1;','float[16] a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
 rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;{int '+('a'*65)+';}']
 rejected += ['int '+('𝑎'*33)+';', 'int a=1;bit c;{const int a=2;c=a==2;}']
 rejected += ['bit[3] c;int a=uint[2](~c);','bit[3] c;int a=int[3](popcount(c));',

@@ -4,6 +4,40 @@ using System.IO;
 using System.Text;
 class ClassicalCircuitTests {
  static int checks;
+ static void Numerics(string worker) {
+  var value=new ClassicalCircuit.RealNode{Kind="Variable",NumericKind="Angle",Width=8,Slot=0};
+  var doc=new ClassicalCircuit.Document{Version=13,Qubits=1,LoopConditionBudget=1000,
+   Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new ClassicalCircuit.Variable[0],
+   NumericVariables=new[]{new ClassicalCircuit.NumericVariable{Name="theta",NumericKind="Angle",Width=8}},OutputBits=new[]{0},
+   Steps=new[]{new ClassicalCircuit.Step{Kind="StoreNumeric",VariableSlot=0,NumericValue=new ClassicalCircuit.RealNode{Kind="TypedConstant",NumericKind="Angle",Width=8,ValueBits="128"}},
+    new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=value,Wires=new[]{0}},new ClassicalCircuit.Step{Kind="Measure",Wires=new[]{0},ClassicalBit=0}}};
+  var circuit=ClassicalCircuit.From(doc);string saved=circuit.Serialize();
+  for(int i=0;i<3;i++){circuit=ClassicalCircuit.Load(saved);Check(circuit.Serialize()==saved);}
+  Check(circuit.NumericTypes[0].Width==8);
+  var copy=circuit.Snapshot();copy.NumericVariables[0].Width=7;Check(circuit.Serialize()==saved);
+  foreach(bool exact in new[]{true,false}) {
+   var request=exact ? NumericalSampling.RequestExact(1,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget,circuit.NumericTypes) :
+    NumericalSampling.RequestClassical(1,1,100,1,new[]{0},circuit.SamplingGates(),circuit.VariableTypes,circuit.LoopConditionBudget,circuit.NumericTypes);
+   Check(Encoding.UTF8.GetString(request).StartsWith(exact ? "QEXACT12\n" : "QSAMPLE13\n"));
+   if(worker!=null){string result=NumericalSampling.RunRequest(worker,exact ? "--exact-circuit" : "--sample",request,System.Threading.CancellationToken.None,t=>t).GetAwaiter().GetResult();Check(result.Contains(exact ? "\"1\":\"1\"" : "\"1\":100"));}
+  }
+  for(int version=2;version<13;version++){copy=circuit.Snapshot();copy.Version=version;Reject(()=>ClassicalCircuit.From(copy));}
+  foreach(Action<ClassicalCircuit.Document> corrupt in new Action<ClassicalCircuit.Document>[] {
+   d=>d.NumericVariables=null,d=>d.NumericVariables[0].NumericKind="0",d=>d.NumericVariables[0].Width=0,d=>d.NumericVariables[0].Width=65,
+   d=>d.NumericVariables[0].Name="c",d=>d.NumericVariables[0].NumericKind="Float",d=>d.Steps[0].VariableSlot=1,
+   d=>d.Steps[0].NumericValue=null,d=>d.Steps[0].NumericValue.ValueBits="256",d=>d.Steps[0].NumericValue.ValueBits="-1",
+   d=>d.Steps[0].NumericValue.Left=value,d=>d.Steps[0].Kind="ClearNumeric",d=>d.Steps[1].Angle.Width=7,
+   d=>d.Steps[1].Angle.Slot=1,d=>d.Steps[1].NumericValue=value,d=>d.Steps[0].IntegerValue=new ClassicalCircuit.ExpressionNode{Kind="IntegerConstant",Width=0,Signedness="Signed",Value="0"}
+  }){copy=circuit.Snapshot();corrupt(copy);Reject(()=>ClassicalCircuit.From(copy));}
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"NumericKind\":\"Angle\"","\"NumericKind\":1")));
+  Reject(()=>ClassicalCircuit.Load(saved.Replace("\"NumericValue\":{","\"NumericValue\":{\"Unknown\":null,")));
+  var f=ClassicalRealExpression.TypedConstant(ClassicalNumericType.Create(ClassicalNumericType.NumericKind.Float,32),0);
+  var cross=ClassicalIntegerExpression.FromNumeric(ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Signed),f);
+  var gates=new[]{new NumericalSampling.Gate{Kind=NumericalSampling.Operation.Assign,Wires=new[]{0},ClassicalExpression=ClassicalExpression.IntegerCompare(ClassicalExpression.Operator.Equal,cross,ClassicalIntegerExpression.Constant(cross.Type,0))}};
+  Check(Encoding.UTF8.GetString(NumericalSampling.RequestExact(0,1,new[]{0},gates)).StartsWith("QEXACT12\n"));
+  for(int i=0;i<14;i++)f=ClassicalRealExpression.FromInteger(ClassicalIntegerExpression.FromNumeric(cross.Type,f));
+  Reject(()=>ClassicalRealExpression.FromInteger(ClassicalIntegerExpression.FromNumeric(cross.Type,ClassicalRealExpression.FromInteger(ClassicalIntegerExpression.FromNumeric(cross.Type,f)))));
+ }
  static void ParameterGates() {
   var doc=new ClassicalCircuit.Document{Version=12,Qubits=3,LoopConditionBudget=1000,Registers=new ClassicalCircuit.Register[0],Variables=new ClassicalCircuit.Variable[0],OutputBits=new int[0],
    Steps=new[]{new ClassicalCircuit.Step{Kind="ParameterGate",Wires=new[]{2,0,1},ParameterGate=new ClassicalCircuit.ParameterGateNode{Gate="U3",Controls=2,ControlState="1",
@@ -411,6 +445,7 @@ class ClassicalCircuitTests {
   var counted=ClassicalCircuit.From(wide);Check(ClassicalCircuit.Load(counted.Serialize()).SamplingGates()[0].ClassicalExpression.Width==64);
   wide.Steps[0].ClassicalValue.Right=Constant(1,"0");Reject(()=>ClassicalCircuit.From(wide));wide.Steps[0].ClassicalValue.Right=null;
   wide.Steps[0].ClassicalValue.RotationDirection="Left";Reject(()=>ClassicalCircuit.From(wide));
+  Numerics(args.Length==0 ? null : args[0]);
   TypedChecks();
   BitCastChecks();
   Variables(args.Length==0 ? null : args[0]);

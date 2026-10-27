@@ -14,6 +14,7 @@ sealed class ClassicalExpression {
  public int Width {get;private set;}public ulong Value {get;private set;}
  public ClassicalExpression Left {get;private set;}public ClassicalExpression Right {get;private set;}
  public ClassicalIntegerExpression IntegerLeft {get;private set;}public ClassicalIntegerExpression IntegerRight {get;private set;}
+ public bool UsesNumericProtocol {get{return (Left!=null && Left.UsesNumericProtocol)||(Right!=null && Right.UsesNumericProtocol)||(IntegerLeft!=null && IntegerLeft.UsesNumericProtocol)||(IntegerRight!=null && IntegerRight.UsesNumericProtocol);}}
  public bool UsesTypedProtocol {get;private set;}
  public bool UsesBitExpressionProtocol {get;private set;}
  internal int Depth {get{return depth;}}internal int Count {get{return count;}}internal ulong References {get{return references;}}
@@ -120,53 +121,130 @@ sealed class ClassicalIntegerType {
  }
  internal void Write(Action<ulong> number){number((ulong)Signedness);number((ulong)DeclaredWidth);}
 }
-// Immutable binary64 expression trees. Evaluation belongs to the worker so
-// both execution modes use the current classical record and variable storage.
+// Typed immutable expressions; only the worker evaluates runtime values.
+sealed class ClassicalNumericType {
+ public enum NumericKind { Float, Angle }
+ public NumericKind Kind {get;private set;}public int Width {get;private set;}
+ ClassicalNumericType(NumericKind kind,int width){Kind=kind;Width=width;}
+ public static ClassicalNumericType Create(NumericKind kind,int width) {
+  if(!Enum.IsDefined(typeof(NumericKind),kind) || (kind==NumericKind.Float ? width!=32 && width!=64 : width<1 || width>64))throw new ArgumentException("Use float32/64 or angle widths 1–64.");
+  return new ClassicalNumericType(kind,width);
+ }
+ public bool Same(ClassicalNumericType other){return other!=null && Kind==other.Kind && Width==other.Width;}
+ internal void Write(Action<ulong> number){number((ulong)Kind);number((ulong)Width);}
+}
+sealed class RuntimeDeclarations : System.Collections.ObjectModel.ReadOnlyCollection<ClassicalIntegerType> {
+ public readonly IList<ClassicalNumericType> Numeric;
+ public RuntimeDeclarations(IList<ClassicalIntegerType> integers,IList<ClassicalNumericType> numeric):base(new List<ClassicalIntegerType>(integers)) {
+  Numeric=new List<ClassicalNumericType>(numeric).AsReadOnly();
+  if(Count+Numeric.Count>4096)throw new ArgumentException("Use at most 4096 variable slots.");
+  foreach(var type in Numeric)if(type==null)throw new ArgumentException("Missing numeric type.");
+ }
+}
 sealed class ClassicalRealExpression {
- public enum NodeKind { Constant=0, Integer=1, Binary=2 }
- public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3 }
+ public enum NodeKind { Constant=0, Integer=1, Binary=2, TypedConstant=3, Variable=4, Cast=5, Function=6, Scale=7, Bits=8, TypedInteger=9 }
+ public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Power=4, Mod=5, And=6, Or=7, Xor=8 }
+ public enum FunctionKind { Negate, Sin, Cos, Tan, Arcsin, Arccos, Arctan, Exp, Log, Sqrt, Floor, Ceiling, Complement }
+ public enum Scaling { Multiply, Divide, ShiftLeft, ShiftRight }
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
+ public ClassicalNumericType Type {get;private set;}public ulong Raw {get;private set;}public int Slot {get;private set;}
+ public FunctionKind FunctionCode {get;private set;}public Scaling ScaleCode {get;private set;}
  public double Value {get;private set;}public ClassicalIntegerExpression Integer {get;private set;}
+ public ClassicalExpression BitOperand {get;private set;}
  public ClassicalRealExpression Left {get;private set;}public ClassicalRealExpression Right {get;private set;}
- internal int Depth {get;private set;}internal int Count {get;private set;}
- ClassicalRealExpression(NodeKind kind,double value,ClassicalIntegerExpression integer,Operator operation,ClassicalRealExpression left,ClassicalRealExpression right) {
-  Kind=kind;Value=value;Integer=integer;Operation=operation;Left=left;Right=right;
-  Depth=1+Math.Max(integer==null ? 0 : integer.Depth,Math.Max(left==null ? 0 : left.Depth,right==null ? 0 : right.Depth));
-  Count=1+(integer==null ? 0 : integer.Count)+(left==null ? 0 : left.Count)+(right==null ? 0 : right.Count);
+ internal int Depth {get;private set;}internal int Count {get;private set;}internal ulong References {get;private set;}
+ public bool UsesNumericProtocol {get{return (int)Kind>=3 || (Kind==NodeKind.Binary && (int)Operation>=4) || (Integer!=null && Integer.UsesNumericProtocol) || (Left!=null && Left.UsesNumericProtocol) || (Right!=null && Right.UsesNumericProtocol);}}
+ static ClassicalNumericType Float(int width=64){return ClassicalNumericType.Create(ClassicalNumericType.NumericKind.Float,width);}
+ static bool Angle(ClassicalNumericType type){return type.Kind==ClassicalNumericType.NumericKind.Angle;}
+ ClassicalRealExpression(NodeKind kind,ClassicalNumericType type,ClassicalIntegerExpression integer=null,ClassicalRealExpression left=null,ClassicalRealExpression right=null,ClassicalExpression bits=null) {
+  Kind=kind;Type=type;Integer=integer;Left=left;Right=right;BitOperand=bits;
+  Depth=1+Math.Max(Math.Max(integer==null ? 0 : integer.Depth,bits==null ? 0 : bits.Depth),Math.Max(left==null ? 0 : left.Depth,right==null ? 0 : right.Depth));
+  Count=1+(integer==null ? 0 : integer.Count)+(left==null ? 0 : left.Count)+(right==null ? 0 : right.Count)+(bits==null ? 0 : bits.Count);
+  References=(integer==null ? 0 : integer.References)|(left==null ? 0 : left.References)|(right==null ? 0 : right.References)|(bits==null ? 0 : bits.References);
   if(Depth>32 || Count>512)throw new ArgumentException("Real expressions allow 32 levels and 512 nodes.");
  }
  public static ClassicalRealExpression Constant(double value) {
   if(Double.IsNaN(value) || Double.IsInfinity(value))throw new ArgumentException("Real constants must be finite.");
-  return new ClassicalRealExpression(NodeKind.Constant,value,null,0,null,null);
+  return new ClassicalRealExpression(NodeKind.Constant,Float()) {Value=value,Raw=unchecked((ulong)BitConverter.DoubleToInt64Bits(value))};
+ }
+ public static ClassicalRealExpression TypedConstant(ClassicalNumericType type,ulong raw) {
+  if(type==null || (type.Width<64 && raw>>type.Width!=0))throw new ArgumentException("Numeric bits exceed their type.");
+  if(!Angle(type)) {
+   double value=type.Width==64 ? BitConverter.Int64BitsToDouble(unchecked((long)raw)) : BitConverter.ToSingle(BitConverter.GetBytes((uint)raw),0);
+   if(Double.IsNaN(value) || Double.IsInfinity(value))throw new ArgumentException("Numeric constants must be finite.");
+  }
+  return new ClassicalRealExpression(NodeKind.TypedConstant,type) {Raw=raw};
+ }
+ public static ClassicalRealExpression Variable(ClassicalNumericType type,int slot) {
+  if(type==null || slot<0 || slot>=4096)throw new ArgumentException("Invalid numeric variable.");
+  return new ClassicalRealExpression(NodeKind.Variable,type) {Slot=slot};
  }
  public static ClassicalRealExpression FromInteger(ClassicalIntegerExpression value) {
-  if(value==null)throw new ArgumentNullException("value");
-  return new ClassicalRealExpression(NodeKind.Integer,0,value,0,null,null);
+  if(value==null)throw new ArgumentNullException("value");return new ClassicalRealExpression(NodeKind.Integer,Float(),value);
+ }
+ public static ClassicalRealExpression FromInteger(ClassicalIntegerExpression value,int width) {
+  if(value==null)throw new ArgumentNullException("value");return new ClassicalRealExpression(NodeKind.TypedInteger,Float(width),value);
+ }
+ public static ClassicalRealExpression Cast(ClassicalNumericType type,ClassicalRealExpression value) {
+  if(type==null || value==null)throw new ArgumentNullException("type or operand");
+  if(Angle(value.Type) && !Angle(type))throw new ArgumentException("Angles cannot be cast to float.");
+  return new ClassicalRealExpression(NodeKind.Cast,type,null,value);
+ }
+ public static ClassicalRealExpression FromBits(int width,ClassicalExpression value) {
+  if(value==null || value.Width!=width)throw new ArgumentException("Bit-to-angle casts require matching widths.");
+  return new ClassicalRealExpression(NodeKind.Bits,ClassicalNumericType.Create(ClassicalNumericType.NumericKind.Angle,width),null,null,null,value);
+ }
+ public static ClassicalRealExpression Function(FunctionKind function,ClassicalRealExpression value) {
+  if(value==null || !Enum.IsDefined(typeof(FunctionKind),function))throw new ArgumentException("Invalid numeric function.");
+  bool trig=function==FunctionKind.Sin || function==FunctionKind.Cos || function==FunctionKind.Tan;
+  if(Angle(value.Type) && !trig && function!=FunctionKind.Negate && function!=FunctionKind.Complement)throw new ArgumentException("Only trigonometric functions accept angles.");
+  if(!Angle(value.Type) && function==FunctionKind.Complement)throw new ArgumentException("Complement requires an angle.");
+  return new ClassicalRealExpression(NodeKind.Function,trig && Angle(value.Type) ? Float() : value.Type,null,value) {FunctionCode=function};
+ }
+ public static ClassicalRealExpression Scale(Scaling operation,ClassicalRealExpression value,ClassicalIntegerExpression integer) {
+  if(value==null || integer==null || !Enum.IsDefined(typeof(Scaling),operation) || !Angle(value.Type) || integer.Type.Signedness!=ClassicalIntegerType.Sign.Unsigned)throw new ArgumentException("Angle scaling requires an unsigned integer.");
+  if((operation==Scaling.Multiply || operation==Scaling.Divide) && value.Type.Width!=integer.Type.Width)throw new ArgumentException("Angle scaling requires matching widths.");
+  return new ClassicalRealExpression(NodeKind.Scale,value.Type,integer,value) {ScaleCode=operation};
  }
  public static ClassicalRealExpression Binary(Operator operation,ClassicalRealExpression left,ClassicalRealExpression right) {
   if(left==null || right==null)throw new ArgumentNullException("operand");
   if(!Enum.IsDefined(typeof(Operator),operation))throw new ArgumentException("Unknown real operator.");
-  return new ClassicalRealExpression(NodeKind.Binary,0,null,operation,left,right);
+  bool angle=Angle(left.Type) || Angle(right.Type);
+  if(angle ? !left.Type.Same(right.Type) || (operation!=Operator.Add && operation!=Operator.Subtract && (int)operation<6) : (int)operation>=6)throw new ArgumentException("Unsupported numeric operand types.");
+  return new ClassicalRealExpression(NodeKind.Binary,angle ? left.Type : Float(Math.Max(left.Type.Width,right.Type.Width)),null,left,right) {Operation=operation};
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
-  if(bits<0 || bits>64)throw new ArgumentException("Classical register size must be 0-64.");
-  if(Integer!=null)Integer.Validate(bits,variables);
+  if(bits<0 || bits>64 || (bits<64 && References>>bits!=0))throw new ArgumentException("Numeric expression reads outside the classical register.");
+  if(Kind==NodeKind.Variable) {
+   var declarations=variables as RuntimeDeclarations;
+   if(declarations==null || Slot>=declarations.Numeric.Count || !Type.Same(declarations.Numeric[Slot]))throw new ArgumentException("Numeric variable slot/type does not match its declaration.");
+  }
+  if(Integer!=null)Integer.Validate(bits,variables);if(BitOperand!=null)BitOperand.ValidateVariables(bits,variables);
   if(Left!=null)Left.Validate(bits,variables);if(Right!=null)Right.Validate(bits,variables);
  }
  internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
-  if(Kind==NodeKind.Constant)number(unchecked((ulong)BitConverter.DoubleToInt64Bits(Value)));
+  if(Kind==NodeKind.Constant)number(Raw);
+  else if(Kind==NodeKind.TypedConstant){Type.Write(number);number(Raw);}
+  else if(Kind==NodeKind.Variable){Type.Write(number);number((ulong)Slot);}
+  else if(Kind==NodeKind.Cast){Type.Write(number);Left.WriteNode(number);}
+  else if(Kind==NodeKind.Function){number((ulong)FunctionCode);Left.WriteNode(number);}
+  else if(Kind==NodeKind.Scale){number((ulong)ScaleCode);Left.WriteNode(number);Integer.WriteNode(number);}
+  else if(Kind==NodeKind.Bits){number((ulong)Type.Width);BitOperand.WriteNode(number);}
+  else if(Kind==NodeKind.TypedInteger){number((ulong)Type.Width);Integer.WriteNode(number);}
   else if(Kind==NodeKind.Integer)Integer.WriteNode(number);
   else {number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);}
  }
 }
 sealed class ClassicalIntegerExpression {
- public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5 }
+ public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public int Slot {get;private set;}
  public ClassicalIntegerType Type {get;private set;}public ulong Value {get;private set;}
  public ClassicalIntegerExpression Left {get;private set;}public ClassicalIntegerExpression Right {get;private set;}
+ public ClassicalRealExpression NumericLeft {get;private set;}public ClassicalRealExpression NumericRight {get;private set;}
+ public bool UsesNumericProtocol {get{return NumericLeft!=null || (Left!=null && Left.UsesNumericProtocol) || (Right!=null && Right.UsesNumericProtocol) || (BitOperand!=null && BitOperand.UsesNumericProtocol);}}
  public ClassicalExpression BitOperand {get;private set;}
  public bool UsesBitExpressionProtocol {get;private set;}
  internal int Depth {get;private set;}internal int Count {get;private set;}internal ulong References {get;private set;}
@@ -180,6 +258,30 @@ sealed class ClassicalIntegerExpression {
   if(Depth>32 || Count>512)throw new ArgumentException("Integer expressions allow 32 levels and 512 nodes.");
   References=(left==null ? 0 : left.References)|(right==null ? 0 : right.References)|(bitOperand==null ? 0 : bitOperand.References);
   if(bits!=null) {indices=(int[])bits.Clone();foreach(int bit in indices){if(bit<0 || bit>=64)throw new ArgumentException("Integer indices must be 0–63.");References|=1UL<<bit;}}
+ }
+ static ClassicalIntegerExpression Numeric(NodeKind kind,ClassicalIntegerType type,ClassicalRealExpression left,ClassicalRealExpression right=null) {
+  if(left==null)throw new ArgumentNullException("operand");
+  var result=new ClassicalIntegerExpression(kind,type,0,null,0,null,null) {NumericLeft=left,NumericRight=right};
+  result.Depth=1+Math.Max(left.Depth,right==null ? 0 : right.Depth);result.Count=1+left.Count+(right==null ? 0 : right.Count);
+  result.References=left.References|(right==null ? 0 : right.References);
+  if(result.Depth>32 || result.Count>512)throw new ArgumentException("Integer expressions allow 32 levels and 512 nodes.");
+  return result;
+ }
+ public static ClassicalIntegerExpression FromNumeric(ClassicalIntegerType type,ClassicalRealExpression operand) {
+  if(operand==null || operand.Type.Kind!=ClassicalNumericType.NumericKind.Float)throw new ArgumentException("Integer casts require floats.");
+  return Numeric(NodeKind.NumericCast,type,operand);
+ }
+ public static ClassicalIntegerExpression AngleBits(ClassicalRealExpression operand) {
+  if(operand==null || operand.Type.Kind!=ClassicalNumericType.NumericKind.Angle)throw new ArgumentException("Angle bit conversion requires an angle.");
+  return Numeric(NodeKind.AngleBits,ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned,operand.Type.Width),operand);
+ }
+ public static ClassicalIntegerExpression AngleRatio(ClassicalRealExpression left,ClassicalRealExpression right) {
+  if(left==null || right==null || left.Type.Kind!=ClassicalNumericType.NumericKind.Angle || !left.Type.Same(right.Type))throw new ArgumentException("Angle ratios require equal widths.");
+  return Numeric(NodeKind.AngleRatio,ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned,left.Type.Width),left,right);
+ }
+ public static ClassicalIntegerExpression NumericCompare(ClassicalRealExpression left,ClassicalRealExpression right) {
+  if(left==null || right==null || ((left.Type.Kind==ClassicalNumericType.NumericKind.Angle || right.Type.Kind==ClassicalNumericType.NumericKind.Angle) && !left.Type.Same(right.Type)))throw new ArgumentException("Incompatible numeric comparison.");
+  return Numeric(NodeKind.NumericCompare,ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Signed),left,right);
  }
  public static ClassicalIntegerExpression Constant(ClassicalIntegerType type,ulong value) {
   if(type==null)throw new ArgumentNullException("type");
@@ -208,6 +310,7 @@ sealed class ClassicalIntegerExpression {
   }
   if(Left!=null)Left.Validate(bits,variables);if(Right!=null)Right.Validate(bits,variables);
   if(BitOperand!=null)BitOperand.ValidateVariables(bits,variables);
+  if(NumericLeft!=null)NumericLeft.Validate(bits,variables);if(NumericRight!=null)NumericRight.Validate(bits,variables);
  }
  public static ClassicalIntegerExpression Cast(ClassicalIntegerType type,ClassicalIntegerExpression operand) {
   if(operand==null)throw new ArgumentNullException("operand");
@@ -220,6 +323,7 @@ sealed class ClassicalIntegerExpression {
  }
  internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
+  if(NumericLeft!=null){if(Kind==NodeKind.NumericCast)Type.Write(number);NumericLeft.WriteNode(number);if(NumericRight!=null)NumericRight.WriteNode(number);return;}
   if(Kind==NodeKind.Binary){number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);return;}
   Type.Write(number);
   if(Kind==NodeKind.Constant)number(Value);

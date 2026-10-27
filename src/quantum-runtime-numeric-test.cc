@@ -56,5 +56,24 @@ int main(){try {
  }
  std::vector<E> angleGate={E::storeNumeric(0,R::constant(V::fromBits(T::angle(8),128))),E::parameterized(G(G::Kind::Y,{R::variable(T::angle(8),0)}),{0}),E::measure(0,0)};
  auto exactAngle=QuantumExact::evaluateCircuit(1,1,angleGate,{},4096,exact,1000,{T::angle(8)});check(exactAngle.size()==1 && exactAngle.begin()->first==1);
+ // Odd rational-pi phases must retain exact conjugate cancellation. A
+ // superposed control makes their phase observable, including inverse powers.
+ for(unsigned width:{8U,64U})for(auto kind:{G::Kind::Phase,G::Kind::PublishedU})for(int power:{-1,1}) {
+  const auto raw=width==8 ? std::uint64_t(129) : (std::uint64_t(1)<<63)+1;
+  auto theta=R::constant(V::fromBits(T::angle(width),raw));
+  std::vector<R> parameters={theta};
+  if(kind==G::Kind::PublishedU){parameters.push_back(R::constant(0.0));parameters.push_back(R::constant(0.0));}
+  G gate(kind,parameters,1,1,power);
+  // Prepare the target in |1> to expose P as well as the phase of U.
+  QuantumExact::TracePreservingMap X({calculator.calculate("quantum:X",exact)},4,exact);
+  auto outcomes=QuantumExact::evaluateCircuit(2,1,{E::map(X,{1}),E::map(H,{0}),E::parameterized(gate,{0,1}),E::map(H,{0}),E::measure(0,0)},{},4096,exact);
+  auto probabilities=QuantumExact::weights(outcomes,2,1,{0},4096,exact);
+  const double angle=V::fromBits(T::angle(width),raw).radians();
+  const double expected=(1+(kind==G::Kind::Phase ? std::cos(angle) : std::pow(std::cos(angle/2),2)))/2;
+  EvaluationOptions approximate=exact;approximate.approximation=APPROXIMATION_APPROXIMATE;
+  double actual=0;
+  if(probabilities.count(0)){auto p=probabilities.at(0);p.eval(approximate);check(p.isNumber());actual=p.number().floatValue();}
+  check(std::abs(actual-expected)<1e-12);
+ }
  std::cout<<"PASS: "<<checks<<" runtime numeric integration checks.\n";return 0;
 }catch(const std::exception &error){std::cerr<<error.what()<<'\n';return 1;}}

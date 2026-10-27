@@ -25,6 +25,7 @@ EXTRA_DIST = config.rpath  \
 	windows/fixtures/runtime-subroutines/qbraid-loop-index.qasm \
 	windows/build-runtime-angle-import-test.ps1 \
 	windows/RuntimeAngleImportTests.cs \
+	windows/test-qasm-runtime-numeric.py \
 	windows/test-qasm-runtime-angles.py \
 	windows/test-qasm-runtime-gates.py \
 	windows/ClassicalRealExpressionText.cs \
@@ -88,6 +89,7 @@ EXTRA_DIST = config.rpath  \
 	windows/qasm_source_diagnostics.py \
 	windows/qasm_subroutine_scope.py \
 	windows/qasm_runtime_subroutines.py \
+	windows/qasm_runtime_numeric.py \
 	windows/qasm_concat_parser.py \
 	windows/test-classical-module-export.py \
 	windows/test-classical-export-ui.py \
