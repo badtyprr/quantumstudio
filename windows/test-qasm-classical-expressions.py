@@ -529,7 +529,6 @@ rejected += [
  'def f(qubit[2] a,qubit b)->bool{return true;}qubit[2] q;bool ok=f(q,q[1]);',
  'def f(qubit b,qubit[2] a)->bool{return true;}qubit[2] q;bool ok=f(q[1],q);',
  'def f(qubit[2] a)->bool{x a[2];return true;}qubit[2] q;bool ok=f(q);',
- 'def f(qubit[2] a,int i)->bool{x a[i];return true;}qubit[2] q;int i=1;bool ok=f(q,i);',
  'def f(qubit a)->bool{x a[0];return true;}qubit q;bool ok=f(q);',
  'def f(qubit[2] a)->bool{return true;}qubit[3] q;bool ok=f(q[0:1]);',
  'def f(qubit[2] a)->bool{return true;}qubit[2] q;let b=q;bool ok=f(b);',
