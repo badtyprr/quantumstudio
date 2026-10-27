@@ -68,6 +68,7 @@ for exact in (True,False):
     # Invalid indices are lazy; declaration/map validation is not.
     bad=select([([0,1],variable())],gate('X',[0]))
     expect([branch(0,[bad])]+readout,{'000':1},exact)
+    expect([store(integer(1)),branch(1,[bad])]+readout,{'010':1},exact)
     for value in (-1,2,(1<<63)-1):
         run(request([store(integer(value)),bad],exact),exact,'fixture.qasm:7:3: Wire index')
     run(request([bad],exact),exact,'fixture.qasm:7:3: Wire index')
@@ -76,6 +77,7 @@ for exact in (True,False):
     for bad_step in [select([],gate('X',[0])),select([([],integer(0))],gate('X',[0])),
                      select([([3],integer(0))],gate('X',[0])),
                      select([([1],integer(0))],store(integer(0))),
+                     select([([1],integer(0))],nums(3,1,1)+gate("X",[0])[2:]),
                      select([([1],integer(0))],gate('X',[1])),
                      select([([1],integer(0))],bad),
                      select([([1],integer(0))],gate('CNOT',[0,1])),

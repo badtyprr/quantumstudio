@@ -24,7 +24,9 @@ It is not a claim that all negative indexing is invalid in the language.
 
 The exact and sampled engines share the resolver. Gates, channels, rotations,
 parameterized gates, measurements and resets accept selection. Readout and
-classical storage operations do not. The exact phase shortcut declines selected
+classical storage operations do not. Conditions use an explicit branch containing
+the selected operation; wrapping the legacy conditional opcode is rejected by
+both engines. The exact phase shortcut declines selected
 operations and uses the general evaluator. Static operations keep their existing
 representation and protocol behavior.
 

@@ -26,7 +26,7 @@ public:
  const std::shared_ptr<const QuantumClassical::WireSelection> wireSelection;
  // Replace fixed targets with a validated runtime selection of the same arity.
  TrajectoryStep selectWires(const QuantumClassical::WireSelection &selection) const {
-  if(!(kind==Kind::Gate || kind==Kind::Conditional || kind==Kind::Channel || kind==Kind::Measure || kind==Kind::Reset || kind==Kind::Rotation || kind==Kind::ParameterGate))throw std::invalid_argument("Only quantum operations accept runtime wire selectors");
+  if(!(kind==Kind::Gate || kind==Kind::Channel || kind==Kind::Measure || kind==Kind::Reset || kind==Kind::Rotation || kind==Kind::ParameterGate))throw std::invalid_argument("Only quantum operations accept runtime wire selectors");
   if(wireSelection)throw std::invalid_argument("Nested wire selections are not supported");
   for(unsigned k=0;k<wires.size();++k)if(wires[k]!=k)throw std::invalid_argument("Runtime wire operation must use local ordinal targets");
   if(selection.size()!=wires.size())throw std::invalid_argument("Wire selector count differs from operation arity");
