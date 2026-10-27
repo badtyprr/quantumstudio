@@ -76,10 +76,11 @@ sealed class ClassicalProgramQasm {
   string expression=gate.Expression.Trim();
   var targets=Targets(text,gate);
   string identity="I";for(int k=1;k<gate.Wires.Length;k++)identity="kron(I,"+identity+")";
-  if(expression==identity) {
-   if(gate.SelectedWires!=null)text.Append((targets.Length==1 ? "id" : targets.Length==2 ? "pow(0) @ cx" : "pow(0) @ ccx")+" "+String.Join(", ",targets)+";\n");
-   return;
-  }
+  // Saved/editor models need not carry the importer's separate preflight.
+  // Resolve every operand in order before an export decomposition can elide
+  // or reorder targets (including scalar phases and interaction gates).
+  if(gate.SelectedWires!=null)text.Append((targets.Length==1 ? "id" : targets.Length==2 ? "pow(0) @ cx" : "pow(0) @ ccx")+" "+String.Join(", ",targets)+";\n");
+  if(expression==identity)return;
   // The importer uses this exact scalar-times-identity form for static gphase.
   var phase=Regex.Match(expression,@"\A\(exp\(i\*\(([+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?)\)\)\*I\)\z");
   if(phase.Success && gate.Wires.Length==1) {

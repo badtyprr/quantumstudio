@@ -86,6 +86,27 @@ for source in ['float i=1.5;qubit[2] q;x q[i];','bool i=true;qubit[2] q;x q[i];'
     except (ValueError,NotImplementedError):checks+=1
     else:raise AssertionError('Unsupported index accepted: '+source)
 
+# Valid saved models need not contain the importer's separate preflight step.
+# A selected scalar phase must retain target errors even though gphase has no target.
+for index in (0,2):
+    model=compile(header+f'qubit[2] q;int i={index};x q[i];')
+    step=next(n for n in model['Steps'] if 'WireTargets' in n)
+    step['Expression']='(exp(i*(1))*I)'
+    model['Steps']=[n for n in model['Steps'] if 'WireTargets' not in n]+[step]
+    original=adapt(model);roundtrip=adapt(compile(original['source']))
+    for exact in (True,False):
+        for encoded in (original,roundtrip):execute(encoded,exact,{'':1},'Wire index is outside' if index==2 else None)
+
+# A decomposed interaction uses the second operand first; its exported preflight
+# must still report the first operand's bounds error before the undefined second.
+model=compile(header+'qubit[2] q;int i=2;int j;cx q[i],q[j];')
+step=next(n for n in model['Steps'] if 'WireTargets' in n)
+step['Expression']='XXMinusYY(0.5,0.2)'
+model['Steps']=[n for n in model['Steps'] if 'WireTargets' not in n]+[step]
+original=adapt(model);roundtrip=adapt(compile(original['source']))
+for exact in (True,False):
+    for encoded in (original,roundtrip):execute(encoded,exact,error='Wire index is outside')
+
 # Raw JSON cannot bypass the operation/arity/schema checks, even in an untaken body.
 model=compile(header+'qubit[2] q;int i=0;x q[i];bit[2] c=measure q;')
 selected=next(n for n in model['Steps'] if 'WireTargets' in n)

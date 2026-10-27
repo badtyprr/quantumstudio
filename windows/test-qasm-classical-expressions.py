@@ -446,7 +446,7 @@ rejected += ['bit[3] c; c=bit[3](int[3](c)+1);','bit[3] c; c=bit[3](int(c));','b
 rejected += ['qubit q;bit c=measure q;bit[2] d;d=bit[2](c=="1");',
              'qubit q;bit c=measure q;bit[2] d;d=bit[2](!(c=="1"));']
 rejected += ['int[0] a;','uint[65] a;','int a=3; int[a] b;','int a=1; while(a){a=0;}',
-             'int a=1; bit[2] c; c[a]=1;', # Quantum targets are covered by test-qasm-runtime-wires.py.
+             # Runtime quantum target success cases moved to test-qasm-runtime-wires.py.
              'int a=1; def f() -> int {return a;}','int a=1; int a=2;',
              'int a=1; bit[2] c; c[a]=1;','float[16] a=1.0;','int a=b; int b=1;', 'int '+('a'*65)+';']
 rejected += ['bit c;{int a=1;}c=a==1;', 'bit c;{int a=1;int a=2;}', 'bit c;{int '+('a'*65)+';}']
@@ -499,7 +499,7 @@ rejected += ['int n=2;bit c;for int i in [true:n]{c=1;}',
              'bool b=true;int n=2;bit c;for int i in [b:n]{c=1;}',
              'int n=2;bit c;for int i in [0:n>1]{c=1;}',
              'int n=2;bit c;for int i in [0:n]{}c=i==0;',
-             'int n=2;qubit[3] q;for int i in [0:n]{x q[i];}']
+             'int n=2;bit[3] c;for int i in [0:n]{c[i]=1;}']
 rejected += ['qubit q;bit[8] c;c[0]=measure q;c=c<<int[8](c);',
              'qubit q;bit[8] c;c[0]=measure q;int[8] n=int[8](c);c=c>>n;',
              'qubit q;bit[8] c;c[0]=measure q;c=c<<uint[7](c);']
