@@ -1,0 +1,134 @@
+{
+  "repository": "https://github.com/qBraid/pyqasm",
+  "revision": "167cff141b270cae023137971e716d5fec68e9f0",
+  "fixtures": [
+    {
+      "id": "custom-runtime-gate",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 138,
+      "sha256": "2c8aa9bbf781768a664ed5ec279415740309df2b3000f6f4d86e40b498b7843a",
+      "source": "\n    OPENQASM 3;\n    include \"stdgates.inc\";\n\n    gate my_gate_2(p) q {\n        ry(p * 2) q;\n    }\n\n    gate my_gate(a, b, c) q {\n        rx(5 * a) q;\n        rz(2 * b / a) q;\n        my_gate_2(a) q;\n        rx(!a) q; // not a = False\n        rx(c) q;\n    }\n\n    qubit q;\n    int[32] m = 3;\n    float[32] n = 6.0;\n    bool o = true;\n    my_gate(m, n, o) q;\n    ",
+      "accepted": false,
+      "diagnostic": "Runtime parameters require a supported primitive gate outside subroutines."
+    },
+    {
+      "id": "broadcast-u3",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 201,
+      "sha256": "2cc7875ba3fb2e2e69d4512b0a3169513a99d81348e22d551e670c233a93d020",
+      "source": "\n    OPENQASM 3;\n    include \"stdgates.inc\";\n\n    qubit[2] q1;\n    u3(0.5, 0.5, 0.5) q1;\n    ",
+      "accepted": true
+    },
+    {
+      "id": "controlled-u3",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 216,
+      "sha256": "4d19ec03a05c6e1d0666b2c4d9801c5a341c738f31b6635a7e5a65a40dd86704",
+      "source": "\n    OPENQASM 3;\n    include \"stdgates.inc\";\n    qubit[2] q;\n    ctrl @ u3(0.5, 0.5, 0.5) q[0], q[1];\n    ",
+      "accepted": true
+    },
+    {
+      "id": "global-phase",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 263,
+      "sha256": "2a17cb27724b2a3ba88e0717895d857f17325c6f09de21473431488697a5e5ce",
+      "source": "OPENQASM 3.0;\n    qubit[2] q;\n    gphase(pi/4);\n    ",
+      "accepted": true
+    },
+    {
+      "id": "powers",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 388,
+      "sha256": "6cd011add601adee3c55ef2371f8d617e7acf6249f7a3d37b45e697d6cb674e4",
+      "source": "\n    OPENQASM 3;\n    include \"stdgates.inc\";\n    qubit q;\n    inv @ pow(2) @ pow(4) @ h q;\n    pow(-2) @ h q;\n    ",
+      "accepted": true
+    },
+    {
+      "id": "inverses",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 403,
+      "sha256": "12c935203a2d83dabaa95b3b5a259dd43010e2f21f2d4726d6f3e26c1015c788",
+      "source": "\n    OPENQASM 3;\n    include \"stdgates.inc\";\n    qubit q;\n    inv @ h q;\n    inv @ y q;\n    inv @ rx(0.5) q;\n    inv @ s q;\n\n    qubit[2] q2;\n    inv @ cx q2;\n    inv @ ccx q[0], q2;\n    ",
+      "accepted": true
+    },
+    {
+      "id": "negative-control",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 655,
+      "sha256": "81507e73c7e8618b9f527ced588ee954915c87128d44d10002d4297315b0e88f",
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    qubit[2] q;\n    negctrl @ z q[0], q[1];\n    ",
+      "accepted": true
+    },
+    {
+      "id": "controlled-global-phase",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 769,
+      "sha256": "6dc81a6e439b0c249b93757dd62e0bf3133d06a06f473da6e1dee85f36a0b945",
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    qubit a;\n    ctrl @ gphase(1) a;\n    ",
+      "accepted": true
+    },
+    {
+      "id": "phase",
+      "path": "tests/qasm3/test_gates.py",
+      "line": 775,
+      "sha256": "a1392335a165fda3e41814c072f323711d229d02c11d6c575068a81dba1f7386",
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    qubit a;\n    p(1) a;\n    ",
+      "accepted": true
+    },
+    {
+      "id": "implicit-float-integer",
+      "path": "tests/qasm3/declarations/test_classical.py",
+      "line": 156,
+      "sha256": "fd471b16f6dc4e72ee6d5687542fd300374a20337a8a650289fb953324419e19",
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    int[32] a = 5.1;\n    float[32] r = 245;\n    uint[4] b = -4; // -4 % 16 = 12\n    bool f = 0;\n    bool g = 1;\n    bit h = 1;\n\n    qubit q;\n    rx(a) q;\n    rx(r) q;\n    rx(b) q;\n    rx(f) q;\n    rx(g) q;\n\n    ",
+      "accepted": false,
+      "diagnostic": "An integer expression requires an explicit numeric cast."
+    },
+    {
+      "id": "angle-bits",
+      "path": "tests/qasm3/declarations/test_classical.py",
+      "line": 771,
+      "sha256": "32ed3cc2aa36c52dd664fcee340975dd50c4bc30179b88e3de99c290e0427a6a",
+      "source": "\n    OPENQASM 3.0;\n    include \"stdgates.inc\";\n    \n    angle[4] ang1 = pi / 2;\n    angle[8] ang2 = 15 * (pi / 16);\n    angle[4] ang3 = -pi / 2;\n    angle[4] ang4 = -pi;\n    angle[8] ang5 = (pi / 2) + (pi / 4);\n    angle[8] ang6 = (pi / 2) - (pi / 4);\n\n    ",
+      "accepted": true
+    },
+    {
+      "id": "wide-bool-bit",
+      "path": "tests/qasm3/resources/variables.py",
+      "line": 372,
+      "sha256": "7c5df9e906dd0cb4b9ebab3019c44dc6c7cc53896fe7fdc83b383d8f07ce7a43",
+      "source": "\n        OPENQASM 3.0;\n        include \"stdgates.inc\";\n        \n        bool b_false = false;\n        bool b_true  = true;\n        \n        int i1 = int(b_false);\n        uint[16] u1 = uint[16](b_true);\n        float[32] f0 = float[32](b_false);\n        \n        bit  b;\n        b = b_true;\n        \n        bit[4] bits_from_true  = bit[4](b_true);\n        \n        bool b_nested = bool(float[32](uint[8](int[8](bit[8](bool(true))))));\n        ",
+      "accepted": false,
+      "diagnostic": "Boolean-to-bit casts require one bit."
+    },
+    {
+      "id": "integer-casts",
+      "path": "tests/qasm3/resources/variables.py",
+      "line": 392,
+      "sha256": "30039eeefaedb9021df7c78527a6bcbc5663fba9dca8a3c3e26abd942be404a2",
+      "source": "\n        OPENQASM 3.0;\n        include \"stdgates.inc\";\n        \n        int[4] x = -3;\n        bool b = bool(x);\n        uint[8] ux = uint[8](x);\n        float[32] f = float[32](x);\n        bit[4] bits = bit[4](x);\n        ",
+      "accepted": true
+    },
+    {
+      "id": "float-casts",
+      "path": "tests/qasm3/resources/variables.py",
+      "line": 416,
+      "sha256": "e4701183abf9b9dcb8ee911107e4c01cde91215d06ff018398f604065cdccb1f",
+      "source": "\n        OPENQASM 3.0;\n        include \"stdgates.inc\";\n\n        const float[64] two_pi = 6.283185307179586;\n        float[64] f = two_pi * (127. / 512.);\n        bool b = bool(f);\n        int i = int(f);\n        uint u = uint(f);\n        // angle[8] a = angle[8](f);\n        ",
+      "accepted": true
+    },
+    {
+      "id": "discarded-sine",
+      "path": "tests/qasm3/test_expressions.py",
+      "line": 128,
+      "sha256": "d2eba4539a4c6abfd8f785b300be3fe50833515c1807becea9518b9118af253d",
+      "source": "\n        OPENQASM 3.0;\n        include \"stdgates.inc\";\n        int value = 1;\n        array[int[32], 2] values = {1, 2};\n        qubit q;\n        sin(1.0);\n        x q;\n        ",
+      "accepted": false,
+      "extraction": "Original JoinedStr with original parameter expression=sin(1.0);",
+      "diagnostic": "'sin'"
+    }
+  ],
+  "copyright": "Copyright 2025 qBraid",
+  "license": "Apache-2.0; see pyqasm-LICENSE.txt",
+  "notice": "Extracted unchanged source string values from upstream Python test files; the surrounding manifest and harness are QuantumStudio additions."
+}

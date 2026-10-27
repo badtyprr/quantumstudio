@@ -19,7 +19,8 @@ expected = [name for name in tracked if name.startswith('windows/')
             or name.startswith('src/quantum')
             or name in ('src/quantum-worker.cc', 'tests/quantum.batch',
                         'docs/quantum-notation.md', 'docs/ibm-learning-sections.json',
-                        'docs/learning-source-inventory.json', 'docs/qbraid-notebook-audit.json')]
+                        'docs/learning-source-inventory.json', 'docs/qbraid-notebook-audit.json',
+                        'docs/runtime-numeric-protocol.md', 'docs/learning-evidence/DEV-06.md')]
 assert expected, 'No project inputs discovered'
 with tarfile.open(args.archive, 'r:gz') as archive:
     members = {}
