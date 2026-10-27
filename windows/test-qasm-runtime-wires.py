@@ -42,7 +42,7 @@ def execute(encoded,exact,expected=None,error=None):
     assert all(abs(actual.get(k,0)-expected.get(k,0))<(1e-12 if exact else .025) for k in set(actual)|set(expected)),(actual,expected)
 
 cases=[
- ('def f(qubit[2] a,int i)->bool{x a[i];return true;}qubit[2] q;int i=1;bool ok=f(q,i);output bit[2] c=measure q;', {'10':1}),
+ ('def f(qubit[2] a,int i)->bool{x a[i];return true;}qubit[2] q;int i=1;bool ok=f(q,i);output bit[2] c;c=measure q;', {'10':1}),
  ('qubit[3] q;int i=0;x q[i];i=2;x q[i];bit[3] c=measure q;',{'101':1}),
  ('qubit[3] q;int n=2;for int i in [0:n] {x q[i];}bit[3] c=measure q;',{'111':1}),
  ('qubit[3] q;let a=q[{2,0}];int i=0;x a[i];i=1;x a[i];bit[3] c=measure q;',{'101':1}),
