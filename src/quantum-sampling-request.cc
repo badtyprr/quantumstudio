@@ -14,7 +14,8 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool numeric() const {return input.compare(0,10,"QSAMPLE13\n")==0;}
+ bool wireSelectors() const {return input.compare(0,10,"QSAMPLE14\n")==0;}
+ bool numeric() const {return input.compare(0,10,"QSAMPLE13\n")==0 || wireSelectors();}
  bool parameterGates() const {return input.compare(0,10,"QSAMPLE12\n")==0 || numeric();}
  bool rotations() const {return input.compare(0,10,"QSAMPLE11\n")==0 || parameterGates();}
  bool ranges() const {return input.compare(0,10,"QSAMPLE10\n")==0 || rotations();}
@@ -28,7 +29,7 @@ public:
  bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE13 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE14 request.");
   if(ranges())position=10;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -136,7 +137,13 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
 QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total,const QuantumClassical::IntegerStorage *variables) {
  using Step=QuantumNumerics::TrajectoryStep;
  if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==20) {
+  if(depth>=32)throw std::length_error("Runtime wire selection exceeds nesting limits");
+  auto selection=QuantumClassicalRequest::wireSelection(reader,qubits,classicalBits,*variables);
+  auto operation=readStep(calculator,reader,qubits,classicalBits,depth+1,total,variables);
+  return operation.selectWires(selection);
+ }
  if(kind==18 || kind==19) {
   const auto slot=static_cast<std::size_t>(reader.integer(4095));variables->numeric().type(slot);
   if(kind==19)return Step::clearNumeric(slot);

@@ -70,6 +70,7 @@ libqalculate_la_SOURCES = \
 	QuantumClassicalNumeric.cc \
 	QuantumRuntimeRotation.cc \
 	QuantumRuntimeGate.cc \
+	QuantumWireSelection.cc \
 	QuantumClassicalIntegerType.cc \
 	QuantumClassicalIntegerStorage.cc \
 	QuantumClassicalIntegerExpression.cc \
@@ -126,6 +127,6 @@ noinst_HEADERS += QuantumClassicalIntegerExpression.h
 noinst_HEADERS += QuantumClassicalRange.h
 noinst_HEADERS += QuantumClassicalRangeExpression.h
 noinst_HEADERS += QuantumClassicalRealExpression.h
-noinst_HEADERS += QuantumRuntimeRotation.h QuantumRuntimeGate.h
+noinst_HEADERS += QuantumRuntimeRotation.h QuantumRuntimeGate.h QuantumWireSelection.h
 
 noinst_HEADERS += QuantumClassicalNumeric.h

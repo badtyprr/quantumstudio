@@ -265,3 +265,6 @@ quantum_runtime_numeric_test_SOURCES = quantum-runtime-numeric-test.cc
 quantum_runtime_numeric_test_LDADD = $(test_LDADD)
 EXTRA_DIST += quantum-runtime-numeric-request-test.py
 TESTS += quantum-runtime-numeric-request-test.py
+
+EXTRA_DIST += quantum-wire-selection-request-test.py
+TESTS += quantum-wire-selection-request-test.py

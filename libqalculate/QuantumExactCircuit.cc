@@ -33,6 +33,7 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
   if(step.kind==Step::Kind::Assign) {
    QuantumClassical::validateAssignment(bits,step.wires,*step.expression,variables);continue;
   }
+  if(step.wireSelection)step.wireSelection->validate(qubits,bits,variables);
   unsigned targets=0;
   for(unsigned wire:step.wires) {
    if(wire>=qubits)throw std::out_of_range("Exact circuit wire is outside the register");
@@ -97,10 +98,10 @@ TracePreservingMap runtimeGate(const QuantumNumerics::RuntimeGate::Value &gate,c
   *matrix.getElement(gate.activeOffset()+r,gate.activeOffset()+c)=*base.getElement(r,c);
  return TracePreservingMap({matrix},size*size,options);
 }
-MathStructure apply(const MathStructure &rho,const Step &step,const EvaluationOptions &exact) {
+MathStructure apply(const MathStructure &rho,const Step &step,const EvaluationOptions &exact,const std::vector<unsigned> &targets) {
  if(step.operation->dimension()==1)return rho; // A complete scalar channel is identity on the state.
  auto function=CALCULATOR->getFunction("qapply");if(!function)throw std::runtime_error("Exact gate application is unavailable");
- MathStructure wires;wires.clearVector();for(unsigned wire:step.wires)wires.addChild(MathStructure(static_cast<int>(wire)));
+ MathStructure wires;wires.clearVector();for(unsigned wire:targets)wires.addChild(MathStructure(static_cast<int>(wire)));
  const std::size_t n=rho.rows();MathStructure sum;sum.clearMatrix();sum.resizeMatrix(n,n,m_zero);
  for(const auto &op:step.operation->operators()) {
   checkpoint();MathStructure result;result.set(function,&op,&rho,&wires,NULL);result.eval(exact);checkpoint();
@@ -232,12 +233,13 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
    if(record.flow!=Flow::Normal) {
     output.add(record.bits,record.variables,record.density,record.flow);continue;
    }
+   const auto wires=step.wireSelection ? step.wireSelection->evaluate(record.bits,bits,record.variables) : step.wires;
    if(step.kind==Step::Kind::End) {
     output.add(record.bits,record.variables,record.density,Flow::End);
    } else if(step.kind==Step::Kind::Break || step.kind==Step::Kind::Continue) {
     output.add(record.bits,record.variables,record.density,step.kind==Step::Kind::Break ? Flow::Break : Flow::Continue);
    } else if(step.kind==Step::Kind::Measure) {
-    for(const auto &outcome:measure({{record.bits,record.density}},qubits,bits,step.wires[0],step.classicalBit,maxCells,exact))
+    for(const auto &outcome:measure({{record.bits,record.density}},qubits,bits,wires[0],step.classicalBit,maxCells,exact))
      output.add(outcome.first,record.variables,outcome.second);
    } else if(step.kind==Step::Kind::Branch) {
     const bool selected=step.expression ? step.expression->evaluate(record.bits,bits,record.variables)!=0 : (record.bits&step.mask)==step.value;
@@ -255,7 +257,7 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
     else variables.numeric().write(step.variableSlot,step.numericExpression->evaluateTyped(record.bits,bits,record.variables));
     output.add(record.bits,variables,record.density);
    } else if(step.kind==Step::Kind::Assign) {
-    output.add(QuantumClassical::assign(record.bits,bits,step.wires,*step.expression,record.variables),record.variables,record.density);
+    output.add(QuantumClassical::assign(record.bits,bits,wires,*step.expression,record.variables),record.variables,record.density);
    } else if(step.kind==Step::Kind::Readout) {
     for(const auto &outcome:step.assignment->outcomes(record.bits)) {
      MathStructure rho=record.density;
@@ -271,17 +273,17 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
     auto density=record.density;
     if(value.power()!=0) {
      const auto map=runtimeGate(value.singleApplication(),exact);
-     const auto application=Step::map(map,step.wires);
-     for(int k=0;k<std::abs(value.power());++k){checkpoint();density=apply(density,application,exact);}
+     const auto application=Step::map(map,wires);
+     for(int k=0;k<std::abs(value.power());++k){checkpoint();density=apply(density,application,exact,wires);}
     }
     output.add(record.bits,record.variables,density);
    } else if(step.kind==Step::Kind::Rotation) {
     const auto map=runtimeRotation(*step.rotation,record.bits,bits,record.variables,exact);
-    output.add(record.bits,record.variables,apply(record.density,Step::map(map,step.wires),exact));
-   } else if(step.kind==Step::Kind::Map) output.add(record.bits,record.variables,apply(record.density,step,exact));
+    output.add(record.bits,record.variables,apply(record.density,Step::map(map,wires),exact,wires));
+   } else if(step.kind==Step::Kind::Map) output.add(record.bits,record.variables,apply(record.density,step,exact,wires));
    else {
     auto reset=CALCULATOR->getFunction("qreset");if(!reset)throw std::runtime_error("Exact reset is unavailable");
-    MathStructure wire(static_cast<int>(step.wires[0])),result;
+    MathStructure wire(static_cast<int>(wires[0])),result;
     result.set(reset,&record.density,&wire,NULL);result.eval(exact);checkpoint();
     output.add(record.bits,record.variables,result);
    }

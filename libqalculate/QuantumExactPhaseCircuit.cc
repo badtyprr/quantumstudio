@@ -76,6 +76,7 @@ bool tryPhaseCircuitWeights(unsigned qubits,unsigned bits,const std::vector<Circ
  // a phase-conversion limit in an earlier gate.
  for(const auto &step:steps) {
   budget.charge();
+  if(step.wireSelection)return false;
   if(step.kind==CircuitStep::Kind::Measure) {
    if(step.wires.size()!=1 || step.wires[0]>=qubits || step.classicalBit>=bits)
     throw std::out_of_range("Exact phase measurement target is outside the register");

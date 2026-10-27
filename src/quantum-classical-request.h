@@ -7,6 +7,7 @@
 #include <libqalculate/QuantumClassicalRangeExpression.h>
 #include <libqalculate/QuantumRuntimeRotation.h>
 #include <libqalculate/QuantumRuntimeGate.h>
+#include <libqalculate/QuantumWireSelection.h>
 #include <cstring>
 #include <limits>
 #include <stdexcept>
@@ -61,6 +62,21 @@ QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,un
  for(unsigned k=0;k<type.width();++k)indices.push_back(static_cast<unsigned>(reader.integer(63)));
  return IntegerExpression::read(type,indices);
 }
+template<class Reader>
+QuantumClassical::WireSelection wireSelection(Reader &reader,unsigned qubits,unsigned bits,const QuantumClassical::IntegerStorage &storage) {
+ const auto source=reader.expression();
+ if(source.size()>512)throw std::length_error("Wire source context exceeds 512 bytes");
+ const auto count=reader.integer(3);std::vector<QuantumClassical::WireSelection::Target> targets;
+ for(unsigned k=0;k<count;++k) {
+  const auto size=reader.integer(25);std::vector<unsigned> mapping;
+  if(!qubits)throw std::out_of_range("A runtime wire requires a quantum register");
+  for(unsigned j=0;j<size;++j)mapping.push_back(static_cast<unsigned>(reader.integer(qubits-1)));
+  unsigned nodes=0;auto index=integerNode(reader,0,nodes,true,true,true);
+  targets.push_back({mapping,index});
+ }
+ QuantumClassical::WireSelection result(targets,source);result.validate(qubits,bits,storage);return result;
+}
+
 template<class Reader>
 QuantumClassical::Bits node(Reader &reader,unsigned depth,unsigned &count,bool typed,bool variables,bool bitExpressions,bool numeric) {
  using Bits=QuantumClassical::Bits;
