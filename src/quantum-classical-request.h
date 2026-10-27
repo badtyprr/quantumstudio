@@ -6,6 +6,7 @@
 #include <libqalculate/QuantumClassicalIntegerStorage.h>
 #include <libqalculate/QuantumClassicalRangeExpression.h>
 #include <libqalculate/QuantumRuntimeRotation.h>
+#include <libqalculate/QuantumRuntimeGate.h>
 #include <cstring>
 #include <limits>
 #include <stdexcept>
@@ -128,6 +129,18 @@ QuantumNumerics::RuntimeRotation rotation(Reader &reader,unsigned bits,const Qua
  const Rotation::Axis axes[]={Rotation::Axis::X,Rotation::Axis::Y,Rotation::Axis::Z};
  const auto axis=axes[reader.integer(2)];unsigned count=0;
  Rotation result(axis,realNode(reader,0,count));result.validate(bits,variables);return result;
+}
+template<class Reader>
+QuantumNumerics::RuntimeGate parameterGate(Reader &reader,unsigned bits,const QuantumClassical::IntegerStorage &variables) {
+ using G=QuantumNumerics::RuntimeGate;
+ const G::Kind kinds[]={G::Kind::X,G::Kind::Y,G::Kind::Z,G::Kind::Phase,G::Kind::GlobalPhase,G::Kind::U3,G::Kind::PublishedU};
+ const auto kind=kinds[reader.integer(6)];
+ const unsigned controls=static_cast<unsigned>(reader.integer(3));
+ const auto state=reader.integer(7);const auto size=reader.integer(3);
+ std::vector<QuantumClassical::RealExpression> parameters;
+ for(unsigned k=0;k<size;++k) {unsigned count=0;parameters.push_back(realNode(reader,0,count));}
+ unsigned count=0;auto power=integerNode(reader,0,count,true,true);
+ G gate(kind,parameters,controls,state,power);gate.validate(bits,variables);return gate;
 }
 }
 #endif

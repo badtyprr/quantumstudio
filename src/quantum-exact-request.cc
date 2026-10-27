@@ -13,7 +13,8 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool rotations() const {return input.compare(0,9,"QEXACT10\n")==0;}
+ bool parameterGates() const {return input.compare(0,9,"QEXACT11\n")==0;}
+ bool rotations() const {return input.compare(0,9,"QEXACT10\n")==0 || parameterGates();}
  bool ranges() const {return input.compare(0,8,"QEXACT9\n")==0 || rotations();}
  bool termination() const {return input.compare(0,8,"QEXACT8\n")==0 || ranges();}
  bool transfers() const {return input.compare(0,8,"QEXACT7\n")==0 || termination();}
@@ -24,7 +25,7 @@ public:
  bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT10 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT11 request.");
   if(rotations())position=9;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -70,7 +71,11 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
  unsigned &total,const EvaluationOptions &exact,const QuantumClassical::IntegerStorage *variables) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==17) {
+  auto wires=reader.targets(qubits,3);
+  return Step::parameterized(QuantumClassicalRequest::parameterGate(reader,bits,*variables),wires);
+ }
  if(kind==16) {
   if(!qubits)throw std::out_of_range("Runtime rotation needs a quantum wire.");
   const auto wire=static_cast<unsigned>(reader.integer(qubits-1));

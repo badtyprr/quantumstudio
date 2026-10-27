@@ -31,7 +31,9 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    if(targets&(1U<<wire))throw std::invalid_argument("Exact circuit wires must be distinct");
    targets|=1U<<wire;
   }
-  if(step.kind==Step::Kind::Rotation) {
+  if(step.kind==Step::Kind::ParameterGate) {
+   step.parameterGate->validate(bits,variables);
+  } else if(step.kind==Step::Kind::Rotation) {
    step.rotation->validate(bits,variables);
   } else if(step.kind==Step::Kind::Map) {
    if(step.operation->dimension()!=(std::size_t(1)<<step.wires.size()))
@@ -76,6 +78,19 @@ TracePreservingMap runtimeRotation(const QuantumNumerics::RuntimeRotation &rotat
  options.parse_options=ParseOptions();options.parse_options.angle_unit=ANGLE_UNIT_RADIANS;
  auto matrix=CALCULATOR->calculate(std::string("quantum:")+name+"("+text+")",options);
  return TracePreservingMap({matrix},4,options);
+}
+TracePreservingMap runtimeGate(const QuantumNumerics::RuntimeGate::Value &gate,const EvaluationOptions &exact) {
+ EvaluationOptions options=exact;options.approximation=APPROXIMATION_EXACT;
+ options.parse_options=ParseOptions();options.parse_options.angle_unit=ANGLE_UNIT_RADIANS;
+ auto base=CALCULATOR->calculate("quantum: "+gate.exactBaseExpression(),options);
+ const std::size_t size=std::size_t(1)<<gate.wireCount(),small=std::size_t(1)<<gate.targetCount();
+ if(small==1) {auto scalar=base;base.clearMatrix();base.resizeMatrix(1,1,m_zero);*base.getElement(1,1)=scalar;}
+ if(!base.isMatrix() || base.rows()!=small || base.columns()!=small)throw std::runtime_error("Runtime gate did not produce its declared matrix");
+ MathStructure matrix;matrix.clearMatrix();matrix.resizeMatrix(size,size,m_zero);
+ for(std::size_t k=1;k<=size;++k)*matrix.getElement(k,k)=m_one;
+ for(std::size_t r=1;r<=small;++r)for(std::size_t c=1;c<=small;++c)
+  *matrix.getElement(gate.activeOffset()+r,gate.activeOffset()+c)=*base.getElement(r,c);
+ return TracePreservingMap({matrix},size*size,options);
 }
 MathStructure apply(const MathStructure &rho,const Step &step,const EvaluationOptions &exact) {
  if(step.operation->dimension()==1)return rho; // A complete scalar channel is identity on the state.
@@ -237,6 +252,15 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
      }
      output.add(outcome.first,record.variables,rho);
     }
+   } else if(step.kind==Step::Kind::ParameterGate) {
+    const auto value=step.parameterGate->evaluate(record.bits,bits,record.variables);
+    auto density=record.density;
+    if(value.power()!=0) {
+     const auto map=runtimeGate(value.singleApplication(),exact);
+     const auto application=Step::map(map,step.wires);
+     for(int k=0;k<std::abs(value.power());++k){checkpoint();density=apply(density,application,exact);}
+    }
+    output.add(record.bits,record.variables,density);
    } else if(step.kind==Step::Kind::Rotation) {
     const auto map=runtimeRotation(*step.rotation,record.bits,bits,record.variables,exact);
     output.add(record.bits,record.variables,apply(record.density,Step::map(map,step.wires),exact));
