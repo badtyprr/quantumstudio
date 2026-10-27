@@ -1,7 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumRuntimeGate.h"
 #include <cmath>
-#include <gmp.h>
 #include <stdexcept>
 namespace QuantumNumerics {
 namespace {
@@ -12,13 +11,6 @@ unsigned parameterCount(RuntimeGate::Kind kind) {
   case K::U3:case K::PublishedU:return 3;
  }
  throw std::invalid_argument("Unknown runtime gate");
-}
-std::string rational(double value) {
- mpq_t number;mpq_init(number);mpq_set_d(number,value);
- try {
-  std::vector<char> text(mpz_sizeinbase(mpq_numref(number),10)+mpz_sizeinbase(mpq_denref(number),10)+4);
-  mpq_get_str(text.data(),10,number);std::string result(text.data());mpq_clear(number);return "("+result+")";
- } catch(...) {mpq_clear(number);throw;}
 }
 std::vector<Complex> multiply(const std::vector<Complex> &a,const std::vector<Complex> &b,unsigned n) {
  std::vector<Complex> result(n*n);
@@ -44,8 +36,8 @@ void RuntimeGate::validate(unsigned bits,const QuantumClassical::IntegerStorage 
  if(powerExpression_)powerExpression_->validate(bits,storage);
 }
 RuntimeGate::Value RuntimeGate::evaluate(std::uint64_t record,unsigned bits,const QuantumClassical::IntegerStorage &storage) const {
- std::vector<double> values;values.reserve(parameters_.size());
- for(const auto &parameter:parameters_)values.push_back(parameter.evaluate(record,bits,storage));
+ std::vector<QuantumClassical::NumericValue> values;values.reserve(parameters_.size());
+ for(const auto &parameter:parameters_)values.push_back(parameter.evaluateTyped(record,bits,storage));
  int power=power_;
  if(powerExpression_) {
   const auto value=powerExpression_->evaluate(record,bits,storage).value();
@@ -56,11 +48,11 @@ RuntimeGate::Value RuntimeGate::evaluate(std::uint64_t record,unsigned bits,cons
  }
  return Value(kind_,values,controls_,controlState_,power);
 }
-RuntimeGate::Value::Value(Kind kind,const std::vector<double> &parameters,unsigned controls,std::uint64_t state,int power):
+RuntimeGate::Value::Value(Kind kind,const std::vector<QuantumClassical::NumericValue> &parameters,unsigned controls,std::uint64_t state,int power):
  kind_(kind),parameters_(parameters),controls_(controls),controlState_(state),power_(power) {}
 unsigned RuntimeGate::Value::targetCount() const {return kind_==Kind::GlobalPhase ? 0 : 1;}
 std::vector<Complex> RuntimeGate::Value::baseMatrix() const {
- const double theta=parameters_[0],c=std::cos(theta/2),s=std::sin(theta/2);
+ const double theta=parameters_[0].radians(),c=std::cos(theta/2),s=std::sin(theta/2);
  auto phase=[](double x){return Complex(std::cos(x),std::sin(x));};
  std::vector<Complex> base;
  switch(kind_) {
@@ -71,7 +63,7 @@ std::vector<Complex> RuntimeGate::Value::baseMatrix() const {
   case Kind::GlobalPhase:base={phase(theta)};break;
   case Kind::U3:case Kind::PublishedU:
    // Multiply phases separately: adding two finite parameters can overflow.
-   base={c,-phase(parameters_[2])*s,phase(parameters_[1])*s,phase(parameters_[1])*phase(parameters_[2])*c};
+   base={c,-phase(parameters_[2].radians())*s,phase(parameters_[1].radians())*s,phase(parameters_[1].radians())*phase(parameters_[2].radians())*c};
    if(kind_==Kind::PublishedU)for(auto &entry:base)entry*=phase(theta/2);
    break;
  }
@@ -92,7 +84,7 @@ std::vector<Complex> RuntimeGate::Value::matrix() const {
  return result;
 }
 std::string RuntimeGate::Value::exactBaseExpression() const {
- const std::string theta=rational(parameters_[0]);std::string base;
+ const std::string theta=parameters_[0].exactRadians();std::string base;
  switch(kind_) {
   case Kind::X:base="Rx("+theta+")";break;
   case Kind::Y:base="Ry("+theta+")";break;
@@ -100,7 +92,7 @@ std::string RuntimeGate::Value::exactBaseExpression() const {
   case Kind::Phase:base="P("+theta+")";break;
   case Kind::GlobalPhase:base="exp(i*"+theta+")";break;
   case Kind::U3:case Kind::PublishedU:
-   base="U3("+theta+","+rational(parameters_[1])+","+rational(parameters_[2])+")";
+   base="U3("+theta+","+parameters_[1].exactRadians()+","+parameters_[2].exactRadians()+")";
    if(kind_==Kind::PublishedU)base="(exp(i*"+theta+"/2)*"+base+")";
    break;
  }

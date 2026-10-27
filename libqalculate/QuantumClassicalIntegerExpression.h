@@ -6,8 +6,10 @@
 #include <vector>
 #include <cstddef>
 namespace QuantumClassical {
-class IntegerStorage;
+class RuntimeStorage;
+using IntegerStorage=RuntimeStorage;
 class Bits;
+class RealExpression;
 // Immutable expressions over a packed record and optional typed variable slots.
 // Register declarations/initialization and protocol decoding belong to callers.
 class IntegerExpression {
@@ -30,6 +32,12 @@ public:
  static IntegerExpression variable(IntegerType type,std::size_t index);
  static IntegerExpression cast(IntegerType type,const IntegerExpression &operand);
  static IntegerExpression binary(Integer::Operation operation,const IntegerExpression &left,const IntegerExpression &right);
+ static IntegerExpression fromNumeric(IntegerType type,const RealExpression &value);
+ static IntegerExpression angleRatio(const RealExpression &left,const RealExpression &right);
+ static IntegerExpression angleBits(const RealExpression &value);
+ // Internal ordered comparison result (-1,0,1); Boolean conditions compare it
+ // with zero through the existing short-circuit bit-expression machinery.
+ static IntegerExpression numericCompare(const RealExpression &left,const RealExpression &right);
  const IntegerType &type() const;
  // Bounds are 32 levels and 512 expanded nodes, including shared subtrees.
  // Validation checks references only: it never evaluates a fabricated record.

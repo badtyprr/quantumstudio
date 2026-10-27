@@ -2,7 +2,7 @@
 #include "QuantumClassicalIntegerStorage.h"
 #include <stdexcept>
 namespace QuantumClassical {
-IntegerStorage::IntegerStorage(const std::vector<IntegerType> &types) {
+RuntimeStorage::RuntimeStorage(const std::vector<IntegerType> &types,const std::vector<NumericType> &numericTypes):numeric_(numericTypes) {
  slots_.reserve(types.size());
  for(const auto &type:types)slots_.emplace_back(type);
 }

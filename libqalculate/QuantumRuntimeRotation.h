@@ -10,6 +10,9 @@ public:
  enum class Axis { X, Y, Z };
  RuntimeRotation(Axis axis,const QuantumClassical::RealExpression &angle);
  Axis axis() const {return axis_;}
+ QuantumClassical::NumericValue typedAngle(std::uint64_t record,unsigned bits,const QuantumClassical::IntegerStorage &storage) const {
+  return angle_.evaluateTyped(record,bits,storage);
+ }
  double angle(std::uint64_t record,unsigned bits,const QuantumClassical::IntegerStorage &storage) const {
   return angle_.evaluate(record,bits,storage);
  }

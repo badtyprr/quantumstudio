@@ -13,8 +13,13 @@
 namespace QuantumNumerics {
 class TrajectoryStep {
 public:
- enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate };
+ enum class Kind { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric };
  const Kind kind;
+ const std::shared_ptr<const QuantumClassical::RealExpression> numericExpression;
+ static TrajectoryStep storeNumeric(std::size_t slot,const QuantumClassical::RealExpression &value) {
+  return {Kind::StoreNumeric,{},{},0,0,0,{},{},{},{},{},slot,{},{},{},{},std::make_shared<const QuantumClassical::RealExpression>(value)};
+ }
+ static TrajectoryStep clearNumeric(std::size_t slot){return {Kind::ClearNumeric,{},{},0,0,0,{},{},{},{},{},slot};}
  const std::vector<Complex> matrix;
  const std::vector<std::vector<Complex>> kraus;
  const std::vector<unsigned> wires;
@@ -77,7 +82,7 @@ public:
   return {Kind::ClearInteger,{},{},0,0,0,{},{},{},{},{},slot};
  }
 private:
- TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={},std::shared_ptr<const RuntimeRotation> rotation_={},std::shared_ptr<const RuntimeGate> parameterGate_={}):kind(k),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range),rotation(rotation_),parameterGate(parameterGate_) {}
+ TrajectoryStep(Kind k,const std::vector<Complex> &m,const std::vector<unsigned> &w,unsigned b,std::uint64_t mask_,std::uint64_t value_,const std::vector<std::vector<Complex>> &operators={},std::shared_ptr<const ReadoutAssignment> readout={},std::shared_ptr<const std::vector<TrajectoryStep>> yes={},std::shared_ptr<const std::vector<TrajectoryStep>> no={},std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},std::shared_ptr<const QuantumClassical::RangeExpression> range={},std::shared_ptr<const RuntimeRotation> rotation_={},std::shared_ptr<const RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={}):kind(k),numericExpression(numeric_),matrix(m),kraus(operators),wires(w),classicalBit(b),mask(mask_),value(value_),assignment(readout),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range),rotation(rotation_),parameterGate(parameterGate_) {}
 };
 // Each shot starts in |0...0> with zero classical memory. Conditions read saved
 // measurement bits, not the current quantum wires. Limits: 25 qubits, 64
@@ -107,6 +112,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
 std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned classicalBits,
  unsigned shots,std::uint64_t seed,const std::vector<unsigned> &outputBits,
  const std::vector<TrajectoryStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
- std::size_t byteBudget,const Cancellation &cancelled,std::size_t maxLoopConditions);
+ std::size_t byteBudget,const Cancellation &cancelled,std::size_t maxLoopConditions,
+ const std::vector<QuantumClassical::NumericType> &numericTypes={});
 }
 #endif

@@ -2,6 +2,7 @@
 #include "QuantumClassicalIntegerExpression.h"
 #include "QuantumClassicalIntegerStorage.h"
 #include "QuantumClassical.h"
+#include "QuantumClassicalRealExpression.h"
 #include <algorithm>
 #include <stdexcept>
 namespace QuantumClassical {
@@ -19,20 +20,23 @@ void checkOperation(Integer::Operation operation) {
 }
 }
 struct IntegerExpression::Node {
- enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression };
+ enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression, NumericCast, AngleRatio, AngleBits, NumericCompare };
  Kind kind;IntegerType type;Integer::Operation operation=Integer::Operation::Add;
  std::uint64_t value=0,references=0;unsigned depth=1,count=1;
  std::vector<unsigned> indices;std::shared_ptr<const Node> left,right;
  std::size_t slot=0;
  std::shared_ptr<const Bits> bits;
+ std::shared_ptr<const RealExpression> numericLeft,numericRight;
  Node(Kind kind,IntegerType type):kind(kind),type(type) {}
  void bound() {
   depth=1+std::max(left ? left->depth : 0,right ? right->depth : 0);
   count=1+(left ? left->count : 0)+(right ? right->count : 0);
   references=(left ? left->references : 0)|(right ? right->references : 0);
+  for(const auto &numeric:{numericLeft,numericRight})if(numeric){depth=std::max(depth,1+numeric->depth());count+=numeric->count();references|=numeric->references();}
   if(depth>32 || count>512)throw std::length_error("Integer expression exceeds 32 levels or 512 expanded nodes");
  }
  void validateVariables(const IntegerStorage *storage) const {
+  for(const auto &numeric:{numericLeft,numericRight})if(numeric){const IntegerStorage empty({});numeric->validate(64,storage ? *storage : empty);}
   if(bits) {
    if(storage)bits->validate(64,*storage);else bits->validate(64);
   }
@@ -44,6 +48,15 @@ struct IntegerExpression::Node {
   if(right)right->validateVariables(storage);
  }
  TypedInteger evaluate(std::uint64_t record,const IntegerStorage *storage) const {
+  if(numericLeft) {
+   const IntegerStorage empty({});const auto &context=storage ? *storage : empty;
+   const auto a=numericLeft->evaluateTyped(record,64,context);
+   if(kind==Kind::NumericCast)return a.integerCast(type);
+   if(kind==Kind::AngleBits)return TypedInteger::fromBits(type,a.bits());
+   const auto b=numericRight->evaluateTyped(record,64,context);
+   if(kind==Kind::AngleRatio)return a.ratio(b);
+   const int comparison=a.compare(b);return TypedInteger::fromBits(type,comparison<0 ? ~std::uint64_t(0) : static_cast<std::uint64_t>(comparison));
+  }
   if(kind==Kind::BitExpression)return TypedInteger::fromBits(type,
    storage ? bits->evaluate(record,64,*storage) : bits->evaluate(record,64));
   if(kind==Kind::Variable) {
@@ -90,6 +103,25 @@ IntegerExpression IntegerExpression::binary(Integer::Operation operation,const I
  checkOperation(operation);
  auto n=std::make_shared<Node>(Node::Kind::Binary,IntegerType::common(left.type(),right.type()));
  n->operation=operation;n->left=left.node_;n->right=right.node_;n->bound();return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::fromNumeric(IntegerType type,const RealExpression &value) {
+ if(value.type().kind()!=NumericType::Kind::Float)throw std::invalid_argument("Angles cannot be cast to integer");
+ auto n=std::make_shared<Node>(Node::Kind::NumericCast,type);n->numericLeft=std::make_shared<const RealExpression>(value);n->bound();return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::angleRatio(const RealExpression &left,const RealExpression &right) {
+ if(left.type().kind()!=NumericType::Kind::Angle || left.type()!=right.type())throw std::invalid_argument("Angle division requires equal widths");
+ auto n=std::make_shared<Node>(Node::Kind::AngleRatio,IntegerType::sized(Integer::Signedness::Unsigned,left.type().width()));
+ n->numericLeft=std::make_shared<const RealExpression>(left);n->numericRight=std::make_shared<const RealExpression>(right);n->bound();return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::angleBits(const RealExpression &value) {
+ if(value.type().kind()!=NumericType::Kind::Angle)throw std::invalid_argument("Only angles can be reinterpreted as bits");
+ auto n=std::make_shared<Node>(Node::Kind::AngleBits,IntegerType::sized(Integer::Signedness::Unsigned,value.type().width()));
+ n->numericLeft=std::make_shared<const RealExpression>(value);n->bound();return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::numericCompare(const RealExpression &left,const RealExpression &right) {
+ if((left.type().kind()==NumericType::Kind::Angle || right.type().kind()==NumericType::Kind::Angle) && left.type()!=right.type())throw std::invalid_argument("Angle comparisons require matching widths");
+ auto n=std::make_shared<Node>(Node::Kind::NumericCompare,IntegerType::machine(Integer::Signedness::Signed));
+ n->numericLeft=std::make_shared<const RealExpression>(left);n->numericRight=std::make_shared<const RealExpression>(right);n->bound();return IntegerExpression(n);
 }
 unsigned IntegerExpression::depth() const {return node_->depth;}
 unsigned IntegerExpression::count() const {return node_->count;}
