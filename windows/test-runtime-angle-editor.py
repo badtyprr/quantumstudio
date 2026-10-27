@@ -5,7 +5,7 @@ p=argparse.ArgumentParser()
 p.add_argument('--prefix',required=True);p.add_argument('--adapter',type=Path,required=True);p.add_argument('--worker',type=Path,required=True)
 a=p.parse_args();worker=a.worker.resolve();env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/'data'))
 checks=0
-for suffix,expected in (('real','1'),('integer','0')):
+for suffix,expected in (('real','1'),('integer','0'),('numeric','1')):
     circuit=Path(a.prefix+'.'+suffix+'.qcircuit').read_bytes()
     bridge=subprocess.run([str(a.adapter.resolve())],input=circuit,capture_output=True,timeout=30)
     assert bridge.returncode==0,bridge.stderr

@@ -10,8 +10,10 @@ using System.Web.Script.Serialization;
 // The editor receives copies; a validated program cannot change underneath a run.
 sealed class ClassicalCircuit {
  public sealed class Register {public string Name {get;set;}public int Size {get;set;}}
+ public sealed class NumericVariable {public string Name {get;set;}public string NumericKind {get;set;}public int Width {get;set;}}
  public sealed class Variable {public string Name {get;set;}public string Signedness {get;set;}public int Width {get;set;}}
  public sealed class ExpressionNode {
+  public RealNode RealLeft {get;set;}public RealNode RealRight {get;set;}
   public int? Slot {get;set;}
   public string Signedness {get;set;}
   public string Kind {get;set;}public int? Width {get;set;}public string Value {get;set;}
@@ -20,6 +22,7 @@ sealed class ClassicalCircuit {
   public ExpressionNode Left {get;set;}public ExpressionNode Right {get;set;}
  }
  public sealed class Step {
+  public RealNode NumericValue {get;set;}
   public ParameterGateNode ParameterGate {get;set;}
   public string Axis {get;set;}public RealNode Angle {get;set;}
   public string Kind {get;set;}public string Expression {get;set;}public int[] Wires {get;set;}
@@ -35,6 +38,8 @@ sealed class ClassicalCircuit {
   public RealNode[] Parameters {get;set;}public ExpressionNode Power {get;set;}
  }
  public sealed class RealNode {
+  public string NumericKind {get;set;}public int? Width {get;set;}public int? Slot {get;set;}
+  public string Function {get;set;}public string Scaling {get;set;}public ExpressionNode BitValue {get;set;}
   public string Kind {get;set;}public string ValueBits {get;set;}public string Operator {get;set;}
   public ExpressionNode IntegerValue {get;set;}public RealNode Left {get;set;}public RealNode Right {get;set;}
  }
@@ -42,7 +47,7 @@ sealed class ClassicalCircuit {
   public int? LoopConditionBudget {get;set;}
   public int Version {get;set;}public int Qubits {get;set;}public Register[] Registers {get;set;}
   public int[] OutputBits {get;set;}public Step[] Steps {get;set;}
-  public Variable[] Variables {get;set;}
+  public Variable[] Variables {get;set;}public NumericVariable[] NumericVariables {get;set;}
  }
  const int MaxBytes=262144;
  readonly Document document;readonly string json;readonly int classicalBits;
@@ -53,6 +58,8 @@ sealed class ClassicalCircuit {
  public int ClassicalBits {get{return classicalBits;}}
  public int[] OutputBits {get{return (int[])document.OutputBits.Clone();}}
  public ClassicalIntegerType[] VariableTypes {get{return Types(document.Variables);}}
+ public ClassicalNumericType[] NumericTypes {get{return NumericTypesOf(document.NumericVariables);}}
+ internal RuntimeDeclarations Declarations {get{return new RuntimeDeclarations(VariableTypes??new ClassicalIntegerType[0],NumericTypes??new ClassicalNumericType[0]);}}
  public string Serialize() {return json;}
  public Document Snapshot() {return Serializer().Deserialize<Document>(json);}
  public static ClassicalCircuit From(Document value) {return Load(Serializer().Serialize(value));}
@@ -72,11 +79,17 @@ sealed class ClassicalCircuit {
  static void IntegerArray(object value) {foreach(object item in ArrayValue(value))Integer(item);}
  static void ExpressionFields(object value,int depth,ref int count,int version,bool integer=false) {
   if(depth>=32 || ++count>512)throw Invalid("Classical expressions allow 32 levels and 512 nodes.");
-  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation,Signedness,Slot");
+  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation,Signedness,Slot,RealLeft,RealRight");
   var kind=Required(fields,"Kind") as string;string permitted;
   if(integer) {
    if(version<4)throw Invalid("Typed integer expressions require circuit version 4.");
-   if(kind=="IntegerConstant" || kind=="IntegerRead" || kind=="IntegerCast" || kind=="IntegerVariable" || kind=="IntegerFromBits") {
+   if(kind=="NumericCast" || kind=="AngleRatio" || kind=="AngleBits" || kind=="NumericCompare") {
+    if(version<13)throw Invalid("Numeric integer operands require circuit version 13.");
+    permitted="Kind,RealLeft";
+    if(kind=="NumericCast") {permitted+=",Signedness,Width";Integer(Required(fields,"Width"));if(!(Required(fields,"Signedness") is string))throw Invalid("Integer signedness must be text.");}
+    RealFields(Required(fields,"RealLeft"),depth+1,ref count,version);
+    if(kind=="AngleRatio" || kind=="NumericCompare"){permitted+=",RealRight";RealFields(Required(fields,"RealRight"),depth+1,ref count,version);}
+   } else if(kind=="IntegerConstant" || kind=="IntegerRead" || kind=="IntegerCast" || kind=="IntegerVariable" || kind=="IntegerFromBits") {
     if(!(Required(fields,"Signedness") is string))throw Invalid("Integer signedness must be a name.");
     Integer(Required(fields,"Width"));
     permitted="Kind,Signedness,Width,"+(kind=="IntegerConstant" ? "Value" : kind=="IntegerRead" ? "Bits" : kind=="IntegerVariable" ? "Slot" : "Left");
@@ -113,11 +126,14 @@ sealed class ClassicalCircuit {
   foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected field for classical expression: "+field.Key);
  }
  internal static void ValidateIntegerExpression(ExpressionNode node,Document context) {
-  var definitions=From(new Document {Version=context.Version,LoopConditionBudget=context.LoopConditionBudget,Qubits=0,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],Steps=new Step[0]});
+  var definitions=From(new Document {Version=context.Version,LoopConditionBudget=context.LoopConditionBudget,Qubits=0,Registers=context.Registers,Variables=context.Variables,NumericVariables=context.NumericVariables,OutputBits=new int[0],Steps=new Step[0]});
   int nodes=0;ExpressionFields(Serializer().DeserializeObject(Serializer().Serialize(node)),0,ref nodes,Math.Max(4,context.Version),true);
-  ConvertInteger(node).Validate(definitions.ClassicalBits,definitions.VariableTypes);
+  ConvertInteger(node).Validate(definitions.ClassicalBits,definitions.Declarations);
  }
  static ClassicalIntegerExpression ConvertInteger(ExpressionNode node) {
+  if(node.Kind=="AngleRatio")return ClassicalIntegerExpression.AngleRatio(ConvertReal(node.RealLeft),ConvertReal(node.RealRight));
+  if(node.Kind=="AngleBits")return ClassicalIntegerExpression.AngleBits(ConvertReal(node.RealLeft));
+  if(node.Kind=="NumericCompare")return ClassicalIntegerExpression.NumericCompare(ConvertReal(node.RealLeft),ConvertReal(node.RealRight));
   if(node.Kind=="IntegerBinary") {
    ClassicalIntegerExpression.Operator op;
    if(!Enum.TryParse(node.Operator,out op) || op.ToString()!=node.Operator || !Enum.IsDefined(typeof(ClassicalIntegerExpression.Operator),op))throw Invalid("Unknown integer operator.");
@@ -126,6 +142,7 @@ sealed class ClassicalCircuit {
   ClassicalIntegerType.Sign sign;
   if(!Enum.TryParse(node.Signedness,out sign) || sign.ToString()!=node.Signedness || !Enum.IsDefined(typeof(ClassicalIntegerType.Sign),sign))throw Invalid("Unknown integer signedness.");
   var type=ClassicalIntegerType.Create(sign,node.Width.Value);
+  if(node.Kind=="NumericCast")return ClassicalIntegerExpression.FromNumeric(type,ConvertReal(node.RealLeft));
   if(node.Kind=="IntegerConstant")return ClassicalIntegerExpression.Constant(type,Condition(node.Value));
   if(node.Kind=="IntegerVariable")return ClassicalIntegerExpression.Variable(type,node.Slot.Value);
   if(node.Kind=="IntegerRead")return ClassicalIntegerExpression.Read(type,node.Bits);
@@ -154,9 +171,22 @@ sealed class ClassicalCircuit {
  static void RealFields(object value,int depth,ref int count,int version) {
   if(version<11)throw Invalid("Runtime angles require circuit version 11.");
   if(depth>=32 || ++count>512)throw Invalid("Real expressions allow 32 levels and 512 nodes.");
-  var fields=Fields(value,"Kind,ValueBits,Operator,IntegerValue,Left,Right");
+  var fields=Fields(value,"Kind,ValueBits,Operator,IntegerValue,Left,Right,NumericKind,Width,Slot,Function,Scaling,BitValue");
   var kind=Required(fields,"Kind") as string;string permitted;
-  if(kind=="Constant") {
+  if(kind=="TypedConstant" || kind=="Variable" || kind=="Cast" || kind=="Function" || kind=="Scale" || kind=="Bits" || kind=="TypedInteger") {
+   if(version<13)throw Invalid("Typed numeric expressions require circuit version 13.");
+   permitted="Kind";
+   if(kind=="TypedConstant" || kind=="Variable" || kind=="Cast") {
+    permitted+=",NumericKind,Width";Integer(Required(fields,"Width"));if(!(Required(fields,"NumericKind") is string))throw Invalid("Numeric kind must be text.");
+   }
+   if(kind=="TypedConstant"){permitted+=",ValueBits";if(!(Required(fields,"ValueBits") is string))throw Invalid("Numeric bits must be unsigned decimal text.");}
+   if(kind=="Variable"){permitted+=",Slot";Integer(Required(fields,"Slot"));}
+   if(kind=="Cast" || kind=="Function" || kind=="Scale"){permitted+=",Left";RealFields(Required(fields,"Left"),depth+1,ref count,version);}
+   if(kind=="Function" || kind=="Scale"){string field=kind=="Function" ? "Function" : "Scaling";permitted+=","+field;if(!(Required(fields,field) is string))throw Invalid("Numeric operation must be a name.");}
+   if(kind=="TypedInteger" || kind=="Bits"){permitted+=",Width";Integer(Required(fields,"Width"));}
+   if(kind=="TypedInteger" || kind=="Scale"){permitted+=",IntegerValue";ExpressionFields(Required(fields,"IntegerValue"),depth+1,ref count,version,true);}
+   if(kind=="Bits"){permitted+=",BitValue";ExpressionFields(Required(fields,"BitValue"),depth+1,ref count,version);}
+  } else if(kind=="Constant") {
    permitted="Kind,ValueBits";
    if(!(Required(fields,"ValueBits") is string))throw Invalid("Real constant bits must be unsigned decimal text.");
   } else if(kind=="Integer") {
@@ -164,12 +194,28 @@ sealed class ClassicalCircuit {
   } else if(kind=="Binary") {
    permitted="Kind,Operator,Left,Right";
    if(!(Required(fields,"Operator") is string))throw Invalid("A real operator must be a name.");
+   if(version<13 && (string)fields["Operator"]!="Add" && (string)fields["Operator"]!="Subtract" && (string)fields["Operator"]!="Multiply" && (string)fields["Operator"]!="Divide")throw Invalid("Numeric operators require version 13.");
    RealFields(Required(fields,"Left"),depth+1,ref count,version);RealFields(Required(fields,"Right"),depth+1,ref count,version);
   } else throw Invalid("Unknown real expression kind.");
   var allowed=new HashSet<string>(permitted.Split(','),StringComparer.Ordinal);
   foreach(var field in fields)if(field.Value!=null && !allowed.Contains(field.Key))throw Invalid("Unexpected real expression field: "+field.Key);
  }
+ static T Named<T>(string name) where T:struct {
+  T value;if(!Enum.TryParse(name,out value) || value.ToString()!=name || !Enum.IsDefined(typeof(T),value))throw Invalid("Unknown "+typeof(T).Name+".");return value;
+ }
+ static ClassicalNumericType NumericType(string kind,int width){return ClassicalNumericType.Create(Named<ClassicalNumericType.NumericKind>(kind),width);}
+ static ClassicalNumericType[] NumericTypesOf(NumericVariable[] variables) {
+  if(variables==null)return null;var types=new ClassicalNumericType[variables.Length];
+  for(int i=0;i<types.Length;i++)types[i]=NumericType(variables[i].NumericKind,variables[i].Width);return types;
+ }
  static ClassicalRealExpression ConvertReal(RealNode node) {
+  if(node.Kind=="TypedConstant")return ClassicalRealExpression.TypedConstant(NumericType(node.NumericKind,node.Width.Value),Condition(node.ValueBits));
+  if(node.Kind=="Variable")return ClassicalRealExpression.Variable(NumericType(node.NumericKind,node.Width.Value),node.Slot.Value);
+  if(node.Kind=="Cast")return ClassicalRealExpression.Cast(NumericType(node.NumericKind,node.Width.Value),ConvertReal(node.Left));
+  if(node.Kind=="Function")return ClassicalRealExpression.Function(Named<ClassicalRealExpression.FunctionKind>(node.Function),ConvertReal(node.Left));
+  if(node.Kind=="Scale")return ClassicalRealExpression.Scale(Named<ClassicalRealExpression.Scaling>(node.Scaling),ConvertReal(node.Left),ConvertInteger(node.IntegerValue));
+  if(node.Kind=="Bits")return ClassicalRealExpression.FromBits(node.Width.Value,ConvertExpression(node.BitValue));
+  if(node.Kind=="TypedInteger")return ClassicalRealExpression.FromInteger(ConvertInteger(node.IntegerValue),node.Width.Value);
   if(node.Kind=="Constant") {
    ulong raw;if(!UInt64.TryParse(node.ValueBits,NumberStyles.None,CultureInfo.InvariantCulture,out raw))throw Invalid("Invalid binary64 constant bits.");
    return ClassicalRealExpression.Constant(BitConverter.Int64BitsToDouble(unchecked((long)raw)));
@@ -182,7 +228,7 @@ sealed class ClassicalCircuit {
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue");
    if(fields.ContainsKey("ParameterGate") && fields["ParameterGate"]!=null) {
     if(version<12)throw Invalid("Parameterized gates require circuit version 12.");
     var parameter=Fields(fields["ParameterGate"],"Gate,Controls,ControlState,Parameters,Power");
@@ -192,6 +238,7 @@ sealed class ClassicalCircuit {
     foreach(var angle in angles){int nodes=0;RealFields(angle,0,ref nodes,version);}
     int powerNodes=0;ExpressionFields(Required(parameter,"Power"),0,ref powerNodes,version,true);
    }
+   if(fields.ContainsKey("NumericValue") && fields["NumericValue"]!=null){if(version<13)throw Invalid("Numeric stores require version 13.");int nodes=0;RealFields(fields["NumericValue"],0,ref nodes,version);}
    if(fields.ContainsKey("Axis") && fields["Axis"]!=null) {
     if(version<11 || !(fields["Axis"] is string))throw Invalid("Runtime rotation axes require version 11 and a name.");
    }
@@ -220,13 +267,13 @@ sealed class ClassicalCircuit {
  }
  public static ClassicalCircuit Load(string text) {
   if(text==null || text.Length>MaxBytes || Encoding.UTF8.GetByteCount(text)>MaxBytes)throw Invalid("Circuit data exceeds 256 KiB.");
-  var serializer=Serializer();var root=Fields(serializer.DeserializeObject(text),"Version,Qubits,Registers,OutputBits,Steps,Variables,LoopConditionBudget");
+  var serializer=Serializer();var root=Fields(serializer.DeserializeObject(text),"Version,Qubits,Registers,OutputBits,Steps,Variables,LoopConditionBudget,NumericVariables");
   Integer(Required(root,"Version"));Integer(Required(root,"Qubits"));IntegerArray(Required(root,"OutputBits"));
   foreach(object item in ArrayValue(Required(root,"Registers"))) {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version<2 || version>12)throw Invalid("Expected a version 2 through 12 classical circuit.");
+  if(version<2 || version>13)throw Invalid("Expected a version 2 through 13 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -242,6 +289,12 @@ sealed class ClassicalCircuit {
     Integer(Required(fields,"Width"));
    }
   } else if(version>=5)throw Invalid("Versions 5–11 require a variable declaration array.");
+  object numericDeclarations;
+  if(root.TryGetValue("NumericVariables",out numericDeclarations) && numericDeclarations!=null) {
+   if(version<13)throw Invalid("Numeric variables require version 13.");
+   var numeric=ArrayValue(numericDeclarations);if(numeric.Length>4096)throw Invalid("Use at most 4096 numeric slots.");
+   foreach(var item in numeric){var fields=Fields(item,"Name,NumericKind,Width");if(!(Required(fields,"Name") is string) || !(Required(fields,"NumericKind") is string))throw Invalid("Numeric names/types must be text.");Integer(Required(fields,"Width"));}
+  } else if(version>=13)throw Invalid("Version 13 requires numeric declarations.");
   int count=0;StepFields(Required(root,"Steps"),0,ref count,version);
   var value=serializer.ConvertToType<Document>(root);
   var names=new HashSet<string>(StringComparer.Ordinal);int bits=0;
@@ -255,10 +308,14 @@ sealed class ClassicalCircuit {
    if(String.IsNullOrWhiteSpace(variable.Name) || variable.Name.Length>64 || variable.Name!=variable.Name.Trim() || !names.Add(variable.Name))throw Invalid("Variable and register names must be distinct and at most 64 characters.");
    foreach(char c in variable.Name)if(Char.IsControl(c))throw Invalid("Variable names cannot contain control characters.");
   }
+  if(value.NumericVariables!=null)foreach(var variable in value.NumericVariables) {
+   if(String.IsNullOrWhiteSpace(variable.Name) || variable.Name.Length>64 || variable.Name!=variable.Name.Trim() || !names.Add(variable.Name))throw Invalid("Variable and register names must be distinct and at most 64 characters.");
+   foreach(char ch in variable.Name)if(Char.IsControl(ch))throw Invalid("Variable names cannot contain control characters.");
+  }
   var types=Types(value.Variables);
   var gates=ConvertSteps(value.Steps,version);
   // Reuse the worker adapter's bounds, destinations, masks and payload checks.
-  NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates,types,value.LoopConditionBudget);
+  NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates,types,value.LoopConditionBudget,NumericTypesOf(value.NumericVariables));
   var canonicalObject=serializer.DeserializeObject(serializer.Serialize(value));
   string canonical=serializer.Serialize(CanonicalFields(canonicalObject));
   if(Encoding.UTF8.GetByteCount(canonical)>MaxBytes)throw Invalid("Canonical circuit data exceeds 256 KiB.");
@@ -272,7 +329,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Variables" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -303,9 +360,12 @@ sealed class ClassicalCircuit {
    bool range=kind==NumericalSampling.Operation.ForRange;
    if(range && version<10)throw Invalid("Runtime ranges require circuit version 10.");
    if(range!=(step.Range!=null))throw Invalid("Only range loops require a Range object.");
+   bool numeric=kind==NumericalSampling.Operation.StoreNumeric || kind==NumericalSampling.Operation.ClearNumeric;
+   if(numeric && version<13)throw Invalid("Numeric stores require version 13.");
+   if(!numeric && step.NumericValue!=null)throw Invalid("Only numeric stores accept numeric values.");
    bool integer=kind==NumericalSampling.Operation.StoreInteger || kind==NumericalSampling.Operation.ClearInteger;
    if(integer && version<5)throw Invalid("Variables require circuit version 5.");
-   if((!integer && step.IntegerValue!=null) || (!integer && !range && step.VariableSlot.HasValue))throw Invalid("Only variable operations accept integer values; variables and ranges accept target slots.");
+   if((!integer && step.IntegerValue!=null) || (!integer && !range && !numeric && step.VariableSlot.HasValue))throw Invalid("Only variable operations accept integer values; variables and ranges accept target slots.");
    bool loop=kind==NumericalSampling.Operation.While;
    if(loop && version<7)throw Invalid("Runtime loops require circuit version 7.");
    bool expression=kind==NumericalSampling.Operation.Assign || kind==NumericalSampling.Operation.ExpressionBranch || loop;
@@ -330,6 +390,7 @@ sealed class ClassicalCircuit {
     var parameters=new List<ClassicalRealExpression>();foreach(var parameter in value.Parameters)parameters.Add(ConvertReal(parameter));
     gate.ParameterGate=new NumericalSampling.ParameterizedGate(gateKind,parameters,value.Controls,controlState,ConvertInteger(value.Power));
    } else if(step.ParameterGate!=null)throw Invalid("Only parameterized gates accept a runtime gate value.");
+   if(numeric){gate.VariableSlot=step.VariableSlot;if(step.NumericValue!=null)gate.NumericExpression=ConvertReal(step.NumericValue);}
    if(integer){gate.VariableSlot=step.VariableSlot;if(step.IntegerValue!=null)gate.IntegerExpression=ConvertInteger(step.IntegerValue);}
    if(range){gate.VariableSlot=step.VariableSlot;gate.Range=new NumericalSampling.IntegerRange(ConvertInteger(step.Range.Start),ConvertInteger(step.Range.Stop),ConvertInteger(step.Range.Step));}
    if(expression)gate.ClassicalExpression=ConvertExpression(step.ClassicalValue);

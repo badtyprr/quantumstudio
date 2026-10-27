@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using N=ClassicalCircuit.ExpressionNode;
+using R=ClassicalCircuit.RealNode;
+using System.Text.RegularExpressions;
 
 // Text syntax is independent of WPF and resolves to the validated file model.
 static class ClassicalExpressionText {
@@ -14,23 +16,80 @@ static class ClassicalExpressionText {
  static int Minimum(ulong value){int width=1;while((value>>=1)!=0)width++;return width;}
  public static N Parse(string text,ClassicalCircuit.Document context,int width) {
   if(context==null || width<1 || width>64)throw new ArgumentException("Use a valid circuit and 1–64 result bits.");
-  var parser=new Parser(text,context.Registers,context.Variables);var value=parser.Expression(1,0);parser.End();value=Normalize(value,0);
+  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables);var value=parser.Expression(1,0);parser.End();value=Normalize(value,0);
+  if(Numeric(value))throw new ArgumentException("Compare numeric values or cast them to bits.");
   if(IntegerValue(value))throw new ArgumentException("Compare integer values to produce a one-bit condition.");
   if(Resolve(value,width,0)!=width)throw new ArgumentException("Expression width must match the assignment or one-bit condition.");
   var step=width==1 ? new ClassicalCircuit.Step{Kind="ExpressionBranch",ClassicalValue=value,WhenTrue=new ClassicalCircuit.Step[0],WhenFalse=new ClassicalCircuit.Step[0]} :
    new ClassicalCircuit.Step{Kind="Assign",ClassicalValue=value,Wires=Enumerable.Range(0,width).ToArray()};
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,LoopConditionBudget=context.LoopConditionBudget,Registers=context.Registers,Variables=context.Variables ?? (RequiredVersion(value)>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new[]{step}});
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,LoopConditionBudget=context.LoopConditionBudget??(RequiredVersion(value)>=7 ? (int?)1000000 : null),Registers=context.Registers,NumericVariables=context.NumericVariables??(RequiredVersion(value)>=13 ? new ClassicalCircuit.NumericVariable[0] : null),Variables=context.Variables ?? (RequiredVersion(value)>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new[]{step}});
   return value;
  }
  public static N ParseInteger(string text,ClassicalCircuit.Document context) {
   if(context==null)throw new ArgumentNullException("context");
-  var parser=new Parser(text,context.Registers,context.Variables);var value=parser.Expression(1,0);parser.End();
+  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables);var value=parser.Expression(1,0);parser.End();
   value=AsInteger(Normalize(value,0));ResolveInteger(value,0);
   int version=Math.Max(context.Version,RequiredVersion(value));
-  ClassicalCircuit.ValidateIntegerExpression(value,new ClassicalCircuit.Document{Version=version,Qubits=0,LoopConditionBudget=context.LoopConditionBudget,Registers=context.Registers,Variables=context.Variables ?? (version>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]});
+  ClassicalCircuit.ValidateIntegerExpression(value,new ClassicalCircuit.Document{Version=version,Qubits=0,LoopConditionBudget=context.LoopConditionBudget??(RequiredVersion(value)>=7 ? (int?)1000000 : null),Registers=context.Registers,NumericVariables=context.NumericVariables??(RequiredVersion(value)>=13 ? new ClassicalCircuit.NumericVariable[0] : null),Variables=context.Variables ?? (version>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]});
   return value;
  }
- static bool IntegerValue(N n){return n!=null && n.Kind.StartsWith("Integer",StringComparison.Ordinal) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
+ static bool Numeric(N n){return n!=null && n.Kind=="NumericOperand";}
+ static N Numeric(R value,string kind,int width){return new N{Kind="NumericOperand",RealLeft=value,Signedness=kind,Width=width};}
+ static N Real(N value,int width=64) {
+  if(Numeric(value))return value;
+  return Numeric(new R{Kind="TypedInteger",Width=width,IntegerValue=AsInteger(value)},"Float",width);
+ }
+ static int RealWidth(R value){return value.Width ?? (value.Kind=="Binary" ? Math.Max(RealWidth(value.Left),RealWidth(value.Right)) : value.Kind=="Function" && (value.Function=="Sin" || value.Function=="Cos" || value.Function=="Tan") && RealKind(value.Left)=="Angle" ? 64 : value.Left!=null ? RealWidth(value.Left) : 64);}
+ static string RealKind(R value){return value.NumericKind ?? (value.Kind=="Bits" ? "Angle" : value.Kind=="Function" && (value.Function=="Sin" || value.Function=="Cos" || value.Function=="Tan") ? "Float" : value.Left!=null ? RealKind(value.Left) : "Float");}
+ static int IntegerWidth(N value){return value.Kind=="AngleBits" || value.Kind=="AngleRatio" ? RealWidth(value.RealLeft) : value.Width ?? 0;}
+ static N NumericTruth(N value) {
+  if(!Numeric(value))return Normalize(new N{Kind="BooleanCast",Left=value},0);
+  return new N{Kind="IntegerCompare",Operator="NotEqual",Left=new N{Kind="NumericCompare",RealLeft=value.RealLeft,RealRight=new R{Kind="TypedConstant",NumericKind=value.Signedness,Width=value.Width,ValueBits="0"}},Right=new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"}};
+ }
+ static N NumericBinary(N n) {
+  var left=n.Left;var right=n.Right;
+  if(n.Operator=="LogicalAnd" || n.Operator=="LogicalOr")return new N{Kind="Logical",Operator=n.Operator=="LogicalAnd" ? "And" : "Or",Left=NumericTruth(left),Right=NumericTruth(right)};
+  if(Numeric(left) && left.Signedness=="Angle" && !Numeric(right) && (n.Operator=="Multiply" || n.Operator=="Divide" || n.Operator=="ShiftLeft" || n.Operator=="ShiftRight"))
+   return Numeric(new R{Kind="Scale",Scaling=n.Operator,Left=left.RealLeft,IntegerValue=AsInteger(right)},"Angle",left.Width.Value);
+  left=Real(left,Numeric(right) && right.Signedness=="Float" ? right.Width.Value : 64);right=Real(right,left.Signedness=="Float" ? left.Width.Value : 64);
+  if(Comparison(n.Operator))return new N{Kind="IntegerCompare",Operator=n.Operator,Left=new N{Kind="NumericCompare",RealLeft=left.RealLeft,RealRight=right.RealLeft},Right=new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"}};
+  if(left.Signedness=="Angle" && right.Signedness=="Angle" && n.Operator=="Divide")return new N{Kind="AngleRatio",RealLeft=left.RealLeft,RealRight=right.RealLeft};
+  return Numeric(new R{Kind="Binary",Operator=n.Operator,Left=left.RealLeft,Right=right.RealLeft},left.Signedness,Math.Max(left.Width.Value,right.Width.Value));
+ }
+ public static bool NeedsNumeric(string text,ClassicalCircuit.Document context) {
+  if(text==null)return false;
+  if(Regex.IsMatch(text,@"\b(?:float|angle)\s*\[|\b(?:sin|cos|tan|arcsin|arccos|arctan|exp|log|sqrt|floor|ceiling|mod|compare|anglebits|numeric)\s*\("))return true;
+  return (context.NumericVariables??new ClassicalCircuit.NumericVariable[0]).Any(v=>Regex.IsMatch(text,@"(?<![\w])"+Regex.Escape(v.Name)+@"(?![\w])"));
+ }
+ public static R ParseNumeric(string text,ClassicalCircuit.Document context,int targetWidth=64) {
+  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables);var result=parser.Expression(1,0);parser.End();var numeric=Real(Normalize(result,0),targetWidth).RealLeft;
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=13,Qubits=1,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],NumericVariables=context.NumericVariables??new ClassicalCircuit.NumericVariable[0],LoopConditionBudget=1000000,OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=numeric,Wires=new[]{0}}}});
+  return numeric;
+ }
+ public static string FormatNumeric(R value,ClassicalCircuit.Document context) {
+  if(value.Kind=="Variable") {
+   string name=context.NumericVariables[value.Slot.Value].Name;
+   var reserved=new[]{"pi","π","float","angle","numeric","sin","cos","tan","arcsin","arccos","arctan","exp","log","sqrt","floor","ceiling","mod","compare","anglebits"};
+   if(Regex.IsMatch(name,@"\A[A-Za-z_][A-Za-z0-9_]*\z") && !reserved.Contains(name))return name;
+   return "numeric("+value.Slot.Value.ToString(CultureInfo.InvariantCulture)+")";
+  }
+  if(value.Kind=="Integer" || value.Kind=="TypedInteger")return "float["+(value.Width??64)+"]("+Format(value.IntegerValue,context)+")";
+  if(value.Kind=="Constant" || value.Kind=="TypedConstant") {
+   ulong bits=UInt64.Parse(value.ValueBits,CultureInfo.InvariantCulture);
+   if(value.NumericKind=="Angle") {var chars=new char[value.Width.Value];for(int i=0;i<chars.Length;i++)chars[chars.Length-i-1]=((bits>>i)&1)==0 ? '0' : '1';return "angle["+value.Width+"](\""+new string(chars)+"\")";}
+   double number=value.Width==32 ? BitConverter.ToSingle(BitConverter.GetBytes((uint)bits),0) : BitConverter.Int64BitsToDouble(unchecked((long)bits));
+   string text=number==0 && ((value.Width==32 ? bits>>31 : bits>>63)!=0) ? "-0.0" : number.ToString("R",CultureInfo.InvariantCulture);
+   if(text.IndexOf('.')<0 && text.IndexOf('E')<0 && text.IndexOf('e')<0)text+=".0";
+   return (value.Kind=="Constant" || value.Width==64) ? text : "float["+value.Width+"]("+text+")";
+  }
+  if(value.Kind=="Cast")return value.NumericKind.ToLowerInvariant()+"["+value.Width+"]("+FormatNumeric(value.Left,context)+")";
+  if(value.Kind=="Bits")return "angle["+value.Width+"]("+Format(value.BitValue,context)+")";
+  if(value.Kind=="Function")return value.Function=="Negate" ? "(-"+FormatNumeric(value.Left,context)+")" : value.Function=="Complement" ? "(~"+FormatNumeric(value.Left,context)+")" : value.Function.ToLowerInvariant()+"("+FormatNumeric(value.Left,context)+")";
+  if(value.Kind=="Scale")return "("+FormatNumeric(value.Left,context)+" "+Symbols[Array.IndexOf(Names,value.Scaling)]+" "+Format(value.IntegerValue,context)+")";
+  if(value.Operator=="Mod")return "mod("+FormatNumeric(value.Left,context)+", "+FormatNumeric(value.Right,context)+")";
+  return "("+FormatNumeric(value.Left,context)+" "+Symbols[Array.IndexOf(Names,value.Operator)]+" "+FormatNumeric(value.Right,context)+")";
+ }
+ static bool IntegerValue(N n){return n!=null && (n.Kind=="NumericCast" || n.Kind=="NumericCompare" || n.Kind=="AngleRatio" || n.Kind=="AngleBits" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) && n.Kind!="IntegerCompare" && n.Kind!="IntegerBits";}
  static bool Arithmetic(string op){return op=="Add" || op=="Subtract" || op=="Multiply" || op=="Divide" || op=="Remainder" || op=="Power";}
  static N AsInteger(N n) {
   if(IntegerValue(n))return n;
@@ -52,13 +111,35 @@ static class ClassicalExpressionText {
    return new N{Kind="IntegerConstant",Signedness=n.Signedness,Width=n.Width,Value=bits.ToString(CultureInfo.InvariantCulture)};
   }
   if(n.Left!=null)n.Left=Normalize(n.Left,depth+1);if(n.Right!=null)n.Right=Normalize(n.Right,depth+1);
+  if(n.Kind=="RealCast") {
+   if(n.Signedness=="Angle" && (n.Left.Kind=="Read" || n.Left.Kind=="Constant" && n.Left.Width.HasValue || n.Left.Kind=="IntegerBits"))return Numeric(new R{Kind="Bits",Width=n.Width,BitValue=n.Left},"Angle",n.Width.Value);
+   if(n.Signedness=="Float" && !Numeric(n.Left))return Real(n.Left,n.Width.Value);
+   var value=Real(n.Left,n.Signedness=="Float" ? n.Width.Value : 64);
+   if(value.Signedness==n.Signedness && value.Width==n.Width)return value;
+   return Numeric(new R{Kind="Cast",NumericKind=n.Signedness,Width=n.Width,Left=value.RealLeft},n.Signedness,n.Width.Value);
+  }
+  if(n.Kind=="NumericFunction") {
+   if(n.Operator=="AngleBits")return new N{Kind="AngleBits",RealLeft=Real(n.Left).RealLeft};
+   var left=Real(n.Left);
+   if(n.Operator=="Compare")return new N{Kind="NumericCompare",RealLeft=left.RealLeft,RealRight=Real(n.Right).RealLeft};
+   if(n.Operator=="Mod"){var right=Real(n.Right);return Numeric(new R{Kind="Binary",Operator="Mod",Left=left.RealLeft,Right=right.RealLeft},"Float",Math.Max(left.Width.Value,right.Width.Value));}
+   bool trig=n.Operator=="Sin" || n.Operator=="Cos" || n.Operator=="Tan";
+   return Numeric(new R{Kind="Function",Function=n.Operator,Left=left.RealLeft},"Float",trig && left.Signedness=="Angle" ? 64 : left.Width.Value);
+  }
+  if(Numeric(n.Left)) {
+   if(n.Kind=="IntegerCast")return new N{Kind="NumericCast",Signedness=n.Signedness,Width=n.Width,RealLeft=n.Left.RealLeft};
+   if(n.Kind=="BooleanCast" || n.Kind=="LogicalNot") {var truth=NumericTruth(n.Left);return n.Kind=="BooleanCast" ? truth : new N{Kind="Complement",Left=truth};}
+   if(n.Kind=="BitCast" && n.Left.Signedness=="Angle" && n.Width==n.Left.Width)return new N{Kind="IntegerBits",Left=new N{Kind="AngleBits",RealLeft=n.Left.RealLeft}};
+   if(n.Kind=="UnaryMinus" || n.Kind=="Complement")return Numeric(new R{Kind="Function",Function=n.Kind=="UnaryMinus" ? "Negate" : "Complement",Left=n.Left.RealLeft},n.Left.Signedness,n.Left.Width.Value);
+  }
+  if(n.Kind=="Binary" && (Numeric(n.Left) || Numeric(n.Right)))return NumericBinary(n);
   if(n.Kind=="BooleanCast") {
    bool integer=IntegerValue(n.Left);
    return new N{Kind=integer ? "IntegerCompare" : "Binary",Operator="NotEqual",Left=n.Left,
     Right=integer ? new N{Kind="IntegerConstant",Signedness="Signed",Width=0,Value="0"} : new N{Kind="Constant",Value="0"}};
   }
   if(n.Kind=="BitCast") {
-   if(!IntegerValue(n.Left) || !n.Left.Width.HasValue || n.Left.Width.Value==0 || n.Left.Width!=n.Width)throw new ArgumentException("Bit casts require an explicitly sized integer of the same width.");
+   if(!IntegerValue(n.Left) || IntegerWidth(n.Left)==0 || IntegerWidth(n.Left)!=n.Width)throw new ArgumentException("Bit casts require an explicitly sized integer of the same width.");
    return new N{Kind="IntegerBits",Left=n.Left};
   }
   if(n.Kind=="UnaryMinus") {
@@ -81,6 +162,8 @@ static class ClassicalExpressionText {
     ulong value=UInt64.Parse(n.Left.Value,CultureInfo.InvariantCulture);if(width<64)value&=(1UL<<width)-1;
     return new N{Kind="IntegerConstant",Signedness=n.Signedness,Width=n.Width,Value=value.ToString(CultureInfo.InvariantCulture)};
    }
+   if(RequiredVersion(n.Left)>=13 && (n.Left.Kind=="IntegerCompare" || n.Left.Kind=="Logical" || n.Left.Kind=="Binary" && Comparison(n.Left.Operator)))
+    return new N{Kind="IntegerCast",Signedness=n.Signedness,Width=n.Width,Left=new N{Kind="IntegerFromBits",Signedness="Unsigned",Width=1,Left=n.Left}};
    return new N{Kind="IntegerFromBits",Signedness=n.Signedness,Width=n.Width,Left=n.Left};
   }
   if(n.Kind=="Binary" && (Arithmetic(n.Operator) || IntegerValue(n.Left) || IntegerValue(n.Right))) {
@@ -92,11 +175,12 @@ static class ClassicalExpressionText {
  public static int RequiredVersion(N value){return RequiredVersion(value,0);}
  static int RequiredVersion(N n,int depth) {
   if(n==null)return 3;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
-  return Math.Max(n.Kind=="IntegerFromBits" ? 6 : n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
+  return Math.Max(n.RealLeft!=null || n.RealRight!=null ? 13 : n.Kind=="IntegerFromBits" ? 6 : n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
  }
  static void ResolveInteger(N n,int depth) {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
   if(!IntegerValue(n))throw new ArgumentException("Expected an integer expression.");
+  if(n.RealLeft!=null || n.RealRight!=null)return;
   if(n.Kind=="IntegerFromBits") {
    int width=n.Width==0 ? 64 : n.Width.Value;
    if(Resolve(n.Left,width,depth+1)!=width)throw new ArgumentException("Bit-to-integer casts require matching widths.");
@@ -105,7 +189,7 @@ static class ClassicalExpressionText {
   if(n.Left!=null)ResolveInteger(n.Left,depth+1);if(n.Right!=null)ResolveInteger(n.Right,depth+1);
  }
  static int? Known(N n) {
-  if(n.Kind=="IntegerBits")return n.Left.Width;
+  if(n.Kind=="IntegerBits")return IntegerWidth(n.Left);
   if(n.Kind=="IntegerCompare")return 1;
   if(n.Kind=="Constant")return n.Width;
   if(n.Kind=="Read")return n.Bits.Length;
@@ -118,7 +202,7 @@ static class ClassicalExpressionText {
  static int Natural(N n){return Known(n) ?? (n.Kind=="Constant" ? Minimum(UInt64.Parse(n.Value,CultureInfo.InvariantCulture)) : 1);}
  static int Resolve(N n,int? hint,int depth) {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
-  if(n.Kind=="IntegerBits"){ResolveInteger(n.Left,depth+1);return n.Left.Width.Value;}
+  if(n.Kind=="IntegerBits"){ResolveInteger(n.Left,depth+1);return IntegerWidth(n.Left);}
   if(n.Kind=="IntegerCompare"){ResolveInteger(n.Left,depth+1);ResolveInteger(n.Right,depth+1);return 1;}
   if(IntegerValue(n))throw new ArgumentException("Compare integer values before using bit operators.");
   if(n.Kind=="Constant"){n.Width=n.Width ?? hint ?? Natural(n);return n.Width.Value;}
@@ -144,6 +228,10 @@ static class ClassicalExpressionText {
  public static string Format(N value,ClassicalCircuit.Document context=null){return FormatNode(value,0,context);}
  static string FormatNode(N n,int depth,ClassicalCircuit.Document context) {
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
+  if(n.Kind=="NumericCast")return (n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width+"]")+"("+FormatNumeric(n.RealLeft,context)+")";
+  if(n.Kind=="NumericCompare")return "compare("+FormatNumeric(n.RealLeft,context)+", "+FormatNumeric(n.RealRight,context)+")";
+  if(n.Kind=="AngleRatio")return "("+FormatNumeric(n.RealLeft,context)+" / "+FormatNumeric(n.RealRight,context)+")";
+  if(n.Kind=="AngleBits")return "anglebits("+FormatNumeric(n.RealLeft,context)+")";
   // bool(...) parses back to these exact canonical comparisons. Retain other
   // zero types explicitly: changing signedness or width can change promotion.
   // Validated bit comparisons already require equal operand widths.
@@ -159,7 +247,7 @@ static class ClassicalExpressionText {
    }
    return "variable("+slot.ToString(CultureInfo.InvariantCulture)+")";
   }
-  if(n.Kind=="IntegerBits")return "bit["+n.Left.Width.Value.ToString(CultureInfo.InvariantCulture)+"]("+FormatNode(n.Left,depth+1,context)+")";
+  if(n.Kind=="IntegerBits")return "bit["+IntegerWidth(n.Left).ToString(CultureInfo.InvariantCulture)+"]("+FormatNode(n.Left,depth+1,context)+")";
   if(n.Kind=="IntegerConstant" || n.Kind=="IntegerRead" || n.Kind=="IntegerCast" || n.Kind=="IntegerFromBits") {
    string type=(n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width.Value.ToString(CultureInfo.InvariantCulture)+"]");
    string operand=n.Kind=="IntegerConstant" ? n.Value : n.Kind=="IntegerRead" ? "read("+String.Join(",",n.Bits)+")" : FormatNode(n.Left,depth+1,context);
@@ -195,9 +283,9 @@ static class ClassicalExpressionText {
  }
  sealed class Parser {
   readonly string text;int position,nodes;readonly Dictionary<string,int[]> registers=new Dictionary<string,int[]>(StringComparer.Ordinal);
-  readonly ClassicalCircuit.Variable[] variables;
-  public Parser(string value,ClassicalCircuit.Register[] declared,ClassicalCircuit.Variable[] variables) {
-   this.variables=variables ?? new ClassicalCircuit.Variable[0];
+  readonly ClassicalCircuit.Variable[] variables;readonly ClassicalCircuit.NumericVariable[] numericVariables;
+  public Parser(string value,ClassicalCircuit.Register[] declared,ClassicalCircuit.Variable[] variables,ClassicalCircuit.NumericVariable[] numericVariables=null) {
+   this.variables=variables ?? new ClassicalCircuit.Variable[0];this.numericVariables=numericVariables??new ClassicalCircuit.NumericVariable[0];
    if(value==null || value.Length>65536 || declared==null)throw new ArgumentException("Enter an expression of at most 65536 characters.");
    text=value;int offset=0;foreach(var r in declared){registers.Add(r.Name,Enumerable.Range(offset,r.Size).ToArray());offset+=r.Size;}
   }
@@ -232,9 +320,22 @@ static class ClassicalExpressionText {
     if(position>=text.Length || text[position]!='"')throw new ArgumentException("A bit string may contain only 0 and 1.");position++;
     if(width==0)throw new ArgumentException("A bit string cannot be empty.");return Node(new N{Kind="Constant",Width=width,Value=value.ToString(CultureInfo.InvariantCulture)});
    }
+   Space();var decimalNumber=Regex.Match(text.Substring(position),@"\A(?:[0-9]+\.[0-9]*|\.[0-9]+|[0-9]+[eE][+-]?[0-9]+)(?:[eE][+-]?[0-9]+)?");
+   if(decimalNumber.Success) {position+=decimalNumber.Length;double number=Double.Parse(decimalNumber.Value,NumberStyles.Float,CultureInfo.InvariantCulture);return Node(Numeric(new R{Kind="TypedConstant",NumericKind="Float",Width=64,ValueBits=unchecked((ulong)BitConverter.DoubleToInt64Bits(number)).ToString(CultureInfo.InvariantCulture)},"Float",64));}
    Space();if(position<text.Length && Char.IsDigit(text[position]))return Node(new N{Kind="Constant",Value=Number().ToString(CultureInfo.InvariantCulture)});
    int start=position;while(position<text.Length && (Char.IsLetterOrDigit(text[position]) || text[position]=='_'))position++;
    string name=text.Substring(start,position-start);if(name.Length==0)throw new ArgumentException("Expected a register, bit string or integer.");
+   if(name=="pi" || name=="π")return Node(Numeric(new R{Kind="TypedConstant",NumericKind="Float",Width=64,ValueBits=unchecked((ulong)BitConverter.DoubleToInt64Bits(Math.PI)).ToString(CultureInfo.InvariantCulture)},"Float",64));
+   if(name=="float" || name=="angle") {
+    int width=64;if(Take("[")){width=checked((int)Number());Need("]");}Need("(");var operand=Expression(1,depth+1);Need(")");
+    return Node(new N{Kind="RealCast",Signedness=name=="float" ? "Float" : "Angle",Width=width,Left=operand});
+   }
+   if(new[]{"sin","cos","tan","arcsin","arccos","arctan","exp","log","sqrt","floor","ceiling","mod","compare","anglebits"}.Contains(name)) {
+    Need("(");var left=Expression(1,depth+1);N right=null;if(name=="mod" || name=="compare"){Need(",");right=Expression(1,depth+1);}Need(")");
+    return Node(new N{Kind="NumericFunction",Operator=name=="anglebits" ? "AngleBits" : Char.ToUpperInvariant(name[0])+name.Substring(1),Left=left,Right=right});
+   }
+   if(name=="numeric" && Take("(")){ulong slot=Number();Need(")");if(slot>=(ulong)numericVariables.Length)throw new ArgumentException("Unknown numeric slot.");var type=numericVariables[(int)slot];return Node(Numeric(new R{Kind="Variable",NumericKind=type.NumericKind,Width=type.Width,Slot=(int)slot},type.NumericKind,type.Width));}
+   for(int slot=0;slot<numericVariables.Length;slot++)if(numericVariables[slot].Name==name){var type=numericVariables[slot];return Node(Numeric(new R{Kind="Variable",NumericKind=type.NumericKind,Width=type.Width,Slot=slot},type.NumericKind,type.Width));}
    if(name=="bool" && Take("(")){var operand=Expression(1,depth+1);Need(")");return Node(new N{Kind="BooleanCast",Left=operand});}
    if(name=="int" || name=="uint" || name=="bit") {
     int saved=position;bool explicitWidth=Take("["),typeShape=true;ulong width=0;

@@ -73,6 +73,9 @@ TracePreservingMap runtimeRotation(const QuantumNumerics::RuntimeRotation &rotat
  using Axis=QuantumNumerics::RuntimeRotation::Axis;
  const char *name=rotation.axis()==Axis::X ? "Rx" : rotation.axis()==Axis::Y ? "Ry" : "Rz";
  EvaluationOptions options=exact;options.approximation=APPROXIMATION_EXACT;
+ // Keep rational-pi phases exponential: fractional powers of -1 obscure
+ // conjugate cancellation during exact trace-preservation validation.
+ options.complex_number_form=COMPLEX_NUMBER_FORM_EXPONENTIAL;
  // Internal decimal integers and radians are independent of entry preferences.
  options.parse_options=ParseOptions();options.parse_options.angle_unit=ANGLE_UNIT_RADIANS;
  auto matrix=CALCULATOR->calculate(std::string("quantum:")+name+"("+text+")",options);
@@ -80,6 +83,9 @@ TracePreservingMap runtimeRotation(const QuantumNumerics::RuntimeRotation &rotat
 }
 TracePreservingMap runtimeGate(const QuantumNumerics::RuntimeGate::Value &gate,const EvaluationOptions &exact) {
  EvaluationOptions options=exact;options.approximation=APPROXIMATION_EXACT;
+ // Keep rational-pi phases exponential: fractional powers of -1 obscure
+ // conjugate cancellation during exact trace-preservation validation.
+ options.complex_number_form=COMPLEX_NUMBER_FORM_EXPONENTIAL;
  options.parse_options=ParseOptions();options.parse_options.angle_unit=ANGLE_UNIT_RADIANS;
  auto base=CALCULATOR->calculate("quantum: "+gate.exactBaseExpression(),options);
  const std::size_t size=std::size_t(1)<<gate.wireCount(),small=std::size_t(1)<<gate.targetCount();

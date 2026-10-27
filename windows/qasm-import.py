@@ -22,7 +22,9 @@ from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
 
-RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)
+from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, contains_numeric, lower_numeric
+
+RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)+NUMERIC_TYPES
 
 
 def unroll_preserving_phase(module, primitives, preserve_branches=False):
@@ -99,9 +101,11 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def integers(visitor):
         return getattr(visitor, '_quantum_integer_names', set())
     def runtime(visitor,value):
-        return any(isinstance(item,ast.Identifier) and (item.name in visitor._global_creg_size_map or item.name in integers(visitor)) for item in nodes(value))
+        return any(isinstance(item,ast.Identifier) and (item.name in visitor._global_creg_size_map or item.name in integers(visitor) or item.name in getattr(visitor,'_quantum_numeric_names',{})) for item in nodes(value))
     def real_angle(visitor,value,depth=0):
         if depth>=32:raise ValueError('Runtime angles exceed 32 levels.')
+        if any(isinstance(item,ast.Identifier) and item.name in getattr(visitor,'_quantum_numeric_names',{}) or isinstance(item,ast.FunctionCall) and item.name.name in NUMERIC_FUNCTIONS or isinstance(item,ast.Cast) and (isinstance(item.type,ast.AngleType) or isinstance(item.type,ast.FloatType) and item.type.size is not None and Qasm3ExprEvaluator.evaluate_expression(item.type.size)[0]!=64) for item in nodes(value)):
+            return {'Kind':'Numeric','Value':normalize_numeric(visitor,value,depth)}
         def integer():return {'Kind':'Integer','IntegerValue':normalize(visitor,value,typed=True)}
         if not runtime(visitor,value):
             result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
@@ -184,7 +188,28 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return any(isinstance(item,ast.FunctionCall) and item.name.name in ('popcount','rotl','rotr') for item in nodes(value))
     def bitstring_boolean(value):
         return any(isinstance(item,ast.Cast) and isinstance(item.type,ast.BoolType) and any(isinstance(child,ast.BitstringLiteral) for child in nodes(item.argument)) for item in nodes(value))
+    def normalize_numeric(visitor,value,depth=0):
+        if depth>=32:raise ValueError('Numeric expressions exceed 32 levels.')
+        if isinstance(value,ast.Identifier) and value.name in getattr(visitor,'_quantum_numeric_names',{}):return copy.deepcopy(value)
+        if isinstance(value,ast.FloatLiteral):return copy.deepcopy(value)
+        if isinstance(value,ast.Cast):
+            target=copy.deepcopy(value.type)
+            if hasattr(target,'size') and target.size is not None:
+                if runtime(visitor,target.size):raise ValueError('Numeric cast widths must be compile-time constants.')
+                width=Qasm3ExprEvaluator.evaluate_expression(target.size,const_expr=True)[0]
+                if type(width) is not int:raise ValueError('Numeric cast widths must be integers.')
+                target.size=ast.IntegerLiteral(width)
+            return ast.Cast(type=target,argument=normalize_numeric(visitor,value.argument,depth+1))
+        if isinstance(value,ast.BinaryExpression):return ast.BinaryExpression(op=value.op,lhs=normalize_numeric(visitor,value.lhs,depth+1),rhs=normalize_numeric(visitor,value.rhs,depth+1))
+        if isinstance(value,ast.UnaryExpression):return ast.UnaryExpression(op=value.op,expression=normalize_numeric(visitor,value.expression,depth+1))
+        if isinstance(value,ast.FunctionCall) and value.name.name in NUMERIC_FUNCTIONS:
+            return ast.FunctionCall(name=copy.deepcopy(value.name),arguments=[normalize_numeric(visitor,item,depth+1) for item in value.arguments])
+        if not runtime(visitor,value) and not isinstance(value,(ast.BitstringLiteral,ast.IntegerLiteral,ast.BooleanLiteral)):
+            result=Qasm3ExprEvaluator.evaluate_expression(value)[0]
+            if type(result) is float:return ast.FloatLiteral(result)
+        return normalize(visitor,value,depth,typed=True)
     def normalize(visitor, value, depth=0, cast_distance=False, typed=False):
+        if contains_numeric(value,getattr(visitor,'_quantum_numeric_names',{})):return normalize_numeric(visitor,value,depth)
         typed=typed or any(isinstance(item,ast.Identifier) and item.name in integers(visitor) for item in nodes(value)) or (runtime(visitor,value) and any(isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(value)))
         if depth >= 32:
             raise ValueError('Classical expressions exceed 32 levels.')
@@ -276,6 +301,15 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             return [] if visitor._check_only else [copy.deepcopy(statement)]
         name = statement.lvalue.name
         name = name.name if isinstance(name,ast.Identifier) else name
+        if name in getattr(visitor,'_quantum_numeric_names',{}):
+            target=copy.deepcopy(statement.lvalue)
+            if not isinstance(target,ast.Identifier):raise ValueError('Numeric variable indexing is not supported; use explicit bit casts.')
+            value=normalize_numeric(visitor,statement.rvalue)
+            if statement.op.name!='=':
+                operation=statement.op.name[:-1]
+                if operation not in ('+','-','*','/','**','&','|','^','<<','>>'):raise ValueError('Unsupported numeric compound assignment.')
+                value=ast.BinaryExpression(op=ast.BinaryOperator[operation],lhs=copy.deepcopy(target),rhs=value)
+            return [] if visitor._check_only else [ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=value)]
         integer_target = name in integers(visitor)
         if name not in visitor._global_creg_size_map and not integer_target:
             return original_assignment(visitor,statement)
@@ -321,6 +355,16 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if in_function(visitor):return original_declaration(visitor,statement)
         if isinstance(statement.type,ast.BitType) and statement.type.size is None:
             visitor._quantum_scalar_bits=getattr(visitor,'_quantum_scalar_bits',set())|{statement.identifier.name}
+        if isinstance(statement.type,NUMERIC_TYPES):
+            kind='Float' if isinstance(statement.type,ast.FloatType) else 'Angle'
+            width=64 if statement.type.size is None else Qasm3ExprEvaluator.evaluate_expression(statement.type.size,const_expr=True)[0]
+            if type(width) is not int or (width not in (32,64) if kind=='Float' else not 1<=width<=64):raise error_at(statement,'Use float32/64 or angle widths 1–64.')
+            bare=copy.deepcopy(statement);bare.init_expression=None;bare.type.size=ast.IntegerLiteral(width)
+            original_declaration(visitor,bare)
+            visitor._quantum_numeric_names=dict(getattr(visitor,'_quantum_numeric_names',{}),**{statement.identifier.name:(kind,width)})
+            result=[] if visitor._check_only else [bare]
+            if statement.init_expression is not None:result+=assignment(visitor,ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression))
+            return result
         if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
             boolean=isinstance(statement.type,ast.BoolType)
             size = ast.IntegerLiteral(1) if boolean else statement.type.size
@@ -915,7 +959,7 @@ def convert(source, published_u=False, classical=False):
             control=node.set_declaration if isinstance(node,ast.ForInLoop) else None
             if control is not None and runtime(control) and not getattr(node,'_quantum_runtime_for',False):
                 raise error_at(node, 'Runtime loops require control flow not yet supported by the circuit importer.')
-            if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and runtime(node.arguments):
+            if isinstance(node,ast.FunctionCall) and node.name.name not in ('popcount','rotl','rotr') and node.name.name not in NUMERIC_FUNCTIONS and runtime(node.arguments):
                 raise error_at(node, 'Runtime function arguments are not yet supported by the circuit importer.')
             targets=(node.qubits if isinstance(node,(ast.QuantumGate,ast.QuantumPhase,ast.QuantumReset,ast.QuantumBarrier)) else
                      node.qubit if isinstance(node,ast.QuantumMeasurement) else None)
@@ -928,7 +972,7 @@ def convert(source, published_u=False, classical=False):
     for node in nodes(module.original_program,True):
         if classical and isinstance(node, ast.ClassicalDeclaration):
             if not isinstance(node.type, (ast.BitType,ast.ArrayType)+RUNTIME_SCALAR_TYPES):
-                raise error_at(node, 'Classical circuit import supports bit registers, integer/Boolean variables and compile-time arrays; other classical declarations are not yet supported.')
+                raise error_at(node, 'Classical circuit import supports bit registers, integer/Boolean, float32/64, angle variables and compile-time arrays; other classical declarations are not yet supported.')
         if isinstance(node, ast.Include) and node.filename not in ('stdgates.inc', 'qelib1.inc'):
             raise error_at(node, 'Only stdgates.inc and qelib1.inc includes are supported.')
     for node in nodes(module.original_program):
@@ -1031,7 +1075,12 @@ def classical_indices(value, registers):
     return [start+x for x in selected]
 
 
-def classical_expression(value, registers, expected_width=None, variables=None, integer_only=False):
+def classical_expression(value, registers, expected_width=None, variables=None, integer_only=False, numeric_variables=None):
+    if contains_numeric(value,numeric_variables or {}):
+        return lower_numeric(value,numeric_variables or {},
+            lambda node:classical_expression(node,registers,variables=variables,integer_only=True),
+            lambda node:classical_expression(node,registers,variables=variables),
+            'Integer' if integer_only else 'Bits',expected_width)
     variables=variables or {}
     operations={'&':'And','|':'Or','^':'Xor','<<':'ShiftLeft','>>':'ShiftRight',
                 '==':'Equal','!=':'NotEqual','<':'Less','<=':'LessEqual','>':'Greater','>=':'GreaterEqual',
@@ -1230,6 +1279,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     hidden_registers=hidden_registers or set()
     quantum, classical, named = {}, {}, []
     variables, declarations = {}, []
+    numeric_variables,numeric_declarations={},[]
     nq = nc = 0
     declarations_in_order=list(nodes(statements))
     # Allocate generated bits last so original register indices do not move.
@@ -1240,6 +1290,15 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             quantum[statement.qubit.name] = (nq, size)
             nq += size
         elif isinstance(statement, ast.ClassicalDeclaration):
+            if isinstance(statement.type,NUMERIC_TYPES):
+                name=statement.identifier.name;size=statement.type.size.value;kind='Float' if isinstance(statement.type,ast.FloatType) else 'Angle'
+                if name in numeric_variables:
+                    if numeric_variables[name][1:]!=(kind,size):raise ValueError('Inconsistent repeated numeric declaration.')
+                    continue
+                if len(name.encode('utf-16-le'))//2>64:raise ValueError('Numeric names must fit 64 UTF-16 code units.')
+                numeric_variables[name]=(len(numeric_variables),kind,size)
+                numeric_declarations.append({'Name':name,'NumericKind':kind,'Width':size})
+                continue
             if isinstance(statement.type,(ast.IntType,ast.UintType)):
                 name=statement.identifier.name;size=statement.type.size.value
                 sign='Signed' if isinstance(statement.type,ast.IntType) else 'Unsigned'
@@ -1263,6 +1322,13 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     if not 0 <= nq <= 25 or not 0 <= nc <= 64:
         raise ValueError('Classical circuits support 0–25 qubits and up to 64 classical bits.')
 
+    if len(variables)+len(numeric_variables)>4096:raise ValueError('Use at most 4096 variable slots.')
+    def classical_value(value,registers,expected_width=None,variables=variables,integer_only=False):
+        return classical_expression(value,registers,expected_width,variables,integer_only,numeric_variables)
+    def numeric(value,target_float_width=64):
+        return lower_numeric(value,numeric_variables,
+            lambda node:classical_expression(node,classical,variables=variables,integer_only=True),
+            lambda node:classical_expression(node,classical,variables=variables),target_float_width=target_float_width)
     def reference(value, registers, whole=False):
         if isinstance(value, ast.Identifier):
             start, size = registers[value.name]
@@ -1289,9 +1355,10 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
         return (start+index, 1) if whole else start+index
 
     count = 0
-    version = 5 if declarations else 2
+    version = 13 if numeric_declarations else 5 if declarations else 2
     def expression_version(node):
         if not isinstance(node,dict):return 3
+        if node.get('Kind') in ('NumericCast','AngleRatio','AngleBits','NumericCompare','TypedConstant','Variable','Cast','Function','Scale','Bits','TypedInteger'):return 13
         return max(6 if node.get('Kind')=='IntegerFromBits' else 4 if node.get('Kind')=='Logical' or node.get('Kind','').startswith('Integer') else 3,
                    expression_version(node.get('Left')),expression_version(node.get('Right')))
     def lower(body, depth=0):
@@ -1308,6 +1375,9 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
         for statement in body:
             if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
                 continue
+            if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,NUMERIC_TYPES):
+                if getattr(statement,'_quantum_scoped',False):append({'Kind':'ClearNumeric','VariableSlot':numeric_variables[statement.identifier.name][0]})
+                continue
             if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType)):
                 if getattr(statement,'_quantum_scoped',False) and not getattr(statement,'_quantum_for_binding',False):append({'Kind':'ClearInteger','VariableSlot':variables[statement.identifier.name][0]})
                 continue
@@ -1317,15 +1387,18 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 continue
             if isinstance(statement, ast.ClassicalAssignment):
                 if getattr(statement,'_quantum_clear',False):
-                    append({'Kind':'ClearInteger','VariableSlot':variables[statement.lvalue.name][0]})
+                    append({'Kind':'ClearNumeric' if statement.lvalue.name in numeric_variables else 'ClearInteger','VariableSlot':(numeric_variables if statement.lvalue.name in numeric_variables else variables)[statement.lvalue.name][0]})
+                    continue
+                if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in numeric_variables:
+                    append({'Kind':'StoreNumeric','VariableSlot':numeric_variables[statement.lvalue.name][0],'NumericValue':numeric(statement.rvalue,numeric_variables[statement.lvalue.name][2] if numeric_variables[statement.lvalue.name][1]=='Float' else 64)})
                     continue
                 if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in variables:
                     append({'Kind':'StoreInteger','VariableSlot':variables[statement.lvalue.name][0],
-                            'IntegerValue':classical_expression(statement.rvalue,classical,variables=variables,integer_only=True)})
+                            'IntegerValue':classical_value(statement.rvalue,classical,variables=variables,integer_only=True)})
                     continue
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
-                append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_expression(statement.rvalue,classical,len(targets),variables)})
+                append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_value(statement.rvalue,classical,len(targets),variables)})
             elif isinstance(statement,ast.EndStatement):
                 version=max(version,9)
                 append({'Kind':'End'})
@@ -1335,13 +1408,13 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.WhileLoop):
                 if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
                 version=max(version,7)
-                append({'Kind':'While','ClassicalValue':classical_expression(statement.while_condition,classical,1,variables),
+                append({'Kind':'While','ClassicalValue':classical_value(statement.while_condition,classical,1,variables),
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement,ast.ForInLoop):
                 if depth>=32:raise ValueError('Classical circuits support at most 32 nested blocks.')
                 version=max(version,10);bounds=statement.set_declaration
                 append({'Kind':'ForRange','VariableSlot':variables[statement.identifier.name][0],
-                        'Range':{key:classical_expression(value,classical,variables=variables,integer_only=True)
+                        'Range':{key:classical_value(value,classical,variables=variables,integer_only=True)
                                  for key,value in [('Start',bounds.start),('Stop',bounds.end),('Step',bounds.step)]},
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement, ast.BranchingStatement):
@@ -1353,7 +1426,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                           isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
                 simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition))
                 if not simple:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1,variables),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 negate = False
@@ -1367,7 +1440,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 try:
                     start, size = reference(target, classical, whole=True)
                 except ValueError:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_expression(condition,classical,1,variables),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
@@ -1391,7 +1464,9 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                     raise ValueError('Timed gates are not supported.')
                 if hasattr(statement,'_quantum_runtime_angle') or hasattr(statement,'_quantum_runtime_gate'):
                     def lower_angle(value):
-                        if value['Kind']=='Integer':return {'Kind':'Integer','IntegerValue':classical_expression(value['IntegerValue'],classical,None,variables,True)}
+                        nonlocal version
+                        if value['Kind']=='Numeric':version=max(version,13);return numeric(value['Value'])
+                        if value['Kind']=='Integer':return {'Kind':'Integer','IntegerValue':classical_value(value['IntegerValue'],classical,None,variables,True)}
                         if value['Kind']=='Constant':return {'Kind':'Constant','ValueBits':value['ValueBits']}
                         return {'Kind':'Binary','Operator':value['Operator'],'Left':lower_angle(value['Left']),'Right':lower_angle(value['Right'])}
                     try:
@@ -1400,7 +1475,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                             node={'Gate':'PublishedU' if published_u and value['PublishedU'] else value['Gate'],
                                   'Controls':value['Controls'],'ControlState':value['ControlState'],
                                   'Parameters':[lower_angle(parameter) for parameter in value['Parameters']],
-                                  'Power':classical_expression(value['Power'],classical,None,variables,True)}
+                                  'Power':classical_value(value['Power'],classical,None,variables,True)}
                             version=max(version,12)
                             append({'Kind':'ParameterGate','ParameterGate':node,'Wires':[reference(q,quantum) for q in statement.qubits]})
                             continue
@@ -1425,6 +1500,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                   for bit in range(start,start+size)]
     result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(visible_bits)), 'Steps': steps}
     if declarations or version>=6:result['Variables']=declarations
+    if version>=13:result['NumericVariables']=numeric_declarations
     if version>=7:result['LoopConditionBudget']=1000000
     return result
 

@@ -13,7 +13,8 @@ sealed class ClassicalProgramQasm {
  readonly ClassicalQasmStorage storage;
  readonly ClassicalExpressionQasm expressions;
  readonly ClassicalIntegerType[] variables;
- ClassicalQasmScopes scopes;
+ ClassicalQasmScopes scopes,numericScopes;
+ readonly ClassicalNumericType[] numericTypes;readonly RuntimeDeclarations declarations;
  static readonly HashSet<string> Gates=new HashSet<string>(
   ("H X Y Z S T Sdg Tdg SX SXdg Rx Ry Rz P CNOT CZ SWAP CCX CY CH CCZ CSWAP "+
    "CP CRx CRy CRz Rxx Ryy Rzz Rzx R U3 fSim ECR FSWAP iSWAP XXPlusYY XXMinusYY").Split(' '));
@@ -22,10 +23,10 @@ sealed class ClassicalProgramQasm {
   return (value.Signedness==ClassicalIntegerType.Sign.Signed ? "int[" : "uint[")+Number(value.Width)+"]";
  }
  ClassicalProgramQasm(ClassicalCircuit value) {
-  circuit=value;variables=value.VariableTypes??new ClassicalIntegerType[0];
+  circuit=value;variables=value.VariableTypes??new ClassicalIntegerType[0];numericTypes=value.NumericTypes??new ClassicalNumericType[0];declarations=new RuntimeDeclarations(variables,numericTypes);
   storage=new ClassicalQasmStorage(value.ClassicalBits,value.OutputBits);
-  expressions=new ClassicalExpressionQasm(value.ClassicalBits,variables,storage);
-  if(storage.BitCount>0 && variables.Length>=4096)
+  expressions=new ClassicalExpressionQasm(value.ClassicalBits,declarations,storage);
+  if(storage.BitCount>0 && variables.Length+numericTypes.Length>=4096)
    throw new InvalidDataException("OpenQASM export needs one assignment temporary within the 4096-variable limit.");
  }
  public static string Export(ClassicalCircuit value) {
@@ -34,7 +35,7 @@ sealed class ClassicalProgramQasm {
  }
  string Build(bool recoverLifetimes=false) {
   var steps=circuit.SamplingGates();
-  try {scopes=new ClassicalQasmScopes(steps,variables.Length);}
+  try {scopes=new ClassicalQasmScopes(steps,variables.Length);numericScopes=new ClassicalQasmScopes(steps,numericTypes.Length,true);}
   catch(InvalidDataException) {
    if(!recoverLifetimes)throw;
    return new ClassicalProgramQasm(ClassicalQasmLifetimes.Prepare(circuit)).Build();
@@ -98,12 +99,19 @@ sealed class ClassicalProgramQasm {
   text.Append(modifiers+name+"("+String.Join(", ",parameters)+")"+suffix);
   // Explicit phase makes the chosen U convention independent of the importer setting.
   if(gate.Kind==NumericalSampling.ParameterGateKind.PublishedU) {
+   if(gate.Parameters[0].Type.Kind==ClassicalNumericType.NumericKind.Angle) {
+    // P(theta) Rz(theta)^-1 is exp(i theta/2) I. Avoid narrowing an
+    // angle[64] half-turn or wrapping its negation before the half-angle gate.
+    text.Append(modifiers+"p("+parameters[0]+")"+suffix);
+    text.Append("inv @ "+modifiers+"rz("+parameters[0]+")"+suffix);return;
+   }
    var controls=targets.GetRange(0,gate.Controls);
    text.Append(modifiers+"gphase(("+parameters[0]+") / 2.0)"+(controls.Count==0 ? ";\n" : " "+String.Join(", ",controls)+";\n"));
   }
  }
  void Statements(StringBuilder text,IList<NumericalSampling.Gate> gates) {
   foreach(int slot in scopes.Declarations(gates))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
+  foreach(int slot in numericScopes.Declarations(gates))text.Append(ClassicalExpressionQasm.NumericTypeName(numericTypes[slot])+" n"+Number(slot)+";\n");
   foreach(var gate in gates) {
    switch(gate.Kind) {
     case NumericalSampling.Operation.Gate:Gate(text,gate);break;
@@ -121,7 +129,11 @@ sealed class ClassicalProgramQasm {
     case NumericalSampling.Operation.ExpressionBranch:
      Block(text,Condition(gate.ClassicalExpression),gate.WhenTrue,gate.WhenFalse);break;
     case NumericalSampling.Operation.Assign:
-     text.Append(storage.Assign(gate.Wires,gate.ClassicalExpression,variables));break;
+     text.Append(storage.Assign(gate.Wires,gate.ClassicalExpression,declarations));break;
+    case NumericalSampling.Operation.StoreNumeric:
+     int numericSlot=gate.VariableSlot.Value;
+     text.Append("n"+Number(numericSlot)+" = "+ClassicalExpressionQasm.NumericTypeName(numericTypes[numericSlot])+"("+expressions.Real(gate.NumericExpression)+");\n");break;
+    case NumericalSampling.Operation.ClearNumeric:break; // Proven lexical exit.
     case NumericalSampling.Operation.StoreInteger:
      int slot=gate.VariableSlot.Value;
      text.Append("v"+Number(slot)+" = "+Type(variables[slot])+"("+expressions.Integer(gate.IntegerExpression)+");\n");break;

@@ -62,6 +62,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Runtime angle import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-gates.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime gate import tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-numeric.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import tests failed.' }
           $expressionCases = Join-Path $env:RUNNER_TEMP 'expression-qasm-cases.json'
           & windows/test-classical-expression-qasm.ps1 -CasesPath $expressionCases
           & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $expressionCases
