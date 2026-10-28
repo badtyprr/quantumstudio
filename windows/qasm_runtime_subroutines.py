@@ -14,7 +14,7 @@ from qasm_source_diagnostics import error_at
 
 
 def lower_runtime_subroutines(program):
-    scalar = (ast.IntType, ast.UintType, ast.BoolType)
+    scalar = (ast.IntType, ast.UintType, ast.BoolType, ast.FloatType, ast.AngleType)
     values = scalar + (ast.BitType,)
 
     def walk(value):
@@ -188,7 +188,7 @@ def lower_runtime_subroutines(program):
         if expanded > 65536:
             raise error_at(call, 'Runtime subroutine expansion exceeds 65536 AST nodes.')
         if definition.return_type is not None and not isinstance(definition.return_type, values):
-            raise error_at(call, 'Runtime return values currently support integers, Booleans and bit registers.')
+            raise error_at(call, 'Runtime return values support integers, Booleans, float32/64, angles and bit registers.')
         returns = [n for n in walk(definition.body) if isinstance(n, ast.ReturnStatement)]
         # Validate before control-flow lowering drops unreachable tails.
         for statement in returns:
@@ -226,7 +226,7 @@ def lower_runtime_subroutines(program):
                 declarations.append(bit_declaration(declaration) if isinstance(declared_type, ast.BitType) else declaration)
                 bindings[name] = slot
             else:
-                raise error_at(formal, 'Runtime call arguments currently support integers, Booleans and bit registers.')
+                raise error_at(formal, 'Runtime call arguments support integers, Booleans, float32/64, angles and bit registers.')
             parameters.add(name)
         result_slot = None; result_type = None; prefix = []
         if definition.return_type is not None:
@@ -497,7 +497,7 @@ def lower_runtime_subroutines(program):
                     raise error_at(node, 'Duplicate declaration in one subroutine scope: ' + name)
                 declared.add(name)
                 if active and isinstance(node, ast.ClassicalDeclaration) and not isinstance(node.type, values):
-                    raise error_at(node, 'Runtime subroutine locals currently support integers, Booleans and bit registers.')
+                    raise error_at(node, 'Runtime subroutine locals support integers, Booleans, float32/64, angles and bit registers.')
                 value = copy.copy(node)
                 value.type = rewrite(node.type, env)
                 if active:

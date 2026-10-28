@@ -118,6 +118,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged runtime gate import checks failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-numeric.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import validation failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-numeric-calls.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric subroutine checks failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-dev08-numeric-source.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Numeric subroutine source evidence failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-wires.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime wire import and execution checks failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-dev07-source-evidence.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
