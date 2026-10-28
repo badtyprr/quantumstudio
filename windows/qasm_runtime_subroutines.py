@@ -14,7 +14,7 @@ from qasm_source_diagnostics import error_at
 
 
 def lower_runtime_subroutines(program):
-    scalar = (ast.IntType, ast.UintType, ast.BoolType)
+    scalar = (ast.IntType, ast.UintType, ast.BoolType, ast.FloatType, ast.AngleType)
     values = scalar + (ast.BitType,)
 
     def walk(value):
@@ -174,7 +174,7 @@ def lower_runtime_subroutines(program):
             raise error_at(actual, 'Quantum-register argument width does not match its parameter.')
         return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
 
-    def activate(call, depth):
+    def activate(call, depth, active=False):
         nonlocal calls, expanded
         if activations and visibility[call.name.name] > activations[-1]:
             raise error_at(call, 'A subroutine can only call previously declared routines or itself.')
@@ -188,7 +188,7 @@ def lower_runtime_subroutines(program):
         if expanded > 65536:
             raise error_at(call, 'Runtime subroutine expansion exceeds 65536 AST nodes.')
         if definition.return_type is not None and not isinstance(definition.return_type, values):
-            raise error_at(call, 'Runtime return values currently support integers, Booleans and bit registers.')
+            raise error_at(call, 'Runtime return values support integers, Booleans, float32/64, angles and bit registers.')
         returns = [n for n in walk(definition.body) if isinstance(n, ast.ReturnStatement)]
         # Validate before control-flow lowering drops unreachable tails.
         for statement in returns:
@@ -205,6 +205,10 @@ def lower_runtime_subroutines(program):
         bindings = dict(constant_bindings)
         parameters = set(); declarations = []; qubits = set()
         for formal, actual in zip(definition.arguments, call.arguments):
+            # Capture each actual before evaluating the next actual's calls.
+            # Hoisting all nested effects first changes error/measurement order.
+            effects, actual = expression_calls(actual, active, depth)
+            declarations.extend(effects)
             name = formal.name.name
             if name in parameters:
                 raise error_at(formal, 'Duplicate subroutine parameter: ' + name)
@@ -226,7 +230,7 @@ def lower_runtime_subroutines(program):
                 declarations.append(bit_declaration(declaration) if isinstance(declared_type, ast.BitType) else declaration)
                 bindings[name] = slot
             else:
-                raise error_at(formal, 'Runtime call arguments currently support integers, Booleans and bit registers.')
+                raise error_at(formal, 'Runtime call arguments support integers, Booleans, float32/64, angles and bit registers.')
             parameters.add(name)
         result_slot = None; result_type = None; prefix = []
         if definition.return_type is not None:
@@ -326,14 +330,22 @@ def lower_runtime_subroutines(program):
         return ast.ClassicalAssignment(lvalue=declaration.identifier, op=ast.AssignmentOperator['='], rvalue=initial)
 
     def runtime_call(call, active):
-        definition = functions[call.name.name]
-        if active or any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(call.arguments)):
+        if active:
             return True
-        if definition.return_type is not None:
-            return any(isinstance(a, ast.QuantumArgument) for a in definition.arguments)
-        # An explicit void return needs structured exit lowering even when the
-        # signature contains no classical arguments (or no arguments at all).
-        return any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body))
+        # walk already visits descendants: recursive classification here would
+        # repeatedly traverse overlapping argument trees (exponential work).
+        for node in walk(call):
+            if isinstance(node, ast.Identifier) and node.name in runtime:
+                return True
+            if isinstance(node, ast.FunctionCall) and node.name.name in functions:
+                definition = functions[node.name.name]
+                if definition.return_type is not None:
+                    if any(isinstance(a, ast.QuantumArgument) for a in definition.arguments):
+                        return True
+                elif any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body)):
+                    # Explicit void returns need structured exit lowering.
+                    return True
+        return False
 
     def specialize_loop(node, env, active, depth):
         """Expand literal ranges needed by quantum call indices before binding.
@@ -442,6 +454,11 @@ def lower_runtime_subroutines(program):
             return prefix, result
         if not isinstance(value, (ast.Expression, ast.RangeDefinition, ast.DiscreteSet)):
             return prefix, value
+        if isinstance(value, ast.FunctionCall) and value.name.name in functions and runtime_call(value, active):
+            effects, replacement = activate(value, depth, active)
+            if replacement is None:
+                raise error_at(value, 'A void subroutine cannot be used as a value.')
+            return effects, replacement
         if isinstance(value, ast.BinaryExpression) and value.op.name in ('&&', '||'):
             left_effects, left = expression_calls(value.lhs, active, depth)
             right_effects, right = expression_calls(value.rhs, active, depth)
@@ -466,12 +483,6 @@ def lower_runtime_subroutines(program):
                 continue
             effects, rewritten = expression_calls(getattr(value, field.name), active, depth)
             prefix.extend(effects); setattr(result, field.name, rewritten)
-        if isinstance(result, ast.FunctionCall) and result.name.name in functions:
-            if runtime_call(result, active):
-                effects, replacement = activate(result, depth)
-                if replacement is None:
-                    raise error_at(value, 'A void subroutine cannot be used as a value.')
-                return prefix + effects, replacement
         return prefix, result
 
     def block(body, parent, active=False, depth=0, declared=None, classical_names=()):
@@ -497,7 +508,7 @@ def lower_runtime_subroutines(program):
                     raise error_at(node, 'Duplicate declaration in one subroutine scope: ' + name)
                 declared.add(name)
                 if active and isinstance(node, ast.ClassicalDeclaration) and not isinstance(node.type, values):
-                    raise error_at(node, 'Runtime subroutine locals currently support integers, Booleans and bit registers.')
+                    raise error_at(node, 'Runtime subroutine locals support integers, Booleans, float32/64, angles and bit registers.')
                 value = copy.copy(node)
                 value.type = rewrite(node.type, env)
                 if active:
@@ -564,10 +575,8 @@ def lower_runtime_subroutines(program):
                 value = rewrite(node, env)
             call = value.expression if isinstance(value, ast.ExpressionStatement) else None
             if isinstance(call, ast.FunctionCall) and call.name.name in functions:
-                effects, call.arguments = expression_calls(call.arguments, active, depth)
-                result.extend(effects)
                 if runtime_call(call, active):
-                    effects, _ = activate(call, depth)
+                    effects, _ = activate(call, depth, active)
                     result.extend(effects)
                     continue
             elif not isinstance(value, (ast.BranchingStatement, ast.ForInLoop, ast.WhileLoop, ast.CompoundStatement, ast.SwitchStatement)):

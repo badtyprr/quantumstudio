@@ -1,0 +1,34 @@
+{
+  "revision": "167cff141b270cae023137971e716d5fec68e9f0",
+  "license": "pyqasm-LICENSE.txt",
+  "fixtures": [
+    {
+      "name": "test_simple_function_call",
+      "path": "tests/qasm3/subroutines/test_subroutines.py",
+      "line": 54,
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(qubit a, float[32] b) {\n        rx(b) a;\n        float[64] c = 2*b;\n        rx(c) a;\n        return;\n    }\n    qubit q;\n    float[32] r = 3.14;\n    my_function(q, r);\n    ",
+      "sha256": "86a272643c1fe96a186123bf747d44e4fd0f78afdb849749f1c076492190b7db"
+    },
+    {
+      "name": "test_update_variable_in_function",
+      "path": "tests/qasm3/subroutines/test_subroutines.py",
+      "line": 100,
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(qubit q) {\n        float[32] a = 3.14;\n        a = 2*a;\n        rx(a) q;\n        return;\n    }\n    qubit q;\n    my_function(q);\n    ",
+      "sha256": "c19f2ce1cdc1ceec826db010cff7387e16bcb708ad5fe7365d8872ecc49b3650"
+    },
+    {
+      "name": "test_function_call_with_return",
+      "path": "tests/qasm3/subroutines/test_subroutines.py",
+      "line": 233,
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(qubit q) -> float[32] {\n        h q;\n        return 3.14;\n    }\n    qubit q;\n    float[32] r = my_function(q);\n    ",
+      "sha256": "c341201b9bd864ed43f94479127834d664e3282698d58e077d9c6e12a6aa7808"
+    },
+    {
+      "name": "test_function_call_from_within_fn",
+      "path": "tests/qasm3/subroutines/test_subroutines.py",
+      "line": 312,
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n    def my_function(qubit q1, float[32] a) {\n        h q1;\n        rx(a) q1;\n        return;\n    }\n\n    def my_function_2(qubit[2] q2, float[32] param) {\n        my_function(q2[1], param);\n        return;\n    }\n\n    def my_function_3(qubit[2] q3) {\n        float[32] a = 3.14;\n        my_function_2(q3, a);\n        my_function(q3[1], a);\n        return;\n    }\n\n    qubit[2] q;\n    float[32] r = 3.14;\n    my_function_2(q, r);\n    my_function_3(q);\n    ",
+      "sha256": "3d01d2011d09b49b91f2d21d6dfb37570498a399d98278103f259678173ebe8b"
+    }
+  ]
+}

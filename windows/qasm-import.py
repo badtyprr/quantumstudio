@@ -1161,7 +1161,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             if type(value) is not int or not -(1<<63)<=value<(1<<64):raise ValueError('Integer literal exceeds 64 bits.')
             return {'Kind':'IntegerConstant','Signedness':'Signed' if value<(1<<63) else 'Unsigned','Width':0,'Value':str(value&((1<<64)-1))}
         if isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)):
-            size=node.type.size.value;storage=size or 64
+            size=0 if node.type.size is None else node.type.size.value;storage=size or 64
             if type(size) is not int or not 0<=size<=64:raise ValueError('Invalid integer cast width.')
             sign='Signed' if isinstance(node.type,ast.IntType) else 'Unsigned'
             boolean=boolean_value(node.argument)
