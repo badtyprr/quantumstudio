@@ -48,6 +48,7 @@ jobs:
             libqalculate/QuantumClassicalIntegerType.cc libqalculate/QuantumClassicalIntegerStorage.cc \
             libqalculate/QuantumClassicalIntegerExpression.cc libqalculate/QuantumClassical.cc \
             libqalculate/QuantumClassicalRealExpression.cc libqalculate/QuantumClassicalNumeric.cc \
+            libqalculate/QuantumClassicalArray.cc \
             -lgmp -o /tmp/quantum-integer-expression-sanitizer
           /tmp/quantum-integer-expression-sanitizer
       - name: Configure
