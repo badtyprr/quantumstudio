@@ -27,6 +27,9 @@ EXTRA_DIST = config.rpath  \
 	windows/RuntimeAngleImportTests.cs \
 	windows/test-qasm-runtime-numeric.py \
 	windows/test-qasm-runtime-numeric-calls.py \
+	windows/test-qasm-runtime-collections.py \
+	windows/fixtures/dev08-collection-upstream.json \
+	docs/runtime-collection-loops.md \
 	windows/test-dev08-numeric-source.py \
 	windows/fixtures/dev08-numeric-upstream.json \
 	docs/learning-evidence/DEV-08-research.md \

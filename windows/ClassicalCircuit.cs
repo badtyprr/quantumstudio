@@ -64,7 +64,14 @@ sealed class ClassicalCircuit {
  internal RuntimeDeclarations Declarations {get{return new RuntimeDeclarations(VariableTypes??new ClassicalIntegerType[0],NumericTypes??new ClassicalNumericType[0]);}}
  public string Serialize() {return json;}
  public Document Snapshot() {return Serializer().Deserialize<Document>(json);}
- public static ClassicalCircuit From(Document value) {return Load(Serializer().Serialize(value));}
+ public static ClassicalCircuit From(Document value) {return Load(SerializeDocument(value));}
+ static string SerializeDocument(Document value) {
+  // DTO serialization expands every absent optional field to null. Bound that
+  // temporary representation separately; the canonical public document still
+  // has the same 256 KiB UTF-8 limit enforced by Load.
+  var expanded=Serializer();expanded.MaxJsonLength=MaxBytes*16;
+  return expanded.Serialize(CanonicalFields(expanded.DeserializeObject(expanded.Serialize(value))));
+ }
  static InvalidDataException Invalid(string message) {return new InvalidDataException(message);}
  static Dictionary<string,object> Fields(object value,string allowed) {
   var fields=value as Dictionary<string,object>;
@@ -324,8 +331,7 @@ sealed class ClassicalCircuit {
   var gates=ConvertSteps(value.Steps,version);
   // Reuse the worker adapter's bounds, destinations, masks and payload checks.
   NumericalSampling.RequestClassical(value.Qubits,bits,1,0,value.OutputBits,gates,types,value.LoopConditionBudget,NumericTypesOf(value.NumericVariables));
-  var canonicalObject=serializer.DeserializeObject(serializer.Serialize(value));
-  string canonical=serializer.Serialize(CanonicalFields(canonicalObject));
+  string canonical=SerializeDocument(value);
   if(Encoding.UTF8.GetByteCount(canonical)>MaxBytes)throw Invalid("Canonical circuit data exceeds 256 KiB.");
   return new ClassicalCircuit(value,canonical,bits);
  }

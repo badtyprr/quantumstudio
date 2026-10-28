@@ -494,6 +494,50 @@ def lower_runtime_subroutines(program):
         finally:
             classical_scopes.pop()
 
+    def collection_loop(node, env, active, depth):
+        """Snapshot a finite value sequence, then use the existing range engine.
+
+        The cursor is independent of the user binding, so assignments, continue
+        and break retain the same transfer and cleanup semantics as range loops.
+        """
+        if not isinstance(node.type, scalar):
+            raise error_at(node, 'Collection loops require an integer, Boolean, float or angle binding.')
+        if len(node.set_declaration.values) > 64:
+            raise error_at(node, 'Runtime collections support at most 64 values.')
+        binding_type = rewrite(node.type, env)
+        prefix = []; snapshots = []
+        for item in node.set_declaration.values:
+            effects, value = expression_calls(rewrite(item, env), active, depth)
+            prefix.extend(effects)
+            slot = ast.Identifier(fresh()); runtime.add(slot.name)
+            prefix.append(ast.ClassicalDeclaration(type=copy.deepcopy(binding_type), identifier=slot, init_expression=value))
+            snapshots.append(slot)
+        cursor = ast.Identifier(fresh()); binding = ast.Identifier(fresh()); count = ast.Identifier(fresh())
+        runtime.update((cursor.name, binding.name, count.name))
+        # Retain a runtime bound through export/reimport too; a literal-only
+        # range would be reclassified as compile-time by the pinned compiler.
+        prefix.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),
+            identifier=count, init_expression=ast.IntegerLiteral(len(snapshots))))
+        inner = dict(env); inner[node.identifier.name] = binding
+        body = block(node.block, inner, active, depth, classical_names=(binding.name,))
+        def dispatch(first, last):
+            if first == last:
+                return []
+            if last-first == 1:
+                return [ast.ClassicalAssignment(lvalue=copy.deepcopy(binding), op=ast.AssignmentOperator['='],
+                    rvalue=copy.deepcopy(snapshots[first]))]
+            middle = (first+last)//2
+            return [ast.BranchingStatement(
+                condition=ast.BinaryExpression(op=ast.BinaryOperator['<'], lhs=copy.deepcopy(cursor), rhs=ast.IntegerLiteral(middle)),
+                if_block=dispatch(first, middle), else_block=dispatch(middle, last))]
+        loop = ast.ForInLoop(type=ast.IntType(size=ast.IntegerLiteral(32)), identifier=cursor,
+            set_declaration=ast.RangeDefinition(start=ast.IntegerLiteral(0),
+                end=ast.BinaryExpression(op=ast.BinaryOperator['-'], lhs=count, rhs=ast.IntegerLiteral(1)), step=None),
+            block=[ast.ClassicalDeclaration(type=binding_type, identifier=binding, init_expression=None)] + dispatch(0, len(snapshots)) + body)
+        loop._quantum_runtime_for = True
+        loop.span = node.span
+        return ast.CompoundStatement(statements=prefix + [loop])
+
     def block_body(body, parent, active=False, depth=0, declared=None):
         env = dict(parent); declared = set() if declared is None else set(declared)
         result = []
@@ -536,6 +580,9 @@ def lower_runtime_subroutines(program):
                 value.else_block = block(node.else_block, env, active, depth)
             elif isinstance(node, (ast.ForInLoop, ast.WhileLoop)):
                 if isinstance(node, ast.ForInLoop):
+                    if isinstance(node.set_declaration, ast.DiscreteSet):
+                        result.append(collection_loop(node, env, active, depth))
+                        continue
                     specialized = specialize_loop(node, env, active, depth)
                     if specialized is not None:
                         result.extend(specialized)

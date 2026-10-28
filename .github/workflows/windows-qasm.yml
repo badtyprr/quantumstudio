@@ -66,6 +66,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-numeric-calls.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric subroutine tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-collections.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime collection checks failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-dev08-numeric-source.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Numeric subroutine source evidence failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-wires.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
@@ -84,5 +86,5 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM storage tests failed.' }
           $programCases = Join-Path $env:RUNNER_TEMP 'program-qasm-cases.json'
           & windows/test-classical-program-qasm.ps1 -CasesPath $programCases
-          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $programCases --expected-cases 35
+          & .tools/qasm-venv/Scripts/python.exe windows/test-classical-expression-qasm.py --cases $programCases --expected-cases 36
           if ($LASTEXITCODE -ne 0) { throw 'OpenQASM program tests failed.' }

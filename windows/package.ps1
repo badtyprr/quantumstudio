@@ -120,6 +120,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import validation failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-numeric-calls.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric subroutine checks failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-collections.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime collection checks failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-dev08-numeric-source.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Numeric subroutine source evidence failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-wires.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
@@ -150,7 +152,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM storage tests failed.' }
     $programCases = Join-Path $repo ('dist/program-qasm/' + [Guid]::NewGuid().ToString('N') + '/cases.json')
     & (Join-Path $PSScriptRoot 'test-classical-program-qasm.ps1') -CasesPath $programCases
-    & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $programCases --expected-cases 35 --worker (Join-Path $output 'quantum-worker.exe')
+    & $PythonPath (Join-Path $PSScriptRoot 'test-classical-expression-qasm.py') --cases $programCases --expected-cases 36 --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged OpenQASM program tests failed.' }
     & (Join-Path $PSScriptRoot 'test-keyboard.ps1') -Distribution $output
 } finally { $env:QALCULATE_DEFINITIONS_DIR = $oldDefinitions }
