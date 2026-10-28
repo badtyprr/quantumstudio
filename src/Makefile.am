@@ -263,8 +263,14 @@ quantum_classical_numeric_test_SOURCES = quantum-classical-numeric-test.cc
 quantum_classical_numeric_test_LDADD = $(test_LDADD)
 quantum_runtime_numeric_test_SOURCES = quantum-runtime-numeric-test.cc
 quantum_runtime_numeric_test_LDADD = $(test_LDADD)
+check_PROGRAMS += quantum-classical-array-test
+TESTS += quantum-classical-array-test
+quantum_classical_array_test_SOURCES = quantum-classical-array-test.cc
+quantum_classical_array_test_LDADD = $(test_LDADD)
 EXTRA_DIST += quantum-runtime-numeric-request-test.py
 TESTS += quantum-runtime-numeric-request-test.py
 
 EXTRA_DIST += quantum-wire-selection-request-test.py
 TESTS += quantum-wire-selection-request-test.py
+EXTRA_DIST += quantum-classical-array-request-test.py
+TESTS += quantum-classical-array-request-test.py

@@ -3,6 +3,7 @@
 #define QUANTUM_CLASSICAL_INTEGER_STORAGE_H
 #include "QuantumClassicalIntegerType.h"
 #include "QuantumClassicalNumeric.h"
+#include "QuantumClassicalArray.h"
 #include <vector>
 #include <cstddef>
 namespace QuantumClassical {
@@ -16,12 +17,14 @@ class RuntimeStorage {
  };
  std::vector<Slot> slots_;
  NumericStorage numeric_;
+ std::shared_ptr<const std::vector<ArrayDeclaration>> arrays_;
 public:
- explicit RuntimeStorage(const std::vector<IntegerType> &types,const std::vector<NumericType> &numericTypes={});
+ explicit RuntimeStorage(const std::vector<IntegerType> &types,const std::vector<NumericType> &numericTypes={},const std::vector<ArrayDeclaration> &arrays={});
  std::size_t size() const {return slots_.size();}
  std::size_t totalSize() const {return size()+numeric_.size();}
  const NumericStorage &numeric() const {return numeric_;}
  NumericStorage &numeric() {return numeric_;}
+ const ArrayDeclaration &array(std::size_t index) const {return arrays_->at(index);}
  IntegerType type(std::size_t index) const;
  bool initialized(std::size_t index) const;
  TypedInteger read(std::size_t index) const;

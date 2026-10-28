@@ -13,7 +13,8 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool wireSelectors() const {return input.compare(0,9,"QEXACT13\n")==0;}
+ bool arrays() const {return input.compare(0,9,"QEXACT14\n")==0;}
+ bool wireSelectors() const {return input.compare(0,9,"QEXACT13\n")==0 || arrays();}
  bool numeric() const {return input.compare(0,9,"QEXACT12\n")==0 || wireSelectors();}
  bool parameterGates() const {return input.compare(0,9,"QEXACT11\n")==0 || numeric();}
  bool rotations() const {return input.compare(0,9,"QEXACT10\n")==0 || parameterGates();}
@@ -27,7 +28,7 @@ public:
  bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT13 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT14 request.");
   if(rotations())position=9;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -73,7 +74,19 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
  unsigned &total,const EvaluationOptions &exact,const QuantumClassical::IntegerStorage *variables) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==21 || kind==22) {
+  unsigned nodes=0;auto selection=QuantumClassicalRequest::arraySelection(reader,0,nodes);
+  selection.validate(bits,*variables);nodes=0;
+  if(kind==21) {
+   variables->array(selection.array()).integerType();
+   auto value=QuantumClassicalRequest::integerNode(reader,0,nodes,true,true,true);
+   value.validate(bits,*variables);return Step::storeArray(selection,value);
+  }
+  variables->array(selection.array()).numericType();
+  auto value=QuantumClassicalRequest::realNode(reader,0,nodes,true);
+  value.validate(bits,*variables);return Step::storeArray(selection,value);
+ }
  if(kind==20) {
   if(depth>=32)throw std::length_error("Runtime wire selection exceeds nesting limits");
   auto selection=QuantumClassicalRequest::wireSelection(reader,qubits,bits,*variables);
@@ -184,8 +197,9 @@ std::string quantumExactRequest(Calculator &calculator,const std::string &input)
   const auto slots=reader.integer(4096-types.size());
   for(std::uint64_t slot=0;slot<slots;++slot)numericTypes.push_back(QuantumClassicalRequest::numericType(reader));
  }
+ const auto arrays=QuantumClassicalRequest::arrays(reader);
  const std::size_t loopBudget=reader.loops()?static_cast<std::size_t>(reader.integer(1000000)):1000000;
- const QuantumClassical::IntegerStorage declarations(types,numericTypes);
+ const QuantumClassical::IntegerStorage declarations(types,numericTypes,arrays);
  auto selected=reader.targets(bits,bits);
  unsigned count=static_cast<unsigned>(reader.integer(512)),total=0;std::vector<Step> steps;
  for(unsigned k=0;k<count;++k)steps.push_back(readStep(calculator,reader,qubits,bits,0,total,exact,reader.variables()?&declarations:nullptr));
@@ -194,7 +208,7 @@ std::string quantumExactRequest(Calculator &calculator,const std::string &input)
  std::map<std::uint64_t,std::string> probabilities;
  QuantumExact::PhaseBudget phaseBudget(262144,4096,100000000,[&]{return calculator.aborted();});
  if(!QuantumExact::tryPhaseCircuitWeights(qubits,bits,steps,selected,probabilities,phaseBudget,{262144,1000000,4000000})) {
-  auto records=QuantumExact::evaluateCircuit(qubits,bits,steps,types,1048576,exact,loopBudget,numericTypes);
+  auto records=QuantumExact::evaluateCircuit(qubits,bits,steps,types,1048576,exact,loopBudget,numericTypes,arrays);
   auto weights=QuantumExact::weights(records,qubits,bits,selected,1048576,exact);
   for(const auto &entry:weights) {
    MathStructure value=entry.second;value.format(print);probabilities.emplace(entry.first,value.print(print));

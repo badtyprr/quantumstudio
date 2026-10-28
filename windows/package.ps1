@@ -109,6 +109,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric protocol tests failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-wire-selection-request-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime wire selection protocol tests failed.' }
+    & $PythonPath (Join-Path $repo 'src\quantum-classical-array-request-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime array protocol tests failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-runtime-gate-request-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged runtime gate checks failed.' }
     & (Join-Path $PSScriptRoot 'build-runtime-angle-import-test.ps1')

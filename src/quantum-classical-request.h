@@ -29,6 +29,9 @@ template<class Reader>
 QuantumClassical::RealExpression realNode(Reader &,unsigned,unsigned &,bool=false);
 
 template<class Reader>
+QuantumClassical::ArraySelection arraySelection(Reader &,unsigned,unsigned &);
+
+template<class Reader>
 QuantumClassical::NumericType numericType(Reader &reader) {
  const auto kind=reader.integer(1);const unsigned width=static_cast<unsigned>(reader.integer(64));
  return kind==0 ? QuantumClassical::NumericType::floating(width) : QuantumClassical::NumericType::angle(width);
@@ -38,7 +41,8 @@ template<class Reader>
 QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,unsigned &count,bool variables=false,bool bitExpressions=false,bool numeric=false) {
  using namespace QuantumClassical;
  if(depth>=32 || ++count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 nodes.");
- const auto kind=reader.integer(numeric ? 9 : bitExpressions ? 5 : variables ? 4 : 3);
+ const auto kind=reader.integer(reader.arrays() ? 10 : numeric ? 9 : bitExpressions ? 5 : variables ? 4 : 3);
+ if(kind==10) {auto type=integerType(reader);return IntegerExpression::arrayElement(type,arraySelection(reader,depth+1,count));}
  if(kind>=6) {
   if(kind==6){auto type=integerType(reader);return IntegerExpression::fromNumeric(type,realNode(reader,depth+1,count,true));}
   auto left=realNode(reader,depth+1,count,true);
@@ -61,6 +65,35 @@ QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,un
  std::vector<unsigned> indices;
  for(unsigned k=0;k<type.width();++k)indices.push_back(static_cast<unsigned>(reader.integer(63)));
  return IntegerExpression::read(type,indices);
+}
+// Source context is encoded as bounded UTF-8 bytes represented by integers,
+// allowing expression writers to retain their integer-only interface.
+template<class Reader>
+QuantumClassical::ArraySelection arraySelection(Reader &reader,unsigned depth,unsigned &count) {
+ if(depth>=32 || ++count>512)throw std::length_error("Array selection exceeds 32 levels or 512 nodes.");
+ const auto array=reader.integer(4095);const auto rank=reader.integer(7);
+ std::vector<QuantumClassical::IntegerExpression> indices;
+ for(unsigned k=0;k<rank;++k)indices.push_back(integerNode(reader,depth+1,count,true,true,true));
+ const auto length=reader.integer(512);std::string source;
+ for(unsigned k=0;k<length;++k)source.push_back(static_cast<char>(reader.integer(255)));
+ return QuantumClassical::ArraySelection(static_cast<std::size_t>(array),indices,source);
+}
+
+template<class Reader>
+std::vector<QuantumClassical::ArrayDeclaration> arrays(Reader &reader) {
+ std::vector<QuantumClassical::ArrayDeclaration> result;
+ if(!reader.arrays())return result;
+ const auto count=reader.integer(4096);
+ for(unsigned k=0;k<count;++k) {
+  const auto numeric=reader.integer(1);
+  auto integer=QuantumClassical::IntegerType::machine(QuantumClassical::Integer::Signedness::Signed);
+  auto real=QuantumClassical::NumericType::floating();
+  if(numeric)real=numericType(reader);else integer=integerType(reader);
+  const auto base=reader.integer(4096);const auto rank=reader.integer(7);std::vector<unsigned> dimensions;
+  for(unsigned j=0;j<rank;++j)dimensions.push_back(static_cast<unsigned>(reader.integer(4096)));
+  result.push_back(numeric ? QuantumClassical::ArrayDeclaration::numerics(real,base,dimensions) : QuantumClassical::ArrayDeclaration::integers(integer,base,dimensions));
+ }
+ return result;
 }
 template<class Reader>
 QuantumClassical::WireSelection wireSelection(Reader &reader,unsigned qubits,unsigned bits,const QuantumClassical::IntegerStorage &storage) {
@@ -143,7 +176,8 @@ template<class Reader>
 QuantumClassical::RealExpression realNode(Reader &reader,unsigned depth,unsigned &count,bool numeric) {
  using R=QuantumClassical::RealExpression;
  if(depth>=32 || ++count>512)throw std::length_error("Real expression exceeds 32 levels or 512 nodes.");
- const auto kind=reader.integer(numeric ? 9 : 2);
+ const auto kind=reader.integer(reader.arrays() ? 10 : numeric ? 9 : 2);
+ if(kind==10) {auto type=numericType(reader);return R::arrayElement(type,arraySelection(reader,depth+1,count));}
  if(kind>=3) {
   if(kind==3 || kind==4 || kind==5) {
    const auto type=numericType(reader);

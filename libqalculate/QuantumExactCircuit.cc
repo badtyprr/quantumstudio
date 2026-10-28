@@ -18,12 +18,14 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    continue;
   }
   if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
-   variables.type(step.variableSlot);
+   if(step.arraySelection) {step.arraySelection->validate(bits,variables);variables.array(step.arraySelection->array()).integerType();}
+   else variables.type(step.variableSlot);
    if(step.integerExpression)step.integerExpression->validate(bits,variables);
    continue;
   }
   if(step.kind==Step::Kind::StoreNumeric || step.kind==Step::Kind::ClearNumeric) {
-   const auto target=variables.numeric().type(step.variableSlot);
+   if(step.arraySelection)step.arraySelection->validate(bits,variables);
+   const auto target=step.arraySelection ? variables.array(step.arraySelection->array()).numericType() : variables.numeric().type(step.variableSlot);
    if(step.numericExpression) {
     step.numericExpression->validate(bits,variables);
     if(step.numericExpression->type().kind()==QuantumClassical::NumericType::Kind::Angle && target.kind()!=QuantumClassical::NumericType::Kind::Angle)throw std::invalid_argument("Angles cannot be stored in float variables");
@@ -249,12 +251,18 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
    } else if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
     auto variables=record.variables;
     if(step.kind==Step::Kind::ClearInteger)variables.clear(step.variableSlot);
-    else variables.write(step.variableSlot,step.integerExpression->evaluate(record.bits,bits,record.variables));
+    else {
+     const auto slot=step.arraySelection ? step.arraySelection->evaluate(record.bits,bits,record.variables) : step.variableSlot;
+     variables.write(slot,step.integerExpression->evaluate(record.bits,bits,record.variables));
+    }
     output.add(record.bits,variables,record.density);
    } else if(step.kind==Step::Kind::StoreNumeric || step.kind==Step::Kind::ClearNumeric) {
     auto variables=record.variables;
     if(step.kind==Step::Kind::ClearNumeric)variables.numeric().clear(step.variableSlot);
-    else variables.numeric().write(step.variableSlot,step.numericExpression->evaluateTyped(record.bits,bits,record.variables));
+    else {
+     const auto slot=step.arraySelection ? step.arraySelection->evaluate(record.bits,bits,record.variables) : step.variableSlot;
+     variables.numeric().write(slot,step.numericExpression->evaluateTyped(record.bits,bits,record.variables));
+    }
     output.add(record.bits,variables,record.density);
    } else if(step.kind==Step::Kind::Assign) {
     output.add(QuantumClassical::assign(record.bits,bits,wires,*step.expression,record.variables),record.variables,record.density);
@@ -303,10 +311,11 @@ Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector
 }
 Records evaluateCircuit(unsigned qubits,unsigned classicalBits,const std::vector<Step> &steps,
  const std::vector<QuantumClassical::IntegerType> &variableTypes,std::size_t maxCells,const EvaluationOptions &options,
- std::size_t maxLoopConditions,const std::vector<QuantumClassical::NumericType> &numericTypes) {
+ std::size_t maxLoopConditions,const std::vector<QuantumClassical::NumericType> &numericTypes,
+ const std::vector<QuantumClassical::ArrayDeclaration> &arrays) {
  checkpoint();RecordAccumulator initial(qubits,classicalBits,maxCells,options);
  if(variableTypes.size()>maxCells || numericTypes.size()>maxCells-variableTypes.size())throw std::length_error("Exact variable slot budget exceeded");
- const QuantumClassical::IntegerStorage variables(variableTypes,numericTypes);
+ const QuantumClassical::IntegerStorage variables(variableTypes,numericTypes,arrays);
  std::size_t count=0;validate(steps,qubits,classicalBits,0,0,count,variables);
  EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
  const std::size_t n=std::size_t(1)<<qubits;

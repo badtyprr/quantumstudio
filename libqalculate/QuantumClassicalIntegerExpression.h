@@ -10,11 +10,13 @@ class RuntimeStorage;
 using IntegerStorage=RuntimeStorage;
 class Bits;
 class RealExpression;
+class ArraySelection;
 // Immutable expressions over a packed record and optional typed variable slots.
 // Register declarations/initialization and protocol decoding belong to callers.
 class IntegerExpression {
  friend class Bits;
  friend class RealExpression;
+ friend class ArraySelection;
  unsigned depth() const;
  unsigned count() const;
  std::uint64_t references() const;
@@ -30,6 +32,7 @@ public:
  // evaluation and undefined-variable errors. Boolean values use unsigned width 1.
  static IntegerExpression fromBits(IntegerType type,const Bits &operand);
  static IntegerExpression variable(IntegerType type,std::size_t index);
+ static IntegerExpression arrayElement(IntegerType type,const ArraySelection &selection);
  static IntegerExpression cast(IntegerType type,const IntegerExpression &operand);
  static IntegerExpression binary(Integer::Operation operation,const IntegerExpression &left,const IntegerExpression &right);
  static IntegerExpression fromNumeric(IntegerType type,const RealExpression &value);

@@ -21,6 +21,7 @@ public:
  static RealExpression constant(const NumericValue &value);
  static RealExpression fromInteger(const IntegerExpression &value,unsigned floatWidth=64);
  static RealExpression variable(NumericType type,std::size_t slot);
+ static RealExpression arrayElement(NumericType type,const ArraySelection &selection);
  static RealExpression cast(NumericType type,const RealExpression &value);
  static RealExpression fromBits(unsigned angleWidth,const Bits &value);
  static RealExpression function(NumericValue::Function function,const RealExpression &value);
