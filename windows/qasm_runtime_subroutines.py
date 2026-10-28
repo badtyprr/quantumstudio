@@ -581,10 +581,13 @@ def lower_runtime_subroutines(program):
             elif isinstance(node, (ast.ForInLoop, ast.WhileLoop)):
                 if isinstance(node, ast.ForInLoop):
                     if isinstance(node.set_declaration, ast.DiscreteSet):
+                        if len(node.set_declaration.values) > 64:
+                            raise error_at(node, 'Runtime collections support at most 64 values.')
                         # Keep the pinned compiler's literal quantum-call path
                         # until runtime reference binding is lowered separately.
                         static_quantum_calls = not active and not any(
-                            isinstance(item, ast.Identifier) and item.name in runtime
+                            isinstance(item, ast.Identifier) and item.name in runtime or
+                            isinstance(item, ast.FunctionCall) and item.name.name in functions and runtime_call(item, active)
                             for item in walk(rewrite(node.set_declaration, env))) and any(
                             isinstance(item, ast.FunctionCall) and item.name.name in functions
                             and any(isinstance(arg, ast.QuantumArgument) for arg in functions[item.name.name].arguments)

@@ -42,6 +42,7 @@ def execute(encoded,exact,expected=None,error=None):
     assert all(abs(actual.get(k,0)-expected.get(k,0))<(1e-12 if exact else .025) for k in set(actual)|set(expected)),(actual,expected)
 
 cases=[
+ ('def g(qubit q)->int{bit b=measure q;return int[2](bool(b));}def f(qubit a){x a;}qubit q;h q;int n=0;for int i in {g(q),1}{f(q);n+=i;}bit c=bool(n==2);',{'0':.5,'1':.5}),
  ('def f(qubit a){x a;}qubit[2] q;for int i in {0,1}{f(q[i]);}bit[2] c=measure q;',{'11':1}),
  ('bool yes=false;for bool b in {false,true,false}{yes=yes || b;}bit c=yes;',{'1':1}),
  ('int a=2;int total=0;for int i in {a,1,a}{total=total*10+i;}bit c=bool(total==212);',{'1':1}),
@@ -65,6 +66,9 @@ for encoded in (original,roundtrip):execute(encoded,True,{'1':1})
 try:compile(header+'for int i in {'+','.join(['1']*65)+'}{}')
 except ValueError as error:assert 'at most 64 values' in str(error);checks+=1
 else:raise AssertionError('Collection value limit not enforced')
+try:compile(header+'def f(qubit q){x q;}qubit q;for int i in {'+','.join(['1']*65)+'}{f(q);}')
+except ValueError as error:assert 'at most 64 values' in str(error);checks+=1
+else:raise AssertionError('Static quantum collection bypassed the value limit')
 # Snapshot evaluation is left-to-right, including nested calls and errors.
 source=header+'def f(float x)->float{float y;return y;}float x=-1;for float i in {sqrt(x),f(x)}{}'
 original=adapt(compile(source));roundtrip=adapt(compile(original['source']))
