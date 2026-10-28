@@ -3,6 +3,27 @@ using System.Text;
 using N=ClassicalCircuit.ExpressionNode;
 static class ClassicalExpressionTextTests {
  static int checks;
+ static void ArrayChecks() {
+  var context=Context();context.Version=15;context.LoopConditionBudget=1000000;
+  context.Variables=new[]{new ClassicalCircuit.Variable{Name="cell",Signedness="Signed",Width=0}};
+  context.NumericVariables=new[]{new ClassicalCircuit.NumericVariable{Name="number",NumericKind="Float",Width=32}};
+  context.Arrays=new[]{new ClassicalCircuit.ArrayDeclaration{Name="a",Base=0,Dimensions=new[]{1},Signedness="Signed",Width=0},new ClassicalCircuit.ArrayDeclaration{Name="f",Base=0,Dimensions=new[]{1},NumericKind="Float",Width=32}};
+  var integer=ClassicalExpressionText.ParseInteger("array(0, -1)",context);
+  Check(integer.Kind=="IntegerArrayElement" && ClassicalExpressionText.RequiredVersion(integer)==15);
+  string formatted=ClassicalExpressionText.Format(integer,context);
+  Check(ClassicalExpressionText.Format(ClassicalExpressionText.ParseInteger(formatted,context),context)==formatted);
+  var numeric=ClassicalExpressionText.ParseNumeric("array(1, 0)",context);
+  Check(numeric.Kind=="ArrayElement" && numeric.Width==32);
+  formatted=ClassicalExpressionText.FormatNumeric(numeric,context);
+  Check(ClassicalExpressionText.FormatNumeric(ClassicalExpressionText.ParseNumeric(formatted,context),context)==formatted);
+  Check(ClassicalExpressionText.ParseArrayTarget("array(0, 0)",context,false).Array==0);
+  Check(ClassicalExpressionText.ParseArrayTarget("array(1, 0)",context,true).Array==1);
+  Check(ClassicalExpressionText.Parse("array(0, 0) == 3",context,1).Kind=="IntegerCompare");
+  Reject(()=>ClassicalExpressionText.ParseInteger("array(2, 0)",context));
+  Reject(()=>ClassicalExpressionText.ParseInteger("array(0, 0, 0)",context));
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(1, 0)",context,false));
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(0, 0)+1",context,false));
+ }
  static void Check(bool value){checks++;if(!value)throw new Exception("Expression text check "+checks+" failed.");}
  static void Reject(Action action){bool caught=false;try{action();}catch(ArgumentException){caught=true;}catch(System.IO.InvalidDataException){caught=true;}Check(caught);}
  static ClassicalCircuit.Document Context(){return new ClassicalCircuit.Document{Version=3,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=3},new ClassicalCircuit.Register{Name="rest",Size=61}},OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]};}
@@ -126,7 +147,7 @@ static class ClassicalExpressionTextTests {
   Check(ClassicalExpressionText.RequiredVersion(Parse("bool(c)",1))==3);
   Check(ClassicalExpressionText.RequiredVersion(Parse("bool(int[3](c))",1))==4);
  }
- static int Main(string[] args){try {
+ static int Main(string[] args){try {ArrayChecks();
   var loopContext=new ClassicalCircuit.Document{Version=7,LoopConditionBudget=3,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new[]{new ClassicalCircuit.Variable{Name="n",Signedness="Signed",Width=8}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]};
   Check(ClassicalExpressionText.Parse("c == 0",loopContext,1).Kind=="Binary");
   Check(ClassicalExpressionText.ParseInteger("n + 1",loopContext).Kind=="IntegerBinary");

@@ -12,8 +12,8 @@ static class ClassicalRealExpressionText {
   return new R{Kind="Constant",ValueBits=unchecked((ulong)BitConverter.DoubleToInt64Bits(value)).ToString(CultureInfo.InvariantCulture)};
  }
  static void Validate(R value,ClassicalCircuit.Document context) {
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=context.Version>=13 ? 13 : 11,Qubits=1,NumericVariables=context.NumericVariables,
-   Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(context.Version,11),Qubits=1,NumericVariables=context.NumericVariables,
+   Arrays=context.Arrays,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],
    OutputBits=new int[0],LoopConditionBudget=1000000,
    Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=value,Wires=new[]{0}}}});
  }

@@ -122,6 +122,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric import validation failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-numeric-calls.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime numeric subroutine checks failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-runtime-array-model.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime array model tests failed.' }
+    & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-arrays.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime array source tests failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-qasm-runtime-collections.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Runtime collection checks failed.' }
     & $PythonPath (Join-Path $PSScriptRoot 'test-dev08-numeric-source.py') --adapter (Join-Path $repo 'dist\gui-validation\runtime-angle-import-tests.exe') --worker (Join-Path $output 'quantum-worker.exe') --frozen (Join-Path $output 'qasm-import\qasm-import.exe')

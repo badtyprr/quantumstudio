@@ -1,4 +1,4 @@
-"""Compile-time array semantics and rejection of unsupported runtime storage."""
+"""Compile-time array compatibility and runtime allocation selection."""
 import argparse,hashlib,importlib.util,json,subprocess
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--frozen',type=Path);args=p.parse_args()
@@ -46,13 +46,16 @@ for body in (
  'bit c="0"; array[bool,1] a={false}; while(c==1){a[0]=true;}',
  'bit c="0"; array[bool,1] a={false}; if(c==1){if(true){a[0]=true;}}',
  'int n=1; array[bool,1] a={false}; for int i in [0:n]{a[0]=true;}',
- 'def set(mutable array[int[32], #dim=1] target){target[0]=1;} bit c="0"; array[int[32],1] a={0}; if(c==1){set(a);}',
  'int n=1; array[int[32],1] a={n};',
  'int n=1; array[int[32],1] a={0}; a[0]=n;',
+):
+ assert convert(header+body)['Version']==15
+for body in (
  'array[bool,1000000000] a;',
  'array[bool,257,256] a;',
  'array[bool,40000] a; array[bool,40000] b;',
 ):reject(body)
+reject('def set(mutable array[int[32], #dim=1] target){target[0]=1;} bit c="0"; array[int[32],1] a={0}; if(c==1){set(a);}')
 reject('bit c="0"; if(c==1){array[bool,1] a={true};}','arrays can only be declared globally')
 # Unchanged QASM string extracted from qBraid notebook qasm_unroll.ipynb,
 # revision86787e1ba372facc224f925189755e69c479828b; no gates/angles rewritten.

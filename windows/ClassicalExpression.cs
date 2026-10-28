@@ -110,6 +110,7 @@ sealed class ClassicalIntegerType {
  public enum Sign { Signed=0, Unsigned=1 }
  public Sign Signedness {get;private set;}public int DeclaredWidth {get;private set;}
  public int Width {get{return DeclaredWidth==0 ? 64 : DeclaredWidth;}}
+ public bool Same(ClassicalIntegerType other){return other!=null && Signedness==other.Signedness && DeclaredWidth==other.DeclaredWidth;}
  ClassicalIntegerType(Sign sign,int width){Signedness=sign;DeclaredWidth=width;}
  public static ClassicalIntegerType Create(Sign sign,int width=0) {
   if(!Enum.IsDefined(typeof(Sign),sign) || width<0 || width>64)throw new ArgumentException("Invalid integer signedness or width.");
@@ -133,19 +134,72 @@ sealed class ClassicalNumericType {
  public bool Same(ClassicalNumericType other){return other!=null && Kind==other.Kind && Width==other.Width;}
  internal void Write(Action<ulong> number){number((ulong)Kind);number((ulong)Width);}
 }
+// Immutable array allocation and checked expression metadata shared by the
+// document validator and both worker request writers.
+sealed class ClassicalArrayAllocation {
+ public readonly int Base,Size;
+ public readonly IList<int> Dimensions;
+ public readonly ClassicalIntegerType Integer;
+ public readonly ClassicalNumericType Numeric;
+ public ClassicalArrayAllocation(int start,IList<int> dimensions,ClassicalIntegerType integer,ClassicalNumericType numeric) {
+  if(start<0 || start>4096 || dimensions==null || dimensions.Count<1 || dimensions.Count>7 || (integer==null)==(numeric==null))throw new ArgumentException("Invalid array declaration.");
+  Base=start;Integer=integer;Numeric=numeric;Dimensions=new List<int>(dimensions).AsReadOnly();
+  bool empty=false;foreach(int size in Dimensions){if(size<0 || size>4096)throw new ArgumentException("Array dimensions must be 0–4096.");empty|=size==0;}
+  int total=empty ? 0 : 1;if(!empty)foreach(int size in Dimensions){if(total>4096/size)throw new ArgumentException("Array allocation exceeds 4096 elements.");total*=size;}
+  if(total>4096-start)throw new ArgumentException("Array allocation exceeds its slot budget.");Size=total;
+ }
+ internal void Validate(RuntimeDeclarations declarations) {
+  int available=Numeric==null ? declarations.Count : declarations.Numeric.Count;
+  if(Base>available || Size>available-Base)throw new ArgumentException("Array allocation is outside runtime storage.");
+  for(int k=Base;k<Base+Size;++k)if(Numeric==null ? !Integer.Same(declarations[k]) : !Numeric.Same(declarations.Numeric[k]))throw new ArgumentException("Array backing types differ from the element type.");
+ }
+ internal void Write(Action<ulong> number) {
+  number(Numeric==null ? 0UL : 1UL);if(Numeric==null)Integer.Write(number);else Numeric.Write(number);
+  number((ulong)Base);number((ulong)Dimensions.Count);foreach(int size in Dimensions)number((ulong)size);
+ }
+}
+sealed class ClassicalArraySelection {
+ public readonly int Array,Depth,Count;public readonly ulong References;
+ public readonly IList<ClassicalIntegerExpression> Indices;public readonly string Source;
+ public ClassicalArraySelection(int array,IList<ClassicalIntegerExpression> indices,string source) {
+  if(array<0 || array>=4096 || indices==null || indices.Count<1 || indices.Count>7)throw new ArgumentException("Array selection needs one to seven indices.");
+  Array=array;Indices=new List<ClassicalIntegerExpression>(indices).AsReadOnly();Source=source??"";
+  if(System.Text.Encoding.UTF8.GetByteCount(Source)>512 || Source.IndexOf('\0')>=0)throw new ArgumentException("Invalid array source context.");
+  int depth=1,count=1;ulong references=0;foreach(var index in Indices){if(index==null)throw new ArgumentException("Missing array index.");depth=Math.Max(depth,index.Depth+1);count+=index.Count;references|=index.References;}
+  if(depth>32 || count>512)throw new ArgumentException("Array selection exceeds expression bounds.");Depth=depth;Count=count;References=references;
+ }
+ internal ClassicalArrayAllocation Validate(int bits,IList<ClassicalIntegerType> variables) {
+  var declarations=variables as RuntimeDeclarations;
+  if(declarations==null || Array>=declarations.Arrays.Count)throw new ArgumentException("Array selection has no declaration.");
+  var allocation=declarations.Arrays[Array];if(Indices.Count!=allocation.Dimensions.Count)throw new ArgumentException("Array index rank differs from its declaration.");
+  foreach(var index in Indices)index.Validate(bits,variables);return allocation;
+ }
+ internal void Write(Action<ulong> number) {
+  number((ulong)Array);number((ulong)Indices.Count);foreach(var index in Indices)index.WriteNode(number);
+  byte[] source=System.Text.Encoding.UTF8.GetBytes(Source);number((ulong)source.Length);foreach(byte value in source)number(value);
+ }
+}
 sealed class RuntimeDeclarations : System.Collections.ObjectModel.ReadOnlyCollection<ClassicalIntegerType> {
  public readonly IList<ClassicalNumericType> Numeric;
- public RuntimeDeclarations(IList<ClassicalIntegerType> integers,IList<ClassicalNumericType> numeric):base(new List<ClassicalIntegerType>(integers)) {
+ public readonly IList<ClassicalArrayAllocation> Arrays;
+ public RuntimeDeclarations(IList<ClassicalIntegerType> integers,IList<ClassicalNumericType> numeric,IList<ClassicalArrayAllocation> arrays=null):base(new List<ClassicalIntegerType>(integers)) {
   Numeric=new List<ClassicalNumericType>(numeric).AsReadOnly();
+  Arrays=new List<ClassicalArrayAllocation>(arrays??new ClassicalArrayAllocation[0]).AsReadOnly();
+  if(Arrays.Count>4096)throw new ArgumentException("Use at most 4096 arrays.");
   if(Count+Numeric.Count>4096)throw new ArgumentException("Use at most 4096 variable slots.");
   foreach(var type in Numeric)if(type==null)throw new ArgumentException("Missing numeric type.");
+  for(int k=0;k<Arrays.Count;++k) {
+   var a=Arrays[k];if(a==null)throw new ArgumentException("Missing array declaration.");a.Validate(this);
+   for(int j=0;j<k;++j){var b=Arrays[j];if((a.Numeric==null)==(b.Numeric==null) && a.Size>0 && b.Size>0 && a.Base<b.Base+b.Size && b.Base<a.Base+a.Size)throw new ArgumentException("Array allocations overlap.");}
+  }
  }
 }
 sealed class ClassicalRealExpression {
- public enum NodeKind { Constant=0, Integer=1, Binary=2, TypedConstant=3, Variable=4, Cast=5, Function=6, Scale=7, Bits=8, TypedInteger=9 }
+ public enum NodeKind { Constant=0, Integer=1, Binary=2, TypedConstant=3, Variable=4, Cast=5, Function=6, Scale=7, Bits=8, TypedInteger=9, ArrayElement=10 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Power=4, Mod=5, And=6, Or=7, Xor=8 }
  public enum FunctionKind { Negate, Sin, Cos, Tan, Arcsin, Arccos, Arctan, Exp, Log, Sqrt, Floor, Ceiling, Complement }
  public enum Scaling { Multiply, Divide, ShiftLeft, ShiftRight }
+ public ClassicalArraySelection Selection {get;private set;}
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public ClassicalNumericType Type {get;private set;}public ulong Raw {get;private set;}public int Slot {get;private set;}
  public FunctionKind FunctionCode {get;private set;}public Scaling ScaleCode {get;private set;}
@@ -174,6 +228,11 @@ sealed class ClassicalRealExpression {
    if(Double.IsNaN(value) || Double.IsInfinity(value))throw new ArgumentException("Numeric constants must be finite.");
   }
   return new ClassicalRealExpression(NodeKind.TypedConstant,type) {Raw=raw};
+ }
+ public static ClassicalRealExpression ArrayElement(ClassicalNumericType type,ClassicalArraySelection selection) {
+  if(type==null || selection==null)throw new ArgumentNullException("array type or selection");
+  var result=new ClassicalRealExpression(NodeKind.ArrayElement,type);result.Selection=selection;result.Depth=1+selection.Depth;result.Count=1+selection.Count;result.References=selection.References;
+  if(result.Depth>32 || result.Count>512)throw new ArgumentException("Array expression exceeds its bounds.");return result;
  }
  public static ClassicalRealExpression Variable(ClassicalNumericType type,int slot) {
   if(type==null || slot<0 || slot>=4096)throw new ArgumentException("Invalid numeric variable.");
@@ -214,6 +273,7 @@ sealed class ClassicalRealExpression {
   return new ClassicalRealExpression(NodeKind.Binary,angle ? left.Type : Float(Math.Max(left.Type.Width,right.Type.Width)),null,left,right) {Operation=operation};
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+  if(Selection!=null && !Type.Same(Selection.Validate(bits,variables).Numeric))throw new ArgumentException("Array read type differs from declaration.");
   if(bits<0 || bits>64 || (bits<64 && References>>bits!=0))throw new ArgumentException("Numeric expression reads outside the classical register.");
   if(Kind==NodeKind.Variable) {
    var declarations=variables as RuntimeDeclarations;
@@ -224,6 +284,7 @@ sealed class ClassicalRealExpression {
  }
  internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
+  if(Selection!=null){Type.Write(number);Selection.Write(number);return;}
   if(Kind==NodeKind.Constant)number(Raw);
   else if(Kind==NodeKind.TypedConstant){Type.Write(number);number(Raw);}
   else if(Kind==NodeKind.Variable){Type.Write(number);number((ulong)Slot);}
@@ -237,8 +298,9 @@ sealed class ClassicalRealExpression {
  }
 }
 sealed class ClassicalIntegerExpression {
- public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9 }
+ public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9, ArrayElement=10 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
+ public ClassicalArraySelection Selection {get;private set;}
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public int Slot {get;private set;}
  public ClassicalIntegerType Type {get;private set;}public ulong Value {get;private set;}
@@ -293,6 +355,11 @@ sealed class ClassicalIntegerExpression {
   if(bits.Length!=type.Width)throw new ArgumentException("Integer read width must match its type.");
   return new ClassicalIntegerExpression(NodeKind.Read,type,0,bits,0,null,null);
  }
+ public static ClassicalIntegerExpression ArrayElement(ClassicalIntegerType type,ClassicalArraySelection selection) {
+  if(type==null || selection==null)throw new ArgumentNullException("array type or selection");
+  var result=new ClassicalIntegerExpression(NodeKind.ArrayElement,type,0,null,0,null,null);result.Selection=selection;result.Depth=1+selection.Depth;result.Count=1+selection.Count;result.References=selection.References;
+  if(result.Depth>32 || result.Count>512)throw new ArgumentException("Array expression exceeds its bounds.");return result;
+ }
  public static ClassicalIntegerExpression Variable(ClassicalIntegerType type,int slot) {
   if(slot<0 || slot>=4096)throw new ArgumentException("Variable slots must be 0-4095.");
   return new ClassicalIntegerExpression(NodeKind.Variable,type,0,null,0,null,null) {Slot=slot};
@@ -303,6 +370,7 @@ sealed class ClassicalIntegerExpression {
   return new ClassicalIntegerExpression(NodeKind.BitExpression,type,0,null,0,null,null,operand);
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+  if(Selection!=null && !Type.Same(Selection.Validate(bits,variables).Integer))throw new ArgumentException("Array read type differs from declaration.");
   if(bits<0 || bits>64 || (bits<64 && (References>>bits)!=0))throw new ArgumentException("Integer expression reads outside the classical register.");
   if(Kind==NodeKind.Variable) {
    if(variables==null || Slot>=variables.Count || variables[Slot]==null || variables[Slot].Signedness!=Type.Signedness || variables[Slot].DeclaredWidth!=Type.DeclaredWidth)
@@ -323,6 +391,7 @@ sealed class ClassicalIntegerExpression {
  }
  internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
+  if(Selection!=null){Type.Write(number);Selection.Write(number);return;}
   if(NumericLeft!=null){if(Kind==NodeKind.NumericCast)Type.Write(number);NumericLeft.WriteNode(number);if(NumericRight!=null)NumericRight.WriteNode(number);return;}
   if(Kind==NodeKind.Binary){number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);return;}
   Type.Write(number);

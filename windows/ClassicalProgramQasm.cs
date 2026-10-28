@@ -24,7 +24,7 @@ sealed class ClassicalProgramQasm {
   return (value.Signedness==ClassicalIntegerType.Sign.Signed ? "int[" : "uint[")+Number(value.Width)+"]";
  }
  ClassicalProgramQasm(ClassicalCircuit value) {
-  circuit=value;variables=value.VariableTypes??new ClassicalIntegerType[0];numericTypes=value.NumericTypes??new ClassicalNumericType[0];declarations=new RuntimeDeclarations(variables,numericTypes);
+  circuit=value;variables=value.VariableTypes??new ClassicalIntegerType[0];numericTypes=value.NumericTypes??new ClassicalNumericType[0];declarations=value.Declarations;
   storage=new ClassicalQasmStorage(value.ClassicalBits,value.OutputBits);
   expressions=new ClassicalExpressionQasm(value.ClassicalBits,declarations,storage);
   if(storage.BitCount>0 && variables.Length+numericTypes.Length>=4096)
@@ -43,6 +43,10 @@ sealed class ClassicalProgramQasm {
   }
   var prefix=new StringBuilder("OPENQASM 3.0;\ninclude \"stdgates.inc\";\n");
   if(circuit.Qubits>0)prefix.Append("qubit["+Number(circuit.Qubits)+"] q;\nreset q;\n");
+  for(int k=0;k<declarations.Arrays.Count;++k) {
+   var array=declarations.Arrays[k];var dimensions=new List<string>();foreach(int size in array.Dimensions)dimensions.Add(Number(size));
+   prefix.Append("array["+(array.Numeric==null ? Type(array.Integer) : ClassicalExpressionQasm.NumericTypeName(array.Numeric))+", "+String.Join(", ",dimensions)+"] a"+Number(k)+";\n");
+  }
   var body=new StringBuilder();
   // QuantumStudio starts bits at zero. OpenQASM declarations alone do not
   // promise that value. Integer variables deliberately remain undefined.
@@ -133,9 +137,17 @@ sealed class ClassicalProgramQasm {
   }
  }
  void Statements(StringBuilder text,IList<NumericalSampling.Gate> gates) {
-  foreach(int slot in scopes.Declarations(gates))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
-  foreach(int slot in numericScopes.Declarations(gates))text.Append(ClassicalExpressionQasm.NumericTypeName(numericTypes[slot])+" n"+Number(slot)+";\n");
+  foreach(int slot in scopes.Declarations(gates))if(expressions.Slot(slot,false)=="v"+Number(slot))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
+  foreach(int slot in numericScopes.Declarations(gates))if(expressions.Slot(slot,true)=="n"+Number(slot))text.Append(ClassicalExpressionQasm.NumericTypeName(numericTypes[slot])+" n"+Number(slot)+";\n");
   foreach(var gate in gates) {
+   if(gate.ArrayTarget!=null) {
+    var array=declarations.Arrays[gate.ArrayTarget.Array];string type=array.Numeric==null ? Type(array.Integer) : ClassicalExpressionQasm.NumericTypeName(array.Numeric);
+    text.Append(expressions.ArrayElement(gate.ArrayTarget)+" = "+type+"("+(array.Numeric==null ? expressions.Integer(gate.IntegerExpression) : expressions.Real(gate.NumericExpression))+");\n");continue;
+   }
+   if(gate.VariableSlot.HasValue) {
+    bool numeric=gate.Kind==NumericalSampling.Operation.ClearNumeric;int slot=gate.VariableSlot.Value;
+    if((gate.Kind==NumericalSampling.Operation.ClearInteger || numeric || gate.Kind==NumericalSampling.Operation.ForRange) && expressions.Slot(slot,numeric)!=(numeric ? "n" : "v")+Number(slot))throw new InvalidDataException("Array backing storage cannot be a cleared local or range binding during export.");
+   }
    switch(gate.Kind) {
     case NumericalSampling.Operation.Gate:Gate(text,gate);break;
     case NumericalSampling.Operation.ParameterGate:ParameterGate(text,gate);break;
@@ -155,11 +167,11 @@ sealed class ClassicalProgramQasm {
      text.Append(storage.Assign(gate.Wires,gate.ClassicalExpression,declarations));break;
     case NumericalSampling.Operation.StoreNumeric:
      int numericSlot=gate.VariableSlot.Value;
-     text.Append("n"+Number(numericSlot)+" = "+ClassicalExpressionQasm.NumericTypeName(numericTypes[numericSlot])+"("+expressions.Real(gate.NumericExpression)+");\n");break;
+     text.Append(expressions.Slot(numericSlot,true)+" = "+ClassicalExpressionQasm.NumericTypeName(numericTypes[numericSlot])+"("+expressions.Real(gate.NumericExpression)+");\n");break;
     case NumericalSampling.Operation.ClearNumeric:break; // Proven lexical exit.
     case NumericalSampling.Operation.StoreInteger:
      int slot=gate.VariableSlot.Value;
-     text.Append("v"+Number(slot)+" = "+Type(variables[slot])+"("+expressions.Integer(gate.IntegerExpression)+");\n");break;
+     text.Append(expressions.Slot(slot,false)+" = "+Type(variables[slot])+"("+expressions.Integer(gate.IntegerExpression)+");\n");break;
     case NumericalSampling.Operation.While:
      if(circuit.LoopConditionBudget!=1000000)
       throw new InvalidDataException("OpenQASM export requires the standard 1000000-condition loop budget.");

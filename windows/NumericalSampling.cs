@@ -72,7 +72,7 @@ static class NumericalSampling {
    }
   }
  }
- public sealed class Gate {public WireSelection SelectedWires;public ClassicalRealExpression NumericExpression;public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
+ public sealed class Gate {public ClassicalArraySelection ArrayTarget;public WireSelection SelectedWires;public ClassicalRealExpression NumericExpression;public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  static bool UsesNumeric(IList<Gate> gates,int depth=0) {
   if(gates==null)return false;
   if(depth>32)throw new ArgumentException("Circuit nesting exceeds 32 levels.");
@@ -99,13 +99,13 @@ static class NumericalSampling {
   return Serialize(qubits,shots,seed,measured,gates,readout,null);
  }
  // Explicit classical outputs preserve saved records: no final measurements are added.
- public static byte[] RequestClassical(int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null) {
-  return Serialize(qubits,shots,seed,outputBits,gates,null,classicalBits,false,variableTypes,loopBudget,numericTypes);
+ public static byte[] RequestClassical(int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null,IList<ClassicalArrayAllocation> arrays=null) {
+  return Serialize(qubits,shots,seed,outputBits,gates,null,classicalBits,false,variableTypes,loopBudget,numericTypes,arrays);
  }
- internal static byte[] RequestExact(int qubits,int classicalBits,int[] outputBits,IList<Gate> gates,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null) {
-  return Serialize(qubits,1,0,outputBits,gates,null,classicalBits,true,variableTypes,loopBudget,numericTypes);
+ internal static byte[] RequestExact(int qubits,int classicalBits,int[] outputBits,IList<Gate> gates,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null,IList<ClassicalArrayAllocation> arrays=null) {
+  return Serialize(qubits,1,0,outputBits,gates,null,classicalBits,true,variableTypes,loopBudget,numericTypes,arrays);
  }
- static byte[] Serialize(int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,IList<Readout> readout,int? classicalBits,bool exact=false,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null) {
+ static byte[] Serialize(int qubits,int shots,ulong seed,int[] measured,IList<Gate> gates,IList<Readout> readout,int? classicalBits,bool exact=false,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null,IList<ClassicalArrayAllocation> arrays=null) {
   if(exact && qubits>10)throw new ArgumentException("Exact circuits support at most 10 qubits.");
   int maxSteps=exact ? 512 : 4096;
   if(loopBudget.HasValue && (!classicalBits.HasValue || loopBudget.Value<0 || loopBudget.Value>1000000))throw new ArgumentException("Loop budget requires explicit classical outputs and 0–1,000,000 condition evaluations.");
@@ -116,10 +116,11 @@ static class NumericalSampling {
    foreach(var type in variables)if(type==null)throw new ArgumentException("Variable declarations require integer types.");
   }
   bool wireProtocol=false;
-  bool numericProtocol=numericTypes!=null || UsesNumeric(gates);
+  bool arrayProtocol=arrays!=null;
+  bool numericProtocol=arrayProtocol || numericTypes!=null || UsesNumeric(gates);
   if(numericProtocol) {
    if(!classicalBits.HasValue)throw new ArgumentException("Numeric expressions require explicit classical outputs.");
-   variables=new RuntimeDeclarations(variables ?? new ClassicalIntegerType[0],numericTypes ?? new ClassicalNumericType[0]);
+   variables=new RuntimeDeclarations(variables ?? new ClassicalIntegerType[0],numericTypes ?? new ClassicalNumericType[0],arrays);
   }
   if(classicalBits.HasValue && (classicalBits.Value<0 || classicalBits.Value>64))throw new ArgumentException("Use 0–64 classical bits.");
   int bits=classicalBits ?? qubits;
@@ -135,6 +136,7 @@ static class NumericalSampling {
    var declarations=(RuntimeDeclarations)variables;number((ulong)declarations.Numeric.Count);
    foreach(var type in declarations.Numeric)type.Write(number);
   }
+  if(arrayProtocol){var declarations=(RuntimeDeclarations)variables;number((ulong)declarations.Arrays.Count);foreach(var array in declarations.Arrays)array.Write(number);}
   int budgetPosition=text.Length;
   Action<int[],int,int> wires=delegate(int[] values,int maximum,int registerSize) {
    if(values==null || values.Length>maximum)throw new ArgumentException("Invalid sampling wire list.");
@@ -162,6 +164,7 @@ static class NumericalSampling {
   write=delegate(Gate gate,int depth,int loopDepth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
+   if(gate.ArrayTarget!=null && gate.Kind!=Operation.StoreInteger && gate.Kind!=Operation.StoreNumeric)throw new ArgumentException("Only stores accept array targets.");
    if(gate.SelectedWires!=null) {
     if(!classicalBits.HasValue || depth>=32 || ++total>maxSteps)throw new ArgumentException("Runtime wires require explicit outputs and available nesting/step budget.");
     if(gate.Kind!=Operation.Gate && gate.Kind!=Operation.Channel && gate.Kind!=Operation.Measure && gate.Kind!=Operation.Reset && gate.Kind!=Operation.Rotation && gate.Kind!=Operation.ParameterGate)throw new ArgumentException("Only quantum operations accept runtime wire targets; use a surrounding branch for conditions.");
@@ -211,6 +214,19 @@ static class NumericalSampling {
     if((gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)
      throw new ArgumentException("Control transfers have no expression, targets or condition fields.");
     terminationProtocol|=end;loopProtocol=true;transferProtocol=true;number((ulong)gate.Kind);return;
+   }
+   if(gate.ArrayTarget!=null) {
+    if(!arrayProtocol || gate.VariableSlot.HasValue || (gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Invalid array store fields.");
+    var allocation=gate.ArrayTarget.Validate(bits,variables);
+    if(numeric) {
+     if(allocation.Numeric==null || gate.NumericExpression==null)throw new ArgumentException("Numeric array store needs a numeric array and value.");
+     if(gate.NumericExpression.Type.Kind==ClassicalNumericType.NumericKind.Angle && allocation.Numeric.Kind!=ClassicalNumericType.NumericKind.Angle)throw new ArgumentException("Angles cannot be stored in floats.");
+     gate.NumericExpression.Validate(bits,variables);number(22);gate.ArrayTarget.Write(number);gate.NumericExpression.WriteNode(number);
+    } else {
+     if(allocation.Integer==null || gate.IntegerExpression==null)throw new ArgumentException("Integer array store needs an integer array and value.");
+     gate.IntegerExpression.Validate(bits,variables);number(21);gate.ArrayTarget.Write(number);gate.IntegerExpression.WriteNode(number);
+    }
+    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");return;
    }
    if(numeric) {
     var declarations=variables as RuntimeDeclarations;
@@ -298,7 +314,7 @@ static class NumericalSampling {
    string budget=(loopBudget ?? 1000000).ToString(CultureInfo.InvariantCulture)+"\n";
    if(variables==null)text.Insert(declarationPosition,"0\n"+budget);
    else text.Insert(budgetPosition,budget);
-   text.Remove(0,exact ? 8 : 9).Insert(0,wireProtocol ? (exact ? "QEXACT13\n" : "QSAMPLE14\n") : numericProtocol ? (exact ? "QEXACT12\n" : "QSAMPLE13\n") : parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
+   text.Remove(0,exact ? 8 : 9).Insert(0,arrayProtocol ? (exact ? "QEXACT14\n" : "QSAMPLE15\n") : wireProtocol ? (exact ? "QEXACT13\n" : "QSAMPLE14\n") : numericProtocol ? (exact ? "QEXACT12\n" : "QSAMPLE13\n") : parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
   }
   else if(bitExpressionProtocol) {
    if(variables==null)text.Insert(declarationPosition,"0\n");
@@ -341,8 +357,8 @@ static class NumericalSampling {
   int[] order=(int[])measured.Clone();
   return RunSerialized(worker,qubits,shots,seed,order,request,cancellation,dynamic ? (int?)qubits : null);
  }
- public static Task<Result> RunClassical(string worker,int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates,CancellationToken cancellation,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null) {
-  byte[] request=RequestClassical(qubits,classicalBits,shots,seed,outputBits,gates,variableTypes,loopBudget,numericTypes);
+ public static Task<Result> RunClassical(string worker,int qubits,int classicalBits,int shots,ulong seed,int[] outputBits,IList<Gate> gates,CancellationToken cancellation,IList<ClassicalIntegerType> variableTypes=null,int? loopBudget=null,IList<ClassicalNumericType> numericTypes=null,IList<ClassicalArrayAllocation> arrays=null) {
+  byte[] request=RequestClassical(qubits,classicalBits,shots,seed,outputBits,gates,variableTypes,loopBudget,numericTypes,arrays);
   return RunSerialized(worker,qubits,shots,seed,(int[])outputBits.Clone(),request,cancellation,classicalBits);
  }
  static Task<Result> RunSerialized(string worker,int qubits,int shots,ulong seed,int[] order,byte[] request,CancellationToken cancellation,int? classicalBits) {

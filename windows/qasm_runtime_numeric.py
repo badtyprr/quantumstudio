@@ -3,11 +3,13 @@ import math
 import struct
 from dataclasses import fields, is_dataclass
 import openqasm3.ast as ast
+from qasm_runtime_arrays import selection as array_selection
 
 NUMERIC_TYPES=(ast.FloatType,ast.AngleType)
 FUNCTIONS={'sin':'Sin','cos':'Cos','tan':'Tan','arcsin':'Arcsin','arccos':'Arccos',
            'arctan':'Arctan','exp':'Exp','log':'Log','sqrt':'Sqrt','floor':'Floor','ceiling':'Ceiling','mod':'Mod'}
 def contains_numeric(value,variables):
+    if hasattr(value,"_quantum_array"):return value._quantum_array["kind"] in ("Float","Angle")
     if isinstance(value,ast.Identifier):return value.name in variables
     if isinstance(value,ast.FloatLiteral):return True
     if isinstance(value,ast.Cast) and isinstance(value.type,NUMERIC_TYPES):return True
@@ -47,6 +49,10 @@ def lower_numeric(value,variables,integer,bit,mode='Real',expected_width=None,ta
     def parse(node,depth=0):
         if depth>=32:raise ValueError('Numeric expressions exceed 32 levels.')
         child=lambda x:parse(x,depth+1)
+        if hasattr(node,'_quantum_array') and node._quantum_array['kind'] in ('Float','Angle'):
+            info=node._quantum_array
+            return dict(Kind='ArrayElement',NumericKind=info['kind'],Width=info['width'],Selection=array_selection(node,integer)),info['kind'],info['width']
+
         if isinstance(node,ast.Identifier) and node.name in variables:
             slot,kind,width=variables[node.name]
             return {'Kind':'Variable','NumericKind':kind,'Width':width,'Slot':slot},kind,width
