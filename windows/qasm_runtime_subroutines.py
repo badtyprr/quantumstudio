@@ -330,17 +330,22 @@ def lower_runtime_subroutines(program):
         return ast.ClassicalAssignment(lvalue=declaration.identifier, op=ast.AssignmentOperator['='], rvalue=initial)
 
     def runtime_call(call, active):
-        definition = functions[call.name.name]
-        if active or any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(call.arguments)):
+        if active:
             return True
-        if any(isinstance(n, ast.FunctionCall) and n.name.name in functions and runtime_call(n, active)
-               for n in walk(call.arguments)):
-            return True
-        if definition.return_type is not None:
-            return any(isinstance(a, ast.QuantumArgument) for a in definition.arguments)
-        # An explicit void return needs structured exit lowering even when the
-        # signature contains no classical arguments (or no arguments at all).
-        return any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body))
+        # walk already visits descendants: recursive classification here would
+        # repeatedly traverse overlapping argument trees (exponential work).
+        for node in walk(call):
+            if isinstance(node, ast.Identifier) and node.name in runtime:
+                return True
+            if isinstance(node, ast.FunctionCall) and node.name.name in functions:
+                definition = functions[node.name.name]
+                if definition.return_type is not None:
+                    if any(isinstance(a, ast.QuantumArgument) for a in definition.arguments):
+                        return True
+                elif any(isinstance(n, ast.ReturnStatement) for n in walk(definition.body)):
+                    # Explicit void returns need structured exit lowering.
+                    return True
+        return False
 
     def specialize_loop(node, env, active, depth):
         """Expand literal ranges needed by quantum call indices before binding.

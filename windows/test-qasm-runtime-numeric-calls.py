@@ -80,4 +80,9 @@ source=header+'def g(float x)->float{float z;return z;}def f(float a,float b)->f
 original=adapt(compile(source));roundtrip=adapt(compile(original['source']))
 for exact in (True,False):
     for encoded in (original,roundtrip):execute(encoded,exact,error='must be finite')
+# Static nested calls must not trigger exponential runtime classification.
+nested='OPENQASM 3;def f(float x)->float{return x;}float y='+('f('*24)+'1.0'+(')'*24)+';'
+probe='import sys,openqasm3;from qasm_runtime_subroutines import lower_runtime_subroutines;lower_runtime_subroutines(openqasm3.parse(sys.stdin.read()))'
+result=subprocess.run([sys.executable,'-c',probe],input=nested.encode(),capture_output=True,cwd=root,timeout=10)
+assert result.returncode==0,result.stderr;checks+=1
 print(f'PASS: {checks} runtime numeric subroutine checks.')
