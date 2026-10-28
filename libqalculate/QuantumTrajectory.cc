@@ -19,7 +19,8 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
 std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned classicalBits,
  unsigned shots,std::uint64_t seed,const std::vector<unsigned> &outputBits,
  const std::vector<TrajectoryStep> &steps,const std::vector<QuantumClassical::IntegerType> &variableTypes,
- std::size_t byteBudget,const Cancellation &cancelled,std::size_t maxLoopConditions,const std::vector<QuantumClassical::NumericType> &numericTypes) {
+ std::size_t byteBudget,const Cancellation &cancelled,std::size_t maxLoopConditions,const std::vector<QuantumClassical::NumericType> &numericTypes,
+ const std::vector<QuantumClassical::ArrayDeclaration> &arrays) {
  if(qubits>25 || classicalBits>64 || shots>1000000 || steps.size()>4096)
   throw std::length_error("Trajectory sampling supports 25 qubits, 64 classical bits, 1000000 shots and 4096 steps");
  if((std::size_t(1)<<qubits)>byteBudget/sizeof(Complex))throw std::length_error("Trajectory state exceeds its memory budget");
@@ -34,7 +35,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
  const std::uint64_t allowed=classicalBits==64 ? ~std::uint64_t(0) : (std::uint64_t(1)<<classicalBits)-1;
  // Validate all operations, including conditional gates whose branch might
  // never run. A tiny state checks local matrices without allocating 2^n here.
- const QuantumClassical::IntegerStorage declarations(variableTypes,numericTypes);
+ const QuantumClassical::IntegerStorage declarations(variableTypes,numericTypes,arrays);
  unsigned totalSteps=0;
  std::function<void(const std::vector<TrajectoryStep>&,unsigned,unsigned)> validate;
  validate=[&](const std::vector<TrajectoryStep> &block,unsigned depth,unsigned loopDepth) {
@@ -47,12 +48,14 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    continue;
   }
   if(step.kind==TrajectoryStep::Kind::StoreInteger || step.kind==TrajectoryStep::Kind::ClearInteger) {
-   declarations.type(step.variableSlot); // Bounds-check targets even in untaken bodies.
+   if(step.arraySelection) {step.arraySelection->validate(classicalBits,declarations);declarations.array(step.arraySelection->array()).integerType();}
+   else declarations.type(step.variableSlot); // Bounds-check targets even in untaken bodies.
    if(step.integerExpression)step.integerExpression->validate(classicalBits,declarations);
    continue;
   }
   if(step.kind==TrajectoryStep::Kind::StoreNumeric || step.kind==TrajectoryStep::Kind::ClearNumeric) {
-   const auto target=declarations.numeric().type(step.variableSlot);
+   if(step.arraySelection)step.arraySelection->validate(classicalBits,declarations);
+   const auto target=step.arraySelection ? declarations.array(step.arraySelection->array()).numericType() : declarations.numeric().type(step.variableSlot);
    if(step.numericExpression) {
     step.numericExpression->validate(classicalBits,declarations);
     if(step.numericExpression->type().kind()==QuantumClassical::NumericType::Kind::Angle && target.kind()!=QuantumClassical::NumericType::Kind::Angle)throw std::invalid_argument("Angles cannot be stored in float variables");
@@ -156,9 +159,15 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
     continue;
    }
    const auto wires=step.wireSelection ? step.wireSelection->evaluate(bits,classicalBits,variables) : step.wires;
-   if(step.kind==TrajectoryStep::Kind::StoreInteger)variables.write(step.variableSlot,step.integerExpression->evaluate(bits,classicalBits,variables));
+   if(step.kind==TrajectoryStep::Kind::StoreInteger) {
+    const auto slot=step.arraySelection ? step.arraySelection->evaluate(bits,classicalBits,variables) : step.variableSlot;
+    variables.write(slot,step.integerExpression->evaluate(bits,classicalBits,variables));
+   }
    else if(step.kind==TrajectoryStep::Kind::ClearInteger)variables.clear(step.variableSlot);
-   else if(step.kind==TrajectoryStep::Kind::StoreNumeric)variables.numeric().write(step.variableSlot,step.numericExpression->evaluateTyped(bits,classicalBits,variables));
+   else if(step.kind==TrajectoryStep::Kind::StoreNumeric) {
+    const auto slot=step.arraySelection ? step.arraySelection->evaluate(bits,classicalBits,variables) : step.variableSlot;
+    variables.numeric().write(slot,step.numericExpression->evaluateTyped(bits,classicalBits,variables));
+   }
    else if(step.kind==TrajectoryStep::Kind::ClearNumeric)variables.numeric().clear(step.variableSlot);
    else if(step.kind==TrajectoryStep::Kind::Assign)bits=QuantumClassical::assign(bits,classicalBits,wires,*step.expression,variables);
    else if(step.kind==TrajectoryStep::Kind::Gate)state.apply(step.matrix,wires,cancelled);

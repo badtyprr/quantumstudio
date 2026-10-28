@@ -20,22 +20,29 @@ void checkOperation(Integer::Operation operation) {
 }
 }
 struct IntegerExpression::Node {
- enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression, NumericCast, AngleRatio, AngleBits, NumericCompare };
+ enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression, NumericCast, AngleRatio, AngleBits, NumericCompare, ArrayElement };
  Kind kind;IntegerType type;Integer::Operation operation=Integer::Operation::Add;
  std::uint64_t value=0,references=0;unsigned depth=1,count=1;
  std::vector<unsigned> indices;std::shared_ptr<const Node> left,right;
  std::size_t slot=0;
  std::shared_ptr<const Bits> bits;
  std::shared_ptr<const RealExpression> numericLeft,numericRight;
+ std::shared_ptr<const ArraySelection> selection;
  Node(Kind kind,IntegerType type):kind(kind),type(type) {}
  void bound() {
   depth=1+std::max(left ? left->depth : 0,right ? right->depth : 0);
   count=1+(left ? left->count : 0)+(right ? right->count : 0);
   references=(left ? left->references : 0)|(right ? right->references : 0);
   for(const auto &numeric:{numericLeft,numericRight})if(numeric){depth=std::max(depth,1+numeric->depth());count+=numeric->count();references|=numeric->references();}
+  if(selection){depth=std::max(depth,1+selection->depth());count+=selection->count();references|=selection->references();}
   if(depth>32 || count>512)throw std::length_error("Integer expression exceeds 32 levels or 512 expanded nodes");
  }
  void validateVariables(const IntegerStorage *storage) const {
+  if(selection) {
+   if(!storage)throw std::invalid_argument("Array read requires runtime storage");
+   selection->validate(64,*storage);
+   if(storage->array(selection->array()).integerType()!=type)throw std::invalid_argument("Integer array read type does not match its declaration");
+  }
   for(const auto &numeric:{numericLeft,numericRight})if(numeric){const IntegerStorage empty({});numeric->validate(64,storage ? *storage : empty);}
   if(bits) {
    if(storage)bits->validate(64,*storage);else bits->validate(64);
@@ -48,6 +55,10 @@ struct IntegerExpression::Node {
   if(right)right->validateVariables(storage);
  }
  TypedInteger evaluate(std::uint64_t record,const IntegerStorage *storage) const {
+  if(selection) {
+   if(!storage)throw std::invalid_argument("Array read requires runtime storage");
+   return storage->read(selection->evaluate(record,64,*storage));
+  }
   if(numericLeft) {
    const IntegerStorage empty({});const auto &context=storage ? *storage : empty;
    const auto a=numericLeft->evaluateTyped(record,64,context);
@@ -98,6 +109,9 @@ IntegerExpression IntegerExpression::fromBits(IntegerType type,const Bits &opera
 }
 IntegerExpression IntegerExpression::variable(IntegerType type,std::size_t index) {
  auto n=std::make_shared<Node>(Node::Kind::Variable,type);n->slot=index;return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::arrayElement(IntegerType type,const ArraySelection &selection) {
+ auto n=std::make_shared<Node>(Node::Kind::ArrayElement,type);n->selection=std::make_shared<const ArraySelection>(selection);n->bound();return IntegerExpression(n);
 }
 IntegerExpression IntegerExpression::binary(Integer::Operation operation,const IntegerExpression &left,const IntegerExpression &right) {
  checkOperation(operation);

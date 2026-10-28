@@ -10,28 +10,35 @@ void bounds(unsigned depth,unsigned count){if(depth>32 || count>512)throw std::l
 bool angle(NumericType type){return type.kind()==NumericType::Kind::Angle;}
 }
 struct RealExpression::Node {
- enum class Kind { Constant, Integer, Binary, Variable, Cast, Bits, Function, Scale };
+ enum class Kind { Constant, Integer, Binary, Variable, Cast, Bits, Function, Scale, ArrayElement };
  Kind kind;NumericType type;std::uint64_t value=0,references=0;std::size_t slot=0;
  Operation operation=Operation::Add;NumericValue::Function function=NumericValue::Function::Negate;NumericValue::Scaling scaling=NumericValue::Scaling::Multiply;
  unsigned depth=1,count=1;
  std::shared_ptr<const IntegerExpression> integer;
  std::shared_ptr<const QuantumClassical::Bits> bits;
  std::shared_ptr<const Node> left,right;
+ std::shared_ptr<const ArraySelection> selection;
  Node(Kind kind,NumericType type):kind(kind),type(type) {}
  void bound() {
   depth=1+std::max(left ? left->depth : 0,right ? right->depth : 0);count=1+(left ? left->count : 0)+(right ? right->count : 0);
   references=(left ? left->references : 0)|(right ? right->references : 0);
   if(integer){depth=std::max(depth,1+integer->depth());count+=integer->count();references|=integer->references();}
   if(bits){depth=std::max(depth,1+bits->depth());count+=bits->count();references|=bits->references();}
+  if(selection){depth=std::max(depth,1+selection->depth());count+=selection->count();references|=selection->references();}
   bounds(depth,count);
  }
  void validate(unsigned registerBits,const IntegerStorage &storage) const {
+  if(selection) {
+   selection->validate(registerBits,storage);
+   if(storage.array(selection->array()).numericType()!=type)throw std::invalid_argument("Numeric array read type does not match its declaration");
+  }
   if(integer)integer->validate(registerBits,storage);
   if(bits)bits->validate(registerBits,storage);
   if(kind==Kind::Variable && storage.numeric().type(slot)!=type)throw std::invalid_argument("Numeric variable type does not match its declaration");
   if(left)left->validate(registerBits,storage);if(right)right->validate(registerBits,storage);
  }
  NumericValue evaluate(std::uint64_t record,unsigned registerBits,const IntegerStorage &storage) const {
+  if(selection)return storage.numeric().read(selection->evaluate(record,registerBits,storage));
   if(kind==Kind::Constant)return NumericValue::fromBits(type,value);
   if(kind==Kind::Variable)return storage.numeric().read(slot);
   if(kind==Kind::Integer)return NumericValue::fromInteger(integer->evaluate(record,registerBits,storage),type.width());
@@ -49,6 +56,9 @@ RealExpression RealExpression::fromInteger(const IntegerExpression &value,unsign
  auto n=std::make_shared<Node>(Node::Kind::Integer,NumericType::floating(width));n->integer=std::make_shared<const IntegerExpression>(value);n->bound();return RealExpression(n);
 }
 RealExpression RealExpression::variable(NumericType type,std::size_t slot){auto n=std::make_shared<Node>(Node::Kind::Variable,type);n->slot=slot;return RealExpression(n);}
+RealExpression RealExpression::arrayElement(NumericType type,const ArraySelection &selection) {
+ auto n=std::make_shared<Node>(Node::Kind::ArrayElement,type);n->selection=std::make_shared<const ArraySelection>(selection);n->bound();return RealExpression(n);
+}
 RealExpression RealExpression::cast(NumericType type,const RealExpression &value) {
  if(angle(value.type()) && !angle(type))throw std::invalid_argument("Angles cannot be cast to float");
  auto n=std::make_shared<Node>(Node::Kind::Cast,type);n->left=value.node_;n->bound();return RealExpression(n);
