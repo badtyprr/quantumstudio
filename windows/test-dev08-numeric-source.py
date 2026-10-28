@@ -41,6 +41,20 @@ for fixture in manifest['fixtures']:
  model=compiler.convert(source,classical=True);payload=bridge(model);checks+=1
  if a.frozen:assert process([a.frozen.resolve(),'--classical'],source.encode())==model;checks+=1
  restored=compiler.convert(payload['source'],classical=True);checks+=1
+ run(payload,{'':1});run(bridge(restored),{'':1})
+ if name=='test_function_call_with_return':
+  # Independently assert the declared public result, then observe its raw
+  # binary32 value on a copy. The unchanged source has no terminal observer.
+  matches=[(slot,var) for slot,var in enumerate(model['NumericVariables']) if var['Name']=='r']
+  assert len(matches)==1 and matches[0][1]==dict(Name='r',NumericKind='Float',Width=32),matches
+  slot,_=matches[0];observed=copy.deepcopy(model)
+  comparison=dict(Kind='NumericCompare',RealLeft=dict(Kind='Variable',Slot=slot,NumericKind='Float',Width=32),
+                  RealRight=dict(Kind='TypedConstant',NumericKind='Float',Width=32,ValueBits=str(struct.unpack('>I',struct.pack('>f',3.14))[0])))
+  test=dict(Kind='IntegerCompare',Operator='Equal',Left=comparison,Right=dict(Kind='IntegerConstant',Signedness='Signed',Width=0,Value='0'))
+  offset=sum(register['Size'] for register in observed['Registers'])
+  observed['Registers'].append(dict(Name='audit_return',Size=1));observed['OutputBits']=[offset]
+  observed['Steps'].append(dict(Kind='Assign',Wires=[offset],ClassicalValue=test))
+  witness=bridge(observed);run(witness,{'1':1});run(bridge(compiler.convert(witness['source'],classical=True)),{'1':1});checks+=1
  # Originals have no outputs. Append an independently derived inverse to
  # copies, then measure zero. This witnesses the zero-input pure state up to
  # global phase, not the full operator or an unused classical return value.

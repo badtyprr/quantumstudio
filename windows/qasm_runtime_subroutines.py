@@ -174,7 +174,7 @@ def lower_runtime_subroutines(program):
             raise error_at(actual, 'Quantum-register argument width does not match its parameter.')
         return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
 
-    def activate(call, depth):
+    def activate(call, depth, active=False):
         nonlocal calls, expanded
         if activations and visibility[call.name.name] > activations[-1]:
             raise error_at(call, 'A subroutine can only call previously declared routines or itself.')
@@ -205,6 +205,10 @@ def lower_runtime_subroutines(program):
         bindings = dict(constant_bindings)
         parameters = set(); declarations = []; qubits = set()
         for formal, actual in zip(definition.arguments, call.arguments):
+            # Capture each actual before evaluating the next actual's calls.
+            # Hoisting all nested effects first changes error/measurement order.
+            effects, actual = expression_calls(actual, active, depth)
+            declarations.extend(effects)
             name = formal.name.name
             if name in parameters:
                 raise error_at(formal, 'Duplicate subroutine parameter: ' + name)
@@ -329,6 +333,9 @@ def lower_runtime_subroutines(program):
         definition = functions[call.name.name]
         if active or any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(call.arguments)):
             return True
+        if any(isinstance(n, ast.FunctionCall) and n.name.name in functions and runtime_call(n, active)
+               for n in walk(call.arguments)):
+            return True
         if definition.return_type is not None:
             return any(isinstance(a, ast.QuantumArgument) for a in definition.arguments)
         # An explicit void return needs structured exit lowering even when the
@@ -442,6 +449,11 @@ def lower_runtime_subroutines(program):
             return prefix, result
         if not isinstance(value, (ast.Expression, ast.RangeDefinition, ast.DiscreteSet)):
             return prefix, value
+        if isinstance(value, ast.FunctionCall) and value.name.name in functions and runtime_call(value, active):
+            effects, replacement = activate(value, depth, active)
+            if replacement is None:
+                raise error_at(value, 'A void subroutine cannot be used as a value.')
+            return effects, replacement
         if isinstance(value, ast.BinaryExpression) and value.op.name in ('&&', '||'):
             left_effects, left = expression_calls(value.lhs, active, depth)
             right_effects, right = expression_calls(value.rhs, active, depth)
@@ -466,12 +478,6 @@ def lower_runtime_subroutines(program):
                 continue
             effects, rewritten = expression_calls(getattr(value, field.name), active, depth)
             prefix.extend(effects); setattr(result, field.name, rewritten)
-        if isinstance(result, ast.FunctionCall) and result.name.name in functions:
-            if runtime_call(result, active):
-                effects, replacement = activate(result, depth)
-                if replacement is None:
-                    raise error_at(value, 'A void subroutine cannot be used as a value.')
-                return prefix + effects, replacement
         return prefix, result
 
     def block(body, parent, active=False, depth=0, declared=None, classical_names=()):
@@ -564,10 +570,8 @@ def lower_runtime_subroutines(program):
                 value = rewrite(node, env)
             call = value.expression if isinstance(value, ast.ExpressionStatement) else None
             if isinstance(call, ast.FunctionCall) and call.name.name in functions:
-                effects, call.arguments = expression_calls(call.arguments, active, depth)
-                result.extend(effects)
                 if runtime_call(call, active):
-                    effects, _ = activate(call, depth)
+                    effects, _ = activate(call, depth, active)
                     result.extend(effects)
                     continue
             elif not isinstance(value, (ast.BranchingStatement, ast.ForInLoop, ast.WhileLoop, ast.CompoundStatement, ast.SwitchStatement)):

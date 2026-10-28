@@ -75,4 +75,9 @@ for source,message in [
     except (ValueError,NotImplementedError) as error:
         assert message.lower() in str(error).lower(),str(error);checks+=1
     else:raise AssertionError('Invalid numeric call accepted: '+source)
+# An earlier actual must be evaluated before later nested-call effects.
+source=header+'def g(float x)->float{float z;return z;}def f(float a,float b)->float{return a;}float x=-1;float v=f(sqrt(x),g(x));'
+original=adapt(compile(source));roundtrip=adapt(compile(original['source']))
+for exact in (True,False):
+    for encoded in (original,roundtrip):execute(encoded,exact,error='must be finite')
 print(f'PASS: {checks} runtime numeric subroutine checks.')
