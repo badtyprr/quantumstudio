@@ -1,0 +1,9 @@
+{
+  "name": "test_convert_qasm3_for_loop_discrete_set",
+  "path": "tests/qasm3/test_loop.py",
+  "line": 155,
+  "source": "\n        OPENQASM 3.0;\n        include \"stdgates.inc\";\n\n        qubit[4] q;\n        bit[4] c;\n\n        h q;\n        for int i in {0, 1, 2} {\n            cx q[i], q[i+1];\n        }\n        measure q->c;\n        ",
+  "sha256": "e340ca78f3d9139280b34614d20242fb4a1b2909d5c2f6528ea0319c501322f8",
+  "revision": "167cff141b270cae023137971e716d5fec68e9f0",
+  "license": "pyqasm-LICENSE.txt"
+}

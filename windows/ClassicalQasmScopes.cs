@@ -49,15 +49,42 @@ static class ClassicalQasmLifetimes {
    Find(body[i].WhenTrue,slot,intervals,numeric);Find(body[i].WhenFalse,slot,intervals,numeric);
   }
  }
- static ClassicalCircuit.Step[] Wrap(ClassicalCircuit.Step[] body,Dictionary<ClassicalCircuit.Step,ClassicalCircuit.Step> starts,Dictionary<ClassicalCircuit.Step,int> lengths) {
+ sealed class RecoveredScope {
+  public readonly HashSet<ClassicalCircuit.Step> Entries=new HashSet<ClassicalCircuit.Step>();
+  public readonly HashSet<ClassicalCircuit.Step> Exits=new HashSet<ClassicalCircuit.Step>();
+ }
+ static void Coalesce(ClassicalCircuit.Step wrapper,Dictionary<ClassicalCircuit.Step,RecoveredScope> recovered) {
+  // Only synthetic unconditional scopes may be combined. Every recovered
+  // slot has already proved that all its references lie in its own interval.
+  // Moving its undefined entry/exit within this containing lexical scope is
+  // therefore safe; never move a clear across a real branch or loop boundary.
+  var entry=new List<ClassicalCircuit.Step>();var body=new List<ClassicalCircuit.Step>();var exit=new List<ClassicalCircuit.Step>();
+  foreach(var step in wrapper.WhenTrue) {
+   RecoveredScope child;
+   if(!recovered.TryGetValue(step,out child)){body.Add(step);continue;}
+   Coalesce(step,recovered);int first=0,last=step.WhenTrue.Length;
+   while(first<last && child.Entries.Contains(step.WhenTrue[first]))entry.Add(step.WhenTrue[first++]);
+   while(last>first && child.Exits.Contains(step.WhenTrue[last-1]))last--;
+   for(int i=first;i<last;i++)body.Add(step.WhenTrue[i]);
+   for(int i=last;i<step.WhenTrue.Length;i++)exit.Add(step.WhenTrue[i]);
+   recovered[wrapper].Entries.UnionWith(child.Entries);recovered[wrapper].Exits.UnionWith(child.Exits);
+  }
+  entry.AddRange(body);entry.AddRange(exit);wrapper.WhenTrue=entry.ToArray();
+ }
+ static ClassicalCircuit.Step[] Wrap(ClassicalCircuit.Step[] body,Dictionary<ClassicalCircuit.Step,ClassicalCircuit.Step> starts,Dictionary<ClassicalCircuit.Step,int> lengths,Dictionary<ClassicalCircuit.Step,RecoveredScope> recovered) {
   if(body==null)return null;
   var result=new List<ClassicalCircuit.Step>();
   for(int i=0;i<body.Length;i++) {
    ClassicalCircuit.Step wrapper;
-   if(starts.TryGetValue(body[i],out wrapper)){result.Add(wrapper);i+=lengths[body[i]]-1;}
+   if(starts.TryGetValue(body[i],out wrapper)){
+    var scope=new RecoveredScope();scope.Entries.Add(wrapper.WhenTrue[0]);scope.Exits.Add(wrapper.WhenTrue[wrapper.WhenTrue.Length-1]);
+    recovered.Add(wrapper,scope);Coalesce(wrapper,recovered);result.Add(wrapper);i+=lengths[body[i]]-1;
+   }
    else {
-    body[i].WhenTrue=Wrap(body[i].WhenTrue,starts,lengths);
-    body[i].WhenFalse=Wrap(body[i].WhenFalse,starts,lengths);result.Add(body[i]);
+    body[i].WhenTrue=Wrap(body[i].WhenTrue,starts,lengths,recovered);
+    body[i].WhenFalse=Wrap(body[i].WhenFalse,starts,lengths,recovered);
+    if(recovered.ContainsKey(body[i]))Coalesce(body[i],recovered);
+    result.Add(body[i]);
    }
   }
   return result.ToArray();
@@ -69,6 +96,7 @@ static class ClassicalQasmLifetimes {
   var numericVariables=new List<ClassicalCircuit.NumericVariable>(document.NumericVariables??new ClassicalCircuit.NumericVariable[0]);
   int originalCount=numeric ? numericVariables.Count : variables.Count;if(originalCount==0)return circuit;
   bool changed=false;
+  var recovered=new Dictionary<ClassicalCircuit.Step,RecoveredScope>();
   for(int slot=0;slot<originalCount;slot++) {
    int total=0;bool range=false;
    foreach(var step in document.Steps) {
@@ -95,7 +123,7 @@ static class ClassicalQasmLifetimes {
     starts.Add(body[0],new ClassicalCircuit.Step{Kind="Branch",Mask="0",Value="0",WhenTrue=body,WhenFalse=new ClassicalCircuit.Step[0]});
     lengths.Add(body[0],body.Length);
    }
-   document.Steps=Wrap(document.Steps,starts,lengths);changed=true;
+   document.Steps=Wrap(document.Steps,starts,lengths,recovered);changed=true;
   }
   if(!changed)return circuit;
   document.Variables=variables.ToArray();if(numeric)document.NumericVariables=numericVariables.ToArray();

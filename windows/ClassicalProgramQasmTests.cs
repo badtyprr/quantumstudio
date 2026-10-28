@@ -66,11 +66,24 @@ static class ClassicalProgramQasmTests {
   if(nested.Serialize()!=unchanged)throw new Exception("Export mutated the input circuit.");
   Reject(Circuit(0,1,new[]{0},new[]{clear,store,innerClear,innerStore,clear,innerAssign,innerClear},nestedTypes),"lifetime");
   Reject(Circuit(0,1,new[]{0},new[]{clear,store,assign,clear,assign},variable),"lifetime");
+  // A nested recovered interval does not own adjacent clears of other slots.
+  var threeTypes=new[]{variable[0],new ClassicalCircuit.Variable{Name="outer",Signedness="Unsigned",Width=1},new ClassicalCircuit.Variable{Name="unrelated",Signedness="Unsigned",Width=1}};
+  var unrelatedClear=new S{Kind="ClearInteger",VariableSlot=2};
+  var unrelatedStore=new S{Kind="StoreInteger",VariableSlot=2,IntegerValue=new N{Kind="IntegerConstant",Signedness="Unsigned",Width=1,Value="1"}};
+  var unrelatedAssign=new S{Kind="Assign",Wires=new[]{0},ClassicalValue=new N{Kind="IntegerBits",Left=new N{Kind="IntegerVariable",Signedness="Unsigned",Width=1,Slot=2}}};
+  Reject(Circuit(0,1,new[]{0},new[]{innerClear,unrelatedStore,clear,store,unrelatedClear,clear,unrelatedAssign,innerClear},threeTypes),"lifetime");
+  Reject(Circuit(0,1,new[]{0},new[]{innerClear,unrelatedStore,unrelatedAssign,clear,unrelatedClear,store,clear,innerClear},threeTypes),"lifetime");
   var deepTypes=new List<ClassicalCircuit.Variable>();var deepSteps=new List<S>();
   for(int i=0;i<40;i++){deepTypes.Add(new ClassicalCircuit.Variable{Name="local"+i,Signedness="Unsigned",Width=1});deepSteps.Add(new S{Kind="ClearInteger",VariableSlot=i});}
   for(int i=39;i>=0;i--)deepSteps.Add(new S{Kind="ClearInteger",VariableSlot=i});
   deepSteps.Add(new S{Kind="Assign",Wires=new[]{0},ClassicalValue=Constant(1,"1")});
-  Reject(Circuit(0,1,new[]{0},deepSteps.ToArray(),deepTypes.ToArray()),"32");
+  Case("many-flat-local-lifetimes",Circuit(0,1,new[]{0},deepSteps.ToArray(),deepTypes.ToArray()),"1");
+  S deepBranch=new S{Kind="Assign",Wires=new[]{0},ClassicalValue=Constant(1,"1")};
+  for(int i=0;i<40;i++)deepBranch=new S{Kind="Branch",Mask="0",Value="0",WhenTrue=new[]{deepBranch},WhenFalse=new S[0]};
+  bool deepRejected=false;
+  try{Circuit(0,1,new[]{0},new[]{deepBranch});}
+  catch(InvalidDataException){deepRejected=true;rejected++;}
+  if(!deepRejected)throw new Exception("Actual branch nesting limit was lost.");
   Reject(Circuit(0,1,new[]{0},new[]{store,clear,assign},variable),"lifetime");
   Reject(Circuit(0,1,new[]{0},new[]{loop},null,12),"loop budget");
   Case("branch-local",Circuit(0,1,new[]{0},new[]{new S{Kind="ExpressionBranch",ClassicalValue=Constant(1,"1"),WhenTrue=new[]{store,assign,clear},WhenFalse=new S[0]}},variable),"1");
