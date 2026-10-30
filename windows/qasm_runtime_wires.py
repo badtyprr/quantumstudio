@@ -12,6 +12,25 @@ from qasm_source_diagnostics import error_at
 @dataclass
 class WireReferenceCheck(ast.Statement):
     targets: list
+    widths: object = None
+
+
+@dataclass
+class QuantumSelectorTypeCheck(ast.Statement):
+    index: object
+
+
+@dataclass
+class SourceQuantumSelection(ast.Expression):
+    register: object
+    index: object
+
+
+@dataclass
+class SourceQuantumRegisterView(ast.Expression):
+    register: object
+    view: object
+    selections: list
 
 
 class RuntimeWires:
@@ -28,6 +47,7 @@ class RuntimeWires:
         return None, None
 
     def dynamic(self, visitor, operand):
+        if isinstance(operand,(SourceQuantumSelection,SourceQuantumRegisterView)):return True
         _, indices = self.parts(operand)
         return indices is not None and self.runtime(visitor, indices)
 
@@ -41,18 +61,26 @@ class RuntimeWires:
         proxy = ast.QuantumGate(modifiers=[], name=ast.Identifier('id'), arguments=[], qubits=[operand])
         return visitor._get_op_bits(proxy, qubits=True)
 
+    @staticmethod
+    def require_integer_index(visitor,value):
+        if (isinstance(value,ast.BooleanLiteral) or
+            isinstance(value,ast.Identifier) and value.name in getattr(visitor,'_quantum_boolean_names',set()) or
+            isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
+            isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
+            isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
+            raise error_at(value,'Quantum indices require integers; cast Boolean values explicitly.')
+
     def group(self, visitor, operand, force=False):
+        if isinstance(operand,SourceQuantumRegisterView):
+            return [target for selected in operand.selections for target in self.group(visitor,selected)]
+        if isinstance(operand,SourceQuantumSelection):
+            return [{'Candidates':self.fixed(visitor,operand.register),'Index':self.normalize(visitor,operand.index,typed=True)}]
         if self.dynamic(visitor, operand) or force and self.parts(operand)[1] is not None:
             name, indices = self.parts(operand)
             if not isinstance(indices, list) or len(indices) != 1 or isinstance(indices[0], (ast.RangeDefinition, ast.DiscreteSet)):
                 raise error_at(operand, 'Runtime quantum indices require one scalar integer; runtime slices/sets are unsupported.')
             value=indices[0]
-            if (isinstance(value,ast.BooleanLiteral) or
-                isinstance(value,ast.Identifier) and value.name in getattr(visitor,'_quantum_boolean_names',set()) or
-                isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
-                isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
-                isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
-                raise error_at(operand,'Quantum indices require integers; cast Boolean values explicitly.')
+            self.require_integer_index(visitor,value)
             index = self.normalize(visitor, value, typed=True)
             return [{'Candidates': self.fixed(visitor, name), 'Index': index}]
         return [{'Candidates': [wire], 'Index': ast.IntegerLiteral(0)} for wire in self.fixed(visitor, operand)]
@@ -68,6 +96,10 @@ class RuntimeWires:
         lanes = max(len(group) for group in groups)
         if any(len(group) not in (1, lanes) for group in groups):
             raise error_at(operation, 'Broadcast register sizes must agree.')
+        measurement_targets=None
+        if isinstance(operation,ast.QuantumMeasurementStatement) and operation.target is not None:
+            measurement_targets=visitor._get_op_bits(operation,qubits=False)
+            if len(measurement_targets)!=lanes:raise error_at(operation,'Measurement source and destination widths must agree.')
         proxies = []
         for name, size in visitor._global_qreg_size_map.items():
             for index in range(size):
@@ -86,6 +118,7 @@ class RuntimeWires:
             guards.append(guard)
             proxy = copy.deepcopy(operation)
             replace(proxy, copy.deepcopy(proxies))
+            if measurement_targets is not None:proxy.target=copy.deepcopy(measurement_targets[lane])
             for item in callback(proxy):
                 if not isinstance(item, (ast.QuantumGate, ast.QuantumPhase, ast.QuantumReset, ast.QuantumMeasurementStatement)):
                     raise error_at(operation, 'Runtime wire lowering produced an unsupported operation.')

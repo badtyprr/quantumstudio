@@ -530,8 +530,6 @@ rejected += [
  'def f(qubit b,qubit[2] a)->bool{return true;}qubit[2] q;bool ok=f(q[1],q);',
  'def f(qubit[2] a)->bool{x a[2];return true;}qubit[2] q;bool ok=f(q);',
  'def f(qubit a)->bool{x a[0];return true;}qubit q;bool ok=f(q);',
- 'def f(qubit[2] a)->bool{return true;}qubit[3] q;bool ok=f(q[0:1]);',
- 'def f(qubit[2] a)->bool{return true;}qubit[2] q;let b=q;bool ok=f(b);',
  'def f(qubit[1] a)->bool{return true;}qubit q;bool ok=f(q);',
  'def f(qubit[1] a,qubit[2] b)->bool{cx a,b;return true;}qubit[1] a;qubit[2] b;bool ok=f(a,b);',
  # Mixed scalar/register gate broadcasting is a separate unroller limitation.
