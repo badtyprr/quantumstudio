@@ -75,6 +75,8 @@ d['Steps']=[dict(Kind='Branch',Mask='1',Value='1',WhenTrue=[bad],WhenFalse=[])];
 for source in (
  'def c(qubit a,qubit b){}qubit[3] q;int i=1;c(q[i],q[2]);output bit r;r=0;',
  'def c(qubit a){}qubit[2] q;bit b=0;if(b==1){c(q[-1]);}output bit r;r=0;',
+ 'def c(qubit a){}qubit[2] q;if(false){c(q[-1]);}output bit r;r=0;',
+ 'def c(qubit a){}qubit[2] q;for int i in [1:0]{c(q[-1]);}output bit r;r=0;',
  'def c(qubit a){}qubit[3] q;let a=q[{2,0}];int i=1;c(a[i]);output bit r;r=0;',
  'def c(qubit a){}qubit[2] q;int i=0;for int j in [0:1]{c(q[i]);i+=1;}output bit r;r=0;',
 ):roundtrip(compile_source('OPENQASM 3.0;'+source),'0')
@@ -82,6 +84,10 @@ for source in (
  'def c(qubit a){}qubit[2] q;c(q);',
  'def c(qubit a){}qubit[2] q;float i=0.5;c(q[i]);',
  'def c(qubit a){}qubit[2] q;c(q[true]);',
+ 'def c(qubit a){}qubit[2] q;if(false){c(q[true]);}',
+ 'def c(qubit a){}qubit[2] q;if(false){c(q[0.5]);}',
+ 'def c(qubit a){}qubit[2] q;for int i in [1:0]{c(q[0.5]);}',
+ 'def c(qubit a){}qubit[2] q;if(false){c(missing[0]);}',
 ):
  try:compile_source('OPENQASM 3.0;'+source)
  except (ValueError,ValidationError):checks+=1

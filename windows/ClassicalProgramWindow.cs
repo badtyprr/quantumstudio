@@ -484,6 +484,7 @@ sealed class ClassicalProgramWindow : Window {
   history.Undo();history.Redo();if(history.Current.Serialize()!=valid)throw new Exception("Wire check undo/redo changed references.");
   SaveTo(prefix+".qcircuit");history.Open(File.ReadAllText(prefix+".qcircuit",new UTF8Encoding(false,true)));Refresh();
   if(history.Current.Serialize()!=valid || !ClassicalProgramQasm.Export(history.Current).Contains("def _wire_check_"))throw new Exception("Wire preflight save/export lost references.");
+  ((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[0]).IsSelected=true;
   status.Text="Verified · Quantum argument checks, invalid edits, undo/redo and save/reopen.";
   UpdateLayout();((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(prefix+".png");
  }

@@ -341,6 +341,9 @@ def lower_runtime_subroutines(program):
         effects.append(ArrayReferenceCheck(views=[copy.deepcopy(view)],shapes=[shape]))
         return effects,view,shape
 
+    def empty_scalar_qubit_helper(definition):
+        return not definition.body and definition.return_type is None and bool(definition.arguments) and all(isinstance(formal,ast.QuantumArgument) and formal.size is None for formal in definition.arguments)
+
     def activate(call, depth, active=False):
         nonlocal calls, expanded
         if activations and visibility[call.name.name] > activations[-1]:
@@ -366,7 +369,7 @@ def lower_runtime_subroutines(program):
         has_return = bool(returns)
         if len(call.arguments) != len(definition.arguments):
             raise error_at(call, 'Subroutine argument count does not match its declaration.')
-        if not definition.body and definition.return_type is None and definition.arguments and all(isinstance(formal,ast.QuantumArgument) and formal.size is None for formal in definition.arguments) and not any(isinstance(item,ast.FunctionCall) for item in walk(call.arguments)):
+        if empty_scalar_qubit_helper(definition) and not any(isinstance(item,ast.FunctionCall) for item in walk(call.arguments)):
             if len(definition.arguments)>25:raise error_at(call,'Quantum reference checks support at most25 targets.')
             if len({formal.name.name for formal in definition.arguments})!=len(definition.arguments):raise error_at(call,'Duplicate subroutine parameter.')
             for actual in call.arguments:check_quantum_name(actual)
@@ -524,7 +527,7 @@ def lower_runtime_subroutines(program):
             if isinstance(node, ast.FunctionCall) and node.name.name in functions:
                 definition = functions[node.name.name]
                 if any(isinstance(a,ast.ClassicalArgument) and isinstance(a.type,ast.ArrayReferenceType) for a in definition.arguments):return True
-                if not definition.body and definition.return_type is None and definition.arguments and all(isinstance(a,ast.QuantumArgument) and a.size is None for a in definition.arguments):return True
+                if empty_scalar_qubit_helper(definition):return True
                 if definition.return_type is not None:
                     if any(isinstance(a, ast.QuantumArgument) for a in definition.arguments):
                         return True
