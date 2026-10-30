@@ -39,4 +39,10 @@ DEV-08 remains unfinished; no release is claimed.
 
 A nonempty runtime subroutine accepts a scalar qubit selected by an integer expression from a declared register or fixed alias. Each selector is checked and captured before evaluating the next argument. After all actuals have been evaluated, one reference check rejects physical overlap across the captured scalar references and whole-register parameters before body effects. Nested calls retain the captured identity. Existing fixed-literal calls retain their compile-time diagnostics and document versions.
 
-Register slices, dynamic aliases, and runtime indexing of register views remain separate DEV-08 work. The scalar binding suite observes wire identity after later argument mutation, nested forwarding, aliases, mixed register parameters, overlap, lazy type checks, and selector-error ordering through original and exported programs on both engines.
+Dynamic aliases remain separate DEV-08 work; register views are described below. The scalar binding suite observes wire identity after later argument mutation, nested forwarding, aliases, mixed register parameters, overlap, lazy type checks, and selector-error ordering through original and exported programs on both engines.
+
+## Quantum register parameters
+
+Register parameters accept fixed aliases and register slices, including runtime range bounds. A private uint32 array records each declared register's physical indices; checked array views capture range geometry at argument evaluation. The view must have the formal's fixed width. Scalar indexing, whole-register gate broadcast and ordered measurement destinations use the selected physical indices, and nested register/scalar forwarding preserves the same capture. Selectors are validated in start/step/stop order before later selector calls. All referenced physical qubits participate in the final call overlap check.
+
+Runtime alias declarations and concatenated dynamic quantum selections remain follow-up work. Existing static aliases and discrete selections retain the pinned compiler's mapping. Private identity arrays count against the existing storage and operation limits; they cannot be accessed or mutated through source parameters.

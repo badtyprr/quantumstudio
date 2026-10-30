@@ -3,6 +3,7 @@ import copy
 from dataclasses import dataclass, fields, is_dataclass
 import openqasm3.ast as ast
 from qasm_source_diagnostics import error_at
+from qasm_runtime_wires import SourceQuantumRegisterView
 from pyqasm.expressions import Qasm3ExprEvaluator
 
 
@@ -243,6 +244,10 @@ def lower_arrays(program):
         if isinstance(value,ArrayCopyStatement):
             info,value.destination=bound_view(value.destination,hidden);info['copies']=True
             value.sources=[bound_view(source,hidden)[1] for source in value.sources];return value
+        if isinstance(value,SourceQuantumRegisterView):
+            value.view=None
+            value.selections=expression(value.selections,hidden)
+            return value
         if isinstance(value,SourceArrayView):
             info,view=bound_view(value,hidden)
             if view.rank:raise error_at(value,'A whole array view requires a reference, copy or collection operation.')

@@ -21,7 +21,7 @@ from qasm_source_diagnostics import error_at
 from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
-from qasm_runtime_wires import RuntimeWires, WireReferenceCheck
+from qasm_runtime_wires import RuntimeWires, WireReferenceCheck, QuantumSelectorTypeCheck
 from qasm_runtime_arrays import ArrayCopyStatement, ArrayReferenceCheck, map_view, view_document, lower_arrays, selection as array_selection, declarations as array_declarations
 
 from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, contains_numeric, lower_numeric
@@ -454,15 +454,20 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def wire_reference_check(visitor,statement):
         if visitor._check_only:return []
         targets=[]
-        for operand in statement.targets:
-            group=wire_adapter.group(visitor,operand,force=True)
-            if len(group)!=1:raise error_at(statement,'Scalar quantum formals require one selected qubit.')
+        widths=statement.widths or [1]*len(statement.targets)
+        for operand,width in zip(statement.targets,widths):
+            group=wire_adapter.group(visitor,operand,force=width==1)
+            if len(group)!=width:raise error_at(statement,'Quantum argument width does not match its parameter.')
             targets.extend(group)
         result=WireReferenceCheck(targets=targets);result.span=statement.span
         return [result]
     def visit_map(visitor):
         mapping=original_visit_map(visitor)
         mapping[WireReferenceCheck]=lambda statement: wire_reference_check(visitor,statement)
+        def selector_type(statement):
+            wire_adapter.require_integer_index(visitor,statement.index)
+            return []
+        mapping[QuantumSelectorTypeCheck]=selector_type
         mapping[ArrayCopyStatement]=lambda statement: [] if visitor._check_only else [ArrayCopyStatement(destination=map_view(statement.destination,lambda value:normalize(visitor,value,typed=True)),sources=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.sources])]
         mapping[ArrayReferenceCheck]=lambda statement: [] if visitor._check_only else [ArrayReferenceCheck(views=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.views],shapes=statement.shapes)]
         mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
