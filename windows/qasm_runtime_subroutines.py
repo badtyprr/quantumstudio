@@ -11,6 +11,7 @@ from pyqasm.maps.expressions import CONSTANTS_MAP
 from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.exceptions import ValidationError
 from qasm_source_diagnostics import error_at
+from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck
 
 
 def lower_runtime_subroutines(program):
@@ -64,6 +65,10 @@ def lower_runtime_subroutines(program):
             if copied_nodes > 65536:
                 raise error_at(value, 'Runtime subroutine binding expansion exceeds 65536 AST nodes.')
             return copy.deepcopy(bound)
+        if isinstance(value,ast.IndexedIdentifier) and isinstance(bindings.get(value.name.name),SourceArrayView):
+            result=rewrite(value.name,bindings,lexical)
+            for group in value.indices:result=ast.IndexExpression(collection=result,index=rewrite(group,bindings,lexical))
+            return result
         if isinstance(value, ast.IndexedIdentifier) and isinstance(bindings.get(value.name.name), ast.IndexedIdentifier):
             raise error_at(value, 'Runtime calls currently require scalar quantum parameters without indexing.')
         if isinstance(value, list):
@@ -179,6 +184,81 @@ def lower_runtime_subroutines(program):
             raise error_at(actual, 'Quantum-register argument width does not match its parameter.')
         return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
 
+    def is_array_target(value):
+        while isinstance(value,(ast.IndexExpression,ast.IndexedIdentifier)):
+            value=value.collection if isinstance(value,ast.IndexExpression) else value.name
+        return isinstance(value,SourceArrayView) or isinstance(value,ast.Identifier) and value.name in array_scopes[-1] and isinstance(collection_scopes[-1].get(value.name),ast.ArrayType)
+
+    def capture_array_view(actual,active,depth):
+        groups=[];root=actual;effects=[]
+        while isinstance(root,(ast.IndexExpression,ast.IndexedIdentifier)):
+            if isinstance(root,ast.IndexExpression):
+                groups.insert(0,root.index if isinstance(root.index,list) else [root.index]);root=root.collection
+            else:groups[0:0]=root.indices;root=root.name
+        if isinstance(root,SourceArrayView):view=copy.deepcopy(root)
+        else:
+            declared=collection_scopes[-1].get(root.name) if isinstance(root,ast.Identifier) else None
+            if not isinstance(declared,ast.ArrayType) or root.name not in array_scopes[-1]:raise error_at(actual,'Array arguments require an array reference.')
+            collection_arrays.add(root.name)
+            view=SourceArrayView(name=root.name,element_type=copy.deepcopy(declared.base_type),parent=None,
+                axes=[ast.RangeDefinition(start=None,end=None,step=None) for _ in declared.dimensions])
+        view.span=getattr(actual,'span',None)
+        if len(groups)>31:raise error_at(actual,'Array references exceed 32 nesting levels.')
+        for group in groups:
+            if len(group)>view.rank:raise error_at(actual,'Too many array selectors.')
+            axes=[ast.RangeDefinition(start=None,end=None,step=None) for _ in range(view.rank)]
+            child=SourceArrayView(name=view.name,element_type=view.element_type,parent=view,axes=axes,writable=view.writable)
+            child.span=getattr(actual,'span',None)
+            for index,axis in enumerate(group):
+                if isinstance(axis,ast.DiscreteSet):raise error_at(actual,'Array references require scalar or range selectors.')
+                scalar=not isinstance(axis,ast.RangeDefinition)
+                for field,value in [('scalar',axis)] if scalar else [('start',axis.start),('step',axis.step),('end',axis.end)]:
+                    if value is None:continue
+                    prefix,value=expression_calls(value,active,depth);effects.extend(prefix)
+                    if scalar:axes[index]=value
+                    else:setattr(axes[index],field,value)
+                    # Validate before narrowing or evaluating a later selector's calls.
+                    probe=copy.deepcopy(child)
+                    if field=='step' and probe.axes[index].end is None:
+                        # The source parser requires a stop for stepped ranges.
+                        # Check the step on a singleton at the effective start;
+                        # the real stop is evaluated and checked next.
+                        start=probe.axes[index].start
+                        if start is None:
+                            negative=ast.Cast(type=ast.IntType(),argument=ast.BinaryExpression(op=ast.BinaryOperator['<'],lhs=copy.deepcopy(value),rhs=ast.IntegerLiteral(0)))
+                            last=ast.BinaryExpression(op=ast.BinaryOperator['-'],lhs=ast.Cast(type=ast.IntType(),argument=ast.SizeOf(target=copy.deepcopy(view),index=ast.IntegerLiteral(index))),rhs=ast.IntegerLiteral(1))
+                            start=ast.BinaryExpression(op=ast.BinaryOperator['*'],lhs=negative,rhs=last)
+                        probe.axes[index].end=copy.deepcopy(start)
+                    if probe.rank==0:
+                        # Address-only validation of a scalar selection retains
+                        # one singleton axis; it never reads the selected value.
+                        probe.axes[-1]=ast.RangeDefinition(start=copy.deepcopy(probe.axes[-1]),end=copy.deepcopy(probe.axes[-1]),step=None)
+                    effects.append(ArrayReferenceCheck(views=[probe],shapes=[[]]))
+                    slot=ast.Identifier(fresh());runtime.add(slot.name)
+                    effects.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=value))
+                    if scalar:axes[index]=slot
+                    else:setattr(axes[index],field,slot)
+            view=child
+        return effects,view
+
+    def array_binding(formal,actual,constant_bindings,active,depth):
+        effects,view=capture_array_view(actual,active,depth)
+        wanted=rewrite(formal.type,constant_bindings,lexical=True)
+        def signature(type_):
+            width=1 if isinstance(type_,ast.BoolType) else (64 if isinstance(type_,(ast.FloatType,ast.AngleType)) else 0) if type_.size is None else collection_integer(type_.size,{})
+            return type(type_),width
+        if signature(wanted.base_type)!=signature(view.element_type):raise error_at(actual,'Array element type does not match the formal.')
+        shape=[collection_integer(d,{}) for d in wanted.dimensions] if isinstance(wanted.dimensions,list) else []
+        if any(not 0<=d<=4096 for d in shape):raise error_at(formal,'Array formal dimensions must be from 0 to 4096.')
+        rank=len(shape) if shape else collection_integer(wanted.dimensions,{})
+        if not 1<=rank<=7 or view.rank!=rank:raise error_at(actual,'Array reference rank does not match the formal.')
+        if formal.access not in (ast.AccessControl.mutable,ast.AccessControl.readonly):raise error_at(formal,'Array formals require readonly or mutable access.')
+        writable=formal.access==ast.AccessControl.mutable
+        if writable and not view.writable:raise error_at(actual,'Cannot regain mutable access from a readonly reference.')
+        view.writable=writable
+        effects.append(ArrayReferenceCheck(views=[copy.deepcopy(view)],shapes=[shape]))
+        return effects,view,shape
+
     def activate(call, depth, active=False):
         nonlocal calls, expanded
         if activations and visibility[call.name.name] > activations[-1]:
@@ -208,10 +288,16 @@ def lower_runtime_subroutines(program):
         constant_bindings = {name: constant_value(name) for name in references
                              if name in constants and constants[name][0] < visibility[call.name.name]}
         bindings = dict(constant_bindings)
-        parameters = set(); declarations = []; qubits = set()
+        parameters = set(); declarations = []; qubits = set(); array_views=[]; array_shapes=[]
         for formal, actual in zip(definition.arguments, call.arguments):
             # Capture each actual before evaluating the next actual's calls.
             # Hoisting all nested effects first changes error/measurement order.
+            if isinstance(formal,ast.ClassicalArgument) and isinstance(formal.type,ast.ArrayReferenceType):
+                name=formal.name.name
+                if name in parameters:raise error_at(formal,'Duplicate subroutine parameter: '+name)
+                effects,binding,shape=array_binding(formal,actual,constant_bindings,active,depth)
+                declarations.extend(effects);bindings[name]=binding;array_views.append(binding);array_shapes.append(shape);parameters.add(name)
+                continue
             effects, actual = expression_calls(actual, active, depth)
             declarations.extend(effects)
             name = formal.name.name
@@ -238,6 +324,8 @@ def lower_runtime_subroutines(program):
             else:
                 raise error_at(formal, 'Runtime call arguments support integers, Booleans, float32/64, angles and bit registers.')
             parameters.add(name)
+        if len(array_views)>64:raise error_at(call,'Calls support at most 64 array references.')
+        if array_views:declarations.append(ArrayReferenceCheck(views=copy.deepcopy(array_views),shapes=array_shapes))
         result_slot = None; result_type = None; prefix = []
         if definition.return_type is not None:
             result_type = rewrite(definition.return_type, constant_bindings, lexical=True)
@@ -345,6 +433,7 @@ def lower_runtime_subroutines(program):
                 return True
             if isinstance(node, ast.FunctionCall) and node.name.name in functions:
                 definition = functions[node.name.name]
+                if any(isinstance(a,ast.ClassicalArgument) and isinstance(a.type,ast.ArrayReferenceType) for a in definition.arguments):return True
                 if definition.return_type is not None:
                     if any(isinstance(a, ast.QuantumArgument) for a in definition.arguments):
                         return True
@@ -460,6 +549,11 @@ def lower_runtime_subroutines(program):
             return prefix, result
         if not isinstance(value, (ast.Expression, ast.RangeDefinition, ast.DiscreteSet)):
             return prefix, value
+        if isinstance(value,(ast.IndexExpression,ast.IndexedIdentifier)) and is_array_target(value) and any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value)):
+            return capture_array_view(value,active,depth)
+        if isinstance(value,ast.SizeOf) and is_array_target(value.target) and any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value.target)):
+            effects,target=capture_array_view(value.target,active,depth)
+            return effects,ast.SizeOf(target=target,index=copy.deepcopy(value.index))
         if isinstance(value, ast.FunctionCall) and value.name.name in functions and runtime_call(value, active):
             effects, replacement = activate(value, depth, active)
             if replacement is None:
@@ -718,6 +812,15 @@ def lower_runtime_subroutines(program):
                     effects, _ = activate(call, depth, active)
                     result.extend(effects)
                     continue
+            elif isinstance(value,ast.ClassicalAssignment) and is_array_target(value.lvalue) and any(isinstance(item,(ast.RangeDefinition,SourceArrayView)) for item in walk(value.lvalue)):
+                effects,rhs=expression_calls(value.rvalue,active,depth)
+                capture=bool(effects) or any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value.lvalue))
+                if capture:
+                    prefix,target=capture_array_view(value.lvalue,active,depth)
+                    if target.rank:raise error_at(value,'Array copies require bulk assignment lowering.')
+                    if not target.writable:raise error_at(value,'Cannot write through a readonly reference.')
+                    result.extend(prefix);value.lvalue=target
+                result.extend(effects);value.rvalue=rhs
             elif isinstance(value,ast.ClassicalAssignment) and isinstance(value.lvalue,ast.IndexedIdentifier) and value.lvalue.name.name in array_scopes[-1]:
                 effects,rhs=expression_calls(value.rvalue,active,depth)
                 indices=[]
