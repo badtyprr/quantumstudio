@@ -47,6 +47,7 @@ def execute(encoded, expected, error=False):
 
 for source in (
     'bit[2] b;if(false){let a=b[5:6];}output bit c;c=1;',
+    'bit[2] b;for int i in [1:0]{let a=b[5:6];}output bit c;c=1;',
     'def f(bit[2] b)->int{let a=b;int n=0;for bit v in a{n=2*n+int(v);}return n;}bit[2] b="10";int n=f(b);output bit c;c=bool(n==1);',
     'def m(mutable array[int,1] a)->int{a[0]=2;return 3;}bit[4] b="1010";array[int,1] i={1};let a=b[i[0]:m(i)];int n=0;for bit v in a{n=2*n+int(v);}output bit c;c=bool(n==5);',
     'bit[4] b="1010";let a=b[0:3];int n=0;for bit v in a[1:2]{n=2*n+int(v);}output bit c;c=bool(n==2);',
@@ -82,6 +83,8 @@ for source in (
     'bit[2] b;let a=b[0.5:1];',
     'bit[2] b;if(false){let a=b[true:1];}output bit c;c=0;',
     'bit[2] b;if(false){let a=b[0.5:1];}output bit c;c=0;',
+    'bit[2] b;for int i in [1:0]{let a=b[true:1];}output bit c;c=0;',
+    'bit[2] b;for int i in [1:0]{let a=b[0.5:1];}output bit c;c=0;',
     'bit[2] b;qubit q;let a=b++q;',
     'let a=b;bit[2] b;',
     'bit[2] b;let a=b;{bit[2] b;let d=b;for bit v in d{}}',

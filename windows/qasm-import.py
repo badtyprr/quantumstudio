@@ -886,7 +886,7 @@ def mark_runtime_ranges(program):
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
                 env[statement.identifier.name]=isinstance(statement,ast.ClassicalDeclaration)
             elif isinstance(statement,ast.ForInLoop):
-                dynamic=runtime(statement.set_declaration,env) or getattr(statement,'_quantum_runtime_for',False) or any(isinstance(item,WireReferenceCheck) for item in nodes(statement.block))
+                dynamic=runtime(statement.set_declaration,env) or getattr(statement,'_quantum_runtime_for',False) or any(isinstance(item,(WireReferenceCheck,QuantumSelectorTypeCheck)) for item in nodes(statement.block))
                 inner=dict(env);inner[statement.identifier.name]=dynamic
                 block(statement.block,inner)
                 # Static expansion duplicates nested runtime binding identities.
