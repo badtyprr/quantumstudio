@@ -31,8 +31,11 @@ def lower_runtime_subroutines(program):
     constants = {}; constant_cache = {}
     used = {node.name for node in walk(program) if isinstance(node, ast.Identifier)}
     runtime = set()
+    collection_arrays=set()
     array_names={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType)}
     array_scopes=[set(array_names)]
+    geometry_scopes=[{}]
+    collection_scopes=[{n.identifier.name:copy.deepcopy(n.type) for n in program.statements if isinstance(n,ast.ClassicalDeclaration)}]
     registers = {}
     register_declarations = {}
     register_arrays = set()
@@ -229,6 +232,7 @@ def lower_runtime_subroutines(program):
                 # an initializer to the newly introduced formal of the same name.
                 declared_type = rewrite(formal.type, constant_bindings, lexical=True)
                 declaration = ast.ClassicalDeclaration(type=declared_type, identifier=slot, init_expression=copy.deepcopy(actual))
+                collection_scopes[-1][slot.name]=declared_type
                 declarations.append(bit_declaration(declaration) if isinstance(declared_type, ast.BitType) else declaration)
                 bindings[name] = slot
             else:
@@ -487,16 +491,78 @@ def lower_runtime_subroutines(program):
             prefix.extend(effects); setattr(result, field.name, rewritten)
         return prefix, result
 
-    def block(body, parent, active=False, depth=0, declared=None, classical_names=()):
+    def block(body, parent, active=False, depth=0, declared=None, classical_names=(), collection_types=None):
         # Call actuals are resolved before expansion, even for unused formals.
         # Keep caller shadowing lexical; leaving a block restores the register.
         classical_scopes.append(set(classical_names))
         array_scopes.append(set(array_scopes[-1])-set(classical_names))
+        geometry_scopes.append(dict(geometry_scopes[-1]))
+        for name in classical_names:geometry_scopes[-1][name]=ast.Identifier(name)
+        collection_scopes.append({name:type_ for name,type_ in collection_scopes[-1].items() if name not in classical_names})
+        collection_scopes[-1].update(collection_types or {})
         try:
             return block_body(body, parent, active, depth, declared)
         finally:
             classical_scopes.pop()
             array_scopes.pop()
+            collection_scopes.pop()
+            geometry_scopes.pop()
+
+    def collection_geometry(value,env):
+        references={n.name for n in walk(value) if isinstance(n,ast.Identifier)}
+        bindings={name:constant_value(name) for name in references if name in constants}
+        bindings.update(geometry_scopes[-1]);bindings.update(env)
+        return rewrite(value,bindings,lexical=False)
+
+    def collection_integer(value, env):
+        value=collection_geometry(value,env)
+        pending=[(value,0)];count=0
+        while pending:
+            item,level=pending.pop();count+=1
+            if count>512 or level>=32:raise error_at(value,'Collection geometry exceeds expression bounds.')
+            if isinstance(item,ast.IntegerLiteral):
+                if type(item.value) is not int or item.value.bit_length()>64:raise error_at(value,'Collection geometry must fit in 64 bits.')
+            elif isinstance(item,ast.UnaryExpression) and item.op.name=='-':pending.append((item.expression,level+1))
+            elif isinstance(item,ast.BinaryExpression) and item.op.name in ('+','-','*'):
+                pending.extend(((item.lhs,level+1),(item.rhs,level+1)))
+            elif isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)):
+                if item.type.size is not None and (not isinstance(item.type.size,ast.IntegerLiteral) or not 1<=item.type.size.value<=64):raise error_at(value,'Collection integer cast widths must be 1 to 64.')
+                pending.append((item.argument,level+1))
+            else:raise error_at(value,'Collection geometry currently requires constant integer arithmetic.')
+        result,effects=Qasm3ExprEvaluator.evaluate_expression(value,const_expr=True)
+        if type(result) is not int or effects:raise error_at(value,'Collection geometry requires integers.')
+        return result
+
+    def collection_values(value,env):
+        reference=rewrite(value,env);indices=None
+        if isinstance(reference,ast.IndexExpression):
+            indices=reference.index;reference=reference.collection
+        if not isinstance(reference,ast.Identifier):return None
+        type_=collection_scopes[-1].get(reference.name)
+        if isinstance(type_,ast.ArrayType):
+            if len(type_.dimensions)!=1:raise error_at(value,'Collection iteration requires a one-dimensional array or view.')
+            length=collection_integer(type_.dimensions[0],env);bits=False
+            collection_arrays.add(reference.name)
+        elif isinstance(type_,ast.BitType) and type_.size is not None:
+            length=collection_integer(type_.size,env);bits=True
+        else:return None
+        if not 0<=length<=(64 if bits else 4096):raise error_at(value,'Collection allocation exceeds its storage limit.')
+        positions=list(range(length))
+        if indices is not None:
+            if not isinstance(indices,list) or len(indices)!=1 or not isinstance(indices[0],ast.RangeDefinition):raise error_at(value,'Collection selection requires a one-dimensional slice.')
+            range_=indices[0]
+            step=1 if range_.step is None else collection_integer(range_.step,env)
+            if step==0:raise error_at(value,'Collection slice step must not be zero.')
+            if length==0 and range_.start is None and range_.end is None:return []
+            start=(0 if step>0 else length-1) if range_.start is None else collection_integer(range_.start,env)
+            stop=(length-1 if step>0 else 0) if range_.end is None else collection_integer(range_.end,env)
+            if not bits:
+                if start<0:start+=length
+                if stop<0:stop+=length
+            if not 0<=start<length or not 0<=stop<length:raise error_at(value,'Collection slice endpoint is outside its allocation.')
+            positions=list(range(start,stop+(1 if step>0 else -1),step))
+        if len(positions)>64:raise error_at(value,'Runtime collections support at most 64 values.')
+        return [ast.IndexExpression(collection=copy.deepcopy(reference),index=[ast.IntegerLiteral(i)]) for i in positions]
 
     def collection_loop(node, env, active, depth):
         """Snapshot a finite value sequence, then use the existing range engine.
@@ -504,17 +570,19 @@ def lower_runtime_subroutines(program):
         The cursor is independent of the user binding, so assignments, continue
         and break retain the same transfer and cleanup semantics as range loops.
         """
-        if not isinstance(node.type, scalar):
-            raise error_at(node, 'Collection loops require an integer, Boolean, float or angle binding.')
+        if not isinstance(node.type, values):
+            raise error_at(node, 'Collection loops require an integer, Boolean, float, angle or bit binding.')
         if len(node.set_declaration.values) > 64:
             raise error_at(node, 'Runtime collections support at most 64 values.')
         binding_type = rewrite(node.type, env)
+        if isinstance(binding_type,ast.BitType) and binding_type.size is not None and collection_integer(binding_type.size,env)!=1:raise error_at(node,'Bit collection bindings must have width one.')
+        def local(declaration):return bit_declaration(declaration) if isinstance(binding_type,ast.BitType) else declaration
         prefix = []; snapshots = []
         for item in node.set_declaration.values:
-            effects, value = expression_calls(rewrite(item, env), active, depth)
+            effects, value = expression_calls(copy.deepcopy(item) if getattr(node,'_quantum_resolved_collection',False) else rewrite(item, env), active, depth)
             prefix.extend(effects)
             slot = ast.Identifier(fresh()); runtime.add(slot.name)
-            prefix.append(ast.ClassicalDeclaration(type=copy.deepcopy(binding_type), identifier=slot, init_expression=value))
+            prefix.append(local(ast.ClassicalDeclaration(type=copy.deepcopy(binding_type), identifier=slot, init_expression=value)))
             snapshots.append(slot)
         cursor = ast.Identifier(fresh()); binding = ast.Identifier(fresh()); count = ast.Identifier(fresh())
         runtime.update((cursor.name, binding.name, count.name))
@@ -523,7 +591,8 @@ def lower_runtime_subroutines(program):
         prefix.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),
             identifier=count, init_expression=ast.IntegerLiteral(len(snapshots))))
         inner = dict(env); inner[node.identifier.name] = binding
-        body = block(node.block, inner, active, depth, classical_names=(binding.name,))
+        body = block(node.block, inner, active, depth, classical_names=(binding.name,),
+            collection_types={binding.name: copy.deepcopy(binding_type)})
         def dispatch(first, last):
             if first == last:
                 return []
@@ -537,7 +606,7 @@ def lower_runtime_subroutines(program):
         loop = ast.ForInLoop(type=ast.IntType(size=ast.IntegerLiteral(32)), identifier=cursor,
             set_declaration=ast.RangeDefinition(start=ast.IntegerLiteral(0),
                 end=ast.BinaryExpression(op=ast.BinaryOperator['-'], lhs=count, rhs=ast.IntegerLiteral(1)), step=None),
-            block=[ast.ClassicalDeclaration(type=binding_type, identifier=binding, init_expression=None)] + dispatch(0, len(snapshots)) + body)
+            block=[local(ast.ClassicalDeclaration(type=binding_type, identifier=binding, init_expression=None))] + dispatch(0, len(snapshots)) + body)
         loop._quantum_runtime_for = True
         loop.span = node.span
         return ast.CompoundStatement(statements=prefix + [loop])
@@ -564,7 +633,9 @@ def lower_runtime_subroutines(program):
                     env[name] = ast.Identifier(fresh())
                 value.identifier = rewrite(node.identifier, env)
                 classical_scopes[-1].add(value.identifier.name)
+                collection_scopes[-1][value.identifier.name]=collection_geometry(value.type,env)
                 value.init_expression = rewrite(node.init_expression, env)
+                geometry_scopes[-1][name]=collection_geometry(ast.Cast(type=copy.deepcopy(value.type),argument=copy.deepcopy(value.init_expression)),env) if isinstance(node,ast.ConstantDeclaration) else copy.deepcopy(value.identifier)
                 effects, value.init_expression = expression_calls(value.init_expression, active, depth)
                 if effects and isinstance(node, ast.ConstantDeclaration):
                     raise error_at(node, 'A constant cannot depend on a runtime subroutine result.')
@@ -585,6 +656,10 @@ def lower_runtime_subroutines(program):
                 value.else_block = block(node.else_block, env, active, depth)
             elif isinstance(node, (ast.ForInLoop, ast.WhileLoop)):
                 if isinstance(node, ast.ForInLoop):
+                    collection=collection_values(node.set_declaration,env)
+                    if collection is not None:
+                        value=copy.copy(node);value.set_declaration=ast.DiscreteSet(values=collection);value._quantum_resolved_collection=True
+                        result.append(collection_loop(value,env,active,depth));continue
                     if isinstance(node.set_declaration, ast.DiscreteSet):
                         if len(node.set_declaration.values) > 64:
                             raise error_at(node, 'Runtime collections support at most 64 values.')
@@ -695,6 +770,8 @@ def lower_runtime_subroutines(program):
                 register_arrays.add(node.qubit.name)
             if size is None or isinstance(size, ast.IntegerLiteral):
                 registers[node.qubit.name] = 1 if size is None else size.value
+        if isinstance(node,ast.ClassicalDeclaration):collection_scopes[0][node.identifier.name]=collection_geometry(node.type,{})
         result.extend(block([node], {}))
     program.statements[:] = bit_storage + result
+    program._quantum_runtime_array_names=collection_arrays
     return {declaration.identifier.name for declaration in bit_storage}

@@ -27,7 +27,7 @@ def lower_arrays(program):
     possibly_undefined={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType) and n.init_expression is None}
     scalar=(ast.IntType,ast.UintType,ast.BoolType,ast.FloatType,ast.AngleType)
     runtime={n.identifier.name for n in all_nodes if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar+(ast.BitType,))}-names
-    constants={};selected=set();arrays={};allocations=[]
+    constants={};selected=set(getattr(program,'_quantum_runtime_array_names',()));arrays={};allocations=[]
     used={n.name for n in all_nodes if isinstance(n,ast.Identifier)}
     charged=sum(isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar) for n in all_nodes)
 
@@ -118,8 +118,9 @@ def lower_arrays(program):
             scan(control,hidden,controlled,dynamic)
             local=set(hidden);local_dynamic=set(dynamic)
             if isinstance(value,ast.ForInLoop):local.add(value.identifier.name)
-            if isinstance(value,ast.ForInLoop) and depends(control):local_dynamic.add(value.identifier.name)
-            scan(value.block,local,controlled or isinstance(value,ast.WhileLoop) or depends(control),local_dynamic);return
+            dynamic=depends(control) or getattr(value,'_quantum_runtime_for',False)
+            if isinstance(value,ast.ForInLoop) and dynamic:local_dynamic.add(value.identifier.name)
+            scan(value.block,local,controlled or isinstance(value,ast.WhileLoop) or dynamic,local_dynamic);return
         if is_dataclass(value):
             for field in fields(value):
                 if field.name not in ('span','annotations'):scan(getattr(value,field.name),hidden,controlled,dynamic)
