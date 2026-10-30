@@ -13,6 +13,30 @@ unsigned checks=0;
 void check(bool value){++checks;if(!value)throw std::runtime_error("Array check "+std::to_string(checks));}
 template<class E,class F>void rejects(F f){bool caught=false;try{f();}catch(const E&){caught=true;}check(caught);}
 IntegerExpression index(std::int64_t value){return IntegerExpression::constant(TypedInteger::fromBits(QuantumClassical::IntegerType::machine(Integer::Signedness::Signed),static_cast<std::uint64_t>(value)));}
+void wireReferenceChecks() {
+ const auto type=QuantumClassical::IntegerType::machine(Integer::Signedness::Signed);
+ RuntimeStorage storage({type});
+ std::vector<WireSelection::Target> targets;
+ for(unsigned wire=0;wire<25;wire++)targets.push_back({{24-wire},index(0)});
+ auto all=WireSelection::references(targets,"call entry");all.validate(25,0,storage);
+ auto resolved=all.evaluate(0,0,storage);check(resolved.size()==25);
+ for(unsigned wire=0;wire<25;wire++)check(resolved[wire]==24-wire);
+ rejects<std::invalid_argument>([&]{WireSelection gate(targets);});
+ targets.push_back({{0},index(0)});rejects<std::invalid_argument>([&]{WireSelection::references(targets);});
+ rejects<std::invalid_argument>([&]{WireSelection::references({});});
+ rejects<std::invalid_argument>([&]{WireSelection::references({{{0},index(0)},{{1,0},index(1)}}).evaluate(0,0,storage);});
+ rejects<std::out_of_range>([&]{WireSelection::references({{{25},index(0)}}).validate(25,0,storage);});
+ rejects<std::out_of_range>([&]{WireSelection::references({{{0},index(-1)}}).evaluate(0,0,storage);});
+ auto huge=IntegerExpression::constant(TypedInteger::fromBits(QuantumClassical::IntegerType::machine(Integer::Signedness::Unsigned),~std::uint64_t(0)));
+ rejects<std::out_of_range>([&]{WireSelection::references({{{0},huge}}).evaluate(0,0,storage);});
+ auto variable=IntegerExpression::variable(type,0);
+ auto deferred=WireSelection::references({{{2,0,1},variable}});deferred.validate(3,0,storage);
+ rejects<std::domain_error>([&]{deferred.evaluate(0,0,storage);});
+ storage.write(0,TypedInteger::fromBits(type,1));check(deferred.evaluate(0,0,storage)==std::vector<unsigned>{0});
+ storage.write(0,TypedInteger::fromBits(type,2));check(deferred.evaluate(0,0,storage)==std::vector<unsigned>{1});
+ auto deep=index(0);for(unsigned k=0;k<30;k++)deep=IntegerExpression::cast(type,deep);
+ rejects<std::length_error>([&]{WireSelection::references(std::vector<WireSelection::Target>(25,{{0},deep}));});
+}
 void copyChecks() {
  const auto type=QuantumClassical::IntegerType::machine(Integer::Signedness::Signed);
  auto slice=[](std::size_t array,std::int64_t start,std::int64_t stop,std::int64_t stride=1) {
@@ -64,6 +88,15 @@ void copyChecks() {
 template<class Step,class Run>void engineChecks(Run run,const Step &superposition) {
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);
  const auto floating=NumericType::floating(32);
+ auto largeIndex=index(0);for(unsigned k=0;k<7;k++)largeIndex=IntegerExpression::binary(Integer::Operation::Add,largeIndex,largeIndex);
+ WireSelection legacyLarge(std::vector<WireSelection::Target>(3,{{0},largeIndex}));
+ rejects<std::length_error>([&]{Step::checkWireReferences(legacyLarge);});
+ run({Step::checkWireReferences(WireSelection::references({{{0},index(0)}}))},{{0,1.0}});
+ rejects<std::invalid_argument>([&]{run({Step::checkWireReferences(WireSelection::references({{{0},index(0)},{{0},index(0)}}))},{});});
+ rejects<std::out_of_range>([&]{run({Step::checkWireReferences(WireSelection::references({{{0},index(-1)}}))},{});});
+ rejects<std::domain_error>([&]{run({Step::checkWireReferences(WireSelection::references({{{0},IntegerExpression::variable(integer,2)}}))},{});});
+ auto invalidWire=Step::checkWireReferences(WireSelection::references({{{1},index(0)}}));
+ rejects<std::out_of_range>([&]{run({Step::branch(1,1,{invalidWire},{})},{});});
  ArraySelection first(0,{index(0)}),last(0,{index(-1)}),floatFirst(1,{index(0)});
  ArrayView writable(0,{ArrayViewAxis::range()},true),readonly(0,{ArrayViewAxis::range()},false);
  ArraySelection throughView(writable,{index(0)}),throughReadonly(readonly,{index(0)});
@@ -150,6 +183,7 @@ void viewChecks() {
  check(ArrayView(row,{ArrayViewAxis::range(&three,&zero)},false).evaluate(0,0,storage).slots.empty());
 }
 int main(){try {
+ wireReferenceChecks();
  copyChecks();
  viewChecks();
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);const auto floating=NumericType::floating(32);
