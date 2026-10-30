@@ -690,16 +690,6 @@ def lower_runtime_subroutines(program):
                     value.while_condition = rewrite(node.while_condition, env)
                 value.block = block(node.block, inner, active, depth,
                     classical_names=(value.identifier.name,) if isinstance(node, ast.ForInLoop) else ())
-                if isinstance(node, ast.ForInLoop) and isinstance(value.set_declaration, ast.RangeDefinition) and any(
-                        getattr(child, '_quantum_runtime_for', False) for child in walk(value.block)):
-                    # Static expansion would duplicate the nested cursor's
-                    # lifetime identity. Capture the endpoint so this enclosing
-                    # range remains runtime through export and reimport too.
-                    endpoint = ast.Identifier(fresh()); runtime.add(endpoint.name)
-                    result.append(ast.ClassicalDeclaration(type=copy.deepcopy(value.type),
-                        identifier=endpoint, init_expression=value.set_declaration.end))
-                    value.set_declaration.end = endpoint
-                    value._quantum_runtime_for = True
                 if isinstance(node, ast.WhileLoop):
                     effects, condition = expression_calls(value.while_condition, active, depth)
                     if effects:

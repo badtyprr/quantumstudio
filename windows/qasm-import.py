@@ -863,15 +863,23 @@ def mark_runtime_ranges(program):
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
                 env[statement.identifier.name]=isinstance(statement,ast.ClassicalDeclaration)
             elif isinstance(statement,ast.ForInLoop):
-                dynamic=runtime(statement.set_declaration,env)
+                dynamic=runtime(statement.set_declaration,env) or getattr(statement,'_quantum_runtime_for',False)
+                inner=dict(env);inner[statement.identifier.name]=dynamic
+                block(statement.block,inner)
+                # Static expansion duplicates nested runtime binding identities.
+                # Classify bottom-up, including exported scalar snapshot loops,
+                # without evaluating or converting any bound earlier.
+                nested=any(getattr(child,'_quantum_runtime_for',False) for child in nodes(statement.block))
+                if nested and not dynamic:
+                    dynamic=True
+                    inner[statement.identifier.name]=True
+                    block(statement.block,inner)
                 if dynamic:
                     if not isinstance(statement.set_declaration,ast.RangeDefinition) or not isinstance(statement.type,(ast.IntType,ast.UintType)):
                         raise ValueError('Runtime for loops currently require an integer binding and a range.')
                     if statement.set_declaration.start is None or statement.set_declaration.end is None:
                         raise ValueError('For-loop ranges require both endpoints.')
                     statement._quantum_runtime_for=True
-                inner=dict(env);inner[statement.identifier.name]=dynamic
-                block(statement.block,inner)
             elif isinstance(statement,ast.WhileLoop):block(statement.block,env)
             elif isinstance(statement,ast.BranchingStatement):block(statement.if_block,env);block(statement.else_block,env)
             elif isinstance(statement,ast.CompoundStatement):block(statement.statements,env)

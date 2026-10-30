@@ -42,6 +42,8 @@ def execute(encoded,exact,expected=None,error=None):
     assert all(abs(actual.get(k,0)-expected.get(k,0))<(1e-12 if exact else .025) for k in set(actual)|set(expected)),(actual,expected)
 
 cases=[
+ ('bit[1] a="1";int n=0;for int[2] i in [0:2]{for bit v in a{n+=int(v);}}output bit c;c=n==3;',{'1':1}),
+ ('bit[1] a="1";int n=0;for uint[2] i in [0:4]{for bit v in a{n+=int(v);}}output bit c;c=n==5;',{'1':1}),
  ('bit[3] a="101";int total=0;for int i in [0:1]{for bit v in a{total+=int(v);}}output bit c;c=total==4;',{'1':1}),
  ('bit[2] a="11";int n=0;for bit[1] v in a{for bit w in v{n+=int(w);}}output bit c;c=n==2;',{'1':1}),
  ('array[int,2] a={1,2};int n=0;for int i in [0:1]{for int v in a{n+=v+i;}}output bit c;c=n==8;',{'1':1}),
@@ -92,6 +94,10 @@ source=header+'def f(float x)->float{float y;return y;}float x=-1;for float i in
 original=adapt(compile(source));roundtrip=adapt(compile(original['source']))
 for exact in (True,False):
     for encoded in (original,roundtrip):execute(encoded,exact,error='must be finite')
+source=header+'bit[1] a="1";int n=0;int first;int zero=0;for int i in [first:1/zero]{for bit v in a{n+=int(v);}}output bit c;c=n==0;'
+original=adapt(compile(source));roundtrip=adapt(compile(original['source']))
+for exact in (True,False):
+    for encoded in (original,roundtrip):execute(encoded,exact,error='before initialization')
 fixture=json.loads((root/'fixtures/dev08-collection-upstream.json').read_text(encoding='utf-8'))
 assert hashlib.sha256(fixture['source'].encode()).hexdigest()==fixture['sha256'];checks+=1
 original=adapt(compile(fixture['source']));roundtrip=adapt(compile(original['source']))
