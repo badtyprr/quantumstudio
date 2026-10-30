@@ -43,18 +43,19 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
   cancel();
   if(++totalSteps>4096)throw std::length_error("Trajectory control flow exceeds 4096 total steps");
   if(step.kind==TrajectoryStep::Kind::End)continue;
+  if(step.kind==TrajectoryStep::Kind::CheckArrayReferences){step.arrayReferences->validate(classicalBits,declarations);continue;}
   if(step.kind==TrajectoryStep::Kind::Break || step.kind==TrajectoryStep::Kind::Continue) {
    if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
    continue;
   }
   if(step.kind==TrajectoryStep::Kind::StoreInteger || step.kind==TrajectoryStep::Kind::ClearInteger) {
-   if(step.arraySelection) {step.arraySelection->validate(classicalBits,declarations);declarations.array(step.arraySelection->array()).integerType();}
+   if(step.arraySelection) {step.arraySelection->validateWrite(classicalBits,declarations);declarations.array(step.arraySelection->array()).integerType();}
    else declarations.type(step.variableSlot); // Bounds-check targets even in untaken bodies.
    if(step.integerExpression)step.integerExpression->validate(classicalBits,declarations);
    continue;
   }
   if(step.kind==TrajectoryStep::Kind::StoreNumeric || step.kind==TrajectoryStep::Kind::ClearNumeric) {
-   if(step.arraySelection)step.arraySelection->validate(classicalBits,declarations);
+   if(step.arraySelection)step.arraySelection->validateWrite(classicalBits,declarations);
    const auto target=step.arraySelection ? declarations.array(step.arraySelection->array()).numericType() : declarations.numeric().type(step.variableSlot);
    if(step.numericExpression) {
     step.numericExpression->validate(classicalBits,declarations);
@@ -159,7 +160,8 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
     continue;
    }
    const auto wires=step.wireSelection ? step.wireSelection->evaluate(bits,classicalBits,variables) : step.wires;
-   if(step.kind==TrajectoryStep::Kind::StoreInteger) {
+   if(step.kind==TrajectoryStep::Kind::CheckArrayReferences)step.arrayReferences->evaluate(bits,classicalBits,variables);
+   else if(step.kind==TrajectoryStep::Kind::StoreInteger) {
     const auto slot=step.arraySelection ? step.arraySelection->evaluate(bits,classicalBits,variables) : step.variableSlot;
     variables.write(slot,step.integerExpression->evaluate(bits,classicalBits,variables));
    }

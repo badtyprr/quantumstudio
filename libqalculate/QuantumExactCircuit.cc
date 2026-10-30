@@ -13,18 +13,19 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
  for(const auto &step:steps) {
   checkpoint();if(++count>512)throw std::length_error("Exact circuits support at most 512 steps across all bodies");
   if(step.kind==Step::Kind::End)continue;
+  if(step.kind==Step::Kind::CheckArrayReferences){step.arrayReferences->validate(bits,variables);continue;}
   if(step.kind==Step::Kind::Break || step.kind==Step::Kind::Continue) {
    if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
    continue;
   }
   if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
-   if(step.arraySelection) {step.arraySelection->validate(bits,variables);variables.array(step.arraySelection->array()).integerType();}
+   if(step.arraySelection) {step.arraySelection->validateWrite(bits,variables);variables.array(step.arraySelection->array()).integerType();}
    else variables.type(step.variableSlot);
    if(step.integerExpression)step.integerExpression->validate(bits,variables);
    continue;
   }
   if(step.kind==Step::Kind::StoreNumeric || step.kind==Step::Kind::ClearNumeric) {
-   if(step.arraySelection)step.arraySelection->validate(bits,variables);
+   if(step.arraySelection)step.arraySelection->validateWrite(bits,variables);
    const auto target=step.arraySelection ? variables.array(step.arraySelection->array()).numericType() : variables.numeric().type(step.variableSlot);
    if(step.numericExpression) {
     step.numericExpression->validate(bits,variables);
@@ -248,6 +249,9 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
     const auto &body=selected ? *step.whenTrue : *step.whenFalse;
     for(const auto &result:execute({record},qubits,bits,body,maxCells,exact,loopConditionsLeft))
      output.add(result.bits,result.variables,result.density,result.flow);
+   } else if(step.kind==Step::Kind::CheckArrayReferences) {
+    step.arrayReferences->evaluate(record.bits,bits,record.variables);
+    output.add(record.bits,record.variables,record.density);
    } else if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
     auto variables=record.variables;
     if(step.kind==Step::Kind::ClearInteger)variables.clear(step.variableSlot);

@@ -28,6 +28,7 @@ struct IntegerExpression::Node {
  std::shared_ptr<const Bits> bits;
  std::shared_ptr<const RealExpression> numericLeft,numericRight;
  std::shared_ptr<const ArraySelection> selection;
+ std::shared_ptr<const ArrayView> view;
  Node(Kind kind,IntegerType type):kind(kind),type(type) {}
  void bound() {
   depth=1+std::max(left ? left->depth : 0,right ? right->depth : 0);
@@ -35,9 +36,15 @@ struct IntegerExpression::Node {
   references=(left ? left->references : 0)|(right ? right->references : 0);
   for(const auto &numeric:{numericLeft,numericRight})if(numeric){depth=std::max(depth,1+numeric->depth());count+=numeric->count();references|=numeric->references();}
   if(selection){depth=std::max(depth,1+selection->depth());count+=selection->count();references|=selection->references();}
+  if(view){depth=std::max(depth,1+view->depth());count+=view->count();references|=view->references();}
   if(depth>32 || count>512)throw std::length_error("Integer expression exceeds 32 levels or 512 expanded nodes");
  }
  void validateVariables(const IntegerStorage *storage) const {
+  if(view) {
+   if(!storage)throw std::invalid_argument("Array view extent requires runtime storage");
+   view->validate(64,*storage);
+   if(slot>=view->rank())throw std::out_of_range("Array view extent axis exceeds its rank");
+  }
   if(selection) {
    if(!storage)throw std::invalid_argument("Array read requires runtime storage");
    if(kind==Kind::ArrayExtent)selection->validatePrefix(64,*storage);else selection->validate(64,*storage);
@@ -55,6 +62,12 @@ struct IntegerExpression::Node {
   if(right)right->validateVariables(storage);
  }
  TypedInteger evaluate(std::uint64_t record,const IntegerStorage *storage) const {
+  if(view) {
+   if(!storage)throw std::invalid_argument("Array view extent requires runtime storage");
+   const auto resolved=view->evaluate(record,64,*storage);
+   if(slot>=resolved.dimensions.size())throw std::out_of_range("Array view extent axis exceeds its rank");
+   return TypedInteger::fromBits(type,resolved.dimensions[slot]);
+  }
   if(selection) {
    if(!storage)throw std::invalid_argument("Array read requires runtime storage");
    if(kind==Kind::ArrayExtent){selection->checkPrefix(record,64,*storage);return TypedInteger::fromBits(type,1);}
@@ -110,6 +123,10 @@ IntegerExpression IntegerExpression::fromBits(IntegerType type,const Bits &opera
 }
 IntegerExpression IntegerExpression::variable(IntegerType type,std::size_t index) {
  auto n=std::make_shared<Node>(Node::Kind::Variable,type);n->slot=index;return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::viewExtent(const ArrayView &view,unsigned axis) {
+ if(axis>=view.rank())throw std::out_of_range("Array view extent axis exceeds its rank");
+ auto n=std::make_shared<Node>(Node::Kind::ArrayExtent,IntegerType::machine(Integer::Signedness::Unsigned));n->view=std::make_shared<ArrayView>(view);n->slot=axis;n->bound();return IntegerExpression(n);
 }
 IntegerExpression IntegerExpression::arrayExtent(const ArraySelection &selection) {
  auto n=std::make_shared<Node>(Node::Kind::ArrayExtent,IntegerType::machine(Integer::Signedness::Signed));n->selection=std::make_shared<const ArraySelection>(selection);n->bound();return IntegerExpression(n);
