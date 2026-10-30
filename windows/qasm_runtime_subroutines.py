@@ -433,7 +433,7 @@ def lower_runtime_subroutines(program):
         constant_bindings = {name: constant_value(name) for name in references
                              if name in constants and constants[name][0] < visibility[call.name.name]}
         bindings = dict(constant_bindings)
-        parameters = set(); declarations = []; qubits = set(); quantum_actuals=[]; quantum_widths=[]; dynamic_scalar=False; array_views=[]; array_shapes=[]
+        parameters = set(); declarations = []; qubits = set(); quantum_actuals=[]; quantum_widths=[]; needs_quantum_preflight=False; array_views=[]; array_shapes=[]
         check_only=not definition.body and definition.return_type is None and all(isinstance(formal,ast.ClassicalArgument) and isinstance(formal.type,ast.ArrayReferenceType) for formal in definition.arguments) and not any(isinstance(item,ast.FunctionCall) for item in walk(call.arguments))
         for formal, actual in zip(definition.arguments, call.arguments):
             # Capture each actual before evaluating the next actual's calls.
@@ -453,7 +453,7 @@ def lower_runtime_subroutines(program):
                 captured=register_view_binding(formal,actual,width_bindings,active,depth)
                 if captured is not None:
                     effects,binding,width=captured;declarations.extend(effects)
-                    quantum_actuals.append(copy.deepcopy(binding));quantum_widths.append(width);dynamic_scalar=True
+                    quantum_actuals.append(copy.deepcopy(binding));quantum_widths.append(width);needs_quantum_preflight=True
                     bindings[name]=binding;parameters.add(name)
                     continue
             # Once the enclosing call is runtime, nested actual calls must also
@@ -474,7 +474,7 @@ def lower_runtime_subroutines(program):
                     if identities:
                         binding,_=quantum_binding(formal,actual,width_bindings)
                     else:
-                        dynamic_scalar=True
+                        needs_quantum_preflight=True
                         effects,binding=capture_scalar_qubit(actual)
                         declarations.extend(effects)
                     quantum_actuals.append(copy.deepcopy(binding));quantum_widths.append(1)
@@ -492,7 +492,7 @@ def lower_runtime_subroutines(program):
                         binding=copy.deepcopy(actual) if isinstance(actual,ast.Identifier) else ast.Identifier(fresh())
                         if not isinstance(actual,ast.Identifier):
                             declarations.append(ast.AliasStatement(target=copy.deepcopy(binding),value=copy.deepcopy(actual)))
-                    quantum_actuals.append(copy.deepcopy(binding));quantum_widths.append(width);dynamic_scalar=True
+                    quantum_actuals.append(copy.deepcopy(binding));quantum_widths.append(width);needs_quantum_preflight=True
                 else:
                     binding, identities = quantum_binding(formal, actual, width_bindings)
                     if qubits.intersection(identities):
@@ -515,7 +515,7 @@ def lower_runtime_subroutines(program):
             else:
                 raise error_at(formal, 'Runtime call arguments support integers, Booleans, float32/64, angles and bit registers.')
             parameters.add(name)
-        if dynamic_scalar:
+        if needs_quantum_preflight:
             if sum(quantum_widths)>25:raise error_at(call,'Quantum calls support at most 25 referenced qubits.')
             check=WireReferenceCheck(targets=quantum_actuals,widths=quantum_widths);check.span=call.span;declarations.append(check)
         if len(array_views)>64:raise error_at(call,'Calls support at most 64 array references.')
