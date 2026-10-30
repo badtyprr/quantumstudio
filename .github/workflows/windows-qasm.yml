@@ -86,6 +86,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Dynamic quantum alias tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-dev08-source-evidence.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Pinned DEV-08 source evidence failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-quantum-call-loops.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime quantum call-loop tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-array-view-model.py --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime array source checks failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-dev08-numeric-source.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe

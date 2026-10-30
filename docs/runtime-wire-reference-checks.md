@@ -56,3 +56,5 @@ Concatenation copies only the private index map, never quantum state. Up to 25 s
 Private arrays and generated loops are charged to existing storage, operation, expression and loop budgets. Reference expansion is bounded by 4096 views and 32 alias levels. Classical-bit aliases and remaining source acceptance are separate DEV-08 work.
 
 Contract sources: [OpenQASM aliasing/index sets/concatenation](https://openqasm.com/versions/3.0/language/types.html) and [lexical alias scope](https://openqasm.com/versions/3.0/language/scope.html).
+
+Quantum calls in range loops use runtime capture when bounds are computed or the body assigns/shadows the binding or transfers control. The independent range cursor still determines the next value, with the existing typed conversion into the loop binding. Eligible literal loops retain compact expansion. Discrete collections use captured ordered values, including duplicates. Export retains local lifetime intervals around transfers rather than moving their exit cleanup past break, continue, or end.

@@ -67,6 +67,11 @@ static class ClassicalQasmLifetimes {
   // slot has already proved that all its references lie in its own interval.
   // Moving its undefined entry/exit within this containing lexical scope is
   // therefore safe; never move a clear across a real branch or loop boundary.
+  // Lifting an inner exit clear to the wrapper tail could move it past a
+  // break/continue in a later sibling. Retain those proven lexical intervals.
+  bool transfer=false;
+  foreach(var step in wrapper.WhenTrue)Visit(step,s=>{if(s.Kind=="Break" || s.Kind=="Continue" || s.Kind=="End")transfer=true;},e=>{});
+  if(transfer)return;
   var entry=new List<ClassicalCircuit.Step>();var body=new List<ClassicalCircuit.Step>();var exit=new List<ClassicalCircuit.Step>();
   foreach(var step in wrapper.WhenTrue) {
    RecoveredScope child;
