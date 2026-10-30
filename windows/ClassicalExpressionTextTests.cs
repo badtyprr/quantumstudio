@@ -55,18 +55,23 @@ static class ClassicalExpressionTextTests {
   Check(Format(ClassicalExpressionText.ParseInteger("uint[8](-1)",context))=="uint[8](255)");
   Reject(()=>ClassicalExpressionText.ParseInteger("int[8](-9223372036854775809)",context));
  }
+ static void CheckDisplayRoundtrip(N before,string shown,System.Web.Script.Serialization.JavaScriptSerializer serializer) {
+  string expected=serializer.Serialize(before),actual=serializer.Serialize(Parse(shown,1));
+  checks++;
+  if(expected!=actual)throw new Exception("Expression display round-trip check "+checks+" failed for "+shown+". Expected: "+expected+"; actual: "+actual);
+ }
  static void BooleanDisplayChecks() {
   var serializer=new System.Web.Script.Serialization.JavaScriptSerializer();
   string[] source={"bool(c)","bool(int[3](c))","bool(popcount(c))","bool(bool(c))","bool(c == 4)","bool(c) && 6 / int[3](c) == 3"};
   foreach(string text in source) {
    N before=Parse(text,1);string shown=Format(before);
    Check(shown.StartsWith("bool(") || shown.StartsWith("(bool("));
-   Check(serializer.Serialize(before)==serializer.Serialize(Parse(shown,1)));
+   CheckDisplayRoundtrip(before,shown,serializer);
   }
   foreach(string text in new[]{"int[3](c) != int[8](0)","int[3](c) != uint(0)","c != 1","c == 0"}) {
    N before=Parse(text,1);string shown=Format(before);
    Check(!shown.StartsWith("bool("));
-   Check(serializer.Serialize(before)==serializer.Serialize(Parse(shown,1)));
+   CheckDisplayRoundtrip(before,shown,serializer);
   }
   var context=Context();context.Version=6;context.Variables=new[]{new ClassicalCircuit.Variable{Name="ready",Signedness="Unsigned",Width=1}};
   N value=ClassicalExpressionText.Parse("bool(ready)",context,1);
