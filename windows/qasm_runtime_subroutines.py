@@ -13,6 +13,7 @@ from pyqasm.exceptions import ValidationError
 from qasm_source_diagnostics import error_at
 from qasm_runtime_wires import WireReferenceCheck, QuantumSelectorTypeCheck, SourceQuantumSelection, SourceQuantumRegisterView
 from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck, ArrayCopyStatement, split_reference, array_selector_groups
+from qasm_runtime_bit_aliases import BitAliases, SourceBitAlias
 
 
 def lower_runtime_subroutines(program):
@@ -42,7 +43,7 @@ def lower_runtime_subroutines(program):
     register_declarations = {}
     register_arrays = set()
     classical_scopes = [set()]
-    quantum_backings={}; global_quantum_aliases={}; global_alias_names=set(); static_quantum_aliases={}; quantum_view_count=0
+    quantum_backings={}; global_alias_bindings={}; global_alias_names=set(); static_quantum_aliases={}; quantum_view_count=0
     bit_storage = []; array_temporaries=[]; array_backing_types={}
     serial = calls = expanded = copied_nodes = 0
 
@@ -71,7 +72,7 @@ def lower_runtime_subroutines(program):
             result=rewrite(value.name,bindings,lexical)
             for group in value.indices:result=ast.IndexExpression(collection=result,index=rewrite(group,bindings,lexical))
             return result
-        if isinstance(value,ast.IndexedIdentifier) and isinstance(bindings.get(value.name.name),SourceArrayView):
+        if isinstance(value,ast.IndexedIdentifier) and isinstance(bindings.get(value.name.name),(SourceArrayView,SourceBitAlias)):
             result=rewrite(value.name,bindings,lexical)
             for group in value.indices:result=ast.IndexExpression(collection=result,index=rewrite(group,bindings,lexical))
             return result
@@ -947,6 +948,18 @@ def lower_runtime_subroutines(program):
 
     def bit_collection_loop(node, reference, env, active, depth):
         root,groups=split_reference(reference)
+        if isinstance(root,SourceBitAlias) or isinstance(reference,ast.Concatenation) or any(isinstance(axis,ast.DiscreteSet) for group in groups for axis in group):
+            captured=bit_aliases.bind(reference,active,depth)
+            if captured is not None:
+                effects,alias=captured
+                prefix,view=bit_aliases.snapshot(alias);effects.extend(prefix)
+                iteration=copy.copy(node)
+                if isinstance(iteration.type,ast.BitType) and iteration.type.size is None:
+                    # Scalar bit/bool values are interchangeable; an integer
+                    # Boolean slot does not consume an additional physical bit.
+                    iteration.type=ast.BoolType()
+                effects.append(array_collection_loop(iteration,view,env,active,depth))
+                return ast.CompoundStatement(statements=effects)
         type_=collection_scopes[-1].get(root.name) if isinstance(root,ast.Identifier) else None
         if not isinstance(type_,ast.BitType) or type_.size is None:return None
         width=collection_integer(type_.size,{})
@@ -1128,6 +1141,12 @@ def lower_runtime_subroutines(program):
             if isinstance(node,ast.AliasStatement):
                 if node.target.name in declared:raise error_at(node,'Duplicate declaration in one scope: '+node.target.name)
                 actual=rewrite(node.value,env)
+                captured_bits=bit_aliases.bind(actual,active,depth)
+                if captured_bits is not None:
+                    effects,binding=captured_bits;result.extend(effects)
+                    env[node.target.name]=binding;declared.add(node.target.name)
+                    node._quantum_bound_view=copy.deepcopy(binding)
+                    continue
                 dynamic=active or any(isinstance(item,(SourceQuantumRegisterView,SourceQuantumSelection,ast.FunctionCall,ast.Concatenation)) or isinstance(item,ast.Identifier) and (item.name in runtime or item.name not in constants and any(item.name in scope for scope in classical_scopes)) for item in walk(actual))
                 if dynamic:
                     name=node.target.name
@@ -1146,7 +1165,7 @@ def lower_runtime_subroutines(program):
                 declared.add(node.target.name)
             if isinstance(node, (ast.ClassicalDeclaration, ast.ConstantDeclaration)):
                 name = node.identifier.name
-                if name in declared and (active or isinstance(env.get(name),SourceQuantumRegisterView)):
+                if name in declared and (active or isinstance(env.get(name),(SourceQuantumRegisterView,SourceBitAlias))):
                     raise error_at(node, 'Duplicate declaration in one subroutine scope: ' + name)
                 declared.add(name)
                 if not isinstance(node.type,ast.ArrayType):array_scopes[-1].discard(name)
@@ -1156,7 +1175,7 @@ def lower_runtime_subroutines(program):
                 value.type = rewrite(node.type, env)
                 if active:
                     env[name] = ast.Identifier(fresh())
-                elif isinstance(env.get(name),SourceQuantumRegisterView):env[name]=ast.Identifier(name)
+                elif isinstance(env.get(name),(SourceQuantumRegisterView,SourceBitAlias)):env[name]=ast.Identifier(name)
                 value.identifier = rewrite(node.identifier, env)
                 classical_scopes[-1].add(value.identifier.name)
                 collection_scopes[-1][value.identifier.name]=collection_geometry(value.type,env)
@@ -1286,6 +1305,23 @@ def lower_runtime_subroutines(program):
             else:result.append(value)
         return result
 
+    def bit_alias_array(type_,width,initial):
+        name=fresh();backing=ast.ArrayType(base_type=copy.deepcopy(type_),dimensions=[ast.IntegerLiteral(width)])
+        declaration=ast.ClassicalDeclaration(type=backing,identifier=ast.Identifier(name),init_expression=initial)
+        array_temporaries.append(declaration)
+        collection_arrays.add(name);array_backing_types[name]=backing
+        return declaration
+
+    def bit_alias_name():
+        name=fresh();runtime.add(name);return name
+
+    def bit_alias_type(name):
+        visible=any(name in scope for scope in classical_scopes) or any(d.identifier.name==name for d in bit_storage)
+        return collection_scopes[-1].get(name) if visible else None
+
+    bit_aliases=BitAliases(bit_alias_name,bit_alias_array,capture_array_view,
+                           lambda value:collection_integer(value,{}),bit_alias_type)
+
     # Process in source order so a forward declaration cannot become visible.
     result = []
     for position, node in enumerate(program.statements):
@@ -1312,13 +1348,13 @@ def lower_runtime_subroutines(program):
         if isinstance(node,ast.ClassicalDeclaration):collection_scopes[0][node.identifier.name]=collection_geometry(node.type,{})
         if isinstance(node,(ast.ClassicalDeclaration,ast.ConstantDeclaration,ast.QubitDeclaration)):
             name=node.qubit.name if isinstance(node,ast.QubitDeclaration) else node.identifier.name
-            if name in global_quantum_aliases:raise error_at(node,'Duplicate global declaration: '+name)
+            if name in global_alias_bindings:raise error_at(node,'Duplicate global declaration: '+name)
         if isinstance(node,ast.AliasStatement) and (node.target.name in global_alias_names or node.target.name in classical_scopes[0] or node.target.name in register_declarations):
             raise error_at(node,'Duplicate global alias: '+node.target.name)
-        result.extend(block([node], global_quantum_aliases))
+        result.extend(block([node], global_alias_bindings))
         if isinstance(node,ast.AliasStatement):
             global_alias_names.add(node.target.name)
-            if hasattr(node,'_quantum_bound_view'):global_quantum_aliases[node.target.name]=node._quantum_bound_view
+            if hasattr(node,'_quantum_bound_view'):global_alias_bindings[node.target.name]=node._quantum_bound_view
             else:static_quantum_aliases[node.target.name]=copy.deepcopy(node.value)
     program.statements[:] = array_temporaries + bit_storage + result
     program._quantum_runtime_array_names=collection_arrays
