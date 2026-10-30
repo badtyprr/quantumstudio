@@ -64,6 +64,17 @@ public:
  static void validateBindings(const std::vector<ResolvedArrayView> &views);
 };
 
+// Explicit reference preflight: validates unused actuals, fixed shapes and
+// overlapping mutable bindings without consuming or modifying array values.
+class ArrayReferenceCheck {
+ std::vector<ArrayView> views_;
+ std::vector<std::vector<unsigned>> shapes_;
+public:
+ ArrayReferenceCheck(const std::vector<ArrayView> &views,const std::vector<std::vector<unsigned>> &shapes={});
+ void validate(unsigned bits,const IntegerStorage &storage) const;
+ void evaluate(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const;
+};
+
 // A rank-aware element address. Validation never reads undefined elements.
 // Evaluation checks each axis before calculating the row-major scalar slot.
 class ArraySelection {

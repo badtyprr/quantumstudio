@@ -19,6 +19,11 @@ template<class Step,class Run>void engineChecks(Run run,const Step &superpositio
  ArraySelection first(0,{index(0)}),last(0,{index(-1)}),floatFirst(1,{index(0)});
  ArrayView writable(0,{ArrayViewAxis::range()},true),readonly(0,{ArrayViewAxis::range()},false);
  ArraySelection throughView(writable,{index(0)}),throughReadonly(readonly,{index(0)});
+ run({Step::checkArrayReferences(ArrayReferenceCheck({readonly},{{2}}))},{{0,1.0}});
+ run({Step::checkArrayReferences(ArrayReferenceCheck({readonly,writable}))},{{0,1.0}});
+ rejects<std::invalid_argument>([&]{run({Step::checkArrayReferences(ArrayReferenceCheck({writable,writable}))},{});});
+ rejects<std::invalid_argument>([&]{run({Step::checkArrayReferences(ArrayReferenceCheck({readonly},{{1}})),Step::storeInteger(0,IntegerExpression::variable(integer,2))},{});});
+
  rejects<std::invalid_argument>([&]{run({Step::storeArray(throughReadonly,index(7))},{});});
  auto read=IntegerExpression::arrayElement(integer,first);
  auto bit=IntegerExpression::read(QuantumClassical::IntegerType::sized(Integer::Signedness::Unsigned,1),{0});
@@ -78,6 +83,11 @@ void viewChecks() {
  rejects<std::out_of_range>([&]{ArrayView(0,{ArrayViewAxis::scalar(huge),all},false).evaluate(0,0,storage);});
  rejects<std::invalid_argument>([&]{ArrayView(row,{ArrayViewAxis::range(nullptr,nullptr,&zero)},false).evaluate(0,0,storage);});
  ArrayView empty(1,{all,all,all},false);auto emptyResult=empty.evaluate(0,0,storage);
+ ArrayReferenceCheck({empty},{{4096,4096,0}}).evaluate(0,0,storage);check(true);
+ ArrayReferenceCheck({full},{{3,4}}).evaluate(0,0,storage);check(true);
+ rejects<std::invalid_argument>([&]{ArrayReferenceCheck({full},{{4,3}}).evaluate(0,0,storage);});
+ rejects<std::invalid_argument>([&]{ArrayReferenceCheck({full},{{12}});});
+ rejects<std::out_of_range>([&]{ArrayReferenceCheck({dynamic}).evaluate(0,0,storage);});
  check(emptyResult.dimensions==std::vector<unsigned>({4096,4096,0}) && emptyResult.slots.empty());
  rejects<std::out_of_range>([&]{ArrayView(1,{all,all,ArrayViewAxis::scalar(zero)},false).evaluate(0,0,storage);});
  rejects<std::invalid_argument>([&]{ArrayView(0,{all},false).validate(0,storage);});

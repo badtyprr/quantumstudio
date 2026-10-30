@@ -43,6 +43,7 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
   cancel();
   if(++totalSteps>4096)throw std::length_error("Trajectory control flow exceeds 4096 total steps");
   if(step.kind==TrajectoryStep::Kind::End)continue;
+  if(step.kind==TrajectoryStep::Kind::CheckArrayReferences){step.arrayReferences->validate(classicalBits,declarations);continue;}
   if(step.kind==TrajectoryStep::Kind::Break || step.kind==TrajectoryStep::Kind::Continue) {
    if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
    continue;
@@ -159,7 +160,8 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
     continue;
    }
    const auto wires=step.wireSelection ? step.wireSelection->evaluate(bits,classicalBits,variables) : step.wires;
-   if(step.kind==TrajectoryStep::Kind::StoreInteger) {
+   if(step.kind==TrajectoryStep::Kind::CheckArrayReferences)step.arrayReferences->evaluate(bits,classicalBits,variables);
+   else if(step.kind==TrajectoryStep::Kind::StoreInteger) {
     const auto slot=step.arraySelection ? step.arraySelection->evaluate(bits,classicalBits,variables) : step.variableSlot;
     variables.write(slot,step.integerExpression->evaluate(bits,classicalBits,variables));
    }

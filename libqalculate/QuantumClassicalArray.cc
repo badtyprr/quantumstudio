@@ -127,6 +127,29 @@ void ArrayView::validateBindings(const std::vector<ResolvedArrayView> &views) {
   }
  }
 }
+ArrayReferenceCheck::ArrayReferenceCheck(const std::vector<ArrayView> &views,const std::vector<std::vector<unsigned>> &shapes):views_(views),shapes_(shapes) {
+ if(views_.empty() || views_.size()>64)throw std::length_error("Array reference preflight requires one to 64 views");
+ if(shapes_.empty())shapes_.resize(views_.size());
+ if(shapes_.size()!=views_.size())throw std::invalid_argument("Array reference shape list does not match actuals");
+ unsigned count=0;
+ for(std::size_t k=0;k<views_.size();++k) {
+  if(!views_[k].rank())throw std::invalid_argument("Array reference parameters require a retained array dimension");
+  count+=views_[k].count();if(count>512)throw std::length_error("Array reference preflight exceeds 512 expression nodes");
+  if(!shapes_[k].empty() && shapes_[k].size()!=views_[k].rank())throw std::invalid_argument("Array reference parameter rank does not match its actual");
+  for(auto dimension:shapes_[k])if(dimension>4096)throw std::length_error("Array reference dimensions exceed 4096");
+ }
+}
+void ArrayReferenceCheck::validate(unsigned bits,const IntegerStorage &storage) const {
+ for(const auto &view:views_)view.validate(bits,storage);
+}
+void ArrayReferenceCheck::evaluate(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const {
+ validate(bits,storage);std::vector<ResolvedArrayView> resolved;
+ for(std::size_t k=0;k<views_.size();++k) {
+  resolved.push_back(views_[k].evaluate(record,bits,storage));
+  if(!shapes_[k].empty() && shapes_[k]!=resolved.back().dimensions)throw std::invalid_argument("Array reference parameter shape does not match its actual");
+ }
+ ArrayView::validateBindings(resolved);
+}
 ArraySelection::ArraySelection(std::size_t array,const std::vector<IntegerExpression> &indices,const std::string &source):array_(array),indices_(indices),source_(source) {measure();}
 ArraySelection::ArraySelection(const ArrayView &view,const std::vector<IntegerExpression> &indices,const std::string &source):array_(view.array()),indices_(indices),view_(std::make_shared<ArrayView>(view)),source_(source) {measure();}
 void ArraySelection::measure() {

@@ -22,11 +22,15 @@ without reading array elements.
 
 `validateBindings` checks physical slots in each scalar table, rather than
 bounding intervals or allocation IDs. Multiple mutable references may not
-overlap; readonly/readonly and readonly/mutable overlap are permitted. Views
-must be resolved before this check. The future call preflight must execute it
-before any callee effects and validate unused actuals as well.
+overlap; readonly/readonly and readonly/mutable overlap are permitted.
+`ArrayReferenceCheck` resolves all actuals, checks fixed parameter shapes and
+checks overlap. Both engines expose an explicit `checkArrayReferences` step;
+it does not read or mutate backing values. The source lowerer must emit this
+before callee effects, including unused actuals. Individual actual validation
+must precede later argument calls when their effects could otherwise win.
+Preflight accepts up to 64 views and 512 total expanded geometry nodes.
 
-Remaining integration: explicit call preflight operations, source lowering and
+Remaining integration: source lowering and
 geometry capture, document/protocol representation, source diagnostics, editor
 and export/reimport, bulk-copy snapshots, and packaged acceptance. No DEV-08
 checkbox or release claim follows from these native APIs alone.
