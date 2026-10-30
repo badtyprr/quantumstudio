@@ -31,5 +31,20 @@ removal preserves the retained value rather than ending a lifetime. Reachable
 clears retain their definedness effects. Source diagnostics and the saved model
 are preserved.
 
-DEV-08 remains open for classical aliases, dynamic quantum reference binding,
-full fixture/oracle/editor acceptance and verified release.
+Classical-bit aliases can be iterated through ranges, scalar selections, discrete
+selections and concatenation. Alias declarations capture selected identities;
+loop entry captures their current values. Nested aliases retain ordering, and
+duplicate identities in concatenated or discrete selections fail before use.
+Alias selectors support negative array-style indices and reverse strides.
+Aliases remain lexical and can refer to bit-valued subroutine formals. Iteration
+uses an independent Boolean scalar for a scalar `bit` binding, preserving the
+full 64-bit physical register capacity. Other alias reads and writes are outside
+this iteration feature. The existing rejection of nested bit-register
+declaration shadowing remains; alias-name shadowing is supported.
+
+Private identity and value maps each reserve 64 array slots and count toward
+the shared storage budget. Contiguous identity-backed aliases reuse captured
+geometry against their value map; concatenated selections gather through an
+identity map. Both paths retain normal saved-model and export validation limits.
+
+DEV-08 remains open for final fixture/oracle/editor acceptance and verified release.
