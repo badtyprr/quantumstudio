@@ -395,12 +395,13 @@ int MathStructure::merge_addition(MathStructure &mstruct, const EvaluationOption
 										madd2.delChild(i + 1, true);
 										if(CHILD(i2)[0].function()->id() == FUNCTION_ID_SIN) {madd = madd2; madd2.calculateNegate(eo);}
 										else {madd = madd1; madd1.calculateNegate(eo);}
-										if(madd1.calculateAdd(madd2, eo)) {
+										// Keep coefficient rewrites from recreating the trigonometric terms being merged.
+										EvaluationOptions eo2 = eo;
+										eo2.transform_trigonometric_functions = false;
+										if(madd1.calculateAdd(madd2, eo2)) {
 											SET_CHILD_MAP(i2);
 											CHILD(0).setFunctionId(FUNCTION_ID_SIN);
-											calculateMultiply(madd1, eo);
-											EvaluationOptions eo2 = eo;
-											eo2.transform_trigonometric_functions = false;
+											calculateMultiply(madd1, eo2);
 											calculateAdd(madd, eo2);
 											return 1;
 										}
