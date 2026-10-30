@@ -1,6 +1,6 @@
 # Runtime discrete collection loops
 
-DEV-08 increment: scalar discrete collections (`for int i in {a, 1, a}`) use the existing range execution engine. Array and bit-register sources use the entry snapshots described in [dynamic collection iteration](runtime-dynamic-collections.md). Classical aliases and dynamic quantum-reference binding remain unfinished DEV-08 work.
+Scalar discrete collections (`for int i in {a, 1, a}`) use the existing range execution engine. Array, bit-register and bit-alias sources use the entry snapshots described in [dynamic collection iteration](runtime-dynamic-collections.md). [Quantum-reference binding](runtime-wire-reference-checks.md) captures selected identities separately from loop values.
 
 An explicit discrete collection contains at most 64 values, in source order, including duplicates. Each expression is evaluated and converted to the declared loop type before the next expression. The resulting sequence is captured at entry; changes to source variables inside the loop do not change later iteration values. The loop binding is independent of the cursor, may be assigned, and is scoped to each iteration. Integer/Boolean, float32/64 and angle types retain their existing conversion rules. The pinned parser rejects empty discrete-set syntax; zero-length arrays execute zero iterations.
 
@@ -27,5 +27,5 @@ loop-variable shadowing must not change the source shape. Bit-register and array
 reference parameters can be iterated inside runtime subroutines. Dynamic
 one-dimensional views, including rows of multidimensional arrays, are supported.
 
-Classical aliases and dynamic quantum reference binding remain separate,
-unfinished requirements. No release or parent DEV-08 closure is claimed.
+Classical aliases retain declaration-time geometry and loop-entry values as
+documented in [dynamic collections](runtime-dynamic-collections.md).

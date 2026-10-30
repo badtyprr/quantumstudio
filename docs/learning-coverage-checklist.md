@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-10-26. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-10-30. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. Run AUD-01 and AUD-02 alongside code work, then choose the first ready P1 item supported by a failing source fixture among the remaining DEV-08 work. The demonstrated QB-005 inverse-QFT exact-execution and large-result display gap is resolved in REL-13; do not prioritize its historical timeout as unfinished implementation. Its remaining notebook/provider acceptance stays open. Compiler-resolved arrays shipped in REL-14. Scalar runtime subroutine arguments and locals shipped in REL-16, bit arguments/local storage in REL-17, and returned values/early exits in REL-18. Bounded DEV-08b4 source acceptance shipped in REL-19: concatenated measured parity and separately audited unchanged qBraid controls. Fixed quantum-register parameters shipped in REL-20 / [#370](https://github.com/badtyprr/quantumstudio/pull/370). Bounded constant widths, bounded literal-range quantum-call loop indices, and declared orthonormal bases shipped in REL-21. DEV-03 is complete; dynamic alias/subroutine binding, runtime arrays and remaining subroutine parameter forms remain separate work. DEV-06 runtime gate parameters, numeric types and the selected unchanged-source audit shipped in REL-22. DEV-07 bounded runtime wire selection shipped in REL-23; the next work is the remaining DEV-08 constructs. Promote newly discovered widespread failures above isolated features.
+Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-05, DEV-06, DEV-07 and the finite DEV-08 contract are released. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -19,7 +19,7 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 | [DEV-05](#dev-05) | P1 | M | Partial | None | Register dimensions and symbolic bit strings |
 | [DEV-06](#dev-06) | P1 | L | Released | None | Runtime gate parameters |
 | [DEV-07](#dev-07) | P1 | L | Released | None | Dynamic wire indexing |
-| [DEV-08](#dev-08) | P1 | L | Partial; scalar, bit and return calls released through REL-18 | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage |
+| [DEV-08](#dev-08) | P1 | L | Released in REL-24 | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage |
 | [DEV-09](#dev-09) | P2 | L | Partial | DEV-03 | Symbolic ensembles, instruments and POVMs |
 | [DEV-10](#dev-10) | P2 | L | Partial | DEV-05 | Symbolic domains, sets and indexed families |
 | [DEV-11](#dev-11) | P2 | L | Partial | DEV-04 | Error-correction lesson operations |
@@ -74,6 +74,8 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 - [x] REL-22: Published [1666b09a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-1666b09a), completing the finite DEV-06 contract through PRs #379–#382. All required reviewed-head and merged-tip CI gates, clean packaging and actual-payload audit passed. Clean package: 61 native passes, one existing thread skip, zero failures/errors; 2,178 worker checks; 285 source inputs verified byte for byte. Audit: 340 numeric and 197 gate protocol checks; 337 typed numeric import/model/export checks; 128 pinned-source checks; nine editor-created execution checks; five inspected GUI captures. All payload and archive hashes verified. ZIP SHA-256 `d9679429503ed9a08e981b25ad1f53f42360696b0ca1b77300e3436387635c26`. [Evidence and explicit limits](learning-evidence/DEV-06.md).
 
 - [x] REL-23: Published [afca2fe6](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-afca2fe6), completing bounded DEV-07 wire selection through PRs #384–#385. Reviewed-head and merged-tip CI, clean packaging and immutable-payload audit passed: 280 wire protocol checks; 270 wire import/model/export checks; 31 pinned-source checks; 12 editor-created execution checks and seven visually inspected captures. All payload/archive hashes match the tested artifact. ZIP SHA-256 `7a6224e40467616fe1ca9b65cd556f2d368afcf34dda78c155a19308c9d10deb`. [Evidence and explicit limits](learning-evidence/DEV-07.md).
+
+- [x] REL-24: Published [35d9e753](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-35d9e753), completing the finite DEV-08 contract through PRs #387–#407. Required reviews/CI, clean packaging, 21 audit groups, 26 actual-editor execution checks and 11 inspected captures passed. Native: 67 passes, one existing skip, zero failures/errors. All 385 payload files, 386 ZIP entries and 321 source inputs verified; both public assets downloaded and hashed. ZIP SHA-256 `19570252fd8b3719623396c05cff1acba448505c3588d1e293d7cee3a457f798`. [Evidence and explicit limits](learning-evidence/DEV-08.md).
 
 ## Acceptance criteria by development item
 
@@ -144,19 +146,19 @@ Recommended order: DEV-05a–d shipped in REL-10 and DEV-05e shipped in REL-11. 
 
 ### DEV-08
 
-- [ ] **Array/set iteration and subroutine-local storage** — P1; Partial, scalar, bit and return calls released through REL-18; size L; dependencies: DEV-07 for dynamic indexing, not for the reproduced constant-index subroutine case.
+- [x] **Array/set iteration and subroutine-local storage** — P1; Released in REL-24 for the documented finite contract; size L; dependency: DEV-07. [Evidence and limits](learning-evidence/DEV-08.md).
 - Source focus: qBraid PyQASM examples and the unchanged QB-004 generated `oracle.qasm` and `bernvaz.qasm` fixtures.
 - Reproduced blocker: the published REL-05 compiler resolves both local includes with `--module-headers`, but `--classical` rejects both fixtures' local integer declarations. Numerical import produces three and ten operations respectively. See [QB-004 follow-up evidence](learning-evidence/QB-004.md#follow-up-local-includes-and-classical-subroutine-storage).
 - Acceptance: Implement one supported construct per PR. Prioritize subroutine-local lifetimes and shadowing for QB-004, then bounded arrays/set loops. Test repeated/nested calls, distinct activations, loop transfers, cleanup, serialization and resource limits. Do not change the generated fixtures to inline or remove their local variables to claim acceptance.
 - [x] DEV-08a: Released compile-time subroutine locals in [#313](https://github.com/badtyprr/quantumstudio/pull/313), merged as `f4736029d957c8353108beedab00c02e8e45574a` from reviewed head `3eebec87b54c34edf016991dacc4150aaa0788f2`. Both unchanged QB-004 modules compile in classical mode; repeated/nested calls, lexical shadowing, mutable-global rejection and call limits have regression coverage. Initial frozen validation passed 15 file-import methods and 1,286 classical-expression checks. Updated-head CI passed before merge. REL-07 passed frozen-package import of both unchanged modules, retained source bytes, editor history/save/reopen and visual checks.
-- [ ] DEV-08b: Complete runtime subroutine activation storage. Scalar arguments/locals, bit-register storage and returned values are released; complete source-example acceptance and remaining parameter forms stay open. [Evidence and limits](learning-evidence/DEV-08b.md).
+- [x] DEV-08b: Runtime activation storage, typed numeric calls/returns and remaining supported parameter forms released in REL-24. Historical scalar/bit milestones are retained below. [Final evidence and limits](learning-evidence/DEV-08.md).
   - [x] **DEV-08b1 — Scalar runtime calls:** REL-16 / [#364](https://github.com/badtyprr/quantumstudio/pull/364). By-value int/uint/bool arguments, nested/repeated calls, scalar locals, lexical constants, bounded expansion and export of proven local lifetimes.
   - [x] **DEV-08b2 — Bit arguments and local storage:** REL-17 / [#366](https://github.com/badtyprr/quantumstudio/pull/366). Measured bit/bit-register arguments and activation-local storage; snapshots, repeated/nested activations, measurements, shadowing, initialization and packaged export/reimport verified. Source-driver additions remain disclosed in the evidence.
-  - [x] **DEV-08b3 — Returned values and early return:** REL-18 / [#367](https://github.com/badtyprr/quantumstudio/pull/367). Integer/Boolean/bit returns, measurement results, missing-return errors, short-circuit effects, returned conditions/bounds and void early exits through nested branches/loops verified. Runtime floating-point/angle returns remain outside this released subset.
+  - [x] **DEV-08b3 — Returned values and early return:** REL-18 / [#367](https://github.com/badtyprr/quantumstudio/pull/367). Integer/Boolean/bit returns, measurement results, missing-return errors, short-circuit effects, returned conditions/bounds and void early exits through nested branches/loops verified. Runtime floating-point/angle returns were outside REL-18 and are now covered by REL-24.
   - [x] **DEV-08b4 — Bounded source acceptance:** REL-19 / [#368](https://github.com/badtyprr/quantumstudio/pull/368). The measured-parity invocation and operations pass with disclosed driver and accumulator initialization; concatenation is a documented grammar compatibility extension. Three unchanged qBraid strings match numerical gate/wire/angle oracles; existing classical-mode rejections remain. [Evidence and limits](learning-evidence/DEV-08b4.md). This closes this bounded audit, not all source examples or notebooks.
-  - [ ] **DEV-08b5 — Remaining parameter forms:** P1, M/L; source-led. Runtime angle/float parameters coordinate with DEV-06; array references and dynamic indices coordinate with DEV-08c/DEV-07. Preserve type-specific aliasing and mutation rules.
-- [ ] DEV-08c: Implement arrays/set iteration with bounded runtime behavior and dynamic indexing where needed; retain the full acceptance criteria above. Compiler-resolved arrays and the unchanged QB-003 adder shipped in REL-14 through [#357](https://github.com/badtyprr/quantumstudio/pull/357); 46 source/frozen array checks and packaged editor/sampling acceptance passed. Runtime storage and dynamic indexing remain open. See [QB-003 evidence](learning-evidence/QB-003.md).
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned.
+  - [x] **DEV-08b5 — Remaining parameter forms:** REL-24 adds float/angle values, readonly/mutable array references, captured quantum scalar/register/view/alias actuals, dynamic indices, alias and mutation validation. [Evidence and finite bounds](learning-evidence/DEV-08.md).
+- [x] DEV-08c: REL-24 adds typed runtime arrays, dynamic indexing/views, snapshot copies and bounded discrete/array/view/bit-register/bit-alias iteration. Compiler-resolved arrays and the unchanged QB-003 adder remain the earlier REL-14 milestone. [Final acceptance and limits](learning-evidence/DEV-08.md).
+- Evidence: [DEV-08 release record](learning-evidence/DEV-08.md), pinned source hashes, independent operator witnesses, automated source/model/export checks, reviewed PRs, CI, packaged editor observations and verified public artifacts.
 
 ### DEV-09
 

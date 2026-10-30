@@ -30,8 +30,7 @@ full-axis boundary with a constant step; otherwise it rejects the unsupported
 export before writing. Such omitted-stop stepped views are native/editor forms,
 not accepted stepped-range syntax from the pinned source parser.
 
-This increment verifies saved-model execution, export syntax and editor
-preservation. Source lowering/reimport of reference views is still unfinished;
-these checks do not establish a source round trip or close DEV-08. Geometry
-capture at call entry, source references and bulk-copy/alias behavior remain
-separate work. No release is claimed.
+Saved-model execution, export syntax and editor preservation are covered here.
+[Source lowering](runtime-array-view-source.md) captures geometry at call entry
+and retains reference checks through reimport. [Bulk copies](runtime-array-copy.md)
+and [collection snapshots](runtime-dynamic-collections.md) reuse these views.

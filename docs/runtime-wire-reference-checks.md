@@ -31,9 +31,7 @@ reference check. Runtime indices, constant-invalid indices in untaken branches,
 classical scope lifetimes and the full target list survive export/reimport.
 This helper path accepts only empty void routines with scalar-qubit formals and
 actuals without nested calls. Full call-entry capture, nonempty routine bodies,
-register formals and dynamic aliases still require source binding integration.
-
-DEV-08 remains unfinished; no release is claimed.
+register formals and dynamic aliases use the source binding integration below.
 
 ## Runtime scalar quantum parameters
 
@@ -53,7 +51,7 @@ Runtime quantum aliases capture range and discrete-set selections at declaration
 
 Concatenation copies only the private index map, never quantum state. Up to 25 selected identities are retained; pairwise reference checks reject physical overlap before the resulting alias is used. An empty alias is invalid. Broadcast operations preflight every lane before physical operations; singleton registers broadcast and other widths must match. Measurement destinations must have matching widths and retain their bit order. The source retains DEV-07's nonnegative quantum-index boundary; ranges may have negative strides.
 
-Private arrays and generated loops are charged to existing storage, operation, expression and loop budgets. Reference expansion is bounded by 4096 views and 32 alias levels. Classical-bit aliases and remaining source acceptance are separate DEV-08 work.
+Private arrays and generated loops are charged to existing storage, operation, expression and loop budgets. Reference expansion is bounded by 4096 views and 32 alias levels. [Classical-bit alias iteration](runtime-dynamic-collections.md) captures bit identities and values without quantum references.
 
 Contract sources: [OpenQASM aliasing/index sets/concatenation](https://openqasm.com/versions/3.0/language/types.html) and [lexical alias scope](https://openqasm.com/versions/3.0/language/scope.html).
 

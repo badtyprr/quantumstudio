@@ -1,5 +1,7 @@
 # DEV-08b5: fixed quantum-register parameters
 
+Current status: the finite DEV-08 contract is released in REL-24. See [final evidence and limits](DEV-08.md). The record below describes the earlier bounded release and its then-open work.
+
 This bounded implementation accepts whole declared quantum registers for runtime
 subroutine parameters with literal widths from 1 to 25. Widths must match exactly;
 underlying qubits may not overlap across actual arguments. References preserve

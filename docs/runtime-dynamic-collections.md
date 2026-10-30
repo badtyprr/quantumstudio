@@ -48,4 +48,5 @@ the shared storage budget. Contiguous identity-backed aliases reuse captured
 geometry against their value map; concatenated selections gather through an
 identity map. Both paths retain normal saved-model and export validation limits.
 
-DEV-08 remains open for final fixture/oracle/editor acceptance and verified release.
+The final fixture/oracle/editor acceptance and verified release are recorded in
+[DEV-08 evidence](learning-evidence/DEV-08.md).

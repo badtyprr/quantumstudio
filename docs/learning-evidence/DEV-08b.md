@@ -1,5 +1,7 @@
 # DEV-08b: runtime subroutine activations
 
+Current status: the finite DEV-08 contract is released in REL-24. See [final evidence and limits](DEV-08.md). The record below describes the earlier bounded release and its then-open work.
+
 Status: **partial**, with scalar runtime calls released in [checkpoint-96595d01](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-96595d01), bit arguments/local storage in [checkpoint-9975e211](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-9975e211), and typed returns/early exits in [checkpoint-abb947c0](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-abb947c0). This does not complete DEV-08b or any whole IBM/qBraid source row.
 
 ## Source and scope
