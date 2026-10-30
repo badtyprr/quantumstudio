@@ -19,6 +19,7 @@ public:
  enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric, CheckArrayReferences, CopyArray, CheckWireReferences };
  const Kind kind;
  static CircuitStep checkWireReferences(const QuantumClassical::WireSelection &selection) {
+  selection.validateReferenceBounds();
   return CircuitStep(CircuitStep(Kind::CheckWireReferences,{},0,0,0),std::make_shared<const QuantumClassical::WireSelection>(selection));
  }
  const std::shared_ptr<const QuantumClassical::ArrayReferenceCheck> arrayReferences;

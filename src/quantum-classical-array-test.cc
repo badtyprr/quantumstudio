@@ -88,6 +88,9 @@ void copyChecks() {
 template<class Step,class Run>void engineChecks(Run run,const Step &superposition) {
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);
  const auto floating=NumericType::floating(32);
+ auto largeIndex=index(0);for(unsigned k=0;k<7;k++)largeIndex=IntegerExpression::binary(Integer::Operation::Add,largeIndex,largeIndex);
+ WireSelection legacyLarge(std::vector<WireSelection::Target>(3,{{0},largeIndex}));
+ rejects<std::length_error>([&]{Step::checkWireReferences(legacyLarge);});
  run({Step::checkWireReferences(WireSelection::references({{{0},index(0)}}))},{{0,1.0}});
  rejects<std::invalid_argument>([&]{run({Step::checkWireReferences(WireSelection::references({{{0},index(0)},{{0},index(0)}}))},{});});
  rejects<std::out_of_range>([&]{run({Step::checkWireReferences(WireSelection::references({{{0},index(-1)}}))},{});});

@@ -7,10 +7,15 @@ WireSelection::WireSelection(const std::vector<Target> &targets,const std::strin
 WireSelection WireSelection::references(const std::vector<Target> &targets,const std::string &source) {return WireSelection(targets,source,25);}
 WireSelection::WireSelection(const std::vector<Target> &targets,const std::string &source,unsigned limit):targets_(targets),source_(source) {
  if(targets_.empty() || targets_.size()>limit)throw std::invalid_argument(limit==3 ? "Dynamic operations need one to three wire selectors" : "Quantum reference checks need one to 25 wire selectors");
- unsigned nodes=0;for(const auto &target:targets_) {nodes+=target.index.count();if(limit==25 && nodes>512)throw std::length_error("Wire selections exceed 512 expression nodes");}
+ if(limit==25)validateReferenceBounds();
  if(source_.size()>512 || source_.find('\0')!=std::string::npos)throw std::invalid_argument("Wire source context exceeds its bounds");
  for(const auto &target:targets_)if(target.wires.empty() || target.wires.size()>25)
   throw std::invalid_argument("Wire selector needs a register of one to 25 wires");
+}
+void WireSelection::validateReferenceBounds() const {
+ unsigned nodes=0;for(const auto &target:targets_) {
+  nodes+=target.index.count();if(nodes>512)throw std::length_error("Wire references exceed 512 expression nodes");
+ }
 }
 std::string WireSelection::diagnostic(const std::string &message) const {return source_.empty() ? message : source_+": "+message;}
 void WireSelection::validate(unsigned qubits,unsigned bits,const IntegerStorage &storage) const {

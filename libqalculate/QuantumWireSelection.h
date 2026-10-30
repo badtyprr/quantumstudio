@@ -13,6 +13,7 @@ public:
  WireSelection(const std::vector<Target> &targets,const std::string &source="");
  // Call-entry preflight spans the full register, independently of gate arity.
  static WireSelection references(const std::vector<Target> &targets,const std::string &source="");
+ void validateReferenceBounds() const;
  unsigned size() const {return static_cast<unsigned>(targets_.size());}
  // Validate references in every body without reading undefined runtime slots.
  void validate(unsigned qubits,unsigned bits,const IntegerStorage &storage) const;
