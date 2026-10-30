@@ -33,6 +33,7 @@ EXTRA_DIST = config.rpath  \
 	windows/test-dev08-numeric-source.py \
 	windows/fixtures/dev08-numeric-upstream.json \
 	docs/learning-evidence/DEV-08-research.md \
+	docs/learning-evidence/DEV-08.md \
 	windows/test-dev06-source-evidence.py \
 	windows/fixtures/dev06-upstream.json \
 	windows/fixtures/pyqasm-LICENSE.txt \

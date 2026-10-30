@@ -33,5 +33,6 @@ readable. At most512 combined expression nodes and4096 copied values are
 accepted. The editor displays the copy and preserves it through save/reopen;
 export uses ordinary assignment and `++` expressions.
 
-DEV-08 remains open for dynamic collection/alias iteration, quantum reference
-capture, full fixture/oracle/editor acceptance and verified packaged release.
+[Dynamic collection and bit-alias iteration](runtime-dynamic-collections.md)
+and [quantum reference capture](runtime-wire-reference-checks.md) use the same
+bounded allocations and captured geometry.

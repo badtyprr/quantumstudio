@@ -2,8 +2,10 @@
 
 DEV-08 now has native array element storage, expressions, writes, worker
 decoding, version-15 saved documents, indexed editor expressions, and basic
-global source arrays with export/reimport. Reference views, array parameters,
-bulk/slice operations and array iteration remain unfinished DEV-08 work.
+global source arrays with export/reimport. Reference views and array parameters
+are described in [source views](runtime-array-view-source.md), bulk/slice
+operations in [array copies](runtime-array-copy.md), and iteration in
+[dynamic collections](runtime-dynamic-collections.md).
 
 An array declaration contains a scalar table (integer or numeric), its element
 type, a base slot, and one to seven dimensions. Elements occupy contiguous

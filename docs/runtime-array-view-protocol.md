@@ -2,7 +2,8 @@
 
 QEXACT15 and QSAMPLE16 extend the previous array-capable protocols. Older
 versions reject new opcodes and view selectors. These formats are internal
-worker integration; source/model/editor/export support remains unfinished.
+worker integration; [saved models and the editor](runtime-array-view-model.md)
+and [source/export integration](runtime-array-view-source.md) use these views.
 All fields below use the existing bounded LF-terminated integer encoding.
 
 A view encodes: writable (0/1), parent-present (0/1), then either a recursively
