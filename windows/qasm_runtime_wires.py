@@ -4,8 +4,14 @@ Only the private compilation proxy uses fixed wires. Every emitted operation
 retains its real ordered candidates and runtime index for the circuit model.
 """
 import copy
+from dataclasses import dataclass
 import openqasm3.ast as ast
 from qasm_source_diagnostics import error_at
+
+
+@dataclass
+class WireReferenceCheck(ast.Statement):
+    targets: list
 
 
 class RuntimeWires:
@@ -31,11 +37,12 @@ class RuntimeWires:
 
     @staticmethod
     def fixed(visitor, operand):
+        if isinstance(operand,ast.IndexExpression) and isinstance(operand.collection,ast.Identifier):operand=ast.IndexedIdentifier(name=operand.collection,indices=[operand.index])
         proxy = ast.QuantumGate(modifiers=[], name=ast.Identifier('id'), arguments=[], qubits=[operand])
         return visitor._get_op_bits(proxy, qubits=True)
 
-    def group(self, visitor, operand):
-        if self.dynamic(visitor, operand):
+    def group(self, visitor, operand, force=False):
+        if self.dynamic(visitor, operand) or force and self.parts(operand)[1] is not None:
             name, indices = self.parts(operand)
             if not isinstance(indices, list) or len(indices) != 1 or isinstance(indices[0], (ast.RangeDefinition, ast.DiscreteSet)):
                 raise error_at(operand, 'Runtime quantum indices require one scalar integer; runtime slices/sets are unsupported.')

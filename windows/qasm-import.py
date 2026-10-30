@@ -21,7 +21,7 @@ from qasm_source_diagnostics import error_at
 from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
-from qasm_runtime_wires import RuntimeWires
+from qasm_runtime_wires import RuntimeWires, WireReferenceCheck
 from qasm_runtime_arrays import ArrayCopyStatement, ArrayReferenceCheck, map_view, view_document, lower_arrays, selection as array_selection, declarations as array_declarations
 
 from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, contains_numeric, lower_numeric
@@ -424,6 +424,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return result+assignment(visitor,initial)
     def branch(visitor, statement, force=False):
         if in_function(visitor):return original_branch(visitor,statement)
+        force=force or any(isinstance(item,WireReferenceCheck) for item in nodes(statement))
         if not force and not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
             return original_branch(visitor, statement)
         # Preserve the expression and choose the body only during execution.
@@ -450,8 +451,18 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             visitor._in_branching_statement -= 1
             if not visitor._in_branching_statement:
                 visitor._update_branching_gate_depths()
+    def wire_reference_check(visitor,statement):
+        if visitor._check_only:return []
+        targets=[]
+        for operand in statement.targets:
+            group=wire_adapter.group(visitor,operand,force=True)
+            if len(group)!=1:raise error_at(statement,'Scalar quantum formals require one selected qubit.')
+            targets.extend(group)
+        result=WireReferenceCheck(targets=targets);result.span=statement.span
+        return [result]
     def visit_map(visitor):
         mapping=original_visit_map(visitor)
+        mapping[WireReferenceCheck]=lambda statement: wire_reference_check(visitor,statement)
         mapping[ArrayCopyStatement]=lambda statement: [] if visitor._check_only else [ArrayCopyStatement(destination=map_view(statement.destination,lambda value:normalize(visitor,value,typed=True)),sources=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.sources])]
         mapping[ArrayReferenceCheck]=lambda statement: [] if visitor._check_only else [ArrayReferenceCheck(views=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.views],shapes=statement.shapes)]
         mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
@@ -867,7 +878,7 @@ def mark_runtime_ranges(program):
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
                 env[statement.identifier.name]=isinstance(statement,ast.ClassicalDeclaration)
             elif isinstance(statement,ast.ForInLoop):
-                dynamic=runtime(statement.set_declaration,env) or getattr(statement,'_quantum_runtime_for',False)
+                dynamic=runtime(statement.set_declaration,env) or getattr(statement,'_quantum_runtime_for',False) or any(isinstance(item,WireReferenceCheck) for item in nodes(statement.block))
                 inner=dict(env);inner[statement.identifier.name]=dynamic
                 block(statement.block,inner)
                 # Static expansion duplicates nested runtime binding identities.
@@ -1449,6 +1460,11 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 raise ValueError('Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
+            if isinstance(statement,WireReferenceCheck):
+                version=max(version,18)
+                span=statement.span
+                append(dict(Kind='CheckWireReferences',WireSource='OpenQASM:'+str(getattr(span,'start_line',0))+':'+str((getattr(span,'start_column',0) or 0)+1),
+                    WireTargets=[dict(Candidates=[reference(value,quantum) for value in target['Candidates']],Index=classical_value(target['Index'],classical,integer_only=True)) for target in statement.targets]));continue
             if isinstance(statement,ArrayCopyStatement):
                 version=max(version,17)
                 append(dict(Kind='CopyArray',ArrayCopy=dict(Destination=view_document(statement.destination,lambda value:classical_value(value,classical,integer_only=True)),Sources=[view_document(view,lambda value:classical_value(value,classical,integer_only=True)) for view in statement.sources])));continue
@@ -1594,7 +1610,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     result={'Version': version, 'Qubits': nq, 'Registers': named, 'OutputBits': list(reversed(visible_bits)), 'Steps': steps}
     if declarations or version>=6:result['Variables']=declarations
     if version>=13:result['NumericVariables']=numeric_declarations
-    if allocations:result['Arrays']=array_declarations(allocations,variables,numeric_variables)
+    if allocations or version>=15:result['Arrays']=array_declarations(allocations,variables,numeric_variables)
     if version>=7:result['LoopConditionBudget']=1000000
     return result
 

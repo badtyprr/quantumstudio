@@ -72,8 +72,8 @@ sealed class ClassicalProgramWindow : Window {
   bottom.Children.Add(status);
   var editor=new WrapPanel();bottom.Children.Add(editor);
   kind.DisplayMemberPath="Label";kind.SelectedValuePath="Key";
-  string[] keys={"Gate","Measure","Reset","Conditional","Channel","Readout","Branch","Assign","ExpressionBranch","StoreInteger","ClearInteger","While","Break","Continue","End","ForRange","Rotation","ParameterGate","StoreNumeric","ClearNumeric"};
-  string[] labels={"Gate","Measure","Reset","Conditional gate","Noise channel","Readout error","If mask","Assign bits","If expression","Assign variable","Clear variable","While expression","Break loop","Continue loop","End program","For integer range","Runtime rotation","Runtime gate","Assign numeric","Clear numeric"};
+  string[] keys={"Gate","Measure","Reset","Conditional","Channel","Readout","Branch","Assign","ExpressionBranch","StoreInteger","ClearInteger","While","Break","Continue","End","ForRange","Rotation","ParameterGate","StoreNumeric","ClearNumeric","CheckWireReferences"};
+  string[] labels={"Gate","Measure","Reset","Conditional gate","Noise channel","Readout error","If mask","Assign bits","If expression","Assign variable","Clear variable","While expression","Break loop","Continue loop","End program","For integer range","Runtime rotation","Runtime gate","Assign numeric","Clear numeric","Validate quantum arguments"};
   for(int i=0;i<keys.Length;i++)kind.Items.Add(new OperationChoice {Key=keys[i],Label=labels[i]});kind.SelectedValue="Gate";
   Field(editor,"Operation",kind,150);Field(editor,"Expression / matrix / channel",expression,240);Field(editor,"Target wires / bits",wires,240);Field(editor,"Save to classical bit",destination,120);
   Field(editor,"Variable name",variableTarget,170);
@@ -107,7 +107,7 @@ sealed class ClassicalProgramWindow : Window {
   return String.Join("; ",step.WireTargets.Select(target=>
    (target.Candidates.SequenceEqual(Enumerable.Range(0,context.Qubits)) ? "q" : "q[{"+String.Join(",",target.Candidates)+"}]")+"["+ClassicalExpressionText.Format(target.Index,context)+"]"));
  }
- static ClassicalCircuit.WireTargetNode[] ParseWireTargets(string text,ClassicalCircuit.Document context) {
+ static ClassicalCircuit.WireTargetNode[] ParseWireTargets(string text,ClassicalCircuit.Document context,int limit=3) {
   var result=new List<ClassicalCircuit.WireTargetNode>();
   foreach(string item in text.Split(';')) {
    var match=System.Text.RegularExpressions.Regex.Match(item.Trim(),@"\Aq(?:\[\{([0-9, ]+)\}\])?\[(.+)\]\z");
@@ -115,7 +115,7 @@ sealed class ClassicalProgramWindow : Window {
    int[] candidates=match.Groups[1].Success ? Indices(match.Groups[1].Value) : Enumerable.Range(0,context.Qubits).ToArray();
    result.Add(new ClassicalCircuit.WireTargetNode{Candidates=candidates,Index=ClassicalExpressionText.ParseInteger(match.Groups[2].Value,context)});
   }
-  if(result.Count<1 || result.Count>3)throw new ArgumentException("Use one to three runtime target wires.");
+  if(result.Count<1 || result.Count>limit)throw new ArgumentException("Too many runtime target wires for this operation.");
   return result.ToArray();
  }
  static int Int(string text) {int result;if(!Int32.TryParse(text.Trim(),NumberStyles.None,CultureInfo.InvariantCulture,out result))throw new ArgumentException("Enter nonnegative integer indices and sizes.");return result;}
@@ -166,7 +166,7 @@ sealed class ClassicalProgramWindow : Window {
   return "Validate array arguments: "+String.Join("; ",step.ArrayReferences.Select(reference=>ClassicalExpressionText.FormatView(reference.View,context)+(reference.Shape.Length==0 ? "" : " shape ["+String.Join(",",reference.Shape)+"]")));
  }
  static int StepVersion(ClassicalCircuit.Step step) {
-  int version=step.ArrayCopy!=null ? 17 : step.ArrayReferences!=null || (step.ArrayTarget!=null && step.ArrayTarget.View!=null) ? 16 : step.ArrayTarget!=null ? 15 : 2;
+  int version=step.Kind=="CheckWireReferences" ? 18 : step.ArrayCopy!=null ? 17 : step.ArrayReferences!=null || (step.ArrayTarget!=null && step.ArrayTarget.View!=null) ? 16 : step.ArrayTarget!=null ? 15 : 2;
   foreach(var expression in new[]{step.IntegerValue,step.ClassicalValue})if(expression!=null)version=Math.Max(version,ClassicalExpressionText.RequiredVersion(expression));
   if(step.ArrayTarget!=null)foreach(var index in step.ArrayTarget.Indices)version=Math.Max(version,ClassicalExpressionText.RequiredVersion(index));
   if(step.Range!=null)foreach(var expression in new[]{step.Range.Start,step.Range.Stop,step.Range.Step})version=Math.Max(version,ClassicalExpressionText.RequiredVersion(expression));
@@ -220,8 +220,12 @@ sealed class ClassicalProgramWindow : Window {
   }
   var step=new ClassicalCircuit.Step {Kind=op,Expression=op=="Gate" || op=="Conditional" || op=="Channel" || op=="Readout" ? expression.Text.Trim() : null,Wires=branch || integer || numeric || IsTransfer(op) || op=="End" ? null : wires.Text.Contains("q[") ? null : Indices(wires.Text),ClassicalBit=op=="Measure" ? (int?)Int(destination.Text) : null,Mask=condition ? mask.Text.Trim() : null,Value=condition ? value.Text.Trim() : null,WhenTrue=branch ? new ClassicalCircuit.Step[0] : null,WhenFalse=branch && !IsLoop(op) ? new ClassicalCircuit.Step[0] : null};
   if(!branch && !integer && !numeric && !IsTransfer(op) && op!="End" && wires.Text.Contains("q[")) {
-   var doc=history.Current.Snapshot();step.WireTargets=ParseWireTargets(wires.Text,doc);step.Wires=Enumerable.Range(0,step.WireTargets.Length).ToArray();step.WireSource="Editor";
+   var doc=history.Current.Snapshot();step.WireTargets=ParseWireTargets(wires.Text,doc,op=="CheckWireReferences" ? 25 : 3);step.Wires=op=="CheckWireReferences" ? null : Enumerable.Range(0,step.WireTargets.Length).ToArray();step.WireSource="Editor";
    if(replace) {var old=Body(doc,selected.Route)[selected.Index];if(old.WireTargets!=null && WireText(old,doc)==wires.Text)step.WireSource=old.WireSource;}
+  }
+  if(op=="CheckWireReferences" && step.WireTargets==null) {
+   step.WireTargets=(step.Wires??new int[0]).Select(wire=>new ClassicalCircuit.WireTargetNode{Candidates=new[]{wire},Index=ClassicalExpressionText.ParseInteger("0",history.Current.Snapshot())}).ToArray();
+   step.Wires=null;step.WireSource="Editor";
   }
   if(integer || range) {
    var doc=history.Current.Snapshot();int slot=Array.FindIndex(doc.Variables ?? new ClassicalCircuit.Variable[0],v=>v.Name==variableTarget.Text.Trim());
@@ -246,7 +250,7 @@ sealed class ClassicalProgramWindow : Window {
   if(op=="ParameterGate")step.ParameterGate=ReadParameterGate();
   bool classical=op=="Assign" || op=="ExpressionBranch" || op=="While";
   if(classical)step.ClassicalValue=ClassicalExpressionText.Parse(expression.Text,history.Current.Snapshot(),op=="Assign" ? step.Wires.Length : 1);
-  history.Edit(d=>{d.Version=Math.Max(d.Version,StepVersion(step));if(step.WireTargets!=null)d.Version=Math.Max(14,d.Version);if(numeric || NumericReal(step.Angle) || (step.ParameterGate!=null && (step.ParameterGate.Parameters.Any(NumericReal) || ClassicalExpressionText.RequiredVersion(step.ParameterGate.Power)>=13)) || (step.Range!=null && new[]{step.Range.Start,step.Range.Stop,step.Range.Step}.Any(e=>ClassicalExpressionText.RequiredVersion(e)>=13)))d.Version=Math.Max(13,d.Version);if(op=="ParameterGate"){d.Version=Math.Max(12,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="Rotation"){d.Version=Math.Max(11,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(range){d.Version=Math.Max(10,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="End"){d.Version=Math.Max(9,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(IsTransfer(op))d.Version=Math.Max(8,d.Version);if(op=="While"){d.Version=Math.Max(7,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=13){if(d.NumericVariables==null)d.NumericVariables=new ClassicalCircuit.NumericVariable[0];if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {
+  history.Edit(d=>{d.Version=Math.Max(d.Version,StepVersion(step));if(step.WireTargets!=null)d.Version=Math.Max(14,d.Version);if(numeric || NumericReal(step.Angle) || (step.ParameterGate!=null && (step.ParameterGate.Parameters.Any(NumericReal) || ClassicalExpressionText.RequiredVersion(step.ParameterGate.Power)>=13)) || (step.Range!=null && new[]{step.Range.Start,step.Range.Stop,step.Range.Step}.Any(e=>ClassicalExpressionText.RequiredVersion(e)>=13)))d.Version=Math.Max(13,d.Version);if(op=="ParameterGate"){d.Version=Math.Max(12,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="Rotation"){d.Version=Math.Max(11,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(range){d.Version=Math.Max(10,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(op=="End"){d.Version=Math.Max(9,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(IsTransfer(op))d.Version=Math.Max(8,d.Version);if(op=="While"){d.Version=Math.Max(7,d.Version);if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(classical || step.IntegerValue!=null)d.Version=Math.Max(ClassicalExpressionText.RequiredVersion(step.IntegerValue ?? step.ClassicalValue),d.Version);if(d.Version>=15 && d.Arrays==null)d.Arrays=new ClassicalCircuit.ArrayDeclaration[0];if(d.Version>=13){if(d.NumericVariables==null)d.NumericVariables=new ClassicalCircuit.NumericVariable[0];if(!d.LoopConditionBudget.HasValue)d.LoopConditionBudget=1000000;}if(d.Version>=5 && d.Variables==null)d.Variables=new ClassicalCircuit.Variable[0];var list=Body(d,selected.Route).ToList();if(replace) {var old=list[selected.Index];if(IsBranch(old.Kind)) {
     var otherwise=old.WhenFalse ?? new ClassicalCircuit.Step[0];
     if((!branch && old.WhenTrue.Length!=0) || ((!branch || IsLoop(op)) && otherwise.Length!=0))throw new ArgumentException("Delete the body's children before a change that would discard them.");
     if(branch){step.WhenTrue=old.WhenTrue;step.WhenFalse=IsLoop(op) ? null : otherwise;}
@@ -263,7 +267,7 @@ sealed class ClassicalProgramWindow : Window {
  }
  static TreeViewItem BodyNode(string title,ClassicalCircuit.Step[] body,int[] route,ClassicalCircuit.Document context) {
   var node=new TreeViewItem {Header=title,IsExpanded=true,Tag=new Selection {Route=route,Index=-1}};
-  for(int i=0;i<body.Length;i++) {var step=body[i];string description=step.ArrayCopy!=null ? CopyDescription(step,context) : step.ArrayReferences!=null ? ReferenceDescription(step,context) : step.ArrayTarget!=null ? ClassicalExpressionText.FormatArray(step.ArrayTarget,context)+" = "+(step.NumericValue!=null ? ClassicalRealExpressionText.Format(step.NumericValue,context) : ClassicalExpressionText.Format(step.IntegerValue,context)) : step.Kind=="StoreNumeric" ? context.NumericVariables[step.VariableSlot.Value].Name+" = "+ClassicalRealExpressionText.Format(step.NumericValue,context) : step.Kind=="ClearNumeric" ? "Clear "+context.NumericVariables[step.VariableSlot.Value].Name : step.Kind=="ParameterGate" ? ParameterDescription(step,context) : step.Kind=="Rotation" ? "R"+step.Axis+"("+ClassicalRealExpressionText.Format(step.Angle,context)+") ["+WireText(step,context)+"]" : step.Kind=="ForRange" ? "For "+context.Variables[step.VariableSlot.Value].Name+" in ["+RangeText(step.Range.Start,context)+" : "+RangeText(step.Range.Step,context)+" : "+RangeText(step.Range.Stop,context)+"]" : step.Kind=="End" ? "End program · keep saved results" : IsTransfer(step.Kind) ? (step.Kind=="Break" ? "Break nearest loop" : "Continue nearest loop") : step.Kind=="StoreInteger" ? context.Variables[step.VariableSlot.Value].Name+" = "+ClassicalExpressionText.Format(step.IntegerValue,context) : step.Kind=="ClearInteger" ? "Clear "+context.Variables[step.VariableSlot.Value].Name : step.Kind=="Assign" ? "Assign ["+String.Join(",",step.Wires)+"] ← "+ClassicalExpressionText.Format(step.ClassicalValue,context) : (step.Kind=="ExpressionBranch" || step.Kind=="While") ? (step.Kind=="While" ? "While " : "If ")+ClassicalExpressionText.Format(step.ClassicalValue,context) : step.Kind=="Branch" ? "If (record & "+step.Mask+") = "+step.Value : step.Kind+" "+(step.Expression ?? "")+" ["+WireText(step,context)+"]"+(step.ClassicalBit.HasValue ? " → bit "+step.ClassicalBit : "")+(step.Kind=="Conditional" ? " if (record & "+step.Mask+") = "+step.Value : "");
+  for(int i=0;i<body.Length;i++) {var step=body[i];string description=step.Kind=="CheckWireReferences" ? "Validate quantum arguments: "+WireText(step,context) : step.ArrayCopy!=null ? CopyDescription(step,context) : step.ArrayReferences!=null ? ReferenceDescription(step,context) : step.ArrayTarget!=null ? ClassicalExpressionText.FormatArray(step.ArrayTarget,context)+" = "+(step.NumericValue!=null ? ClassicalRealExpressionText.Format(step.NumericValue,context) : ClassicalExpressionText.Format(step.IntegerValue,context)) : step.Kind=="StoreNumeric" ? context.NumericVariables[step.VariableSlot.Value].Name+" = "+ClassicalRealExpressionText.Format(step.NumericValue,context) : step.Kind=="ClearNumeric" ? "Clear "+context.NumericVariables[step.VariableSlot.Value].Name : step.Kind=="ParameterGate" ? ParameterDescription(step,context) : step.Kind=="Rotation" ? "R"+step.Axis+"("+ClassicalRealExpressionText.Format(step.Angle,context)+") ["+WireText(step,context)+"]" : step.Kind=="ForRange" ? "For "+context.Variables[step.VariableSlot.Value].Name+" in ["+RangeText(step.Range.Start,context)+" : "+RangeText(step.Range.Step,context)+" : "+RangeText(step.Range.Stop,context)+"]" : step.Kind=="End" ? "End program · keep saved results" : IsTransfer(step.Kind) ? (step.Kind=="Break" ? "Break nearest loop" : "Continue nearest loop") : step.Kind=="StoreInteger" ? context.Variables[step.VariableSlot.Value].Name+" = "+ClassicalExpressionText.Format(step.IntegerValue,context) : step.Kind=="ClearInteger" ? "Clear "+context.Variables[step.VariableSlot.Value].Name : step.Kind=="Assign" ? "Assign ["+String.Join(",",step.Wires)+"] ← "+ClassicalExpressionText.Format(step.ClassicalValue,context) : (step.Kind=="ExpressionBranch" || step.Kind=="While") ? (step.Kind=="While" ? "While " : "If ")+ClassicalExpressionText.Format(step.ClassicalValue,context) : step.Kind=="Branch" ? "If (record & "+step.Mask+") = "+step.Value : step.Kind+" "+(step.Expression ?? "")+" ["+WireText(step,context)+"]"+(step.ClassicalBit.HasValue ? " → bit "+step.ClassicalBit : "")+(step.Kind=="Conditional" ? " if (record & "+step.Mask+") = "+step.Value : "");
    var child=new TreeViewItem {Header=new TextBlock {Text=description,TextWrapping=TextWrapping.Wrap,FontFamily=new FontFamily("Consolas")},IsExpanded=true,Tag=new Selection {Route=route,Index=i}};node.Items.Add(child);
    if(IsBranch(step.Kind)) {child.Items.Add(BodyNode(IsLoop(step.Kind) ? "Loop body" : "Then",step.WhenTrue,route.Concat(new[]{i,0}).ToArray(),context));if(!IsLoop(step.Kind))child.Items.Add(BodyNode("Else",step.WhenFalse,route.Concat(new[]{i,1}).ToArray(),context));}
   }return node;
@@ -464,6 +468,25 @@ sealed class ClassicalProgramWindow : Window {
   VerifyNumerics(screenshot+".rotations");
   VerifyArrays(screenshot+".arrays");
   VerifyRuntimeWires(screenshot+".rotations.wires");
+  VerifyWireReferences(screenshot+".wire-references");
+ }
+ void VerifyWireReferences(string prefix) {
+  Width=1100;Height=920;
+  history.Open(ClassicalCircuit.From(new ClassicalCircuit.Document{Version=2,Qubits=3,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]}).Serialize());Refresh();
+  kind.SelectedValue="CheckWireReferences";wires.Text="q[{2,0}][0]; q[1]";ChangeStep(false);Refresh();
+  var row=(TreeViewItem)((TreeViewItem)tree.Items[0]).Items[0];row.IsSelected=true;
+  if(!((TextBlock)row.Header).Text.StartsWith("Validate quantum arguments:",StringComparison.Ordinal))throw new Exception("Wire preflight was not identified.");
+  wires.Text="q[{2,0}][1]; q[1]";ChangeStep(true);Refresh();string valid=history.Current.Serialize();
+  if(history.Current.Snapshot().Version!=18 || history.Current.Snapshot().Steps[0].WireTargets.Length!=2)throw new Exception("Wire check editing lost references.");
+  ((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[0]).IsSelected=true;wires.Text="q[{99}][0]";
+  try{ChangeStep(true);throw new Exception("Invalid quantum reference accepted.");}catch(ArgumentException){}
+  if(history.Current.Serialize()!=valid)throw new Exception("Invalid wire edit changed the circuit.");
+  history.Undo();history.Redo();if(history.Current.Serialize()!=valid)throw new Exception("Wire check undo/redo changed references.");
+  SaveTo(prefix+".qcircuit");history.Open(File.ReadAllText(prefix+".qcircuit",new UTF8Encoding(false,true)));Refresh();
+  if(history.Current.Serialize()!=valid || !ClassicalProgramQasm.Export(history.Current).Contains("def _wire_check_"))throw new Exception("Wire preflight save/export lost references.");
+  ((TreeViewItem)((TreeViewItem)tree.Items[0]).Items[0]).IsSelected=true;
+  status.Text="Verified · Quantum argument checks, invalid edits, undo/redo and save/reopen.";
+  UpdateLayout();((ScrollViewer)Content).ScrollToTop();UpdateLayout();Capture(prefix+".png");
  }
  void VerifyRuntimeWires(string prefix) {
   Width=980;Height=920;
