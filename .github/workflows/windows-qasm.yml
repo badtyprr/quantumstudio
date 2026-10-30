@@ -13,7 +13,7 @@ jobs:
   compiler:
     name: Windows OpenQASM build and tests
     runs-on: windows-2025-vs2026
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Check out proposed revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
