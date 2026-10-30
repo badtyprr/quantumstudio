@@ -274,3 +274,6 @@ EXTRA_DIST += quantum-wire-selection-request-test.py
 TESTS += quantum-wire-selection-request-test.py
 EXTRA_DIST += quantum-classical-array-request-test.py
 TESTS += quantum-classical-array-request-test.py
+
+EXTRA_DIST += quantum-classical-array-view-request-test.py
+TESTS += quantum-classical-array-view-request-test.py

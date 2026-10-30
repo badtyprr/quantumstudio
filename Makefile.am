@@ -165,3 +165,5 @@ EXTRA_DIST += windows/qasm_runtime_arrays.py windows/test-qasm-runtime-arrays.py
 EXTRA_DIST += docs/learning-evidence/DEV-07-research.md
 
 EXTRA_DIST += docs/learning-evidence/DEV-07.md
+
+EXTRA_DIST += docs/runtime-array-views.md docs/runtime-array-view-protocol.md
