@@ -25,9 +25,10 @@ All loop work remains subject to the existing execution budgets.
 The lowering uses existing array-copy, view, scalar and range-loop model steps.
 Saved documents, editor operations and OpenQASM export retain those explicit
 snapshots; reimport does not introduce another collection snapshot. No protocol
-or document version change is needed. Export removes only duplicate tail cleanup after direct transfers, from a
-snapshot of an already validated circuit. Every removed clear must already
-occur immediately before the transfer. Source diagnostics and the saved model
+or document version change is needed. Export removes unreachable instructions only from a snapshot of an already
+validated circuit. A clear after unconditional continue never executes, so its
+removal preserves the retained value rather than ending a lifetime. Reachable
+clears retain their definedness effects. Source diagnostics and the saved model
 are preserved.
 
 DEV-08 remains open for classical aliases, dynamic quantum reference binding,

@@ -46,6 +46,9 @@ def execute(encoded, expected, error=False):
         assert values == {expected: '1' if exact else 10000}, values
 
 for source in (
+ 'array[int,3] a={1,2,3};int n=0;for int v in a{int x=v;n+=x;continue;int z=1;}output bit c;c=n==6;',
+ 'array[int,3] a={1,2,3};int n=0;for int v in a{int x=v;n+=x;break;int z=1;}output bit c;c=n==1;',
+
  'array[int,2] a={1,2};int n=0;for int v in a{n+=v;break;}output bit c;c=n==1;',
  'array[int,2] a={1,2};int n=0;for int v in a{n+=v;continue;}output bit c;c=n==3;',
 
@@ -89,4 +92,17 @@ for source in (
     try:compiler.convert('OPENQASM 3.0;'+source,classical=True)
     except (ValueError,RuntimeError,ValidationError):checks+=1
     else:raise AssertionError('Accepted invalid collection: '+source)
+# A model's clear after continue is unreachable. Observe the retained value
+# after the loop on both engines, then compare exported/reimported execution.
+read=dict(Kind='IntegerVariable',Signedness='Unsigned',Width=1,Slot=0)
+def bit(value):return dict(Kind='Assign',Wires=[0],ClassicalValue=dict(Kind='Constant',Width=1,Value=str(value)))
+model=dict(Version=9,Qubits=0,Registers=[dict(Name='c',Size=1)],OutputBits=[0],
+    Variables=[dict(Name='retained',Signedness='Unsigned',Width=1)],LoopConditionBudget=1000000,
+    Steps=[bit(1),dict(Kind='While',ClassicalValue=dict(Kind='Read',Bits=[0]),WhenTrue=[
+        dict(Kind='StoreInteger',VariableSlot=0,IntegerValue=dict(Kind='IntegerConstant',Signedness='Unsigned',Width=1,Value='1')),
+        bit(0),dict(Kind='Continue'),dict(Kind='ClearInteger',VariableSlot=0)]),
+        dict(Kind='Assign',Wires=[0],ClassicalValue=dict(Kind='IntegerBits',Left=read))])
+run=subprocess.run([str(args.adapter.resolve())],input=json.dumps(model).encode(),capture_output=True,timeout=30)
+assert run.returncode==0,run.stderr
+encoded=json.loads(run.stdout);execute(encoded,'1');execute(compile_source(encoded['source']),'1')
 print('PASS: %d dynamic array iteration checks.'%checks)

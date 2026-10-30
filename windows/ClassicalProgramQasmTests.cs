@@ -97,7 +97,11 @@ static class ClassicalProgramQasmTests {
   var stop=new S{Kind="Assign",Wires=new[]{0},ClassicalValue=Constant(1,"0")};
   Case("local-continue",Circuit(0,1,new[]{0},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,stop,clear,new S{Kind="Continue"}}}},variable),"0");
   Case("local-break",Circuit(0,1,new[]{0},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,stop,clear,new S{Kind="Break"}}}},variable),"0");
-  Reject(Circuit(0,1,new[]{0},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,stop,new S{Kind="Continue"},clear}}},variable),"lifetime");
+  // Unreachable cleanup cannot clear the value retained after the loop.
+  var retained=Circuit(0,1,new[]{0},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,stop,new S{Kind="Continue"},clear}},assign},variable);
+  string retainedBefore=retained.Serialize();Case("unreachable-clear-retains-value",retained,"1");
+  if(retained.Serialize()!=retainedBefore)throw new Exception("Export mutated unreachable instructions.");
+  Reject(Circuit(0,1,new[]{0},new[]{begin,new S{Kind="While",ClassicalValue=Read(0),WhenTrue=new[]{store,stop,clear,new S{Kind="Continue"}}},assign},variable),"lifetime");
   var rangeType=new[]{new ClassicalCircuit.Variable{Name="iterator",Signedness="Unsigned",Width=2}};
   var rangeRead=new N{Kind="IntegerVariable",Signedness="Unsigned",Width=2,Slot=0};
   var rangeAssign=new S{Kind="Assign",Wires=new[]{0,1},ClassicalValue=new N{Kind="IntegerBits",Left=rangeRead}};
