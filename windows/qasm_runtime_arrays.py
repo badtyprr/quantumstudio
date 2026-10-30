@@ -118,8 +118,9 @@ def lower_arrays(program):
             scan(control,hidden,controlled,dynamic)
             local=set(hidden);local_dynamic=set(dynamic)
             if isinstance(value,ast.ForInLoop):local.add(value.identifier.name)
-            if isinstance(value,ast.ForInLoop) and depends(control):local_dynamic.add(value.identifier.name)
-            scan(value.block,local,controlled or isinstance(value,ast.WhileLoop) or depends(control),local_dynamic);return
+            dynamic=depends(control) or getattr(value,'_quantum_runtime_for',False)
+            if isinstance(value,ast.ForInLoop) and dynamic:local_dynamic.add(value.identifier.name)
+            scan(value.block,local,controlled or isinstance(value,ast.WhileLoop) or dynamic,local_dynamic);return
         if is_dataclass(value):
             for field in fields(value):
                 if field.name not in ('span','annotations'):scan(getattr(value,field.name),hidden,controlled,dynamic)

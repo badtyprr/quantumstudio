@@ -980,6 +980,7 @@ def convert(source, published_u=False, classical=False):
     if classical:
         prepare_subroutine_scope(module.original_program)
         hidden_registers=lower_runtime_subroutines(module.original_program)
+        mark_runtime_ranges(module.original_program)
         allocations=lower_arrays(module.original_program)
         mark_runtime_ranges(module.original_program)
         lower_for_transfers(module.original_program)
