@@ -179,3 +179,5 @@ EXTRA_DIST += windows/test-qasm-runtime-dynamic-collections.py docs/runtime-dyna
 EXTRA_DIST += docs/runtime-wire-reference-checks.md
 
 EXTRA_DIST += windows/test-runtime-wire-reference-model.py
+
+EXTRA_DIST += windows/test-runtime-scalar-quantum-bindings.py

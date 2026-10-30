@@ -34,3 +34,9 @@ actuals without nested calls. Full call-entry capture, nonempty routine bodies,
 register formals and dynamic aliases still require source binding integration.
 
 DEV-08 remains unfinished; no release is claimed.
+
+## Runtime scalar quantum parameters
+
+A nonempty runtime subroutine accepts a scalar qubit selected by an integer expression from a declared register or fixed alias. Each selector is checked and captured before evaluating the next argument. After all actuals have been evaluated, one reference check rejects physical overlap across the captured scalar references and whole-register parameters before body effects. Nested calls retain the captured identity. Existing fixed-literal calls retain their compile-time diagnostics and document versions.
+
+Register slices, dynamic aliases, and runtime indexing of register views remain separate DEV-08 work. The scalar binding suite observes wire identity after later argument mutation, nested forwarding, aliases, mixed register parameters, overlap, lazy type checks, and selector-error ordering through original and exported programs on both engines.
