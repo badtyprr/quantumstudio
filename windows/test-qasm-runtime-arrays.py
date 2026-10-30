@@ -85,4 +85,9 @@ for index in ('2','-3','18446744073709551615'):
     original=compile_source(source);restored=compile_source(original['source'])
     execute(original,None,error='array');execute(restored,None,error='array')
 
+for suffix in ('=1;','=f(z);'):
+    source='OPENQASM 3.0;def f(int x)->int {return 1/x;}int z=0;int bad=2;array[int,2,2] a;a[bad,f(z)]'+suffix
+    original=compile_source(source);restored=compile_source(original['source'])
+    execute(original,None,error='array');execute(restored,None,error='array')
+
 print(f'PASS: {checks} runtime array source checks.')

@@ -647,9 +647,11 @@ def lower_runtime_subroutines(program):
                 effects,rhs=expression_calls(value.rvalue,active,depth)
                 indices=[]
                 raw_indices=[index for group in value.lvalue.indices for index in group]
-                for axis,index in enumerate(raw_indices):
-                    prefix,index=expression_calls(index,active,depth);result.extend(prefix)
-                    if effects:
+                lowered_indices=[expression_calls(index,active,depth) for index in raw_indices]
+                capture=bool(effects) or any(prefix for prefix,_ in lowered_indices)
+                for axis,(prefix,index) in enumerate(lowered_indices):
+                    result.extend(prefix)
+                    if capture:
                         # Check before narrowing to a signed snapshot: UINT64_MAX
                         # must fail bounds rather than turn into the valid -1.
                         probe=[ast.IntegerLiteral(0) for _ in raw_indices];probe[axis]=index
