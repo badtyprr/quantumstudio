@@ -13,6 +13,7 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
  for(const auto &step:steps) {
   checkpoint();if(++count>512)throw std::length_error("Exact circuits support at most 512 steps across all bodies");
   if(step.kind==Step::Kind::End)continue;
+  if(step.kind==Step::Kind::CopyArray){step.arrayCopy->validate(bits,variables);continue;}
   if(step.kind==Step::Kind::CheckArrayReferences){step.arrayReferences->validate(bits,variables);continue;}
   if(step.kind==Step::Kind::Break || step.kind==Step::Kind::Continue) {
    if(loopDepth==0)throw std::invalid_argument("Break and continue require an enclosing loop");
@@ -249,6 +250,9 @@ RuntimeRecords execute(RuntimeRecords records,unsigned qubits,unsigned bits,cons
     const auto &body=selected ? *step.whenTrue : *step.whenFalse;
     for(const auto &result:execute({record},qubits,bits,body,maxCells,exact,loopConditionsLeft))
      output.add(result.bits,result.variables,result.density,result.flow);
+   } else if(step.kind==Step::Kind::CopyArray) {
+    auto variables=record.variables;step.arrayCopy->execute(record.bits,bits,variables);
+    output.add(record.bits,variables,record.density);
    } else if(step.kind==Step::Kind::CheckArrayReferences) {
     step.arrayReferences->evaluate(record.bits,bits,record.variables);
     output.add(record.bits,record.variables,record.density);

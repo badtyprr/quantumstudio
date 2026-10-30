@@ -33,6 +33,7 @@ static class ClassicalQasmLifetimes {
   if(depth>=32)throw new InvalidDataException("OpenQASM export local lifetimes exceed 32 levels of nesting.");
   instruction(step);Expression(step.ClassicalValue,expression,numeric);Expression(step.IntegerValue,expression,numeric);Real(step.Angle,expression,numeric);Real(step.NumericValue,expression,numeric);
   if(step.ArrayTarget!=null){View(step.ArrayTarget.View,expression,numeric);foreach(var index in step.ArrayTarget.Indices)Expression(index,expression,numeric);}
+  if(step.ArrayCopy!=null){View(step.ArrayCopy.Destination,expression,numeric);foreach(var source in step.ArrayCopy.Sources)View(source,expression,numeric);}
   if(step.ArrayReferences!=null)foreach(var reference in step.ArrayReferences)View(reference.View,expression,numeric);
   if(step.WireTargets!=null)foreach(var target in step.WireTargets)Expression(target.Index,expression,numeric);
   if(step.ParameterGate!=null){foreach(var angle in step.ParameterGate.Parameters)Real(angle,expression,numeric);Expression(step.ParameterGate.Power,expression,numeric);}
@@ -249,6 +250,7 @@ sealed class ClassicalQasmScopes {
    var gate=body[i];var site=new Site{Scope=scope,Index=i,Gate=gate};
    Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);Real(gate.Angle,scope);Real(gate.NumericExpression,scope);
    if(gate.ArrayTarget!=null){View(gate.ArrayTarget.View,scope);foreach(var index in gate.ArrayTarget.Indices)Integer(index,scope);}
+   if(gate.ArrayCopy!=null){View(gate.ArrayCopy.Destination,scope);foreach(var source in gate.ArrayCopy.Sources)View(source,scope);}
    if(gate.ArrayReferences!=null)foreach(var view in gate.ArrayReferences.Views)View(view,scope);
    if(gate.SelectedWires!=null)foreach(var target in gate.SelectedWires.Targets)Integer(target.Index,scope);
    if(gate.ParameterGate!=null){foreach(var parameter in gate.ParameterGate.Parameters)Real(parameter,scope);Integer(gate.ParameterGate.Power,scope);}

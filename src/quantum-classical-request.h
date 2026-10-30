@@ -105,6 +105,14 @@ QuantumClassical::ArrayReferenceCheck arrayReferenceCheck(Reader &reader) {
  }
  return QuantumClassical::ArrayReferenceCheck(views,shapes);
 }
+template<class Reader>
+QuantumClassical::ArrayCopy arrayCopy(Reader &reader) {
+ if(!reader.copies())throw std::invalid_argument("Array copy requires the copy protocol");
+ unsigned count=0;auto destination=arrayView(reader,0,count);
+ const auto size=reader.integer(64);std::vector<QuantumClassical::ArrayView> sources;
+ for(unsigned k=0;k<size;++k)sources.push_back(arrayView(reader,0,count));
+ return QuantumClassical::ArrayCopy(destination,sources);
+}
 // Source context is encoded as bounded UTF-8 bytes represented by integers,
 // allowing expression writers to retain their integer-only interface.
 template<class Reader>

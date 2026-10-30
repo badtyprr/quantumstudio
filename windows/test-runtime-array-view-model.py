@@ -43,7 +43,8 @@ def run(document, expected=None, invalid=False, runtime_error=False):
     assert result.returncode == 0, result.stderr
     encoded = json.loads(result.stdout)
     import openqasm3
-    try:openqasm3.parse(encoded['source'])
+    from qasm_concat_parser import concatenation_program
+    try:concatenation_program(encoded['source']) or openqasm3.parse(encoded['source'])
     except Exception as error:raise AssertionError(encoded['source']) from error
     assert 'array[int[64], 2, 3] a0;' in encoded['source']
     for exact in (True, False):
@@ -120,4 +121,24 @@ geometry=view([dict(Scalar=True,Start=cast),axis()])
 real=dict(Kind='TypedConstant',NumericKind='Float',Width=64,ValueBits=str(struct.unpack('<Q',struct.pack('<d',1.0))[0]))
 doc['Steps']=[dict(Kind='ClearNumeric',VariableSlot=0),dict(Kind='StoreNumeric',VariableSlot=0,NumericValue=real),check((geometry,[3])),observe(extent(geometry),3),dict(Kind='ClearNumeric',VariableSlot=0)]
 run(doc,'1')
+copy_base=copy.deepcopy(base);copy_base['Version']=17
+row0=view([axis(0),axis()],True);row1=view([axis(1),axis()],True)
+def copy_values(destination,*sources):return dict(Kind='CopyArray',ArrayCopy=dict(Destination=destination,Sources=list(sources)))
+initial=[store(k+1,0,k) for k in range(3)]
+doc=copy.deepcopy(copy_base);doc['Steps']=initial+[copy_values(row1,row0),observe(load(row1,2),3)];run(doc,'1')
+last_two=view([axis(start=integer(1),stop=integer(2))],True,row0)
+first=view([axis(start=integer(0),stop=integer(0))],False,row0)
+doc['Steps']=initial+[copy_values(row0,last_two,first),observe(load(row0,2),1)];run(doc,'1')
+for mutation in (
+    lambda d:d.update(Version=16),
+    lambda d:d['Steps'][3]['ArrayCopy']['Destination'].update(Writable=False),
+    lambda d:d['Steps'][3]['ArrayCopy'].update(Sources=[]),
+    lambda d:d['Steps'][3]['ArrayCopy'].update(Unknown=True),
+    lambda d:d['Steps'][3].update(VariableSlot=0),
+    lambda d:d['Steps'][3].update(Kind='CheckArrayReferences'),
+):
+    bad=copy.deepcopy(doc);mutation(bad);run(bad,invalid=True)
+doc['Steps']=[copy_values(row1,row0)];run(doc,runtime_error=True)
+doc['Steps']=[copy_values(row1,first)];run(doc,runtime_error=True)
+
 print(f'PASS: {checks} array view model checks (source reimport still pending).')

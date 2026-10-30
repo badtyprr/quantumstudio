@@ -13,6 +13,54 @@ unsigned checks=0;
 void check(bool value){++checks;if(!value)throw std::runtime_error("Array check "+std::to_string(checks));}
 template<class E,class F>void rejects(F f){bool caught=false;try{f();}catch(const E&){caught=true;}check(caught);}
 IntegerExpression index(std::int64_t value){return IntegerExpression::constant(TypedInteger::fromBits(QuantumClassical::IntegerType::machine(Integer::Signedness::Signed),static_cast<std::uint64_t>(value)));}
+void copyChecks() {
+ const auto type=QuantumClassical::IntegerType::machine(Integer::Signedness::Signed);
+ auto slice=[](std::size_t array,std::int64_t start,std::int64_t stop,std::int64_t stride=1) {
+  auto a=index(start),b=index(stop),c=index(stride);
+  return ArrayView(array,{ArrayViewAxis::range(&a,&b,&c)},true);
+ };
+ RuntimeStorage storage(std::vector<QuantumClassical::IntegerType>(12,type),{},
+  {ArrayDeclaration::integers(type,0,{6}),ArrayDeclaration::integers(type,6,{6})});
+ auto reset=[&]{for(unsigned k=0;k<12;++k)storage.write(k,TypedInteger::fromBits(type,k));};
+ auto equals=[&](std::size_t slot,std::uint64_t value){check(storage.read(slot).value().bits()==value);};
+ reset();ArrayCopy(slice(0,1,5),{slice(0,0,4)}).execute(0,0,storage);
+ for(unsigned k=0;k<6;++k)equals(k,k?k-1:0);
+ reset();ArrayCopy(slice(0,0,4),{slice(0,1,5)}).execute(0,0,storage);
+ for(unsigned k=0;k<6;++k)equals(k,k<5?k+1:5);
+ reset();ArrayCopy(slice(0,0,5),{slice(0,0,2),slice(0,0,2)}).execute(0,0,storage);
+ for(unsigned k=0;k<6;++k)equals(k,k%3);
+ reset();ArrayCopy(slice(0,5,0,-1),{slice(0,0,5)}).execute(0,0,storage);
+ for(unsigned k=0;k<6;++k)equals(k,5-k);
+ reset();ArrayCopy(slice(0,0,4,2),{slice(0,-3,-1)}).execute(0,0,storage);
+ equals(0,3);equals(2,4);equals(4,5);equals(1,1);
+ reset();storage.clear(5);
+ rejects<std::domain_error>([&]{ArrayCopy(slice(1,0,5),{slice(0,0,5)}).execute(0,0,storage);});
+ for(unsigned k=6;k<12;++k)equals(k,k); // no partial writes on a late undefined read
+ rejects<std::invalid_argument>([&]{ArrayCopy(slice(1,0,4),{slice(0,0,5)}).execute(0,0,storage);});
+ rejects<std::invalid_argument>([&]{ArrayCopy(ArrayView(0,{ArrayViewAxis::range()},false),{slice(1,0,5)});});
+ const auto floating=NumericType::floating(32),angle=NumericType::angle(8);
+ RuntimeStorage numeric({}, {floating,floating,angle,angle},
+  {ArrayDeclaration::numerics(floating,0,{2}),ArrayDeclaration::numerics(angle,2,{2})});
+ numeric.numeric().write(0,NumericValue::floating(16777217));numeric.numeric().write(1,NumericValue::floating(-0.0));
+ ArrayCopy(slice(0,0,1),{slice(0,1,0,-1)}).execute(0,0,numeric);
+ check(numeric.numeric().read(0).bits()==0x80000000u);check(numeric.numeric().read(1).floatingValue()==16777216);
+ numeric.numeric().write(2,NumericValue::fromBits(angle,255));numeric.numeric().write(3,NumericValue::fromBits(angle,1));
+ ArrayCopy(slice(1,0,1),{slice(1,1,0,-1)}).execute(0,0,numeric);
+ check(numeric.numeric().read(2).bits()==1);check(numeric.numeric().read(3).bits()==255);
+ rejects<std::invalid_argument>([&]{ArrayCopy(slice(0,0,1),{slice(1,0,1)}).validate(0,numeric);});
+ RuntimeStorage empty({}, {}, {ArrayDeclaration::integers(type,0,{0}),ArrayDeclaration::integers(type,0,{1,0}),ArrayDeclaration::integers(type,0,{2,0})});
+ ArrayView zero(0,{ArrayViewAxis::range()},true),oneByZero(1,{ArrayViewAxis::range(),ArrayViewAxis::range()},true),twoByZero(2,{ArrayViewAxis::range(),ArrayViewAxis::range()},true);
+ ArrayCopy(zero,{zero}).execute(0,0,empty);check(true);
+ ArrayCopy(twoByZero,{oneByZero,oneByZero}).execute(0,0,empty);check(true);
+ ArrayCopy(zero,std::vector<ArrayView>(64,zero)).execute(0,0,empty);check(true);
+ rejects<std::invalid_argument>([&]{ArrayCopy(zero,std::vector<ArrayView>(65,zero));});
+ rejects<std::invalid_argument>([&]{ArrayCopy(twoByZero,{zero});});
+ RuntimeStorage shaped(std::vector<QuantumClassical::IntegerType>(12,type),{},
+  {ArrayDeclaration::integers(type,0,{2,3}),ArrayDeclaration::integers(type,6,{3,2})});
+ ArrayView left(0,{ArrayViewAxis::range(),ArrayViewAxis::range()},true),right(1,{ArrayViewAxis::range(),ArrayViewAxis::range()},false);
+ rejects<std::invalid_argument>([&]{ArrayCopy(left,{right}).execute(0,0,shaped);});
+}
+
 template<class Step,class Run>void engineChecks(Run run,const Step &superposition) {
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);
  const auto floating=NumericType::floating(32);
@@ -25,6 +73,10 @@ template<class Step,class Run>void engineChecks(Run run,const Step &superpositio
  rejects<std::invalid_argument>([&]{run({Step::checkArrayReferences(ArrayReferenceCheck({readonly},{{1}})),Step::storeInteger(0,IntegerExpression::variable(integer,2))},{});});
 
  rejects<std::invalid_argument>([&]{run({Step::storeArray(throughReadonly,index(7))},{});});
+ auto zeroIndex=index(0),oneIndex=index(1);
+ ArrayView firstView(0,{ArrayViewAxis::range(&zeroIndex,&zeroIndex)},true),lastView(0,{ArrayViewAxis::range(&oneIndex,&oneIndex)},true);
+ run({Step::storeArray(first,index(7)),Step::copyArray(ArrayCopy(lastView,{firstView})),Step::assign({1},Bits::integerCompare(Bits::Binary::Equal,IntegerExpression::arrayElement(integer,last),index(7)))},{{1,1.0}});
+ rejects<std::domain_error>([&]{run({Step::copyArray(ArrayCopy(lastView,{firstView}))},{});});
  auto read=IntegerExpression::arrayElement(integer,first);
  auto bit=IntegerExpression::read(QuantumClassical::IntegerType::sized(Integer::Signedness::Unsigned,1),{0});
  auto output=Step::assign({1},Bits::integerCompare(Bits::Binary::Equal,read,index(7)));
@@ -98,6 +150,7 @@ void viewChecks() {
  check(ArrayView(row,{ArrayViewAxis::range(&three,&zero)},false).evaluate(0,0,storage).slots.empty());
 }
 int main(){try {
+ copyChecks();
  viewChecks();
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);const auto floating=NumericType::floating(32);
  const auto angle=NumericType::angle(8);

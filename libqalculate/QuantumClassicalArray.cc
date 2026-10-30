@@ -150,6 +150,48 @@ void ArrayReferenceCheck::evaluate(std::uint64_t record,unsigned bits,const Inte
  }
  ArrayView::validateBindings(resolved);
 }
+ArrayCopy::ArrayCopy(const ArrayView &destination,const std::vector<ArrayView> &sources):destination_(destination),sources_(sources) {
+ if(!destination_.rank() || sources_.empty() || sources_.size()>64)throw std::invalid_argument("Array copy requires an array destination and one to 64 sources");
+ if(!destination_.writable())throw std::invalid_argument("Cannot copy into a readonly array reference");
+ unsigned count=destination_.count();
+ for(const auto &source:sources_) {
+  if(source.rank()!=destination_.rank())throw std::invalid_argument("Array copy ranks do not match");
+  count+=source.count();if(count>512)throw std::length_error("Array copy exceeds 512 expression nodes");
+ }
+}
+void ArrayCopy::validate(unsigned bits,const IntegerStorage &storage) const {
+ destination_.validate(bits,storage);const auto &destination=storage.array(destination_.array());
+ for(const auto &source:sources_) {
+  source.validate(bits,storage);const auto &array=storage.array(source.array());
+  if(array.numeric()!=destination.numeric() || (array.numeric()?array.numericType()!=destination.numericType():array.integerType()!=destination.integerType()))
+   throw std::invalid_argument("Array copy element types do not match");
+ }
+}
+void ArrayCopy::execute(std::uint64_t record,unsigned bits,IntegerStorage &storage) const {
+ validate(bits,storage);const auto destination=destination_.evaluate(record,bits,storage);
+ std::vector<unsigned> shape;std::vector<std::size_t> slots;
+ for(const auto &source:sources_) {
+  const auto selected=source.evaluate(record,bits,storage);
+  if(shape.empty())shape=selected.dimensions;
+  else {
+   if(!std::equal(shape.begin()+1,shape.end(),selected.dimensions.begin()+1))throw std::invalid_argument("Concatenated array shapes do not match");
+   if(selected.dimensions[0]>4096-shape[0])throw std::length_error("Concatenated array dimension exceeds 4096");
+   shape[0]+=selected.dimensions[0];
+  }
+  if(selected.slots.size()>4096-slots.size())throw std::length_error("Array copy exceeds 4096 values");
+  slots.insert(slots.end(),selected.slots.begin(),selected.slots.end());
+ }
+ if(shape!=destination.dimensions)throw std::invalid_argument("Array copy shapes do not match");
+ if(destination.numeric) {
+  std::vector<NumericValue> values;values.reserve(slots.size());
+  for(auto slot:slots)values.push_back(storage.numeric().read(slot));
+  for(std::size_t k=0;k<values.size();++k)storage.numeric().write(destination.slots[k],values[k]);
+ } else {
+  std::vector<TypedInteger> values;values.reserve(slots.size());
+  for(auto slot:slots)values.push_back(storage.read(slot));
+  for(std::size_t k=0;k<values.size();++k)storage.write(destination.slots[k],values[k]);
+ }
+}
 ArraySelection::ArraySelection(std::size_t array,const std::vector<IntegerExpression> &indices,const std::string &source):array_(array),indices_(indices),source_(source) {measure();}
 ArraySelection::ArraySelection(const ArrayView &view,const std::vector<IntegerExpression> &indices,const std::string &source):array_(view.array()),indices_(indices),view_(std::make_shared<ArrayView>(view)),source_(source) {measure();}
 void ArraySelection::measure() {

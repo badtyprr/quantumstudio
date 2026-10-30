@@ -16,11 +16,15 @@
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric, CheckArrayReferences };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric, CheckArrayReferences, CopyArray };
  const Kind kind;
  const std::shared_ptr<const QuantumClassical::ArrayReferenceCheck> arrayReferences;
+ const std::shared_ptr<const QuantumClassical::ArrayCopy> arrayCopy;
  static CircuitStep checkArrayReferences(const QuantumClassical::ArrayReferenceCheck &check) {
   return {Kind::CheckArrayReferences,{},0,0,0,{},{},{},{},{},0,{},{},{},{},{},{},{},std::make_shared<const QuantumClassical::ArrayReferenceCheck>(check)};
+ }
+ static CircuitStep copyArray(const QuantumClassical::ArrayCopy &copy) {
+  return {Kind::CopyArray,{},0,0,0,{},{},{},{},{},0,{},{},{},{},{},{},{},{},std::make_shared<const QuantumClassical::ArrayCopy>(copy)};
  }
 
  const std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation;
@@ -110,17 +114,17 @@ public:
  }
 private:
  CircuitStep(const CircuitStep &other,std::shared_ptr<const QuantumClassical::WireSelection> selection):
-  CircuitStep(other.kind,other.wires,other.classicalBit,other.mask,other.value,other.operation,other.assignment,other.whenTrue,other.whenFalse,other.expression,other.variableSlot,other.integerExpression,other.rangeExpression,other.rotation,other.parameterGate,other.numericExpression,selection,other.arraySelection,other.arrayReferences) {}
+  CircuitStep(other.kind,other.wires,other.classicalBit,other.mask,other.value,other.operation,other.assignment,other.whenTrue,other.whenFalse,other.expression,other.variableSlot,other.integerExpression,other.rangeExpression,other.rotation,other.parameterGate,other.numericExpression,selection,other.arraySelection,other.arrayReferences,other.arrayCopy) {}
  CircuitStep(const CircuitStep &other,std::shared_ptr<const QuantumClassical::ArraySelection> selection):
-  CircuitStep(other.kind,other.wires,other.classicalBit,other.mask,other.value,other.operation,other.assignment,other.whenTrue,other.whenFalse,other.expression,other.variableSlot,other.integerExpression,other.rangeExpression,other.rotation,other.parameterGate,other.numericExpression,other.wireSelection,selection,other.arrayReferences) {}
+  CircuitStep(other.kind,other.wires,other.classicalBit,other.mask,other.value,other.operation,other.assignment,other.whenTrue,other.whenFalse,other.expression,other.variableSlot,other.integerExpression,other.rangeExpression,other.rotation,other.parameterGate,other.numericExpression,other.wireSelection,selection,other.arrayReferences,other.arrayCopy) {}
  CircuitStep(Kind k,const std::vector<unsigned> &w,unsigned bit,std::uint64_t m,std::uint64_t v,
   std::shared_ptr<const TracePreservingMap> op={},std::shared_ptr<const ReadoutAssignment> a={},
   std::shared_ptr<const std::vector<CircuitStep>> yes={},std::shared_ptr<const std::vector<CircuitStep>> no={},
   std::shared_ptr<const QuantumClassical::Bits> expr={},std::size_t slot=0,
   std::shared_ptr<const QuantumClassical::IntegerExpression> integer={},
   std::shared_ptr<const QuantumClassical::RangeExpression> range={},
-  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={},std::shared_ptr<const QuantumClassical::WireSelection> selection={},std::shared_ptr<const QuantumClassical::ArraySelection> array={},std::shared_ptr<const QuantumClassical::ArrayReferenceCheck> references={}):
-  kind(k),arrayReferences(references),wireSelection(selection),arraySelection(array),rotation(rotation_),parameterGate(parameterGate_),numericExpression(numeric_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
+  std::shared_ptr<const QuantumNumerics::RuntimeRotation> rotation_={},std::shared_ptr<const QuantumNumerics::RuntimeGate> parameterGate_={},std::shared_ptr<const QuantumClassical::RealExpression> numeric_={},std::shared_ptr<const QuantumClassical::WireSelection> selection={},std::shared_ptr<const QuantumClassical::ArraySelection> array={},std::shared_ptr<const QuantumClassical::ArrayReferenceCheck> references={},std::shared_ptr<const QuantumClassical::ArrayCopy> copy={}):
+  kind(k),arrayReferences(references),arrayCopy(copy),wireSelection(selection),arraySelection(array),rotation(rotation_),parameterGate(parameterGate_),numericExpression(numeric_),wires(w),classicalBit(bit),mask(m),value(v),operation(op),assignment(a),whenTrue(yes),whenFalse(no),expression(expr),variableSlot(slot),integerExpression(integer),rangeExpression(range) {}
 };
 // Starts in |0...0><0...0| with zero classical memory. No implicit final
 // measurement. Validates every body before execution, including untaken ones.

@@ -22,7 +22,7 @@ from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
 from qasm_runtime_wires import RuntimeWires
-from qasm_runtime_arrays import ArrayReferenceCheck, map_view, view_document, lower_arrays, selection as array_selection, declarations as array_declarations
+from qasm_runtime_arrays import ArrayCopyStatement, ArrayReferenceCheck, map_view, view_document, lower_arrays, selection as array_selection, declarations as array_declarations
 
 from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, contains_numeric, lower_numeric
 
@@ -452,6 +452,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 visitor._update_branching_gate_depths()
     def visit_map(visitor):
         mapping=original_visit_map(visitor)
+        mapping[ArrayCopyStatement]=lambda statement: [] if visitor._check_only else [ArrayCopyStatement(destination=map_view(statement.destination,lambda value:normalize(visitor,value,typed=True)),sources=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.sources])]
         mapping[ArrayReferenceCheck]=lambda statement: [] if visitor._check_only else [ArrayReferenceCheck(views=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.views],shapes=statement.shapes)]
         mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
         return mapping
@@ -1417,7 +1418,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
         return (start+index, 1) if whole else start+index
 
     count = 0
-    version = 16 if any(info.get('views') for info in allocations) else 15 if allocations else 13 if numeric_declarations else 5 if declarations else 2
+    version = 17 if any(info.get('copies') for info in allocations) else 16 if any(info.get('views') for info in allocations) else 15 if allocations else 13 if numeric_declarations else 5 if declarations else 2
     def expression_version(node):
         if not isinstance(node,dict):return 3
         if node.get('Kind') in ('NumericCast','AngleRatio','AngleBits','NumericCompare','TypedConstant','Variable','Cast','Function','Scale','Bits','TypedInteger'):return 13
@@ -1448,6 +1449,9 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 raise ValueError('Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
+            if isinstance(statement,ArrayCopyStatement):
+                version=max(version,17)
+                append(dict(Kind='CopyArray',ArrayCopy=dict(Destination=view_document(statement.destination,lambda value:classical_value(value,classical,integer_only=True)),Sources=[view_document(view,lambda value:classical_value(value,classical,integer_only=True)) for view in statement.sources])));continue
             if isinstance(statement,ArrayReferenceCheck):
                 version=max(version,16)
                 append(dict(Kind='CheckArrayReferences',ArrayReferences=[dict(View=view_document(view,lambda value:classical_value(value,classical,integer_only=True)),Shape=shape) for view,shape in zip(statement.views,statement.shapes)]));continue
