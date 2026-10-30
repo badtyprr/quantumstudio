@@ -47,6 +47,9 @@ def execute(encoded, expected, error=False):
 for source in (
     'def f(int x)->int {return x+1;} int z=6;int i=0;array[int,2] a;a[i]=f(z);output bit c;c=bool(a[i]==7);',
     'def f(int x)->float[64] {return float[64](x+1);} int z=6;int i=0;array[float[64],2] a;a[i]=f(z);output bit c;c=bool(a[i]==7.0);',
+    'array[int,1] a;bit b="0";output bit c;c=1;if(b==1){c=bool(a[0]);}',
+    'array[int,1] a;bit b="0";output bit c;c=!(bool(b) && bool(a[0]));',
+    'array[int,1] a;bit b="1";output bit c;c=bool(b) || bool(a[0]);',
     'array[int,2,3] a; a[1,2]=7; bit c=bool(a[-1,-1]==7);',
     'int i=1; array[int[8],2] a={3,4};a[i]+=2;bit c=bool(a[i]==6);',
     'qubit q;h q;bit b=measure q;array[int,2] a;int i=int[2](bool(b));a[i]=7;output bit c;c=bool(a[i]==7);',

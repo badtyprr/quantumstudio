@@ -85,7 +85,10 @@ def lower_arrays(program):
                 for index in indices:
                     try:negative|=constant(index)<0
                     except ValueError:pass
-                if negative or depends(indices):selected.add(name)
+                if controlled or negative or depends(indices):selected.add(name)
+        if isinstance(value,ast.BinaryExpression) and value.op.name in ('&&','||'):
+            scan(value.lhs,hidden,controlled,dynamic)
+            scan(value.rhs,hidden,controlled or depends(value.lhs),dynamic);return
         if isinstance(value,ast.BranchingStatement):
             scan(value.condition,hidden,controlled,dynamic)
             active=controlled or depends(value.condition)
