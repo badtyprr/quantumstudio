@@ -188,7 +188,7 @@ def lower_runtime_subroutines(program):
         value,_=split_reference(value)
         return isinstance(value,SourceArrayView) or isinstance(value,ast.Identifier) and value.name in array_scopes[-1] and isinstance(collection_scopes[-1].get(value.name),ast.ArrayType)
 
-    def capture_array_view(actual,active,depth,capture=True):
+    def capture_array_view(actual,active,depth,capture=True,nonnegative=False):
         root,groups=split_reference(actual);effects=[]
         if isinstance(root,SourceArrayView):view=copy.deepcopy(root)
         else:
@@ -234,6 +234,14 @@ def lower_runtime_subroutines(program):
                         # one singleton axis; it never reads the selected value.
                         probe.axes[-1]=ast.RangeDefinition(start=copy.deepcopy(probe.axes[-1]),end=copy.deepcopy(probe.axes[-1]),step=None)
                     effects.append(ArrayReferenceCheck(views=[probe],shapes=[[]]))
+                    if nonnegative and field!='step':
+                        # Check the original integer expression before adding a
+                        # cast: implicit float-to-index conversion is forbidden.
+                        unsigned=copy.deepcopy(probe)
+                        converted=ast.Cast(type=ast.UintType(size=ast.IntegerLiteral(64)),argument=copy.deepcopy(value))
+                        if scalar:unsigned.axes[index]=ast.RangeDefinition(start=converted,end=copy.deepcopy(converted),step=None)
+                        else:setattr(unsigned.axes[index],field,converted)
+                        effects.append(ArrayReferenceCheck(views=[unsigned],shapes=[[]]))
                     slot=ast.Identifier(fresh());runtime.add(slot.name)
                     if field=='step':
                         # A stride larger than any backing dimension selects at
@@ -715,12 +723,9 @@ def lower_runtime_subroutines(program):
         for group in groups:
             if len(group)!=1 or not isinstance(group[0],ast.RangeDefinition):raise error_at(node,'Bit collection selection requires a one-dimensional slice.')
             axis=copy.deepcopy(group[0])
-            for field in ('start','end'):
-                value=getattr(axis,field)
-                if value is not None:setattr(axis,field,ast.Cast(type=ast.UintType(size=ast.IntegerLiteral(64)),argument=value))
             selected=ast.IndexExpression(collection=selected,index=[axis])
         # Capture selector calls before reading the register's values.
-        effects,view=capture_array_view(selected,active,depth)
+        effects,view=capture_array_view(selected,active,depth,nonnegative=True)
         effects.append(ArrayReferenceCheck(views=[copy.deepcopy(view)],shapes=[[]]))
         for index in range(width):
             effects.append(ast.ClassicalAssignment(lvalue=ast.IndexedIdentifier(name=ast.Identifier(name),indices=[[ast.IntegerLiteral(index)]]),op=ast.AssignmentOperator['='],rvalue=ast.IndexExpression(collection=copy.deepcopy(root),index=[ast.IntegerLiteral(index)])))

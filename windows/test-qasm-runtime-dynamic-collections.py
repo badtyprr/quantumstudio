@@ -79,4 +79,13 @@ for source in (
 ):
     original=compile_source('OPENQASM 3.0;'+source);execute(original,'',error=True)
     execute(compile_source(original['source']),'',error=True)
+for source in (
+ 'qubit q;int n=1;for int i in [0:n]{break;bogus q;}',
+ 'qubit q;int n=1;for int i in [0:n]{continue;bogus q;}',
+ 'bit[3] b="101";for bit v in b[0.5:1]{}',
+ 'bit[3] b="101";float f=0.5;for bit v in b[f:1]{}',
+):
+    try:compiler.convert('OPENQASM 3.0;'+source,classical=True)
+    except (ValueError,RuntimeError):checks+=1
+    else:raise AssertionError('Accepted invalid collection: '+source)
 print('PASS: %d dynamic array iteration checks.'%checks)

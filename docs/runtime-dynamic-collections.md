@@ -25,7 +25,9 @@ All loop work remains subject to the existing execution budgets.
 The lowering uses existing array-copy, view, scalar and range-loop model steps.
 Saved documents, editor operations and OpenQASM export retain those explicit
 snapshots; reimport does not introduce another collection snapshot. No protocol
-or document version change is needed.
+or document version change is needed. Export removes unreachable instructions
+after direct transfers only from a snapshot of an already validated circuit,
+preserving source diagnostics and the saved model.
 
 DEV-08 remains open for classical aliases, dynamic quantum reference binding,
 full fixture/oracle/editor acceptance and verified release.
