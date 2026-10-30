@@ -574,7 +574,6 @@ rejected += [loop_prefix+body for body in [
  'int n=1;for int i in [0:n]{bool ok=f(q[i]);}',
  'for int i in [0:0:1]{bool ok=f(q[i]);}',
  'for int i in [0:2]{bool ok=f(q[i]);}',
- 'for int i in [0:1]{bool ok=f(q[i+0]);}',
  'for uint[1] i in [0:2]{bool ok=f(q[i]);}',
  'for int i in [0:4096]{bool ok=f(q[i]);}',
  'for int i in [0:18446744073709551616]{bool ok=f(q[i]);}',

@@ -146,7 +146,7 @@ def lower_runtime_subroutines(program):
             registers[name] = quantum_width(declaration.size, bindings)
         return registers.get(name)
 
-    def quantum_key(value):
+    def quantum_key(value, required=True):
         if isinstance(value, ast.IndexExpression) and isinstance(value.collection, ast.Identifier):
             value = ast.IndexedIdentifier(name=value.collection, indices=[value.index])
         if isinstance(value, ast.Identifier) and register_size(value.name) == 1:
@@ -154,9 +154,12 @@ def lower_runtime_subroutines(program):
         if isinstance(value, ast.IndexedIdentifier) and len(value.indices) == 1 and len(value.indices[0]) == 1:
             index = value.indices[0][0]
             size = register_size(value.name.name)
-            if isinstance(index, ast.IntegerLiteral) and size is not None and 0 <= index.value < size:
+            if isinstance(index, ast.IntegerLiteral) and size is not None:
+                if not 0 <= index.value < size:
+                    raise error_at(value,'Quantum register index is out of bounds.')
                 return value.name.name, index.value
-        raise error_at(value, 'Runtime call quantum arguments require a scalar qubit or a fixed literal register index.')
+        if required:raise error_at(value, 'Runtime call quantum arguments require a scalar qubit or a fixed literal register index.')
+        return None
 
     def check_quantum_name(value):
         reference = value
@@ -184,6 +187,25 @@ def lower_runtime_subroutines(program):
         if size != width:
             raise error_at(actual, 'Quantum-register argument width does not match its parameter.')
         return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
+
+    def capture_scalar_qubit(actual):
+        """Check the caller selector before saving it or evaluating later actuals."""
+        check_quantum_name(actual)
+        actual=copy.deepcopy(actual)
+        check=WireReferenceCheck(targets=[copy.deepcopy(actual)]);check.span=getattr(actual,'span',None)
+        effects=[check]
+        if isinstance(actual,ast.IndexExpression) and isinstance(actual.collection,ast.Identifier):
+            actual=ast.IndexedIdentifier(name=actual.collection,indices=[actual.index])
+        if isinstance(actual,ast.IndexedIdentifier):
+            if len(actual.indices)!=1 or len(actual.indices[0])!=1 or isinstance(actual.indices[0][0],(ast.RangeDefinition,ast.DiscreteSet)):
+                raise error_at(actual,'Scalar quantum arguments require one integer selector.')
+            slot=ast.Identifier(fresh());runtime.add(slot.name)
+            effects.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=slot,
+                init_expression=copy.deepcopy(actual.indices[0][0])))
+            actual.indices=[[copy.deepcopy(slot)]]
+        elif not isinstance(actual,ast.Identifier):
+            raise error_at(actual,'Scalar quantum arguments require a qubit reference.')
+        return effects,actual
 
     def is_array_target(value):
         value,_=split_reference(value)
@@ -379,7 +401,7 @@ def lower_runtime_subroutines(program):
         constant_bindings = {name: constant_value(name) for name in references
                              if name in constants and constants[name][0] < visibility[call.name.name]}
         bindings = dict(constant_bindings)
-        parameters = set(); declarations = []; qubits = set(); array_views=[]; array_shapes=[]
+        parameters = set(); declarations = []; qubits = set(); quantum_actuals=[]; dynamic_scalar=False; array_views=[]; array_shapes=[]
         check_only=not definition.body and definition.return_type is None and all(isinstance(formal,ast.ClassicalArgument) and isinstance(formal.type,ast.ArrayReferenceType) for formal in definition.arguments) and not any(isinstance(item,ast.FunctionCall) for item in walk(call.arguments))
         for formal, actual in zip(definition.arguments, call.arguments):
             # Capture each actual before evaluating the next actual's calls.
@@ -391,17 +413,34 @@ def lower_runtime_subroutines(program):
                 if not check_only:declarations.extend(effects)
                 bindings[name]=binding;array_views.append(binding);array_shapes.append(shape);parameters.add(name)
                 continue
-            effects, actual = expression_calls(actual, active, depth)
+            # Once the enclosing call is runtime, nested actual calls must also
+            # execute in order rather than being folded by the static visitor.
+            effects, actual = expression_calls(actual, True, depth)
             declarations.extend(effects)
             name = formal.name.name
             if name in parameters:
                 raise error_at(formal, 'Duplicate subroutine parameter: ' + name)
             if isinstance(formal, ast.QuantumArgument):
                 width_bindings = {key: value for key, value in constant_bindings.items() if key not in parameters}
-                binding, identities = quantum_binding(formal, actual, width_bindings)
-                if qubits.intersection(identities):
-                    raise error_at(call, 'Quantum subroutine arguments must not overlap.')
-                qubits.update(identities)
+                if formal.size is None:
+                    fixed=quantum_key(actual,required=False)
+                    identities={fixed} if fixed is not None else set()
+                    if qubits.intersection(identities):
+                        raise error_at(call,'Quantum subroutine arguments must not overlap.')
+                    qubits.update(identities)
+                    if identities:
+                        binding,_=quantum_binding(formal,actual,width_bindings)
+                    else:
+                        dynamic_scalar=True
+                        effects,binding=capture_scalar_qubit(actual)
+                        declarations.extend(effects)
+                    quantum_actuals.append(copy.deepcopy(binding))
+                else:
+                    binding, identities = quantum_binding(formal, actual, width_bindings)
+                    if qubits.intersection(identities):
+                        raise error_at(call, 'Quantum subroutine arguments must not overlap.')
+                    qubits.update(identities)
+                    quantum_actuals.extend(ast.IndexedIdentifier(name=ast.Identifier(register),indices=[[ast.IntegerLiteral(index)]]) for register,index in sorted(identities))
                 bindings[name] = binding
             elif isinstance(formal, ast.ClassicalArgument) and isinstance(formal.type, values):
                 if formal.access is not None:
@@ -417,6 +456,9 @@ def lower_runtime_subroutines(program):
             else:
                 raise error_at(formal, 'Runtime call arguments support integers, Booleans, float32/64, angles and bit registers.')
             parameters.add(name)
+        if dynamic_scalar:
+            if len(quantum_actuals)>25:raise error_at(call,'Quantum calls support at most 25 referenced qubits.')
+            check=WireReferenceCheck(targets=quantum_actuals);check.span=call.span;declarations.append(check)
         if len(array_views)>64:raise error_at(call,'Calls support at most 64 array references.')
         if array_views:declarations.append(ArrayReferenceCheck(views=copy.deepcopy(array_views),shapes=array_shapes))
         result_slot = None; result_type = None; prefix = []
