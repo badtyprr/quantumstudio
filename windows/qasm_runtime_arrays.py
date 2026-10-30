@@ -6,6 +6,16 @@ from qasm_source_diagnostics import error_at
 from pyqasm.expressions import Qasm3ExprEvaluator
 
 
+def split_reference(value):
+    """Keep each bracket group intact while finding its backing expression."""
+    groups=[];root=value
+    while isinstance(root,(ast.IndexExpression,ast.IndexedIdentifier)):
+        if isinstance(root,ast.IndexExpression):
+            groups.insert(0,root.index if isinstance(root.index,list) else [root.index]);root=root.collection
+        else:groups[0:0]=root.indices;root=root.name
+    return root,groups
+
+
 @dataclass
 class SourceArrayView(ast.Expression):
     name: str
@@ -113,11 +123,8 @@ def lower_arrays(program):
             except ValueError:pass
 
     def reference(value):
-        if isinstance(value,ast.IndexedIdentifier):return value.name.name,[i for group in value.indices for i in group]
-        if isinstance(value,ast.IndexExpression):
-            name,earlier=reference(value.collection)
-            return name,earlier+(value.index if isinstance(value.index,list) else [value.index])
-        return (value.name,[]) if isinstance(value,ast.Identifier) else (None,[])
+        root,groups=split_reference(value)
+        return (root.name if isinstance(root,ast.Identifier) else None),[index for group in groups for index in group]
 
     def scan(value,hidden=frozenset(),controlled=False,dynamic=frozenset()):
         def depends(item):return any(isinstance(n,ast.Identifier) and n.name in (runtime|set(dynamic)|(selected-set(hidden))) for n in walk(item))
@@ -210,12 +217,7 @@ def lower_arrays(program):
         return info,ArrayView(info['id'],parent,[expression(axis,hidden) for axis in value.axes],value.writable)
 
     def sliced(value,hidden,force=False):
-        groups=[];root=value
-        while isinstance(root,(ast.IndexExpression,ast.IndexedIdentifier)):
-            if isinstance(root,ast.IndexExpression):
-                groups.insert(0,root.index if isinstance(root.index,list) else [root.index]);root=root.collection
-            else:
-                groups[0:0]=root.indices;root=root.name
+        root,groups=split_reference(value)
         if isinstance(root,SourceArrayView):
             info,parent=bound_view(root,hidden);rank=parent.rank
         else:

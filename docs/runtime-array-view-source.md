@@ -8,7 +8,9 @@ inherited from that allocation.
 
 Readonly/mutable array formals accept explicit fixed shapes or a fixed `#dim`
 rank. Each actual's geometry is captured before later actuals and before the body.
-Selectors are evaluated in parent, axis, start, step, stop order. Address-only
+Selectors are evaluated in parent, axis, start, step, stop order. Stride magnitudes
+above the maximum backing dimension are captured as an equivalent signed stride
+of magnitude4097, preserving direction even for `uint[64]` maximum values. Address-only
 reference checks validate each captured part before narrowing snapshots; they do
 not read or initialize array elements. A singleton geometry check validates a
 scalar address without inventing a value. A final check enforces fixed shapes and

@@ -45,6 +45,11 @@ def execute(encoded, expected, error=False):
         assert values == {expected: '1' if exact else 10000}, values
 
 for source in (
+    'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,4] a;uint s=1;output bit c;c=bool(f(a[0:s:3])==4);',
+    'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,4] a;uint s=4096;output bit c;c=bool(f(a[0:s:3])==1);',
+    'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,3] a;uint[64] s=18446744073709551615;output bit c;c=bool(f(a[0:s:2])==1);',
+    'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,3] a;uint[64] s=18446744073709551615;output bit c;c=bool(f(a[2:s:0])==0);',
+    'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,3] a;int[64] s=-9223372036854775808;output bit c;c=bool(f(a[2:s:0])==1);',
     'array[int,2,3] a;int k=1;output bit c;c=bool(sizeof(a[k])==3);',
     'array[int,2,3] a;int k=1;output bit c;c=bool(sizeof(a[k:k],1)==3);',
     'def f(readonly array[int,#dim=2] a)->uint{return sizeof(a[0:0],1);} array[int,2,3] a;output bit c;c=bool(f(a)==3);',

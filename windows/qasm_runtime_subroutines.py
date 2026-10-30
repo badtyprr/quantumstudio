@@ -11,7 +11,7 @@ from pyqasm.maps.expressions import CONSTANTS_MAP
 from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.exceptions import ValidationError
 from qasm_source_diagnostics import error_at
-from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck
+from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck, split_reference
 
 
 def lower_runtime_subroutines(program):
@@ -185,16 +185,11 @@ def lower_runtime_subroutines(program):
         return copy.deepcopy(actual), {(actual.name, index) for index in range(size)}
 
     def is_array_target(value):
-        while isinstance(value,(ast.IndexExpression,ast.IndexedIdentifier)):
-            value=value.collection if isinstance(value,ast.IndexExpression) else value.name
+        value,_=split_reference(value)
         return isinstance(value,SourceArrayView) or isinstance(value,ast.Identifier) and value.name in array_scopes[-1] and isinstance(collection_scopes[-1].get(value.name),ast.ArrayType)
 
     def capture_array_view(actual,active,depth):
-        groups=[];root=actual;effects=[]
-        while isinstance(root,(ast.IndexExpression,ast.IndexedIdentifier)):
-            if isinstance(root,ast.IndexExpression):
-                groups.insert(0,root.index if isinstance(root.index,list) else [root.index]);root=root.collection
-            else:groups[0:0]=root.indices;root=root.name
+        root,groups=split_reference(actual);effects=[]
         if isinstance(root,SourceArrayView):view=copy.deepcopy(root)
         else:
             declared=collection_scopes[-1].get(root.name) if isinstance(root,ast.Identifier) else None
@@ -235,7 +230,17 @@ def lower_runtime_subroutines(program):
                         probe.axes[-1]=ast.RangeDefinition(start=copy.deepcopy(probe.axes[-1]),end=copy.deepcopy(probe.axes[-1]),step=None)
                     effects.append(ArrayReferenceCheck(views=[probe],shapes=[[]]))
                     slot=ast.Identifier(fresh());runtime.add(slot.name)
-                    effects.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=value))
+                    if field=='step':
+                        # A stride larger than any backing dimension selects at
+                        # most one element. Clamp magnitude before signed storage
+                        # so UINT64_MAX cannot silently reverse the direction.
+                        effects.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=None))
+                        def assign(expression):return ast.ClassicalAssignment(lvalue=copy.deepcopy(slot),op=ast.AssignmentOperator['='],rvalue=expression)
+                        below=ast.BranchingStatement(condition=ast.BinaryExpression(op=ast.BinaryOperator['<'],lhs=ast.Cast(type=ast.IntType(),argument=copy.deepcopy(value)),rhs=ast.UnaryExpression(op=ast.UnaryOperator['-'],expression=ast.IntegerLiteral(4096))),
+                            if_block=[assign(ast.UnaryExpression(op=ast.UnaryOperator['-'],expression=ast.IntegerLiteral(4097)))],else_block=[assign(value)])
+                        effects.append(ast.BranchingStatement(condition=ast.BinaryExpression(op=ast.BinaryOperator['>'],lhs=copy.deepcopy(value),rhs=ast.IntegerLiteral(4096)),
+                            if_block=[assign(ast.IntegerLiteral(4097))],else_block=[below]))
+                    else:effects.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=value))
                     if scalar:axes[index]=slot
                     else:setattr(axes[index],field,slot)
             view=child
