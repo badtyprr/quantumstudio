@@ -49,6 +49,7 @@ int main(){try {
   {ArrayDeclaration::integers(integer,0,{2,3}),ArrayDeclaration::numerics(floating,0,{2}),ArrayDeclaration::numerics(angle,2,{2}),ArrayDeclaration::integers(integer,7,{0,4096})});
  for(unsigned r=0;r<2;++r)for(unsigned c=0;c<3;++c) {
   ArraySelection selection(0,{index(r),index(c)});selection.validate(0,storage);check(selection.evaluate(0,0,storage)==r*3+c);
+  auto extent=IntegerExpression::arrayExtent(selection);extent.validate(0,storage);check(extent.evaluate(0,0,storage).value().bits()==1);
   auto read=IntegerExpression::arrayElement(integer,selection);read.validate(0,storage);
   rejects<std::domain_error>([&]{read.evaluate(0,0,storage);});
   storage.write(r*3+c,TypedInteger::fromBits(integer,10*r+c));check(read.evaluate(0,0,storage).value().bits()==10*r+c);
@@ -57,6 +58,13 @@ int main(){try {
  for(auto invalid:std::vector<std::vector<IntegerExpression>>{{index(-3),index(0)},{index(2),index(0)},{index(0),index(-4)},{index(0),index(3)},
    {index(std::numeric_limits<std::int64_t>::min()),index(0)}})
   rejects<std::out_of_range>([&]{ArraySelection(0,invalid,"array.qasm:7:2").evaluate(0,0,storage);});
+ for(unsigned array:{1u,2u})check(IntegerExpression::arrayExtent(ArraySelection(array,{index(0)})).evaluate(0,0,storage).value().bits()==1);
+ rejects<std::out_of_range>([&]{IntegerExpression::arrayExtent(ArraySelection(0,{index(2),index(0)})).evaluate(0,0,storage);});
+ check(IntegerExpression::arrayExtent(ArraySelection(0,{index(1)})).evaluate(0,0,storage).value().bits()==1);
+ RuntimeStorage emptyShape({}, {}, {ArrayDeclaration::integers(integer,0,{1,0})});
+ check(IntegerExpression::arrayExtent(ArraySelection(0,{index(0)})).evaluate(0,0,emptyShape).value().bits()==1);
+ rejects<std::out_of_range>([&]{IntegerExpression::arrayExtent(ArraySelection(0,{index(0),index(0)})).evaluate(0,0,emptyShape);});
+ rejects<std::invalid_argument>([&]{IntegerExpression::arrayElement(integer,ArraySelection(0,{index(0)})).validate(0,emptyShape);});
  auto huge=IntegerExpression::constant(TypedInteger::fromBits(QuantumClassical::IntegerType::machine(Integer::Signedness::Unsigned),~std::uint64_t(0)));
  rejects<std::out_of_range>([&]{ArraySelection(0,{huge,index(0)}).evaluate(0,0,storage);});
  rejects<std::invalid_argument>([&]{ArraySelection(0,{index(0)}).validate(0,storage);});

@@ -14,23 +14,32 @@ static class ClassicalExpressionText {
  static readonly int[] Priority={1,2,3,4,5,6,6,7,7,7,7,8,8,9,9,10,10,10,12};
  static bool Comparison(string op){return op=="Equal" || op=="NotEqual" || op=="Less" || op=="Greater" || op=="LessEqual" || op=="GreaterEqual";}
  static int Minimum(ulong value){int width=1;while((value>>=1)!=0)width++;return width;}
+ public static string FormatArray(ClassicalCircuit.ArraySelectionNode selection,ClassicalCircuit.Document context) {
+  return "array("+selection.Array.ToString(CultureInfo.InvariantCulture)+", "+String.Join(", ",Array.ConvertAll(selection.Indices,index=>Format(index,context)))+")";
+ }
+ public static ClassicalCircuit.ArraySelectionNode ParseArrayTarget(string text,ClassicalCircuit.Document context,bool numeric) {
+  ClassicalCircuit.ArraySelectionNode selection;
+  if(numeric)selection=ParseNumeric(text,context).Selection;
+  else {var node=ParseInteger(text,context);selection=node.Kind=="IntegerArrayElement" ? node.Selection : null;}
+  if(selection==null)throw new ArgumentException("An array target must be one indexed element.");return selection;
+ }
  public static N Parse(string text,ClassicalCircuit.Document context,int width) {
   if(context==null || width<1 || width>64)throw new ArgumentException("Use a valid circuit and 1–64 result bits.");
-  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables);var value=parser.Expression(1,0);parser.End();value=Normalize(value,0);
+  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables,context.Arrays);var value=parser.Expression(1,0);parser.End();value=Normalize(value,0);
   if(Numeric(value))throw new ArgumentException("Compare numeric values or cast them to bits.");
   if(IntegerValue(value))throw new ArgumentException("Compare integer values to produce a one-bit condition.");
   if(Resolve(value,width,0)!=width)throw new ArgumentException("Expression width must match the assignment or one-bit condition.");
   var step=width==1 ? new ClassicalCircuit.Step{Kind="ExpressionBranch",ClassicalValue=value,WhenTrue=new ClassicalCircuit.Step[0],WhenFalse=new ClassicalCircuit.Step[0]} :
    new ClassicalCircuit.Step{Kind="Assign",ClassicalValue=value,Wires=Enumerable.Range(0,width).ToArray()};
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,LoopConditionBudget=context.LoopConditionBudget??(RequiredVersion(value)>=7 ? (int?)1000000 : null),Registers=context.Registers,NumericVariables=context.NumericVariables??(RequiredVersion(value)>=13 ? new ClassicalCircuit.NumericVariable[0] : null),Variables=context.Variables ?? (RequiredVersion(value)>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new[]{step}});
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredVersion(value),context.Version),Qubits=0,LoopConditionBudget=context.LoopConditionBudget??(RequiredVersion(value)>=7 ? (int?)1000000 : null),Arrays=context.Arrays,Registers=context.Registers,NumericVariables=context.NumericVariables??(RequiredVersion(value)>=13 ? new ClassicalCircuit.NumericVariable[0] : null),Variables=context.Variables ?? (RequiredVersion(value)>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new[]{step}});
   return value;
  }
  public static N ParseInteger(string text,ClassicalCircuit.Document context) {
   if(context==null)throw new ArgumentNullException("context");
-  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables);var value=parser.Expression(1,0);parser.End();
+  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables,context.Arrays);var value=parser.Expression(1,0);parser.End();
   value=AsInteger(Normalize(value,0));ResolveInteger(value,0);
   int version=Math.Max(context.Version,RequiredVersion(value));
-  ClassicalCircuit.ValidateIntegerExpression(value,new ClassicalCircuit.Document{Version=version,Qubits=0,LoopConditionBudget=context.LoopConditionBudget??(RequiredVersion(value)>=7 ? (int?)1000000 : null),Registers=context.Registers,NumericVariables=context.NumericVariables??(RequiredVersion(value)>=13 ? new ClassicalCircuit.NumericVariable[0] : null),Variables=context.Variables ?? (version>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]});
+  ClassicalCircuit.ValidateIntegerExpression(value,new ClassicalCircuit.Document{Version=version,Qubits=0,LoopConditionBudget=context.LoopConditionBudget??(RequiredVersion(value)>=7 ? (int?)1000000 : null),Arrays=context.Arrays,Registers=context.Registers,NumericVariables=context.NumericVariables??(RequiredVersion(value)>=13 ? new ClassicalCircuit.NumericVariable[0] : null),Variables=context.Variables ?? (version>=5 ? new ClassicalCircuit.Variable[0] : null),OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]});
   return value;
  }
  static bool Numeric(N n){return n!=null && n.Kind=="NumericOperand";}
@@ -62,11 +71,12 @@ static class ClassicalExpressionText {
   return (context.NumericVariables??new ClassicalCircuit.NumericVariable[0]).Any(v=>Regex.IsMatch(text,@"(?<![\w])"+Regex.Escape(v.Name)+@"(?![\w])"));
  }
  public static R ParseNumeric(string text,ClassicalCircuit.Document context,int targetWidth=64) {
-  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables);var result=parser.Expression(1,0);parser.End();var numeric=Real(Normalize(result,0),targetWidth).RealLeft;
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=13,Qubits=1,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],NumericVariables=context.NumericVariables??new ClassicalCircuit.NumericVariable[0],LoopConditionBudget=1000000,OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=numeric,Wires=new[]{0}}}});
+  var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables,context.Arrays);var result=parser.Expression(1,0);parser.End();var numeric=Real(Normalize(result,0),targetWidth).RealLeft;
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(13,context.Version),Qubits=1,Arrays=context.Arrays,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],NumericVariables=context.NumericVariables??new ClassicalCircuit.NumericVariable[0],LoopConditionBudget=1000000,OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=numeric,Wires=new[]{0}}}});
   return numeric;
  }
  public static string FormatNumeric(R value,ClassicalCircuit.Document context) {
+  if(value.Kind=="ArrayElement")return FormatArray(value.Selection,context);
   if(value.Kind=="Variable") {
    string name=context.NumericVariables[value.Slot.Value].Name;
    var reserved=new[]{"pi","π","float","angle","numeric","sin","cos","tan","arcsin","arccos","arctan","exp","log","sqrt","floor","ceiling","mod","compare","anglebits"};
@@ -175,6 +185,7 @@ static class ClassicalExpressionText {
  public static int RequiredVersion(N value){return RequiredVersion(value,0);}
  static int RequiredVersion(N n,int depth) {
   if(n==null)return 3;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
+  if(n.Selection!=null)return 15;
   return Math.Max(n.RealLeft!=null || n.RealRight!=null ? 13 : n.Kind=="IntegerFromBits" ? 6 : n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
  }
  static void ResolveInteger(N n,int depth) {
@@ -227,6 +238,8 @@ static class ClassicalExpressionText {
  }
  public static string Format(N value,ClassicalCircuit.Document context=null){return FormatNode(value,0,context);}
  static string FormatNode(N n,int depth,ClassicalCircuit.Document context) {
+  if(n.Kind=="IntegerArrayExtent")return FormatArray(n.Selection,context).Replace("array(","arrayextent(");
+  if(n.Kind=="IntegerArrayElement")return FormatArray(n.Selection,context);
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
   if(n.Kind=="NumericCast")return (n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width+"]")+"("+FormatNumeric(n.RealLeft,context)+")";
   if(n.Kind=="NumericCompare")return "compare("+FormatNumeric(n.RealLeft,context)+", "+FormatNumeric(n.RealRight,context)+")";
@@ -283,8 +296,9 @@ static class ClassicalExpressionText {
  }
  sealed class Parser {
   readonly string text;int position,nodes;readonly Dictionary<string,int[]> registers=new Dictionary<string,int[]>(StringComparer.Ordinal);
-  readonly ClassicalCircuit.Variable[] variables;readonly ClassicalCircuit.NumericVariable[] numericVariables;
-  public Parser(string value,ClassicalCircuit.Register[] declared,ClassicalCircuit.Variable[] variables,ClassicalCircuit.NumericVariable[] numericVariables=null) {
+  readonly ClassicalCircuit.Variable[] variables;readonly ClassicalCircuit.NumericVariable[] numericVariables;readonly ClassicalCircuit.ArrayDeclaration[] arrays;
+  public Parser(string value,ClassicalCircuit.Register[] declared,ClassicalCircuit.Variable[] variables,ClassicalCircuit.NumericVariable[] numericVariables=null,ClassicalCircuit.ArrayDeclaration[] arrays=null) {
+   this.arrays=arrays??new ClassicalCircuit.ArrayDeclaration[0];
    this.variables=variables ?? new ClassicalCircuit.Variable[0];this.numericVariables=numericVariables??new ClassicalCircuit.NumericVariable[0];
    if(value==null || value.Length>65536 || declared==null)throw new ArgumentException("Enter an expression of at most 65536 characters.");
    text=value;int offset=0;foreach(var r in declared){registers.Add(r.Name,Enumerable.Range(offset,r.Size).ToArray());offset+=r.Size;}
@@ -333,6 +347,14 @@ static class ClassicalExpressionText {
    if(new[]{"sin","cos","tan","arcsin","arccos","arctan","exp","log","sqrt","floor","ceiling","mod","compare","anglebits"}.Contains(name)) {
     Need("(");var left=Expression(1,depth+1);N right=null;if(name=="mod" || name=="compare"){Need(",");right=Expression(1,depth+1);}Need(")");
     return Node(new N{Kind="NumericFunction",Operator=name=="anglebits" ? "AngleBits" : Char.ToUpperInvariant(name[0])+name.Substring(1),Left=left,Right=right});
+   }
+   if((name=="array" || name=="arrayextent") && Take("(")) {
+    ulong id=Number();if(id>=(ulong)arrays.Length)throw new ArgumentException("Unknown array.");var declaration=arrays[(int)id];var indices=new List<N>();
+    while(Take(",")){if(indices.Count>=7)throw new ArgumentException("Array rank exceeds seven.");indices.Add(AsInteger(Normalize(Expression(1,depth+1),depth+1)));}Need(")");
+    if(name=="arrayextent" ? indices.Count<1 || indices.Count>declaration.Dimensions.Length : indices.Count!=declaration.Dimensions.Length)throw new ArgumentException("Array index rank differs from its declaration.");
+    var selection=new ClassicalCircuit.ArraySelectionNode{Array=(int)id,Indices=indices.ToArray(),Source="editor"};
+    if(name=="arrayextent")return Node(new N{Kind="IntegerArrayExtent",Signedness="Signed",Width=0,Selection=selection});
+    return declaration.NumericKind==null ? Node(new N{Kind="IntegerArrayElement",Signedness=declaration.Signedness,Width=declaration.Width,Selection=selection}) : Node(Numeric(new R{Kind="ArrayElement",NumericKind=declaration.NumericKind,Width=declaration.Width,Selection=selection},declaration.NumericKind,declaration.Width));
    }
    if(name=="numeric" && Take("(")){ulong slot=Number();Need(")");if(slot>=(ulong)numericVariables.Length)throw new ArgumentException("Unknown numeric slot.");var type=numericVariables[(int)slot];return Node(Numeric(new R{Kind="Variable",NumericKind=type.NumericKind,Width=type.Width,Slot=(int)slot},type.NumericKind,type.Width));}
    for(int slot=0;slot<numericVariables.Length;slot++)if(numericVariables[slot].Name==name){var type=numericVariables[slot];return Node(Numeric(new R{Kind="Variable",NumericKind=type.NumericKind,Width=type.Width,Slot=slot},type.NumericKind,type.Width));}

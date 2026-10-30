@@ -18,7 +18,21 @@ sealed class ClassicalExpressionQasm {
   bits=registerBits;
   if(mappedStorage!=null && mappedStorage.BitCount!=registerBits)throw new ArgumentException("Export storage must match the expression register.");
   storage=mappedStorage;
-  variables=variableTypes is RuntimeDeclarations ? (IList<T>)new RuntimeDeclarations(variableTypes,((RuntimeDeclarations)variableTypes).Numeric) : variableTypes==null ? new T[0] : new List<T>(variableTypes).ToArray();
+  variables=variableTypes is RuntimeDeclarations ? (IList<T>)new RuntimeDeclarations(variableTypes,((RuntimeDeclarations)variableTypes).Numeric,((RuntimeDeclarations)variableTypes).Arrays) : variableTypes==null ? new T[0] : new List<T>(variableTypes).ToArray();
+ }
+ public string Slot(int slot,bool numeric) {
+  var declarations=variables as RuntimeDeclarations;
+  if(declarations!=null)for(int k=0;k<declarations.Arrays.Count;++k) {
+   var array=declarations.Arrays[k];if((array.Numeric!=null)!=numeric || slot<array.Base || slot>=array.Base+array.Size)continue;
+   int offset=slot-array.Base;var indices=new string[array.Dimensions.Count];
+   for(int j=indices.Length-1;j>=0;--j){indices[j]=Number(offset%array.Dimensions[j]);offset/=array.Dimensions[j];}
+   return "a"+Number(k)+"["+String.Join(",",indices)+"]";
+  }
+  return (numeric ? "n" : "v")+Number(slot);
+ }
+ public string ArrayElement(ClassicalArraySelection selection) {
+  selection.Validate(bits,variables);var indices=new List<string>();foreach(var index in selection.Indices)indices.Add(Integer(index));
+  return "a"+Number(selection.Array)+"["+String.Join(",",indices)+"]";
  }
  static string Number(int value){return value.ToString(CultureInfo.InvariantCulture);}
  static string TypeName(T type) {
@@ -72,7 +86,8 @@ sealed class ClassicalExpressionQasm {
  }
  string RealNode(ClassicalRealExpression value) {
   switch(value.Kind) {
-   case ClassicalRealExpression.NodeKind.Variable:return "n"+Number(value.Slot);
+   case ClassicalRealExpression.NodeKind.Variable:return Slot(value.Slot,true);
+   case ClassicalRealExpression.NodeKind.ArrayElement:return ArrayElement(value.Selection);
    case ClassicalRealExpression.NodeKind.TypedConstant:
     if(value.Type.Kind==ClassicalNumericType.NumericKind.Angle)return Cast(NumericTypeName(value.Type),Literal(value.Type.Width,value.Raw));
     double number=value.Type.Width==64 ? BitConverter.Int64BitsToDouble(unchecked((long)value.Raw)) : BitConverter.ToSingle(BitConverter.GetBytes((uint)value.Raw),0);
@@ -151,7 +166,11 @@ sealed class ClassicalExpressionQasm {
     return Binary(Cast("int[64]",Binary(RealNode(value.NumericLeft),">",RealNode(value.NumericRight))),"-",Cast("int[64]",Binary(RealNode(value.NumericLeft),"<",RealNode(value.NumericRight))));
    case I.NodeKind.Constant:return Cast(TypeName(value.Type),IntegerLiteral(value));
    case I.NodeKind.Read:return Cast(TypeName(value.Type),Read(value.Indices));
-   case I.NodeKind.Variable:return "v"+Number(value.Slot);
+   case I.NodeKind.Variable:return Slot(value.Slot,false);
+   case I.NodeKind.ArrayExtent:
+    var slices=new List<string>();foreach(var index in value.Selection.Indices){string item=Integer(index);slices.Add(item+":"+item);}
+    return "sizeof(a"+Number(value.Selection.Array)+"["+String.Join(",",slices)+"])";
+   case I.NodeKind.ArrayElement:return ArrayElement(value.Selection);
    case I.NodeKind.Cast:return Cast(TypeName(value.Type),IntegerNode(value.Left));
    case I.NodeKind.BitExpression:return Cast(TypeName(value.Type),BitNode(value.BitOperand));
    case I.NodeKind.Binary:

@@ -42,8 +42,18 @@ void ArraySelection::validate(unsigned bits,const IntegerStorage &storage) const
  if(indices_.size()!=array.dimensions().size())throw std::invalid_argument(diagnostic("Array index rank does not match its shape"));
  for(const auto &index:indices_)index.validate(bits,storage);
 }
+void ArraySelection::validatePrefix(unsigned bits,const IntegerStorage &storage) const {
+ if(indices_.size()>storage.array(array_).dimensions().size())throw std::invalid_argument(diagnostic("Array index prefix exceeds its shape"));
+ for(const auto &index:indices_)index.validate(bits,storage);
+}
+void ArraySelection::checkPrefix(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const {
+ evaluateAddress(record,bits,storage,true);
+}
 std::size_t ArraySelection::evaluate(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const {
- validate(bits,storage);const auto &array=storage.array(array_);std::size_t offset=0;
+ return evaluateAddress(record,bits,storage,false);
+}
+std::size_t ArraySelection::evaluateAddress(std::uint64_t record,unsigned bits,const IntegerStorage &storage,bool prefix) const {
+ if(prefix)validatePrefix(bits,storage);else validate(bits,storage);const auto &array=storage.array(array_);std::size_t offset=0;
  for(std::size_t axis=0;axis<indices_.size();++axis) {
   const auto value=[&]{try{return indices_[axis].evaluate(record,bits,storage).value();}
    catch(const std::exception &error){throw std::domain_error(diagnostic(std::string("Array index: ")+error.what()));}}();
@@ -54,7 +64,7 @@ std::size_t ArraySelection::evaluate(std::uint64_t record,unsigned bits,const In
    index=dimension-magnitude;
   }
   if(index>=dimension)throw std::out_of_range(diagnostic("Array index is outside dimension "+std::to_string(axis)));
-  offset=offset*dimension+static_cast<std::size_t>(index);
+  if(!prefix)offset=offset*dimension+static_cast<std::size_t>(index);
  }
  return array.base()+offset;
 }

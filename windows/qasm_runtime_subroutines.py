@@ -31,6 +31,8 @@ def lower_runtime_subroutines(program):
     constants = {}; constant_cache = {}
     used = {node.name for node in walk(program) if isinstance(node, ast.Identifier)}
     runtime = set()
+    array_names={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType)}
+    array_scopes=[set(array_names)]
     registers = {}
     register_declarations = {}
     register_arrays = set()
@@ -489,10 +491,12 @@ def lower_runtime_subroutines(program):
         # Call actuals are resolved before expansion, even for unused formals.
         # Keep caller shadowing lexical; leaving a block restores the register.
         classical_scopes.append(set(classical_names))
+        array_scopes.append(set(array_scopes[-1])-set(classical_names))
         try:
             return block_body(body, parent, active, depth, declared)
         finally:
             classical_scopes.pop()
+            array_scopes.pop()
 
     def collection_loop(node, env, active, depth):
         """Snapshot a finite value sequence, then use the existing range engine.
@@ -551,6 +555,7 @@ def lower_runtime_subroutines(program):
                 if active and name in declared:
                     raise error_at(node, 'Duplicate declaration in one subroutine scope: ' + name)
                 declared.add(name)
+                if not isinstance(node.type,ast.ArrayType):array_scopes[-1].discard(name)
                 if active and isinstance(node, ast.ClassicalDeclaration) and not isinstance(node.type, values):
                     raise error_at(node, 'Runtime subroutine locals support integers, Booleans, float32/64, angles and bit registers.')
                 value = copy.copy(node)
@@ -638,6 +643,26 @@ def lower_runtime_subroutines(program):
                     effects, _ = activate(call, depth, active)
                     result.extend(effects)
                     continue
+            elif isinstance(value,ast.ClassicalAssignment) and isinstance(value.lvalue,ast.IndexedIdentifier) and value.lvalue.name.name in array_scopes[-1]:
+                effects,rhs=expression_calls(value.rvalue,active,depth)
+                indices=[]
+                raw_indices=[index for group in value.lvalue.indices for index in group]
+                lowered_indices=[expression_calls(index,active,depth) for index in raw_indices]
+                capture=bool(effects) or any(prefix for prefix,_ in lowered_indices)
+                for prefix,index in lowered_indices:
+                    result.extend(prefix)
+                    if capture:
+                        # Check before narrowing to a signed snapshot: UINT64_MAX
+                        # must fail bounds rather than turn into the valid -1.
+                        probe=indices+[index]
+                        target=ast.IndexExpression(collection=copy.deepcopy(value.lvalue.name),index=[ast.RangeDefinition(start=copy.deepcopy(i),end=copy.deepcopy(i),step=None) for i in probe])
+                        check=ast.Identifier(fresh());runtime.add(check.name)
+                        result.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=check,init_expression=ast.SizeOf(target=target,index=None)))
+                        slot=ast.Identifier(fresh());runtime.add(slot.name)
+                        result.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=index));index=slot
+                    indices.append(index)
+                value.lvalue.indices=[indices]
+                result.extend(effects);value.rvalue=rhs
             elif not isinstance(value, (ast.BranchingStatement, ast.ForInLoop, ast.WhileLoop, ast.CompoundStatement, ast.SwitchStatement)):
                 for field in fields(value):
                     if field.name in ('span', 'annotations'):

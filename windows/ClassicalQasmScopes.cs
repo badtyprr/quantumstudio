@@ -15,10 +15,12 @@ static class ClassicalQasmLifetimes {
  }
  static void Expression(ClassicalCircuit.ExpressionNode node,Action<ClassicalCircuit.ExpressionNode> visit,Action<ClassicalCircuit.RealNode> numeric) {
   if(node==null)return;
+  if(node.Selection!=null)foreach(var index in node.Selection.Indices)Expression(index,visit,numeric);
   visit(node);Expression(node.Left,visit,numeric);Expression(node.Right,visit,numeric);Real(node.RealLeft,visit,numeric);Real(node.RealRight,visit,numeric);
  }
  static void Real(ClassicalCircuit.RealNode node,Action<ClassicalCircuit.ExpressionNode> visit,Action<ClassicalCircuit.RealNode> numeric) {
   if(node==null)return;
+  if(node.Selection!=null)foreach(var index in node.Selection.Indices)Expression(index,visit,numeric);
   if(numeric!=null)numeric(node);Expression(node.IntegerValue,visit,numeric);Expression(node.BitValue,visit,numeric);Real(node.Left,visit,numeric);Real(node.Right,visit,numeric);
  }
  static void Visit(ClassicalCircuit.Step step,Action<ClassicalCircuit.Step> instruction,Action<ClassicalCircuit.ExpressionNode> expression,Action<ClassicalCircuit.RealNode> numeric=null,int depth=0) {
@@ -26,6 +28,7 @@ static class ClassicalQasmLifetimes {
   // too, so intermediate trees cannot exhaust the stack while being rebuilt.
   if(depth>=32)throw new InvalidDataException("OpenQASM export local lifetimes exceed 32 levels of nesting.");
   instruction(step);Expression(step.ClassicalValue,expression,numeric);Expression(step.IntegerValue,expression,numeric);Real(step.Angle,expression,numeric);Real(step.NumericValue,expression,numeric);
+  if(step.ArrayTarget!=null)foreach(var index in step.ArrayTarget.Indices)Expression(index,expression,numeric);
   if(step.WireTargets!=null)foreach(var target in step.WireTargets)Expression(target.Index,expression,numeric);
   if(step.ParameterGate!=null){foreach(var angle in step.ParameterGate.Parameters)Real(angle,expression,numeric);Expression(step.ParameterGate.Power,expression,numeric);}
   if(step.Range!=null){Expression(step.Range.Start,expression,numeric);Expression(step.Range.Stop,expression,numeric);Expression(step.Range.Step,expression,numeric);}
@@ -215,6 +218,7 @@ sealed class ClassicalQasmScopes {
  }
  void Integer(ClassicalIntegerExpression expression,Scope scope) {
   if(expression==null)return;
+  if(expression.Selection!=null)foreach(var index in expression.Selection.Indices)Integer(index,scope);
   if(!numeric && expression.Kind==ClassicalIntegerExpression.NodeKind.Variable)uses[expression.Slot].Add(scope);
   Integer(expression.Left,scope);Integer(expression.Right,scope);Bits(expression.BitOperand,scope);Real(expression.NumericLeft,scope);Real(expression.NumericRight,scope);
  }
@@ -225,6 +229,7 @@ sealed class ClassicalQasmScopes {
  }
  void Real(ClassicalRealExpression expression,Scope scope) {
   if(expression==null)return;
+  if(expression.Selection!=null)foreach(var index in expression.Selection.Indices)Integer(index,scope);
   if(numeric && expression.Kind==ClassicalRealExpression.NodeKind.Variable)uses[expression.Slot].Add(scope);
   Integer(expression.Integer,scope);Bits(expression.BitOperand,scope);Real(expression.Left,scope);Real(expression.Right,scope);
  }
@@ -234,9 +239,10 @@ sealed class ClassicalQasmScopes {
   for(int i=0;i<body.Count;i++) {
    var gate=body[i];var site=new Site{Scope=scope,Index=i,Gate=gate};
    Bits(gate.ClassicalExpression,scope);Integer(gate.IntegerExpression,scope);Real(gate.Angle,scope);Real(gate.NumericExpression,scope);
+   if(gate.ArrayTarget!=null)foreach(var index in gate.ArrayTarget.Indices)Integer(index,scope);
    if(gate.SelectedWires!=null)foreach(var target in gate.SelectedWires.Targets)Integer(target.Index,scope);
    if(gate.ParameterGate!=null){foreach(var parameter in gate.ParameterGate.Parameters)Real(parameter,scope);Integer(gate.ParameterGate.Power,scope);}
-   if(gate.Kind==(numeric ? O.StoreNumeric : O.StoreInteger))uses[gate.VariableSlot.Value].Add(scope);
+   if(gate.ArrayTarget==null && gate.Kind==(numeric ? O.StoreNumeric : O.StoreInteger))uses[gate.VariableSlot.Value].Add(scope);
    if(OwnClear(gate))clears[gate.VariableSlot.Value].Add(site);
    if(gate.Kind==O.Break || gate.Kind==O.Continue || gate.Kind==O.End)transfers.Add(site);
    if(gate.Kind==O.ForRange) {

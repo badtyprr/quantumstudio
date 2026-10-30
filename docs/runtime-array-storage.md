@@ -1,8 +1,9 @@
 # Runtime array storage
 
-This DEV-08 increment adds native array element storage, expressions, writes,
-and worker decoding. Source-language arrays, reference views, editor support,
-and export remain separate unfinished DEV-08 work.
+DEV-08 now has native array element storage, expressions, writes, worker
+decoding, version-15 saved documents, indexed editor expressions, and basic
+global source arrays with export/reimport. Reference views, array parameters,
+bulk/slice operations and array iteration remain unfinished DEV-08 work.
 
 An array declaration contains a scalar table (integer or numeric), its element
 type, a base slot, and one to seven dimensions. Elements occupy contiguous
@@ -49,3 +50,54 @@ trailing-data checks apply before or during execution as described above.
 measurement-history independence. `quantum-classical-array-request-test.py`
 exercises both worker formats, malformed declarations, every truncation of a
 valid request, nested array reads, and measurement-dependent indexing.
+
+## Application and source integration
+
+Version 15 adds `Arrays` declarations (name, base, dimensions, element type and
+width), `Selection` on integer/real array-element expressions, and `ArrayTarget`
+on stores. Selections carry array ID, integer index expressions and source
+context. Existing versions retain their layouts. The adapter validates shape,
+allocation, element type, expression depth and target fields before execution.
+Both worker boundaries pass these declarations explicitly.
+
+The expression editor uses `array(0, index)` (additional comma-separated indices
+for additional axes) for reads and store targets. Imported allocations survive
+editing, invalid edits, undo/redo and save/reopen. Array allocation itself is
+authored in source or in the validated document. Export emits global OpenQASM
+array declarations and maps backing-slot reads/writes to the corresponding
+elements. Clearing an array backing slot as a local lifetime or using it as a
+range binding has no supported export representation and is rejected.
+
+The source adapter retains the established compile-time path for static arrays.
+It selects runtime storage for measurement/scalar-dependent indexing,
+initialization and writes, writes in runtime control flow, negative indices and
+zero dimensions. All accesses to a selected allocation use the same runtime
+storage. The runtime budget is 4096 combined scalar/array slots; the older
+compile-time-only path retains its 65536-element budget. Supported runtime
+elements are int/uint/bool, float32/64 and angles of widths 1–64. Constant shape
+and width expressions currently accept integer literals, named integer
+constants, unary minus and addition/subtraction/multiplication. Complex and
+duration elements are rejected.
+
+`test-runtime-array-model.py` exercises saved documents through both workers.
+`test-qasm-runtime-arrays.py` checks source, exported/reimported source and frozen
+compiler equivalence. Existing compile-time array fixtures, including the
+unchanged ripple-carry program, remain covered by `test-qasm-arrays.py`.
+
+## Checked singleton slice extents
+
+Integer expression tag 11 (`IntegerArrayExtent` in circuit JSON) carries an
+nonempty prefix of array indices and returns signed machine integer 1 after
+validating those axes in order. Omitted trailing axes are not evaluated. It reads no element and works for integer and numeric allocations,
+including undefined elements. Invalid or undefined indices fail normally.
+The wire encoding is the tag followed by the selection; it carries no type
+prefix. JSON requires signedness `Signed` and width 0.
+
+QASM export uses `sizeof(a[i:i, j:j])`, and editor text uses
+`arrayextent(array_id, i, j)`. An extent is a value, never an assignment target.
+For an array store whose RHS calls a runtime subroutine, call lowering validates
+each destination index before narrowing it into a signed temporary, then runs
+the RHS effects and stores through the captured indices. It neither reads an
+undefined destination nor writes a dummy value. Tests cover undefined integer
+and float destinations, negative and oversized unsigned indices, error order,
+source export/reimport, and both execution engines.

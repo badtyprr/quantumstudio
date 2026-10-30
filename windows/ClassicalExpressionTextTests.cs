@@ -3,6 +3,31 @@ using System.Text;
 using N=ClassicalCircuit.ExpressionNode;
 static class ClassicalExpressionTextTests {
  static int checks;
+ static void ArrayChecks() {
+  var context=Context();context.Version=15;context.LoopConditionBudget=1000000;
+  context.Variables=new[]{new ClassicalCircuit.Variable{Name="cell",Signedness="Signed",Width=0}};
+  context.NumericVariables=new[]{new ClassicalCircuit.NumericVariable{Name="number",NumericKind="Float",Width=32}};
+  context.Arrays=new[]{new ClassicalCircuit.ArrayDeclaration{Name="a",Base=0,Dimensions=new[]{1},Signedness="Signed",Width=0},new ClassicalCircuit.ArrayDeclaration{Name="f",Base=0,Dimensions=new[]{1},NumericKind="Float",Width=32}};
+  var integer=ClassicalExpressionText.ParseInteger("array(0, -1)",context);
+  Check(integer.Kind=="IntegerArrayElement" && ClassicalExpressionText.RequiredVersion(integer)==15);
+  string formatted=ClassicalExpressionText.Format(integer,context);
+  Check(ClassicalExpressionText.Format(ClassicalExpressionText.ParseInteger(formatted,context),context)==formatted);
+  var extent=ClassicalExpressionText.ParseInteger("arrayextent(1, 0)",context);
+  Check(extent.Kind=="IntegerArrayExtent");
+  Check(ClassicalExpressionText.ParseInteger(ClassicalExpressionText.Format(extent,context),context).Kind=="IntegerArrayExtent");
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("arrayextent(0, 0)",context,false));
+  var numeric=ClassicalExpressionText.ParseNumeric("array(1, 0)",context);
+  Check(numeric.Kind=="ArrayElement" && numeric.Width==32);
+  formatted=ClassicalExpressionText.FormatNumeric(numeric,context);
+  Check(ClassicalExpressionText.FormatNumeric(ClassicalExpressionText.ParseNumeric(formatted,context),context)==formatted);
+  Check(ClassicalExpressionText.ParseArrayTarget("array(0, 0)",context,false).Array==0);
+  Check(ClassicalExpressionText.ParseArrayTarget("array(1, 0)",context,true).Array==1);
+  Check(ClassicalExpressionText.Parse("array(0, 0) == 3",context,1).Kind=="IntegerCompare");
+  Reject(()=>ClassicalExpressionText.ParseInteger("array(2, 0)",context));
+  Reject(()=>ClassicalExpressionText.ParseInteger("array(0, 0, 0)",context));
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(1, 0)",context,false));
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(0, 0)+1",context,false));
+ }
  static void Check(bool value){checks++;if(!value)throw new Exception("Expression text check "+checks+" failed.");}
  static void Reject(Action action){bool caught=false;try{action();}catch(ArgumentException){caught=true;}catch(System.IO.InvalidDataException){caught=true;}Check(caught);}
  static ClassicalCircuit.Document Context(){return new ClassicalCircuit.Document{Version=3,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=3},new ClassicalCircuit.Register{Name="rest",Size=61}},OutputBits=new int[0],Steps=new ClassicalCircuit.Step[0]};}
@@ -23,12 +48,33 @@ static class ClassicalExpressionTextTests {
   string[] expected={"int(-1)","int[64](-9223372036854775808)","int[8](-128)","int[3](-1)","int[1](-1)","int[3](3)","uint[64](18446744073709551615)"};
   for(int i=0;i<samples.Length;i++) {
    Check(Format(samples[i])==expected[i]);
-   Check(serializer.Serialize(ClassicalExpressionText.ParseInteger(expected[i],context))==serializer.Serialize(samples[i]));
+   Check(CanonicalJson(ClassicalExpressionText.ParseInteger(expected[i],context),serializer)==CanonicalJson(samples[i],serializer));
    var cast=new N{Kind="IntegerCast",Signedness="Signed",Width=8,Left=samples[i]};
-   Check(serializer.Serialize(ClassicalExpressionText.ParseInteger(Format(cast),context))==serializer.Serialize(cast));
+   Check(CanonicalJson(ClassicalExpressionText.ParseInteger(Format(cast),context),serializer)==CanonicalJson(cast,serializer));
   }
   Check(Format(ClassicalExpressionText.ParseInteger("uint[8](-1)",context))=="uint[8](255)");
   Reject(()=>ClassicalExpressionText.ParseInteger("int[8](-9223372036854775809)",context));
+ }
+ // Framework reflection may enumerate DTO properties in different orders.
+ // Preserve all fields and array order, comparing JSON objects by key instead.
+ static object OrderedFields(object value) {
+  var fields=value as System.Collections.Generic.IDictionary<string,object>;
+  if(fields!=null) {
+   var ordered=new System.Collections.Generic.SortedDictionary<string,object>(StringComparer.Ordinal);
+   foreach(var field in fields)ordered.Add(field.Key,OrderedFields(field.Value));
+   return ordered;
+  }
+  var items=value as object[];
+  if(items!=null)return Array.ConvertAll(items,OrderedFields);
+  return value;
+ }
+ static string CanonicalJson(object value,System.Web.Script.Serialization.JavaScriptSerializer serializer) {
+  return serializer.Serialize(OrderedFields(serializer.DeserializeObject(serializer.Serialize(value))));
+ }
+ static void CheckDisplayRoundtrip(N before,string shown,System.Web.Script.Serialization.JavaScriptSerializer serializer) {
+  string expected=CanonicalJson(before,serializer),actual=CanonicalJson(Parse(shown,1),serializer);
+  checks++;
+  if(expected!=actual)throw new Exception("Expression display round-trip check "+checks+" failed for "+shown+". Expected: "+expected+"; actual: "+actual);
  }
  static void BooleanDisplayChecks() {
   var serializer=new System.Web.Script.Serialization.JavaScriptSerializer();
@@ -36,17 +82,17 @@ static class ClassicalExpressionTextTests {
   foreach(string text in source) {
    N before=Parse(text,1);string shown=Format(before);
    Check(shown.StartsWith("bool(") || shown.StartsWith("(bool("));
-   Check(serializer.Serialize(before)==serializer.Serialize(Parse(shown,1)));
+   CheckDisplayRoundtrip(before,shown,serializer);
   }
   foreach(string text in new[]{"int[3](c) != int[8](0)","int[3](c) != uint(0)","c != 1","c == 0"}) {
    N before=Parse(text,1);string shown=Format(before);
    Check(!shown.StartsWith("bool("));
-   Check(serializer.Serialize(before)==serializer.Serialize(Parse(shown,1)));
+   CheckDisplayRoundtrip(before,shown,serializer);
   }
   var context=Context();context.Version=6;context.Variables=new[]{new ClassicalCircuit.Variable{Name="ready",Signedness="Unsigned",Width=1}};
   N value=ClassicalExpressionText.Parse("bool(ready)",context,1);
   Check(ClassicalExpressionText.Format(value,context)=="bool(ready)");
-  Check(serializer.Serialize(value)==serializer.Serialize(ClassicalExpressionText.Parse("bool(ready)",context,1)));
+  Check(CanonicalJson(value,serializer)==CanonicalJson(ClassicalExpressionText.Parse("bool(ready)",context,1),serializer));
  }
  static void VariableChecks(string worker) {
   var context=Context();context.Version=5;context.Variables=new[]{new ClassicalCircuit.Variable{Name="counter",Signedness="Signed",Width=8}};
@@ -126,7 +172,7 @@ static class ClassicalExpressionTextTests {
   Check(ClassicalExpressionText.RequiredVersion(Parse("bool(c)",1))==3);
   Check(ClassicalExpressionText.RequiredVersion(Parse("bool(int[3](c))",1))==4);
  }
- static int Main(string[] args){try {
+ static int Main(string[] args){try {ArrayChecks();
   var loopContext=new ClassicalCircuit.Document{Version=7,LoopConditionBudget=3,Qubits=0,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new[]{new ClassicalCircuit.Variable{Name="n",Signedness="Signed",Width=8}},OutputBits=new[]{0},Steps=new ClassicalCircuit.Step[0]};
   Check(ClassicalExpressionText.Parse("c == 0",loopContext,1).Kind=="Binary");
   Check(ClassicalExpressionText.ParseInteger("n + 1",loopContext).Kind=="IntegerBinary");

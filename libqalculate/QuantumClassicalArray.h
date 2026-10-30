@@ -33,6 +33,7 @@ class ArraySelection {
  std::string source_;
  unsigned depth_=1,count_=1;std::uint64_t references_=0;
  std::string diagnostic(const std::string &message) const;
+ std::size_t evaluateAddress(std::uint64_t record,unsigned bits,const IntegerStorage &storage,bool prefix) const;
 public:
  ArraySelection(std::size_t array,const std::vector<IntegerExpression> &indices,const std::string &source="");
  std::size_t array() const {return array_;}
@@ -40,6 +41,8 @@ public:
  unsigned count() const {return count_;}
  std::uint64_t references() const {return references_;}
  void validate(unsigned bits,const IntegerStorage &storage) const;
+ void validatePrefix(unsigned bits,const IntegerStorage &storage) const;
+ void checkPrefix(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const;
  std::size_t evaluate(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const;
 };
 }

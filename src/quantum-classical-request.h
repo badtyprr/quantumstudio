@@ -41,7 +41,8 @@ template<class Reader>
 QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,unsigned &count,bool variables=false,bool bitExpressions=false,bool numeric=false) {
  using namespace QuantumClassical;
  if(depth>=32 || ++count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 nodes.");
- const auto kind=reader.integer(reader.arrays() ? 10 : numeric ? 9 : bitExpressions ? 5 : variables ? 4 : 3);
+ const auto kind=reader.integer(reader.arrays() ? 11 : numeric ? 9 : bitExpressions ? 5 : variables ? 4 : 3);
+ if(kind==11)return IntegerExpression::arrayExtent(arraySelection(reader,depth+1,count));
  if(kind==10) {auto type=integerType(reader);return IntegerExpression::arrayElement(type,arraySelection(reader,depth+1,count));}
  if(kind>=6) {
   if(kind==6){auto type=integerType(reader);return IntegerExpression::fromNumeric(type,realNode(reader,depth+1,count,true));}

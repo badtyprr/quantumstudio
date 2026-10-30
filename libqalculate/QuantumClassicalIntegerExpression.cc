@@ -20,7 +20,7 @@ void checkOperation(Integer::Operation operation) {
 }
 }
 struct IntegerExpression::Node {
- enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression, NumericCast, AngleRatio, AngleBits, NumericCompare, ArrayElement };
+ enum class Kind { Constant, Read, Cast, Binary, Variable, BitExpression, NumericCast, AngleRatio, AngleBits, NumericCompare, ArrayElement, ArrayExtent };
  Kind kind;IntegerType type;Integer::Operation operation=Integer::Operation::Add;
  std::uint64_t value=0,references=0;unsigned depth=1,count=1;
  std::vector<unsigned> indices;std::shared_ptr<const Node> left,right;
@@ -40,8 +40,8 @@ struct IntegerExpression::Node {
  void validateVariables(const IntegerStorage *storage) const {
   if(selection) {
    if(!storage)throw std::invalid_argument("Array read requires runtime storage");
-   selection->validate(64,*storage);
-   if(storage->array(selection->array()).integerType()!=type)throw std::invalid_argument("Integer array read type does not match its declaration");
+   if(kind==Kind::ArrayExtent)selection->validatePrefix(64,*storage);else selection->validate(64,*storage);
+   if(kind!=Kind::ArrayExtent && storage->array(selection->array()).integerType()!=type)throw std::invalid_argument("Integer array read type does not match its declaration");
   }
   for(const auto &numeric:{numericLeft,numericRight})if(numeric){const IntegerStorage empty({});numeric->validate(64,storage ? *storage : empty);}
   if(bits) {
@@ -57,6 +57,7 @@ struct IntegerExpression::Node {
  TypedInteger evaluate(std::uint64_t record,const IntegerStorage *storage) const {
   if(selection) {
    if(!storage)throw std::invalid_argument("Array read requires runtime storage");
+   if(kind==Kind::ArrayExtent){selection->checkPrefix(record,64,*storage);return TypedInteger::fromBits(type,1);}
    return storage->read(selection->evaluate(record,64,*storage));
   }
   if(numericLeft) {
@@ -109,6 +110,9 @@ IntegerExpression IntegerExpression::fromBits(IntegerType type,const Bits &opera
 }
 IntegerExpression IntegerExpression::variable(IntegerType type,std::size_t index) {
  auto n=std::make_shared<Node>(Node::Kind::Variable,type);n->slot=index;return IntegerExpression(n);
+}
+IntegerExpression IntegerExpression::arrayExtent(const ArraySelection &selection) {
+ auto n=std::make_shared<Node>(Node::Kind::ArrayExtent,IntegerType::machine(Integer::Signedness::Signed));n->selection=std::make_shared<const ArraySelection>(selection);n->bound();return IntegerExpression(n);
 }
 IntegerExpression IntegerExpression::arrayElement(IntegerType type,const ArraySelection &selection) {
  auto n=std::make_shared<Node>(Node::Kind::ArrayElement,type);n->selection=std::make_shared<const ArraySelection>(selection);n->bound();return IntegerExpression(n);

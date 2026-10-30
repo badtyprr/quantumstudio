@@ -160,6 +160,7 @@ EXTRA_DIST += docs/runtime-numeric-protocol.md docs/learning-evidence/DEV-06.md
 
 EXTRA_DIST += docs/runtime-wire-protocol.md
 EXTRA_DIST += docs/runtime-array-storage.md
+EXTRA_DIST += windows/qasm_runtime_arrays.py windows/test-qasm-runtime-arrays.py windows/test-runtime-array-model.py
 
 EXTRA_DIST += docs/learning-evidence/DEV-07-research.md
 
