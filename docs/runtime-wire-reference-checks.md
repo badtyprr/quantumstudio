@@ -39,10 +39,20 @@ DEV-08 remains unfinished; no release is claimed.
 
 A nonempty runtime subroutine accepts a scalar qubit selected by an integer expression from a declared register or fixed alias. Each selector is checked and captured before evaluating the next argument. After all actuals have been evaluated, one reference check rejects physical overlap across the captured scalar references and whole-register parameters before body effects. Nested calls retain the captured identity. Existing fixed-literal calls retain their compile-time diagnostics and document versions.
 
-Dynamic aliases remain separate DEV-08 work; register views are described below. The scalar binding suite observes wire identity after later argument mutation, nested forwarding, aliases, mixed register parameters, overlap, lazy type checks, and selector-error ordering through original and exported programs on both engines.
+Register views and dynamic aliases are described below. The scalar binding suite observes wire identity after later argument mutation, nested forwarding, aliases, mixed register parameters, overlap, lazy type checks, and selector-error ordering through original and exported programs on both engines.
 
 ## Quantum register parameters
 
 Register parameters accept fixed aliases and register slices, including runtime range bounds. A private uint32 array records each declared register's physical indices; checked array views capture range geometry at argument evaluation. The view must have the formal's fixed width. Scalar indexing, whole-register gate broadcast and ordered measurement destinations use the selected physical indices, and nested register/scalar forwarding preserves the same capture. Selectors are validated in start/step/stop order before later selector calls. All referenced physical qubits participate in the final call overlap check.
 
-Runtime alias declarations and concatenated dynamic quantum selections remain follow-up work. Existing static aliases and discrete selections retain the pinned compiler's mapping. Private identity arrays count against the existing storage and operation limits; they cannot be accessed or mutated through source parameters.
+Runtime aliases and concatenated quantum selections use the path described below. Existing static aliases and discrete selections retain the pinned compiler's mapping. Private identity arrays count against the existing storage and operation limits; they cannot be accessed or mutated through source parameters.
+
+## Captured quantum aliases
+
+Runtime quantum aliases capture range and discrete-set selections at declaration, with lexical scope, shadowing and per-iteration initialization. They can be indexed, passed to scalar/register parameters, reset, measured, and used by broadcast gates. Private identity arrays use circuit-wide physical indices so views from distinct registers compose without ambiguity.
+
+Concatenation copies only the private index map, never quantum state. Up to 25 selected identities are retained; pairwise reference checks reject physical overlap before the resulting alias is used. An empty alias is invalid. Broadcast operations preflight every lane before physical operations; singleton registers broadcast and other widths must match. Measurement destinations must have matching widths and retain their bit order. The source retains DEV-07's nonnegative quantum-index boundary; ranges may have negative strides.
+
+Private arrays and generated loops are charged to existing storage, operation, expression and loop budgets. Reference expansion is bounded by 4096 views and 32 alias levels. Classical-bit aliases and remaining source acceptance are separate DEV-08 work.
+
+Contract sources: [OpenQASM aliasing/index sets/concatenation](https://openqasm.com/versions/3.0/language/types.html) and [lexical alias scope](https://openqasm.com/versions/3.0/language/scope.html).

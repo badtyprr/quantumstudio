@@ -57,6 +57,7 @@ class RuntimeWires:
 
     @staticmethod
     def fixed(visitor, operand):
+        if isinstance(operand,list):return [wire for register in operand for wire in RuntimeWires.fixed(visitor,register)]
         if isinstance(operand,ast.IndexExpression) and isinstance(operand.collection,ast.Identifier):operand=ast.IndexedIdentifier(name=operand.collection,indices=[operand.index])
         proxy = ast.QuantumGate(modifiers=[], name=ast.Identifier('id'), arguments=[], qubits=[operand])
         return visitor._get_op_bits(proxy, qubits=True)
@@ -74,6 +75,7 @@ class RuntimeWires:
         if isinstance(operand,SourceQuantumRegisterView):
             return [target for selected in operand.selections for target in self.group(visitor,selected)]
         if isinstance(operand,SourceQuantumSelection):
+            self.require_integer_index(visitor,operand.index)
             return [{'Candidates':self.fixed(visitor,operand.register),'Index':self.normalize(visitor,operand.index,typed=True)}]
         if self.dynamic(visitor, operand) or force and self.parts(operand)[1] is not None:
             name, indices = self.parts(operand)

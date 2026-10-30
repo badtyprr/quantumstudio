@@ -183,3 +183,5 @@ EXTRA_DIST += windows/test-runtime-wire-reference-model.py
 EXTRA_DIST += windows/test-runtime-scalar-quantum-bindings.py
 
 EXTRA_DIST += windows/test-runtime-quantum-register-views.py
+
+EXTRA_DIST += windows/test-runtime-dynamic-quantum-aliases.py
