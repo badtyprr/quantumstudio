@@ -146,18 +146,18 @@ std::vector<QuantumClassical::ArrayDeclaration> arrays(Reader &reader) {
  return result;
 }
 template<class Reader>
-QuantumClassical::WireSelection wireSelection(Reader &reader,unsigned qubits,unsigned bits,const QuantumClassical::IntegerStorage &storage) {
+QuantumClassical::WireSelection wireSelection(Reader &reader,unsigned qubits,unsigned bits,const QuantumClassical::IntegerStorage &storage,bool references=false) {
  const auto source=reader.expression();
  if(source.size()>512)throw std::length_error("Wire source context exceeds 512 bytes");
- const auto count=reader.integer(3);std::vector<QuantumClassical::WireSelection::Target> targets;
+ const auto count=reader.integer(references?25:3);std::vector<QuantumClassical::WireSelection::Target> targets;unsigned nodes=0;
  for(unsigned k=0;k<count;++k) {
   const auto size=reader.integer(25);std::vector<unsigned> mapping;
   if(!qubits)throw std::out_of_range("A runtime wire requires a quantum register");
   for(unsigned j=0;j<size;++j)mapping.push_back(static_cast<unsigned>(reader.integer(qubits-1)));
-  unsigned nodes=0;auto index=integerNode(reader,0,nodes,true,true,true);
+  if(!references)nodes=0;auto index=integerNode(reader,0,nodes,true,true,true);
   targets.push_back({mapping,index});
  }
- QuantumClassical::WireSelection result(targets,source);result.validate(qubits,bits,storage);return result;
+ auto result=references?QuantumClassical::WireSelection::references(targets,source):QuantumClassical::WireSelection(targets,source);result.validate(qubits,bits,storage);return result;
 }
 
 template<class Reader>

@@ -16,8 +16,11 @@
 namespace QuantumExact {
 class CircuitStep {
 public:
- enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric, CheckArrayReferences, CopyArray };
+ enum class Kind { Map, Measure, Reset, Branch, Readout, Assign, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric, CheckArrayReferences, CopyArray, CheckWireReferences };
  const Kind kind;
+ static CircuitStep checkWireReferences(const QuantumClassical::WireSelection &selection) {
+  return CircuitStep(CircuitStep(Kind::CheckWireReferences,{},0,0,0),std::make_shared<const QuantumClassical::WireSelection>(selection));
+ }
  const std::shared_ptr<const QuantumClassical::ArrayReferenceCheck> arrayReferences;
  const std::shared_ptr<const QuantumClassical::ArrayCopy> arrayCopy;
  static CircuitStep checkArrayReferences(const QuantumClassical::ArrayReferenceCheck &check) {
@@ -57,6 +60,7 @@ public:
   if(!(kind==Kind::Map || kind==Kind::Measure || kind==Kind::Reset || kind==Kind::Rotation || kind==Kind::ParameterGate))throw std::invalid_argument("Only quantum operations accept runtime wire selectors");
   if(wireSelection)throw std::invalid_argument("Nested wire selections are not supported");
   for(unsigned k=0;k<wires.size();++k)if(wires[k]!=k)throw std::invalid_argument("Runtime wire operation must use local ordinal targets");
+  if(selection.size()>3)throw std::invalid_argument("Dynamic operations need one to three wire selectors");
   if(selection.size()!=wires.size())throw std::invalid_argument("Wire selector count differs from operation arity");
   return CircuitStep(*this,std::make_shared<const QuantumClassical::WireSelection>(selection));
  }

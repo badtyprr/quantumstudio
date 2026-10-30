@@ -19,6 +19,7 @@ class IntegerExpression {
  friend class RealExpression;
  friend class ArraySelection;
  friend class ArrayView;
+ friend class WireSelection;
  unsigned depth() const;
  unsigned count() const;
  std::uint64_t references() const;

@@ -11,6 +11,8 @@ class WireSelection {
 public:
  struct Target {std::vector<unsigned> wires;IntegerExpression index;};
  WireSelection(const std::vector<Target> &targets,const std::string &source="");
+ // Call-entry preflight spans the full register, independently of gate arity.
+ static WireSelection references(const std::vector<Target> &targets,const std::string &source="");
  unsigned size() const {return static_cast<unsigned>(targets_.size());}
  // Validate references in every body without reading undefined runtime slots.
  void validate(unsigned qubits,unsigned bits,const IntegerStorage &storage) const;
@@ -18,6 +20,7 @@ public:
  // indices and physical-wire collisions before any quantum mutation.
  std::vector<unsigned> evaluate(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const;
 private:
+ WireSelection(const std::vector<Target> &targets,const std::string &source,unsigned limit);
  const std::vector<Target> targets_;
  const std::string source_;
  std::string diagnostic(const std::string &message) const;

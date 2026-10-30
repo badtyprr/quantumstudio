@@ -13,7 +13,8 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool copies() const {return input.compare(0,9,"QEXACT16\n")==0;}
+ bool wireReferences() const {return input.compare(0,9,"QEXACT17\n")==0;}
+ bool copies() const {return input.compare(0,9,"QEXACT16\n")==0 || wireReferences();}
  bool views() const {return input.compare(0,9,"QEXACT15\n")==0 || copies();}
  bool arrays() const {return input.compare(0,9,"QEXACT14\n")==0 || views();}
  bool wireSelectors() const {return input.compare(0,9,"QEXACT13\n")==0 || arrays();}
@@ -30,7 +31,7 @@ public:
  bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT16 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT17 request.");
   if(rotations())position=9;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -76,7 +77,8 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
  unsigned &total,const EvaluationOptions &exact,const QuantumClassical::IntegerStorage *variables) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.copies()?24:reader.views()?23:reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.wireReferences()?25:reader.copies()?24:reader.views()?23:reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==25)return Step::checkWireReferences(QuantumClassicalRequest::wireSelection(reader,qubits,bits,*variables,true));
  if(kind==24)return Step::copyArray(QuantumClassicalRequest::arrayCopy(reader));
  if(kind==23) {
   auto check=QuantumClassicalRequest::arrayReferenceCheck(reader);
