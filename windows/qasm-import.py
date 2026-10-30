@@ -67,6 +67,11 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         visitor._quantum_call_depth=depth+1;visitor._quantum_call_count=calls
         try:return original_function(visitor,statement)
         finally:visitor._quantum_call_depth=depth
+    def require_range_integer(value):
+        if (isinstance(value,ast.BooleanLiteral) or isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
+            isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
+            isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
+            raise ValueError('For-loop range bounds and step require integers; cast Boolean values explicitly.')
     def for_loop(visitor, statement):
         bounds=statement.set_declaration
         if getattr(statement,'_quantum_runtime_for',False):
@@ -75,11 +80,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             captured=ast.RangeDefinition(start=normalize(visitor,bounds.start,typed=True),
                                         end=normalize(visitor,bounds.end,typed=True),
                                         step=normalize(visitor,bounds.step or ast.IntegerLiteral(1),typed=True))
-            for value in (captured.start,captured.end,captured.step):
-                if (isinstance(value,ast.BooleanLiteral) or isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
-                    isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
-                    isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
-                    raise ValueError('For-loop range bounds and step require integers; cast Boolean values explicitly.')
+            for value in (captured.start,captured.end,captured.step):require_range_integer(value)
             proxy=ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=statement.block,else_block=[])
             compiled=branch(visitor,proxy,force=True)
             return [ast.ForInLoop(type=statement.type,identifier=statement.identifier,set_declaration=captured,block=item.if_block) for item in compiled]
@@ -398,6 +399,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if statement.init_expression is not None:result+=assignment(visitor,ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression))
             return result
         if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
+            if getattr(statement,'_quantum_range_capture',False):
+                require_range_integer(normalize(visitor,statement.init_expression,typed=True))
             boolean=isinstance(statement.type,ast.BoolType)
             size = ast.IntegerLiteral(1) if boolean else statement.type.size
             if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
@@ -1188,12 +1191,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
                 isinstance(node,ast.Cast) and isinstance(node.type,(ast.IntType,ast.UintType)) or
                 isinstance(node,ast.BinaryExpression) and node.op.name in arithmetic or
                 isinstance(node,ast.UnaryExpression) and node.op.name=='-')
-    def integer_type(node):
-        if node['Kind']!='IntegerBinary':return node['Signedness'],node['Width']
-        # Match the runtime's arithmetic promotion: only unsigned 64-bit
-        # operands require an unsigned machine result; narrower values fit int.
-        operands=[integer_type(node[key]) for key in ('Left','Right')]
-        return ('Unsigned' if any(sign=='Unsigned' and (size or 64)==64 for sign,size in operands) else 'Signed'),0
+    integer_type=integer_expression_type
     def bound(depth):
         nonlocal count
         count+=1
@@ -1354,10 +1352,24 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
     return result
 
 
+def integer_expression_type(node):
+    """The integer type retained by native expression evaluation."""
+    if node['Kind']=='IntegerBinary':
+        operands=[integer_expression_type(node[key]) for key in ('Left','Right')]
+        return ('Unsigned' if any(sign=='Unsigned' and (size or 64)==64 for sign,size in operands) else 'Signed'),0
+    if node['Kind'] in ('IntegerCompare','NumericCompare'):return 'Signed',0
+    if node['Kind'] in ('AngleBits','AngleRatio'):
+        real=node['RealLeft']
+        while 'Width' not in real:real=real['Left']
+        return 'Unsigned',real['Width']
+    return node['Signedness'],node['Width']
+
+
 def classical_circuit(statements, published_u, hidden_registers=None, output_registers=None, allocations=None):
     hidden_registers=hidden_registers or set()
     quantum, classical, named = {}, {}, []
     variables, declarations = {}, []
+    inferred_ranges=set()
     numeric_variables,numeric_declarations={},[]
     nq = nc = 0
     declarations_in_order=list(nodes(statements))
@@ -1386,6 +1398,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                     if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
                     continue
                 if len(variables)>=4096:raise ValueError('Excessive integer declarations.')
+                if getattr(statement,'_quantum_range_capture',False):inferred_ranges.add(name)
                 variables[name]=(len(variables),sign,size)
                 declarations.append({'Name':name,'Signedness':sign,'Width':size})
                 continue
@@ -1502,8 +1515,14 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                     append({'Kind':'StoreNumeric','VariableSlot':numeric_variables[statement.lvalue.name][0],'NumericValue':numeric(statement.rvalue,numeric_variables[statement.lvalue.name][2] if numeric_variables[statement.lvalue.name][1]=='Float' else 64)})
                     continue
                 if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in variables:
-                    append({'Kind':'StoreInteger','VariableSlot':variables[statement.lvalue.name][0],
-                            'IntegerValue':classical_value(statement.rvalue,classical,variables=variables,integer_only=True)})
+                    name=statement.lvalue.name
+                    value=classical_value(statement.rvalue,classical,variables=variables,integer_only=True)
+                    if name in inferred_ranges:
+                        slot=variables[name][0];sign,width=integer_expression_type(value)
+                        variables[name]=(slot,sign,width)
+                        declarations[slot].update(Signedness=sign,Width=width)
+                        inferred_ranges.remove(name)
+                    append({'Kind':'StoreInteger','VariableSlot':variables[name][0],'IntegerValue':value})
                     continue
                 targets=classical_indices(statement.lvalue,classical)
                 if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')

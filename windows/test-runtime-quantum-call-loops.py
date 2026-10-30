@@ -51,6 +51,12 @@ for body,expected in [('for int i in [0:1]{i=1;bool ok=f(q[i]);}', '00'), ('for 
     execute(original,expected);execute(restored,expected)
 
 for source,expected in (
+    ('def m(mutable array[int,1] a)->int{a[0]=2;return 3;}array[int,1] a={1};int count=0;for int i in [a[0]:m(a)]{count+=1;}output bit c;c=bool(count==3);','1'),
+    ('def f(qubit a)->bool{x a;return true;}qubit[2] q;uint[64] stride=18446744073709551615;for int i in [0:stride:1]{bool b=f(q[i]);}output bit[2] r;r=measure q;','01'),
+    ('def f(qubit a)->bool{x a;return true;}def m(mutable array[int,1] a)->int{a[0]=2;return 3;}qubit[4] q;array[int,1] a={1};for int i in [0:a[0]:m(a)]{bool b=f(q[i]);}output bit[4] r;r=measure q;','1111'),
+    ('def f(qubit a)->bool{x a;return true;}def m(mutable array[int,1] a)->int{a[0]=2;return 1;}qubit[4] q;array[int,1] a={0};for int i in [a[0]:m(a):3]{bool b=f(q[i]);}output bit[4] r;r=measure q;','1111'),
+    ('def f(qubit a)->bool{x a;return true;}def m(mutable array[int,1] a)->int{a[0]=2;return 3;}qubit[4] q;array[int,1] a={1};for int i in [a[0]:m(a)]{bool b=f(q[i]);}output bit[4] r;r=measure q;','1110'),
+    ('def f(qubit a)->bool{x a;return true;}def m(mutable array[uint[64],1] a)->int{a[0]=0;return 1;}qubit[2] q;array[uint[64],1] a={18446744073709551615};for uint[64] i in [a[0]:m(a)]{bool b=f(q[i]);}output bit[2] r;r=measure q;','00'),
     ('def f(qubit a)->bool{x a;return true;}qubit[2] q;int n=2;for uint[1] i in [0:n]{bool ok=f(q[i]);}output bit[2] r;r=measure q;','10'),
     ('def f(qubit a)->bool{x a;return true;}qubit[2] q;for uint[1] i in [0:2]{bool ok=f(q[i]);}output bit[2] r;r=measure q;','10'),
     ('def f(qubit a){x a;}qubit[2] q;int n=1;for int i in [0:n]{f(q[i]);}output bit[2] r;r=measure q;','11'),
@@ -74,5 +80,15 @@ for body in (
 source='OPENQASM 3.0;def f(qubit a,qubit b)->bool{return true;}qubit[2] q;int n=1;for int i in [0:n]{bool ok=f(q[i],q[i]);}'
 original=compile_source(source);restored=compile_source(original['source'])
 execute(original,None,error=True);execute(restored,None,error=True)
+
+source='OPENQASM 3.0;def f(qubit a)->bool{x a;return true;}def m(int z)->int{return 1/z;}qubit q;int z=0;array[int,1] a;for int i in [a[0]:m(z)]{bool b=f(q[i]);}'
+original=compile_source(source);restored=compile_source(original['source'])
+execute(original,None,error='initialization');execute(restored,None,error='initialization')
+
+for bound in ('true','1.5'):
+    source='OPENQASM 3.0;def f(qubit a)->bool{x a;return true;}def m()->int{return 1;}qubit[2] q;for int i in ['+bound+':m()]{bool b=f(q[i]);}'
+    try:compiler.convert(source,classical=True)
+    except ValueError:checks+=1
+    else:raise AssertionError('Expected noninteger bound rejection: '+bound)
 
 print(f'PASS: {checks} runtime quantum call-loop checks.')

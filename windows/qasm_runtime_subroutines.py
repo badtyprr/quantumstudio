@@ -720,6 +720,20 @@ def lower_runtime_subroutines(program):
                     return True
         return False
 
+    def capture_range_bounds(bounds,depth):
+        captured=copy.deepcopy(bounds);effects=[]
+        # Capture in source order before any later bound's call effects. The
+        # importer infers exact integer storage types after normalization.
+        for field in ('start','step','end'):
+            bound=getattr(captured,field)
+            if bound is None:continue
+            prefix,bound=expression_calls(bound,True,depth);effects.extend(prefix)
+            slot=ast.Identifier(fresh());runtime.add(slot.name)
+            capture=ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=bound)
+            capture._quantum_range_capture=True;effects.append(capture)
+            setattr(captured,field,slot)
+        return effects,captured
+
     def runtime_quantum_loop(node, env, active, depth):
         """Use runtime binding when literal call-loop expansion cannot preserve semantics."""
         nonlocal expanded
@@ -775,7 +789,7 @@ def lower_runtime_subroutines(program):
             if not isinstance(node.set_declaration,ast.RangeDefinition) or not isinstance(node.type,(ast.IntType,ast.UintType)):
                 raise error_at(node,'Quantum-call range loops require an integer binding and a range.')
             value=copy.copy(node);value.type=rewrite(node.type,env)
-            effects,value.set_declaration=expression_calls(rewrite(node.set_declaration,env),active,depth)
+            effects,value.set_declaration=capture_range_bounds(rewrite(node.set_declaration,env),depth)
             binding=ast.Identifier(fresh());runtime.add(binding.name)
             inner=dict(env);inner[node.identifier.name]=binding;value.identifier=binding
             value.block=block(node.block,inner,True,depth,classical_names=(binding.name,),
@@ -856,6 +870,8 @@ def lower_runtime_subroutines(program):
         if isinstance(value,ast.SizeOf) and is_array_target(value.target) and any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value.target)):
             effects,target=capture_array_view(value.target,active,depth)
             return effects,ast.SizeOf(target=target,index=copy.deepcopy(value.index))
+        if isinstance(value,ast.RangeDefinition) and any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value)):
+            return capture_range_bounds(value,depth)
         if isinstance(value, ast.FunctionCall) and value.name.name in functions and runtime_call(value, active):
             effects, replacement = activate(value, depth, active)
             if replacement is None:
