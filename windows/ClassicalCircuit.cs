@@ -13,6 +13,7 @@ sealed class ClassicalCircuit {
  public sealed class NumericVariable {public string Name {get;set;}public string NumericKind {get;set;}public int Width {get;set;}}
  public sealed class Variable {public string Name {get;set;}public string Signedness {get;set;}public int Width {get;set;}}
  public sealed class ExpressionNode {
+  public ArrayViewNode View {get;set;}public int? ViewAxis {get;set;}
   public ArraySelectionNode Selection {get;set;}
   public RealNode RealLeft {get;set;}public RealNode RealRight {get;set;}
   public int? Slot {get;set;}
@@ -24,6 +25,7 @@ sealed class ClassicalCircuit {
  }
  public sealed class WireTargetNode {public int[] Candidates {get;set;}public ExpressionNode Index {get;set;}}
  public sealed class Step {
+  public ArrayReferenceNode[] ArrayReferences {get;set;}
   public ArraySelectionNode ArrayTarget {get;set;}
   public WireTargetNode[] WireTargets {get;set;}public string WireSource {get;set;}
   public RealNode NumericValue {get;set;}
@@ -48,7 +50,10 @@ sealed class ClassicalCircuit {
   public string Kind {get;set;}public string ValueBits {get;set;}public string Operator {get;set;}
   public ExpressionNode IntegerValue {get;set;}public RealNode Left {get;set;}public RealNode Right {get;set;}
  }
- public sealed class ArraySelectionNode {public int Array {get;set;}public ExpressionNode[] Indices {get;set;}public string Source {get;set;}}
+ public sealed class ArrayViewAxisNode {public bool Scalar {get;set;}public ExpressionNode Start {get;set;}public ExpressionNode Stop {get;set;}public ExpressionNode Step {get;set;}}
+ public sealed class ArrayViewNode {public int Array {get;set;}public bool Writable {get;set;}public ArrayViewNode Parent {get;set;}public ArrayViewAxisNode[] Axes {get;set;}}
+ public sealed class ArrayReferenceNode {public ArrayViewNode View {get;set;}public int[] Shape {get;set;}}
+ public sealed class ArraySelectionNode {public ArrayViewNode View {get;set;}public int Array {get;set;}public ExpressionNode[] Indices {get;set;}public string Source {get;set;}}
  public sealed class ArrayDeclaration {public string Name {get;set;}public int Base {get;set;}public int[] Dimensions {get;set;}public string Signedness {get;set;}public string NumericKind {get;set;}public int Width {get;set;}}
  public sealed class Document {
   public ArrayDeclaration[] Arrays {get;set;}
@@ -100,25 +105,47 @@ sealed class ClassicalCircuit {
    array.NumericKind==null ? null : NumericType(array.NumericKind,array.Width)));
   return result.ToArray();
  }
+ static ClassicalArrayView ConvertView(ArrayViewNode node) {
+  var axes=new List<ClassicalArrayViewAxis>();foreach(var axis in node.Axes)axes.Add(new ClassicalArrayViewAxis(axis.Scalar,axis.Start==null ? null : ConvertInteger(axis.Start),axis.Stop==null ? null : ConvertInteger(axis.Stop),axis.Step==null ? null : ConvertInteger(axis.Step)));
+  return new ClassicalArrayView(node.Array,node.Parent==null ? null : ConvertView(node.Parent),axes,node.Writable);
+ }
+ static void ViewFields(object value,int depth,ref int count,int version) {
+  if(version<16)throw Invalid("Array views require circuit version 16.");
+  if(depth>=32 || ++count>512)throw Invalid("Array view exceeds expression bounds.");
+  var fields=Fields(value,"Array,Writable,Parent,Axes");Integer(Required(fields,"Array"));
+  if(!(Required(fields,"Writable") is bool))throw Invalid("View access must be Boolean.");
+  if(fields.ContainsKey("Parent") && fields["Parent"]!=null)ViewFields(fields["Parent"],depth+1,ref count,version);
+  var axes=ArrayValue(Required(fields,"Axes"));if(axes.Length<1 || axes.Length>7)throw Invalid("A view needs one to seven selectors.");
+  foreach(var item in axes) {
+   var axis=Fields(item,"Scalar,Start,Stop,Step");if(!(Required(axis,"Scalar") is bool))throw Invalid("View selector kind must be Boolean.");
+   if((bool)axis["Scalar"])Required(axis,"Start");
+   foreach(string name in new[]{"Start","Stop","Step"})if(axis.ContainsKey(name) && axis[name]!=null)ExpressionFields(axis[name],depth+1,ref count,version,true);
+  }
+ }
  static ClassicalArraySelection ConvertSelection(ArraySelectionNode node) {
   var indices=new List<ClassicalIntegerExpression>();foreach(var index in node.Indices)indices.Add(ConvertInteger(index));
-  return new ClassicalArraySelection(node.Array,indices,node.Source);
+  if(node.View!=null && node.Array!=node.View.Array)throw Invalid("Selection backing array differs from its view.");
+  return node.View==null ? new ClassicalArraySelection(node.Array,indices,node.Source) : new ClassicalArraySelection(ConvertView(node.View),indices,node.Source);
  }
  static void SelectionFields(object value,int depth,ref int count,int version) {
   if(version<15)throw Invalid("Arrays require circuit version 15.");
   if(depth>=32 || ++count>512)throw Invalid("Array selection exceeds expression bounds.");
-  var fields=Fields(value,"Array,Indices,Source");Integer(Required(fields,"Array"));
+  var fields=Fields(value,"Array,Indices,Source,View");Integer(Required(fields,"Array"));
+  bool view=fields.ContainsKey("View") && fields["View"]!=null;if(view)ViewFields(fields["View"],depth+1,ref count,version);
   if(!(Required(fields,"Source") is string))throw Invalid("Array source must be text.");
-  var indices=ArrayValue(Required(fields,"Indices"));if(indices.Length<1 || indices.Length>7)throw Invalid("Array selection needs one to seven indices.");
+  var indices=ArrayValue(Required(fields,"Indices"));if((!view && indices.Length<1) || indices.Length>7)throw Invalid("Array selection needs one to seven indices.");
   foreach(var index in indices)ExpressionFields(index,depth+1,ref count,version,true);
  }
  static void ExpressionFields(object value,int depth,ref int count,int version,bool integer=false) {
   if(depth>=32 || ++count>512)throw Invalid("Classical expressions allow 32 levels and 512 nodes.");
-  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation,Signedness,Slot,RealLeft,RealRight,Selection");
+  var fields=Fields(value,"Kind,Width,Value,Bits,Operator,Left,Right,RotationDirection,DistanceInterpretation,Signedness,Slot,RealLeft,RealRight,Selection,View,ViewAxis");
   var kind=Required(fields,"Kind") as string;string permitted;
   if(integer) {
    if(version<4)throw Invalid("Typed integer expressions require circuit version 4.");
-   if(kind=="IntegerArrayElement" || kind=="IntegerArrayExtent") {
+   if(kind=="IntegerViewExtent") {
+    permitted="Kind,Signedness,Width,View,ViewAxis";Integer(Required(fields,"Width"));Integer(Required(fields,"ViewAxis"));if(!(Required(fields,"Signedness") is string))throw Invalid("View extent signedness must be text.");
+    ViewFields(Required(fields,"View"),depth+1,ref count,version);
+   } else if(kind=="IntegerArrayElement" || kind=="IntegerArrayExtent") {
     permitted="Kind,Signedness,Width,Selection";Integer(Required(fields,"Width"));if(!(Required(fields,"Signedness") is string))throw Invalid("Array signedness must be text.");
     SelectionFields(Required(fields,"Selection"),depth+1,ref count,version);
    } else if(kind=="NumericCast" || kind=="AngleRatio" || kind=="AngleBits" || kind=="NumericCompare") {
@@ -180,6 +207,7 @@ sealed class ClassicalCircuit {
   ClassicalIntegerType.Sign sign;
   if(!Enum.TryParse(node.Signedness,out sign) || sign.ToString()!=node.Signedness || !Enum.IsDefined(typeof(ClassicalIntegerType.Sign),sign))throw Invalid("Unknown integer signedness.");
   var type=ClassicalIntegerType.Create(sign,node.Width.Value);
+  if(node.Kind=="IntegerViewExtent") {if(type.Signedness!=ClassicalIntegerType.Sign.Unsigned || type.DeclaredWidth!=0)throw Invalid("View extent requires an unsigned machine integer.");return ClassicalIntegerExpression.ViewExtent(ConvertView(node.View),node.ViewAxis.Value);}
   if(node.Kind=="IntegerArrayExtent") {if(type.Signedness!=ClassicalIntegerType.Sign.Signed || type.DeclaredWidth!=0)throw Invalid("Array extent requires a machine signed integer.");return ClassicalIntegerExpression.ArrayExtent(ConvertSelection(node.Selection));}
   if(node.Kind=="IntegerArrayElement")return ClassicalIntegerExpression.ArrayElement(type,ConvertSelection(node.Selection));
   if(node.Kind=="NumericCast")return ClassicalIntegerExpression.FromNumeric(type,ConvertReal(node.RealLeft));
@@ -272,7 +300,12 @@ sealed class ClassicalCircuit {
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue,WireTargets,WireSource,ArrayTarget");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue,WireTargets,WireSource,ArrayTarget,ArrayReferences");
+   if(fields.ContainsKey("ArrayReferences") && fields["ArrayReferences"]!=null) {
+    if(version<16)throw Invalid("Array preflight requires circuit version 16.");
+    var references=ArrayValue(fields["ArrayReferences"]);if(references.Length<1 || references.Length>64)throw Invalid("Preflight requires one to 64 references.");
+    int nodes=0;foreach(var itemReference in references){var reference=Fields(itemReference,"View,Shape");ViewFields(Required(reference,"View"),0,ref nodes,version);IntegerArray(Required(reference,"Shape"));}
+   }
    if(fields.ContainsKey("ArrayTarget") && fields["ArrayTarget"]!=null){int nodes=0;SelectionFields(fields["ArrayTarget"],0,ref nodes,version);}
    if(fields.ContainsKey("WireTargets") && fields["WireTargets"]!=null) {
     if(version<14)throw Invalid("Runtime wire targets require circuit version 14.");
@@ -324,7 +357,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version<2 || version>15)throw Invalid("Expected a version 2 through 15 classical circuit.");
+  if(version<2 || version>16)throw Invalid("Expected a version 2 through 16 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -394,7 +427,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="Arrays" || field.Key=="Selection" || field.Key=="ArrayTarget" || field.Key=="WireTargets" || field.Key=="WireSource" || field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="View" || field.Key=="ViewAxis" || field.Key=="ArrayReferences" || field.Key=="Arrays" || field.Key=="Selection" || field.Key=="ArrayTarget" || field.Key=="WireTargets" || field.Key=="WireSource" || field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -440,6 +473,12 @@ sealed class ClassicalCircuit {
    if(!condition && (step.Mask!=null || step.Value!=null))throw Invalid("Only conditions have a mask and value.");
    if((kind==NumericalSampling.Operation.Measure || kind==NumericalSampling.Operation.Reset) && !String.IsNullOrEmpty(step.Expression))throw Invalid("Measurement and reset cannot contain matrix expressions.");
    var gate=new NumericalSampling.Gate {Kind=kind,Expression=step.Expression,Wires=step.Wires==null ? null : (int[])step.Wires.Clone(),ClassicalBit=step.ClassicalBit};
+   if((kind==NumericalSampling.Operation.CheckArrayReferences)!=(step.ArrayReferences!=null))throw Invalid("Only array preflight requires reference metadata.");
+   if(step.ArrayReferences!=null) {
+    if(version<16)throw Invalid("Array preflight requires circuit version 16.");
+    var views=new List<ClassicalArrayView>();var shapes=new List<IList<int>>();foreach(var reference in step.ArrayReferences){views.Add(ConvertView(reference.View));shapes.Add(reference.Shape);}
+    gate.ArrayReferences=new ClassicalArrayReferenceCheck(views,shapes);
+   }
    if(step.ArrayTarget!=null) {
     if(version<15 || (kind!=NumericalSampling.Operation.StoreInteger && kind!=NumericalSampling.Operation.StoreNumeric))throw Invalid("Only version 15 stores accept array targets.");
     gate.ArrayTarget=ConvertSelection(step.ArrayTarget);

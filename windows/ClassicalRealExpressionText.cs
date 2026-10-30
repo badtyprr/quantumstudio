@@ -12,7 +12,8 @@ static class ClassicalRealExpressionText {
   return new R{Kind="Constant",ValueBits=unchecked((ulong)BitConverter.DoubleToInt64Bits(value)).ToString(CultureInfo.InvariantCulture)};
  }
  static void Validate(R value,ClassicalCircuit.Document context) {
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(context.Version,11),Qubits=1,NumericVariables=context.NumericVariables,
+  int version=Math.Max(context.Version,ClassicalExpressionText.RequiredNumericVersion(value));
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=version,Qubits=1,NumericVariables=context.NumericVariables??(version>=13 ? new ClassicalCircuit.NumericVariable[0] : null),
    Arrays=context.Arrays,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],
    OutputBits=new int[0],LoopConditionBudget=1000000,
    Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=value,Wires=new[]{0}}}});
@@ -23,7 +24,7 @@ static class ClassicalRealExpressionText {
   var parser=new Parser(text,context);var result=parser.Expression(0,0);parser.End();Validate(result,context);return result;
  }
  public static string Format(R value,ClassicalCircuit.Document context) {
-  if(context==null)throw new ArgumentNullException("context");Validate(value,context);return context.Version>=13 ? ClassicalExpressionText.FormatNumeric(value,context) : FormatNode(value,context);
+  if(context==null)throw new ArgumentNullException("context");Validate(value,context);return Math.Max(context.Version,ClassicalExpressionText.RequiredNumericVersion(value))>=13 ? ClassicalExpressionText.FormatNumeric(value,context) : FormatNode(value,context);
  }
  static string FormatNode(R value,ClassicalCircuit.Document context) {
   if(value.Kind=="Integer")return "float("+ClassicalExpressionText.Format(value.IntegerValue,context)+")";

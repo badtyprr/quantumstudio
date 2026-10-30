@@ -32,7 +32,47 @@ sealed class ClassicalExpressionQasm {
  }
  public string ArrayElement(ClassicalArraySelection selection) {
   selection.Validate(bits,variables);var indices=new List<string>();foreach(var index in selection.Indices)indices.Add(Integer(index));
-  return "a"+Number(selection.Array)+"["+String.Join(",",indices)+"]";
+  string source=selection.View==null ? "a"+Number(selection.Array) : ArrayView(selection.View);
+  return indices.Count==0 ? source : source+"["+String.Join(",",indices)+"]";
+ }
+ int[] StaticViewShape(ClassicalArrayView view) {
+  int[] source=view.Parent==null ? new List<int>(((RuntimeDeclarations)variables).Arrays[view.Array].Dimensions).ToArray() : StaticViewShape(view.Parent);
+  if(source==null)return null;var result=new List<int>();
+  for(int k=0;k<view.Axes.Count;k++) {
+   var axis=view.Axes[k];if(axis.Scalar)continue;
+   if(axis.Start!=null || axis.Stop!=null || axis.Step!=null)return null;
+   result.Add(source[k]);
+  }
+  return result.ToArray();
+ }
+ public string ArrayView(ClassicalArrayView view) {
+  view.Validate(bits,variables);var axes=new List<string>();
+  string source=view.Parent==null ? "a"+Number(view.Array) : ArrayView(view.Parent);
+  int[] shape=view.Parent==null ? new List<int>(((RuntimeDeclarations)variables).Arrays[view.Array].Dimensions).ToArray() : StaticViewShape(view.Parent);
+  for(int k=0;k<view.Axes.Count;k++) {
+   var axis=view.Axes[k];
+   if(axis.Scalar){axes.Add(Integer(axis.Start));continue;}
+   string stop=axis.Stop==null ? "" : Integer(axis.Stop);
+   if(axis.Step!=null && axis.Stop==null) {
+    long step;
+    if(shape==null || shape[k]==0 || axis.Step.Kind!=I.NodeKind.Constant || !Int64.TryParse(IntegerLiteral(axis.Step),NumberStyles.Integer,CultureInfo.InvariantCulture,out step))
+     throw new ArgumentException("OpenQASM export requires an explicit stop for a stepped view with dynamic or empty shape.");
+    stop=Number(step<0 ? 0 : shape[k]-1);
+   }
+   axes.Add((axis.Start==null ? "" : Integer(axis.Start))+":"+(axis.Step==null ? "" : Integer(axis.Step)+":")+stop);
+  }
+  return source+"["+String.Join(",",axes)+"]";
+ }
+ string ArrayExtent(ClassicalArraySelection selection) {
+  var slices=new List<string>();foreach(var index in selection.Indices){string item=Integer(index);slices.Add(item+":"+item);}
+  if(selection.View==null)return "sizeof(a"+Number(selection.Array)+"["+String.Join(",",slices)+"])";
+  var view=selection.View;
+  if(slices.Count>0)return "sizeof("+ArrayView(view)+"["+String.Join(",",slices)+"])";
+  if(view.Rank==0) {
+   var axes=new List<ClassicalArrayViewAxis>(view.Axes);var last=axes[axes.Count-1];axes[axes.Count-1]=new ClassicalArrayViewAxis(false,last.Start,last.Start);
+   return "sizeof("+ArrayView(new ClassicalArrayView(view.Array,view.Parent,axes,view.Writable))+")";
+  }
+  return "int[64](sizeof("+ArrayView(view)+",0) >= uint[64](0))";
  }
  static string Number(int value){return value.ToString(CultureInfo.InvariantCulture);}
  static string TypeName(T type) {
@@ -167,9 +207,8 @@ sealed class ClassicalExpressionQasm {
    case I.NodeKind.Constant:return Cast(TypeName(value.Type),IntegerLiteral(value));
    case I.NodeKind.Read:return Cast(TypeName(value.Type),Read(value.Indices));
    case I.NodeKind.Variable:return Slot(value.Slot,false);
-   case I.NodeKind.ArrayExtent:
-    var slices=new List<string>();foreach(var index in value.Selection.Indices){string item=Integer(index);slices.Add(item+":"+item);}
-    return "sizeof(a"+Number(value.Selection.Array)+"["+String.Join(",",slices)+"])";
+   case I.NodeKind.ViewExtent:return "sizeof("+ArrayView(value.View)+","+Number(value.ViewAxis)+")";
+   case I.NodeKind.ArrayExtent:return ArrayExtent(value.Selection);
    case I.NodeKind.ArrayElement:return ArrayElement(value.Selection);
    case I.NodeKind.Cast:return Cast(TypeName(value.Type),IntegerNode(value.Left));
    case I.NodeKind.BitExpression:return Cast(TypeName(value.Type),BitNode(value.BitOperand));

@@ -15,13 +15,19 @@ static class ClassicalExpressionText {
  static bool Comparison(string op){return op=="Equal" || op=="NotEqual" || op=="Less" || op=="Greater" || op=="LessEqual" || op=="GreaterEqual";}
  static int Minimum(ulong value){int width=1;while((value>>=1)!=0)width++;return width;}
  public static string FormatArray(ClassicalCircuit.ArraySelectionNode selection,ClassicalCircuit.Document context) {
-  return "array("+selection.Array.ToString(CultureInfo.InvariantCulture)+", "+String.Join(", ",Array.ConvertAll(selection.Indices,index=>Format(index,context)))+")";
+  string source=selection.View==null ? selection.Array.ToString(CultureInfo.InvariantCulture) : FormatView(selection.View,context);
+  return "array("+source+(selection.Indices.Length==0 ? "" : ", "+String.Join(", ",Array.ConvertAll(selection.Indices,index=>Format(index,context))))+")";
+ }
+ public static string FormatView(ClassicalCircuit.ArrayViewNode view,ClassicalCircuit.Document context) {
+  var axes=new System.Collections.Generic.List<string>();
+  foreach(var axis in view.Axes)axes.Add(axis.Scalar ? "at("+Format(axis.Start,context)+")" : "range("+String.Join(", ",new[]{axis.Start,axis.Stop,axis.Step}.Select(value=>value==null ? "*" : Format(value,context)))+")");
+  return "view("+(view.Parent==null ? view.Array.ToString(CultureInfo.InvariantCulture) : FormatView(view.Parent,context))+", "+(view.Writable ? "mutable" : "readonly")+", "+String.Join(", ",axes)+")";
  }
  public static ClassicalCircuit.ArraySelectionNode ParseArrayTarget(string text,ClassicalCircuit.Document context,bool numeric) {
   ClassicalCircuit.ArraySelectionNode selection;
   if(numeric)selection=ParseNumeric(text,context).Selection;
   else {var node=ParseInteger(text,context);selection=node.Kind=="IntegerArrayElement" ? node.Selection : null;}
-  if(selection==null)throw new ArgumentException("An array target must be one indexed element.");return selection;
+  if(selection==null)throw new ArgumentException("An array target must be one indexed element.");if(selection.View!=null && !selection.View.Writable)throw new ArgumentException("Cannot write through a readonly view.");return selection;
  }
  public static N Parse(string text,ClassicalCircuit.Document context,int width) {
   if(context==null || width<1 || width>64)throw new ArgumentException("Use a valid circuit and 1–64 result bits.");
@@ -67,12 +73,12 @@ static class ClassicalExpressionText {
  }
  public static bool NeedsNumeric(string text,ClassicalCircuit.Document context) {
   if(text==null)return false;
-  if(Regex.IsMatch(text,@"\b(?:float|angle)\s*\[|\b(?:sin|cos|tan|arcsin|arccos|arctan|exp|log|sqrt|floor|ceiling|mod|compare|anglebits|numeric|angle)\s*\("))return true;
+  if(Regex.IsMatch(text,@"\b(?:float|angle)\s*\[|\b(?:sin|cos|tan|arcsin|arccos|arctan|exp|log|sqrt|floor|ceiling|mod|compare|anglebits|numeric|angle|array|arrayextent|viewextent)\s*\("))return true;
   return (context.NumericVariables??new ClassicalCircuit.NumericVariable[0]).Any(v=>Regex.IsMatch(text,@"(?<![\w])"+Regex.Escape(v.Name)+@"(?![\w])"));
  }
  public static R ParseNumeric(string text,ClassicalCircuit.Document context,int targetWidth=64) {
   var parser=new Parser(text,context.Registers,context.Variables,context.NumericVariables,context.Arrays);var result=parser.Expression(1,0);parser.End();var numeric=Real(Normalize(result,0),targetWidth).RealLeft;
-  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(13,context.Version),Qubits=1,Arrays=context.Arrays,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],NumericVariables=context.NumericVariables??new ClassicalCircuit.NumericVariable[0],LoopConditionBudget=1000000,OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=numeric,Wires=new[]{0}}}});
+  ClassicalCircuit.From(new ClassicalCircuit.Document{Version=Math.Max(RequiredNumericVersion(numeric),context.Version),Qubits=1,Arrays=context.Arrays,Registers=context.Registers,Variables=context.Variables??new ClassicalCircuit.Variable[0],NumericVariables=context.NumericVariables??new ClassicalCircuit.NumericVariable[0],LoopConditionBudget=1000000,OutputBits=new int[0],Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=numeric,Wires=new[]{0}}}});
   return numeric;
  }
  public static string FormatNumeric(R value,ClassicalCircuit.Document context) {
@@ -185,8 +191,16 @@ static class ClassicalExpressionText {
  public static int RequiredVersion(N value){return RequiredVersion(value,0);}
  static int RequiredVersion(N n,int depth) {
   if(n==null)return 3;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
-  if(n.Selection!=null)return 15;
-  return Math.Max(n.RealLeft!=null || n.RealRight!=null ? 13 : n.Kind=="IntegerFromBits" ? 6 : n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
+  if(n.View!=null || (n.Selection!=null && n.Selection.View!=null))return 16;
+  if(n.Selection!=null)return Math.Max(15,n.Selection.Indices.Length==0 ? 15 : n.Selection.Indices.Max(index=>RequiredVersion(index,depth+1)));
+  return Math.Max(n.RealLeft!=null || n.RealRight!=null ? Math.Max(13,Math.Max(RequiredNumericVersion(n.RealLeft,depth+1),RequiredNumericVersion(n.RealRight,depth+1))) : n.Kind=="IntegerFromBits" ? 6 : n.Kind=="IntegerVariable" ? 5 : (n.Kind=="Logical" || n.Kind.StartsWith("Integer",StringComparison.Ordinal)) ? 4 : 3,Math.Max(RequiredVersion(n.Left,depth+1),RequiredVersion(n.Right,depth+1)));
+ }
+ public static int RequiredNumericVersion(R value){return RequiredNumericVersion(value,0);}
+ static int RequiredNumericVersion(R value,int depth) {
+  if(value==null)return 11;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
+  int version=value.Selection==null ? (value.Kind=="Constant" || value.Kind=="Integer" || value.Kind=="Binary" ? 11 : 13) : value.Selection.View==null ? 15 : 16;
+  if(value.Selection!=null && value.Selection.Indices.Length!=0)version=Math.Max(version,value.Selection.Indices.Max(index=>RequiredVersion(index,depth+1)));
+  return Math.Max(version,Math.Max(RequiredVersion(value.IntegerValue,depth+1),Math.Max(RequiredVersion(value.BitValue,depth+1),Math.Max(RequiredNumericVersion(value.Left,depth+1),RequiredNumericVersion(value.Right,depth+1)))));
  }
  static void ResolveInteger(N n,int depth) {
   if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
@@ -238,7 +252,8 @@ static class ClassicalExpressionText {
  }
  public static string Format(N value,ClassicalCircuit.Document context=null){return FormatNode(value,0,context);}
  static string FormatNode(N n,int depth,ClassicalCircuit.Document context) {
-  if(n.Kind=="IntegerArrayExtent")return FormatArray(n.Selection,context).Replace("array(","arrayextent(");
+  if(n.Kind=="IntegerViewExtent")return "viewextent("+FormatView(n.View,context)+", "+n.ViewAxis.Value.ToString(CultureInfo.InvariantCulture)+")";
+  if(n.Kind=="IntegerArrayExtent")return "arrayextent"+FormatArray(n.Selection,context).Substring(5);
   if(n.Kind=="IntegerArrayElement")return FormatArray(n.Selection,context);
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
   if(n.Kind=="NumericCast")return (n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width+"]")+"("+FormatNumeric(n.RealLeft,context)+")";
@@ -322,6 +337,23 @@ static class ClassicalExpressionText {
    return left;
   }
   N Variable(int slot){var declaration=variables[slot];return Node(new N{Kind="IntegerVariable",Signedness=declaration.Signedness,Width=declaration.Width,Slot=slot});}
+  ClassicalCircuit.ArrayViewNode View(int depth) {
+   if(depth>=32 || ++nodes>1024)throw new ArgumentException("View parsing exceeds its bounds.");
+   Need("(");ClassicalCircuit.ArrayViewNode parent=null;ulong id;
+   if(Take("view")){parent=View(depth+1);id=(ulong)parent.Array;}else id=Number();
+   if(id>=(ulong)arrays.Length)throw new ArgumentException("Unknown view array.");Need(",");
+   bool writable=Take("mutable");if(!writable)Need("readonly");
+   var axes=new List<ClassicalCircuit.ArrayViewAxisNode>();
+   while(Take(",")) {
+    if(axes.Count>=7)throw new ArgumentException("View rank exceeds seven.");
+    bool scalar=Take("at");if(!scalar)Need("range");Need("(");
+    var values=new N[scalar ? 1 : 3];
+    for(int k=0;k<values.Length;k++){if(k>0)Need(",");if(scalar || !Take("*"))values[k]=AsInteger(Normalize(Expression(1,depth+1),depth+1));}
+    Need(")");axes.Add(new ClassicalCircuit.ArrayViewAxisNode{Scalar=scalar,Start=values[0],Stop=scalar ? null : values[1],Step=scalar ? null : values[2]});
+   }
+   Need(")");if(axes.Count==0)throw new ArgumentException("A view requires selectors.");
+   return new ClassicalCircuit.ArrayViewNode{Array=(int)id,Parent=parent,Writable=writable,Axes=axes.ToArray()};
+  }
   N Atom(int depth) {
    if(depth>=128)throw new ArgumentException("Expression nesting is too deep.");
    if(Take("-"))return Node(new N{Kind="UnaryMinus",Left=Expression(11,depth+1)});
@@ -348,11 +380,16 @@ static class ClassicalExpressionText {
     Need("(");var left=Expression(1,depth+1);N right=null;if(name=="mod" || name=="compare"){Need(",");right=Expression(1,depth+1);}Need(")");
     return Node(new N{Kind="NumericFunction",Operator=name=="anglebits" ? "AngleBits" : Char.ToUpperInvariant(name[0])+name.Substring(1),Left=left,Right=right});
    }
+   if(name=="viewextent" && Take("(")) {
+    Need("view");var view=View(depth+1);Need(",");ulong axis=Number();Need(")");if(axis>6)throw new ArgumentException("View extent axis must be 0–6.");
+    return Node(new N{Kind="IntegerViewExtent",Signedness="Unsigned",Width=0,View=view,ViewAxis=(int)axis});
+   }
    if((name=="array" || name=="arrayextent") && Take("(")) {
-    ulong id=Number();if(id>=(ulong)arrays.Length)throw new ArgumentException("Unknown array.");var declaration=arrays[(int)id];var indices=new List<N>();
+    ClassicalCircuit.ArrayViewNode view=null;ulong id;if(Take("view")){view=View(depth+1);id=(ulong)view.Array;}else id=Number();if(id>=(ulong)arrays.Length)throw new ArgumentException("Unknown array.");var declaration=arrays[(int)id];var indices=new List<N>();
     while(Take(",")){if(indices.Count>=7)throw new ArgumentException("Array rank exceeds seven.");indices.Add(AsInteger(Normalize(Expression(1,depth+1),depth+1)));}Need(")");
-    if(name=="arrayextent" ? indices.Count<1 || indices.Count>declaration.Dimensions.Length : indices.Count!=declaration.Dimensions.Length)throw new ArgumentException("Array index rank differs from its declaration.");
-    var selection=new ClassicalCircuit.ArraySelectionNode{Array=(int)id,Indices=indices.ToArray(),Source="editor"};
+    int rank=view==null ? declaration.Dimensions.Length : view.Axes.Count(axis=>!axis.Scalar);
+    if(name=="arrayextent" ? (view==null && indices.Count<1) || indices.Count>rank : indices.Count!=rank)throw new ArgumentException("Array index rank differs from its declaration.");
+    var selection=new ClassicalCircuit.ArraySelectionNode{Array=(int)id,View=view,Indices=indices.ToArray(),Source="editor"};
     if(name=="arrayextent")return Node(new N{Kind="IntegerArrayExtent",Signedness="Signed",Width=0,Selection=selection});
     return declaration.NumericKind==null ? Node(new N{Kind="IntegerArrayElement",Signedness=declaration.Signedness,Width=declaration.Width,Selection=selection}) : Node(Numeric(new R{Kind="ArrayElement",NumericKind=declaration.NumericKind,Width=declaration.Width,Selection=selection},declaration.NumericKind,declaration.Width));
    }

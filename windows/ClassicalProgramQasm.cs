@@ -23,6 +23,7 @@ sealed class ClassicalProgramQasm {
  static string Type(ClassicalIntegerType value) {
   return (value.Signedness==ClassicalIntegerType.Sign.Signed ? "int[" : "uint[")+Number(value.Width)+"]";
  }
+ readonly StringBuilder referenceHelpers=new StringBuilder();int nextArrayCheck;
  ClassicalProgramQasm(ClassicalCircuit value) {
   circuit=value;variables=value.VariableTypes??new ClassicalIntegerType[0];numericTypes=value.NumericTypes??new ClassicalNumericType[0];declarations=value.Declarations;
   storage=new ClassicalQasmStorage(value.ClassicalBits,value.OutputBits);
@@ -52,6 +53,7 @@ sealed class ClassicalProgramQasm {
   // promise that value. Integer variables deliberately remain undefined.
   for(int i=0;i<storage.BitCount;i++)body.Append(storage.Bit(i)+" = 0;\n");
   Statements(body,steps);
+  prefix.Append(referenceHelpers.ToString());
   prefix.Append(storage.ProgramBody(body.ToString()));
   string source=prefix.ToString();
   if(Encoding.UTF8.GetByteCount(source)>262144)
@@ -140,6 +142,16 @@ sealed class ClassicalProgramQasm {
   foreach(int slot in scopes.Declarations(gates))if(expressions.Slot(slot,false)=="v"+Number(slot))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
   foreach(int slot in numericScopes.Declarations(gates))if(expressions.Slot(slot,true)=="n"+Number(slot))text.Append(ClassicalExpressionQasm.NumericTypeName(numericTypes[slot])+" n"+Number(slot)+";\n");
   foreach(var gate in gates) {
+   if(gate.ArrayReferences!=null) {
+    string name="_array_check_"+Number(nextArrayCheck++);var parameters=new List<string>();var actuals=new List<string>();
+    for(int k=0;k<gate.ArrayReferences.Views.Count;k++) {
+     var view=gate.ArrayReferences.Views[k];var array=declarations.Arrays[view.Array];var shape=gate.ArrayReferences.Shapes[k];var dimensions=new List<string>();foreach(int size in shape)dimensions.Add(Number(size));
+     parameters.Add((view.Writable ? "mutable" : "readonly")+" array["+(array.Numeric==null ? Type(array.Integer) : ClassicalExpressionQasm.NumericTypeName(array.Numeric))+","+(shape.Count==0 ? "#dim="+Number(view.Rank) : String.Join(",",dimensions))+"] p"+Number(k));
+     actuals.Add(expressions.ArrayView(view));
+    }
+    referenceHelpers.Append("def "+name+"("+String.Join(",",parameters)+") {}\n");
+    text.Append(name+"("+String.Join(",",actuals)+");\n");continue;
+   }
    if(gate.ArrayTarget!=null) {
     var array=declarations.Arrays[gate.ArrayTarget.Array];string type=array.Numeric==null ? Type(array.Integer) : ClassicalExpressionQasm.NumericTypeName(array.Numeric);
     text.Append(expressions.ArrayElement(gate.ArrayTarget)+" = "+type+"("+(array.Numeric==null ? expressions.Integer(gate.IntegerExpression) : expressions.Real(gate.NumericExpression))+");\n");continue;

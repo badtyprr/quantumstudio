@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 static class NumericalSampling {
- public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric }
+ public enum Operation { Gate, Measure, Reset, Conditional, Channel, Readout, Branch, Assign, ExpressionBranch, StoreInteger, ClearInteger, While, Break, Continue, End, ForRange, Rotation, ParameterGate, StoreNumeric, ClearNumeric, CheckArrayReferences=23 }
  public enum RotationAxis { X=0, Y=1, Z=2 }
  public enum ParameterGateKind { X, Y, Z, Phase, GlobalPhase, U3, PublishedU }
  public sealed class ParameterizedGate {
@@ -72,7 +72,7 @@ static class NumericalSampling {
    }
   }
  }
- public sealed class Gate {public ClassicalArraySelection ArrayTarget;public WireSelection SelectedWires;public ClassicalRealExpression NumericExpression;public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
+ public sealed class Gate {public ClassicalArrayReferenceCheck ArrayReferences;public ClassicalArraySelection ArrayTarget;public WireSelection SelectedWires;public ClassicalRealExpression NumericExpression;public ParameterizedGate ParameterGate;public RotationAxis? Axis;public ClassicalRealExpression Angle;public string Expression;public int[] Wires;public Operation Kind;public ulong Mask,Value;public ClassicalExpression ClassicalExpression;public int? VariableSlot;public ClassicalIntegerExpression IntegerExpression;public IntegerRange Range;public int? ClassicalBit {get;set;}public IList<Gate> WhenTrue {get;set;}public IList<Gate> WhenFalse {get;set;}}
  static bool UsesNumeric(IList<Gate> gates,int depth=0) {
   if(gates==null)return false;
   if(depth>32)throw new ArgumentException("Circuit nesting exceeds 32 levels.");
@@ -164,6 +164,7 @@ static class NumericalSampling {
   write=delegate(Gate gate,int depth,int loopDepth) {
    if(++total>maxSteps)throw new ArgumentException("Circuit exceeds "+maxSteps+" total operations.");
    if(gate==null || !Enum.IsDefined(typeof(Operation),gate.Kind))throw new ArgumentException("Invalid sampling operation.");
+   if((gate.Kind==Operation.CheckArrayReferences)!=(gate.ArrayReferences!=null))throw new ArgumentException("Only reference preflight requires array references.");
    if(gate.ArrayTarget!=null && gate.Kind!=Operation.StoreInteger && gate.Kind!=Operation.StoreNumeric)throw new ArgumentException("Only stores accept array targets.");
    if(gate.SelectedWires!=null) {
     if(!classicalBits.HasValue || depth>=32 || ++total>maxSteps)throw new ArgumentException("Runtime wires require explicit outputs and available nesting/step budget.");
@@ -206,6 +207,11 @@ static class NumericalSampling {
     if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");
     return;
    }
+   if(gate.Kind==Operation.CheckArrayReferences) {
+    if(!arrayProtocol || (gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Invalid array reference preflight fields.");
+    gate.ArrayReferences.Validate(bits,variables);number(23);gate.ArrayReferences.Write(number);
+    if(text.Length>1100000)throw new ArgumentException("Sampling request is too large.");return;
+   }
    if(range && (!classicalBits.HasValue || variables==null || !gate.VariableSlot.HasValue || gate.VariableSlot.Value<0 || gate.VariableSlot.Value>=variables.Count || gate.Mask!=0 || gate.Value!=0))throw new ArgumentException("Range loops require explicit outputs, a declared binding slot and no condition mask.");
    if(gate.Kind==Operation.Break || gate.Kind==Operation.Continue || gate.Kind==Operation.End) {
     bool end=gate.Kind==Operation.End;
@@ -217,6 +223,7 @@ static class NumericalSampling {
    }
    if(gate.ArrayTarget!=null) {
     if(!arrayProtocol || gate.VariableSlot.HasValue || (gate.Wires!=null && gate.Wires.Length!=0) || !String.IsNullOrEmpty(gate.Expression) || gate.Mask!=0 || gate.Value!=0)throw new ArgumentException("Invalid array store fields.");
+    if(gate.ArrayTarget.View!=null && !gate.ArrayTarget.View.Writable)throw new ArgumentException("Cannot write through a readonly array reference.");
     var allocation=gate.ArrayTarget.Validate(bits,variables);
     if(numeric) {
      if(allocation.Numeric==null || gate.NumericExpression==null)throw new ArgumentException("Numeric array store needs a numeric array and value.");
@@ -314,7 +321,7 @@ static class NumericalSampling {
    string budget=(loopBudget ?? 1000000).ToString(CultureInfo.InvariantCulture)+"\n";
    if(variables==null)text.Insert(declarationPosition,"0\n"+budget);
    else text.Insert(budgetPosition,budget);
-   text.Remove(0,exact ? 8 : 9).Insert(0,arrayProtocol ? (exact ? "QEXACT14\n" : "QSAMPLE15\n") : wireProtocol ? (exact ? "QEXACT13\n" : "QSAMPLE14\n") : numericProtocol ? (exact ? "QEXACT12\n" : "QSAMPLE13\n") : parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
+   text.Remove(0,exact ? 8 : 9).Insert(0,arrayProtocol ? (exact ? "QEXACT15\n" : "QSAMPLE16\n") : wireProtocol ? (exact ? "QEXACT13\n" : "QSAMPLE14\n") : numericProtocol ? (exact ? "QEXACT12\n" : "QSAMPLE13\n") : parameterGateProtocol ? (exact ? "QEXACT11\n" : "QSAMPLE12\n") : rotationProtocol ? (exact ? "QEXACT10\n" : "QSAMPLE11\n") : rangeProtocol ? (exact ? "QEXACT9\n" : "QSAMPLE10\n") : terminationProtocol ? (exact ? "QEXACT8\n" : "QSAMPLE9\n") : transferProtocol ? (exact ? "QEXACT7\n" : "QSAMPLE8\n") : (exact ? "QEXACT6\n" : "QSAMPLE7\n"));
   }
   else if(bitExpressionProtocol) {
    if(variables==null)text.Insert(declarationPosition,"0\n");

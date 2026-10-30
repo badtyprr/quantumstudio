@@ -27,6 +27,21 @@ static class ClassicalExpressionTextTests {
   Reject(()=>ClassicalExpressionText.ParseInteger("array(0, 0, 0)",context));
   Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(1, 0)",context,false));
   Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(0, 0)+1",context,false));
+  foreach(string text in new[]{"array(view(0, mutable, range(*, *, *)), -1)","viewextent(view(0, readonly, range(*, *, *)), 0)","arrayextent(view(0, readonly, at(0)))","array(view(view(0, mutable, range(*, *, *)), readonly, range(*, *, *)), 0)"}) {
+   var parsed=ClassicalExpressionText.ParseInteger(text,context);Check(ClassicalExpressionText.RequiredVersion(parsed)==16);
+   string stable=ClassicalExpressionText.Format(parsed,context);Check(ClassicalExpressionText.Format(ClassicalExpressionText.ParseInteger(stable,context),context)==stable);
+  }
+  var nestedViewNumeric=ClassicalExpressionText.ParseNumeric("array(1, viewextent(view(1, readonly, range(*, *, *)), 0) - 1)",context);
+  Check(ClassicalExpressionText.RequiredNumericVersion(nestedViewNumeric)==16);
+  formatted=ClassicalExpressionText.FormatNumeric(nestedViewNumeric,context);
+  Check(ClassicalExpressionText.FormatNumeric(ClassicalExpressionText.ParseNumeric(formatted,context),context)==formatted);
+  var viewNumeric=ClassicalExpressionText.ParseNumeric("array(view(1, readonly, range(*, *, *)), 0)",context);
+  Check(ClassicalExpressionText.RequiredNumericVersion(viewNumeric)==16);
+  formatted=ClassicalExpressionText.FormatNumeric(viewNumeric,context);Check(ClassicalExpressionText.FormatNumeric(ClassicalExpressionText.ParseNumeric(formatted,context),context)==formatted);
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("array(view(0, readonly, range(*, *, *)), 0)",context,false));
+  Reject(()=>ClassicalExpressionText.ParseInteger("array(view(view(0, readonly, range(*, *, *)), mutable, range(*, *, *)), 0)",context));
+  Reject(()=>ClassicalExpressionText.ParseInteger("viewextent(view(0, readonly, range(*, *, *)), 1)",context));
+
  }
  static void Check(bool value){checks++;if(!value)throw new Exception("Expression text check "+checks+" failed.");}
  static void Reject(Action action){bool caught=false;try{action();}catch(ArgumentException){caught=true;}catch(System.IO.InvalidDataException){caught=true;}Check(caught);}
