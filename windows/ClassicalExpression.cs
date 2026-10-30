@@ -158,24 +158,88 @@ sealed class ClassicalArrayAllocation {
   number((ulong)Base);number((ulong)Dimensions.Count);foreach(int size in Dimensions)number((ulong)size);
  }
 }
+sealed class ClassicalArrayViewAxis {
+ public readonly bool Scalar;public readonly ClassicalIntegerExpression Start,Stop,Step;
+ public ClassicalArrayViewAxis(bool scalar,ClassicalIntegerExpression start,ClassicalIntegerExpression stop=null,ClassicalIntegerExpression step=null) {
+  if(scalar && (start==null || stop!=null || step!=null))throw new ArgumentException("A scalar view selector requires one index.");
+  Scalar=scalar;Start=start;Stop=stop;Step=step;
+ }
+ internal void Write(Action<ulong> number) {
+  number(Scalar ? 0UL : 1UL);
+  if(!Scalar)number((Start!=null ? 1UL : 0UL)|(Stop!=null ? 2UL : 0UL)|(Step!=null ? 4UL : 0UL));
+  foreach(var expression in new[]{Start,Stop,Step})if(expression!=null)expression.WriteNode(number);
+ }
+}
+sealed class ClassicalArrayView {
+ public readonly int Array,Rank,Depth,Count;public readonly ulong References;public readonly bool Writable;
+ public readonly ClassicalArrayView Parent;public readonly IList<ClassicalArrayViewAxis> Axes;
+ public ClassicalArrayView(int array,ClassicalArrayView parent,IList<ClassicalArrayViewAxis> axes,bool writable) {
+  if(array<0 || array>=4096 || axes==null || axes.Count<1 || axes.Count>7)throw new ArgumentException("Array views require one to seven selectors.");
+  if(parent!=null && (parent.Array!=array || (writable && !parent.Writable)))throw new ArgumentException("Nested views must preserve backing storage and readonly access.");
+  Array=array;Parent=parent;Writable=writable;Axes=new List<ClassicalArrayViewAxis>(axes).AsReadOnly();
+  int depth=parent==null ? 1 : parent.Depth+1,count=1+(parent==null ? 0 : parent.Count),rank=0;ulong references=parent==null ? 0 : parent.References;
+  foreach(var axis in Axes) {
+   if(axis==null)throw new ArgumentException("Missing array view selector.");if(!axis.Scalar)rank++;
+   foreach(var expression in new[]{axis.Start,axis.Stop,axis.Step})if(expression!=null){depth=Math.Max(depth,expression.Depth+1);count+=expression.Count;references|=expression.References;}
+  }
+  if(depth>32 || count>512)throw new ArgumentException("Array view exceeds expression bounds.");
+  Rank=rank;Depth=depth;Count=count;References=references;
+ }
+ internal ClassicalArrayAllocation Validate(int bits,IList<ClassicalIntegerType> variables) {
+  var declarations=variables as RuntimeDeclarations;
+  if(declarations==null || Array>=declarations.Arrays.Count)throw new ArgumentException("Array view has no allocation.");
+  var allocation=declarations.Arrays[Array];if(Parent!=null)Parent.Validate(bits,variables);
+  if(Axes.Count!=(Parent==null ? allocation.Dimensions.Count : Parent.Rank))throw new ArgumentException("View selector rank differs from its source.");
+  foreach(var axis in Axes)foreach(var expression in new[]{axis.Start,axis.Stop,axis.Step})if(expression!=null)expression.Validate(bits,variables);
+  return allocation;
+ }
+ internal void Write(Action<ulong> number) {
+  number(Writable ? 1UL : 0UL);number(Parent==null ? 0UL : 1UL);
+  if(Parent==null)number((ulong)Array);else Parent.Write(number);
+  number((ulong)Axes.Count);foreach(var axis in Axes)axis.Write(number);
+ }
+}
+sealed class ClassicalArrayReferenceCheck {
+ public readonly IList<ClassicalArrayView> Views;public readonly IList<IList<int>> Shapes;
+ public ClassicalArrayReferenceCheck(IList<ClassicalArrayView> views,IList<IList<int>> shapes) {
+  if(views==null || shapes==null || views.Count<1 || views.Count>64 || shapes.Count!=views.Count)throw new ArgumentException("Reference preflight requires matching views and shapes.");
+  var copied=new List<IList<int>>();int nodes=0;
+  for(int k=0;k<views.Count;k++) {
+   var view=views[k];var shape=shapes[k];
+   if(view==null || view.Rank==0 || shape==null || (shape.Count!=0 && shape.Count!=view.Rank))throw new ArgumentException("Reference parameter rank differs from actual.");
+   nodes+=view.Count;if(nodes>512)throw new ArgumentException("Reference preflight exceeds 512 nodes.");
+   foreach(int size in shape)if(size<0 || size>4096)throw new ArgumentException("Reference shape dimensions must be 0–4096.");
+   copied.Add(new List<int>(shape).AsReadOnly());
+  }
+  Views=new List<ClassicalArrayView>(views).AsReadOnly();Shapes=copied.AsReadOnly();
+ }
+ internal void Validate(int bits,IList<ClassicalIntegerType> variables){foreach(var view in Views)view.Validate(bits,variables);}
+ internal void Write(Action<ulong> number) {
+  number((ulong)Views.Count);for(int k=0;k<Views.Count;k++){Views[k].Write(number);number((ulong)Shapes[k].Count);foreach(int size in Shapes[k])number((ulong)size);}
+ }
+}
 sealed class ClassicalArraySelection {
  public readonly int Array,Depth,Count;public readonly ulong References;
- public readonly IList<ClassicalIntegerExpression> Indices;public readonly string Source;
- public ClassicalArraySelection(int array,IList<ClassicalIntegerExpression> indices,string source) {
-  if(array<0 || array>=4096 || indices==null || indices.Count<1 || indices.Count>7)throw new ArgumentException("Array selection needs one to seven indices.");
-  Array=array;Indices=new List<ClassicalIntegerExpression>(indices).AsReadOnly();Source=source??"";
+ public readonly IList<ClassicalIntegerExpression> Indices;public readonly string Source;public readonly ClassicalArrayView View;
+ public ClassicalArraySelection(int array,IList<ClassicalIntegerExpression> indices,string source):this(array,null,indices,source) {}
+ public ClassicalArraySelection(ClassicalArrayView view,IList<ClassicalIntegerExpression> indices,string source):this(view==null ? -1 : view.Array,view,indices,source) {}
+ ClassicalArraySelection(int array,ClassicalArrayView view,IList<ClassicalIntegerExpression> indices,string source) {
+  if(array<0 || array>=4096 || indices==null || (view==null && indices.Count<1) || indices.Count>7)throw new ArgumentException("Array selection needs one to seven indices.");
+  Array=array;View=view;Indices=new List<ClassicalIntegerExpression>(indices).AsReadOnly();Source=source??"";
   if(System.Text.Encoding.UTF8.GetByteCount(Source)>512 || Source.IndexOf('\0')>=0)throw new ArgumentException("Invalid array source context.");
-  int depth=1,count=1;ulong references=0;foreach(var index in Indices){if(index==null)throw new ArgumentException("Missing array index.");depth=Math.Max(depth,index.Depth+1);count+=index.Count;references|=index.References;}
+  int depth=view==null ? 1 : view.Depth+1,count=1+(view==null ? 0 : view.Count);ulong references=view==null ? 0 : view.References;foreach(var index in Indices){if(index==null)throw new ArgumentException("Missing array index.");depth=Math.Max(depth,index.Depth+1);count+=index.Count;references|=index.References;}
   if(depth>32 || count>512)throw new ArgumentException("Array selection exceeds expression bounds.");Depth=depth;Count=count;References=references;
  }
  internal ClassicalArrayAllocation Validate(int bits,IList<ClassicalIntegerType> variables,bool prefix=false) {
   var declarations=variables as RuntimeDeclarations;
   if(declarations==null || Array>=declarations.Arrays.Count)throw new ArgumentException("Array selection has no declaration.");
-  var allocation=declarations.Arrays[Array];if(prefix ? Indices.Count>allocation.Dimensions.Count : Indices.Count!=allocation.Dimensions.Count)throw new ArgumentException("Array index rank differs from its declaration.");
+  var allocation=declarations.Arrays[Array];if(View!=null)View.Validate(bits,variables);int rank=View==null ? allocation.Dimensions.Count : View.Rank;
+  if(prefix ? Indices.Count>rank : Indices.Count!=rank)throw new ArgumentException("Array index rank differs from its declaration.");
   foreach(var index in Indices)index.Validate(bits,variables);return allocation;
  }
  internal void Write(Action<ulong> number) {
-  number((ulong)Array);number((ulong)Indices.Count);foreach(var index in Indices)index.WriteNode(number);
+  if(View==null)number((ulong)Array);else {number(4096);View.Write(number);}
+  number((ulong)Indices.Count);foreach(var index in Indices)index.WriteNode(number);
   byte[] source=System.Text.Encoding.UTF8.GetBytes(Source);number((ulong)source.Length);foreach(byte value in source)number(value);
  }
 }
@@ -298,9 +362,10 @@ sealed class ClassicalRealExpression {
  }
 }
 sealed class ClassicalIntegerExpression {
- public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9, ArrayElement=10, ArrayExtent=11 }
+ public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9, ArrayElement=10, ArrayExtent=11, ViewExtent=12 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
  public ClassicalArraySelection Selection {get;private set;}
+ public ClassicalArrayView View {get;private set;}public int ViewAxis {get;private set;}
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
  public int Slot {get;private set;}
  public ClassicalIntegerType Type {get;private set;}public ulong Value {get;private set;}
@@ -355,6 +420,12 @@ sealed class ClassicalIntegerExpression {
   if(bits.Length!=type.Width)throw new ArgumentException("Integer read width must match its type.");
   return new ClassicalIntegerExpression(NodeKind.Read,type,0,bits,0,null,null);
  }
+ public static ClassicalIntegerExpression ViewExtent(ClassicalArrayView view,int axis) {
+  if(view==null || axis<0 || axis>=view.Rank)throw new ArgumentException("View extent axis exceeds rank.");
+  var result=new ClassicalIntegerExpression(NodeKind.ViewExtent,ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Unsigned,0),0,null,0,null,null);
+  result.View=view;result.ViewAxis=axis;result.Depth=1+view.Depth;result.Count=1+view.Count;result.References=view.References;
+  if(result.Depth>32 || result.Count>512)throw new ArgumentException("View extent exceeds expression bounds.");return result;
+ }
  public static ClassicalIntegerExpression ArrayExtent(ClassicalArraySelection selection) {
   var result=ArrayElement(ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Signed,0),selection);result.Kind=NodeKind.ArrayExtent;return result;
  }
@@ -373,6 +444,7 @@ sealed class ClassicalIntegerExpression {
   return new ClassicalIntegerExpression(NodeKind.BitExpression,type,0,null,0,null,null,operand);
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+  if(View!=null)View.Validate(bits,variables);
   if(Selection!=null && Kind==NodeKind.ArrayExtent)Selection.Validate(bits,variables,true);
   if(Selection!=null && Kind!=NodeKind.ArrayExtent && !Type.Same(Selection.Validate(bits,variables).Integer))throw new ArgumentException("Array read type differs from declaration.");
   if(bits<0 || bits>64 || (bits<64 && (References>>bits)!=0))throw new ArgumentException("Integer expression reads outside the classical register.");
@@ -395,6 +467,7 @@ sealed class ClassicalIntegerExpression {
  }
  internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
+  if(View!=null){View.Write(number);number((ulong)ViewAxis);return;}
   if(Selection!=null){if(Kind!=NodeKind.ArrayExtent)Type.Write(number);Selection.Write(number);return;}
   if(NumericLeft!=null){if(Kind==NodeKind.NumericCast)Type.Write(number);NumericLeft.WriteNode(number);if(NumericRight!=null)NumericRight.WriteNode(number);return;}
   if(Kind==NodeKind.Binary){number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);return;}

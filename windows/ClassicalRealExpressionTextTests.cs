@@ -4,13 +4,17 @@ using System.Web.Script.Serialization;
 static class ClassicalRealExpressionTextTests {
  static int checks;
  static void Check(bool value){checks++;if(!value)throw new Exception("Angle text check "+checks+" failed.");}
+ static string Canonical(ClassicalCircuit.RealNode node,ClassicalCircuit.Document context) {
+  return ClassicalCircuit.From(new ClassicalCircuit.Document{Version=context.Version,Qubits=1,Registers=context.Registers,Variables=context.Variables,NumericVariables=context.NumericVariables,Arrays=context.Arrays,OutputBits=new int[0],LoopConditionBudget=1000000,Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=node,Wires=new[]{0}}}}).Serialize();
+ }
  static void Main() {
   var context=new ClassicalCircuit.Document{Version=11,LoopConditionBudget=1000000,Registers=new[]{new ClassicalCircuit.Register{Name="c",Size=1}},Variables=new[]{new ClassicalCircuit.Variable{Name="n",Signedness="Signed",Width=0}}};
-  var json=new JavaScriptSerializer();
   foreach(string source in new[]{"pi*n/2","π * uint[1](c)","float(n/2)","1e-9 + .5","-n","-0.0","1-(2-3)","1/2/3","float(int[8](-1))"}) {
    var value=ClassicalRealExpressionText.Parse(source,context);
    string formatted=ClassicalRealExpressionText.Format(value,context);
-   Check(json.Serialize(value)==json.Serialize(ClassicalRealExpressionText.Parse(formatted,context)));
+   string before=Canonical(value,context),after=Canonical(ClassicalRealExpressionText.Parse(formatted,context),context);
+   if(before!=after)Console.Error.WriteLine(source+"\n"+formatted+"\n"+before+"\n"+after);
+   Check(before==after);
   }
   Check(ClassicalRealExpressionText.Parse("n/2",context).Kind=="Binary");
   Check(ClassicalRealExpressionText.Parse("float(n/2)",context).IntegerValue.Kind=="IntegerBinary");
@@ -24,7 +28,7 @@ static class ClassicalRealExpressionTextTests {
   var restoredDeep=ClassicalRealExpressionText.Parse(ClassicalRealExpressionText.Format(deep,context),context);
   // JavaScriptSerializer reflection order can change as DTO shapes are cached.
   // Compare the complete canonical trees, retaining every typed node/value.
-  Func<ClassicalCircuit.RealNode,string> canonical=node=>ClassicalCircuit.From(new ClassicalCircuit.Document{Version=11,Qubits=1,Registers=context.Registers,Variables=context.Variables,OutputBits=new int[0],LoopConditionBudget=1000000,Steps=new[]{new ClassicalCircuit.Step{Kind="Rotation",Axis="Y",Angle=node,Wires=new[]{0}}}}).Serialize();
+  Func<ClassicalCircuit.RealNode,string> canonical=node=>Canonical(node,context);
   Check(canonical(deep)==canonical(restoredDeep));
   context.Version=13;context.Registers[0].Size=8;context.NumericVariables=new[]{new ClassicalCircuit.NumericVariable{Name="f",NumericKind="Float",Width=32},new ClassicalCircuit.NumericVariable{Name="a",NumericKind="Angle",Width=8}};
   foreach(string source in new[]{"f+1","sin(f)","sqrt(float[32](9.0))","float[32](n/2)","float[64](f)","mod(f,2.0)","f**2.0","angle[8](\"10000000\")","a+angle[8](pi)","-a","~a","a / uint[8](2)","a << uint[8](1)","float[32](-0.0)","angle(1.0)"}) {

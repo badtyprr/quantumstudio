@@ -69,6 +69,8 @@ jobs:
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-collections.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime collection checks failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-arrays.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-array-view-model.py --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime array source checks failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-dev08-numeric-source.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Numeric subroutine source evidence failed.' }
