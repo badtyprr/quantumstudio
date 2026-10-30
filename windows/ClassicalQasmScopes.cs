@@ -98,21 +98,28 @@ static class ClassicalQasmLifetimes {
   }
   return result.ToArray();
  }
- // The input model has already validated every instruction, including dead
- // code. Prune only on the export snapshot, after semantic validation, so tail
- // cleanup after an unconditional transfer cannot split a recovered lifetime.
- static ClassicalCircuit.Step[] Reachable(ClassicalCircuit.Step[] body) {
+ // The input model has already validated every instruction. Remove only
+ // duplicate tail cleanup after a direct transfer, on the export snapshot.
+ // Every removed clear must also occur immediately before that transfer.
+ static ClassicalCircuit.Step[] TrimTransferCleanup(ClassicalCircuit.Step[] body) {
   if(body==null)return null;
-  var result=new List<ClassicalCircuit.Step>();
-  foreach(var step in body) {
-   step.WhenTrue=Reachable(step.WhenTrue);step.WhenFalse=Reachable(step.WhenFalse);
-   result.Add(step);
-   if(step.Kind=="Break" || step.Kind=="Continue" || step.Kind=="End")break;
+  for(int index=0;index<body.Length;index++) {
+   var step=body[index];step.WhenTrue=TrimTransferCleanup(step.WhenTrue);step.WhenFalse=TrimTransferCleanup(step.WhenFalse);
+   if(step.Kind!="Break" && step.Kind!="Continue")continue;
+   var cleared=new HashSet<string>();
+   for(int before=index-1;before>=0;before--) {
+    var item=body[before];if(item.Kind!="ClearInteger" && item.Kind!="ClearNumeric")break;
+    cleared.Add(item.Kind+":"+item.VariableSlot);
+   }
+   bool redundant=index+1<body.Length;
+   for(int after=index+1;after<body.Length;after++)
+    if(!cleared.Contains(body[after].Kind+":"+body[after].VariableSlot))redundant=false;
+   if(redundant){var result=new ClassicalCircuit.Step[index+1];Array.Copy(body,result,result.Length);return result;}
   }
-  return result.ToArray();
+  return body;
  }
  public static ClassicalCircuit Prepare(ClassicalCircuit circuit){
-  var document=circuit.Snapshot();document.Steps=Reachable(document.Steps);
+  var document=circuit.Snapshot();document.Steps=TrimTransferCleanup(document.Steps);
   return PrepareKind(PrepareKind(ClassicalCircuit.From(document),false),true);
  }
  static ClassicalCircuit PrepareKind(ClassicalCircuit circuit,bool numeric) {

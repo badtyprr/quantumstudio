@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+from pyqasm.exceptions import ValidationError
 
 p = argparse.ArgumentParser()
 p.add_argument('--adapter', type=Path, required=True)
@@ -86,6 +87,6 @@ for source in (
  'bit[3] b="101";float f=0.5;for bit v in b[f:1]{}',
 ):
     try:compiler.convert('OPENQASM 3.0;'+source,classical=True)
-    except (ValueError,RuntimeError):checks+=1
+    except (ValueError,RuntimeError,ValidationError):checks+=1
     else:raise AssertionError('Accepted invalid collection: '+source)
 print('PASS: %d dynamic array iteration checks.'%checks)
