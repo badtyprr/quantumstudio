@@ -11,6 +11,7 @@ from pyqasm.maps.expressions import CONSTANTS_MAP
 from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.exceptions import ValidationError
 from qasm_source_diagnostics import error_at
+from qasm_runtime_wires import WireReferenceCheck
 from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck, ArrayCopyStatement, split_reference
 
 
@@ -365,6 +366,12 @@ def lower_runtime_subroutines(program):
         has_return = bool(returns)
         if len(call.arguments) != len(definition.arguments):
             raise error_at(call, 'Subroutine argument count does not match its declaration.')
+        if not definition.body and definition.return_type is None and definition.arguments and all(isinstance(formal,ast.QuantumArgument) and formal.size is None for formal in definition.arguments) and not any(isinstance(item,ast.FunctionCall) for item in walk(call.arguments)):
+            if len(definition.arguments)>25:raise error_at(call,'Quantum reference checks support at most25 targets.')
+            if len({formal.name.name for formal in definition.arguments})!=len(definition.arguments):raise error_at(call,'Duplicate subroutine parameter.')
+            for actual in call.arguments:check_quantum_name(actual)
+            check=WireReferenceCheck(targets=copy.deepcopy(call.arguments));check.span=call.span
+            return [check],None
         references = {n.name for n in walk(definition) if isinstance(n, ast.Identifier)}
         constant_bindings = {name: constant_value(name) for name in references
                              if name in constants and constants[name][0] < visibility[call.name.name]}
@@ -517,6 +524,7 @@ def lower_runtime_subroutines(program):
             if isinstance(node, ast.FunctionCall) and node.name.name in functions:
                 definition = functions[node.name.name]
                 if any(isinstance(a,ast.ClassicalArgument) and isinstance(a.type,ast.ArrayReferenceType) for a in definition.arguments):return True
+                if not definition.body and definition.return_type is None and definition.arguments and all(isinstance(a,ast.QuantumArgument) and a.size is None for a in definition.arguments):return True
                 if definition.return_type is not None:
                     if any(isinstance(a, ast.QuantumArgument) for a in definition.arguments):
                         return True

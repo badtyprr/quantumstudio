@@ -142,6 +142,12 @@ sealed class ClassicalProgramQasm {
   foreach(int slot in scopes.Declarations(gates))if(expressions.Slot(slot,false)=="v"+Number(slot))text.Append(Type(variables[slot])+" v"+Number(slot)+";\n");
   foreach(int slot in numericScopes.Declarations(gates))if(expressions.Slot(slot,true)=="n"+Number(slot))text.Append(ClassicalExpressionQasm.NumericTypeName(numericTypes[slot])+" n"+Number(slot)+";\n");
   foreach(var gate in gates) {
+   if(gate.Kind==NumericalSampling.Operation.CheckWireReferences) {
+    string name="_wire_check_"+Number(nextArrayCheck++);var parameters=new List<string>();
+    for(int k=0;k<gate.SelectedWires.Targets.Count;k++)parameters.Add("qubit p"+Number(k));
+    referenceHelpers.Append("def "+name+"("+String.Join(",",parameters)+") {}\n");
+    text.Append(name+"("+String.Join(",",Targets(text,gate))+");\n");continue;
+   }
    if(gate.ArrayCopy!=null) {
     var sources=new List<string>();foreach(var source in gate.ArrayCopy.Sources)sources.Add(expressions.ArrayView(source));
     text.Append(expressions.ArrayView(gate.ArrayCopy.Destination)+" = "+String.Join(" ++ ",sources)+";\n");continue;

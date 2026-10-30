@@ -317,9 +317,11 @@ sealed class ClassicalCircuit {
    if(fields.ContainsKey("ArrayTarget") && fields["ArrayTarget"]!=null){int nodes=0;SelectionFields(fields["ArrayTarget"],0,ref nodes,version);}
    if(fields.ContainsKey("WireTargets") && fields["WireTargets"]!=null) {
     if(version<14)throw Invalid("Runtime wire targets require circuit version 14.");
-    var targets=ArrayValue(fields["WireTargets"]);if(targets.Length<1 || targets.Length>3)throw Invalid("Use 1–3 runtime wire targets.");
+    bool references=Required(fields,"Kind") as string=="CheckWireReferences";
+    if(references && version<18)throw Invalid("Wire reference checks require version18.");
+    var targets=ArrayValue(fields["WireTargets"]);if(targets.Length<1 || targets.Length>(references?25:3))throw Invalid("Wire target count exceeds its operation bound.");
     if(!(Required(fields,"WireSource") is string))throw Invalid("Runtime wires require source context.");
-    foreach(var itemTarget in targets){var target=Fields(itemTarget,"Candidates,Index");IntegerArray(Required(target,"Candidates"));int nodes=0;ExpressionFields(Required(target,"Index"),0,ref nodes,version,true);}
+    int wireNodes=0;foreach(var itemTarget in targets){var target=Fields(itemTarget,"Candidates,Index");IntegerArray(Required(target,"Candidates"));if(!references)wireNodes=0;ExpressionFields(Required(target,"Index"),0,ref wireNodes,version,true);}
    } else if(fields.ContainsKey("WireSource") && fields["WireSource"]!=null)throw Invalid("Wire source context requires runtime wire targets.");
    if(fields.ContainsKey("ParameterGate") && fields["ParameterGate"]!=null) {
     if(version<12)throw Invalid("Parameterized gates require circuit version 12.");
@@ -365,7 +367,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version<2 || version>17)throw Invalid("Expected a version 2 through 17 classical circuit.");
+  if(version<2 || version>18)throw Invalid("Expected a version 2 through 18 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -497,10 +499,12 @@ sealed class ClassicalCircuit {
     if(version<15 || (kind!=NumericalSampling.Operation.StoreInteger && kind!=NumericalSampling.Operation.StoreNumeric))throw Invalid("Only version 15 stores accept array targets.");
     gate.ArrayTarget=ConvertSelection(step.ArrayTarget);
    }
+   bool wireCheck=kind==NumericalSampling.Operation.CheckWireReferences;
+   if(wireCheck && (version<18 || step.WireTargets==null))throw Invalid("Wire reference checks require version18 and targets.");
    if(step.WireTargets!=null) {
     var targets=new List<NumericalSampling.WireTarget>();
     foreach(var target in step.WireTargets)targets.Add(new NumericalSampling.WireTarget(target.Candidates,ConvertInteger(target.Index)));
-    gate.SelectedWires=new NumericalSampling.WireSelection(targets,step.WireSource);
+    gate.SelectedWires=wireCheck ? NumericalSampling.WireSelection.References(targets,step.WireSource) : new NumericalSampling.WireSelection(targets,step.WireSource);
    }
    bool rotation=kind==NumericalSampling.Operation.Rotation;
    if(rotation) {
