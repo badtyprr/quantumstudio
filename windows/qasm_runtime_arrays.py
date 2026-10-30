@@ -23,6 +23,7 @@ def lower_arrays(program):
     all_nodes=list(walk(program))
     names={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType)}
     if not names:return []
+    possibly_undefined={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType) and n.init_expression is None}
     scalar=(ast.IntType,ast.UintType,ast.BoolType,ast.FloatType,ast.AngleType)
     runtime={n.identifier.name for n in all_nodes if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar+(ast.BitType,))}-names
     constants={};selected=set();arrays={};allocations=[]
@@ -85,10 +86,10 @@ def lower_arrays(program):
                 for index in indices:
                     try:negative|=constant(index)<0
                     except ValueError:pass
-                if controlled or negative or depends(indices):selected.add(name)
+                if controlled and name in possibly_undefined or negative or depends(indices):selected.add(name)
         if isinstance(value,ast.BinaryExpression) and value.op.name in ('&&','||'):
             scan(value.lhs,hidden,controlled,dynamic)
-            scan(value.rhs,hidden,controlled or depends(value.lhs),dynamic);return
+            scan(value.rhs,hidden,True,dynamic);return
         if isinstance(value,ast.BranchingStatement):
             scan(value.condition,hidden,controlled,dynamic)
             active=controlled or depends(value.condition)
