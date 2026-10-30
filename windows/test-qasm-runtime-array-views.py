@@ -45,6 +45,16 @@ def execute(encoded, expected, error=False):
         assert values == {expected: '1' if exact else 10000}, values
 
 for source in (
+    'def f(readonly array[int,2,2] a)->int{return a[0][0]+a[0][1];}array[int,4,3] a={{1,2,3},{4,5,6},{7,8,9},{10,11,12}};int k=1;output bit c;c=bool(f(a[k:2][1:2])==11);',
+    'array[int,3,3] a={{1,2,3},{4,5,6},{7,8,9}};array[int,2,2] b={{10,11},{12,13}};int k=1;a[k:2][1:2]=b;output bit c;c=bool(a[1,1]==10 && a[2,2]==13 && a[0,1]==2);',
+    'def f(mutable array[int,2,2] a){a[1][0]=17;}array[int,3,3] a={{1,2,3},{4,5,6},{7,8,9}};f(a[1:2][1:2]);output bit c;c=bool(a[2,1]==17 && a[1,1]==5);',
+    'array[int,4] a={1,2,3,4};int k=1;output bit c;c=bool(a[k:3][2]==4);',
+):
+    original=compile_source('OPENQASM 3.0;'+source)
+    restored=compile_source(original['source'])
+    execute(original,'1');execute(restored,'1')
+
+for source in (
     'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,4] a;uint s=1;output bit c;c=bool(f(a[0:s:3])==4);',
     'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,4] a;uint s=4096;output bit c;c=bool(f(a[0:s:3])==1);',
     'def f(readonly array[int,#dim=1] a)->uint{return sizeof(a);} array[int,3] a;uint[64] s=18446744073709551615;output bit c;c=bool(f(a[0:s:2])==1);',

@@ -29,3 +29,5 @@ unfinished. Full unchanged upstream fixtures, independent oracle acceptance,
 packaged release verification and milestone closure also remain. Source support
 inherits bounded rank/storage/expression/call/operation budgets; complex and
 duration elements remain outside the supported scalar types.
+
+Multidimensional bracket shorthand consumes the source dimensions in order: `a[i:j][k:l]` selects the same rectangle as `a[i:j,k:l]`, matching the pinned upstream importer. After all dimensions have been supplied, additional brackets select the resulting view. In particular, the one-dimensional `a[1:3][2]` still refers to original element 3. Scalar destinations read arrays through typed runtime storage even when their indices are constants, retaining element precision and undefined-value checks.

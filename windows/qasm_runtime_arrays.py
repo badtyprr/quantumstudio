@@ -17,6 +17,23 @@ def split_reference(value):
     return root,groups
 
 
+def array_selector_groups(groups,rank):
+    """Consume consecutive brackets across remaining array dimensions first.
+
+    This preserves the pinned importer multidimensional shorthand a[i][j].
+    Once all dimensions are supplied, later brackets select the resulting view.
+    """
+    result=[];pending=[]
+    for group in groups:
+        pending.extend(group)
+        if len(pending)>=rank:
+            result.append(pending)
+            rank-=sum(not isinstance(axis,ast.RangeDefinition) for axis in pending)
+            pending=[]
+    if pending:result.append(pending)
+    return result
+
+
 @dataclass
 class SourceArrayView(ast.Expression):
     name: str
@@ -151,6 +168,15 @@ def lower_arrays(program):
         if isinstance(value,ast.SizeOf):
             name,indices=reference(value.target)
             if name in names-hidden and indices:selected.add(name)
+        if (isinstance(value,ast.ClassicalDeclaration) and isinstance(value.type,scalar+(ast.BitType,))
+                or isinstance(value,ast.ClassicalAssignment) and reference(value.lvalue)[0] not in names):
+            # Scalar destinations execute in the worker, including constant-index
+            # reads. Keep array element widths and definedness at that boundary.
+            source=value.init_expression if isinstance(value,ast.ClassicalDeclaration) else value.rvalue
+            for item in walk(source):
+                if isinstance(item,(ast.IndexExpression,ast.IndexedIdentifier)):
+                    name,_=reference(item)
+                    if name in names-hidden:selected.add(name)
         if isinstance(value,ast.ClassicalAssignment):
             name,_=reference(value.lvalue)
             if name in names-hidden and (controlled or depends(value)):selected.add(name)
@@ -232,7 +258,7 @@ def lower_arrays(program):
             if not force and not any(isinstance(axis,ast.RangeDefinition) for group in groups for axis in group):return None
             info=arrays[root.name];rank=len(info['dimensions']);parent=None
         if len(groups)>32:raise error_at(value,'Array views exceed 32 nesting levels.')
-        for group in groups:
+        for group in array_selector_groups(groups,rank):
             if len(group)>rank:raise error_at(value,'Array view has more selectors than axes.')
             group=list(group)+[ast.RangeDefinition(start=None,end=None,step=None) for _ in range(rank-len(group))]
             if any(isinstance(axis,ast.DiscreteSet) for axis in group):raise error_at(value,'Array views require scalar or range selectors.')
