@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-05, DEV-06, DEV-07 and the finite DEV-08 contract are released. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
+Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07 and the finite DEV-08 contract are released. DEV-05a–e shipped in REL-10/REL-11; DEV-05 remains partial. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
