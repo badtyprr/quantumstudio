@@ -40,7 +40,7 @@ struct IntegerExpression::Node {
  void validateVariables(const IntegerStorage *storage) const {
   if(selection) {
    if(!storage)throw std::invalid_argument("Array read requires runtime storage");
-   selection->validate(64,*storage);
+   if(kind==Kind::ArrayExtent)selection->validatePrefix(64,*storage);else selection->validate(64,*storage);
    if(kind!=Kind::ArrayExtent && storage->array(selection->array()).integerType()!=type)throw std::invalid_argument("Integer array read type does not match its declaration");
   }
   for(const auto &numeric:{numericLeft,numericRight})if(numeric){const IntegerStorage empty({});numeric->validate(64,storage ? *storage : empty);}
@@ -57,8 +57,8 @@ struct IntegerExpression::Node {
  TypedInteger evaluate(std::uint64_t record,const IntegerStorage *storage) const {
   if(selection) {
    if(!storage)throw std::invalid_argument("Array read requires runtime storage");
-   const auto address=selection->evaluate(record,64,*storage);
-   return kind==Kind::ArrayExtent ? TypedInteger::fromBits(type,1) : storage->read(address);
+   if(kind==Kind::ArrayExtent){selection->checkPrefix(record,64,*storage);return TypedInteger::fromBits(type,1);}
+   return storage->read(selection->evaluate(record,64,*storage));
   }
   if(numericLeft) {
    const IntegerStorage empty({});const auto &context=storage ? *storage : empty;

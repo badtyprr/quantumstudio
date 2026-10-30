@@ -87,8 +87,8 @@ unchanged ripple-carry program, remain covered by `test-qasm-arrays.py`.
 ## Checked singleton slice extents
 
 Integer expression tag 11 (`IntegerArrayExtent` in circuit JSON) carries an
-array selection and returns signed machine integer 1 after validating every
-axis. It reads no element and works for integer and numeric allocations,
+nonempty prefix of array indices and returns signed machine integer 1 after
+validating those axes in order. Omitted trailing axes are not evaluated. It reads no element and works for integer and numeric allocations,
 including undefined elements. Invalid or undefined indices fail normally.
 The wire encoding is the tag followed by the selection; it carries no type
 prefix. JSON requires signedness `Signed` and width 0.

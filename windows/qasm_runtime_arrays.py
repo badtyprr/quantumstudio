@@ -23,6 +23,7 @@ def lower_arrays(program):
     all_nodes=list(walk(program))
     names={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType)}
     if not names:return []
+    array_nodes={n.identifier.name:n for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType)}
     possibly_undefined={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType) and n.init_expression is None}
     scalar=(ast.IntType,ast.UintType,ast.BoolType,ast.FloatType,ast.AngleType)
     runtime={n.identifier.name for n in all_nodes if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar+(ast.BitType,))}-names
@@ -76,6 +77,9 @@ def lower_arrays(program):
             try:zero=any(constant(d)==0 for d in value.type.dimensions)
             except ValueError:pass
             if zero or depends(value.init_expression):selected.add(value.identifier.name)
+        if isinstance(value,ast.SizeOf):
+            name,indices=reference(value.target)
+            if name in names-hidden and indices:selected.add(name)
         if isinstance(value,ast.ClassicalAssignment):
             name,_=reference(value.lvalue)
             if name in names-hidden and (controlled or depends(value)):selected.add(name)
@@ -86,7 +90,22 @@ def lower_arrays(program):
                 for index in indices:
                     try:negative|=constant(index)<0
                     except ValueError:pass
-                if controlled and name in possibly_undefined or negative or depends(indices):selected.add(name)
+                deferred=False
+                if controlled:
+                    try:
+                        shape=[constant(d) for d in array_nodes[name].type.dimensions]
+                        deferred=(name in possibly_undefined
+                                  or any(isinstance(n,ast.Identifier) and n.name in hidden for n in walk(indices))
+                                  or len(indices)!=len(shape)
+                                  or any(not 0<=constant(i)<d for i,d in zip(indices,shape)))
+                    except ValueError:deferred=True
+                if deferred or negative or depends(indices):selected.add(name)
+        if isinstance(value,ast.SwitchStatement):
+            scan(value.target,hidden,controlled,dynamic)
+            active=controlled or depends(value.target)
+            for _,case in value.cases:scan(case.statements,hidden,active,dynamic)
+            if value.default is not None:scan(value.default.statements,hidden,active,dynamic)
+            return
         if isinstance(value,ast.BinaryExpression) and value.op.name in ('&&','||'):
             scan(value.lhs,hidden,controlled,dynamic)
             scan(value.rhs,hidden,True,dynamic);return
@@ -114,8 +133,8 @@ def lower_arrays(program):
     if len(selected)>4096:raise ValueError('Runtime storage exceeds 4096 array declarations.')
     constants.clear()
 
-    def marker(info, indices, source):
-        if len(indices) != len(info['dimensions']) or any(isinstance(i, (ast.RangeDefinition, ast.DiscreteSet)) for i in indices):
+    def marker(info, indices, source, prefix=False):
+        if (not 1<=len(indices)<=len(info['dimensions']) if prefix else len(indices)!=len(info['dimensions'])) or any(isinstance(i, (ast.RangeDefinition, ast.DiscreteSet)) for i in indices):
             raise error_at(source, 'Runtime array element access requires one scalar index per dimension.')
         node = ast.Identifier(info['backing'][0] if info['backing'] else '_qa_empty_' + str(info['id']))
         node._quantum_array = dict(info)
@@ -127,6 +146,7 @@ def lower_arrays(program):
         return node
 
     def expression(value,hidden=frozenset()):
+        if isinstance(value,tuple):return tuple(expression(item,hidden) for item in value)
         if isinstance(value,(ast.SubroutineDefinition,ast.QuantumGateDefinition)):return value
         if isinstance(value,list):
             local=set(hidden);result=[]
@@ -146,7 +166,7 @@ def lower_arrays(program):
             if name in arrays and name not in hidden and indices:
                 if value.index is not None and constant(value.index)!=0:raise error_at(value,'Singleton slice extent supports axis zero.')
                 if any(not isinstance(i,ast.RangeDefinition) or i.step is not None or i.start!=i.end for i in indices):raise error_at(value,'Runtime sizeof slices currently require singleton ranges.')
-                node=marker(arrays[name],[expression(i.start,hidden) for i in indices],value)
+                node=marker(arrays[name],[expression(i.start,hidden) for i in indices],value,prefix=True)
                 node._quantum_array_extent=True
                 return node
             if name in arrays and name not in hidden and not indices:

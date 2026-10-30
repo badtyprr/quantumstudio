@@ -52,6 +52,12 @@ for source in (
     'array[int,1] a;bit b="1";output bit c;c=bool(b) || bool(a[0]);',
     'array[int,1] a;output bit c;c=!(false && bool(a[0]));',
     'array[int,1] a;output bit c;c=true || bool(a[0]);',
+    'array[int,1] a={1};bit b="0";output bit c;c=1;if(b==1){c=bool(a[1]);}',
+    'array[int,1] a={1};output bit c;c=!(false && bool(a[1]));',
+    'const int N=0;array[int,1] a={1};bit b="0";output bit c;c=1;if(b==1){for int N in [1:1]{c=bool(a[N]);}}',
+    'array[int,1] a;int n=0;output bit c;c=1;switch(n){case 1{c=bool(a[0]);}default{c=1;}}',
+    'array[int,2,3] a;output bit c;c=bool(sizeof(a[0:0])==1);',
+    'array[int,2,0] a;output bit c;c=bool(sizeof(a[0:0])==1);',
     'array[int,2,3] a; a[1,2]=7; bit c=bool(a[-1,-1]==7);',
     'int i=1; array[int[8],2] a={3,4};a[i]+=2;bit c=bool(a[i]==6);',
     'qubit q;h q;bit b=measure q;array[int,2] a;int i=int[2](bool(b));a[i]=7;output bit c;c=bool(a[i]==7);',
@@ -94,5 +100,9 @@ for suffix in ('=1;','=f(z);'):
     source='OPENQASM 3.0;def f(int x)->int {return 1/x;}int z=0;int bad=2;array[int,2,2] a;a[bad,f(z)]'+suffix
     original=compile_source(source);restored=compile_source(original['source'])
     execute(original,None,error='array');execute(restored,None,error='array')
+
+source='OPENQASM 3.0;def f(int x)->int{return 1/x;}int z=0;array[int,1,0] a;a[0,f(z)]=1;'
+original=compile_source(source);restored=compile_source(original['source'])
+execute(original,None,error='division by zero');execute(restored,None,error='division by zero')
 
 print(f'PASS: {checks} runtime array source checks.')

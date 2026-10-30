@@ -351,7 +351,7 @@ static class ClassicalExpressionText {
    if((name=="array" || name=="arrayextent") && Take("(")) {
     ulong id=Number();if(id>=(ulong)arrays.Length)throw new ArgumentException("Unknown array.");var declaration=arrays[(int)id];var indices=new List<N>();
     while(Take(",")){if(indices.Count>=7)throw new ArgumentException("Array rank exceeds seven.");indices.Add(AsInteger(Normalize(Expression(1,depth+1),depth+1)));}Need(")");
-    if(indices.Count!=declaration.Dimensions.Length)throw new ArgumentException("Array index rank differs from its declaration.");
+    if(name=="arrayextent" ? indices.Count<1 || indices.Count>declaration.Dimensions.Length : indices.Count!=declaration.Dimensions.Length)throw new ArgumentException("Array index rank differs from its declaration.");
     var selection=new ClassicalCircuit.ArraySelectionNode{Array=(int)id,Indices=indices.ToArray(),Source="editor"};
     if(name=="arrayextent")return Node(new N{Kind="IntegerArrayExtent",Signedness="Signed",Width=0,Selection=selection});
     return declaration.NumericKind==null ? Node(new N{Kind="IntegerArrayElement",Signedness=declaration.Signedness,Width=declaration.Width,Selection=selection}) : Node(Numeric(new R{Kind="ArrayElement",NumericKind=declaration.NumericKind,Width=declaration.Width,Selection=selection},declaration.NumericKind,declaration.Width));

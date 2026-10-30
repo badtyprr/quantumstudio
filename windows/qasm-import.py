@@ -105,7 +105,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def integers(visitor):
         return getattr(visitor, '_quantum_integer_names', set())
     def runtime(visitor,value):
-        return any(isinstance(item,ast.Identifier) and (item.name in visitor._global_creg_size_map or item.name in integers(visitor) or item.name in getattr(visitor,'_quantum_numeric_names',{})) for item in nodes(value))
+        return any(hasattr(item,"_quantum_array") or isinstance(item,ast.Identifier) and (item.name in visitor._global_creg_size_map or item.name in integers(visitor) or item.name in getattr(visitor,'_quantum_numeric_names',{})) for item in nodes(value))
     def real_angle(visitor,value,depth=0):
         if depth>=32:raise ValueError('Runtime angles exceed 32 levels.')
         if any(isinstance(item,ast.Identifier) and item.name in getattr(visitor,'_quantum_numeric_names',{}) or isinstance(item,ast.FunctionCall) and item.name.name in NUMERIC_FUNCTIONS or isinstance(item,ast.Cast) and (isinstance(item.type,ast.AngleType) or isinstance(item.type,ast.FloatType) and item.type.size is not None and Qasm3ExprEvaluator.evaluate_expression(item.type.size)[0]!=64) for item in nodes(value)):
@@ -856,7 +856,7 @@ def lower_boolean_measurements(program):
 def mark_runtime_ranges(program):
     """Classify bounds lexically before static transfer lowering changes scopes."""
     def runtime(value,env):
-        return any(isinstance(n,ast.Identifier) and env.get(n.name,False) for n in nodes(value))
+        return any(hasattr(n,"_quantum_array") or isinstance(n,ast.Identifier) and env.get(n.name,False) for n in nodes(value))
     def block(body,parent):
         env=dict(parent)
         for statement in body:
@@ -981,7 +981,7 @@ def convert(source, published_u=False, classical=False):
         runtime_names={node.identifier.name for node in nodes(module.original_program,True)
                    if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,(ast.BitType,)+RUNTIME_SCALAR_TYPES)}
         def runtime(value):
-            return any(isinstance(item,ast.Identifier) and item.name in runtime_names for item in nodes(value))
+            return any(hasattr(item,"_quantum_array") or isinstance(item,ast.Identifier) and item.name in runtime_names for item in nodes(value))
         integer_names={node.identifier.name for node in module.original_program.statements
                        if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
         quantum_names={node.qubit.name for node in nodes(module.original_program,True) if isinstance(node,ast.QubitDeclaration)}

@@ -649,12 +649,12 @@ def lower_runtime_subroutines(program):
                 raw_indices=[index for group in value.lvalue.indices for index in group]
                 lowered_indices=[expression_calls(index,active,depth) for index in raw_indices]
                 capture=bool(effects) or any(prefix for prefix,_ in lowered_indices)
-                for axis,(prefix,index) in enumerate(lowered_indices):
+                for prefix,index in lowered_indices:
                     result.extend(prefix)
                     if capture:
                         # Check before narrowing to a signed snapshot: UINT64_MAX
                         # must fail bounds rather than turn into the valid -1.
-                        probe=[ast.IntegerLiteral(0) for _ in raw_indices];probe[axis]=index
+                        probe=indices+[index]
                         target=ast.IndexExpression(collection=copy.deepcopy(value.lvalue.name),index=[ast.RangeDefinition(start=copy.deepcopy(i),end=copy.deepcopy(i),step=None) for i in probe])
                         check=ast.Identifier(fresh());runtime.add(check.name)
                         result.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=check,init_expression=ast.SizeOf(target=target,index=None)))

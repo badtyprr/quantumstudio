@@ -60,6 +60,11 @@ int main(){try {
   rejects<std::out_of_range>([&]{ArraySelection(0,invalid,"array.qasm:7:2").evaluate(0,0,storage);});
  for(unsigned array:{1u,2u})check(IntegerExpression::arrayExtent(ArraySelection(array,{index(0)})).evaluate(0,0,storage).value().bits()==1);
  rejects<std::out_of_range>([&]{IntegerExpression::arrayExtent(ArraySelection(0,{index(2),index(0)})).evaluate(0,0,storage);});
+ check(IntegerExpression::arrayExtent(ArraySelection(0,{index(1)})).evaluate(0,0,storage).value().bits()==1);
+ RuntimeStorage emptyShape({}, {}, {ArrayDeclaration::integers(integer,0,{1,0})});
+ check(IntegerExpression::arrayExtent(ArraySelection(0,{index(0)})).evaluate(0,0,emptyShape).value().bits()==1);
+ rejects<std::out_of_range>([&]{IntegerExpression::arrayExtent(ArraySelection(0,{index(0),index(0)})).evaluate(0,0,emptyShape);});
+ rejects<std::invalid_argument>([&]{IntegerExpression::arrayElement(integer,ArraySelection(0,{index(0)})).validate(0,emptyShape);});
  auto huge=IntegerExpression::constant(TypedInteger::fromBits(QuantumClassical::IntegerType::machine(Integer::Signedness::Unsigned),~std::uint64_t(0)));
  rejects<std::out_of_range>([&]{ArraySelection(0,{huge,index(0)}).evaluate(0,0,storage);});
  rejects<std::invalid_argument>([&]{ArraySelection(0,{index(0)}).validate(0,storage);});

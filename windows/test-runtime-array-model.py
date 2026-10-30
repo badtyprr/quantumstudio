@@ -61,7 +61,7 @@ for indices in ((0, 0), (1, 2), (-1, -1), (-2, -3)):
     run(doc, '1')
 
 # Address-only checks succeed on undefined cells, but still validate each axis.
-for indices in ((0,0),(-1,-1),(2,0),(0,3)):
+for indices in ((0,),(0,0),(-1,-1),(2,0),(0,3)):
     doc=copy.deepcopy(base)
     extent=dict(Kind='IntegerArrayExtent',Signedness='Signed',Width=0,Selection=selection(*indices))
     doc['Steps']=[observe(extent,1)]

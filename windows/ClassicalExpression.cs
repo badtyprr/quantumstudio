@@ -168,10 +168,10 @@ sealed class ClassicalArraySelection {
   int depth=1,count=1;ulong references=0;foreach(var index in Indices){if(index==null)throw new ArgumentException("Missing array index.");depth=Math.Max(depth,index.Depth+1);count+=index.Count;references|=index.References;}
   if(depth>32 || count>512)throw new ArgumentException("Array selection exceeds expression bounds.");Depth=depth;Count=count;References=references;
  }
- internal ClassicalArrayAllocation Validate(int bits,IList<ClassicalIntegerType> variables) {
+ internal ClassicalArrayAllocation Validate(int bits,IList<ClassicalIntegerType> variables,bool prefix=false) {
   var declarations=variables as RuntimeDeclarations;
   if(declarations==null || Array>=declarations.Arrays.Count)throw new ArgumentException("Array selection has no declaration.");
-  var allocation=declarations.Arrays[Array];if(Indices.Count!=allocation.Dimensions.Count)throw new ArgumentException("Array index rank differs from its declaration.");
+  var allocation=declarations.Arrays[Array];if(prefix ? Indices.Count>allocation.Dimensions.Count : Indices.Count!=allocation.Dimensions.Count)throw new ArgumentException("Array index rank differs from its declaration.");
   foreach(var index in Indices)index.Validate(bits,variables);return allocation;
  }
  internal void Write(Action<ulong> number) {
@@ -373,7 +373,7 @@ sealed class ClassicalIntegerExpression {
   return new ClassicalIntegerExpression(NodeKind.BitExpression,type,0,null,0,null,null,operand);
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
-  if(Selection!=null && Kind==NodeKind.ArrayExtent)Selection.Validate(bits,variables);
+  if(Selection!=null && Kind==NodeKind.ArrayExtent)Selection.Validate(bits,variables,true);
   if(Selection!=null && Kind!=NodeKind.ArrayExtent && !Type.Same(Selection.Validate(bits,variables).Integer))throw new ArgumentException("Array read type differs from declaration.");
   if(bits<0 || bits>64 || (bits<64 && (References>>bits)!=0))throw new ArgumentException("Integer expression reads outside the classical register.");
   if(Kind==NodeKind.Variable) {
