@@ -34,9 +34,10 @@ for body in (
  'array[bool,2,2] a={{false,true},{true,false}}; if(a[1,0]) x q;',
  'array[bool,2] a={false,false}; for int i in [0:1]{a[i]=true;} if(a[0] && a[1]) x q;',
  'array[bool,1] a={false}; if(true){a[0]=true;} if(a[0]) x q;',
- 'def set(mutable array[int[32], #dim=1] target){target[0]=1;} array[int[32],1] a={0}; set(a); if(a[0]==1) x q;',
 ):
  steps=convert(header+body)['Steps'];assert len(steps)==1 and steps[0]['Expression']=='X' and steps[0]['Wires']==[0],steps
+reference=convert(header+'def set(mutable array[int[32], #dim=1] target){target[0]=1;} array[int[32],1] a={0}; set(a); if(a[0]==1) x q;')
+assert reference['Version']==16 and any(step['Kind']=='CheckArrayReferences' for step in reference['Steps'])
 assert convert(header+'array[bool,1] a={true};')['Steps']==[]
 assert convert(header+'array[bool,65536] a;')['Steps']==[]
 branch=convert(header+'bit c="1"; array[bool,1] a={true}; if(c==1){if(a[0]) x q;}')['Steps'][-1]
@@ -55,7 +56,7 @@ for body in (
  'array[bool,257,256] a;',
  'array[bool,40000] a; array[bool,40000] b;',
 ):reject(body)
-reject('def set(mutable array[int[32], #dim=1] target){target[0]=1;} bit c="0"; array[int[32],1] a={0}; if(c==1){set(a);}')
+assert convert(header+'def set(mutable array[int[32], #dim=1] target){target[0]=1;} bit c="0"; array[int[32],1] a={0}; if(c==1){set(a);}')['Version']==16
 reject('bit c="0"; if(c==1){array[bool,1] a={true};}','arrays can only be declared globally')
 # Unchanged QASM string extracted from qBraid notebook qasm_unroll.ipynb,
 # revision86787e1ba372facc224f925189755e69c479828b; no gates/angles rewritten.

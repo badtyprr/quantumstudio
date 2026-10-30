@@ -22,7 +22,7 @@ from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
 from qasm_runtime_wires import RuntimeWires
-from qasm_runtime_arrays import lower_arrays, selection as array_selection, declarations as array_declarations
+from qasm_runtime_arrays import ArrayReferenceCheck, map_view, view_document, lower_arrays, selection as array_selection, declarations as array_declarations
 
 from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, contains_numeric, lower_numeric
 
@@ -203,6 +203,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return any(isinstance(item,ast.Cast) and isinstance(item.type,ast.BoolType) and any(isinstance(child,ast.BitstringLiteral) for child in nodes(item.argument)) for item in nodes(value))
     def normalize_array(visitor,value,depth):
         result=copy.deepcopy(value)
+        if hasattr(value,'_quantum_array_view'):result._quantum_array_view=map_view(value._quantum_array_view,lambda index:normalize(visitor,index,depth+1,typed=True))
         result._quantum_array_indices=[normalize(visitor,index,depth+1,typed=True) for index in value._quantum_array_indices]
         return result
     def normalize_numeric(visitor,value,depth=0):
@@ -451,6 +452,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 visitor._update_branching_gate_depths()
     def visit_map(visitor):
         mapping=original_visit_map(visitor)
+        mapping[ArrayReferenceCheck]=lambda statement: [] if visitor._check_only else [ArrayReferenceCheck(views=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.views],shapes=statement.shapes)]
         mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
         return mapping
     def transfer(visitor, statement):
@@ -721,6 +723,7 @@ def resolve_integer_scopes(program):
             if candidate not in used:used.add(candidate);return candidate
     def expression(value,env):
         if hasattr(value,"_quantum_array_indices"):expression(value._quantum_array_indices,env)
+        if hasattr(value,"_quantum_array_view"):expression(value._quantum_array_view,env)
         if isinstance(value,ast.Identifier):value.name=env.get(value.name,value.name)
         elif isinstance(value,list):
             for item in value:expression(item,env)
@@ -1184,6 +1187,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             return lower_numeric(node,numeric_variables or {},lambda item:integer(item,depth+1),lambda item:build(item,None,depth+1)[0],mode='Integer')
         if hasattr(node,'_quantum_array'):
             info=node._quantum_array
+            if hasattr(node,'_quantum_view_axis'):return dict(Kind='IntegerViewExtent',Signedness='Unsigned',Width=0,View=view_document(node._quantum_array_view,lambda index:integer(index,depth+2)),ViewAxis=node._quantum_view_axis)
             if getattr(node,'_quantum_array_extent',False):return dict(Kind='IntegerArrayExtent',Signedness='Signed',Width=0,Selection=array_selection(node,lambda index:integer(index,depth+2)))
             if info['kind'] not in ('Signed','Unsigned'):raise ValueError('Cast numeric array elements explicitly to integers.')
             return dict(Kind='IntegerArrayElement',Signedness=info['kind'],Width=info['width'],Selection=array_selection(node,lambda index:integer(index,depth+2)))
@@ -1413,7 +1417,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
         return (start+index, 1) if whole else start+index
 
     count = 0
-    version = 15 if allocations else 13 if numeric_declarations else 5 if declarations else 2
+    version = 16 if any(info.get('views') for info in allocations) else 15 if allocations else 13 if numeric_declarations else 5 if declarations else 2
     def expression_version(node):
         if not isinstance(node,dict):return 3
         if node.get('Kind') in ('NumericCast','AngleRatio','AngleBits','NumericCompare','TypedConstant','Variable','Cast','Function','Scale','Bits','TypedInteger'):return 13
@@ -1444,6 +1448,9 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 raise ValueError('Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
+            if isinstance(statement,ArrayReferenceCheck):
+                version=max(version,16)
+                append(dict(Kind='CheckArrayReferences',ArrayReferences=[dict(View=view_document(view,lambda value:classical_value(value,classical,integer_only=True)),Shape=shape) for view,shape in zip(statement.views,statement.shapes)]));continue
             if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
                 continue
             if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,NUMERIC_TYPES):

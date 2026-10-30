@@ -1,14 +1,81 @@
 """Lower global runtime arrays to typed backing slots and checked selections."""
 import copy
-from dataclasses import fields, is_dataclass
+from dataclasses import dataclass, fields, is_dataclass
 import openqasm3.ast as ast
 from qasm_source_diagnostics import error_at
 from pyqasm.expressions import Qasm3ExprEvaluator
 
 
+def split_reference(value):
+    """Keep each bracket group intact while finding its backing expression."""
+    groups=[];root=value
+    while isinstance(root,(ast.IndexExpression,ast.IndexedIdentifier)):
+        if isinstance(root,ast.IndexExpression):
+            groups.insert(0,root.index if isinstance(root.index,list) else [root.index]);root=root.collection
+        else:groups[0:0]=root.indices;root=root.name
+    return root,groups
+
+
+@dataclass
+class SourceArrayView(ast.Expression):
+    name: str
+    element_type: object
+    parent: object
+    axes: list
+    writable: bool = True
+
+    @property
+    def rank(self):return sum(isinstance(axis,ast.RangeDefinition) for axis in self.axes)
+
+
+@dataclass
+class ArrayReferenceCheck(ast.Statement):
+    views: list
+    shapes: list
+
+
+@dataclass
+class ArrayView:
+    array: int
+    parent: object
+    axes: list
+    writable: bool = True
+
+    @property
+    def rank(self):
+        return sum(isinstance(axis, ast.RangeDefinition) for axis in self.axes)
+
+
+def map_view(view, transform):
+    """Visit geometry in parent/start/step/stop evaluation order."""
+    if view is None:return None
+    parent=map_view(view.parent,transform)
+    axes=[]
+    for axis in view.axes:
+        if isinstance(axis,ast.RangeDefinition):
+            axes.append(ast.RangeDefinition(start=None if axis.start is None else transform(axis.start),
+                step=None if axis.step is None else transform(axis.step),
+                end=None if axis.end is None else transform(axis.end)))
+        else:axes.append(transform(axis))
+    return ArrayView(view.array,parent,axes,view.writable)
+
+
+def view_document(view, integer):
+    result=dict(Array=view.array,Writable=view.writable,Axes=[])
+    if view.parent is not None:result['Parent']=view_document(view.parent,integer)
+    for axis in view.axes:
+        if isinstance(axis,ast.RangeDefinition):
+            result['Axes'].append(dict(Scalar=False,**{name:integer(value) for name,value in
+                [('Start',axis.start),('Step',axis.step),('Stop',axis.end)] if value is not None}))
+        else:result['Axes'].append(dict(Scalar=True,Start=integer(axis)))
+    return result
+
+
 def selection(node, integer):
     info = node._quantum_array
-    return dict(Array=info['id'], Indices=[integer(index) for index in node._quantum_array_indices], Source=info['source'])
+    result=dict(Array=info['id'], Indices=[integer(index) for index in node._quantum_array_indices], Source=info['source'])
+    if hasattr(node,'_quantum_array_view'):result['View']=view_document(node._quantum_array_view,integer)
+    return result
 
 
 def lower_arrays(program):
@@ -56,11 +123,8 @@ def lower_arrays(program):
             except ValueError:pass
 
     def reference(value):
-        if isinstance(value,ast.IndexedIdentifier):return value.name.name,[i for group in value.indices for i in group]
-        if isinstance(value,ast.IndexExpression):
-            name,earlier=reference(value.collection)
-            return name,earlier+(value.index if isinstance(value.index,list) else [value.index])
-        return (value.name,[]) if isinstance(value,ast.Identifier) else (None,[])
+        root,groups=split_reference(value)
+        return (root.name if isinstance(root,ast.Identifier) else None),[index for group in groups for index in group]
 
     def scan(value,hidden=frozenset(),controlled=False,dynamic=frozenset()):
         def depends(item):return any(isinstance(n,ast.Identifier) and n.name in (runtime|set(dynamic)|(selected-set(hidden))) for n in walk(item))
@@ -99,7 +163,7 @@ def lower_arrays(program):
                                   or len(indices)!=len(shape)
                                   or any(not 0<=constant(i)<d for i,d in zip(indices,shape)))
                     except ValueError:deferred=True
-                if deferred or negative or depends(indices):selected.add(name)
+                if deferred or negative or depends(indices) or any(isinstance(i,ast.RangeDefinition) for i in indices):selected.add(name)
         if isinstance(value,ast.SwitchStatement):
             scan(value.target,hidden,controlled,dynamic)
             active=controlled or depends(value.target)
@@ -146,7 +210,41 @@ def lower_arrays(program):
         node.span = getattr(source, 'span', None)
         return node
 
+    def bound_view(value,hidden):
+        if value.name not in arrays:raise error_at(value,'Array reference backing declaration is unavailable.')
+        info=arrays[value.name];info['views']=True
+        parent=bound_view(value.parent,hidden)[1] if value.parent is not None else None
+        return info,ArrayView(info['id'],parent,[expression(axis,hidden) for axis in value.axes],value.writable)
+
+    def sliced(value,hidden,force=False):
+        root,groups=split_reference(value)
+        if isinstance(root,SourceArrayView):
+            info,parent=bound_view(root,hidden);rank=parent.rank
+        else:
+            if not isinstance(root,ast.Identifier) or root.name not in arrays or root.name in hidden:return None
+            if not force and not any(isinstance(axis,ast.RangeDefinition) for group in groups for axis in group):return None
+            info=arrays[root.name];rank=len(info['dimensions']);parent=None
+        if len(groups)>32:raise error_at(value,'Array views exceed 32 nesting levels.')
+        for group in groups:
+            if len(group)>rank:raise error_at(value,'Array view has more selectors than axes.')
+            group=list(group)+[ast.RangeDefinition(start=None,end=None,step=None) for _ in range(rank-len(group))]
+            if any(isinstance(axis,ast.DiscreteSet) for axis in group):raise error_at(value,'Array views require scalar or range selectors.')
+            parent=ArrayView(info['id'],parent,[expression(axis,hidden) for axis in group],parent.writable if parent else True);rank=parent.rank
+        info['views']=True
+        return info,parent
+
     def expression(value,hidden=frozenset()):
+        if isinstance(value,SourceArrayView):
+            info,view=bound_view(value,hidden)
+            if view.rank:raise error_at(value,'A whole array view requires a reference, copy or collection operation.')
+            node=marker(info,[ast.IntegerLiteral(0)]*len(info['dimensions']),value)
+            node._quantum_array_indices=[];node._quantum_array_view=view
+            return node
+        if isinstance(value,ArrayReferenceCheck):
+            value.views=[bound_view(view,hidden)[1] for view in value.views];return value
+        if isinstance(value,ast.ClassicalAssignment):
+            chosen=sliced(value.lvalue,hidden)
+            if chosen is not None and not chosen[1].writable:raise error_at(value,'Cannot write through a readonly array reference.')
         if isinstance(value,tuple):return tuple(expression(item,hidden) for item in value)
         if isinstance(value,(ast.SubroutineDefinition,ast.QuantumGateDefinition)):return value
         if isinstance(value,list):
@@ -160,9 +258,27 @@ def lower_arrays(program):
             value.init_expression=expression(value.init_expression,hidden|{value.identifier.name})
             return value
         if isinstance(value,(ast.IndexedIdentifier,ast.IndexExpression)):
+            chosen=sliced(value,hidden)
+            if chosen is not None:
+                info,view=chosen
+                if view.rank:raise error_at(value,'An array view requires a reference, copy or collection operation.')
+                node=marker(info,[ast.IntegerLiteral(0)]*len(info['dimensions']),value)
+                node._quantum_array_indices=[];node._quantum_array_view=view
+                return node
             name,indices=reference(value)
             if name in arrays and name not in hidden:return marker(arrays[name],[expression(i,hidden) for i in indices],value)
         if isinstance(value,ast.SizeOf):
+            prior_name,prior=reference(value.target)
+            direct=isinstance(value.target,ast.IndexExpression) and isinstance(value.target.collection,ast.Identifier) or isinstance(value.target,ast.IndexedIdentifier) and len(value.target.indices)==1
+            singleton=direct and prior_name in arrays and prior and (value.index is None or constant(value.index)==0) and all(isinstance(i,ast.RangeDefinition) and i.step is None and i.start==i.end and i.start is not None for i in prior)
+            chosen=bound_view(value.target,hidden) if isinstance(value.target,SourceArrayView) else None if singleton else sliced(value.target,hidden,force=bool(prior))
+            if chosen is not None:
+                info,view=chosen;axis=0 if value.index is None else constant(value.index)
+                if not 0<=axis<view.rank:raise error_at(value,'sizeof axis is outside the array view rank.')
+                node=marker(info,[ast.IntegerLiteral(0)]*len(info['dimensions']),value)
+                node._quantum_array_indices=[];node._quantum_array_view=view
+                node._quantum_array_extent=True;node._quantum_view_axis=axis
+                return node
             name,indices=reference(value.target)
             if name in arrays and name not in hidden and indices:
                 if value.index is not None and constant(value.index)!=0:raise error_at(value,'Singleton slice extent supports axis zero.')
