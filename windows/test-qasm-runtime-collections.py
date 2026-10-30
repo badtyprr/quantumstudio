@@ -42,6 +42,9 @@ def execute(encoded,exact,expected=None,error=None):
     assert all(abs(actual.get(k,0)-expected.get(k,0))<(1e-12 if exact else .025) for k in set(actual)|set(expected)),(actual,expected)
 
 cases=[
+ ('bit[3] a="101";int total=0;for int i in [0:1]{for bit v in a{total+=int(v);}}output bit c;c=total==4;',{'1':1}),
+ ('bit[2] a="11";int n=0;for bit[1] v in a{for bit w in v{n+=int(w);}}output bit c;c=n==2;',{'1':1}),
+ ('array[int,2] a={1,2};int n=0;for int i in [0:1]{for int v in a{n+=v+i;}}output bit c;c=n==8;',{'1':1}),
  ('array[int,0] a;int total=0;for int v in a[:] {total+=v;}output bit c;c=total==0;',{'1':1}),
  ('array[int,65] a;a[0]=2;a[1]=3;int total=0;for int v in a[0:1]{total+=v;}output bit c;c=total==5;',{'1':1}),
  ('array[int,4] a={1,2,3,4};int total=0;for int v in a{if(v==2){continue;}if(v==4){break;}total+=v;}output bit c;c=total==4;',{'1':1}),
