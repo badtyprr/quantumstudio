@@ -280,3 +280,6 @@ TESTS += quantum-classical-array-view-request-test.py
 
 EXTRA_DIST += quantum-wire-reference-request-test.py
 TESTS += quantum-wire-reference-request-test.py
+
+EXTRA_DIST += quantum-exact-rotation-chain-test.py
+TESTS += quantum-exact-rotation-chain-test.py
