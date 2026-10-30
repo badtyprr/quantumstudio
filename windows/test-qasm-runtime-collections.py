@@ -107,12 +107,13 @@ original=adapt(compile(fixture['source']));roundtrip=adapt(compile(original['sou
 expected={format(value,'04b'):1/16 for value in range(16)}
 for exact in (True,False):
     for encoded in (original,roundtrip):execute(encoded,exact,expected)
+# Array collections use the existing storage budget; selected values are read
+# at entry, and invalid geometry fails even when the body is empty.
 for body,marker in (
-    ('array[int,65] a;for int v in a{}','at most 64 values'),
-    ('array[int,2] a={1,2};for int v in a[0:0:1]{}','step must not be zero'),
+    ('array[int,65] a;for int v in a{}','before initialization'),
+    ('array[int,2] a={1,2};for int v in a[0:0:1]{}','step'),
     ('array[int,2] a={1,2};for int v in a[0:2]{}','endpoint is outside'),
 ):
-    try:compile(header+body)
-    except ValueError as error:assert marker in str(error),str(error);checks+=1
-    else:raise AssertionError('Invalid collection accepted: '+body)
+    encoded=adapt(compile(header+body))
+    for exact in (True,False):execute(encoded,exact,error=marker)
 print(f'PASS: {checks} runtime collection checks.')

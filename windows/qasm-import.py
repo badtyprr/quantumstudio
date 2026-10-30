@@ -803,7 +803,13 @@ def resolve_integer_scopes(program):
                     expression(statement.size,env)
                 else:expression(statement,env)
                 result.append(statement)
-        result.extend(clear(name) for name in reversed(local));body[:]=result
+        # A direct transfer already emitted every crossed scope's cleanup.
+        # Keep validation of the full source above, but do not retain unreachable
+        # tail clears that would split the exported loop binding's lifetime.
+        transfer=next((index for index,item in enumerate(result) if isinstance(item,(ast.BreakStatement,ast.ContinueStatement))),None)
+        if transfer is None:result.extend(clear(name) for name in reversed(local))
+        else:result=result[:transfer+1]
+        body[:]=result
     block(program.statements,{})
     return scoped
 

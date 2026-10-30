@@ -73,6 +73,7 @@ jobs:
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-array-views.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime array view source tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-array-copies.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          & .tools/qasm-venv/Scripts/python.exe windows/test-qasm-runtime-dynamic-collections.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime array copy source tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-array-view-model.py --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime array source checks failed.' }
