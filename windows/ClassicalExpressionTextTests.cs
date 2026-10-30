@@ -48,15 +48,31 @@ static class ClassicalExpressionTextTests {
   string[] expected={"int(-1)","int[64](-9223372036854775808)","int[8](-128)","int[3](-1)","int[1](-1)","int[3](3)","uint[64](18446744073709551615)"};
   for(int i=0;i<samples.Length;i++) {
    Check(Format(samples[i])==expected[i]);
-   Check(serializer.Serialize(ClassicalExpressionText.ParseInteger(expected[i],context))==serializer.Serialize(samples[i]));
+   Check(CanonicalJson(ClassicalExpressionText.ParseInteger(expected[i],context),serializer)==CanonicalJson(samples[i],serializer));
    var cast=new N{Kind="IntegerCast",Signedness="Signed",Width=8,Left=samples[i]};
-   Check(serializer.Serialize(ClassicalExpressionText.ParseInteger(Format(cast),context))==serializer.Serialize(cast));
+   Check(CanonicalJson(ClassicalExpressionText.ParseInteger(Format(cast),context),serializer)==CanonicalJson(cast,serializer));
   }
   Check(Format(ClassicalExpressionText.ParseInteger("uint[8](-1)",context))=="uint[8](255)");
   Reject(()=>ClassicalExpressionText.ParseInteger("int[8](-9223372036854775809)",context));
  }
+ // Framework reflection may enumerate DTO properties in different orders.
+ // Preserve all fields and array order, comparing JSON objects by key instead.
+ static object OrderedFields(object value) {
+  var fields=value as System.Collections.Generic.IDictionary<string,object>;
+  if(fields!=null) {
+   var ordered=new System.Collections.Generic.SortedDictionary<string,object>(StringComparer.Ordinal);
+   foreach(var field in fields)ordered.Add(field.Key,OrderedFields(field.Value));
+   return ordered;
+  }
+  var items=value as object[];
+  if(items!=null)return Array.ConvertAll(items,OrderedFields);
+  return value;
+ }
+ static string CanonicalJson(object value,System.Web.Script.Serialization.JavaScriptSerializer serializer) {
+  return serializer.Serialize(OrderedFields(serializer.DeserializeObject(serializer.Serialize(value))));
+ }
  static void CheckDisplayRoundtrip(N before,string shown,System.Web.Script.Serialization.JavaScriptSerializer serializer) {
-  string expected=serializer.Serialize(before),actual=serializer.Serialize(Parse(shown,1));
+  string expected=CanonicalJson(before,serializer),actual=CanonicalJson(Parse(shown,1),serializer);
   checks++;
   if(expected!=actual)throw new Exception("Expression display round-trip check "+checks+" failed for "+shown+". Expected: "+expected+"; actual: "+actual);
  }
@@ -76,7 +92,7 @@ static class ClassicalExpressionTextTests {
   var context=Context();context.Version=6;context.Variables=new[]{new ClassicalCircuit.Variable{Name="ready",Signedness="Unsigned",Width=1}};
   N value=ClassicalExpressionText.Parse("bool(ready)",context,1);
   Check(ClassicalExpressionText.Format(value,context)=="bool(ready)");
-  Check(serializer.Serialize(value)==serializer.Serialize(ClassicalExpressionText.Parse("bool(ready)",context,1)));
+  Check(CanonicalJson(value,serializer)==CanonicalJson(ClassicalExpressionText.Parse("bool(ready)",context,1),serializer));
  }
  static void VariableChecks(string worker) {
   var context=Context();context.Version=5;context.Variables=new[]{new ClassicalCircuit.Variable{Name="counter",Signedness="Signed",Width=8}};
