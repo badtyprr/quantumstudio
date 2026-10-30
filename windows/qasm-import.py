@@ -427,7 +427,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return result+assignment(visitor,initial)
     def branch(visitor, statement, force=False):
         if in_function(visitor):return original_branch(visitor,statement)
-        force=force or any(isinstance(item,WireReferenceCheck) for item in nodes(statement))
+        force=force or any(isinstance(item,(WireReferenceCheck,QuantumSelectorTypeCheck)) for item in nodes(statement))
         if not force and not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
             return original_branch(visitor, statement)
         # Preserve the expression and choose the body only during execution.
