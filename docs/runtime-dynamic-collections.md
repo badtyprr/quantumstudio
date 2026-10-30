@@ -37,8 +37,9 @@ loop entry captures their current values. Nested aliases retain ordering, and
 duplicate identities in concatenated or discrete selections fail before use.
 Alias selectors support negative array-style indices and reverse strides.
 Aliases remain lexical and can refer to bit-valued subroutine formals. Iteration
-uses an independent Boolean scalar for a scalar `bit` binding, preserving the
-full 64-bit physical register capacity. Other alias reads and writes are outside
+retains the declared binding type and its assignment rules. A `bit` binding
+consumes a physical bit from the shared 64-bit capacity; Boolean and integer
+bindings use scalar storage, so they can iterate a full 64-bit register. Other alias reads and writes are outside
 this iteration feature. The existing rejection of nested bit-register
 declaration shadowing remains; alias-name shadowing is supported.
 

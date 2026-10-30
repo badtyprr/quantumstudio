@@ -953,12 +953,7 @@ def lower_runtime_subroutines(program):
             if captured is not None:
                 effects,alias=captured
                 prefix,view=bit_aliases.snapshot(alias);effects.extend(prefix)
-                iteration=copy.copy(node)
-                if isinstance(iteration.type,ast.BitType) and iteration.type.size is None:
-                    # Scalar bit/bool values are interchangeable; an integer
-                    # Boolean slot does not consume an additional physical bit.
-                    iteration.type=ast.BoolType()
-                effects.append(array_collection_loop(iteration,view,env,active,depth))
+                effects.append(array_collection_loop(node,view,env,active,depth))
                 return ast.CompoundStatement(statements=effects)
         type_=collection_scopes[-1].get(root.name) if isinstance(root,ast.Identifier) else None
         if not isinstance(type_,ast.BitType) or type_.size is None:return None
