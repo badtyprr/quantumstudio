@@ -118,7 +118,7 @@ sealed class ClassicalCircuit {
   var kind=Required(fields,"Kind") as string;string permitted;
   if(integer) {
    if(version<4)throw Invalid("Typed integer expressions require circuit version 4.");
-   if(kind=="IntegerArrayElement") {
+   if(kind=="IntegerArrayElement" || kind=="IntegerArrayExtent") {
     permitted="Kind,Signedness,Width,Selection";Integer(Required(fields,"Width"));if(!(Required(fields,"Signedness") is string))throw Invalid("Array signedness must be text.");
     SelectionFields(Required(fields,"Selection"),depth+1,ref count,version);
    } else if(kind=="NumericCast" || kind=="AngleRatio" || kind=="AngleBits" || kind=="NumericCompare") {
@@ -180,6 +180,7 @@ sealed class ClassicalCircuit {
   ClassicalIntegerType.Sign sign;
   if(!Enum.TryParse(node.Signedness,out sign) || sign.ToString()!=node.Signedness || !Enum.IsDefined(typeof(ClassicalIntegerType.Sign),sign))throw Invalid("Unknown integer signedness.");
   var type=ClassicalIntegerType.Create(sign,node.Width.Value);
+  if(node.Kind=="IntegerArrayExtent") {if(type.Signedness!=ClassicalIntegerType.Sign.Signed || type.DeclaredWidth!=0)throw Invalid("Array extent requires a machine signed integer.");return ClassicalIntegerExpression.ArrayExtent(ConvertSelection(node.Selection));}
   if(node.Kind=="IntegerArrayElement")return ClassicalIntegerExpression.ArrayElement(type,ConvertSelection(node.Selection));
   if(node.Kind=="NumericCast")return ClassicalIntegerExpression.FromNumeric(type,ConvertReal(node.RealLeft));
   if(node.Kind=="IntegerConstant")return ClassicalIntegerExpression.Constant(type,Condition(node.Value));

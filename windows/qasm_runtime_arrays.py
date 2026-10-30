@@ -3,6 +3,7 @@ import copy
 from dataclasses import fields, is_dataclass
 import openqasm3.ast as ast
 from qasm_source_diagnostics import error_at
+from pyqasm.expressions import Qasm3ExprEvaluator
 
 
 def selection(node, integer):
@@ -11,56 +12,103 @@ def selection(node, integer):
 
 
 def lower_arrays(program):
-    # Keep the established compile-time path when no array access depends on
-    # runtime storage. Runtime lowering is selected for the whole allocation,
-    # never independently for two uses of the same array.
     def walk(value):
         if is_dataclass(value):
             yield value
+            if isinstance(value,(ast.SubroutineDefinition,ast.QuantumGateDefinition)):return
             for field in fields(value):
-                if field.name not in ('span', 'annotations'): yield from walk(getattr(value, field.name))
-        elif isinstance(value, (list, tuple)):
-            for item in value: yield from walk(item)
-    all_nodes = list(walk(program))
-    names = {n.identifier.name for n in all_nodes if isinstance(n, ast.ClassicalDeclaration) and isinstance(n.type, ast.ArrayType)}
-    if not names: return []
-    runtime = {n.identifier.name for n in all_nodes if isinstance(n, ast.ClassicalDeclaration) and isinstance(n.type, (ast.IntType, ast.UintType, ast.BoolType, ast.FloatType, ast.AngleType, ast.BitType))}
-    def depends(value): return any(isinstance(n, ast.Identifier) and n.name in runtime for n in walk(value))
-    def uses_array(value): return any(isinstance(n, ast.Identifier) and n.name in names for n in walk(value))
-    needed = False
-    for node in all_nodes:
-        if isinstance(node, ast.ClassicalDeclaration) and isinstance(node.type, ast.ArrayType):
-            needed |= depends(node.init_expression) or any(isinstance(d, ast.IntegerLiteral) and d.value == 0 for d in node.type.dimensions)
-        if isinstance(node, ast.ClassicalAssignment) and uses_array(node.lvalue): needed |= depends(node)
-        if isinstance(node, (ast.IndexExpression, ast.IndexedIdentifier)) and uses_array(node):
-            needed |= depends(node) or any(isinstance(n, ast.UnaryExpression) and n.op.name == '-' for n in walk(node))
-        if isinstance(node, ast.BranchingStatement) and depends(node.condition):
-            needed |= any(isinstance(n, ast.ClassicalAssignment) and uses_array(n.lvalue) for n in walk([node.if_block, node.else_block]))
-        if isinstance(node, ast.WhileLoop) and uses_array(node.block): needed = True
-        if isinstance(node, ast.ForInLoop) and depends(node.set_declaration) and uses_array(node.block): needed = True
-    if not needed: return []
-    constants = {}
-    arrays = {}
-    allocations = []
-    used = set()
+                if field.name not in ('span','annotations'):yield from walk(getattr(value,field.name))
+        elif isinstance(value,(list,tuple)):
+            for item in value:yield from walk(item)
+    all_nodes=list(walk(program))
+    names={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType)}
+    if not names:return []
+    scalar=(ast.IntType,ast.UintType,ast.BoolType,ast.FloatType,ast.AngleType)
+    runtime={n.identifier.name for n in all_nodes if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar+(ast.BitType,))}-names
+    constants={};selected=set();arrays={};allocations=[]
+    used={n.name for n in all_nodes if isinstance(n,ast.Identifier)}
+    charged=sum(isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar) for n in all_nodes)
 
-    def collect(value):
-        if isinstance(value, ast.Identifier): used.add(value.name)
-        elif isinstance(value, list):
-            for item in value: collect(item)
-        elif is_dataclass(value):
+    def constant(value,depth=0):
+        if depth>=32:raise error_at(value,'Constant expression exceeds 32 levels.')
+        child=lambda item:constant(item,depth+1)
+        if isinstance(value,ast.IntegerLiteral):return value.value
+        if isinstance(value,ast.Identifier) and value.name in constants:return constants[value.name]
+        if isinstance(value,ast.UnaryExpression) and value.op.name=='-':return -child(value.expression)
+        if isinstance(value,ast.BinaryExpression) and value.op.name in ('+','-','*'):
+            left,right=child(value.lhs),child(value.rhs)
+            result={'+':lambda:left+right,'-':lambda:left-right,'*':lambda:left*right}[value.op.name]()
+            if not -(1<<64)<=result<(1<<64):raise error_at(value,'Array constant exceeds 64 bits.')
+            return result
+        if isinstance(value,ast.Cast) and isinstance(value.type,(ast.IntType,ast.UintType)):
+            type_=copy.deepcopy(value.type)
+            if type_.size is not None:type_.size=ast.IntegerLiteral(child(type_.size))
+            result,effects=Qasm3ExprEvaluator.evaluate_expression(ast.Cast(type=type_,argument=ast.IntegerLiteral(child(value.argument))),const_expr=True)
+            if effects or type(result) is not int:raise error_at(value,'Array constant must be an integer.')
+            return result
+        raise error_at(value,'Array dimensions and element widths must be constant integers.')
+
+    def remember(statement):
+        if isinstance(statement,ast.ConstantDeclaration):
+            try:constants[statement.identifier.name]=constant(ast.Cast(type=copy.deepcopy(statement.type),argument=statement.init_expression))
+            except ValueError:pass
+
+    def reference(value):
+        if isinstance(value,ast.IndexedIdentifier):return value.name.name,[i for group in value.indices for i in group]
+        if isinstance(value,ast.IndexExpression):
+            name,earlier=reference(value.collection)
+            return name,earlier+(value.index if isinstance(value.index,list) else [value.index])
+        return (value.name,[]) if isinstance(value,ast.Identifier) else (None,[])
+
+    def scan(value,hidden=frozenset(),controlled=False,dynamic=frozenset()):
+        def depends(item):return any(isinstance(n,ast.Identifier) and n.name in (runtime|set(dynamic)|(selected-set(hidden))) for n in walk(item))
+        if isinstance(value,list):
+            local=set(hidden);local_dynamic=set(dynamic)
+            for item in value:
+                if isinstance(item,(ast.ClassicalDeclaration,ast.ConstantDeclaration)) and not isinstance(item.type,ast.ArrayType):local.add(item.identifier.name)
+                if isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,scalar+(ast.BitType,)):local_dynamic.add(item.identifier.name)
+                scan(item,local,controlled,local_dynamic)
+            return
+        if isinstance(value,(ast.SubroutineDefinition,ast.QuantumGateDefinition)):return
+        if isinstance(value,ast.ClassicalDeclaration) and isinstance(value.type,ast.ArrayType) and value.identifier.name in names:
+            zero=False
+            try:zero=any(constant(d)==0 for d in value.type.dimensions)
+            except ValueError:pass
+            if zero or depends(value.init_expression):selected.add(value.identifier.name)
+        if isinstance(value,ast.ClassicalAssignment):
+            name,_=reference(value.lvalue)
+            if name in names-hidden and (controlled or depends(value)):selected.add(name)
+        if isinstance(value,(ast.IndexExpression,ast.IndexedIdentifier)):
+            name,indices=reference(value)
+            if name in names-hidden:
+                negative=False
+                for index in indices:
+                    try:negative|=constant(index)<0
+                    except ValueError:pass
+                if negative or depends(indices):selected.add(name)
+        if isinstance(value,ast.BranchingStatement):
+            scan(value.condition,hidden,controlled,dynamic)
+            active=controlled or depends(value.condition)
+            scan(value.if_block,hidden,active,dynamic);scan(value.else_block,hidden,active,dynamic);return
+        if isinstance(value,(ast.ForInLoop,ast.WhileLoop)):
+            control=value.set_declaration if isinstance(value,ast.ForInLoop) else value.while_condition
+            scan(control,hidden,controlled,dynamic)
+            local=set(hidden);local_dynamic=set(dynamic)
+            if isinstance(value,ast.ForInLoop):local.add(value.identifier.name)
+            if isinstance(value,ast.ForInLoop) and depends(control):local_dynamic.add(value.identifier.name)
+            scan(value.block,local,controlled or isinstance(value,ast.WhileLoop) or depends(control),local_dynamic);return
+        if is_dataclass(value):
             for field in fields(value):
-                if field.name not in ('span', 'annotations'): collect(getattr(value, field.name))
-    collect(program)
+                if field.name not in ('span','annotations'):scan(getattr(value,field.name),hidden,controlled,dynamic)
 
-    def constant(value):
-        if isinstance(value, ast.IntegerLiteral): return value.value
-        if isinstance(value, ast.Identifier) and value.name in constants: return constants[value.name]
-        if isinstance(value, ast.UnaryExpression) and value.op.name == '-': return -constant(value.expression)
-        if isinstance(value, ast.BinaryExpression) and value.op.name in ('+', '-', '*'):
-            left, right = constant(value.lhs), constant(value.rhs)
-            return {'+': lambda: left + right, '-': lambda: left - right, '*': lambda: left * right}[value.op.name]()
-        raise error_at(value, 'Array dimensions and element widths must be constant integers.')
+    # Dependency closure: reading a runtime array makes a destination runtime.
+    while True:
+        before=set(selected);constants.clear()
+        for statement in program.statements:remember(statement);scan(statement)
+        if before==selected:break
+    if not selected:return []
+    if len(selected)>4096:raise ValueError('Runtime storage exceeds 4096 array declarations.')
+    constants.clear()
 
     def marker(info, indices, source):
         if len(indices) != len(info['dimensions']) or any(isinstance(i, (ast.RangeDefinition, ast.DiscreteSet)) for i in indices):
@@ -74,33 +122,41 @@ def lower_arrays(program):
         node.span = getattr(source, 'span', None)
         return node
 
-    def reference(value):
-        if isinstance(value, ast.IndexedIdentifier):
-            return value.name.name, [i for group in value.indices for i in group]
-        if isinstance(value, ast.IndexExpression):
-            indices = value.index if isinstance(value.index, list) else [value.index]
-            name, earlier = reference(value.collection)
-            return name, earlier + indices
-        if isinstance(value, ast.Identifier): return value.name, []
-        return None, []
-
-    def expression(value):
-        if isinstance(value, (ast.IndexedIdentifier, ast.IndexExpression)):
-            name, indices = reference(value)
-            if name in arrays: return marker(arrays[name], [expression(i) for i in indices], value)
-        if isinstance(value, ast.SizeOf):
-            name, indices = reference(value.target)
-            if name in arrays and not indices:
-                axis = 0 if value.index is None else constant(value.index)
-                if not 0 <= axis < len(arrays[name]['dimensions']): raise error_at(value, 'sizeof axis is outside the array rank.')
+    def expression(value,hidden=frozenset()):
+        if isinstance(value,(ast.SubroutineDefinition,ast.QuantumGateDefinition)):return value
+        if isinstance(value,list):
+            local=set(hidden);result=[]
+            for item in value:
+                if isinstance(item,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):local.add(item.identifier.name)
+                result.append(expression(item,local))
+            return result
+        if isinstance(value,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
+            value.type=expression(value.type,hidden)
+            value.init_expression=expression(value.init_expression,hidden|{value.identifier.name})
+            return value
+        if isinstance(value,(ast.IndexedIdentifier,ast.IndexExpression)):
+            name,indices=reference(value)
+            if name in arrays and name not in hidden:return marker(arrays[name],[expression(i,hidden) for i in indices],value)
+        if isinstance(value,ast.SizeOf):
+            name,indices=reference(value.target)
+            if name in arrays and name not in hidden and indices:
+                if value.index is not None and constant(value.index)!=0:raise error_at(value,'Singleton slice extent supports axis zero.')
+                if any(not isinstance(i,ast.RangeDefinition) or i.step is not None or i.start!=i.end for i in indices):raise error_at(value,'Runtime sizeof slices currently require singleton ranges.')
+                node=marker(arrays[name],[expression(i.start,hidden) for i in indices],value)
+                node._quantum_array_extent=True
+                return node
+            if name in arrays and name not in hidden and not indices:
+                axis=0 if value.index is None else constant(value.index)
+                if not 0<=axis<len(arrays[name]['dimensions']):raise error_at(value,'sizeof axis is outside the array rank.')
                 return ast.IntegerLiteral(arrays[name]['dimensions'][axis])
-        if isinstance(value, ast.Identifier) and value.name in arrays:
-            raise error_at(value, 'A whole runtime array requires an array reference or collection operation.')
-        if isinstance(value, list): return [expression(item) for item in value]
+        if isinstance(value,ast.Identifier) and value.name in arrays and value.name not in hidden:
+            raise error_at(value,'A whole runtime array requires an array reference or collection operation.')
+        if isinstance(value,ast.ForInLoop):
+            value.set_declaration=expression(value.set_declaration,hidden)
+            value.block=expression(value.block,hidden|{value.identifier.name});return value
         if is_dataclass(value):
             for field in fields(value):
-                if field.name not in ('span', 'annotations'):
-                    setattr(value, field.name, expression(getattr(value, field.name)))
+                if field.name not in ('span','annotations'):setattr(value,field.name,expression(getattr(value,field.name),hidden))
         return value
 
     def flatten(value, shape):
@@ -113,10 +169,8 @@ def lower_arrays(program):
 
     result = []
     for statement in program.statements:
-        if isinstance(statement, ast.ConstantDeclaration):
-            try: constants[statement.identifier.name] = constant(statement.init_expression)
-            except ValueError: pass
-        if not isinstance(statement, ast.ClassicalDeclaration) or not isinstance(statement.type, ast.ArrayType):
+        remember(statement)
+        if not isinstance(statement, ast.ClassicalDeclaration) or not isinstance(statement.type, ast.ArrayType) or statement.identifier.name not in selected:
             result.append(expression(statement));continue
         name = statement.identifier.name
         if name in arrays: raise error_at(statement, 'Duplicate array declaration.')
@@ -128,6 +182,8 @@ def lower_arrays(program):
             for dimension in dimensions:
                 if size > 4096 // dimension: raise error_at(statement, 'Runtime array allocation exceeds 4096 elements.')
                 size *= dimension
+        if size>4096-charged:raise error_at(statement,'Runtime scalar and array storage exceeds 4096 slots.')
+        charged+=size
         element = copy.deepcopy(statement.type.base_type)
         boolean = isinstance(element, ast.BoolType)
         if not isinstance(element, (ast.IntType, ast.UintType, ast.BoolType, ast.FloatType, ast.AngleType)):

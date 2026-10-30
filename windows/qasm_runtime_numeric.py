@@ -9,6 +9,7 @@ NUMERIC_TYPES=(ast.FloatType,ast.AngleType)
 FUNCTIONS={'sin':'Sin','cos':'Cos','tan':'Tan','arcsin':'Arcsin','arccos':'Arccos',
            'arctan':'Arctan','exp':'Exp','log':'Log','sqrt':'Sqrt','floor':'Floor','ceiling':'Ceiling','mod':'Mod'}
 def contains_numeric(value,variables):
+    if getattr(value,"_quantum_array_extent",False):return False
     if hasattr(value,"_quantum_array"):return value._quantum_array["kind"] in ("Float","Angle")
     if isinstance(value,ast.Identifier):return value.name in variables
     if isinstance(value,ast.FloatLiteral):return True

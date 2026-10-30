@@ -229,7 +229,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     def normalize(visitor, value, depth=0, cast_distance=False, typed=False):
         if hasattr(value,"_quantum_array"):
             result=normalize_array(visitor,value,depth)
-            return ast.Cast(type=ast.BoolType(),argument=result) if value._quantum_array['boolean'] else result
+            return ast.Cast(type=ast.BoolType(),argument=result) if value._quantum_array['boolean'] and not getattr(value,'_quantum_array_extent',False) else result
         if contains_numeric(value,getattr(visitor,'_quantum_numeric_names',{})):return normalize_numeric(visitor,value,depth)
         typed=typed or any(isinstance(item,ast.Identifier) and item.name in integers(visitor) for item in nodes(value)) or (runtime(visitor,value) and any(isinstance(item,ast.Cast) and isinstance(item.type,(ast.IntType,ast.UintType)) for item in nodes(value)))
         if depth >= 32:
@@ -1175,6 +1175,7 @@ def classical_expression(value, registers, expected_width=None, variables=None, 
             return lower_numeric(node,numeric_variables or {},lambda item:integer(item,depth+1),lambda item:build(item,None,depth+1)[0],mode='Integer')
         if hasattr(node,'_quantum_array'):
             info=node._quantum_array
+            if getattr(node,'_quantum_array_extent',False):return dict(Kind='IntegerArrayExtent',Signedness='Signed',Width=0,Selection=array_selection(node,lambda index:integer(index,depth+2)))
             if info['kind'] not in ('Signed','Unsigned'):raise ValueError('Cast numeric array elements explicitly to integers.')
             return dict(Kind='IntegerArrayElement',Signedness=info['kind'],Width=info['width'],Selection=array_selection(node,lambda index:integer(index,depth+2)))
 

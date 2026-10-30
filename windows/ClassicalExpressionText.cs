@@ -18,7 +18,9 @@ static class ClassicalExpressionText {
   return "array("+selection.Array.ToString(CultureInfo.InvariantCulture)+", "+String.Join(", ",Array.ConvertAll(selection.Indices,index=>Format(index,context)))+")";
  }
  public static ClassicalCircuit.ArraySelectionNode ParseArrayTarget(string text,ClassicalCircuit.Document context,bool numeric) {
-  var selection=numeric ? ParseNumeric(text,context).Selection : ParseInteger(text,context).Selection;
+  ClassicalCircuit.ArraySelectionNode selection;
+  if(numeric)selection=ParseNumeric(text,context).Selection;
+  else {var node=ParseInteger(text,context);selection=node.Kind=="IntegerArrayElement" ? node.Selection : null;}
   if(selection==null)throw new ArgumentException("An array target must be one indexed element.");return selection;
  }
  public static N Parse(string text,ClassicalCircuit.Document context,int width) {
@@ -236,6 +238,7 @@ static class ClassicalExpressionText {
  }
  public static string Format(N value,ClassicalCircuit.Document context=null){return FormatNode(value,0,context);}
  static string FormatNode(N n,int depth,ClassicalCircuit.Document context) {
+  if(n.Kind=="IntegerArrayExtent")return FormatArray(n.Selection,context).Replace("array(","arrayextent(");
   if(n.Kind=="IntegerArrayElement")return FormatArray(n.Selection,context);
   if(n==null || depth>=32)throw new ArgumentException("Invalid expression tree.");
   if(n.Kind=="NumericCast")return (n.Signedness=="Signed" ? "int" : "uint")+(n.Width==0 ? "" : "["+n.Width+"]")+"("+FormatNumeric(n.RealLeft,context)+")";
@@ -345,11 +348,12 @@ static class ClassicalExpressionText {
     Need("(");var left=Expression(1,depth+1);N right=null;if(name=="mod" || name=="compare"){Need(",");right=Expression(1,depth+1);}Need(")");
     return Node(new N{Kind="NumericFunction",Operator=name=="anglebits" ? "AngleBits" : Char.ToUpperInvariant(name[0])+name.Substring(1),Left=left,Right=right});
    }
-   if(name=="array" && Take("(")) {
+   if((name=="array" || name=="arrayextent") && Take("(")) {
     ulong id=Number();if(id>=(ulong)arrays.Length)throw new ArgumentException("Unknown array.");var declaration=arrays[(int)id];var indices=new List<N>();
     while(Take(",")){if(indices.Count>=7)throw new ArgumentException("Array rank exceeds seven.");indices.Add(AsInteger(Normalize(Expression(1,depth+1),depth+1)));}Need(")");
     if(indices.Count!=declaration.Dimensions.Length)throw new ArgumentException("Array index rank differs from its declaration.");
     var selection=new ClassicalCircuit.ArraySelectionNode{Array=(int)id,Indices=indices.ToArray(),Source="editor"};
+    if(name=="arrayextent")return Node(new N{Kind="IntegerArrayExtent",Signedness="Signed",Width=0,Selection=selection});
     return declaration.NumericKind==null ? Node(new N{Kind="IntegerArrayElement",Signedness=declaration.Signedness,Width=declaration.Width,Selection=selection}) : Node(Numeric(new R{Kind="ArrayElement",NumericKind=declaration.NumericKind,Width=declaration.Width,Selection=selection},declaration.NumericKind,declaration.Width));
    }
    if(name=="numeric" && Take("(")){ulong slot=Number();Need(")");if(slot>=(ulong)numericVariables.Length)throw new ArgumentException("Unknown numeric slot.");var type=numericVariables[(int)slot];return Node(Numeric(new R{Kind="Variable",NumericKind=type.NumericKind,Width=type.Width,Slot=(int)slot},type.NumericKind,type.Width));}

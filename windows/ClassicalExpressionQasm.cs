@@ -167,6 +167,9 @@ sealed class ClassicalExpressionQasm {
    case I.NodeKind.Constant:return Cast(TypeName(value.Type),IntegerLiteral(value));
    case I.NodeKind.Read:return Cast(TypeName(value.Type),Read(value.Indices));
    case I.NodeKind.Variable:return Slot(value.Slot,false);
+   case I.NodeKind.ArrayExtent:
+    var slices=new List<string>();foreach(var index in value.Selection.Indices){string item=Integer(index);slices.Add(item+":"+item);}
+    return "sizeof(a"+Number(value.Selection.Array)+"["+String.Join(",",slices)+"])";
    case I.NodeKind.ArrayElement:return ArrayElement(value.Selection);
    case I.NodeKind.Cast:return Cast(TypeName(value.Type),IntegerNode(value.Left));
    case I.NodeKind.BitExpression:return Cast(TypeName(value.Type),BitNode(value.BitOperand));

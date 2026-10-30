@@ -298,7 +298,7 @@ sealed class ClassicalRealExpression {
  }
 }
 sealed class ClassicalIntegerExpression {
- public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9, ArrayElement=10 }
+ public enum NodeKind { Constant=0, Read=1, Cast=2, Binary=3, Variable=4, BitExpression=5, NumericCast=6, AngleRatio=7, AngleBits=8, NumericCompare=9, ArrayElement=10, ArrayExtent=11 }
  public enum Operator { Add=0, Subtract=1, Multiply=2, Divide=3, Remainder=4, Power=5 }
  public ClassicalArraySelection Selection {get;private set;}
  public NodeKind Kind {get;private set;}public Operator Operation {get;private set;}
@@ -355,6 +355,9 @@ sealed class ClassicalIntegerExpression {
   if(bits.Length!=type.Width)throw new ArgumentException("Integer read width must match its type.");
   return new ClassicalIntegerExpression(NodeKind.Read,type,0,bits,0,null,null);
  }
+ public static ClassicalIntegerExpression ArrayExtent(ClassicalArraySelection selection) {
+  var result=ArrayElement(ClassicalIntegerType.Create(ClassicalIntegerType.Sign.Signed,0),selection);result.Kind=NodeKind.ArrayExtent;return result;
+ }
  public static ClassicalIntegerExpression ArrayElement(ClassicalIntegerType type,ClassicalArraySelection selection) {
   if(type==null || selection==null)throw new ArgumentNullException("array type or selection");
   var result=new ClassicalIntegerExpression(NodeKind.ArrayElement,type,0,null,0,null,null);result.Selection=selection;result.Depth=1+selection.Depth;result.Count=1+selection.Count;result.References=selection.References;
@@ -370,7 +373,8 @@ sealed class ClassicalIntegerExpression {
   return new ClassicalIntegerExpression(NodeKind.BitExpression,type,0,null,0,null,null,operand);
  }
  internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
-  if(Selection!=null && !Type.Same(Selection.Validate(bits,variables).Integer))throw new ArgumentException("Array read type differs from declaration.");
+  if(Selection!=null && Kind==NodeKind.ArrayExtent)Selection.Validate(bits,variables);
+  if(Selection!=null && Kind!=NodeKind.ArrayExtent && !Type.Same(Selection.Validate(bits,variables).Integer))throw new ArgumentException("Array read type differs from declaration.");
   if(bits<0 || bits>64 || (bits<64 && (References>>bits)!=0))throw new ArgumentException("Integer expression reads outside the classical register.");
   if(Kind==NodeKind.Variable) {
    if(variables==null || Slot>=variables.Count || variables[Slot]==null || variables[Slot].Signedness!=Type.Signedness || variables[Slot].DeclaredWidth!=Type.DeclaredWidth)
@@ -391,7 +395,7 @@ sealed class ClassicalIntegerExpression {
  }
  internal void WriteNode(Action<ulong> number) {
   number((ulong)Kind);
-  if(Selection!=null){Type.Write(number);Selection.Write(number);return;}
+  if(Selection!=null){if(Kind!=NodeKind.ArrayExtent)Type.Write(number);Selection.Write(number);return;}
   if(NumericLeft!=null){if(Kind==NodeKind.NumericCast)Type.Write(number);NumericLeft.WriteNode(number);if(NumericRight!=null)NumericRight.WriteNode(number);return;}
   if(Kind==NodeKind.Binary){number((ulong)Operation);Left.WriteNode(number);Right.WriteNode(number);return;}
   Type.Write(number);

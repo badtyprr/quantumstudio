@@ -12,6 +12,10 @@ static class ClassicalExpressionTextTests {
   Check(integer.Kind=="IntegerArrayElement" && ClassicalExpressionText.RequiredVersion(integer)==15);
   string formatted=ClassicalExpressionText.Format(integer,context);
   Check(ClassicalExpressionText.Format(ClassicalExpressionText.ParseInteger(formatted,context),context)==formatted);
+  var extent=ClassicalExpressionText.ParseInteger("arrayextent(1, 0)",context);
+  Check(extent.Kind=="IntegerArrayExtent");
+  Check(ClassicalExpressionText.ParseInteger(ClassicalExpressionText.Format(extent,context),context).Kind=="IntegerArrayExtent");
+  Reject(()=>ClassicalExpressionText.ParseArrayTarget("arrayextent(0, 0)",context,false));
   var numeric=ClassicalExpressionText.ParseNumeric("array(1, 0)",context);
   Check(numeric.Kind=="ArrayElement" && numeric.Width==32);
   formatted=ClassicalExpressionText.FormatNumeric(numeric,context);

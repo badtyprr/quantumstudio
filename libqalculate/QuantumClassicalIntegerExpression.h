@@ -32,6 +32,7 @@ public:
  // evaluation and undefined-variable errors. Boolean values use unsigned width 1.
  static IntegerExpression fromBits(IntegerType type,const Bits &operand);
  static IntegerExpression variable(IntegerType type,std::size_t index);
+ static IntegerExpression arrayExtent(const ArraySelection &selection);
  static IntegerExpression arrayElement(IntegerType type,const ArraySelection &selection);
  static IntegerExpression cast(IntegerType type,const IntegerExpression &operand);
  static IntegerExpression binary(Integer::Operation operation,const IntegerExpression &left,const IntegerExpression &right);

@@ -83,3 +83,21 @@ duration elements are rejected.
 `test-qasm-runtime-arrays.py` checks source, exported/reimported source and frozen
 compiler equivalence. Existing compile-time array fixtures, including the
 unchanged ripple-carry program, remain covered by `test-qasm-arrays.py`.
+
+## Checked singleton slice extents
+
+Integer expression tag 11 (`IntegerArrayExtent` in circuit JSON) carries an
+array selection and returns signed machine integer 1 after validating every
+axis. It reads no element and works for integer and numeric allocations,
+including undefined elements. Invalid or undefined indices fail normally.
+The wire encoding is the tag followed by the selection; it carries no type
+prefix. JSON requires signedness `Signed` and width 0.
+
+QASM export uses `sizeof(a[i:i, j:j])`, and editor text uses
+`arrayextent(array_id, i, j)`. An extent is a value, never an assignment target.
+For an array store whose RHS calls a runtime subroutine, call lowering validates
+each destination index before narrowing it into a signed temporary, then runs
+the RHS effects and stores through the captured indices. It neither reads an
+undefined destination nor writes a dummy value. Tests cover undefined integer
+and float destinations, negative and oversized unsigned indices, error order,
+source export/reimport, and both execution engines.
