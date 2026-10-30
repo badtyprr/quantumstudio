@@ -1,8 +1,8 @@
 # Runtime discrete collection loops
 
-DEV-08 increment: scalar discrete collections (`for int i in {a, 1, a}`) use the existing range execution engine. Whole one-dimensional arrays and bit registers, plus constant slices, now use the same entry snapshots. Dynamic slices, classical aliases, array-reference parameters and quantum-reference binding remain unfinished DEV-08 work.
+DEV-08 increment: scalar discrete collections (`for int i in {a, 1, a}`) use the existing range execution engine. Array and bit-register sources use the entry snapshots described in [dynamic collection iteration](runtime-dynamic-collections.md). Classical aliases and dynamic quantum-reference binding remain unfinished DEV-08 work.
 
-A collection contains at most 64 values, in source order, including duplicates. Each expression is evaluated and converted to the declared loop type before the next expression. The resulting sequence is captured at entry; changes to source variables inside the loop do not change later iteration values. The loop binding is independent of the cursor, may be assigned, and is scoped to each iteration. Integer/Boolean, float32/64 and angle types retain their existing conversion rules. The pinned parser rejects empty discrete-set syntax; zero-length arrays execute zero iterations.
+An explicit discrete collection contains at most 64 values, in source order, including duplicates. Each expression is evaluated and converted to the declared loop type before the next expression. The resulting sequence is captured at entry; changes to source variables inside the loop do not change later iteration values. The loop binding is independent of the cursor, may be assigned, and is scoped to each iteration. Integer/Boolean, float32/64 and angle types retain their existing conversion rules. The pinned parser rejects empty discrete-set syntax; zero-length arrays execute zero iterations.
 
 Break, continue, nested loops and subroutine returns use existing cleanup and execution budgets. A balanced dispatch tree selects the captured value without nesting proportional to the sequence length. Existing 512-step, 32-level, variable and 256 KiB canonical-document limits still apply to the complete lowered program. Export emits equivalent scalar snapshots and a runtime range, retaining those semantics after reimport.
 
@@ -15,19 +15,17 @@ The unchanged pinned PyQASM `test_convert_qasm3_for_loop_discrete_set` string is
 Array and bit-register iteration visits indices in order and captures the selected
 values before the body starts. Modifying a loop variable never writes through to
 its source. Mutating the source during the body does not change the captured
-sequence. Constant inclusive slices preserve stride and direction; classical
+sequence. Runtime inclusive slices preserve stride and direction; classical
 array endpoints accept negative indices. Whole zero-length arrays and their
 full omitted-endpoint slices execute no iterations.
 
-The selected sequence is limited to 64 values; a small slice may come from a
-larger array within the 4096-slot runtime allocation budget. Snapshots also count
-against normal storage limits. Bit snapshots and bit bindings use the existing
-64-bit classical-record budget, so large bit collections can exhaust it. Array
-iteration retains element type, including float32 rounding and angle wrapping.
-Declared dimensions are captured in their declaration scope; loop-variable
-shadowing must not change the source shape. Bit-register parameters can be
-iterated inside runtime subroutines.
+Selected array values and private backing snapshots count against the 4096-slot
+runtime allocation budget. Array iteration retains element type, including
+float32 rounding and angle wrapping; each value is converted to the loop binding
+on that iteration. Declared dimensions are captured in their declaration scope;
+loop-variable shadowing must not change the source shape. Bit-register and array
+reference parameters can be iterated inside runtime subroutines. Dynamic
+one-dimensional views, including rows of multidimensional arrays, are supported.
 
-This increment supports constant slice geometry. Runtime slice bounds, iterating
-classical aliases, multidimensional views and array-reference parameters remain
-separate, unfinished requirements. No release or parent DEV-08 closure is claimed.
+Classical aliases and dynamic quantum reference binding remain separate,
+unfinished requirements. No release or parent DEV-08 closure is claimed.

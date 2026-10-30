@@ -173,3 +173,5 @@ EXTRA_DIST += docs/runtime-array-view-model.md windows/test-runtime-array-view-m
 EXTRA_DIST += windows/test-qasm-runtime-array-views.py docs/runtime-array-view-source.md
 
 EXTRA_DIST += windows/test-qasm-runtime-array-copies.py docs/runtime-array-copy.md
+
+EXTRA_DIST += windows/test-qasm-runtime-dynamic-collections.py docs/runtime-dynamic-collections.md

@@ -188,7 +188,7 @@ def lower_runtime_subroutines(program):
         value,_=split_reference(value)
         return isinstance(value,SourceArrayView) or isinstance(value,ast.Identifier) and value.name in array_scopes[-1] and isinstance(collection_scopes[-1].get(value.name),ast.ArrayType)
 
-    def capture_array_view(actual,active,depth,capture=True):
+    def capture_array_view(actual,active,depth,capture=True,nonnegative=False):
         root,groups=split_reference(actual);effects=[]
         if isinstance(root,SourceArrayView):view=copy.deepcopy(root)
         else:
@@ -234,6 +234,14 @@ def lower_runtime_subroutines(program):
                         # one singleton axis; it never reads the selected value.
                         probe.axes[-1]=ast.RangeDefinition(start=copy.deepcopy(probe.axes[-1]),end=copy.deepcopy(probe.axes[-1]),step=None)
                     effects.append(ArrayReferenceCheck(views=[probe],shapes=[[]]))
+                    if nonnegative and field!='step':
+                        # Check the original integer expression before adding a
+                        # cast: implicit float-to-index conversion is forbidden.
+                        unsigned=copy.deepcopy(probe)
+                        converted=ast.Cast(type=ast.UintType(size=ast.IntegerLiteral(64)),argument=copy.deepcopy(value))
+                        if scalar:unsigned.axes[index]=ast.RangeDefinition(start=converted,end=copy.deepcopy(converted),step=None)
+                        else:setattr(unsigned.axes[index],field,converted)
+                        effects.append(ArrayReferenceCheck(views=[unsigned],shapes=[[]]))
                     slot=ast.Identifier(fresh());runtime.add(slot.name)
                     if field=='step':
                         # A stride larger than any backing dimension selects at
@@ -702,36 +710,50 @@ def lower_runtime_subroutines(program):
         if type(result) is not int or effects:raise error_at(value,'Collection geometry requires integers.')
         return result
 
-    def collection_values(value,env):
-        reference=rewrite(value,env);indices=None
-        if isinstance(reference,ast.IndexExpression):
-            indices=reference.index;reference=reference.collection
-        if not isinstance(reference,ast.Identifier):return None
-        type_=collection_scopes[-1].get(reference.name)
-        if isinstance(type_,ast.ArrayType):
-            if len(type_.dimensions)!=1:raise error_at(value,'Collection iteration requires a one-dimensional array or view.')
-            length=collection_integer(type_.dimensions[0],env);bits=False
-            collection_arrays.add(reference.name)
-        elif isinstance(type_,ast.BitType) and type_.size is not None:
-            length=collection_integer(type_.size,env);bits=True
-        else:return None
-        if not 0<=length<=(64 if bits else 4096):raise error_at(value,'Collection allocation exceeds its storage limit.')
-        positions=list(range(length))
-        if indices is not None:
-            if not isinstance(indices,list) or len(indices)!=1 or not isinstance(indices[0],ast.RangeDefinition):raise error_at(value,'Collection selection requires a one-dimensional slice.')
-            range_=indices[0]
-            step=1 if range_.step is None else collection_integer(range_.step,env)
-            if step==0:raise error_at(value,'Collection slice step must not be zero.')
-            if length==0 and range_.start is None and range_.end is None:return []
-            start=(0 if step>0 else length-1) if range_.start is None else collection_integer(range_.start,env)
-            stop=(length-1 if step>0 else 0) if range_.end is None else collection_integer(range_.end,env)
-            if not bits:
-                if start<0:start+=length
-                if stop<0:stop+=length
-            if not 0<=start<length or not 0<=stop<length:raise error_at(value,'Collection slice endpoint is outside its allocation.')
-            positions=list(range(start,stop+(1 if step>0 else -1),step))
-        if len(positions)>64:raise error_at(value,'Runtime collections support at most 64 values.')
-        return [ast.IndexExpression(collection=copy.deepcopy(reference),index=[ast.IntegerLiteral(i)]) for i in positions]
+    def bit_collection_loop(node, reference, env, active, depth):
+        root,groups=split_reference(reference)
+        type_=collection_scopes[-1].get(root.name) if isinstance(root,ast.Identifier) else None
+        if not isinstance(type_,ast.BitType) or type_.size is None:return None
+        width=collection_integer(type_.size,{})
+        if not 1<=width<=64:raise error_at(node,'Bit collections require widths from 1 to 64.')
+        name=fresh();backing=ast.ArrayType(base_type=ast.BoolType(),dimensions=[ast.IntegerLiteral(width)])
+        array_temporaries.append(ast.ClassicalDeclaration(type=backing,identifier=ast.Identifier(name),init_expression=None));collection_arrays.add(name);array_backing_types[name]=backing
+        collection_scopes[-1][name]=backing;array_scopes[-1].add(name)
+        selected=ast.Identifier(name)
+        for group in groups:
+            if len(group)!=1 or not isinstance(group[0],ast.RangeDefinition):raise error_at(node,'Bit collection selection requires a one-dimensional slice.')
+            axis=copy.deepcopy(group[0])
+            selected=ast.IndexExpression(collection=selected,index=[axis])
+        # Capture selector calls before reading the register's values.
+        effects,view=capture_array_view(selected,active,depth,nonnegative=True)
+        effects.append(ArrayReferenceCheck(views=[copy.deepcopy(view)],shapes=[[]]))
+        for index in range(width):
+            effects.append(ast.ClassicalAssignment(lvalue=ast.IndexedIdentifier(name=ast.Identifier(name),indices=[[ast.IntegerLiteral(index)]]),op=ast.AssignmentOperator['='],rvalue=ast.IndexExpression(collection=copy.deepcopy(root),index=[ast.IntegerLiteral(index)])))
+        effects.append(array_collection_loop(node,view,env,active,depth))
+        return ast.CompoundStatement(statements=effects)
+
+    def array_collection_loop(node, reference, env, active, depth):
+        """Capture geometry and selected values once before the first iteration."""
+        if array_rank(reference)!=1:raise error_at(node,'Collection iteration requires a one-dimensional array or view.')
+        if not isinstance(node.type,values):raise error_at(node,'Collection loops require a scalar binding.')
+        binding_type=rewrite(node.type,env)
+        if isinstance(binding_type,ast.BitType) and binding_type.size is not None and collection_integer(binding_type.size,env)!=1:raise error_at(node,'Bit collection bindings must have width one.')
+        prefix,view=capture_array_view(reference,active,depth)
+        name=fresh();type_=copy.deepcopy(array_backing_types[view.name])
+        array_temporaries.append(ast.ClassicalDeclaration(type=type_,identifier=ast.Identifier(name),init_expression=None));collection_arrays.add(name)
+        snapshot=copy.deepcopy(view);current=snapshot
+        while current is not None:current.name=name;current.writable=True;current=current.parent
+        prefix.append(ArrayCopyStatement(destination=snapshot,sources=[view]))
+        cursor=ast.Identifier(fresh());binding=ast.Identifier(fresh());count=ast.Identifier(fresh())
+        runtime.update((cursor.name,binding.name,count.name))
+        prefix.append(ast.ClassicalDeclaration(type=ast.IntType(),identifier=count,init_expression=ast.SizeOf(target=copy.deepcopy(snapshot),index=ast.IntegerLiteral(0))))
+        inner=dict(env);inner[node.identifier.name]=binding
+        body=block(node.block,inner,active,depth,classical_names=(binding.name,),collection_types={binding.name:copy.deepcopy(binding_type)})
+        declaration=ast.ClassicalDeclaration(type=binding_type,identifier=binding,init_expression=ast.IndexExpression(collection=copy.deepcopy(snapshot),index=[copy.deepcopy(cursor)]))
+        if isinstance(binding_type,ast.BitType):declaration=bit_declaration(declaration)
+        loop=ast.ForInLoop(type=ast.IntType(),identifier=cursor,set_declaration=ast.RangeDefinition(start=ast.IntegerLiteral(0),end=ast.BinaryExpression(op=ast.BinaryOperator['-'],lhs=count,rhs=ast.IntegerLiteral(1)),step=None),block=[declaration]+body)
+        loop._quantum_runtime_for=True;loop.span=node.span
+        return ast.CompoundStatement(statements=prefix+[loop])
 
     def collection_loop(node, env, active, depth):
         """Snapshot a finite value sequence, then use the existing range engine.
@@ -829,10 +851,11 @@ def lower_runtime_subroutines(program):
                 value.else_block = block(node.else_block, env, active, depth)
             elif isinstance(node, (ast.ForInLoop, ast.WhileLoop)):
                 if isinstance(node, ast.ForInLoop):
-                    collection=collection_values(node.set_declaration,env)
-                    if collection is not None:
-                        value=copy.copy(node);value.set_declaration=ast.DiscreteSet(values=collection);value._quantum_resolved_collection=True
-                        result.append(collection_loop(value,env,active,depth));continue
+                    reference=rewrite(node.set_declaration,env)
+                    if is_array_target(reference):
+                        result.append(array_collection_loop(node,reference,env,active,depth));continue
+                    bit_loop=bit_collection_loop(node,reference,env,active,depth)
+                    if bit_loop is not None:result.append(bit_loop);continue
                     if isinstance(node.set_declaration, ast.DiscreteSet):
                         if len(node.set_declaration.values) > 64:
                             raise error_at(node, 'Runtime collections support at most 64 values.')

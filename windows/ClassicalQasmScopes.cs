@@ -98,7 +98,23 @@ static class ClassicalQasmLifetimes {
   }
   return result.ToArray();
  }
- public static ClassicalCircuit Prepare(ClassicalCircuit circuit){return PrepareKind(PrepareKind(circuit,false),true);}
+ // The input model has already validated every instruction, including dead
+ // code. Prune only on the export snapshot, after semantic validation, so tail
+ // cleanup after an unconditional transfer cannot split a recovered lifetime.
+ static ClassicalCircuit.Step[] Reachable(ClassicalCircuit.Step[] body) {
+  if(body==null)return null;
+  var result=new List<ClassicalCircuit.Step>();
+  foreach(var step in body) {
+   step.WhenTrue=Reachable(step.WhenTrue);step.WhenFalse=Reachable(step.WhenFalse);
+   result.Add(step);
+   if(step.Kind=="Break" || step.Kind=="Continue" || step.Kind=="End")break;
+  }
+  return result.ToArray();
+ }
+ public static ClassicalCircuit Prepare(ClassicalCircuit circuit){
+  var document=circuit.Snapshot();document.Steps=Reachable(document.Steps);
+  return PrepareKind(PrepareKind(ClassicalCircuit.From(document),false),true);
+ }
  static ClassicalCircuit PrepareKind(ClassicalCircuit circuit,bool numeric) {
   var document=circuit.Snapshot();
   var variables=new List<ClassicalCircuit.Variable>(document.Variables??new ClassicalCircuit.Variable[0]);
