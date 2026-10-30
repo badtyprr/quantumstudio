@@ -17,10 +17,15 @@ template<class Step,class Run>void engineChecks(Run run,const Step &superpositio
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);
  const auto floating=NumericType::floating(32);
  ArraySelection first(0,{index(0)}),last(0,{index(-1)}),floatFirst(1,{index(0)});
+ ArrayView writable(0,{ArrayViewAxis::range()},true),readonly(0,{ArrayViewAxis::range()},false);
+ ArraySelection throughView(writable,{index(0)}),throughReadonly(readonly,{index(0)});
+ rejects<std::invalid_argument>([&]{run({Step::storeArray(throughReadonly,index(7))},{});});
  auto read=IntegerExpression::arrayElement(integer,first);
  auto bit=IntegerExpression::read(QuantumClassical::IntegerType::sized(Integer::Signedness::Unsigned,1),{0});
  auto output=Step::assign({1},Bits::integerCompare(Bits::Binary::Equal,read,index(7)));
  run({Step::storeArray(first,index(7)),output},{{1,1.0}});
+ run({Step::storeArray(throughView,index(7)),output},{{1,1.0}});
+ run({Step::storeArray(throughView,index(7)),Step::assign({1},Bits::integerCompare(Bits::Binary::Equal,IntegerExpression::arrayElement(integer,throughReadonly),index(7)))},{{1,1.0}});
  run({Step::storeArray(last,index(7)),Step::storeArray(first,IntegerExpression::arrayElement(integer,last)),output},{{1,1.0}});
  // Histories with identical quantum/classical registers must still retain
  // distinct array values until the final marginalization.
@@ -42,7 +47,48 @@ template<class Step,class Run>void engineChecks(Run run,const Step &superpositio
  // A valid destination does not suppress a failed RHS.
  rejects<std::domain_error>([&]{run({Step::storeArray(first,IntegerExpression::variable(integer,2))},{});});
 }
+void viewChecks() {
+ const auto integer=QuantumClassical::IntegerType::machine(Integer::Signedness::Signed);
+ RuntimeStorage storage(std::vector<QuantumClassical::IntegerType>(13,integer),{},
+  {ArrayDeclaration::integers(integer,0,{3,4}),ArrayDeclaration::integers(integer,12,{4096,4096,0})});
+ const auto all=ArrayViewAxis::range();const auto one=index(1),two=index(2),three=index(3),minusOne=index(-1),zero=index(0);
+ ArrayView full(0,{all,all},true);auto complete=full.evaluate(0,0,storage);
+ check(complete.dimensions==std::vector<unsigned>({3,4}) && complete.slots.size()==12);
+ // No backing element is initialized: binding must remain address-only.
+ auto extent=IntegerExpression::viewExtent(full,1);extent.validate(0,storage);check(extent.evaluate(0,0,storage).value().bits()==4);
+ rejects<std::out_of_range>([&]{IntegerExpression::viewExtent(full,2);});
+ ArrayView row(full,{ArrayViewAxis::scalar(minusOne),all},true);
+ ArraySelection lastInRow(row,{minusOne});check(lastInRow.evaluate(0,0,storage)==11);
+ ArrayView scalar(row,{ArrayViewAxis::scalar(zero)},false);check(ArraySelection(scalar,{}).evaluate(0,0,storage)==8);
+ auto resolved=row.evaluate(0,0,storage);check(resolved.dimensions==std::vector<unsigned>({4}) && resolved.slots==std::vector<std::size_t>({8,9,10,11}));
+ ArrayView reverse(row,{ArrayViewAxis::range(nullptr,nullptr,&minusOne)},false);
+ check(reverse.evaluate(0,0,storage).slots==std::vector<std::size_t>({11,10,9,8}));
+ rejects<std::invalid_argument>([&]{ArrayView illegal(reverse,{all},true);});
+ ArrayView even(row,{ArrayViewAxis::range(&zero,&three,&two)},true),odd(row,{ArrayViewAxis::range(&one,&three,&two)},true);
+ ArrayView::validateBindings({even.evaluate(0,0,storage),odd.evaluate(0,0,storage)});check(true);
+ rejects<std::invalid_argument>([&]{ArrayView::validateBindings({row.evaluate(0,0,storage),even.evaluate(0,0,storage)});});
+ ArrayView::validateBindings({reverse.evaluate(0,0,storage),row.evaluate(0,0,storage)});check(true);
+ ArrayView::validateBindings({reverse.evaluate(0,0,storage),reverse.evaluate(0,0,storage)});check(true);
+ auto variable=IntegerExpression::variable(integer,12);
+ ArrayView dynamic(0,{ArrayViewAxis::scalar(variable),all},true);dynamic.validate(0,storage);
+ rejects<std::domain_error>([&]{dynamic.evaluate(0,0,storage);});
+ storage.write(12,TypedInteger::fromBits(integer,1));check(dynamic.evaluate(0,0,storage).slots==std::vector<std::size_t>({4,5,6,7}));
+ storage.write(12,TypedInteger::fromBits(integer,3));rejects<std::out_of_range>([&]{dynamic.evaluate(0,0,storage);});
+ auto huge=IntegerExpression::constant(TypedInteger::fromBits(QuantumClassical::IntegerType::machine(Integer::Signedness::Unsigned),~std::uint64_t(0)));
+ rejects<std::out_of_range>([&]{ArrayView(0,{ArrayViewAxis::scalar(huge),all},false).evaluate(0,0,storage);});
+ rejects<std::invalid_argument>([&]{ArrayView(row,{ArrayViewAxis::range(nullptr,nullptr,&zero)},false).evaluate(0,0,storage);});
+ ArrayView empty(1,{all,all,all},false);auto emptyResult=empty.evaluate(0,0,storage);
+ check(emptyResult.dimensions==std::vector<unsigned>({4096,4096,0}) && emptyResult.slots.empty());
+ rejects<std::out_of_range>([&]{ArrayView(1,{all,all,ArrayViewAxis::scalar(zero)},false).evaluate(0,0,storage);});
+ rejects<std::invalid_argument>([&]{ArrayView(0,{all},false).validate(0,storage);});
+ // A huge stride selects at most one element without overflowing arithmetic.
+ check(ArrayView(row,{ArrayViewAxis::range(nullptr,nullptr,&huge)},false).evaluate(0,0,storage).slots==std::vector<std::size_t>({8}));
+ auto minimum=index(std::numeric_limits<std::int64_t>::min());
+ check(ArrayView(row,{ArrayViewAxis::range(nullptr,nullptr,&minimum)},false).evaluate(0,0,storage).slots==std::vector<std::size_t>({11}));
+ check(ArrayView(row,{ArrayViewAxis::range(&three,&zero)},false).evaluate(0,0,storage).slots.empty());
+}
 int main(){try {
+ viewChecks();
  const auto integer=QuantumClassical::IntegerType::sized(Integer::Signedness::Signed,16);const auto floating=NumericType::floating(32);
  const auto angle=NumericType::angle(8);
  RuntimeStorage storage(std::vector<QuantumClassical::IntegerType>(7,integer),{floating,floating,angle,angle},

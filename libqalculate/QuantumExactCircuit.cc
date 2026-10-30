@@ -18,13 +18,13 @@ void validate(const std::vector<Step> &steps,unsigned qubits,unsigned bits,unsig
    continue;
   }
   if(step.kind==Step::Kind::StoreInteger || step.kind==Step::Kind::ClearInteger) {
-   if(step.arraySelection) {step.arraySelection->validate(bits,variables);variables.array(step.arraySelection->array()).integerType();}
+   if(step.arraySelection) {step.arraySelection->validateWrite(bits,variables);variables.array(step.arraySelection->array()).integerType();}
    else variables.type(step.variableSlot);
    if(step.integerExpression)step.integerExpression->validate(bits,variables);
    continue;
   }
   if(step.kind==Step::Kind::StoreNumeric || step.kind==Step::Kind::ClearNumeric) {
-   if(step.arraySelection)step.arraySelection->validate(bits,variables);
+   if(step.arraySelection)step.arraySelection->validateWrite(bits,variables);
    const auto target=step.arraySelection ? variables.array(step.arraySelection->array()).numericType() : variables.numeric().type(step.variableSlot);
    if(step.numericExpression) {
     step.numericExpression->validate(bits,variables);

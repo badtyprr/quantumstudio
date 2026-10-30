@@ -48,13 +48,13 @@ std::map<std::uint64_t,unsigned> sampleTrajectories(unsigned qubits,unsigned cla
    continue;
   }
   if(step.kind==TrajectoryStep::Kind::StoreInteger || step.kind==TrajectoryStep::Kind::ClearInteger) {
-   if(step.arraySelection) {step.arraySelection->validate(classicalBits,declarations);declarations.array(step.arraySelection->array()).integerType();}
+   if(step.arraySelection) {step.arraySelection->validateWrite(classicalBits,declarations);declarations.array(step.arraySelection->array()).integerType();}
    else declarations.type(step.variableSlot); // Bounds-check targets even in untaken bodies.
    if(step.integerExpression)step.integerExpression->validate(classicalBits,declarations);
    continue;
   }
   if(step.kind==TrajectoryStep::Kind::StoreNumeric || step.kind==TrajectoryStep::Kind::ClearNumeric) {
-   if(step.arraySelection)step.arraySelection->validate(classicalBits,declarations);
+   if(step.arraySelection)step.arraySelection->validateWrite(classicalBits,declarations);
    const auto target=step.arraySelection ? declarations.array(step.arraySelection->array()).numericType() : declarations.numeric().type(step.variableSlot);
    if(step.numericExpression) {
     step.numericExpression->validate(classicalBits,declarations);
