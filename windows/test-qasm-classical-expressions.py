@@ -564,19 +564,10 @@ rejected.append('def f(qubit['+('-('*33)+'2'+(')'*33)+'] a)->bool{return true;}q
 rejected.append('const int a0=1;'+''.join('const int a'+str(i)+'=a'+str(i-1)+'+a'+str(i-1)+';' for i in range(1,21))+'def f(qubit[a20] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
 rejected.append('const int a0=2;'+''.join('const int a'+str(i)+'=a'+str(i-1)+';' for i in range(1,34))+'def f(qubit[a33] a)->bool{return true;}qubit[2] q;bool ok=f(q);')
 loop_prefix='def f(qubit a)->bool{x a;return true;}qubit[2] q;'
-rejected += [loop_prefix+body for body in [
- 'for int i in [0:1]{i=1;bool ok=f(q[i]);}',
- 'for int i in [0:1]{{int i=0;bool ok=f(q[i]);}}',
- 'for int i in [0:1]{bool ok=f(q[i]);break;}',
- 'for int i in [0:1]{bool ok=f(q[i]);continue;}',
- 'int n=1;for int i in [0:n]{bool ok=f(q[i]);}',
- 'for int i in [0:0:1]{bool ok=f(q[i]);}',
- 'for int i in [0:2]{bool ok=f(q[i]);}',
- 'for uint[1] i in [0:2]{bool ok=f(q[i]);}',
- 'for int i in [0:4096]{bool ok=f(q[i]);}',
- 'for int i in [0:18446744073709551616]{bool ok=f(q[i]);}',
- 'for int i in [0:1]{for int i in [0:1]{bool ok=f(q[i]);}}',
-]]
+# Valid call loops and execution-time range/wire errors are exercised by
+# test-runtime-quantum-call-loops.py on both engines.
+rejected.append(loop_prefix+'for int i in [0:18446744073709551616]{bool ok=f(q[i]);}')
+rejected += [loop_prefix+body for body in ['for int i in [0:0:1]{bool ok=f(q[i]);}','for int i in [0:2]{bool ok=f(q[i]);}']]
 rejected.append('def f(qubit a,qubit b)->bool{return true;}qubit[2] q;for int i in [0:1]{bool ok=f(q[i],q[i]);}')
 for body in rejected:
  try:adapter.convert(header+body,classical=True)

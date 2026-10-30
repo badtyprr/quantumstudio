@@ -720,13 +720,25 @@ def lower_runtime_subroutines(program):
                     return True
         return False
 
-    def specialize_loop(node, env, active, depth):
-        """Expand literal ranges needed by quantum call indices before binding.
+    def capture_range_bounds(bounds,depth):
+        captured=copy.deepcopy(bounds);effects=[]
+        # Capture in source order before any later bound's call effects. The
+        # importer infers exact integer storage types after normalization.
+        for field in ('start','step','end'):
+            bound=getattr(captured,field)
+            if bound is None:continue
+            prefix,bound=expression_calls(bound,True,depth);effects.extend(prefix)
+            slot=ast.Identifier(fresh());runtime.add(slot.name)
+            capture=ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=bound)
+            capture._quantum_range_capture=True;effects.append(capture)
+            setattr(captured,field,slot)
+        return effects,captured
 
-        Each iteration remains a lexical block. Reject binding mutation and
-        shadowing rather than substituting a literal into a mutable binding.
-        """
+    def runtime_quantum_loop(node, env, active, depth):
+        """Use runtime binding when literal call-loop expansion cannot preserve semantics."""
         nonlocal expanded
+        active=active or any(isinstance(item,ast.Identifier) and item.name in runtime
+                            for item in walk(rewrite(node.set_declaration,env)))
         name = node.identifier.name
         def needs_index(items, visible):
             # Match declaration order and block visibility before block_body
@@ -773,19 +785,33 @@ def lower_runtime_subroutines(program):
         if not needs_index(node.block, set()):
             return None
 
+        def runtime_range():
+            if not isinstance(node.set_declaration,ast.RangeDefinition) or not isinstance(node.type,(ast.IntType,ast.UintType)):
+                raise error_at(node,'Quantum-call range loops require an integer binding and a range.')
+            value=copy.copy(node);value.type=rewrite(node.type,env)
+            effects,value.set_declaration=capture_range_bounds(rewrite(node.set_declaration,env),depth)
+            binding=ast.Identifier(fresh());runtime.add(binding.name)
+            inner=dict(env);inner[node.identifier.name]=binding;value.identifier=binding
+            value.block=block(node.block,inner,True,depth,classical_names=(binding.name,),
+                              collection_types={binding.name:copy.deepcopy(value.type)})
+            value._quantum_runtime_for=True
+            return effects+[value]
+
         def literal(value):
             sign = 1
             if isinstance(value, ast.UnaryExpression) and value.op.name == '-':
                 sign = -1; value = value.expression
             if not isinstance(value, ast.IntegerLiteral) or type(value.value) is not int or value.value.bit_length() > 64:
-                raise error_at(node, 'Quantum-call loop ranges require literal integers of at most 64 bits.')
+                raise ValueError('Not a literal range')
             return sign * value.value
 
         domain = node.set_declaration
         if not isinstance(domain, ast.RangeDefinition) or not isinstance(node.type, (ast.IntType, ast.UintType)):
             raise error_at(node, 'Quantum-call index loops require integer literal ranges.')
-        start, stop = literal(domain.start), literal(domain.end)
-        step = 1 if domain.step is None else literal(domain.step)
+        try:
+            start, stop = literal(domain.start), literal(domain.end)
+            step = 1 if domain.step is None else literal(domain.step)
+        except ValueError:return runtime_range()
         if step == 0:
             raise error_at(node, 'Quantum-call index loop step must be nonzero.')
         size = node.type.size
@@ -796,20 +822,20 @@ def lower_runtime_subroutines(program):
         maximum = (1 << (width - (1 if isinstance(node.type, ast.IntType) else 0))) - 1
         count = max(0, (stop - start) // step + 1)
         if count and not (minimum <= start <= maximum and minimum <= start + (count - 1) * step <= maximum):
-            raise error_at(node, 'Quantum-call loop values do not fit their declared integer type.')
+            return runtime_range()
         for child in walk(node.block):
             if isinstance(child, (ast.BreakStatement, ast.ContinueStatement, ast.ReturnStatement)):
-                raise error_at(child, 'Specialized quantum-call loops do not support control transfers.')
+                return runtime_range()
             if isinstance(child, (ast.ClassicalDeclaration, ast.ConstantDeclaration, ast.ForInLoop)) and child.identifier.name == name:
-                raise error_at(child, 'Specialized quantum-call loop bindings must not be shadowed.')
+                return runtime_range()
             target = child.lvalue if isinstance(child, ast.ClassicalAssignment) else child.target if isinstance(child, ast.QuantumMeasurementStatement) else None
             if isinstance(target, ast.IndexedIdentifier): target = target.name
             if isinstance(target, ast.IndexExpression): target = target.collection
             if isinstance(target, ast.Identifier) and target.name == name:
-                raise error_at(child, 'Specialized quantum-call loop bindings must not be assigned.')
+                return runtime_range()
         cost = count * sum(1 for _ in walk(node.block))
         if count > 4096 or expanded + cost > 65536:
-            raise error_at(node, 'Quantum-call loop expansion exceeds 4096 iterations or 65536 AST nodes.')
+            return runtime_range()
         expanded += cost
         result = []
         for iteration in range(count):
@@ -844,6 +870,8 @@ def lower_runtime_subroutines(program):
         if isinstance(value,ast.SizeOf) and is_array_target(value.target) and any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value.target)):
             effects,target=capture_array_view(value.target,active,depth)
             return effects,ast.SizeOf(target=target,index=copy.deepcopy(value.index))
+        if isinstance(value,ast.RangeDefinition) and any(isinstance(item,ast.FunctionCall) and item.name.name in functions for item in walk(value)):
+            return capture_range_bounds(value,depth)
         if isinstance(value, ast.FunctionCall) and value.name.name in functions and runtime_call(value, active):
             effects, replacement = activate(value, depth, active)
             if replacement is None:
@@ -1166,19 +1194,9 @@ def lower_runtime_subroutines(program):
                     if isinstance(node.set_declaration, ast.DiscreteSet):
                         if len(node.set_declaration.values) > 64:
                             raise error_at(node, 'Runtime collections support at most 64 values.')
-                        # Keep the pinned compiler's literal quantum-call path
-                        # until runtime reference binding is lowered separately.
-                        static_quantum_calls = not active and not any(
-                            isinstance(item, ast.Identifier) and item.name in runtime or
-                            isinstance(item, ast.FunctionCall) and item.name.name in functions and runtime_call(item, active)
-                            for item in walk(rewrite(node.set_declaration, env))) and any(
-                            isinstance(item, ast.FunctionCall) and item.name.name in functions
-                            and any(isinstance(arg, ast.QuantumArgument) for arg in functions[item.name.name].arguments)
-                            and not runtime_call(item, active) for item in walk(node.block))
-                        if not static_quantum_calls:
-                            result.append(collection_loop(node, env, active, depth))
-                            continue
-                    specialized = specialize_loop(node, env, active, depth)
+                        result.append(collection_loop(node, env, active, depth))
+                        continue
+                    specialized = runtime_quantum_loop(node, env, active, depth)
                     if specialized is not None:
                         result.extend(specialized)
                         continue
