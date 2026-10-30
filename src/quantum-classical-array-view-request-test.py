@@ -32,8 +32,9 @@ def output(value, expected):
 def floating(value):
     return nums(3, 0, 64, struct.unpack('<Q', struct.pack('<d', value))[0])
 
-def request(steps, exact, declarations=None):
+def request(steps, exact, declarations=None, copies=False):
     header = b'QEXACT15\n' + nums(1, 2) if exact else b'QSAMPLE16\n' + nums(1, 4000, 731, 2)
+    if copies:header=header.replace(b'QEXACT15',b'QEXACT16').replace(b'QSAMPLE16',b'QSAMPLE17')
     # Six machine integers in a 2x3 array, and one float32 in a rank-one array.
     if declarations is None:
         declarations = nums(2, 0, 0, 0, 0, 2, 2, 3, 1, 0, 32, 0, 1, 1)
@@ -111,4 +112,25 @@ for exact in (True,False):
     run(request([check((full,[4097,3]))],exact),exact,error='')
     for length in range(len(payload)):run(payload[:length],exact,error='')
     run(payload+b'0\n',exact,error='')
+for exact in (True,False):
+    row0=view([scalar(integer(0)),span()],True)
+    row1=view([scalar(integer(1)),span()],True)
+    def copy_values(destination,*sources):return nums(24)+destination+nums(len(sources))+b''.join(sources)
+    initial=[save(row0,[integer(k)],integer(k+1)) for k in range(3)]
+    copied=copy_values(row1,row0)
+    run(request(initial+[copied,output(load(row1,[integer(2)]),3)],exact,copies=True),exact,{'1':1})
+    first_two=view([span(integer(0),integer(1))],parent=row0)
+    last_two=view([span(integer(1),integer(2))],True,parent=row0)
+    first=view([span(integer(0),integer(0))],parent=row0)
+    run(request(initial+[copy_values(last_two,first_two),output(load(row0,[integer(2)]),2)],exact,copies=True),exact,{'1':1})
+    run(request(initial+[copy_values(row0,last_two,first),output(load(row0,[integer(2)]),1)],exact,copies=True),exact,{'1':1})
+    run(request([copied],exact,copies=True),exact,error='initialization')
+    run(request([copy_values(row1,first_two)],exact,copies=True),exact,error='shape')
+    run(request([copy_values(row1,view([span()],array=1))],exact,copies=True),exact,error='type')
+    run(request([copy_values(view([scalar(integer(1)),span()]),row0)],exact,copies=True),exact,error='readonly')
+    run(request([copy_values(row1)],exact,copies=True),exact,error='sources')
+    run(request([nums(24)+row1+nums(65)],exact,copies=True),exact,error='')
+    run(request([copied],exact),exact,error='')
+    for cut in (1,2,4,8,len(copied)//2):run(request([copied[:-cut]],exact,copies=True),exact,error='')
+
 print(f'PASS: {checks} array view protocol checks.')

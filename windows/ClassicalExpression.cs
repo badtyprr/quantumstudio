@@ -218,6 +218,19 @@ sealed class ClassicalArrayReferenceCheck {
   number((ulong)Views.Count);for(int k=0;k<Views.Count;k++){Views[k].Write(number);number((ulong)Shapes[k].Count);foreach(int size in Shapes[k])number((ulong)size);}
  }
 }
+sealed class ClassicalArrayCopy {
+ public readonly ClassicalArrayView Destination;public readonly IList<ClassicalArrayView> Sources;
+ public ClassicalArrayCopy(ClassicalArrayView destination,IList<ClassicalArrayView> sources) {
+  if(destination==null || destination.Rank==0 || !destination.Writable || sources==null || sources.Count<1 || sources.Count>64)throw new ArgumentException("Array copy needs a writable destination and one to 64 sources.");
+  int count=destination.Count;foreach(var source in sources){if(source==null || source.Rank!=destination.Rank)throw new ArgumentException("Array copy ranks differ.");count+=source.Count;if(count>512)throw new ArgumentException("Array copy exceeds 512 nodes.");}
+  Destination=destination;Sources=new List<ClassicalArrayView>(sources).AsReadOnly();
+ }
+ internal void Validate(int bits,IList<ClassicalIntegerType> variables) {
+  var target=Destination.Validate(bits,variables);
+  foreach(var source in Sources){var allocation=source.Validate(bits,variables);if(target.Numeric==null ? allocation.Numeric!=null || !target.Integer.Same(allocation.Integer) : allocation.Numeric==null || !target.Numeric.Same(allocation.Numeric))throw new ArgumentException("Array copy element types differ.");}
+ }
+ internal void Write(Action<ulong> number){Destination.Write(number);number((ulong)Sources.Count);foreach(var source in Sources)source.Write(number);}
+}
 sealed class ClassicalArraySelection {
  public readonly int Array,Depth,Count;public readonly ulong References;
  public readonly IList<ClassicalIntegerExpression> Indices;public readonly string Source;public readonly ClassicalArrayView View;

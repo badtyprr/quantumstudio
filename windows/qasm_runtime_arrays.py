@@ -29,6 +29,12 @@ class SourceArrayView(ast.Expression):
 
 
 @dataclass
+class ArrayCopyStatement(ast.Statement):
+    destination: object
+    sources: list
+
+
+@dataclass
 class ArrayReferenceCheck(ast.Statement):
     views: list
     shapes: list
@@ -234,6 +240,9 @@ def lower_arrays(program):
         return info,parent
 
     def expression(value,hidden=frozenset()):
+        if isinstance(value,ArrayCopyStatement):
+            info,value.destination=bound_view(value.destination,hidden);info['copies']=True
+            value.sources=[bound_view(source,hidden)[1] for source in value.sources];return value
         if isinstance(value,SourceArrayView):
             info,view=bound_view(value,hidden)
             if view.rank:raise error_at(value,'A whole array view requires a reference, copy or collection operation.')

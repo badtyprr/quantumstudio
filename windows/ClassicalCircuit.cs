@@ -26,6 +26,7 @@ sealed class ClassicalCircuit {
  public sealed class WireTargetNode {public int[] Candidates {get;set;}public ExpressionNode Index {get;set;}}
  public sealed class Step {
   public ArrayReferenceNode[] ArrayReferences {get;set;}
+  public ArrayCopyNode ArrayCopy {get;set;}
   public ArraySelectionNode ArrayTarget {get;set;}
   public WireTargetNode[] WireTargets {get;set;}public string WireSource {get;set;}
   public RealNode NumericValue {get;set;}
@@ -50,6 +51,7 @@ sealed class ClassicalCircuit {
   public string Kind {get;set;}public string ValueBits {get;set;}public string Operator {get;set;}
   public ExpressionNode IntegerValue {get;set;}public RealNode Left {get;set;}public RealNode Right {get;set;}
  }
+ public sealed class ArrayCopyNode {public ArrayViewNode Destination {get;set;}public ArrayViewNode[] Sources {get;set;}}
  public sealed class ArrayViewAxisNode {public bool Scalar {get;set;}public ExpressionNode Start {get;set;}public ExpressionNode Stop {get;set;}public ExpressionNode Step {get;set;}}
  public sealed class ArrayViewNode {public int Array {get;set;}public bool Writable {get;set;}public ArrayViewNode Parent {get;set;}public ArrayViewAxisNode[] Axes {get;set;}}
  public sealed class ArrayReferenceNode {public ArrayViewNode View {get;set;}public int[] Shape {get;set;}}
@@ -300,7 +302,13 @@ sealed class ClassicalCircuit {
  static void StepFields(object value,int depth,ref int count,int version) {
   foreach(object item in ArrayValue(value)) {
    if(++count>512 || depth>32)throw Invalid("Use at most 512 steps and 32 nested branches.");
-   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue,WireTargets,WireSource,ArrayTarget,ArrayReferences");
+   var fields=Fields(item,"Kind,Expression,Wires,ClassicalBit,Mask,Value,WhenTrue,WhenFalse,ClassicalValue,VariableSlot,IntegerValue,Range,Axis,Angle,ParameterGate,NumericValue,WireTargets,WireSource,ArrayTarget,ArrayReferences,ArrayCopy");
+   if(fields.ContainsKey("ArrayCopy") && fields["ArrayCopy"]!=null) {
+    if(version<17)throw Invalid("Array copies require circuit version 17.");
+    var copy=Fields(fields["ArrayCopy"],"Destination,Sources");int nodes=0;ViewFields(Required(copy,"Destination"),0,ref nodes,version);
+    var sources=ArrayValue(Required(copy,"Sources"));if(sources.Length<1 || sources.Length>64)throw Invalid("Array copy requires one to 64 sources.");
+    foreach(var source in sources)ViewFields(source,0,ref nodes,version);
+   }
    if(fields.ContainsKey("ArrayReferences") && fields["ArrayReferences"]!=null) {
     if(version<16)throw Invalid("Array preflight requires circuit version 16.");
     var references=ArrayValue(fields["ArrayReferences"]);if(references.Length<1 || references.Length>64)throw Invalid("Preflight requires one to 64 references.");
@@ -357,7 +365,7 @@ sealed class ClassicalCircuit {
    var fields=Fields(item,"Name,Size");if(!(Required(fields,"Name") is string))throw Invalid("A register name must be text.");Integer(Required(fields,"Size"));
   }
   int version=(int)root["Version"];
-  if(version<2 || version>16)throw Invalid("Expected a version 2 through 16 classical circuit.");
+  if(version<2 || version>17)throw Invalid("Expected a version 2 through 17 classical circuit.");
   object loopBudget;
   if(version>=7) {
    loopBudget=Required(root,"LoopConditionBudget");Integer(loopBudget);
@@ -427,7 +435,7 @@ sealed class ClassicalCircuit {
   if(fields!=null) {
    var result=new Dictionary<string,object>();
    var ordered=new SortedDictionary<string,object>(fields,StringComparer.Ordinal);
-   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="View" || field.Key=="ViewAxis" || field.Key=="ArrayReferences" || field.Key=="Arrays" || field.Key=="Selection" || field.Key=="ArrayTarget" || field.Key=="WireTargets" || field.Key=="WireSource" || field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
+   foreach(var field in ordered)if(field.Key!="Signedness" && !(field.Value==null && (field.Key=="View" || field.Key=="ViewAxis" || field.Key=="ArrayReferences" || field.Key=="ArrayCopy" || field.Key=="Arrays" || field.Key=="Selection" || field.Key=="ArrayTarget" || field.Key=="WireTargets" || field.Key=="WireSource" || field.Key=="NumericVariables" || field.Key=="NumericValue" || field.Key=="NumericKind" || field.Key=="Function" || field.Key=="Scaling" || field.Key=="BitValue" || field.Key=="RealLeft" || field.Key=="RealRight" || field.Key=="Variables" || field.Key=="Width" || field.Key=="Slot" || field.Key=="VariableSlot" || field.Key=="IntegerValue" || field.Key=="LoopConditionBudget" || field.Key=="Range" || field.Key=="Axis" || field.Key=="Angle")))result.Add(field.Key,CanonicalFields(field.Value));
    object sign;if(fields.TryGetValue("Signedness",out sign) && sign!=null)result.Add("Signedness",sign);
    return result;
   }
@@ -473,6 +481,12 @@ sealed class ClassicalCircuit {
    if(!condition && (step.Mask!=null || step.Value!=null))throw Invalid("Only conditions have a mask and value.");
    if((kind==NumericalSampling.Operation.Measure || kind==NumericalSampling.Operation.Reset) && !String.IsNullOrEmpty(step.Expression))throw Invalid("Measurement and reset cannot contain matrix expressions.");
    var gate=new NumericalSampling.Gate {Kind=kind,Expression=step.Expression,Wires=step.Wires==null ? null : (int[])step.Wires.Clone(),ClassicalBit=step.ClassicalBit};
+   if((kind==NumericalSampling.Operation.CopyArray)!=(step.ArrayCopy!=null))throw Invalid("Only array copies require copy metadata.");
+   if(step.ArrayCopy!=null) {
+    if(version<17)throw Invalid("Array copies require circuit version 17.");
+    var sources=new List<ClassicalArrayView>();foreach(var source in step.ArrayCopy.Sources)sources.Add(ConvertView(source));
+    gate.ArrayCopy=new ClassicalArrayCopy(ConvertView(step.ArrayCopy.Destination),sources);
+   }
    if((kind==NumericalSampling.Operation.CheckArrayReferences)!=(step.ArrayReferences!=null))throw Invalid("Only array preflight requires reference metadata.");
    if(step.ArrayReferences!=null) {
     if(version<16)throw Invalid("Array preflight requires circuit version 16.");

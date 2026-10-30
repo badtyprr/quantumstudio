@@ -75,6 +75,17 @@ public:
  void evaluate(std::uint64_t record,unsigned bits,const IntegerStorage &storage) const;
 };
 
+// Shape/type-preserving value copy. Multiple sources concatenate along axis0;
+// all source values are captured before any destination slot is changed.
+class ArrayCopy {
+ ArrayView destination_;
+ std::vector<ArrayView> sources_;
+public:
+ ArrayCopy(const ArrayView &destination,const std::vector<ArrayView> &sources);
+ void validate(unsigned bits,const IntegerStorage &storage) const;
+ void execute(std::uint64_t record,unsigned bits,IntegerStorage &storage) const;
+};
+
 // A rank-aware element address. Validation never reads undefined elements.
 // Evaluation checks each axis before calculating the row-major scalar slot.
 class ArraySelection {

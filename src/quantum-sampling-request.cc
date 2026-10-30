@@ -14,7 +14,8 @@ class Reader {
  const std::string &input;
  size_t position = 9; // Version header followed by LF
 public:
- bool views() const {return input.compare(0,10,"QSAMPLE16\n")==0;}
+ bool copies() const {return input.compare(0,10,"QSAMPLE17\n")==0;}
+ bool views() const {return input.compare(0,10,"QSAMPLE16\n")==0 || copies();}
  bool arrays() const {return input.compare(0,10,"QSAMPLE15\n")==0 || views();}
  bool wireSelectors() const {return input.compare(0,10,"QSAMPLE14\n")==0 || arrays();}
  bool numeric() const {return input.compare(0,10,"QSAMPLE13\n")==0 || wireSelectors();}
@@ -31,7 +32,7 @@ public:
  bool dynamic() const {return input.compare(0,9,"QSAMPLE2\n")==0 || classical();}
  explicit Reader(const std::string &value) : input(value) {
   if(input.size()>1100000 || (input.compare(0,9,"QSAMPLE1\n")!=0 && !dynamic()))
-   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE16 request.");
+   throw std::runtime_error("Expected a bounded QSAMPLE1 through QSAMPLE17 request.");
   if(ranges())position=10;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -139,7 +140,8 @@ QuantumNumerics::TrajectoryStep readAssignment(Calculator &calculator,Reader &re
 QuantumNumerics::TrajectoryStep readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned classicalBits,unsigned depth,unsigned &total,const QuantumClassical::IntegerStorage *variables) {
  using Step=QuantumNumerics::TrajectoryStep;
  if(++total>4096)throw std::length_error("Sampling branches exceed 4096 total operations.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.views()?23:reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.copies()?24:reader.views()?23:reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==24)return Step::copyArray(QuantumClassicalRequest::arrayCopy(reader));
  if(kind==23) {
   auto check=QuantumClassicalRequest::arrayReferenceCheck(reader);
   return Step::checkArrayReferences(check);
