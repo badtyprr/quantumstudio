@@ -13,7 +13,8 @@ using Step=QuantumExact::CircuitStep;
 class Reader {
  const std::string &input;size_t position=8;
 public:
- bool arrays() const {return input.compare(0,9,"QEXACT14\n")==0;}
+ bool views() const {return input.compare(0,9,"QEXACT15\n")==0;}
+ bool arrays() const {return input.compare(0,9,"QEXACT14\n")==0 || views();}
  bool wireSelectors() const {return input.compare(0,9,"QEXACT13\n")==0 || arrays();}
  bool numeric() const {return input.compare(0,9,"QEXACT12\n")==0 || wireSelectors();}
  bool parameterGates() const {return input.compare(0,9,"QEXACT11\n")==0 || numeric();}
@@ -28,7 +29,7 @@ public:
  bool classical() const {return input.compare(0,8,"QEXACT2\n")==0 || typed();}
  explicit Reader(const std::string &value):input(value) {
   if(input.size()>1100000 || (input.compare(0,8,"QEXACT1\n") && !classical()))
-   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT14 request.");
+   throw std::runtime_error("Expected a bounded QEXACT1 through QEXACT15 request.");
   if(rotations())position=9;
  }
  std::uint64_t integer(std::uint64_t maximum) {
@@ -74,7 +75,11 @@ MathStructure expression(Calculator &calculator,Reader &reader,const EvaluationO
 Step readStep(Calculator &calculator,Reader &reader,unsigned qubits,unsigned bits,unsigned depth,
  unsigned &total,const EvaluationOptions &exact,const QuantumClassical::IntegerStorage *variables) {
  if(++total>512)throw std::length_error("Exact circuits support at most 512 steps.");
- const unsigned kind=static_cast<unsigned>(reader.integer(reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ const unsigned kind=static_cast<unsigned>(reader.integer(reader.views()?23:reader.arrays()?22:reader.wireSelectors()?20:reader.numeric()?19:reader.parameterGates()?17:reader.rotations()?16:reader.ranges()?15:reader.termination()?14:reader.transfers()?13:reader.loops()?11:(reader.variables()?10:(reader.classical()?8:6))));
+ if(kind==23) {
+  auto check=QuantumClassicalRequest::arrayReferenceCheck(reader);
+  return Step::checkArrayReferences(check);
+ }
  if(kind==21 || kind==22) {
   unsigned nodes=0;auto selection=QuantumClassicalRequest::arraySelection(reader,0,nodes);
   selection.validate(bits,*variables);nodes=0;

@@ -29,6 +29,9 @@ template<class Reader>
 QuantumClassical::RealExpression realNode(Reader &,unsigned,unsigned &,bool=false);
 
 template<class Reader>
+QuantumClassical::ArrayView arrayView(Reader &,unsigned,unsigned &);
+
+template<class Reader>
 QuantumClassical::ArraySelection arraySelection(Reader &,unsigned,unsigned &);
 
 template<class Reader>
@@ -41,7 +44,8 @@ template<class Reader>
 QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,unsigned &count,bool variables=false,bool bitExpressions=false,bool numeric=false) {
  using namespace QuantumClassical;
  if(depth>=32 || ++count>512)throw std::length_error("Classical expression exceeds 32 levels or 512 nodes.");
- const auto kind=reader.integer(reader.arrays() ? 11 : numeric ? 9 : bitExpressions ? 5 : variables ? 4 : 3);
+ const auto kind=reader.integer(reader.views() ? 12 : reader.arrays() ? 11 : numeric ? 9 : bitExpressions ? 5 : variables ? 4 : 3);
+ if(kind==12){auto view=arrayView(reader,depth+1,count);return IntegerExpression::viewExtent(view,static_cast<unsigned>(reader.integer(6)));}
  if(kind==11)return IntegerExpression::arrayExtent(arraySelection(reader,depth+1,count));
  if(kind==10) {auto type=integerType(reader);return IntegerExpression::arrayElement(type,arraySelection(reader,depth+1,count));}
  if(kind>=6) {
@@ -67,17 +71,54 @@ QuantumClassical::IntegerExpression integerNode(Reader &reader,unsigned depth,un
  for(unsigned k=0;k<type.width();++k)indices.push_back(static_cast<unsigned>(reader.integer(63)));
  return IntegerExpression::read(type,indices);
 }
+template<class Reader>
+QuantumClassical::ArrayView arrayView(Reader &reader,unsigned depth,unsigned &count) {
+ using namespace QuantumClassical;
+ if(!reader.views())throw std::invalid_argument("Array views require the reference protocol");
+ if(depth>=32 || ++count>512)throw std::length_error("Array view exceeds 32 levels or 512 nodes");
+ const bool writable=reader.integer(1)!=0,hasParent=reader.integer(1)!=0;
+ std::shared_ptr<ArrayView> parent;std::size_t array=0;
+ if(hasParent)parent=std::make_shared<ArrayView>(arrayView(reader,depth+1,count));
+ else array=static_cast<std::size_t>(reader.integer(4095));
+ const auto rank=reader.integer(7);std::vector<ArrayViewAxis> axes;
+ for(unsigned k=0;k<rank;++k) {
+  if(reader.integer(1)==0)axes.push_back(ArrayViewAxis::scalar(integerNode(reader,depth+1,count,true,true,true)));
+  else {
+   const auto present=reader.integer(7);std::shared_ptr<IntegerExpression> start,stop,step;
+   if(present&1)start=std::make_shared<IntegerExpression>(integerNode(reader,depth+1,count,true,true,true));
+   if(present&2)stop=std::make_shared<IntegerExpression>(integerNode(reader,depth+1,count,true,true,true));
+   if(present&4)step=std::make_shared<IntegerExpression>(integerNode(reader,depth+1,count,true,true,true));
+   axes.push_back(ArrayViewAxis::range(start.get(),stop.get(),step.get()));
+  }
+ }
+ return parent ? ArrayView(*parent,axes,writable) : ArrayView(array,axes,writable);
+}
+template<class Reader>
+QuantumClassical::ArrayReferenceCheck arrayReferenceCheck(Reader &reader) {
+ const auto size=reader.integer(64);unsigned count=0;
+ std::vector<QuantumClassical::ArrayView> views;std::vector<std::vector<unsigned>> shapes;
+ for(unsigned k=0;k<size;++k) {
+  views.push_back(arrayView(reader,0,count));
+  const auto rank=reader.integer(7);std::vector<unsigned> shape;
+  for(unsigned j=0;j<rank;++j)shape.push_back(static_cast<unsigned>(reader.integer(4096)));
+  shapes.push_back(shape);
+ }
+ return QuantumClassical::ArrayReferenceCheck(views,shapes);
+}
 // Source context is encoded as bounded UTF-8 bytes represented by integers,
 // allowing expression writers to retain their integer-only interface.
 template<class Reader>
 QuantumClassical::ArraySelection arraySelection(Reader &reader,unsigned depth,unsigned &count) {
  if(depth>=32 || ++count>512)throw std::length_error("Array selection exceeds 32 levels or 512 nodes.");
- const auto array=reader.integer(4095);const auto rank=reader.integer(7);
+ const auto array=reader.integer(reader.views()?4096:4095);
+ std::shared_ptr<QuantumClassical::ArrayView> view;
+ if(array==4096)view=std::make_shared<QuantumClassical::ArrayView>(arrayView(reader,depth+1,count));
+ const auto rank=reader.integer(7);
  std::vector<QuantumClassical::IntegerExpression> indices;
  for(unsigned k=0;k<rank;++k)indices.push_back(integerNode(reader,depth+1,count,true,true,true));
  const auto length=reader.integer(512);std::string source;
  for(unsigned k=0;k<length;++k)source.push_back(static_cast<char>(reader.integer(255)));
- return QuantumClassical::ArraySelection(static_cast<std::size_t>(array),indices,source);
+ return view ? QuantumClassical::ArraySelection(*view,indices,source) : QuantumClassical::ArraySelection(static_cast<std::size_t>(array),indices,source);
 }
 
 template<class Reader>
