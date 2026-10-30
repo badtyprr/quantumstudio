@@ -27,7 +27,7 @@ def lower_arrays(program):
     possibly_undefined={n.identifier.name for n in program.statements if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,ast.ArrayType) and n.init_expression is None}
     scalar=(ast.IntType,ast.UintType,ast.BoolType,ast.FloatType,ast.AngleType)
     runtime={n.identifier.name for n in all_nodes if isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar+(ast.BitType,))}-names
-    constants={};selected=set();arrays={};allocations=[]
+    constants={};selected=set(getattr(program,'_quantum_runtime_array_names',()));arrays={};allocations=[]
     used={n.name for n in all_nodes if isinstance(n,ast.Identifier)}
     charged=sum(isinstance(n,ast.ClassicalDeclaration) and isinstance(n.type,scalar) for n in all_nodes)
 

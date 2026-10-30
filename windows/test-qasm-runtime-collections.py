@@ -42,6 +42,21 @@ def execute(encoded,exact,expected=None,error=None):
     assert all(abs(actual.get(k,0)-expected.get(k,0))<(1e-12 if exact else .025) for k in set(actual)|set(expected)),(actual,expected)
 
 cases=[
+ ('array[int,0] a;int total=0;for int v in a[:] {total+=v;}output bit c;c=total==0;',{'1':1}),
+ ('array[int,65] a;a[0]=2;a[1]=3;int total=0;for int v in a[0:1]{total+=v;}output bit c;c=total==5;',{'1':1}),
+ ('array[int,4] a={1,2,3,4};int total=0;for int v in a{if(v==2){continue;}if(v==4){break;}total+=v;}output bit c;c=total==4;',{'1':1}),
+ ('array[angle[8],2] a={pi,pi};angle[8] total=0;for angle[8] v in a{total+=v;}output bit c;c=total==angle[8](0.0);',{'1':1}),
+ ('array[float[32],1] a={16777217.0};float[64] total=0;for float[32] v in a{total+=v;}output bit c;c=total==16777216.0;',{'1':1}),
+ ('const int N=2;array[int,N] a={1,2};int total=0;for int N in {5}{for int v in a {total+=v;}}output bit c;c=total==3;',{'1':1}),
+ ('int total=0;{const int N=3;bit[N] a="101";for bit v in a {total+=int(v);}}output bit c;c=total==2;',{'1':1}),
+ ('def count(bit[3] a)->int{int total=0;for bit v in a{total+=int(v);}return total;}bit[3] a="101";output bit c;c=count(a)==2;',{'1':1}),
+ ('bit m="1";array[int,2] a={int(m),2};int sum=0;for int v in a {sum+=v;}output bit c;c=sum==3;',{'1':1}),
+ ('array[int,3] a={1,2,3};int total=0;for int v in a {a[1]=9;total=total*10+v;v=0;}output bit c;c=total==123 && a[0]==1 && a[1]==9;',{'1':1}),
+ ('array[float[64],3] a={0.5,1.5,2.0};float total=0;for float v in a {total+=v;}output bit c;c=total==4.0;',{'1':1}),
+ ('array[int,4] a={1,2,3,4};int total=0;for int v in a[3:-2:0] {total=total*10+v;}output bit c;c=total==42;',{'1':1}),
+ ('array[int,0] a;int total=0;for int v in a {total+=v;}output bit c;c=total==0;',{'1':1}),
+ ('bit[3] a="101";int total=0;for bit v in a {total+=int(v);}output bit c;c=total==2;',{'1':1}),
+ ('bit[4] a="1011";int total=0;for bit v in a[0:2:3] {total=total*10+int(v);v=0;}output bit c;c=total==10 && a=="1011";',{'1':1}),
  ('def g(qubit q)->int{bit b=measure q;return int[2](bool(b));}def f(qubit a){x a;}qubit q;h q;int n=0;for int i in {g(q),1}{f(q);n+=i;}bit c=bool(n==2);',{'0':.5,'1':.5}),
  ('def f(qubit a){x a;}qubit[2] q;for int i in {0,1}{f(q[i]);}bit[2] c=measure q;',{'11':1}),
  ('bool yes=false;for bool b in {false,true,false}{yes=yes || b;}bit c=yes;',{'1':1}),
@@ -82,4 +97,12 @@ original=adapt(compile(fixture['source']));roundtrip=adapt(compile(original['sou
 expected={format(value,'04b'):1/16 for value in range(16)}
 for exact in (True,False):
     for encoded in (original,roundtrip):execute(encoded,exact,expected)
+for body,marker in (
+    ('array[int,65] a;for int v in a{}','at most 64 values'),
+    ('array[int,2] a={1,2};for int v in a[0:0:1]{}','step must not be zero'),
+    ('array[int,2] a={1,2};for int v in a[0:2]{}','endpoint is outside'),
+):
+    try:compile(header+body)
+    except ValueError as error:assert marker in str(error),str(error);checks+=1
+    else:raise AssertionError('Invalid collection accepted: '+body)
 print(f'PASS: {checks} runtime collection checks.')
