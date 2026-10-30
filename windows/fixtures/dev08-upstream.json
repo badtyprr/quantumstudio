@@ -1,0 +1,48 @@
+{
+  "revision": "167cff141b270cae023137971e716d5fec68e9f0",
+  "fixtures": [
+    {
+      "name": "test_return_values_from_function",
+      "path": "tests/qasm3/subroutines/test_subroutines.py",
+      "line": 254,
+      "sha256": "0ff53fe1ad425250ee83328e36335eae448eaeeb303afc5fa03a128a1d4a9ff0",
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n    def my_function(qubit qin) -> float[32] {\n        h qin;\n        return 3.14;\n    }\n    def my_function_2(qubit qin, float[32] r) {\n        rx(r) qin;\n        return;\n    }\n    qubit[2] q;\n    float[32] r1 = my_function(q[0]);\n    my_function_2(q[0], r1);\n\n    array[float[32], 1, 1] r2 = {{3.14}};\n    my_function_2(q[1], r2[0,0]);\n\n    "
+    },
+    {
+      "name": "test_simple_function_call",
+      "path": "tests/qasm3/subroutines/test_subroutines_arrays.py",
+      "line": 31,
+      "sha256": "f3cdd5d1f6cfd3d264085ad1decd157fc99a5ed20f7bb8bc7843d6fb94ab469e",
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(qubit a, readonly array[int[8], 2, 2] my_arr) {\n        return;\n    }\n    qubit q;\n    array[int[8], 2, 2] arr;\n    my_function(q, arr);\n\n    "
+    },
+    {
+      "name": "test_passing_array_to_function",
+      "path": "tests/qasm3/subroutines/test_subroutines_arrays.py",
+      "line": 51,
+      "sha256": "0fcb673294fec09237d7e0cdcd9aeae6bff304deffd5497c5717f843d6473d31",
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(readonly array[int[8], 2, 2] my_arr, qubit q) {\n        rx(my_arr[0][0]) q;\n        rx(my_arr[0][1]) q;\n        rx(my_arr[1][0]) q;\n        rx(my_arr[1][1]) q;\n\n        return;\n    }\n    qubit my_q;\n    array[int[8], 2, 2] arr = { {1, 2}, {3, 4} };\n    my_function(arr, my_q);\n    "
+    },
+    {
+      "name": "test_passing_subarray_to_function",
+      "path": "tests/qasm3/subroutines/test_subroutines_arrays.py",
+      "line": 79,
+      "sha256": "5172919fa90517a3e2c67b04d9fdac1ff8e7f6e7c47ee8a6a0c78f5c4c2a847a",
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(readonly array[int[8], 2, 2] my_arr, qubit q) {\n        rx(my_arr[0][0]) q;\n        rx(my_arr[0][1]) q;\n        return;\n    }\n    qubit my_q;\n    array[int[8], 4, 3] arr_1 = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12} };\n    array[int[8], 2, 2] arr_2 = { {1, 2}, {3, 4} };\n    my_function(arr_1[1:2][1:2], my_q);\n    my_function(arr_2[0:1, :], my_q);\n\n    "
+    },
+    {
+      "name": "test_passing_array_with_dim_identifier",
+      "path": "tests/qasm3/subroutines/test_subroutines_arrays.py",
+      "line": 107,
+      "sha256": "bc885eb799e9d48230d1f6c327b72b2ddae2d5658124a82e27d7688bd2bb6eaf",
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(readonly array[int[8], #dim = 2] my_arr, qubit q) {\n        rx(my_arr[0][0]) q;\n        rx(my_arr[0][1]) q;\n        return;\n    }\n    qubit my_q;\n    array[int[8], 2, 2, 2] arr = { { {1, 2}, {3, 4} }, { {5, 6}, {7, 8} } };\n    my_function(arr[0, :, :], my_q);\n    "
+    },
+    {
+      "name": "test_pass_multiple_arrays_to_function",
+      "path": "tests/qasm3/subroutines/test_subroutines_arrays.py",
+      "line": 132,
+      "sha256": "1226b4fd1471cd04eff692c53839db7909d290979806ea6264b9964053abd0d7",
+      "source": "OPENQASM 3.0;\n    include \"stdgates.inc\";\n\n    def my_function(readonly array[int[8], 2, 2] my_arr1, \n                    readonly array[int[8], 2, 2] my_arr2, \n                    qubit q) {\n        for int[8] i in [0:1] {\n            rx(my_arr1[i][0]) q;\n            rx(my_arr2[i][1]) q;\n        }\n\n        return;\n    }\n    qubit my_q;\n    array[int[8], 2, 2] arr_1 = { {1, 2}, {3, 4} };\n    array[int[8], 2, 2] arr_2 = { {5, 6}, {7, 8} };\n    my_function(arr_1, arr_2, my_q);\n    "
+    }
+  ],
+  "oracle_notes": "Independent expected operators from source arithmetic: I, Rx(10), Rx(14), Rx(3), Rx(18); return fixture (Rx(a) H) on q0 and Rx(a) on q1, a=float32(3.14). Witnesses are added only to model copies."
+}

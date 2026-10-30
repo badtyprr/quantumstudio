@@ -105,4 +105,16 @@ source='OPENQASM 3.0;def f(int x)->int{return 1/x;}int z=0;array[int,1,0] a;a[0,
 original=compile_source(source);restored=compile_source(original['source'])
 execute(original,None,error='division by zero');execute(restored,None,error='division by zero')
 
+# Constant-index reads still cross the typed runtime storage boundary.
+for source in (
+    'array[float[32],1] a={3.14};float[64] x=a[0];output bit c;c=bool(x==float[64](float[32](3.14)));',
+    'array[int[8],1] a={3};float[32] x=a[0];output bit c;c=bool(x==3.0);',
+    'def f(float[32] x)->float[32]{return x;}array[float[32],1] a={3.14};float[32] x=f(a[0]);output bit c;c=bool(x==float[32](3.14));',
+    'array[bool,1] a={true};bool x=a[0];output bit c;c=x;',
+    'array[float[32],1] a={3.14};float[64] x;x=a[0];output bit c;c=bool(x==float[64](float[32](3.14)));',
+):
+    original=compile_source('OPENQASM 3.0;'+source)
+    restored=compile_source(original['source'])
+    execute(original,'1');execute(restored,'1')
+
 print(f'PASS: {checks} runtime array source checks.')

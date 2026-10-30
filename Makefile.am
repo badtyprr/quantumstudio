@@ -185,3 +185,5 @@ EXTRA_DIST += windows/test-runtime-scalar-quantum-bindings.py
 EXTRA_DIST += windows/test-runtime-quantum-register-views.py
 
 EXTRA_DIST += windows/test-runtime-dynamic-quantum-aliases.py
+
+EXTRA_DIST += windows/test-dev08-source-evidence.py windows/fixtures/dev08-upstream.json

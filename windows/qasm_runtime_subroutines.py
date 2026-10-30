@@ -12,7 +12,7 @@ from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.exceptions import ValidationError
 from qasm_source_diagnostics import error_at
 from qasm_runtime_wires import WireReferenceCheck, QuantumSelectorTypeCheck, SourceQuantumSelection, SourceQuantumRegisterView
-from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck, ArrayCopyStatement, split_reference
+from qasm_runtime_arrays import SourceArrayView, ArrayReferenceCheck, ArrayCopyStatement, split_reference, array_selector_groups
 
 
 def lower_runtime_subroutines(program):
@@ -334,7 +334,7 @@ def lower_runtime_subroutines(program):
                 axes=[ast.RangeDefinition(start=None,end=None,step=None) for _ in declared.dimensions])
         view.span=getattr(actual,'span',None)
         if len(groups)>31:raise error_at(actual,'Array references exceed 32 nesting levels.')
-        for group_index,group in enumerate(groups):
+        for group_index,group in enumerate(array_selector_groups(groups,view.rank)):
             if len(group)>view.rank:raise error_at(actual,'Too many array selectors.')
             axes=[ast.RangeDefinition(start=None,end=None,step=None) for _ in range(view.rank)]
             child=SourceArrayView(name=view.name,element_type=view.element_type,parent=None if group_index==0 and isinstance(root,ast.Identifier) else view,axes=axes,writable=view.writable)
@@ -403,7 +403,7 @@ def lower_runtime_subroutines(program):
     def array_rank(value):
         root,groups=split_reference(value)
         rank=root.rank if isinstance(root,SourceArrayView) else len(collection_scopes[-1][root.name].dimensions)
-        for group in groups:
+        for group in array_selector_groups(groups,rank):
             if len(group)>rank:raise error_at(value,'Too many array selectors.')
             rank-=sum(not isinstance(axis,ast.RangeDefinition) for axis in group)
         return rank
@@ -704,6 +704,8 @@ def lower_runtime_subroutines(program):
         # walk already visits descendants: recursive classification here would
         # repeatedly traverse overlapping argument trees (exponential work).
         for node in walk(call):
+            if isinstance(node,(ast.IndexExpression,ast.IndexedIdentifier)) and is_array_target(node):
+                return True
             if isinstance(node, ast.Identifier) and node.name in runtime:
                 return True
             if isinstance(node, ast.FunctionCall) and node.name.name in functions:
