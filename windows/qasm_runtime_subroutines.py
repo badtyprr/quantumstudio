@@ -42,7 +42,7 @@ def lower_runtime_subroutines(program):
     register_declarations = {}
     register_arrays = set()
     classical_scopes = [set()]
-    quantum_backings={}
+    quantum_backings={}; global_quantum_aliases={}; global_alias_names=set(); static_quantum_aliases={}; quantum_view_count=0
     bit_storage = []; array_temporaries=[]; array_backing_types={}
     serial = calls = expanded = copied_nodes = 0
 
@@ -197,8 +197,12 @@ def lower_runtime_subroutines(program):
         """Check the caller selector before saving it or evaluating later actuals."""
         check_quantum_name(actual)
         actual=copy.deepcopy(actual)
+        prefix=[]
+        if isinstance(actual,SourceQuantumRegisterView):
+            prefix.append(ArrayReferenceCheck(views=[copy.deepcopy(actual.view)],shapes=[[1]]))
+            actual=SourceQuantumSelection(register=copy.deepcopy(actual.register),index=SourceArrayView(name=actual.view.name,element_type=actual.view.element_type,parent=copy.deepcopy(actual.view),axes=[ast.IntegerLiteral(0)],writable=False))
         check=WireReferenceCheck(targets=[copy.deepcopy(actual)]);check.span=getattr(actual,'span',None)
-        effects=[check]
+        effects=prefix+[check]
         if isinstance(actual,SourceQuantumSelection):
             slot=ast.Identifier(fresh());runtime.add(slot.name)
             effects.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=slot,init_expression=copy.deepcopy(actual.index)))
@@ -217,26 +221,103 @@ def lower_runtime_subroutines(program):
             raise error_at(actual,'Scalar quantum arguments require a qubit reference.')
         return effects,actual
 
-    def register_view_binding(formal,actual,constant_bindings,active,depth):
+    def register_view_binding(formal,actual,constant_bindings,active,depth,alias_depth=0):
+        nonlocal quantum_view_count
+        quantum_view_count+=1
+        if quantum_view_count>4096 or alias_depth>=32:raise error_at(actual,'Quantum reference expansion exceeds 4096 views or 32 alias levels.')
+        check_quantum_name(actual)
+        if isinstance(actual,ast.Concatenation):
+            effects,binding=concatenate_quantum_views(actual,active,depth)
+            if formal is None:return effects,binding,None
+            suffix,binding,width=register_view_binding(formal,binding,constant_bindings,active,depth)
+            return effects+suffix,binding,width
         root,groups=split_reference(actual)
+        groups=[group if isinstance(group,list) else [group] for group in groups]
+        if isinstance(root,ast.Identifier) and root.name in static_quantum_aliases:
+            selected=copy.deepcopy(static_quantum_aliases[root.name])
+            for group in groups:selected=ast.IndexExpression(collection=selected,index=copy.deepcopy(group))
+            return register_view_binding(formal,selected,constant_bindings,active,depth,alias_depth+1)
+        if isinstance(root,ast.Concatenation):
+            effects,binding=concatenate_quantum_views(root,active,depth)
+            selected=binding
+            for group in groups:selected=ast.IndexExpression(collection=selected,index=copy.deepcopy(group))
+            suffix,binding,width=register_view_binding(formal,selected,constant_bindings,active,depth,alias_depth+1)
+            return effects+suffix,binding,width
         if isinstance(root,SourceQuantumRegisterView):
             register=copy.deepcopy(root.register);selected=copy.deepcopy(root.view)
         elif isinstance(root,ast.Identifier) and root.name in register_declarations:
-            register=copy.deepcopy(root);width=register_size(root.name)
+            register=[ast.Identifier(name) for name in register_declarations];width=register_size(root.name)
+            offset=0
+            for name in register_declarations:
+                if name==root.name:break
+                offset+=register_size(name)
             if root.name not in quantum_backings:
                 name=fresh();type_=ast.ArrayType(base_type=ast.UintType(size=ast.IntegerLiteral(32)),dimensions=[ast.IntegerLiteral(width)])
-                array_temporaries.append(ast.ClassicalDeclaration(type=type_,identifier=ast.Identifier(name),init_expression=ast.ArrayLiteral(values=[ast.IntegerLiteral(i) for i in range(width)])))
+                array_temporaries.append(ast.ClassicalDeclaration(type=type_,identifier=ast.Identifier(name),init_expression=ast.ArrayLiteral(values=[ast.IntegerLiteral(offset+i) for i in range(width)])))
                 quantum_backings[root.name]=name;array_backing_types[name]=type_;collection_arrays.add(name)
             name=quantum_backings[root.name];collection_scopes[-1][name]=array_backing_types[name];array_scopes[-1].add(name)
             selected=ast.Identifier(name)
         else:return None
-        if any(isinstance(axis,ast.DiscreteSet) for group in groups for axis in group):return None
+        if any(isinstance(axis,ast.DiscreteSet) for group in groups for axis in group):
+            if not groups or len(groups[0])!=1 or not isinstance(groups[0][0],ast.DiscreteSet):raise error_at(actual,'Quantum index sets require one register axis.')
+            values=groups[0][0].values
+            if not 1<=len(values)<=25:raise error_at(actual,'Quantum index sets require 1 to 25 entries.')
+            parts=[ast.IndexExpression(collection=copy.deepcopy(root),index=[copy.deepcopy(value)]) for value in values]
+            joined=parts[0]
+            for part in parts[1:]:joined=ast.Concatenation(lhs=joined,rhs=part)
+            prefix,binding,_=register_view_binding(None,joined,constant_bindings,active,depth)
+            selected=binding
+            for group in groups[1:]:selected=ast.IndexExpression(collection=selected,index=copy.deepcopy(group))
+            suffix,binding,width=register_view_binding(formal,selected,constant_bindings,active,depth)
+            return prefix+suffix,binding,width
         for group in groups:selected=ast.IndexExpression(collection=selected,index=copy.deepcopy(group))
         effects,view=capture_array_view(selected,True,depth,nonnegative=True,quantum=True)
+        if formal is None:
+            if view.rank==0:
+                axis=view.axes[-1];view.axes[-1]=ast.RangeDefinition(start=copy.deepcopy(axis),end=copy.deepcopy(axis),step=None)
+            if view.rank!=1:raise error_at(actual,'Quantum aliases require a one-dimensional register selection.')
+            first=SourceArrayView(name=view.name,element_type=view.element_type,parent=copy.deepcopy(view),axes=[ast.RangeDefinition(start=ast.IntegerLiteral(0),end=ast.IntegerLiteral(0),step=None)],writable=False)
+            effects.append(ArrayReferenceCheck(views=[first],shapes=[[]]))
+            return effects,SourceQuantumRegisterView(register=register,view=view,selections=[]),None
         width=quantum_width(formal.size,constant_bindings)
         effects.append(ArrayReferenceCheck(views=[copy.deepcopy(view)],shapes=[[width]]))
         selections=[SourceQuantumSelection(register=copy.deepcopy(register),index=SourceArrayView(name=view.name,element_type=view.element_type,parent=copy.deepcopy(view),axes=[ast.IntegerLiteral(i)],writable=False)) for i in range(width)]
         return effects,SourceQuantumRegisterView(register=register,view=view,selections=selections),width
+
+    def concatenate_quantum_views(actual,active,depth):
+        parts=[]
+        def flatten(value,level=0):
+            if level>=32:raise error_at(actual,'Quantum concatenation exceeds 32 nesting levels.')
+            if isinstance(value,ast.Concatenation):flatten(value.lhs,level+1);flatten(value.rhs,level+1)
+            else:parts.append(value)
+            if len(parts)>25:raise error_at(actual,'Quantum concatenation supports at most 25 parts.')
+        flatten(actual)
+        effects=[];views=[]
+        for part in parts:
+            captured=register_view_binding(None,part,{},True,depth)
+            if captured is None:raise error_at(part,'Dynamic quantum concatenation requires declared registers or captured views.')
+            prefix,view,_=captured;effects.extend(prefix);views.append(view)
+        name=fresh();type_=ast.ArrayType(base_type=ast.UintType(size=ast.IntegerLiteral(32)),dimensions=[ast.IntegerLiteral(25)])
+        array_temporaries.append(ast.ClassicalDeclaration(type=type_,identifier=ast.Identifier(name),init_expression=None));array_backing_types[name]=type_;collection_arrays.add(name)
+        total=ast.Identifier(fresh());runtime.add(total.name)
+        effects.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=total,init_expression=ast.IntegerLiteral(0)))
+        for view in views:
+            start=ast.Identifier(fresh());runtime.add(start.name)
+            effects.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=start,init_expression=copy.deepcopy(total)))
+            effects.append(ast.ClassicalAssignment(lvalue=copy.deepcopy(total),op=ast.AssignmentOperator['+='],rvalue=ast.SizeOf(target=copy.deepcopy(view.view),index=ast.IntegerLiteral(0))))
+            destination=SourceArrayView(name=name,element_type=copy.deepcopy(type_.base_type),parent=None,axes=[ast.RangeDefinition(start=start,end=ast.BinaryExpression(op=ast.BinaryOperator['-'],lhs=copy.deepcopy(total),rhs=ast.IntegerLiteral(1)),step=None)])
+            effects.append(ArrayReferenceCheck(views=[copy.deepcopy(destination)],shapes=[[]]))
+            effects.append(ArrayCopyStatement(destination=destination,sources=[copy.deepcopy(view.view)]))
+        view=SourceArrayView(name=name,element_type=copy.deepcopy(type_.base_type),parent=None,axes=[ast.RangeDefinition(start=ast.IntegerLiteral(0),end=ast.BinaryExpression(op=ast.BinaryOperator['-'],lhs=copy.deepcopy(total),rhs=ast.IntegerLiteral(1)),step=None)],writable=False)
+        register=[ast.Identifier(name) for name in register_declarations]
+        left=ast.Identifier(fresh());right=ast.Identifier(fresh());runtime.update((left.name,right.name))
+        def selected(index):return SourceQuantumSelection(register=copy.deepcopy(register),index=SourceArrayView(name=name,element_type=copy.deepcopy(type_.base_type),parent=copy.deepcopy(view),axes=[copy.deepcopy(index)],writable=False))
+        check=WireReferenceCheck(targets=[selected(left),selected(right)]);check.span=actual.span
+        def loop(cursor,start,body):
+            result=ast.ForInLoop(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=cursor,set_declaration=ast.RangeDefinition(start=start,end=ast.BinaryExpression(op=ast.BinaryOperator['-'],lhs=copy.deepcopy(total),rhs=ast.IntegerLiteral(1)),step=None),block=body)
+            result._quantum_runtime_for=True;result.span=actual.span;return result
+        effects.append(loop(left,ast.IntegerLiteral(0),[loop(right,ast.BinaryExpression(op=ast.BinaryOperator['+'],lhs=copy.deepcopy(left),rhs=ast.IntegerLiteral(1)),[check])]))
+        return effects,SourceQuantumRegisterView(register=register,view=view,selections=[])
 
     def is_array_target(value):
         value,_=split_reference(value)
@@ -423,7 +504,7 @@ def lower_runtime_subroutines(program):
         has_return = bool(returns)
         if len(call.arguments) != len(definition.arguments):
             raise error_at(call, 'Subroutine argument count does not match its declaration.')
-        if empty_scalar_qubit_helper(definition) and not any(isinstance(item,ast.FunctionCall) for item in walk(call.arguments)):
+        if empty_scalar_qubit_helper(definition) and not any(isinstance(item,(ast.FunctionCall,SourceQuantumRegisterView,SourceQuantumSelection)) for item in walk(call.arguments)):
             if len(definition.arguments)>25:raise error_at(call,'Quantum reference checks support at most25 targets.')
             if len({formal.name.name for formal in definition.arguments})!=len(definition.arguments):raise error_at(call,'Duplicate subroutine parameter.')
             for actual in call.arguments:check_quantum_name(actual)
@@ -671,6 +752,7 @@ def lower_runtime_subroutines(program):
                     local_actual = any(isinstance(n, ast.Identifier) and n.name in visible for n in walk(call.arguments))
                     if not runtime_call(call, active or local_actual):
                         continue
+                    if empty_scalar_qubit_helper(functions[call.name.name]):continue
                     for formal, actual in zip(functions[call.name.name].arguments, call.arguments):
                         if isinstance(formal, ast.QuantumArgument):
                             for index in walk(actual):
@@ -749,7 +831,7 @@ def lower_runtime_subroutines(program):
             if len(groups)!=1 or len(groups[0])!=1 or isinstance(groups[0][0],(ast.RangeDefinition,ast.DiscreteSet)):
                 raise error_at(value,'Indexed register formals require one scalar index.')
             prefix,index=expression_calls(groups[0][0],True,depth)
-            raw=ast.IndexedIdentifier(name=copy.deepcopy(root.register),indices=[[copy.deepcopy(index)]])
+            raw=SourceQuantumSelection(register=copy.deepcopy(root.register),index=copy.deepcopy(index))
             check=WireReferenceCheck(targets=[raw]);check.span=getattr(value,'span',None);prefix.append(check)
             selected=ast.IndexExpression(collection=selected,index=[index])
             effects,view=capture_array_view(selected,True,depth,nonnegative=True,quantum=True)
@@ -925,6 +1007,86 @@ def lower_runtime_subroutines(program):
         loop.span = node.span
         return ast.CompoundStatement(statements=prefix + [loop])
 
+    def dynamic_alias_operation(operation,depth):
+        if isinstance(operation,(ast.QuantumGate,ast.QuantumPhase)):
+            operands=operation.qubits or []
+            def replace(op,targets):op.qubits=targets
+        elif isinstance(operation,ast.QuantumReset):
+            operands=[operation.qubits]
+            def replace(op,targets):op.qubits=targets[0]
+        elif isinstance(operation,ast.QuantumMeasurementStatement):
+            operands=[operation.measure.qubit]
+            def replace(op,targets):op.measure.qubit=targets[0]
+        else:return None
+        if not any(isinstance(value,SourceQuantumRegisterView) and not value.selections for value in operands):return None
+        if not 1<=len(operands)<=3:raise error_at(operation,'Quantum operations support one to three operands.')
+        prefix=[];groups=[]
+        for operand in operands:
+            if isinstance(operand,SourceQuantumRegisterView):groups.append(copy.deepcopy(operand));continue
+            if isinstance(operand,SourceQuantumSelection):
+                effects,selected=capture_scalar_qubit(operand);prefix.extend(effects);groups.append(selected);continue
+            captured=register_view_binding(None,operand,{},True,depth)
+            if captured is None:raise error_at(operation,'Dynamic alias broadcasting requires declared registers or captured quantum views.')
+            effects,view,_=captured;prefix.extend(effects);groups.append(view)
+        if isinstance(operation,ast.QuantumMeasurementStatement) and operation.target is not None:
+            target=operation.target
+            if isinstance(target,ast.Identifier):
+                type_=collection_scopes[-1].get(target.name)
+                if type_ is None:type_=next((d.type for d in bit_storage if d.identifier.name==target.name),None)
+                if not isinstance(type_,ast.BitType):raise error_at(operation,'Quantum alias measurements require a bit destination.')
+                width=1 if type_.size is None else collection_integer(type_.size,{})
+            elif isinstance(target,ast.IndexedIdentifier) and len(target.indices)==1:
+                group=target.indices[0] if isinstance(target.indices[0],list) else [target.indices[0]]
+                if len(group)!=1:raise error_at(operation,'Measurement destinations require one register axis.')
+                axis=group[0]
+                if isinstance(axis,ast.DiscreteSet):width=len(axis.values)
+                elif isinstance(axis,ast.RangeDefinition):
+                    type_=collection_scopes[-1].get(target.name.name)
+                    if not isinstance(type_,ast.BitType):raise error_at(operation,'Measurement destination is not a bit register.')
+                    total_width=1 if type_.size is None else collection_integer(type_.size,{})
+                    step=1 if axis.step is None else collection_integer(axis.step,{})
+                    start=(total_width-1 if step<0 else 0) if axis.start is None else collection_integer(axis.start,{})
+                    stop=(0 if step<0 else total_width-1) if axis.end is None else collection_integer(axis.end,{})
+                    if step==0:raise error_at(operation,'Measurement destination stride cannot be zero.')
+                    distance=stop-start
+                    width=0 if distance*step<0 else distance//step+1
+                    # Pass the same explicit endpoints to the pinned visitor;
+                    # its omitted-start default does not follow reverse strides.
+                    axis.start=ast.IntegerLiteral(start);axis.end=ast.IntegerLiteral(stop);axis.step=ast.IntegerLiteral(step)
+                else:width=1
+            else:raise error_at(operation,'Quantum alias measurements require a bit-register destination.')
+            if not 1<=width<=64:raise error_at(operation,'Measurement destination width must be from 1 to 64.')
+            view=groups[0]
+            prefix.append(ArrayReferenceCheck(views=[copy.deepcopy(view.view)],shapes=[[width]]))
+            view.selections=[SourceQuantumSelection(register=copy.deepcopy(view.register),index=SourceArrayView(name=view.view.name,element_type=view.view.element_type,parent=copy.deepcopy(view.view),axes=[ast.IntegerLiteral(i)],writable=False)) for i in range(width)]
+            result=copy.deepcopy(operation);replace(result,[view]);return prefix+[result]
+        count=ast.Identifier(fresh());runtime.add(count.name)
+        prefix.append(ast.ClassicalDeclaration(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=count,init_expression=ast.IntegerLiteral(1)))
+        def extent(group):return ast.SizeOf(target=copy.deepcopy(group.view),index=ast.IntegerLiteral(0)) if isinstance(group,SourceQuantumRegisterView) else ast.IntegerLiteral(1)
+        for group in groups:
+            size=extent(group)
+            prefix.append(ast.BranchingStatement(condition=ast.BinaryExpression(op=ast.BinaryOperator['>'],lhs=copy.deepcopy(size),rhs=copy.deepcopy(count)),if_block=[ast.ClassicalAssignment(lvalue=copy.deepcopy(count),op=ast.AssignmentOperator['='],rvalue=size)],else_block=[]))
+        def targets(cursor):
+            result=[]
+            for group in groups:
+                if isinstance(group,SourceQuantumSelection):result.append(copy.deepcopy(group));continue
+                # A one-qubit register broadcasts; all other widths must match.
+                many=ast.Cast(type=ast.IntType(),argument=ast.BinaryExpression(op=ast.BinaryOperator['!='],lhs=extent(group),rhs=ast.IntegerLiteral(1)))
+                index=ast.BinaryExpression(op=ast.BinaryOperator['*'],lhs=many,rhs=copy.deepcopy(cursor))
+                selected=SourceArrayView(name=group.view.name,element_type=group.view.element_type,parent=copy.deepcopy(group.view),axes=[index],writable=False)
+                result.append(SourceQuantumSelection(register=copy.deepcopy(group.register),index=selected))
+            return result
+        for preflight in (True,False):
+            cursor=ast.Identifier(fresh());runtime.add(cursor.name)
+            selected=targets(cursor)
+            if preflight:
+                body=[WireReferenceCheck(targets=selected)];body[0].span=operation.span
+            else:
+                op=copy.deepcopy(operation);replace(op,selected);body=[op]
+            loop=ast.ForInLoop(type=ast.IntType(size=ast.IntegerLiteral(32)),identifier=cursor,set_declaration=ast.RangeDefinition(start=ast.IntegerLiteral(0),end=ast.BinaryExpression(op=ast.BinaryOperator['-'],lhs=copy.deepcopy(count),rhs=ast.IntegerLiteral(1)),step=None),block=body)
+            loop._quantum_runtime_for=True;loop.span=operation.span;prefix.append(loop)
+        return prefix
+
     def block_body(body, parent, active=False, depth=0, declared=None):
         env = dict(parent); declared = set() if declared is None else set(declared)
         result = []
@@ -933,9 +1095,28 @@ def lower_runtime_subroutines(program):
                 raise error_at(node, 'Annotated operations require semantics the editor does not support.')
             if isinstance(node, (ast.SubroutineDefinition, ast.QuantumGateDefinition)):
                 result.append(node); continue
+            if isinstance(node,ast.AliasStatement):
+                if node.target.name in declared:raise error_at(node,'Duplicate declaration in one scope: '+node.target.name)
+                actual=rewrite(node.value,env)
+                dynamic=active or any(isinstance(item,(SourceQuantumRegisterView,SourceQuantumSelection,ast.FunctionCall,ast.Concatenation)) or isinstance(item,ast.Identifier) and (item.name in runtime or item.name not in constants and any(item.name in scope for scope in classical_scopes)) for item in walk(actual))
+                if dynamic:
+                    name=node.target.name
+                    if name in declared:raise error_at(node,'Duplicate declaration in one scope: '+name)
+                    captured=register_view_binding(None,actual,{},active,depth)
+                    if captured is not None:
+                        effects,binding,_=captured;result.extend(effects);env[name]=binding;declared.add(name)
+                        node._quantum_bound_view=copy.deepcopy(binding)
+                        continue
+                if len(classical_scopes)>2:
+                    name=node.target.name;bound=ast.Identifier(fresh())
+                    static_quantum_aliases[bound.name]=copy.deepcopy(actual)
+                    env[name]=bound;declared.add(name)
+                    alias=ast.AliasStatement(target=copy.deepcopy(bound),value=actual);alias.span=node.span
+                    result.append(alias);continue
+                declared.add(node.target.name)
             if isinstance(node, (ast.ClassicalDeclaration, ast.ConstantDeclaration)):
                 name = node.identifier.name
-                if active and name in declared:
+                if name in declared and (active or isinstance(env.get(name),SourceQuantumRegisterView)):
                     raise error_at(node, 'Duplicate declaration in one subroutine scope: ' + name)
                 declared.add(name)
                 if not isinstance(node.type,ast.ArrayType):array_scopes[-1].discard(name)
@@ -945,6 +1126,7 @@ def lower_runtime_subroutines(program):
                 value.type = rewrite(node.type, env)
                 if active:
                     env[name] = ast.Identifier(fresh())
+                elif isinstance(env.get(name),SourceQuantumRegisterView):env[name]=ast.Identifier(name)
                 value.identifier = rewrite(node.identifier, env)
                 classical_scopes[-1].add(value.identifier.name)
                 collection_scopes[-1][value.identifier.name]=collection_geometry(value.type,env)
@@ -1079,7 +1261,9 @@ def lower_runtime_subroutines(program):
                         continue
                     effects, rewritten = expression_calls(getattr(value, field.name), active, depth)
                     result.extend(effects); setattr(value, field.name, rewritten)
-            result.append(value)
+            alias_operation=dynamic_alias_operation(value,depth)
+            if alias_operation is not None:result.extend(alias_operation)
+            else:result.append(value)
         return result
 
     # Process in source order so a forward declaration cannot become visible.
@@ -1106,7 +1290,16 @@ def lower_runtime_subroutines(program):
             if size is None or isinstance(size, ast.IntegerLiteral):
                 registers[node.qubit.name] = 1 if size is None else size.value
         if isinstance(node,ast.ClassicalDeclaration):collection_scopes[0][node.identifier.name]=collection_geometry(node.type,{})
-        result.extend(block([node], {}))
+        if isinstance(node,(ast.ClassicalDeclaration,ast.ConstantDeclaration,ast.QubitDeclaration)):
+            name=node.qubit.name if isinstance(node,ast.QubitDeclaration) else node.identifier.name
+            if name in global_quantum_aliases:raise error_at(node,'Duplicate global declaration: '+name)
+        if isinstance(node,ast.AliasStatement) and (node.target.name in global_alias_names or node.target.name in classical_scopes[0] or node.target.name in register_declarations):
+            raise error_at(node,'Duplicate global alias: '+node.target.name)
+        result.extend(block([node], global_quantum_aliases))
+        if isinstance(node,ast.AliasStatement):
+            global_alias_names.add(node.target.name)
+            if hasattr(node,'_quantum_bound_view'):global_quantum_aliases[node.target.name]=node._quantum_bound_view
+            else:static_quantum_aliases[node.target.name]=copy.deepcopy(node.value)
     program.statements[:] = array_temporaries + bit_storage + result
     program._quantum_runtime_array_names=collection_arrays
     return {declaration.identifier.name for declaration in bit_storage}

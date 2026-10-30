@@ -82,6 +82,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Scalar quantum binding tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-quantum-register-views.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Quantum register view tests failed.' }
+          & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-dynamic-quantum-aliases.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Dynamic quantum alias tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-runtime-array-view-model.py --adapter dist/gui-validation/runtime-angle-import-tests.exe
           if ($LASTEXITCODE -ne 0) { throw 'Runtime array source checks failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-dev08-numeric-source.py --frozen dist/QuantumStudio/qasm-import/qasm-import.exe --adapter dist/gui-validation/runtime-angle-import-tests.exe

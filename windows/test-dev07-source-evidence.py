@@ -46,16 +46,18 @@ for fixture in manifest['fixtures']:
  elif name.endswith('with_break'):expected={'000':.5,'001':.5}
  else:expected={'':1} # Original has no outputs: execution smoke only.
  run(payload,expected);run(again,expected)
- if name.endswith('unroll_qasm_output'):
+ if name.endswith('unroll_qasm_output') or name=='test_alias_arg_from_loop_validates':
   # Independently derived original order: H0,CX01,H1,CX12,H2,CX23.
   # Its inverse maps the expected PURE state to zero; measuring all-zero with
   # probability one witnesses relative phases as well as populations. Append
   # this observer to a COPY of each model, never to the unchanged source.
+  inverse=[('H',[3]),('H',[0])] if name=='test_alias_arg_from_loop_validates' else [('CNOT',[2,3]),('H',[2]),('CNOT',[1,2]),('H',[1]),('CNOT',[0,1]),('H',[0])]
+  # The alias fixture applies H0,H1,H2,H1,H2,H3, hence H0 H3.
   for candidate in (model,restored):
    observed=copy.deepcopy(candidate)
    observed['Registers']=[dict(Name='audit',Size=4)];observed['OutputBits']=[3,2,1,0]
-   observed['Steps'] += [dict(Kind='Gate',Expression=gate,Wires=wires) for gate,wires in [('CNOT',[2,3]),('H',[2]),('CNOT',[1,2]),('H',[1]),('CNOT',[0,1]),('H',[0])]]
+   observed['Steps'] += [dict(Kind='Gate',Expression=gate,Wires=wires) for gate,wires in inverse]
    observed['Steps'] += [dict(Kind='Measure',Wires=[wire],ClassicalBit=wire) for wire in range(4)]
    run(bridge(observed),{'0000':1})
  print('PASS:',name,flush=True)
-print(f'PASS: {checks} pinned DEV-07 checks; unmeasured state uses a separately labeled inverse witness; alias calls remain deferred.')
+print(f'PASS: {checks} pinned DEV-07 checks; unmeasured state uses a separately labeled inverse witness; loop-local quantum alias calls included.')
