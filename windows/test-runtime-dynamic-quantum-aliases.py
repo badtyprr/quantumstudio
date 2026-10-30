@@ -45,6 +45,9 @@ def roundtrip(document,expected='000',error=False):
  reimported=adapt(compile_source(encoded['source']));execute(reimported,expected,error)
  return encoded
 for source,expected in (
+ ('qubit[3] q;int i=1;let a=q[i];{let a=q[0];x a;}x a;output bit[3] r;r=measure q;','011'),
+ ('qubit[3] q;let a=q[0:1];int i=0;{let a=q[1:2];let b=a[i];x b;}output bit[3] r;r=measure q;','010'),
+ ('qubit[3] q;x q[1];int i=1;let a=q[i:2];output bit[2] r;r[:-1:0]=measure a;','10'),
  ('qubit[3] q;x q[2];int i=1;let a=q[i:i+1];output bit[3] r;r=0;r[1:2]=measure a;','100'),
  ('qubit[4] q;x q[0];x q[2];int i=1;let a=q[{i,3}];cx q[{0,2}],a;output bit[4] r;r=measure q;','1111'),
  ('qubit[3] q;let fixed=q[{2,0,1}];int i=1;let a=fixed[i:i+1];x a;output bit[3] r;r=measure q;','011'),

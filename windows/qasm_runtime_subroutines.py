@@ -1044,12 +1044,15 @@ def lower_runtime_subroutines(program):
                     type_=collection_scopes[-1].get(target.name.name)
                     if not isinstance(type_,ast.BitType):raise error_at(operation,'Measurement destination is not a bit register.')
                     total_width=1 if type_.size is None else collection_integer(type_.size,{})
-                    start=0 if axis.start is None else collection_integer(axis.start,{})
-                    stop=total_width-1 if axis.end is None else collection_integer(axis.end,{})
                     step=1 if axis.step is None else collection_integer(axis.step,{})
+                    start=(total_width-1 if step<0 else 0) if axis.start is None else collection_integer(axis.start,{})
+                    stop=(0 if step<0 else total_width-1) if axis.end is None else collection_integer(axis.end,{})
                     if step==0:raise error_at(operation,'Measurement destination stride cannot be zero.')
                     distance=stop-start
                     width=0 if distance*step<0 else distance//step+1
+                    # Pass the same explicit endpoints to the pinned visitor;
+                    # its omitted-start default does not follow reverse strides.
+                    axis.start=ast.IntegerLiteral(start);axis.end=ast.IntegerLiteral(stop);axis.step=ast.IntegerLiteral(step)
                 else:width=1
             else:raise error_at(operation,'Quantum alias measurements require a bit-register destination.')
             if not 1<=width<=64:raise error_at(operation,'Measurement destination width must be from 1 to 64.')
@@ -1104,6 +1107,12 @@ def lower_runtime_subroutines(program):
                         effects,binding,_=captured;result.extend(effects);env[name]=binding;declared.add(name)
                         node._quantum_bound_view=copy.deepcopy(binding)
                         continue
+                if len(classical_scopes)>2:
+                    name=node.target.name;bound=ast.Identifier(fresh())
+                    static_quantum_aliases[bound.name]=copy.deepcopy(actual)
+                    env[name]=bound;declared.add(name)
+                    alias=ast.AliasStatement(target=copy.deepcopy(bound),value=actual);alias.span=node.span
+                    result.append(alias);continue
                 declared.add(node.target.name)
             if isinstance(node, (ast.ClassicalDeclaration, ast.ConstantDeclaration)):
                 name = node.identifier.name
