@@ -31,6 +31,10 @@ static class ClassicalExpressionTextTests {
    var parsed=ClassicalExpressionText.ParseInteger(text,context);Check(ClassicalExpressionText.RequiredVersion(parsed)==16);
    string stable=ClassicalExpressionText.Format(parsed,context);Check(ClassicalExpressionText.Format(ClassicalExpressionText.ParseInteger(stable,context),context)==stable);
   }
+  var nestedViewNumeric=ClassicalExpressionText.ParseNumeric("array(1, viewextent(view(1, readonly, range(*, *, *)), 0) - 1)",context);
+  Check(ClassicalExpressionText.RequiredNumericVersion(nestedViewNumeric)==16);
+  formatted=ClassicalExpressionText.FormatNumeric(nestedViewNumeric,context);
+  Check(ClassicalExpressionText.FormatNumeric(ClassicalExpressionText.ParseNumeric(formatted,context),context)==formatted);
   var viewNumeric=ClassicalExpressionText.ParseNumeric("array(view(1, readonly, range(*, *, *)), 0)",context);
   Check(ClassicalExpressionText.RequiredNumericVersion(viewNumeric)==16);
   formatted=ClassicalExpressionText.FormatNumeric(viewNumeric,context);Check(ClassicalExpressionText.FormatNumeric(ClassicalExpressionText.ParseNumeric(formatted,context),context)==formatted);

@@ -199,6 +199,7 @@ static class ClassicalExpressionText {
  static int RequiredNumericVersion(R value,int depth) {
   if(value==null)return 11;if(depth>=32)throw new ArgumentException("Expressions allow at most 32 levels.");
   int version=value.Selection==null ? (value.Kind=="Constant" || value.Kind=="Integer" || value.Kind=="Binary" ? 11 : 13) : value.Selection.View==null ? 15 : 16;
+  if(value.Selection!=null && value.Selection.Indices.Length!=0)version=Math.Max(version,value.Selection.Indices.Max(index=>RequiredVersion(index,depth+1)));
   return Math.Max(version,Math.Max(RequiredVersion(value.IntegerValue,depth+1),Math.Max(RequiredVersion(value.BitValue,depth+1),Math.Max(RequiredNumericVersion(value.Left,depth+1),RequiredNumericVersion(value.Right,depth+1)))));
  }
  static void ResolveInteger(N n,int depth) {
