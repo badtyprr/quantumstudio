@@ -96,6 +96,12 @@ int main() {try {
  equal("qmeasurementvalid(qinstrument(vector(0,1),vector(vector(qmatrix(1,2,vector(1,0))),vector(qmatrix(1,2,vector(0,1))))))","1");
  reject("qpovm(vector(0,1),vector([x,0,0;0,1,2;0,2,1],[1-x,0,0;0,0,-2;0,-2,0]))");
  reject("qpovm(vector(0),vector([1+1/10000000000000,0;0,1]))");
+ reject("qmeasurementvalid(qinstrument(vector(0),vector(vector(matrixparam(\"A\",2,2),[infinity,infinity;infinity,infinity]))))");
+ auto selection=evaluate("qpoststate("+z+",[1;1]/sqrt(2),x)");
+ if(!selection.isFunction())throw std::runtime_error("Unknown outcome selector lost");++checks;
+ equal("replace(qpoststate("+z+",[1;1]/sqrt(2),x),x,0)","[1,0;0,0]");
+ equal("replace(qpoststate("+z+",[1;1]/sqrt(2),x),x,1)","[0,0;0,1]");
+ reject("replace(qpoststate("+z+",[1;1]/sqrt(2),x),x,2)");
  eo.approximation=APPROXIMATION_APPROXIMATE;
  equal("qmeasurementvalid(qpovm(vector(0),vector([1+1/10000000000000,0;0,1])))","1");
  reject("qpovm(vector(0),vector([1+1/1000000,0;0,1]))");

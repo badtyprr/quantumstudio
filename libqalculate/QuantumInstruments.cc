@@ -145,6 +145,11 @@ bool readMeasurement(const MathStructure &value,Measurement &m,const EvaluationO
    if(first) {input=columns;output=rows;first=false;}
    if(!matchingDimension(columns,input,m.validity,eo) || !matchingDimension(rows,output,m.validity,eo))return false;
    if(!op.isMatrix()) {m.deferred=true;deferredGroup=true;m.validity=combine(m.validity,Verdict::Unknown);continue;}
+   for(size_t r=0;r<op.rows();++r)for(size_t c=0;c<op.columns();++c) {
+    const MathStructure &entry=cell(op,r,c);
+    if(entry.isVector() || (entry.isNumber() && (entry.number().isUndefined() || entry.number().isInfinite(false))))
+     return fail("Measurement operators require finite scalar entries.");
+   }
    MathStructure term=op;
    if(instrument) {term=quantumAdjoint(op,eo);term*=op;term.eval(eo);if(op.columns()==1)preserveSingleton(term);}
    if(!j)effect=term;else effect+=term;
@@ -384,11 +389,19 @@ public:
     return 1;
    }
    MathStructure label=raw[2];label.eval(eo);
+   if(label.isVector()) {fail("An outcome selector must be a scalar value or text.");return 0;}
+   bool unknownMatch=false;
+   for(size_t k=0;k<m.labels.size();++k)if(!label.equals(m.labels[k])) {
+    if(label.isSymbolic() && m.labels[k].isSymbolic())continue;
+    MathStructure difference=label;difference-=m.labels[k];
+    unknownMatch|=zero(difference,eo)!=Verdict::Invalid;
+   }
    for(size_t k=0;k<m.labels.size();++k)if(label.equals(m.labels[k])) {
     if(probabilities[k].isZero()) {fail("A zero-probability outcome has no normalized post-measurement state.");return 0;}
     if(!probabilities[k].representsPositive())return 0;
     out=states[k];out/=probabilities[k];out.eval(eo);return 1;
    }
+   if(unknownMatch)return 0;
    fail("The requested outcome label is not present in this instrument.");return 0;
   }
   return 0;
