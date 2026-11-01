@@ -40,7 +40,12 @@ for flags in [[], ['--approx']]:
         ('cardinality(vector(x))', '1'),
         ('cardinality(vector())', '0'),
         ('cardinality(vector(1,1,2))', '2'),
+        ('cardinality(vector(bitstring(1+1,2),bitstring(2,2)))', '1'),
         ('sumset(sumset(x,vector(0,1),x),vector(2,3),x)', '2'),
     ]:
         assert evaluate(expression)['text'] == expected, expression
+    for expression in ['member(bitstring(-1,2),Σ)', 'member([1,2;3,4],Σ)']:
+        result = subprocess.run([worker, '--json']+flags, input=('quantum: '+expression).encode(), capture_output=True, timeout=30)
+        assert result.returncode != 0 and not result.stdout, (expression, result.stdout, result.stderr)
+        checks += 1
 print(f'{checks} symbolic domain checks passed')
