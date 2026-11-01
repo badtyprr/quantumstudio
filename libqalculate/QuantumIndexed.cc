@@ -24,6 +24,22 @@ QuantumBitLabelState validateQuantumBitLabel(MathStructure &index,MathStructure 
 }
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
+// Labels passed here have already been validated and canonicalized.
+enum class SetEquality { Equal, Different, Unknown };
+SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
+ if(left.equals(right))return SetEquality::Equal;
+ bool leftLabel=left.isFunction() && left.function()->referenceName()=="qbitlabel";
+ bool rightLabel=right.isFunction() && right.function()->referenceName()=="qbitlabel";
+ if(leftLabel && rightLabel)return SetEquality::Different;
+ if(leftLabel || rightLabel) {
+  const MathStructure &scalar=leftLabel ? right : left;
+  return scalar.containsUnknowns() ? SetEquality::Unknown : SetEquality::Different;
+ }
+ ComparisonResult comparison=left.compare(right);
+ if(comparison==COMPARISON_RESULT_EQUAL)return SetEquality::Equal;
+ if(comparison==COMPARISON_RESULT_LESS || comparison==COMPARISON_RESULT_GREATER || comparison==COMPARISON_RESULT_NOT_EQUAL)return SetEquality::Different;
+ return SetEquality::Unknown;
+}
 // A register family retains bit assignments made before its width is known.
 // The flat binding list contains alternating numeric indices and bit values.
 // Numeric keys cannot be accidentally replaced along with a symbolic bit.
@@ -410,56 +426,39 @@ class QuantumIndexedFunction: public MathFunction {
    if(!members.isVector() && (members.representsScalar() || bitLabel) && (collection.isVector() || (collection.isFunction() &&
       (collection.function()->referenceName()=="qbitstrings" || collection.function()->referenceName()=="vector" || collection.function()->referenceName()=="union" || collection.function()->referenceName()=="intersect" || collection.function()->referenceName()=="setdiff" || collection.function()->referenceName()=="unique" || collection.function()->referenceName()=="select" || collection.function()->referenceName()=="qindexrange"))))
     members.transform(STRUCT_VECTOR);
-   // An unspecified domain is not an invalid concrete collection. Preserve
-   // symbolic singleton collections above before deferring an unknown domain.
-   if(op=="qsumset" && (members.isSymbolic() || (members.isVariable() && !members.variable()->isKnown())))return 0;
-   if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    // Distinct symbolic labels may become equal after substitution. Do not
    // count, deduplicate, or test membership before their domains are known.
    bool deferredLabels=false;
-   auto validateLabel=[&](const MathStructure &value)->bool {
+   auto validateLabel=[&](MathStructure &value)->bool {
     if(!value.isFunction() || value.function()->referenceName()!="qbitlabel")return value.representsScalar();
     if(value.size()!=2)return false;
     MathStructure index=value[0],width=value[1];
     QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
     deferredLabels=deferredLabels || state==QuantumBitLabelState::Symbolic;
+    if(state==QuantumBitLabelState::Concrete) {auto function=value.function();value.set(function,&index,&width,NULL);}
     return state!=QuantumBitLabelState::Invalid;
    };
+   MathStructure probe=raw[0];
+   if(op=="qmember") {
+    probe.eval(exact);
+    if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
+   }
+   // Validate the probe even when its domain is not yet specified.
+   if(members.isSymbolic() || (members.isVariable() && !members.variable()->isKnown()))return 0;
+   if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    for(size_t k=0;k<members.size();++k)if(!validateLabel(members[k])) {
     CALCULATOR->error(true,"Set entries must be scalars or valid binary-string labels.",NULL);return 0;
    }
-   if(op=="qmember") {
-    MathStructure probe=raw[0];probe.eval(exact);
-    if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
-   }
    if(deferredLabels)return 0;
    if(op=="qmember") {
-    auto canonical=[&](MathStructure &value)->bool {
-     if(value.isFunction() && value.function()->referenceName()=="qbitlabel") {
-      if(value.size()!=2)return false;
-      MathStructure index=value[0],width=value[1];
-      if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return false;
-      auto function=value.function();value.set(function,&index,&width,NULL);return true;
-     }
-     return value.representsScalar();
-    };
-    MathStructure probe=raw[0];probe.eval(exact);
-    if(!canonical(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
     bool found=false,unknown=false;
     for(size_t k=0;k<members.size();++k) {
      if(CALCULATOR->aborted())return 0;
-     MathStructure member=members[k];
-     if(!canonical(member)) {CALCULATOR->error(true,"Membership requires a finite flat scalar or binary-string collection.",NULL);return 0;}
-     bool probeLabel=probe.isFunction() && probe.function()->referenceName()=="qbitlabel";
-     bool memberLabel=member.isFunction() && member.function()->referenceName()=="qbitlabel";
-     if(probeLabel && memberLabel) {if(probe[0].equals(member[0]) && probe[1].equals(member[1]))found=true;continue;}
-     if(probe.equals(member)) {found=true;continue;}
-     if(probeLabel || memberLabel)continue;
-     ComparisonResult comparison=probe.compare(member);
-     if(comparison==COMPARISON_RESULT_EQUAL)found=true;
-     else if(comparison!=COMPARISON_RESULT_LESS && comparison!=COMPARISON_RESULT_GREATER && comparison!=COMPARISON_RESULT_NOT_EQUAL)unknown=true;
+     SetEquality equality=setEquality(probe,members[k]);
+     found=found || equality==SetEquality::Equal;
+     unknown=unknown || equality==SetEquality::Unknown;
     }
-    if(!found && unknown) {CALCULATOR->error(true,"Membership could not determine equality of symbolic entries.",NULL);return 0;}
+    if(!found && unknown)return 0;
     out=found ? m_one : m_zero;return 1;
    }
    std::vector<MathStructure> seen;
@@ -468,7 +467,12 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     const MathStructure &member=members[k];
     if(!member.representsScalar() && !(member.isFunction() && member.function()->referenceName()=="qbitlabel")) {CALCULATOR->error(true,"Set sum indices must be scalars or binary-string labels.",NULL);return 0;}
-    bool duplicate=false;for(const auto &previous:seen)if(member.equals(previous)){duplicate=true;break;}
+    bool duplicate=false;
+    for(const auto &previous:seen) {
+     SetEquality equality=setEquality(member,previous);
+     if(equality==SetEquality::Equal) {duplicate=true;break;}
+     if(equality==SetEquality::Unknown)return 0;
+    }
     if(duplicate)continue;
     seen.push_back(member);
     MathStructure term=raw[0];replaceQuantumIndex(term,raw[2],member);term.eval(eo);
