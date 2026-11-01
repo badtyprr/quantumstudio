@@ -25,7 +25,7 @@ spelling and argument order; retain it as a failed control. Corrected native
 qptracedim(rho,0,[2,2]) yields I/2 for a Bell state.
 
 1. Native models, validity, ensemble averages, probabilities, instrument branches
-   and Naimark completion: current regression passed 168 assertions. Development
+   and Naimark completion: current regression passed 175 assertions. Development
    linkage uses retained dev08-build-base; it is not a clean package build.
 2. Symbolic domains, substitutions, serialization/copy/re-entry, expanded source
    fixtures and actual GUI workflows: pending. Initial native checks do not
@@ -53,4 +53,42 @@ loss of symbolic label distinctness, approximate-root dispatch, and rejection of
 declared symbolic matrices. Corrective regressions cover each finding. Standards
 reported no documented violations and two naming/duplication suggestions; shared
 label validation and the positiveSemidefinite name address those suggestions.
-Final exact-head review remains pending.
+Final native exact-head reviews of `617dec706d5c4b34c7ca2ccfffceebe3315ba150`
+report zero Standards violations/heuristics and zero Spec findings. Workflow
+changes, CI, packaged artifacts and publication are separate gates.
+
+## Workflow development checks
+
+The worker contract suite passed 214 checks against the development worker. It
+covers exact/approximate copy and re-entry, label substitution, unknown outcome
+selection, invalid nonfinite Kraus matrices, singleton/rectangular dimensions,
+and partial traces of conditional Bell-state outputs. A failing symbolic-selector
+copy exposed matrix separators lost inside arithmetic; recursive serialization
+now retains those dimensions and separators.
+
+The Naimark source's tetrahedral states are |0> and
+(|0>+sqrt(2)*exp(i*phi)|1>)/sqrt(3), phi=0,+2*pi/3,-2*pi/3.
+Effects are half their projectors. For |0> the independent probabilities are
+1/2,1/6,1/6,1/6. Python complex arithmetic checks every entry of U-adjoint U
+and every compressed effect of the constructed 8-by-8 unitary, using independent
+state vectors. A disclosed instrument adaptation uses the rank-one identity
+sqrt(P/2)=P/sqrt(2); all four conditional |0> input outputs equal their respective
+projectors. The general square-root form was also tried with |i> input; the
+fourth conditional state stayed pending. The rank-one form has the same pending
+result for that input: the scalar engine does not establish positivity of its
+exact probability. This limitation remains explicit and has a copy/re-entry
+regression; it is not counted as successful evaluation or whole-lesson coverage.
+
+A preview GUI using the development worker passed 21 checks through actual Run
+and Copy buttons, clipboard re-entry, session save/open, invalid-input recovery,
+and poststate/Naimark matrix display. Five screenshots were inspected. This uses
+the previous released GUI with the development worker, not the final package.
+The package pipeline now includes the worker suite and actual measurement GUI
+checks; final clean packaged results remain pending.
+
+The workflow Spec review found pending comparisons lost nested matrix separators
+and the Windows payload omitted the linked feature guide. Recursive comparison
+serialization and substitution regressions address the first; packaging the guide
+and its evidence addresses the second. The broader worker suite also caught a
+Fourier-display regression, so arithmetic serialization is restricted to expressions
+containing literal vectors. Final review of these corrections remains pending.

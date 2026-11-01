@@ -87,10 +87,16 @@ Copy-Item (Join-Path $repo 'COPYING') (Join-Path $output 'LICENSE.txt')
 Copy-Item (Join-Path $PSScriptRoot 'Notation-guide.html') $output
 Copy-Item (Join-Path $PSScriptRoot 'README.txt') $output
 Copy-Item (Join-Path $repo 'docs\quantum-notation.md') (Join-Path $output 'Research-notes.md')
+Copy-Item (Join-Path $repo 'docs\quantum-measurements.md') $output
+New-Item -ItemType Directory -Path (Join-Path $output 'learning-evidence') | Out-Null
+Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-09.md') (Join-Path $output 'learning-evidence')
 Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
 $oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
 try {
     $env:QALCULATE_DEFINITIONS_DIR = Join-Path $output 'data'
+    & $PythonPath (Join-Path $repo 'src/quantum-instruments-worker-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged measurement worker checks failed.' }
+    & (Join-Path $PSScriptRoot 'test-measurements-gui.ps1') -Distribution $output -Evidence (Join-Path $repo 'dist/measurement-gui-validation')
     & $PythonPath (Join-Path $PSScriptRoot 'test-classical-module-export.py') --package $output --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Classical module export validation failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-worker-test.py') (Join-Path $output 'quantum-worker.exe')
