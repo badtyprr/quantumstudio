@@ -1,0 +1,95 @@
+{
+  "status": "passed",
+  "kind": "development-reference-proof",
+  "execution": "external CPython process; no QuantumStudio invocation",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "F:\\src\\libqalculate\\.tools\\dev13-aud02-replay-20261101-b6e2\\Scripts\\python.exe",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "packages": {
+    "dill": "0.4.1",
+    "numpy": "2.5.4",
+    "pip": "25.0.1",
+    "qiskit": "2.2.3",
+    "rustworkx": "0.18.1",
+    "scipy": "1.18.1",
+    "stevedore": "5.9.1",
+    "typing_extensions": "4.16.0"
+  },
+  "source_sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+  "cell_index": 5,
+  "cell_sha256": "e275067a2d9d843207e49a9f27a4cb7ffc883d4e9362f3b2258f7221df49387e",
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "base": "0fed41cb5637c578737278bf13f59590a56d6cf4",
+  "script_sha256": "c5e5d0dec701d53dbac61f56c03e7cb3469841c4faec7f8935ca43eb1aabab9d",
+  "state": [
+    [
+      0.7071067811865475,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.7071067811865475,
+      0.0
+    ]
+  ],
+  "expected_state": [
+    [
+      0.7071067811865475,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.7071067811865475,
+      0.0
+    ]
+  ],
+  "amplitude_error": 0.0,
+  "shots": 4096,
+  "seed": 1731,
+  "counts": {
+    "00": 1964,
+    "11": 2132
+  },
+  "frequency_tolerance": 0.04,
+  "frequency_deviation": 0.0205078125,
+  "ordering_witness": {
+    "10": 32
+  },
+  "expected_errors": [
+    {
+      "case": "qubit-out-of-range",
+      "type": "CircuitError",
+      "message": "'Index 2 out of range for size 2.'"
+    },
+    {
+      "case": "non-normalized-state",
+      "type": "ValueError",
+      "message": "Probabilities do not sum to 1. See Notes section of docstring for more information."
+    },
+    {
+      "case": "malformed-qasm",
+      "type": "QASM2ParseError",
+      "message": "\"<input>:1,25: 'invalid' is not defined in this scope\""
+    }
+  ],
+  "claims_excluded": [
+    "unchanged notebook execution",
+    "qBraid conversion graph",
+    "provider execution",
+    "QuantumStudio Python support"
+  ]
+}
