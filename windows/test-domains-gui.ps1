@@ -17,4 +17,3 @@ try {
  if($process.ExitCode -ne 0 -or !$result.StartsWith('PASS:')){throw $result}
  Write-Output $result
 }finally{$process.Dispose()}
-
