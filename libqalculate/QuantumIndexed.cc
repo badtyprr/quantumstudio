@@ -92,6 +92,15 @@ bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &
  return value.representsScalar() && !value.isUndefined();
 }
 enum class DomainState { Invalid, Pending, Finite };
+bool normalizeSetEntries(MathStructure &members,const EvaluationOptions &eo,bool &pending) {
+ for(size_t k=0;k<members.size();++k)if(!canonicalSetElement(members[k],eo,pending))return false;
+ for(size_t k=members.size();k>0;--k)for(size_t j=0;j<k-1;++j)if(setEquality(members[k-1],members[j])==SetEquality::Equal) {members.delChild(k);break;}
+ return true;
+}
+bool unresolvedSetEquality(const MathStructure &members) {
+ for(size_t k=0;k<members.size();++k)for(size_t j=0;j<k;++j)if(setEquality(members[k],members[j])==SetEquality::Unknown)return true;
+ return false;
+}
 DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
  members=raw;members.eval(eo);
  if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
@@ -99,8 +108,7 @@ DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const E
  if(pendingDomain(members))return DomainState::Pending;
  if(!members.isVector() || members.size()>1024)return DomainState::Invalid;
  bool pending=false;
- for(size_t k=0;k<members.size();++k)if(!canonicalSetElement(members[k],eo,pending))return DomainState::Invalid;
- for(size_t k=members.size();k>0;--k)for(size_t j=0;j<k-1;++j)if(setEquality(members[k-1],members[j])==SetEquality::Equal) {members.delChild(k);break;}
+ if(!normalizeSetEntries(members,eo,pending))return DomainState::Invalid;
  return pending ? DomainState::Pending : DomainState::Finite;
 }
 // A register family retains bit assignments made before its width is known.
@@ -254,8 +262,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(!entries.isVector() || entries.size()>1024) {CALCULATOR->error(true,"A set requires a vector of at most 1024 valid entries.",NULL);return 0;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;bool pending=false;
-   for(size_t k=0;k<entries.size();++k)if(!canonicalSetElement(entries[k],exact,pending)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
-   for(size_t k=entries.size();k>0;--k)for(size_t j=0;j<k-1;++j)if(setEquality(entries[k-1],entries[j])==SetEquality::Equal) {entries.delChild(k);break;}
+   if(!normalizeSetEntries(entries,exact,pending)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
    if(!entries.equals(raw[0])) {out.set(this,&entries,NULL);return 1;}
    return 0;
   }
@@ -285,7 +292,10 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure initial(CALCULATOR->getFunction("qtuple"),&empty,NULL);tuples.addChild(initial);
    for(int axis=0;axis<repetitions;++axis) {
     const MathStructure &factor=op=="qcartesian" && axis==1 ? right : left;
-    if(factor.size() && tuples.size()>1024/factor.size()) {CALCULATOR->error(true,"Cartesian materialization supports at most 1024 tuples.",NULL);return 0;}
+    if(factor.size() && tuples.size()>1024/factor.size()) {
+     if(unresolvedSetEquality(left) || (op=="qcartesian" && unresolvedSetEquality(right)))return 0;
+     CALCULATOR->error(true,"Cartesian materialization supports at most 1024 tuples.",NULL);return 0;
+    }
     MathStructure next;next.clearVector();
     for(size_t a=0;a<tuples.size();++a)for(size_t b=0;b<factor.size();++b) {
      if(CALCULATOR->aborted())return 0;
