@@ -223,6 +223,18 @@ const std::map<std::string,int> quantumSignatures = {
  {"qbitvalue",1},
  {"qbloch",1},
  {"qblochsub",2},
+ {"qpovm",2},
+ {"qinstrument",2},
+ {"qmeasurementvalid",1},
+ {"qoutcomelabels",1},
+ {"qeffects",1},
+ {"qensemble",3},
+ {"qensembleaverage",1},
+ {"qensemblevalid",1},
+ {"qprobabilities",2},
+ {"qbranches",2},
+ {"qpoststate",3},
+ {"qnaimark",2},
  {"qborn",2},
  {"qchannel",2},
  {"qchoi",1},
@@ -990,6 +1002,7 @@ class Parser {
     if(name=="bitvalue")name="qbitvalue";
     if(name=="density") name="qdensity";
     if(name=="bloch") name="qbloch";
+    if(name=="povm" || name=="instrument" || name=="measurementvalid" || name=="outcomelabels" || name=="effects" || name=="ensemble" || name=="ensembleaverage" || name=="ensemblevalid" || name=="probabilities" || name=="branches" || name=="poststate" || name=="naimark")name="q"+name;
     if(name=="ptrace") name="qptrace";
     if(name=="permute") name="qpermute";
     if(name=="vec") name="qvec";

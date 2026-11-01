@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumMeasurement.h"
+#include "QuantumInstruments.h"
 #include "Calculator.h"
 #include "QuantumAlgebra.h"
 #include "Function.h"
@@ -127,6 +128,7 @@ class QuantumMeasurementFunction: public MathFunction {
 };
 }
 void registerQuantumMeasurement(Calculator &calculator) {
+ registerQuantumInstruments(calculator);
  for(const auto &entry:{std::pair<const char *,int>("qprobs",1),{"qprobsub",2},{"qpurity",1},{"qexpect",2},{"qborn",2},{"qpostselect",2},{"qvariance",2}})
   calculator.addFunction(new QuantumMeasurementFunction(entry.first,entry.second));
 }
