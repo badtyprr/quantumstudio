@@ -144,3 +144,14 @@ vector inputs retain their vector behavior. Explicit three-argument multiset
 operations continue to return vectors so that requested multiplicities survive;
 these are multiset operations, not the two-argument set operations.
 The immutable v14 worker passes 148 Cartesian/family checks in both modes.
+
+The next independent Spec review found that typed `unique` and `select` still
+rejected unresolved equality/predicates. Fixtures `5076fe9c` and the retained
+`dev10-legacy-symbolic-red.log` record that failure. Typed unique now preserves
+the canonical set; typed select uses the conditional-aware filter (including
+pending index ranges). Genuine vector inputs and explicit first-match select
+retain legacy behavior. Copy parsing avoids wrapping an existing compatibility
+adapter twice; v15's failed copy test is retained. Singleton set display now
+renders braces even after presentation formatting collapses its inner vector.
+The immutable v18 worker passes 174 focused Cartesian/family checks, including
+unknown predicates, pending ranges, default predicates and first-match controls.

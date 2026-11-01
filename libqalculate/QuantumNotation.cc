@@ -1324,7 +1324,7 @@ class Parser {
      for(size_t k=0;k<2;++k)args[k]="qdomainvector("+args[k]+")";
     }
     std::string legacyDomain;
-    if(!args.empty() && (name=="unique" || name=="select")) {
+    if(!args.empty() && (name=="unique" || name=="select") && args[0].find("qdomainvector(")!=0) {
      legacyDomain=args[0];args[0]="qdomainvector("+args[0]+")";
     }
     if(name=="qsequence" && args.size()==3 && args[0].size()>=2 && args[0].front()=='[' && args[0].back()==']') {

@@ -256,12 +256,24 @@ class QuantumIndexedFunction: public MathFunction {
    out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
   if(op=="qdomainresult") {
-   MathStructure source=raw[1];source.eval(eo);out=raw[0];out.eval(eo);
-   if(source.isFunction() && source.function()->referenceName()=="qset") {
-    if(!out.isVector())out.transform(STRUCT_VECTOR);
-    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);
+   MathStructure source=raw[1];source.eval(eo);
+   if((source.isSymbolic() || (source.isVariable() && !source.variable()->isKnown())))return 0;
+   if(domainExpression(source) && raw[0].isFunction()) {
+    const MathStructure &call=raw[0];const std::string name=call.function()->referenceName();
+    if(name=="unique") {out=source;return 1;}
+    if(name=="select" && call.size()==4) {
+     MathStructure firstOnly=call[3];firstOnly.eval(eo);
+     if(firstOnly.isZero()) {
+      MathStructure index=call[2];
+      if(index.isUndefined()) {
+       index=MathStructure("__qselect_index",true);
+       while(call.contains(index))index=MathStructure(index.symbol()+"_",true);
+      }
+      out.set(CALCULATOR->getFunction("qsetfilter"),&call[1],&source,&index,NULL);out.eval(eo);return 1;
+     }
+    }
    }
-   return 1;
+   out=raw[0];out.eval(eo);return 1;
   }
   if(op=="qdomainvector") {
    // Legacy vector consumers retain their own validation and multiset rules.

@@ -43,6 +43,10 @@ for flags in [[], ['--approx']]:
         ('cardinality(intersect(bitstrings(1),bitstrings(0),1))','0'),
         ('cardinality(setdiff(qindexrange(1,3),qindexrange(2,3),1))','1'),
         ('sumset(k,select(qindexrange(1,3),k>1,k),k)','5'),
+        ('cardinality(select(qset(vector(1,2)),1))','2'),
+        ('select(qset(vector(1,2)),k>1,k,1)','2'),
+        ('replace(cardinality(unique(qindexrange(0,n))),n,2)','3'),
+        ('replace(cardinality(select(qindexrange(0,n),k>0,k)),n,2)','2'),
     ]:
         value=data(expression)
         assert value['text']==expected,(expression,value,expected)
@@ -58,7 +62,9 @@ for flags in [[], ['--approx']]:
     pending=data('cardinality(cartesianpower(vector(x,y),11))')
     assert data('replace('+pending['copy_text']+',y,x)')['text']=='1'
     for expression in ['cardinality(unique(qset(vector(x,y))))',
-                       'cardinality(select(qset(vector(0,1)),k=x,k))']:
+                       'cardinality(select(qset(vector(0,1)),k=x,k))',
+                       'cardinality(unique(qindexrange(0,n)))',
+                       'cardinality(select(qindexrange(0,n),k>0,k))']:
         pending=data(expression)
         assert pending['text'] not in ['0','1','2']
         assert data(pending['copy_text'])['display_text']==pending['display_text']

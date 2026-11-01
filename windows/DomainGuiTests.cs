@@ -55,6 +55,7 @@ class DomainGuiTests {
     await Calculate("cardinality(cartesianpower(vector(),0))");Require(((TextBox)Field("output")).Text=="1","Empty tuple was lost");
     foreach(string singleton in new[]{@"\{0,1\}^0",@"\{3,\ldots,3\}"}) {
      await Calculate(singleton);string copied=await Copy();
+     Require(((TextBox)Field("output")).Text.StartsWith("{"),"Singleton set display lost braces");
      await Calculate("cardinality("+copied+")");Require(((TextBox)Field("output")).Text=="1","Copied singleton domain lost its set type");
     }
     await Calculate(@"cardinality(\{k\in\{0,1\}:k=x\})");string filter=await Copy();Require(filter.Contains("qsetfilter"),"Unknown predicate was lost");Capture(Path.Combine(output,"filter.png"));

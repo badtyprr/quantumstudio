@@ -117,7 +117,10 @@ class Printer {
   }
   if(!value.isFunction())return fallback(value);
   const std::string name=value.function()->referenceName();
-  if(name=="qset" && value.size()==1 && value[0].isVector()) {
+  if(name=="qset" && value.size()==1) {
+   // Formatting collapses a singleton vector; the enclosing descriptor keeps
+   // its collection meaning even in this presentation-only tree.
+   if(!value[0].isVector())return Fragment("{"+render(value[0],depth+1).text+"}");
    std::string text="{";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
    return Fragment(text+"}");
