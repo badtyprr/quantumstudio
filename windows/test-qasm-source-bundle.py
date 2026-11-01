@@ -8,7 +8,7 @@ import unittest
 from pyqasm import ValidationError
 
 from qasm_source_bundle import capture_source, check_snapshot, SourceError, MAX_BYTES, MAX_DEPTH, MAX_FILES
-from qasm_source_diagnostics import compile_source, error_at
+from qasm_source_diagnostics import compile_source, error_at, copy_span, diagnostic_context
 
 
 class SourceBundleTests(unittest.TestCase):
@@ -136,6 +136,25 @@ class SourceBundleTests(unittest.TestCase):
             raise error_at(node, "Invalid original AST span.")
         with self.assertRaisesRegex(SourceError, "^main.qasm: Invalid original AST span."):
             compile_source(bundle, failure)
+
+    def test_lowering_context_preserves_inner_and_missing_spans(self):
+        from types import SimpleNamespace
+        bundle = capture_source(self.put("main.qasm", "OPENQASM 3;\nqubit q;"))
+        located = SimpleNamespace(span=SimpleNamespace(start_line=2, start_column=0))
+        for original, expected in ((located, "main.qasm:2:1: failure"),
+                                   (object(), "main.qasm: failure")):
+            synthesized = copy_span(SimpleNamespace(), original)
+            def failure(source):
+                with diagnostic_context(synthesized):
+                    raise ValueError("failure")
+            with self.assertRaises(SourceError) as caught:
+                compile_source(bundle, failure)
+            self.assertEqual(str(caught.exception), expected)
+        inner = error_at(located, "inner")
+        with self.assertRaises(type(inner)) as caught:
+            with diagnostic_context(object()):
+                raise inner
+        self.assertIs(caught.exception, inner)
 
     def test_nested_spaces_and_snapshot(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc";\ninclude "sub dir/gate.inc";\nqubit q; g q;')
