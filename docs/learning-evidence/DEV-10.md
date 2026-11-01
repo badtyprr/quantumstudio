@@ -155,3 +155,13 @@ adapter twice; v15's failed copy test is retained. Singleton set display now
 renders braces even after presentation formatting collapses its inner vector.
 The immutable v18 worker passes 174 focused Cartesian/family checks, including
 unknown predicates, pending ranges, default predicates and first-match controls.
+
+Required native CI on `e6bb0dc6` failed an existing notation rejection fixture:
+`|\{0,1\}>` was accepted after the literal-set descriptor changed. The merge
+guard stopped; no merge or release occurred. The complete job log is retained
+as `cleanup-audit/dev10-e6bb-native-ci-failure.log`. Collection recognition now
+includes the typed domain constructors, preserving the existing distinction
+between set cardinality bars and ket syntax. Immutable v19 passes all 526
+notation checks and 174 Cartesian/family checks. Full worker/native/GUI v18
+results precede this parser correction; final-head CI and final packaged tests
+are required separately. No failed CI result is represented as a passed gate.

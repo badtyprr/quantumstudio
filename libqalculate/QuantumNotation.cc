@@ -763,7 +763,9 @@ class Parser {
     else if(c=='>' && plainDepth==0)break;
     else if(c=='|' && plainDepth==0) {plainClosing=k;break;}
    }
-   bool explicitCollection=s.compare(p,7,"unique(")==0 || s.compare(p,7,"select(")==0 || s.compare(p,12,"qbitstrings(")==0 || s.compare(p,7,"vector(")==0;
+   bool explicitCollection=false;
+   for(const char *prefix:{"unique(","select(","qbitstrings(","vector(","qset(","qindexrange(","qcartesian(","qcartesianpower(","qsetimage(","qsetfilter("})
+    explicitCollection=explicitCollection || s.compare(p,std::string(prefix).size(),prefix)==0;
    if(plainClosing!=std::string::npos && !explicitCollection) {
     s[plainClosing]=')';std::string value=expression();ws();
     if(p!=plainClosing)throw std::runtime_error("Invalid expression inside bars.");
