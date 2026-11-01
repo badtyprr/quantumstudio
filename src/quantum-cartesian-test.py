@@ -65,6 +65,9 @@ for flags in [[], ['--approx']]:
                        'cartesianpower(vector(0,1),11)']:
         data(expression,True)
     for expression, expected in [(r'\{0,1\}^0','1'),(r'\{3,\ldots,3\}','1'),
+                                 ('unique(qindexrange(3,3))','1'),
+                                 ('select(qindexrange(1,3),k=2,k)','1'),
+                                 ('select(qindexrange(1,3),k=4,k)','0'),
                                  (r'\{0,\ldots,-1\}','0'),
                                  (r'\{7\}','1'),(r'\{\}','0'),('cartesianpower(vector(7),3)','1'),
                                  ('setimage(1,vector(0,1),k)','1'),
