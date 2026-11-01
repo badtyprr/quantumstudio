@@ -13,7 +13,9 @@ for axis,name in [(0,'Rx'),(1,'Ry')]:
   steps.append(gate(name+'(-10)') if fixed_inverse else rotation(-10,axis))
   steps.append(nums(1,0,0))
   request=b'QEXACT10\n'+nums(1,1,0,1000,1,0,len(steps))+b''.join(steps)
-  result=subprocess.run([str(worker),'--exact-circuit'],input=request,capture_output=True,timeout=20)
+  # This cancellation takes about 25 seconds on a loaded Windows host, even
+  # with the previous release. Preserve the oracle and allow scheduling margin.
+  result=subprocess.run([str(worker),'--exact-circuit'],input=request,capture_output=True,timeout=60 if os.name=='nt' else 20)
   assert result.returncode==0,(result.returncode,result.stderr)
   actual=json.loads(result.stdout)['probabilities'];assert '0' in actual,actual
   for key,expression in actual.items():

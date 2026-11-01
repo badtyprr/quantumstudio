@@ -165,3 +165,26 @@ between set cardinality bars and ket syntax. Immutable v19 passes all 526
 notation checks and 174 Cartesian/family checks. Full worker/native/GUI v18
 results precede this parser correction; final-head CI and final packaged tests
 are required separately. No failed CI result is represented as a passed gate.
+
+## Scoped release-gate correction
+
+The clean PowerShell 7 build at `a950cdd0` stopped in the existing exact
+rotation-chain test: 70 native tests passed, one existing thread test skipped,
+and one test exceeded its 20-second subprocess ceiling. The failure and original
+suite summary remain in `cleanup-audit/dev10-release-initial-rotation-chain.log`
+and `dev10-release-initial-test-suite.log`. No package was published.
+
+An isolated run reproduced the same first-request timeout on both the new worker
+and released DEV-09 worker `e5ed358a`, using identical request bytes, data and DLL
+settings. Diagnostic runs with a longer ceiling completed in 25.06 and 24.06
+seconds respectively. These diagnostic completions are not passes of the
+original 20-second gate. The saved request SHA-256 is
+`331905f963ba8dc9d5521e336192ef0e55d510e0b85abb816d034163ac187ab8`.
+
+The test now allows 60 seconds for exact-circuit evaluation on Windows, retaining
+the four cancellation cases, their independent identity/probability oracle and
+the `1e-10` numerical tolerance. Linux keeps its 20-second ceiling, and numeric
+readback keeps its existing timeout. Packaging additionally runs this test on
+the actual packaged worker. This is a test scheduling margin, not an algorithmic
+performance improvement. Product sources are unchanged by this correction;
+review, CI and accurately recorded build resumption are still required.
