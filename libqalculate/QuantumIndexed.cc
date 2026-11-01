@@ -30,7 +30,11 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(left.equals(right))return SetEquality::Equal;
  bool leftLabel=left.isFunction() && left.function()->referenceName()=="qbitlabel";
  bool rightLabel=right.isFunction() && right.function()->referenceName()=="qbitlabel";
- if(leftLabel || rightLabel)return SetEquality::Different;
+ if(leftLabel && rightLabel)return SetEquality::Different;
+ if(leftLabel || rightLabel) {
+  const MathStructure &scalar=leftLabel ? right : left;
+  return scalar.containsUnknowns() ? SetEquality::Unknown : SetEquality::Different;
+ }
  ComparisonResult comparison=left.compare(right);
  if(comparison==COMPARISON_RESULT_EQUAL)return SetEquality::Equal;
  if(comparison==COMPARISON_RESULT_LESS || comparison==COMPARISON_RESULT_GREATER || comparison==COMPARISON_RESULT_NOT_EQUAL)return SetEquality::Different;

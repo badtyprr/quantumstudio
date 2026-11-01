@@ -44,6 +44,10 @@ for flags in [[], ['--approx']]:
         ('sumset(sumset(x,vector(0,1),x),vector(2,3),x)', '2'),
     ]:
         assert evaluate(expression)['text'] == expected, expression
+    for expression in ['member(x,vector(bitstring(0,1)))', 'cardinality(vector(x,bitstring(0,1)))']:
+        value=evaluate(expression)
+        assert value['text'] not in ['0','1','2'], (expression,value)
+        assert evaluate('replace('+value['copy_text']+',x,bitstring(0,1))')['text']=='1'
     for expression in ['member(bitstring(-1,2),Σ)', 'member([1,2;3,4],Σ)']:
         result = subprocess.run([worker, '--json']+flags, input=('quantum: '+expression).encode(), capture_output=True, timeout=30)
         assert result.returncode != 0 and not result.stdout, (expression, result.stdout, result.stderr)
