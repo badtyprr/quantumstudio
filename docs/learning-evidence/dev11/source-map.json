@@ -1,0 +1,2142 @@
+[
+  {
+    "id": "IBM-053",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction",
+    "notebook_sha256": "4df2145513b50391fe4c80b07df88f0e4796c650c4116ac6e316289cef9cfcef",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "62d79c12",
+        "line": 10,
+        "title": "Introduction"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "62d79c12",
+        "line": 26,
+        "title": "Lesson video"
+      }
+    ],
+    "display_equations": [],
+    "linked_images": [],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-codes",
+    "notebook_sha256": "975d857196c998a633dfcc2e95b352d0e366f248a5bdeec66a10cea8bfe68dd9",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 8,
+        "title": "Repetition codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 13,
+        "title": "Classical encoding and decoding"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 39,
+        "title": "Noise reduction for the binary symmetric channel"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 65,
+        "title": "Encoding qubits"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 84,
+        "title": "Bit-flip errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 132,
+        "title": "Phase-flip errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 165,
+        "title": "Modified repetition code for phase-flip errors"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-054-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 21,
+        "section": "Classical encoding and decoding",
+        "sha256": "bc7d80a36450e510408931a017ac40f9dd78acb330bdffe0c028f4d1a37d45f8",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 32,
+        "section": "Classical encoding and decoding",
+        "sha256": "4df464358b57c08876892c219ed926f329a2087270d5659738d1517fccbb54fa",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 53,
+        "section": "Noise reduction for the binary symmetric channel",
+        "sha256": "2dce6b17466090d5a520e971ea15307dfbc78ec86e05ac215b8a52532b1e93fd",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 73,
+        "section": "Encoding qubits",
+        "sha256": "6cae271913987ee8bd8c44ee6e635957dd72370358d819210ac759ccc4088c26",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 90,
+        "section": "Bit-flip errors",
+        "sha256": "1d00944e52dbe3ce6071e17216aaafb7b332e0d18c21395901bdd77adbeb6ab4",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 145,
+        "section": "Phase-flip errors",
+        "sha256": "923fa682aa66744debc2abf6428ca5d3b67647ffaf4e5b4fc94ffa564c748fb3",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 159,
+        "section": "Phase-flip errors",
+        "sha256": "dd84721de2dcdb6e236b24c225bd69038b4950fdf8a6f3b7907e92a8d6ca03fc",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-054-c0-eq008",
+        "cell_index": 0,
+        "cell_id": "78d88306",
+        "line": 178,
+        "section": "Modified repetition code for phase-flip errors",
+        "sha256": "4b1298c9e6c48201dd91fdd87e8fe66488b1b64d1fac2fc48870d77b035ac43c",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/binary-symmetric-error.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-encoder.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-error-detection.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-no-error.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-e0.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-e1.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-e2.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-encoder-modified.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/three-bit-modified-error-detect.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/simplified-phase-error-detect.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-none.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-0.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-1.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-2.svg"
+    ],
+    "fixture_ids": [
+      "054-encoding",
+      "054-phase-encoding",
+      "054-phase-recovery-III",
+      "054-phase-recovery-ZII",
+      "054-phase-recovery-IZI",
+      "054-phase-recovery-IIZ",
+      "054-bit-noise",
+      "054-phase-noise"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code",
+    "notebook_sha256": "3f6dd806e9e61c58c60ef5f58288e25b4332ffda073d81424e92730b3c62ae0b",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 6,
+        "title": "The 9-qubit Shor code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 10,
+        "title": "Code description"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 44,
+        "title": "Correcting bit-flip and phase-flip errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 46,
+        "title": "Errors and CNOT gates"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 63,
+        "title": "Correcting bit-flip errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 73,
+        "title": "Correcting phase-flip errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 111,
+        "title": "Simultaneous bit- and phase-flip errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 171,
+        "title": "Error reduction for random errors"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-055-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 25,
+        "section": "Code description",
+        "sha256": "4a0262f98fc0a64a6681d7547008a2c2e0f1d0d0d6fda964f1da71ba839ea1ed",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-055-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 128,
+        "section": "Simultaneous bit- and phase-flip errors",
+        "sha256": "2c267f160fabb9589dbaa7076ed921c6e6b6b97e4e31bd012820b638bf76c0ab",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-055-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 195,
+        "section": "Error reduction for random errors",
+        "sha256": "c0fec7efb1de9c3e89b148c942339f7dbab788aeaf65fda9ace009c8cada7887",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-055-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 201,
+        "section": "Error reduction for random errors",
+        "sha256": "e7d3be83a2c153b3390f4c44bb5bb940d1682addfce482beb3d42f3cb6f2214c",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-055-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "8b06b8f1",
+        "line": 215,
+        "section": "Error reduction for random errors",
+        "sha256": "582594fd753eb52cf871f16512b21da22f7040dcd4bade4156eb06c1c8fa3cb5",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-encoder.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/X-and-CNOT.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Z-and-CNOT.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-1.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-2.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-detect-1.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-detect-2.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-XZ-error.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-ZX-error.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-ZX-error-2.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/breakeven-Shor.svg"
+    ],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-056",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors",
+    "notebook_sha256": "acacc51286660e12f389aa3282a0ca7a3aa46fb7405dbd9797c5c94b55825f5d",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 6,
+        "title": "Discretization of errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 13,
+        "title": "Unitary qubit errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 116,
+        "title": "Arbitrary qubit errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 164,
+        "title": "Generalization"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-056-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 25,
+        "section": "Unitary qubit errors",
+        "sha256": "efcffa3cc43703e39abb2cb156b6399bc8d8baf15c5c176b85f1793621580923",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 36,
+        "section": "Unitary qubit errors",
+        "sha256": "1bc607a8d793855babf113b1ba26f1e145e7aa7307bd9f331d492dd30894bd71",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 46,
+        "section": "Unitary qubit errors",
+        "sha256": "d04266aa02103b760fb347e28ffb78cba06ab72611d80acab96a0001d4fddfc1",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 53,
+        "section": "Unitary qubit errors",
+        "sha256": "8722f25558adc971ccfc55f7c610bdfe9d8115648308f39da71fb9b1061d1125",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 59,
+        "section": "Unitary qubit errors",
+        "sha256": "b62849c4e427a60a35c8567b4c8c2dbd330ee74cebb1612f60cf7d6839dc9cca",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 67,
+        "section": "Unitary qubit errors",
+        "sha256": "d0c69df8e7b3a52109c2fcb59880d96b2a4bec7b0b72d662123eb8a5132afffe",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 87,
+        "section": "Unitary qubit errors",
+        "sha256": "ede5577cf0bf64965c22bac23a1f35c9e9ade9d35c6164e5bc0f611efc97525f",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq008",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 93,
+        "section": "Unitary qubit errors",
+        "sha256": "11d45b597277b71bfc8d049faa3d5d44da1328860351a240f2adff5f4c2c6897",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq009",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 124,
+        "section": "Arbitrary qubit errors",
+        "sha256": "681d64900c7945ddaef8d7fc5539e9c570af65b1fb038997c2fa0f096b026de4",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq010",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 130,
+        "section": "Arbitrary qubit errors",
+        "sha256": "532dda8e172d62789c17a831f7b7a634b5f0c2caf06e62477dc6a12475c929d0",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq011",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 136,
+        "section": "Arbitrary qubit errors",
+        "sha256": "55a5cd0fa81229ee7f5a32fbc643db5c0ecbed3fb5673ad5c87898598f60fd50",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq012",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 146,
+        "section": "Arbitrary qubit errors",
+        "sha256": "ede5577cf0bf64965c22bac23a1f35c9e9ade9d35c6164e5bc0f611efc97525f",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-056-c0-eq013",
+        "cell_index": 0,
+        "cell_id": "1c1d9429",
+        "line": 152,
+        "section": "Arbitrary qubit errors",
+        "sha256": "afa4ac21458a3be830d6044afebd6a71e384d2e6fcd2d5af5f93ba76ad870dbf",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [],
+    "fixture_ids": [
+      "056-Pauli-expansion"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-057",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction",
+    "notebook_sha256": "fa557435ce005a2229783f998ac153aba66e4da8711755fc5996e68c1ed00d8e",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "4876a7c0",
+        "line": 6,
+        "title": "Introduction"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "4876a7c0",
+        "line": 17,
+        "title": "Lesson video"
+      }
+    ],
+    "display_equations": [],
+    "linked_images": [],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-058",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables",
+    "notebook_sha256": "327f3f6dc910b571e1d2bdd18028446a7b9e38855d030f3c37298bf174ea97cc",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 8,
+        "title": "Pauli operations and observables"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 13,
+        "title": "Pauli operation basics"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 43,
+        "title": "Properties of Pauli matrices"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 69,
+        "title": "Pauli operations on multiple qubits"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 90,
+        "title": "Pauli operations as generators"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 132,
+        "title": "Pauli observables"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 137,
+        "title": "Hermitian matrix observables"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 161,
+        "title": "Measurements from Pauli operations"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 221,
+        "title": "Nondestructive implementation through phase estimation"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-058-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 17,
+        "section": "Pauli operation basics",
+        "sha256": "ddc3e3c463b60b633a2a5c330f83eeac71cec4c5a43ca33ca6fe327ab5c02f79",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 51,
+        "section": "Properties of Pauli matrices",
+        "sha256": "5e95ac7d7b117e680616109f4be963cf33a5a3a1189c4c6c19f8e586d9309656",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 60,
+        "section": "Properties of Pauli matrices",
+        "sha256": "4a9b7c267aa5dcd8a3c5edfc13283f650bb165f78b558b1f335c25fde3f49ed8",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 74,
+        "section": "Pauli operations on multiple qubits",
+        "sha256": "1bf119d94be6f93bacd18dbc5f9cab46ab08b7c85cacc42f8ed535ce0574c5a2",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 102,
+        "section": "Pauli operations as generators",
+        "sha256": "3ff02854a2786b87c3a49d86a5144a7cf15ce3050c12687d331d524173bc16df",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 111,
+        "section": "Pauli operations as generators",
+        "sha256": "8585e2f086d18cd5144a748b39341193da0e8e223ba626eb883230b1f8a3c418",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 117,
+        "section": "Pauli operations as generators",
+        "sha256": "a3f2b1f17b80a271358e98b43a71ea2f188d93749d8e56f5a772e01516da7c49",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq008",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 123,
+        "section": "Pauli operations as generators",
+        "sha256": "b18071886ddfae9a234a9e439b916595cf0baf061172eea262a939543ce552c7",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq009",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 146,
+        "section": "Hermitian matrix observables",
+        "sha256": "30e8e97ea50b565112233aa811b6a941a69f018bd44f99741ffb23346a9bffca",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq010",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 152,
+        "section": "Hermitian matrix observables",
+        "sha256": "eb48ef182dbda6cb83cd75096efacbe324534da194acad378f47ac4d384aeb04",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq011",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 166,
+        "section": "Measurements from Pauli operations",
+        "sha256": "bde84b0318000bfdb38c4b5eda78036635fd37338e2e7f21b297434392891a79",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq012",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 177,
+        "section": "Measurements from Pauli operations",
+        "sha256": "93a9d45498f61540b851ac32496a71a8c0172ec93101be620de379d66dae58fc",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq013",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 202,
+        "section": "Measurements from Pauli operations",
+        "sha256": "e8b77daabdab249cff8d9f975be1fd4699cf6d79abf935c6e41561f7b675bbac",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-058-c0-eq014",
+        "cell_index": 0,
+        "cell_id": "637926c1",
+        "line": 211,
+        "section": "Measurements from Pauli operations",
+        "sha256": "67589467dc0387f8a0cf3e3a8f772ea953414e86d1e662ffb156090b94c984dd",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-Pauli.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-3-qubit-Pauli.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-ZZ.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/simplified-ZZ.svg"
+    ],
+    "fixture_ids": [
+      "058-product-II",
+      "058-product-IX",
+      "058-product-IY",
+      "058-product-IZ",
+      "058-product-XI",
+      "058-product-XX",
+      "058-product-XY",
+      "058-product-XZ",
+      "058-product-YI",
+      "058-product-YX",
+      "058-product-YY",
+      "058-product-YZ",
+      "058-product-ZI",
+      "058-product-ZX",
+      "058-product-ZY",
+      "058-product-ZZ",
+      "058-group-phase",
+      "058-degenerate-projector",
+      "058-variadic-tensor",
+      "058-nested-tensor"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-059",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited",
+    "notebook_sha256": "045e7b67db06d668b833be027d5d97fb63bf30ea1a7c0625f80e34516d2c1792",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 6,
+        "title": "Repetition code revisited"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 11,
+        "title": "Pauli observables for the repetition code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 55,
+        "title": "Error detection"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 131,
+        "title": "Syndromes"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-059-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 15,
+        "section": "Pauli observables for the repetition code",
+        "sha256": "7e21bd9a0b3d8ea5e26d90324b516383749d8017bc21bcf024128da7172b26eb",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 21,
+        "section": "Pauli observables for the repetition code",
+        "sha256": "37f9386c888f770ce7e88391c0f1cb3fda08dc064eba22d08831d9facb9b09f4",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 41,
+        "section": "Pauli observables for the repetition code",
+        "sha256": "cea48725b2b1712339418d15b584fe194a93aec45bc9d440991360566aef7ffc",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 62,
+        "section": "Error detection",
+        "sha256": "79b8863a4434cfa745aaee3cf3678a342fa4fd095e7992ad35e00b3458a4e31f",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 74,
+        "section": "Error detection",
+        "sha256": "80bdfcc353562f765a259190fb25d1739d9660425380cfd570a80a362040958d",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 87,
+        "section": "Error detection",
+        "sha256": "39908e8bc54f0563a63c35ebbc4fc8ac8349bdd052697eccd966b9b019d087d9",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 103,
+        "section": "Error detection",
+        "sha256": "00e1207c2cb017d1b71d69b20c12201e034817e233d16ba5405608d372b4a06b",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq008",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 117,
+        "section": "Error detection",
+        "sha256": "de5230f09d94a3dff956c7345442e7663883307ecddbc56fd39ce3debe68360f",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-059-c0-eq009",
+        "cell_index": 0,
+        "cell_id": "891e7568",
+        "line": 154,
+        "section": "Syndromes",
+        "sha256": "e8d3f092971dff49cec0fbe44c3adf92044beca72762ae715c7144120b86fc43",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/3-bit-repetition-parity-checks.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-generator-table.svg"
+    ],
+    "fixture_ids": [
+      "059-syndrome-III",
+      "059-recovery-III",
+      "059-syndrome-XII",
+      "059-recovery-XII",
+      "059-syndrome-IXI",
+      "059-recovery-IXI",
+      "059-syndrome-IIX",
+      "059-recovery-IIX",
+      "059-partition-IIY",
+      "059-partition-IIZ",
+      "059-partition-IXX",
+      "059-partition-IXY",
+      "059-partition-IXZ",
+      "059-partition-IYI",
+      "059-partition-IYX",
+      "059-partition-IYY",
+      "059-partition-IYZ",
+      "059-partition-IZI",
+      "059-partition-IZX",
+      "059-partition-IZY",
+      "059-partition-IZZ",
+      "059-partition-XIX",
+      "059-partition-XIY",
+      "059-partition-XIZ",
+      "059-partition-XXI",
+      "059-partition-XXX",
+      "059-partition-XXY",
+      "059-partition-XXZ",
+      "059-partition-XYI",
+      "059-partition-XYX",
+      "059-partition-XYY",
+      "059-partition-XYZ",
+      "059-partition-XZI",
+      "059-partition-XZX",
+      "059-partition-XZY",
+      "059-partition-XZZ",
+      "059-partition-YII",
+      "059-partition-YIX",
+      "059-partition-YIY",
+      "059-partition-YIZ",
+      "059-partition-YXI",
+      "059-partition-YXX",
+      "059-partition-YXY",
+      "059-partition-YXZ",
+      "059-partition-YYI",
+      "059-partition-YYX",
+      "059-partition-YYY",
+      "059-partition-YYZ",
+      "059-partition-YZI",
+      "059-partition-YZX",
+      "059-partition-YZY",
+      "059-partition-YZZ",
+      "059-partition-ZII",
+      "059-partition-ZIX",
+      "059-partition-ZIY",
+      "059-partition-ZIZ",
+      "059-partition-ZXI",
+      "059-partition-ZXX",
+      "059-partition-ZXY",
+      "059-partition-ZXZ",
+      "059-partition-ZYI",
+      "059-partition-ZYX",
+      "059-partition-ZYY",
+      "059-partition-ZYZ",
+      "059-partition-ZZI",
+      "059-partition-ZZX",
+      "059-partition-ZZY",
+      "059-partition-ZZZ",
+      "059-logical-XXX",
+      "059-logical-ZII",
+      "059-original-tensor"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-060",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes",
+    "notebook_sha256": "aa8204ce28d3b7a2939151d5e8cebcae480941efb5f38f7c99e642d51ef67bbb",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 10,
+        "title": "Stabilizer codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 15,
+        "title": "Definition of stabilizer codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 73,
+        "title": "Examples"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 78,
+        "title": "3-bit repetition code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 118,
+        "title": "Modified 3-bit repetition code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 127,
+        "title": "9-qubit Shor code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 193,
+        "title": "7-qubit Steane code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 217,
+        "title": "5-qubit code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 233,
+        "title": "One-dimensional stabilizer codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 258,
+        "title": "Code space dimension"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 345,
+        "title": "Clifford operations and encodings"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 349,
+        "title": "Clifford operations"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 404,
+        "title": "Encoders for stabilizer codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 427,
+        "title": "Detecting errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 440,
+        "title": "Error detection cases"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 483,
+        "title": "Distance of a stabilizer code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 541,
+        "title": "Correcting errors"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-060-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 22,
+        "section": "Definition of stabilizer codes",
+        "sha256": "990f85ca61381cf66a865191791ff5f02be661744dda4edc47a753fff6a446e2",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 28,
+        "section": "Definition of stabilizer codes",
+        "sha256": "130547144edc1b0242bb709b85d4be485be5210fd1e27d718a0edd0b51150e4d",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 34,
+        "section": "Definition of stabilizer codes",
+        "sha256": "3113ac80f41e96e31901a23ec9937f9938ae861baa0bac12cc3d4b05f4afaa3f",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 42,
+        "section": "Definition of stabilizer codes",
+        "sha256": "a7b37fbd2cd296872431f05a93f232beaaea228042abb2ee9cacb9260f7efd80",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 51,
+        "section": "Definition of stabilizer codes",
+        "sha256": "28a023e586af233109389f8ed5a66b579367730850160e7e317e1e2635123f94",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 86,
+        "section": "3-bit repetition code",
+        "sha256": "f05c8e395264ac4d1e8319cf78b19a47c7d68b4afb764d75321649d70b9152cd",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 93,
+        "section": "3-bit repetition code",
+        "sha256": "883f6faa4165878a1a190598f726b987ea37284008fd4eff65ddd8b2c24a2efc",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq008",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 105,
+        "section": "3-bit repetition code",
+        "sha256": "f3a4c3e0f0fb63dc0858aeeb93da40c6e0251eb71b71ed8aef5789b73b6dc821",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq009",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 131,
+        "section": "9-qubit Shor code",
+        "sha256": "5576e70fa964d6b7e965f2af0879e06dd1c883dea1431b7e96e2a42bd5de81bf",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq010",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 166,
+        "section": "9-qubit Shor code",
+        "sha256": "12c3b6010995d04a955654012da2d29018b9c6284a5d089e6adc7feebb7b8c4e",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq011",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 198,
+        "section": "7-qubit Steane code",
+        "sha256": "04ec67d74de69e1c6d8a6fc1cf75dea704c0d6781c924b8a226d9a494156be80",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq012",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 221,
+        "section": "5-qubit code",
+        "sha256": "ae2cb88bc5edecb03c57d8f3dd89d9df66ee636b3b56766f9c99ef77c25a4107",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq013",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 239,
+        "section": "One-dimensional stabilizer codes",
+        "sha256": "7cdd47a7f4b9878432287e58c5f565fbd4f6b14d08c6a7234b64628fee486f5a",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq014",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 250,
+        "section": "One-dimensional stabilizer codes",
+        "sha256": "e7b8bf4b1536fb94f6280a6c596213f11984ed57f5dc8eb704c785b963100d22",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq015",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 276,
+        "section": "Code space dimension",
+        "sha256": "617fd1daa11ccf026854583e373ef921cbd930bea97eb45bc70b3934faf434ab",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq016",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 287,
+        "section": "Code space dimension",
+        "sha256": "15592a0d7e7486f25c3718c1bdf707351d874a0c0acda9140e9c30b31971e8e8",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq017",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 299,
+        "section": "Code space dimension",
+        "sha256": "06aa3f8382347b9ef7f04c55f9da41d6251712ab0236862f2370e2130f8013b9",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq018",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 310,
+        "section": "Code space dimension",
+        "sha256": "0443b0a176962181bf10c2dd4b843c7b70da2b8365c60677c2a59287bd3527f4",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq019",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 320,
+        "section": "Code space dimension",
+        "sha256": "ee4bdb67ff09019c581008f8e79c2e0e47efb08e0fad6c6c1e93270988a7877c",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq020",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 326,
+        "section": "Code space dimension",
+        "sha256": "2b1d329e8d7eadd38e655707a46fa8ee8ccc081b53139cd7d254e6138e12db34",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq021",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 332,
+        "section": "Code space dimension",
+        "sha256": "2f53b41ecdb64485e7f73b673dfc03295409c8767156101960459475ecb1c95a",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq022",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 365,
+        "section": "Clifford operations",
+        "sha256": "ade93c8767f5c4e5b074fe96579cef36a3b210c8d658fe9722ec8b617bceeda5",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq023",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 377,
+        "section": "Clifford operations",
+        "sha256": "a07f7f8efd9c50389c3ccf5acabf4b5a69ef13a6f4be74be6685afbbe4e6d631",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq024",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 385,
+        "section": "Clifford operations",
+        "sha256": "6fd1223bddefa8d4fbb4be52eb62e39d6f25ddc0078b1358d8bed8c6cb1c28bc",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq025",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 411,
+        "section": "Encoders for stabilizer codes",
+        "sha256": "2c8f97a2cb3f25c84a969e077eab126ad9b19add38e37ab0941b87a4519165e6",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq026",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 444,
+        "section": "Error detection cases",
+        "sha256": "2f9c3e237daf0e526916b33fa9201c054c605603f6d3335952c339421384f520",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq027",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 452,
+        "section": "Error detection cases",
+        "sha256": "03308f92ec10a98443545bcd2c7f24336cda37dca206e5cdc69ee76ddcb94392",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq028",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 461,
+        "section": "Error detection cases",
+        "sha256": "e1a917bea0eb2f5401eae259da2e4db1cabdd87a068badafb6104c03fe0311d3",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq029",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 495,
+        "section": "Distance of a stabilizer code",
+        "sha256": "04ec67d74de69e1c6d8a6fc1cf75dea704c0d6781c924b8a226d9a494156be80",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq030",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 513,
+        "section": "Distance of a stabilizer code",
+        "sha256": "191ad78a63011fe6e53b02493201372bae7c2e90313a4083cb592a02de68a516",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq031",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 522,
+        "section": "Distance of a stabilizer code",
+        "sha256": "1c85944185eceebb1527d59b54d0a1fd5ffa4b4e9bd2681b817c59ca9afa8c9c",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq032",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 589,
+        "section": "Correcting errors",
+        "sha256": "6af92cddc3b0d88a066f84445a5918fd972092467838df8af0eb11ed1f9795c8",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-060-c0-eq033",
+        "cell_index": 0,
+        "cell_id": "e0bf6af5",
+        "line": 598,
+        "section": "Correcting errors",
+        "sha256": "20705dd55100aac8d54b227ec89f1fd0975848bdffd35907a30010881fa8f191",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/Steane-encoder.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/lowest-weight-correction.svg"
+    ],
+    "fixture_ids": [
+      "060-parameters-repetition",
+      "060-parameters-phase-repetition",
+      "060-parameters-five",
+      "060-syndrome-five-IIIII",
+      "060-recovery-five-IIIII",
+      "060-syndrome-five-XIIII",
+      "060-recovery-five-XIIII",
+      "060-syndrome-five-IXIII",
+      "060-recovery-five-IXIII",
+      "060-syndrome-five-IIXII",
+      "060-recovery-five-IIXII",
+      "060-syndrome-five-IIIXI",
+      "060-recovery-five-IIIXI",
+      "060-syndrome-five-IIIIX",
+      "060-recovery-five-IIIIX",
+      "060-syndrome-five-YIIII",
+      "060-recovery-five-YIIII",
+      "060-syndrome-five-IYIII",
+      "060-recovery-five-IYIII",
+      "060-syndrome-five-IIYII",
+      "060-recovery-five-IIYII",
+      "060-syndrome-five-IIIYI",
+      "060-recovery-five-IIIYI",
+      "060-syndrome-five-IIIIY",
+      "060-recovery-five-IIIIY",
+      "060-syndrome-five-ZIIII",
+      "060-recovery-five-ZIIII",
+      "060-syndrome-five-IZIII",
+      "060-recovery-five-IZIII",
+      "060-syndrome-five-IIZII",
+      "060-recovery-five-IIZII",
+      "060-syndrome-five-IIIZI",
+      "060-recovery-five-IIIZI",
+      "060-syndrome-five-IIIIZ",
+      "060-recovery-five-IIIIZ",
+      "060-parameters-steane",
+      "060-syndrome-steane-IIIIIII",
+      "060-recovery-steane-IIIIIII",
+      "060-syndrome-steane-XIIIIII",
+      "060-recovery-steane-XIIIIII",
+      "060-syndrome-steane-IXIIIII",
+      "060-recovery-steane-IXIIIII",
+      "060-syndrome-steane-IIXIIII",
+      "060-recovery-steane-IIXIIII",
+      "060-syndrome-steane-IIIXIII",
+      "060-recovery-steane-IIIXIII",
+      "060-syndrome-steane-IIIIXII",
+      "060-recovery-steane-IIIIXII",
+      "060-syndrome-steane-IIIIIXI",
+      "060-recovery-steane-IIIIIXI",
+      "060-syndrome-steane-IIIIIIX",
+      "060-recovery-steane-IIIIIIX",
+      "060-syndrome-steane-YIIIIII",
+      "060-recovery-steane-YIIIIII",
+      "060-syndrome-steane-IYIIIII",
+      "060-recovery-steane-IYIIIII",
+      "060-syndrome-steane-IIYIIII",
+      "060-recovery-steane-IIYIIII",
+      "060-syndrome-steane-IIIYIII",
+      "060-recovery-steane-IIIYIII",
+      "060-syndrome-steane-IIIIYII",
+      "060-recovery-steane-IIIIYII",
+      "060-syndrome-steane-IIIIIYI",
+      "060-recovery-steane-IIIIIYI",
+      "060-syndrome-steane-IIIIIIY",
+      "060-recovery-steane-IIIIIIY",
+      "060-syndrome-steane-ZIIIIII",
+      "060-recovery-steane-ZIIIIII",
+      "060-syndrome-steane-IZIIIII",
+      "060-recovery-steane-IZIIIII",
+      "060-syndrome-steane-IIZIIII",
+      "060-recovery-steane-IIZIIII",
+      "060-syndrome-steane-IIIZIII",
+      "060-recovery-steane-IIIZIII",
+      "060-syndrome-steane-IIIIZII",
+      "060-recovery-steane-IIIIZII",
+      "060-syndrome-steane-IIIIIZI",
+      "060-recovery-steane-IIIIIZI",
+      "060-syndrome-steane-IIIIIIZ",
+      "060-recovery-steane-IIIIIIZ",
+      "060-parameters-shor",
+      "060-syndrome-shor-IIIIIIIII",
+      "060-recovery-shor-IIIIIIIII",
+      "060-syndrome-shor-XIIIIIIII",
+      "060-recovery-shor-XIIIIIIII",
+      "060-syndrome-shor-IXIIIIIII",
+      "060-recovery-shor-IXIIIIIII",
+      "060-syndrome-shor-IIXIIIIII",
+      "060-recovery-shor-IIXIIIIII",
+      "060-syndrome-shor-IIIXIIIII",
+      "060-recovery-shor-IIIXIIIII",
+      "060-syndrome-shor-IIIIXIIII",
+      "060-recovery-shor-IIIIXIIII",
+      "060-syndrome-shor-IIIIIXIII",
+      "060-recovery-shor-IIIIIXIII",
+      "060-syndrome-shor-IIIIIIXII",
+      "060-recovery-shor-IIIIIIXII",
+      "060-syndrome-shor-IIIIIIIXI",
+      "060-recovery-shor-IIIIIIIXI",
+      "060-syndrome-shor-IIIIIIIIX",
+      "060-recovery-shor-IIIIIIIIX",
+      "060-syndrome-shor-YIIIIIIII",
+      "060-recovery-shor-YIIIIIIII",
+      "060-syndrome-shor-IYIIIIIII",
+      "060-recovery-shor-IYIIIIIII",
+      "060-syndrome-shor-IIYIIIIII",
+      "060-recovery-shor-IIYIIIIII",
+      "060-syndrome-shor-IIIYIIIII",
+      "060-recovery-shor-IIIYIIIII",
+      "060-syndrome-shor-IIIIYIIII",
+      "060-recovery-shor-IIIIYIIII",
+      "060-syndrome-shor-IIIIIYIII",
+      "060-recovery-shor-IIIIIYIII",
+      "060-syndrome-shor-IIIIIIYII",
+      "060-recovery-shor-IIIIIIYII",
+      "060-syndrome-shor-IIIIIIIYI",
+      "060-recovery-shor-IIIIIIIYI",
+      "060-syndrome-shor-IIIIIIIIY",
+      "060-recovery-shor-IIIIIIIIY",
+      "060-syndrome-shor-ZIIIIIIII",
+      "060-recovery-shor-ZIIIIIIII",
+      "060-syndrome-shor-IZIIIIIII",
+      "060-recovery-shor-IZIIIIIII",
+      "060-syndrome-shor-IIZIIIIII",
+      "060-recovery-shor-IIZIIIIII",
+      "060-syndrome-shor-IIIZIIIII",
+      "060-recovery-shor-IIIZIIIII",
+      "060-syndrome-shor-IIIIZIIII",
+      "060-recovery-shor-IIIIZIIII",
+      "060-syndrome-shor-IIIIIZIII",
+      "060-recovery-shor-IIIIIZIII",
+      "060-syndrome-shor-IIIIIIZII",
+      "060-recovery-shor-IIIIIIZII",
+      "060-syndrome-shor-IIIIIIIZI",
+      "060-recovery-shor-IIIIIIIZI",
+      "060-syndrome-shor-IIIIIIIIZ",
+      "060-recovery-shor-IIIIIIIIZ",
+      "060-bell-dimension",
+      "060-negative-identity",
+      "060-noncommuting",
+      "060-conjugate-HX",
+      "060-conjugate-HY",
+      "060-conjugate-HZ",
+      "060-conjugate-SX",
+      "060-conjugate-SY",
+      "060-conjugate-SZ",
+      "060-CNOT-II",
+      "060-CNOT-IX",
+      "060-CNOT-IY",
+      "060-CNOT-IZ",
+      "060-CNOT-XI",
+      "060-CNOT-XX",
+      "060-CNOT-XY",
+      "060-CNOT-XZ",
+      "060-CNOT-YI",
+      "060-CNOT-YX",
+      "060-CNOT-YY",
+      "060-CNOT-YZ",
+      "060-CNOT-ZI",
+      "060-CNOT-ZX",
+      "060-CNOT-ZY",
+      "060-CNOT-ZZ",
+      "060-associated-recovery-shor-IIIIIIYII",
+      "060-associated-recovery-shor-IIIIIIIYI",
+      "060-associated-recovery-shor-IIIIIIIIY",
+      "060-associated-recovery-shor-ZIIIIIIII",
+      "060-associated-recovery-shor-IZIIIIIII",
+      "060-associated-recovery-shor-IIZIIIIII",
+      "060-associated-recovery-shor-IIIZIIIII",
+      "060-associated-recovery-shor-IIIIZIIII",
+      "060-associated-recovery-shor-IIIIIZIII",
+      "060-associated-recovery-shor-IIIIIIZII",
+      "060-associated-recovery-shor-IIIIIIIZI",
+      "060-associated-recovery-shor-IIIIIIIIZ"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-061",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction",
+    "notebook_sha256": "217493b2f5af3a7c370c3c8b167eeb10adb165b77a72d5181ebc988e128fbe1f",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "6dffed1f",
+        "line": 6,
+        "title": "Introduction"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "6dffed1f",
+        "line": 23,
+        "title": "Lesson video"
+      }
+    ],
+    "display_equations": [],
+    "linked_images": [],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-062",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes",
+    "notebook_sha256": "e8b1deec5f914fc07cd75fcf26051712116a936dc50d38ed2149032b8487b4f5",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 10,
+        "title": "CSS Codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 12,
+        "title": "Classical linear codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 31,
+        "title": "Example: the 3-bit repetition code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 44,
+        "title": "Example: the $[7,4,3]$-Hamming code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 66,
+        "title": "Describing classical linear codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 134,
+        "title": "Definition of CSS codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 274,
+        "title": "Error detection and correction"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 307,
+        "title": "Code spaces of CSS codes"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-062-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 37,
+        "section": "Example: the 3-bit repetition code",
+        "sha256": "39165556043145459f59d44e0490e4a77931303c9752c005bf24ed633fe041ad",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 50,
+        "section": "Example: the $[7,4,3]$-Hamming code",
+        "sha256": "777e4abe2e37d55e233a436c00f0a444bf55fac7f428a7aa54e6ebe3fd9400bd",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 75,
+        "section": "Describing classical linear codes",
+        "sha256": "781caadc678539e54ea432cd05b11352f411bb3b2b6a55613c8ccf8358d0c2c9",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 88,
+        "section": "Describing classical linear codes",
+        "sha256": "02837a15387f2634ca85b09240e79ab84de26184d1a93e0440389bb7fcbcac74",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 110,
+        "section": "Describing classical linear codes",
+        "sha256": "ad204c45f1dad3df62366063029e6e0201ca4bcc84a8f76ea6fb1eac983a9a26",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 121,
+        "section": "Describing classical linear codes",
+        "sha256": "b5ff1b917ddeda1dcd5a78f5a8ece3ec779da9b6d9e27d906f9c8e226ae7811d",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 143,
+        "section": "Definition of CSS codes",
+        "sha256": "b5ff1b917ddeda1dcd5a78f5a8ece3ec779da9b6d9e27d906f9c8e226ae7811d",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq008",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 154,
+        "section": "Definition of CSS codes",
+        "sha256": "6e3a2175a4e19e14704a35a5538a2d8b15b7699d08c17694596c38b76872909b",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq009",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 170,
+        "section": "Definition of CSS codes",
+        "sha256": "16c5daab89a209befe091858ce03ff8ccc43a31736a8c9aa96ccc1fa157efa17",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq010",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 182,
+        "section": "Definition of CSS codes",
+        "sha256": "3fb1ffac9a1b9a7a311e80ed3227e55c04f2232adf09d34e51019663310f7810",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq011",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 204,
+        "section": "Definition of CSS codes",
+        "sha256": "7cdd47a7f4b9878432287e58c5f565fbd4f6b14d08c6a7234b64628fee486f5a",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq012",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 218,
+        "section": "Definition of CSS codes",
+        "sha256": "e665e4702bc223670fbe05fb0b4489db8a83dc31db3211805f8c9689e3e97709",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq013",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 226,
+        "section": "Definition of CSS codes",
+        "sha256": "04ec67d74de69e1c6d8a6fc1cf75dea704c0d6781c924b8a226d9a494156be80",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq014",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 241,
+        "section": "Definition of CSS codes",
+        "sha256": "12c3b6010995d04a955654012da2d29018b9c6284a5d089e6adc7feebb7b8c4e",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq015",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 281,
+        "section": "Error detection and correction",
+        "sha256": "04ec67d74de69e1c6d8a6fc1cf75dea704c0d6781c924b8a226d9a494156be80",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq016",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 315,
+        "section": "Code spaces of CSS codes",
+        "sha256": "2e7a6f9854322085fad7a63d938768765b5a948da0d551d0be59db5cc97a2d9c",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq017",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 324,
+        "section": "Code spaces of CSS codes",
+        "sha256": "c62c0dcd5e80c4431491355d7f79350c639491d6d0f20283fc9c6053f7dbaa06",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq018",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 334,
+        "section": "Code spaces of CSS codes",
+        "sha256": "c545c424ba291b54eb6368a07df209f51969166726f17480d5cfb70df7afd5d0",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq019",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 360,
+        "section": "Code spaces of CSS codes",
+        "sha256": "720200452acec3b9d01a99bc814d2d4731c4e94ffa79f134e26852911e577bc5",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq020",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 380,
+        "section": "Code spaces of CSS codes",
+        "sha256": "cd76a1400af96e1ad00017607879d012a13abd57891555751ada617c5ef4f87c",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq021",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 386,
+        "section": "Code spaces of CSS codes",
+        "sha256": "9dbe59b22c3529359f67e19783ace11b4abd69e137c7765b15d14897e70a45e1",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq022",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 395,
+        "section": "Code spaces of CSS codes",
+        "sha256": "d8ca4ac4668d9aa3bd631992d919ff9351f28c037074f194ee3d4b20fa2a4d81",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq023",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 408,
+        "section": "Code spaces of CSS codes",
+        "sha256": "b090d0e8df2aa250a06c910603d26caeae888e6535bec5d4c9bf755d18135d35",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq024",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 416,
+        "section": "Code spaces of CSS codes",
+        "sha256": "abfae497f481108868a1d215a591978abd8b3f14c6e0dbcf9f8f2a7e7890cbec",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-062-c0-eq025",
+        "cell_index": 0,
+        "cell_id": "bd74fbe8",
+        "line": 427,
+        "section": "Code spaces of CSS codes",
+        "sha256": "3d80112d86f9719620ee3fd59db8e79955d04c0c1101e45c8d4816dd843a65fd",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [],
+    "fixture_ids": [
+      "062-css-encoder",
+      "062-css-state-0",
+      "062-css-state-1",
+      "062-invalid-css"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code",
+    "notebook_sha256": "ced045841fbd12061196175558cc61d8623f9fc241b2d0470eeeb5355f56a9f1",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "0e334530",
+        "line": 10,
+        "title": "Toric code"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "0e334530",
+        "line": 22,
+        "title": "Toric code description"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "0e334530",
+        "line": 90,
+        "title": "Detecting errors"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "0e334530",
+        "line": 163,
+        "title": "Correcting errors"
+      }
+    ],
+    "display_equations": [],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/9-by-9-lattice.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/torus.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/qubits-on-lattice-edges.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code-stabilizer-generators.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/stabilizer-generator-examples.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/stabilizer-generators-overlap.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code-bit-flip.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-chain.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-loop.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-loop-generated.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-logical.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-correction.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/correction-complete-error.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/multiple-correction-chains.svg"
+    ],
+    "fixture_ids": [
+      "063-capacity-18"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-064",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families",
+    "notebook_sha256": "8793cd24af3f6b4775a675c917979e9d3ce73e6e9b9f69dc0deb89c0e9946cc4",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "6b02bc3b",
+        "line": 6,
+        "title": "Other code families"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "6b02bc3b",
+        "line": 11,
+        "title": "Surface codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "6b02bc3b",
+        "line": 36,
+        "title": "Color codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "6b02bc3b",
+        "line": 75,
+        "title": "Other codes"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "6b02bc3b",
+        "line": 80,
+        "title": "Example: The gross code"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-064-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "6b02bc3b",
+        "line": 45,
+        "section": "Color codes",
+        "sha256": "04ec67d74de69e1c6d8a6fc1cf75dea704c0d6781c924b8a226d9a494156be80",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/surface-code.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/rotated-surface-code.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/Steane-color-code.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/color-code.svg"
+    ],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-065",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction",
+    "notebook_sha256": "ad1007aee373cdfe655c0b288de1ce6e0445337c73a5a5c46f74eafca08a16e6",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "68abe899",
+        "line": 6,
+        "title": "Introduction"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "68abe899",
+        "line": 29,
+        "title": "Lesson video"
+      }
+    ],
+    "display_equations": [],
+    "linked_images": [],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-066",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance",
+    "notebook_sha256": "b120160c52977341925d9cd830fc5cb65cc167840691f91b56b24fc4acc278a0",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "4046b869",
+        "line": 6,
+        "title": "An approach to fault tolerance"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "4046b869",
+        "line": 27,
+        "title": "Noise models"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "4046b869",
+        "line": 49,
+        "title": "Fault-tolerant circuit implementations"
+      }
+    ],
+    "display_equations": [],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/teleportation-circuit.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/FT-teleportation-circuit.svg"
+    ],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation",
+    "notebook_sha256": "ea38373bb78b2e706adb458948e3a81225f41b49caf47ac61e0ca6ba64ed9ea6",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 8,
+        "title": "Controlling error propagation"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 34,
+        "title": "Transversal gate implementations"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 40,
+        "title": "Examples of transversal gate implementations"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 99,
+        "title": "Error propagation for transversal gadgets"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 117,
+        "title": "Non-universality of transversal gates"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 136,
+        "title": "Magic states"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 141,
+        "title": "Implementing gates with magic states"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 195,
+        "title": "Fault-tolerant gadgets from magic states"
+      },
+      {
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 252,
+        "title": "Fault-tolerant error correction"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-067-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 59,
+        "section": "Examples of transversal gate implementations",
+        "sha256": "5fdda4206a0e4d79529a631eadcada5c4e5d55813cfe0e23ed0d7a155f01fd17",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-067-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 78,
+        "section": "Examples of transversal gate implementations",
+        "sha256": "4c94df8e7729fdabb9518529767e25ee592ae48396de522c2e3eb5bdcc8b4cf1",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-067-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 86,
+        "section": "Examples of transversal gate implementations",
+        "sha256": "5f4d0eb3a4e324a60f31e6ad67331f9a39191d920a5c30d1dc8dc75aaa03feb7",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-067-c0-eq004",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 145,
+        "section": "Implementing gates with magic states",
+        "sha256": "db0d7706f8f11a80d00dd06dc119fa293b171c974e05d23b08e747991f256ea3",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-067-c0-eq005",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 170,
+        "section": "Implementing gates with magic states",
+        "sha256": "8222902035dc6e36ec44ae3ad92e17c821ff10ff83389e42f15dfa0dfd9076d9",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-067-c0-eq006",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 182,
+        "section": "Implementing gates with magic states",
+        "sha256": "ece89271918b26b6f3e0d725d2b31da1d00fd416523f22e998c76503bd94357d",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-067-c0-eq007",
+        "cell_index": 0,
+        "cell_id": "816797bd",
+        "line": 264,
+        "section": "Fault-tolerant error correction",
+        "sha256": "aea12aba7e644666c5d6122454994e6fa1ba7809743cce72161c52d269a9875a",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/CNOT-error-propagation.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/multiple-CNOT-error-propagation.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/transversal-CNOT.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/magic-state-injection.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/encoded-magic-state-injection.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/encoded-magic-state-distillation.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/Shor-error-detection.svg",
+      "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/Steane-error-detection.svg"
+    ],
+    "fixture_ids": [
+      "067-logical-shor-ZIIZIIZII",
+      "067-logical-shor-XXXIIIIII",
+      "067-logical-steane-XXXXXXX",
+      "067-logical-steane-ZZZZZZZ",
+      "067-steane-H",
+      "067-steane-Sdg",
+      "067-capacity-14"
+    ],
+    "whole_row_audited": false
+  },
+  {
+    "id": "IBM-068",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/threshold-theorem",
+    "notebook_sha256": "c4236b70e8268214fb296b30e9f372e42e6fabbe1877ea9eb232e6c0e9180756",
+    "sections": [
+      {
+        "cell_index": 0,
+        "cell_id": "22f9660f",
+        "line": 6,
+        "title": "Threshold theorem"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "7fa5a2c0",
+        "line": 1,
+        "title": "Post-course survey"
+      }
+    ],
+    "display_equations": [
+      {
+        "id": "IBM-068-c0-eq001",
+        "cell_index": 0,
+        "cell_id": "22f9660f",
+        "line": 58,
+        "section": "Threshold theorem",
+        "sha256": "7873cedb2ed781f36c9301388e48ab71f48813836fe126822be2361b877162a4",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-068-c0-eq002",
+        "cell_index": 0,
+        "cell_id": "22f9660f",
+        "line": 64,
+        "section": "Threshold theorem",
+        "sha256": "bedd2ae98804f2023202a9a3294836e932882660ee2ad3b01ebc185b973195f2",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      },
+      {
+        "id": "IBM-068-c0-eq003",
+        "cell_index": 0,
+        "cell_id": "22f9660f",
+        "line": 70,
+        "section": "Threshold theorem",
+        "sha256": "581be509ebc52f74eea381bd667a949d7d07203964fb3bc66d5f4ce940576e6f",
+        "audit_status": "Located; no automatic whole-equation coverage inferred from family probes"
+      }
+    ],
+    "linked_images": [],
+    "fixture_ids": [],
+    "whole_row_audited": false
+  }
+]
