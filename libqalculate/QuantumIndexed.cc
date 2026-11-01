@@ -412,7 +412,7 @@ class QuantumIndexedFunction: public MathFunction {
     members.transform(STRUCT_VECTOR);
    // An unspecified domain is not an invalid concrete collection. Preserve
    // symbolic singleton collections above before deferring an unknown domain.
-   if(op=="qsumset" && (members.isSymbolic() || (members.isVariable() && !members.variable()->isKnown())))return 0;
+   if(members.isSymbolic() || (members.isVariable() && !members.variable()->isKnown()))return 0;
    if(!members.isVector() || members.size()>1024) {CALCULATOR->error(true,"A set sum requires a finite flat vector of at most 1024 scalar indices.",NULL);return 0;}
    // Distinct symbolic labels may become equal after substitution. Do not
    // count, deduplicate, or test membership before their domains are known.
@@ -459,7 +459,7 @@ class QuantumIndexedFunction: public MathFunction {
      if(comparison==COMPARISON_RESULT_EQUAL)found=true;
      else if(comparison!=COMPARISON_RESULT_LESS && comparison!=COMPARISON_RESULT_GREATER && comparison!=COMPARISON_RESULT_NOT_EQUAL)unknown=true;
     }
-    if(!found && unknown) {CALCULATOR->error(true,"Membership could not determine equality of symbolic entries.",NULL);return 0;}
+    if(!found && unknown)return 0;
     out=found ? m_one : m_zero;return 1;
    }
    std::vector<MathStructure> seen;
@@ -468,7 +468,17 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     const MathStructure &member=members[k];
     if(!member.representsScalar() && !(member.isFunction() && member.function()->referenceName()=="qbitlabel")) {CALCULATOR->error(true,"Set sum indices must be scalars or binary-string labels.",NULL);return 0;}
-    bool duplicate=false;for(const auto &previous:seen)if(member.equals(previous)){duplicate=true;break;}
+    bool duplicate=false;
+    for(const auto &previous:seen) {
+     if(member.equals(previous)) {duplicate=true;break;}
+     bool label=member.isFunction() && member.function()->referenceName()=="qbitlabel";
+     bool previousLabel=previous.isFunction() && previous.function()->referenceName()=="qbitlabel";
+     // Concrete binary labels have a separate type from scalar indices.
+     if(label || previousLabel)continue;
+     ComparisonResult comparison=member.compare(previous);
+     if(comparison==COMPARISON_RESULT_EQUAL) {duplicate=true;break;}
+     if(comparison!=COMPARISON_RESULT_LESS && comparison!=COMPARISON_RESULT_GREATER && comparison!=COMPARISON_RESULT_NOT_EQUAL)return 0;
+    }
     if(duplicate)continue;
     seen.push_back(member);
     MathStructure term=raw[0];replaceQuantumIndex(term,raw[2],member);term.eval(eo);

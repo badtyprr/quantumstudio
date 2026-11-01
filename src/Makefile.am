@@ -291,3 +291,5 @@ quantum_instruments_test_LDADD = $(test_LDADD)
 
 TESTS += quantum-instruments-worker-test.py
 EXTRA_DIST += quantum-instruments-worker-test.py
+TESTS += quantum-domains-test.py
+EXTRA_DIST += quantum-domains-test.py

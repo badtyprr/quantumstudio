@@ -25,8 +25,11 @@ definition of Cartesian tuples, not a replacement for the requested sources.
 
 ## Scoped change A: unresolved equality
 
-Source membership `x in Sigma^n` is diagnostically reduced to `member(x,S)`;
-`S` represents the not-yet-specified domain. `member(x,vector(y))` and
+Source membership `x in Sigma^n` is diagnostically reduced to `member(x,Σ)`;
+`Σ` represents the not-yet-specified domain. The first baseline used `S`, which
+is the phase gate in quantum notation and therefore was an invalid adaptation;
+the corrected `Σ` probe also fails, with the finite-flat-vector diagnostic.
+`member(x,vector(y))` and
 `cardinality(vector(x,y))` are authored equality witnesses. They are not literal
 lesson expressions. Independent expectation: membership remains a proposition
 until equality is known; a two-entry set has one element if its entries coincide
