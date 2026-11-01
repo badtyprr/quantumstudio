@@ -37,6 +37,12 @@ for flags in [[], ['--approx']]:
         ('sumset(k,setimage(sumset(k,vector(2,3),k),vector(0,1),k),k)','5'),
         ('cardinality(union(vector(1,1),vector(1),1))','1'),
         ('cardinality(intersect(vector(1,1),vector(1),1))','1'),
+        ('cardinality(union(bitstrings(1),bitstrings(1),1))','2'),
+        ('cardinality(unique(bitstrings(1)))','2'),
+        ('cardinality(unique(qindexrange(3,3)))','1'),
+        ('cardinality(intersect(bitstrings(1),bitstrings(0),1))','0'),
+        ('cardinality(setdiff(qindexrange(1,3),qindexrange(2,3),1))','1'),
+        ('sumset(k,select(qindexrange(1,3),k>1,k),k)','5'),
     ]:
         value=data(expression)
         assert value['text']==expected,(expression,value,expected)
