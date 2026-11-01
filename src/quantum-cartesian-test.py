@@ -58,7 +58,9 @@ for flags in [[], ['--approx']]:
                        'setfilter(2,vector(0,1),k)',
                        'cartesianpower(vector(0,1),11)']:
         data(expression,True)
-    for expression, expected in [(r'\{7\}','1'),(r'\{\}','0'),('cartesianpower(vector(7),3)','1'),
+    for expression, expected in [(r'\{0,1\}^0','1'),(r'\{3,\ldots,3\}','1'),
+                                 (r'\{0,\ldots,-1\}','0'),
+                                 (r'\{7\}','1'),(r'\{\}','0'),('cartesianpower(vector(7),3)','1'),
                                  ('setimage(1,vector(0,1),k)','1'),
                                  ('cartesian(vector(),vector(2))','0')]:
         original=data(expression)
