@@ -57,6 +57,12 @@ for flags in [[], ['--approx']]:
         assert copy['display_text']==value['display_text'],(expression,value,copy)
     pending=data('cardinality(cartesianpower(vector(x,y),11))')
     assert data('replace('+pending['copy_text']+',y,x)')['text']=='1'
+    for expression in ['cardinality(unique(qset(vector(x,y))))',
+                       'cardinality(select(qset(vector(0,1)),k=x,k))']:
+        pending=data(expression)
+        assert pending['text'] not in ['0','1','2']
+        assert data(pending['copy_text'])['display_text']==pending['display_text']
+    assert data(r'\{3,\ldots,3\}')['display_text']=='{3}'
 
     for expression in ['cartesianpower(vector(0,1),-1)','cartesianpower(vector(0,1),1/2)',
                        'cartesianpower(Σ,-1)','cartesian(vector(0,1),2)',
