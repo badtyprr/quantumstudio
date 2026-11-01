@@ -53,6 +53,10 @@ class DomainGuiTests {
     await Calculate("cartesian(vector(0,1),vector(2,3,4))");string pairs=await Copy();Require(pairs.Contains("qtuple"),"Copy lost typed tuples");Capture(Path.Combine(output,"cartesian.png"));
     await Calculate("member(tuple(1,4),"+pairs+")");Require(((TextBox)Field("output")).Text=="1","Copied Cartesian product lost membership");
     await Calculate("cardinality(cartesianpower(vector(),0))");Require(((TextBox)Field("output")).Text=="1","Empty tuple was lost");
+    foreach(string singleton in new[]{@"\{0,1\}^0",@"\{3,\ldots,3\}"}) {
+     await Calculate(singleton);string copied=await Copy();
+     await Calculate("cardinality("+copied+")");Require(((TextBox)Field("output")).Text=="1","Copied singleton domain lost its set type");
+    }
     await Calculate(@"cardinality(\{k\in\{0,1\}:k=x\})");string filter=await Copy();Require(filter.Contains("qsetfilter"),"Unknown predicate was lost");Capture(Path.Combine(output,"filter.png"));
     await Calculate("replace("+filter+",x,0)");Require(((TextBox)Field("output")).Text=="1","Copied filter did not resolve");
     await Calculate("setimage(k^2,Σ,k)");string image=await Copy();Require(!((TextBox)Field("output")).Text.Contains("qboundindex"),"Internal binder exposed in display");

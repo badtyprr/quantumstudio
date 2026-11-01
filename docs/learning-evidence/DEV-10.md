@@ -111,3 +111,16 @@ Its first attempt encountered Windows clipboard lock `0x800401D0`; that failure
 is retained. The driver now retries only that lock or stale clipboard content,
 at most ten attempts, and reports its count. The successful retry used zero
 clipboard retries. These observations remain development validation, not a release.
+
+A final singleton audit reproduced loss of set type for the zero-width binary
+alphabet `\{0,1\}^0` and singleton range `\{3,\ldots,3\}`. These are authored
+boundary adaptations of the binary alphabet and integer-family source forms,
+with independent cardinality one (the empty binary word and integer 3).
+Fixtures were committed as `f4f3f95e` before correction; the failure is retained
+in `cleanup-audit/dev10-singleton-red.log`. Binary alphabets and integer ranges
+now return the same typed set descriptor, including empty reversed ranges.
+The v10 immutable development snapshot passes 124 Cartesian/family checks,
+249 TeX, 100 indexed and 1523 parser checks. Three direct range expectations
+now assert typed sets with the same members. Actual preview GUI validation
+passes 43 checks, including both singleton copies, with zero clipboard retries.
+These are development observations; final packaged validation remains pending.

@@ -542,7 +542,7 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     MathStructure index(k),entry;entry.set(label,&index,&width,NULL);out.addChild(entry);
    }
-   return 1;
+   MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
   if(op=="qindexrange") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
@@ -555,14 +555,14 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending)return 0;
    if(CALCULATOR->aborted())return 0;
    out.clearVector();Number span=last.number();span-=first.number();
-   if(span.isNegative())return 1;
+   if(span.isNegative()) {MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;}
    if(span>1023) {CALCULATOR->error(true,"Finite index ranges support at most 1024 entries.",NULL);return 0;}
    int count=span.intValue()+1;Number value=first.number();
    for(int k=0;k<count;++k) {
     if(CALCULATOR->aborted())return 0;
     out.addChild(MathStructure(value));value+=1;
    }
-   return 1;
+   MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
   if(op=="qbars") {
    MathStructure source=raw[0];
