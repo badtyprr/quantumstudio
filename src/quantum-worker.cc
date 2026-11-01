@@ -30,21 +30,46 @@ static void jsonString(const std::string &s) {
  }
  std::cout << '"';
 }
+static std::string copyText(const MathStructure &,const PrintOptions &);
+static std::string copyCollection(const MathStructure &value,const PrintOptions &po,unsigned depth) {
+ if(!value.isVector())return copyText(value,po);
+ std::string text="vector(";
+ for(size_t k=0;k<value.size();++k) {if(k)text+=",";text+=depth>1 ? copyCollection(value[k],po,depth-1) : copyText(value[k],po);}
+ return text+")";
+}
 static std::string copyText(const MathStructure &result, const PrintOptions &po) {
  // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
  // for implicit multiplication by the quantum parser.
- if(!result.isMatrix()) {
+ bool scalarMatrix=result.isMatrix();
+ if(scalarMatrix)for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c)
+  if(result.getElement(r,c)->isVector())scalarMatrix=false;
+ // A vector of equal-sized matrices also satisfies isMatrix(). Keep these
+ // collections nested instead of flattening their rows into matrix cells.
+ if(!scalarMatrix) {
   // Deferred operations retain nested vectors and matrix constructors.
   // Serialize every function argument recursively so their separators survive
   // copy/re-entry even when no typed binary label occurs in the expression.
   if(result.isFunction()) {
-   std::string text=result.function()->referenceName()+"(";
+   const std::string name=result.function()->referenceName();
+   if((name=="qpovm" || name=="qinstrument") && result.size()==2)
+    return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1)+")";
+   if(name=="qensemble" && result.size()==3)
+    return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,1)+","+copyCollection(result[2],po,1)+")";
+   std::string text=name+"(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
    return text+")";
   }
   if(result.isVector()) {
    std::string text="vector(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
+   return text+")";
+  }
+  // Arithmetic can enclose unevaluated matrix-valued states. Formatting the
+  // whole expression would lose explicit comma-separated matrix dimensions.
+  if(result.isAddition() || result.isMultiplication() || result.isPower()) {
+   std::string text="(";
+   const char *separator=result.isAddition() ? ")+ (" : result.isMultiplication() ? ")*(" : ")^(";
+   for(size_t k=0;k<result.size();++k) {if(k)text+=separator;text+=copyText(result[k],po);}
    return text+")";
   }
   MathStructure display=result;display.format(po);return display.print(po);

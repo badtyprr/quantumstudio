@@ -288,3 +288,6 @@ check_PROGRAMS += quantum-instruments-test
 TESTS += quantum-instruments-test
 quantum_instruments_test_SOURCES = quantum-instruments-test.cc
 quantum_instruments_test_LDADD = $(test_LDADD)
+
+TESTS += quantum-instruments-worker-test.py
+EXTRA_DIST += quantum-instruments-worker-test.py

@@ -143,3 +143,5 @@ try {
     if (-not $result.StartsWith('PASS:')) { throw "Circuit layout validation failed: $result" }
     Write-Output $result
 } finally { $process.Dispose() }
+
+& (Join-Path $PSScriptRoot "test-measurements-gui.ps1") -Distribution (Join-Path $repo "dist/QuantumStudio") -Evidence (Join-Path $validation "measurements") -CompileOnly

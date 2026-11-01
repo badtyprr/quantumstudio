@@ -91,6 +91,9 @@ Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'lice
 $oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
 try {
     $env:QALCULATE_DEFINITIONS_DIR = Join-Path $output 'data'
+    & $PythonPath (Join-Path $repo 'src/quantum-instruments-worker-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged measurement worker checks failed.' }
+    & (Join-Path $PSScriptRoot 'test-measurements-gui.ps1') -Distribution $output -Evidence (Join-Path $repo 'dist/measurement-gui-validation')
     & $PythonPath (Join-Path $PSScriptRoot 'test-classical-module-export.py') --package $output --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Classical module export validation failed.' }
     & $PythonPath (Join-Path $repo 'src\quantum-worker-test.py') (Join-Path $output 'quantum-worker.exe')

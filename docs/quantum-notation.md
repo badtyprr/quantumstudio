@@ -1216,3 +1216,8 @@ A `return` exits the current call, including from nested branches or loops. Retu
 For example, `def xmeasure(qubit q) -> bit { h q; return measure q; }` can be used as `result = xmeasure(q);`. This definition comes from the [OpenQASM subroutine specification](https://openqasm.com/language/subroutines.html); tests add an explicit header, include and executable driver. Return-result slots use the existing integer storage and scope cleanup. Measurement returns additionally use hidden bit storage, subject to the same storage limits as other runtime calls.
 
 This is infrastructure toward DEV-08b. Specification-derived parity and measurement examples do not establish unchanged qBraid notebook coverage.
+
+## Labeled general measurements
+
+See [ensembles, instruments and POVMs](quantum-measurements.md) for outcome labels,
+conditional states, symbolic validity and explicit-ancilla Naimark construction.
