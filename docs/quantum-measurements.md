@@ -33,7 +33,7 @@ Each Kraus group may contain several matrices. Matrices share input and output
 dimensions across the instrument; rectangular matrices are allowed. A POVM alone
 does not determine post-measurement states. Zero-probability outcomes retain zero
 unnormalized branches but have no normalized conditional state. Density matrices
-returned by these operations work with `ptrace` and `ptracedim`.
+returned by these operations work with `ptrace` and `qptracedim(rho,indices,dimensions)`.
 
 Invalid positivity, normalization, completeness or dimensions produce errors.
 Unproved symbolic conditions remain in the original expression; they do not become

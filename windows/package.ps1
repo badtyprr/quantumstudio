@@ -87,6 +87,9 @@ Copy-Item (Join-Path $repo 'COPYING') (Join-Path $output 'LICENSE.txt')
 Copy-Item (Join-Path $PSScriptRoot 'Notation-guide.html') $output
 Copy-Item (Join-Path $PSScriptRoot 'README.txt') $output
 Copy-Item (Join-Path $repo 'docs\quantum-notation.md') (Join-Path $output 'Research-notes.md')
+Copy-Item (Join-Path $repo 'docs\quantum-measurements.md') $output
+New-Item -ItemType Directory -Path (Join-Path $output 'learning-evidence') | Out-Null
+Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-09.md') (Join-Path $output 'learning-evidence')
 Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
 $oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
 try {

@@ -59,7 +59,7 @@ changes, CI, packaged artifacts and publication are separate gates.
 
 ## Workflow development checks
 
-The worker contract suite passed 198 checks against the development worker. It
+The worker contract suite passed 214 checks against the development worker. It
 covers exact/approximate copy and re-entry, label substitution, unknown outcome
 selection, invalid nonfinite Kraus matrices, singleton/rectangular dimensions,
 and partial traces of conditional Bell-state outputs. A failing symbolic-selector
@@ -85,3 +85,10 @@ and poststate/Naimark matrix display. Five screenshots were inspected. This uses
 the previous released GUI with the development worker, not the final package.
 The package pipeline now includes the worker suite and actual measurement GUI
 checks; final clean packaged results remain pending.
+
+The workflow Spec review found pending comparisons lost nested matrix separators
+and the Windows payload omitted the linked feature guide. Recursive comparison
+serialization and substitution regressions address the first; packaging the guide
+and its evidence addresses the second. The broader worker suite also caught a
+Fourier-display regression, so arithmetic serialization is restricted to expressions
+containing literal vectors. Final review of these corrections remains pending.

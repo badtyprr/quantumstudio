@@ -64,9 +64,21 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
    return text+")";
   }
+  if(result.isComparison() && result.size()==2) {
+   const char *comparison="==";
+   switch(result.comparisonType()) {
+    case COMPARISON_LESS:comparison="<";break;
+    case COMPARISON_GREATER:comparison=">";break;
+    case COMPARISON_EQUALS_LESS:comparison="<=";break;
+    case COMPARISON_EQUALS_GREATER:comparison=">=";break;
+    case COMPARISON_NOT_EQUALS:comparison="!=";break;
+    case COMPARISON_EQUALS:break;
+   }
+   return "("+copyText(result[0],po)+")"+comparison+"("+copyText(result[1],po)+")";
+  }
   // Arithmetic can enclose unevaluated matrix-valued states. Formatting the
   // whole expression would lose explicit comma-separated matrix dimensions.
-  if(result.isAddition() || result.isMultiplication() || result.isPower()) {
+  if((result.isAddition() || result.isMultiplication() || result.isPower()) && result.containsType(STRUCT_VECTOR)) {
    std::string text="(";
    const char *separator=result.isAddition() ? ")+ (" : result.isMultiplication() ? ")*(" : ")^(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=separator;text+=copyText(result[k],po);}
