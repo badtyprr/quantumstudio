@@ -283,3 +283,8 @@ TESTS += quantum-wire-reference-request-test.py
 
 EXTRA_DIST += quantum-exact-rotation-chain-test.py
 TESTS += quantum-exact-rotation-chain-test.py
+
+check_PROGRAMS += quantum-instruments-test
+TESTS += quantum-instruments-test
+quantum_instruments_test_SOURCES = quantum-instruments-test.cc
+quantum_instruments_test_LDADD = $(test_LDADD)
