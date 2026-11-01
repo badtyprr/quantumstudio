@@ -101,3 +101,13 @@ native tests use the release's `-O2` compilation setting. A build made near edit
 was explicitly excluded from exact-input evidence; later development builds use
 immutable input snapshots. Development GUI previews use the released e5ed358a
 GUI with a development worker and are not packaged-release evidence.
+
+The v9 development snapshot passes 112 Cartesian/family checks in exact and
+approximate modes, 76 equality checks, 2178 general worker checks, 249 TeX,
+100 indexed and 1523 parser-integration checks. Four parser expectations were
+updated from vectors to typed sets; expected members remain unchanged. A GUI
+preview passed 33 checks including actual Copy, re-entry and session save/open.
+Its first attempt encountered Windows clipboard lock `0x800401D0`; that failure
+is retained. The driver now retries only that lock or stale clipboard content,
+at most ten attempts, and reports its count. The successful retry used zero
+clipboard retries. These observations remain development validation, not a release.
