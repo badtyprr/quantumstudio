@@ -79,3 +79,7 @@ Proposed central-checklist change, for the integrator to apply separately:
 > DEV-11 remains Partial. Link this inventory, complete finite comparison tables and reproducible fixture runner. Record 16/16 source rows inventoried, 0/16 certified as fully audited, and the explicit remaining media/operational/scaling gaps. Queue DEV-11a performance work and DEV-11b/c representation/runtime work; coordinate DEV-11d with DEV-09. Keep all source-row checkboxes open. No new released implementation is claimed.
 
 The central checklist was not edited. CI and code review remain integration steps; this local audit does not claim a reviewed PR or released DEV-11 completion.
+
+## Performance follow-up
+
+[The isolated timing diagnosis](performance-followup.md) reduces the Shor slowdown to ordinary dense Pauli multiplication, rules out complex arithmetic and output formatting as necessary causes, and refines DEV-11a acceptance tests. Shared implementation remains unchanged.
