@@ -1319,8 +1319,11 @@ class Parser {
     std::vector<std::string> args;
     if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
     // Preserve the established optional multiset argument for vector callers.
-    if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff"))
+    if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
      name=name=="qsetunion" ? "union" : name=="qsetintersect" ? "intersect" : "setdiff";
+     for(size_t k=0;k<2;++k)args[k]="qdomainvector("+args[k]+")";
+    }
+    if(!args.empty() && (name=="unique" || name=="select"))args[0]="qdomainvector("+args[0]+")";
     if(name=="qsequence" && args.size()==3 && args[0].size()>=2 && args[0].front()=='[' && args[0].back()==']') {
      // Preserve singleton lists: libqalculate otherwise collapses [step] to step.
      std::string body=args[0].substr(1,args[0].size()-2);int nesting=0;char quoted=0;

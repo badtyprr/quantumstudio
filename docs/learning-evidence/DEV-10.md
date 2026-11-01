@@ -124,3 +124,13 @@ The v10 immutable development snapshot passes 124 Cartesian/family checks,
 now assert typed sets with the same members. Actual preview GUI validation
 passes 43 checks, including both singleton copies, with zero clipboard retries.
 These are development observations; final packaged validation remains pending.
+
+Independent Spec review of `02dafd38` caught a compatibility regression:
+`unique(bitstrings(1))` and three-argument legacy multiset operations rejected
+typed domains. Failing fixtures were committed as `f061fae9`; retained log:
+`cleanup-audit/dev10-vector-compat-red.log`. The notation adapter now unwraps
+set descriptors only at legacy `unique`, `select` and optional-multiset call
+boundaries, preserving those builtins' vector validation and duplicate rules.
+The v12 immutable worker passes 136 Cartesian/family checks. The full v10
+worker regression passed 2178 checks before this compatibility correction;
+v12 regression and exact-head review/CI are separate gates.

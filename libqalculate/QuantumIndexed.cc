@@ -255,6 +255,15 @@ class QuantumIndexedFunction: public MathFunction {
    if(entries.size()>1024) {CALCULATOR->error(true,"Set operations support at most 1024 entries.",NULL);return 0;}
    out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
+  if(op=="qdomainvector") {
+   // Legacy vector consumers retain their own validation and multiset rules.
+   // Only erase the set descriptor at this explicit compatibility boundary.
+   out=raw[0];out.eval(eo);
+   if(out.isFunction() && out.function()->referenceName()=="qset" && out.size()==1) {
+    MathStructure entries=out[0];out=entries;
+   }
+   return 1;
+  }
   if(op=="qset") {
    MathStructure entries=raw[0];
    if(entries.isFunction() && entries.function()->referenceName()=="vector") {
@@ -767,6 +776,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
  calculator.addFunction(new QuantumIndexedFunction("qset",1));
+ calculator.addFunction(new QuantumIndexedFunction("qdomainvector",1));
  calculator.addFunction(new QuantumIndexedFunction("qcartesian",2));
  calculator.addFunction(new QuantumIndexedFunction("qcartesianpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qsetimage",3));
