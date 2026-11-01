@@ -105,6 +105,8 @@ int main() {try {
  eo.approximation=APPROXIMATION_APPROXIMATE;
  equal("qmeasurementvalid(qpovm(vector(0),vector([1+1/10000000000000,0;0,1])))","1");
  reject("qpovm(vector(0),vector([1+1/1000000,0;0,1]))");
+ equal("qmeasurementvalid(qpovm(vector(0,\"red\"),vector([1,0;0,0],[0,0;0,1])))","1");
+ reject("qpoststate(qinstrument(vector(\"red\",\"blue\"),vector(vector([1,0;0,0]),vector([0,0;0,1]))),[1;1]/sqrt(2),2)");
  std::cout<<"PASS: "<<checks<<" instrument checks\n";return 0;
 }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}
 

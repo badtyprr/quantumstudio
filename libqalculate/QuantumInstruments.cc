@@ -70,15 +70,19 @@ Verdict positiveSemidefinite(MathStructure a,const EvaluationOptions &eo) {
 }
 bool isKind(const MathStructure &a,const char *name) {return a.isFunction() && a.function()->referenceName()==name;}
 bool fail(const char *message) {CALCULATOR->error(true,message,NULL);return false;}
+Verdict labelsEqual(const MathStructure &left,const MathStructure &right,const EvaluationOptions &eo) {
+ if(left.equals(right))return Verdict::Valid;
+ if((left.isSymbolic() || left.isNumber()) && (right.isSymbolic() || right.isNumber()))return Verdict::Invalid;
+ MathStructure difference=left;difference-=right;return zero(difference,eo);
+}
 bool validateLabels(const MathStructure &labels,Verdict &validity,const EvaluationOptions &eo) {
  if(!labels.isVector() || labels.size()==0 || labels.size()>64)return fail("Require 1 to 64 outcome labels.");
  for(size_t k=0;k<labels.size();++k) {
   if(labels[k].isVector())return fail("Outcome labels must be scalar values or text.");
   for(size_t j=0;j<k;++j) {
-   if(labels[k].equals(labels[j]))return fail("Outcome labels must be distinct.");
-   if(labels[k].isSymbolic() && labels[j].isSymbolic())continue;
-   MathStructure difference=labels[k];difference-=labels[j];
-   if(zero(difference,eo)!=Verdict::Invalid)validity=combine(validity,Verdict::Unknown);
+   Verdict same=labelsEqual(labels[k],labels[j],eo);
+   if(same==Verdict::Valid)return fail("Outcome labels must be distinct.");
+   if(same==Verdict::Unknown)validity=combine(validity,Verdict::Unknown);
   }
  }
  return true;
@@ -391,12 +395,8 @@ public:
    MathStructure label=raw[2];label.eval(eo);
    if(label.isVector()) {fail("An outcome selector must be a scalar value or text.");return 0;}
    bool unknownMatch=false;
-   for(size_t k=0;k<m.labels.size();++k)if(!label.equals(m.labels[k])) {
-    if(label.isSymbolic() && m.labels[k].isSymbolic())continue;
-    MathStructure difference=label;difference-=m.labels[k];
-    unknownMatch|=zero(difference,eo)!=Verdict::Invalid;
-   }
-   for(size_t k=0;k<m.labels.size();++k)if(label.equals(m.labels[k])) {
+   for(size_t k=0;k<m.labels.size();++k)unknownMatch|=labelsEqual(label,m.labels[k],eo)==Verdict::Unknown;
+   for(size_t k=0;k<m.labels.size();++k)if(labelsEqual(label,m.labels[k],eo)==Verdict::Valid) {
     if(probabilities[k].isZero()) {fail("A zero-probability outcome has no normalized post-measurement state.");return 0;}
     if(!probabilities[k].representsPositive())return 0;
     out=states[k];out/=probabilities[k];out.eval(eo);return 1;
