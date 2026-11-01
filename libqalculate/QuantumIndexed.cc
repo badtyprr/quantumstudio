@@ -62,7 +62,7 @@ bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="vector" || name=="union" || name=="intersect" || name=="setdiff" || name=="unique" || name=="select";
+ return name=="vector" || name=="union" || name=="intersect" || name=="setdiff" || name=="unique" || name=="select" || name=="qdomainresult";
 }
 bool pendingDomain(const MathStructure &value) {
  return value.isSymbolic() || (value.isVariable() && !value.variable()->isKnown()) || domainExpression(value);
@@ -254,6 +254,14 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(entries.size()>1024) {CALCULATOR->error(true,"Set operations support at most 1024 entries.",NULL);return 0;}
    out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+  }
+  if(op=="qdomainresult") {
+   MathStructure source=raw[1];source.eval(eo);out=raw[0];out.eval(eo);
+   if(source.isFunction() && source.function()->referenceName()=="qset") {
+    if(!out.isVector())out.transform(STRUCT_VECTOR);
+    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);
+   }
+   return 1;
   }
   if(op=="qdomainvector") {
    // Legacy vector consumers retain their own validation and multiset rules.
@@ -777,6 +785,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
  calculator.addFunction(new QuantumIndexedFunction("qset",1));
  calculator.addFunction(new QuantumIndexedFunction("qdomainvector",1));
+ calculator.addFunction(new QuantumIndexedFunction("qdomainresult",2));
  calculator.addFunction(new QuantumIndexedFunction("qcartesian",2));
  calculator.addFunction(new QuantumIndexedFunction("qcartesianpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qsetimage",3));

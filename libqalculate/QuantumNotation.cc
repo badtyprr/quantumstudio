@@ -1323,7 +1323,10 @@ class Parser {
      name=name=="qsetunion" ? "union" : name=="qsetintersect" ? "intersect" : "setdiff";
      for(size_t k=0;k<2;++k)args[k]="qdomainvector("+args[k]+")";
     }
-    if(!args.empty() && (name=="unique" || name=="select"))args[0]="qdomainvector("+args[0]+")";
+    std::string legacyDomain;
+    if(!args.empty() && (name=="unique" || name=="select")) {
+     legacyDomain=args[0];args[0]="qdomainvector("+args[0]+")";
+    }
     if(name=="qsequence" && args.size()==3 && args[0].size()>=2 && args[0].front()=='[' && args[0].back()==']') {
      // Preserve singleton lists: libqalculate otherwise collapses [step] to step.
      std::string body=args[0].substr(1,args[0].size()-2);int nesting=0;char quoted=0;
@@ -1339,6 +1342,7 @@ class Parser {
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
+    if(!legacyDomain.empty()) {a="qdomainresult("+a+","+legacyDomain+")";checkSize(a);}
     auto signature=quantumSignatures.find(name);
     if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }

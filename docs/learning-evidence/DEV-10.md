@@ -134,3 +134,13 @@ boundaries, preserving those builtins' vector validation and duplicate rules.
 The v12 immutable worker passes 136 Cartesian/family checks. The full v10
 worker regression passed 2178 checks before this compatibility correction;
 v12 regression and exact-head review/CI are separate gates.
+
+The follow-up Spec review reproduced singleton copy loss after
+`unique(qindexrange(3,3))`; failing fixtures `a4c3d340` and
+`cleanup-audit/dev10-legacy-singleton-red.log` precede the correction.
+A result adapter preserves typed-set results of `unique` and `select` when
+their source is a typed set, including empty and singleton outputs. Genuine
+vector inputs retain their vector behavior. Explicit three-argument multiset
+operations continue to return vectors so that requested multiplicities survive;
+these are multiset operations, not the two-argument set operations.
+The immutable v14 worker passes 148 Cartesian/family checks in both modes.

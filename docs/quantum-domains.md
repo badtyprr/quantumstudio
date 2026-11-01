@@ -38,3 +38,9 @@ widths retain the existing 0-to-10 bound. Unknown counts retain these constraint
 until substitution; a known invalid count, label or domain rejects even when
 another input is unknown. These limits are explicit evaluation bounds, not a
 claim of unrestricted symbolic set algebra or whole-lesson compatibility.
+
+Legacy `unique` and `select` accept typed domains and retain their set type.
+For genuine vector inputs they retain the established vector behavior. The
+explicit third argument of `union`, `intersect` and `setdiff` selects the legacy
+multiset API: its result is a vector, preserving requested multiplicities.
+Use the two-argument forms for typed set operations and set copy/re-entry.
