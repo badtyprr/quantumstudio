@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07 and the finite DEV-08 contract are released. DEV-05a–e shipped in REL-10/REL-11; DEV-05 remains partial. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
+Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07, the finite DEV-08 contract and DEV-09 are released. DEV-05a–e shipped in REL-10/REL-11; DEV-05 remains partial. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -20,7 +20,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-06](#dev-06) | P1 | L | Released | None | Runtime gate parameters |
 | [DEV-07](#dev-07) | P1 | L | Released | None | Dynamic wire indexing |
 | [DEV-08](#dev-08) | P1 | L | Released in REL-24 | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage |
-| [DEV-09](#dev-09) | P2 | L | Partial | DEV-03 | Symbolic ensembles, instruments and POVMs |
+| [DEV-09](#dev-09) | P2 | L | Released in REL-25 | DEV-03 | Symbolic ensembles, instruments and POVMs |
 | [DEV-10](#dev-10) | P2 | L | Partial | DEV-05 | Symbolic domains, sets and indexed families |
 | [DEV-11](#dev-11) | P2 | L | Partial | DEV-04 | Error-correction lesson operations |
 | [DEV-12](#dev-12) | P2 | L | Partial | DEV-04 | Variational and numerical operator coverage |
@@ -76,6 +76,8 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - [x] REL-23: Published [afca2fe6](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-afca2fe6), completing bounded DEV-07 wire selection through PRs #384–#385. Reviewed-head and merged-tip CI, clean packaging and immutable-payload audit passed: 280 wire protocol checks; 270 wire import/model/export checks; 31 pinned-source checks; 12 editor-created execution checks and seven visually inspected captures. All payload/archive hashes match the tested artifact. ZIP SHA-256 `7a6224e40467616fe1ca9b65cd556f2d368afcf34dda78c155a19308c9d10deb`. [Evidence and explicit limits](learning-evidence/DEV-07.md).
 
 - [x] REL-24: Published [35d9e753](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-35d9e753), completing the finite DEV-08 contract through PRs #387–#407. Required reviews/CI, clean packaging, 21 audit groups, 26 actual-editor execution checks and 11 inspected captures passed. Native: 67 passes, one existing skip, zero failures/errors. All 385 payload files, 386 ZIP entries and 321 source inputs verified; both public assets downloaded and hashed. ZIP SHA-256 `19570252fd8b3719623396c05cff1acba448505c3588d1e293d7cee3a457f798`. [Evidence and explicit limits](learning-evidence/DEV-08.md).
+
+- [x] REL-25: Published [e5ed358a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e5ed358a), completing the documented DEV-09 feature contract through PRs #409–#410. Independent reviews and required CI passed. Clean package: 175 native measurement assertions, 214 measurement worker checks, 2,178 general worker checks and 21 actual measurement GUI checks; five inspected captures. Manifest/payload and both public download hashes verified. ZIP SHA-256 `ffd1485bd4bd54689659526e25853c02bfbe5292ac915dd1809fd6658e3e8f91`. [Evidence, source adaptations and remaining limits](learning-evidence/DEV-09.md).
 
 ## Acceptance criteria by development item
 
@@ -162,10 +164,10 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 
 ### DEV-09
 
-- [ ] **Symbolic ensembles, instruments and POVMs** — P2; Partial; size L; dependencies: DEV-03.
-- Source focus: General formulation: general measurements. These are audit targets, not a claim that every page has the same gap.
-- Acceptance: Represent labeled outcomes and post-measurement states; verify normalization, probabilities and partial trace. Add automatic Naimark construction with explicit ancilla dimensions and rejection of invalid POVMs.
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+- [x] **Symbolic ensembles, instruments and POVMs** — P2; Released in REL-25; size L; dependencies: DEV-03.
+- Acceptance: Labeled outcomes and instrument poststates; normalization, probabilities and partial traces; automatic full Naimark construction with explicit ancilla dimensions; invalid POVM/dimension rejection and preservation of unresolved symbolic conditions.
+- Delivered through [#409](https://github.com/badtyprr/quantumstudio/pull/409) and [#410](https://github.com/badtyprr/quantumstudio/pull/410), verified release [e5ed358a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e5ed358a). [Source reproductions, review/CI records, package checks and limits](learning-evidence/DEV-09.md).
+- Bounds: 64 outcomes, 64 Kraus matrices per outcome, dimensions up to 64, total Naimark dimension up to 128. The fourth diagnostic tetrahedral |i> conditional state remains pending because its exact probability sign is not established. No whole IBM lesson completion is inferred.
 
 ### DEV-10
 
@@ -315,8 +317,8 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-008** [quantum-channels/representations-of-channels](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-009** [quantum-channels/representation-equivalence](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representation-equivalence) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-010** [general-measurements/introduction](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/introduction) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-011** [general-measurements/formulations-of-measurements](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-012** [general-measurements/naimark-theorem](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-011** [general-measurements/formulations-of-measurements](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements) — P1 / AUD-01; selected DEV-09 reproductions verified; full lesson audit remains open; [evidence and limits](learning-evidence/DEV-09.md).
+- [ ] **IBM-012** [general-measurements/naimark-theorem](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem) — P1 / AUD-01; selected DEV-09 reproductions verified; full lesson audit remains open; [evidence and limits](learning-evidence/DEV-09.md).
 - [ ] **IBM-013** [general-measurements/discrimination-and-tomography](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-014** [purifications-and-fidelity/introduction](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-015** [purifications-and-fidelity/purifications](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications) — P1 / AUD-01; full audit pending; evidence: not yet recorded.

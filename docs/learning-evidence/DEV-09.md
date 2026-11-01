@@ -1,9 +1,10 @@
-# DEV-09 development evidence (unfinished)
+# DEV-09: released ensembles, instruments and POVMs
 
 Base: upstream master `0fed41cb5637c578737278bf13f59590a56d6cf4`, fetched 2026-11-01.
 The root checkout, README changes, untracked files and root dist are preserved.
 Development checkout: `.tools/dev09-implementation-clone`. External evidence:
-`cleanup-audit/dev09-*`. No release or whole-lesson completion is claimed.
+`cleanup-audit/dev09-*`. Released as [e5ed358a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e5ed358a) (REL-25).
+This closes the documented DEV-09 feature contract, not whole-lesson coverage.
 
 ## Sources and original inputs
 
@@ -24,20 +25,24 @@ The Born control passed. The initial partial-trace control had the wrong public
 spelling and argument order; retain it as a failed control. Corrected native
 qptracedim(rho,0,[2,2]) yields I/2 for a Bell state.
 
-1. Native models, validity, ensemble averages, probabilities, instrument branches
-   and Naimark completion: current regression passed 175 assertions. Development
-   linkage uses retained dev08-build-base; it is not a clean package build.
-2. Symbolic domains, substitutions, serialization/copy/re-entry, expanded source
-   fixtures and actual GUI workflows: pending. Initial native checks do not
-   close these requirements.
-3. Independent Standards/Spec reviews, CI, guarded merges, clean build, actual
-   payload tests, publication/download verification, documentation closure and
-   verified clone cleanup: pending.
+1. Native models, tri-state validity, ensemble averages, labeled probabilities,
+   instrument branches/poststates and full Naimark completion shipped through
+   [PR #409](https://github.com/badtyprr/quantumstudio/pull/409). The clean build's
+   native regression passed 175 assertions.
+2. Symbolic substitutions, serialization/copy/re-entry, independent tetrahedral
+   dilation checks and actual GUI/package gates shipped through
+   [PR #410](https://github.com/badtyprr/quantumstudio/pull/410). Actual packaged
+   binaries passed 214 measurement checks and 2,178 general worker checks.
+3. Both scoped Standards and Spec reviews passed with zero outstanding findings.
+   All three required CI jobs passed for each reviewed head and the released
+   merged revision. Clean packaging, actual GUI tests, payload verification,
+   publication and public download/hash verification passed. Documentation
+   closure and subsequent verified disposal are tracked separately in the audit.
 
 Current resource bounds: 64 labels, 64 Kraus matrices per outcome, dimensions up
 to 64, total Naimark dimension up to 128. No whole-lesson coverage is inferred.
-Symbolic declared-matrix shapes, singleton shapes and approximate inputs still
-need adversarial validation. Numerical completion checks a 1e-10 unitary residual;
+Symbolic declared-matrix shapes, singleton/rectangular shapes and approximate
+inputs have regression coverage; unproved conditions remain pending. Numerical completion checks a 1e-10 unitary residual;
 two-dimensional positive roots use the exact determinant/trace formula.
 
 ## Numerical policy and review corrections
@@ -55,11 +60,12 @@ reported no documented violations and two naming/duplication suggestions; shared
 label validation and the positiveSemidefinite name address those suggestions.
 Final native exact-head reviews of `617dec706d5c4b34c7ca2ccfffceebe3315ba150`
 report zero Standards violations/heuristics and zero Spec findings. Workflow
-changes, CI, packaged artifacts and publication are separate gates.
+head `7053448572307bcc3a1bbf9b9c42aa02a0fbc061` also passed both reviews.
+CI, packaged artifacts and publication were verified separately.
 
 ## Workflow development checks
 
-The worker contract suite passed 214 checks against the development worker. It
+The worker contract suite passed 214 checks against the actual packaged worker. It
 covers exact/approximate copy and re-entry, label substitution, unknown outcome
 selection, invalid nonfinite Kraus matrices, singleton/rectangular dimensions,
 and partial traces of conditional Bell-state outputs. A failing symbolic-selector
@@ -84,11 +90,56 @@ and Copy buttons, clipboard re-entry, session save/open, invalid-input recovery,
 and poststate/Naimark matrix display. Five screenshots were inspected. This uses
 the previous released GUI with the development worker, not the final package.
 The package pipeline now includes the worker suite and actual measurement GUI
-checks; final clean packaged results remain pending.
+checks. The final clean package passed the same 21 actual GUI checks, and all
+five final captures were inspected. At minimum size, the result panel scrolls;
+the full matrix is not simultaneously visible in that capture.
 
 The workflow Spec review found pending comparisons lost nested matrix separators
 and the Windows payload omitted the linked feature guide. Recursive comparison
 serialization and substitution regressions address the first; packaging the guide
 and its evidence addresses the second. The broader worker suite also caught a
 Fourier-display regression, so arithmetic serialization is restricted to expressions
-containing literal vectors. Final review of these corrections remains pending.
+containing literal vectors. Final review of these corrections passed. The full
+2,178-check worker suite passed after the correction and against the package.
+
+## Acceptance trace and remaining limits
+
+| Acceptance | Evidence |
+| --- | --- |
+| Labeled outcomes and poststates | Native instrument/ensemble tests; worker label ordering and substitutions; actual GUI display and session round-trip |
+| Normalization, probabilities and partial traces | Invalid weights/states/completeness rejected; IBM 5/6,1/6 and tetrahedral 1/2,1/6,1/6,1/6 references; conditional Bell-state partial trace |
+| Automatic Naimark with explicit ancilla | Full 4-by-4 and 8-by-8 unitaries; padded ancilla; independent Python U-adjoint U and every compressed effect |
+| Invalid POVMs/dimensions and unknown validity | Negative/non-Hermitian/nonfinite/incomplete effects and incompatible dimensions rejected; declared symbolic shapes, unknown labels/selectors and conditions retained through substitution and copy |
+
+Automated paths: `src/quantum-instruments-test.cc`,
+`src/quantum-instruments-worker-test.py`, `windows/MeasurementGuiTests.cs`,
+`windows/test-measurements-gui.ps1`. The Windows package pipeline executes the
+worker and real GUI gates; its source archive includes these inputs.
+
+The fourth tetrahedral outcome for the diagnostic |i> input has independently
+positive probability (3-sqrt(6))/12, but the exact scalar sign prover leaves its
+conditional state pending. This is a disclosed evaluation limitation, not a
+successful evaluation claim. Symbolic unresolved calls are conservative; the
+resource bounds and numerical tolerances above remain part of the contract.
+IBM-011 and IBM-012 have selected-example evidence only. IBM-013 and full-lesson
+coverage remain unaudited by this work.
+
+## Verified release
+
+Revision: `e5ed358ab533fbe72e3264e0047b8aa1d309873e`. [Public release](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e5ed358a).
+
+Clean native suite: 69 passes, 1 existing skip, zero failures/errors. Source archive: 329 inputs verified byte for byte. Payload: 387 files plus its manifest; 388 ZIP files.
+
+Packaging initially stopped in the existing shutdown-observation count check under Windows PowerShell 5.1: its direct JSON pipeline counted zero despite three recorded missing-path observations. The same report counts three under PowerShell 7.6.5 and explicitly enumerated PowerShell 5.1. The final observer and unchanged packaging tail were resumed under the established PowerShell 7 host; all tested payload bytes and the source archive remained unchanged. This was a clean-source build completed through a documented final-gate resumption, not an uninterrupted successful invocation. The initial log, diagnosis, independent resumption review and byte-preservation record remain in `cleanup-audit/dev09-release-build-initial.log`, `dev09-shutdown-diagnosis.json`, `dev09-resumption-review.json` and `dev09-build-resumption.json`.
+
+Required merged-revision CI: [Native build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/41340542639/job/124949387643), [Windows GUI build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/41340542668/job/124949387552), [Windows OpenQASM build and tests](https://github.com/badtyprr/quantumstudio/actions/runs/41340542707/job/124949388097).
+
+- [QuantumStudio-Windows-x64.zip](https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-e5ed358a/QuantumStudio-Windows-x64.zip): SHA-256 `ffd1485bd4bd54689659526e25853c02bfbe5292ac915dd1809fd6658e3e8f91`; 82035279 bytes, downloaded and verified.
+- [QuantumStudio-source.tar.gz](https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-e5ed358a/QuantumStudio-source.tar.gz): SHA-256 `f847c0a77e96eb11ef85fcb0466db650296f01fa55ceda27ca3ddea7226734e1`; 4265289 bytes, downloaded and verified.
+
+External records: `cleanup-audit/dev09-native-pr.json`,
+`dev09-workflow-pr.json`, `dev09-release.json`, `dev09-build-manifest.json`,
+`dev09-release-build.log`, `dev09-release-native.log`,
+`dev09-release-test-suite.log`, and `dev09-release-gui/`. The published package
+contains the pre-publication development evidence; this closure records the final
+verified results without modifying the tested binaries or archives.
