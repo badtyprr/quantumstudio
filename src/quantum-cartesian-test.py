@@ -28,12 +28,19 @@ for expression, expected in [
     ('cardinality(setimage(bitstring(k,5),vector(19,5,5,19,26,1,1,26),k))','4'),
     (r'cardinality(\{k^2:k\in\{0,1,2\}\})','3'),
     ('sumset(k,setimage(sumset(k+j,vector(0,1),j),vector(2,3),k),k)','12'),
+    (r'replace(cardinality(\{k\in\{0,1\}:k=x\}),x,0)','1'),
+    (r'replace(cardinality(\{k\in\{0,1\}:k=x\}),x,2)','0'),
+    ('cardinality(cartesianpower(vector(1,1),10))','1'),
+    ('member(tuple(x,1),cartesian(vector(x),vector(1)))','1'),
+    ('cardinality(setimage(1,vector(x,y),k))','1'),
+    ('sumset(k,setimage(sumset(k,vector(2,3),k),vector(0,1),k),k)','5'),
 ]:
     value=data(expression)
     assert value['text']==expected,(expression,value,expected)
 
 for expression in [r'cardinality(\{0,1\}^n)',r'cardinality(\{0,\ldots,n-1\})',
                    'cardinality(cartesian(Σ,Γ))','setimage(k^2,Σ,k)',
+                   r'cardinality(\{k\in\{0,1\}:k=x\})',
                    'cardinality(cartesianpower(vector(x,y),2))']:
     value=data(expression)
     assert value['text'] not in ['0','1','2','4']
@@ -43,6 +50,7 @@ for expression in [r'cardinality(\{0,1\}^n)',r'cardinality(\{0,\ldots,n-1\})',
 for expression in ['cartesianpower(vector(0,1),-1)','cartesianpower(vector(0,1),1/2)',
                    'cartesianpower(Σ,-1)','cartesian(vector(0,1),2)',
                    'member(tuple(0,bitstring(-1,2)),Σ)',
+                   'setfilter(2,vector(0,1),k)',
                    'cartesianpower(vector(0,1),11)']:
     data(expression,True)
 print(f'{checks} Cartesian and indexed-family checks passed')
