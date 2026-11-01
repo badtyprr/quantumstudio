@@ -89,6 +89,34 @@ class FileImportTests(unittest.TestCase):
             message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
             self.assertEqual(message.strip(), "parameters.inc:3:1: Use float32/64 or angle widths 1–64.")
 
+    def test_lowering_and_assignment_emission_locations(self):
+        cases = [
+            ("qubit q;\nfor int i in [0:0:2] { x q; }", 4,
+             "For-loop range step must not be zero.", (False, True)),
+            ("bool b;\nb += true;", 4,
+             "Boolean compound assignments are not yet supported.", (True,)),
+            ("int n = 1;\nbit[2] b;\nb = bit[2](n);", 5,
+             "Integer-to-bit casts require equal explicit widths.", (True,)),
+            ("int n = 1;\nbit[2] b = bit[2](n);", 4,
+             "Integer-to-bit casts require equal explicit widths.", (True,)),
+        ]
+        for module in (False, True):
+            prologue = 'OPENQASM 3;\ninclude "stdgates.inc";\n' if module else '// original\n// dependency\n'
+            main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "sub dir/wrapper.inc";')
+            self.put("sub dir/wrapper.inc", '// nested\ninclude "bad \u03ba.inc";')
+            for body, line, expected, modes in cases:
+                self.put("sub dir/bad \u03ba.inc", prologue + body.rsplit("\n", 1)[0] + "\n  " + body.rsplit("\n", 1)[1])
+                for command in COMMANDS:
+                    for classical in modes:
+                        with self.subTest(module=module, body=body, command=command, classical=classical):
+                            mode = ["--classical"] if classical else []
+                            args = ["--source-file", str(main), *mode] + (["--module-headers"] if module else [])
+                            message = self.run_import(command, args, success=False)
+                            self.assertEqual(message.strip(), f"sub dir/bad \u03ba.inc:{line}:3: {expected}")
+                            # The diagnostic text remains identical for paste-only input.
+                            message = self.run_import(command, mode, source='OPENQASM 3;\n' + body, success=False)
+                            self.assertEqual(message.strip(), expected)
+
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:
             module = (HERE / "fixtures/qb004" / (name + ".qasm")).read_text(encoding="utf-8")

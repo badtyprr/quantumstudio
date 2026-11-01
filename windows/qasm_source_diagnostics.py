@@ -1,4 +1,6 @@
 """Original-file diagnostics for the pinned, single-request compiler process."""
+from contextlib import contextmanager
+
 import logging
 import re
 
@@ -23,6 +25,23 @@ class LocatedError(ValueError):
 def error_at(node, message):
     # Keep str(error) unchanged for stdin-only clients.
     return LocatedError(message, getattr(node, "span", None))
+
+
+def copy_span(node, original):
+    """Attribute a synthesized node only to the AST node it replaces."""
+    node.span = getattr(original, "span", None)
+    return node
+
+
+@contextmanager
+def diagnostic_context(node):
+    """Locate adapter ValueErrors without replacing an already located failure."""
+    try:
+        yield
+    except LocatedError:
+        raise
+    except ValueError as error:
+        raise error_at(node, str(error)) from error
 
 
 def _parser_location(error):
