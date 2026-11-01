@@ -526,6 +526,9 @@ class QuantumAlgebraFunction: public MathFunction {
     args[j]=row;
    }
   }
+  if(op=="qketstate" && args[0].isFunction() && args[0].function()->referenceName()=="qset" && args[0].size()==1 && args[0][0].isVector()) {
+   MathStructure entries=args[0][0];args[0]=entries;
+  }
   const MathStructure &a=args[0];
   if((op=="qadd" || op=="qmul" || op=="qadjacent" || op=="qdensity") &&
      args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0) {

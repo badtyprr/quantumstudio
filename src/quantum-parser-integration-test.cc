@@ -336,7 +336,8 @@ int main(){try {
  equal("quantum: cardinality(bitstrings(10))","1024");
  equal(R"(quantum: \sum_{x\in\{0,1\}^2}{\sum_{x\in\{0,1\}^1}{|x>}})","[4;4]");
  equal("quantum: qketstate(bitstring(1,3))","[0;1;0;0;0;0;0;0]");
- for(const char *expression:{"quantum: bitstrings(-1)","quantum: bitstrings(11)","quantum: bitstrings(1/2)","quantum: bitstrings(n)","quantum: bitstring(4,2)","quantum: bitstring(-1,2)"}) {
+ equal("quantum: replace(cardinality(bitstrings(n)),n,3)","8");
+ for(const char *expression:{"quantum: bitstrings(-1)","quantum: bitstrings(11)","quantum: bitstrings(1/2)","quantum: bitstring(4,2)","quantum: bitstring(-1,2)"}) {
   while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
   if(!error)throw std::runtime_error(std::string("Invalid binary domain accepted: ")+expression);++checks;
@@ -416,12 +417,13 @@ int main(){try {
 
  equal(R"(quantum: \sum_{\alpha\in\{1,3\}}{\sum_{a_0\in\{\alpha\in\{\alpha,\alpha+1\}:\alpha>1\}}{a_0}})","9");
 
- equal(R"(quantum: \{0,2,0\})","vector(0,2)");
- equal(R"(quantum: \{k\in\{-2,0,2,2\}:k\geq0\})","vector(0,2)");
- equal(R"(quantum: \{k\in\{0,2\}:k<0\})","vector()");
+ // Sets retain their type through empty/singleton results and clipboard entry.
+ equal(R"(quantum: \{0,2,0\})","qset(vector(0,2))");
+ equal(R"(quantum: \{k\in\{-2,0,2,2\}:k\geq0\})","qset(vector(0,2))");
+ equal(R"(quantum: \{k\in\{0,2\}:k<0\})","qset(vector())");
  equal(R"(quantum: \sum_{k\in\{j\in\{-1,0,2\}:j>=0\}}{k})","2");
  equal(R"(quantum: \sum_{k\in\{1,3\}}{\sum_{k\in\{k\in\{k,k+1\}:k>1\}}{k}})","9");
- equal(R"(quantum: \{\alpha\in\{-1,0,1\}:\alpha\geq0\})","vector(0,1)");
+ equal(R"(quantum: \{\alpha\in\{-1,0,1\}:\alpha\geq0\})","qset(vector(0,1))");
 
  equal(R"(quantum: \prod_{\alpha=1}^{2}{\sum_{\alpha\in\{2,3\}}{\alpha}})","25");
  equal(R"(quantum: \sum_{\alpha\in\{0,1\}}{\prod_{\alpha=2}^{3}{\alpha}})","12");

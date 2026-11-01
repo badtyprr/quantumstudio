@@ -88,10 +88,10 @@ int main(){try {
  equal("qsum(qsumset(x,vector(0,1),x),0,2,x)","3");
  equal("qsumset(qsum(x,0,1,x),vector(0,1),x)","2");
  equal("qsumset(x,vector(7),x)","7");
- equal("qindexrange(-2,2)","vector(-2,-1,0,1,2)");
- equal("qindexrange(0,-1)","vector()");
+ equal("qindexrange(-2,2)","qset(vector(-2,-1,0,1,2))");
+ equal("qindexrange(0,-1)","qset(vector())");
  equal("qsumset(x,qindexrange(3,3),x)","3");
- equal("qindexrange(1000000000000000000000,1000000000000000000002)","vector(1000000000000000000000,1000000000000000000001,1000000000000000000002)");
+ equal("qindexrange(1000000000000000000000,1000000000000000000002)","qset(vector(1000000000000000000000,1000000000000000000001,1000000000000000000002))");
  equal("qsumset(1,qindexrange(0,1023),x)","1024");
 
  equal("qsumset(x,unique(vector(2,2)),x)","2");

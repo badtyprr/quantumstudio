@@ -145,3 +145,4 @@ try {
 } finally { $process.Dispose() }
 
 & (Join-Path $PSScriptRoot "test-measurements-gui.ps1") -Distribution (Join-Path $repo "dist/QuantumStudio") -Evidence (Join-Path $validation "measurements") -CompileOnly
+& (Join-Path $PSScriptRoot "test-domains-gui.ps1") -Distribution (Join-Path $repo "dist/QuantumStudio") -Evidence (Join-Path $validation "domains") -CompileOnly

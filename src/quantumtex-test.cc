@@ -73,8 +73,8 @@ int main() {
   equal(R"(\{0,1\}^{3})","qbitstrings(3)");
   equal(R"(\{1,0\}^{n})","qbitstrings(n)");
   equal(R"(\{0,1,1\}^{2})","qbitstrings(2)");
-  rejects(R"(\{0,2\}^{2})");
-  rejects(R"(\{0,\ldots,3\}^{2})");
+  equal(R"(\{0,2\}^{2})","qcartesianpower(vector(0,2),2)");
+  equal(R"(\{0,\ldots,3\}^{2})","qcartesianpower(qindexrange(0,3),2)");
   equal(R"(\Bigl\lfloor\frac{\pi}{4}\sqrt{16}\Bigr\rfloor)","floor(((pi)/(4))sqrt(16))");
   equal(R"(\lfloor-3/2\rfloor^2)","floor(-3/2)^2");
   equal(R"(\lceil\lfloor3/2\rfloor+1/2\rceil)","ceil(floor(3/2)+1/2)");
@@ -97,27 +97,27 @@ int main() {
   equal(R"(\arcsin(x)+\arccos(x)+\arctan(x))","asin(x)+acos(x)+atan(x)");
   for(const char *s:{R"(\sin^{}(x))",R"(\sin^2())",R"(\sin^2)",R"(\sin^2 x)",R"(\sin^2(x)"})rejects(s);
   rejects(R"(\{0,\ldots,\ldots\})");
-  equal(R"(\{0,\ldots,n-1\})","unique(qindexrange(0,n-1))");
-  equal(R"(\{0,\cdots,3\})","unique(qindexrange(0,3))");
-  equal(R"(\{0,...,3\})","unique(qindexrange(0,3))");
+  equal(R"(\{0,\ldots,n-1\})","qindexrange(0,n-1)");
+  equal(R"(\{0,\cdots,3\})","qindexrange(0,3)");
+  equal(R"(\{0,...,3\})","qindexrange(0,3)");
   rejects(R"(\{0,\ldots\})");
   rejects(R"(\{0,1,\ldots,3\})");
 
-  equal(R"(\{\})","unique(vector())");
-  equal(R"(\{"a:b",'c:d'\})",R"(unique(vector("a:b",'c:d')))");
+  equal(R"(\{\})","qset(vector())");
+  equal(R"(\{"a:b",'c:d'\})",R"(qset(vector("a:b",'c:d')))");
   rejects(R"(\{0,1)");
   rejects(R"(\})");
 
-  equal(R"(\{0,1,0\})","unique(vector(0,1,0))");
-  equal(R"(\{k\in\{0,1\}:k>0\})","unique(select(unique(vector(0,1)),k>0,k))");
-  equal(R"(\left\{k\in S_0\mid k\geq0\right\})","unique(select(S_0,k>=0,k))");
+  equal(R"(\{0,1,0\})","qset(vector(0,1,0))");
+  equal(R"(\{k\in\{0,1\}:k>0\})","qsetfilter(k>0,qset(vector(0,1)),k)");
+  equal(R"(\left\{k\in S_0\mid k\geq0\right\})","qsetfilter(k>=0,S_0,k)");
   rejects(R"(\{k\in S_0:\})");
   rejects(R"(\{k+1\in S_0:k>0\})");
   rejects(R"(\{k\in S_0:k>0:k<2\})");
 
   rejects(R"(\sum_{k\in\{0,1}{k})");
   rejects(R"(\prod_{k\in\{0,1\}}{k})");
-  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","qtexgroupsumset(unique(vector(0,2,5)),k,k^2)");
+  equal(R"(\sum_{k\in\{0,2,5\}}{k^2})","qtexgroupsumset(qset(vector(0,2,5)),k,k^2)");
   equal(R"(\sum_{k\in S_0} k+1)","qtexsumset( S_0,k) k+1");
   rejects(R"(\sum^{2}_{k\in S_0}{k})");
   rejects(R"(\sum_{k\in}{k})");

@@ -293,3 +293,5 @@ TESTS += quantum-instruments-worker-test.py
 EXTRA_DIST += quantum-instruments-worker-test.py
 TESTS += quantum-domains-test.py
 EXTRA_DIST += quantum-domains-test.py
+TESTS += quantum-cartesian-test.py
+EXTRA_DIST += quantum-cartesian-test.py
