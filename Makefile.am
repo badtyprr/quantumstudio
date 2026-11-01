@@ -192,3 +192,5 @@ EXTRA_DIST += windows/test-dev08-source-evidence.py windows/fixtures/dev08-upstr
 EXTRA_DIST += windows/test-runtime-quantum-call-loops.py
 
 EXTRA_DIST += windows/qasm_runtime_bit_aliases.py windows/test-runtime-bit-alias-iteration.py
+
+EXTRA_DIST += docs/learning-evidence/DEV-09.md

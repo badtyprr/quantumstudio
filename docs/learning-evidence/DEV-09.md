@@ -25,7 +25,7 @@ spelling and argument order; retain it as a failed control. Corrected native
 qptracedim(rho,0,[2,2]) yields I/2 for a Bell state.
 
 1. Native models, validity, ensemble averages, probabilities, instrument branches
-   and Naimark completion: initial regression passed 83 assertions. Development
+   and Naimark completion: current regression passed 168 assertions. Development
    linkage uses retained dev08-build-base; it is not a clean package build.
 2. Symbolic domains, substitutions, serialization/copy/re-entry, expanded source
    fixtures and actual GUI workflows: pending. Initial native checks do not
@@ -39,3 +39,18 @@ to 64, total Naimark dimension up to 128. No whole-lesson coverage is inferred.
 Symbolic declared-matrix shapes, singleton shapes and approximate inputs still
 need adversarial validation. Numerical completion checks a 1e-10 unitary residual;
 two-dimensional positive roots use the exact determinant/trace formula.
+
+## Numerical policy and review corrections
+
+Exact normalization and completeness are strict. Approximate-mode normalization
+and completeness allow an absolute residual of 1e-12 for decimal copy/re-entry.
+Positivity is not relaxed by that tolerance. Numerical unitary completion uses
+1e-10; exact negative effects remain rejected. These tolerances do not establish
+validity for unknown symbolic expressions.
+
+The first independent Spec review identified hidden negative diagonal entries,
+loss of symbolic label distinctness, approximate-root dispatch, and rejection of
+declared symbolic matrices. Corrective regressions cover each finding. Standards
+reported no documented violations and two naming/duplication suggestions; shared
+label validation and the positiveSemidefinite name address those suggestions.
+Final exact-head review remains pending.
