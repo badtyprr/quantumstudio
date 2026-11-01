@@ -48,3 +48,56 @@ register-width implementation. Symbolic widths, Cartesian alphabets and indexed
 families are subsequent required scopes, not covered by this change. DEV-09's
 fourth tetrahedral conditional state and all existing whole-source boundaries
 remain unresolved and unchanged.
+
+## Scoped change B: Cartesian alphabets and indexed images
+
+Failing source-adapted fixtures were committed as `764b8041` before implementation
+in `src/quantum-cartesian-test.py`; released-worker failure is retained as
+`cleanup-audit/dev10-cartesian-red.log`. The wider baseline also records symbolic
+binary width, nonbinary alphabet and symbolic integer-range failures.
+
+Adaptations and independent expectations:
+
+| Source location/input | Executable adaptation | Independent oracle |
+| --- | --- | --- |
+| General formulation, Multiple systems: Cartesian product of component state sets | `cartesian(vector(0,1),vector(2,3,4))` | Six ordered pairs; `(1,4)` belongs, `(4,1)` does not. Concrete alphabets are authored dimension witnesses. |
+| Same general Cartesian requirement | `cardinality(\{0,1,2\}^{2})` | Nine ordered pairs; the ternary alphabet and repetition are authored controls. |
+| Query model: `Sigma={0,1}`, `x in Sigma^n` | `\{0,1\}^n`; then substitute `n=3` | Preserve the width condition until known; eight strings at width three. Replaces the prose-defined alphabet with its literal definition. |
+| General formulation ensemble indices `0,...,m-1` | `\{0,\ldots,n-1\}` | Substitute three to obtain three indices; zero yields the empty set. `m` renamed `n`. |
+| Query model minimum: `{f(x):x in Sigma^n}` | `setimage(k%2,vector(0,1,2,3),k)` | Authored concrete function and scalar-index adaptation: image `{0,1}`, size two. This is not a full oracle or algorithm execution. |
+| Simon's problem: eight displayed function outputs | `setimage(bitstring(k,5),vector(19,5,5,19,26,1,1,26),k)` | Decimal transcription of original five-bit outputs; four distinct strings, retaining width. No input circuit is claimed. |
+
+Other tests are authored edge and scope witnesses: zero-fold products contain
+one empty tuple, a positive power of the empty set is empty, a singleton power
+is singleton, tuples preserve order, image binders shadow nested indices, and
+invalid counts/probes reject even when another field remains symbolic.
+
+The required DEV-05 prerequisite extension is narrowly the symbolic domain of
+binary strings and deferred integer ranges. It does not complete general
+register-width equations or expand numerical state-vector limits. Pending domain
+descriptors retain validity constraints rather than replacing them with an
+unconditional cardinality formula. Concrete materialization remains bounded.
+
+Follow-up reproductions within change B:
+
+* The query model's parity example filters an alphabet with a predicate.
+  The authored reduction `cardinality(\{k\in\{0,1\}:k=x\})` errored in
+  `select()` before filter implementation. Fixtures were committed as `c257f5fc`;
+  `cleanup-audit/dev10-filter-red.log` retains the error. Independent expectations
+  are one element at `x=0` and zero at `x=2`; otherwise retain the predicate.
+* A generated singleton Cartesian set copied as its lone tuple; a constant
+  image copied as its scalar. The literal `\{7\}` also copied as `7`.
+  `dev10-singleton-copy-red.log`, `dev10-literal-singleton-red.log` and
+  `dev10-literal-fixture-red.log` preserve those observations. Explicit set
+  descriptors retain empty and singleton collections through copy/re-entry.
+* Existing nested-filter/intersection parser fixtures caught a regression from
+  introducing typed image results. Set union/intersection/difference now accept
+  those descriptors and preserve unknown equality. These operations preserve
+  existing notation compatibility; no additional whole-source coverage follows.
+
+Intermediate validation failures are retained outside the checkout. One
+unoptimized native TeX test process overflowed its Windows stack; subsequent
+native tests use the release's `-O2` compilation setting. A build made near edits
+was explicitly excluded from exact-input evidence; later development builds use
+immutable input snapshots. Development GUI previews use the released e5ed358a
+GUI with a development worker and are not packaged-release evidence.

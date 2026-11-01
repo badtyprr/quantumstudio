@@ -65,7 +65,7 @@ class Printer {
   if(depth>128 || ++nodes>2048)return fallback(value);
   if(value.isVector() && !value.isMatrix() && value.size()>0) {
    bool labels=true;
-   for(size_t i=0;i<value.size();++i)labels=labels && value[i].isFunction() && value[i].function()->referenceName()=="qbitlabel";
+   for(size_t i=0;i<value.size();++i)labels=labels && value[i].isFunction() && (value[i].function()->referenceName()=="qbitlabel" || value[i].function()->referenceName()=="qtuple");
    if(labels) {
     std::string text="{";
     for(size_t i=0;i<value.size();++i) {if(i)text+=", ";text+=render(value[i],depth+1).text;}
@@ -117,6 +117,15 @@ class Printer {
   }
   if(!value.isFunction())return fallback(value);
   const std::string name=value.function()->referenceName();
+  if(name=="qset" && value.size()==1 && value[0].isVector()) {
+   std::string text="{";
+   for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
+   return Fragment(text+"}");
+  }
+  if(name=="qcompare" && value.size()==3 && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=5) {
+   const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
+   return Fragment(grouped(render(value[0],depth+1),6)+operators[value[2].number().intValue()]+grouped(render(value[1],depth+1),6),5);
+  }
   if((name=="qindexedcolumn" && value.size()==3) || (name=="qindexedmatrix" && value.size()==5)) {
    const bool matrix=name=="qindexedmatrix";
    std::string prefix=value[0].isSymbolic() ? value[0].symbol() : "";
@@ -179,6 +188,25 @@ class Printer {
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
+  if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
+   std::string text="(";
+   for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
+   if(value[0].size()==1)text+=",";
+   return Fragment(text+")");
+  }
+  if(name=="qcartesian" && value.size()==2)
+   return Fragment("("+render(value[0],depth+1).text+") × ("+render(value[1],depth+1).text+")");
+  if(name=="qcartesianpower" && value.size()==2)
+   return Fragment("("+render(value[0],depth+1).text+")^("+render(value[1],depth+1).text+") (Cartesian power; nonnegative integer count)");
+  if(name=="qbitstrings" && value.size()==1)
+   return Fragment("{0,1}^("+render(value[0],depth+1).text+") (integer width 0 to 10)");
+  if(name=="qindexrange" && value.size()==2)
+   return Fragment("{"+render(value[0],depth+1).text+", …, "+render(value[1],depth+1).text+"} (integer endpoints)");
+  if((name=="qsetimage" || name=="qsetfilter") && value.size()==3) {
+   Fragment domain=render(value[1],depth+1);std::string index=fresh();
+   bindings.push_back({value[2],index});Fragment body=render(value[0],depth+1);bindings.pop_back();
+   return Fragment(name=="qsetimage" ? "{"+body.text+" : "+index+" ∈ "+domain.text+"}" : "{"+index+" ∈ "+domain.text+" : "+body.text+"}");
+  }
   if(name=="qsumset" && value.size()==3) {
    Fragment domain=render(value[1],depth+1);std::string index=fresh();
    bindings.push_back({value[2],index});Fragment body=render(value[0],depth+1);bindings.pop_back();

@@ -309,6 +309,8 @@ const std::map<std::string,int> quantumSignatures = {
  {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
+ {"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qregisterfamily",4},
  {"qindexrange",2},
  {"qpostselect",2},
@@ -410,7 +412,7 @@ class Parser {
  }
 
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
-  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="select") && args.size()==3) ? 2 :
+  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
    ((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
   if(!index)return;
   size_t body=name=="select" ? 1 : 0;
@@ -420,7 +422,7 @@ class Parser {
   const std::string occurrence=original;
   const bool lexicalConstant=original.size()>2 && original.front()==constantMarkerBegin && original.back()==constantMarkerEnd;
   original=withoutLabelMarkers(original);
-  bool plain=(name=="qsumset" || name=="sum" || name=="qsum" || name=="product" || name=="select") && !original.empty() && (lexicalConstant || (original!="pi" && original!="i" && original!="e"));
+  bool plain=(name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="sum" || name=="qsum" || name=="product" || name=="select") && !original.empty() && (lexicalConstant || (original!="pi" && original!="i" && original!="e"));
   for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
   if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
      original.find('"',1)!=original.size()-1))return;
@@ -1056,6 +1058,13 @@ class Parser {
     if(name=="sumset") name="qsumset";
     if(name=="member") name="qmember";
     if(name=="bitstrings") name="qbitstrings";
+    if(name=="cartesian")name="qcartesian";
+    if(name=="cartesianpower")name="qcartesianpower";
+    if(name=="setimage")name="qsetimage";
+    if(name=="setfilter")name="qsetfilter";
+    if(name=="union")name="qsetunion";
+    if(name=="intersect")name="qsetintersect";
+    if(name=="setdiff")name="qsetdiff";
     if(name=="bitstring") name="qbitlabel";
     if(name=="blocksum") name="qblocksum";
     if(name=="probs") name="qprobs";
@@ -1132,6 +1141,10 @@ class Parser {
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }
      else a=name+"("+state+","+indices+")";
      need(')');
+    } else if(name=="tuple") {
+     a="qtuple(vector(";
+     if(!take(')')) {a+=expression();while(take(','))a+=","+expression();need(')');}
+     a+="))";
     } else if(name=="cardinality") {
      std::string collection=expression();need(')');
      a="qsumset(1,"+collection+",'__cardinality_index')";
@@ -1444,8 +1457,8 @@ class Parser {
  std::string setIntersection() {
   std::string result=additive();
   while(true) {
-   if(takeSetOperator("∩"))result="intersect("+result+","+additive()+")";
-   else if(takeSetOperator("∖"))result="setdiff("+result+","+additive()+")";
+   if(takeSetOperator("∩"))result="qsetintersect("+result+","+additive()+")";
+   else if(takeSetOperator("∖"))result="qsetdiff("+result+","+additive()+")";
    else break;
    checkSize(result);
   }
@@ -1453,7 +1466,7 @@ class Parser {
  }
  std::string setUnion() {
   std::string result=setIntersection();
-  while(takeSetOperator("∪")) {result="union("+result+","+setIntersection()+")";checkSize(result);}
+  while(takeSetOperator("∪")) {result="qsetunion("+result+","+setIntersection()+")";checkSize(result);}
   return result;
  }
  std::string comparison() {

@@ -195,5 +195,6 @@ EXTRA_DIST += windows/qasm_runtime_bit_aliases.py windows/test-runtime-bit-alias
 
 EXTRA_DIST += docs/learning-evidence/DEV-09.md
 EXTRA_DIST += docs/learning-evidence/DEV-10.md
+EXTRA_DIST += docs/quantum-domains.md windows/DomainGuiTests.cs windows/test-domains-gui.ps1
 
 EXTRA_DIST += windows/MeasurementGuiTests.cs windows/test-measurements-gui.ps1 docs/quantum-measurements.md

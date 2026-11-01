@@ -88,6 +88,7 @@ Copy-Item (Join-Path $PSScriptRoot 'Notation-guide.html') $output
 Copy-Item (Join-Path $PSScriptRoot 'README.txt') $output
 Copy-Item (Join-Path $repo 'docs\quantum-notation.md') (Join-Path $output 'Research-notes.md')
 Copy-Item (Join-Path $repo 'docs\quantum-measurements.md') $output
+Copy-Item (Join-Path $repo 'docs\quantum-domains.md') $output
 New-Item -ItemType Directory -Path (Join-Path $output 'learning-evidence') | Out-Null
 Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-09.md') (Join-Path $output 'learning-evidence')
 Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
@@ -98,6 +99,9 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged measurement worker checks failed.' }
     & $PythonPath (Join-Path $repo 'src/quantum-domains-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged symbolic domain checks failed.' }
+    & $PythonPath (Join-Path $repo 'src/quantum-cartesian-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged Cartesian domain checks failed.' }
+    & (Join-Path $PSScriptRoot 'test-domains-gui.ps1') -Distribution $output -Evidence (Join-Path $repo 'dist/domain-gui-validation')
     & (Join-Path $PSScriptRoot 'test-measurements-gui.ps1') -Distribution $output -Evidence (Join-Path $repo 'dist/measurement-gui-validation')
     & $PythonPath (Join-Path $PSScriptRoot 'test-classical-module-export.py') --package $output --worker (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Classical module export validation failed.' }

@@ -53,4 +53,9 @@ for expression in ['cartesianpower(vector(0,1),-1)','cartesianpower(vector(0,1),
                    'setfilter(2,vector(0,1),k)',
                    'cartesianpower(vector(0,1),11)']:
     data(expression,True)
+for expression, expected in [(r'\{7\}','1'),(r'\{\}','0'),('cartesianpower(vector(7),3)','1'),
+                             ('setimage(1,vector(0,1),k)','1'),
+                             ('cartesian(vector(),vector(2))','0')]:
+    original=data(expression)
+    assert data('cardinality('+original['copy_text']+')')['text']==expected, (expression,original)
 print(f'{checks} Cartesian and indexed-family checks passed')
