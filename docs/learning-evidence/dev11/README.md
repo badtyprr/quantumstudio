@@ -2,6 +2,12 @@
 
 Status: finite audit delivered; DEV-11 remains partial. No implementation, merge, PR, CI run, or new release is claimed.
 
+Integration review tightened the runner to require exit code 2 and the exact
+expected diagnostic for each rejection. `test_probe.py` rejects crashes and
+unrelated errors. Historical output archives remain unchanged; their six
+rejection diagnostics satisfy the stricter check. Dates and binary provenance
+below describe the original audit, not a fresh run against later releases.
+
 ## Revisions and boundaries
 
 - Verified remote `origin/master` and isolated source base: `0fed41cb5637c578737278bf13f59590a56d6cf4`.

@@ -8,6 +8,17 @@ BASE='0fed41cb5637c578737278bf13f59590a56d6cf4'
 RELEASE='35d9e753af19372a8f6472404726955eeba2190e'
 HASH='a62b058870263d33c979a84a274f6a0b37779c8a72fd91e146e2ec201aa194a8'
 P={'I':[[1,0],[0,1]],'X':[[0,1],[1,0]],'Y':[[0,-1j],[1j,0]],'Z':[[1,0],[0,-1]]}
+REJECTIONS={
+ '060-negative-identity':'The generators contain -I in their group and have no common +1 eigenspace.',
+ '060-noncommuting':'Stabilizer generators must commute.',
+ '062-invalid-css':'CSS checks must satisfy Hx Hz^T = 0 over GF(2), so every X check commutes with every Z check.',
+ '063-capacity-18':'Pauli labels require 1 to 9 letters I, X, Y, Z, with an optional sign, 1, and i/j phase prefix.',
+ '067-capacity-14':'Pauli labels require 1 to 9 letters I, X, Y, Z, with an optional sign, 1, and i/j phase prefix.',
+ '058-variadic-tensor':'Quantum function tensor requires exactly 2 arguments.',
+}
+
+def expected_rejection(fixture_id,returncode,stderr):
+ return fixture_id in REJECTIONS and returncode==2 and stderr.strip()==REJECTIONS[fixture_id]
 def apply(word,v):
  out=[0j]*len(v)
  for column,value in enumerate(v):
@@ -183,7 +194,8 @@ def main():
    r.update(returncode=p.returncode,stdout=p.stdout.decode(errors='replace'),stderr=p.stderr.decode(errors='replace'))
    k=c['comparison'];success=False
    if k in ('reject','capacity','syntax'):
-    success=p.returncode!=0;r['classification']='validated-rejection' if k=='reject' else 'missing-operation-capacity' if k=='capacity' else 'unsupported-adaptation-syntax'
+    success=expected_rejection(c['id'],p.returncode,r['stderr'])
+    r['classification']=('validated-rejection' if k=='reject' else 'missing-operation-capacity' if k=='capacity' else 'unsupported-adaptation-syntax') if success else 'unexpected-rejection-result'
    elif p.returncode!=0:r['classification']='execution-error'
    else:
     d=json.loads(r['stdout']);r['approximate']=d['approximate']
