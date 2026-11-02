@@ -24,6 +24,34 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ // Copied large matrices have many shallow entries, not deep expressions.
+ std::string copied=basis(0,509);
+ equal(copied,"q"+copied);
+ copied="matrix(512,2,[";
+ std::string expected="qmatrix(512,2,[";
+ for(unsigned k=0;k<1024;++k) {
+  if(k){copied+=',';expected+=',';}
+  copied+=k%64==0 ? "−1 ∕ (2 ⋅ √(2))" : "0";
+  expected+=k%64==0 ? translateQuantum("−1 ∕ (2 ⋅ √(2))") : "0";
+ }
+ equal(copied+"])",expected+"])");
+ equal("q"+copied+"])",expected+"])");
+ std::string zeros;
+ for(unsigned k=0;k<4097;++k){if(k)zeros+=',';zeros+='0';}
+ rejects("matrix(4097,1,["+zeros+"])");
+ rejects("["+zeros+"]");
+ rejects("matrix(1,1,["+std::string(130,'(')+"0"+std::string(130,')')+"])");
+ rejects(basis(0,2100)+"+"+basis(0,2100));
+ std::string outer="matrix(1,1,[0])";
+ for(unsigned k=0;k<512;++k)outer+="+0";
+ rejects(outer);
+ std::string longEntry="0";
+ for(unsigned k=0;k<600;++k)longEntry+="+0";
+ rejects("matrix(1,1,["+longEntry+"])");
+ rejects("matrix(1,1,[0]+"+longEntry+")");
+ rejects("matrix(1,1,[matrix(600,1,["+zeros.substr(0,1199)+"])])");
+ equal("matrix(1,1,[0]+[1])","qmatrix(1,1,qadd(vector(0),vector(1)))");
+
  for(const std::string &input:{"|x_(n-1) ... x_0>","|x_(n-1) ⋯ x_0>","|x_(n-1) … x_0>"})
   equal(input,translateQuantum("qregisterfamily(\"x_\",n-1,0,vector())"));
  equal("|x_{n-1} ... x_1 x_0>",translateQuantum("qregisterfamily(\"x_\",n-1,0,vector(1,x_1))"));

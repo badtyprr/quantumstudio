@@ -24,6 +24,17 @@ def data(expression, *flags):
     return value
 
 
+# Large exact matrices copied by the GUI must re-enter through quantum notation.
+# Start in ordinary calculator syntax so the first evaluation is independent of
+# the quantum parser's explicit-entry budget, then compare every copied entry.
+entries = ["-1/(2*sqrt(2))", "1/(2*sqrt(2))", "i/3", "-2/7"] + ["0"] * 1020
+original_matrix = data("matrix(512,2,[" + ",".join(entries) + "])")
+reentered_matrix = data("quantum:" + original_matrix["copy_text"])
+for value in (original_matrix, reentered_matrix):
+    assert (value["rows"], value["columns"]) == (512, 2)
+    assert value["approximate"] is False
+assert reentered_matrix["copy_text"] == original_matrix["copy_text"]
+
 # Indexed orthonormal families retain their integer domains through copy.
 for flags in ((), ("--approx",)):
     def basis_value(expression):
