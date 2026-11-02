@@ -26,6 +26,22 @@ using std::cout;
 using std::vector;
 using std::endl;
 
+// Zero products may be omitted only when they cannot carry a domain condition,
+// infinity, approximation or precision information.
+static bool exact_finite_matrix(const MathStructure &matrix) {
+	if(matrix.isApproximate() || matrix.precision() >= 0) return false;
+	for(size_t r = 0; r < matrix.size(); ++r) {
+		if(matrix[r].isApproximate() || matrix[r].precision() >= 0) return false;
+		for(size_t c = 0; c < matrix[r].size(); ++c) {
+			const MathStructure &cell = matrix[r][c];
+			if(!cell.isNumber() || cell.isApproximate() || cell.precision() >= 0 ||
+			   cell.number().isApproximate() || cell.number().precision() >= 0 ||
+			   cell.number().includesInfinity()) return false;
+		}
+	}
+	return true;
+}
+
 bool warn_test_interval(MathStructure &mnonzero, const EvaluationOptions &eo2) {
 	if(mnonzero.isComparison() && mnonzero[0].isVariable() && !mnonzero[0].variable()->isKnown() && !((UnknownVariable*) mnonzero[0].variable())->interval().isUndefined()) {
 		/*if(((UnknownVariable*) mnonzero[0].variable())->interval().isNumber() && mnonzero[1].isNumber()) {
@@ -1811,6 +1827,26 @@ int MathStructure::merge_multiplication(MathStructure &mstruct, const Evaluation
 							return -1;
 						}
 						MathStructure mtmp;
+						if(exact_finite_matrix(msave) && exact_finite_matrix(mstruct)) {
+							// Visit inner indices in their original order for each result cell.
+							// Row lists avoid scanning the zero columns of a sparse RHS;
+							// zero LHS entries skip the entire corresponding RHS row.
+							vector<vector<size_t> > nonzero(mstruct.size());
+							for(size_t k = 0; k < mstruct.size(); ++k)
+								for(size_t c = 0; c < mstruct[k].size(); ++c)
+									if(!mstruct[k][c].isZero()) nonzero[k].push_back(c);
+							for(size_t row = 0; row < SIZE; ++row) {
+								if(CALCULATOR->aborted()) { set(msave); return -1; }
+								for(size_t k = 0; k < msave[row].size(); ++k) {
+									if(msave[row][k].isZero()) continue;
+									for(size_t c : nonzero[k]) {
+										mtmp = msave[row][k];
+										mtmp.calculateMultiply(mstruct[k][c], eo);
+										CHILD(row)[c].calculateAdd(mtmp, eo, &CHILD(row), c);
+									}
+								}
+							}
+						} else {
 						for(size_t index_r = 0; index_r < SIZE; index_r++) {
 							for(size_t index_c = 0; index_c < CHILD(0).size(); index_c++) {
 								for(size_t index = 0; index < msave[0].size(); index++) {
@@ -1819,6 +1855,7 @@ int MathStructure::merge_multiplication(MathStructure &mstruct, const Evaluation
 									CHILD(index_r)[index_c].calculateAdd(mtmp, eo, &CHILD(index_r), index_c);
 								}
 							}
+						}
 						}
 						if(SIZE == 1 && CHILD(0).size() == 1) {
 							SET_CHILD_MAP(0)
