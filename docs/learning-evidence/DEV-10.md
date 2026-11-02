@@ -1,7 +1,73 @@
 # DEV-10: symbolic domains, sets and indexed families
 
-Development in progress from `95b0e34448bebfe2260b087728df74a44fdd86ea`.
-No implementation, merge, release, or whole-lesson completion is claimed here.
+Implemented and merged through [PR412](https://github.com/badtyprr/quantumstudio/pull/412)
+(`5396cc5e`, unresolved equality) and [PR413](https://github.com/badtyprr/quantumstudio/pull/413)
+(`a950cdd0`, Cartesian domains and indexed families), followed by the
+test-only release-gate correction in [PR414](https://github.com/badtyprr/quantumstudio/pull/414)
+(`7d8b5c15`). Released and publicly
+download-verified in [7d8b5c15](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-7d8b5c15). The feature contract below is complete;
+whole-source lesson audits and the wider DEV-05 register scope remain open.
+
+## Verified release
+
+The implementation and test-correction heads received independent Standards and Spec reviews
+with zero outstanding findings, followed by all three required CI checks and
+guarded merges. Final B review: `148a9767`, base `5396cc5e`; native, Windows GUI
+and Windows OpenQASM CI also passed on merged `7d8b5c15`.
+Test-correction review: `843396ee`, base `a950cdd0`, with both axes at zero findings.
+
+The clean native build used the recorded PowerShell 7 host from the beginning.
+It stopped at `a950cdd0` with 70 passes, one existing skip and one 20-second
+rotation-chain timeout. The same request timed out on DEV-09; longer diagnostic
+runs took about 25 and 24 seconds. PR414 changed only the Windows test ceiling
+and added packaged validation, retaining all cases and numerical assertions.
+
+Validation and packaging resumed at `7d8b5c15` after independent guard reviews.
+Native sources, build configuration, all native executables, nine generated
+definition files and dependency DLLs were verified unchanged. Only the failed
+native test was rechecked; its four cases passed. The combined native record
+retains the 70 earlier passes and existing skip; it is not a fresh full-suite run.
+The source archive was regenerated from the final merged revision and all
+remaining package gates ran under PowerShell 7. Initial failure logs, the original
+and amended provenance inventories, and both resumed logs are retained outside
+the clone in `cleanup-audit/dev10-build-resumption*.json` and related files.
+The first resumption guard stopped after the successful native recheck and archive
+because a Windows backslash inventory key did not match its slash-separated
+exception. A separately reviewed continuation normalized inventory keys, verified
+all unchanged records and native inputs, and ran only the remaining package gates.
+No native test or archive generation was repeated for that guard correction;
+`dev10-resumption-path-guard-failure.json` preserves the failed guard evidence.
+
+Combined native result: 71 passes, 1 existing skip,
+0 failures and 0 errors. Actual packaged bytes
+passed all four rotation cancellation cases, 174 Cartesian/family checks,
+76 symbolic-domain checks, 2178 general
+worker checks and 45 actual domain GUI checks. GUI acceptance includes Calculate,
+Copy/re-entry, singleton braces, pending predicates and session save/open;
+five final captures were inspected, including the minimum layout with scrolling.
+The package also runs the existing DEV-09 measurement and broader compiler gates.
+
+All 388 manifested payload files and 389 ZIP files
+were verified, along with 335 source-distribution inputs. Both public assets
+were downloaded without authentication and matched the tested hashes and sizes.
+The first immediate public-download attempt returned HTTP 404 after publication;
+a later retry downloaded the same published assets successfully. The original
+`dev10-publication.log` and successful `dev10-publication-retry.log` are retained.
+
+* Windows ZIP SHA-256: `e4a34e2b7cb43b5ba78287e8914f207b287619ddb936a8a5a7ed6b8da925871c`.
+* Source archive SHA-256: `fdc1a96f0567c2a76c00774a19687348ce239df88251bfa718e07088a0162108`.
+
+Evidence is outside disposable clones: `cleanup-audit/dev10-release.json`,
+`dev10-build-manifest.json`, `dev10-release-build.log`, `dev10-release-native-tests/`,
+`dev10-release-gui/`, and the implementation and test-correction PR records. Earlier failed development probes
+and excluded snapshots below remain retained; passing later gates do not erase them.
+
+This release supports the documented bounded domain operations and adaptations.
+It does not establish a whole-lesson audit, unrestricted set algebra, general
+register-width equations, or a new numerical state-vector limit. DEV-09's fourth
+tetrahedral conditional state for `|i>` remains unresolved. Existing DEV-11,
+DEV-13/AUD-02 and DEV-16 checkouts are retained; no work from them was overwritten.
+
 
 ## Source-driven scope
 
@@ -186,5 +252,5 @@ the four cancellation cases, their independent identity/probability oracle and
 the `1e-10` numerical tolerance. Linux keeps its 20-second ceiling, and numeric
 readback keeps its existing timeout. Packaging additionally runs this test on
 the actual packaged worker. This is a test scheduling margin, not an algorithmic
-performance improvement. Product sources are unchanged by this correction;
-review, CI and accurately recorded build resumption are still required.
+performance improvement. Product sources are unchanged by this correction. Its reviewed merge, required
+CI and verified build resumption are recorded in the release section above.
