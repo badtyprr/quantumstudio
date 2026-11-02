@@ -37,6 +37,13 @@ static void matrixProducts() {
   matrixProduct(CALCULATOR->calculate(pair.first,eo),CALCULATOR->calculate(pair.second,eo));
  MathStructure a=CALCULATOR->calculate("[1,0;0,1]",eo),b=a;
  a[0][1].setApproximate();a[0][1].setPrecision(7);matrixProduct(a,b);matrixProduct(b,a);
+ MathStructure interrupted=CALCULATOR->calculate("[1,0;0,2]",eo),before=interrupted;
+ MathStructure factor=CALCULATOR->calculate("[3,0;0,4]",eo);
+ CALCULATOR->startControl();CALCULATOR->abort();
+ int merged=interrupted.merge_multiplication(factor,eo);
+ CALCULATOR->stopControl();
+ if(merged!=-1 || !interrupted.equals(before))throw std::runtime_error("Aborted product accepted a partial matrix");++checks;
+ matrixProduct(before,factor);
  // Deterministic rectangular, signed and sparse/dense combinations.
  for(unsigned seed=1;seed<=24;++seed) {
   MathStructure l,r;l.clearMatrix();r.clearMatrix();l.resizeMatrix(2+seed%3,2+seed%4,m_zero);r.resizeMatrix(l.columns(),2+seed%5,m_zero);
