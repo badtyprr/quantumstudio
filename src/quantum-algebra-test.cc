@@ -7,6 +7,55 @@
 #include <stdexcept>
 static unsigned checks=0;
 static EvaluationOptions eo;
+static void matrixProduct(const MathStructure &left, const MathStructure &right) {
+ if(!left.isMatrix() || !right.isMatrix())throw std::runtime_error("Reference requires matrices: "+left.print()+" / "+right.print());
+ MathStructure expected;expected.clearMatrix();expected.resizeMatrix(left.rows(),right.columns(),m_zero);
+ // Independent scalar reference: include every zero term and preserve order.
+ for(size_t r=0;r<left.rows();++r)for(size_t c=0;c<right.columns();++c)
+  for(size_t k=0;k<left.columns();++k) {
+   MathStructure term=left[r][k];term.calculateMultiply(right[k][c],eo);
+   expected[r][c].calculateAdd(term,eo,&expected[r],c);
+  }
+ MathStructure actual=left;actual*=right;actual.eval(eo);
+ if(left.rows()==1 && right.columns()==1) { MathStructure scalar=expected[0][0];expected=scalar; }
+ if(!actual.equals(expected,true,true))throw std::runtime_error("Matrix product differs from scalar reference: "+left.print()+" * "+right.print()+" => "+actual.print()+" expected "+expected.print());
+ if(actual.isMatrix())for(size_t r=0;r<actual.rows();++r)for(size_t c=0;c<actual.columns();++c)
+  if(actual[r][c].isApproximate()!=expected[r][c].isApproximate() || actual[r][c].precision()!=expected[r][c].precision())
+   throw std::runtime_error("Matrix product changed cell precision metadata");
+ ++checks;
+}
+static void matrixProducts() {
+ for(const auto &pair : {std::pair<const char *,const char *>("[1,0,0;0,-2,0]","[1,i;2,3;4,5]"),
+   {"[1,2,3;-4,5,6]","[0,1;0,0;i,0]"},
+   {"[1,2,3;4,5,6]","[7,8;9,10;11,12]"},
+   {"[0,0;0,0]","[1,i;0,-1]"}, {"[1,i;0,-1]","[0,0;0,0]"},
+   {"[1,i;-i,1]","[1,-i;i,1]"}, {"[1,-1;2,-2]","[1,3;1,3]"},
+   {"[1/3,0;0,-2/7]","[0,i/5;3/2,0]"},
+   {"[1,0;0,1]","[x,0;0,sqrt(2)]"},
+   {"[1,0;0,1]","[infinity,0;0,1]"},
+   {"[0,1;1,0]","[1,0;0,-infinity]"}})
+  matrixProduct(CALCULATOR->calculate(pair.first,eo),CALCULATOR->calculate(pair.second,eo));
+ MathStructure a=CALCULATOR->calculate("[1,0;0,1]",eo),b=a;
+ a[0][1].setApproximate();a[0][1].setPrecision(7);matrixProduct(a,b);matrixProduct(b,a);
+ MathStructure interrupted=CALCULATOR->calculate("[1,0;0,2]",eo),before=interrupted;
+ MathStructure factor=CALCULATOR->calculate("[3,0;0,4]",eo);
+ CALCULATOR->startControl();CALCULATOR->abort();
+ int merged=interrupted.merge_multiplication(factor,eo);
+ CALCULATOR->stopControl();
+ if(merged!=-1 || !interrupted.equals(before))throw std::runtime_error("Aborted product accepted a partial matrix");++checks;
+ matrixProduct(before,factor);
+ // Deterministic rectangular, signed and sparse/dense combinations.
+ for(unsigned seed=1;seed<=24;++seed) {
+  MathStructure l,r;l.clearMatrix();r.clearMatrix();l.resizeMatrix(2+seed%3,2+seed%4,m_zero);r.resizeMatrix(l.columns(),2+seed%5,m_zero);
+  for(size_t i=0;i<l.rows();++i)for(size_t j=0;j<l.columns();++j)l[i][j]=MathStructure(int((i*7+j*3+seed)%7)-3);
+  for(size_t i=0;i<r.rows();++i)for(size_t j=0;j<r.columns();++j)r[i][j]=MathStructure(int((i*3+j*5+seed)%5)-2);
+  matrixProduct(l,r);
+ }
+ MathStructure identity;identity.clearMatrix();identity.resizeMatrix(512,512,m_zero);
+ for(size_t i=0;i<512;++i)identity[i][i]=m_one;
+ MathStructure product=identity;product*=identity;product.eval(eo);
+ if(!product.equals(identity))throw std::runtime_error("Full 512-dimensional identity product mismatch");++checks;
+}
 static void equal(const std::string &expression,const std::string &expected) {
  MathStructure value=CALCULATOR->calculate("("+expression+")==("+expected+")",eo);
  if(!value.isNumber() || !value.number().isOne())throw std::runtime_error("Mismatch: "+expression+" vs "+expected);
@@ -19,6 +68,8 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ matrixProducts();
+ equal("matrix(1,2,[1,2])*matrix(2,1,[3,4])","11");
  for(const char *source:{"qmul(qdag(operatorparam(\"A\",2,unitary)),operatorparam(\"A\",2,unitary))",
                          "qmul(operatorparam(\"A\",2,unitary),qdag(operatorparam(\"A\",2,unitary)))"}) {
   MathStructure guarded=calculator.calculate(source,eo);
