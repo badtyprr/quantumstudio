@@ -22,7 +22,8 @@ a 512-by-2 Shor result exceeded the ordinary parser budget. Explicit matrix
 entry lists now share 4096 nodes; each entry keeps 512 nodes. Nested lists cannot
 reset the allowance, arithmetic after the list uses the ordinary budget, and
 input length, expanded length and nesting limits remain. This is bounded support,
-not unlimited matrix serialization. The 32768-byte input limit still applies.
+not unlimited matrix serialization. The native translator keeps its 32768-byte
+input limit; the GUI enforces its existing 32000-byte UTF-8 input limit.
 
 Both changes received separate Standards and Spec reviews with zero outstanding
 findings, all three required CI checks, and guarded merges with actual parents
