@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07, the finite DEV-08 contract and DEV-09 are released. DEV-05a–e shipped in REL-10/REL-11; DEV-05 remains partial. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
+Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07, the finite DEV-08 contract, DEV-09 and DEV-10 are released. DEV-05a–e shipped in REL-10/REL-11; DEV-05 remains partial. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -21,7 +21,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-07](#dev-07) | P1 | L | Released | None | Dynamic wire indexing |
 | [DEV-08](#dev-08) | P1 | L | Released in REL-24 | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage |
 | [DEV-09](#dev-09) | P2 | L | Released in REL-25 | DEV-03 | Symbolic ensembles, instruments and POVMs |
-| [DEV-10](#dev-10) | P2 | L | Partial | DEV-05 | Symbolic domains, sets and indexed families |
+| [DEV-10](#dev-10) | P2 | L | Released in REL-26 | DEV-05 | Symbolic domains, sets and indexed families |
 | [DEV-11](#dev-11) | P2 | L | Partial | DEV-04 | Error-correction lesson operations |
 | [DEV-12](#dev-12) | P2 | L | Partial | DEV-04 | Variational and numerical operator coverage |
 | [DEV-13](#dev-13) | P2 | L | Discovery needed | AUD-02 | Python/SDK notebook execution route |
@@ -78,6 +78,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - [x] REL-24: Published [35d9e753](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-35d9e753), completing the finite DEV-08 contract through PRs #387–#407. Required reviews/CI, clean packaging, 21 audit groups, 26 actual-editor execution checks and 11 inspected captures passed. Native: 67 passes, one existing skip, zero failures/errors. All 385 payload files, 386 ZIP entries and 321 source inputs verified; both public assets downloaded and hashed. ZIP SHA-256 `19570252fd8b3719623396c05cff1acba448505c3588d1e293d7cee3a457f798`. [Evidence and explicit limits](learning-evidence/DEV-08.md).
 
 - [x] REL-25: Published [e5ed358a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e5ed358a), completing the documented DEV-09 feature contract through PRs #409–#410. Independent reviews and required CI passed. Clean package: 175 native measurement assertions, 214 measurement worker checks, 2,178 general worker checks and 21 actual measurement GUI checks; five inspected captures. Manifest/payload and both public download hashes verified. ZIP SHA-256 `ffd1485bd4bd54689659526e25853c02bfbe5292ac915dd1809fd6658e3e8f91`. [Evidence, source adaptations and remaining limits](learning-evidence/DEV-09.md).
+- [x] REL-26: Published [7d8b5c15](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-7d8b5c15), delivering DEV-10 through PRs #412–#413 and the reviewed test-only correction #414. Independent Standards/Spec reviews and required CI passed. PS7 validation resumed after a recorded Windows test timeout: 70 native passes retained and one failed test rechecked; combined 71 passes / 1 existing skip / zero failures. Actual package: 4 rotation chains, 174 Cartesian/family, 76 symbolic-domain, 2178 worker and 45 domain GUI checks; five inspected captures. Payload/ZIP and both public download hashes verified. ZIP SHA-256 `e4a34e2b7cb43b5ba78287e8914f207b287619ddb936a8a5a7ed6b8da925871c`. [Evidence, resumption details and coverage boundaries](learning-evidence/DEV-10.md).
 
 ## Acceptance criteria by development item
 
@@ -123,7 +124,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
   - [x] **DEV-05c — Declared register dimensions:** [#330](https://github.com/badtyprr/quantumstudio/pull/330), released in REL-10; depends on DEV-05b. Reject incompatible explicit shapes such as `H|x_1 x_0>`, retain `tensor(H,H)|x_1 x_0>`, and defer genuinely unknown dimensions.
   - [x] **DEV-05d — Symbolic tensor repetition:** [#332](https://github.com/badtyprr/quantumstudio/pull/332), released in REL-10; depends on DEV-05c. Preserve unresolved `H^{\otimes n}` and natural `tensorpow(H,n)` through copy and substitution, including zero repetitions and invalid-count checks. Copy and saved sessions retain readable notation.
   - [x] **DEV-05e — Variable-length indexed families:** [#333](https://github.com/badtyprr/quantumstudio/pull/333), released in REL-11. Natural `|x_(n-1) ... x_0>` and IBM TeX ellipses preserve descending inclusive bounds, bit assignments and explicit trailing-bit constraints. Packaged validation included 1,832 worker checks, 526 notation checks, 249 TeX checks and 12 dedicated family GUI calculations; independent two-bit Hadamard controls included. Concrete expansion supports one through ten qubits. This does not establish whole-lesson coverage.
-- Regression locations for DEV-05a–e: `src/quantum-worker-test.py` and `src/quantum-notation-test.cc`. REL-10 records released DEV-05a–d evidence; REL-11 records released DEV-05e evidence. Remaining scope includes general symbolic register-width equations, symbolic domains, arbitrary indexed ellipsis patterns and widths beyond the finite numerical limit.
+- Regression locations for DEV-05a–e: `src/quantum-worker-test.py` and `src/quantum-notation-test.cc`. REL-10 records released DEV-05a–d evidence; REL-11 records released DEV-05e evidence. DEV-10 delivers symbolic binary-string domains and deferred integer ranges in REL-26. Remaining scope includes general symbolic register-width equations, arbitrary indexed ellipsis patterns and widths beyond the finite numerical limit.
 
 ### DEV-06
 
@@ -171,10 +172,10 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 
 ### DEV-10
 
-- [ ] **Symbolic domains, sets and indexed families** — P2; Partial; size L; dependencies: DEV-05.
+- [x] **Symbolic domains, sets and indexed families** — P2; released in REL-26; size L; required DEV-05 prerequisites delivered; wider DEV-05 scope remains partial.
 - Source focus: General formulation and fundamentals. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Support required Cartesian alphabets, symbolic membership/cardinality and lesson-specific indexed families. Preserve singleton/empty sets, binder scopes and unresolved equality. Add actual failing source fixtures before implementing each extension.
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+- Delivered in PRs [#412](https://github.com/badtyprr/quantumstudio/pull/412) and [#413](https://github.com/badtyprr/quantumstudio/pull/413), verified release [7d8b5c15](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-7d8b5c15). [Source inputs, adaptations, independent expectations, reviews, validation and limits](learning-evidence/DEV-10.md). Whole-lesson coverage remains open.
 
 ### DEV-11
 
@@ -311,7 +312,7 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-002** [density-matrices/density-matrix-basics](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-003** [density-matrices/convex-combinations](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-004** [density-matrices/bloch-sphere](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-005** [density-matrices/multiple-systems](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems) — P1 / AUD-01; partial audit: five adapted numeric probes passed on published `3254e5d4`; named trace rejection tracked in DEV-17. Full lesson/notebook coverage remains open; [evidence](learning-evidence/IBM-005.md).
+- [ ] **IBM-005** [density-matrices/multiple-systems](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems) — P1 / AUD-01; partial audit: five adapted numeric probes passed on published `3254e5d4`; named trace rejection tracked in DEV-17. Full lesson/notebook coverage remains open; [evidence](learning-evidence/IBM-005.md). Selected Cartesian domain adaptations are also verified in REL-26; [DEV-10 evidence](learning-evidence/DEV-10.md).
 - [ ] **IBM-006** [quantum-channels/introduction](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/introduction) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-007** [quantum-channels/quantum-channel-basics](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-008** [quantum-channels/representations-of-channels](https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
@@ -326,10 +327,10 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 ### fundamentals-of-quantum-algorithms
 
 - [ ] **IBM-017** [quantum-query-algorithms/introduction](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-018** [quantum-query-algorithms/query-model-of-computation](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-018** [quantum-query-algorithms/query-model-of-computation](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation) — P1 / AUD-01; selected domain/image adaptations verified in REL-26; full lesson audit remains open; [evidence and adaptations](learning-evidence/DEV-10.md).
 - [ ] **IBM-019** [quantum-query-algorithms/deutsch-algorithm](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-020** [quantum-query-algorithms/deutsch-jozsa-algorithm](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-021** [quantum-query-algorithms/simon-algorithm](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/simon-algorithm) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-021** [quantum-query-algorithms/simon-algorithm](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/simon-algorithm) — P1 / AUD-01; selected domain/image adaptations verified in REL-26; full lesson audit remains open; [evidence and adaptations](learning-evidence/DEV-10.md).
 - [ ] **IBM-022** [quantum-algorithmic-foundations/introduction](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/introduction) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-023** [quantum-algorithmic-foundations/factoring-and-gcd](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/factoring-and-gcd) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-024** [quantum-algorithmic-foundations/measuring-computational-cost](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/measuring-computational-cost) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
