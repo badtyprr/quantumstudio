@@ -37,14 +37,21 @@ int main(){try {
  equal(copied+"])",expected+"])");
  equal("q"+copied+"])",expected+"])");
  std::string zeros;
- for(unsigned k=0;k<4096;++k){if(k)zeros+=',';zeros+='0';}
- rejects("matrix(4096,1,["+zeros+"])");
+ for(unsigned k=0;k<4097;++k){if(k)zeros+=',';zeros+='0';}
+ rejects("matrix(4097,1,["+zeros+"])");
  rejects("["+zeros+"]");
  rejects("matrix(1,1,["+std::string(130,'(')+"0"+std::string(130,')')+"])");
  rejects(basis(0,2100)+"+"+basis(0,2100));
  std::string outer="matrix(1,1,[0])";
  for(unsigned k=0;k<512;++k)outer+="+0";
  rejects(outer);
+ std::string longEntry="0";
+ for(unsigned k=0;k<600;++k)longEntry+="+0";
+ rejects("matrix(1,1,["+longEntry+"])");
+ rejects("matrix(1,1,[0]+"+longEntry+")");
+ rejects("matrix(1,1,[matrix(600,1,["+zeros.substr(0,1199)+"])])");
+ equal("matrix(1,1,[0]+[1])","qmatrix(1,1,qadd(vector(0),vector(1)))");
+
  for(const std::string &input:{"|x_(n-1) ... x_0>","|x_(n-1) ⋯ x_0>","|x_(n-1) … x_0>"})
   equal(input,translateQuantum("qregisterfamily(\"x_\",n-1,0,vector())"));
  equal("|x_{n-1} ... x_1 x_0>",translateQuantum("qregisterfamily(\"x_\",n-1,0,vector(1,x_1))"));
