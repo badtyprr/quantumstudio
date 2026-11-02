@@ -1,0 +1,9 @@
+{
+  "already-supported-adaptation": 268,
+  "execution-timeout": 12,
+  "missing-operation-capacity": 2,
+  "unsupported-adaptation-syntax": 1,
+  "validated-rejection": 3,
+  "total": 286,
+  "expectations_passed": 274
+}

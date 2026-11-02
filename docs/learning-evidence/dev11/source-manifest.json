@@ -1,0 +1,226 @@
+[
+  {
+    "id": "IBM-053",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction",
+    "retrieved_utc": "2026-11-01T15:54:00.923167+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:48.314436+00:00",
+      "status": 200,
+      "sha256": "4df2145513b50391fe4c80b07df88f0e4796c650c4116ac6e316289cef9cfcef",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-codes",
+    "retrieved_utc": "2026-11-01T15:54:01.143087+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-codes.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:48.772354+00:00",
+      "status": 200,
+      "sha256": "975d857196c998a633dfcc2e95b352d0e366f248a5bdeec66a10cea8bfe68dd9",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code",
+    "retrieved_utc": "2026-11-01T15:54:01.210262+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:49.050539+00:00",
+      "status": 200,
+      "sha256": "3f6dd806e9e61c58c60ef5f58288e25b4332ffda073d81424e92730b3c62ae0b",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-056",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors",
+    "retrieved_utc": "2026-11-01T15:54:01.258772+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:49.305104+00:00",
+      "status": 200,
+      "sha256": "acacc51286660e12f389aa3282a0ca7a3aa46fb7405dbd9797c5c94b55825f5d",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-057",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction",
+    "retrieved_utc": "2026-11-01T15:54:01.317112+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:49.464623+00:00",
+      "status": 200,
+      "sha256": "fa557435ce005a2229783f998ac153aba66e4da8711755fc5996e68c1ed00d8e",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-058",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables",
+    "retrieved_utc": "2026-11-01T15:54:01.361439+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:49.846266+00:00",
+      "status": 200,
+      "sha256": "327f3f6dc910b571e1d2bdd18028446a7b9e38855d030f3c37298bf174ea97cc",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-059",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited",
+    "retrieved_utc": "2026-11-01T15:54:01.401429+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:50.128753+00:00",
+      "status": 200,
+      "sha256": "045e7b67db06d668b833be027d5d97fb63bf30ea1a7c0625f80e34516d2c1792",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-060",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes",
+    "retrieved_utc": "2026-11-01T15:54:01.439404+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:50.549312+00:00",
+      "status": 200,
+      "sha256": "aa8204ce28d3b7a2939151d5e8cebcae480941efb5f38f7c99e642d51ef67bbb",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-061",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction",
+    "retrieved_utc": "2026-11-01T15:54:01.481656+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:51.019635+00:00",
+      "status": 200,
+      "sha256": "217493b2f5af3a7c370c3c8b167eeb10adb165b77a72d5181ebc988e128fbe1f",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-062",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes",
+    "retrieved_utc": "2026-11-01T15:54:01.543366+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:51.153274+00:00",
+      "status": 200,
+      "sha256": "e8b1deec5f914fc07cd75fcf26051712116a936dc50d38ed2149032b8487b4f5",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code",
+    "retrieved_utc": "2026-11-01T15:54:01.588233+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:51.444123+00:00",
+      "status": 200,
+      "sha256": "ced045841fbd12061196175558cc61d8623f9fc241b2d0470eeeb5355f56a9f1",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-064",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families",
+    "retrieved_utc": "2026-11-01T15:54:01.630174+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:51.740062+00:00",
+      "status": 200,
+      "sha256": "8793cd24af3f6b4775a675c917979e9d3ce73e6e9b9f69dc0deb89c0e9946cc4",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-065",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction",
+    "retrieved_utc": "2026-11-01T15:54:01.668558+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:52.096366+00:00",
+      "status": 200,
+      "sha256": "ad1007aee373cdfe655c0b288de1ce6e0445337c73a5a5c46f74eafca08a16e6",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-066",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance",
+    "retrieved_utc": "2026-11-01T15:54:01.710064+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:52.232037+00:00",
+      "status": 200,
+      "sha256": "b120160c52977341925d9cd830fc5cb65cc167840691f91b56b24fc4acc278a0",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation",
+    "retrieved_utc": "2026-11-01T15:54:01.761776+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:52.563758+00:00",
+      "status": 200,
+      "sha256": "ea38373bb78b2e706adb458948e3a81225f41b49caf47ac61e0ca6ba64ed9ea6",
+      "cells": 2,
+      "code_cells": 0
+    }
+  },
+  {
+    "id": "IBM-068",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/threshold-theorem",
+    "retrieved_utc": "2026-11-01T15:54:01.802349+00:00",
+    "error": "HTTP Error 403: Forbidden",
+    "notebook": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/threshold-theorem.ipynb",
+      "retrieved_utc": "2026-11-01T16:03:52.994837+00:00",
+      "status": 200,
+      "sha256": "c4236b70e8268214fb296b30e9f372e42e6fabbe1877ea9eb232e6c0e9180756",
+      "cells": 3,
+      "code_cells": 0
+    }
+  }
+]

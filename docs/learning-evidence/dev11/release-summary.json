@@ -1,0 +1,305 @@
+{
+  "release": {
+    "revision": "214e686668672f2ab405300e88baa008eb40fcf4",
+    "release_clone": ".tools/dev11-release-corrected-20261102",
+    "status": "released and downloaded artifacts verified",
+    "build_exit_code": 0,
+    "powershell": "C:\\Users\\Simeon\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "payload_audit": "passed",
+    "native_suite": {
+      "TOTAL": 72,
+      "PASS": 71,
+      "SKIP": 1,
+      "FAIL": 0,
+      "ERROR": 0
+    },
+    "native_validation": "Fresh clean native build and tests; no resumption",
+    "full_worker_checks": 2180,
+    "algebra_checks": 316,
+    "artifacts": {
+      "QuantumStudio-Windows-x64.zip": {
+        "sha256": "401ee642a5d1a180e4955444c383785ce3d148ea9371e910a6ed5821b598b19c",
+        "size": 82185395
+      },
+      "QuantumStudio-source.tar.gz": {
+        "sha256": "c3908cc3ffd8344ed96c4fd5ab7526b62011ca791c0269552cd55d2a6befbbe7",
+        "size": 4287039
+      }
+    },
+    "binaries": {
+      "QuantumStudio.exe": "b01ce765f54c9d653e817efaa89924da83ff397a43f1b1a3f6eefe5ed8e018f1",
+      "quantum-worker.exe": "42126088fd76b9dfa5c7787f9bf66a6429c1baa0985ca9543b508322d4dc955d",
+      "qasm-import/qasm-import.exe": "88b4968b55fb2d8d98354dc16d0062ba8f7d293260d235c6dfa8d89bb6154a68"
+    },
+    "payload_files": 388,
+    "zip_files": 389,
+    "build_log_sha256": "91c058ac6c1f1beb19ca0823d6ea346e83a27d1b19c4a5c859ca6423a7ee57aa",
+    "current_release_summary": {
+      "already-supported-adaptation": 253,
+      "execution-timeout": 27,
+      "missing-operation-capacity": 2,
+      "unsupported-adaptation-syntax": 1,
+      "validated-rejection": 3,
+      "total": 286,
+      "expectations_passed": 259
+    },
+    "current_release_context": "Single host; overlaps development tests, compilation and later clean release build. Observed outcomes, not an isolated benchmark.",
+    "gui_checks": 28,
+    "gui_full_matrix_checks": 4,
+    "gui_worker_sha256": "42126088fd76b9dfa5c7787f9bf66a6429c1baa0985ca9543b508322d4dc955d",
+    "gui_application_sha256": "b01ce765f54c9d653e817efaa89924da83ff397a43f1b1a3f6eefe5ed8e018f1",
+    "gui_evidence": "F:\\src\\libqalculate\\cleanup-audit\\dev11-20261102\\packaged-gui",
+    "visual_inspection": "passed",
+    "visual_evidence": {
+      "passed": true,
+      "reviewer": "root visual inspection",
+      "captures": {
+        "identity.png": "85ec5d1cb45f1027e72b176778de8f4309bad5a8cee7c8389c74df2e209abaa2",
+        "shor-recovery.png": "bb2c9cac5be5a1a1ab22b1c840d72e52fb823a00e0218ba133008cc3319768b9",
+        "syndrome.png": "47ca9c40ebf71dd629d247c29f3ad3ae0be85c9b0a3cf86ab8714a2425b574b9",
+        "condition.png": "6cd090756aabcbe411816b51cde7d2014669b98f9f0422e173423ee007d61199",
+        "invalid-dimensions.png": "f324f53d8940f0b8569bbc22a9e5d40d2744be894aaa104c02a9b53f0c4d3f9d",
+        "minimum.png": "6725b5bd582313b14b0cb1fe600969a4c90d86c240b6c70827fa70b0c3702bb9"
+      },
+      "notes": "Viewed all six final-package captures. Identity grid and syndrome readable; large Shor input/output scroll within panes; unitary/dimension condition retained; dimension diagnostic clear. Minimum layout wraps controls and exposes Calculate/Copy with scrollable result content. No essential controls overlap. Full amplitudes verified separately from screenshots."
+    },
+    "post_build_harness_failure": {
+      "kind": "UnicodeEncodeError writing runner through CP1252",
+      "fixtures_executed_before_failure": 0,
+      "repair": "Explicit UTF-8 runner write",
+      "evidence": "source-launch-encoding-failure.txt",
+      "retained_successful_validation": [
+        "fresh clean build",
+        "payload audit",
+        "actual packaged GUI"
+      ]
+    },
+    "source_fixture_summary": {
+      "already-supported-adaptation": 280,
+      "missing-operation-capacity": 2,
+      "unsupported-adaptation-syntax": 1,
+      "validated-rejection": 3,
+      "total": 286,
+      "expectations_passed": 286
+    },
+    "source_fixture_worker_sha256": "42126088fd76b9dfa5c7787f9bf66a6429c1baa0985ca9543b508322d4dc955d",
+    "source_exact_results": 280,
+    "original_fixtures_unchanged": true,
+    "merged_tip_ci": [
+      {
+        "name": "Native build and tests",
+        "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41435588619/job/125244420477",
+        "conclusion": "success"
+      },
+      {
+        "name": "Windows GUI build and tests",
+        "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41435588697/job/125244421184",
+        "conclusion": "success"
+      },
+      {
+        "name": "Windows OpenQASM build and tests",
+        "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41435588505/job/125244421789",
+        "conclusion": "success"
+      }
+    ],
+    "release_pending": false,
+    "github_release": {
+      "url": "https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-214e6866",
+      "assets": [
+        {
+          "url": "https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-214e6866/QuantumStudio-Windows-x64.zip",
+          "sha256": "401ee642a5d1a180e4955444c383785ce3d148ea9371e910a6ed5821b598b19c",
+          "size": 82185395
+        },
+        {
+          "url": "https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-214e6866/QuantumStudio-source.tar.gz",
+          "sha256": "c3908cc3ffd8344ed96c4fd5ab7526b62011ca791c0269552cd55d2a6befbbe7",
+          "size": 4287039
+        }
+      ]
+    },
+    "destination": "F:\\src\\libqalculate\\dist\\releases\\214e6866",
+    "public_download_retry": {
+      "initial_error": "HTTP 404",
+      "final_result": "Both anonymous downloads match SHA256 and size",
+      "evidence": "publication-retry.log"
+    }
+  },
+  "implementation_prs": [
+    {
+      "number": 416,
+      "url": "https://github.com/badtyprr/quantumstudio/pull/416",
+      "head": "bda9a09556425d19a34036ae6e7f9d5a9f7a6be0",
+      "status": "Merged and parent/tree verified; release pending",
+      "base": "37a78926a0402121c41f1c1b86671e9b05f789d2",
+      "tree": "fd79d5509bf84f9ed60bdaf00a035136146818a0",
+      "independent_reviews": {
+        "head": "bda9a09556425d19a34036ae6e7f9d5a9f7a6be0",
+        "standards": {
+          "reviewer": "/root/standards",
+          "outstanding": 0
+        },
+        "spec": {
+          "reviewer": "/root/spec",
+          "outstanding": 0
+        },
+        "resolved": "Added deterministic cancellation restoration and subsequent successful evaluation; 316 native checks pass."
+      },
+      "ci": [
+        {
+          "name": "Native build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41420313433/job/125194009878",
+          "conclusion": "success"
+        },
+        {
+          "name": "Windows GUI build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41420313539/job/125194010051",
+          "conclusion": "success"
+        },
+        {
+          "name": "Windows OpenQASM build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41420313509/job/125194010172",
+          "conclusion": "success"
+        }
+      ],
+      "verification_pending": false,
+      "merge": "17388f642c46dc4e08d29d2f0ee5ad28eb611cfd"
+    },
+    {
+      "number": 418,
+      "url": "https://github.com/badtyprr/quantumstudio/pull/418",
+      "head": "f4661f9d7cf0762ec7ac6c4f3e92ba2fdb419845",
+      "status": "Merged and parent/tree verified; release pending",
+      "base": "17388f642c46dc4e08d29d2f0ee5ad28eb611cfd",
+      "tree": "9da9474b73f648cc9644a18f5e18ecc3bac3bdb6",
+      "independent_reviews": {
+        "head": "f4661f9d7cf0762ec7ac6c4f3e92ba2fdb419845",
+        "standards": {
+          "reviewer": "/root/standards",
+          "outstanding": 0
+        },
+        "spec": {
+          "reviewer": "/root/spec",
+          "outstanding": 0
+        },
+        "resolved": "Scoped allowance to immediate entry list; individual512/shared4096, nested scopes no resets, tail and sequence retain limits. Spec independently verified rejections and complete exact512x2 roundtrip."
+      },
+      "ci": [
+        {
+          "name": "Native build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41432484109/job/125234215427",
+          "conclusion": "success"
+        },
+        {
+          "name": "Windows GUI build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41432484019/job/125234215093",
+          "conclusion": "success"
+        },
+        {
+          "name": "Windows OpenQASM build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41432484118/job/125234215259",
+          "conclusion": "success"
+        }
+      ],
+      "verification_pending": false,
+      "merge": "214e686668672f2ab405300e88baa008eb40fcf4"
+    }
+  ],
+  "independent_reviews": {
+    "sparse": {
+      "head": "bda9a09556425d19a34036ae6e7f9d5a9f7a6be0",
+      "standards": {
+        "reviewer": "/root/standards",
+        "outstanding": 0
+      },
+      "spec": {
+        "reviewer": "/root/spec",
+        "outstanding": 0
+      },
+      "resolved": "Added deterministic cancellation restoration and subsequent successful evaluation; 316 native checks pass."
+    },
+    "copy": {
+      "head": "f4661f9d7cf0762ec7ac6c4f3e92ba2fdb419845",
+      "standards": {
+        "reviewer": "/root/standards",
+        "outstanding": 0
+      },
+      "spec": {
+        "reviewer": "/root/spec",
+        "outstanding": 0
+      },
+      "resolved": "Scoped allowance to immediate entry list; individual512/shared4096, nested scopes no resets, tail and sequence retain limits. Spec independently verified rejections and complete exact512x2 roundtrip."
+    }
+  },
+  "fixture_provenance": {
+    "inventory_head": "8dc6bf2bc741faea4ca2b158c2e9f454bc2d4dbc",
+    "original_runner_sha256": "da0aa3d1cf403b97d3074edbc693e618eb7b5eab93534a1ffc910abaaffade30",
+    "product_revision": "214e686668672f2ab405300e88baa008eb40fcf4",
+    "worker_sha256": "42126088fd76b9dfa5c7787f9bf66a6429c1baa0985ca9543b508322d4dc955d"
+  },
+  "fixture_sha256": "c1451b52dd977580ddc10fc7d34e08e3720b08a68edb25e73ae27aae542ac211",
+  "result_sha256": "63cc7f126a854e03741978edffe31647e1fea4eb8b3c5f709a717e3d04431af7",
+  "baseline": {
+    "summary": {
+      "already-supported-adaptation": 253,
+      "execution-timeout": 27,
+      "missing-operation-capacity": 2,
+      "unsupported-adaptation-syntax": 1,
+      "validated-rejection": 3,
+      "total": 286,
+      "expectations_passed": 259
+    },
+    "worker_revision": "7d8b5c15a7c22fee7a48d736099d6050c64488ee",
+    "worker_sha256": "c4e36fd4c71192781150e50665ba85ae23846d4b729de6780f70de7bc5e8be76",
+    "original_timeout_seconds": 90,
+    "exact_rejection_diagnostics_verified": 6,
+    "results_sha256": "a693db0f71994f41a7fb0c56d0ea927c990d2088152daaadf3196c7c81789cbd",
+    "context": "Single host; overlaps development tests, compilation and later clean release build. Observed outcomes, not an isolated benchmark."
+  },
+  "gui_matrices": [
+    {
+      "file": "shor-copy.txt",
+      "sha256": "5bf49e6e507e2a503ab41e561ff5f08aa906f10004bb23b7442fa6347c9a217e",
+      "residual": 0.0,
+      "common_phase": [
+        1.0,
+        0.0
+      ],
+      "rows": 512,
+      "columns": 2
+    },
+    {
+      "file": "shor-reentry.txt",
+      "sha256": "5bf49e6e507e2a503ab41e561ff5f08aa906f10004bb23b7442fa6347c9a217e",
+      "residual": 0.0,
+      "common_phase": [
+        1.0,
+        0.0
+      ],
+      "rows": 512,
+      "columns": 2
+    },
+    {
+      "file": "identity-copy.txt",
+      "sha256": "83f77690aa20c3a34bc38c8bdcb4ff1f2edbff8431f334248524a65f6aa038e6",
+      "residual": 0.0,
+      "common_phase": [
+        1.0,
+        0.0
+      ],
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "signed-copy.txt",
+      "sha256": "fd8e4bd70bec3b3ff8ad466e3932fe162bab5a536af6c113c205ac73f46d2fc9",
+      "residual": 0.0,
+      "common_phase": [
+        1.0,
+        0.0
+      ],
+      "rows": 4,
+      "columns": 4
+    }
+  ]
+}

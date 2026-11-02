@@ -194,7 +194,8 @@ EXTRA_DIST += windows/test-runtime-quantum-call-loops.py
 EXTRA_DIST += windows/qasm_runtime_bit_aliases.py windows/test-runtime-bit-alias-iteration.py
 
 EXTRA_DIST += docs/learning-evidence/DEV-09.md
-EXTRA_DIST += docs/learning-evidence/DEV-10.md
+EXTRA_DIST += docs/learning-evidence/DEV-10.md docs/learning-evidence/DEV-11.md docs/learning-evidence/dev11/release-summary.json docs/learning-evidence/dev11/probe-release.py docs/learning-evidence/dev11/results-release.json.gz docs/learning-evidence/dev11/results-dev10-reassessment.json.gz
 EXTRA_DIST += docs/quantum-domains.md windows/DomainGuiTests.cs windows/test-domains-gui.ps1
 
 EXTRA_DIST += windows/MeasurementGuiTests.cs windows/test-measurements-gui.ps1 docs/quantum-measurements.md
+EXTRA_DIST += docs/learning-evidence/dev11/README.md docs/learning-evidence/dev11/comparison-tables.md docs/learning-evidence/dev11/fetch_sources.py docs/learning-evidence/dev11/fixtures.json.gz docs/learning-evidence/dev11/performance-followup.md docs/learning-evidence/dev11/performance-results.json docs/learning-evidence/dev11/primary-inventory.md docs/learning-evidence/dev11/probe.py docs/learning-evidence/dev11/product_cost_probe.py docs/learning-evidence/dev11/results.json.gz docs/learning-evidence/dev11/source-manifest.json docs/learning-evidence/dev11/source-map.json docs/learning-evidence/dev11/summary.json docs/learning-evidence/dev11/test_probe.py docs/learning-evidence/dev11/timing_probe.py
