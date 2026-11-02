@@ -386,6 +386,8 @@ class Parser {
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
+ unsigned matrixEntryNodes=0;
+ bool parsingMatrixEntries=false, nextMatrixEntries=false;
  unsigned nextBoundIndex=0,indexedReferences=0;
  // TeX binds single-letter indices before parsing its body. Only products
  // composed entirely of these indices are implicit; quoted names stay atomic.
@@ -708,12 +710,29 @@ class Parser {
   }
   else if(take('(')) { a="("+expression()+")"; need(')'); }
   else if(take('[')) {
+   const bool matrixEntries=nextMatrixEntries;
+   nextMatrixEntries=false;
+   if(matrixEntries)parsingMatrixEntries=true;
+   // Copied matrices need room for many shallow entries, not more complex
+   // individual expressions. Share the entry allowance across all matrices;
+   // nested lists use their enclosing entry's ordinary expression budget.
+   auto entry=[&]() {
+    if(!matrixEntries)return expression();
+    const unsigned outerNodes=nodes,outerLimit=nodeLimit;
+    nodes=0;nodeLimit=512;
+    std::string value=expression();
+    matrixEntryNodes+=nodes;
+    if(matrixEntryNodes>4096)throw std::runtime_error("Quantum matrix entries exceed the complexity limit.");
+    nodes=outerNodes;nodeLimit=outerLimit;
+    return value;
+   };
    if(take(']'))a="vector()";
    else {
-    std::string first=expression();bool multiple=false;a="["+first;
-    while(true) { if(take(',')) {multiple=true;a+=","+expression();} else if(take(';')) {multiple=true;a+=";"+expression();} else break; }
+    std::string first=entry();bool multiple=false;a="["+first;
+    while(true) { if(take(',')) {multiple=true;a+=","+entry();} else if(take(';')) {multiple=true;a+=";"+entry();} else break; }
     need(']'); a=multiple ? a+"]" : "vector("+first+")";
    }
+   if(matrixEntries)parsingMatrixEntries=false;
   }
   else if(s.compare(p,2,"||")==0) {
    p+=2;size_t closing=std::string::npos;int nesting=0;
@@ -1073,7 +1092,7 @@ class Parser {
     if(name=="QFT") name="qft";
     if(name=="phaseoracle") name="qphaseoracle";
     if(name=="phase_function")name="qphasefunction";
-    if(name=="sequence" || name=="qsequence") {name="qsequence";nodeLimit=4096;}
+    if(name=="sequence" || name=="qsequence") {name="qsequence";if(!parsingMatrixEntries)nodeLimit=4096;}
     if(name=="oracle") name="qoracle";
     if(name=="oracle_function")name="qoraclefunction";
     if(name=="modmul") name="qmodmul";
@@ -1319,7 +1338,15 @@ class Parser {
      if(controlled) a="qcontrolled("+a+")";
     } else {
     std::vector<std::string> args;
-    if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
+    if(!take(')')) {
+     args.push_back(expression());
+     while(take(',')) {
+      ws();
+      if(name=="qmatrix" && args.size()==2 && p<s.size() && s[p]=='[' && !parsingMatrixEntries)nextMatrixEntries=true;
+      args.push_back(expression());
+     }
+     need(')');
+    }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
      name=name=="qsetunion" ? "union" : name=="qsetintersect" ? "intersect" : "setdiff";
