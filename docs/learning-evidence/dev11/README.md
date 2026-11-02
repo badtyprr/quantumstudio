@@ -1,6 +1,6 @@
 # DEV-11 source inventory and executable gap audit
 
-Status: finite audit delivered; DEV-11 remains partial. No implementation, merge, PR, CI run, or new release is claimed.
+Status: this page preserves the original finite audit and its historical results. DEV-11 remains partial. The subsequent DEV-11a implementation, Copy/re-entry correction, verified release and current task status are recorded in [DEV-11 delivery evidence](../DEV-11.md). Historical no-implementation statements below apply to the original audit only.
 
 Integration review tightened the runner to require exit code 2 and the exact
 expected diagnostic for each rejection. `test_probe.py` rejects crashes and
@@ -47,7 +47,7 @@ The first harness misread symbolic radicals and omitted JSON cell arrays. The wo
 
 ## Ranked development and audit queue
 
-All tasks below are proposals; no shared code change is included.
+Current status: DEV-11a is released; DEV-11b through DEV-11f remain open. The descriptions below preserve the original scoped acceptance and ownership proposals; see [current delivery evidence](../DEV-11.md) for implementation and release results.
 
 1. **DEV-11a — Avoid the observed Shor recovery multiplication cost (confirmed performance gap, P2).** Minimal fixture: `060-recovery-shor-IIIIIIYII`, with matching `060-associated-recovery-shor-IIIIIIYII` in fixtures. Separate decoder construction from matrix association during profiling. Acceptance: all 12 original expressions complete under the existing 90-second per-case audit bound on the same host, match both full logical columns with one common phase, and preserve the 70 syndrome columns and invalid-generator rejection checks. Likely owners: matrix evaluation (`MathStructure-matrixvector.cc` and related evaluation code), quantum expression evaluation, with `QuantumStabilizer.cc` reviewed only if profiling implicates decoder construction. Do not presume DEV-09 ownership or change its files.
 2. **DEV-11b — A compact Pauli representation for finite larger codes (confirmed representation limit, P2).** `063-capacity-18` rejects an 18-letter label. Acceptance: represent an 18-qubit toric Pauli without a dense 2^18-square matrix; construct the 3x3 torus checks, verify commutation and two dependencies, rank 16, dimension 4, distance 3, all 54 one-site error syndromes and noncontractible logical-loop commutation. Likely owners: a new compact Pauli/stabilizer module plus notation boundary. The current rejection is a deliberate finite contract, not wrong arithmetic. A general decoder remains a separate task.
