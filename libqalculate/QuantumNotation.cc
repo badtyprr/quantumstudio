@@ -386,6 +386,8 @@ class Parser {
  bool spinContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
+ unsigned matrixEntryNodes=0;
+ bool parsingMatrixEntries=false;
  unsigned nextBoundIndex=0,indexedReferences=0;
  // TeX binds single-letter indices before parsing its body. Only products
  // composed entirely of these indices are implicit; quoted names stay atomic.
@@ -1319,7 +1321,22 @@ class Parser {
      if(controlled) a="qcontrolled("+a+")";
     } else {
     std::vector<std::string> args;
-    if(!take(')')) {args.push_back(expression());while(take(','))args.push_back(expression());need(')');}
+    if(!take(')')) {
+     args.push_back(expression());
+     while(take(',')) {
+      ws();
+      if(name=="qmatrix" && args.size()==2 && p<s.size() && s[p]=='[' && !parsingMatrixEntries) {
+       // Clipboard matrices contain many shallow scalar entries. Give their
+       // explicit data lists a shared bounded budget without increasing the
+       // budget for surrounding expressions or resetting it for nested lists.
+       const unsigned outerNodes=nodes,outerLimit=nodeLimit;
+       nodes=matrixEntryNodes;nodeLimit=4096;parsingMatrixEntries=true;
+       args.push_back(expression());
+       matrixEntryNodes=nodes;nodes=outerNodes;nodeLimit=outerLimit;parsingMatrixEntries=false;
+      } else args.push_back(expression());
+     }
+     need(')');
+    }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
      name=name=="qsetunion" ? "union" : name=="qsetintersect" ? "intersect" : "setdiff";
