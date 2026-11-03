@@ -15,9 +15,9 @@ requires the original IBM-056/058 notebook bytes and verifies their hashes.
 
 | Source | Original expression and location | Executed adaptation |
 | --- | --- | --- |
-| IBM-058, cell 0 `637926c1`, Measurements from Pauli operations, eq013/014, lines 202/211 | `ZZ = Pi0 - Pi1`; `Pi0 = |00><00| + |11><11|`, `Pi1 = |01><01| + |10><10|` | Both `(II +/- ZZ)/2`, instrument labels `+1,-1`, each containing one rank-two Kraus projector |
-| IBM-056, cell 0 `1c1d9429`, Unitary qubit errors, eq001/005/006, lines 25/59/67 | `U = alpha I + beta X + gamma Y + delta Z`; `Y=iXZ`; coherent syndrome terms `alpha|I syndrome>psi + beta|X syndrome>X psi + i gamma|XZ syndrome>XZ psi + delta|Z syndrome>Z psi` | `U=(I+iX+iY+iZ)/2`, known-site three-qubit code described below; preserve syndrome amplitudes and physical Y phase |
-| IBM-056, same cell, Arbitrary qubit errors, eq009/010/013, lines 124/130/152 | `Phi(sigma)=sum_j A_j sigma A_j^dagger`; `A_j=alpha_j I+beta_j X+gamma_j Y+delta_j Z`; corrected state `xi tensor |psi><psi|`, with diagonal syndrome weights `sum_j |coefficient_j|^2` | Nonunitary amplitude damping `A0=diag(1,3/5)`, `A1=[0,4/5;0,0]`; full entangled-reference channel and classical syndrome output |
+| IBM-058, cell 0 `637926c1`, Measurements from Pauli operations, eq013/014, lines 202/211 | `ZZ = Pi0 - Pi1`; `Pi0 = \|00><00\| + \|11><11\|`, `Pi1 = \|01><01\| + \|10><10\|` | Both `(II +/- ZZ)/2`, instrument labels `+1,-1`, each containing one rank-two Kraus projector |
+| IBM-056, cell 0 `1c1d9429`, Unitary qubit errors, eq001/005/006, lines 25/59/67 | `U = alpha I + beta X + gamma Y + delta Z`; `Y=iXZ`; coherent syndrome terms `alpha\|I syndrome>psi + beta\|X syndrome>X psi + i gamma\|XZ syndrome>XZ psi + delta\|Z syndrome>Z psi` | `U=(I+iX+iY+iZ)/2`, known-site three-qubit code described below; preserve syndrome amplitudes and physical Y phase |
+| IBM-056, same cell, Arbitrary qubit errors, eq009/010/013, lines 124/130/152 | `Phi(sigma)=sum_j A_j sigma A_j^dagger`; `A_j=alpha_j I+beta_j X+gamma_j Y+delta_j Z`; corrected state `xi tensor \|psi><psi\|`, with diagonal syndrome weights `sum_j \|coefficient_j\|^2` | Nonunitary amplitude damping `A0=diag(1,3/5)`, `A1=[0,4/5;0,0]`; full entangled-reference channel and classical syndrome output |
 
 IBM-056 SHA-256: `acacc51286660e12f389aa3282a0ca7a3aa46fb7405dbd9797c5c94b55825f5d`.
 IBM-058 SHA-256: `327f3f6dc910b571e1d2bdd18028446a7b9e38855d030f3c37298bf174ea97cc`.
