@@ -213,3 +213,5 @@ EXTRA_DIST += docs/learning-evidence/dev11/instrument-audit.py \
  docs/learning-evidence/dev11/instrument-expanded.json.gz \
  windows/InstrumentRecoveryGuiTests.cs windows/test-instrument-recovery-gui.ps1
 EXTRA_DIST += docs/learning-evidence/dev11/diagram-audit.md docs/learning-evidence/dev11/diagram-audit.py docs/learning-evidence/dev11/diagram-export.cs docs/learning-evidence/dev11/diagram-fixtures.json.gz docs/learning-evidence/dev11/diagram-media.json docs/learning-evidence/dev11/diagram-native.cc docs/learning-evidence/dev11/diagram-results.json.gz docs/learning-evidence/dev11/family-audit.py docs/learning-evidence/dev11/family-fixtures.json.gz docs/learning-evidence/dev11/family-results.json.gz docs/learning-evidence/dev11/remaining-source-ledger.json docs/learning-evidence/dev11/remaining-source-triage.md docs/learning-evidence/dev11/test_diagram_audit.py docs/learning-evidence/dev11/tranche-summary.json
+
+EXTRA_DIST += docs/learning-evidence/dev11/dev11bc-release-summary.json docs/learning-evidence/dev11/toric-results-final.json.gz docs/learning-evidence/dev11/toric-fixtures-final.json.gz docs/learning-evidence/dev11/steane-results-final.json.gz

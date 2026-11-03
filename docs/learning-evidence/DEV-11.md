@@ -1,12 +1,78 @@
 # DEV-11: error-correction lesson operations
 
-Scoped implementation is merged and publicly verified in [214e6866](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-214e6866).
+Current scoped delivery is publicly verified in [c575cb7e](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c575cb7e); historical DEV-11a release evidence is retained below.
 **DEV-11 remains Partial:** all 16 source rows are inventoried, but zero rows
 are certified as fully audited. The 286 executable adaptations do not equal
 whole-source coverage. See the [source inventory](dev11/primary-inventory.md),
 [example map](dev11/source-map.json) and [remaining scoped tasks](#remaining-work).
 
-## Implementation and review
+## Current scoped delivery: DEV-11b/c and parallel audits
+
+Verified release [c575cb7e](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c575cb7e), revision `c575cb7e70d8b952c18d0a297a7784e246c34381`, integrates reviewed PR #419 and
+PR #420, including the unchanged reviewed DEV-11e/f commit from PR #421.
+DEV-11 remains **Partial: 16 source rows inventoried, zero whole rows certified**.
+
+- **DEV-11b:** separate compact Pauli values preserve exact phases and ordering
+  without dense 18-qubit matrices. The adapted 3×3 torus passes commutation,
+  exactly two dependencies, rank 16, dimension 4, distance 3, all 54 one-site
+  syndromes and noncontractible logical-loop relations. Independent group
+  enumeration and all 1,431 weight-one/two errors establish the finite result.
+  [Contract, conventions and oracle](dev11/compact-toric.md).
+- **DEV-11c:** existing numerical execution handles transversal CNOT on two
+  encoded Steane blocks. All four complete columns, relative phases, leakage
+  and a complex witness pass 163,910 native comparisons at tolerance 1e-12.
+  No dense limit was raised. [Routes and adaptation](dev11/steane-transversal.md).
+- **DEV-11d:** 60 finite full-state/channel cases and 35 GUI assertions cover
+  jointly degenerate ZZ measurement and a disclosed known-site three-qubit
+  discretization/recovery adaptation with an entangled reference. This is not
+  execution of the original nine-qubit Shor instrument.
+  [Instrument evidence and limits](dev11/instrument-audit.md).
+- **DEV-11e/f:** 216 manual diagram cases, 50 actual unitary serializer/importer
+  round trips, 1,920 expanded Shor recovery adaptations and 24 exact scalar
+  examples pass. Dynamic diagram suffix imports/GUI, general topology/decoders,
+  larger families, noisy gadgets, threshold certification, media and proofs
+  remain open. [Diagram audit](dev11/diagram-audit.md),
+  [remaining source ledger](dev11/remaining-source-triage.md).
+
+Separate Standards and Spec reviews passed on the exact integration head;
+required CI and guarded merge parent/tree checks passed. GitHub refused the
+separate #421 merge because its base was behind master; its exact reviewed
+commit was instead included unchanged through the current-base #420 merge.
+The final merged revision passed all required CI before publication.
+
+PowerShell 7 native validation: Fresh clean native build and tests; no resumption. The package run
+passed **73 native tests, one existing skip, zero failures/errors**. Actual packaged validation preserved all 286 original
+expectations (280 supported plus the same six verified rejections), all 405
+exact compact results and serialized re-entries, 52 compact GUI assertions
+with nine independent clipboard comparisons, and 40 Steane GUI assertions
+across five import/save/reopen/export/execution cases. The final instrument
+and e/f audits also ran fresh against the packaged binaries and final source.
+Thirteen specifically identified final captures were inspected. File-dialog
+interaction is not claimed. All payload/ZIP entries and both anonymous public
+archive downloads matched their tested hashes and sizes. The first anonymous
+download returned HTTP 404; retrying the same published assets succeeded.
+Both publication attempts remain preserved.
+
+The development native run had 71 passes/one skip plus two separately run new
+targets; it is not mislabeled as the final clean combined run. Launcher setup
+failures, an initial supplementary Automake setup failure, and Steane GUI
+harness failures remain preserved. The GUI harness compared JSON property
+order incorrectly; structural comparison retained full circuit/source checks.
+No failed candidate was published. Exact toric arithmetic uses no tolerance;
+Steane amplitude comparisons are numerical at 1e-12. Sampling is supplemental.
+
+Windows ZIP SHA-256: `2a42415bec616bed4174cf1e1e39bdf0b7a82ae6982a3a3d2326b3baf3f1d7d9`.
+Source archive SHA-256: `0bf9f2b6ce8619ec90d65c8b419d2bf932a4ccc7e20e1a94269253f120a137f0`.
+[Machine-readable release and provenance](dev11/dev11bc-release-summary.json).
+Full evidence remains outside disposable checkouts in
+`F:/src/libqalculate/cleanup-audit/dev11bc-20261102/`.
+
+Historical DEV-11a evidence below is retained unchanged. Dense 14/18-qubit
+constructor rejections are still intentional and are not counted as new
+supported fixtures. DEV-09's unresolved symbolic tetrahedral conditional case
+and DEV-10's documented limits remain unchanged.
+
+## Historical DEV-11a implementation and review
 
 [PR #416](https://github.com/badtyprr/quantumstudio/pull/416), merge `17388f64`,
 implements DEV-11a: exact finite numeric matrix products visit nonzero
@@ -136,21 +202,13 @@ External full evidence and capture files remain in
 
 ## Remaining work
 
-DEV-11a is released; the following scoped tasks remain open with acceptance in
-the [inventory queue](dev11/README.md#ranked-development-and-audit-queue):
+DEV-11a and scoped DEV-11b/c are released. Finite DEV-11d/e/f audits are
+recorded above; the wider task remains open:
 
-- **DEV-11b:** compact 18-qubit toric Paulis/checks, dependencies, distance,
-  syndromes and logical loops. Dense constructor capacity is a confirmed limit.
-- **DEV-11c:** encoded two-block 14-qubit Steane transversal CNOT; investigate
-  existing compact/circuit execution before adding a representation.
-- **DEV-11d:** jointly degenerate stabilizer instruments and coherent recovery,
-  including entangled-reference/channel witnesses. This is an unaudited surface,
-  not a confirmed absence of the released DEV-09 instrument capabilities.
-- **DEV-11e:** transcribe and independently check original encoder/syndrome
-  diagrams and wire conventions; validate import/export when used.
-- **DEV-11f:** remaining code families, toric decoder, fault-tolerance gadgets,
-  thresholds, parameterized proofs and linked media. Split confirmed failures
-  into individual implementation tasks with original reproductions.
+- General toric decoding, L=9/source topology and larger code families.
+- Original nine-qubit Shor instruments and broader arbitrary-error recovery.
+- Remaining original circuit/media cases, dynamic diagram suffix import and GUI.
+- Fault-tolerance gadgets, physical thresholds and parameterized proofs.
 
 The variadic `tensor(X,Y,Z)` spelling was an invented adaptation, not an original
 source feature: nested binary/Unicode tensor forms pass. The 14/18-qubit

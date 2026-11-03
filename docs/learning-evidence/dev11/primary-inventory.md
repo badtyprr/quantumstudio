@@ -1,5 +1,7 @@
 # DEV-11 primary-source example inventory
 
+Follow-up: this preserves the original inventory. Scoped DEV-11b/c delivery and finite instrument, original-diagram and family audits are recorded in [current delivery evidence](../DEV-11.md#current-scoped-delivery-dev-11bc-and-parallel-audits), verified in [c575cb7e](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c575cb7e). Earlier open-surface statements below describe the historical inventory; wider coverage remains open and no whole row is certified.
+
 Base: `0fed41cb5637c578737278bf13f59590a56d6cf4`. Retrieved 2026-11-01. All 16 Foundations rows IBM-053–068 are inventoried; zero whole rows are certified. See [README.md](README.md) for the 286 fixtures, [source-manifest.json](source-manifest.json) for official URLs, retrieval timestamps and hashes, and [source-map.json](source-map.json) for exact cell IDs, lines, sections, equations, image references and fixture mappings.
 
 Every notebook has zero code cells: probes adapt mathematical notation, not original IBM executable code. Original notebook snapshots stay outside the clone. Web text was available, but direct HTML downloads returned 403; official notebooks all succeeded. Videos, slides and visual diagram topology remain unaudited. Linked resources with retrieval failures are explicitly identified below.
