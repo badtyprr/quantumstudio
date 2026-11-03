@@ -203,3 +203,12 @@ EXTRA_DIST += docs/learning-evidence/dev11/README.md docs/learning-evidence/dev1
 EXTRA_DIST += docs/learning-evidence/dev11/toric-probe.py docs/learning-evidence/dev11/compact-toric.md docs/learning-evidence/dev11/steane-probe.py docs/learning-evidence/dev11/steane-transversal.md windows/CompactPauliGuiTests.cs windows/test-compact-pauli-gui.ps1 windows/SteaneTransversalGuiTests.cs windows/test-steane-transversal-gui.ps1
 
 EXTRA_DIST += docs/learning-evidence/dev11/compact-gui-fixtures.py docs/learning-evidence/dev11/steane-verify-gui.py
+# DEV-11d finite instrument audit and standalone GUI validation.
+EXTRA_DIST += docs/learning-evidence/dev11/instrument-audit.py \
+ docs/learning-evidence/dev11/instrument-audit.md \
+ docs/learning-evidence/dev11/instrument-results.json.gz \
+ docs/learning-evidence/dev11/instrument-summary.json \
+ docs/learning-evidence/dev11/instrument-baseline.json.gz \
+ docs/learning-evidence/dev11/instrument-corrected-harness.json.gz \
+ docs/learning-evidence/dev11/instrument-expanded.json.gz \
+ windows/InstrumentRecoveryGuiTests.cs windows/test-instrument-recovery-gui.ps1
