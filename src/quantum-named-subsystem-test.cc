@@ -62,6 +62,13 @@ int main() {try {
  if(!mapped.isFunction() || mapped.function()->referenceName()!="qsubsystems" || mapped.size()!=3 || !mapped[0].isMatrix() || mapped[1][0].symbol()!="A")
   throw std::runtime_error("Evaluated declaration lost its mapping");
  ++checks;
+ calculator.addVariable(new KnownVariable("","k",MathStructure(0)));
+ equal("ptrace("+rho+",k)","[3/4,1/4;1/4,1/4]");
+ equal("ptrace("+rho+",[k])","[3/4,1/4;1/4,1/4]");
+ equal("ptrace("+rho+",k,[2,2])","[3/4,1/4;1/4,1/4]");
+ equal("sum(ptrace("+rho+",j),0,1,j)","[5/4,1/4;1/4,3/4]");
+ equal("ptrace(subsystems(identity(2),[A,B],[1,2]),B)","2");
+ equal("ptrace(subsystems(identity(2),[A,B],[1,2]),[A,B])","2");
  rejects("ptrace(subsystems("+rho+",[A,B],[2,2]),missing)","Unknown subsystem label");
  rejects("ptrace(subsystems("+rho+",[A,B],[2,2]),[B,B])","Duplicate traced subsystem labels");
  rejects("subsystems("+rho+",[A,A],[2,2])","Duplicate subsystem labels");

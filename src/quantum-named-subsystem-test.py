@@ -40,6 +40,14 @@ def exact_copy_cells(text):
     return [cells[i * columns:(i + 1) * columns] for i in range(rows)]
 
 
+def matches(value, expected):
+    try:
+        return (value['approximate'] is False and value['rows'] == len(expected)
+                and value['columns'] == len(expected[0]) and exact_copy_cells(value['copy_text']) == expected)
+    except (KeyError, ValueError, TypeError):
+        return False
+
+
 def contraction(matrix, dims, removed):
     """Independent definition: sum diagonal blocks via explicit basis tuples."""
     kept = [i for i in range(len(dims)) if i not in removed]
@@ -81,19 +89,14 @@ def main():
         row.update(name=name, expected=[[str(x) for x in r] for r in expected])
         try:
             value = json.loads(row['stdout'])
-            row['passed'] = (row['exit_code'] == 0 and not row['stderr'] and value['approximate'] is False
-                             and value['rows'] == len(expected) and value['columns'] == len(expected[0])
-                             and exact_copy_cells(value['copy_text']) == expected)
+            row['passed'] = row['exit_code'] == 0 and not row['stderr'] and matches(value, expected)
         except (ValueError, KeyError, TypeError):
             row['passed'] = False
         rows.append(row)
         if row['passed']:
             copied = run(value['copy_text'])
             replay = json.loads(copied['stdout']) if copied['exit_code'] == 0 else {}
-            copied.update(name=name + ' result Copy/re-entry', passed=(copied['exit_code'] == 0 and not copied['stderr']
-                          and replay.get('rows') == len(expected) and replay.get('columns') == len(expected[0])
-                          and replay.get('approximate') is False and replay.get('cells') == value['cells']
-                          and exact_copy_cells(replay.get('copy_text', '')) == expected))
+            copied.update(name=name + ' result Copy/re-entry', passed=copied['exit_code'] == 0 and not copied['stderr'] and matches(replay, expected))
             rows.append(copied)
 
     def mapped(matrix, labels, dims):
@@ -151,6 +154,18 @@ def main():
             check('trace copied mapping ' + str(labels), 'ptrace(' + copied + ',' + labels[0] + ')', expected)
 
     value = mapped(matrix_text(rho), ['A', 'B'], [2, 2])
+    check('finite numeric binder regression', 'sum(ptrace(' + matrix_text(rho) + ',j),0,1,j)',
+          [[F(5, 4), F(1, 4)], [F(1, 4), F(3, 4)]])
+    for chosen in ['B', '[A,B]']:
+        scalar = run('ptrace(subsystems(identity(2),[A,B],[1,2]),' + chosen + ')')
+        result = json.loads(scalar['stdout']) if scalar['exit_code'] == 0 else {}
+        replay = run(result.get('copy_text', ''))
+        replay_result = json.loads(replay['stdout']) if replay['exit_code'] == 0 else {}
+        scalar.update(name='retained dimension one ' + chosen, replay=replay,
+                      passed=scalar['exit_code'] == 0 and not scalar['stderr'] and result.get('copy_text') == '2'
+                      and result.get('approximate') is False and replay['exit_code'] == 0 and not replay['stderr']
+                      and replay_result.get('copy_text') == '2' and replay_result.get('approximate') is False)
+        rows.append(scalar)
     for expression, diagnostic in [
         ('ptrace(' + value + ',missing)', 'Unknown subsystem label'),
         ('ptrace(' + value + ',[B,B])', 'Duplicate traced subsystem labels'),

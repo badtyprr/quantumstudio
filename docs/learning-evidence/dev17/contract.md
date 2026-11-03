@@ -23,8 +23,9 @@ as `[B,C]` traces out both; its order does not reorder the output. The remaining
 factors keep their original relative order. The equivalent source operator form
 is `\operatorname{Tr}_{\mathsf{B}}(subsystems(matrix,[A,B],[2,3]))`. Multiple labels
 are comma-separated, for example `\operatorname{Tr}_{\mathsf{B},\mathsf{C}}(...)`.
-An empty selection retains the input matrix; tracing every factor returns the
-ordinary scalar trace, consistently with explicit-dimension numeric traces.
+An empty selection retains the input matrix. When the retained dimension is
+one, the result is a scalar, consistently with explicit-dimension numeric traces;
+this includes tracing every factor and retaining only dimension-one factors.
 
 Scope is the value, with no global label registry or implicit declaration based
 on surrounding prose. Evaluating a declaration preserves its matrix, ordered
@@ -35,7 +36,7 @@ other. Nesting a declaration around an already mapped value is rejected, even
 if the two mappings are equal. Numeric selectors and additional dimension
 arguments on a mapped value are rejected, avoiding mixed conventions.
 
-A trace result is an ordinary matrix (or scalar when all factors are removed),
+A trace result is an ordinary matrix (or scalar when the retained dimension is one),
 without mapping metadata. Copy/re-entry of that result preserves the full exact
 value, not an implicit declaration. To chain named traces, explicitly attach a
 new mapping to the result, using only its retained factors and dimensions. Using

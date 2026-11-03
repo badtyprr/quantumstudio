@@ -59,7 +59,7 @@ class QuantumSubsystemFunction: public MathFunction {
    out=MathStructure(static_cast<MathFunction*>(this),static_cast<MathStructure*>(NULL));
    out.addChild(matrix);out.addChild(labels);out.addChild(dims);return 1;
   }
-  if(op=="qptrace" || op=="qptracedim") {
+  if(op=="qptrace" || op=="qptracedim" || op=="qptraceselect") {
    MathStructure state=raw[0];state.eval(eo);
    if(mappedSubsystems(state)) {
     if(op=="qptracedim") {subsystemError("A named subsystem mapping already supplies dimensions; do not pass conflicting explicit dimensions.");return 0;}
@@ -78,6 +78,17 @@ class QuantumSubsystemFunction: public MathFunction {
     }
     MathStructure args;args.clearVector();args.addChild(state[0]);args.addChild(indices);args.addChild(state[2]);
     return CALCULATOR->getFunction("qptracedim")->calculate(out,args,eo);
+   }
+   if(op=="qptraceselect") {
+    // The same spelling can denote metadata on a mapped value or an assigned
+    // numeric index on an ordinary matrix. Resolve only after seeing the value.
+    MathStructure indices=raw[2];indices.eval(eo);
+    for(size_t k=0;k<(indices.isVector() ? indices.size() : 1);++k)
+     if(!(indices.isVector() ? indices[k] : indices).isNumber()) {
+      subsystemError("Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping.");return 0;
+     }
+    MathStructure args;args.clearVector();args.addChild(state);args.addChild(indices);
+    return CALCULATOR->getFunction("qptrace")->calculate(out,args,eo);
    }
    MathStructure selected=raw[1];selected.eval(eo);
    for(size_t k=0;k<(selected.isVector() ? selected.size() : 1);++k)
@@ -270,6 +281,6 @@ class QuantumSubsystemFunction: public MathFunction {
 };
 }
 void registerQuantumSubsystem(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
+ for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
   calculator.addFunction(new QuantumSubsystemFunction(entry.first,entry.second));
 }

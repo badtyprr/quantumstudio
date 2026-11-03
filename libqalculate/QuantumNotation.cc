@@ -321,6 +321,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qprobs",1},
  {"qprobsub",2},
  {"qptrace",2},
+ {"qptraceselect",3},
  {"qsubsystems",3},
  {"qptracedim",3},
  {"qptm",1},
@@ -1202,9 +1203,11 @@ class Parser {
      std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
      std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {
-     std::string state=expression(); need(','); std::string indices=name=="qptrace" ? subsystemLabels(false) : "";
-     if(indices.empty())indices=expression();
+     std::string state=expression(); need(',');size_t selectorStart=p;unsigned selectorNodes=nodes;
+     std::string labels=name=="qptrace" ? subsystemLabels(false) : "";
+     p=selectorStart;nodes=selectorNodes;std::string indices=expression();
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }
+     else if(!labels.empty())a="qptraceselect("+state+","+labels+","+indices+")";
      else a=name+"("+state+","+indices+")";
      need(')');
     } else if(name=="tuple") {
