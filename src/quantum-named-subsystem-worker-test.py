@@ -120,6 +120,16 @@ def main():
                       f'density((|{a}>{sign}|{b}>)/sqrt(2))', ['B', 'A'], [2, 2], [removed], half_identity)
     rho = [[F(1, 2), 0, 0, 0], [0, 0, 0, 0], [0, 0, F(1, 4), F(1, 4)], [0, 0, F(1, 4), F(1, 4)]]
     right_mixture = [[F(3, 4), F(1, 4)], [F(1, 4), F(1, 4)]]
+    for keyword in ['not', 'and', 'or', 'xor']:
+        value = mapped(matrix_text(rho), [keyword, 'B'], [2, 2])
+        for selector in [keyword, '[' + keyword + ']', 'vector(' + keyword + ')']:
+            check('keyword selector ' + selector, 'ptrace(' + value + ',' + selector + ')', right_mixture)
+        trace('keyword TeX ' + keyword, matrix_text(rho), [keyword, 'B'], [2, 2], [0], right_mixture, True)
+        check('keyword quoted binder ' + keyword,
+              'sum(ptrace(' + value + ',' + keyword + '),0,1,"' + keyword + '")',
+              [[F(3, 2), F(1, 2)], [F(1, 2), F(1, 2)]])
+    trace('multiple keyword labels', 'density(|101>)', ['not', 'and', 'xor'], [2, 2, 2], [2, 0], projector(2, 0), True)
+    check('multiple keyword vector', 'ptrace(subsystems(density(|101>),[not,and,xor],[2,2,2]),[xor,not])', projector(2, 0))
     for labels in [['A', 'B'], ['B', 'A'], ['X', 'Z'], ['pi', 'i'], ['sin', 'vector'], ['ancilla_2', 'data']]:
         for removed, expected in [(0, right_mixture), (1, half_identity)]:
             for tex in [False, True]:

@@ -509,7 +509,7 @@ class Parser {
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
  // Labels are literal identifiers here, even when their spelling is a gate or
  // scalar constant elsewhere. A multi-letter name is never split into factors.
- std::string subsystemLabels(bool required) {
+ std::string subsystemLabels(bool required,bool *hasKeyword=nullptr) {
   size_t saved=p;unsigned savedNodes=nodes;ws();char close=0;
   if(take('['))close=']';
   else if(s.compare(p,7,"vector(")==0) {p+=7;close=')';}
@@ -530,6 +530,7 @@ class Parser {
     throw std::runtime_error("Subsystem labels must be identifiers of 1 to 64 ASCII letters, digits or underscores, starting with a letter.");
    }
    if(++count>32 || ++nodes>nodeLimit)throw std::runtime_error("Subsystem labels exceed the 32-factor or expression complexity limit.");
+   if(hasKeyword && (label=="not" || label=="and" || label=="or" || label=="xor"))*hasKeyword=true;
    if(count>1)result+=",";result+=subsystemLabelBegin;result+='\"'+label+'\"';result+=subsystemLabelEnd;
    if(!close)return result;
    if(take(close))return result+")";
@@ -1212,8 +1213,14 @@ class Parser {
      std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {
      std::string state=expression(); need(',');size_t selectorStart=p;unsigned selectorNodes=nodes;
-     std::string labels=name=="qptrace" ? subsystemLabels(false) : "";
-     p=selectorStart;nodes=selectorNodes;std::string indices=expression();
+     bool keywordLabels=false;
+     std::string labels=name=="qptrace" ? subsystemLabels(false,&keywordLabels) : "";
+     std::string indices;
+     // Operator words are valid literal labels but cannot be parsed as bare
+     // expressions. Keep their numeric alternative as unprotected symbols so
+     // quoted binders still work; ordinary numeric selectors retain parsing.
+     if(!labels.empty() && keywordLabels)indices=withoutLabelMarkers(labels);
+     else {p=selectorStart;nodes=selectorNodes;indices=expression();}
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }
      else if(!labels.empty())a="qptraceselect("+state+","+labels+","+indices+")";
      else a=name+"("+state+","+indices+")";

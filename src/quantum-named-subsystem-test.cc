@@ -46,6 +46,15 @@ int main() {try {
   equal("ptrace("+mapped+","+right+")","[1/2,0;0,1/2]");
  }
  equal("ptrace(subsystems("+rho+",[B,A],[2,2]),B)","[3/4,1/4;1/4,1/4]");
+ for(const auto &keyword:{"not","and","or","xor"}) {
+  std::string label=keyword,mapping="subsystems("+rho+",["+label+",B],[2,2])";
+  for(const auto &selector:{label,"["+label+"]","vector("+label+")"})
+   equal("ptrace("+mapping+","+selector+")","[3/4,1/4;1/4,1/4]");
+  equal("\\operatorname{Tr}_{\\mathsf{"+label+"}}("+mapping+")","[3/4,1/4;1/4,1/4]");
+  equal("sum(ptrace("+mapping+","+label+"),0,1,\""+label+"\")","[3/2,1/2;1/2,1/2]");
+  equal("sum(ptrace("+rho+",\""+label+"\"),0,1,\""+label+"\")","[5/4,1/4;1/4,3/4]");
+ }
+ equal("ptrace(subsystems(density(|101>),[not,and,xor],[2,2,2]),[xor,not])","[1,0;0,0]");
  equal("\\operatorname{Tr}_{\\mathsf{B}}(subsystems("+rho+",[B,A],[2,2]))","[3/4,1/4;1/4,1/4]");
  equal("ptrace(subsystems(density(|01>),[B,A],[2,2]),B)","[0,0;0,1]");
  equal("ptrace(subsystems(density(|01>),[B,A],[2,2]),A)","[1,0;0,0]");
