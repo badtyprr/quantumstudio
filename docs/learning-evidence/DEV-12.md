@@ -136,12 +136,54 @@ untested encoding families, large-circuit scaling, source media and hardware
 remain open. Ideal finite Gram-matrix positivity is not a certification of
 finite-shot kernel positivity. These boundaries do not reduce the full task.
 
+## Chemistry and diagonalization: scoped product change
+
+[Source inventory, independent references and boundaries](dev12/chemistry-diagonalization.md)
+cover IBM-090–095 and IBM-108–113: 12 notebooks / 422 cells, including 152 code
+cells; zero whole source rows certified. The released baseline already passes
+12 selected matrix constructions, 12 norms and 12 expectations. All 24 attempted
+eigenpair calls return nonnumeric implicit products; the original source uses
+NumPy/SciPy rather than these proposed native spellings. The new bounded native
+interface computes eigenpairs; it does not claim to execute those Python calls.
+
+`heigenvalues(A)` returns a sorted numerical column and `heigenvectors(A)` returns
+paired orthonormal columns for finite Hermitian matrices of dimension 1–64.
+Outputs are approximate even for exact inputs. Scaled Hermiticity, residual and
+orthonormality checks guard the solver; degeneracies permit arbitrary orthonormal
+bases. Existing parser complexity and dense-constructor limits are unchanged.
+Symbolic/non-Hermitian/generalized eigensolvers and global optimization remain
+outside this implementation. The finite generalized example instead uses an
+explicitly disclosed existing matrix-whitening adaptation.
+
+Development validation at chemistry head
+`93900d3dcaa908dc27eee2b66b23555eac189308`: 1,114,552 native assertions
+(including repeated numeric/helper checks), 32 public worker requests, and 60
+source-backed operations: 12 each of matrix construction, norm, expectation,
+eigenvalues and eigenvectors. Analytic small spectra and independently computed
+SciPy spectra/residuals/projectors provide the oracles. This includes the full
+four-qubit H2 operator, not a silently reduced two-qubit replacement. Rounded
+source coefficients, a swapped prose eigenvector pairing and the nuclear-energy
+offset convention are documented; none is silently corrected or double counted.
+Both independent scoped peer reviews report zero findings. Final integration
+review, CI, clean package validation and publication remain pending.
+
+Development GUI validation uses the unchanged released app with the newly built
+worker in a separately recorded staging directory, **not a clean release**:
+41 Calculate/Copy/re-entry/session assertions and 14 independent clipboard
+comparisons pass. The first attempt incorrectly required approximate decimal
+copies and their exact rational re-entries to have identical text; it is retained
+under `cleanup-audit/dev12-20261102/development-gui`. The corrected verifier checks
+dimensions, values, eigenvector residuals and orthonormality. Earlier variational
+GUI testing on the unchanged release passed 26 assertions, four independent
+clipboard comparisons and five inspected captures. Neither run substitutes for
+fresh final packaged-binary validation.
+
 ## Coordination and retained limits
 
 Agent 2 owns chemistry and diagonalization, Agent 3 owns machine learning.
 Only the integration owner edits this combined evidence, the central checklist
-and shared build files. Ready ML evidence is linked above; chemistry evidence
-will be linked when its implementation and audit are ready.
+and shared build files. Ready peer evidence is integrated above. Across the
+three workstreams, 27 source rows are inventoried and zero whole rows certified.
 
 The retained DEV-13 owner confirmed QB-007 is static inventory only, at qBraid
 revision `86787e1ba372facc224f925189755e69c479828b`, notebook SHA-256
