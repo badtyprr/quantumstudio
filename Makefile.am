@@ -216,3 +216,4 @@ EXTRA_DIST += docs/learning-evidence/dev11/diagram-audit.md docs/learning-eviden
 
 EXTRA_DIST += docs/learning-evidence/dev11/dev11bc-release-summary.json docs/learning-evidence/dev11/toric-results-final.json.gz docs/learning-evidence/dev11/toric-fixtures-final.json.gz docs/learning-evidence/dev11/steane-results-final.json.gz
 EXTRA_DIST += docs/learning-evidence/DEV-12.md docs/learning-evidence/dev12/variational-source-manifest.json
+EXTRA_DIST += docs/learning-evidence/dev12/variational-baseline-summary.json

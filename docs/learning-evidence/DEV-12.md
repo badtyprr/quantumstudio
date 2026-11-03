@@ -13,6 +13,9 @@ The new regression is `src/quantum-variational-test.py`. All 78 requests passed:
 75 scalar/matrix requests and three separately assessed numerical sampling
 requests. Worker SHA-256 is recorded with every saved run in the external
 `cleanup-audit/dev12-20261102/variational/baseline-regression.json`.
+The [tracked baseline summary](dev12/variational-baseline-summary.json) pins
+the worker, build manifest, regression, source manifest and full run hashes;
+all 388 manifest payload files were reverified.
 Review, merge, CI and new-release status are pending; these results alone do not
 claim delivery of a product change.
 

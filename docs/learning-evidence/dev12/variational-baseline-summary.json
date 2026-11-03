@@ -1,0 +1,18 @@
+{
+  "validation": "fresh run against existing verified release; no new build",
+  "package_revision": "c575cb7e70d8b952c18d0a297a7784e246c34381",
+  "worker_sha256": "24ffff787c90b9ebcdb6f483ee561dce67266a646702893236a935a55890b7df",
+  "build_manifest_sha256": "09f42a2b554b5bbdcb3bac8127670d390b9310c6f3f822ef0a2722acf38bbe84",
+  "payload_files_verified": 388,
+  "result_sha256": "6ffd35dbd84abc7a7940fe136af7ee5a4546272a585a5a4d7ec683171a8d90cc",
+  "regression_sha256": "4e7c32040f82de5b10181b8be052f1060eb184a6a4a5928252adc86b25e80b2a",
+  "source_manifest_sha256": "ee97658668e21ce571fcddad7687e25fbc5e8bc1ab12b3965952aee1053f1526",
+  "requests": 78,
+  "notation_requests": 75,
+  "sampling_requests": 3,
+  "numerical_absolute_tolerance": 2e-12,
+  "sampling_frequency_tolerance": 0.025,
+  "shots": 20000,
+  "seed": 120105,
+  "whole_rows_certified": 0
+}
