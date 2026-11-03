@@ -99,8 +99,6 @@ Validation entry points:
   full rational matrix checks, renamed/permuted mappings, mixed dimensions,
   multiple traced factors, evaluated declaration Copy/re-entry and result copies.
 
-Pending: compilation, exact-head regressions, real GUI entry/Copy/session
-reopening, independent Standards and Spec reviews, central integration and
-released-artifact validation. Symbolic dimensions, named symbolic matrix
-identities, set-indexed sums, block-matrix syntax and notebook execution remain
-outside this finite feature.
+Validation and remaining integration gates are recorded in [validation.md](validation.md).
+Symbolic dimensions, named symbolic matrix identities, set-indexed sums,
+block-matrix syntax and notebook execution remain outside this finite feature.
