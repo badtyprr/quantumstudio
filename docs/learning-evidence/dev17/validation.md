@@ -1,5 +1,38 @@
 # DEV-17 validation and integration handoff
 
+## Integration-review correction: operator keyword labels
+
+Integration review found that valid labels `not`, `and`, `or`, and `xor` were
+accepted in declarations but rejected as unquoted trace selectors. The original
+reviewer input, output and old worker hash are preserved in `keyword-original.json`;
+`keyword-baseline.json` separately records 22 new failures and 112 prior passes.
+No identifier-contract restriction was introduced to hide these failures.
+
+Correction commits `4f5ba575f` and `8c07c7205` avoid expression reparsing only for
+valid literal selectors containing an unquoted operator keyword. Quoted keyword
+selectors retain expression parsing, preserving mixed assigned numeric variables
+and quoted binders. Spec review caught that compatibility edge case in the first
+correction; the assigned `k=0`, `[k,"not"]` regression is now checked exactly.
+Test-only commit `8a379a275` adds single/double quoted and logical-selector coverage.
+
+Final correction validation: 88 native named-subsystem checks, 212 worker checks,
+538 notation checks, 116 subsystem checks and 249 TeX checks pass. Logs are
+`keyword-native-final.log`, `keyword-corrected-final.json`, `keyword-notation.log`,
+`keyword-subsystem.log`, and `keyword-tex.log`. The worker was rebuilt at
+`8c07c7205`; `8a379a275` has identical product source. `keyword-provenance.json`
+records exact revisions and binary hashes. These targeted regressions do not
+replace the historical complete-suite record below or integrated CI.
+
+All four keywords are tested bare, single/double quoted, in list/vector selectors
+and in supported source TeX; multiple traced keyword labels and named/quoted
+numeric binders are covered. Ordinary `not`, `and`, `or`, `xor` numeric selector
+expressions retain their prior results. Complete expected matrices still derive
+from the independent IBM mixture and product-state oracles.
+
+Independent Spec review at `8c07c7205` reports zero outstanding findings after
+the quoted-keyword correction. GUI Clipboard, integrated CI and release gates
+remain open; none of these additional checks establishes those gates.
+
 Implementation is reviewable on `codex/dev17-named-traces`, based on fetched
 upstream `2fb33c4d435adaf3518b5c79da38392030c957ce`. This is not a released-artifact
 claim. Product code was built at `fffb351a903c7138ac4a991cfcc488de8231cf10`;
