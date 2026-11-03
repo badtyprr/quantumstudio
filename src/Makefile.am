@@ -304,3 +304,10 @@ quantum_compact_pauli_test_SOURCES = quantum-compact-pauli-test.cc
 quantum_compact_pauli_test_LDADD = $(test_LDADD)
 quantum_steane_transversal_test_SOURCES = quantum-steane-transversal-test.cc
 quantum_steane_transversal_test_LDADD = ../libqalculate/libqalculate.la
+
+check_PROGRAMS += quantum-eigensystem-test
+TESTS += quantum-eigensystem-test
+quantum_eigensystem_test_SOURCES = quantum-eigensystem-test.cc
+quantum_eigensystem_test_LDADD = $(test_LDADD)
+TESTS += quantum-eigensystem-worker-test.py
+EXTRA_DIST += quantum-eigensystem-worker-test.py

@@ -272,6 +272,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qentropybase",2},
  {"qexp",1},
  {"qexpect",2},
+ {"qheigenvalues",1},{"qheigenvectors",1},
  {"qfcreate",2},
  {"qfdestroy",2},
  {"qfeedforward",5},
@@ -1060,6 +1061,7 @@ class Parser {
     if(name=="spectralnorm") name="qspectralnorm";
     if(name=="frobeniusnorm") name="qfrobeniusnorm";
     if(name=="expect") name="qexpect";
+    if(name=="heigenvalues" || name=="heigenvectors") name="q"+name;
     if(name=="purity") name="qpurity";
     if(name=="entropy") name="qentropy";
     if(name=="schmidt_coeffs") name="qschmidt";

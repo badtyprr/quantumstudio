@@ -31,6 +31,7 @@
 #include "QuantumGates.h"
 #include "QuantumMeasurement.h"
 #include "QuantumMatrixPower.h"
+#include "QuantumEigensystem.h"
 #include "QuantumStateFunctions.h"
 #include "QuantumMatrixExp.h"
 #include "BuiltinFunctions.h"
@@ -1722,6 +1723,7 @@ void Calculator::addBuiltinFunctions() {
 	registerQuantumGates(*this);
 	registerQuantumMeasurement(*this);
 	registerQuantumMatrixPower(*this);
+	registerQuantumEigensystem(*this);
 	registerQuantumStateFunctions(*this);
 	registerQuantumMatrixExp(*this);
 
