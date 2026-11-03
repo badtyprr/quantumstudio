@@ -199,3 +199,13 @@ EXTRA_DIST += docs/quantum-domains.md windows/DomainGuiTests.cs windows/test-dom
 
 EXTRA_DIST += windows/MeasurementGuiTests.cs windows/test-measurements-gui.ps1 docs/quantum-measurements.md
 EXTRA_DIST += docs/learning-evidence/dev11/README.md docs/learning-evidence/dev11/comparison-tables.md docs/learning-evidence/dev11/fetch_sources.py docs/learning-evidence/dev11/fixtures.json.gz docs/learning-evidence/dev11/performance-followup.md docs/learning-evidence/dev11/performance-results.json docs/learning-evidence/dev11/primary-inventory.md docs/learning-evidence/dev11/probe.py docs/learning-evidence/dev11/product_cost_probe.py docs/learning-evidence/dev11/results.json.gz docs/learning-evidence/dev11/source-manifest.json docs/learning-evidence/dev11/source-map.json docs/learning-evidence/dev11/summary.json docs/learning-evidence/dev11/test_probe.py docs/learning-evidence/dev11/timing_probe.py
+
+# DEV-11d finite instrument audit and standalone GUI validation.
+EXTRA_DIST += docs/learning-evidence/dev11/instrument-audit.py \
+ docs/learning-evidence/dev11/instrument-audit.md \
+ docs/learning-evidence/dev11/instrument-results.json.gz \
+ docs/learning-evidence/dev11/instrument-summary.json \
+ docs/learning-evidence/dev11/instrument-baseline.json.gz \
+ docs/learning-evidence/dev11/instrument-corrected-harness.json.gz \
+ docs/learning-evidence/dev11/instrument-expanded.json.gz \
+ windows/InstrumentRecoveryGuiTests.cs windows/test-instrument-recovery-gui.ps1

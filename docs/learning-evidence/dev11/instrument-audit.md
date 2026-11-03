@@ -80,9 +80,9 @@ and the specific diagnostic. These conditions are not assumed valid.
 ## Evidence, failure history and reproduction
 
 External evidence is at `F:/src/libqalculate/cleanup-audit/dev11d-20261102/`.
-`validated/` records 60/60 passing fresh worker cases. The existing DEV-09 suite
+`final-worker/` records 60/60 passing fresh worker cases. The existing DEV-09 suite
 passes 214 checks, including its still-pending fourth tetrahedral `|i>` poststate.
-`gui/` records 35 actual packaged GUI checks: Calculate and Copy buttons,
+`final-gui/` records 35 actual packaged GUI checks (binary hashes verified before and after): Calculate and Copy buttons,
 four complete copied-result comparisons, re-entry, session Save/Open through
 application serialization, invalid-input recovery and five inspected captures.
 The 64-by-1 vector scrolls; the 16-by-16 density uses the textual fallback. Full
@@ -110,8 +110,8 @@ fresh results. Portable raw results and the summary accompany this document.
 ## Integration and limits
 
 The lead owns shared build lists, central checklist integration, merges and the
-combined release. This branch changes only audit fixtures, documentation and a
-separate GUI test driver. No QuantumMeasurement, QuantumInstruments, notation or
+combined release. This branch changes audit fixtures, documentation, a separate GUI test driver
+and the nine-file source archive list explicitly coordinated with the lead. No QuantumMeasurement, QuantumInstruments, notation or
 shared checklist edits; no release publication. Keep the isolated checkout until
 integration or verified recovery; evidence remains outside it.
 
