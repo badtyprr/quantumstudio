@@ -27,6 +27,7 @@ works directly on Pauli letters: distinct nonidentity letters anticommute.
 Neither oracle calls the implementation's binary symplectic routines.
 
 All 324 generator pairs commute. Products of all stars and all faces are +I;
+an independent enumeration yields 65,536 distinct binary group elements;
 rank 16 establishes that these are exactly two independent relations and gives
 code-space dimension 2^(18-16)=4. The independent Python lower-bound proof
 enumerates all 1,431 weight-one/two Paulis and finds a nonzero syndrome for
@@ -54,9 +55,12 @@ remains part of the original 286-fixture baseline, not a new supported case.
 Development checks: 743 focused native assertions passed, including ordered
 phase multiplication, geometry, rank, distance and invalid-group rejection.
 This diagnostic linked the new module/notation against the retained DEV-08
-build dependency and is not evidence of a fresh packaged build. Full native,
-worker, actual GUI Calculate/Copy/re-entry/session and release checks must be
-recorded separately before release certification.
+build dependency and is not evidence of a fresh packaged build. The separately built development worker passed all 405 toric cases and their
+serialized re-entries. Actual GUI controls passed 52 assertions plus nine
+independent exact clipboard comparisons; four captures were inspected. That
+development payload combines the freshly built worker with released 214e6866
+GUI/dependencies and is not the final package. Full native and final packaged
+release checks remain pending.
 
 `toric-probe.py` produces 405 exact worker cases, each followed by re-entry of
 the actual `copy_text`. It requires a new output directory, hashes the worker
