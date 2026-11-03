@@ -295,6 +295,8 @@ TESTS += quantum-domains-test.py
 EXTRA_DIST += quantum-domains-test.py
 TESTS += quantum-cartesian-test.py
 EXTRA_DIST += quantum-cartesian-test.py
+TESTS += quantum-variational-test.py
+EXTRA_DIST += quantum-variational-test.py
 
 check_PROGRAMS += quantum-compact-pauli-test quantum-steane-transversal-test
 TESTS += quantum-compact-pauli-test quantum-steane-transversal-test

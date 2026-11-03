@@ -193,7 +193,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - [ ] **Variational and numerical operator coverage** — P2; Partial; size L; dependencies: DEV-04.
 - Source focus: Variational design; chemistry; diagonalization; ML. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Inventory unsupported objectives, derivatives, matrix functions and eigensolvers from source examples. Verify small reference problems and report numerical tolerances independently of exact arithmetic.
-- Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
+- In progress: [source-backed finite evidence and remaining surfaces](learning-evidence/DEV-12.md). IBM-101–107 and MOD-012: eight notebook rows / 349 cells inventoried; zero whole rows certified. Existing released routes pass 78 fresh worker requests for selected states, costs, analytic gradients, explicit optimization steps, Copy/re-entry and separately labeled sampling. Chemistry/diagonalization and ML workstreams are coordinated separately; review, integration and delivery status remain pending.
 
 ### DEV-13
 

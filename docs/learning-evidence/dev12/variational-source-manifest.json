@@ -1,0 +1,3268 @@
+[
+  {
+    "id": "IBM-101",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/variational-algorithms",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/variational-algorithms.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:44.009848+00:00",
+    "sha256": "42e70596c4348af81e2f71d88a37ed01fdbffe733e128439776ef7ea85214297",
+    "cells": 8,
+    "code_cells": 0,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "54453454-26da-499f-b42f-ec9a911aa23f",
+        "type": "markdown",
+        "source_sha256": "7d3b38265b0fbcd4fa40b16347b64bb080f88271c522fc5e217c700e4f65de9a",
+        "headings": [
+          "Variational algorithms"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "d5b17281-21f7-4d3e-921a-9a533d46208f",
+        "type": "markdown",
+        "source_sha256": "73ac96d9951c1c015c904708a5664b77597cf729a2e6553c88dee7272705a69a",
+        "headings": [
+          "Simplified hybrid workflow"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "8ec24045-65fb-43c7-8ea5-ba6fa1061956",
+        "type": "markdown",
+        "source_sha256": "b532bfcf21f5222dcc1185c03310adc69ca4d155cfe5e0cf1d9634641cf3c1a4",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "8e23f141-350e-4cfc-ae87-c2ee64890607",
+        "type": "markdown",
+        "source_sha256": "c43753b1d7d099dee84a64cfdbc346fcc723592e500b0a4375514162baa466e1",
+        "headings": [
+          "Variational theorem"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "3468473d-d97a-4332-8f66-8d74976361e5",
+        "type": "markdown",
+        "source_sha256": "de70585d565e62973ee29c056212e9832d458a47728bc9a27885538ebcc6e6ed",
+        "headings": [
+          "Mathematical intuition for energy and ground states"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "f22bc219-954d-46bd-8bb8-53b87f795658",
+        "type": "markdown",
+        "source_sha256": "8d7fd7b6880a4c4d967275c7581f9c7ee0b5d1b41910b3651a4a181b3a65f8bd",
+        "headings": [
+          "Variational theorem of Quantum Mechanics"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "81088f06-649e-4e57-a296-38c51b5053ba",
+        "type": "markdown",
+        "source_sha256": "92cfdb8681f4622932f91c2449f21b9b6f16238ba5c4d82ea89d72ed5ef183ba",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "IBM-102",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/reference-states",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/reference-states.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:44.659599+00:00",
+    "sha256": "937fe85b65311b74d997a8d6654bf733877d249fadd201a4efaa8a09013fc79c",
+    "cells": 13,
+    "code_cells": 4,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "07f4a5ad-7429-4478-91c8-d6143e3ed407",
+        "type": "markdown",
+        "source_sha256": "b880d4bff284751bf618f7074a0365e31d8d830008c8d3b7d3b14ce5e38a2859",
+        "headings": [
+          "Reference states"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "61d1dbca-5992-4228-b04d-a731b329e59d",
+        "type": "markdown",
+        "source_sha256": "b66290d84c7983ec102809d061ae28fe3a0d5d686228dc82f707fe7203a43812",
+        "headings": [
+          "Default state"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "a03c8fff-2cd5-403f-bf3b-d06682eee3ce",
+        "type": "markdown",
+        "source_sha256": "2dd0d275b2695a7fa62b176ca0a0188f6fc8eb062cb6ccda88053c0edb3871f9",
+        "headings": [
+          "Classical reference state"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "cfd71225-1f9f-4a34-b825-ae19813956a8",
+        "type": "code",
+        "source_sha256": "c5df8c228243a74d8c7d2fb32c64266cc4b0ac4b68f2f1832891a84195ad8620",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "36223992-268a-4244-a261-a2b98d44770c",
+        "type": "markdown",
+        "source_sha256": "5be71ea71ab45c023fcf72126c9b02e14e18e1bb6704ea2c3963be4d46662bf7",
+        "headings": [
+          "Quantum reference state"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "77297158-60d7-469a-8a82-27d38a52d795",
+        "type": "code",
+        "source_sha256": "bd4f05fe243673e09ab3570acbed62dc1989440363fea26f64d48b1cd28381f4",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "54a7c9c6-760a-4521-a178-002424200607",
+        "type": "markdown",
+        "source_sha256": "f7ec3508c737961b64ef8b9c45e5aa7ca80902bdb388380efceeabacc908dfc4",
+        "headings": [
+          "Constructing Reference States using template circuits"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "8f3948ad-4caf-4ee6-8a72-bb91ed1bfeae",
+        "type": "code",
+        "source_sha256": "4021983b0dd0c6eadf13761245c7f3f000eb0c053f11d26d7a096d9455d2a520",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "7b5fd0c2-6b94-40dc-9d2b-ff7d56553a29",
+        "type": "markdown",
+        "source_sha256": "ea4761479125bdd469dabf28185f1b6e83f14d5bf62fcf1b3f7c275077a45a24",
+        "headings": [
+          "Application-specific reference states"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "3229a734-9c4a-4747-8118-faddfc7dac47",
+        "type": "markdown",
+        "source_sha256": "11511cf1af6112b93cc153689a8e54267750729d5a58cafbec0f4d2e6fb595e1",
+        "headings": [
+          "Quantum machine learning"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "4bfd5a76-0db3-499d-bda1-0cb95c3f23c2",
+        "type": "code",
+        "source_sha256": "564b44ea911b71290785098409a323d71e746aa59c0ea598ad2dafd1bcef8ea8",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "d32468d1-0f72-43d5-bfa8-715a885c9ac2",
+        "type": "markdown",
+        "source_sha256": "8b00733cbaaabccf8eec75022d24c0c41f0f0a2a4941422c3b035fe7600f8032",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "IBM-103",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/ansaetze-and-variational-forms",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/ansaetze-and-variational-forms.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:44.906314+00:00",
+    "sha256": "b997c4a80e5c1237db3cecd6a5539b701bdd3e0c75463364b8607aeba76c1113",
+    "cells": 24,
+    "code_cells": 9,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "7dc25056-2c3c-435a-a827-1930f8bb768f",
+        "type": "markdown",
+        "source_sha256": "72e0d741c30c4c628b37d6eb92202802e3ce01e29c074aceb688cbd3aee48417",
+        "headings": [
+          "Ansaetze and variational forms"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "5ebac8e8-6451-46e5-8a01-099f84296a17",
+        "type": "markdown",
+        "source_sha256": "1b583cd8a3c31fafee7ef5c8fbdb80ac13eae7825b789766cd1083ab489e62cc",
+        "headings": [
+          "Parameterized Quantum Circuits"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "4c564fab-ed65-4949-b27f-658b0f1ed621",
+        "type": "code",
+        "source_sha256": "cf77b28754647e0230ac60ded5f37c10df5df93487dc2bb5d0e5dc44a3c8f9a0",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "4096d161-2916-472b-8abc-d4a6b78955cf",
+        "type": "code",
+        "source_sha256": "a18d95e45fd4353d9e1ade6903958d1567711b99f5f84d43712a93e1b3a478b1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "f01221c4-f7ee-496a-a664-4b3abc0748c2",
+        "type": "markdown",
+        "source_sha256": "8ab379f093d5d58642a713a8cb1fd7a329f3db76db0ff157391450a2a6b1386d",
+        "headings": [
+          "Variational Form and Ansatz"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "6d6caf9e-4eb0-4ae1-b9be-6fcfacd23b39",
+        "type": "markdown",
+        "source_sha256": "efbaa61fe1ee921c135751bae2bce7e3199e543b2dbea03b6acdafe061ca99dc",
+        "headings": [
+          "Heuristic ansaetze and trade-offs"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "136b5311-f52b-47a0-a7d2-3f1255b0270e",
+        "type": "markdown",
+        "source_sha256": "e39cdff4a3cc5a78ae2d177f495dc32cb17da19615dd161e40c17f434ad05a1f",
+        "headings": [
+          "N-local circuits"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "c28d7b53-fbd7-42f5-a619-5a6b0b44e9fc",
+        "type": "code",
+        "source_sha256": "cf568909edf08dea9e7273da4528f4fab372eb9166352d717556d4ba45348398",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "d293b8cc-1512-4a65-a3f7-94a979d1736b",
+        "type": "markdown",
+        "source_sha256": "4fa247af398ebd99f33ce00e9b2bb5ae6437b9cabefa5e0bfcdd71b56cd1e643",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "c48521ee-db12-449e-af9f-7d8ec0fa7890",
+        "type": "code",
+        "source_sha256": "a88dd173ddb6883c51b456fb59ab21fbd27035645c6a9543b55c684cb271bd8f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "a6e80571-9bb4-4e33-9581-2c48cad1a566",
+        "type": "markdown",
+        "source_sha256": "d0246b5f54983832320b47dd9fb78287931d713733139b0376fe169572a0ac1c",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "65d39e58-e54b-4ea3-95bf-ee68d9b89832",
+        "type": "markdown",
+        "source_sha256": "7617a3c0d79414709d79164757671d92581f7b6eecd902d43de3ca9aac3fbcb4",
+        "headings": [
+          "Efficient SU2"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "5abc6f15-d7f5-466a-9659-78a11a2c5270",
+        "type": "code",
+        "source_sha256": "465764b0217e710c8a6f75598a22898025cb4da9e751e424f99a5f6497cfdd8b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 13,
+        "cell_id": "14d01a25-2e2a-47e5-9c50-910599c59502",
+        "type": "markdown",
+        "source_sha256": "369fddcf0f780ca7cb266e01819ce66ba48bff9f46834e66c0bb5a60638410ec",
+        "headings": [
+          "Problem-specific ansaetze"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 14,
+        "cell_id": "ae376a5f-004c-44af-a6ba-4e4419e350c3",
+        "type": "markdown",
+        "source_sha256": "62510ef06d4eab2e0ad56028637e96b6a63f221688716d7a92e031a16f3e8168",
+        "headings": [
+          "Optimization"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 15,
+        "cell_id": "ef9a5e1d-f70a-4f59-9112-2d8f71b253ba",
+        "type": "code",
+        "source_sha256": "cbe5b8f42e2601b4a1a22c4915fb7d732609cee4af4bd1c429a1ae1d126c49cd",
+        "headings": [
+          "The edge syntax is (start, end, weight)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 16,
+        "cell_id": "65d72527-77b1-4eb4-93e5-762a5f55b838",
+        "type": "markdown",
+        "source_sha256": "c68567b6322290ce9c8b8e3c9f65752a9059105cd4e76429a2842758fcbdc43b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 17,
+        "cell_id": "69599589-689e-4e0f-8135-937aedd9430d",
+        "type": "code",
+        "source_sha256": "6babe50c8bbe4b6578eeda9e90b1e1db68e32c271c555a3ce2e8a98706fc83fb",
+        "headings": [
+          "Pre-defined ansatz circuit, operator class and visualization tools",
+          "Problem to Hamiltonian operator",
+          "QAOA ansatz circuit",
+          "Draw"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 18,
+        "cell_id": "23728bd9-ac92-4e3a-a886-2238fc5287ad",
+        "type": "markdown",
+        "source_sha256": "f815c194f3a711a5d4f6fc7bb4b400973f6b7c4d2baa73494e10ea6c5f7b2b82",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 19,
+        "cell_id": "9724a36b-aae6-4d98-aad2-1090f0e1a941",
+        "type": "code",
+        "source_sha256": "ba5769ff77d5bcefbeaa58e2400daa35ca514057323fa6cd4967eac6878f2ddc",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 20,
+        "cell_id": "6a8aa7fc-3f80-46b2-b520-b6006d75a404",
+        "type": "markdown",
+        "source_sha256": "2f563495a2281db1db474d6043bb38b5ec14dfcdde73b0e31977e16e366d50e9",
+        "headings": [
+          "Quantum Machine Learning"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 21,
+        "cell_id": "9d3a813b-40cf-4399-b912-714893987c30",
+        "type": "code",
+        "source_sha256": "865a5fa27a54e3fb276b55691000060a2c7941ca3e1c03a8f6c52ff4e5dd90de",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 22,
+        "cell_id": "4a1b37bd-8de9-479b-8453-1d8942492731",
+        "type": "markdown",
+        "source_sha256": "04410ad15550c9e657396af7e5a288583fccfbfcc3618fc8f3705b03a0dedbe6",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 23,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "IBM-104",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/cost-functions",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/cost-functions.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:45.191266+00:00",
+    "sha256": "8833eae8d161c530a0be66995d80bd5482f480150990242dd7ac64ea47a21cea",
+    "cells": 55,
+    "code_cells": 23,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "da8ce695-8435-4099-b0fd-ade7b298f540",
+        "type": "markdown",
+        "source_sha256": "2186a0e90ee06cd77f247bbecd30ba093a0d121cb416d95c0d1f0ed5d9b3ad4f",
+        "headings": [
+          "Cost functions"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "4a9b79a9-c040-43d3-a4cf-314277e30eea",
+        "type": "markdown",
+        "source_sha256": "a997f0fd6faf1c7a0a645671bcbd361aa6055a7362cd29096092347b87ad0e05",
+        "headings": [
+          "Primitives"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "00aa7dfa-34f1-440e-bbdb-19b6e6a1aff8",
+        "type": "markdown",
+        "source_sha256": "0b5ca915d411202c6e9f2b3e105c6a76471fac7e0e13565447905ef646202e18",
+        "headings": [
+          "The Sampler primitive"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "96a74b2b-6aa0-4ef1-a8d1-448b591429e4",
+        "type": "markdown",
+        "source_sha256": "7a1857dd41f680415f8f11fe3af5b99e594904ad611917ea55cd7a24cbec74a2",
+        "headings": [
+          "The Estimator primitive"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "6dcabf55-4462-4cf9-b6e4-e7860fd25b31",
+        "type": "markdown",
+        "source_sha256": "3b3e11a38dcaddf88e65ac7dbd4928b3e82d5b721bc5de4e631a96588833cba2",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "dcffb899-ef2d-4dca-b2a7-11c197d45ed0",
+        "type": "markdown",
+        "source_sha256": "2581345890c516f46af97a78abc52fcf5c9818544595792ab88cdb52736fb4d7",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "c1547f3e-3c05-46d9-be5a-3e7e4141dc92",
+        "type": "markdown",
+        "source_sha256": "642376bdd7d5e9b8d418ac85f39a963141bf0357049b7dd261499a368b7af315",
+        "headings": [
+          "Guided example to calculate expectation values"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "7c32e970-f9cb-48ec-a60b-2dccb0744141",
+        "type": "code",
+        "source_sha256": "ac293a6985541d6e1d1de2a6869b512ec25efb095cf32914c9f887c790663d3d",
+        "headings": [
+          "The following code will work for any other initial single-qubit state and observable"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "ec3cf7af-66b2-4ea9-94d7-6ec6ba2bfc5e",
+        "type": "code",
+        "source_sha256": "4cd936d28356f05c34c62c313cb0f1844335102827c65c3244008717e4b82200",
+        "headings": [
+          "Auxiliary circuit for X"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "678d3bd0-d8fd-4767-b0a6-77cae945810a",
+        "type": "code",
+        "source_sha256": "fe95779474f4fc7a51c4511c2c90db0e5ad265acb5c63d055dfc2c70a5ee219a",
+        "headings": [
+          "Auxiliary circuit for Z"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "beef97f0-c968-4a3f-9b7b-fed39b88cbe3",
+        "type": "markdown",
+        "source_sha256": "8aca60b8a2f3b1d4414d2cad7c60ce4580f58e84f8ece4d0080b63c58f8b128b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "d59dffe0-85cb-4849-8421-03bbcc9668df",
+        "type": "code",
+        "source_sha256": "44625be7411ae5fa3fa6604f96409db5ec7ea1bab692a11158d928a211fa1374",
+        "headings": [
+          "SAMPLER",
+          "Run the sampler job and step through results",
+          "Print expectation values",
+          "Use estimator for comparison",
+          "Print results"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "44f13c37-50e3-426c-90cb-f730a81e20d1",
+        "type": "markdown",
+        "source_sha256": "ca4c085eaa832b7a0c6bb4f8cc293cfd49fe66b7a2e7e5f7b03768a8b13c8536",
+        "headings": [
+          "Mathematical rigor (optional)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 13,
+        "cell_id": "6a3bea3d-a2f6-4033-85f9-9a10c5d5c64c",
+        "type": "markdown",
+        "source_sha256": "3ef706dd0a1a7a19323fc616876daa9355d83518bd1b3f068a1fe1cf549cf6dc",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 14,
+        "cell_id": "c21a9a05-6e07-45dc-a090-4414dfdf2521",
+        "type": "markdown",
+        "source_sha256": "3a9b63249729913745f12b9cf8becf577e29e01cfb1dcb5e5483962b07096ec8",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 15,
+        "cell_id": "9e1c0933-5fbe-466d-9114-92d66d21785f",
+        "type": "markdown",
+        "source_sha256": "f80ee270e3a1a5ea77b81a24c8289e254f7207583144422c2fd0b81f901d777f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 16,
+        "cell_id": "42f771a0-486d-4a5f-9df1-a1720d7bf252",
+        "type": "markdown",
+        "source_sha256": "0855c812c7602b31961a2528c54b351dd4b03fb80d03efa66cb8d816249ae0e0",
+        "headings": [
+          "Cost functions"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 17,
+        "cell_id": "650faaab-b964-4587-a39f-d6cc80b225b2",
+        "type": "code",
+        "source_sha256": "f7af52b900d4c0205041101098db0d26b5968e7a22877ba2e5f6c70603d9b427",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 18,
+        "cell_id": "a01a54f2-da16-4008-b422-fa7ded531f67",
+        "type": "code",
+        "source_sha256": "5090655a988d58002ee6883741abcff85cf456047667bc32f384fc840b8670e0",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 19,
+        "cell_id": "7357e05e-f68a-4cd5-bf0d-77eab963a86d",
+        "type": "markdown",
+        "source_sha256": "b2000e20d3fd60122865f0e0fd9ea3010c97c5c9752b0c55ad9919ccf8ab9079",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 20,
+        "cell_id": "883bcb28-15d0-4046-a654-f43d9480a642",
+        "type": "code",
+        "source_sha256": "b8bd2a4ca412d4d1056d76ab882859685468200b6a352415c962f2d69e9da5c0",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 21,
+        "cell_id": "1a94eba3-146d-4eee-970d-9a966d1e15f3",
+        "type": "markdown",
+        "source_sha256": "ab41a7abf2b00152086706a6ed5f0cf583a7c0e3e3d6acb7cc0eb24b967e5dc4",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 22,
+        "cell_id": "e4ca4722-46ab-418f-8a1f-740a65e92eb9",
+        "type": "code",
+        "source_sha256": "bc904ae34f1f68bace00fe9c3671c033c72b7c38c852f918b5cc2d73b499d91c",
+        "headings": [
+          "Estimated usage: < 1 min. Benchmarked at 7 seconds on an Eagle processor",
+          "Load necessary packages:",
+          "Select the least busy backend:",
+          "Or get a specific backend:",
+          "backend = service.backend(\"ibm_brisbane\")",
+          "Use a pass manager to transpile the circuit and observable for the specific backend being used:",
+          "Set estimator options",
+          "Open a Quantum Compute session:"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 23,
+        "cell_id": "95dc0e83-46ce-4839-91c3-af550aef9ddf",
+        "type": "markdown",
+        "source_sha256": "f556493f800625acadfbd2bd78e3c9cf004eefa9b6caf53224b50e876fcefa6a",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 24,
+        "cell_id": "7f3951a3-47ad-4ddb-90a0-2218b1e11d15",
+        "type": "markdown",
+        "source_sha256": "d97737aa6fe76d2928f2a125d684bf6688211266369ae4b602f9fd5611c557b5",
+        "headings": [
+          "Example mapping to non-physical systems"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 25,
+        "cell_id": "739ca7a0-fae3-4389-a8de-7ae93c13b9e1",
+        "type": "code",
+        "source_sha256": "cbe5b8f42e2601b4a1a22c4915fb7d732609cee4af4bd1c429a1ae1d126c49cd",
+        "headings": [
+          "The edge syntax is (start, end, weight)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 26,
+        "cell_id": "3246e173-b1a8-48c2-bce8-f80a1524bcfb",
+        "type": "markdown",
+        "source_sha256": "cab7c65ca34427c0e4bb7bb41376cf007233409a63f81149a98390d7b55287a1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 27,
+        "cell_id": "83c86ba1-8b9d-4222-bb7e-637e6f29e5cd",
+        "type": "markdown",
+        "source_sha256": "61ba9cab795de832829dca6a42184646d3df895562b8d568c8fa536554fd080b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 28,
+        "cell_id": "29398315-3baf-4363-88fc-69b6438e4afa",
+        "type": "code",
+        "source_sha256": "6b717f5a409200fa049ffa345daf98b34056f0db41404973b9bb4d8cca03435e",
+        "headings": [
+          "Draw"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 29,
+        "cell_id": "91d02379-9da6-426b-a5f0-d1fb75a891ee",
+        "type": "code",
+        "source_sha256": "2404fd496116d3ff2702c58e19837dd2cf46c1c10e606e5544fa6d61772a3ed8",
+        "headings": [
+          "Sum the weights, and divide by 2"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 30,
+        "cell_id": "84a98a08-00e4-4b05-a3f0-de29a7e73a60",
+        "type": "markdown",
+        "source_sha256": "a8add2f1f610e3251c689bb509015c514d1fe72d01ff0ab04bc76ba25e4c3614",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 31,
+        "cell_id": "73ac80dd-87cf-4a43-b19b-e89a4782a44a",
+        "type": "code",
+        "source_sha256": "f8bf804b0b098256dd5f66ba1aefae35b5f1ced848f56083fdf808311dd5ecba",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 32,
+        "cell_id": "fc6af87b-a838-43b8-96ce-0af790fe0172",
+        "type": "code",
+        "source_sha256": "846db250c12e258667f3a3fcab21b2089462a50cecafe0ca5e86f7604e98703c",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 33,
+        "cell_id": "389b7e86-cd61-4184-96c3-ae91b8ad59f5",
+        "type": "code",
+        "source_sha256": "b2c87a64e956bffb13f7337b42b83d6368c1d805884b294c2c6b4d67b255693e",
+        "headings": [
+          "Estimated usage: < 1 min, benchmarked at 6 seconds on ibm_osaka, 5-23-24",
+          "Load some necessary packages:",
+          "Select the least busy backend:",
+          "Or get a specific backend:",
+          "backend = service.backend(\"ibm_brisbane\")",
+          "Use a pass manager to transpile the circuit and observable for the specific backend being used:",
+          "Set estimator options",
+          "Open a Quantum Compute session:",
+          "Close session after done"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 34,
+        "cell_id": "16c94186-366c-4ac4-8745-4e7da283f8da",
+        "type": "markdown",
+        "source_sha256": "d734d1076eee14c212f901ad0b243abcf05e995a125d07d11eb21beb686f4cb1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 35,
+        "cell_id": "d14d5800-24c1-4e4b-b692-9bdb9ef4440f",
+        "type": "markdown",
+        "source_sha256": "9dc0c8cb9d5f8577b4f9efdfdcb577a30beca42e11fdf629945bc2c26356c984",
+        "headings": [
+          "Measurement strategy: speed versus accuracy"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 36,
+        "cell_id": "f23f0d82-d4f9-4485-aad3-cd2f8fd19b4f",
+        "type": "markdown",
+        "source_sha256": "2646d57d3f0c8af4367c285efe457af2adde04fe142a4d7605331bd3bf353aa5",
+        "headings": [
+          "Error Suppression"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 37,
+        "cell_id": "9e0bf552-32b0-477e-9ac3-4ab643c30623",
+        "type": "code",
+        "source_sha256": "da7d7593f521aacd5f837961ed5638ffead19e266e2a5c50f22fd4a811297df6",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 38,
+        "cell_id": "1c2b0408-e004-4a04-8aa5-cf519744082b",
+        "type": "markdown",
+        "source_sha256": "a7d33cc6dac6a01432540ec607a76c61a0835f9f2245d61dc5bec899d4ffbbb8",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 39,
+        "cell_id": "99b23f88-ddcb-45dc-a86d-3d48ff990319",
+        "type": "code",
+        "source_sha256": "6f4fa118acaa56b9d866f1254f9f5b68b475562661c79b1c8417b49eb651710b",
+        "headings": [
+          "Setup phases",
+          "phases need to be expressed as a list of lists in order to work"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 40,
+        "cell_id": "ca040383-9c8c-4a38-8e40-bad1b26c6085",
+        "type": "markdown",
+        "source_sha256": "82691b1bc2d22167ed8d0453476f9e83d3ef8fd5761f8bc722c8b367589da213",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 41,
+        "cell_id": "6f0e6f32-02f7-471f-a9f3-f30d22f8cca4",
+        "type": "code",
+        "source_sha256": "d09151eb65e72d40f3e1fb8edaeae781642de7fd1fe2de48e2e4472d5cd0eca8",
+        "headings": [
+          "get a real backend from the runtime service",
+          "generate a simulator that mimics the real quantum system with the latest calibration results"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 42,
+        "cell_id": "38df43e8-b11e-4671-b8fb-7a2eb74f648a",
+        "type": "markdown",
+        "source_sha256": "672cc4772650d9edb35ac5219dac9eba18383ab7254ac5afc62d1d7ebab7212e",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 43,
+        "cell_id": "4dc699cd-0bb4-4b48-adcc-0bbe99218a26",
+        "type": "code",
+        "source_sha256": "a5aee9fa84e56556068f5ab0ece81d8abebd293c959d2a8f1ddbb0811dbaa461",
+        "headings": [
+          "Import estimator and specify that we are using the simulated backend:"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 44,
+        "cell_id": "7990eb62-879d-4beb-b452-f3d86b164d11",
+        "type": "code",
+        "source_sha256": "bb23eb861876ba0f8c900f18ec0241a4290aa922841ca739796c7ee41fadf09b",
+        "headings": [
+          "Use a pass manager to transpile the circuit and observable for the backend being simulated.",
+          "Start with no optimization:",
+          "Repeat above steps, but now with optimization = 3:"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 45,
+        "cell_id": "0cc8d4ea-81ef-4146-b8ed-9c7edae72be3",
+        "type": "markdown",
+        "source_sha256": "4b32caa83510f81c67d33d52cf8d5bda0ef5a4c5cd465d0efbddf57cead1514a",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 46,
+        "cell_id": "f3d3f805-f8d0-474d-9a88-2d1f164639b0",
+        "type": "code",
+        "source_sha256": "d361425347fffe126544bd6bf46857e154184835f67c9b06632ce54a851e2d83",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 47,
+        "cell_id": "2394d082-2278-48cf-95b0-3363ed723ec1",
+        "type": "markdown",
+        "source_sha256": "4df67362a8ea3cbd6016ecdc43ac4e6498c33a09952c9b9bf2abdea45bbbdac4",
+        "headings": [
+          "Error Mitigation",
+          "Twirled readout error extinction (T-REx)",
+          "Zero noise extrapolation"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 48,
+        "cell_id": "8b46120f-5312-4450-bf51-13be198428fa",
+        "type": "markdown",
+        "source_sha256": "d05c05ec453591a3e795bf38e0f9b8f78a48d758155d767b8e19be9af468aacb",
+        "headings": [
+          "Using the options in Quantum Compute for mitigation and suppression"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 49,
+        "cell_id": "57a6b723-6e73-4693-95bf-f0782a8eb854",
+        "type": "code",
+        "source_sha256": "52028336d5bb137107035b3a0759be4c00df2443dafdc5254a65353e0602c483",
+        "headings": [
+          "Estimated usage: 8 minutes, benchmarked on an Eagle processor, 5-23-24",
+          "We select the least busy backend",
+          "Select the least busy backend",
+          "backend = service.least_busy(",
+          "   operational=True, min_num_qubits=ansatz.num_qubits, simulator=False",
+          ")",
+          "Or use a specific backend",
+          "Initialize some variables to save the results from different runs:",
+          "Use a pass manager to optimize the circuit and observables for the backend chosen:",
+          "Open a session and run with no error mitigation:",
+          "Open a session and run with resilience = 1:",
+          "Open a session and run with resilience = 2:"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 50,
+        "cell_id": "48215ea6-3045-4880-8671-265e2fb33e5e",
+        "type": "markdown",
+        "source_sha256": "4cf4890af7d76cda284e9f96fe926dc071d9aa553e734cb4065ec0059731c95b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 51,
+        "cell_id": "474f1a1a-ee90-468d-9390-fdb455aeb142",
+        "type": "code",
+        "source_sha256": "d8c1cfac355abaf1db01b92be8c52467877b89e4acc8f2bcfaecd0690662ab05",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 52,
+        "cell_id": "1e683c07-96f3-47d5-8981-8d3aeb8be81f",
+        "type": "markdown",
+        "source_sha256": "d9d99e7317a529ee0c86ce58470eb6f24b15e16eb9403e3ca56e9f2083e3fe7e",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 53,
+        "cell_id": "2751c16d-a9c1-407b-ab88-a9dcf768bc2e",
+        "type": "code",
+        "source_sha256": "346c90764986f83453fcf55231e40991f7618590e341e3933a8d3cb57f6fb450",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 54,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "IBM-105",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/optimization-loops",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/optimization-loops.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:45.536385+00:00",
+    "sha256": "721c10a43b8f7904453f80eb37b1eacd31dec7638efabb30d0d1716394394f5e",
+    "cells": 17,
+    "code_cells": 6,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "2a246d14-ed2b-4573-bf97-939c3628b3bb",
+        "type": "markdown",
+        "source_sha256": "f7115b8041140725a373a98e29377565f14935a38ca620b32edba8ace4201484",
+        "headings": [
+          "Optimization loops"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "110421e7-0d2a-4653-a195-1925c809ca61",
+        "type": "markdown",
+        "source_sha256": "0ccb865310f439fdf3e200d8f50a0fd1edf42a86e3f5814bd2adb46a6ff5ea2e",
+        "headings": [
+          "Local and Global Optimizers"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "15cf7810-1d25-4c54-aff0-91d3a0c51cec",
+        "type": "code",
+        "source_sha256": "cb08b39dd56a605f4f2072b31cf3c25b70ea3fa7dca4e2e31aa9b46c0e92c589",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "950569c0-4e8f-49b5-b118-7cd227bd5ce1",
+        "type": "code",
+        "source_sha256": "32daea384e575b6b008f8cf40c48a743bbb7204d89e2718326a49d9cc2748053",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "f536ee50-373f-4873-b258-66c5c07c65c5",
+        "type": "code",
+        "source_sha256": "91d5c522d04c9f927b4986d4d5f2bf529821a8b8317f905d3bee25d0296e9dec",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "c9dcec4d-5b84-4731-8b5a-cb8a0f7572d5",
+        "type": "markdown",
+        "source_sha256": "ded2882cf1ea6ed0c62ed7265e652bc3fe0bf0888eab12cb118c0a6a749e90b6",
+        "headings": [
+          "Local Optimizers"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "447df742-13bd-4d4a-a364-41d34380cbc9",
+        "type": "code",
+        "source_sha256": "c3396b6b49a2d48d13d2bc08488dac38e801df325aaac70dc8497a64809d960f",
+        "headings": [
+          "SciPy minimizer routine"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "25fee3f4-9d3e-45ce-a104-dfde5e132b2b",
+        "type": "markdown",
+        "source_sha256": "44d55d55317eade5252829b061ff617b3f8d9658c468e9e3997d491a4fa501e2",
+        "headings": [
+          "Global optimizers"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "8d794038-8e75-4649-a978-a9e832ebed60",
+        "type": "markdown",
+        "source_sha256": "4401991f8ef17ef8efff881346a2dc4d44b700688478a8dec6fed90672ac6c4a",
+        "headings": [
+          "Bootstrapping Optimization"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "07ba982e-9280-4e15-9d8c-4b6460b1deea",
+        "type": "markdown",
+        "source_sha256": "7adc990f221418897cf896ab891bfd9ba0e512bf09a44c1434f1a78d0be2cd0d",
+        "headings": [
+          "Gradient-Based and Gradient-Free Optimizers",
+          "Gradient-Based"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "0897260d-f3f8-4caa-8a79-f258e41f8e21",
+        "type": "markdown",
+        "source_sha256": "6adf1202a6e417f21233a7d883f3f631d20c80c237a8f9bec5f04e17ed844e50",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "aad81101-3c19-4946-8453-3db9df3369c0",
+        "type": "code",
+        "source_sha256": "24e0cf37c1d0a7ba0c38a5f2a00d213841d3d6ad5f5e82842a3ab0217bbaa23a",
+        "headings": [
+          "SciPy minimizer routine"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "0f7d55f8-e3a2-4223-b456-17b39a81f524",
+        "type": "markdown",
+        "source_sha256": "dd5dacf7ec3922f93e5d3f1fe0fc749c64ee7c14d7ade1ff91d9b268fe42f3a9",
+        "headings": [
+          "Gradient-Free"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 13,
+        "cell_id": "c749695b-3124-47d8-8a23-10c9d5965a7f",
+        "type": "code",
+        "source_sha256": "9873c7a40bc83c98b1cb2cb175e7a67778d237daaad28a1824720eade2a7b476",
+        "headings": [
+          "SciPy minimizer routine"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 14,
+        "cell_id": "396d0617-9f20-48cb-b57c-30dfa54293ff",
+        "type": "markdown",
+        "source_sha256": "3abb58fc40ad1389a20fcce3429948be6a58c14a51850d93e4bef725d3bb9477",
+        "headings": [
+          "Barren Plateaus"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 15,
+        "cell_id": "182110bc-f952-4460-8048-d1df961ba860",
+        "type": "markdown",
+        "source_sha256": "0b5725cea681a9ae8ec165e9b7ffac6a7a995f078d95e1879978075d2a75352d",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 16,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "IBM-106",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/instances-and-extensions",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/instances-and-extensions.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:45.763335+00:00",
+    "sha256": "52ddd0399b7d8aefaa210b1831381dcd62e67975dea52aadb144e62a67bc6a24",
+    "cells": 42,
+    "code_cells": 15,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "453ab30f-a0c6-448b-8579-710968b0f288",
+        "type": "markdown",
+        "source_sha256": "93aeee89d3f5ae7b543aa32158901e53e0ba7665b1d3037ab7fc82531ee881fd",
+        "headings": [
+          "Instances and extensions"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "341eacfa-f6fe-4727-a9de-5babe59455f6",
+        "type": "markdown",
+        "source_sha256": "2fd2053770cb622c025366527bd4ff465b924397148f2d6d74020ead8a5f597f",
+        "headings": [
+          "Variational Quantum Eigensolver (VQE)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "9453754c-03c5-44cf-accc-42ad434d0645",
+        "type": "markdown",
+        "source_sha256": "3e6c0e226f7b25705da3db8a6e6750862f6345194c95608548da9cf196f10afa",
+        "headings": [
+          "Step 1: Map classical inputs to a quantum problem",
+          "Theoretical layout"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "ee353736-d996-4c96-bac5-15b144da9a74",
+        "type": "markdown",
+        "source_sha256": "63f3dd7d2ace4050afb3ad26f375f7e144bc84b2c48ceef747bb41ac1ee618e1",
+        "headings": [
+          "Implementation"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "db20526e-48d4-44eb-9d2b-6c5d2ce5777e",
+        "type": "code",
+        "source_sha256": "2d859a75f99b44d0586a8e7f9b49d53677e33bba6e768426fa125997b5b855d3",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "88797da9-1519-4ebb-8e5c-447fa9ccf662",
+        "type": "code",
+        "source_sha256": "8c3673b32016f3d168ef11b83e0ceb45e072756b6aa2c12e81766678d258f187",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "08859a29-ee3c-416b-92fd-f60176fe6a80",
+        "type": "code",
+        "source_sha256": "91d5c522d04c9f927b4986d4d5f2bf529821a8b8317f905d3bee25d0296e9dec",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "ec815a0e-7f38-4152-b979-b92953d204f0",
+        "type": "markdown",
+        "source_sha256": "942c77c95823f2bd16aa1ca0515e9790d3a55b204b15c82eae92ef7dbe282993",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "bfbffa18-b281-4b76-a57e-700c55ee2daa",
+        "type": "code",
+        "source_sha256": "9873c7a40bc83c98b1cb2cb175e7a67778d237daaad28a1824720eade2a7b476",
+        "headings": [
+          "SciPy minimizer routine"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "009eb817-583c-4240-9951-34f76adc92ea",
+        "type": "markdown",
+        "source_sha256": "28e42a365a933a1088b59634a9090337ce506dd991d46f76ac89a1e9784b81cd",
+        "headings": [
+          "Step 2: Optimize problem for quantum execution"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "c06c9393-b4f6-4e4c-92b1-4ec062852e2c",
+        "type": "code",
+        "source_sha256": "77709d014454dab1850306df5eedf04343405ba4237d4eb5304a01e31e7fcd59",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "94d86bc0-b0fe-466c-a6e2-582f240ae014",
+        "type": "markdown",
+        "source_sha256": "28390dfe7ced544f2392dd84ece365d7db69fd5f3808fde4cf0c6d2d42e094d9",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "09c82d1d-9a14-4601-baef-8080a2758201",
+        "type": "code",
+        "source_sha256": "25c7505ec5f9a1cf0cfaa08da0f4a097c93765655b217aa2cecdb7598564855f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 13,
+        "cell_id": "07772b29-e880-476c-a4bc-07f7591ad969",
+        "type": "markdown",
+        "source_sha256": "cc783fd20c3a196eee912d2915f400f6ceafad83cee886443ce0238fb4ddf0e3",
+        "headings": [
+          "Step 3: Execute using IBM Quantum primitives"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 14,
+        "cell_id": "c785cd0b-2a26-4414-a320-9746d016083e",
+        "type": "code",
+        "source_sha256": "99eadf6c6d42cf6c374036526facd607e6f5522983ea1584047e45640a2d3658",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 15,
+        "cell_id": "34ad36bb-e83a-4cfc-be9b-f5ecde1122ab",
+        "type": "markdown",
+        "source_sha256": "c9c818207081239fdfa4f88bc1b222d859619b022677bb57beeb85ac031af54d",
+        "headings": [
+          "Step 4: Post-process, return result in classical format"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 16,
+        "cell_id": "015a8beb-ec4e-4e02-a937-6588c6a81b64",
+        "type": "markdown",
+        "source_sha256": "9f0e064749778b6199a39f7108cd68d50fb033df37d6ed9aace0fd4ac6cec85f",
+        "headings": [
+          "Subspace Search VQE (SSVQE)",
+          "Theoretical layout"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 17,
+        "cell_id": "11001807-1038-46d0-901e-4e00d55e914c",
+        "type": "code",
+        "source_sha256": "dc60cda3072aa49c38990ddb9b83cbbb600c3fd56d711af3964cff102118e16f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 18,
+        "cell_id": "bda7ac14-a9f6-49ea-a850-e01345a34ae3",
+        "type": "markdown",
+        "source_sha256": "a09b4023939c6c854f09a7c795b87fad01c7575d6fd0ecf457d25fdc717a5e76",
+        "headings": [
+          "Variational Quantum Deflation (VQD)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 19,
+        "cell_id": "09078493-5926-43a9-8473-e87843294612",
+        "type": "markdown",
+        "source_sha256": "c5ab005eb4703820d5d5f6ed5266a709648c3fcdbf00b1dfbbd48a3c8ecf08d5",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 20,
+        "cell_id": "0b713dad-29ff-4693-9e72-df9b6de3afd0",
+        "type": "markdown",
+        "source_sha256": "18146aefc465a0acdb6d1577949f53498d54246799ef37fa57b52d496b418feb",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 21,
+        "cell_id": "a17f468d-37bf-4d7a-8465-ab6cda804d0a",
+        "type": "markdown",
+        "source_sha256": "e25bb5cd72806c7bd21363ee7222fbc2dc4977f03b679693b68586e5850e0643",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 22,
+        "cell_id": "bfc019b0-518f-48cb-a37b-f05f6cfa7929",
+        "type": "markdown",
+        "source_sha256": "54812c86cba0cd222d625ec96fce04611821ecdcf393986a5d05d6b23504a1e5",
+        "headings": [
+          "Theoretical layout"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 23,
+        "cell_id": "bc6fa596-31ce-4b55-9d72-6c8b92aa8698",
+        "type": "markdown",
+        "source_sha256": "9dee8c6f7329401207b7cd7e93b433e88582ef59d249028faf79cd0fdff211c2",
+        "headings": [
+          "Implementation"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 24,
+        "cell_id": "9d368de5-d512-4fe8-8842-9c735944b22b",
+        "type": "code",
+        "source_sha256": "f2731a11b8a9001c91882de152d64478afae5300e443f0e946885bfcc2a81584",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 25,
+        "cell_id": "20934503-046f-4daa-b99c-43c99060b46d",
+        "type": "markdown",
+        "source_sha256": "d6d88fdde85b486d2f667cd5d22dc1b9c7f8251b7ed71e0b9dddbca5596c34db",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 26,
+        "cell_id": "188d306a-48f2-4c36-9d90-2a243269f847",
+        "type": "code",
+        "source_sha256": "98f818baf91af2db52af1c8cf3eddefb6f607fe816ccf425fc720f2836ca8a16",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 27,
+        "cell_id": "36345bbd-ae25-41d3-b3f4-04b93d822018",
+        "type": "markdown",
+        "source_sha256": "bae599a183bf00ac9db26c8da0505db879a6f8ed4627334cbf17def74bacd5de",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 28,
+        "cell_id": "5367c47a-5e76-45ca-b9c6-fc711db2e64a",
+        "type": "code",
+        "source_sha256": "2485caab07d79177c6f9976cc7320c3383408f8fc000d83c9ef84794b0fbfb99",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 29,
+        "cell_id": "6be376ac-cfef-4151-841c-d93fcbeb6c76",
+        "type": "markdown",
+        "source_sha256": "d6034708984c98b89f6e0d861141dee3c8e8ada7b32a0e364df57b09d28b3e71",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 30,
+        "cell_id": "825e6e01-b0b0-4cf5-a05d-eeac33349fdd",
+        "type": "code",
+        "source_sha256": "bf3c5962ff1c7c23569fac0163e64a7201b56bfdd1c138809f084c2c9f5d4445",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 31,
+        "cell_id": "08a92ff7-b0c0-467d-a322-cdcc7afb1add",
+        "type": "markdown",
+        "source_sha256": "751d442cb3c175fd65cc88d7661c60b98ef8a2a1f2a9e297626d756e8988be61",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 32,
+        "cell_id": "aa8ee41c-a0a7-4445-90b0-8554a31c3ce6",
+        "type": "code",
+        "source_sha256": "1041961f9a3479ecfbac52619d45cf54a7fed1fd3fc250a28ddd53569b65ef97",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 33,
+        "cell_id": "dabaa1a5-11df-46fc-92e9-0e1272b06a20",
+        "type": "markdown",
+        "source_sha256": "ec820735e23509666a89806fa94abda5e7e96e109444aabc7b7bbfd89e4a041e",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 34,
+        "cell_id": "798fc5cf-c961-405d-a224-cf8189589190",
+        "type": "code",
+        "source_sha256": "996a5f190b9be40896275df8b12f6bcdef9bc54e23d797c49d99665710d2afc7",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 35,
+        "cell_id": "f180bdeb-4fb8-4dc9-8f88-ddc60874c1db",
+        "type": "markdown",
+        "source_sha256": "33feaed4f27d79808023f0a4f9dbd466480facecae9e7556ca732e46835b6b5f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 36,
+        "cell_id": "dabcc978-0f86-41ab-92c5-9768645ce923",
+        "type": "code",
+        "source_sha256": "2eea348f68fd570a49908631b2f44cdb7dacee3cb42b5ee15f7e87115801b5da",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 37,
+        "cell_id": "8d605a38-9711-4295-8245-201d3fb55e67",
+        "type": "markdown",
+        "source_sha256": "9ea7febfea1f2d7bdcfe0d2a4fad908e3d66d46d46909e88b25f7417f7e1a466",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 38,
+        "cell_id": "c4b4d9b8-d730-41cb-b979-0c6e02faa442",
+        "type": "markdown",
+        "source_sha256": "fa44c803918b67c67ecce7f637fcfe10d2963dc801939e09d909486289121376",
+        "headings": [
+          "Quantum Sampling Regression (QSR)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 39,
+        "cell_id": "cd5399d1-8166-42e5-938c-fb2e2d600cb3",
+        "type": "markdown",
+        "source_sha256": "df95919057f4027fc190d8e2d2ecd4ad98d851ed1366d2e18ff5235554d4da75",
+        "headings": [
+          "Theoretical layout"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 40,
+        "cell_id": "02bd8e30-adf8-4261-8b35-77f6709dce0d",
+        "type": "markdown",
+        "source_sha256": "180d8568723c0c6279158c151901884c35c3e01236d09156f576520fc76b25a2",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 41,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "IBM-107",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/examples-and-applications",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/variational-algorithm-design/examples-and-applications.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:46.089468+00:00",
+    "sha256": "b3ab86017c8d6d0d5e0865ba49c83fedeeb949f7779745e95983784561103a2b",
+    "cells": 117,
+    "code_cells": 61,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "b45c3fbc-3d24-4da0-88a4-8db2150aba7c",
+        "type": "markdown",
+        "source_sha256": "b947283956bc7c97d4f232e8778b9e768f296e3cd4d1466360049dcd5700c56f",
+        "headings": [
+          "Examples and applications"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "8b7f0c00-af07-4043-8af3-0b3d514f1a32",
+        "type": "markdown",
+        "source_sha256": "b5fe019d36e5148353e4d7d39faea356ff101e9f9d86cb96ab1d53ec2704bf42",
+        "headings": [
+          "Problem definitions"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "1cb9f137-3cb0-45dd-a49a-61d0be119c68",
+        "type": "code",
+        "source_sha256": "a947cf4b8c96b7786a9d6985eda768947d2ae7491fcec18facce49af27ad95e1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "297600c7-8f3d-4070-b066-b2a0496f7f9c",
+        "type": "markdown",
+        "source_sha256": "80ee20e0c5877fc32b1b2e807e009a274eab2d8ef29a297c57071637f06360c2",
+        "headings": [
+          "Custom VQE"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "36120a96-c625-49d7-9ad3-ca70bfb08346",
+        "type": "code",
+        "source_sha256": "820ea6a7a8a4815df7b68af0b9365a91783b4cfd4439ae9f92e1c22168164ea0",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "57c071aa-e8ab-4b39-b5db-773016da2550",
+        "type": "code",
+        "source_sha256": "c9db4e17a5ff6205a7bd2b0c21b5b3d32da292dd2df9339138fdafcd9020859e",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "4a138028-d14c-4146-921e-476698102568",
+        "type": "markdown",
+        "source_sha256": "f74a3ec6f087d9e1781516fd123428ea35f8989c7c3bea651faf7a6a6f2d10cb",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "2f7c0fab-d6c2-4c90-b122-a5a90976bdaf",
+        "type": "code",
+        "source_sha256": "0743ba42f3f695be712a1e3b100e3e998f537a1da618f5ac04066e35e2eed8d6",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "824c57f9-8bf0-478a-99fd-3f89a48a1aff",
+        "type": "markdown",
+        "source_sha256": "630150247000c5f8aa92854a552be2976c12d2e6eaa896707a40373ef5b1f298",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "cd0e029d-0807-4387-aef0-96ea5866c063",
+        "type": "code",
+        "source_sha256": "22a8df13a683f97c439cc92df8ee170d03cbbb17d5d0207a90355a3573d31bd2",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "0d70046a-16ac-48b4-9a0d-5afe3b65af09",
+        "type": "markdown",
+        "source_sha256": "71d2990e0a1070baa5022f28ef287ea9d431af569fa12a9ba58288d924eb5cec",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "25df1d56-ad05-43a8-b2cb-60b16105f6e4",
+        "type": "code",
+        "source_sha256": "004845f4f42fe709f2ea89e5484ffe00f05c808c94f1a6ca23f26768dee4a2d2",
+        "headings": [
+          "SciPy minimizer routine"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "fbf9450b-acfb-43bd-88b3-cfe4633b54ae",
+        "type": "code",
+        "source_sha256": "f6a214f7a5fcda0c2cee9660b7fc29f5649e3c68aad48e20e950137c98913a68",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 13,
+        "cell_id": "a3bcf55d-cfee-415f-85c9-5923dd3e4513",
+        "type": "markdown",
+        "source_sha256": "5441b6e83bec4920366d0ed5e04ede75b97b66887ba617d71f2e8cfda3c0d87b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 14,
+        "cell_id": "e99d0559-c392-4023-93be-7e0ea0361f5b",
+        "type": "code",
+        "source_sha256": "69a5905c595ea865ff2c03ff6f8b2084b897753551d5f15733bb1dc605914b05",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 15,
+        "cell_id": "17f4f2b7-3721-4708-969d-3f07dc74d2f1",
+        "type": "markdown",
+        "source_sha256": "53ba2d50e19f2935e0c4788239e2e92522920b156342e62815b7f431c2d38aed",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 16,
+        "cell_id": "f795f1dc-dd4b-478a-84d0-4a981a3187cf",
+        "type": "markdown",
+        "source_sha256": "7819f36b0fbb0fc785b410daffe8b5410551f1cbcf2623363e17711bc70ec9c8",
+        "headings": [
+          "Experimenting to improve speed and accuracy"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 17,
+        "cell_id": "68de1e76-a6d8-4585-83ec-9bb57747dbf7",
+        "type": "markdown",
+        "source_sha256": "39f77be20730b038c592cf8a9cc8a15b6d467923f37639a8b14ad660f944c92a",
+        "headings": [
+          "Add reference state"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 18,
+        "cell_id": "55b26ae7-ad26-4b54-b4f3-2004bb2db0c9",
+        "type": "code",
+        "source_sha256": "a1959638fe39fd06ad68ff4b6a2912db83fada2206367d7bdaa8db27e64e5720",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 19,
+        "cell_id": "e5368863-cf78-4f07-93bf-3a215aae5476",
+        "type": "markdown",
+        "source_sha256": "fb55fa4565136d455b493b1b04be06c914ac281b86e2c5198ed02b36c1ae6a01",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 20,
+        "cell_id": "2595ad2a-bea2-4770-8f77-f38eb0c07815",
+        "type": "code",
+        "source_sha256": "f3ff2e9c150984ef435d9b381549fcffa8cb2d9e37d13e85e0e180a5546abaad",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 21,
+        "cell_id": "b075a92d-4162-4cb1-bb4f-ab9feea67f61",
+        "type": "markdown",
+        "source_sha256": "798ae0f2dbe0d659a0c68a25f6bce22d361ff299817745d586a559109ba6f55e",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 22,
+        "cell_id": "14e04c7a-e81f-41e1-b0cf-790954581be9",
+        "type": "code",
+        "source_sha256": "dc36ec604bd566f49c6633f2ef3529c3f39a8a5243a316bced77bb0b49cf4db9",
+        "headings": [
+          "Include barrier to separate reference from variational form"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 23,
+        "cell_id": "d032410e-eb2e-4410-859c-7c5f8ef8c2db",
+        "type": "markdown",
+        "source_sha256": "210ea4846f75cf4fe603b083a1f5854b780d84e1c0b3479d3061784396365ef4",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 24,
+        "cell_id": "968dedc7-4073-4014-b807-8451a50c0f13",
+        "type": "code",
+        "source_sha256": "aeea496d5d40fc66142bd512f56b658b3d69fe96efd7b66232ada7aa7a744dbe",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 25,
+        "cell_id": "20f61d98-86ef-4e9a-a85e-fa333309508c",
+        "type": "markdown",
+        "source_sha256": "5be69c4bc3606c44b683d7c61c76eff7477a80c60c4fceeaa589cd9548d14ff0",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 26,
+        "cell_id": "241a5b4d-b5cf-41c9-a8d2-4ebf65b47a5e",
+        "type": "code",
+        "source_sha256": "8a01a9eb6beee45f5a57c7839b4f41fbaa5e404c0d224b201a5d3a741ed3ec5b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 27,
+        "cell_id": "878ff8e1-f1d7-47c2-acda-d2541ac0b3cd",
+        "type": "code",
+        "source_sha256": "67ebf5544c4037108951c5e4bf5d37ef96c1ba26fe15d4b3cdeb6a0f0f657d1c",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 28,
+        "cell_id": "28048443-9890-4168-bb19-cf95f999b6c2",
+        "type": "markdown",
+        "source_sha256": "6be3acc3f5679e59f93e292af16b3d4d6400d1f2e6676d64d25dfd16457c0c99",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 29,
+        "cell_id": "41cdb430-27a3-4a28-92f1-d73ad6ed0dc5",
+        "type": "markdown",
+        "source_sha256": "794953b5e3ef8b31e47a891be206b0d8c259a0cf8514e5120b41c8f91e88d8e8",
+        "headings": [
+          "Change the initial point"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 30,
+        "cell_id": "f528cb99-dcab-4f76-ad38-00ddf4d75f50",
+        "type": "markdown",
+        "source_sha256": "b7396bc73b58c6d9394d1ac999fb028e5767bcb2532342a4d84b039060035d8b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 31,
+        "cell_id": "9ef75002-f058-4946-a38d-564775a7268f",
+        "type": "code",
+        "source_sha256": "90e10c2e13342ffe8d4026e92223e2816c4033b1f56e30952c2a0515b75d0079",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 32,
+        "cell_id": "f52592f3-0af5-4f58-84ce-d1e9960d8dc2",
+        "type": "code",
+        "source_sha256": "45d12601e497d33d80cf41c3cb5d1ef8fe35b1603e96b6542a33d36dbedef954",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 33,
+        "cell_id": "a8bfac60-cb21-4661-a412-ce8a41f25597",
+        "type": "markdown",
+        "source_sha256": "3143381f45dd9659b4785136090c241cd4ed221c6084b1f0356f3bbd6afae454",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 34,
+        "cell_id": "c33df46e-bd4b-490d-8704-750e271724ff",
+        "type": "code",
+        "source_sha256": "0df396caefc9467a1230bad5d1991b35a28a90b6c0c1d66b727c45b50356d12d",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 35,
+        "cell_id": "a04e7171-26c3-4b38-afa7-bfe4e1b95600",
+        "type": "code",
+        "source_sha256": "f7d7286523297b5619dcfec843a460e071bc87aa5ba59ce291b2ec47544b2b38",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 36,
+        "cell_id": "6b842e53-bfa2-48ec-8ae9-54e3be0efaab",
+        "type": "markdown",
+        "source_sha256": "b4546829a05fb8267f3eedf000866bd99183600fff3c936170277ec099a50231",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 37,
+        "cell_id": "9fd53a82-758c-4081-8fef-3b0bb109f0db",
+        "type": "markdown",
+        "source_sha256": "71a98393408136448f1a60300b40ef51d4fde7d2a945786aacba6ae7e49a61e5",
+        "headings": [
+          "Experimenting with different optimizers"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 38,
+        "cell_id": "7e21aa4c-67b1-46db-8d32-d216f7ea8f40",
+        "type": "code",
+        "source_sha256": "45cfd738895959801c90d875e74df6f1b259819da9b42e4554e9ab6080a94ec6",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 39,
+        "cell_id": "063f98c5-a281-47c9-978d-438ddb35b556",
+        "type": "code",
+        "source_sha256": "e5c7ffd9ec775b1f1f9c84876f46c9b31ca4ac3c29e597aaa4ffac3453784cf2",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 40,
+        "cell_id": "4eb3e4e4-ae77-4098-95cc-2d29ea04301b",
+        "type": "markdown",
+        "source_sha256": "6a0c86ecf12774ab59f6e21ee3c644d31aee9f1334bd0534cb0abd023afcf2a5",
+        "headings": [
+          "VQD example"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 41,
+        "cell_id": "a0f974f7-cf29-4d30-93a7-da9ee8689c2e",
+        "type": "markdown",
+        "source_sha256": "62eca90d82bfd050f5ae579559bef8faed038eb3a7d36dc28d2260b685141182",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 42,
+        "cell_id": "3ef8f695-9694-4ccc-9fba-c24ba312a066",
+        "type": "markdown",
+        "source_sha256": "4a3b3c23b49f7143139074eed02e5590a0de909b8c9d9e0d106358f4e8df989a",
+        "headings": [
+          "Step 1: Map classical inputs to a quantum problem"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 43,
+        "cell_id": "e4d59381-43ff-4322-a6f2-df55cef18536",
+        "type": "code",
+        "source_sha256": "c5e30fb602265c6f8305f5fd60ad0481d71661eeb12687bf19822038d046c89b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 44,
+        "cell_id": "f49e35ed-2a4b-48bb-a060-f6fea16d7e7d",
+        "type": "markdown",
+        "source_sha256": "aae7932d0cea146a3b7429f22c7b5bdff39ff92b431d6c86e95f9531d32bd715",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 45,
+        "cell_id": "917749d0-c396-4045-9df7-a61ece924485",
+        "type": "code",
+        "source_sha256": "c755716d2260262d749f69e39a517f62c2c215457315cf9b83e685649bc92420",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 46,
+        "cell_id": "17bbde42-da64-44c3-9257-8c2ed4c48667",
+        "type": "markdown",
+        "source_sha256": "159179445a3232699773f2e1505748a1d21c7975dbe96ef10f0a2aa48df391f9",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 47,
+        "cell_id": "9999ed16-2b59-4dfb-8313-17dde10dcbf1",
+        "type": "code",
+        "source_sha256": "ae6d9206e0bb471a86862271c30548055617ed8fc4819e8506b8c2146e42dd12",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 48,
+        "cell_id": "5321dc7f-f546-4223-8de3-fe29008ec8d2",
+        "type": "markdown",
+        "source_sha256": "e096c32a244bb45c45bf8f3a5bc3e7acc6bb33f93889846722f3610502fd4fdc",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 49,
+        "cell_id": "07ce634a-9921-42e8-be37-74fbf1631b97",
+        "type": "code",
+        "source_sha256": "7ab793e43022ba44680cd657c627f64f6d7b66d340fad2b75e7311c05317ced3",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 50,
+        "cell_id": "722f238d-2789-47a3-9998-267b74f9e481",
+        "type": "markdown",
+        "source_sha256": "02ad867e1ee3a446ff65838aa6b4e2e6f60937a6b9107c6ba10be5fb08bac9fc",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 51,
+        "cell_id": "c6f418c0-4cab-4334-96ed-14f26162ffcc",
+        "type": "code",
+        "source_sha256": "bdf4ee95872e254eb3507f51003aca07718483378173d97b74238545a4ab6e46",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 52,
+        "cell_id": "1cdb7151-2408-4f70-8381-af70255b7c34",
+        "type": "markdown",
+        "source_sha256": "f3bd3b6fc38d993ccd0a0e885be3869863e137771b959233df5303e92408bc8b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 53,
+        "cell_id": "b6c71453-4466-4fdf-8442-82483d16ff8d",
+        "type": "code",
+        "source_sha256": "de66e7ca3d23c79d9e4579fa385682b6a27fc15c64051918acc156106b67adb8",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 54,
+        "cell_id": "60152310-abcb-439d-ae51-5627797fe821",
+        "type": "markdown",
+        "source_sha256": "8883745b6790596149f62e2506b5c860dced0aa1a0d58d821c7b16ff28ed42f4",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 55,
+        "cell_id": "0c846737-4766-454f-a5a0-d09bc04cf5c2",
+        "type": "code",
+        "source_sha256": "7d9cf8778127eeb6bfbf0179d026c857bef9350fcc3914ab9335b5521ecf9488",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 56,
+        "cell_id": "91546335-2f0f-4e05-bb92-62c49f67a005",
+        "type": "code",
+        "source_sha256": "288cf5264fe4720380667eb7a1cda034b299483e12f9c385cd492372ef57af32",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 57,
+        "cell_id": "14d995bd-e486-48cc-b73d-b2ca042dce07",
+        "type": "markdown",
+        "source_sha256": "2398e430be2a1f859e143469d224ca9df8187a80c060b18dba57f7763cf0944a",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 58,
+        "cell_id": "6e18fcde-09b2-45a0-a04b-3ee7a6e9bde6",
+        "type": "code",
+        "source_sha256": "246e455e6d4c2b5aa93c33fbd705c313ac0e1f9ef5875b662a6803e353dffb18",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 59,
+        "cell_id": "13fc804e-6248-4738-9187-dbebfc2fbfd6",
+        "type": "markdown",
+        "source_sha256": "236f8ae1f532aa8065e3743d0df989578bcdd6f4fdaf4474edd46c4973697330",
+        "headings": [
+          "Change betas"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 60,
+        "cell_id": "36b1bee9-e6f2-4978-be4f-509f67d7f5da",
+        "type": "markdown",
+        "source_sha256": "669c7ca268e63e0e12ee59fc484eda3d509d9f5722f44241e4610e52e1132de2",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 61,
+        "cell_id": "91f7f00a-b843-4b8d-98a6-836d41643f7a",
+        "type": "code",
+        "source_sha256": "e62822af1bd8b106183d0ca6c2bd050b66ff32f9b08c1cc4f7f079b663f9ecf8",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 62,
+        "cell_id": "011f21d7-358b-4f8f-ac3e-fd348e486c9e",
+        "type": "code",
+        "source_sha256": "7e7a71e010eca52deb8b88a1d5b7fc383ae8760efac22f8dd290089c39ac2668",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 63,
+        "cell_id": "b7076fc6-0929-4032-a4a3-b50ba39a59a2",
+        "type": "code",
+        "source_sha256": "246e455e6d4c2b5aa93c33fbd705c313ac0e1f9ef5875b662a6803e353dffb18",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 64,
+        "cell_id": "a47a9ce5-b591-4550-bd39-2fffb699b832",
+        "type": "markdown",
+        "source_sha256": "b5d142f5656a4795d6b3654320bdfcb380a4723064ef0b5d1fb3f15104706dde",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 65,
+        "cell_id": "6978f795-f949-4b10-9420-6d64bc907b4a",
+        "type": "markdown",
+        "source_sha256": "c3081bf319565cfd369118d3942fea6a38990da212389e38c501edcdcc3f9c9b",
+        "headings": [
+          "Step 2: Optimize problem for quantum execution"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 66,
+        "cell_id": "e9b485a5-8446-4667-af29-81a2a30d9fee",
+        "type": "code",
+        "source_sha256": "880fce74e517f0b9c0e5e01ae516e531d34d7aacabdb4d4b5a2defbcfdc1927d",
+        "headings": [
+          "Or use a specific backend",
+          "backend = service.backend(\"ibm_brisbane\")"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 67,
+        "cell_id": "12f03728-656d-45cc-a1c5-5366ec301304",
+        "type": "markdown",
+        "source_sha256": "5de8ccd3a383e6b27d73673331c4c955c0ef99c17a4656d4e53bc4cdf5e6537f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 68,
+        "cell_id": "ba4a98a3-159b-4863-84bd-298be5b6d091",
+        "type": "code",
+        "source_sha256": "c114536ff5720099d0283ea3ba9750768537516a64fa77c191df395c4e8a3cad",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 69,
+        "cell_id": "a29f9139-3c91-424f-97d2-80b31cce5d91",
+        "type": "markdown",
+        "source_sha256": "ed798e9055533bc7ad63cdf161930594908985e07b53cdbb4a909ce2080261d0",
+        "headings": [
+          "Step 3: Execute using IBM Quantum primitives"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 70,
+        "cell_id": "3e373e99-19d9-4fb2-b26e-208f1a2b7c9b",
+        "type": "code",
+        "source_sha256": "748bba1a3b149166a7bea6315f66480454de9e2afc7d637258e1c13c47ac7102",
+        "headings": [
+          "Estimated compute resource usage: 25 minutes.",
+          "Benchmarked at 24 min, 30 sec on an Eagle r3 processor on 5-30-24"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 71,
+        "cell_id": "f8e976c0-5d73-4244-b4be-4808925a3e40",
+        "type": "markdown",
+        "source_sha256": "f2b0964a144bfc0bbe32416f7a5ebdb83eeee8c02c252b0cf316676ed3db6982",
+        "headings": [
+          "Step 4: Post-process, return result in classical format"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 72,
+        "cell_id": "4b6857c6-09fe-44ca-ba9f-822eb9ee5ad8",
+        "type": "markdown",
+        "source_sha256": "2573f9106bcbf2241fed80e441d6a24e7e4a3d5de9e67b48d687507296257866",
+        "headings": [
+          "Quantum chemistry: ground state and excited energy solver"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 73,
+        "cell_id": "de006d72-db04-49d4-806b-89bd1e5b9947",
+        "type": "code",
+        "source_sha256": "90737df3c6c7708d0afb3775f721198fd02f9bd7972cc31e29f99a5f586fd04f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 74,
+        "cell_id": "1e67cecd-cb3d-4593-a9e8-1058e816c9ae",
+        "type": "code",
+        "source_sha256": "d89030dc1f6c6e31e8219a1492757d72c5b78819fd504ac55325abd2d70b0c74",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 75,
+        "cell_id": "21b278c0-719c-4240-ae6e-f21360cb21f5",
+        "type": "markdown",
+        "source_sha256": "630150247000c5f8aa92854a552be2976c12d2e6eaa896707a40373ef5b1f298",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 76,
+        "cell_id": "d6a2f152-6642-4b66-aa34-951d86973f8c",
+        "type": "code",
+        "source_sha256": "06b82a8d76ff717b75bd2b2591bb8b9efe7694c7fd07c6e75aa7b4600182cfcc",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 77,
+        "cell_id": "1ad424a9-4c4c-4c36-8408-2fc76318eeb9",
+        "type": "markdown",
+        "source_sha256": "e64e56bfe524b242c963403db6c08ecbbe1508efe78ba619e49482da136d2777",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 78,
+        "cell_id": "69785252-e337-404a-8fbf-ae2a5a875525",
+        "type": "code",
+        "source_sha256": "0743ba42f3f695be712a1e3b100e3e998f537a1da618f5ac04066e35e2eed8d6",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 79,
+        "cell_id": "79fd09b2-d886-4281-9381-b802b4d2f7a7",
+        "type": "code",
+        "source_sha256": "547fc86c3f4f47cdb51fc518e8601f0dbf3b0e80f8a4386e810eb73fbd697039",
+        "headings": [
+          "SciPy minimizer routine"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 80,
+        "cell_id": "0b2beab7-816d-438b-8502-5e7f9d65ae1d",
+        "type": "markdown",
+        "source_sha256": "932727813c99dfce761448d475d7dd21a747ec9e26c9ba492b15c5e0168e1d5a",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 81,
+        "cell_id": "54a8a55c-6aa4-4e7c-a999-d3e468079571",
+        "type": "markdown",
+        "source_sha256": "1e9d0e99c8985297d80fd677372c14d1aa80ab2a17d823a7907269d516ea6838",
+        "headings": [
+          "Excited States"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 82,
+        "cell_id": "678ed2ab-c572-43a8-9a87-26cb0c470b68",
+        "type": "code",
+        "source_sha256": "01877f70eafc650e530c0651ef3b5af30418768676590b1d073178ba7950cf4a",
+        "headings": [
+          "x0 = np.zeros(ansatz.num_parameters)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 83,
+        "cell_id": "760ebdc7-596c-4781-824a-3b7972cdba53",
+        "type": "markdown",
+        "source_sha256": "2adf387bb506adfa7df3586cce8029ad262aff42b582da14a488902c665babef",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 84,
+        "cell_id": "d755f8b7-9aab-4c74-84ff-80f62a9b3c23",
+        "type": "code",
+        "source_sha256": "6b3383c5ec03d0fd931c6758bdfa7a2e97edc14e18945bce7e5fd314f63e287a",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 85,
+        "cell_id": "212c3e80-1b5e-4155-a3d3-d3bf12c2e97a",
+        "type": "code",
+        "source_sha256": "288cf5264fe4720380667eb7a1cda034b299483e12f9c385cd492372ef57af32",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 86,
+        "cell_id": "deec3d64-7f91-4623-8236-63a7de6aa6e6",
+        "type": "markdown",
+        "source_sha256": "839e1b7c77d0b09bfc950d18503a3bd738c1a746ceb6c07b07eb525bc2b6cfd5",
+        "headings": [
+          "Real hardware and a final cautionary message"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 87,
+        "cell_id": "5fdaae83-47cf-40ab-95d9-d1ff048ed825",
+        "type": "code",
+        "source_sha256": "437dab823241ee57c6d2cd159b7489cb967e582f6c416289ac85756982242822",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 88,
+        "cell_id": "ad33ec78-d495-48f2-b64f-6042d5319da6",
+        "type": "markdown",
+        "source_sha256": "ea1e3f79837f6fa2403034bece298b1b6de318b57c4acede67593dda8bed0ac5",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 89,
+        "cell_id": "9733e0b3-fc05-4c5b-b29a-1ba197106fad",
+        "type": "code",
+        "source_sha256": "8b1561240d727d7b83c2e55e5b75bbde7783fbd31875afbca4784b86f56918c7",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 90,
+        "cell_id": "262a1b78-a9bc-4850-bef8-60e290f2f2e0",
+        "type": "markdown",
+        "source_sha256": "d8952ebd7610c2e01daa9780e02555c184710e72ceb60f584a7ace9a08f3ee41",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 91,
+        "cell_id": "12843daa-4b84-408d-ae46-f72d24509ae1",
+        "type": "code",
+        "source_sha256": "d4a3a4d7ce05c06953209dd10dc3e62c999c5303eaff3adb48cdb61d74133b13",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 92,
+        "cell_id": "cd8e07fd-5968-4741-919e-4d9c46d58de5",
+        "type": "code",
+        "source_sha256": "bc651b1a2ec24cdf74801cbe50b0ac37560fa282e653af156870907201b845d4",
+        "headings": [
+          "Estimated hardware usage: 20 min benchmarked on an Eagle r3 processor on 5-30-24"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 93,
+        "cell_id": "4c5985c2-86af-4969-b0aa-1932502e58e6",
+        "type": "markdown",
+        "source_sha256": "18d6d67eaed602424c382e9de5d61ca434d67ca7a26403af3ede836bcb688cd2",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 94,
+        "cell_id": "af2202c6-2d1b-4213-a244-1dc1e34e5e34",
+        "type": "markdown",
+        "source_sha256": "07ee1b5356050ac39e73035c0a132fba9b0a1092e51adfbf5505a4c5c91e55c6",
+        "headings": [
+          "Optimization: max-cut"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 95,
+        "cell_id": "3eb71b79-a988-4807-aa88-7fb25a78a236",
+        "type": "code",
+        "source_sha256": "cbe5b8f42e2601b4a1a22c4915fb7d732609cee4af4bd1c429a1ae1d126c49cd",
+        "headings": [
+          "The edge syntax is (start, end, weight)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 96,
+        "cell_id": "8771ec8d-9913-4e25-94dd-96dc57c9675d",
+        "type": "markdown",
+        "source_sha256": "cab7c65ca34427c0e4bb7bb41376cf007233409a63f81149a98390d7b55287a1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 97,
+        "cell_id": "84bbf27e-6def-4ce0-b563-ae5ae2fcfe34",
+        "type": "markdown",
+        "source_sha256": "61ba9cab795de832829dca6a42184646d3df895562b8d568c8fa536554fd080b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 98,
+        "cell_id": "d28c4262-a080-4fe4-9427-762326184cd8",
+        "type": "code",
+        "source_sha256": "96ca71137dedb73f32fcd1c4ec0ad82fada492d3724a80575d08add345a7b575",
+        "headings": [
+          "Draw"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 99,
+        "cell_id": "1d3f4fc4-6804-40fd-a470-ddd2c09a94d4",
+        "type": "code",
+        "source_sha256": "2404fd496116d3ff2702c58e19837dd2cf46c1c10e606e5544fa6d61772a3ed8",
+        "headings": [
+          "Sum the weights, and divide by 2"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 100,
+        "cell_id": "d6bf5f9c-5277-4833-8864-1e0277c1b6c1",
+        "type": "code",
+        "source_sha256": "f8bf804b0b098256dd5f66ba1aefae35b5f1ced848f56083fdf808311dd5ecba",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 101,
+        "cell_id": "159e0521-4870-4e8d-829a-317d6dafce79",
+        "type": "code",
+        "source_sha256": "0743ba42f3f695be712a1e3b100e3e998f537a1da618f5ac04066e35e2eed8d6",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 102,
+        "cell_id": "6ca87213-311a-46bd-b2c5-814e2c8ffe27",
+        "type": "markdown",
+        "source_sha256": "0494bb9f2012b27871e3eae4ac64d5e122d30a610a7afba491857678f08f4938",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 103,
+        "cell_id": "babd595f-a1b0-4513-9a97-3b23428b83f6",
+        "type": "code",
+        "source_sha256": "c936c1f0c4c6e56dea15f349c9f02dae8fd53206b8a2459d28b9622cbe975a6f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 104,
+        "cell_id": "3447ab1d-e2c1-4d8d-98f6-ee231f3bbc7a",
+        "type": "markdown",
+        "source_sha256": "f9756febd92222eee9c831d10a476dccbdc7662e1d8779afddbc4fc4db6abba7",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 105,
+        "cell_id": "ecc3e775-4e9a-4a4b-ab78-ed53d690b64b",
+        "type": "markdown",
+        "source_sha256": "05ab7d9a3f0959c58248b42114f14391f9b6e6553e6ed98f0048b58698986706",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 106,
+        "cell_id": "03c79980-1510-4a11-83aa-797111c02187",
+        "type": "code",
+        "source_sha256": "2a70630a8a28c797edf9f19a453536c955fba70a60678016ea0d8f40ae7ed358",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 107,
+        "cell_id": "3be090d4-4adb-4943-931b-5f603df663a1",
+        "type": "code",
+        "source_sha256": "9d02a11f5fafae47f0412a626583e85cefd1535002f40939a1a39c0ff9f9122f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 108,
+        "cell_id": "c2e3ae85-7eb1-4c41-9ab8-0a38008374c1",
+        "type": "markdown",
+        "source_sha256": "4df5b840af8776d5b46424587547d3ca501e096df8a338046ffcb8dc8d0401ea",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 109,
+        "cell_id": "141b2c86-3902-46f0-bb67-46f4565c3975",
+        "type": "code",
+        "source_sha256": "115480fcf42c57087b7fd928cd5fcc49ad9edbcd52526f68f8ed560f43d224b1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 110,
+        "cell_id": "b882490f-745a-4b07-ae94-bb3673316ce6",
+        "type": "code",
+        "source_sha256": "4d41e0c02c5cc8b19385433daab58f0c3073410a30d186eb0d89bee4810795ee",
+        "headings": [
+          "Assign solution parameters to ansatz",
+          "Add measurements to our circuit",
+          "Sample ansatz at optimal parameters",
+          "samp_dist = sampler.run(qc).result().quasi_dists[0]"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 111,
+        "cell_id": "686ee28e-9327-40d1-8d7c-3ec527160f01",
+        "type": "code",
+        "source_sha256": "9c9f1c7b50bd41f8d42fc883d78c598798252831c5e1a67818900d7c3ecf0d87",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 112,
+        "cell_id": "c2e4ebb9-530a-4b72-acb1-1356634dc7a5",
+        "type": "code",
+        "source_sha256": "b6f66e4a4f9b1cc0daf8929ba7dae7ad6074017cd062d14a728a47952e7f54f7",
+        "headings": [
+          "Close the session since we are now done with it",
+          "session.close()"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 113,
+        "cell_id": "13a4c371-fd40-4ce3-b737-268d4a4c9c2c",
+        "type": "code",
+        "source_sha256": "4debbb7cd316fa8042192c100d936f7c61e86b6b97858fe17c0572aa6408ccd7",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 114,
+        "cell_id": "4238cc64-6910-43d2-889e-6322bf2864eb",
+        "type": "code",
+        "source_sha256": "af73a6f678d83976cf56bcfa8b6b4de0cf098b16d9b300ea7fc80b4924db1aff",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 115,
+        "cell_id": "761b55e2-2e6b-4d00-ad1a-b0d3d546881e",
+        "type": "markdown",
+        "source_sha256": "93a23d7aaa0896a83565ab2f1536455382c5fc6b987c34abe2d4bce62b6afffe",
+        "headings": [
+          "Summary"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 116,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  },
+  {
+    "id": "MOD-012",
+    "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/vqe",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/modules/computer-science/vqe.ipynb",
+    "retrieved_utc": "2026-11-03T03:14:46.451516+00:00",
+    "sha256": "9f3b5c8d30b51e82965b09f8155647ae654b176f97afd6d87ad6d17869591bda",
+    "cells": 73,
+    "code_cells": 33,
+    "inventory": [
+      {
+        "cell_index": 0,
+        "cell_id": "a9fc5202-9641-4db3-ac1a-9986f28854bc",
+        "type": "markdown",
+        "source_sha256": "de842b7e8160028550f33d150374e8267429de60ba79de9a2979e140d9a27f48",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 1,
+        "cell_id": "bafc481a-d2d4-4668-8389-acbe9cd3f615",
+        "type": "markdown",
+        "source_sha256": "ab7e336dc3ab4657eee0405523a2a94f6871b7eb4eded948814f32c35f0320da",
+        "headings": [
+          "Variational Quantum Eigensolver (VQE)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 2,
+        "cell_id": "cda95261-1473-492c-8a1d-1e29773086c9",
+        "type": "code",
+        "source_sha256": "6ecb29fd397089e6cee222d3a58807713fdda9df3c5ded265d7c5bc3b3b0e1c0",
+        "headings": [
+          "Uncomment and modify this line as needed to install dependencies"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 3,
+        "cell_id": "127021b2-3419-4b9d-bf13-7ef940b50029",
+        "type": "markdown",
+        "source_sha256": "14ea8697c43778d663cd8062560db919f4463d5969bc97ed0ef0f4d9704af496",
+        "headings": [
+          "Introduction"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 4,
+        "cell_id": "eef4da0c-8f48-47fc-88a2-9a2979c1dbc1",
+        "type": "markdown",
+        "source_sha256": "85135dc8ea5eee38f5a5fec1a7bff97da322bc3b993321d64b76770bb7b2e316",
+        "headings": [
+          "VQE - A variational quantum algorithm for eigenvalue problems",
+          "Approximation techniques for chemistry - variational principle and the basis set",
+          "Check your understanding"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 5,
+        "cell_id": "ed2bd1ba-73ad-42d3-94ad-c1d4a7db0a6f",
+        "type": "markdown",
+        "source_sha256": "3995ea3b1ce3079e22a34f9de0f39d579b3f7fb3ab47a9424d8c8b8f90221c44",
+        "headings": [
+          "VQE (Variational Quantum Eigensolver)",
+          "Check your understanding",
+          "(Quantum) Observable: The molecular Hamiltonian (energy of a molecule)",
+          "(Quantum) Ansatz: The trial wave function (How to build a trivial quantum state with a quantum circuit)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 6,
+        "cell_id": "a8fae507-41e6-4585-8e9d-b45db5055fb9",
+        "type": "markdown",
+        "source_sha256": "ca6001a035dde47cc8e4bd48e55dd1daa2b50a462dea924e745a9b82bc678082",
+        "headings": [
+          "(Classical) Optimizer: fine-tuning the quantum circuit"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 7,
+        "cell_id": "8cdcfcc0-a6ca-4153-a11a-bd7b598f9b35",
+        "type": "markdown",
+        "source_sha256": "a1daca193df1fcf6ceb08353b716018b6176603656f5644b8774922e3813acb8",
+        "headings": [
+          "Check your understanding"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 8,
+        "cell_id": "64a090f7-1d18-4edb-bef3-4cea0f4cec2c",
+        "type": "markdown",
+        "source_sha256": "28e78aa74788a6c01b80c89d4f00c949b170d14020591fd53e0daf6dc461b0b9",
+        "headings": [
+          "Compute the ground state energy of a hydrogen atom with VQE"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 9,
+        "cell_id": "18d9c613-ee5f-4e38-bc83-57d25197b200",
+        "type": "code",
+        "source_sha256": "b432369a9ded4ee17b4339b54f309799ea93bb32e3699f0949dd9ad39c798c74",
+        "headings": [
+          "Load IBM Quantum Compute Service",
+          "Load the Runtime primitive and session",
+          "Syntax for first saving your token.  Delete these lines after saving your credentials.",
+          "QiskitRuntimeService.save_account(channel='ibm_quantum_platform',",
+          "instance = '<YOUR_IBM_INSTANCE_CRN>', token='<YOUR-API_KEY>', overwrite=True, set_as_default=True)",
+          "service = QiskitRuntimeService(channel='ibm_quantum_platform')",
+          "Load saved credentials",
+          "Use the least busy backend, or uncomment the loading of a specific backend like \"ibm_brisbane\".",
+          "backend = service.backend(\"ibm_brisbane\")"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 10,
+        "cell_id": "0c4e0ac4-7f4c-4cab-b726-1d6fe1ca10ac",
+        "type": "markdown",
+        "source_sha256": "cb70f45481a53927a4d7de9235e9c2c32d6a3dcd7bbb979f306f2b604e7250b1",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 11,
+        "cell_id": "4c38f002-c6e6-4fe2-acf1-3cccf3d1f525",
+        "type": "code",
+        "source_sha256": "c066248d29facc8ac68d6786274c7fca66c25adf1b9b506706213a489bd9be1f",
+        "headings": [
+          "Load the Aer simulator and generate a noise model based on the currently-selected backend.",
+          "Alternatively, load a fake backend with generic properties and define a simulator.",
+          "Define a simulator using Aer, and use it in Sampler."
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 12,
+        "cell_id": "497acce3-f34c-43b3-a014-630702a3620b",
+        "type": "markdown",
+        "source_sha256": "caeb6b76d62ceba42d19b7904914e1d4c0e78aecd9999967b532ff1b72a4d44d",
+        "headings": [
+          "Step 1: Map the problem to quantum circuits and operators"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 13,
+        "cell_id": "aaef7daa-6dbe-4a2e-abe2-3ad2a0baa860",
+        "type": "code",
+        "source_sha256": "6a73b76a982b68c44862f10eabf8766afc54ded250120b4f6d09f418e10abb17",
+        "headings": [
+          "Qubit Hamiltonian of the hydrogen atom generated by using STO-3G basis set and parity mapping",
+          "exact ground state energy of Hamiltonian"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 14,
+        "cell_id": "ec53e133-d8ab-4e5d-a44a-428fe8095aee",
+        "type": "markdown",
+        "source_sha256": "0ed2ace36e10931b78a44175631aaf5b9b47b22f9f6d1d95b1220393b65bc2d3",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 15,
+        "cell_id": "653b257f-9975-4bd3-9c48-a046ec4a9fae",
+        "type": "code",
+        "source_sha256": "6e56eb566fd566055b40ddc6c477fcb7eeacfa6a6cc3abce051e7a52a2860e2b",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 16,
+        "cell_id": "26707a66-7098-4f57-93fc-eb1cb4c305f7",
+        "type": "markdown",
+        "source_sha256": "4fe0a7bfec78f1ff7fbd14906c9099801da923fb232863dca0b8059d16ec9445",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 17,
+        "cell_id": "6e47463b-b0c2-44cd-b099-9f50f38ebd0e",
+        "type": "code",
+        "source_sha256": "f67b8417b70817909b463de734c2081c9962915a685dd84dcd1977430bdb1232",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 18,
+        "cell_id": "af24b916-fa42-4c4c-8e22-098adfb4fcd5",
+        "type": "markdown",
+        "source_sha256": "2dddab658fc7da89b1480505ea8fb4e034cb5905a9c1f35f306e213415fd4431",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 19,
+        "cell_id": "6471a5d1-287a-4726-9e65-e23ef77ccf75",
+        "type": "code",
+        "source_sha256": "1b84175a509148b8180dc0f1d5e9d075b232163a6e0c2f1eb86e4c0c5596de21",
+        "headings": [
+          "List to store Bloch Sphere XZ coordinates",
+          "Generate quantum states and extract Bloch vectors",
+          "Convert to a numpy array for plotting"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 20,
+        "cell_id": "9cb7d81e-8df5-4557-8452-98f794bdc5cd",
+        "type": "markdown",
+        "source_sha256": "437b90eaadc9fb9bf42af5dfe6ad1811ef5addbe1bfbbd8422500372b0c4646f",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 21,
+        "cell_id": "9cd86049-f652-4e76-a68a-2780cb7782db",
+        "type": "code",
+        "source_sha256": "1f54015c54f3fdc1dc23595b712a1873e9b158855280a8996ebd870926968149",
+        "headings": [
+          "Generate quantum states and extract Bloch vectors",
+          "Convert to numpy array for plotting"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 22,
+        "cell_id": "e3fde737-d565-4200-a968-c6a6c78dfe30",
+        "type": "markdown",
+        "source_sha256": "beccdbeaa838c26dc40e278fd39ca571f19fe2b029a4bcfea9a6cbc9eff71edd",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 23,
+        "cell_id": "ec2e9a84-46b2-4143-8cde-d981e9edd3ce",
+        "type": "code",
+        "source_sha256": "dfffbcd7c084920fecd0738f86e695651692e9fd3e2c64e81d27d0ce8c4efce4",
+        "headings": [
+          "Generate quantum states and extract Bloch vectors",
+          "Convert to numpy array for plotting"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 24,
+        "cell_id": "ca886db5-e7c7-4f5c-8594-50f79fbc61dd",
+        "type": "markdown",
+        "source_sha256": "5973bcfc99880f600050aa36e166c110ede46b10d3e37b641a92ddf7dfa8df87",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 25,
+        "cell_id": "9f0c76d9-b4b2-46dc-a261-7c624c031177",
+        "type": "code",
+        "source_sha256": "bb4cecf2e39445e2b9f2a8a0b30c1d3acd02a89492fc8edad5933b5d0fc28d5d",
+        "headings": [
+          "Pre-defined ansatz circuit and operator class for Hamiltonian"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 26,
+        "cell_id": "b7dc624b-37bc-4523-8532-e45c7826ce64",
+        "type": "markdown",
+        "source_sha256": "70aab510af078a8e4f623ccb8eb0e90d20331026ae8c3db92fc464cebe117a8b",
+        "headings": [
+          "Step 2: Optimize for target hardware"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 27,
+        "cell_id": "d4f50ff9-cdf4-483f-9bb8-5814fe5acc53",
+        "type": "code",
+        "source_sha256": "fd38772c0a1cd35e5b996478162a7bfc0263f4155680592566962253356c8964",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 28,
+        "cell_id": "04feccf8-4591-4919-90ba-9b0d72e1b436",
+        "type": "markdown",
+        "source_sha256": "b53d479e242bfa233d02c81b14cfbeee04f1ef8cd0ac4c832ff9dd5e04d2399a",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 29,
+        "cell_id": "2e105b4d-8c3c-4b1e-9652-9857ee9e5465",
+        "type": "code",
+        "source_sha256": "8c7efec8a5900bafc90e499b6bff1c18afc3a492b168c0d96cda810578fb5747",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 30,
+        "cell_id": "d3212dfa-da89-43d6-85ce-6200ecf9ca09",
+        "type": "markdown",
+        "source_sha256": "4dae38525d1b16953921d60bd475557bafe9cda9fde9dce733b1e0ffc319eed7",
+        "headings": [
+          "Step 3: Execute on target hardware"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 31,
+        "cell_id": "6b2178bd-6e86-4178-b82b-f7a6d7e95022",
+        "type": "code",
+        "source_sha256": "88496241e299a5562bb245de485e5139dda394dfe31a7b709a01488f57ed6229",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 32,
+        "cell_id": "83ed09be-d475-4d66-b55f-b25bbf3412c8",
+        "type": "markdown",
+        "source_sha256": "4a17341c374102b8fb715e0c89d004df1872a4962696b41f23e386e87c04df62",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 33,
+        "cell_id": "b2a5dab1-f724-48df-b84b-20749ffd5261",
+        "type": "code",
+        "source_sha256": "30860881f01ad80f5ccae429bf318143165c47fed946388960bce1f7883e7823",
+        "headings": [
+          "x0 = np.random.uniform(0, 2*pi, 3)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 34,
+        "cell_id": "5b48b37d-1f1e-4aef-9fd5-ba594db832b0",
+        "type": "code",
+        "source_sha256": "7f5e0afa80981fcf3bbff2681e3b1e52c62f20dc83a9d60b2b6b2a88195faba2",
+        "headings": [
+          "QPU Est. 2min for ibm_brisbane"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 35,
+        "cell_id": "124e15d2-ddce-4201-9f69-03c9e5612644",
+        "type": "code",
+        "source_sha256": "3cd8b9ea80fb532b83f6cfdd4813aad86717e5fcd7102b1e841e5c27f263348c",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 36,
+        "cell_id": "79bce65c-d84e-4bed-bfe8-71f448290fd1",
+        "type": "markdown",
+        "source_sha256": "c1ab0772809a258d6b75df87112a308de0910976de359f0709d58e1cb6593ab5",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 37,
+        "cell_id": "dae9eeb5-a2ac-4632-90cf-d2ac70182c7b",
+        "type": "markdown",
+        "source_sha256": "ea8b261e05611443f4a2f189f6fee1cc2ed64da9bc23b10015e85ca4b841e37d",
+        "headings": [
+          "Step 4: Post-process"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 38,
+        "cell_id": "b6b32cce-cbfa-4566-9d77-e511f54cc558",
+        "type": "code",
+        "source_sha256": "877bb4c8d17d2c1e68ed6984da15c3b7d38833b6e87600cc7e2dc1f1d8de34ef",
+        "headings": [
+          "Define the constant function"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 39,
+        "cell_id": "909ed768-080d-42b2-aae5-0fe6fa4f088b",
+        "type": "markdown",
+        "source_sha256": "fed4c7a9213128477449582f24f660b71058117052cfcb0314b1e0709cb09573",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 40,
+        "cell_id": "4b3fe46b-fb4e-48d4-a891-732231429926",
+        "type": "markdown",
+        "source_sha256": "d565f60c32e57b14961af887cad54b2c26a2b8cad1eff8a18cb5d9f6b7d2bad3",
+        "headings": [
+          "Check your understanding"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 41,
+        "cell_id": "52e936bb-a9af-4355-94a1-82393a25124e",
+        "type": "markdown",
+        "source_sha256": "be94c7fc1d336412b13490afd72808822aa08fc0b5fae080070fcd8c049ed29b",
+        "headings": [
+          "Compute the ground state energy of the hydrogen molecule with VQE"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 42,
+        "cell_id": "bcd4b1e5-aea5-4509-af22-661937b4286d",
+        "type": "markdown",
+        "source_sha256": "dd65f04231ea1e2b00120cdd24df269c5603b431689f167db1e515145dcdf670",
+        "headings": [
+          "Step 1: Map the problem to quantum circuits and operators"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 43,
+        "cell_id": "3722816b-8710-4c61-9da9-a347556496e6",
+        "type": "code",
+        "source_sha256": "7358ea9ee38e73ec7fd24db2d9a2f70ec47cc460752b823a822f174b6bd02342",
+        "headings": [
+          "exact ground state energy of hamiltonian"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 44,
+        "cell_id": "7e275302-80ea-454b-83c1-d70b09b37442",
+        "type": "markdown",
+        "source_sha256": "c9192449cb081d74a0b3cac03d5b239c9657f77af5b6316d300f8ddfdf1b3800",
+        "headings": [
+          "Step 2: Optimize for target hardware"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 45,
+        "cell_id": "6a461ab3-fbd7-493a-aaad-e47d6bfd0079",
+        "type": "code",
+        "source_sha256": "16c108d8c26864bafa021faf0fe07faa80c8bbf22f7912f14c79b8c7dd019434",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 46,
+        "cell_id": "da36cda3-94a8-4b2d-9e3d-3b5ac957c180",
+        "type": "markdown",
+        "source_sha256": "d64b2b38892b0ca14386047ffc1cdcb161a6a1ea4019aa19fb56e46e9ed8211e",
+        "headings": [
+          "Step 3: Execute on target hardware"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 47,
+        "cell_id": "b5afe148-bfdc-4d77-895c-d58afc118d9e",
+        "type": "code",
+        "source_sha256": "a00a914314598a4d0d09202983ad9cacf6e3a2c39acf8000bda5a5589a265888",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 48,
+        "cell_id": "3fb2e079-1413-4fd2-a3db-da5d11fe58d5",
+        "type": "code",
+        "source_sha256": "17ff7c2ba17cc64811094e770fe312ab1bc079a83b0201b1637ae3eb618e63ce",
+        "headings": [
+          "QPU time 4min for ibm_brisbane"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 49,
+        "cell_id": "4edf1dbd-8363-4d0d-a4ca-2223719c7059",
+        "type": "code",
+        "source_sha256": "3f0219cf2795391c9add17099ec9aacf43d0bb8da52c9ea8ff949b5ad561db7c",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 50,
+        "cell_id": "0d30fbc5-8f52-4b84-b9a6-55b3432bbec5",
+        "type": "markdown",
+        "source_sha256": "396f7d67775e6f17e32d1ec48f505fa335208bad2d6a6c11166c034dee7693fd",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 51,
+        "cell_id": "5d5c88de-fcd1-4ef6-8055-01505d86d07e",
+        "type": "markdown",
+        "source_sha256": "0436d5c6e27b4b649ccddb4ea6c6196195589f17b0e2e32403409b5ddcdc41e1",
+        "headings": [
+          "Step 4: Post-process"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 52,
+        "cell_id": "b20dda12-dad9-4585-9a56-31611aa00930",
+        "type": "code",
+        "source_sha256": "d2cbb0556ef1fdb424bad6853c671ebcdd46b2246b5d7a418c4d6cd9706a15d3",
+        "headings": [
+          "Define the constant function"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 53,
+        "cell_id": "8eab4184-b5dd-494e-9e67-c209b3f835f3",
+        "type": "markdown",
+        "source_sha256": "5e8078ba9ad69df983934ae8c7c93a60178850aeb4c0bbf3ffd787a38d1b805d",
+        "headings": [
+          "Check your understanding"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 54,
+        "cell_id": "f75e4a10-dfdc-4416-8087-a41c1eac039c",
+        "type": "markdown",
+        "source_sha256": "f57e478b32da77af8a482cc81153ea0c42812aa6996d9e4092bcf4467c0bfea0",
+        "headings": [
+          "Compute reaction energy of $H + H = H_2$"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 55,
+        "cell_id": "aa8d1a29-fbfe-41bf-8ed7-947827d0f0e6",
+        "type": "code",
+        "source_sha256": "920b9371b9aaa017f261fb76ed01b657aad660fa17def2bf47edd2759b8b24e6",
+        "headings": [
+          "Theoretical values",
+          "Experimental values",
+          "Calculate reaction energies",
+          "Set up the plot",
+          "Plot theoretical energy levels",
+          "Plot experimental energy levels",
+          "Add labels",
+          "Add arrows for reaction energy with \u0394E label in the middle",
+          "Add legend"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 56,
+        "cell_id": "f1a87af7-0c69-42c5-a415-87c95752d678",
+        "type": "markdown",
+        "source_sha256": "b704a1ab6d5f665f4b11527018b5388c9f5fa213fabcb7895430e8e8a46df975",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 57,
+        "cell_id": "006ded34-29e0-4702-a46a-0459ee49f416",
+        "type": "markdown",
+        "source_sha256": "8258cacd18f5a9d9a4593fc575a9cc73fb20d89d31868129ff280cb9b8f4577c",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 58,
+        "cell_id": "03c9dfc1-7367-4d71-9598-f02288c30ac0",
+        "type": "markdown",
+        "source_sha256": "774b08b1d0f9104c570065a8b9de7dfb8e04753a252e32b9c26cfbd564cb6382",
+        "headings": [
+          "Review and questions",
+          "Critical concepts:",
+          "True/false",
+          "Multiple-choice questions:"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 59,
+        "cell_id": "7f44807a-45f6-4e36-9d19-faa77f7c0c79",
+        "type": "markdown",
+        "source_sha256": "00d36a68fe635fb13b5cb526dd8a0eb89200acf8b312b781e5f1c5b5dac0bb54",
+        "headings": [
+          "(Optional) Appendix: Optimizer overhead by ansatz complexity"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 60,
+        "cell_id": "96179a4e-33f9-43ff-a791-f5ac8114dd29",
+        "type": "code",
+        "source_sha256": "beea3ffb46068a45a1a40b57b025c10119c14335baaebb3ed95aefd191ee7e4f",
+        "headings": [
+          "step1: Map problem to quantum circuits and operators"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 61,
+        "cell_id": "0eeb0370-0ec7-490e-962b-55f746c4e4a3",
+        "type": "code",
+        "source_sha256": "7cf76130a856c4c5df2dd2b5a641ced6a81d0a51ad8599e541f0f4b2fcfc7c86",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 62,
+        "cell_id": "105b8557-861c-4fcc-a84e-82d382ad730f",
+        "type": "code",
+        "source_sha256": "bb786a7ebc81d0de2c361c90e86f8fb55098b780559209124d567d3407b43f95",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 63,
+        "cell_id": "2f3f5e3f-d41b-45af-a14f-d2f1ef506037",
+        "type": "code",
+        "source_sha256": "6f9d77f62502d15c16f1fb3bc6239c110ff2079f3c8126b6c9b174a44abd7645",
+        "headings": [
+          "Step 2: Optimize for target hardware"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 64,
+        "cell_id": "1433eb47-1fcc-4e2e-8738-2d2818be8824",
+        "type": "markdown",
+        "source_sha256": "f2ff1537f186aef2421dbb5309cd805c7e612e301a6fda0a07b0adcdc1231707",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 65,
+        "cell_id": "693444f0-5835-471f-b9f7-20b5158b3d45",
+        "type": "code",
+        "source_sha256": "5b341695dbf6f0f1e4945ed5ef26d520d5505ae61630aef05aede204a1334dbe",
+        "headings": [
+          "QPU time 3m 40s for ibm_brisbane",
+          "Step 3: Execute on target hardware"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 66,
+        "cell_id": "6922c55c-6a4f-41d8-8aad-69fa432ddf14",
+        "type": "code",
+        "source_sha256": "26c5b6fc2627fefbb59a5e8711e859d430dd3ecdf5c55f322ddd82fba20a38e9",
+        "headings": [
+          "Save Cost_history as a new list"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 67,
+        "cell_id": "5ba0affa-8641-4a15-9408-a99dff0c7f8c",
+        "type": "code",
+        "source_sha256": "b8ed914c15972d2338bfc202b93c436771c3b7530da1df4b7cd3ad6e1a3a011f",
+        "headings": [
+          "QPU time 3m 40s for ibm_brisbane"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 68,
+        "cell_id": "7354f299-cab6-4d43-a0e3-38c6c19f0486",
+        "type": "code",
+        "source_sha256": "a629a950b51f94b10fbc4484e13af4816fffdcad4202e0a10fd09e324d5319ab",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 69,
+        "cell_id": "2c6d2eb4-197b-4811-bb0b-377e445ff3a8",
+        "type": "code",
+        "source_sha256": "7399cdfd76f77b210617e3e75911dd2e20b96de180bb83dac0384726f0829a93",
+        "headings": [
+          "Define the constant function)"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 70,
+        "cell_id": "b6a9fcdb-020f-429a-8b6e-17d67b0caaf9",
+        "type": "markdown",
+        "source_sha256": "ebf2cd4a3e51845753c6927b85fc51625db5ffd5e49020ed40cff2ee9fd1a676",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 71,
+        "cell_id": "f7c6d9a5-c2cc-4674-9d54-1f9809cfde51",
+        "type": "markdown",
+        "source_sha256": "481ecc2313f9b6b8d7f8d523eae4a442cfd7d1149ed2485d66294d9e6a21a0fa",
+        "headings": [
+          "References"
+        ],
+        "status": "Inventoried; whole-cell execution unaudited"
+      },
+      {
+        "cell_index": 72,
+        "cell_id": "a1b8767d",
+        "type": "markdown",
+        "source_sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+        "headings": [],
+        "status": "Inventoried; whole-cell execution unaudited"
+      }
+    ]
+  }
+]
