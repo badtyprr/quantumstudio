@@ -23,6 +23,9 @@ as `[B,C]` traces out both; its order does not reorder the output. The remaining
 factors keep their original relative order. The equivalent source operator form
 is `\operatorname{Tr}_{\mathsf{B}}(subsystems(matrix,[A,B],[2,3]))`. Multiple labels
 are comma-separated, for example `\operatorname{Tr}_{\mathsf{B},\mathsf{C}}(...)`.
+For an indexed label such as `ancilla_2`, use `\mathsf{ancilla}_{2}` or plain
+`ancilla_2` in the trace subscript. The existing TeX name-group parser rejects
+`\mathsf{ancilla_2}`; that original authored probe remains in the initial evidence.
 An empty selection retains the input matrix. When the retained dimension is
 one, the result is a scalar, consistently with explicit-dimension numeric traces;
 this includes tracing every factor and retaining only dimension-one factors.
@@ -92,7 +95,7 @@ Validation entry points:
 
 - `src/quantum-named-subsystem-test.cc`: native exact values, immutable metadata,
   symbol conflicts and error contracts.
-- `src/quantum-named-subsystem-test.py --worker PATH --output REPORT --revision SHA`:
+- `src/quantum-named-subsystem-worker-test.py --worker PATH --output REPORT --revision SHA`:
   full rational matrix checks, renamed/permuted mappings, mixed dimensions,
   multiple traced factors, evaluated declaration Copy/re-entry and result copies.
 

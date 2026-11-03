@@ -67,6 +67,15 @@ int main() {try {
  equal("ptrace("+rho+",[k])","[3/4,1/4;1/4,1/4]");
  equal("ptrace("+rho+",k,[2,2])","[3/4,1/4;1/4,1/4]");
  equal("sum(ptrace("+rho+",j),0,1,j)","[5/4,1/4;1/4,3/4]");
+ equal("sum(ptrace("+rho+",\"j\"),0,1,\"j\")","[5/4,1/4;1/4,3/4]");
+ for(const auto &binder:{"B","\"B\"","\"j\""})
+  equal("sum(ptrace(subsystems("+rho+",[B,A],[2,2]),B),0,1,"+std::string(binder)+")","[3/2,1/2;1/2,1/2]");
+ equal("sum(sum(ptrace(subsystems("+rho+",[B,A],[2,2]),B),0,1,\"A\"),0,1,\"B\")","[3,1;1,1]");
+ equal("sum(ptrace(subsystems(\"B\"*identity(4),[B,A],[2,2]),B),0,1,\"B\")","[2,0;0,2]");
+ equal("sum(ptrace(subsystems(B*identity(4),[B,A],[2,2]),B),0,1,B)","[2,0;0,2]");
+ equal("ptrace(subsystems(matrix(1,1,[7]),[A],[1]),A)","7");
+ rejects(std::string("subsystems(identity(2),[")+char(0x18)+"A],[2])","reserved control characters");
+ rejects(std::string("subsystems(identity(2),[")+char(0x19)+"A],[2])","reserved control characters");
  equal("ptrace(subsystems(identity(2),[A,B],[1,2]),B)","2");
  equal("ptrace(subsystems(identity(2),[A,B],[1,2]),[A,B])","2");
  rejects("ptrace(subsystems("+rho+",[A,B],[2,2]),missing)","Unknown subsystem label");

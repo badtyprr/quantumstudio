@@ -14,12 +14,15 @@ namespace {
 const char labelMarkerBegin='\x1e',labelMarkerEnd='\x1f';
 const char constantMarkerBegin='\x1c',constantMarkerEnd='\x1d';
 const char phaseKetMarker='\x1b';
+const char subsystemLabelBegin='\x18',subsystemLabelEnd='\x19';
 std::string indexableLabel(const std::string &label) {return std::string(1,labelMarkerBegin)+"\""+label+"\""+labelMarkerEnd;}
 std::string withoutLabelMarkers(std::string value) {
  value.erase(std::remove(value.begin(),value.end(),labelMarkerBegin),value.end());
  value.erase(std::remove(value.begin(),value.end(),labelMarkerEnd),value.end());
  value.erase(std::remove(value.begin(),value.end(),constantMarkerBegin),value.end());
- value.erase(std::remove(value.begin(),value.end(),constantMarkerEnd),value.end());return value;
+ value.erase(std::remove(value.begin(),value.end(),constantMarkerEnd),value.end());
+ value.erase(std::remove(value.begin(),value.end(),subsystemLabelBegin),value.end());
+ value.erase(std::remove(value.begin(),value.end(),subsystemLabelEnd),value.end());return value;
 }
 size_t quantumSpaceLength(const std::string &s,size_t p) {
  if(p>=s.size())return 0;
@@ -476,6 +479,9 @@ class Parser {
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
   while((at=args[body].find(occurrence,at))!=std::string::npos) {
+   // A quoted binder may capture quoted scalar symbols, but never immutable
+   // subsystem metadata. Keep that provenance until every binder is scoped.
+   if(at && args[body][at-1]==subsystemLabelBegin) {at+=occurrence.size();continue;}
    if(plain && !lexicalConstant) {
     auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
     char quoted=0;for(size_t k=0;k<at;++k) {char c=args[body][k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;}}
@@ -524,7 +530,7 @@ class Parser {
     throw std::runtime_error("Subsystem labels must be identifiers of 1 to 64 ASCII letters, digits or underscores, starting with a letter.");
    }
    if(++count>32 || ++nodes>nodeLimit)throw std::runtime_error("Subsystem labels exceed the 32-factor or expression complexity limit.");
-   if(count>1)result+=",";result+='\"'+label+'\"';
+   if(count>1)result+=",";result+=subsystemLabelBegin;result+='\"'+label+'\"';result+=subsystemLabelEnd;
    if(!close)return result;
    if(take(close))return result+")";
    need(',');
@@ -1643,7 +1649,7 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 }
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
- if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
+ if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos || expression.find(subsystemLabelBegin)!=std::string::npos || expression.find(subsystemLabelEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
  std::string s=unicodeArithmetic(quantumWhitespace(expression));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);

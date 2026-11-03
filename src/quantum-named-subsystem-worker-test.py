@@ -105,7 +105,10 @@ def main():
     def trace(name, matrix, labels, dims, removed, expected, tex=False):
         value = mapped(matrix, labels, dims)
         chosen = [labels[i] for i in removed]
-        expression = (r'\operatorname{Tr}_{' + ','.join(r'\mathsf{' + x + '}' for x in chosen) + '}(' + value + ')'
+        def tex_label(label):
+            parts = label.split('_', 1)
+            return r'\mathsf{' + parts[0] + '}' + ('_{' + parts[1] + '}' if len(parts) == 2 else '')
+        expression = (r'\operatorname{Tr}_{' + ','.join(tex_label(x) for x in chosen) + '}(' + value + ')'
                       if tex else 'ptrace(' + value + ',[' + ','.join(chosen) + '])')
         check(name, expression, expected)
 
@@ -156,6 +159,14 @@ def main():
     value = mapped(matrix_text(rho), ['A', 'B'], [2, 2])
     check('finite numeric binder regression', 'sum(ptrace(' + matrix_text(rho) + ',j),0,1,j)',
           [[F(5, 4), F(1, 4)], [F(1, 4), F(3, 4)]])
+    check('quoted finite numeric binder', 'sum(ptrace(' + matrix_text(rho) + ',"j"),0,1,"j")',
+          [[F(5, 4), F(1, 4)], [F(1, 4), F(3, 4)]])
+    for binder in ['B', '"B"', '"j"']:
+        check('literal mapping versus binder ' + binder,
+              'sum(ptrace(' + mapped(matrix_text(rho), ['B', 'A'], [2, 2]) + ',B),0,1,' + binder + ')',
+              [[F(3, 2), F(1, 2)], [F(1, 2), F(1, 2)]])
+    check('bound matrix expression with literal metadata',
+          'sum(ptrace(subsystems("B"*identity(4),[B,A],[2,2]),B),0,1,"B")', [[F(2), F(0)], [F(0), F(2)]])
     for chosen in ['B', '[A,B]']:
         scalar = run('ptrace(subsystems(identity(2),[A,B],[1,2]),' + chosen + ')')
         result = json.loads(scalar['stdout']) if scalar['exit_code'] == 0 else {}
