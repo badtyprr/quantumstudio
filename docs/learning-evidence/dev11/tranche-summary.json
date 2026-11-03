@@ -1,0 +1,147 @@
+{
+  "base": "affdcc843916f1c4c40270135f9f7c2e4d83855f",
+  "status": "Partial",
+  "date": "2026-11-02",
+  "external_evidence": "F:\\src\\libqalculate\\cleanup-audit\\dev11ef-20261102",
+  "source_files": {
+    "libqalculate/QuantumNumericalState.cc": "8eaccb3f233576084776db2eac259c6fe2e1774d87a19c25dee6354bebd6aa53",
+    "libqalculate/QuantumNumericalState.h": "31e7c8ee4380f1d6fe80bce9c2ff0f6074ae2d86f4ef7fa1e2ec9e08530c1e13",
+    "windows/QasmGateSerializer.cs": "6e12553e1e5e752072ae81c0e8bb96e9a2479b19efe000f8d7d927d6a65c2dc5",
+    "windows/QasmAngle.cs": "b005994439eefdc0ec6e2d731337cf09fc9576b3de3e30b5f602432cc1b89b3e",
+    "docs/learning-evidence/dev11/diagram-native.cc": "d4a4a4fd6a2a0bfab6557ea175938f553d3f32e51ceb2875f2e298b33c368eb7",
+    "docs/learning-evidence/dev11/diagram-export.cs": "eaa2b7779d2d88e1776ece6174e56fdb0a5ab18fa3a3c207a46259f42f5af4ed"
+  },
+  "compile_native": "g++ -std=c++17 -O2 -Ilibqalculate docs/learning-evidence/dev11/diagram-native.cc libqalculate/QuantumNumericalState.cc -o EXTERNAL/diagram-native.exe",
+  "compile_exporter": "Framework64/v4.0.30319/csc /r:System.Web.Extensions.dll /out:EXTERNAL/diagram-export.exe docs\\learning-evidence\\dev11\\diagram-export.cs windows\\QasmGateSerializer.cs windows\\QasmAngle.cs",
+  "compiler": "g++.exe (Rev5, Built by MSYS2 project) 16.2.0",
+  "manual_cases": 216,
+  "round_trip_cases": 50,
+  "family_cases": 1920,
+  "scalar_cases": 24,
+  "failures": 0,
+  "original_fixture_sha256": "d72f1d8d73626f6ed7a287a4a5d854972fd792a129dc531066cfce7d2c803957",
+  "visual_inspection": {
+    "inspected": [
+      "Shor-encoder.svg",
+      "Shor-phase-error-detect-1.svg",
+      "Shor-phase-error-detect-2.svg",
+      "Steane-encoder.svg",
+      "lowest-weight-correction.svg",
+      "phase-error-0.svg",
+      "phase-error-1.svg",
+      "phase-error-2.svg",
+      "phase-error-none.svg",
+      "repetition-decode-e0.svg",
+      "repetition-decode-e1.svg",
+      "repetition-decode-e2.svg",
+      "repetition-decode-no-error.svg",
+      "repetition-encoder-modified.svg",
+      "repetition-encoder.svg",
+      "repetition-error-detection.svg",
+      "simplified-phase-error-detect.svg",
+      "three-bit-modified-error-detect.svg"
+    ],
+    "rendering": "CairoSVG 2.9.1, width and height set to viewBox dimensions in memory; original SVG bytes unchanged.",
+    "date": "2026-11-02",
+    "scope": "Visual gate/wire inspection only; see finite fixture mapping."
+  },
+  "comparator_tests": {
+    "comparator_checks": 4,
+    "pass": true,
+    "results": [
+      {
+        "record": 0,
+        "norm": 0.9999999999999998,
+        "amplitudes": [
+          [
+            0,
+            0.7071067811865475,
+            0
+          ],
+          [
+            7,
+            0,
+            0.7071067811865475
+          ]
+        ],
+        "id": "control",
+        "max_amplitude_error": 0.0,
+        "leakage": 0.0,
+        "pass": true
+      },
+      {
+        "record": 0,
+        "norm": 0.9999999999999998,
+        "amplitudes": [
+          [
+            0,
+            0.7071067811865475,
+            0
+          ],
+          [
+            6,
+            0,
+            0.7071067811865475
+          ]
+        ],
+        "id": "reversed-wire",
+        "max_amplitude_error": 0.7071067811865475,
+        "leakage": 0.4999999999999999,
+        "pass": false
+      },
+      {
+        "record": 0,
+        "norm": 0.9999999999999998,
+        "amplitudes": [
+          [
+            0,
+            0.7071067811865475,
+            0
+          ],
+          [
+            7,
+            0,
+            0.7071067811865475
+          ]
+        ],
+        "id": "relative-phase",
+        "max_amplitude_error": 1.414213562373095,
+        "leakage": 0.0,
+        "pass": false
+      },
+      {
+        "record": 0,
+        "norm": 0.9999999999999998,
+        "amplitudes": [
+          [
+            2,
+            0.7071067811865475,
+            0
+          ],
+          [
+            5,
+            0,
+            0.7071067811865475
+          ]
+        ],
+        "id": "leakage",
+        "max_amplitude_error": 0.7071067811865475,
+        "leakage": 0.9999999999999998,
+        "pass": false
+      }
+    ]
+  },
+  "historical_probe_tests": {
+    "passed": 2
+  },
+  "executables": {
+    "diagram-native.exe": "37ab8eeb3dc145398c881b3d98f7011b22a2afa63a0cf43cc2a073799c4c0798",
+    "diagram-export.exe": "46fdd09d0ef1f086b3bf1dcb265ffb6e611f7eb701c80244be62a370f26d98fd"
+  },
+  "portable_evidence": {
+    "diagram-fixtures.json.gz": "34eff3efe7f33cc96634d08e04016a2edf289a907466a244a85ae9a06b5919ad",
+    "diagram-results.json.gz": "e9964e621d2a18e20f0e4e447062d0331a5d7bfb8f99af2c3e9a87430df201b4",
+    "family-fixtures.json.gz": "a5884ca94d27fe638c4facaa4181952b75cde1f20d9cb2416bc4680ee361ba24",
+    "family-results.json.gz": "433bcd8a338af1cf67af3b8000791c2e4cc828973a42de37454706b7280c02bc"
+  }
+}

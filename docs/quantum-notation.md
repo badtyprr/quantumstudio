@@ -1221,3 +1221,34 @@ This is infrastructure toward DEV-08b. Specification-derived parity and measurem
 
 See [ensembles, instruments and POVMs](quantum-measurements.md) for outcome labels,
 conditional states, symbolic validity and explicit-ancilla Naimark construction.
+
+
+### Compact finite Pauli algebra
+
+`compact_pauli("XIIIIIIIIIIIIIIIII")` stores an 18-qubit Pauli as the exact
+four-integer vector `vector(18,131072,0,0)`, without allocating a Hilbert-space
+matrix. The fields are `[n,x,z,p]`, meaning `i^p Z^z X^x`. Wire zero is the
+leftmost, most significant bit. Each Y contributes phase 3 because Y = -i ZX;
+optional signs and i/j prefixes follow the dense Pauli label convention.
+The finite compact contract supports 1–25 qubits, masks below 2^n and phase 0–3.
+`qcompactpauli(n,x,z,p)` validates a numeric tuple. These vectors are data;
+ordinary vector multiplication is not Pauli multiplication.
+
+Use `compact_multiply(a,b)` for ordered products and `compact_commutes(a,b)`
+for an exact 0/1 answer. For a nonempty vector of at most 64 Hermitian,
+commuting compact generators, `compact_rank(g)`, `compact_dimension(g)` and
+`compact_syndrome(g,error)` return the binary rank, common +1 code-space
+dimension and syndrome in generator order. Syndrome 1 means anticommutation.
+Groups containing -I are rejected, including inconsistent redundant checks.
+
+`compact_distance(g,bound)` searches weights in ascending order through an
+explicit bound of 1–3. A returned integer is the exact minimum: every smaller
+weight was exhausted and the witness commutes with the checks but lies outside
+their span. If no witness is found, it reports that distance is undetermined;
+it never reports the bound as a distance. Stabilizer states with no logical
+qubit reject this distance convention. This is not a general decoder.
+
+Compact output uses normal vector serialization and can be copied/re-entered.
+Dense `pauli`, `qpauliword` and existing dense stabilizer APIs keep their
+original nine-qubit limits and matrix contracts. Compact values are accepted
+only by the separate compact operations above.
