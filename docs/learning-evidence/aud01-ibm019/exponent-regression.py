@@ -6,6 +6,9 @@ from pathlib import Path
 import subprocess
 from run import Q, parse_cell
 
+def exact_cell(text):
+    return parse_cell(text.replace('⋅', '*').replace('×', '*'))
+
 ap = argparse.ArgumentParser()
 ap.add_argument('--worker', type=Path, required=True)
 ap.add_argument('--definitions', type=Path, required=True)
@@ -58,7 +61,7 @@ for expression, expected in cases:
         value = json.loads(row['stdout'])
         cells = value['cells'] if value['rows'] else [[value['text']]]
         row['pass'] = (value['approximate'] is False and value['columns'] in (0, 1)
-                       and [parse_cell(x[0]) for x in cells] == expected)
+                       and [exact_cell(x[0]) for x in cells] == expected)
         if row['pass']:
             replay = subprocess.run([str(a.worker), '--json'], input=value['copy_text'].encode(),
                                     capture_output=True, timeout=30,
@@ -68,7 +71,7 @@ for expression, expected in cases:
             copied_cells = copied['cells'] if copied['rows'] else [[copied['text']]]
             row['pass'] = (replay.returncode == 0 and copied['approximate'] is False
                            and copied['rows'] == value['rows'] and copied['columns'] == value['columns']
-                           and [parse_cell(x[0]) for x in copied_cells] == expected)
+                           and [exact_cell(x[0]) for x in copied_cells] == expected)
     except (ValueError, KeyError, SyntaxError):
         row['pass'] = False
     rows.append(row)
