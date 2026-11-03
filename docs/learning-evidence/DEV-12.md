@@ -129,7 +129,8 @@ complexity guard; the ordinary calculator expectation route passes. Both
 original failures and the working route are recorded. An initial review found
 reversed source class labels; the final run corrects them to horizontal −1 /
 vertical +1 and retains prior results. Separate final-head Standards and Spec
-reviews report zero findings; integration CI/merge remain pending.
+reviews report zero findings. Completed integration CI, merges and fresh release
+validation are recorded in the verified scoped release section below.
 
 Original SDK/notebook execution, training, prediction quality, convergence,
 untested encoding families, large-circuit scaling, source media and hardware
