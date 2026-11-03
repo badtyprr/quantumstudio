@@ -1,0 +1,95 @@
+[
+  {
+    "id": "IBM-096",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction",
+    "html": {
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction",
+      "sha256": "698a1f77a88ac9f0e05d7e7fe95192fd5c0d89d6ba7db0b4943fc86d46fc6a34",
+      "bytes": 477181
+    },
+    "ipynb": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-machine-learning/introduction.ipynb",
+      "sha256": "a4a8b2cb30645e80accbb37f5daa10b1e6c8e5622c36ba54c1d0f745cb98140b",
+      "bytes": 31969
+    }
+  },
+  {
+    "id": "IBM-097",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review",
+    "html": {
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review",
+      "sha256": "a25f3cd8ccd0b41e49666c490bc7bea08663564c9491bf0a8fa0ec035c420645",
+      "bytes": 771162
+    },
+    "ipynb": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-machine-learning/classical-ml-review.ipynb",
+      "sha256": "aba4934bbd52695a61edd1350a8f5fa458a51ab615eddc362ad4c39754acd72f",
+      "bytes": 27158
+    }
+  },
+  {
+    "id": "IBM-098",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding",
+    "html": {
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding",
+      "sha256": "c450ee2fd196a69461985c22e4d056ea159dca360178608692c30d1551484e8c",
+      "bytes": 3213951
+    },
+    "ipynb": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-machine-learning/data-encoding.ipynb",
+      "sha256": "ef14bc512347cc802503fbdcdd1ac45f8df7b006d060424a7effb12624aea151",
+      "bytes": 94511
+    }
+  },
+  {
+    "id": "IBM-099",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods",
+    "html": {
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods",
+      "sha256": "5f398afbba364c85f85defa5f8d4eab52d851916318dd08968ea6730cef43bc8",
+      "bytes": 1051704
+    },
+    "ipynb": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-machine-learning/quantum-kernel-methods.ipynb",
+      "sha256": "8ecb7d3ab5fd2481f320b8b23cf4bfd1461f788e8756280530d15ff03f66ad40",
+      "bytes": 61368
+    }
+  },
+  {
+    "id": "IBM-100",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn",
+    "html": {
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn",
+      "sha256": "46d957d91671c4c0c87f426015c1a2667a842b1890062941c32b718abdabf26e",
+      "bytes": 1205656
+    },
+    "ipynb": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-machine-learning/qvc-qnn.ipynb",
+      "sha256": "06cff1ebcec1f9cbb242589cabf32869a90744d081d95d61056317747d001154",
+      "bytes": 95903
+    }
+  },
+  {
+    "id": "IBM-119",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms",
+    "html": {
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms",
+      "sha256": "af159a5912c1446e9d7f984cc4e278a2540e65a5740614a81df12c73e49b3879",
+      "bytes": 1223519
+    },
+    "ipynb": {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms.ipynb",
+      "sha256": "d97c842e17e32d137616631fced08b1a7a9d6ca090529fdc681165012bde2712",
+      "bytes": 71569
+    }
+  },
+  {
+    "id": "QB-007",
+    "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+    "ipynb": {
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+      "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "bytes": 11817
+    }
+  }
+]
