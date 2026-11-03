@@ -1,0 +1,122 @@
+[
+  {
+    "id": "IBM-090",
+    "title": "introduction",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction",
+    "retrieved_utc": "2026-11-03T03:14:12.705240+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-diagonalization-algorithms/introduction.ipynb",
+    "sha256": "1f118c86796305a98e269e2d0cb7a43331337115d985207c139bdee890555ec4",
+    "cells": 4,
+    "code_cells": 0
+  },
+  {
+    "id": "IBM-091",
+    "title": "vqe",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe",
+    "retrieved_utc": "2026-11-03T03:14:12.705972+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-diagonalization-algorithms/vqe.ipynb",
+    "sha256": "21561cc9e947d1b615bd0a213c76004a6dc71eff387df9f64946fd9b378ccc6d",
+    "cells": 40,
+    "code_cells": 15
+  },
+  {
+    "id": "IBM-092",
+    "title": "krylov",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov",
+    "retrieved_utc": "2026-11-03T03:14:12.706440+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-diagonalization-algorithms/krylov.ipynb",
+    "sha256": "524d48804ce536442b4329b818413ca7cda14304fcdf6a42c764b1b2dbdada8e",
+    "cells": 111,
+    "code_cells": 45
+  },
+  {
+    "id": "IBM-093",
+    "title": "sqd-overview",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview",
+    "retrieved_utc": "2026-11-03T03:14:12.706827+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview.ipynb",
+    "sha256": "632716f4b9f944a3ec507c94cf613f632ff9ccf07a71c0123dd6734fb403f841",
+    "cells": 46,
+    "code_cells": 11
+  },
+  {
+    "id": "IBM-094",
+    "title": "sqd-implementation",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation",
+    "retrieved_utc": "2026-11-03T03:14:12.707223+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
+    "sha256": "236e1f56cde55e1f3586821ded07b4c1234ab906e02506577e75cb82e1702f7f",
+    "cells": 59,
+    "code_cells": 11
+  },
+  {
+    "id": "IBM-095",
+    "title": "skqd",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd",
+    "retrieved_utc": "2026-11-03T03:14:12.740751+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-diagonalization-algorithms/skqd.ipynb",
+    "sha256": "2b8a726ee4850af9c5b4c67cb8cd3f928be8260a4fa518230797f4607262b773",
+    "cells": 37,
+    "code_cells": 15
+  },
+  {
+    "id": "IBM-108",
+    "title": "introduction",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/introduction",
+    "retrieved_utc": "2026-11-03T03:14:13.171032+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-chem-with-vqe/introduction.ipynb",
+    "sha256": "633e6f8f0012251ccbc8b4d7ff5c539808f31039cd9702899500690f266a6495",
+    "cells": 2,
+    "code_cells": 0
+  },
+  {
+    "id": "IBM-109",
+    "title": "hamiltonian-construction",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction",
+    "retrieved_utc": "2026-11-03T03:14:13.489108+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction.ipynb",
+    "sha256": "4e247cf8556a925f895ad1c15aea24a0a45e6a9cd05b7c83f1c3a88a9b394d8c",
+    "cells": 43,
+    "code_cells": 19
+  },
+  {
+    "id": "IBM-110",
+    "title": "ansatz",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ansatz",
+    "retrieved_utc": "2026-11-03T03:14:13.503413+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-chem-with-vqe/ansatz.ipynb",
+    "sha256": "8b239324725fc31eaacb001f92d17be98a594fd7d80d980d5e712d5e89dcf2bf",
+    "cells": 22,
+    "code_cells": 10
+  },
+  {
+    "id": "IBM-111",
+    "title": "classical-optimizers",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/classical-optimizers",
+    "retrieved_utc": "2026-11-03T03:14:13.613178+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-chem-with-vqe/classical-optimizers.ipynb",
+    "sha256": "3f7deda6ca1d97363e7ef168838dfaa25de0f3c5393c0602fcbca258a989da4c",
+    "cells": 5,
+    "code_cells": 0
+  },
+  {
+    "id": "IBM-112",
+    "title": "ground-state",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ground-state",
+    "retrieved_utc": "2026-11-03T03:14:13.615866+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-chem-with-vqe/ground-state.ipynb",
+    "sha256": "72d34ff747b6d46e2b27f6e73812dd242f1d82fdf0ed3fb5f9036c8453c441d7",
+    "cells": 26,
+    "code_cells": 12
+  },
+  {
+    "id": "IBM-113",
+    "title": "geometry",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/geometry",
+    "retrieved_utc": "2026-11-03T03:14:13.628502+00:00",
+    "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/quantum-chem-with-vqe/geometry.ipynb",
+    "sha256": "8890a111e4acfc09e6cd9431b963e2396c1cd08ad764a676b114b4ce4ca9cc5b",
+    "cells": 27,
+    "code_cells": 14
+  }
+]

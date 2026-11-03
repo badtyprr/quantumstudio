@@ -33,6 +33,7 @@ noinst_HEADERS = QuantumReadout.h QuantumTrajectory.h QuantumNumericalState.h Qu
 libqalculate_la_SOURCES = \
 	QuantumBasisDomain.cc \
 	QuantumMatrixPower.cc \
+	QuantumEigensystem.cc \
 	QuantumMatrixExp.cc \
 	QuantumInstruments.cc \
 	QuantumMeasurement.cc \
@@ -136,3 +137,4 @@ noinst_HEADERS += QuantumClassicalArray.h
 noinst_HEADERS += QuantumClassicalNumeric.h
 
 noinst_HEADERS += QuantumCompactPauli.h
+noinst_HEADERS += QuantumEigensystem.h

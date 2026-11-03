@@ -91,10 +91,16 @@ Copy-Item (Join-Path $repo 'docs\quantum-measurements.md') $output
 Copy-Item (Join-Path $repo 'docs\quantum-domains.md') $output
 New-Item -ItemType Directory -Path (Join-Path $output 'learning-evidence') | Out-Null
 Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-09.md') (Join-Path $output 'learning-evidence')
+Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-12.md') (Join-Path $output 'learning-evidence')
+Copy-Item (Join-Path $repo 'docs\learning-evidence\dev12') (Join-Path $output 'learning-evidence\dev12') -Recurse
 Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
 $oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
 try {
     $env:QALCULATE_DEFINITIONS_DIR = Join-Path $output 'data'
+    & $PythonPath (Join-Path $repo 'src/quantum-variational-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged variational checks failed.' }
+    & $PythonPath (Join-Path $repo 'src/quantum-eigensystem-worker-test.py') (Join-Path $output 'quantum-worker.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged Hermitian eigensystem checks failed.' }
     & $PythonPath (Join-Path $repo 'src/quantum-exact-rotation-chain-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged exact rotation-chain checks failed.' }
     & $PythonPath (Join-Path $repo 'src/quantum-instruments-worker-test.py') (Join-Path $output 'quantum-worker.exe')

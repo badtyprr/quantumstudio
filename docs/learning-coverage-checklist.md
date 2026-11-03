@@ -193,7 +193,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - [ ] **Variational and numerical operator coverage** — P2; Partial; size L; dependencies: DEV-04.
 - Source focus: Variational design; chemistry; diagonalization; ML. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Inventory unsupported objectives, derivatives, matrix functions and eigensolvers from source examples. Verify small reference problems and report numerical tolerances independently of exact arithmetic.
-- In progress: [source-backed finite evidence and remaining surfaces](learning-evidence/DEV-12.md). IBM-101–107 and MOD-012: eight notebook rows / 349 cells inventoried; zero whole rows certified. Existing released routes pass 78 fresh worker requests for selected states, costs, analytic gradients, explicit optimization steps, Copy/re-entry and separately labeled sampling. ML source-boundary evidence now inventories seven further rows, with 65 worker expressions, 65 canonical re-entries and 15 native circuits verified; no ML product change. Chemistry/diagonalization remains in progress. Independent scoped reviews passed; integration CI and merges remain pending.
+- In progress: [source-backed finite evidence and remaining surfaces](learning-evidence/DEV-12.md). IBM-101–107 and MOD-012: eight notebook rows / 349 cells inventoried; zero whole rows certified. Existing released routes pass 78 fresh worker requests for selected states, costs, analytic gradients, explicit optimization steps, Copy/re-entry and separately labeled sampling. ML source-boundary evidence now inventories seven further rows, with 65 worker expressions, 65 canonical re-entries and 15 native circuits verified; no ML product change. Chemistry/diagonalization inventories 12 additional rows and adds bounded numerical Hermitian eigenpairs; 60 development source operations pass. All 27 whole-source rows remain unchecked. Independent scoped reviews passed; final integration review/CI, clean package validation, merges and release remain pending.
 
 ### DEV-13
 
@@ -417,12 +417,12 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-089** [next-steps](https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing/next-steps) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 ### quantum-diagonalization-algorithms
 
-- [ ] **IBM-090** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-091** [vqe](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-092** [krylov](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-093** [sqd-overview](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-094** [sqd-implementation](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-095** [skqd](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-090** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-091** [vqe](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-092** [krylov](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-093** [sqd-overview](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-094** [sqd-implementation](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-095** [skqd](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
 ### quantum-machine-learning
 
 - [ ] **IBM-096** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/dev12/ml-audit.md); whole-source audit remains pending.
@@ -441,12 +441,12 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-107** [examples-and-applications](https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/examples-and-applications) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/DEV-12.md); whole-source audit remains pending.
 ### quantum-chem-with-vqe
 
-- [ ] **IBM-108** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/introduction) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-109** [hamiltonian-construction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-110** [ansatz](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ansatz) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-111** [classical-optimizers](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/classical-optimizers) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-112** [ground-state](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ground-state) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-113** [geometry](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/geometry) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-108** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/introduction) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-109** [hamiltonian-construction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-110** [ansatz](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ansatz) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-111** [classical-optimizers](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/classical-optimizers) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-112** [ground-state](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ground-state) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
+- [ ] **IBM-113** [geometry](https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/geometry) — P2 / AUD-03; full audit pending; selected finite matrix/eigenpair evidence: [DEV-12](learning-evidence/dev12/chemistry-diagonalization.md); whole-source audit remains pending.
 ### utility-scale-quantum-computing
 
 - [ ] **IBM-114** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/introduction) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
