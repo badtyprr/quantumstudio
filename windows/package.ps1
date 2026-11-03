@@ -91,6 +91,8 @@ Copy-Item (Join-Path $repo 'docs\quantum-measurements.md') $output
 Copy-Item (Join-Path $repo 'docs\quantum-domains.md') $output
 New-Item -ItemType Directory -Path (Join-Path $output 'learning-evidence') | Out-Null
 Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-09.md') (Join-Path $output 'learning-evidence')
+Copy-Item (Join-Path $repo 'docs\learning-evidence\DEV-12.md') (Join-Path $output 'learning-evidence')
+Copy-Item (Join-Path $repo 'docs\learning-evidence\dev12') (Join-Path $output 'learning-evidence\dev12') -Recurse
 Copy-Item (Join-Path $MsysRoot 'ucrt64\share\licenses') (Join-Path $output 'licenses') -Recurse
 $oldDefinitions = $env:QALCULATE_DEFINITIONS_DIR
 try {
