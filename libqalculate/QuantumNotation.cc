@@ -321,6 +321,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qprobs",1},
  {"qprobsub",2},
  {"qptrace",2},
+ {"qsubsystems",3},
  {"qptracedim",3},
  {"qptm",1},
  {"qpaulivec",1},
@@ -499,6 +500,35 @@ class Parser {
   return 0;
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
+ // Labels are literal identifiers here, even when their spelling is a gate or
+ // scalar constant elsewhere. A multi-letter name is never split into factors.
+ std::string subsystemLabels(bool required) {
+  size_t saved=p;unsigned savedNodes=nodes;ws();char close=0;
+  if(take('['))close=']';
+  else if(s.compare(p,7,"vector(")==0) {p+=7;close=')';}
+  std::string result=close ? "vector(" : "";size_t count=0;
+  do {
+   ws();if(close && p<s.size() && s[p]==close && count==0) {++p;return result+")";}
+   char quote=0;if(p<s.size() && (s[p]=='\"' || s[p]=='\''))quote=s[p++];
+   size_t begin=p;
+   if(p<s.size() && ((s[p]>='A' && s[p]<='Z') || (s[p]>='a' && s[p]<='z'))) {
+    ++p;while(p<s.size() && (std::isalnum((unsigned char)s[p]) || s[p]=='_'))++p;
+   }
+   std::string label=s.substr(begin,p-begin);
+   bool valid=!label.empty() && label.size()<=64;
+   if(quote) {valid=valid && p<s.size() && s[p]==quote;if(valid)++p;}
+   ws();valid=valid && p<s.size() && (s[p]==',' || s[p]==(close ? close : ')'));
+   if(!valid) {
+    p=saved;nodes=savedNodes;if(!required)return "";
+    throw std::runtime_error("Subsystem labels must be identifiers of 1 to 64 ASCII letters, digits or underscores, starting with a letter.");
+   }
+   if(++count>32 || ++nodes>nodeLimit)throw std::runtime_error("Subsystem labels exceed the 32-factor or expression complexity limit.");
+   if(count>1)result+=",";result+='\"'+label+'\"';
+   if(!close)return result;
+   if(take(close))return result+")";
+   need(',');
+  } while(true);
+ }
  bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
@@ -1036,6 +1066,7 @@ class Parser {
     if(name=="bloch") name="qbloch";
     if(name=="povm" || name=="instrument" || name=="measurementvalid" || name=="outcomelabels" || name=="effects" || name=="ensemble" || name=="ensembleaverage" || name=="ensemblevalid" || name=="probabilities" || name=="branches" || name=="poststate" || name=="naimark")name="q"+name;
     if(name=="ptrace") name="qptrace";
+    if(name=="subsystems") name="qsubsystems";
     if(name=="permute") name="qpermute";
     if(name=="vec") name="qvec";
     if(name=="spre") name="qspre";
@@ -1167,8 +1198,12 @@ class Parser {
      if(p==s.size()) throw std::runtime_error("Unclosed Pauli label.");
      std::string label=labelText(s.substr(begin,p-begin)); if(quote) ++p; need(')');
      a=pauliLabelExpression(label,name=="compact_pauli");
+    } else if(name=="qsubsystems") {
+     std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
+     std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {
-     std::string state=expression(); need(','); std::string indices=expression();
+     std::string state=expression(); need(','); std::string indices=name=="qptrace" ? subsystemLabels(false) : "";
+     if(indices.empty())indices=expression();
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }
      else a=name+"("+state+","+indices+")";
      need(')');
