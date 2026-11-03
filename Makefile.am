@@ -223,3 +223,4 @@ EXTRA_DIST += docs/learning-evidence/dev12/chemistry-diagonalization.md docs/lea
 EXTRA_DIST += docs/learning-evidence/dev12/ml-audit.py docs/learning-evidence/dev12/ml-numerical-driver.cc docs/learning-evidence/dev12/ml-audit.md docs/learning-evidence/dev12/ml-source-manifest.json docs/learning-evidence/dev12/ml-data-manifest.json docs/learning-evidence/dev12/ml-cell-ledger.json docs/learning-evidence/dev12/ml-results-summary.json
 
 EXTRA_DIST += docs/learning-evidence/dev12/release-summary.json
+EXTRA_DIST += docs/learning-evidence/dev17/contract.md
