@@ -224,3 +224,4 @@ EXTRA_DIST += docs/learning-evidence/dev12/ml-audit.py docs/learning-evidence/de
 
 EXTRA_DIST += docs/learning-evidence/dev12/release-summary.json
 EXTRA_DIST += docs/learning-evidence/dev17/contract.md
+EXTRA_DIST += windows/Dev17GuiTests.cs windows/test-named-subsystems-gui.ps1
