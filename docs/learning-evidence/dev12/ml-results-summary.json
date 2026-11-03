@@ -13,7 +13,7 @@
     },
     "script": {
       "path": "F:\\src\\libqalculate\\.tools\\dev12-ml-audit\\docs\\learning-evidence\\dev12\\ml-audit.py",
-      "sha256": "32006a70aab6c68aa4aa11ccb78b794a2360a86eb52d75a1c6419d23154f44b3"
+      "sha256": "f0b766f8c83beae42c439b467aa5f1596241831a6bef1af8033e30afb2f0d209"
     }
   },
   "kernel": [
@@ -183,14 +183,14 @@
       0.56
     ],
     "labels": [
-      1,
-      -1
+      -1,
+      1
     ],
     "predictions": [
       -0.03149757277850548,
       -0.03565803656611143
     ],
-    "mse": 0.9969713325437376,
+    "mse": 1.0052922601189496,
     "training": false
   },
   "qbraid": {
@@ -249,8 +249,8 @@
   "amplitudes": 2064,
   "source_base": "753bf16df56aeae0f6454f89999ef203665755f6",
   "release": "c575cb7e70d8b952c18d0a297a7784e246c34381",
-  "raw_result_path": "F:\\src\\libqalculate\\cleanup-audit\\dev12-ml-20261102\\run-2\\results.json",
-  "raw_result_sha256": "3ed4544a7861d5c940d4d63aa7decdd62531932cd3a433f8a6d62db89a56e458",
+  "raw_result_path": "F:\\src\\libqalculate\\cleanup-audit\\dev12-ml-20261102\\run-3\\results.json",
+  "raw_result_sha256": "89d858785712a6628da65e9e8047a583d80fba10eae87787dced3f4722e4f775",
   "api_source": {
     "url": "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.z_feature_map",
     "sha256": "9a34142d54754e2b5ea939b37f44a159041794e4c3d7a32d78569fb8058ca720"

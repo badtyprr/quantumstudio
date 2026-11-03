@@ -42,7 +42,7 @@ The QNN Z-map expansion uses two H/P layers with phase `2*x`, per the
 [official Z feature-map API](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.z_feature_map).
 That API HTML is separately hashed in the results summary. Authored images,
 weights and labels are stored in every run; zero-valued pixels and deterministic
-backgrounds deliberately differ from the source random generator. There is no
+backgrounds deliberately differ from the source random generator. The class convention is source-faithful: horizontal=-1, vertical=+1. There is no
 seed, split or optimizer to reproduce in this forward-only test.
 
 Encoding amplitudes are checked against normalization constants sqrt105 and
@@ -68,7 +68,7 @@ same declared phase convention. Energies independently enumerate spin values
 ## Results, failures and provenance
 
 [Results summary](ml-results-summary.json) records binary hashes and the full
-external result path/hash. Run2 passes 65 packaged-worker expressions plus65
+external result path/hash. Run3 passes 65 packaged-worker expressions plus65
 actual canonical serialization re-entries, and15 native numerical circuits
 (2,064 amplitudes and all corresponding probabilities). Absolute tolerance is
 1e-12; largest inverse-overlap discrepancy is 8.881784197001252e-16. The 3x3
@@ -84,10 +84,12 @@ SDK execution. Exact/approximate worker flags are recorded per input.
 
 Run1's two original 256-entry quantum-notation classifier literals rejected at
 the existing nesting/complexity guard; full expressions/stderr remain in
-`run-1/results.json`. Run2 uses existing ordinary calculator
+`run-1/results.json`. Run2 established the route; Run3 uses existing ordinary calculator
 `qexpect(qpauliword(...),matrix(...))`, which passes. Do not remove the guard or
 describe the rejection as lack of numerical expectation support. Canonical
-scalar re-entry also passes. No product failure was repaired or hidden.
+scalar re-entry also passes. No product failure was repaired or hidden. The independent Spec review found
+that run2 had inverted the two classifier labels; run3 corrects the labels and
+MSE target. Both earlier runs are retained; only run3 is final acceptance.
 
 No prior DEV-11 fixture or result was edited. Its original286 expectations and
 Partial status remain historical evidence, not rerun claims for this work.

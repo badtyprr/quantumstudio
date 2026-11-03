@@ -216,12 +216,12 @@ def main():
     diagonal = max(abs(kernel[i][i]-1) for i in range(3)) < TOL
     predictions = [expect_parity(v) for v in states[3:5]]
     expected_predictions = [expect_parity(oracle(c['qubits'],c['operations'])) for c in cases[3:5]]
-    labels = [1,-1]
+    labels = [-1,1]
     mse = sum((x-y)**2 for x,y in zip(predictions,labels))/2
     for i,x in enumerate(predictions):
         worker_case(f'classifier-expectation-{i}','IBM-100',16,
                     'qexpect(qpauliword(8,0,255,0),matrix(256,1,['+','.join(probe.exprnum(complex(*a)) for a in cases[3+i]['actual'])+']))', [expected_predictions[i]], raw=True)
-    worker_case('classifier-mse','IBM-100',20,f'(({predictions[0]}-1)^2+({predictions[1]}+1)^2)/2',[mse])
+    worker_case('classifier-mse','IBM-100',20,f'(({predictions[0]}+1)^2+({predictions[1]}-1)^2)/2',[mse])
     energy=[]
     for i in range(16):
         spins=[1-2*((i>>(3-q))&1) for q in range(4)]
