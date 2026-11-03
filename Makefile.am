@@ -242,3 +242,8 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm019/regressions.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019/run.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019/source-manifest.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019/validation.json
+EXTRA_DIST += docs/learning-evidence/dev11/reassess-performance.py \
+ docs/learning-evidence/dev11/matrix-cost.cc \
+ docs/learning-evidence/dev11/performance-reassessment.md \
+ docs/learning-evidence/dev11/reassessment-run.json.gz \
+ docs/learning-evidence/dev11/reassessment-results.json
