@@ -28,7 +28,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
-| [DEV-17](#dev-17) | P2 | M | Not implemented | None; explicit subsystem mapping required | Named subsystem partial traces |
+| [DEV-17](#dev-17) | P2 | M | Partial | Actual GUI Clipboard, integrated CI and release open | Named subsystem partial traces |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
 | [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
@@ -266,12 +266,13 @@ those semantics when adding whole-program serialization.
 
 ### DEV-17
 
-- [ ] **Named subsystem partial traces** — P2; Not implemented; size M. Numeric partial traces already provide the arithmetic baseline; define explicit subsystem names, order and dimensions before implementing named syntax.
+- [ ] **Named subsystem partial traces** — P2; Partial; size M. Explicit ordered expression-local mappings and named trace-out syntax are implemented; integrated validation, actual GUI Clipboard acceptance, CI and release remain open. See the [contract](learning-evidence/dev17/contract.md) and [validation with preserved failures](learning-evidence/dev17/validation.md).
 - Source and reproduction: [IBM-005 evidence](learning-evidence/IBM-005.md), published revision `3254e5d4`. With the explicit matrix `R` in that evidence, `ptrace(R,1)` returns `identity(2)/2`, while `\operatorname{Tr}_{\mathsf{B}}(R)` rejects its named subscript. This is a literal source operator prefix with an adapted operand, not a whole-lesson compatibility test.
-- [ ] DEV-17a: Define how users bind ordered subsystem labels and dimensions to an expression. Document scope, persistence and conflicts. Never guess positions from alphabetical names; distinguish the factors being traced out from the factors retained.
-- [ ] DEV-17b: Accept human-entered named trace syntax and the source TeX form using that mapping. Compare full exact matrices for Bell marginals, the asymmetric IBM mixture and a product-state ordering control. Unknown or duplicate labels and incompatible dimensions must produce specific errors.
-- [ ] DEV-17c: Cover unequal dimensions `[2,3]`, a middle factor in three systems, and tracing multiple factors. Preserve remaining-factor order. Test renamed/permuted labels so accidental A-to-0/B-to-1 assumptions cannot pass.
+- [x] DEV-17a: Implemented explicit ordered labels/dimensions through expression-local `subsystems` values; scope, literal-label binder protection, conflicts and persistence contract documented. No alphabetical position inference; selections name factors traced out. Actual GUI Copy persistence remains gated by DEV-17d.
+- [x] DEV-17b: Implemented human-entered and supported source TeX named trace forms; full exact Bell, asymmetric mixture and product-order controls plus specific invalid-label/dimension diagnostics validated on the scoped development worker.
+- [x] DEV-17c: Scoped checks cover unequal dimensions `[2,3]`, a middle factor, multiple traced factors, retained order and renamed/permuted labels. The legacy retained-dimension-one scalar convention is explicit.
 - [ ] DEV-17d: Verify GUI entry, copied expressions and saved/reopened declarations retain the same mapping and result. Attach exact-head tests, required CI and the tested release revision before marking this feature released.
+- Development evidence: 112/112 direct worker checks; original corrected-registration suite 77 pass/1 existing skip/1 test-only assertion failure, followed by a corrected 62-check native rerun. These are separate runs, not a fresh all-green integrated suite. Supplemental 72 GUI Calculate/session checks exclude Clipboard. Actual Copy failed on the locked desktop and in a private-station experiment; no working unattended setup or privilege remedy is established. No release is claimed.
 - Boundaries: Symbolic dimension identities, set-indexed sums, block matrices and the linked notebook remain separate unverified IBM-005 coverage. Successful numeric adaptations cannot complete that lesson. Owner: unassigned; implementation PR: unassigned.
 
 ### AUD-01
