@@ -1,6 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$Distribution,[Parameter(Mandatory=$true)][string]$Evidence,[switch]$CompileOnly,[Parameter(Mandatory=$true)][string]$PythonPath)
 $ErrorActionPreference='Stop'
 $Distribution=(Resolve-Path -LiteralPath $Distribution).Path
+if(Test-Path -LiteralPath $Evidence){throw 'Use a fresh GUI evidence directory.'}
 New-Item -ItemType Directory -Force -Path $Evidence | Out-Null
 $Evidence=(Resolve-Path -LiteralPath $Evidence).Path
 $fx=Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319'

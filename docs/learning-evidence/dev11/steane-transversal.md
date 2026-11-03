@@ -82,8 +82,13 @@ base corrected this harness configuration without modifying package files.
 The next attempt passed the first case but the existing application test hook
 rejected Undo because JSON property order changed, although the captured
 objects were semantically identical. The dedicated harness now compares JSON
-structurally, preserving array order, values and source metadata. The rerun and
-visual inspection are pending; no passing GUI result is yet claimed here.
+structurally, preserving array order, values and source metadata. A fresh rerun
+on unchanged released `214e6866` bytes passed 40 assertions across all five
+cases, including actual sampling-button results. Independent frozen reimports
+confirmed all five full exported circuits and retained source bytes. Four
+captures were visually inspected (composer, minimum scrollable layout, a
+64-outcome column and coherent all-zero echo). This is validation of the named
+existing release, not the pending integrated release.
 
 ## Reproduction and provenance
 
@@ -92,6 +97,8 @@ Evidence is outside disposable checkouts at
 source and binary hashes in `native-provenance.json`; original fresh released
 worker outputs and generated QASM/request fixtures in `released-214e6866/`;
 separate GUI failure directories retain their original reports and snapshots.
+The successful GUI rerun is `released-gui-214e6866-v3/`, with binary hashes checked
+before and after, `serialization-verification.json` and `visual-inspection.json`.
 The native development executable linked the existing StateVector source
 directly; it is not represented as an already-tested final package executable.
 
