@@ -1,5 +1,12 @@
 # DEV-11a: dense multiplication cost isolated
 
+**Historical diagnosis, superseded for current performance status.** The finite
+exact numeric optimization was subsequently released in PR #416. The
+[current-baseline reassessment](performance-reassessment.md) reruns the original
+fixtures and cost controls against verified current runtime sources. The timings,
+no-fix statements and proposed work below describe the original audit and remain
+unchanged as historical evidence.
+
 This follow-up diagnoses the existing audit's timeouts without changing symbolic or quantum implementation code. Original inventory commit: `b67443d645ce245a0f4d729e37941fe499033852`. Product source base remains `0fed41cb5637c578737278bf13f59590a56d6cf4`; all probes use released worker `35d9e753af19372a8f6472404726955eeba2190e`, SHA-256 `a62b058870263d33c979a84a274f6a0b37779c8a72fd91e146e2ec201aa194a8`. No new binary, build, GUI, merge or release is involved. DEV-09's active measurement/instrument work is untouched.
 
 ## Reproduction and minimization
