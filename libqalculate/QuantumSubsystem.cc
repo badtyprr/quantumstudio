@@ -47,6 +47,8 @@ class QuantumSubsystemFunction: public MathFunction {
  public:
  QuantumSubsystemFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumSubsystemFunction(*this);}
+ bool representsScalar(const MathStructure &args) const {return op=="qsubsystems" ? false : MathFunction::representsScalar(args);}
+ bool representsNonMatrix(const MathStructure &args) const {return op=="qsubsystems" ? false : MathFunction::representsNonMatrix(args);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qsubsystems") {
    // The notation parser quotes labels, so evaluating their vector constructor
