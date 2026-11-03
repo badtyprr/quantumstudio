@@ -36,6 +36,29 @@ order for later substitution. This does not infer matrix dimensions or distribut
 a trace over arbitrary unknown products; those operations need compatible matrix
 domains, which bare symbol names do not establish.
 
+## Numerical Hermitian eigensystems
+
+`heigenvalues(A)` returns an ascending n-by-1 column of numerical eigenvalues;
+`heigenvectors(A)` returns the paired normalized eigenvectors as columns of an
+n-by-n matrix. For example, `heigenvalues([4,-1,0;-1,4,-1;0,-1,4])` approximates
+4−sqrt(2), 4, 4+sqrt(2). Both results retain their matrix shape at n=1.
+
+Inputs must be finite numeric Hermitian matrices of dimension 1 through 64,
+representable in double precision. Hermiticity is checked after scaling by
+the largest absolute real or imaginary component, with tolerance 1e−12;
+accepted roundoff asymmetry is averaged with the adjoint. The solver checks
+scaled eigenvector residuals and orthonormality at 1e−10 before output
+formatting. Output is approximate, with 12-digit precision metadata, even
+for exact inputs. It does not certify exact eigenvalues or positivity.
+
+Eigenvectors have their largest-magnitude component made real and positive.
+Degenerate eigenspaces may use any orthonormal basis; compare residuals and
+projectors rather than assuming unique vectors. These functions do not solve
+generalized eigenproblems or accept symbolic/non-Hermitian matrices. Existing
+symbolic matrix products remain available for exact spectral identities.
+See [DEV-12 source evidence](learning-evidence/DEV-12.md) for adaptations and
+the distinction between matrix support and full algorithm execution.
+
 ## Sources and audit method
 
 The [IBM course catalog](https://quantum.cloud.ibm.com/learning/en/courses), checked on 2026-10-15, lists 15 courses. Discovering those courses is only an inventory step. Each lesson still needs its mathematical expressions, assumptions, register conventions, and executable code classified separately. The public qBraid notebook audit uses [qbraid-lab-demo revision 86787e1](https://github.com/qBraid/qbraid-lab-demo/tree/86787e1ba372facc224f925189755e69c479828b); it does not imply that the app executes the notebooks or their SDK calls.
