@@ -60,7 +60,7 @@ def contraction(matrix, dims, removed):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--worker', type=Path, default=Path(os.environ.get('QUANTUM_WORKER', Path(__file__).with_name('quantum-worker.exe' if os.name == 'nt' else 'quantum-worker'))))
+    parser.add_argument('--worker', type=Path, default=Path(os.environ.get('QUANTUM_WORKER', 'quantum-worker.exe' if os.name == 'nt' else 'quantum-worker')))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--revision', default='unspecified; identify via binary manifest')
     args = parser.parse_args()
@@ -92,7 +92,8 @@ def main():
             replay = json.loads(copied['stdout']) if copied['exit_code'] == 0 else {}
             copied.update(name=name + ' result Copy/re-entry', passed=(copied['exit_code'] == 0 and not copied['stderr']
                           and replay.get('rows') == len(expected) and replay.get('columns') == len(expected[0])
-                          and replay.get('approximate') is False and replay.get('cells') == value['cells']))
+                          and replay.get('approximate') is False and replay.get('cells') == value['cells']
+                          and exact_copy_cells(replay.get('copy_text', '')) == expected))
             rows.append(copied)
 
     def mapped(matrix, labels, dims):
