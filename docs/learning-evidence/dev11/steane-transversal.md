@@ -1,5 +1,7 @@
 # DEV-11c: two encoded Steane blocks
 
+Final scoped validation: verified release [c575cb7e](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c575cb7e); see [combined final evidence](../DEV-11.md#current-scoped-delivery-dev-11bc-and-parallel-audits). Development records below remain historical; the final package reran the applicable checks.
+
 Development evidence, 2026-11-02. The existing numerical circuit backend executes
 the scoped two-block transversal CNOT. No product allocation limit or dense
 constructor contract was changed. Final integrated package/release validation

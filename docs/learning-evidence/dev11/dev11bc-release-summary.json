@@ -1,0 +1,134 @@
+{
+  "revision": "c575cb7e70d8b952c18d0a297a7784e246c34381",
+  "release_clone": ".tools/dev11bc-release",
+  "status": "released and downloaded artifacts verified",
+  "build_exit_code": 0,
+  "release_pending": false,
+  "payload_audit": "passed",
+  "native_suite": {
+    "TOTAL": 74,
+    "PASS": 73,
+    "SKIP": 1,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "native_validation": "Fresh clean native build and tests; no resumption",
+  "full_worker_checks": 2180,
+  "algebra_checks": 316,
+  "artifacts": {
+    "QuantumStudio-Windows-x64.zip": {
+      "sha256": "2a42415bec616bed4174cf1e1e39bdf0b7a82ae6982a3a3d2326b3baf3f1d7d9",
+      "size": 82426269
+    },
+    "QuantumStudio-source.tar.gz": {
+      "sha256": "0bf9f2b6ce8619ec90d65c8b419d2bf932a4ccc7e20e1a94269253f120a137f0",
+      "size": 4542514
+    }
+  },
+  "binaries": {
+    "QuantumStudio.exe": "38c056f0511220b0b32fd31cf472b8317f5faf1e587acbadc1d8c2908913927c",
+    "quantum-worker.exe": "24ffff787c90b9ebcdb6f483ee561dce67266a646702893236a935a55890b7df",
+    "qasm-import/qasm-import.exe": "ca503deacbdd4912eeb2c8798e8aa922dae0fd2599d05375d8712cc5ff6cd4c0"
+  },
+  "payload_files": 388,
+  "zip_files": 389,
+  "build_log_sha256": "fdd8ed52a40076dfa7e5bfda23d0c8b41870e2ae2c4f96b36d77930ef10e696e",
+  "validation_complete": true,
+  "visual_inspection": "passed",
+  "baseline286": {
+    "already-supported-adaptation": 280,
+    "missing-operation-capacity": 2,
+    "unsupported-adaptation-syntax": 1,
+    "validated-rejection": 3,
+    "total": 286,
+    "expectations_passed": 286
+  },
+  "toric_worker_cases": 405,
+  "compact_gui_checks": 52,
+  "compact_gui_comparisons": 9,
+  "steane_native_checks": 163910,
+  "steane_gui_checks": 40,
+  "instrument_cases": 60,
+  "instrument_gui_checks": 35,
+  "final_validation_worker_sha256": "24ffff787c90b9ebcdb6f483ee561dce67266a646702893236a935a55890b7df",
+  "ef_final": {
+    "manual_cases": 216,
+    "round_trip_cases": 50,
+    "family_cases": 1920,
+    "scalar_cases": 24
+  },
+  "final_evidence_hashes": {
+    "baseline-final\\results\\summary.json": "399f87bb942cd26defea402e9a775633ff3419418e4a83a0d619ad059892c8ba",
+    "toric-final\\results.json": "c4bc688e818f510ea8423ef04a4d6efba9d453681b7598479ae451cfef9c1984",
+    "compact-final-gui\\provenance.json": "3c5f6106d850079a5936fe04374cb9c38bd989d734368686f4fb1cfdd7152e78",
+    "steane-final\\results.json": "d4e1cb792101b953891ef7c7f3a498ac85dfde6063f42cbd784ffa65eaf06ac2",
+    "steane-final-gui\\provenance.json": "86ff8a9261b705d3e4b501593aa91f86a8bf7fcdaef07785ff4e1f926ce37035",
+    "instrument-final\\summary.json": "59a8875202154476a03f488acbac154d1d26acb35eab79deafef403b3f2a2ed2",
+    "ef-final\\run-status.json": "f8737ac85aee183676df181eb889b69a436d6ffb0f53313b81ceabc0c42dff7c",
+    "final-visual-review.json": "9dab385dd72810dacf22700ce9d29fd5baa38ad3c831c72a7ee39f27a1013f7d"
+  },
+  "merged_tip_ci": [
+    {
+      "name": "Native build and tests",
+      "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41555459840/job/125653149921",
+      "conclusion": "success"
+    },
+    {
+      "name": "Windows GUI build and tests",
+      "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41555460259/job/125653151514",
+      "conclusion": "success"
+    },
+    {
+      "name": "Windows OpenQASM build and tests",
+      "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41555460043/job/125653151115",
+      "conclusion": "success"
+    }
+  ],
+  "github_release": {
+    "url": "https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c575cb7e",
+    "assets": [
+      {
+        "url": "https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-c575cb7e/QuantumStudio-Windows-x64.zip",
+        "sha256": "2a42415bec616bed4174cf1e1e39bdf0b7a82ae6982a3a3d2326b3baf3f1d7d9",
+        "size": 82426269
+      },
+      {
+        "url": "https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-c575cb7e/QuantumStudio-source.tar.gz",
+        "sha256": "0bf9f2b6ce8619ec90d65c8b419d2bf932a4ccc7e20e1a94269253f120a137f0",
+        "size": 4542514
+      }
+    ]
+  },
+  "destination": "F:\\src\\libqalculate\\dist\\releases\\c575cb7e",
+  "publication_attempts": [
+    {
+      "log": "publication-attempt-1.log",
+      "result": "Assets published; first anonymous download returned HTTP404"
+    },
+    {
+      "log": "publication-attempt-2.log",
+      "result": "Same assets downloaded anonymously; both hashes and sizes verified"
+    }
+  ],
+  "reviews": {
+    "head": "eb7278897db6a28511785a5ebfa44a9af2ef114e",
+    "base": "f703817a05d580fa3beaafbf1e848d019eec591f",
+    "standards": {
+      "agent": "/root/standards_review",
+      "outstanding": 0,
+      "initial_findings": 1,
+      "resolution": "Fresh evidence directory guard added",
+      "summary": "Bounded separate module and truthful development evidence; no remaining documented violations or actionable smells."
+    },
+    "spec": {
+      "agent": "/root/spec_review",
+      "outstanding": 0,
+      "summary": "Compact exact phases and toric witnesses, independent Steane amplitude oracle, dense contracts and original fixtures preserved. Release gates pending."
+    },
+    "integration": "Both independent reviewers verified unchanged b/c code/tests, unchanged reviewed e/f files, preserved d distribution block and complete new archive entries; zero outstanding."
+  },
+  "source_coverage": {
+    "inventoried": 16,
+    "whole_rows_certified": 0
+  }
+}

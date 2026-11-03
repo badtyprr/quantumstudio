@@ -1,7 +1,9 @@
 # DEV-11b: compact finite toric Pauli checks
 
-Development evidence; review, merged CI and packaged release verification remain
-pending. This scoped change does not certify any complete source row. DEV-11
+Final scoped validation: verified release [c575cb7e](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c575cb7e); see [combined final evidence](../DEV-11.md#current-scoped-delivery-dev-11bc-and-parallel-audits). Development records below remain historical; the final package reran the applicable checks.
+
+Development evidence is retained below; review, merged CI and final packaged
+verification are now complete in the linked delivery record. This scoped change does not certify any complete source row. DEV-11
 remains Partial: 16 rows inventoried, zero whole rows certified.
 
 The pinned IBM-063 notebook and source locations are recorded in
