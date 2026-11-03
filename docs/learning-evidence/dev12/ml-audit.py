@@ -138,11 +138,23 @@ def main():
         worker_case(f'gradient-{index}', 'IBM-100', 20,
                     f'diff((expect(Z,Ry(x)*|0>)-1)^2,x,1,{angle})', [2*(1-math.cos(angle))*math.sin(angle)])
     edges = [(0,1),(0,2),(1,2),(1,3),(2,4),(3,4)]
+    # This adaptation labels graph vertex q by native/MSB-first wire q.
+    # Source SparsePauliOp q0 is LSB: reverse the displayed ket to compare.
     ham = '+'.join('pauli("'+''.join('Z' if q in edge else 'I' for q in range(5))+'")/2' for edge in edges)
     for i in range(32):
         bits = [int(x) for x in format(i,'05b')]
         cut = sum(bits[a] != bits[b] for a,b in edges)
         worker_case(f'maxcut-{i:05b}', 'IBM-119', 65, f'expect({ham},|{i:05b}>)-3', [-cut], True)
+        source_label = format(i, '05b')[::-1]
+        source_integer = int(source_label, 2)
+        source_spins = [1-2*((source_integer >> q) & 1) for q in range(5)]
+        source_energy = sum(source_spins[a]*source_spins[b]/2 for a,b in edges)-3
+        assert source_energy == -cut
+        scalar[-1].update(
+            adaptation='Graph vertex q maps to native MSB-first wire q; source Qiskit ket label is reversed.',
+            graph_vertex_bits=bits, native_ket_label=format(i, '05b'),
+            source_qiskit_ket_label=source_label, source_qiskit_integer=source_integer,
+            source_diagonal_energy=source_energy)
 
     rows = [[float(x) for x in row] for row in csv.reader(dataset.open())]
     cases = []

@@ -26,10 +26,23 @@ contents were not independently audited or certified.
 | [IBM-098 encoding](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding) | Cells6/8 amplitude examples (including padding); 11 angle,16 phase,22 dense angle,38 two-wire phase convention adapted and verified. | Cells3/4 12-wire basis example; 13/18 plots; 26/33 SU2; 40 Z-map repetitions; 43–49 ZZ; 53/56 Pauli gallery; 59 depth survey and hardware discussion remain unaudited as original executions. Generic scaling and arbitrary maps not certified. |
 | [IBM-099 kernels](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods) | Cells26/30/32: original seven-wire custom map on first three pinned CSV rows, theta=pi/2; complete complex Gram and fidelity kernel, all nine inverse overlaps. Actual diagonal execution checked. | Original 10-feature example cells3–23, 90/30 training/test split, SVC cells34/36, 42-feature/21-wire scaling cells39–58, plots, shots, transpilation and provider calls not executed. |
 | [IBM-100 QVC/QNN](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn) | Cells10/12/16/18/20: original first eight-wire ansatz on two authored inputs/fixed weights; all 256 amplitudes and probabilities, global Z parity expectation and MSE. Scalar one-wire MSE/derivatives are explicitly reduced mathematical witnesses. | Source random dataset/split, COBYLA training (cell34 seed42, batch140, one epoch, maxiter100), improved ansatz cell45, repeated training, predictions/performance, 36-wire scaling and hardware remain unexecuted. No convergence or accuracy claim. |
-| [IBM-119 variational algorithms](https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms) | Cells61/65/66/99: all32 bitstrings verify the five-node six-unit-edge diagonal Hamiltonian with offset -3 equals negative cut size. | Cells7–50 Z/ZZ U-gate variational objectives, numpy eigenvalues and sampled COBYLA; QAOA construction/parameter order, optimizer/layout/backend/mitigation cells71–99 assigned to Agent1/2 or DEV-13/provider owners, not certified here. Source offset is correct for these unit edges; no weighted generalization claimed. |
+| [IBM-119 variational algorithms](https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms) | Cells61/65/66/99: all32 native bitstrings, with explicit reversal to source labels, verify the five-node six-unit-edge diagonal Hamiltonian with offset -3 equals negative cut size. | Cells7–50 Z/ZZ U-gate variational objectives, numpy eigenvalues and sampled COBYLA; QAOA construction/parameter order, optimizer/layout/backend/mitigation cells71–99 assigned to Agent1/2 or DEV-13/provider owners, not certified here. Source offset is correct for these unit edges; no weighted generalization claimed. |
 | [QB-007 Cirq VQE](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb) | Cells9/11/14/17/23/25: reduced fixed 2x2 adaptation, all16 probabilities and basis energies. `jr` joins rows, `jc` joins columns. The measured objective is diagonal Z/ZZ. | Original unseeded 5x5 instance and 10,000-shot CPU/GPU execution remain DEV-13/hardware work. Cell20 constructs GPU simulator unconditionally. There is no optimization loop establishing a ground state in the tested source. Original timing/comparison and later cells remain unexecuted. |
 
 ## Conventions and independent expectations
+
+IBM119 uses a separate, explicit graph relabeling: graph vertex q is native
+MSB-first wire q. Source `SparsePauliOp.from_sparse_list` assigns vertex q to
+Qiskit qubit q, with q0 least significant. Thus native ket `b0b1b2b3b4`
+corresponds to source displayed ket `b4b3b2b1b0`, not the same integer label.
+Source cell94 likewise reverses its displayed bitstring before evaluating the
+graph cut. Each MaxCut fixture now records both labels, the source integer and
+graph-vertex bits, and checks the source diagonal energy under that mapping.
+For example, native `10000` maps to source `00001` (integer1); both represent
+vertex0 selected and have energy minus cut equal to -2. The historical energy
+checks remain valid under this relabeling, but did not disclose it. They never
+established identical source/native bitstring correspondence. Run4 records the
+mapping explicitly; runs1–3 remain preserved.
 
 The [pinned dataset manifest](ml-data-manifest.json) records the external CSV
 snapshot. Only rows0–2 and their 14 features are used; no training/test split or
@@ -68,7 +81,7 @@ same declared phase convention. Energies independently enumerate spin values
 ## Results, failures and provenance
 
 [Results summary](ml-results-summary.json) records binary hashes and the full
-external result path/hash. Run3 passes 65 packaged-worker expressions plus65
+external result path/hash. Run4 passes 65 packaged-worker expressions plus65
 actual canonical serialization re-entries, and15 native numerical circuits
 (2,064 amplitudes and all corresponding probabilities). Absolute tolerance is
 1e-12; largest inverse-overlap discrepancy is 8.881784197001252e-16. The 3x3
@@ -89,7 +102,7 @@ the existing nesting/complexity guard; full expressions/stderr remain in
 describe the rejection as lack of numerical expectation support. Canonical
 scalar re-entry also passes. No product failure was repaired or hidden. The independent Spec review found
 that run2 had inverted the two classifier labels; run3 corrects the labels and
-MSE target. Both earlier runs are retained; only run3 is final acceptance.
+MSE target. Both earlier runs are retained; run4 is final acceptance, adding the explicit IBM119 bit mapping above.
 
 No prior DEV-11 fixture or result was edited. Its original286 expectations and
 Partial status remain historical evidence, not rerun claims for this work.

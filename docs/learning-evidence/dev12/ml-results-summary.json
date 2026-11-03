@@ -13,7 +13,7 @@
     },
     "script": {
       "path": "F:\\src\\libqalculate\\.tools\\dev12-ml-audit\\docs\\learning-evidence\\dev12\\ml-audit.py",
-      "sha256": "f0b766f8c83beae42c439b467aa5f1596241831a6bef1af8033e30afb2f0d209"
+      "sha256": "58a8327238fe9da05f3d803789b875e815cf84ddfd0b1a642fe8cf82bf35f404"
     }
   },
   "kernel": [
@@ -249,10 +249,15 @@
   "amplitudes": 2064,
   "source_base": "753bf16df56aeae0f6454f89999ef203665755f6",
   "release": "c575cb7e70d8b952c18d0a297a7784e246c34381",
-  "raw_result_path": "F:\\src\\libqalculate\\cleanup-audit\\dev12-ml-20261102\\run-3\\results.json",
-  "raw_result_sha256": "89d858785712a6628da65e9e8047a583d80fba10eae87787dced3f4722e4f775",
+  "raw_result_path": "F:\\src\\libqalculate\\cleanup-audit\\dev12-ml-20261102\\run-4\\results.json",
+  "raw_result_sha256": "0e69f9bad46210f04b2fca9e2d6c47863f752633a1d5429f0b44bbdf8fbfdbf0",
   "api_source": {
     "url": "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.z_feature_map",
     "sha256": "9a34142d54754e2b5ea939b37f44a159041794e4c3d7a32d78569fb8058ca720"
+  },
+  "ibm119_mapping": {
+    "graph_vertex_q": "native MSB-first wire q; source Qiskit LSB-first qubit q",
+    "source_displayed_ket": "reverse of native ket label",
+    "checked_source_diagonal_energies": 32
   }
 }
