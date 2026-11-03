@@ -1,0 +1,7 @@
+{
+  "url": "https://raw.githubusercontent.com/qiskit-community/prototype-quantum-kernel-training/main/data/dataset_graph7.csv",
+  "sha256": "357b4356a558c5b8387e9765a955327fc2786b4d231483f57b7504ca0e3788ba",
+  "bytes": 49405,
+  "retrieved": "2026-11-02",
+  "selection": "IBM099 first three rows, original 14 features; labels unused; no training split"
+}
