@@ -2,6 +2,7 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "Variable.h"
+#include "QuantumNotation.h"
 #include <iostream>
 #include <stdexcept>
 static unsigned checks=0;
@@ -74,8 +75,18 @@ int main() {try {
  equal("sum(ptrace(subsystems(\"B\"*identity(4),[B,A],[2,2]),B),0,1,\"B\")","[2,0;0,2]");
  equal("sum(ptrace(subsystems(B*identity(4),[B,A],[2,2]),B),0,1,B)","[2,0;0,2]");
  equal("ptrace(subsystems(matrix(1,1,[7]),[A],[1]),A)","7");
- rejects(std::string("subsystems(identity(2),[")+char(0x18)+"A],[2])","reserved control characters");
- rejects(std::string("subsystems(identity(2),[")+char(0x19)+"A],[2])","reserved control characters");
+ // Calculator sanitizes control characters before translation. Exercise the
+ // translator boundary directly to check its reserved-marker protection.
+ for(char marker:{char(0x18),char(0x19)}) {
+  bool rejected=false;
+  try {translateQuantum(std::string("subsystems(identity(2),[")+marker+"A],[2])");}
+  catch(const std::runtime_error &error) {
+   if(std::string(error.what()).find("reserved control characters")==std::string::npos)throw;
+   rejected=true;
+  }
+  if(!rejected)throw std::runtime_error("Translator accepted reserved marker");
+  ++checks;
+ }
  equal("ptrace(subsystems(identity(2),[A,B],[1,2]),B)","2");
  equal("ptrace(subsystems(identity(2),[A,B],[1,2]),[A,B])","2");
  rejects("ptrace(subsystems("+rho+",[A,B],[2,2]),missing)","Unknown subsystem label");
