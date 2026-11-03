@@ -316,5 +316,5 @@ check_PROGRAMS += quantum-named-subsystem-test
 TESTS += quantum-named-subsystem-test
 quantum_named_subsystem_test_SOURCES = quantum-named-subsystem-test.cc
 quantum_named_subsystem_test_LDADD = $(test_LDADD)
-TESTS += quantum-named-subsystem-test.py
-EXTRA_DIST += quantum-named-subsystem-test.py
+TESTS += quantum-named-subsystem-worker-test.py
+EXTRA_DIST += quantum-named-subsystem-worker-test.py
