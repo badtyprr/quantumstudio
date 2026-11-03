@@ -986,7 +986,9 @@ class Parser {
     a="qsumgate("+dimension+","+dimension+")";
    }
    else if(gates.find(a)!=gates.end()) { a=gates.at(a); }
-   else if(take('(')) {
+   // A numeric token followed by parentheses is an adjacent factor, not a
+   // function call. Let product() bind it after any power of that token.
+   else if(!numericToken && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     if(name=="J_x" || name=="Jₓ") name="Jx";
     if(name=="J_y") name="Jy";
