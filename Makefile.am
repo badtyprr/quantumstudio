@@ -218,3 +218,4 @@ EXTRA_DIST += docs/learning-evidence/dev11/dev11bc-release-summary.json docs/lea
 EXTRA_DIST += docs/learning-evidence/DEV-12.md docs/learning-evidence/dev12/variational-source-manifest.json
 EXTRA_DIST += docs/learning-evidence/dev12/variational-baseline-summary.json
 EXTRA_DIST += windows/Dev12GuiTests.cs windows/test-dev12-gui.ps1
+EXTRA_DIST += docs/learning-evidence/dev12/chemistry-diagonalization.md docs/learning-evidence/dev12/chemistry-diagonalization-source-manifest.json docs/learning-evidence/dev12/chemistry-diagonalization-cell-inventory.json docs/learning-evidence/dev12/chemistry-diagonalization-inventory.py docs/learning-evidence/dev12/chemistry-diagonalization-probe.py
