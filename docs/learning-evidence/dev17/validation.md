@@ -23,7 +23,7 @@ All logs below are retained outside disposable checkouts at
 | `gui-session-only/result.txt` | 72 real application Calculate/session checks pass, including saved/reopened evaluated mappings. This supplementary driver reads the application's internal copy text: Windows Clipboard is explicitly NOT tested. |
 | `gui-fixed`, `gui-retry`, `gui-diagnostic` | Full unchanged GUI Copy fixture fails because Windows denies clipboard access. Do not count these as GUI Copy passes. |
 | `private-clipboard-probe.txt` | Child confirms private station/desktop; native OpenClipboard still returns error 5 and WPF returns 0x800401D0. |
-| `preservation.json` | Root README hash and 41,752 pre-existing dist file size/timestamp records preserved; retained DEV-13/DEV-16 state preserved. |
+| `preservation.json` | Root README hash and 41,752 pre-existing dist file size/timestamp records preserved. |
 
 Worker SHA-256:
 `8bc83389b29fd24ef4958a2d9d3a38db2392f066c2cbfda48eb84fc5d8638db1`.
