@@ -1,0 +1,53 @@
+{
+  "utc": "2026-11-02T23:58:38.783956+00:00",
+  "worker": "F:\\src\\libqalculate\\dist\\releases\\214e6866\\QuantumStudio\\quantum-worker.exe",
+  "worker_sha256": "42126088fd76b9dfa5c7787f9bf66a6429c1baa0985ca9543b508322d4dc955d",
+  "runner_sha256": "7c7e0590a3fb1244c9e5e75c0ce965cb0ed011cec1105b423cf176971e2e53ef",
+  "sources": [
+    {
+      "id": "IBM-056",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors",
+      "retrieved_utc": "2026-11-01T15:54:01.258772+00:00",
+      "error": "HTTP Error 403: Forbidden",
+      "notebook": {
+        "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors.ipynb",
+        "retrieved_utc": "2026-11-01T16:03:49.305104+00:00",
+        "status": 200,
+        "sha256": "acacc51286660e12f389aa3282a0ca7a3aa46fb7405dbd9797c5c94b55825f5d",
+        "cells": 2,
+        "code_cells": 0
+      }
+    },
+    {
+      "id": "IBM-058",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables",
+      "retrieved_utc": "2026-11-01T15:54:01.361439+00:00",
+      "error": "HTTP Error 403: Forbidden",
+      "notebook": {
+        "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables.ipynb",
+        "retrieved_utc": "2026-11-01T16:03:49.846266+00:00",
+        "status": 200,
+        "sha256": "327f3f6dc910b571e1d2bdd18028446a7b9e38855d030f3c37298bf174ea97cc",
+        "cells": 2,
+        "code_cells": 0
+      }
+    }
+  ],
+  "tests": 60,
+  "passed": 60,
+  "product_revision": "214e686668672f2ab405300e88baa008eb40fcf4",
+  "source_base": "affdcc843916f1c4c40270135f9f7c2e4d83855f",
+  "gui_checks": 35,
+  "dev09_regression_checks": 214,
+  "gui_binary_sha256": {
+    "QuantumStudio.exe": "b01ce765f54c9d653e817efaa89924da83ff397a43f1b1a3f6eefe5ed8e018f1",
+    "quantum-worker.exe": "42126088fd76b9dfa5c7787f9bf66a6429c1baa0985ca9543b508322d4dc955d"
+  },
+  "gui_inspected_captures": [
+    "coherent-controlled-recovery.png",
+    "damping-unconditional-channel.png",
+    "minimum.png",
+    "zz-conditional--1.png",
+    "zz-conditional-1.png"
+  ]
+}
