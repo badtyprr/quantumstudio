@@ -111,11 +111,37 @@ cancellation diagnostic is unresolved and is not counted as newly supported.
 Attempt 2 exposed a test-parser assumption that tiny complex residuals would
 print as real; accepting complex numerical output corrected the harness.
 
+## Machine learning: existing-route evidence
+
+[Scoped ML evidence](dev12/ml-audit.md) inventories IBM-096–100 plus
+IBM-119/QB-007, with zero full source rows certified. The final development
+run passes 65 packaged-worker expressions and 65 actual canonical re-entries,
+plus 15 native numerical circuits with 2,064 full amplitudes and probabilities
+at absolute tolerance 1e−12. The native adapter is a separately built audit
+executable, not a packaged GUI or original SDK execution. Existing numerical
+state regression: 3,664 checks passed.
+
+This includes finite seven-qubit feature-map/overlap matrices on pinned source
+data, eight-qubit classifier circuits on two authored inputs, a disclosed
+reduced QB-007 adaptation, and 32 source MaxCut basis energies. No ML product
+gap was confirmed. Two dense quantum-notation inputs hit the existing
+complexity guard; the ordinary calculator expectation route passes. Both
+original failures and the working route are recorded. An initial review found
+reversed source class labels; the final run corrects them to horizontal −1 /
+vertical +1 and retains prior results. Separate final-head Standards and Spec
+reviews report zero findings; integration CI/merge remain pending.
+
+Original SDK/notebook execution, training, prediction quality, convergence,
+untested encoding families, large-circuit scaling, source media and hardware
+remain open. Ideal finite Gram-matrix positivity is not a certification of
+finite-shot kernel positivity. These boundaries do not reduce the full task.
+
 ## Coordination and retained limits
 
 Agent 2 owns chemistry and diagonalization, Agent 3 owns machine learning.
 Only the integration owner edits this combined evidence, the central checklist
-and shared build files. Scoped peer evidence will be linked as it becomes ready.
+and shared build files. Ready ML evidence is linked above; chemistry evidence
+will be linked when its implementation and audit are ready.
 
 The retained DEV-13 owner confirmed QB-007 is static inventory only, at qBraid
 revision `86787e1ba372facc224f925189755e69c479828b`, notebook SHA-256

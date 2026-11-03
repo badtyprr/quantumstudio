@@ -220,3 +220,4 @@ EXTRA_DIST += docs/learning-evidence/dev12/variational-baseline-summary.json
 EXTRA_DIST += windows/Dev12GuiTests.cs windows/test-dev12-gui.ps1
 EXTRA_DIST += docs/learning-evidence/dev12/gui-verify.py
 EXTRA_DIST += docs/learning-evidence/dev12/chemistry-diagonalization.md docs/learning-evidence/dev12/chemistry-diagonalization-source-manifest.json docs/learning-evidence/dev12/chemistry-diagonalization-cell-inventory.json docs/learning-evidence/dev12/chemistry-diagonalization-inventory.py docs/learning-evidence/dev12/chemistry-diagonalization-probe.py
+EXTRA_DIST += docs/learning-evidence/dev12/ml-audit.py docs/learning-evidence/dev12/ml-numerical-driver.cc docs/learning-evidence/dev12/ml-audit.md docs/learning-evidence/dev12/ml-source-manifest.json docs/learning-evidence/dev12/ml-data-manifest.json docs/learning-evidence/dev12/ml-cell-ledger.json docs/learning-evidence/dev12/ml-results-summary.json
