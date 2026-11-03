@@ -324,6 +324,8 @@ const std::map<std::string,int> quantumSignatures = {
  {"qptm",1},
  {"qpaulivec",1},
  {"qpauliword",4},
+ {"qcompactpauli",4},{"qcompactmultiply",2},{"qcompactcommutes",2},
+ {"qcompactrank",1},{"qcompactdimension",1},{"qcompactdistance",2},{"qcompactsyndrome",2},
  {"qunpaulivec",1},
  {"qptranspose",2},
  {"qptransposedim",3},
@@ -367,17 +369,17 @@ std::string operatorVector(const std::string &label) {
  for(unsigned char c:name) if(c<128 && !std::isalnum(c) && c!='_') throw std::runtime_error("Double kets require an operator name; use vec(expression) for a general matrix.");
  auto gate=gates.find(name); return "qvec("+(gate==gates.end() ? name : gate->second)+")";
 }
-std::string pauliLabelExpression(const std::string &label) {
+std::string pauliLabelExpression(const std::string &label,bool compact=false) {
  unsigned phase=0;size_t first=0,x=0,z=0;
  if(first<label.size() && (label[first]=='+' || label[first]=='-')) {if(label[first]=='-')phase=2;++first;}
  if(first<label.size() && label[first]=='1')++first;
  if(first<label.size() && (label[first]=='i' || label[first]=='j')) {++phase;++first;}
- if(label.size()-first<1 || label.size()-first>9 || label.find_first_not_of("IXYZ",first)!=std::string::npos)throw std::runtime_error("Pauli labels require 1 to 9 letters I, X, Y, Z, with an optional sign, 1, and i/j phase prefix.");
+ if(label.size()-first<1 || label.size()-first>(compact ? 25 : 9) || label.find_first_not_of("IXYZ",first)!=std::string::npos)throw std::runtime_error(compact ? "Compact Pauli labels require 1 to 25 letters I, X, Y, Z, with an optional sign, 1, and i/j phase prefix." : "Pauli labels require 1 to 9 letters I, X, Y, Z, with an optional sign, 1, and i/j phase prefix.");
  for(size_t k=first;k<label.size();++k) {
   x=(x<<1)|(label[k]=='X' || label[k]=='Y');z=(z<<1)|(label[k]=='Z' || label[k]=='Y');
   if(label[k]=='Y')phase+=3; // Y = -i ZX; row-based sparse matrix convention.
  }
- return "qpauliword("+std::to_string(label.size()-first)+","+std::to_string(x)+","+std::to_string(z)+","+std::to_string(phase%4)+")";
+ return std::string(compact ? "qcompactpauli(" : "qpauliword(")+std::to_string(label.size()-first)+","+std::to_string(x)+","+std::to_string(z)+","+std::to_string(phase%4)+")";
 }
 class Parser {
  static void checkSize(const std::string &value) {
@@ -1013,6 +1015,12 @@ class Parser {
     if(name=="linear_gate")name="qlineargate";
     if(name=="gf2_inverse")name="qgf2inverse";
     if(name=="gf2_nullspace")name="qgf2nullspace";
+    if(name=="compact_multiply")name="qcompactmultiply";
+    if(name=="compact_commutes")name="qcompactcommutes";
+    if(name=="compact_rank")name="qcompactrank";
+    if(name=="compact_dimension")name="qcompactdimension";
+    if(name=="compact_distance")name="qcompactdistance";
+    if(name=="compact_syndrome")name="qcompactsyndrome";
     if(name=="stabilizer_projector")name="qstabilizerprojector";
     if(name=="stabilizer_dimension")name="qstabilizerdimension";
     if(name=="stabilizer_distance")name="qstabilizerdistance";
@@ -1151,12 +1159,12 @@ class Parser {
      need('>');generators+=")";a=name+"("+generators;
      if(name=="qstabilizersyndrome" || name=="qstabilizercorrection") {need(',');a+=","+expression();}
      need(')');a+=")";
-    } else if(name=="pauli" || name=="Pauli") {
+    } else if(name=="pauli" || name=="Pauli" || name=="compact_pauli") {
      ws(); char quote=take('"') ? '"' : take('\'') ? '\'' : 0; size_t begin=p;
      while(p<s.size() && s[p]!=(quote ? quote : ')')) ++p;
      if(p==s.size()) throw std::runtime_error("Unclosed Pauli label.");
      std::string label=labelText(s.substr(begin,p-begin)); if(quote) ++p; need(')');
-     a=pauliLabelExpression(label);
+     a=pauliLabelExpression(label,name=="compact_pauli");
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {
      std::string state=expression(); need(','); std::string indices=expression();
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }

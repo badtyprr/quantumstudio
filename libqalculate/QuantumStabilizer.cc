@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumStabilizer.h"
+#include "QuantumCompactPauli.h"
 #include "Calculator.h"
 #include "Function.h"
 #include <string>
@@ -167,5 +168,6 @@ class QuantumStabilizerFunction: public MathFunction {
 };
 }
 void registerQuantumStabilizer(Calculator &calculator) {
+ registerQuantumCompactPauli(calculator);
  for(const auto &entry:{std::pair<const char *,int>("qpauliword",4),{"qstabilizerprojector",1},{"qstabilizerdimension",1},{"qstabilizersyndrome",2},{"qstabilizerdistance",1},{"qstabilizerparameters",1},{"qstabilizercorrection",2}})calculator.addFunction(new QuantumStabilizerFunction(entry.first,entry.second));
 }

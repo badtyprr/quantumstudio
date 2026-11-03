@@ -49,6 +49,7 @@ libqalculate_la_SOURCES = \
 	QuantumBinary.cc \
 	QuantumOrder.cc \
 	QuantumIndexed.cc \
+	QuantumCompactPauli.cc \
 	QuantumStabilizer.cc \
 	QuantumCSS.cc \
 	QuantumNegativity.cc \
@@ -133,3 +134,5 @@ noinst_HEADERS += QuantumRuntimeRotation.h QuantumRuntimeGate.h QuantumWireSelec
 noinst_HEADERS += QuantumClassicalArray.h
 
 noinst_HEADERS += QuantumClassicalNumeric.h
+
+noinst_HEADERS += QuantumCompactPauli.h

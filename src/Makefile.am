@@ -295,3 +295,10 @@ TESTS += quantum-domains-test.py
 EXTRA_DIST += quantum-domains-test.py
 TESTS += quantum-cartesian-test.py
 EXTRA_DIST += quantum-cartesian-test.py
+
+check_PROGRAMS += quantum-compact-pauli-test quantum-steane-transversal-test
+TESTS += quantum-compact-pauli-test quantum-steane-transversal-test
+quantum_compact_pauli_test_SOURCES = quantum-compact-pauli-test.cc
+quantum_compact_pauli_test_LDADD = $(test_LDADD)
+quantum_steane_transversal_test_SOURCES = quantum-steane-transversal-test.cc
+quantum_steane_transversal_test_LDADD = ../libqalculate/libqalculate.la
