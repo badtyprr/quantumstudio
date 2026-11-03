@@ -425,10 +425,10 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-095** [skqd](https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 ### quantum-machine-learning
 
-- [ ] **IBM-096** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-097** [classical-ml-review](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-098** [data-encoding](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
-- [ ] **IBM-099** [quantum-kernel-methods](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-096** [introduction](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/dev12/ml-audit.md); whole-source audit remains pending.
+- [ ] **IBM-097** [classical-ml-review](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/dev12/ml-audit.md); whole-source audit remains pending.
+- [ ] **IBM-098** [data-encoding](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/dev12/ml-audit.md); whole-source audit remains pending.
+- [ ] **IBM-099** [quantum-kernel-methods](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/dev12/ml-audit.md); whole-source audit remains pending.
 - [ ] **IBM-100** [qvc-qnn](https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/dev12/ml-audit.md); whole-source audit remains pending.
 ### variational-algorithm-design
 
