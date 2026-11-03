@@ -530,7 +530,7 @@ class Parser {
     throw std::runtime_error("Subsystem labels must be identifiers of 1 to 64 ASCII letters, digits or underscores, starting with a letter.");
    }
    if(++count>32 || ++nodes>nodeLimit)throw std::runtime_error("Subsystem labels exceed the 32-factor or expression complexity limit.");
-   if(hasKeyword && (label=="not" || label=="and" || label=="or" || label=="xor"))*hasKeyword=true;
+   if(hasKeyword && !quote && (label=="not" || label=="and" || label=="or" || label=="xor"))*hasKeyword=true;
    if(count>1)result+=",";result+=subsystemLabelBegin;result+='\"'+label+'\"';result+=subsystemLabelEnd;
    if(!close)return result;
    if(take(close))return result+")";

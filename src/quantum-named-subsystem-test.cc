@@ -73,6 +73,7 @@ int main() {try {
   throw std::runtime_error("Evaluated declaration lost its mapping");
  ++checks;
  calculator.addVariable(new KnownVariable("","k",MathStructure(0)));
+ equal("sum(ptrace(identity(4),[k,\"not\"]),1,1,\"not\")","4");
  equal("ptrace("+rho+",k)","[3/4,1/4;1/4,1/4]");
  equal("ptrace("+rho+",[k])","[3/4,1/4;1/4,1/4]");
  equal("ptrace("+rho+",k,[2,2])","[3/4,1/4;1/4,1/4]");
