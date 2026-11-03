@@ -10,12 +10,92 @@
 namespace {
 const MathStructure &element(const MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
 MathStructure &element(MathStructure &m, size_t r, size_t c) { return *m.getElement(r+1,c+1); }
+bool mappedSubsystems(const MathStructure &value) {
+ return value.isFunction() && value.function()->referenceName()=="qsubsystems" && value.size()==3;
+}
+bool subsystemError(const char *message) {CALCULATOR->error(true,message,NULL);return false;}
+bool validSubsystems(const MathStructure &matrix,const MathStructure &labels,const MathStructure &dims) {
+ if(mappedSubsystems(matrix))return subsystemError("A subsystem mapping is already attached; nested redeclarations are not allowed.");
+ if(!labels.isVector() || labels.size()==0 || labels.size()>32)
+  return subsystemError("A subsystem mapping requires an ordered list of 1 to 32 labels.");
+ for(size_t k=0;k<labels.size();++k) {
+  const std::string name=labels[k].isSymbolic() ? labels[k].symbol() : "";
+  bool valid=!name.empty() && name.size()<=64;
+  for(size_t j=0;j<name.size();++j) {
+   unsigned char c=name[j];bool letter=(c>='A' && c<='Z') || (c>='a' && c<='z');
+   if(!letter && (j==0 || !((c>='0' && c<='9') || c=='_')))valid=false;
+  }
+  if(!valid)return subsystemError("Subsystem labels must be literal identifiers of 1 to 64 ASCII letters, digits or underscores, starting with a letter.");
+  for(size_t j=0;j<k;++j)if(labels[j].equals(labels[k]))return subsystemError("Duplicate subsystem labels in mapping.");
+ }
+ if(!dims.isVector() || dims.size()!=labels.size())return subsystemError("Subsystem labels and dimensions must have matching lengths.");
+ size_t product=1;
+ for(size_t k=0;k<dims.size();++k) {
+  if(!dims[k].isNumber() || !dims[k].number().isInteger() || dims[k].number()<1 || dims[k].number()>512)
+   return subsystemError("Subsystem dimensions must be integers from 1 to 512.");
+  size_t dimension=dims[k].number().intValue();
+  if(product>512/dimension)return subsystemError("Subsystem dimension product exceeds 512.");
+  product*=dimension;
+ }
+ if(!matrix.isMatrix() || matrix.rows()!=matrix.columns() || matrix.rows()>512)
+  return subsystemError("A subsystem mapping requires a square matrix of at most 512 rows.");
+ if(product!=matrix.rows())return subsystemError("Subsystem dimension product must equal the matrix dimension.");
+ return true;
+}
 class QuantumSubsystemFunction: public MathFunction {
  std::string op;
  public:
  QuantumSubsystemFunction(const char *name,int count):MathFunction(name,count),op(name) {}
  ExpressionItem *copy() const {return new QuantumSubsystemFunction(*this);}
+ bool representsScalar(const MathStructure &args) const {return op=="qsubsystems" ? false : MathFunction::representsScalar(args);}
+ bool representsNonMatrix(const MathStructure &args) const {return op=="qsubsystems" ? false : MathFunction::representsNonMatrix(args);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qsubsystems") {
+   // The notation parser quotes labels, so evaluating their vector constructor
+   // never turns names into assigned variables, gates or scalar constants.
+   MathStructure matrix=raw[0],labels=raw[1],dims=raw[2];matrix.eval(eo);labels.eval(eo);dims.eval(eo);
+   if(!validSubsystems(matrix,labels,dims))return 0;
+   if(matrix.equals(raw[0]) && labels.equals(raw[1]) && dims.equals(raw[2]))return 0;
+   out=MathStructure(static_cast<MathFunction*>(this),static_cast<MathStructure*>(NULL));
+   out.addChild(matrix);out.addChild(labels);out.addChild(dims);return 1;
+  }
+  if(op=="qptrace" || op=="qptracedim" || op=="qptraceselect") {
+   MathStructure state=raw[0];state.eval(eo);
+   if(mappedSubsystems(state)) {
+    if(op=="qptracedim") {subsystemError("A named subsystem mapping already supplies dimensions; do not pass conflicting explicit dimensions.");return 0;}
+    if(!validSubsystems(state[0],state[1],state[2]))return 0;
+    MathStructure selected=raw[1];selected.eval(eo);
+    size_t count=selected.isVector() ? selected.size() : 1;
+    if(count>32) {subsystemError("Too many traced subsystem labels.");return 0;}
+    MathStructure indices;indices.clearVector();std::vector<bool> seen(state[1].size(),false);
+    for(size_t k=0;k<count;++k) {
+     const MathStructure &label=selected.isVector() ? selected[k] : selected;
+     if(!label.isSymbolic()) {subsystemError("A mapped partial trace requires subsystem labels, not numeric indices.");return 0;}
+     size_t index=0;while(index<state[1].size() && !label.equals(state[1][index]))++index;
+     if(index==state[1].size()) {subsystemError("Unknown subsystem label in partial trace.");return 0;}
+     if(seen[index]) {subsystemError("Duplicate traced subsystem labels.");return 0;}
+     seen[index]=true;indices.addChild(MathStructure(Number(index)));
+    }
+    MathStructure args;args.clearVector();args.addChild(state[0]);args.addChild(indices);args.addChild(state[2]);
+    return CALCULATOR->getFunction("qptracedim")->calculate(out,args,eo);
+   }
+   if(op=="qptraceselect") {
+    // The same spelling can denote metadata on a mapped value or an assigned
+    // numeric index on an ordinary matrix. Resolve only after seeing the value.
+    MathStructure indices=raw[2];indices.eval(eo);
+    for(size_t k=0;k<(indices.isVector() ? indices.size() : 1);++k)
+     if(!(indices.isVector() ? indices[k] : indices).isNumber()) {
+      subsystemError("Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping.");return 0;
+     }
+    MathStructure args;args.clearVector();args.addChild(state);args.addChild(indices);
+    return CALCULATOR->getFunction("qptrace")->calculate(out,args,eo);
+   }
+   MathStructure selected=raw[1];selected.eval(eo);
+   for(size_t k=0;k<(selected.isVector() ? selected.size() : 1);++k)
+    if((selected.isVector() ? selected[k] : selected).isSymbolic()) {
+     subsystemError("Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping.");return 0;
+    }
+  }
   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
   if((op=="qpermute" || op=="qpermutedim") && args[0].isVector() && !args[0].isMatrix()) {
    bool flat=true;for(size_t k=0;k<args[0].size();++k)if(args[0][k].isVector())flat=false;
@@ -201,6 +281,6 @@ class QuantumSubsystemFunction: public MathFunction {
 };
 }
 void registerQuantumSubsystem(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
+ for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
   calculator.addFunction(new QuantumSubsystemFunction(entry.first,entry.second));
 }

@@ -1,0 +1,1242 @@
+[
+  {
+    "id": "initial",
+    "source": "M01",
+    "input": "quantum:\\vert 1\\rangle \\vert 0 \\rangle",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "None; source TeX unchanged"
+  },
+  {
+    "id": "pi1-0",
+    "source": "M02",
+    "input": "quantum:(H \u2297 H)|10>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Extract expression from equation chain; circuit route makes H layers explicit"
+  },
+  {
+    "id": "pi1-1",
+    "source": "M02",
+    "input": "quantum:|->|+>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Extract expression from equation chain; circuit route makes H layers explicit"
+  },
+  {
+    "id": "pi1-2",
+    "source": "M02",
+    "input": "quantum:1/2*(|0>-|1>)|0>+1/2*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Extract expression from equation chain; circuit route makes H layers explicit"
+  },
+  {
+    "id": "xor-0-0",
+    "source": "M08,M10",
+    "input": "quantum:\\vert 0 \\oplus 0\\rangle - \\vert 1 \\oplus 0\\rangle",
+    "expected": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms"
+  },
+  {
+    "id": "xor-0-1",
+    "source": "M08,M10",
+    "input": "quantum:(-1)^0*(|0>-|1>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms"
+  },
+  {
+    "id": "xor-0-2",
+    "source": "M08,M10",
+    "input": "quantum:|0>-|1>",
+    "expected": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms"
+  },
+  {
+    "id": "xor-1-0",
+    "source": "M08,M10",
+    "input": "quantum:\\vert 0 \\oplus 1\\rangle - \\vert 1 \\oplus 1\\rangle",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms"
+  },
+  {
+    "id": "xor-1-1",
+    "source": "M08,M10",
+    "input": "quantum:(-1)^1*(|0>-|1>)",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms"
+  },
+  {
+    "id": "xor-1-2",
+    "source": "M08,M10",
+    "input": "quantum:|1>-|0>",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms"
+  },
+  {
+    "id": "minus",
+    "source": "M14",
+    "input": "quantum:\\vert - \\rangle",
+    "expected": [
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "-1/2"
+      ]
+    ],
+    "adaptation": "None"
+  },
+  {
+    "id": "oracle-1",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1]*(|->|+>)",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix"
+  },
+  {
+    "id": "pi2-xor-1",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 0>-|1 \u2295 0>)|0>+1/2*(|0 \u2295 0>-|1 \u2295 0>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels"
+  },
+  {
+    "id": "pi2-phase-1-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^0*(|0>-|1>)|0>+1/2*(-1)^0*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-phase-1-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^0*|0>+(-1)^0*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-factor-1-0",
+    "source": "M18",
+    "input": "quantum:(-1)^0*(|-> \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi2-factor-1-1",
+    "source": "M18",
+    "input": "quantum:(-1)^0*|->|+>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi3-1",
+    "source": "M25",
+    "input": "quantum:(-1)^0*|->|0>",
+    "expected": [
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch"
+  },
+  {
+    "id": "circuit-1",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution"
+  },
+  {
+    "id": "measure-1",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|0><0|),(I \u2297 H)*[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling"
+  },
+  {
+    "id": "phase-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^0",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "parity-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "difference-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0-0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "sign-equivalence-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(0-0)-(-1)^0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "oracle-2",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]*(|->|+>)",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix"
+  },
+  {
+    "id": "pi2-xor-2",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 0>-|1 \u2295 0>)|0>+1/2*(|0 \u2295 1>-|1 \u2295 1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels"
+  },
+  {
+    "id": "pi2-phase-2-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^0*(|0>-|1>)|0>+1/2*(-1)^1*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-phase-2-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^0*|0>+(-1)^1*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-factor-2-0",
+    "source": "M18",
+    "input": "quantum:(-1)^0*(|-> \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi2-factor-2-1",
+    "source": "M18",
+    "input": "quantum:(-1)^0*|->|->",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi3-2",
+    "source": "M25",
+    "input": "quantum:(-1)^0*|->|1>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch"
+  },
+  {
+    "id": "circuit-2",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution"
+  },
+  {
+    "id": "measure-2",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|1><1|),(I \u2297 H)*[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling"
+  },
+  {
+    "id": "phase-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^0",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "parity-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "difference-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1-0",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "sign-equivalence-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(1-0)-(-1)^1",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "oracle-3",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[0,0,1,0;0,1,0,0;1,0,0,0;0,0,0,1]*(|->|+>)",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix"
+  },
+  {
+    "id": "pi2-xor-3",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 1>-|1 \u2295 1>)|0>+1/2*(|0 \u2295 0>-|1 \u2295 0>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels"
+  },
+  {
+    "id": "pi2-phase-3-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^1*(|0>-|1>)|0>+1/2*(-1)^0*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-phase-3-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^1*|0>+(-1)^0*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-factor-3-0",
+    "source": "M18",
+    "input": "quantum:(-1)^1*(|-> \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi2-factor-3-1",
+    "source": "M18",
+    "input": "quantum:(-1)^1*|->|->",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi3-3",
+    "source": "M25",
+    "input": "quantum:(-1)^1*|->|1>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch"
+  },
+  {
+    "id": "circuit-3",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[0,0,1,0;0,1,0,0;1,0,0,0;0,0,0,1]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution"
+  },
+  {
+    "id": "measure-3",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|1><1|),(I \u2297 H)*[0,0,1,0;0,1,0,0;1,0,0,0;0,0,0,1]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling"
+  },
+  {
+    "id": "phase-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "parity-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "difference-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0-1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "sign-equivalence-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(0-1)-(-1)^1",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "oracle-4",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[0,0,1,0;0,0,0,1;1,0,0,0;0,1,0,0]*(|->|+>)",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix"
+  },
+  {
+    "id": "pi2-xor-4",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 1>-|1 \u2295 1>)|0>+1/2*(|0 \u2295 1>-|1 \u2295 1>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels"
+  },
+  {
+    "id": "pi2-phase-4-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^1*(|0>-|1>)|0>+1/2*(-1)^1*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-phase-4-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^1*|0>+(-1)^1*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit"
+  },
+  {
+    "id": "pi2-factor-4-0",
+    "source": "M18",
+    "input": "quantum:(-1)^1*(|-> \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi2-factor-4-1",
+    "source": "M18",
+    "input": "quantum:(-1)^1*|->|+>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product"
+  },
+  {
+    "id": "pi3-4",
+    "source": "M25",
+    "input": "quantum:(-1)^1*|->|0>",
+    "expected": [
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch"
+  },
+  {
+    "id": "circuit-4",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[0,0,1,0;0,0,0,1;1,0,0,0;0,1,0,0]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution"
+  },
+  {
+    "id": "measure-4",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|0><0|),(I \u2297 H)*[0,0,1,0;0,0,0,1;1,0,0,0;0,1,0,0]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling"
+  },
+  {
+    "id": "phase-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "parity-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "difference-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1-1",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "sign-equivalence-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(1-1)-(-1)^0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two"
+  },
+  {
+    "id": "minus-one",
+    "source": "M20",
+    "input": "quantum:-1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "None"
+  },
+  {
+    "id": "one",
+    "source": "M26",
+    "input": "quantum:1",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Scalar alone is not measurement evidence; see measure-1..4"
+  }
+]

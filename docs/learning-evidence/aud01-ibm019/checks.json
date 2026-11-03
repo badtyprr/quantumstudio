@@ -1,0 +1,2864 @@
+[
+  {
+    "id": "initial",
+    "source": "M01",
+    "input": "quantum:\\vert 1\\rangle \\vert 0 \\rangle",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "None; source TeX unchanged",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0; 0; 1; 0]\",\"display_text\":\"[0; 0; 1; 0]\",\"copy_text\":\"matrix(4,1,[0,0,1,0])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0\"],[\"0\"],[\"1\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0; 0; 1; 0]",
+      "display_text": "[0; 0; 1; 0]",
+      "copy_text": "matrix(4,1,[0,0,1,0])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "1"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi1-0",
+    "source": "M02",
+    "input": "quantum:(H \u2297 H)|10>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Extract expression from equation chain; circuit route makes H layers explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi1-1",
+    "source": "M02",
+    "input": "quantum:|->|+>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Extract expression from equation chain; circuit route makes H layers explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi1-2",
+    "source": "M02",
+    "input": "quantum:1/2*(|0>-|1>)|0>+1/2*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Extract expression from equation chain; circuit route makes H layers explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "xor-0-0",
+    "source": "M08,M10",
+    "input": "quantum:\\vert 0 \\oplus 0\\rangle - \\vert 1 \\oplus 0\\rangle",
+    "expected": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[1; \u22121]\",\"display_text\":\"[1; \u22121]\",\"copy_text\":\"matrix(2,1,[1,\u22121])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1\"],[\"\u22121\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[1; \u22121]",
+      "display_text": "[1; \u22121]",
+      "copy_text": "matrix(2,1,[1,\u22121])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "1"
+        ],
+        [
+          "\u22121"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "xor-0-1",
+    "source": "M08,M10",
+    "input": "quantum:(-1)^0*(|0>-|1>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[1; \u22121]\",\"display_text\":\"[1; \u22121]\",\"copy_text\":\"matrix(2,1,[1,\u22121])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1\"],[\"\u22121\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[1; \u22121]",
+      "display_text": "[1; \u22121]",
+      "copy_text": "matrix(2,1,[1,\u22121])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "1"
+        ],
+        [
+          "\u22121"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "xor-0-2",
+    "source": "M08,M10",
+    "input": "quantum:|0>-|1>",
+    "expected": [
+      [
+        "1",
+        "0"
+      ],
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[1; \u22121]\",\"display_text\":\"[1; \u22121]\",\"copy_text\":\"matrix(2,1,[1,\u22121])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1\"],[\"\u22121\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[1; \u22121]",
+      "display_text": "[1; \u22121]",
+      "copy_text": "matrix(2,1,[1,\u22121])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "1"
+        ],
+        [
+          "\u22121"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "xor-1-0",
+    "source": "M08,M10",
+    "input": "quantum:\\vert 0 \\oplus 1\\rangle - \\vert 1 \\oplus 1\\rangle",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22121; 1]\",\"display_text\":\"[\u22121; 1]\",\"copy_text\":\"matrix(2,1,[\u22121,1])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"\u22121\"],[\"1\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22121; 1]",
+      "display_text": "[\u22121; 1]",
+      "copy_text": "matrix(2,1,[\u22121,1])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22121"
+        ],
+        [
+          "1"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "xor-1-1",
+    "source": "M08,M10",
+    "input": "quantum:(-1)^1*(|0>-|1>)",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22121; 1]\",\"display_text\":\"[\u22121; 1]\",\"copy_text\":\"matrix(2,1,[\u22121,1])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"\u22121\"],[\"1\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22121; 1]",
+      "display_text": "[\u22121; 1]",
+      "copy_text": "matrix(2,1,[\u22121,1])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22121"
+        ],
+        [
+          "1"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "xor-1-2",
+    "source": "M08,M10",
+    "input": "quantum:|1>-|0>",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaust both source bit cases; extract individual equality terms",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22121; 1]\",\"display_text\":\"[\u22121; 1]\",\"copy_text\":\"matrix(2,1,[\u22121,1])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"\u22121\"],[\"1\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22121; 1]",
+      "display_text": "[\u22121; 1]",
+      "copy_text": "matrix(2,1,[\u22121,1])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22121"
+        ],
+        [
+          "1"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "minus",
+    "source": "M14",
+    "input": "quantum:\\vert - \\rangle",
+    "expected": [
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "-1/2"
+      ]
+    ],
+    "adaptation": "None",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[(1 \u2215 \u221a(2)); (\u22121 \u2215 \u221a(2))]\",\"display_text\":\"[(1 \u2215 \u221a(2)); (\u22121 \u2215 \u221a(2))]\",\"copy_text\":\"matrix(2,1,[1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1 \u2215 \u221a(2)\"],[\"\u22121 \u2215 \u221a(2)\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[(1 \u2215 \u221a(2)); (\u22121 \u2215 \u221a(2))]",
+      "display_text": "[(1 \u2215 \u221a(2)); (\u22121 \u2215 \u221a(2))]",
+      "copy_text": "matrix(2,1,[1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)])",
+      "approximate": false,
+      "rows": 2,
+      "columns": 1,
+      "cells": [
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "oracle-1",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1]*(|->|+>)",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-xor-1",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 0>-|1 \u2295 0>)|0>+1/2*(|0 \u2295 0>-|1 \u2295 0>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-1-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^0*(|0>-|1>)|0>+1/2*(-1)^0*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-1-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^0*|0>+(-1)^0*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-1-0",
+    "source": "M18",
+    "input": "quantum:(-1)^0*(|-> \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-1-1",
+    "source": "M18",
+    "input": "quantum:(-1)^0*|->|+>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "display_text": "[0.5; 0.5; \u22120.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi3-1",
+    "source": "M25",
+    "input": "quantum:(-1)^0*|->|0>",
+    "expected": [
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]\",\"display_text\":\"[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]\",\"copy_text\":\"matrix(4,1,[1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2),0])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"1 \u2215 \u221a(2)\"],[\"0\"],[\"\u22121 \u2215 \u221a(2)\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]",
+      "display_text": "[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]",
+      "copy_text": "matrix(4,1,[1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2),0])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "circuit-1",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]\",\"display_text\":\"[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]\",\"copy_text\":\"matrix(4,1,[1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2),0])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"1 \u2215 \u221a(2)\"],[\"0\"],[\"\u22121 \u2215 \u221a(2)\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]",
+      "display_text": "[(1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2)); 0]",
+      "copy_text": "matrix(4,1,[1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2),0])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "measure-1",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|0><0|),(I \u2297 H)*[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "phase-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^0",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "parity-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "difference-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0-0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "sign-equivalence-1",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(0-0)-(-1)^0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "oracle-2",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]*(|->|+>)",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"display_text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "display_text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-xor-2",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 0>-|1 \u2295 0>)|0>+1/2*(|0 \u2295 1>-|1 \u2295 1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"display_text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "display_text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-2-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^0*(|0>-|1>)|0>+1/2*(-1)^1*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"display_text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "display_text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-2-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^0*|0>+(-1)^1*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"display_text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "display_text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-2-0",
+    "source": "M18",
+    "input": "quantum:(-1)^0*(|-> \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"display_text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "display_text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-2-1",
+    "source": "M18",
+    "input": "quantum:(-1)^0*|->|->",
+    "expected": [
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"display_text\":\"[0.5; \u22120.5; \u22120.5; 0.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "display_text": "[0.5; \u22120.5; \u22120.5; 0.5]",
+      "copy_text": "matrix(4,1,[1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi3-2",
+    "source": "M25",
+    "input": "quantum:(-1)^0*|->|1>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]\",\"display_text\":\"[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]\",\"copy_text\":\"matrix(4,1,[0,1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2)])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0\"],[\"1 \u2215 \u221a(2)\"],[\"0\"],[\"\u22121 \u2215 \u221a(2)\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]",
+      "display_text": "[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]",
+      "copy_text": "matrix(4,1,[0,1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2)])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0"
+        ],
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "circuit-2",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]\",\"display_text\":\"[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]\",\"copy_text\":\"matrix(4,1,[0,1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2)])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0\"],[\"1 \u2215 \u221a(2)\"],[\"0\"],[\"\u22121 \u2215 \u221a(2)\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]",
+      "display_text": "[0; (1 \u2215 \u221a(2)); 0; (\u22121 \u2215 \u221a(2))]",
+      "copy_text": "matrix(4,1,[0,1 \u2215 \u221a(2),0,\u22121 \u2215 \u221a(2)])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0"
+        ],
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "measure-2",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|1><1|),(I \u2297 H)*[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "phase-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^0",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "parity-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "difference-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1-0",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "sign-equivalence-2",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(1-0)-(-1)^1",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "oracle-3",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[0,0,1,0;0,1,0,0;1,0,0,0;0,0,0,1]*(|->|+>)",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"display_text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"0.5\"],[\"0.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "display_text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-xor-3",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 1>-|1 \u2295 1>)|0>+1/2*(|0 \u2295 0>-|1 \u2295 0>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"display_text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"0.5\"],[\"0.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "display_text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-3-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^1*(|0>-|1>)|0>+1/2*(-1)^0*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"display_text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"0.5\"],[\"0.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "display_text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-3-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^1*|0>+(-1)^0*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"display_text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"0.5\"],[\"0.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "display_text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-3-0",
+    "source": "M18",
+    "input": "quantum:(-1)^1*(|-> \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"display_text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"0.5\"],[\"0.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "display_text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-3-1",
+    "source": "M18",
+    "input": "quantum:(-1)^1*|->|->",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"display_text\":\"[\u22120.5; 0.5; 0.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"0.5\"],[\"0.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "display_text": "[\u22120.5; 0.5; 0.5; \u22120.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,1 \u2215 2,1 \u2215 2,\u22121 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "\u22120.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi3-3",
+    "source": "M25",
+    "input": "quantum:(-1)^1*|->|1>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]\",\"display_text\":\"[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]\",\"copy_text\":\"matrix(4,1,[0,\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2)])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0\"],[\"\u22121 \u2215 \u221a(2)\"],[\"0\"],[\"1 \u2215 \u221a(2)\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]",
+      "display_text": "[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]",
+      "copy_text": "matrix(4,1,[0,\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2)])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "1 \u2215 \u221a(2)"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "circuit-3",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[0,0,1,0;0,1,0,0;1,0,0,0;0,0,0,1]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]\",\"display_text\":\"[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]\",\"copy_text\":\"matrix(4,1,[0,\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2)])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0\"],[\"\u22121 \u2215 \u221a(2)\"],[\"0\"],[\"1 \u2215 \u221a(2)\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]",
+      "display_text": "[0; (\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2))]",
+      "copy_text": "matrix(4,1,[0,\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2)])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "0"
+        ],
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "1 \u2215 \u221a(2)"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "measure-3",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|1><1|),(I \u2297 H)*[0,0,1,0;0,1,0,0;1,0,0,0;0,0,0,1]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "phase-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"\u22121\",\"display_text\":\"\u22121\",\"copy_text\":\"\u22121\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "\u22121",
+      "display_text": "\u22121",
+      "copy_text": "\u22121",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "parity-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "difference-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0-1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"\u22121\",\"display_text\":\"\u22121\",\"copy_text\":\"\u22121\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "\u22121",
+      "display_text": "\u22121",
+      "copy_text": "\u22121",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "sign-equivalence-3",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(0-1)-(-1)^1",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "oracle-4",
+    "source": "M03,M04,M07,M13,M15",
+    "input": "quantum:[0,0,1,0;0,0,0,1;1,0,0,0;0,1,0,0]*(|->|+>)",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Instantiate f by one of all four truth tables; explicit oracle matrix",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"display_text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "display_text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-xor-4",
+    "source": "M07",
+    "input": "quantum:1/2*(|0 \u2295 1>-|1 \u2295 1>)|0>+1/2*(|0 \u2295 1>-|1 \u2295 1>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute f(0), f(1); extract RHS; retain evaluated XOR labels",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"display_text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "display_text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-4-0",
+    "source": "M12",
+    "input": "quantum:1/2*(-1)^1*(|0>-|1>)|0>+1/2*(-1)^1*(|0>-|1>)|1>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"display_text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "display_text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-phase-4-1",
+    "source": "M12",
+    "input": "quantum:|-> \u2297 (((-1)^1*|0>+(-1)^1*|1>)/sqrt(2))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; extract equality terms; make tensor product explicit",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"display_text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "display_text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-4-0",
+    "source": "M18",
+    "input": "quantum:(-1)^1*(|-> \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)))",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"display_text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "display_text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi2-factor-4-1",
+    "source": "M18",
+    "input": "quantum:(-1)^1*|->|+>",
+    "expected": [
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "-1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ],
+      [
+        "1/2",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs; evaluate XOR; select source cases branch; explicit tensor product",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"display_text\":\"[\u22120.5; \u22120.5; 0.5; 0.5]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22120.5\"],[\"\u22120.5\"],[\"0.5\"],[\"0.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "display_text": "[\u22120.5; \u22120.5; 0.5; 0.5]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 2,\u22121 \u2215 2,1 \u2215 2,1 \u2215 2])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22120.5"
+        ],
+        [
+          "\u22120.5"
+        ],
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "pi3-4",
+    "source": "M25",
+    "input": "quantum:(-1)^1*|->|0>",
+    "expected": [
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Substitute truth-table outputs and select appropriate source branch",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]\",\"display_text\":\"[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2),0])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22121 \u2215 \u221a(2)\"],[\"0\"],[\"1 \u2215 \u221a(2)\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]",
+      "display_text": "[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2),0])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "circuit-4",
+    "source": "diagram,M25",
+    "input": "quantum:(I \u2297 H)*[0,0,1,0;0,0,0,1;1,0,0,0;0,1,0,0]*(H \u2297 H)*|10>",
+    "expected": [
+      [
+        "0",
+        "-1/2"
+      ],
+      [
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1/2"
+      ],
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Translate diagram to exact matrices; |b a> ordering; no Qiskit execution",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]\",\"display_text\":\"[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]\",\"copy_text\":\"matrix(4,1,[\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2),0])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"\u22121 \u2215 \u221a(2)\"],[\"0\"],[\"1 \u2215 \u221a(2)\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]",
+      "display_text": "[(\u22121 \u2215 \u221a(2)); 0; (1 \u2215 \u221a(2)); 0]",
+      "copy_text": "matrix(4,1,[\u22121 \u2215 \u221a(2),0,1 \u2215 \u221a(2),0])",
+      "approximate": false,
+      "rows": 4,
+      "columns": 1,
+      "cells": [
+        [
+          "\u22121 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ],
+        [
+          "1 \u2215 \u221a(2)"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "measure-4",
+    "source": "M26",
+    "input": "quantum:expect(I \u2297 (|0><0|),(I \u2297 H)*[0,0,1,0;0,0,0,1;1,0,0,0;0,1,0,0]*(H \u2297 H)*|10>)",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Born probability using grouped explicit projector on RIGHT tensor factor; no shot sampling",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "phase-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"\u22121\",\"display_text\":\"\u22121\",\"copy_text\":\"\u22121\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "\u22121",
+      "display_text": "\u22121",
+      "copy_text": "\u22121",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "parity-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "difference-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:1-1",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "sign-equivalence-4",
+    "source": "M16,M19,M21,M22",
+    "input": "quantum:(-1)^(1-1)-(-1)^0",
+    "expected": [
+      [
+        "0",
+        "0"
+      ]
+    ],
+    "adaptation": "Exhaustive truth-table substitution; difference and XOR need only agree modulo two",
+    "returncode": 0,
+    "stdout": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "0",
+      "display_text": "0",
+      "copy_text": "0",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "minus-one",
+    "source": "M20",
+    "input": "quantum:-1",
+    "expected": [
+      [
+        "-1",
+        "0"
+      ]
+    ],
+    "adaptation": "None",
+    "returncode": 0,
+    "stdout": "{\"text\":\"\u22121\",\"display_text\":\"\u22121\",\"copy_text\":\"\u22121\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "\u22121",
+      "display_text": "\u22121",
+      "copy_text": "\u22121",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  },
+  {
+    "id": "one",
+    "source": "M26",
+    "input": "quantum:1",
+    "expected": [
+      [
+        "1",
+        "0"
+      ]
+    ],
+    "adaptation": "Scalar alone is not measurement evidence; see measure-1..4",
+    "returncode": 0,
+    "stdout": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "route": "released quantum-worker.exe --json, exact mode",
+    "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+    "actual": {
+      "text": "1",
+      "display_text": "1",
+      "copy_text": "1",
+      "approximate": false,
+      "rows": 0,
+      "columns": 0,
+      "cells": [],
+      "probabilities": [],
+      "bloch": []
+    },
+    "status": "pass_adapted"
+  }
+]

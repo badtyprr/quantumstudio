@@ -1,0 +1,10 @@
+{
+  "inventory_matches_pinned_source": true,
+  "ledger_covers_all_26_occurrences": true,
+  "display_blocks": 7,
+  "unique_finite_checks": 65,
+  "all_finite_checks_pass": true,
+  "source_hashes_verified": true,
+  "source_base": "2fb33c4d435adaf3518b5c79da38392030c957ce",
+  "modified_scope": "docs/learning-evidence/aud01-ibm019 only"
+}

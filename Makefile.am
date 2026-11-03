@@ -223,3 +223,30 @@ EXTRA_DIST += docs/learning-evidence/dev12/chemistry-diagonalization.md docs/lea
 EXTRA_DIST += docs/learning-evidence/dev12/ml-audit.py docs/learning-evidence/dev12/ml-numerical-driver.cc docs/learning-evidence/dev12/ml-audit.md docs/learning-evidence/dev12/ml-source-manifest.json docs/learning-evidence/dev12/ml-data-manifest.json docs/learning-evidence/dev12/ml-cell-ledger.json docs/learning-evidence/dev12/ml-results-summary.json
 
 EXTRA_DIST += docs/learning-evidence/dev12/release-summary.json
+
+# Scoped IBM-019 audit and numeric-exponent regression evidence.
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/CHECKLIST-PROPOSAL.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/FOLLOWUP.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/checks.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/existing-tests.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/exponent-regression.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/ledger.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/literal.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/minimal-probes.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/proposed-regressions.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/provenance.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/regressions.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/run.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/source-manifest.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019/validation.json
+EXTRA_DIST += docs/learning-evidence/dev11/reassess-performance.py \
+ docs/learning-evidence/dev11/matrix-cost.cc \
+ docs/learning-evidence/dev11/performance-reassessment.md \
+ docs/learning-evidence/dev11/reassessment-run.json.gz \
+ docs/learning-evidence/dev11/reassessment-results.json
+EXTRA_DIST += docs/learning-evidence/dev17/contract.md
+EXTRA_DIST += windows/Dev17GuiTests.cs windows/test-named-subsystems-gui.ps1
+EXTRA_DIST += docs/learning-evidence/dev17/validation.md

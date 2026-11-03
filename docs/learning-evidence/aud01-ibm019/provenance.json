@@ -1,0 +1,12 @@
+{
+  "binary_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+  "worker_sha256": "ea0467a5ca5ce58d043c08bed80043361aca4305a5bb92d029781e4035e76913",
+  "verified_payload_files": 404,
+  "package": "F:\\src\\libqalculate\\dist\\releases\\52c37a2a\\QuantumStudio",
+  "runner_sha256": "af7e7c6f72ec5763264bdf98cb98e1c397417466a3e0e9d60a9d6050c7214a30",
+  "inventory_sha256": "9c4c15fea3d546a7079c0f6ffb1a78df80b932f85f18ade2bed2795c56c6e3b4",
+  "oracle": "Exact independent Q(sqrt(2)) butterfly H and bit-permutation oracle, all four Boolean functions; compare every coefficient including global phase",
+  "counts": {
+    "pass_adapted": 65
+  }
+}

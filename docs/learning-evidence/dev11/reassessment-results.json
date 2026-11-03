@@ -1,0 +1,745 @@
+{
+  "baseline": "2fb33c4d435adaf3518b5c79da38392030c957ce",
+  "outcome": "Existing released optimization resolves the finite historical issue; no product patch",
+  "worker_revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+  "worker_sha256": "ea0467a5ca5ce58d043c08bed80043361aca4305a5bb92d029781e4035e76913",
+  "serial": {
+    "total": 588,
+    "passed": 588,
+    "timeouts": 0,
+    "repetitions": 2,
+    "original_fixtures_per_repetition": 286,
+    "supported_per_repetition": 280,
+    "expected_rejections_per_repetition": 6,
+    "controls": [
+      {
+        "id": "identity-alone",
+        "repetition": 1,
+        "expression": "quantum:qidentity(512)",
+        "timeout": 12,
+        "seconds": 1.6936675000001742,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "Y-alone",
+        "repetition": 1,
+        "expression": "quantum:pauli(\"IIIIIIYII\")",
+        "timeout": 12,
+        "seconds": 1.6994652000003043,
+        "returncode": 0,
+        "stdout_sha256": "a1a36a3abaf414e5dbe318834326a017a9cda3b816624dd6bd4b92a3acb1e85a",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "identity-square",
+        "repetition": 1,
+        "expression": "quantum:qidentity(512)*qidentity(512)",
+        "timeout": 12,
+        "seconds": 3.113542200000211,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "Y-square",
+        "repetition": 1,
+        "expression": "quantum:pauli(\"IIIIIIYII\")*pauli(\"IIIIIIYII\")",
+        "timeout": 12,
+        "seconds": 3.0865642999997362,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "X-square",
+        "repetition": 1,
+        "expression": "quantum:pauli(\"IIIIIIXII\")*pauli(\"IIIIIIXII\")",
+        "timeout": 12,
+        "seconds": 3.33462180000015,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "trace-identity",
+        "repetition": 1,
+        "expression": "quantum:trace(qidentity(512)*qidentity(512))",
+        "timeout": 12,
+        "seconds": 1.647737700000107,
+        "returncode": 0,
+        "stdout_sha256": "165cfe92df747037112668fa32d054156600dec6c2e3d4e8424f1fcbc9108977",
+        "approximate": false,
+        "passed": true
+      },
+      {
+        "id": "trace-Y",
+        "repetition": 1,
+        "expression": "quantum:trace(pauli(\"IIIIIIYII\")*pauli(\"IIIIIIYII\"))",
+        "timeout": 12,
+        "seconds": 1.6815221000001657,
+        "returncode": 0,
+        "stdout_sha256": "165cfe92df747037112668fa32d054156600dec6c2e3d4e8424f1fcbc9108977",
+        "approximate": false,
+        "passed": true
+      },
+      {
+        "id": "trace-X",
+        "repetition": 1,
+        "expression": "quantum:trace(pauli(\"IIIIIIXII\")*pauli(\"IIIIIIXII\"))",
+        "timeout": 12,
+        "seconds": 1.7215107000001808,
+        "returncode": 0,
+        "stdout_sha256": "165cfe92df747037112668fa32d054156600dec6c2e3d4e8424f1fcbc9108977",
+        "approximate": false,
+        "passed": true
+      },
+      {
+        "id": "identity-alone",
+        "repetition": 2,
+        "expression": "quantum:qidentity(512)",
+        "timeout": 12,
+        "seconds": 1.6377990000000864,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "Y-alone",
+        "repetition": 2,
+        "expression": "quantum:pauli(\"IIIIIIYII\")",
+        "timeout": 12,
+        "seconds": 1.629667199999858,
+        "returncode": 0,
+        "stdout_sha256": "a1a36a3abaf414e5dbe318834326a017a9cda3b816624dd6bd4b92a3acb1e85a",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "identity-square",
+        "repetition": 2,
+        "expression": "quantum:qidentity(512)*qidentity(512)",
+        "timeout": 12,
+        "seconds": 3.074464199999966,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "Y-square",
+        "repetition": 2,
+        "expression": "quantum:pauli(\"IIIIIIYII\")*pauli(\"IIIIIIYII\")",
+        "timeout": 12,
+        "seconds": 3.014395400000012,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "X-square",
+        "repetition": 2,
+        "expression": "quantum:pauli(\"IIIIIIXII\")*pauli(\"IIIIIIXII\")",
+        "timeout": 12,
+        "seconds": 3.029532200000176,
+        "returncode": 0,
+        "stdout_sha256": "491b0aabf887681c65091695826ab7f15ef1c9d82ccef8a0e4f603089b236757",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "trace-identity",
+        "repetition": 2,
+        "expression": "quantum:trace(qidentity(512)*qidentity(512))",
+        "timeout": 12,
+        "seconds": 1.5307257999998,
+        "returncode": 0,
+        "stdout_sha256": "165cfe92df747037112668fa32d054156600dec6c2e3d4e8424f1fcbc9108977",
+        "approximate": false,
+        "passed": true
+      },
+      {
+        "id": "trace-Y",
+        "repetition": 2,
+        "expression": "quantum:trace(pauli(\"IIIIIIYII\")*pauli(\"IIIIIIYII\"))",
+        "timeout": 12,
+        "seconds": 1.5378662000002805,
+        "returncode": 0,
+        "stdout_sha256": "165cfe92df747037112668fa32d054156600dec6c2e3d4e8424f1fcbc9108977",
+        "approximate": false,
+        "passed": true
+      },
+      {
+        "id": "trace-X",
+        "repetition": 2,
+        "expression": "quantum:trace(pauli(\"IIIIIIXII\")*pauli(\"IIIIIIXII\"))",
+        "timeout": 12,
+        "seconds": 1.5350304999997206,
+        "returncode": 0,
+        "stdout_sha256": "165cfe92df747037112668fa32d054156600dec6c2e3d4e8424f1fcbc9108977",
+        "approximate": false,
+        "passed": true
+      }
+    ],
+    "original_timeout_ids": [
+      "060-recovery-shor-IIIIIIIIY",
+      "060-recovery-shor-IIIIIIIIZ",
+      "060-recovery-shor-IIIIIIIYI",
+      "060-recovery-shor-IIIIIIIZI",
+      "060-recovery-shor-IIIIIIYII",
+      "060-recovery-shor-IIIIIIZII",
+      "060-recovery-shor-IIIIIZIII",
+      "060-recovery-shor-IIIIZIIII",
+      "060-recovery-shor-IIIZIIIII",
+      "060-recovery-shor-IIZIIIIII",
+      "060-recovery-shor-IZIIIIIII",
+      "060-recovery-shor-ZIIIIIIII"
+    ],
+    "original_timeout_rechecks": [
+      {
+        "id": "060-recovery-shor-IIIIIIYII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,1,0,0,1])*pauli(\"IIIIIIYII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.971967100000256,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIYI",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,1,1,0,1])*pauli(\"IIIIIIIYI\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 6.023946599999817,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIIY",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,1,0,1])*pauli(\"IIIIIIIIY\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 6.13208480000003,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-ZIIIIIIII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,0])*pauli(\"ZIIIIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.849877099999958,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IZIIIIIII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,0])*pauli(\"IZIIIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.986326099999587,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIZIIIIII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,0])*pauli(\"IIZIIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.975497399999767,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIZIIIII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,1])*pauli(\"IIIZIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.899264799999855,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIZIIII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,1])*pauli(\"IIIIZIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.878897000000052,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIZIII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,1])*pauli(\"IIIIIZIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.779798500000197,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIZII",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,0,1])*pauli(\"IIIIIIZII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.829326300000048,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIZI",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,0,1])*pauli(\"IIIIIIIZI\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.882257700000082,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIIZ",
+        "repetition": 1,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,0,1])*pauli(\"IIIIIIIIZ\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.87888410000005,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIYII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,1,0,0,1])*pauli(\"IIIIIIYII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.610786799999914,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIYI",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,1,1,0,1])*pauli(\"IIIIIIIYI\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.521603499999856,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIIY",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,1,0,1])*pauli(\"IIIIIIIIY\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.810486400000173,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-ZIIIIIIII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,0])*pauli(\"ZIIIIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.491797800000313,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IZIIIIIII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,0])*pauli(\"IZIIIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 6.419907899999998,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIZIIIIII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,0])*pauli(\"IIZIIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.546063499999946,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIZIIIII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,1])*pauli(\"IIIZIIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.601655299999948,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIZIIII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,1])*pauli(\"IIIIZIIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.569400599999881,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIZIII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,1,1])*pauli(\"IIIIIZIII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.50006409999969,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIZII",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,0,1])*pauli(\"IIIIIIZII\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.578540099999827,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIZI",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,0,1])*pauli(\"IIIIIIIZI\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.556147300000248,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      },
+      {
+        "id": "060-recovery-shor-IIIIIIIIZ",
+        "repetition": 2,
+        "expression": "quantum:stabilizer_correction(<ZZIIIIIII,IZZIIIIII,IIIZZIIII,IIIIZZIII,IIIIIIZZI,IIIIIIIZZ,XXXXXXIII,IIIXXXXXX>,[0,0,0,0,0,0,0,1])*pauli(\"IIIIIIIIZ\")*(((|000000000>+|000000111>+|000111000>+|000111111>+|111000000>+|111000111>+|111111000>+|111111111>)/sqrt(8))*<0|+((|000000000>+-|000000111>+-|000111000>+|000111111>+-|111000000>+|111000111>+|111111000>+-|111111111>)/sqrt(8))*<1|)",
+        "timeout": 90,
+        "seconds": 5.89188809999996,
+        "returncode": 0,
+        "stdout_sha256": "54865d73ffd960e0e10180a35200af460af00e72552060159077c439e4f8bbc7",
+        "approximate": false,
+        "residual": 0.0,
+        "phase": [
+          1.0,
+          0.0
+        ],
+        "passed": true
+      }
+    ]
+  },
+  "native": {
+    "baseline": "2fb33c4d435adaf3518b5c79da38392030c957ce",
+    "compiler": "MSYS2 UCRT64 GCC 16.2.0 Rev5",
+    "flags": "-g -O2",
+    "build_exit_code": 0,
+    "native_exit_code": 0,
+    "native_checks": 316,
+    "files": {
+      "matrix-cost.exe": "86f1370e8c0682f7261ef8d3715652a3c56620a09db7d21dd60fe307067a5783",
+      "src/quantum-algebra-test.exe": "b8ba1adb3d1ffbb908a98274c0c88e18135490d61f731e880aadf2194b308177",
+      "libqalculate/.libs/libqalculate.a": "ec9d5e02baa8facc47bd99a568e0708fbdfc0f289b6c1071668cd6f0ea2ba8f7",
+      "config.h": "8fa7e6e016e69e7aa2774c69e12913bfd5e63510cfeaa49b6ec0fb01ca4e28a1",
+      "docs/learning-evidence/dev11/matrix-cost.cc": "fe9a89178412d252d3f8842da435b331a1d69e49a44245a3785b0f88a0ff6a33",
+      "libqalculate/MathStructure-calculate.cc": "a06c4d8fa5728f2f5912b100d85b36a7923f45b16ea0005210a56130076c784d",
+      "libqalculate/QuantumAlgebra.cc": "19272946a570ddc435f921416b4a5cb509a1db1353e24297b77903f4bd989c35",
+      "src/quantum-algebra-test.cc": "82b943d76e0747dd9f27ad76188df58dfc5fabbeca88c2b48c2550dabee74458"
+    }
+  },
+  "phase": {
+    "exit_code": 0,
+    "rows": [
+      {
+        "repetition": 1,
+        "expression": "qidentity(512)",
+        "construct_both_seconds": 0.492575,
+        "copy_multiply_evaluate_seconds": 0.745946,
+        "native_print_seconds": 0.179721,
+        "formatted_bytes": 786432,
+        "full_exact_identity_passed": true
+      },
+      {
+        "repetition": 1,
+        "expression": "pauli(\"IIIIIIXII\")",
+        "construct_both_seconds": 0.52729,
+        "copy_multiply_evaluate_seconds": 0.758398,
+        "native_print_seconds": 0.176679,
+        "formatted_bytes": 786432,
+        "full_exact_identity_passed": true
+      },
+      {
+        "repetition": 1,
+        "expression": "pauli(\"IIIIIIYII\")",
+        "construct_both_seconds": 0.494746,
+        "copy_multiply_evaluate_seconds": 0.737021,
+        "native_print_seconds": 0.177253,
+        "formatted_bytes": 786432,
+        "full_exact_identity_passed": true
+      },
+      {
+        "repetition": 2,
+        "expression": "qidentity(512)",
+        "construct_both_seconds": 0.495413,
+        "copy_multiply_evaluate_seconds": 0.72136,
+        "native_print_seconds": 0.172568,
+        "formatted_bytes": 786432,
+        "full_exact_identity_passed": true
+      },
+      {
+        "repetition": 2,
+        "expression": "pauli(\"IIIIIIXII\")",
+        "construct_both_seconds": 0.498042,
+        "copy_multiply_evaluate_seconds": 0.695414,
+        "native_print_seconds": 0.172552,
+        "formatted_bytes": 786432,
+        "full_exact_identity_passed": true
+      },
+      {
+        "repetition": 2,
+        "expression": "pauli(\"IIIIIIYII\")",
+        "construct_both_seconds": 0.497698,
+        "copy_multiply_evaluate_seconds": 0.696282,
+        "native_print_seconds": 0.172915,
+        "formatted_bytes": 786432,
+        "full_exact_identity_passed": true
+      }
+    ],
+    "host_load_percent": 1,
+    "other_workstreams_held": true
+  },
+  "host": {
+    "cpu": "Intel Core i5-7600K @3.80GHz",
+    "physical_cores": 4,
+    "logical_processors": 4,
+    "os": "Windows 11 Pro 10.0.22631",
+    "memory_KiB": 33495132,
+    "power_plan": "High performance",
+    "worker_midrun_load_percent": 100,
+    "no_compiler_or_make_in_midrun_snapshot": true
+  },
+  "evidence_directory": "F:\\src\\libqalculate\\cleanup-audit\\matrix-performance-20261102",
+  "evidence_manifest_sha256": "b0ec726027ec43c67bff7ebcd5da7284a19a845053a607c775b5edef1d1174f1",
+  "archive_sha256": "83d0e6538acfb01a149146d7ec8ddc3a3399bc6d782e9eecfad405b14f78fb0e",
+  "fixtures_sha256": "d72f1d8d73626f6ed7a287a4a5d854972fd792a129dc531066cfce7d2c803957",
+  "executed_runner_sha256": "45a65d2920c6d8af77e60b8fe223348af67be3299ab6297dbbe14039943c2a5b",
+  "committed_runner_sha256": "826065979b62561fc4476920db408ae36df46fd87178cdc8a1b1812a979e636f",
+  "runner_difference": "Committed integer controls require zero residual; executed runner used1e-12. All ten complete matrix controls have zero residual; independently replayed.",
+  "source_verification_sha256": "2b5ad13ffb30385a4b2bdf67ea6f129cf1b56e7e05e4bb78339761c07e00295d",
+  "rejection_oracle_unit_tests": 2,
+  "recovery_directory": "D:/Archives/libqalculate-recovery/matrix-performance-20261102",
+  "recovery_verified": true,
+  "temporary_clone_removed": false,
+  "cleanup_block": "Automatic approval review: blocked by policy"
+}

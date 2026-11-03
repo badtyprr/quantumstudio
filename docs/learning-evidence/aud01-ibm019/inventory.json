@@ -1,0 +1,170 @@
+{
+  "section": "Analysis",
+  "code_cells": 0,
+  "formulas": [
+    {
+      "id": "M01",
+      "kind": "inline",
+      "original": "\\vert 1\\rangle \\vert 0 \\rangle",
+      "offset": 366
+    },
+    {
+      "id": "M02",
+      "kind": "display",
+      "original": "\n\\vert \\pi_1 \\rangle = \\vert - \\rangle \\vert + \\rangle\n= \\frac{1}{2} \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr) \\vert 0\\rangle\n+ \\frac{1}{2} \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr) \\vert 1\\rangle.\n",
+      "offset": 494
+    },
+    {
+      "id": "M03",
+      "kind": "inline",
+      "original": "U_f",
+      "offset": 1026
+    },
+    {
+      "id": "M04",
+      "kind": "inline",
+      "original": "U_f",
+      "offset": 1086
+    },
+    {
+      "id": "M05",
+      "kind": "inline",
+      "original": "f",
+      "offset": 1124
+    },
+    {
+      "id": "M06",
+      "kind": "inline",
+      "original": "\\vert \\pi_1\\rangle",
+      "offset": 1237
+    },
+    {
+      "id": "M07",
+      "kind": "display",
+      "original": "\n\\vert \\pi_2 \\rangle\n= \\frac{1}{2} \\bigl( \\vert 0 \\oplus f(0) \\rangle - \\vert 1 \\oplus f(0) \\rangle \\bigr) \\vert 0 \\rangle\n+ \\frac{1}{2} \\bigl( \\vert 0 \\oplus f(1) \\rangle - \\vert 1 \\oplus f(1) \\rangle \\bigr) \\vert 1 \\rangle.\n",
+      "offset": 1274
+    },
+    {
+      "id": "M08",
+      "kind": "display",
+      "original": "\n\\vert 0 \\oplus a\\rangle - \\vert 1 \\oplus a\\rangle = (-1)^a \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)\n",
+      "offset": 1569
+    },
+    {
+      "id": "M09",
+      "kind": "inline",
+      "original": "a\\in\\Sigma",
+      "offset": 1712
+    },
+    {
+      "id": "M10",
+      "kind": "display",
+      "original": "\n\\begin{aligned}\n\\vert 0 \\oplus 0\\rangle - \\vert 1 \\oplus 0\\rangle\n& = \\vert 0 \\rangle - \\vert 1 \\rangle\n= (-1)^0 \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)\\\\\n\\vert 0 \\oplus 1\\rangle - \\vert 1 \\oplus 1\\rangle & = \\vert 1 \\rangle - \\vert 0\\rangle\n= (-1)^1 \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)\n\\end{aligned}\n",
+      "offset": 1774
+    },
+    {
+      "id": "M11",
+      "kind": "inline",
+      "original": "\\vert\\pi_2\\rangle",
+      "offset": 2133
+    },
+    {
+      "id": "M12",
+      "kind": "display",
+      "original": "\n\\begin{aligned}\n  \\vert\\pi_2\\rangle\n  & = \\frac{1}{2} (-1)^{f(0)} \\bigl( \\vert 0 \\rangle - \\vert 1 \\rangle \\bigr) \\vert 0 \\rangle\n  + \\frac{1}{2} (-1)^{f(1)} \\bigl( \\vert 0 \\rangle - \\vert 1 \\rangle \\bigr) \\vert 1 \\rangle \\\\\n  & = \\vert - \\rangle \\biggl( \\frac{(-1)^{f(0)} \\vert 0\\rangle + (-1)^{f(1)} \\vert 1\\rangle}{\\sqrt{2}}\\biggr).\n\\end{aligned}\n",
+      "offset": 2165
+    },
+    {
+      "id": "M13",
+      "kind": "inline",
+      "original": "U_f",
+      "offset": 2586
+    },
+    {
+      "id": "M14",
+      "kind": "inline",
+      "original": "\\vert - \\rangle",
+      "offset": 2888
+    },
+    {
+      "id": "M15",
+      "kind": "inline",
+      "original": "U_f",
+      "offset": 2933
+    },
+    {
+      "id": "M16",
+      "kind": "inline",
+      "original": "(-1)^{f(0)}",
+      "offset": 3118
+    },
+    {
+      "id": "M17",
+      "kind": "inline",
+      "original": "\\vert\\pi_2\\rangle",
+      "offset": 3191
+    },
+    {
+      "id": "M18",
+      "kind": "display",
+      "original": "\n\\begin{aligned}\n  \\vert\\pi_2\\rangle\n  & = (-1)^{f(0)} \\vert - \\rangle\n      \\biggl( \\frac{\\vert 0\\rangle + (-1)^{f(0) \\oplus f(1)} \\vert 1\\rangle}{\\sqrt{2}}\\biggr) \\\\\n  & = \\begin{cases}\n        (-1)^{f(0)} \\vert - \\rangle \\vert + \\rangle & \\text{if $f(0) \\oplus f(1) = 0$}\\\\[1mm]\n        (-1)^{f(0)} \\vert - \\rangle \\vert - \\rangle & \\text{if $f(0) \\oplus f(1) = 1$}.\n      \\end{cases}\n\\end{aligned}\n",
+      "offset": 3213
+    },
+    {
+      "id": "M19",
+      "kind": "inline",
+      "original": "f(0) \\oplus f(1)",
+      "offset": 3661
+    },
+    {
+      "id": "M20",
+      "kind": "inline",
+      "original": "-1",
+      "offset": 3699
+    },
+    {
+      "id": "M21",
+      "kind": "inline",
+      "original": "f(1) - f(0)",
+      "offset": 3718
+    },
+    {
+      "id": "M22",
+      "kind": "inline",
+      "original": "(-1)^k",
+      "offset": 3866
+    },
+    {
+      "id": "M23",
+      "kind": "inline",
+      "original": "k",
+      "offset": 3891
+    },
+    {
+      "id": "M24",
+      "kind": "inline",
+      "original": "k",
+      "offset": 3919
+    },
+    {
+      "id": "M25",
+      "kind": "display",
+      "original": "\n\\vert \\pi_3 \\rangle =\n\\begin{cases}\n  (-1)^{f(0)} \\vert - \\rangle \\vert 0 \\rangle & \\text{if $f(0) \\oplus f(1) = 0$}\\\\[1mm]\n  (-1)^{f(0)} \\vert - \\rangle \\vert 1 \\rangle & \\text{if $f(0) \\oplus f(1) = 1$},\n\\end{cases}\n",
+      "offset": 4016
+    },
+    {
+      "id": "M26",
+      "kind": "inline",
+      "original": "1",
+      "offset": 4293
+    }
+  ],
+  "diagram": "circuit.svg",
+  "conceptual": [
+    "Qiskit tensor ordering",
+    "oracle XOR action",
+    "phase kickback",
+    "parity of integer powers",
+    "deterministic final measurement"
+  ]
+}
