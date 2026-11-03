@@ -14,12 +14,15 @@ namespace {
 const char labelMarkerBegin='\x1e',labelMarkerEnd='\x1f';
 const char constantMarkerBegin='\x1c',constantMarkerEnd='\x1d';
 const char phaseKetMarker='\x1b';
+const char subsystemLabelBegin='\x18',subsystemLabelEnd='\x19';
 std::string indexableLabel(const std::string &label) {return std::string(1,labelMarkerBegin)+"\""+label+"\""+labelMarkerEnd;}
 std::string withoutLabelMarkers(std::string value) {
  value.erase(std::remove(value.begin(),value.end(),labelMarkerBegin),value.end());
  value.erase(std::remove(value.begin(),value.end(),labelMarkerEnd),value.end());
  value.erase(std::remove(value.begin(),value.end(),constantMarkerBegin),value.end());
- value.erase(std::remove(value.begin(),value.end(),constantMarkerEnd),value.end());return value;
+ value.erase(std::remove(value.begin(),value.end(),constantMarkerEnd),value.end());
+ value.erase(std::remove(value.begin(),value.end(),subsystemLabelBegin),value.end());
+ value.erase(std::remove(value.begin(),value.end(),subsystemLabelEnd),value.end());return value;
 }
 size_t quantumSpaceLength(const std::string &s,size_t p) {
  if(p>=s.size())return 0;
@@ -321,6 +324,8 @@ const std::map<std::string,int> quantumSignatures = {
  {"qprobs",1},
  {"qprobsub",2},
  {"qptrace",2},
+ {"qptraceselect",3},
+ {"qsubsystems",3},
  {"qptracedim",3},
  {"qptm",1},
  {"qpaulivec",1},
@@ -474,6 +479,9 @@ class Parser {
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
   while((at=args[body].find(occurrence,at))!=std::string::npos) {
+   // A quoted binder may capture quoted scalar symbols, but never immutable
+   // subsystem metadata. Keep that provenance until every binder is scoped.
+   if(at && args[body][at-1]==subsystemLabelBegin) {at+=occurrence.size();continue;}
    if(plain && !lexicalConstant) {
     auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
     char quoted=0;for(size_t k=0;k<at;++k) {char c=args[body][k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;}}
@@ -499,6 +507,35 @@ class Parser {
   return 0;
  }
  void need(char c) { if(!take(c)) throw std::runtime_error(std::string("Expected '") + c + "' at byte " + std::to_string(p + 1)); }
+ // Labels are literal identifiers here, even when their spelling is a gate or
+ // scalar constant elsewhere. A multi-letter name is never split into factors.
+ std::string subsystemLabels(bool required) {
+  size_t saved=p;unsigned savedNodes=nodes;ws();char close=0;
+  if(take('['))close=']';
+  else if(s.compare(p,7,"vector(")==0) {p+=7;close=')';}
+  std::string result=close ? "vector(" : "";size_t count=0;
+  do {
+   ws();if(close && p<s.size() && s[p]==close && count==0) {++p;return result+")";}
+   char quote=0;if(p<s.size() && (s[p]=='\"' || s[p]=='\''))quote=s[p++];
+   size_t begin=p;
+   if(p<s.size() && ((s[p]>='A' && s[p]<='Z') || (s[p]>='a' && s[p]<='z'))) {
+    ++p;while(p<s.size() && (std::isalnum((unsigned char)s[p]) || s[p]=='_'))++p;
+   }
+   std::string label=s.substr(begin,p-begin);
+   bool valid=!label.empty() && label.size()<=64;
+   if(quote) {valid=valid && p<s.size() && s[p]==quote;if(valid)++p;}
+   ws();valid=valid && p<s.size() && (s[p]==',' || s[p]==(close ? close : ')'));
+   if(!valid) {
+    p=saved;nodes=savedNodes;if(!required)return "";
+    throw std::runtime_error("Subsystem labels must be identifiers of 1 to 64 ASCII letters, digits or underscores, starting with a letter.");
+   }
+   if(++count>32 || ++nodes>nodeLimit)throw std::runtime_error("Subsystem labels exceed the 32-factor or expression complexity limit.");
+   if(count>1)result+=",";result+=subsystemLabelBegin;result+='\"'+label+'\"';result+=subsystemLabelEnd;
+   if(!close)return result;
+   if(take(close))return result+")";
+   need(',');
+  } while(true);
+ }
  bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
@@ -1038,6 +1075,7 @@ class Parser {
     if(name=="bloch") name="qbloch";
     if(name=="povm" || name=="instrument" || name=="measurementvalid" || name=="outcomelabels" || name=="effects" || name=="ensemble" || name=="ensembleaverage" || name=="ensemblevalid" || name=="probabilities" || name=="branches" || name=="poststate" || name=="naimark")name="q"+name;
     if(name=="ptrace") name="qptrace";
+    if(name=="subsystems") name="qsubsystems";
     if(name=="permute") name="qpermute";
     if(name=="vec") name="qvec";
     if(name=="spre") name="qspre";
@@ -1169,9 +1207,15 @@ class Parser {
      if(p==s.size()) throw std::runtime_error("Unclosed Pauli label.");
      std::string label=labelText(s.substr(begin,p-begin)); if(quote) ++p; need(')');
      a=pauliLabelExpression(label,name=="compact_pauli");
+    } else if(name=="qsubsystems") {
+     std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
+     std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {
-     std::string state=expression(); need(','); std::string indices=expression();
+     std::string state=expression(); need(',');size_t selectorStart=p;unsigned selectorNodes=nodes;
+     std::string labels=name=="qptrace" ? subsystemLabels(false) : "";
+     p=selectorStart;nodes=selectorNodes;std::string indices=expression();
      if(take(',')) { std::string dimensions=expression(); a=name+"dim("+state+","+indices+","+dimensions+")"; }
+     else if(!labels.empty())a="qptraceselect("+state+","+labels+","+indices+")";
      else a=name+"("+state+","+indices+")";
      need(')');
     } else if(name=="tuple") {
@@ -1607,7 +1651,7 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 }
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
- if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
+ if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos || expression.find(subsystemLabelBegin)!=std::string::npos || expression.find(subsystemLabelEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
  std::string s=unicodeArithmetic(quantumWhitespace(expression));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);

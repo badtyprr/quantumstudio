@@ -247,3 +247,6 @@ EXTRA_DIST += docs/learning-evidence/dev11/reassess-performance.py \
  docs/learning-evidence/dev11/performance-reassessment.md \
  docs/learning-evidence/dev11/reassessment-run.json.gz \
  docs/learning-evidence/dev11/reassessment-results.json
+EXTRA_DIST += docs/learning-evidence/dev17/contract.md
+EXTRA_DIST += windows/Dev17GuiTests.cs windows/test-named-subsystems-gui.ps1
+EXTRA_DIST += docs/learning-evidence/dev17/validation.md
