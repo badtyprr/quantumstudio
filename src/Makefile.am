@@ -311,3 +311,8 @@ quantum_eigensystem_test_SOURCES = quantum-eigensystem-test.cc
 quantum_eigensystem_test_LDADD = $(test_LDADD)
 TESTS += quantum-eigensystem-worker-test.py
 EXTRA_DIST += quantum-eigensystem-worker-test.py
+
+check_PROGRAMS += quantum-named-subsystem-test
+TESTS += quantum-named-subsystem-test
+quantum_named_subsystem_test_SOURCES = quantum-named-subsystem-test.cc
+quantum_named_subsystem_test_LDADD = $(test_LDADD)
