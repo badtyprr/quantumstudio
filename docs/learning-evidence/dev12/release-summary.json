@@ -1,0 +1,227 @@
+{
+  "revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+  "fresh": true,
+  "release": {
+    "url": "https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-52c37a2a",
+    "assets": [
+      {
+        "url": "https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-52c37a2a/QuantumStudio-Windows-x64.zip",
+        "sha256": "efa29f15ee17a676b6b4e850f7f6aadd2eb52b8206e680fc262d4e0326f1ed42",
+        "size": 82889406
+      },
+      {
+        "url": "https://github.com/badtyprr/quantumstudio/releases/download/checkpoint-52c37a2a/QuantumStudio-source.tar.gz",
+        "sha256": "98a1b5ef3c391570d5a383707fe1a02699e16b8ecedfadd761e1b40d199d431b",
+        "size": 4679395
+      }
+    ]
+  },
+  "native_suite": {
+    "TOTAL": 77,
+    "PASS": 76,
+    "SKIP": 1,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "binaries": {
+    "QuantumStudio.exe": "1803f0257983abb82bf1add484529e5c03e63d66bc4dca23d8533647ec4d8c2c",
+    "quantum-worker.exe": "ea0467a5ca5ce58d043c08bed80043361aca4305a5bb92d029781e4035e76913",
+    "qasm-import/qasm-import.exe": "ef867e0e6a172b0d1242a7f927c07c14630a99d0c3f4f3a074064950f9326a4e"
+  },
+  "artifacts": {
+    "QuantumStudio-Windows-x64.zip": {
+      "sha256": "efa29f15ee17a676b6b4e850f7f6aadd2eb52b8206e680fc262d4e0326f1ed42",
+      "size": 82889406
+    },
+    "QuantumStudio-source.tar.gz": {
+      "sha256": "98a1b5ef3c391570d5a383707fe1a02699e16b8ecedfadd761e1b40d199d431b",
+      "size": 4679395
+    }
+  },
+  "payload_files": 404,
+  "zip_files": 405,
+  "source_rows_inventoried": 27,
+  "whole_source_rows_certified": 0,
+  "status": "Partial",
+  "merges": {
+    "variational": {
+      "number": 423,
+      "head": "883ecdb57d9c6a6767bcdfa69b6c5e85808b89d4",
+      "base": "753bf16df56aeae0f6454f89999ef203665755f6",
+      "tree": "8cf131bf22de002c3f58f2b141108fdcb5211c9f",
+      "reviews": {
+        "head": "883ecdb57d9c6a6767bcdfa69b6c5e85808b89d4",
+        "base": "753bf16df56aeae0f6454f89999ef203665755f6",
+        "standards": {
+          "outstanding": 0,
+          "reviewer": "/root/standards_review",
+          "summary": "Current instructions, test/build conventions, distribution and provenance checked. Independent 78-request rerun; all source/cell/manifest/result hashes verified. No findings."
+        },
+        "spec": {
+          "outstanding": 0,
+          "reviewer": "/root/spec_review",
+          "summary": "Eight notebooks/349 cell hashes, source correspondence, Qiskit TwoLocal ordering, wire reversal, Bell energies and analytic derivatives checked. Independent 78-request rerun passed. No scoped findings."
+        }
+      },
+      "checks": [
+        {
+          "name": "Native build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41571965345/job/125706703598"
+        },
+        {
+          "name": "Windows GUI build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41571965364/job/125706703360"
+        },
+        {
+          "name": "Windows OpenQASM build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41571965135/job/125706703770"
+        }
+      ],
+      "verification_pending": false,
+      "merge": "d56fab6125bb0341cb87c37bb75321d02d0b36c6"
+    },
+    "ml": {
+      "number": 424,
+      "head": "5dd14c75d55d915a92831f116f9cf20529dfdb14",
+      "base": "d56fab6125bb0341cb87c37bb75321d02d0b36c6",
+      "tree": "07682f06b2d6c3d7744de74f0a8f01c0733229fd",
+      "reviews": {
+        "head": "5dd14c75d55d915a92831f116f9cf20529dfdb14",
+        "base": "883ecdb57d9c6a6767bcdfa69b6c5e85808b89d4",
+        "standards": {
+          "outstanding": 0,
+          "reviewer": "/root/standards_review",
+          "summary": "Both initial ML findings resolved: central zero-padded links and explicit IBM119 relabeling; all32 mappings/run4 hashes verified."
+        },
+        "spec": {
+          "outstanding": 0,
+          "reviewer": "/root/spec_review",
+          "summary": "Both initial ML findings resolved: central zero-padded links and explicit IBM119 relabeling; all32 mappings/run4 hashes verified."
+        }
+      },
+      "checks": [
+        {
+          "name": "Native build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41573352442/job/125711463274"
+        },
+        {
+          "name": "Windows GUI build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41573352427/job/125711123479"
+        },
+        {
+          "name": "Windows OpenQASM build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41573352452/job/125711395183"
+        }
+      ],
+      "verification_pending": false,
+      "merge": "a87c9b1a6f4730a8d264179114119a6315828f75"
+    },
+    "product": {
+      "number": 425,
+      "head": "283a6261be25cde0cdd9f29df3be3d72c128bae9",
+      "base": "a87c9b1a6f4730a8d264179114119a6315828f75",
+      "tree": "eed646ae3f79d40c8772456800a1e7a92dd6f5dd",
+      "reviews": {
+        "head": "283a6261be25cde0cdd9f29df3be3d72c128bae9",
+        "base": "5dd14c75d55d915a92831f116f9cf20529dfdb14",
+        "standards": {
+          "outstanding": 0,
+          "reviewer": "/root/standards_review",
+          "summary": "Public32 rerun; Spec independently added18 Fourier-spectrum probes across dimensions2/3/5 and scales1e-150,1,1e150, maxscalederror1.77e-12; all12sourcehashes verified. Core module matches peer-reviewed93900d3dc; GUI development provenance correctly limited."
+        },
+        "spec": {
+          "outstanding": 0,
+          "reviewer": "/root/spec_review",
+          "summary": "Public32 rerun; Spec independently added18 Fourier-spectrum probes across dimensions2/3/5 and scales1e-150,1,1e150, maxscalederror1.77e-12; all12sourcehashes verified. Core module matches peer-reviewed93900d3dc; GUI development provenance correctly limited."
+        }
+      },
+      "checks": [
+        {
+          "name": "Native build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41574163933/job/125713705077"
+        },
+        {
+          "name": "Windows GUI build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41574163994/job/125713704306"
+        },
+        {
+          "name": "Windows OpenQASM build and tests",
+          "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41574163794/job/125714045305"
+        }
+      ],
+      "verification_pending": false,
+      "merge": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39"
+    }
+  },
+  "merged_tip_ci": [
+    {
+      "name": "Native build and tests",
+      "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41576566305/job/125721323282",
+      "conclusion": "success"
+    },
+    {
+      "name": "Windows GUI build and tests",
+      "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41576566209/job/125721322282",
+      "conclusion": "success"
+    },
+    {
+      "name": "Windows OpenQASM build and tests",
+      "url": "https://github.com/badtyprr/quantumstudio/actions/runs/41576566210/job/125721322427",
+      "conclusion": "success"
+    }
+  ],
+  "final_evidence_hashes": {
+    "final-worker-validation.json": "a8521662c8c1856ee12b2fd7eb15e6a8da94f89c52f14c52e50bca33b1dd2557",
+    "final-gui-validation.json": "48a2d043718da18c3ba9b14f64d12f9e7033d924db60603294f6092528dfe97a",
+    "baseline-final/results/summary.json": "399f87bb942cd26defea402e9a775633ff3419418e4a83a0d619ad059892c8ba",
+    "compact-final/results.json": "c4bc688e818f510ea8423ef04a4d6efba9d453681b7598479ae451cfef9c1984",
+    "steane-final/results.json": "3e24842b93f08dc25e294a282115505097dc9d83157697111cbe65872686b3f2",
+    "instrument-final/summary.json": "f1dbe8f998a8e24b6a9cadaf4fcdac57603a9cfc2cbc4d702d23263631711d97",
+    "variational-final.json": "6420f14b441ccec234cf683a61776179e79690bee927d97789c28fb7bdfcfe3d",
+    "chemistry-final/results.json": "a42c3d231a5aac5040b7f3f48ca2ddedd06a3d0450296e04f42cbb0acec987ef",
+    "ml-final/results.json": "bdc27b6e698f76a0688e54a8f20fe6cd7491ac13fd14f84a5e60cdbb6c7c43bf",
+    "dev12-final-gui/independent-verification.json": "238b2aa0cce675dc2a68a2bddc17fcef067e50664b1b151ea20afb2cc194a0e0",
+    "final-visual-review.json": "c229e3f0d8faedb50ba85a3a5fe361028646d2b8b215de345d0d339e601e0419",
+    "chemistry-final/execution-provenance.json": "0a60147c0f8360f97b8aeced5b9faa5c4d6e5db1263719269b6d72a5a76f7678",
+    "ml-final/build-provenance.json": "06c892d00ec3779b80eb0419ff55e63fbe5a34bb92cb4043a1704f34f9154e6b"
+  },
+  "validation": {
+    "baseline286": {
+      "already-supported-adaptation": 280,
+      "missing-operation-capacity": 2,
+      "unsupported-adaptation-syntax": 1,
+      "validated-rejection": 3,
+      "total": 286,
+      "expectations_passed": 286
+    },
+    "compact_worker_cases": 405,
+    "compact_gui_checks": 52,
+    "steane_native_checks": 163910,
+    "steane_gui_checks": 40,
+    "instrument_cases": 60,
+    "instrument_gui_checks": 35,
+    "variational_requests": 78,
+    "eigensystem_worker_requests": 32,
+    "chemistry_operations": 60,
+    "ml_worker_expressions": 65,
+    "ml_reentries": 65,
+    "ml_native_circuits": 15,
+    "dev12_gui_checks": 41,
+    "dev12_gui_comparisons": 14
+  },
+  "external_evidence": "cleanup-audit/dev12-20261102",
+  "execution": "Manual finite mathematical adaptations; original source SDK notebooks not executed",
+  "publication_attempts": [
+    {
+      "log": "publication-attempt-1.log",
+      "sha256": "f932db2019bb8cfb43c3b6c88b51e8e04ad81d8e5f32d2d7ebf0658ba3695dd1",
+      "result": "Initial anonymous download HTTP404"
+    },
+    {
+      "log": "publication-attempt-2.log",
+      "sha256": "be562a32f65fc9285dd3dda11d6f08bf97a6e877f24468308253cccdddf5b1e4",
+      "result": "Both anonymous downloads verified"
+    }
+  ],
+  "publication_retry": "Same immutable assets; no rebuild or validation resumption"
+}

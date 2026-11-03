@@ -16,8 +16,8 @@ requests. Worker SHA-256 is recorded with every saved run in the external
 The [tracked baseline summary](dev12/variational-baseline-summary.json) pins
 the worker, build manifest, regression, source manifest and full run hashes;
 all 388 manifest payload files were reverified.
-Review, merge, CI and new-release status are pending; these results alone do not
-claim delivery of a product change.
+These baseline results alone do not claim a product change. The later scoped
+product release and its separate fresh validation are recorded below.
 
 ### Sources and inventory
 
@@ -164,8 +164,8 @@ SciPy spectra/residuals/projectors provide the oracles. This includes the full
 four-qubit H2 operator, not a silently reduced two-qubit replacement. Rounded
 source coefficients, a swapped prose eigenvector pairing and the nuclear-energy
 offset convention are documented; none is silently corrected or double counted.
-Both independent scoped peer reviews report zero findings. Final integration
-review, CI, clean package validation and publication remain pending.
+Both independent scoped peer reviews report zero findings. The final integration
+review, CI, clean package validation and publication are recorded below.
 
 Development GUI validation uses the unchanged released app with the newly built
 worker in a separately recorded staging directory, **not a clean release**:
@@ -198,3 +198,62 @@ the transverse-field wording; no X field is silently added.
 DEV-11 remains Partial and its original 286 expectations are unchanged.
 DEV-09's unresolved tetrahedral symbolic conditional state and DEV-10's
 documented limits remain. No intentional rejection is relabeled as support.
+
+## Verified scoped release
+
+Released [52c37a2a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-52c37a2a) from `52c37a2abe8fce9770ad610f56bd5118a1d4bc39`. This is a product delivery
+of bounded numerical Hermitian eigenpairs plus evidence for existing variational
+and ML routes. DEV-12 remains **Partial**: 27 source rows inventoried, zero
+whole rows certified. [Machine-readable release evidence](dev12/release-summary.json)
+records reviewed heads, merge parents/trees, CI links, binary/archive hashes and
+external final-run hashes.
+
+PRs [#423](https://github.com/badtyprr/quantumstudio/pull/423),
+[#424](https://github.com/badtyprr/quantumstudio/pull/424) and
+[#425](https://github.com/badtyprr/quantumstudio/pull/425) passed separate
+independent Standards and Spec reviews with zero outstanding findings and all
+required native, GUI and OpenQASM CI before guarded merges. Exact merge parents
+and trees were verified. ML review corrected the disclosed source class labels
+and graph-node/basis mapping; the original evidence is retained.
+
+The final PowerShell 7 build and validation were **fresh, not resumed**.
+Native suite: 76 passes, one existing skip, zero failures/errors.
+The eigensystem native regression contains 1,114,552 assertions, including
+repeated numeric helper checks. Actual packaged worker runs passed 78 variational
+requests, 32 eigenpair requests, 60 chemistry operations, and 65 ML expressions
+plus 65 canonical re-entries. Fifteen additional ML circuits used a separately
+built native audit driver from this release source, not the GUI or original SDK.
+
+Original DEV-11 expectations remain unchanged: all 286 pass, including the
+intentional capacity/syntax rejections and invalid-input checks. Applicable
+regressions also pass: 405 exact compact toric cases and re-entry, 743 compact
+native assertions, 163,910 Steane native comparisons, five Steane worker
+witnesses, 60 instrument cases, and the existing 214 DEV-09 worker checks.
+The standard build retains 316 algebra, 538 notation and 2,180 worker checks.
+
+Real final-app Calculate/Copy/re-entry/session checks pass 41 DEV-12 assertions
+plus 14 independent clipboard comparisons, 52 compact GUI assertions, 40 Steane
+GUI assertions and 35 instrument GUI assertions. Steane serialization verifies
+all five exact gate orders and original source bytes through the packaged
+importer. Twenty-two selected captures from the four final GUI runs were
+inspected. No file-dialog interaction is claimed.
+
+All 404 payload files and 405 ZIP file entries match the retained manifest;
+the source archive passed distribution verification. Both published assets were
+downloaded anonymously and matched tested sizes and SHA-256 hashes:
+
+- Windows ZIP: `efa29f15ee17a676b6b4e850f7f6aadd2eb52b8206e680fc262d4e0326f1ed42`.
+- Source archive: `98a1b5ef3c391570d5a383707fe1a02699e16b8ecedfadd761e1b40d199d431b`.
+
+The initial anonymous download returned HTTP 404 after publication. Its log is
+retained; retrying the identical published assets passed. This was a publication
+verification retry, not a resumed build or validation run.
+
+Raw source snapshots, original failing inputs, baseline/development runs,
+failed harness assumptions, final runs and build manifests remain outside
+disposable checkouts under `cleanup-audit/`. Decimal eigenpair copies re-enter
+as equivalent exact fractions and are checked semantically. The earlier
+approximate norm-cancellation diagnostic is retained as unresolved. This release
+does not claim symbolic/generalized eigensolvers, expanded parser capacity,
+whole-lesson support, original framework execution or global optimizer convergence.
+DEV-09's unresolved symbolic case, DEV-10 limits and DEV-11 Partial status remain.
