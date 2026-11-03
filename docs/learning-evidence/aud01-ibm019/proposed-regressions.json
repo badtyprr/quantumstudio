@@ -1,0 +1,58 @@
+[
+  {
+    "input": "quantum:(-1)^0 \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "returncode": 0,
+    "stdout": "{\"text\":\"(\u22121)^[0; 0]\",\"display_text\":\"(\u22121)^[0; 0]\",\"copy_text\":\"(\u22121)^(matrix(2,1,[0,0]))\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "expected": [
+      "1",
+      "-1"
+    ],
+    "source": "M10",
+    "control": false,
+    "matches_expected": false,
+    "status": "incorrect_result"
+  },
+  {
+    "input": "quantum:(-1)^{0} \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[1; \u22121]\",\"display_text\":\"[1; \u22121]\",\"copy_text\":\"matrix(2,1,[1,\u22121])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1\"],[\"\u22121\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "expected": [
+      "1",
+      "-1"
+    ],
+    "source": "M10",
+    "control": true,
+    "matches_expected": true,
+    "status": "pass"
+  },
+  {
+    "input": "quantum:(-1)^1 \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "returncode": 0,
+    "stdout": "{\"text\":\"(\u22121)^[1; \u22121]\",\"display_text\":\"(\u22121)^[1; \u22121]\",\"copy_text\":\"(\u22121)^(matrix(2,1,[1,\u22121]))\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "expected": [
+      "-1",
+      "1"
+    ],
+    "source": "M10",
+    "control": false,
+    "matches_expected": false,
+    "status": "incorrect_result"
+  },
+  {
+    "input": "quantum:(-1)^{1} \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "returncode": 0,
+    "stdout": "{\"text\":\"[\u22121; 1]\",\"display_text\":\"[\u22121; 1]\",\"copy_text\":\"matrix(2,1,[\u22121,1])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"\u22121\"],[\"1\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "stderr": "",
+    "expected": [
+      "-1",
+      "1"
+    ],
+    "source": "M10",
+    "control": true,
+    "matches_expected": true,
+    "status": "pass"
+  }
+]

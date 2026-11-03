@@ -1,0 +1,18 @@
+{
+  "source": "C:\\Users\\Simeon\\.codex\\worktrees\\aud01-ibm-algorithms\\libqalculate\\src\\quantum-worker-test.py",
+  "source_sha256": "22c1555508f7cd8c2a73001bd6013fa823fc3298be7464f72a110817b638de8e",
+  "selected_nodes": [
+    {
+      "line": 724,
+      "end_line": 726,
+      "sha256": "3e578f82ce0bf0e1637482e4db26c540de0b4c3970eee444e4fd724b9edff9f9"
+    },
+    {
+      "line": 729,
+      "end_line": 745,
+      "sha256": "8f724db19f06e53b1deedafb8672273ee5fa6a37f0e0d1f23253217eac8d0d54"
+    }
+  ],
+  "worker_checks": 28,
+  "status": "pass"
+}

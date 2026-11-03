@@ -1,0 +1,62 @@
+[
+  {
+    "input": "(-1)^0 \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "rc": 0,
+    "out": "{\"text\":\"(\u22121)^[0; 0]\",\"display_text\":\"(\u22121)^[0; 0]\",\"copy_text\":\"(\u22121)^(matrix(2,1,[0,0]))\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "(-1)^1 \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "rc": 0,
+    "out": "{\"text\":\"(\u22121)^[1; \u22121]\",\"display_text\":\"(\u22121)^[1; \u22121]\",\"copy_text\":\"(\u22121)^(matrix(2,1,[1,\u22121]))\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "(-1)^{0} \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "rc": 0,
+    "out": "{\"text\":\"[1; \u22121]\",\"display_text\":\"[1; \u22121]\",\"copy_text\":\"matrix(2,1,[1,\u22121])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1\"],[\"\u22121\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "(-1)^{1} \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)",
+    "rc": 0,
+    "out": "{\"text\":\"[\u22121; 1]\",\"display_text\":\"[\u22121; 1]\",\"copy_text\":\"matrix(2,1,[\u22121,1])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"\u22121\"],[\"1\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "\\vert 0 \\oplus 0\\rangle - \\vert 1 \\oplus 0\\rangle = \\vert 0\\rangle - \\vert 1\\rangle",
+    "rc": 0,
+    "out": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "(-1)^{f(0)}",
+    "rc": 0,
+    "out": "{\"text\":\"1\",\"display_text\":\"1\",\"copy_text\":\"1\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "f(0)",
+    "rc": 0,
+    "out": "{\"text\":\"0\",\"display_text\":\"0\",\"copy_text\":\"0\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "f(1)",
+    "rc": 0,
+    "out": "{\"text\":\"'f'\",\"display_text\":\"f\",\"copy_text\":\"'f'\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  },
+  {
+    "input": "|0 \u2295 a>",
+    "rc": 2,
+    "out": "",
+    "err": "XOR basis labels require literal binary strings of 1 to 10 bits.\r\n"
+  },
+  {
+    "input": "|->((|0>+|1>)/sqrt(2))",
+    "rc": 0,
+    "out": "{\"text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"display_text\":\"[0.5; 0.5; \u22120.5; \u22120.5]\",\"copy_text\":\"matrix(4,1,[1 \u2215 2,1 \u2215 2,\u22121 \u2215 2,\u22121 \u2215 2])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"0.5\"],[\"0.5\"],[\"\u22120.5\"],[\"\u22120.5\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+    "err": ""
+  }
+]

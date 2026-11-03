@@ -1,0 +1,18 @@
+{
+  "page_url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm",
+  "section": "Analysis",
+  "notebook_cell_id": "7e5d320e",
+  "scope": "h2 Analysis inclusive to h2 Further remarks exclusive; no code cells; notebook implementation excluded",
+  "files": {
+    "baseline-AGENTS.md": "28c16645e4e3310059136013ef613b946a07d635576fb1d2edfa26aa24bbdcec",
+    "baseline-learning-coverage-checklist.md": "89ed260038c36c2e1169121933ebf88594f6826913bf0d71104220f6f6bc4381",
+    "baseline-learning-source-inventory.json": "79df8d26505f34a4cf350522aadc766f431b0581068f7413180c7f1fb015928e",
+    "circuit.svg": "a9de1c7f182892cab152c30ce1ff226d968bddf3375d59757d7278e0b370460f",
+    "inventory.json": "9c4c15fea3d546a7079c0f6ffb1a78df80b932f85f18ade2bed2795c56c6e3b4",
+    "section.md": "cb6dc2822a9de883f43e309c233556a8b22ad5a50067eb673fd107f6db3ae2a3",
+    "source.html": "f955bbec8d53df02b40dc6221e8e74b95aec70fc9251ee1d5ba535e7aecc7d2e",
+    "source.ipynb": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f"
+  },
+  "notebook_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "diagram_url": "https://quantum.cloud.ibm.com/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/Deutsch-circuit-states.svg"
+}
