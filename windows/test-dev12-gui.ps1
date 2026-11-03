@@ -20,6 +20,8 @@ try {
  if(!$process.WaitForExit(300000)){$process.Kill();$process.WaitForExit();throw 'DEV-12 GUI tests timed out.'}
  $result=Get-Content -LiteralPath (Join-Path $Evidence 'result.txt') -Raw
  if($process.ExitCode -ne 0 -or !$result.StartsWith('PASS:')){throw $result}
+ & $PythonPath (Join-Path $PSScriptRoot '../docs/learning-evidence/dev12/gui-verify.py') $Distribution $Evidence
+ if($LASTEXITCODE -ne 0){throw 'Independent DEV-12 clipboard verification failed.'}
  if((Get-FileHash -LiteralPath $app).Hash.ToLower() -ne $guiProvenance.application_sha256 -or (Get-FileHash -LiteralPath (Join-Path $Distribution 'quantum-worker.exe')).Hash.ToLower() -ne $guiProvenance.worker_sha256){throw 'GUI binaries changed during validation.'}
  $guiProvenance.verified_after_run=$true
  $guiProvenance | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Evidence 'provenance.json')

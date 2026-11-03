@@ -55,6 +55,9 @@ Eigenvectors have their largest-magnitude component made real and positive.
 Degenerate eigenspaces may use any orthonormal basis; compare residuals and
 projectors rather than assuming unique vectors. These functions do not solve
 generalized eigenproblems or accept symbolic/non-Hermitian matrices. Existing
+notation size and complexity limits still apply to input expressions, so a
+fully expanded dense complex literal can hit that limit below dimension 64.
+No parser or dense-constructor capacity is raised by this interface. Existing
 symbolic matrix products remain available for exact spectral identities.
 See [DEV-12 source evidence](learning-evidence/DEV-12.md) for adaptations and
 the distinction between matrix support and full algorithm execution.

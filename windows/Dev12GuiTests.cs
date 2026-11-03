@@ -53,7 +53,11 @@ class Dev12GuiTests {
      await Calculate(expressions[k]);string copied=await Copy();
      File.WriteAllText(Path.Combine(output,"copy-"+k+".txt"),copied);
      Capture(Path.Combine(output,"dev12-"+k+".png"));
-     await Calculate(copied);Require(await Copy()==copied,"DEV-12 Copy/re-entry changed result "+k);
+     await Calculate(copied);string reentered=await Copy();
+     File.WriteAllText(Path.Combine(output,"reentry-"+k+".txt"),reentered);
+     // Approximate decimals become exact rational literals on re-entry.
+     // The independent verifier checks all cells, residuals and dimensions.
+     if(k<4)Require(reentered==copied,"DEV-12 Copy/re-entry changed result "+k);
     }
     string session=Path.Combine(output,"dev12.qsession");object snapshot=Call("CaptureSession");
     assembly.GetType("SessionStore").GetMethod("Save").Invoke(null,new object[]{session,snapshot});
