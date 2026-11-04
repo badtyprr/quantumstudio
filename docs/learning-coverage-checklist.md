@@ -34,6 +34,36 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
 | [AUD-04](#aud-04) | P2 | M | Pending | AUD-02 | Audit remaining notebooks end to end |
 
+## Dated development staging checkpoint — 2026-11-04
+
+This is a record of reviewed preparation, not a release announcement. Live master
+was `02d5ca3f5713385818e80db15b1a58e3b518e569` at this checkpoint. The draft PRs
+below were unmerged; no new public release is established. Recheck exact heads,
+required CI and actual merged trees before integration. The existing release
+ledger and whole-source checkboxes remain unchanged.
+
+| Scope | Reviewed preparation | Evidence established | Remaining acceptance |
+|---|---|---|---|
+| DEV-17 | [PR428](https://github.com/badtyprr/quantumstudio/pull/428), `7c41e31cb`; [PR429](https://github.com/badtyprr/quantumstudio/pull/429), `abd843427` | Candidate acceptance and independent reviews; new non-Candidate workflow reviewed | Exact merge authorization, actual master CI/tree, newly built final bytes, final visual/native acceptance, separate publication authorization and public-download hashes |
+| DEV-16 | [PR431](https://github.com/badtyprr/quantumstudio/pull/431), `f3b4f55a` | Reviewed diagnostics and editor acceptance; hosted classical 1,184 checks, six imports and 12 round trips | Hosted composer route was explicitly structural only; full package numerical acceptance and source-specific remaining failure matrix stay open |
+| DEV-05 complement | [PR430](https://github.com/badtyprr/quantumstudio/pull/430), `3fdf7ebd`; [PR435](https://github.com/badtyprr/quantumstudio/pull/435), harness `74212d518` | Reviewed finite grammar; fresh native suite 79 passed / one existing skip; dedicated integrated-worker checks passed | Local Clipboard/session attempt blocked by locked desktop; reviewed hosted candidate route pending. Its newly built bytes must be identified separately from the local worker |
+| DEV-05 tensor marker | [PR437](https://github.com/badtyprr/quantumstudio/pull/437), `ec2610d7` | Reviewed source-backed IBM-020 M24 increment; standalone-parser and retained-evaluator checks passed | Fresh integrated worker, GUI/session and actual release acceptance; the other 45 inventoried source occurrences are not certified |
+| DEV-11 vector XOR | [PR438](https://github.com/badtyprr/quantumstudio/pull/438), `577dbb657` | Repeated real-worker failure and reviewed corresponding-index correction; the defect exists in the baseline | Fresh corrected-worker regression and integrated/release acceptance. Static review is not a green test result |
+| DEV-13 external notebooks | [PR432](https://github.com/badtyprr/quantumstudio/pull/432), `3b62cd56e`; [PR434](https://github.com/badtyprr/quantumstudio/pull/434), `57844c51b` | Original IBM-019/020 cells executed in pinned offline environments; shared environment/run/cancel interface independently reviewed; 12 lifecycle tests passed | Application runtime integration, other frameworks, external resources and full interpretation remain open. Authored seed/witness cells are separately identified; finite external execution does not complete AUD-04 |
+| AUD-02 discovery | [PR433](https://github.com/badtyprr/quantumstudio/pull/433), `4a788743`; [PR436](https://github.com/badtyprr/quantumstudio/pull/436), `945efea7a` | Reviewed dated repository comparison and additional source/dependency accounting; 188 known source rows, all unchecked | DISC-01/02/04/05 and full source acceptance remain open. Retained landing shells do not establish question/path content or authentication requirements |
+
+The reviewed DEV-16 reconciliation evidence is already included in PR428; original
+commit IDs differing after cherry-pick do not justify applying it again. The
+reviewed branches have also been combined in a local rehearsal, with distribution
+conflicts resolved by preserving every entry. That rehearsal is not actual master
+integration and has no combined runtime/package acceptance yet.
+
+DEV-12 regularized-overlap composition and DEV-14 QIR prerequisites are additional
+external investigations, not completed feature or source rows. A successful
+composition pilot does not justify a new API; valid LLVM artifacts do not by
+themselves prove QIR semantic execution. Access-blocked, external-runtime and
+unexecuted acceptance must retain their separate evidence and disposition.
+
 ## Release queue
 
 - [x] REL-01: Release `92f80696`: 70 packaged audit groups, 262 verified visual captures, 340 manifest files. ZIP SHA-256 `d621438711c3ff6a58f819b3c3d559db547b187d3b2c5f5f099e87c71bdb3323`.
