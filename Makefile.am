@@ -294,3 +294,9 @@ EXTRA_DIST += windows/dev13-notebooks/profiles/notebook-linux-py312.json
 EXTRA_DIST += windows/dev13-notebooks/linux-notebook-requirements.lock
 EXTRA_DIST += docs/learning-evidence/dev14/linux-lifecycle.md
 EXTRA_DIST += .github/workflows/notebook-linux-lifecycle.yml
+
+# Retained Linux Qiskit acquisition prerequisite; no notebook acceptance.
+EXTRA_DIST += .github/workflows/notebook-linux-qiskit.yml
+EXTRA_DIST += diagnostics/notebook-linux-qiskit/acquire_environment.py
+EXTRA_DIST += diagnostics/notebook-linux-qiskit/exact-requirements.txt
+EXTRA_DIST += diagnostics/notebook-linux-qiskit/inputs.zip
