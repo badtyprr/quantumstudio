@@ -58,7 +58,8 @@ function Run-Driver([string]$Executable,[string[]]$Arguments,[string]$Name){
     $cleanup+=@{pid=$id;start=$owned[$id];terminated=$live.HasExited}
    }
   }
-  @{observed_processes=$owned;cleanup=$cleanup;limitation='Polling can miss short-lived parents; dedicated single-job guest required. Guest disposal is final containment.'} | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $Evidence "$Name.processes.json")
+  $identities=@(foreach($id in $owned.Keys){@{pid=$id;start=$owned[$id]}})
+  @{observed_processes=$identities;cleanup=$cleanup;limitation='Polling can miss short-lived parents; dedicated single-job guest required. Guest disposal is final containment.'} | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $Evidence "$Name.processes.json")
   $p.Dispose()
   if(@($cleanup | Where-Object { !$_.terminated }).Count){throw "$Name left owned processes running."}
  }
