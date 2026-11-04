@@ -20,8 +20,8 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"ibm019", "ibm020"}
-PROFILES = {"qiskit-aer-win-py312"}
+CONTRACTS = {"ibm019", "ibm020", "qb017"}
+PROFILES = {"qiskit-aer-win-py312", "qir-win-py312"}
 
 
 def digest(raw):
@@ -72,10 +72,14 @@ def inspect_environment(python, profile, dependencies=True):
         if identity[key] != profile[key]:
             raise ValueError("ENVIRONMENT_MISMATCH: " + key)
     if dependencies:
+        expected = {}
         for line in canonical(ROOT / profile["lock"]).decode().splitlines():
             name, version = line.split()[0].split("==")
+            expected[name.lower().replace("_", "-")] = version
             if identity["packages"].get(name.lower().replace("_", "-")) != version:
                 raise ValueError("DEPENDENCY_MISMATCH: " + name)
+        if profile.get("exact_packages") and identity["packages"] != expected:
+            raise ValueError("DEPENDENCY_INVENTORY_MISMATCH")
         subprocess.run([str(python), "-I", "-m", "pip", "check"], capture_output=True, text=True, timeout=30, check=True)
     return identity
 
@@ -123,10 +127,88 @@ def validate_request(request):
     witness = canonical(ROOT / contract["witness"]["path"])
     if digest(witness) != contract["witness"]["sha256"]:
         raise ValueError("WITNESS_HASH_MISMATCH")
+    setup = contract.get("setup")
+    if setup:
+        if digest(_setup_observer(setup["commands"]).encode("utf-8")) != setup["observer_sha256"]:
+            raise ValueError("SETUP_OBSERVER_HASH_MISMATCH")
+        if digest(SETUP_CHECK.encode("utf-8")) != setup["check_sha256"]:
+            raise ValueError("SETUP_CHECK_HASH_MISMATCH")
     python = Path(request["environment"]).resolve() / "Scripts" / "python.exe"
     identity = inspect_environment(python, profile)
     return raw, dict(contract=contract, contract_sha256=digest(contract_bytes), profile=profile,
                      witness=witness.decode(), identity=identity, python=str(python))
+
+
+def _setup_observer(commands):
+    """Disclosed authored observation: execute the original IPython commands."""
+    return '''import hashlib as _dev13_hashlib, importlib.metadata as _dev13_metadata
+import json as _dev13_json, pathlib as _dev13_pathlib, sys as _dev13_sys
+import os as _dev13_os, time as _dev13_time
+def _dev13_inventory():
+    return {d.metadata['Name'].lower().replace('_', '-'): {
+        'version': d.version,
+        'metadata_sha256': _dev13_hashlib.sha256((d.read_text('METADATA') or '').encode()).hexdigest(),
+        'record_sha256': _dev13_hashlib.sha256((d.read_text('RECORD') or '').encode()).hexdigest()
+    } for d in _dev13_metadata.distributions()}
+_dev13_setup = {'commands': [], 'before': _dev13_inventory(), 'accepted': False}
+def _dev13_save_setup():
+    temporary = _dev13_pathlib.Path('setup-evidence.json.tmp')
+    temporary.write_text(_dev13_json.dumps(_dev13_setup, indent=2), encoding='utf-8')
+    deadline = _dev13_time.monotonic() + 2
+    while True:
+        try:
+            _dev13_os.replace(temporary, 'setup-evidence.json')
+            break
+        except PermissionError:
+            if _dev13_time.monotonic() >= deadline:
+                raise
+            _dev13_time.sleep(0.02)
+_dev13_shell = get_ipython()
+_dev13_real_system = _dev13_shell.system
+_dev13_commands = ''' + repr(commands) + '''
+def _dev13_observed_system(command):
+    index = len(_dev13_setup['commands'])
+    expected = ('"' + _dev13_sys.executable + '" -m pip ' + _dev13_commands[index]) if index < len(_dev13_commands) else None
+    if command != expected:
+        raise RuntimeError('UNREVIEWED_SETUP_COMMAND: ' + command)
+    _dev13_shell.user_ns['_exit_code'] = None
+    try:
+        _dev13_real_system(command)
+    finally:
+        code = _dev13_shell.user_ns.get('_exit_code')
+        _dev13_setup['commands'].append({'command': command, 'exit_code': code})
+        _dev13_save_setup()
+    if code != 0:
+        raise RuntimeError('SETUP_COMMAND_FAILED: ' + str(code))
+_dev13_shell.system = _dev13_observed_system
+_dev13_save_setup()
+'''
+
+
+SETUP_CHECK = '''_dev13_shell.system = _dev13_real_system
+_dev13_setup['after'] = _dev13_inventory()
+_dev13_setup['accepted'] = (_dev13_setup['before'] == _dev13_setup['after'] and
+    len(_dev13_setup['commands']) == len(_dev13_commands) and
+    all(c['exit_code'] == 0 for c in _dev13_setup['commands']))
+_dev13_save_setup()
+if not _dev13_setup['accepted']:
+    raise RuntimeError('SETUP_INVENTORY_DRIFT_OR_INCOMPLETE')
+'''
+
+
+def _kernel_environment(setup):
+    environment = dict(os.environ)
+    if setup:
+        # IPython's original %pip launches a child without -I. Scrub its import
+        # and pip settings too; this is offline pip policy, not network isolation.
+        for key in list(environment):
+            if key.upper().startswith(('PIP_', 'PYTHON')):
+                del environment[key]
+        environment.update(PIP_CONFIG_FILE=os.devnull, PIP_NO_INDEX="1", PIP_NO_CACHE_DIR="1",
+                           PIP_DISABLE_PIP_VERSION_CHECK="1", PIP_REQUIRE_VIRTUALENV="1",
+                           PYTHONNOUSERSITE="1")
+    environment["MPLBACKEND"] = "module://matplotlib_inline.backend_inline"
+    return environment
 
 
 class _WindowsJob:
@@ -346,7 +428,7 @@ def _supervise(output, config, events=None):
         job.close()
 
 
-async def _run_notebook(output, config):
+async def _run_notebook(output, config, control_state=None):
     import nbformat
     from nbclient import NotebookClient
     from jupyter_client import AsyncKernelManager
@@ -360,13 +442,33 @@ async def _run_notebook(output, config):
         if cell.cell_type == "code":
             cell.outputs, cell.execution_count = [], None
             cell.metadata.pop("execution", None)
-    offset = int(bool(contract["preamble"]))
-    if offset:
-        notebook.cells.insert(0, nbformat.v4.new_code_cell(contract["preamble"], metadata={"tags": ["authored-preamble"]}))
-    notebook.cells.append(nbformat.v4.new_code_cell(config["witness"], metadata={"tags": ["authored-independent-witness"]}))
-    records = [dict(index=i, original_index=i-offset if offset <= i < offset+len(original) else None,
-                    type=c.cell_type, state="not_run" if c.cell_type == "code" else "not_executable")
-               for i, c in enumerate(notebook.cells)]
+    original_cells = list(notebook.cells)
+    notebook.cells = []
+    records = []
+    source_positions = {}
+
+    def append(cell, original_index=None, role=None):
+        index = len(notebook.cells)
+        notebook.cells.append(cell)
+        records.append(dict(index=index, original_index=original_index, authored_role=role,
+                            type=cell.cell_type, source_sha256=digest(cell.source.encode("utf-8")),
+                            state="not_run" if cell.cell_type == "code" else "not_executable"))
+        if original_index is not None:
+            source_positions[original_index] = index
+
+    def authored(source, role):
+        append(nbformat.v4.new_code_cell(source, metadata={"tags": ["authored-" + role]}), role=role)
+
+    if contract["preamble"]:
+        authored(contract["preamble"], "preamble")
+    setup = contract.get("setup")
+    for index, cell in enumerate(original_cells):
+        if setup and index == setup["cell"]:
+            authored(_setup_observer(setup["commands"]), "setup-observer")
+        append(cell, original_index=index)
+        if setup and index == setup["cell"]:
+            authored(SETUP_CHECK, "setup-check")
+    authored(config["witness"], "independent-witness")
     result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
 
     def checkpoint():
@@ -385,7 +487,7 @@ async def _run_notebook(output, config):
         client = NotebookClient(notebook, km=manager, timeout=config["profile"]["default_cell_timeout_seconds"],
                                 allow_errors=False, interrupt_on_timeout=False, resources={"metadata": {"path": str(output)}})
         try:
-            async with client.async_setup_kernel(cleanup_kc=True):
+            async with client.async_setup_kernel(cleanup_kc=True, env=_kernel_environment(setup)):
                 atomic_json(output / "kernel.json", {"pid": manager.provisioner.pid, "executable": sys.executable})
                 for i, cell in enumerate(notebook.cells):
                     if cell.cell_type != "code":
@@ -397,30 +499,42 @@ async def _run_notebook(output, config):
                         await client.async_execute_cell(cell, i)
                         records[i]["state"] = "succeeded"
                     except BaseException as error:
-                        records[i].update(state="interrupted" if isinstance(error, asyncio.CancelledError) else "failed",
+                        interrupted = isinstance(error, asyncio.CancelledError) or bool(control_state)
+                        records[i].update(state="interrupted" if interrupted else "failed",
                                           error={"type": type(error).__name__, "message": str(error)})
                         raise
                     finally:
                         records[i]["elapsed_seconds"] = time.monotonic() - started
                         checkpoint()
-            preserved = [(c.cell_type, c.source) for c in notebook.cells[offset:offset+len(original)]]
+            preserved = [(notebook.cells[source_positions[i]].cell_type, notebook.cells[source_positions[i]].source)
+                         for i in range(len(original))]
             if preserved != original:
                 raise AssertionError("SOURCE_CELLS_CHANGED")
             for index in contract["required_images"]:
-                if not any(o.get("data", {}).get("image/png") for o in notebook.cells[index+offset].outputs):
+                if not any(o.get("data", {}).get("image/png") for o in notebook.cells[source_positions[index]].outputs):
                     raise AssertionError("MISSING_DRAWING: " + str(index))
             for index, text in contract["required_text"].items():
-                if not any(o.get("data", {}).get("text/plain") == text for o in notebook.cells[int(index)+offset].outputs):
+                if not any(o.get("data", {}).get("text/plain") == text for o in notebook.cells[source_positions[int(index)]].outputs):
                     raise AssertionError("SOURCE_RESULT_MISMATCH: " + index)
             witness_text = "".join(o.get("text", "") for o in notebook.cells[-1].outputs if o.output_type == "stream")
             result.update(state="succeeded", original_execution="succeeded", authored_verification="succeeded",
                           independent_results=json.loads(witness_text), source_cells_preserved=True)
+            if contract.get("acceptance_field"):
+                if result["independent_results"].get(contract["acceptance_field"]) is not True:
+                    raise AssertionError("SEMANTIC_ACCEPTANCE_FAILED")
         except BaseException as error:
             result["error"] = dict(type=type(error).__name__, message=str(error), traceback=traceback.format_exc())
-            codes = [records[i+offset]["state"] for i in contract["code_cells"]]
+            codes = [records[source_positions[i]]["state"] for i in contract["code_cells"]]
+            result["state"] = "failed"
             result["original_execution"] = "succeeded" if all(x == "succeeded" for x in codes) else "incomplete"
             result["authored_verification"] = "failed" if records[-1]["state"] == "succeeded" else records[-1]["state"]
         finally:
+            artifacts = {}
+            for pattern in contract.get("output_artifacts", []):
+                for path in output.glob(pattern):
+                    if path.is_file() and path.resolve().parent == output.resolve():
+                        artifacts[path.name] = dict(bytes=path.stat().st_size, sha256=digest(path.read_bytes()))
+            result["output_artifacts"] = artifacts
             checkpoint()
             atomic_json(output / "engine-result.json", result)
     return result
@@ -433,20 +547,38 @@ def _engine(output):
     config = json.loads((output / "engine-request.json").read_bytes())
 
     async def main():
-        task = asyncio.create_task(_run_notebook(output, config))
+        control_state = {}
+        task = asyncio.create_task(_run_notebook(output, config, control_state))
         loop = asyncio.get_running_loop()
+        control_event = None
+
+        def interrupt(reason):
+            nonlocal control_event
+            if not task.done() and control_event is None:
+                control_event = reason
+                control_state['reason'] = reason
+                task.cancel()
 
         def control():
+            reason = "control_eof"
             for line in sys.stdin:
                 if line.strip() == "cancel":
-                    try:
-                        loop.call_soon_threadsafe(task.cancel)
-                    except RuntimeError:
-                        pass
-                    return
+                    reason = "cancel_requested"
+                    break
+            try:
+                loop.call_soon_threadsafe(interrupt, reason)
+            except RuntimeError:
+                pass  # Execution finished and the loop has already closed.
 
         threading.Thread(target=control, daemon=True).start()
-        return await task
+        try:
+            result = await task
+        except asyncio.CancelledError:
+            result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
+        if control_event is not None:
+            result.update(state="failed", control_event=control_event)
+            atomic_json(output / "engine-result.json", result)
+        return result
 
     result = asyncio.run(main())
     return 0 if result["state"] == "succeeded" else 1

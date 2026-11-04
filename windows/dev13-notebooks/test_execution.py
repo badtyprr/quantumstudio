@@ -93,6 +93,98 @@ class LifecycleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "ENVIRONMENT_MISMATCH: python"):
             execution.inspect_environment(Path(sys.executable), dict(self.profile, python="0.0.0"))
 
+    def test_reviewed_setup_preserves_source_and_inventory(self):
+        config = self.fixture(['%pip --version', '42'])
+        config['contract']['setup'] = {'cell': 0, 'commands': ['--version']}
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'succeeded')
+        setup = json.loads((self.output / 'setup-evidence.json').read_bytes())
+        self.assertTrue(setup['accepted'])
+        self.assertEqual(setup['before'], setup['after'])
+        self.assertEqual([c['exit_code'] for c in setup['commands']], [0])
+        notebook = json.loads((self.output / 'executed.ipynb').read_bytes())
+        original = [notebook['cells'][r['index']]['source'] for r in self.records() if r['original_index'] is not None]
+        self.assertEqual(original, ['%pip --version', '42'])
+        self.assert_cleanup(result)
+
+    def test_early_setup_failure_cannot_be_hidden_by_later_success(self):
+        config = self.fixture(['%pip install --dev13-invalid-option\n%pip --version', '42'])
+        config['contract']['setup'] = {'cell': 0, 'commands': ['install --dev13-invalid-option', '--version']}
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'failed')
+        setup = json.loads((self.output / 'setup-evidence.json').read_bytes())
+        self.assertFalse(setup['accepted'])
+        self.assertEqual(len(setup['commands']), 1)
+        self.assertNotEqual(setup['commands'][0]['exit_code'], 0)
+        self.assertEqual(next(r['state'] for r in self.records() if r['original_index'] == 1), 'not_run')
+        self.assert_cleanup(result)
+
+    def test_setup_metadata_drift_stops_later_cells(self):
+        source = ('%pip --version\nimport pathlib,sys\n'
+                  'directory=pathlib.Path("dev13_drift-0.dist-info"); directory.mkdir()\n'
+                  '(directory/"METADATA").write_text("Metadata-Version: 2.1\\nName: dev13-drift\\nVersion: 0\\n")\n'
+                  'sys.path.insert(0,str(pathlib.Path.cwd()))')
+        config = self.fixture([source, '42'])
+        config['contract']['setup'] = {'cell': 0, 'commands': ['--version']}
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'failed')
+        setup = json.loads((self.output / 'setup-evidence.json').read_bytes())
+        self.assertIn('dev13-drift', setup['after'])
+        self.assertFalse(setup['accepted'])
+        self.assertEqual(next(r['state'] for r in self.records() if r['original_index'] == 1), 'not_run')
+        self.assert_cleanup(result)
+
+    def test_setup_scrubs_inherited_pip_and_child_python_settings(self):
+        config = self.fixture(['%pip --version\nimport os\nassert os.environ["PIP_NO_INDEX"] == "1"\n'
+                               'assert "PIP_INDEX_URL" not in os.environ\nassert "PYTHONPATH" not in os.environ'])
+        config['contract']['setup'] = {'cell': 0, 'commands': ['--version']}
+        with patch.dict(os.environ, {'PIP_INDEX_URL': 'https://invalid.example/', 'PIP_CONFIG_FILE': 'invalid',
+                                     'PYTHONPATH': 'invalid', 'PIP_REQUIREMENT': 'invalid'}):
+            result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'succeeded')
+        self.assert_cleanup(result)
+
+    def test_missing_setup_package_fails_without_contacting_inherited_index(self):
+        from http.server import BaseHTTPRequestHandler, HTTPServer
+        requests = []
+
+        class Index(BaseHTTPRequestHandler):
+            def do_GET(self):
+                requests.append(self.path)
+                self.send_response(404)
+                self.end_headers()
+
+            def log_message(self, *args):
+                pass
+
+        server = HTTPServer(('127.0.0.1', 0), Index)
+        listener = threading.Thread(target=server.serve_forever)
+        listener.start()
+        config = self.fixture(['%pip install dev13-missing-package-proof-000000 --quiet', '42'])
+        config['contract']['setup'] = {'cell': 0, 'commands': ['install dev13-missing-package-proof-000000 --quiet']}
+        try:
+            with patch.dict(os.environ, {'PIP_INDEX_URL': f'http://127.0.0.1:{server.server_port}/simple'}):
+                result = execution._supervise(self.output, config)
+        finally:
+            server.shutdown()
+            listener.join()
+            server.server_close()
+        self.assertEqual(result['state'], 'failed')
+        self.assertEqual(requests, [])
+        self.assertEqual(next(r['state'] for r in self.records() if r['original_index'] == 1), 'not_run')
+        self.assert_cleanup(result)
+
+    def test_semantic_rejection_retains_successful_source_and_evidence(self):
+        config = self.fixture(['42'])
+        config['witness'] = 'print(\'{"accepted": false, "reason": "unmeasured results"}\')'
+        config['contract']['acceptance_field'] = 'accepted'
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'failed')
+        self.assertEqual(result['original_execution'], 'succeeded')
+        self.assertEqual(result['authored_verification'], 'failed')
+        self.assertEqual(result['independent_results']['reason'], 'unmeasured results')
+        self.assert_cleanup(result)
+
     def test_ambient_pythonpath_cannot_replace_locked_package(self):
         foreign = self.output / "foreign"
         foreign.mkdir()
@@ -173,6 +265,54 @@ class LifecycleTests(unittest.TestCase):
                 execution._supervise(self.output, config)
         self.assertFalse((self.output / "kernel.json").exists())
         self.assertEqual(json.loads((self.output / "status.json").read_bytes())["state"], "failed")
+
+    def control_eof(self, started):
+        config = self.fixture(['print("retained")', 'import time; time.sleep(120)', '42'], timeout=180)
+        execution.atomic_json(self.output / 'engine-request.json', config)
+        job = execution._WindowsJob()
+        process = None
+        try:
+            with (self.output / 'engine.stdout').open('w') as stdout, (self.output / 'engine.stderr').open('w') as stderr:
+                process = subprocess.Popen([sys.executable, '-I', str(Path(execution.__file__).resolve()),
+                                            '--engine', str(self.output)], stdin=subprocess.PIPE,
+                                           stdout=stdout, stderr=stderr, text=True,
+                                           creationflags=subprocess.CREATE_NO_WINDOW)
+                job.assign(process)
+                if started:
+                    process.stdin.write('start\n')
+                    process.stdin.flush()
+                    deadline = time.monotonic() + 30
+                    while time.monotonic() < deadline:
+                        path = self.output / 'cells.json'
+                        if path.exists() and json.loads(path.read_bytes())[1]['state'] == 'running':
+                            break
+                        time.sleep(0.05)
+                    else:
+                        self.fail('Second cell never started')
+                process.stdin.close()
+                self.assertNotEqual(process.wait(timeout=15), 0)
+            if started:
+                result = json.loads((self.output / 'engine-result.json').read_bytes())
+                self.assertEqual(result['state'], 'failed')
+                self.assertEqual(result['control_event'], 'control_eof')
+                self.assertEqual([r['state'] for r in self.records()], ['succeeded', 'interrupted', 'not_run', 'not_run'])
+                notebook = json.loads((self.output / 'executed.ipynb').read_bytes())
+                self.assertEqual(notebook['cells'][0]['outputs'][0]['text'], 'retained\n')
+            else:
+                self.assertFalse((self.output / 'kernel.json').exists())
+        finally:
+            if process is not None and process.stdin and not process.stdin.closed:
+                process.stdin.close()
+            job.terminate()
+            if process is not None:
+                process.wait(timeout=10)
+            job.close()
+
+    def test_control_eof_before_gate_never_starts_kernel(self):
+        self.control_eof(False)
+
+    def test_control_eof_after_checkpoint_interrupts_execution(self):
+        self.control_eof(True)
 
     def test_public_route_rejects_unknown_and_changed_source(self):
         source = self.output / "source.ipynb"
