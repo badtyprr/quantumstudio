@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "id": "notebook-linux-py312",
+  "python": "3.12.10",
+  "platform": "linux",
+  "architecture": "64bit",
+  "lock": "linux-notebook-requirements.lock",
+  "lock_sha256": "18848dd56acfa26d5a107454eeb30fb38c1388f3eff532254fed9d2b11eba4c4",
+  "offline_only": true,
+  "exact_packages": true,
+  "default_cell_timeout_seconds": 120,
+  "cancel_grace_seconds": 5,
+  "service_runtime_seconds": 300,
+  "scope": "Small hosted Linux lifecycle test environment; no framework or CUDA-Q notebook contract",
+  "provenance": {
+    "run_id": "41872076629",
+    "artifact_id": "13343839049",
+    "source_revision": "bfe2c8944e329a3b47157593b3601103d3a4a879",
+    "runner_image": "ubuntu24/20261101.360.1",
+    "wheel_count": 46
+  }
+}
