@@ -51,7 +51,7 @@ function Verify-Payload {
   if((Get-FileHash -LiteralPath $path).Hash -ne $entry.sha256){throw "Payload mismatch: $($entry.path)"}
  }
  $actual=@(Get-ChildItem -LiteralPath $Distribution -Recurse -File | ForEach-Object { [IO.Path]::GetRelativePath($Distribution,$_.FullName).Replace('\','/') })
- if(!$expected.SetEquals($actual)){throw 'Payload file inventory changed.'}
+ if(!$expected.SetEquals([string[]]$actual)){throw 'Payload file inventory changed.'}
  foreach($entry in $archives){if((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash){throw 'Candidate/source archive changed.'}}
 }
 

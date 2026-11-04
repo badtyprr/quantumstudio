@@ -1,4 +1,4 @@
-# Product and acceptance-harness revisions are independent. No release publication.
+# Replay the verified attempt-2 candidate; never rebuild or publish it.
 name: DEV05 complement hosted Clipboard acceptance
 on:
   workflow_dispatch:
@@ -8,6 +8,7 @@ on:
       - diagnostics/dev05-complement/**
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: dev05-complement-gui
   cancel-in-progress: false
@@ -15,7 +16,7 @@ jobs:
   acceptance:
     if: github.repository == 'badtyprr/quantumstudio' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == 'badtyprr/quantumstudio')
     runs-on: windows-2025-vs2026
-    timeout-minutes: 120
+    timeout-minutes: 30
     env:
       PRODUCT_REVISION: 3fdf7ebd6141feec7c48005c4e3557229ed794c0
       HARNESS_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -28,7 +29,7 @@ jobs:
           persist-credentials: false
           ref: ${{ env.HARNESS_REVISION }}
           path: harness
-      - name: Check out pinned complement product separately
+      - name: Check out pinned product source for verification only
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
@@ -50,85 +51,190 @@ jobs:
             if ($LASTEXITCODE -ne 0 -or $dirty) { throw "Clean $checkout checkout required." }
           }
           $tree = git -C product rev-parse 'HEAD^{tree}'
-          if ($LASTEXITCODE -ne 0) { throw 'Product tree lookup failed.' }
+          if ($LASTEXITCODE -ne 0 -or $tree -cne 'e9ff72dea77d75a9b563b1ab8eb5d000348ec987') { throw 'Product tree mismatch.' }
           ./product/diagnostics/dev17-unattended/Inspect-Environment.ps1 -Evidence "$env:RUNNER_TEMP/dev05-preflight"
           @{
             product_revision=$product; product_tree=$tree; harness_revision=$harness
             event_revision=$env:GITHUB_SHA; workflow_revision=$env:ACCEPTANCE_WORKFLOW_REVISION
             workflow_ref=$env:ACCEPTANCE_WORKFLOW_REF; candidate=$true; publication=$false
-            scope='Fresh hosted bytes from pinned product; not reuse of the local development worker.'
+            reused_run='41862013549'; reused_attempt=2; reused_artifact='13346081621'
+            scope='Replay unchanged hosted Candidate bytes; no native rebuild or release.'
             powershell=$PSVersionTable.PSVersion.ToString()
           } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev05-preflight/source.json"
-          Get-FileHash product/windows/package.ps1,product/diagnostics/dev17-unattended/Inspect-Environment.ps1,harness/diagnostics/dev05-complement/ComplementGuiTests.cs,harness/diagnostics/dev05-complement/Run-Acceptance.ps1,harness/.github/workflows/dev05-complement-gui.yml |
+          Get-FileHash product/windows/test-package.py,product/diagnostics/dev17-unattended/Inspect-Environment.ps1,harness/diagnostics/dev05-complement/ComplementGuiTests.cs,harness/diagnostics/dev05-complement/Run-Acceptance.ps1,harness/.github/workflows/dev05-complement-gui.yml |
             Select-Object Path,Hash | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev05-preflight/source-hashes.json"
           Copy-Item -LiteralPath harness/.github/workflows/dev05-complement-gui.yml -Destination "$env:RUNNER_TEMP/dev05-preflight/workflow.yml"
           $probe = Get-Content "$env:RUNNER_TEMP/dev05-preflight/environment.json" -Raw | ConvertFrom-Json
           if (!$probe.clipboard_open) { throw 'Hosted Clipboard denied; preserve evidence and stop.' }
-      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
-        id: msys
-        with:
-          msystem: UCRT64
-          update: true
-          cache: false
-          install: >-
-            autoconf automake libtool gettext-devel make
-            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp
-            mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2
-            mingw-w64-ucrt-x86_64-pkgconf
-      - name: Prepare compiler dependencies outside both checkouts
-        shell: pwsh
-        run: |
-          python -m venv "$env:RUNNER_TEMP/dev05-python"
-          if ($LASTEXITCODE -ne 0) { throw 'venv failed.' }
-          & "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -m pip install -r product/windows/qasm-import-requirements.txt
-          if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency install failed.' }
-          & "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -m pip check
-          if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency check failed.' }
-          & "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:RUNNER_TEMP/dev05-preflight/python-packages.txt"
-          if ($LASTEXITCODE -ne 0) { throw 'Compiler inventory failed.' }
-      - name: Build unchanged pinned product as Candidate
-        shell: pwsh
-        working-directory: product
+      - name: Acquire exact saved artifact without forwarding credentials
+        shell: python
         env:
-          DEV05_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
+          GH_ARTIFACT_TOKEN: ${{ github.token }}
         run: |
-          Start-Transcript -Path "$env:RUNNER_TEMP/dev05-preflight/package.log"
-          try {
-            & "$env:DEV05_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:RUNNER_TEMP/dev05-preflight/msys-packages.txt"
-            if ($LASTEXITCODE -ne 0) { throw 'MSYS inventory failed.' }
-            ./windows/package.ps1 -MsysRoot $env:DEV05_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -Candidate
-          } finally { Stop-Transcript }
-      - name: Verify actual Candidate ZIP and run complement controls
+          import hashlib, json, os, shutil, urllib.error, urllib.parse, urllib.request
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'dev05-replay'
+          root.mkdir()
+          endpoint = 'https://api.github.com/repos/badtyprr/quantumstudio/actions/artifacts/13346081621'
+          expected = 'eb8cb9faedb1976d82f6399afdb7f78c12f4563fde27d9a2b9080ca88fbf979c'
+          expected_size = 175844510
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          opener = urllib.request.build_opener(NoRedirect())
+          headers = {'Authorization':'Bearer '+os.environ['GH_ARTIFACT_TOKEN'],
+                     'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}
+          # Never print HTTPError objects: signed redirect URLs must stay out of logs.
+          try:
+              with opener.open(urllib.request.Request(endpoint, headers=headers), timeout=60) as response:
+                  metadata = json.load(response)
+              (root / 'artifact-metadata.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
+              assert metadata['id'] == 13346081621 and metadata['expired'] is False
+              assert metadata['digest'] == 'sha256:'+expected and metadata['size_in_bytes'] == expected_size
+              assert metadata['workflow_run']['id'] == 41862013549
+              assert metadata['workflow_run']['head_sha'] == '74212d5180f210ddd873c800cb5268a0605e1ba9'
+              assert metadata['name'] == 'dev05-complement-3fdf7ebd6141feec7c48005c4e3557229ed794c0-74212d5180f210ddd873c800cb5268a0605e1ba9-41862013549-2'
+              try:
+                  response = opener.open(urllib.request.Request(endpoint+'/zip', headers=headers), timeout=60)
+              except urllib.error.HTTPError as error:
+                  if error.code != 302:
+                      raise RuntimeError('Artifact API returned HTTP '+str(error.code)) from None
+                  location = error.headers.get('Location', '')
+                  error.close()
+                  parsed = urllib.parse.urlsplit(location)
+                  assert parsed.scheme == 'https' and parsed.hostname and not parsed.username and not parsed.password
+                  # New request, no token/header inheritance; reject further redirects.
+                  response = opener.open(urllib.request.Request(location), timeout=60)
+              with response, (root / 'original-artifact.zip').open('xb') as output:
+                  digest = hashlib.sha256()
+                  total = 0
+                  while block := response.read(1024*1024):
+                      total += len(block)
+                      assert total <= expected_size, 'Artifact larger than pinned size'
+                      digest.update(block)
+                      output.write(block)
+              assert total == expected_size and digest.hexdigest() == expected
+              (root / 'download-verification.json').write_text(json.dumps(dict(
+                  artifact_id=13346081621, source_run=41862013549, source_attempt=2,
+                  bytes=total, sha256=digest.hexdigest(), verified=True), indent=2), encoding='utf-8')
+          except urllib.error.HTTPError as error:
+              raise RuntimeError('Artifact retrieval returned HTTP '+str(error.code)) from None
+          except urllib.error.URLError:
+              raise RuntimeError('Artifact retrieval transport failed') from None
+      - name: Verify saved members and extract the actual Candidate safely
+        shell: python
+        run: |
+          import hashlib, json, os, shutil, stat, subprocess, sys, zipfile
+          from pathlib import Path, PurePosixPath
+          root = Path(os.environ['RUNNER_TEMP']) / 'dev05-replay'
+          inputs = root / 'inputs'
+          inputs.mkdir()
+          prefix = 'quantumstudio/quantumstudio/product/dist/'
+          members = {
+              prefix+'QuantumStudio-candidate-Windows-x64.zip':(81746462,'4d0c028494116a47c8a3ac674c6b5a824e13673fb4d2d34a36edfc612c556b56'),
+              prefix+'QuantumStudio-source.tar.gz':(4953046,'77f55207d0af2bf5eb0f47e2ae0a5cba9b49693c302c3e64cf54a83f9b2287c5'),
+              '_temp/dev05-acceptance/binding.json':(622,'ad22ad2c36f1dc23a1cf458ed70fcbe190d5da3a1ba9ea9fcc71fdb2ea76e84b')}
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          def inspect(package, destination):
+              seen = set()
+              for item in package.infolist():
+                  parts = PurePosixPath(item.filename).parts
+                  assert parts and not PurePosixPath(item.filename).is_absolute()
+                  assert '\\' not in item.filename and ':' not in item.filename
+                  assert all(p not in ('.','..') and not p.endswith((' ','.')) for p in parts)
+                  reserved = {'CON','PRN','AUX','NUL',*('COM'+str(i) for i in range(1,10)),*('LPT'+str(i) for i in range(1,10))}
+                  assert all(p.split('.')[0].upper() not in reserved for p in parts)
+                  key = '/'.join(parts).casefold()
+                  assert key not in seen, 'Archive path collision'
+                  seen.add(key)
+                  assert stat.S_IFMT(item.external_attr >> 16) in (0,stat.S_IFREG,stat.S_IFDIR)
+                  target = destination.joinpath(*parts).resolve()
+                  assert target.is_relative_to(destination.resolve()) and target != destination.resolve()
+          with zipfile.ZipFile(root / 'original-artifact.zip') as archive:
+              inspect(archive, inputs)
+              for name,(size,sha) in members.items():
+                  info = archive.getinfo(name)
+                  assert info.file_size == size
+                  target = inputs / PurePosixPath(name).name
+                  with archive.open(info) as source, target.open('xb') as output:
+                      shutil.copyfileobj(source, output)
+                  assert target.stat().st_size == size and digest(target) == sha
+          binding = json.loads((inputs / 'binding.json').read_text(encoding='utf-8-sig'))
+          assert binding['product_revision'] == os.environ['PRODUCT_REVISION'] and binding['candidate'] is True
+          assert binding['run'] == '41862013549' and binding['attempt'] == '2'
+          assert binding['harness_revision'] == '74212d5180f210ddd873c800cb5268a0605e1ba9'
+          candidate = inputs / 'QuantumStudio-candidate-Windows-x64.zip'
+          subprocess.run([sys.executable,'product/windows/test-package.py',str(candidate),'--candidate',
+                          '--revision',os.environ['PRODUCT_REVISION']], check=True)
+          destination = Path(os.environ['RUNNER_TEMP']) / 'dev05-payload'
+          destination.mkdir()
+          with zipfile.ZipFile(candidate) as archive:
+              inspect(archive, destination)
+              assert all(PurePosixPath(i.filename).parts[0] == 'QuantumStudio' for i in archive.infolist())
+              archive.extractall(destination)
+          payload = destination / 'QuantumStudio'
+          manifest_file = payload / 'build-manifest.json'
+          assert digest(manifest_file) == binding['manifest_sha256'].lower()
+          manifest = json.loads(manifest_file.read_text(encoding='utf-8-sig'))
+          expected = {row['path']:row['sha256'].lower() for row in manifest['files']}
+          assert len(expected) == len(manifest['files'])
+          actual = {p.relative_to(payload).as_posix():digest(p) for p in payload.rglob('*') if p.is_file()}
+          manifest_sha = actual.pop('build-manifest.json')
+          assert actual == expected
+          actual['build-manifest.json'] = manifest_sha
+          (root / 'payload-before.json').write_text(json.dumps(actual, indent=2), encoding='utf-8')
+          (root / 'selected-members.json').write_text(json.dumps(members, indent=2), encoding='utf-8')
+      - name: Replay corrected harness against unchanged saved Candidate
         shell: pwsh
         run: |
-          $archive = "$env:GITHUB_WORKSPACE/product/dist/QuantumStudio-candidate-Windows-x64.zip"
-          $source = "$env:GITHUB_WORKSPACE/product/dist/QuantumStudio-source.tar.gz"
-          python product/windows/test-package.py $archive --candidate --revision $env:PRODUCT_REVISION
-          if ($LASTEXITCODE -ne 0) { throw 'Candidate archive failed independent manifest verification.' }
-          $before = @(Get-FileHash -LiteralPath $archive,$source | Select-Object Path,Hash)
-          $before | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev05-preflight/archive-hashes.json"
-          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/dev05-payload"
+          $archive = "$env:RUNNER_TEMP/dev05-replay/inputs/QuantumStudio-candidate-Windows-x64.zip"
+          $source = "$env:RUNNER_TEMP/dev05-replay/inputs/QuantumStudio-source.tar.gz"
+          Start-Transcript -Path "$env:RUNNER_TEMP/dev05-replay/acceptance.log"
           try {
             ./harness/diagnostics/dev05-complement/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/dev05-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev05-acceptance" -Revision $env:PRODUCT_REVISION -ProductSource "$env:GITHUB_WORKSPACE/product" -HarnessRevision $env:HARNESS_REVISION -CandidateArchive $archive -SourceArchive $source
-          } finally {
-            foreach ($entry in $before) {
-              if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance.' }
-            }
-          }
-      - name: Retain actual bytes and evidence even on failure
+          } finally { Stop-Transcript }
+      - name: Record replay integrity and hash retained evidence
+        if: always()
+        shell: python
+        run: |
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'dev05-replay'
+          root.mkdir(exist_ok=True)
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          complete = (root / 'payload-before.json').exists()
+          unchanged = False
+          if complete:
+              payload = Path(os.environ['RUNNER_TEMP']) / 'dev05-payload/QuantumStudio'
+              current = {p.relative_to(payload).as_posix():digest(p) for p in payload.rglob('*') if p.is_file()}
+              unchanged = current == json.loads((root / 'payload-before.json').read_text())
+              for name,(size,sha) in json.loads((root / 'selected-members.json').read_text()).items():
+                  path = root / 'inputs' / Path(name).name
+                  unchanged = unchanged and path.is_file() and path.stat().st_size == size and digest(path) == sha
+          (root / 'replay-integrity.json').write_text(json.dumps(dict(acquisition_complete=complete,
+              payload_and_archives_unchanged=unchanged, candidate=True, publication=False),indent=2),encoding='utf-8')
+          records = []
+          for name in ('dev05-preflight','dev05-replay','dev05-acceptance'):
+              folder = Path(os.environ['RUNNER_TEMP']) / name
+              for path in sorted(folder.rglob('*')):
+                  if path.is_file() and path != root / 'evidence-manifest.json':
+                      records.append(dict(root=name,path=path.relative_to(folder).as_posix(),bytes=path.stat().st_size,sha256=digest(path)))
+          (root / 'evidence-manifest.json').write_text(json.dumps(records,indent=2),encoding='utf-8')
+          if complete:
+              assert unchanged, 'Saved Candidate or source bytes changed during replay'
+      - name: Retain saved bytes and new evidence even on failure
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: dev05-complement-${{ env.PRODUCT_REVISION }}-${{ env.HARNESS_REVISION }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: dev05-complement-replay-${{ env.PRODUCT_REVISION }}-${{ env.HARNESS_REVISION }}-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 14
           if-no-files-found: error
           path: |
             ${{ runner.temp }}/dev05-preflight/
+            ${{ runner.temp }}/dev05-replay/
             ${{ runner.temp }}/dev05-acceptance/
             harness/diagnostics/dev05-complement/
-            product/src/*.log
-            product/src/*.trs
-            product/config.log
-            product/*.log
-            product/*.trs
-            product/dist/
