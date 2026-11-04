@@ -352,3 +352,8 @@ EXTRA_DIST += docs/learning-evidence/dev13/linux-original-notebooks.md
 
 EXTRA_DIST += .github/workflows/notebook-linux-originals.yml
 EXTRA_DIST += diagnostics/notebook-linux-originals/retained_execution.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/baseline-summary.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/source-inventory.json
