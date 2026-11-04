@@ -70,3 +70,15 @@ Run-Acceptance verifies every manifest-listed payload file before/after, uses th
 Local validation: read-only inventory executed; supplemental C# compilation passed; PowerShell syntax parsed; no GUI driver or package executed here. The first compilation command used a relative slash path that csc misparsed and failed before compilation; a corrected absolute-path command passed. No original failed fixture evidence was replaced.
 
 These files are infrastructure diagnostics, not product/distribution files. No source-archive registration is proposed: hosted source checkout includes them, while original shipped GUI fixture registration remains untouched. If the coordinator elects to ship this runner, source-distribution registration and tests require a separate reviewed shared-file change. Artifact upload is a new proposed use of a pinned upload-artifact action; the current workflows contain no existing upload pattern. Artifact retention is 14 days; export evidence to the external audit directory before expiry.
+
+## Coordinator integration decision — 2026-11-03
+
+The coordinator verified that badtyprr/quantumstudio is public and selected the
+existing standard hosted Windows runner under the requested CI/candidate work.
+The integrated workflow also runs for pull requests changing this workflow or
+its diagnostics, so its first run can be reviewed before any master merge.
+It retains the 120-minute bound, read-only repository permissions, no secrets,
+no retries and 14-day artifact retention. No release transport or publication
+is authorized. The proposal above remains historical context; the installed
+workflow is the executable source of truth. Newly built hosted bytes require
+their own acceptance and local artifact verification.

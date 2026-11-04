@@ -1,0 +1,81 @@
+# Fresh hosted-built candidate; never a claim about local candidate bytes.
+name: DEV17 hosted Clipboard candidate
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/dev17-clipboard.yml
+      - diagnostics/dev17-unattended/**
+permissions:
+  contents: read
+concurrency:
+  group: dev17-clipboard-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Read-only session preflight
+        shell: pwsh
+        run: |
+          ./diagnostics/dev17-unattended/Inspect-Environment.ps1 -Evidence "$env:RUNNER_TEMP/dev17-preflight"
+          $probe = Get-Content "$env:RUNNER_TEMP/dev17-preflight/environment.json" -Raw | ConvertFrom-Json
+          if (!$probe.clipboard_open) { throw 'Hosted Clipboard denied; preserve evidence and stop.' }
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        id: msys
+        with:
+          msystem: UCRT64
+          update: true
+          cache: false
+          install: >-
+            autoconf automake libtool gettext-devel make
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-pkgconf
+      - name: Prepare compiler dependencies outside clean source
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/dev17-python"
+          if ($LASTEXITCODE) { throw 'venv failed' }
+          & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip install -r windows/qasm-import-requirements.txt
+          if ($LASTEXITCODE) { throw 'pip install failed' }
+          & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip check
+          if ($LASTEXITCODE) { throw 'pip check failed' }
+          & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:RUNNER_TEMP/dev17-preflight/python-packages.txt"
+      - name: Build unchanged package workflow as candidate
+        shell: pwsh
+        env:
+          DEV17_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP/dev17-preflight/package.log"
+          try {
+            & "$env:DEV17_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:RUNNER_TEMP/dev17-preflight/msys-packages.txt"
+            if ($LASTEXITCODE) { throw 'MSYS inventory failed' }
+            ./windows/package.ps1 -MsysRoot $env:DEV17_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -Candidate
+          } finally { Stop-Transcript }
+      - name: Actual Copy acceptance against hosted-built payload
+        shell: pwsh
+        run: |
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE) { throw 'Revision lookup failed' }
+          ./diagnostics/dev17-unattended/Run-Acceptance.ps1 -Distribution "$env:GITHUB_WORKSPACE/dist/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev17-acceptance" -Revision $revision
+          Get-FileHash dist/QuantumStudio-candidate-Windows-x64.zip,dist/QuantumStudio-source.tar.gz | Select-Object Path,Hash | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-acceptance/archive-hashes.json"
+      - name: Retain evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev17-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/dev17-preflight/
+            ${{ runner.temp }}/dev17-acceptance/
+            src/*.log
+            dist/
