@@ -269,3 +269,5 @@ EXTRA_DIST += docs/learning-evidence/dev16/verification.json
 EXTRA_DIST += .github/workflows/dev17-release.yml
 EXTRA_DIST += docs/learning-evidence/aud02/catalog-20261104.json
 EXTRA_DIST += docs/learning-evidence/aud02/catalog-20261104.md
+EXTRA_DIST += docs/learning-evidence/aud02/discovery-expansion-20261104.md
+EXTRA_DIST += docs/learning-evidence/aud02/discovery-expansion-20261104.json
