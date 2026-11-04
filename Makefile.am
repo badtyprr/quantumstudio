@@ -279,3 +279,9 @@ EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
 EXTRA_DIST += docs/learning-evidence/dev16/verification.json
 EXTRA_DIST += .github/workflows/dev17-release.yml
+
+EXTRA_DIST += docs/learning-evidence/dev14/QB-017.md
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb017.json
+EXTRA_DIST += windows/dev13-notebooks/profiles/qir-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/qir-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb017.py
