@@ -308,3 +308,8 @@ EXTRA_DIST += docs/learning-evidence/dev13/linux-original-notebooks.md
 EXTRA_DIST += windows/dev13-notebooks/contracts/qb007.json
 EXTRA_DIST += windows/dev13-notebooks/witnesses/qb007.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb007-selected-cells.md
+
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb027.json
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb027.py
+EXTRA_DIST += windows/dev13-notebooks/test_qb027.py
+EXTRA_DIST += docs/learning-evidence/dev13/qb027-braket-local.md
