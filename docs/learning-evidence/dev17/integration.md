@@ -45,14 +45,56 @@ The current recheck is retained in
 `F:/src/libqalculate/cleanup-audit/dev17-candidate-20261103/`:
 `upstream-current.json` and `historical-reverification.json`.
 
-## Open release gates
+## Fresh candidate validation — 2026-11-03 Pacific
 
-DEV-17 remains Partial and DEV-17d remains unchecked. Actual Windows Clipboard
-Copy/re-entry against candidate binaries, inspected captures, and fresh packaged
-release validation remain open. Internal copy-text checks and generic GUI CI do
-not close this gate. A fresh PowerShell 7 package attempt is being recorded
-separately; no result from it is claimed here.
+The clean PowerShell 7 package at source `02d5ca3f5713385818e80db15b1a58e3b518e569`
+passed 78 native tests with one existing skip and zero failures/errors, including
+88 native and 212 worker named-subsystem checks. The actual packaged worker
+additionally passed the 30 exponent cases and 30 exact reentries, unchanged 65
+audit fixtures, M10 true/true derivation and gathered-TeX reentry, and all 286
+unchanged DEV-11 expectations. No timing claim follows.
 
-Neither PR427 nor this evidence update publishes a release. The source lesson,
-symbolic dimensions, set-indexed sums, block matrices and notebook remain outside
-this finite acceptance claim. Historical DEV-09/10/11/12 limits are unchanged.
+Against these exact local candidate binaries, the unchanged original GUI fixture
+passed 72 checks and the reviewed keyword supplement passed 306 checks, including
+actual Copy controls, Windows Clipboard reads, re-entry and saved/reopened
+mappings. Both recorded zero Clipboard retries and verified post-run binary hashes.
+All eight GUI captures and the package smoke capture were visually inspected.
+This local desktop pass does not prove locked-workstation or unattended operation.
+The assigned numeric `k=0` compatibility case still has native/worker evidence
+rather than supplemental GUI coverage.
+
+Candidate ZIP SHA-256:
+`77a044ab1c27c1f3bef93e25d229e2f42ae04cb6d6a0c1d97d04b65e25b3b938`.
+Worker SHA-256:
+`8e26bf5c1b991c896d0c168573d8f1c1207c166fd0796cb9b4a5fe3f8b5b8578`.
+The external candidate evidence directory contains `package-audit.json`,
+`fresh-native.json`, `worker-validation.json`, `baseline286-summary.json`,
+`local-gui-original/`, `local-gui-keywords-attempt2/`, `local-visual-review.json`,
+complete logs and archived artifacts. The initial supplemental compile-path
+failure and the initial source-audit helper failure remain separately retained;
+neither was a product test failure or overwritten by the corrected attempt.
+
+## Hosted attempt and open release gates
+
+[Hosted attempt 41781100599](https://github.com/badtyprr/quantumstudio/actions/runs/41781100599)
+built a separate candidate successfully at PR merge revision
+`6005e1de0e36c985a1319d6255274c430d06b634` (tree identical to reviewed `185ead319`).
+Its native suite passed 78 tests, one existing skip, zero failures/errors. Actual
+GUI execution never began: the Windows PowerShell 5 child inherited the PowerShell
+7 module environment and could not resolve Get-FileHash. The original failure,
+full artifact and independently verified package/source hashes remain under
+`hosted-41781100599-attempt-1/` in the external evidence directory.
+
+A reviewed narrow correction launches the original wrapper with the current
+PowerShell 7 executable. The installed workflow rechecks the exact retained ZIP
+`f655f8e09f64c16419b9e13bc33404417fe0ae93bd69e8855f00b6374b11ebcf`, with
+pinned source archive and original fixture hashes. It does not rebuild or publish;
+it fails closed if the retained artifact expires. Hosted Clipboard acceptance,
+repeatability and final release coordination remain open at this checkpoint.
+
+DEV-17 remains Partial and DEV-17d remains unchecked pending the tested release
+revision and release gates. Internal copy-text checks and generic GUI CI do not
+substitute for actual Clipboard acceptance. Neither PR427 nor PR428 publishes a
+release. The source lesson, symbolic dimensions, set-indexed sums, block matrices
+and notebook remain outside this finite acceptance claim. Historical DEV-09/10/11/12
+limits are unchanged.

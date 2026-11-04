@@ -28,7 +28,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
-| [DEV-17](#dev-17) | P2 | M | Partial | Actual GUI Clipboard and packaged release open | Named subsystem partial traces |
+| [DEV-17](#dev-17) | P2 | M | Partial | Local candidate Clipboard passed; hosted/release open | Named subsystem partial traces |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
 | [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
@@ -266,9 +266,9 @@ those semantics when adding whole-program serialization.
 
 ### DEV-17
 
-- [ ] **Named subsystem partial traces** — P2; Partial; size M. Explicit ordered expression-local mappings and named trace-out syntax merged in PR #427; corrected integrated validation and required CI passed. Actual GUI Clipboard acceptance and fresh packaged release remain open. See the [verified integration status](learning-evidence/dev17/integration.md). See the [contract](learning-evidence/dev17/contract.md) and [validation with preserved failures](learning-evidence/dev17/validation.md).
+- [ ] **Named subsystem partial traces** — P2; Partial; size M. Explicit ordered expression-local mappings and named trace-out syntax merged in PR #427; corrected integrated validation and required CI passed. Fresh local package and actual Clipboard acceptance passed; hosted acceptance and release coordination remain open. See the [verified integration status](learning-evidence/dev17/integration.md). See the [contract](learning-evidence/dev17/contract.md) and [validation with preserved failures](learning-evidence/dev17/validation.md).
 - Source and reproduction: [IBM-005 evidence](learning-evidence/IBM-005.md), published revision `3254e5d4`. With the explicit matrix `R` in that evidence, `ptrace(R,1)` returns `identity(2)/2`, while `\operatorname{Tr}_{\mathsf{B}}(R)` rejects its named subscript. This is a literal source operator prefix with an adapted operand, not a whole-lesson compatibility test.
-- [x] DEV-17a: Implemented explicit ordered labels/dimensions through expression-local `subsystems` values; scope, literal-label binder protection, conflicts and persistence contract documented. No alphabetical position inference; selections name factors traced out. Actual GUI Copy persistence remains gated by DEV-17d.
+- [x] DEV-17a: Implemented explicit ordered labels/dimensions through expression-local `subsystems` values; scope, literal-label binder protection, conflicts and persistence contract documented. No alphabetical position inference; selections name factors traced out. Candidate GUI Copy persistence is recorded under DEV-17d; release remains gated.
 - [x] DEV-17b: Implemented human-entered and supported source TeX named trace forms; full exact Bell, asymmetric mixture and product-order controls plus specific invalid-label/dimension diagnostics validated on the scoped development worker.
 - [x] DEV-17c: Scoped checks cover unequal dimensions `[2,3]`, a middle factor, multiple traced factors, retained order and renamed/permuted labels. The legacy retained-dimension-one scalar convention is explicit.
 - [ ] DEV-17d: Verify GUI entry, copied expressions and saved/reopened declarations retain the same mapping and result. Attach exact-head tests, required CI and the tested release revision before marking this feature released.

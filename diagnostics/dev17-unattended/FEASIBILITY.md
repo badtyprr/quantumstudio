@@ -1,6 +1,6 @@
 # DEV-17 unattended GUI feasibility â€” 2026-11-03 Pacific
 
-Status: **blocked on an authorized, provisioned test environment; no unattended GUI acceptance claimed.** This is a diagnostic/provisioning handoff with an unproven runner proposal, not a product fix or supported runner. Base upstream: `02d5ca3f5713385818e80db15b1a58e3b518e569` (fetched this session). The original `windows/Dev17GuiTests.cs` and `windows/test-named-subsystems-gui.ps1` are unchanged.
+Historical initial status (superseded by the coordinator update below): **blocked on an authorized, provisioned test environment; no unattended GUI acceptance claimed.** This is a diagnostic/provisioning handoff with an unproven runner proposal, not a product fix or supported runner. Base upstream: `02d5ca3f5713385818e80db15b1a58e3b518e569` (fetched this session). The original `windows/Dev17GuiTests.cs` and `windows/test-named-subsystems-gui.ps1` are unchanged.
 
 ## Evidence and limits
 
@@ -82,3 +82,27 @@ no retries and 14-day artifact retention. No release transport or publication
 is authorized. The proposal above remains historical context; the installed
 workflow is the executable source of truth. Newly built hosted bytes require
 their own acceptance and local artifact verification.
+
+## Coordinator retained-candidate recheck — 2026-11-03 Pacific
+
+The initial full hosted build completed successfully in run 41781100599. Its
+acceptance launch failed before GUI execution because Windows PowerShell 5 could
+not resolve Get-FileHash in the inherited PowerShell 7 module environment.
+The reviewed child-shell fix uses the current process executable; Test-ChildShell
+reproduces the original failure and checks hashing, shell identity, exit-code
+propagation and owned-descendant cleanup. Original failure evidence is retained.
+
+The installed workflow now reuses that exact archived candidate, pins both archive
+hashes and unchanged original fixture hashes, verifies the payload manifest, and
+runs actual Clipboard acceptance within a 20-minute bound. It has read-only
+contents/actions permissions, no rebuild, no publication and 14-day evidence
+retention. Artifact expiry is a hard failure; this finite recovery workflow is not
+a permanent new-candidate build workflow. The full-build proposal and Git history
+preserve the original recipe. Hosted acceptance and repeatability are pending.
+
+The separate local clean package has now passed original 72 and keyword 306 actual
+Clipboard checks with zero retries; all captures were inspected. That result is
+bound to the local candidate and says nothing about a locked host. See the current
+[coordinator record](../../docs/learning-evidence/dev17/integration.md) for hashes,
+new validation and still-open release gates. Earlier sections retain the initial
+investigation and proposal as historical context, not current acceptance claims.
