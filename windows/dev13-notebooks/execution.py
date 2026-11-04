@@ -21,7 +21,7 @@ import traceback
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
 CONTRACTS = {"ibm019", "ibm020", "qb017"}
-PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "notebook-linux-py312"}
+PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312"}
 
 
 def digest(raw):
@@ -58,6 +58,25 @@ def profile_for(name):
     profile = json.loads((ROOT / "profiles" / (name + ".json")).read_bytes())
     if digest(canonical(ROOT / profile["lock"])) != profile["lock_sha256"]:
         raise ValueError("LOCK_HASH_MISMATCH")
+    return profile
+
+
+def contract_profile(contract):
+    """Choose only a reviewed profile for the current host platform."""
+    profiles = contract.get("profiles")
+    if profiles is None:
+        name = contract["profile"]
+    else:
+        if not isinstance(profiles, dict) or any(key not in {"win32", "linux"} for key in profiles):
+            raise ValueError("INVALID_PLATFORM_PROFILES")
+        if sys.platform not in profiles:
+            raise ValueError("UNSUPPORTED_CONTRACT_PLATFORM")
+        name = profiles[sys.platform]
+        if not isinstance(name, str):
+            raise ValueError("INVALID_PLATFORM_PROFILES")
+    profile = profile_for(name)
+    if profile["platform"] != sys.platform:
+        raise ValueError("UNSUPPORTED_CONTRACT_PLATFORM")
     return profile
 
 
@@ -123,7 +142,7 @@ def validate_request(request):
         raise ValueError("UNKNOWN_CONTRACT")
     contract_bytes = (ROOT / "contracts" / (name + ".json")).read_bytes()
     contract = json.loads(contract_bytes)
-    profile = profile_for(contract["profile"])
+    profile = contract_profile(contract)
     raw = Path(request["source"]).read_bytes()
     if digest(raw) != contract["source"]["sha256"]:
         raise ValueError("SOURCE_HASH_MISMATCH")
