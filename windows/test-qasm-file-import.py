@@ -91,6 +91,18 @@ class FileImportTests(unittest.TestCase):
 
     def test_lowering_and_assignment_emission_locations(self):
         cases = [
+            ("// register\nqubit[26] q;", 4,
+             "Classical circuits support 0–25 qubits and up to 64 classical bits.", (True,)),
+            ("qubit[25] q;\nqubit extra;", 4,
+             "Classical circuits support 0–25 qubits and up to 64 classical bits.", (True,)),
+            ("bit[64] b;\nbit extra;", 4,
+             "Classical circuits support 0–25 qubits and up to 64 classical bits.", (True,)),
+            ("int n=1;\nswitch(n) { case 1 { } case 1 { } }", 4,
+             "Duplicate switch case value: 1", (True,)),
+            ("int n=1;\nint n=2;", 4,
+             "Duplicate declaration in one scope: n", (True,)),
+            ("bit[2] b;\nif(b) { }", 4,
+             "Whole-register truth conditions require an explicit comparison.", (True,)),
             ("qubit q;\nfor int i in [0:0:2] { x q; }", 4,
              "For-loop range step must not be zero.", (False, True)),
             ("bool b;\nb += true;", 4,

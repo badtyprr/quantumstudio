@@ -12,6 +12,27 @@ from qasm_source_diagnostics import compile_source, error_at, copy_span, diagnos
 
 
 class SourceBundleTests(unittest.TestCase):
+    def test_late_lowering_dependency_diagnostics(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = (
+            ("qubit[26] q;", 3, "Classical circuits support"),
+            ("int n=1;\n  switch(n) { case 1 { } case 1 { } }", 4, "Duplicate switch case value"),
+            ("int n=1;\n  int n=2;", 4, "Duplicate declaration in one scope"),
+            ("bit[2] b;\n  if(b) { }", 4, "Whole-register truth conditions"),
+        )
+        main = self.put("main κ.qasm", '\ufeffOPENQASM 3;\ninclude "nested dir/wrapper.inc";')
+        self.put("nested dir/wrapper.inc", 'include "δ.inc";')
+        for source, line, message in cases:
+            with self.subTest(source=source):
+                self.put("nested dir/δ.inc", "// dependency\n// location witness\n  " + source)
+                bundle = capture_source(main)
+                with self.assertRaises(SourceError) as caught:
+                    compile_source(bundle, compiler.convert, classical=True)
+                self.assertIn(f"nested dir/δ.inc:{line}:3:", str(caught.exception))
+                self.assertIn(message, str(caught.exception))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

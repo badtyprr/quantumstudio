@@ -239,9 +239,15 @@ checks require failed imports to preserve both the saved document and usable
 undo/redo history. Existing unchanged QB-004 fixture comparisons remain separate
 scoped source-example coverage.
 
-DEV-16d is still incomplete. Confirmed entry-only diagnostics remain for duplicate
-switch labels, duplicate declarations in a scope, whole-register truth
-conditions, and aggregate qubit/bit limits. Other control-flow transformations,
+Duplicate switch labels now identify their original switch statement; duplicate
+declarations identify the repeated declaration. Whole-register truth failures
+retain the original branch span across branch reconstruction. Aggregate qubit/bit
+limit errors identify the first declaration that exceeds the applicable budget,
+when that declaration has an original span. Source tests cover these failures
+through nested dependencies and module-header adaptation, and preserve the same
+unlocated stdin messages. These are authored negative cases, not notebook runs.
+
+DEV-16d is still incomplete. Other control-flow transformations,
 numerical emission and synthesized nodes without original spans need further
 coverage. Errors without a usable span continue to name only the entry file;
 no nearest statement or invented coordinate is substituted. These changes are
