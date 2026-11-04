@@ -268,3 +268,5 @@ EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
 EXTRA_DIST += docs/learning-evidence/dev16/verification.json
 EXTRA_DIST += .github/workflows/dev17-release.yml
+
+EXTRA_DIST += windows/test-dev16-source-failures.py
