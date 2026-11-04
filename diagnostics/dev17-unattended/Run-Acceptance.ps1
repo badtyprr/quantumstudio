@@ -6,6 +6,8 @@ param(
 )
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 required.'}
+# Start-Process inherits PS7 module paths; a Windows PowerShell child can lose cmdlets.
+$powerShell=(Get-Process -Id $PID).Path
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $Distribution=(Resolve-Path -LiteralPath $Distribution).Path
 if(Test-Path -LiteralPath $Evidence){throw 'Fresh evidence directory required.'}
@@ -73,7 +75,7 @@ try {
  $environment=Get-Content (Join-Path $Evidence 'environment/environment.json') -Raw | ConvertFrom-Json
  if(!$environment.clipboard_open){throw 'Native Clipboard preflight denied; no escalation attempted.'}
  $original=Join-Path $repo 'windows/test-named-subsystems-gui.ps1'
- Run-Driver 'powershell.exe' @('-NoProfile','-File',('"'+$original+'"'),'-Distribution',('"'+$Distribution+'"'),'-Evidence',('"'+(Join-Path $Evidence 'original')+'"'),'-WorkerRevision',$Revision) 'original'
+ Run-Driver $powerShell @('-NoProfile','-File',('"'+$original+'"'),'-Distribution',('"'+$Distribution+'"'),'-Evidence',('"'+(Join-Path $Evidence 'original')+'"'),'-WorkerRevision',$Revision) 'original'
  $originalResult=Get-Content (Join-Path $Evidence 'original/result.txt') -Raw
  $originalProvenance=Get-Content (Join-Path $Evidence 'original/provenance.json') -Raw | ConvertFrom-Json
  if(!$originalResult.StartsWith('PASS:') -or !$originalProvenance.verified_after_run){throw 'Original fixture did not verify.'}
