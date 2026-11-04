@@ -313,3 +313,10 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/qb027.json
 EXTRA_DIST += windows/dev13-notebooks/witnesses/qb027.py
 EXTRA_DIST += windows/dev13-notebooks/test_qb027.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb027-braket-local.md
+
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb030.json
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb030.py
+EXTRA_DIST += windows/dev13-notebooks/test_qb030.py
+EXTRA_DIST += windows/dev13-notebooks/profiles/pulser-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/pulser-requirements.lock
+EXTRA_DIST += docs/learning-evidence/dev13/qb030-pulser-local.md
