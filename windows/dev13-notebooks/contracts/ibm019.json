@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "id": "ibm019",
+  "route": "notebook",
+  "profile": "qiskit-aer-win-py312",
+  "source": {
+    "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+    "sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "a3155143e8613156279f9d03c7bba3b83bc1aaced25ff48bfc137a920f0cf5d9"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "f7f66d07663b76f87d6965c90d285cc7cec1ce8bcc43de958352cf787ef30445"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "0f8cd08c48a98dd1d530a9045b0c726ac7361de4bd0d8acba93ae00e5518db61"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "fa373c884d885872e8c8845ea465efa7bd1254bb074c9eb1768c3de7bf40cb39"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "890c5cf7a475ca211c14a959bfbb5e6accf78c7644c5f3fc68910c2bba9bb87e"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "ce4b48ac27444e2cd6d5908323f4fed7586e22830e851b297daac555f90c916a"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "b7072258896520d0823a1834e24bfe4f8d66486c55aa2b61c423a9938573ae99"
+      },
+      {
+        "index": 8,
+        "type": "markdown",
+        "sha256": "4baa8eb611932f62c25062a3e704a3b694945b5b2c504f43f562c53b709eda69"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "ae6a4337303cc4dcdef6b8c1a0a6ddb156c9260057c54694f97355e3def597b8"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "d72806450d10501e4524900e5ebe8996a1a5642edd9a1fc1a2230b9e9a8818cb"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "5cf7801fff08ffc6da621b4ab00f565bf5c268bd13e2058caef62c715100ca96"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "96d9ba626e2b6b246339373dfcaa477d11b3ed08b24f9019445120eeb59ae6b0"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "a12dd3741f410b738ec09a1b965ea0e67df188e034ac38a9ce7f536c0d6d6714"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "992056cf3eccf4c30c9e96ceb3b1ff26a8229955909d6d239765ecf39985c878"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "e6c54a1d2d0a3aa92f5e029e71fbb3262dd67b9636b6b603b5a0f356c4d18c30"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65"
+      }
+    ]
+  },
+  "code_cells": [
+    2,
+    3,
+    5,
+    7,
+    9,
+    11,
+    13,
+    15
+  ],
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/ibm019.py",
+    "sha256": "ce9b6e3b5359582241ccb5ddc38d998171b853f785b66ff38f3792a1b99c9c70",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "required_images": [
+    7,
+    11
+  ],
+  "required_text": {
+    "15": "'balanced'"
+  },
+  "capabilities": [
+    "local-computation",
+    "rich-display"
+  ],
+  "external_requirements": [
+    "Original markdown SVG/page rendering",
+    "Native mathematics and lesson interpretation"
+  ],
+  "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance"
+}
