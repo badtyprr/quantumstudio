@@ -267,6 +267,15 @@ class CircuitComposer : Window {
   FitWires();CaptureSource(report+".png");
   Width=MinWidth;Height=MinHeight;UpdateLayout();page.ScrollToTop();FitWires();CaptureSource(report+".minimum.png");
  }
+ public async System.Threading.Tasks.Task VerifySourceFailures(string path,string report) {
+  ImportSource(QasmImport.CompileSource(path,false,false,true));string imported=Snapshot();
+  SaveCircuit(report+".reopened.qcircuit");OpenCircuit(report+".reopened.qcircuit");
+  if(Snapshot()!=imported)throw new Exception("Save/reopen changed source document.");
+  await SourceFilesWindow.VerifyFailures(this,sourceDocument,Path.GetDirectoryName(path),report,
+   envelope=>ImportSource(envelope),()=>Snapshot(),()=>Undo(),()=>Redo(),100,
+   ()=>{if(!AddGate("X","0",""))throw new Exception("Could not seed history marker.");},
+   file=>SaveCircuit(file),file=>{FitWires();CaptureSource(file);});
+ }
  public async System.Threading.Tasks.Task VerifySourceFiles(string path,string report) {
   ImportSource(QasmImport.CompileSource(path));
   await SourceFilesWindow.Verify(this,sourceDocument,Path.GetDirectoryName(path),report,envelope=>ImportSource(envelope),()=>Snapshot(),()=>Undo());

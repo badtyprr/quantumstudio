@@ -274,6 +274,17 @@ sealed class ClassicalProgramWindow : Window {
  }
  bool Discard() {return verifying || history.Serialize()==saved || MessageBox.Show(this,"Discard unsaved circuit changes?","Classical circuit",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes;}
  void Import(string path,bool published,bool moduleHeaders=false) {history.ImportSource(QasmImport.CompileSource(path,published,true,moduleHeaders),published);}
+ public async System.Threading.Tasks.Task VerifySourceFailures(string path,string report) {
+  verifying=true;Import(path,false,true);Refresh();string imported=history.Serialize();
+  SaveTo(report+".reopened.qcircuit");history.Open(File.ReadAllText(report+".reopened.qcircuit",new UTF8Encoding(false,true)));Refresh();
+  if(history.Serialize()!=imported)throw new Exception("Save/reopen changed source document.");
+  await SourceFilesWindow.VerifyFailures(this,history.Source,Path.GetDirectoryName(path),report,
+   envelope=>{history.ImportSource(envelope,false);Refresh();},()=>history.Serialize(),
+   ()=>{if(!history.CanUndo)return false;history.Undo();Refresh();return true;},
+   ()=>{if(!history.CanRedo)return false;history.Redo();Refresh();return true;},64,
+   ()=>{history.Edit(d=>d.Steps=d.Steps.Concat(new[]{new ClassicalCircuit.Step {Kind="Gate",Expression="X",Wires=new[]{0}}}).ToArray());Refresh();},
+   file=>SaveTo(file),file=>{Refresh();Capture(file);});
+ }
  public async System.Threading.Tasks.Task VerifySourceFiles(string path,string report) {
   verifying=true;Import(path,false);Refresh();
   await SourceFilesWindow.Verify(this,history.Source,Path.GetDirectoryName(path),report,envelope=>history.ImportSource(envelope,false),()=>history.Serialize(),()=>history.Undo());

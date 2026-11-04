@@ -344,3 +344,5 @@ EXTRA_DIST += .github/workflows/notebook-linux-qiskit.yml
 EXTRA_DIST += diagnostics/notebook-linux-qiskit/acquire_environment.py
 EXTRA_DIST += diagnostics/notebook-linux-qiskit/exact-requirements.txt
 EXTRA_DIST += diagnostics/notebook-linux-qiskit/inputs.zip
+
+EXTRA_DIST += windows/test-dev16-source-failures.py
