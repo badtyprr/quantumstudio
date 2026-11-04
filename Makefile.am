@@ -270,3 +270,5 @@ EXTRA_DIST += docs/learning-evidence/dev16/verification.json
 EXTRA_DIST += .github/workflows/dev17-release.yml
 
 EXTRA_DIST += windows/test-dev16-source-failures.py
+
+EXTRA_DIST += .github/workflows/dev16-source-failure-acceptance.yml
