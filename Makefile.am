@@ -268,3 +268,12 @@ EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
 EXTRA_DIST += docs/learning-evidence/dev16/verification.json
 EXTRA_DIST += .github/workflows/dev17-release.yml
+
+# Source-backed IBM-019 phase-kickback audit.
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/baseline-summary.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/corrected-summary.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/inventory.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/negation-repro.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/README.md
