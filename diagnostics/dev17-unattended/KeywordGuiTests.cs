@@ -10,12 +10,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Web.Script.Serialization;
 class KeywordGuiTests {
+ static string evidence;
  static Type app;static Assembly assembly;static int checks,clipboardRetries;
  static BindingFlags flags=BindingFlags.Static|BindingFlags.NonPublic;
  static object Field(string name) {return app.GetField(name,flags).GetValue(null);}
  static object Call(string name,params object[] args) {return app.GetMethod(name,flags).Invoke(null,args);}
  static void Require(bool condition,string message) {if(!condition)throw new Exception(message);checks++;}
  static async Task Calculate(string expression,string diagnostic=null) {
+  File.AppendAllText(Path.Combine(evidence,"actions.log"),"CALCULATE: "+expression+Environment.NewLine);
   ((TextBox)Field("input")).Text=expression;var run=(Button)Field("run");run.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
   DateTime deadline=DateTime.UtcNow.AddSeconds(60);
   while(!run.IsEnabled && DateTime.UtcNow<deadline)await Task.Delay(20);
@@ -33,7 +35,7 @@ class KeywordGuiTests {
   Clipboard.SetText("DEV17-sentinel-"+Guid.NewGuid().ToString("N"));
   for(int attempt=0;attempt<10;attempt++) {
    ((Button)((Window)Field("window")).FindName("Copy")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-   try {string copied=Clipboard.GetText();if(copied==(string)Field("copyText"))return copied;}
+   try {string copied=Clipboard.GetText();if(copied==(string)Field("copyText")){File.AppendAllText(Path.Combine(evidence,"actions.log"),"CLIPBOARD: "+copied+Environment.NewLine);return copied;}}
    catch(System.Runtime.InteropServices.COMException ex) {if(ex.ErrorCode!=unchecked((int)0x800401D0))throw;}
    clipboardRetries++;await Task.Delay(50);
   }
@@ -46,7 +48,7 @@ class KeywordGuiTests {
   await Calculate(copied);Require(Normalize(await Copy())==expected,"Matrix Copy/re-entry changed exact cells");
  }
  [STAThread] static int Main(string[] args) {
-  string output=Path.GetFullPath(args[1]);Directory.CreateDirectory(output);
+  string output=Path.GetFullPath(args[1]);Directory.CreateDirectory(output);evidence=output;
   assembly=Assembly.LoadFrom(Path.GetFullPath(args[0]));app=assembly.GetType("QuantumStudio");app.GetField("root",flags).SetValue(null,Path.GetDirectoryName(Path.GetFullPath(args[0])));int code=1;
   Dispatcher.CurrentDispatcher.BeginInvoke(new Action(async delegate {
    try {

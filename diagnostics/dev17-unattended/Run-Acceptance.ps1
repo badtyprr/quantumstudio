@@ -34,9 +34,12 @@ function Run-Driver([string]$Executable,[string[]]$Arguments,[string]$Name){
     $added=$false
     foreach($child in $all){
      if($owned.ContainsKey([int]$child.ParentProcessId) -and !$owned.ContainsKey([int]$child.ProcessId)){
-      $parentStart=[DateTime]::Parse($owned[[int]$child.ParentProcessId]).ToUniversalTime()
-      if($child.CreationDate.ToUniversalTime() -ge $parentStart){
-       $owned[[int]$child.ProcessId]=$child.CreationDate.ToUniversalTime().ToString('o'); $added=$true
+      $parent=Get-Process -Id $child.ParentProcessId -ErrorAction SilentlyContinue
+      $current=Get-Process -Id $child.ProcessId -ErrorAction SilentlyContinue
+      if($parent -and $current -and $parent.StartTime.ToUniversalTime().ToString('o') -eq $owned[[int]$child.ParentProcessId] -and
+         $current.StartTime -ge $parent.StartTime -and
+         [Math]::Abs(($current.StartTime.ToUniversalTime()-$child.CreationDate.ToUniversalTime()).TotalMilliseconds) -lt 1){
+       $owned[[int]$child.ProcessId]=$current.StartTime.ToUniversalTime().ToString('o'); $added=$true
       }
      }
     }
@@ -57,6 +60,7 @@ function Run-Driver([string]$Executable,[string[]]$Arguments,[string]$Name){
   }
   @{observed_processes=$owned;cleanup=$cleanup;limitation='Polling can miss short-lived parents; dedicated single-job guest required. Guest disposal is final containment.'} | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $Evidence "$Name.processes.json")
   $p.Dispose()
+  if(@($cleanup | Where-Object { !$_.terminated }).Count){throw "$Name left owned processes running."}
  }
 }
 $passed=$false
