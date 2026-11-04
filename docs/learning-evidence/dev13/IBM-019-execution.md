@@ -80,12 +80,20 @@ result are required. The actual kernel executable is checked against the launche
 External evidence lives in `cleanup-audit/notebook-lane-20261104/ibm019/` in the
 main project: wheel/source acquisition and install logs, manifest, and run-01/02/03
 outputs. Run-03 includes the full amplitude witness. Earlier runs are preserved.
+Clean replay in a second fresh environment installed exclusively from the 51
+hash-locked retained wheels and reproduced all cell execution/output classifications,
+package versions and independent numerical/error results. Source tampering was
+rejected before output/kernel creation. An injected authored-witness failure
+retained the failed notebook and error report; it did not alter original cells.
+Independent Standards and Spec reviews of implementation `2860d9f13` found zero
+actionable findings. Source-distribution registration remains coordinator-owned.
+
 First-run circuit images were visually inspected; later runs enforce image output
 presence, not pixel identity. Source text and display objects remain in the notebook.
 
 A Windows ZeroMQ selector-thread warning and local TCP kernel warning were emitted;
 they did not prevent execution. No unsupported SDK operation was observed in this
-finite source. Clean second-environment replay, independent final reviews, external
-SVG rendering and integration evidence remain pending. Markdown was preserved and
+finite source. External SVG rendering and integration evidence remain pending.
+Markdown was preserved and
 read, but this runner does not render IBM-specific page components. Do not mark the
 whole lesson, all notebook external requirements, DEV-13 or AUD-04 complete.
