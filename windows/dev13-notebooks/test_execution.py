@@ -31,7 +31,7 @@ class SelectedCellTests(unittest.TestCase):
                         preamble="value = 0", required_images=[], required_text={})
         return cells, contract
 
-    def run_synthetic(self, cells, contract, fail_at=None):
+    def run_synthetic(self, cells, contract, fail_at=None, before_execute=None, witness=None):
         import asyncio
         import contextlib
         import io
@@ -55,6 +55,8 @@ class SelectedCellTests(unittest.TestCase):
 
             async def async_execute_cell(self, cell, index):
                 calls.append(cell.source)
+                if before_execute:
+                    await before_execute(cell, index)
                 if index == fail_at:
                     raise asyncio.CancelledError()
                 stdout = io.StringIO()
@@ -66,6 +68,8 @@ class SelectedCellTests(unittest.TestCase):
 
         config = dict(contract=contract, profile={"default_cell_timeout_seconds": 3},
                       witness='print("{\\"accepted\\": true}")')
+        if witness is not None:
+            config["witness"] = witness
         with patch("nbclient.NotebookClient", Client), patch("jupyter_client.AsyncKernelManager",
                 return_value=SimpleNamespace(provisioner=SimpleNamespace(pid=123))):
             outcome = asyncio.run(execution._run_notebook(output, config))
@@ -177,6 +181,264 @@ class SelectedCellTests(unittest.TestCase):
         witness = execution.canonical(execution.ROOT / contract["witness"]["path"])
         self.assertEqual(execution.digest(witness), contract["witness"]["sha256"])
         compile(witness, "authored-qb007-witness-not-executed", "exec")
+
+
+class PostCellObserverTests(unittest.TestCase):
+    """Authored synthetic Python only: no SDK imports, kernels or child processes."""
+
+    run_synthetic = SelectedCellTests.run_synthetic
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory(prefix="dev13-observer-unit-")
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        patcher = patch.object(execution, "ROOT", self.root)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def source(self, name, text):
+        (self.root / name).write_text(text, encoding="utf-8")
+        return dict(path=name, sha256=execution.digest(text.encode("utf-8")))
+
+    def fixture(self, observer="assert value == 1", lifecycle=False):
+        import nbformat
+        cells = [nbformat.v4.new_code_cell("value = 1; print('original-output')"),
+                 nbformat.v4.new_markdown_cell("unchanged prose"),
+                 nbformat.v4.new_code_cell("value = 2")]
+        descriptor = dict(after_original_index=0, role="postcell-observer",
+                          **self.source("observe.py", observer))
+        contract = dict(id="synthetic-observer", preamble="", code_cells=[0, 2],
+                        required_images=[], required_text={}, post_cell_observers=[descriptor])
+        if lifecycle:
+            contract["observer_lifecycle"] = dict(
+                bootstrap=self.source("bootstrap.py", "original = object(); hook = original; hook = 'wrapped'"),
+                cleanup=self.source("cleanup.py", "hook = original; assert hook is original; print('restored')"),
+                cleanup_timeout_seconds=1)
+        return cells, contract
+
+    def test_success_order_outputs_and_association(self):
+        cells, contract = self.fixture(lifecycle=True)
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["state"], "succeeded")
+        self.assertEqual(result["authored_observation"], "succeeded")
+        self.assertEqual(result["observer_cleanup"], "succeeded")
+        self.assertEqual(calls[2], "assert value == 1")
+        self.assertEqual(calls[3], "value = 2")
+        self.assertIn("restored", calls[-2])
+        records = json.loads((output / "cells.json").read_bytes())
+        self.assertEqual(records[2]["after_original_index"], 0)
+        self.assertIsNone(records[2]["original_index"])
+        self.assertEqual(records[-1]["authored_role"], "independent-witness")
+        notebook = json.loads((output / "executed.ipynb").read_bytes())
+        originals = [notebook["cells"][r["index"]] for r in records if r["original_index"] is not None]
+        self.assertEqual([execution.cell_text(c) for c in originals], [c.source for c in cells])
+        self.assertIn("original-output", "".join(originals[0]["outputs"][0]["text"]))
+        self.assertEqual((output / "source-original.ipynb").read_bytes(), raw)
+
+    def test_failed_observer_preserves_original_and_stops_next(self):
+        cells, contract = self.fixture("raise ValueError('OBSERVATION_FAILED')", lifecycle=True)
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["state"], "failed")
+        self.assertEqual(result["authored_observation"], "failed")
+        self.assertEqual(result["original_execution"], "incomplete")
+        self.assertEqual(result["authored_verification"], "not_run")
+        self.assertEqual(result["observer_cleanup"], "succeeded")
+        self.assertNotIn("value = 2", calls)
+        records = json.loads((output / "cells.json").read_bytes())
+        self.assertEqual(records[1]["state"], "succeeded")
+        self.assertEqual(records[2]["state"], "failed")
+        notebook = json.loads((output / "executed.ipynb").read_bytes())
+        self.assertIn("original-output", "".join(notebook["cells"][1]["outputs"][0]["text"]))
+        self.assertEqual((output / "source-original.ipynb").read_bytes(), raw)
+
+    def test_last_original_success_does_not_hide_observer_failure(self):
+        cells, contract = self.fixture("raise ValueError('LAST_OBSERVER')")
+        contract["post_cell_observers"][0]["after_original_index"] = 2
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["original_execution"], "succeeded")
+        self.assertEqual(result["authored_observation"], "failed")
+        self.assertEqual(result["state"], "failed")
+        self.assertEqual(result["authored_verification"], "not_run")
+
+    def test_original_exception_survives_cleanup_exception(self):
+        cells, contract = self.fixture(lifecycle=True)
+        cells[0].source = "raise ValueError('ORIGINAL_ERROR')"
+        contract["observer_lifecycle"]["cleanup"] = self.source("cleanup.py", "raise RuntimeError('CLEANUP_ERROR')")
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["error"]["type"], "ValueError")
+        self.assertEqual(result["error"]["message"], "ORIGINAL_ERROR")
+        self.assertEqual(result["observer_cleanup"], "failed")
+        self.assertEqual(result["authored_observation"], "not_run")
+        records = json.loads((output / "cells.json").read_bytes())
+        self.assertEqual(records[-2]["error"]["message"], "CLEANUP_ERROR")
+        self.assertNotIn("value = 2", calls)
+
+    def test_cleanup_failure_prevents_witness(self):
+        cells, contract = self.fixture(lifecycle=True)
+        contract["observer_lifecycle"]["cleanup"] = self.source("cleanup.py", "raise ValueError('cleanup')")
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["original_execution"], "succeeded")
+        self.assertEqual(result["authored_observation"], "succeeded")
+        self.assertEqual(result["observer_cleanup"], "failed")
+        self.assertEqual(result["authored_verification"], "not_run")
+        self.assertEqual(result["state"], "failed")
+
+    def test_partial_bootstrap_failure_attempts_cleanup(self):
+        cells, contract = self.fixture(lifecycle=True)
+        contract["observer_lifecycle"]["bootstrap"] = self.source("bootstrap.py", "original = object(); raise ValueError('BOOTSTRAP')")
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["observer_bootstrap"], "failed")
+        self.assertEqual(result["observer_cleanup"], "succeeded")
+        self.assertNotIn(cells[0].source, calls)
+
+    def test_cleanup_timeout_is_bounded_and_preserves_primary(self):
+        import asyncio
+        cells, contract = self.fixture("raise ValueError('PRIMARY')", lifecycle=True)
+        async def delay(cell, index):
+            if "authored-observer-cleanup" in cell.metadata.get("tags", []):
+                await asyncio.sleep(30)
+        started = time.monotonic()
+        output, result, calls, raw = self.run_synthetic(cells, contract, before_execute=delay)
+        self.assertLess(time.monotonic() - started, 5)
+        self.assertEqual(result["error"]["message"], "PRIMARY")
+        self.assertEqual(result["observer_cleanup"], "failed")
+        records = json.loads((output / "cells.json").read_bytes())
+        self.assertEqual(records[-2]["error"]["type"], "TimeoutError")
+
+    def test_cancelled_observer_skips_cleanup_and_lost_report_recovers(self):
+        cells, contract = self.fixture(lifecycle=True)
+        output, result, calls, raw = self.run_synthetic(cells, contract, fail_at=2)
+        self.assertEqual(result["authored_observation"], "interrupted")
+        self.assertEqual(result["observer_cleanup"], "not_run")
+        self.assertNotIn("value = 2", calls)
+        records = json.loads((output / "cells.json").read_bytes())
+        records[2]["state"] = "running"
+        execution.atomic_json(output / "cells.json", records)
+        status = {}
+        execution._recover_checkpoint_disposition(output, status)
+        self.assertEqual(status["authored_observation"], "interrupted")
+        self.assertEqual(status["original_execution"], "incomplete")
+        self.assertEqual(status["authored_verification"], "not_run")
+        self.assertEqual(status["observer_cleanup"], "not_run")
+
+    def test_source_timeout_or_dead_kernel_does_not_queue_cleanup(self):
+        from nbclient.exceptions import DeadKernelError, CellTimeoutError
+        for error in (CellTimeoutError("source timeout"), DeadKernelError("dead")):
+            with self.subTest(error=type(error).__name__):
+                cells, contract = self.fixture(lifecycle=True)
+                async def fail(cell, index):
+                    if index == 1:
+                        raise error
+                output, result, calls, raw = self.run_synthetic(cells, contract, before_execute=fail)
+                self.assertEqual(result["observer_cleanup"], "not_run")
+                self.assertEqual(len(calls), 2)
+
+    def test_multiple_observers_run_once_in_source_order(self):
+        cells, contract = self.fixture()
+        contract["post_cell_observers"].append(dict(after_original_index=2, role="timing-postcell",
+            **self.source("second observe ü.py", "assert value == 2; print('second-observer')")))
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["authored_observation"], "succeeded")
+        self.assertEqual(calls.count("assert value == 1"), 1)
+        self.assertEqual(calls.count("assert value == 2; print('second-observer')"), 1)
+        records = json.loads((output / "cells.json").read_bytes())
+        observers = [r for r in records if "after_original_index" in r]
+        self.assertEqual([r["after_original_index"] for r in observers], [0, 2])
+
+    def test_setup_check_failure_is_not_observer_or_source_failure(self):
+        cells, contract = self.fixture(lifecycle=True)
+        contract["setup"] = dict(cell=0, commands=["authored-stub"])
+        with patch.object(execution, "_setup_observer", return_value="setup_stub = True"), patch.object(execution, "SETUP_CHECK", "raise ValueError('SETUP_FAILED')"):
+            output, result, calls, raw = self.run_synthetic(cells, contract)
+        records = json.loads((output / "cells.json").read_bytes())
+        self.assertEqual(next(r for r in records if r["original_index"] == 0)["state"], "succeeded")
+        self.assertEqual(result["authored_observation"], "not_run")
+        self.assertEqual(result["observer_cleanup"], "succeeded")
+        self.assertEqual(result["error"]["message"], "SETUP_FAILED")
+        self.assertNotIn("value = 2", calls)
+
+    def test_final_witness_failure_retains_successful_observation_and_cleanup(self):
+        cells, contract = self.fixture(lifecycle=True)
+        output, result, calls, raw = self.run_synthetic(cells, contract, witness="raise ValueError('WITNESS_FAILED')")
+        self.assertEqual(result["original_execution"], "succeeded")
+        self.assertEqual(result["authored_observation"], "succeeded")
+        self.assertEqual(result["observer_cleanup"], "succeeded")
+        self.assertEqual(result["authored_verification"], "failed")
+        self.assertEqual(result["error"]["message"], "WITNESS_FAILED")
+        self.assertEqual(calls.count("hook = original; assert hook is original; print('restored')"), 1)
+
+    def test_descriptor_rejects_invalid_indices_roles_and_structure(self):
+        cells, contract = self.fixture()
+        original = contract["post_cell_observers"][0]
+        variants = [None, {}, [None], [dict(original, extra=1)],
+                    [dict(original, role="independent-witness")],
+                    [dict(original), dict(original)],
+                    [dict(original, after_original_index=2), dict(original)]]
+        variants += [[dict(original, after_original_index=i)] for i in (True, -1, 1, 3, "0", 0.0)]
+        for value in variants:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                execution._observer_sources(dict(contract, post_cell_observers=value), cells)
+        selected = dict(contract, route=execution.SELECTED_ROUTE, selected_cells=[2], code_cells=[2],
+                        excluded_code_cells={"0": "omitted"})
+        with self.assertRaises(ValueError):
+            execution._observer_sources(selected, cells)
+
+    def test_path_hash_and_resolved_escape_rejected(self):
+        cells, contract = self.fixture()
+        original = contract["post_cell_observers"][0]
+        variants = [dict(original, path=p) for p in ("../observe.py", str(self.root / "observe.py"), "C:observe.py", "")]
+        variants += [dict(original, sha256=h) for h in ("0" * 64, "F" * 64, None, "short")]
+        for descriptor in variants:
+            with self.subTest(descriptor=descriptor), self.assertRaises(ValueError):
+                execution._observer_sources(dict(contract, post_cell_observers=[descriptor]), cells)
+        original_resolve = Path.resolve
+        def redirected(path, *args, **kwargs):
+            if path.name == "observe.py":
+                return self.root.parent / "outside.py"
+            return original_resolve(path, *args, **kwargs)
+        with patch.object(Path, "resolve", redirected), self.assertRaisesRegex(ValueError, "OBSERVER_PATH_ESCAPE"):
+            execution._observer_sources(contract, cells)
+
+    def test_lifecycle_schema_and_hashes_rejected(self):
+        cells, contract = self.fixture(lifecycle=True)
+        variants = [None, {}, dict(contract["observer_lifecycle"], extra=1)]
+        variants += [dict(contract["observer_lifecycle"], cleanup_timeout_seconds=x) for x in (True, 0, 6, 1.0, "1")]
+        variants += [dict(contract["observer_lifecycle"], bootstrap={"path": "bootstrap.py"}),
+                     dict(contract["observer_lifecycle"], cleanup=dict(path="cleanup.py", sha256="0" * 64))]
+        # An absent lifecycle is valid; an explicit null also means no hooks.
+        for value in variants[1:]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                execution._observer_sources(dict(contract, observer_lifecycle=value), cells)
+        with self.assertRaises(ValueError):
+            execution._observer_sources(dict(contract, post_cell_observers=[]), cells)
+
+    def test_mutated_observer_rejected_before_kernel_construction(self):
+        import asyncio
+        import nbformat
+        cells, contract = self.fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            (output / "source-original.ipynb").write_text(nbformat.writes(nbformat.v4.new_notebook(cells=cells)))
+            (self.root / "observe.py").write_text("changed")
+            with patch("jupyter_client.AsyncKernelManager") as manager:
+                with self.assertRaisesRegex(ValueError, "OBSERVER_HASH_MISMATCH"):
+                    asyncio.run(execution._run_notebook(output, dict(contract=contract)))
+                manager.assert_not_called()
+
+    def test_public_observer_validation_precedes_environment_inspection(self):
+        import nbformat
+        cells, contract = self.fixture()
+        raw = nbformat.writes(nbformat.v4.new_notebook(cells=cells)).encode()
+        contract["source"] = dict(sha256=execution.digest(raw), cells=[
+            dict(index=i, type=c.cell_type, sha256=execution.digest(c.source.encode())) for i, c in enumerate(cells)])
+        (self.root / "contracts").mkdir()
+        (self.root / "contracts/qb007.json").write_text(json.dumps(contract))
+        (self.root / "original.ipynb").write_bytes(raw)
+        (self.root / "observe.py").write_text("changed")
+        with patch.object(execution, "contract_profile", return_value={"platform": "win32"}), patch.object(execution, "inspect_environment") as inspect:
+            with self.assertRaisesRegex(ValueError, "OBSERVER_HASH_MISMATCH"):
+                execution.validate_request(dict(contract="qb007", source=self.root / "original.ipynb", environment=self.root))
+            inspect.assert_not_called()
 
 
 class PlatformProfileTests(unittest.TestCase):

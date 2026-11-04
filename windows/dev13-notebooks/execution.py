@@ -153,6 +153,7 @@ def validate_request(request):
     if cells != contract["source"]["cells"]:
         raise ValueError("SOURCE_CELL_MISMATCH")
     _execution_indices(contract, original["cells"])
+    _observer_sources(contract, original["cells"])
     witness = canonical(ROOT / contract["witness"]["path"])
     if digest(witness) != contract["witness"]["sha256"]:
         raise ValueError("WITNESS_HASH_MISMATCH")
@@ -197,6 +198,75 @@ def _execution_indices(contract, cells):
             or any(type(i) is not str or i not in {str(s) for s in selected} for i in texts)):
         raise ValueError("OUTPUT_REQUIREMENT_OUTSIDE_SELECTION")
     return selected[:]
+
+
+def _observer_sources(contract, cells):
+    """Load finite reviewed authored cells before any kernel starts.
+
+    Hash canonical source text, as for witnesses, and resolve paths inside the
+    fixed runtime root. Revalidate in the engine so post-validation edits fail.
+    """
+    descriptors = contract.get("post_cell_observers", [])
+    if type(descriptors) is not list:
+        raise ValueError("INVALID_POST_CELL_OBSERVERS")
+    indices = _execution_indices(contract, cells)
+    loaded, previous = {}, -1
+
+    def source(descriptor):
+        path, expected = descriptor.get("path"), descriptor.get("sha256")
+        if (type(path) is not str or not path or Path(path).is_absolute()
+                or Path(path).drive or ".." in Path(path).parts
+                or type(expected) is not str or len(expected) != 64
+                or any(c not in "0123456789abcdef" for c in expected)):
+            raise ValueError("INVALID_OBSERVER_SOURCE")
+        target = (ROOT / path).resolve(strict=True)
+        if not target.is_relative_to(ROOT.resolve()) or not target.is_file():
+            raise ValueError("OBSERVER_PATH_ESCAPE")
+        raw = canonical(target)
+        if digest(raw) != expected:
+            raise ValueError("OBSERVER_HASH_MISMATCH")
+        return raw.decode("utf-8")
+
+    for descriptor in descriptors:
+        if type(descriptor) is not dict or set(descriptor) != {"after_original_index", "path", "sha256", "role"}:
+            raise ValueError("INVALID_POST_CELL_OBSERVER")
+        index = descriptor["after_original_index"]
+        if (type(index) is not int or index <= previous or index not in indices
+                or cells[index]["cell_type"] != "code"
+                or descriptor["role"] not in ("postcell-observer", "timing-postcell")):
+            raise ValueError("INVALID_POST_CELL_OBSERVER")
+        loaded[index] = dict(source=source(descriptor), role=descriptor["role"])
+        previous = index
+    lifecycle = contract.get("observer_lifecycle")
+    if lifecycle is None:
+        return loaded, None
+    if (not loaded or type(lifecycle) is not dict
+            or set(lifecycle) != {"bootstrap", "cleanup", "cleanup_timeout_seconds"}
+            or type(lifecycle["cleanup_timeout_seconds"]) is not int
+            or not 1 <= lifecycle["cleanup_timeout_seconds"] <= 5):
+        raise ValueError("INVALID_OBSERVER_LIFECYCLE")
+    for name in ("bootstrap", "cleanup"):
+        if type(lifecycle[name]) is not dict or set(lifecycle[name]) != {"path", "sha256"}:
+            raise ValueError("INVALID_OBSERVER_LIFECYCLE")
+    return loaded, dict(bootstrap=source(lifecycle["bootstrap"]),
+                        cleanup=source(lifecycle["cleanup"]),
+                        cleanup_timeout_seconds=lifecycle["cleanup_timeout_seconds"])
+
+
+def _observation_progress(records):
+    observers = [r for r in records if r.get("authored_role") in ("postcell-observer", "timing-postcell")]
+    if not observers:
+        return {}
+    states = [r["state"] for r in observers]
+    outcome = ("failed" if "failed" in states else "interrupted" if "interrupted" in states
+               else "succeeded" if all(s == "succeeded" for s in states)
+               else "incomplete" if any(s != "not_run" for s in states) else "not_run")
+    result = dict(authored_observation=outcome)
+    for role, key in (("observer-bootstrap", "observer_bootstrap"), ("observer-cleanup", "observer_cleanup")):
+        matches = [r for r in records if r.get("authored_role") == role]
+        if matches:
+            result[key] = matches[0]["state"]
+    return result
 
 
 def _scope_progress(route, outcome):
@@ -537,6 +607,7 @@ def _supervise(output, config, events=None):
                 atomic_json(cells_path, cells)
                 _update_disposition(output, cells)
                 status.update(_scope_progress(status.get("route"), _original_outcome(cells)))
+                status.update(_observation_progress(cells))
                 if not result_path.exists():
                     status["authored_verification"] = cells[-1]["state"]
         elif process.returncode != 0 or status["state"] != "succeeded":
@@ -601,6 +672,7 @@ def _recover_checkpoint_disposition(output, status):
     status.update(_scope_progress(status.get('route'), _original_outcome(cells)))
     witness = [cell for cell in cells if cell.get('authored_role') == 'independent-witness']
     status['authored_verification'] = witness[0]['state'] if witness else 'not_run'
+    status.update(_observation_progress(cells))
     status['terminal_engine_report_missing'] = True
     atomic_json(path, cells)
     _update_disposition(output, cells)
@@ -609,6 +681,7 @@ def _recover_checkpoint_disposition(output, status):
 async def _run_notebook(output, config, control_state=None):
     import nbformat
     from nbclient import NotebookClient
+    from nbclient.exceptions import DeadKernelError
     from jupyter_client import AsyncKernelManager
     from jupyter_client.kernelspec import KernelSpecManager
 
@@ -622,6 +695,7 @@ async def _run_notebook(output, config, control_state=None):
             cell.metadata.pop("execution", None)
     original_cells = list(notebook.cells)
     execution_indices = _execution_indices(contract, original_cells)
+    observers, lifecycle = _observer_sources(contract, original_cells)
     if contract.get("route") == SELECTED_ROUTE and not (output / "source-disposition.json").exists():
         _initialize_disposition(output, contract, original_cells)
     notebook.cells = []
@@ -637,11 +711,15 @@ async def _run_notebook(output, config, control_state=None):
         if original_index is not None:
             source_positions[original_index] = index
 
-    def authored(source, role):
+    def authored(source, role, after_original_index=None):
         append(nbformat.v4.new_code_cell(source, metadata={"tags": ["authored-" + role]}), role=role)
+        if after_original_index is not None:
+            records[-1]["after_original_index"] = after_original_index
 
     if contract["preamble"]:
         authored(contract["preamble"], "preamble")
+    if lifecycle:
+        authored(lifecycle["bootstrap"], "observer-bootstrap")
     setup = contract.get("setup")
     for index in execution_indices:
         cell = original_cells[index]
@@ -650,6 +728,12 @@ async def _run_notebook(output, config, control_state=None):
         append(cell, original_index=index)
         if setup and index == setup["cell"]:
             authored(SETUP_CHECK, "setup-check")
+        if index in observers:
+            authored(observers[index]["source"], observers[index]["role"], index)
+    cleanup_index = None
+    if lifecycle:
+        cleanup_index = len(notebook.cells)
+        authored(lifecycle["cleanup"], "observer-cleanup")
     authored(config["witness"], "independent-witness")
     result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
     result.update(_scope_progress(contract.get("route"), "not_run"))
@@ -673,14 +757,17 @@ async def _run_notebook(output, config, control_state=None):
         try:
             async with client.async_setup_kernel(cleanup_kc=True, env=_kernel_environment(setup)):
                 atomic_json(output / "kernel.json", {"pid": manager.provisioner.pid, "executable": sys.executable})
-                for i, cell in enumerate(notebook.cells):
-                    if cell.cell_type != "code":
-                        continue
+                async def execute_cell(i):
+                    cell = notebook.cells[i]
                     records[i]["state"] = "running"
                     checkpoint()
                     started = time.monotonic()
                     try:
-                        await client.async_execute_cell(cell, i)
+                        if i == cleanup_index:
+                            await asyncio.wait_for(client.async_execute_cell(cell, i),
+                                                   timeout=lifecycle["cleanup_timeout_seconds"])
+                        else:
+                            await client.async_execute_cell(cell, i)
                         records[i]["state"] = "succeeded"
                     except BaseException as error:
                         interrupted = isinstance(error, asyncio.CancelledError) or bool(control_state)
@@ -690,6 +777,26 @@ async def _run_notebook(output, config, control_state=None):
                     finally:
                         records[i]["elapsed_seconds"] = time.monotonic() - started
                         checkpoint()
+
+                try:
+                    for i, cell in enumerate(notebook.cells):
+                        if cell.cell_type == "code":
+                            await execute_cell(i)
+                except BaseException as primary:
+                    # Cleanup is an authored cell, never a replacement for the
+                    # original exception. Do not send more work to a timed-out,
+                    # dead or cancelled kernel; owned shutdown remains in charge.
+                    if cleanup_index is not None and records[cleanup_index]["state"] == "not_run":
+                        if (not isinstance(primary, (asyncio.CancelledError, TimeoutError, DeadKernelError))
+                                and not control_state):
+                            try:
+                                await execute_cell(cleanup_index)
+                            except BaseException:
+                                pass  # Exact cleanup error is retained in its checkpoint.
+                        else:
+                            records[cleanup_index]["skip_reason"] = "kernel_interrupted_or_unavailable"
+                            checkpoint()
+                    raise
             preserved = [(notebook.cells[source_positions[i]].cell_type, notebook.cells[source_positions[i]].source)
                          for i in execution_indices]
             if preserved != [original[i] for i in execution_indices]:
@@ -714,6 +821,7 @@ async def _run_notebook(output, config, control_state=None):
             result.update(_scope_progress(contract.get("route"), "succeeded" if all(x == "succeeded" for x in codes) else "incomplete"))
             result["authored_verification"] = "failed" if records[-1]["state"] == "succeeded" else records[-1]["state"]
         finally:
+            result.update(_observation_progress(records))
             artifacts = {}
             for pattern in contract.get("output_artifacts", []):
                 for path in output.glob(pattern):
