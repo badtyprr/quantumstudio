@@ -372,3 +372,7 @@ EXTRA_DIST += windows/dev13-notebooks/test_qb030.py
 EXTRA_DIST += windows/dev13-notebooks/profiles/pulser-win-py312.json
 EXTRA_DIST += windows/dev13-notebooks/pulser-requirements.lock
 EXTRA_DIST += docs/learning-evidence/dev13/qb030-pulser-local.md
+EXTRA_DIST += windows/dev15-provider/offline_adapter.py
+EXTRA_DIST += windows/dev15-provider/test_offline_adapter.py
+EXTRA_DIST += windows/dev15-provider/fixtures.json
+EXTRA_DIST += docs/learning-evidence/dev15/provider-offline.md
