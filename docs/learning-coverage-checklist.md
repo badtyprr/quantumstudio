@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-11-03. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-11-04. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -30,7 +30,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
 | [DEV-17](#dev-17) | P2 | M | Partial | Candidate Clipboard passed; release open | Named subsystem partial traces |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
-| [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
+| [AUD-02](#aud-02) | P1 | M | Partial | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
 | [AUD-04](#aud-04) | P2 | M | Pending | AUD-02 | Audit remaining notebooks end to end |
 
@@ -287,7 +287,8 @@ those semantics when adding whole-program serialization.
 
 ### AUD-02
 
-- [ ] **Complete source discovery** — P1; Pending; size M; dependencies: None.
+- [ ] **Complete source discovery** — P1; Partial; size M; dependencies: None.
+- Dated discovery: [2026-11-04 reconciliation](learning-evidence/aud02/catalog-20261104.md) verifies the qBraid snapshot comparison and appends three unchecked notebooks. IBM content, learning paths, supplemental material, syntax references and authorized qBook inventory remain incomplete.
 - Source focus: All IBM/qBraid catalogs. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Reconcile the pinned inventory with current catalogs. Inventory overviews, exams, videos, downloads, linked examples, SDK references and qBook chapters. Track access-blocked sources explicitly; a missing chapter cannot count as covered.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
@@ -308,7 +309,7 @@ those semantics when adding whole-program serialization.
 
 ## Source checklist
 
-The pinned inventory contains **137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows)**. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
+The pinned inventory contains **137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows)**. The [2026-11-04 supplement](learning-evidence/aud02/catalog-20261104.md) adds three qBraid notebooks as QB-036–038, giving **187 known source rows**. The original inventory and its hashes remain unchanged; 48 supplemental IBM repository assets are a separate discovery queue. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
 
 Each row closes only after an evidence record lists every relevant formula/code cell, direct input versus adaptation, exact/approximate results, copy/save/import behavior where relevant, and all failures linked to development IDs. Mark access restrictions as blocked with a reason. Do not check a row merely because its title or one example is supported.
 
@@ -523,8 +524,8 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **QB-022** [qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 - [ ] **QB-023** [qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 - [ ] **QB-024** [qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
-- [ ] **QB-025** [qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
-- [ ] **QB-026** [qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
+- [ ] **QB-025** [qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb) — P2 / AUD-04; full audit pending; compatibility evidence: not yet recorded; source changed in the [2026-11-04 snapshot](learning-evidence/aud02/catalog-20261104.md), with original hashes preserved.
+- [ ] **QB-026** [qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb) — P2 / AUD-04; full audit pending; compatibility evidence: not yet recorded; source changed in the [2026-11-04 snapshot](learning-evidence/aud02/catalog-20261104.md), with original hashes preserved.
 - [ ] **QB-027** [Provider-Jobs/qbraid_runtime_braket_provider.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_braket_provider.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 - [ ] **QB-028** [Provider-Jobs/qbraid_runtime_ionq_provider.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_ionq_provider.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 - [ ] **QB-029** [Provider-Jobs/qbraid_runtime_oqc_provider.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_oqc_provider.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
@@ -535,11 +536,15 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **QB-034** [qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 - [ ] **QB-035** [qBraid-CUDAQ/cuda_quantum_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 
-## Discovery checklist (outside the 184 pinned rows)
+- [ ] **QB-036** [qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb) — P2 / AUD-04; source discovered at `4deeced9`, execution and provider acceptance unverified; [identity and scope](learning-evidence/aud02/catalog-20261104.md).
+- [ ] **QB-037** [qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb) — P2 / AUD-04; source discovered at `4deeced9`, execution and provider acceptance unverified; [identity and scope](learning-evidence/aud02/catalog-20261104.md).
+- [ ] **QB-038** [qBraid-Runtime/qperfect_mimiq_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qperfect_mimiq_quickstart.ipynb) — P2 / AUD-04; source discovered at `4deeced9`, execution and provider acceptance unverified; [identity and scope](learning-evidence/aud02/catalog-20261104.md).
+
+## Discovery checklist (beyond the original 184 pinned rows)
 
 - [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs.
 - [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks.
-- [ ] DISC-03 — Reconcile qBraid demo repository HEAD with the pinned `86787e1ba372facc224f925189755e69c479828b` snapshot; record changed notebook hashes and new/deleted paths.
+- [x] DISC-03 — [Dated snapshot reconciliation](learning-evidence/aud02/catalog-20261104.md) completed for observed `4deeced918b79c10a4f7585fafbc65d4250dc6e7` against pinned `86787e1ba372facc224f925189755e69c479828b`: 33 unchanged, QB-025/026 changed, none removed, three new notebooks. This is source discovery at the retained 2026-11-04 snapshot, not execution acceptance or a claim about later HEADs.
 - [ ] DISC-04 — Inventory qBraid SDK, PyQASM, QIR, Algorithms and runtime syntax references beyond demonstration notebooks; separate syntax support from provider execution.
 - [ ] DISC-05 — Inventory qBook courses and chapters through authorized access; record unavailable/account-only content as access-blocked rather than complete.
 
