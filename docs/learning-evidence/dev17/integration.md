@@ -45,7 +45,7 @@ The current recheck is retained in
 `F:/src/libqalculate/cleanup-audit/dev17-candidate-20261103/`:
 `upstream-current.json` and `historical-reverification.json`.
 
-## Fresh candidate validation — 2026-11-03 Pacific
+## Fresh candidate validation -- 2026-11-03 Pacific
 
 The clean PowerShell 7 package at source `02d5ca3f5713385818e80db15b1a58e3b518e569`
 passed 78 native tests with one existing skip and zero failures/errors, including

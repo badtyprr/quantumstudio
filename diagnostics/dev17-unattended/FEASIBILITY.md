@@ -83,7 +83,7 @@ is authorized. The proposal above remains historical context; the installed
 workflow is the executable source of truth. Newly built hosted bytes require
 their own acceptance and local artifact verification.
 
-## Coordinator retained-candidate recheck — 2026-11-03 Pacific
+## Coordinator retained-candidate recheck -- 2026-11-03 Pacific
 
 The initial full hosted build completed successfully in run 41781100599. Its
 acceptance launch failed before GUI execution because Windows PowerShell 5 could
