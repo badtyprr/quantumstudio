@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "id": "qiskit-aer-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "ibm019-requirements.lock",
+  "lock_sha256": "0ac7a06688424d9260aaf75af2cab390519ff587cf367891f36dd74da30ae45a",
+  "offline_only": true,
+  "wheel_requirement": "Retained custom pylatexenc2.10 wheel required; not reproducible from PyPI alone",
+  "default_cell_timeout_seconds": 120,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only"
+}
