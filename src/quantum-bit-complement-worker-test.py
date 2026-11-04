@@ -79,7 +79,7 @@ def main():
                     value(f'{symbol}-{bra}-{kind}-{bit}',f'replace({form},{symbol},{bit})',cells)
                 for bad in ('-1','2','1/2','i'):
                     reject(f'invalid-{symbol}-{bra}-{kind}-{bad}',f'replace({form},{symbol},{bad})')
-    for bad in ('2','01','-1','(b+1)','b ⊕ 1'):
+    for bad in ('2','01','-1','(b+1)','b ⊕ 1','notable','foo','x_y','H'):
         reject('syntax-'+bad,f'|¬{bad}>')
     reject('dimension','|¬b>_3')
     for opaque in ('notable','not0'):

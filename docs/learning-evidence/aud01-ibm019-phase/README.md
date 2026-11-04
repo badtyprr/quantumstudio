@@ -85,21 +85,36 @@ boundary in a label and lowers to existing `basis(1-b,2)`. Since 1-b is an
 integer in [0,1] exactly when b is, existing basis validation enforces the bit
 domain after substitution. Fractional, negative, greater-than-one and complex
 controls were tested against this existing route before editing the parser.
-Names follow existing scalar identifier semantics; no global bit declaration
+Names are restricted to one lowercase scalar letter with an optional numeric
+subscript, such as b or x_0, and follow existing scalar semantics. Reserved
+constants retain their existing meaning; no global bit declaration
 or Boolean function binding is introduced. An explicit dimension suffix is
 rejected because this operation already denotes one bit.
+General multi-letter bit identifiers remain unsupported in this finite syntax;
+rejecting them is not completion of general symbolic-bit-label coverage.
 
 Product scope is `libqalculate/QuantumNotation.cc`,
 `src/quantum-notation-test.cc` and the dedicated
 `src/quantum-bit-complement-worker-test.py`. No algebra source edits are needed.
-Build registration belongs to the coordinator. Standalone native notation
-validation passes 562 checks (538 inherited and 24 new). The dedicated regression
-passes 104 candidate checks; the same final harness on the unchanged parser has
+Build registration belongs to the coordinator. Initial standalone notation
+validation passed 562 checks (538 inherited and 24 new). The initial dedicated regression
+passed 104 candidate checks; the same harness on the unchanged parser had
 66 failures among 80 attempts. Additional Copy checks run only after a value
 passes, so those totals are not directly comparable test inventories. The
 candidate parser SHA-256 is
 `588872b5d877e694312bfbf7091dcb1f8689243ea3ed0ee568760987b135ad53`.
-Final independent Standards/Spec reviews and integrated acceptance remain pending.
+Initial Standards review found no actionable issues. Initial Spec review found
+that accepting arbitrary words could split their symbolic identity during
+ordinary expression parsing (notable and foo). The grammar was restricted as
+above, with explicit rejection regressions. The corrected parser passes **566
+notation checks, 108 dedicated checks and all 120 finite source adaptations
+with 120 text re-entries**. Corrected parser SHA-256:
+`6227abb2215bf0a4a59915654b88116212d0bacd00754da8e0b2f832bb511835`.
+The exact full-source parser hash is
+`3d19cb5e4fb15512117870e36d1658aec94a14fccfdf7b8d086a1ba6ab42ed3a`.
+Final independent reviews and integrated acceptance remain pending. These are
+standalone parser plus retained quantum evaluator results, not an integrated
+new worker. `corrected-summary.json` records the final finite source audit.
 Actual GUI Clipboard and saved-session behavior require a separately scheduled
 slot; canonical worker re-entry is not a substitute for them.
 

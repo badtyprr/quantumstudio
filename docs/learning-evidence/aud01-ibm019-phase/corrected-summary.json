@@ -1,0 +1,13 @@
+{
+  "revision": "52c37a2abe8fce9770ad610f56bd5118a1d4bc39",
+  "verified_payload_files": 404,
+  "translator_sha256": "6227abb2215bf0a4a59915654b88116212d0bacd00754da8e0b2f832bb511835",
+  "route": "standalone parser plus retained quantum evaluator",
+  "worker_sha256": "ea0467a5ca5ce58d043c08bed80043361aca4305a5bb92d029781e4035e76913",
+  "runner_sha256": "37f2518e53d0b525cb085990d78d882049f930267d391e44051a7dde300dc0ba",
+  "literal_count": 20,
+  "finite_cases": 120,
+  "passes": 120,
+  "reentry_passes": 120,
+  "failures": []
+}

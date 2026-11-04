@@ -646,10 +646,15 @@ class Parser {
    size_t begin=label.find_first_not_of(" \t\r\n",first+3);
    size_t end=label.find_last_not_of(" \t\r\n");
    std::string bit=begin==std::string::npos ? "" : label.substr(begin,end-begin+1);
-   bool identifier=!bit.empty() && std::isalpha((unsigned char)bit[0]);
-   for(unsigned char c:bit)if(c>=128 || (!std::isalnum(c) && c!='_'))identifier=false;
+   // Ordinary multi-letter names can split into products or keywords. Limit
+   // this finite syntax to one scalar letter, optionally a numeric subscript.
+   bool identifier=!bit.empty() && bit[0]>='a' && bit[0]<='z';
+   if(bit.size()>1) {
+    if(bit.size()<3 || bit[1]!='_')identifier=false;
+    for(size_t k=2;k<bit.size();++k)if(bit[k]<'0' || bit[k]>'9')identifier=false;
+   }
    if(bit!="0" && bit!="1" && !identifier)
-    throw std::runtime_error("A complemented basis bit requires 0, 1, or one scalar bit identifier.");
+    throw std::runtime_error("A complemented basis bit requires 0, 1, or a single lowercase scalar letter with an optional numeric subscript.");
    // The affine index is in {0,1} exactly when the original bit is in {0,1}.
    // Retaining qbasis preserves validation after symbolic substitution/copy.
    return basisState("1-("+bit+")","2");

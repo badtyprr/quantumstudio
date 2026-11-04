@@ -32,7 +32,7 @@ int main(){try {
   equal("\\vert \\neg "+operand+"\\rangle",complemented);
   equal("\\langle \\neg "+operand+"\\vert","qdag("+complemented+")");
  }
- for(const std::string &invalid:{"|¬2>","|¬01>","|¬-1>","|¬(b+1)>","|¬b ⊕ 1>","|¬b>_3"})rejects(invalid);
+ for(const std::string &invalid:{"|¬2>","|¬01>","|¬-1>","|¬(b+1)>","|¬b ⊕ 1>","|¬b>_3","|¬notable>","|¬foo>","|¬x_y>","|¬H>"})rejects(invalid);
  equal("|notable>","qnamedket(\"notable\")");
  equal("|not0>","qnamedket(\"not0\")");
  // Copied large matrices have many shallow entries, not deep expressions.

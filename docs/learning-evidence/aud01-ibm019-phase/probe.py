@@ -81,6 +81,7 @@ def main():
     ap=argparse.ArgumentParser()
     for name in ('source','package','output'):
         ap.add_argument('--'+name,type=Path,required=True)
+    ap.add_argument('--translator',type=Path)
     args=ap.parse_args()
     _, inv=inventory(args.source)
     args.output.mkdir(parents=True,exist_ok=True)
@@ -90,8 +91,16 @@ def main():
     env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(args.package/'data'))
     def execute(expr):
         try:
-            p=subprocess.run([str(args.package/'quantum-worker.exe'),'--json'], input=expr.encode(),capture_output=True,env=env,timeout=20)
+            wire=expr
+            if args.translator:
+                source_expr=expr[8:] if expr.startswith('quantum:') else expr
+                t=subprocess.run([str(args.translator)],input=source_expr.encode(),capture_output=True,timeout=20)
+                if t.returncode:
+                    return dict(input=expr,returncode=t.returncode,stdout=t.stdout.decode(),stderr=t.stderr.decode(),route='standalone parser rejection')
+                wire='quantum:'+t.stdout.decode().strip()
+            p=subprocess.run([str(args.package/'quantum-worker.exe'),'--json'], input=wire.encode(),capture_output=True,env=env,timeout=20)
             d=dict(input=expr,returncode=p.returncode,stdout=p.stdout.decode(),stderr=p.stderr.decode())
+            d['evaluator_input']=wire
             if p.returncode==0: d['actual']=json.loads(d['stdout'])
             return d
         except subprocess.TimeoutExpired:
@@ -121,6 +130,8 @@ def main():
         results.append(d)
     save('checks.json',results)
     summary=dict(revision=manifest['revision'], verified_payload_files=len(manifest['files']),
+                 translator_sha256=hashlib.sha256(args.translator.read_bytes()).hexdigest() if args.translator else None,
+                 route='standalone parser plus retained quantum evaluator' if args.translator else 'released worker',
                  worker_sha256=hashlib.sha256((args.package/'quantum-worker.exe').read_bytes()).hexdigest(),
                  runner_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                  literal_count=len(literal), finite_cases=len(cases),
