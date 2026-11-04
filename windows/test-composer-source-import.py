@@ -3,6 +3,7 @@ import argparse,hashlib,json,os,subprocess,uuid
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument("--package",type=Path);p.add_argument("--output",type=Path)
 p.add_argument("--prepare-only",action="store_true",help="Write source fixtures and independent expectations without launching the GUI.")
+p.add_argument("--structural-only",action="store_true",help="Explicit compiler/GUI-only CI route; does not satisfy numerical acceptance.")
 a=p.parse_args();repo=Path(__file__).resolve().parent.parent
 package=(a.package or repo/"dist/QuantumStudio").resolve()
 out=(a.output or repo/"dist/composer-source-validation"/uuid.uuid4().hex).resolve()
@@ -10,7 +11,8 @@ assert not out.exists(),"Use a fresh audit output directory."
 out.mkdir(parents=True)
 compiler=package/"qasm-import/qasm-import.exe";app=package/"QuantumStudio.exe";worker=package/"quantum-worker.exe"
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-hashes={} if a.prepare_only else {"gui":digest(app),"compiler":digest(compiler),"worker":digest(worker)}
+hashes={} if a.prepare_only else {"gui":digest(app),"compiler":digest(compiler)}
+if not a.prepare_only and not a.structural_only:hashes["worker"]=digest(worker)
 startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
 results=[]
 contract=json.loads((repo/"windows/fixtures/dev16-composer-contract.json").read_text(encoding="utf-8"))
@@ -105,7 +107,7 @@ for name,value,count in (("strict",0,2),("oracle",0,3),("oracle",1,4),("oracle",
         assert normalized(restored)==expected_circuit
         expected=expected_state(name,value,edited)
         actual=Path(str(report)+suffix+".expression.txt").read_text(encoding="utf-8")
-        semantic.append(dict(edited=edited,expected=expected,
+        if not a.structural_only:semantic.append(dict(edited=edited,expected=expected,
                              editor_residual=verify_state(actual,expected),
                              saved_residual=verify_state(circuit_expression(saved["Circuit"]),expected),
                              reimport_residual=verify_state(circuit_expression(restored),expected,True)))
@@ -117,8 +119,13 @@ if a.prepare_only:
     (out/"prepared.json").write_text(json.dumps(dict(executed=False,results=results),indent=2)+"\n",encoding="utf-8")
     print("Prepared six cases; no GUI, compiler or worker execution.")
     raise SystemExit(0)
-assert {"gui":digest(app),"compiler":digest(compiler),"worker":digest(worker)}==hashes
+actual_hashes={"gui":digest(app),"compiler":digest(compiler)}
+if not a.structural_only:actual_hashes["worker"]=digest(worker)
+assert actual_hashes==hashes
 assert {row["name"] for row in results}==set(contract_cases)
 (out/"audit.json").write_text(json.dumps(dict(passed=True,package=str(package),hashes=hashes,results=results,
+    acceptance="structural-only" if a.structural_only else "full-numerical",
+    numerical_acceptance=not a.structural_only,semantic_checks=0 if a.structural_only else 36,
     scope="Numerical composer source import and standalone circuit equivalence; no complete notebook or changed-dependency claim."),indent=2)+"\n")
-print("PASS: six frozen composer source imports, twelve original/edited round trips and 36 independent state checks.")
+print("PASS: six frozen composer source imports and twelve original/edited round trips; "+
+      ("numerical acceptance NOT RUN (explicit structural-only route)." if a.structural_only else "36 independent state checks."))
