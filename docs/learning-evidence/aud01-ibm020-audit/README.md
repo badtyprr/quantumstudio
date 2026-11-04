@@ -100,7 +100,11 @@ A zero exit means the finite audit reproduced its documented observations with
 no unexpected failures. It does **not** turn the two failed primary value
 attempts or nine literal rejections into mathematical passes. Results retain
 those statuses separately; any unrelated diagnostic or incorrect full value
-fails the run. Old-worker evidence is 3fdf7ebd, SHA-256
+fails the run. Each original fixture pins its return code and diagnostic; M09
+also pins its deferred shape and canonical text before and after ordinary re-entry.
+A changed literal outcome requires review, including a newly accepted expression.
+These baseline comparisons are observation checks, not mathematical acceptance.
+Old-worker evidence is 3fdf7ebd, SHA-256
 `d72b59ef52188cbf7b1603daecbe03649eec7f1e8e31d712d9e1de2d337cee12`.
 Later combined-worker replay, independent final reviews and actual GUI/session
 acceptance remain pending. Coordinator owns registration and central coverage.
