@@ -428,7 +428,7 @@ def _supervise(output, config, events=None):
         job.close()
 
 
-async def _run_notebook(output, config):
+async def _run_notebook(output, config, control_state=None):
     import nbformat
     from nbclient import NotebookClient
     from jupyter_client import AsyncKernelManager
@@ -499,7 +499,8 @@ async def _run_notebook(output, config):
                         await client.async_execute_cell(cell, i)
                         records[i]["state"] = "succeeded"
                     except BaseException as error:
-                        records[i].update(state="interrupted" if isinstance(error, asyncio.CancelledError) else "failed",
+                        interrupted = isinstance(error, asyncio.CancelledError) or bool(control_state)
+                        records[i].update(state="interrupted" if interrupted else "failed",
                                           error={"type": type(error).__name__, "message": str(error)})
                         raise
                     finally:
@@ -546,20 +547,38 @@ def _engine(output):
     config = json.loads((output / "engine-request.json").read_bytes())
 
     async def main():
-        task = asyncio.create_task(_run_notebook(output, config))
+        control_state = {}
+        task = asyncio.create_task(_run_notebook(output, config, control_state))
         loop = asyncio.get_running_loop()
+        control_event = None
+
+        def interrupt(reason):
+            nonlocal control_event
+            if not task.done() and control_event is None:
+                control_event = reason
+                control_state['reason'] = reason
+                task.cancel()
 
         def control():
+            reason = "control_eof"
             for line in sys.stdin:
                 if line.strip() == "cancel":
-                    try:
-                        loop.call_soon_threadsafe(task.cancel)
-                    except RuntimeError:
-                        pass
-                    return
+                    reason = "cancel_requested"
+                    break
+            try:
+                loop.call_soon_threadsafe(interrupt, reason)
+            except RuntimeError:
+                pass  # Execution finished and the loop has already closed.
 
         threading.Thread(target=control, daemon=True).start()
-        return await task
+        try:
+            result = await task
+        except asyncio.CancelledError:
+            result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
+        if control_event is not None:
+            result.update(state="failed", control_event=control_event)
+            atomic_json(output / "engine-result.json", result)
+        return result
 
     result = asyncio.run(main())
     return 0 if result["state"] == "succeeded" else 1
