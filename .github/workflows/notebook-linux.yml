@@ -1,0 +1,109 @@
+name: Notebook Linux capability and dependency bootstrap
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/notebook-linux.yml'
+      - 'diagnostics/notebook-linux/**'
+      - 'windows/dev13-notebooks/linux_lifecycle.py'
+      - 'windows/dev13-notebooks/test_linux_execution.py'
+  workflow_dispatch:
+    inputs:
+      expected_revision:
+        description: Full reviewed source revision on the selected branch
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notebook-linux-bootstrap-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      BOOTSTRAP_SOURCE: ${{ github.event.pull_request.head.sha || github.sha }}
+      BOOTSTRAP_DISPATCH_EXPECTED: ${{ inputs.expected_revision }}
+    steps:
+      - name: Check out exact proposed source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up fixed Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Record source and guest identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I - <<'PY'
+          import hashlib, json, os, pathlib, platform, re, subprocess, sys
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'notebook-linux'
+          root.mkdir(exist_ok=False)
+          expected = os.environ['BOOTSTRAP_SOURCE']
+          actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          assert re.fullmatch('[0-9a-f]{40}', expected) and actual == expected
+          if os.environ['GITHUB_EVENT_NAME'] == 'workflow_dispatch':
+              assert os.environ['BOOTSTRAP_DISPATCH_EXPECTED'] == expected
+          assert sys.version_info[:3] == (3, 12, 10) and sys.platform == 'linux'
+          subprocess.run(['git', 'diff', '--exit-code'], check=True)
+          files = ['windows/dev13-notebooks/linux_lifecycle.py',
+                   'windows/dev13-notebooks/test_linux_execution.py',
+                   'diagnostics/notebook-linux/resolve_environment.py',
+                   'diagnostics/notebook-linux/direct-requirements.txt',
+                   '.github/workflows/notebook-linux.yml']
+          record = {'source_revision': actual,
+                    'source_tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+                    'event_revision': os.environ['GITHUB_SHA'],
+                    'run_id': os.environ['GITHUB_RUN_ID'], 'attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                    'python': sys.version, 'platform': platform.platform(), 'machine': platform.machine(),
+                    'image_os': os.environ.get('ImageOS'), 'image_version': os.environ.get('ImageVersion'),
+                    'source_hashes': {p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() for p in files},
+                    'scope': 'Capability/dependency proof only; no notebook lifecycle or CUDA-Q acceptance.'}
+          (root / 'identity.json').write_text(json.dumps(record, indent=2), encoding='utf-8')
+          PY
+      - name: Require actual owned-service capability before acquisition
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/notebook-linux"
+          python -B -E -s windows/dev13-notebooks/test_linux_execution.py --preflight --output "$root/preflight" 2>&1 | tee "$root/preflight.log"
+      - name: Resolve and verify small binary-only notebook environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/notebook-linux"
+          python -I diagnostics/notebook-linux/resolve_environment.py --requirements "$GITHUB_WORKSPACE/diagnostics/notebook-linux/direct-requirements.txt" --output "$root/bootstrap" 2>&1 | tee "$root/bootstrap.log"
+          git diff --exit-code
+      - name: Seal retained evidence without copying the installed environment
+        if: always()
+        shell: bash
+        run: |
+          python -I - <<'PY'
+          import hashlib, json, os, pathlib
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'notebook-linux'
+          if root.is_dir():
+              excluded = root / 'bootstrap' / 'environment'
+              entries = {}
+              for p in sorted(root.rglob('*')):
+                  if not p.is_file() or p.is_symlink() or p == root / 'evidence-manifest.json' or excluded in p.parents:
+                      continue
+                  entries[p.relative_to(root).as_posix()] = {'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
+              (root / 'evidence-manifest.json').write_text(json.dumps(entries, indent=2), encoding='utf-8')
+          PY
+      - name: Retain capability failures, wheels, lock and verification
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: notebook-linux-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/notebook-linux
+            !${{ runner.temp }}/notebook-linux/bootstrap/environment/**
+          if-no-files-found: warn
+          retention-days: 30
