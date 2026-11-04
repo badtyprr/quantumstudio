@@ -318,3 +318,6 @@ quantum_named_subsystem_test_SOURCES = quantum-named-subsystem-test.cc
 quantum_named_subsystem_test_LDADD = $(test_LDADD)
 TESTS += quantum-named-subsystem-worker-test.py
 EXTRA_DIST += quantum-named-subsystem-worker-test.py
+
+TESTS += quantum-bit-complement-worker-test.py
+EXTRA_DIST += quantum-bit-complement-worker-test.py
