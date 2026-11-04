@@ -1,0 +1,67 @@
+{
+  "worker_commit": "3fdf7ebd6141feec7c48005c4e3557229ed794c0",
+  "worker_sha256": "d72b59ef52188cbf7b1603daecbe03649eec7f1e8e31d712d9e1de2d337cee12",
+  "first_analysis_math": 46,
+  "remainder_math": 122,
+  "total_math": 168,
+  "cohort_counts": {
+    "original": 10,
+    "primary": 164,
+    "context": 10,
+    "deferred": 2
+  },
+  "primary_values_passed": 162,
+  "primary_values_failed": 2,
+  "failed_primary_ids": [
+    "g1-m03-set-sum-0",
+    "g1-m03-set-sum-1"
+  ],
+  "context_values_passed": 10,
+  "deferred_contexts_retained": 2,
+  "literal_dispositions": "Nine reject; M09 retains a deferred tensor power. No full literal acceptance inferred.",
+  "ordinary_numeric_copies_passed": 172,
+  "ordinary_deferred_copies_passed": 2,
+  "history": "Failed repeated notation parsing of canonical deferred copy is retained; ordinary re-entry succeeds. Numeric scalar-set replacement discarded source binary width; failures are not converted into mathematical passes.",
+  "external_artifacts": {
+    "g1-fixture-plan.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g1-fixture-plan.json",
+      "sha256": "ac33409f4dd00aa916b95fe80d8bdc25781b9e8822a0cd982fd526fd0f35c238",
+      "bytes": 35848
+    },
+    "g1-pilot.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g1-pilot.json",
+      "sha256": "f8c77caed737767215dab30ba0750532022e5bf5f8dc7652f86c5343b2731c24",
+      "bytes": 34861
+    },
+    "g1-dimension-controls.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g1-dimension-controls.json",
+      "sha256": "9314c817ba8e7c79508e49081e1cbf1900107ce9652eedd6290af465ff845bb6",
+      "bytes": 2513
+    },
+    "g1-context-controls.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g1-context-controls.json",
+      "sha256": "26aa832f157cce5b5ac70249db4bed93c425d0effa37653d59b6a4135041c2ec",
+      "bytes": 18290
+    },
+    "g1-context-copy-routes.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g1-context-copy-routes.json",
+      "sha256": "4be98d0633b7bbe1309c0f844740c7d23d767696384f594c20ad334e6083dde4",
+      "bytes": 3027
+    },
+    "g1-context-controls-final.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g1-context-controls-final.json",
+      "sha256": "eb1949e565db874541d03a2e364a632c85fcea44379e55cd4455f92bb72e72b9",
+      "bytes": 25233
+    },
+    "g2-g4-fixtures.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g2-g4-fixtures.json",
+      "sha256": "fb022dcba2e82e0be14751173571663d5cea11161644e922a9de637fa6c862f7",
+      "bytes": 256222
+    },
+    "g2-g4-pilot.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/g2-g4-pilot.json",
+      "sha256": "c593c759dbcf4476c59fd2cefadcb228652abef0792e1197cf4684d945f88241",
+      "bytes": 800383
+    }
+  }
+}
