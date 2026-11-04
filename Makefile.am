@@ -376,3 +376,7 @@ EXTRA_DIST += windows/dev15-provider/offline_adapter.py
 EXTRA_DIST += windows/dev15-provider/test_offline_adapter.py
 EXTRA_DIST += windows/dev15-provider/fixtures.json
 EXTRA_DIST += docs/learning-evidence/dev15/provider-offline.md
+
+EXTRA_DIST += .github/workflows/dev16-source-failure-acceptance.yml
+
+EXTRA_DIST += .github/workflows/dev16-source-evidence-verify.yml

@@ -1,0 +1,413 @@
+# Finite assembled-payload acceptance only; no clean candidate, release or publication.
+name: DEV16 source failure and history acceptance
+on:
+  pull_request:
+    paths:
+      - .github/workflows/dev16-source-failure-acceptance.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: dev16-package-acceptance
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 45
+    env:
+      MATRIX_SOURCE: acac77ab9c2408b16d3e7c7bb76c3881adc17ccb
+      DEPENDENCY_SOURCE: f3b4f55a426622551f8597d7fc25f4b82ded266d
+      MATRIX_WORKFLOW_SHA: ${{ github.workflow_sha }}
+      MATRIX_WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Initialize isolated evidence paths
+        shell: pwsh
+        run: |
+          "MATRIX_EVIDENCE=$(Join-Path $env:RUNNER_TEMP 'dev16-matrix-evidence')" >> $env:GITHUB_ENV
+          "MATRIX_ORIGINAL=$(Join-Path $env:RUNNER_TEMP 'dev16-matrix-original')" >> $env:GITHUB_ENV
+          "MATRIX_PAYLOAD=$(Join-Path $env:RUNNER_TEMP 'dev16-matrix-assembled')" >> $env:GITHUB_ENV
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: acac77ab9c2408b16d3e7c7bb76c3881adc17ccb
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Bind source and acquire exact immutable dependency candidate
+        shell: python
+        env:
+          ACTIONS_READ_TOKEN: ${{ github.token }}
+        run: |
+          import base64, hashlib, json, os, platform, shutil, stat, subprocess, sys, time, unicodedata
+          import urllib.error, urllib.parse, urllib.request, zipfile
+          from pathlib import Path, PurePosixPath
+          evidence = Path(os.environ['MATRIX_EVIDENCE'])
+          import sys, traceback
+          def retain_failure(kind, value, tb):
+              evidence.mkdir(exist_ok=True)
+              (evidence / 'stage-1-failure.txt').write_text(''.join(traceback.format_exception(kind, value, tb)), encoding='utf-8')
+              sys.__excepthook__(kind, value, tb)
+          sys.excepthook = retain_failure
+          evidence.mkdir()
+          def require(value, message):
+              if not value:
+                  raise ValueError(message)
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          def write(name, value):
+              (evidence / name).write_text(json.dumps(value, indent=2) + '\n', encoding='utf-8')
+          def inventory(root):
+              return {p.relative_to(root).as_posix():digest(p) for p in sorted(root.rglob('*')) if p.is_file()}
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          def validate_index(archive, max_entries, max_bytes):
+              entries = archive.infolist()
+              require(0 < len(entries) <= max_entries, 'Archive entry count outside bound')
+              require(sum(item.file_size for item in entries) <= max_bytes, 'Expanded archive exceeds bound')
+              seen, files = set(), set()
+              for item in entries:
+                  name = item.orig_filename
+                  require(name == item.filename, 'ZIP parser normalized an ambiguous name')
+                  require(name and '\\' not in name and not any(ord(c) < 32 or c in ':<>"|?*' for c in name), 'Unsafe archive name')
+                  path = PurePosixPath(name)
+                  parts = path.parts
+                  require(parts and not path.is_absolute() and '/'.join(parts) == name.rstrip('/'), 'Noncanonical archive path')
+                  require(not item.flag_bits & 1, 'Encrypted entry')
+                  require(stat.S_IFMT(item.external_attr >> 16) in (0, stat.S_IFREG, stat.S_IFDIR), 'Special archive entry')
+                  for part in parts:
+                      require(part not in ('.', '..') and not part.endswith((' ', '.')), 'Ambiguous archive component')
+                      stem = part.split('.')[0].upper()
+                      reserved = {'CON', 'PRN', 'AUX', 'NUL', 'CONIN$', 'CONOUT$',
+                          *('COM'+n for n in '123456789¹²³'), *('LPT'+n for n in '123456789¹²³')}
+                      require(stem not in reserved, 'Windows device path')
+                  key = unicodedata.normalize('NFC', '/'.join(parts)).casefold()
+                  require(key not in seen, 'Archive path collision')
+                  seen.add(key)
+                  if not item.is_dir():
+                      files.add(key)
+              for key in seen:
+                  parts = key.split('/')
+                  require(not any('/'.join(parts[:i]) in files for i in range(1, len(parts))), 'File/directory collision')
+              return entries
+          def validate_artifact(metadata):
+              require(metadata['id'] == 13348651284 and metadata['size_in_bytes'] == 177386126, 'Wrong artifact identity/size')
+              require(metadata['expired'] is False and metadata['workflow_run']['id'] == 41874031429, 'Unavailable/wrong-run artifact')
+              require(metadata['digest'] == 'sha256:b0203ff6e38d49fba50ef26fef79234ed5010302c656f8b3f013f59cdbb0e8a8', 'Wrong API digest')
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          require(os.environ['GITHUB_REPOSITORY'] == 'badtyprr/quantumstudio', 'Unexpected repository')
+          require(git('rev-parse', 'HEAD') == os.environ['MATRIX_SOURCE'], 'Wrong product revision')
+          require(git('rev-parse', 'HEAD^{tree}') == '53f6084b45c1aef2f6c01da569f2ac3805f1da66', 'Wrong product tree')
+          require(git('rev-parse', os.environ['DEPENDENCY_SOURCE']+'^{tree}') == 'b76d38f9a8cef3ea3457d9feac7865748189015b', 'Wrong dependency tree')
+          require(not git('status', '--porcelain', '--untracked-files=all'), 'Dirty product checkout')
+          expected_diff = ['M\tMakefile.am', 'M\twindows/CircuitComposer.cs', 'M\twindows/ClassicalProgramWindow.cs',
+              'M\twindows/QuantumStudio.cs', 'M\twindows/SourceFilesWindow.cs', 'A\twindows/test-dev16-source-failures.py']
+          require(git('diff', '--name-status', os.environ['DEPENDENCY_SOURCE'], 'HEAD').splitlines() == expected_diff, 'Dependency source changes outside allowlist')
+          paths = [p for p in git('ls-files', 'windows').splitlines() if Path(p).is_file()]
+          write('source-before.json', {p:digest(Path(p)) for p in paths})
+          write('identity.json', dict(product=os.environ['MATRIX_SOURCE'], tree=git('rev-parse', 'HEAD^{tree}'),
+              dependency_source=os.environ['DEPENDENCY_SOURCE'], workflow_sha=os.environ['MATRIX_WORKFLOW_SHA'],
+              workflow_ref=os.environ['MATRIX_WORKFLOW_REF'], event_revision=os.environ['GITHUB_SHA'],
+              run_id=os.environ['GITHUB_RUN_ID'], run_attempt=os.environ['GITHUB_RUN_ATTEMPT'],
+              platform=platform.platform(), python=sys.version, autocrlf=git('config', '--get', 'core.autocrlf'),
+              kind='assembled-test-payload', clean_candidate_build=False, release=False, publication=False,
+              changed_paths=expected_diff, git_blobs={p:git('rev-parse', 'HEAD:'+p) for p in paths}))
+          with (evidence / 'acac-gui-source.tar').open('wb') as output:
+              subprocess.run(['git', 'archive', '--format=tar', 'HEAD', 'windows', 'Makefile.am'], stdout=output, check=True)
+          contract = json.loads(Path('windows/fixtures/dev16-composer-contract.json').read_text(encoding='utf-8'))
+          for name, expected in {'oracle.qasm':'00ca08a9b091c46c942bc1f1878ccc69e922a0500b61c79a11b87c8c4debc4b1',
+                                 'bernvaz.qasm':'9f9eb3c6537bf209ff7c98fae8a5e2e77e1e135597d81569bf978498100f977e'}.items():
+              require(contract['fixtures'][name] == expected and digest(Path('windows/fixtures/qb004') / name) == expected, 'Windows fixture identity mismatch')
+          endpoint = 'https://api.github.com/repos/badtyprr/quantumstudio/actions/artifacts/13348651284'
+          headers = {'Authorization':'Bearer '+os.environ['ACTIONS_READ_TOKEN'], 'Accept':'application/vnd.github+json',
+                     'X-GitHub-Api-Version':'2022-11-28', 'User-Agent':'dev16-finite-acceptance'}
+          opener = urllib.request.build_opener(NoRedirect)
+          workflow_path = '.github/workflows/dev16-source-failure-acceptance.yml'
+          workflow_revision = os.environ['MATRIX_WORKFLOW_SHA']
+          require(len(workflow_revision) == 40 and all(c in '0123456789abcdef' for c in workflow_revision), 'Invalid workflow revision')
+          workflow_url = 'https://api.github.com/repos/badtyprr/quantumstudio/contents/'+workflow_path+'?ref='+workflow_revision
+          with opener.open(urllib.request.Request(workflow_url, headers=headers), timeout=30) as response:
+              raw = response.read(256*1024+1)
+          require(len(raw) <= 256*1024, 'Workflow API response exceeds bound')
+          workflow = json.loads(raw)
+          require(workflow['type'] == 'file' and workflow['path'] == workflow_path and workflow['encoding'] == 'base64', 'Wrong workflow contents response')
+          workflow_bytes = base64.b64decode(workflow['content'], validate=False)
+          require(len(workflow_bytes) == workflow['size'] and 0 < len(workflow_bytes) < 128*1024, 'Workflow contents size mismatch')
+          require(hashlib.sha1(b'blob '+str(len(workflow_bytes)).encode()+b'\0'+workflow_bytes).hexdigest() == workflow['sha'], 'Workflow Git blob mismatch')
+          (evidence/'executed-workflow.yml').write_bytes(workflow_bytes)
+          write('workflow-source.json', dict(revision=workflow_revision, path=workflow_path, git_blob=workflow['sha'], sha256=digest(evidence/'executed-workflow.yml')))
+          with opener.open(urllib.request.Request(endpoint, headers=headers), timeout=30) as response:
+              metadata = json.load(response)
+          write('artifact-api.json', metadata)
+          validate_artifact(metadata)
+          try:
+              opener.open(urllib.request.Request(endpoint+'/zip', headers=headers), timeout=30)
+              raise ValueError('Expected signed download redirect')
+          except urllib.error.HTTPError as response:
+              require(response.code == 302, 'Artifact API did not return a download redirect')
+              location = response.headers['Location']
+          signed = urllib.parse.urlsplit(location)
+          require(signed.scheme == 'https' and signed.hostname and not signed.username and not signed.password, 'Unsafe signed download URL')
+          # New request has no Authorization; redirects retain only this public User-Agent.
+          archive_path = evidence / 'original-artifact.zip'
+          deadline, count = time.monotonic()+300, 0
+          with urllib.request.urlopen(urllib.request.Request(location, headers={'User-Agent':'dev16-finite-acceptance'}), timeout=30) as response, archive_path.open('xb') as output:
+              while True:
+                  require(time.monotonic() <= deadline, 'Download deadline exceeded')
+                  chunk = response.read(1024*1024)
+                  if not chunk:
+                      break
+                  count += len(chunk)
+                  require(count <= 177386126, 'Download exceeds exact size')
+                  output.write(chunk)
+          require(count == 177386126 and digest(archive_path) == metadata['digest'].split(':')[1], 'Downloaded artifact bytes mismatch')
+          selected = {'QuantumStudio-candidate-Windows-x64.zip':(81744296, '28351a2270e241c33378f93838e4e16e5b70ef25bc072f4933fb3e3fb801ed31'),
+                      'QuantumStudio-source.tar.gz':(4949519, 'c4192c70585a833a5ce3a449a458d3cba3bde361538ba92e49cbf9d9bbbdc512')}
+          with zipfile.ZipFile(archive_path) as outer:
+              validate_index(outer, 2000, 2*1024**3)
+              for name, (size, expected) in selected.items():
+                  member = 'quantumstudio/quantumstudio/dist/'+name
+                  require(outer.getinfo(member).file_size == size, 'Inner archive size mismatch')
+                  with outer.open(member) as source, (evidence / name).open('xb') as target:
+                      shutil.copyfileobj(source, target)
+                  require(digest(evidence / name) == expected, 'Inner archive hash mismatch')
+          candidate = evidence / 'QuantumStudio-candidate-Windows-x64.zip'
+          result = subprocess.run([sys.executable, 'windows/test-package.py', str(candidate), '--candidate', '--revision', os.environ['DEPENDENCY_SOURCE']], capture_output=True)
+          (evidence / 'original-package-validation.stdout').write_bytes(result.stdout)
+          (evidence / 'original-package-validation.stderr').write_bytes(result.stderr)
+          write('original-package-validation.exit.json', dict(code=result.returncode))
+          require(result.returncode == 0, 'Original package validation failed')
+          original = Path(os.environ['MATRIX_ORIGINAL'])
+          original.mkdir()
+          with zipfile.ZipFile(candidate) as inner:
+              entries = validate_index(inner, 500, 1024**3)
+              for item in entries:
+                  parts = PurePosixPath(item.filename).parts
+                  require(parts[0] == 'QuantumStudio', 'Unexpected candidate root')
+                  target = original.joinpath(*parts)
+                  require(target.resolve().is_relative_to(original.resolve()), 'Candidate path escape')
+                  if item.is_dir():
+                      target.mkdir(parents=True, exist_ok=True)
+                  else:
+                      target.parent.mkdir(parents=True, exist_ok=True)
+                      with inner.open(item) as source, target.open('xb') as output:
+                          shutil.copyfileobj(source, output)
+          payload = original / 'QuantumStudio'
+          before = inventory(payload)
+          manifest = json.loads((payload / 'build-manifest.json').read_text(encoding='utf-8-sig'))
+          require(manifest['candidate'] is True and manifest['revision'] == os.environ['DEPENDENCY_SOURCE'], 'Original manifest provenance mismatch')
+          expected = {item['path']:item['sha256'].lower() for item in manifest['files']}
+          require(len(expected) == len(manifest['files']), 'Duplicate manifest files')
+          require(len(before) == 361 and {k:v for k,v in before.items() if k != 'build-manifest.json'} == expected, 'Original payload differs from complete manifest')
+          require(before['quantum-worker.exe'] == '869814b4797416217322e26ddbd5f63ccfc3332a60faacfc4164f3fa931c1e7d', 'Wrong worker')
+          require(before['qasm-import/qasm-import.exe'] == '8131c4c0ca4277fb311d38b4d289abd58c15c367fbf4add02b6a2f2b71051207', 'Wrong compiler')
+          write('original-before.json', before)
+          write('archives-before.json', {p.name:dict(bytes=p.stat().st_size, sha256=digest(p)) for p in [archive_path, candidate, evidence/'QuantumStudio-source.tar.gz', evidence/'acac-gui-source.tar']})
+      - name: Compile complete GUI from the exact new product source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Start-Transcript -Path "$env:MATRIX_EVIDENCE/gui-build.log"
+          try {
+            if (Test-Path dist/QuantumStudio) { throw 'GUI output must start absent' }
+            $fx = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319'
+            $files = @((Join-Path $fx 'csc.exe'), (Join-Path $fx 'csc.rsp'))
+            $files += @(Get-ChildItem -LiteralPath $fx -Filter '*.dll' -File | ForEach-Object FullName)
+            $files += @(Get-ChildItem -LiteralPath (Join-Path $fx 'WPF') -Filter '*.dll' -File | ForEach-Object FullName)
+            $records = foreach ($path in $files) {
+              [ordered]@{path=$path; sha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToLower(); version=(Get-Item -LiteralPath $path).VersionInfo.FileVersion}
+            }
+            $records | ConvertTo-Json -Depth 5 | Set-Content -Encoding utf8 "$env:MATRIX_EVIDENCE/gui-toolchain.json"
+            $PSVersionTable | Out-String | Set-Content "$env:MATRIX_EVIDENCE/powershell.txt"
+            ./windows/build-gui.ps1
+            if ($LASTEXITCODE) { throw 'Full GUI compilation failed' }
+            $gui = Get-Item -LiteralPath dist/QuantumStudio/QuantumStudio.exe
+            if ($gui.Length -le 0) { throw 'Missing new GUI' }
+            Copy-Item -LiteralPath $gui.FullName -Destination "$env:MATRIX_EVIDENCE/new-QuantumStudio.exe"
+            [ordered]@{source=$env:MATRIX_SOURCE; sha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $gui.FullName).Hash.ToLower(); bytes=$gui.Length; compiled=$true} | ConvertTo-Json | Set-Content -Encoding utf8 "$env:MATRIX_EVIDENCE/gui-build.json"
+          } finally { Stop-Transcript }
+      - name: Assemble explicitly mixed-provenance test payload
+        shell: python
+        run: |
+          import hashlib, json, os, shutil
+          from pathlib import Path
+          evidence = Path(os.environ['MATRIX_EVIDENCE'])
+          import sys, traceback
+          def retain_failure(kind, value, tb):
+              evidence.mkdir(exist_ok=True)
+              (evidence / 'stage-2-failure.txt').write_text(''.join(traceback.format_exception(kind, value, tb)), encoding='utf-8')
+              sys.__excepthook__(kind, value, tb)
+          sys.excepthook = retain_failure
+          original = Path(os.environ['MATRIX_ORIGINAL']) / 'QuantumStudio'
+          payload = Path(os.environ['MATRIX_PAYLOAD'])
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          def inventory(root):
+              return {p.relative_to(root).as_posix():digest(p) for p in root.rglob('*') if p.is_file()}
+          before = json.loads((evidence/'original-before.json').read_text())
+          assert inventory(original) == before
+          build = json.loads((evidence/'gui-build.json').read_text(encoding='utf-8-sig'))
+          assert build['compiled'] is True and build['source'] == os.environ['MATRIX_SOURCE']
+          assert digest(evidence/'new-QuantumStudio.exe') == build['sha256'] == digest(Path('dist/QuantumStudio/QuantumStudio.exe'))
+          assert build['sha256'] != before['QuantumStudio.exe'], 'Old GUI cannot run new acceptance'
+          shutil.copytree(original, payload)
+          (payload/'build-manifest.json').replace(evidence/'original-build-manifest.json')
+          shutil.copyfile(evidence/'new-QuantumStudio.exe', payload/'QuantumStudio.exe')
+          expected = dict(before)
+          removed_manifest = expected.pop('build-manifest.json')
+          expected['QuantumStudio.exe'] = build['sha256']
+          assert len(expected) == 360 and inventory(payload) == expected
+          assert digest(evidence/'original-build-manifest.json') == removed_manifest
+          (evidence/'assembled-before.json').write_text(json.dumps(expected, indent=2), encoding='utf-8')
+          (evidence/'assembly.json').write_text(json.dumps(dict(kind='assembled-test-payload', gui_source=os.environ['MATRIX_SOURCE'],
+              gui_sha256=build['sha256'], dependency_source=os.environ['DEPENDENCY_SOURCE'], dependency_artifact=13348651284,
+              original_manifest_sha256=removed_manifest, files=expected, clean_candidate_build=False, release=False, publication=False), indent=2), encoding='utf-8')
+      - name: Run actual four-document source failure and history matrix
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Start-Transcript -Path "$env:MATRIX_EVIDENCE/matrix.log"
+          try {
+            python windows/test-dev16-source-failures.py --package "$env:MATRIX_PAYLOAD" --output "$env:MATRIX_EVIDENCE/matrix" --product-revision "$env:MATRIX_SOURCE"
+            if ($LASTEXITCODE) { throw 'Source failure matrix failed' }
+          } finally { Stop-Transcript }
+      - name: Verify exact case/state/capture evidence and unchanged bytes
+        shell: python
+        run: |
+          import hashlib, importlib.util, json, math, os
+          from pathlib import Path
+          evidence = Path(os.environ['MATRIX_EVIDENCE'])
+          import sys, traceback
+          def retain_failure(kind, value, tb):
+              evidence.mkdir(exist_ok=True)
+              (evidence / 'stage-3-failure.txt').write_text(''.join(traceback.format_exception(kind, value, tb)), encoding='utf-8')
+              sys.__excepthook__(kind, value, tb)
+          sys.excepthook = retain_failure
+          out = evidence/'matrix'
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          def inventory(root):
+              return {p.relative_to(root).as_posix():digest(p) for p in root.rglob('*') if p.is_file()}
+          source = Path('windows/test-dev16-source-failures.py')
+          sources = json.loads((evidence/'source-before.json').read_text())
+          assert digest(source) == sources[source.as_posix()]
+          spec = importlib.util.spec_from_file_location('finite_matrix', source)
+          helper = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(helper)
+          audit = json.loads((out/'audit.json').read_text(encoding='utf-8'))
+          assert audit['passed'] is True and audit['product_revision'] == os.environ['MATRIX_SOURCE']
+          assert audit['harness_sha256'] == digest(source) and audit['visual_review'] == 'pending'
+          before = json.loads((evidence/'assembled-before.json').read_text())
+          assert audit['package_before'] == audit['package_after'] == before
+          assert audit['fixtures_after'] == helper.FIXTURES
+          expected_cases = {editor+'-'+module for editor in ('composer','classical') for module in ('oracle','bernvaz')}
+          rows = audit['results']
+          assert len(rows) == 4 and {row['name'] for row in rows} == expected_cases
+          checks, captures = 0, []
+          for row in rows:
+              assert row['passed'] is True and 'restoration_blocked' not in row
+              editor, module = row['name'].split('-')
+              assert row['module_after_gui_sha256'] == row['module_restored_sha256'] == helper.FIXTURES[module+'.qasm']
+              folder = out/(row['name']+' Unicode κ')
+              report = folder/'gui.txt'
+              assert report.read_text(encoding='utf-8-sig').startswith('PASS:')
+              assert json.loads((folder/'gui-process.exit.json').read_text()) == {'code':0}
+              command = json.loads((folder/'gui-process.command.json').read_text())
+              assert command == [str(Path(os.environ['MATRIX_PAYLOAD'])/'QuantumStudio.exe'), '--dev16-source-failure-test', editor, str(folder/'main κ.qasm'), str(report)]
+              saved = {state:Path(str(report)+'.'+state+'.qcircuit').read_text(encoding='utf-8-sig') for state in helper.STATES}
+              helper.check_history(json.loads(Path(str(report)+'.history.json').read_text(encoding='utf-8-sig')), saved)
+              initial = {p.relative_to(folder/'inputs').as_posix():p.read_bytes() for p in (folder/'inputs').rglob('*') if p.is_file()}
+              assert set(initial) == {'main κ.qasm', 'wrapper.inc', 'nested modules λ/'+module+'.qasm'}
+              assert {name:hashlib.sha256(raw).hexdigest() for name,raw in initial.items()} == row['inputs']
+              assert hashlib.sha256(initial['nested modules λ/'+module+'.qasm']).hexdigest() == helper.FIXTURES[module+'.qasm']
+              changed = dict(initial)
+              changed['wrapper.inc'] = initial['wrapper.inc'].replace(b'x a; x a;', b'x a;')
+              assert changed != initial
+              for state in helper.STATES:
+                  assert helper.source_bytes(json.loads(saved[state]), 'main κ.qasm') == (changed if state == 'reimported' else initial)
+              assert all((folder/name).read_bytes() == raw for name,raw in changed.items())
+              for stage in ('blank','unchanged','missing-check','missing-reimport','restored','changed','reimport'):
+                  assert Path(str(report)+'.'+stage+'.txt').stat().st_size > 0
+              assert len(row['semantic']) == 3 and {value['state'] for value in row['semantic']} == set(helper.STATES)
+              for value in row['semantic']:
+                  state = value['state']
+                  expected = ('|0001>' if state == 'reimported' else '|1001>') if module == 'oracle' else ('(|1110>-|1111>)/sqrt(2)' if state == 'reimported' else '(|0110>-|0111>)/sqrt(2)')
+                  assert value['expected'] == expected and type(value['residual']) in (int,float)
+                  assert math.isfinite(value['residual']) and 0 <= value['residual'] < 1e-12
+                  prefix = folder/(state+'-worker')
+                  assert json.loads(Path(str(prefix)+'.exit.json').read_text()) == {'code':0}
+                  assert json.loads(Path(str(prefix)+'.command.json').read_text()) == [str(Path(os.environ['MATRIX_PAYLOAD'])/'quantum-worker.exe'), '--json', '--approx']
+                  expression = helper.circuit_expression(json.loads(saved[state]), editor == 'classical')
+                  assert Path(str(prefix)+'.stdin').read_text(encoding='utf-8') == f'quantum:norm(vec(({expression})-({expected})))'
+                  assert helper.residual_value(Path(str(prefix)+'.stdout').read_bytes()) == value['residual']
+                  assert Path(str(prefix)+'.stderr').is_file()
+                  checks += 1
+              expected_images = [Path(str(report)+'.'+stage+'.png') for stage in helper.CAPTURES]
+              assert len(row['captures']) == 6
+              assert [Path(image['path']).resolve() for image in row['captures']] == [p.resolve() for p in expected_images]
+              for recorded, path in zip(row['captures'], expected_images):
+                  assert path.resolve().is_relative_to(out.resolve())
+                  assert helper.png_record(path) == recorded
+                  captures.append(dict(case=row['name'], path=path.relative_to(evidence).as_posix(), sha256=digest(path), visual_review='pending'))
+          assert checks == 12 and len(captures) == 24
+          assert {p.relative_to(out).as_posix() for p in out.rglob('*.png')} == {str(Path(item['path']).relative_to('matrix')).replace('\\','/') for item in captures}
+          embedded = json.loads((out/'evidence-manifest.json').read_text(encoding='utf-8'))
+          actual = {p.relative_to(out).as_posix():dict(bytes=p.stat().st_size, sha256=digest(p)) for p in out.rglob('*') if p.is_file() and p.name != 'evidence-manifest.json'}
+          assert embedded == actual
+          original = Path(os.environ['MATRIX_ORIGINAL'])/'QuantumStudio'
+          original_after, assembled_after = inventory(original), inventory(Path(os.environ['MATRIX_PAYLOAD']))
+          (evidence/'original-after.json').write_text(json.dumps(original_after, indent=2))
+          (evidence/'assembled-after.json').write_text(json.dumps(assembled_after, indent=2))
+          assert original_after == json.loads((evidence/'original-before.json').read_text())
+          assert assembled_after == before
+          archives_after = {name:dict(bytes=(evidence/name).stat().st_size, sha256=digest(evidence/name)) for name in json.loads((evidence/'archives-before.json').read_text())}
+          (evidence/'archives-after.json').write_text(json.dumps(archives_after, indent=2))
+          assert archives_after == json.loads((evidence/'archives-before.json').read_text())
+          source_after = {name:digest(Path(name)) for name in sources}
+          (evidence/'source-after.json').write_text(json.dumps(source_after, indent=2))
+          assert source_after == sources
+          workflow_binding = json.loads((evidence/'workflow-source.json').read_text())
+          assert workflow_binding['revision'] == os.environ['MATRIX_WORKFLOW_SHA']
+          assert digest(evidence/'executed-workflow.yml') == workflow_binding['sha256']
+          (evidence/'acceptance.json').write_text(json.dumps(dict(machine_checks_passed=True, cases=4, numerical_checks=12,
+              captures=captures, visual_review='pending', finite_acceptance_complete=False,
+              kind='assembled-test-payload', clean_candidate_build=False, release=False, publication=False), indent=2), encoding='utf-8')
+      - name: Retain available final identities and hash evidence on every outcome
+        if: always()
+        shell: python
+        run: |
+          import hashlib, json, os, traceback
+          from pathlib import Path
+          evidence = Path(os.environ['MATRIX_EVIDENCE'])
+          import sys, traceback
+          def retain_failure(kind, value, tb):
+              evidence.mkdir(exist_ok=True)
+              (evidence / 'stage-4-failure.txt').write_text(''.join(traceback.format_exception(kind, value, tb)), encoding='utf-8')
+              sys.__excepthook__(kind, value, tb)
+          sys.excepthook = retain_failure
+          evidence.mkdir(exist_ok=True)
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          for name, root in [('original', Path(os.environ['MATRIX_ORIGINAL'])/'QuantumStudio'), ('assembled', Path(os.environ['MATRIX_PAYLOAD']))]:
+              try:
+                  records = {p.relative_to(root).as_posix():digest(p) for p in root.rglob('*') if p.is_file()}
+                  (evidence/(name+'-finally.json')).write_text(json.dumps(dict(exists=root.exists(), files=records), indent=2))
+              except Exception:
+                  (evidence/(name+'-finally-error.txt')).write_text(traceback.format_exc())
+          records = {p.relative_to(evidence).as_posix():dict(bytes=p.stat().st_size, sha256=digest(p)) for p in sorted(evidence.rglob('*')) if p.is_file() and p != evidence/'evidence-manifest.json'}
+          (evidence/'evidence-manifest.json').write_text(json.dumps(records, indent=2), encoding='utf-8')
+      - name: Retain immutable input, rebuilt GUI and complete partial or successful evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev16-source-matrix-acac77ab-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: ${{ runner.temp }}/dev16-matrix-evidence/
