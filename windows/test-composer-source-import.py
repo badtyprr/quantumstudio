@@ -13,6 +13,10 @@ def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 hashes={} if a.prepare_only else {"gui":digest(app),"compiler":digest(compiler),"worker":digest(worker)}
 startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
 results=[]
+contract=json.loads((repo/"windows/fixtures/dev16-composer-contract.json").read_text(encoding="utf-8"))
+for filename,expected_hash in contract["fixtures"].items():
+    assert digest(repo/"windows/fixtures/qb004"/filename)==expected_hash,(filename,"original fixture hash mismatch")
+contract_cases={case["name"]:case for case in contract["cases"]}
 
 def expected_state(name,value,edited):
     # Native ket digits are q0,q1,..., not the displayed count-string order.
@@ -46,6 +50,8 @@ def normalized(circuit):
             "Steps":[dict(Gate=s["Gate"],Wires=s["Wires"],Angle=s.get("Angle") or "") for s in circuit["Steps"]]}
 for name,value,count in (("strict",0,2),("oracle",0,3),("oracle",1,4),("oracle",2,4),("oracle",4,4),("bernvaz",0,10)):
     label=f"{name}-{value}"
+    assert contract_cases[label]["original"]==expected_state(name,value,False)
+    assert contract_cases[label]["edited"]==expected_state(name,value,True)
     folder=out/(label+" Unicode κ");folder.mkdir()
     entry=folder/"main κ.qasm"
     if name=="strict":
@@ -107,10 +113,12 @@ for name,value,count in (("strict",0,2),("oracle",0,3),("oracle",1,4),("oracle",
     assert all(Path(path).exists() for path in screenshots)
     results.append(dict(name=label,passed=True,operations=count,source_files=len(expected_sources),screenshots=screenshots,semantic=semantic))
 if a.prepare_only:
+    assert {row["name"] for row in results}==set(contract_cases)
     (out/"prepared.json").write_text(json.dumps(dict(executed=False,results=results),indent=2)+"\n",encoding="utf-8")
     print("Prepared six cases; no GUI, compiler or worker execution.")
     raise SystemExit(0)
 assert {"gui":digest(app),"compiler":digest(compiler),"worker":digest(worker)}==hashes
+assert {row["name"] for row in results}==set(contract_cases)
 (out/"audit.json").write_text(json.dumps(dict(passed=True,package=str(package),hashes=hashes,results=results,
     scope="Numerical composer source import and standalone circuit equivalence; no complete notebook or changed-dependency claim."),indent=2)+"\n")
 print("PASS: six frozen composer source imports, twelve original/edited round trips and 36 independent state checks.")
