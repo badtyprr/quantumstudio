@@ -249,7 +249,7 @@ jobs:
                   return hashlib.file_digest(stream, 'sha256').hexdigest()
           def inventory(root):
               return {p.relative_to(root).as_posix():digest(p) for p in root.rglob('*') if p.is_file()}
-          before = json.loads((evidence/'original-before.json').read_text())
+          before = json.loads((evidence/'original-before.json').read_text(encoding='utf-8'))
           assert inventory(original) == before
           build = json.loads((evidence/'gui-build.json').read_text(encoding='utf-8-sig'))
           assert build['compiled'] is True and build['source'] == os.environ['MATRIX_SOURCE']
@@ -295,7 +295,7 @@ jobs:
           def inventory(root):
               return {p.relative_to(root).as_posix():digest(p) for p in root.rglob('*') if p.is_file()}
           source = Path('windows/test-dev16-source-failures.py')
-          sources = json.loads((evidence/'source-before.json').read_text())
+          sources = json.loads((evidence/'source-before.json').read_text(encoding='utf-8'))
           assert digest(source) == sources[source.as_posix()]
           spec = importlib.util.spec_from_file_location('finite_matrix', source)
           helper = importlib.util.module_from_spec(spec)
@@ -303,7 +303,7 @@ jobs:
           audit = json.loads((out/'audit.json').read_text(encoding='utf-8'))
           assert audit['passed'] is True and audit['product_revision'] == os.environ['MATRIX_SOURCE']
           assert audit['harness_sha256'] == digest(source) and audit['visual_review'] == 'pending'
-          before = json.loads((evidence/'assembled-before.json').read_text())
+          before = json.loads((evidence/'assembled-before.json').read_text(encoding='utf-8'))
           assert audit['package_before'] == audit['package_after'] == before
           assert audit['fixtures_after'] == helper.FIXTURES
           expected_cases = {editor+'-'+module for editor in ('composer','classical') for module in ('oracle','bernvaz')}
@@ -317,8 +317,8 @@ jobs:
               folder = out/(row['name']+' Unicode κ')
               report = folder/'gui.txt'
               assert report.read_text(encoding='utf-8-sig').startswith('PASS:')
-              assert json.loads((folder/'gui-process.exit.json').read_text()) == {'code':0}
-              command = json.loads((folder/'gui-process.command.json').read_text())
+              assert json.loads((folder/'gui-process.exit.json').read_text(encoding='utf-8')) == {'code':0}
+              command = json.loads((folder/'gui-process.command.json').read_text(encoding='utf-8'))
               assert command == [str(Path(os.environ['MATRIX_PAYLOAD'])/'QuantumStudio.exe'), '--dev16-source-failure-test', editor, str(folder/'main κ.qasm'), str(report)]
               saved = {state:Path(str(report)+'.'+state+'.qcircuit').read_text(encoding='utf-8-sig') for state in helper.STATES}
               helper.check_history(json.loads(Path(str(report)+'.history.json').read_text(encoding='utf-8-sig')), saved)
@@ -341,8 +341,8 @@ jobs:
                   assert value['expected'] == expected and type(value['residual']) in (int,float)
                   assert math.isfinite(value['residual']) and 0 <= value['residual'] < 1e-12
                   prefix = folder/(state+'-worker')
-                  assert json.loads(Path(str(prefix)+'.exit.json').read_text()) == {'code':0}
-                  assert json.loads(Path(str(prefix)+'.command.json').read_text()) == [str(Path(os.environ['MATRIX_PAYLOAD'])/'quantum-worker.exe'), '--json', '--approx']
+                  assert json.loads(Path(str(prefix)+'.exit.json').read_text(encoding='utf-8')) == {'code':0}
+                  assert json.loads(Path(str(prefix)+'.command.json').read_text(encoding='utf-8')) == [str(Path(os.environ['MATRIX_PAYLOAD'])/'quantum-worker.exe'), '--json', '--approx']
                   expression = helper.circuit_expression(json.loads(saved[state]), editor == 'classical')
                   assert Path(str(prefix)+'.stdin').read_text(encoding='utf-8') == f'quantum:norm(vec(({expression})-({expected})))'
                   assert helper.residual_value(Path(str(prefix)+'.stdout').read_bytes()) == value['residual']
@@ -364,15 +364,15 @@ jobs:
           original_after, assembled_after = inventory(original), inventory(Path(os.environ['MATRIX_PAYLOAD']))
           (evidence/'original-after.json').write_text(json.dumps(original_after, indent=2))
           (evidence/'assembled-after.json').write_text(json.dumps(assembled_after, indent=2))
-          assert original_after == json.loads((evidence/'original-before.json').read_text())
+          assert original_after == json.loads((evidence/'original-before.json').read_text(encoding='utf-8'))
           assert assembled_after == before
-          archives_after = {name:dict(bytes=(evidence/name).stat().st_size, sha256=digest(evidence/name)) for name in json.loads((evidence/'archives-before.json').read_text())}
+          archives_after = {name:dict(bytes=(evidence/name).stat().st_size, sha256=digest(evidence/name)) for name in json.loads((evidence/'archives-before.json').read_text(encoding='utf-8'))}
           (evidence/'archives-after.json').write_text(json.dumps(archives_after, indent=2))
-          assert archives_after == json.loads((evidence/'archives-before.json').read_text())
+          assert archives_after == json.loads((evidence/'archives-before.json').read_text(encoding='utf-8'))
           source_after = {name:digest(Path(name)) for name in sources}
           (evidence/'source-after.json').write_text(json.dumps(source_after, indent=2))
           assert source_after == sources
-          workflow_binding = json.loads((evidence/'workflow-source.json').read_text())
+          workflow_binding = json.loads((evidence/'workflow-source.json').read_text(encoding='utf-8'))
           assert workflow_binding['revision'] == os.environ['MATRIX_WORKFLOW_SHA']
           assert digest(evidence/'executed-workflow.yml') == workflow_binding['sha256']
           (evidence/'acceptance.json').write_text(json.dumps(dict(machine_checks_passed=True, cases=4, numerical_checks=12,
