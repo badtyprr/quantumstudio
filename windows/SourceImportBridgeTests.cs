@@ -46,6 +46,20 @@ class SourceImportBridgeTests {
   File.WriteAllText(helper,"// line one\ngate flip a { undefined_gate a; }\n",new UTF8Encoding(false));
   try{history.ImportSource(QasmImport.CompileSource(entry,false,true),false);throw new Exception("Undefined dependency gate accepted.");}
   catch(InvalidDataException error){Check(error.Message.Contains("helper.qasm:2:") && error.Message.Contains("Unsupported / undeclared QASM operation") && history.Serialize()==imported);}
+  // Preserve a real redo entry across lowering/emission failures.
+  history.Edit(d=>d.Qubits=3);string edited=history.Serialize();history.Undo();
+  Check(history.Serialize()==imported && history.CanUndo && history.CanRedo);
+  string bad=Path.Combine(nested,"bad \u03ba.inc");
+  File.WriteAllText(entry,"OPENQASM 3; include \"stdgates.inc\"; include \"helper.qasm\";",new UTF8Encoding(false));
+  File.WriteAllText(helper,"// nested wrapper\ninclude \"sub dir/bad \u03ba.inc\";",new UTF8Encoding(false));
+  string[] bodies={"qubit q;\n  for int i in [0:0:2] { x q; }","bool b;\n  b += true;","int n=1;\nbit[2] b;\n  b=bit[2](n);","int n=1;\n  bit[2] b=bit[2](n);"};
+  string[] messages={"For-loop range step must not be zero.","Boolean compound assignments are not yet supported.","Integer-to-bit casts require equal explicit widths.","Integer-to-bit casts require equal explicit widths."};
+  for(int i=0;i<bodies.Length;++i) {
+   File.WriteAllText(bad,"OPENQASM 3;\ninclude \"stdgates.inc\";\n"+bodies[i],new UTF8Encoding(true));
+   try{history.ImportSource(QasmImport.CompileSource(entry,false,true,true),false);throw new Exception("Invalid lowering accepted.");}
+   catch(InvalidDataException error){Check(error.Message.Contains("sub dir/bad \u03ba.inc:"+(i==2?5:4)+":3: "+messages[i]) && history.Serialize()==imported && history.CanUndo && history.CanRedo);}
+  }
+  history.Redo();Check(history.Serialize()==edited);history.Undo();Check(history.Serialize()==imported);
   Console.WriteLine("PASS: "+checks+" frozen source-import bridge checks.");
  }
 }
