@@ -1,0 +1,1339 @@
+{
+  "scope": "Dated retained-source identity and lexical discovery evidence; no whole-source acceptance, source execution, or access certification.",
+  "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "inputs": {
+    "source-manifest.json": "1e80688bf60503cb3e369352c98c57b010b654195a227a6212e2de38eb74beb8",
+    "dependency-inventory.json": "f0830506f5edb2bcf01e0855b26b03fce6872171f95b8e36c359db26344b09ef",
+    "public-access.json": "d6fdc5689eab7caff8351ce3d4e2b6fcc8eba2aa0bc85224861bf28a84d62f1e",
+    "public-js-manifest.json": "3cdc693217f01b4bccf4932382ca7bc642004179fbaea81115d604658df543b8",
+    "validation.json": "eee12897015ee8a24d93eae52bbddd71684674b109c5d322d839156ee35964c5",
+    "findings.md": "36af2aea4bea595d3b6c4d234d2f8531d83159c136641637c9b55a4cc6133ecb",
+    "expand.py": "bfa4944e3ed1e7daf99e9bd38749c063f213c3e79c90625b4d6048198fa89ec9"
+  },
+  "source_checks": [
+    {
+      "key": "IBM-ASSET-61feafd6a7b4",
+      "path": "learning/courses/basics-of-quantum-information/_toc.json",
+      "sha256": "1d02d2fe6a8b7e6970b8ac144aa653ad05e31a89222f4957087e2b7cc77e3eb7",
+      "git_blob": "393e6e4d24c168a1bd32012792ab898a073a8c42",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-403efbe76a4f",
+      "path": "learning/courses/basics-of-quantum-information/exam.mdx",
+      "sha256": "1b1e047f582ad515512020aadac9c29b16abeb6df5549f6b21c523ea8ecdc08d",
+      "git_blob": "38eeaf046ae24d4c8afa39da715cdb97a91da198",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-2858c10ef693",
+      "path": "learning/courses/basics-of-quantum-information/index.mdx",
+      "sha256": "5a32fd9feb1dd92f35e4d1beb671dc9a47e894c108479599859d65c55591e1e5",
+      "git_blob": "28d5b0b0f3e6b1c51c682e068dcd67c858ee5de1",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-880975cf10cb",
+      "path": "learning/courses/designing-and-leading-quantum-projects/_toc.json",
+      "sha256": "a98815b5d0d91b1bb6611c114956d68decb6962e40d2fb769172444a07f80f13",
+      "git_blob": "c9e0b914efb7e09d7420936c0b88999854a8b900",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-055a6819a77b",
+      "path": "learning/courses/designing-and-leading-quantum-projects/index.mdx",
+      "sha256": "7a885cf5955bb3eac9c7a019888507b3b12a659da31b3915c0f290f97c164ed1",
+      "git_blob": "2486d4427114e22de02e1a6b2471f3bdd3cb91c8",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-42e3447c64e9",
+      "path": "learning/courses/foundations-of-quantum-error-correction/_toc.json",
+      "sha256": "d25247649d911ba9c5e659aebc39b158446e98718302020f3fe799c16d5c4190",
+      "git_blob": "9cc35abaae8abd35f0d2bcbdc878be48d38d8522",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-5e308ffd4b41",
+      "path": "learning/courses/foundations-of-quantum-error-correction/exam.mdx",
+      "sha256": "38014e1159064719549fd811f4bd9bcb4d118b87ac948ae77434a35f4cb2f617",
+      "git_blob": "2e931f96a8ae906897e2f6ce8e32a23c69e498b3",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-fd9bad4eed07",
+      "path": "learning/courses/foundations-of-quantum-error-correction/index.mdx",
+      "sha256": "4c7535542375f286a47ad146b4932fdfc04a9c4a45d21e0aebcb37d6b12f00b9",
+      "git_blob": "03b4c5a9b6029a983b80af761f865a87f38792f1",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-b855c6c80398",
+      "path": "learning/courses/fundamentals-of-quantum-algorithms/_toc.json",
+      "sha256": "1164011b1a341195350e4d4fb4a14d4432181571bad7cb6f88af1c3a98434325",
+      "git_blob": "04ee23d8139646372a18eb71679a01ecc68b3b6f",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-03313a3f9cf7",
+      "path": "learning/courses/fundamentals-of-quantum-algorithms/exam.mdx",
+      "sha256": "6aee535ccdc8f8be734f039d9b65e80bfb4718cc6dc10e4a861ae395c9953228",
+      "git_blob": "eb38a683373af909e8e8070232dfaef8285a7714",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-f8879b756500",
+      "path": "learning/courses/fundamentals-of-quantum-algorithms/index.mdx",
+      "sha256": "4d87a0b27c754a024a658e716ae83801c5d338d145a5c60cbd0b4cd86eb86ec3",
+      "git_blob": "1788a9004bc42a64a9982bbde025e325208c8476",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-7e91f84b901f",
+      "path": "learning/courses/general-formulation-of-quantum-information/_toc.json",
+      "sha256": "7fe188a5e0f1ea2168f64241f880a5a2b243002c06cd6fac841e8d9c6a161e9c",
+      "git_blob": "57cf6fb309dc24b402d0ae034fd543fff1355ffe",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-b01f31f0565f",
+      "path": "learning/courses/general-formulation-of-quantum-information/exam.mdx",
+      "sha256": "17da12f5afee06a461adf059531cb973c810d954eca451360eadd10e4707bc4e",
+      "git_blob": "bab9f17bec5af1a3bd066b253872813dd3f3440d",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-85377f03bea6",
+      "path": "learning/courses/general-formulation-of-quantum-information/index.mdx",
+      "sha256": "a192099aa4e1d8870b516722e323bc5737a64fa582a1eb5f6fc022a060b0df3f",
+      "git_blob": "0a5b052e2c109cea9425c9e935394339dd835a2a",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-be545041442f",
+      "path": "learning/courses/integrating-quantum-and-high-performance-computing/_toc.json",
+      "sha256": "3f30934c866458b9f6bb4ed43c52805f3ff5844bc5a2f61ad46d39ff60812a05",
+      "git_blob": "0daa5564b43b9a33c33cedf419c214fe493e0f7f",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-c2910b0e4200",
+      "path": "learning/courses/integrating-quantum-and-high-performance-computing/exam.mdx",
+      "sha256": "89e760299f3dedbc64282ca63a2dff09ad561746ce86d61e8ec8f47a279c48de",
+      "git_blob": "e22dc678fb43288a8a2576a982fb8c727400f0af",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-5aa4be3f0fac",
+      "path": "learning/courses/integrating-quantum-and-high-performance-computing/index.mdx",
+      "sha256": "7bf6819dd0a63d2bbd320a8c87a77e03c15118d2923471554fdfbe89211d3196",
+      "git_blob": "c54819f68f4ba810532f8a90486d9a4edcdea67b",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-84e47689dd6b",
+      "path": "learning/courses/quantum-business-foundations/_toc.json",
+      "sha256": "9a354cc8d90883aa58f726aed074e87d11bd4fdc8d8611bb57534bc6a2defeab",
+      "git_blob": "ea667550471c3cd4f71a2cf2289c8cf166d7702d",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-d0a76846fbb2",
+      "path": "learning/courses/quantum-business-foundations/exam.mdx",
+      "sha256": "07bf0295ebf91a856df1b610bc4d35340b6fd08ca6496a0c83a88bf570985750",
+      "git_blob": "86d81846bf49f55ae07cb76a52fae137a2428571",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-866c9429195e",
+      "path": "learning/courses/quantum-business-foundations/index.mdx",
+      "sha256": "d4e569c58a1eaa21296afcc9d8a8fa5b15b04f04b3239ba845bfe85350eea6c1",
+      "git_blob": "fcab2dcba6374b2657b39ba63603c706a1c5a885",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-1741e71f8323",
+      "path": "learning/courses/quantum-chem-with-vqe/_toc.json",
+      "sha256": "647120b610d9fcb77daaf7eb6e1213bcf9f087fea2e868826d253377e68f8d77",
+      "git_blob": "7aaae7638ed00d70ad313d3fff8f522ca6eb4799",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-d12261bbb2dc",
+      "path": "learning/courses/quantum-chem-with-vqe/exam.mdx",
+      "sha256": "3c8e18ade2823a4ae411ca763f3753b303d1ad42481e11da129e1b629de573f1",
+      "git_blob": "4d3ef980ebee58634969cf0dbb4524809453ee01",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-9998cc5387e2",
+      "path": "learning/courses/quantum-chem-with-vqe/index.mdx",
+      "sha256": "0ba89f1c5409a744a1d61ecbd17ac44a4319a253ad9728d4e44067209d76d8d1",
+      "git_blob": "5551d0e786360f6667f0351af3ef3808d521725d",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-e04adca93d15",
+      "path": "learning/courses/quantum-computing-in-practice/_toc.json",
+      "sha256": "c65a3b446ec9b3ecd2e2c110d0092fc00a771827973015d0488361026a554280",
+      "git_blob": "7fb435433c683c1e1e7bf8fe4194e006a3c586bb",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-8f7d9c523519",
+      "path": "learning/courses/quantum-computing-in-practice/exam.mdx",
+      "sha256": "1c907c62ffae9c700e167a81515fd5a115e373f5670808096f5ac33fc93874b6",
+      "git_blob": "1a82826c0e260a34d8c7bc6a62e0aae9c84c2bf1",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-0c2a85f6c4d5",
+      "path": "learning/courses/quantum-computing-in-practice/index.mdx",
+      "sha256": "1df8427f28f4d7c8cecf3b8105ce71c55b9c1775d5279eebadc8a358781010f8",
+      "git_blob": "ec3b12ed8c646a79ab20d147e14fa1a15dbbb0d0",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-9bcaed47b059",
+      "path": "learning/courses/quantum-diagonalization-algorithms/_toc.json",
+      "sha256": "b21c19a7b2f3b4b66d25b24e430911fe76494187185238e5007960492ba66042",
+      "git_blob": "cc79314a079b3e2b9ec8955e4a4b1fd69c63adb4",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-159b0c1b8b95",
+      "path": "learning/courses/quantum-diagonalization-algorithms/exam.mdx",
+      "sha256": "eeb4def2f6e4143e585028a4a8295de22e834f0e5a00167fa8ce683b0b169d0c",
+      "git_blob": "d8e434059d3c120b5d78e3978d60533cd66e4c72",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-406de2ff6f23",
+      "path": "learning/courses/quantum-diagonalization-algorithms/index.mdx",
+      "sha256": "19cd42af3c4ceba3d54c18b5c1201b6503e1abd6dbdc7778a2c2e4f0299cd2f7",
+      "git_blob": "c9e93da3beabc86caa74b01b99b5db6407b525e8",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-3ac69a9a04ae",
+      "path": "learning/courses/quantum-machine-learning/_toc.json",
+      "sha256": "948dfe9fbabb738391013c4b963860224da877a91f2dc15aa5f40ba4e867c953",
+      "git_blob": "d3f30be6eda9e35343d2e547c3d0a13c61d5873d",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-fd7a2b84fb88",
+      "path": "learning/courses/quantum-machine-learning/exam.mdx",
+      "sha256": "07ca4a497a0802173f9af35c42bb690cb2b641c0a60999a0af0c96ca1500cfc6",
+      "git_blob": "dcd15835f4ba7cc2dc9e12fa7c5552dfadd42e83",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-255490db6f0e",
+      "path": "learning/courses/quantum-machine-learning/index.mdx",
+      "sha256": "98fe87ffc0903270f1de1ab3b0a1c80242758a9d85b80e554a54be06b1c5121f",
+      "git_blob": "4ad7a0be666e040787605e6de89354b3d02a6792",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-db5d8f23d427",
+      "path": "learning/courses/tools-for-quantum-advantage/_toc.json",
+      "sha256": "a11a591ee720bc7a6e458c99ebfe4f9d25afe02d6c7977b91c647d996dedc146",
+      "git_blob": "b03290ebfe89d0470c8c68d384bf0c9ac3a58da2",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-a7c5052653a5",
+      "path": "learning/courses/tools-for-quantum-advantage/error-correction-ii.ipynb",
+      "sha256": "e064e99e0e5e352e050db19d521e1befa037bdb72f4a8654b2d629d8a40f9739",
+      "git_blob": "b2f45d23ea75e61fbd1760878e0bdf5d14869b2d",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-4699e0f3579b",
+      "path": "learning/courses/tools-for-quantum-advantage/index.mdx",
+      "sha256": "43903d828eec957996bb00bc00bb16114a18e15b85261006e2777d26ace4d2d2",
+      "git_blob": "36af6fe791ab406316cbdf8223cb2b7d2e97a7e6",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-f79f5dee80b9",
+      "path": "learning/courses/use-a-qc-today/_toc.json",
+      "sha256": "bd91a8a3f0ef73c88f40a8784a130726869961c552b08e0c8537d1daeda6e0fc",
+      "git_blob": "8ba2a6fa5514c386e41819052f5d2a554bb6660d",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-740a9dacf097",
+      "path": "learning/courses/use-a-qc-today/exam.mdx",
+      "sha256": "be4ef10a7a071d420a7bb0b050e4c9f89d9d7bf2378ee6c319a46b13f2c32123",
+      "git_blob": "57c9e2379b607bafc651c1590de03b824c8ef248",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-80ec207f43cf",
+      "path": "learning/courses/use-a-qc-today/index.mdx",
+      "sha256": "7ef74c4611b2aea1916cd98d06b615e6af9e02d86ea9a08be627d8b12e44e5a5",
+      "git_blob": "4d607397a749d26856289318112b57920dc8cc80",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-555f2d4b860c",
+      "path": "learning/courses/utility-scale-quantum-computing/_toc.json",
+      "sha256": "0039a9f773eaeabb9bfbf93119b0f43b355d048c84751b67e777f905af050d12",
+      "git_blob": "c92f00284805c9c07259ef2689ab401e15f23be5",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-5686519deb99",
+      "path": "learning/courses/utility-scale-quantum-computing/index.mdx",
+      "sha256": "6f576f27050b1aa5aa9236b3669bfe332e355475cffed252614879a6bf629f30",
+      "git_blob": "3629e9adbc04a2ed41ff4e711bab008982c52ab1",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-1aba6df7b7ba",
+      "path": "learning/courses/variational-algorithm-design/_toc.json",
+      "sha256": "0d0bf154ed0b35619176e18ac5f3f5fedbd251b472e96823d366552053d288af",
+      "git_blob": "648419c78b2b65cead1cea19776e62ec51b8139a",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-795cd01dae94",
+      "path": "learning/courses/variational-algorithm-design/exam.mdx",
+      "sha256": "2a7d3e0f86b9f6d86ceb41518111d1b87d700de64679a332d924277492df8ec0",
+      "git_blob": "0df423cf50edc231459970ae083cdb59e7a21308",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-9170b6a6069e",
+      "path": "learning/courses/variational-algorithm-design/index.mdx",
+      "sha256": "5d69e27daed02a57f37a5188bf17bff9a43d46ed439307ae49b1a3e71b150d35",
+      "git_blob": "e3bc9201b090cf3b66ebc5cc835693497e1985b6",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-edce958ab1cc",
+      "path": "learning/index.mdx",
+      "sha256": "547a8ca424cf6aca535b362cee5eb76e67ba3a238055b29c4413ace6ffe539a0",
+      "git_blob": "57ae307d89f77df8176b93c5669cb1e2449c6ea8",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-cbaf77747d3d",
+      "path": "learning/modules/computer-science/_toc.json",
+      "sha256": "93e2261791d088e8c60231604c8fed931057c849ce3c1731048f87d9dfa6e25b",
+      "git_blob": "7494d1bfb67fb8206f672ba07961c4bab0278932",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-d32125fb9cfa",
+      "path": "learning/modules/computer-science/index.mdx",
+      "sha256": "4de206f8b3b90d13d37419f69ad6c5f48873952bf158fbc8184f32fe80339e9b",
+      "git_blob": "b11045df466a62be83802dfab0bb134c6b079785",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-cd10237c01a7",
+      "path": "learning/modules/quantum-mechanics/_toc.json",
+      "sha256": "3ceb6584b414ae6925f000c0cf4b7fc9b3b8873455e9f687ceb20d9690de4d4c",
+      "git_blob": "1271817dc678b3fd42be009a47dcfeea7035cb16",
+      "passed": true
+    },
+    {
+      "key": "IBM-ASSET-26fd14b8ade3",
+      "path": "learning/modules/quantum-mechanics/index.mdx",
+      "sha256": "df060ef44c9d95bcc3dc99d2c0e7f40ff3339194b0d5f689aa5a3a0cf9eac4cb",
+      "git_blob": "28d9442c2cdba20cead5687f3909dd3645bd1900",
+      "passed": true
+    }
+  ],
+  "lexical_edges_exactly_reproduced": true,
+  "counts": {
+    "sources": 48,
+    "categories": {
+      "metadata": 17,
+      "exam": 12,
+      "overview": 18,
+      "notebook": 1
+    },
+    "link_occurrences": 485,
+    "unique_targets": 304,
+    "navigation_occurrences": 179,
+    "edge_categories": {
+      "linked-reference": 355,
+      "exam": 37,
+      "image": 48,
+      "administrative": 43,
+      "download": 2
+    }
+  },
+  "public_response_checks": [
+    {
+      "key": "IBM-ACCESS-6354cfcfdc8171f2",
+      "url": "https://www.ibm.com/training/course/basics-of-quantum-information-badge-quiz-DL46101G",
+      "bytes": 7055,
+      "sha256": "38bc2a7a8560eebfbb1b1d6ee263942ac5ac16430993c4aa725f204fc6c7b215",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-801baed58d2b306f",
+      "url": "https://www.ibm.com/training/course/foundations-of-quantum-error-correction-badge-quiz-DL46109G",
+      "bytes": 7145,
+      "sha256": "ee29fb02a27bc0c3f01ec937aef0266cb2d1f530f1df167100d0681743eace70",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-7a83afafa8b013a8",
+      "url": "https://www.ibm.com/training/course/fundamentals-of-quantum-algorithms-badge-quiz-DL46102G",
+      "bytes": 7100,
+      "sha256": "392e7f29cffd30bbcdcae8ea3dfba0359f4b5cc315527c20c0288fbd9ee8aedc",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-71c49bd8bbef7b9f",
+      "url": "https://www.ibm.com/training/course/general-formulation-of-quantum-information-quiz-DL46100G",
+      "bytes": 7120,
+      "sha256": "e04b7776defd7a3efc03ab72f7d6ee660b1729e3574b110e7d302359759ad555",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-ec6c975ed81f3d71",
+      "url": "https://www.ibm.com/training/course/integrating-quantum-and-high-performance-computing-badge-quiz-DL46110G",
+      "bytes": 7219,
+      "sha256": "99c0119f585f2442fe3ef74b92329b05614fb4b3622304bbaf77c47ab1f4f091",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-3cd61d4a8349f9cb",
+      "url": "https://www.ibm.com/training/course/quantum-business-foundations-badge-quiz-DL46104G",
+      "bytes": 7046,
+      "sha256": "0add53fbbf90687531ea97c82927b0b58046e36f087bdaeca4b9c989a483fd59",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-6f274bf76a50b614",
+      "url": "https://www.ibm.com/training/course/quantum-chemistry-with-vqe-badge-quiz-DL46105G",
+      "bytes": 7030,
+      "sha256": "6c8badd97c13dd8cf4f3a64e2c681b82cf87d81fa3f75d530c67b36220dd0e88",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-6185025e34fa263c",
+      "url": "https://www.ibm.com/training/course/quantum-computing-in-practice-DL46111G",
+      "bytes": 6843,
+      "sha256": "d38aa0f87e1c6153e4bfa350b4d7bb5551e4fee70ea3fce165c18b644f0f2ed6",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-c30ac87711d0d66f",
+      "url": "https://www.ibm.com/training/course/quantum-diagonalization-algorithms-badge-quiz-DL46106G",
+      "bytes": 7100,
+      "sha256": "518f61e7282d3e1b2f419fc6b963ee7274d5d24aeffa26c81e6969ceaba19645",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-1a9005e629931b9c",
+      "url": "https://www.ibm.com/training/course/quantum-machine-learning-badge-quiz-DL46107G",
+      "bytes": 7010,
+      "sha256": "b3dc1f2e553580774d25cc8ec71bfca72d85d1c9dabe98c4ca5e18d2bdd773cd",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-054b2e9ad1cdad63",
+      "url": "https://www.ibm.com/training/course/using-a-quantum-computer-DL46112G",
+      "bytes": 6902,
+      "sha256": "01db67f0fdc480fd9581cf4420b269bacb650e67f35f647f229c44cfb0b0a688",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-ae610ddb22880085",
+      "url": "https://www.ibm.com/training/course/variational-algorithm-design-badge-quiz-DL46108G",
+      "bytes": 7046,
+      "sha256": "6499d3e2eaa0a6ba5e9aea32d5cd3a7de8638279f8b47c53dfe86f3a72aede51",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "exam_landing",
+      "empty_root_marker": true,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-e70d61811ad7efb1",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=introduction-to-quantum",
+      "bytes": 230069,
+      "sha256": "56e8943b5e597bc0ecc6f37a4e2104d93be84e35f8ddab2d3543043d87935cec",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "path_modal_landing",
+      "empty_root_marker": false,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-5da81f63a535a543",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=optimization",
+      "bytes": 230047,
+      "sha256": "39cb319ed1d47ef31615c0944601fa5036aa6ae537bada6ac94421e65ed73b89",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "path_modal_landing",
+      "empty_root_marker": false,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-e90ef5e18c6c813b",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=data-science",
+      "bytes": 230026,
+      "sha256": "d94ee2368238ba772edb033c972cb57663d1df822b382583054145b465f83245",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "path_modal_landing",
+      "empty_root_marker": false,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-61e99a5871909ea1",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry",
+      "bytes": 230047,
+      "sha256": "39cb319ed1d47ef31615c0944601fa5036aa6ae537bada6ac94421e65ed73b89",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "path_modal_landing",
+      "empty_root_marker": false,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-fe748aa3bc12897d",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development",
+      "bytes": 230026,
+      "sha256": "6dd889c592d64acd4c553f63ff3cbf0d863e85d250c9f81e31ed6f70772c13fe",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "path_modal_landing",
+      "empty_root_marker": false,
+      "authenticated_false_marker": false
+    },
+    {
+      "key": "IBM-ACCESS-230e62fb68d7927f",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=qise",
+      "bytes": 230026,
+      "sha256": "d94ee2368238ba772edb033c972cb57663d1df822b382583054145b465f83245",
+      "hash_verified": true,
+      "recorded_status": 200,
+      "kind": "path_modal_landing",
+      "empty_root_marker": false,
+      "authenticated_false_marker": false
+    }
+  ],
+  "js_records": {
+    "count": 22,
+    "all_recorded_403": true,
+    "urls_in_captured_landing": 22,
+    "captured_landing_script_urls": 22,
+    "unmatched_urls": [],
+    "limitation": "Recorded failures only, no response bodies; not a new network verification or proof authentication is required"
+  },
+  "new_notebook": {
+    "proposed_id": "IBM-138",
+    "source_key": "IBM-ASSET-a7c5052653a5",
+    "path": "learning/courses/tools-for-quantum-advantage/error-correction-ii.ipynb",
+    "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+    "sha256": "e064e99e0e5e352e050db19d521e1befa037bdb72f4a8654b2d629d8a40f9739",
+    "git_blob": "b2f45d23ea75e61fbd1760878e0bdf5d14869b2d",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-correction-ii",
+    "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/tools-for-quantum-advantage/error-correction-ii.ipynb",
+    "cells": 66,
+    "code_cell_indices": [
+      1,
+      5,
+      7,
+      12,
+      21,
+      36,
+      41,
+      48
+    ],
+    "markdown_cells": 58,
+    "all_cell_hashes_verified": true,
+    "id_or_url_collision": false,
+    "original_rows": 184,
+    "after_PR433": 187,
+    "after_IBM138_adoption": 188,
+    "remaining_asset_queue": 47,
+    "source_execution": "not performed by this audit"
+  },
+  "proposed_asset_tasks": [
+    {
+      "source_key": "IBM-ASSET-61feafd6a7b4",
+      "source_path": "learning/courses/basics-of-quantum-information/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "1d02d2fe6a8b7e6970b8ac144aa653ad05e31a89222f4957087e2b7cc77e3eb7",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/basics-of-quantum-information/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-403efbe76a4f",
+      "source_path": "learning/courses/basics-of-quantum-information/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "1b1e047f582ad515512020aadac9c29b16abeb6df5549f6b21c523ea8ecdc08d",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/basics-of-quantum-information/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-2858c10ef693",
+      "source_path": "learning/courses/basics-of-quantum-information/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "5a32fd9feb1dd92f35e4d1beb671dc9a47e894c108479599859d65c55591e1e5",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/basics-of-quantum-information/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-880975cf10cb",
+      "source_path": "learning/courses/designing-and-leading-quantum-projects/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "a98815b5d0d91b1bb6611c114956d68decb6962e40d2fb769172444a07f80f13",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/designing-and-leading-quantum-projects/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-055a6819a77b",
+      "source_path": "learning/courses/designing-and-leading-quantum-projects/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "7a885cf5955bb3eac9c7a019888507b3b12a659da31b3915c0f290f97c164ed1",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/designing-and-leading-quantum-projects/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-42e3447c64e9",
+      "source_path": "learning/courses/foundations-of-quantum-error-correction/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "d25247649d911ba9c5e659aebc39b158446e98718302020f3fe799c16d5c4190",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/foundations-of-quantum-error-correction/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-5e308ffd4b41",
+      "source_path": "learning/courses/foundations-of-quantum-error-correction/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "38014e1159064719549fd811f4bd9bcb4d118b87ac948ae77434a35f4cb2f617",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/foundations-of-quantum-error-correction/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-fd9bad4eed07",
+      "source_path": "learning/courses/foundations-of-quantum-error-correction/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "4c7535542375f286a47ad146b4932fdfc04a9c4a45d21e0aebcb37d6b12f00b9",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/foundations-of-quantum-error-correction/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-b855c6c80398",
+      "source_path": "learning/courses/fundamentals-of-quantum-algorithms/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "1164011b1a341195350e4d4fb4a14d4432181571bad7cb6f88af1c3a98434325",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/fundamentals-of-quantum-algorithms/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-03313a3f9cf7",
+      "source_path": "learning/courses/fundamentals-of-quantum-algorithms/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "6aee535ccdc8f8be734f039d9b65e80bfb4718cc6dc10e4a861ae395c9953228",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/fundamentals-of-quantum-algorithms/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-f8879b756500",
+      "source_path": "learning/courses/fundamentals-of-quantum-algorithms/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "4d87a0b27c754a024a658e716ae83801c5d338d145a5c60cbd0b4cd86eb86ec3",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/fundamentals-of-quantum-algorithms/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-7e91f84b901f",
+      "source_path": "learning/courses/general-formulation-of-quantum-information/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "7fe188a5e0f1ea2168f64241f880a5a2b243002c06cd6fac841e8d9c6a161e9c",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/general-formulation-of-quantum-information/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-b01f31f0565f",
+      "source_path": "learning/courses/general-formulation-of-quantum-information/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "17da12f5afee06a461adf059531cb973c810d954eca451360eadd10e4707bc4e",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/general-formulation-of-quantum-information/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-85377f03bea6",
+      "source_path": "learning/courses/general-formulation-of-quantum-information/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "a192099aa4e1d8870b516722e323bc5737a64fa582a1eb5f6fc022a060b0df3f",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/general-formulation-of-quantum-information/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-be545041442f",
+      "source_path": "learning/courses/integrating-quantum-and-high-performance-computing/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "3f30934c866458b9f6bb4ed43c52805f3ff5844bc5a2f61ad46d39ff60812a05",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/integrating-quantum-and-high-performance-computing/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-c2910b0e4200",
+      "source_path": "learning/courses/integrating-quantum-and-high-performance-computing/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "89e760299f3dedbc64282ca63a2dff09ad561746ce86d61e8ec8f47a279c48de",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/integrating-quantum-and-high-performance-computing/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-5aa4be3f0fac",
+      "source_path": "learning/courses/integrating-quantum-and-high-performance-computing/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "7bf6819dd0a63d2bbd320a8c87a77e03c15118d2923471554fdfbe89211d3196",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/integrating-quantum-and-high-performance-computing/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-84e47689dd6b",
+      "source_path": "learning/courses/quantum-business-foundations/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "9a354cc8d90883aa58f726aed074e87d11bd4fdc8d8611bb57534bc6a2defeab",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-business-foundations/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-d0a76846fbb2",
+      "source_path": "learning/courses/quantum-business-foundations/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "07bf0295ebf91a856df1b610bc4d35340b6fd08ca6496a0c83a88bf570985750",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-business-foundations/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-866c9429195e",
+      "source_path": "learning/courses/quantum-business-foundations/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "d4e569c58a1eaa21296afcc9d8a8fa5b15b04f04b3239ba845bfe85350eea6c1",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-business-foundations/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-1741e71f8323",
+      "source_path": "learning/courses/quantum-chem-with-vqe/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "647120b610d9fcb77daaf7eb6e1213bcf9f087fea2e868826d253377e68f8d77",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-chem-with-vqe/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-d12261bbb2dc",
+      "source_path": "learning/courses/quantum-chem-with-vqe/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "3c8e18ade2823a4ae411ca763f3753b303d1ad42481e11da129e1b629de573f1",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-chem-with-vqe/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-9998cc5387e2",
+      "source_path": "learning/courses/quantum-chem-with-vqe/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "0ba89f1c5409a744a1d61ecbd17ac44a4319a253ad9728d4e44067209d76d8d1",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-chem-with-vqe/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-e04adca93d15",
+      "source_path": "learning/courses/quantum-computing-in-practice/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "c65a3b446ec9b3ecd2e2c110d0092fc00a771827973015d0488361026a554280",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-computing-in-practice/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-8f7d9c523519",
+      "source_path": "learning/courses/quantum-computing-in-practice/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "1c907c62ffae9c700e167a81515fd5a115e373f5670808096f5ac33fc93874b6",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-computing-in-practice/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-0c2a85f6c4d5",
+      "source_path": "learning/courses/quantum-computing-in-practice/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "1df8427f28f4d7c8cecf3b8105ce71c55b9c1775d5279eebadc8a358781010f8",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-computing-in-practice/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-9bcaed47b059",
+      "source_path": "learning/courses/quantum-diagonalization-algorithms/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "b21c19a7b2f3b4b66d25b24e430911fe76494187185238e5007960492ba66042",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-diagonalization-algorithms/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-159b0c1b8b95",
+      "source_path": "learning/courses/quantum-diagonalization-algorithms/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "eeb4def2f6e4143e585028a4a8295de22e834f0e5a00167fa8ce683b0b169d0c",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-diagonalization-algorithms/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-406de2ff6f23",
+      "source_path": "learning/courses/quantum-diagonalization-algorithms/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "19cd42af3c4ceba3d54c18b5c1201b6503e1abd6dbdc7778a2c2e4f0299cd2f7",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-diagonalization-algorithms/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-3ac69a9a04ae",
+      "source_path": "learning/courses/quantum-machine-learning/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "948dfe9fbabb738391013c4b963860224da877a91f2dc15aa5f40ba4e867c953",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-machine-learning/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-fd7a2b84fb88",
+      "source_path": "learning/courses/quantum-machine-learning/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "07ca4a497a0802173f9af35c42bb690cb2b641c0a60999a0af0c96ca1500cfc6",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-machine-learning/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-255490db6f0e",
+      "source_path": "learning/courses/quantum-machine-learning/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "98fe87ffc0903270f1de1ab3b0a1c80242758a9d85b80e554a54be06b1c5121f",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/quantum-machine-learning/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-db5d8f23d427",
+      "source_path": "learning/courses/tools-for-quantum-advantage/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "a11a591ee720bc7a6e458c99ebfe4f9d25afe02d6c7977b91c647d996dedc146",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/tools-for-quantum-advantage/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-a7c5052653a5",
+      "source_path": "learning/courses/tools-for-quantum-advantage/error-correction-ii.ipynb",
+      "category": "notebook",
+      "proposed_source_id": "IBM-138",
+      "dependencies": [
+        "DEV-13",
+        "DEV-11",
+        "AUD-03/AUD-04"
+      ],
+      "acceptance": "Pin compatible DEV13 environment; inspect/run all8 original code cells; independently justify outputs; inventory58 markdown cells, figures/references and remaining native DEV11 gaps. No whole lesson closure from subset.",
+      "retained_sha256": "e064e99e0e5e352e050db19d521e1befa037bdb72f4a8654b2d629d8a40f9739",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/tools-for-quantum-advantage/error-correction-ii.ipynb"
+    },
+    {
+      "source_key": "IBM-ASSET-4699e0f3579b",
+      "source_path": "learning/courses/tools-for-quantum-advantage/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "43903d828eec957996bb00bc00bb16114a18e15b85261006e2777d26ace4d2d2",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/tools-for-quantum-advantage/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-f79f5dee80b9",
+      "source_path": "learning/courses/use-a-qc-today/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "bd91a8a3f0ef73c88f40a8784a130726869961c552b08e0c8537d1daeda6e0fc",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/use-a-qc-today/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-740a9dacf097",
+      "source_path": "learning/courses/use-a-qc-today/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "be4ef10a7a071d420a7bb0b050e4c9f89d9d7bf2378ee6c319a46b13f2c32123",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/use-a-qc-today/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-80ec207f43cf",
+      "source_path": "learning/courses/use-a-qc-today/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "7ef74c4611b2aea1916cd98d06b615e6af9e02d86ea9a08be627d8b12e44e5a5",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/use-a-qc-today/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-555f2d4b860c",
+      "source_path": "learning/courses/utility-scale-quantum-computing/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "0039a9f773eaeabb9bfbf93119b0f43b355d048c84751b67e777f905af050d12",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/utility-scale-quantum-computing/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-5686519deb99",
+      "source_path": "learning/courses/utility-scale-quantum-computing/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "6f576f27050b1aa5aa9236b3669bfe332e355475cffed252614879a6bf629f30",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/utility-scale-quantum-computing/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-1aba6df7b7ba",
+      "source_path": "learning/courses/variational-algorithm-design/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "0d0bf154ed0b35619176e18ac5f3f5fedbd251b472e96823d366552053d288af",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/variational-algorithm-design/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-795cd01dae94",
+      "source_path": "learning/courses/variational-algorithm-design/exam.mdx",
+      "category": "exam",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Inventory pinned description and administrative prerequisites only; separately record question contents unavailable in retained shell. Any authorized future access must avoid submissions/attempt consumption.",
+      "retained_sha256": "2a7d3e0f86b9f6d86ceb41518111d1b87d700de64679a332d924277492df8ec0",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/variational-algorithm-design/exam.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-9170b6a6069e",
+      "source_path": "learning/courses/variational-algorithm-design/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "5d69e27daed02a57f37a5188bf17bff9a43d46ed439307ae49b1a3e71b150d35",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/variational-algorithm-design/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-edce958ab1cc",
+      "source_path": "learning/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "547a8ca424cf6aca535b362cee5eb76e67ba3a238055b29c4413ace6ffe539a0",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-cbaf77747d3d",
+      "source_path": "learning/modules/computer-science/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "93e2261791d088e8c60231604c8fed931057c849ce3c1731048f87d9dfa6e25b",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/modules/computer-science/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-d32125fb9cfa",
+      "source_path": "learning/modules/computer-science/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "4de206f8b3b90d13d37419f69ad6c5f48873952bf158fbc8184f32fe80339e9b",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/modules/computer-science/index.mdx"
+    },
+    {
+      "source_key": "IBM-ASSET-cd10237c01a7",
+      "source_path": "learning/modules/quantum-mechanics/_toc.json",
+      "category": "metadata",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Verify every TOC target maps to original/adopted source ID or explicit pending asset key; do not use preview index as production learning-path sequence.",
+      "retained_sha256": "3ceb6584b414ae6925f000c0cf4b7fc9b3b8873455e9f687ceb20d9690de4d4c",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/modules/quantum-mechanics/_toc.json"
+    },
+    {
+      "source_key": "IBM-ASSET-26fd14b8ade3",
+      "source_path": "learning/modules/quantum-mechanics/index.mdx",
+      "category": "overview",
+      "proposed_source_id": null,
+      "dependencies": [
+        "DISC-02",
+        "authorized access only if later required"
+      ],
+      "acceptance": "Read narrative and classify each lexical edge as required prerequisite, optional background, navigation or unresolved; account for images/media/computed dependencies with explicit limits.",
+      "retained_sha256": "df060ef44c9d95bcc3dc99d2c0e7f40ff3339194b0d5f689aa5a3a0cf9eac4cb",
+      "acceptance_status": "pending",
+      "pinned_source_url": "https://github.com/Qiskit/documentation/blob/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/modules/quantum-mechanics/index.mdx"
+    }
+  ],
+  "learning_path_tasks": [
+    {
+      "candidate_key": "IBM-PATH-introduction-to-quantum",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=introduction-to-quantum",
+      "status": "link_observed_modal_contents_not_exposed_by_web_reader",
+      "acceptance_status": "pending"
+    },
+    {
+      "candidate_key": "IBM-PATH-optimization",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=optimization",
+      "status": "link_observed_modal_contents_not_exposed_by_web_reader",
+      "acceptance_status": "pending"
+    },
+    {
+      "candidate_key": "IBM-PATH-data-science",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=data-science",
+      "status": "link_observed_modal_contents_not_exposed_by_web_reader",
+      "acceptance_status": "pending"
+    },
+    {
+      "candidate_key": "IBM-PATH-physics-and-chemistry",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry",
+      "status": "link_observed_modal_contents_not_exposed_by_web_reader",
+      "acceptance_status": "pending"
+    },
+    {
+      "candidate_key": "IBM-PATH-quantum-algorithm-development",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development",
+      "status": "link_observed_modal_contents_not_exposed_by_web_reader",
+      "acceptance_status": "pending"
+    },
+    {
+      "candidate_key": "IBM-PATH-qise",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=qise",
+      "status": "link_observed_modal_contents_not_exposed_by_web_reader",
+      "acceptance_status": "pending"
+    }
+  ],
+  "completion_boundaries": [
+    "48source retrieval/classification and lexical edge inventory complete only for dated subset",
+    "DISC01 and DISC02 remain open",
+    "No exam questions/path sequences/provider execution or whole-source completion established",
+    "External PDF targets listed only; no PDF was read",
+    "Raw public_page_url is lexical without /en and metadata paths are not guaranteed production URLs; use pinned repository URLs as identity"
+  ],
+  "errors": [],
+  "integration_base": "4a78874352ca4f1071f6207f6fae1741f379f87a",
+  "retained_evidence_directory": "cleanup-audit/notebook-lane-20261104/discovery-expansion/",
+  "independent_audit_sha256": "842d6319c08256f01f1968b9adbffe685466b9496b9d3531ff95fffe83b75673",
+  "status": {
+    "whole_source_certifications": 0,
+    "DISC-01": "open",
+    "DISC-02": "open",
+    "known_source_rows_after_adoption": 188,
+    "integration": "prepared; pending independent final reviews and integration"
+  }
+}
