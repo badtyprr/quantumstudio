@@ -1,0 +1,147 @@
+# Acquisition/import prerequisite only; original notebooks are not executed.
+name: Notebook Linux Qiskit retained environment acquisition
+on:
+  pull_request:
+    paths:
+      - .github/workflows/notebook-linux-qiskit.yml
+      - diagnostics/notebook-linux-qiskit/**
+  workflow_dispatch:
+    inputs:
+      expected_revision:
+        description: Exact reviewed branch head expected for acquisition
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: notebook-linux-qiskit-acquisition
+  cancel-in-progress: false
+jobs:
+  acquisition:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      ACQUISITION_SOURCE: ${{ github.event.pull_request.head.sha || github.sha }}
+      ACQUISITION_EXPECTED: ${{ inputs.expected_revision }}
+      ACQUISITION_WORKFLOW_SHA: ${{ github.workflow_sha }}
+      ACQUISITION_WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Check out exact acquisition source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up fixed Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Bind exact source and retained inputs before acquisition
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I - <<'PY'
+          import hashlib, json, os, platform, re, subprocess, sys
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'notebook-linux-qiskit'
+          root.mkdir(exist_ok=False)
+          source = os.environ['ACQUISITION_SOURCE']
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          assert re.fullmatch('[0-9a-f]{40}', source) and git('rev-parse','HEAD') == source
+          if os.environ['GITHUB_EVENT_NAME'] == 'workflow_dispatch':
+              assert os.environ['ACQUISITION_EXPECTED'] == source
+          assert not git('status','--porcelain','--untracked-files=all'), 'Clean checkout required'
+          assert sys.version_info[:3] == (3,12,10) and sys.platform == 'linux' and platform.machine() == 'x86_64'
+          fixed = {
+              'windows/dev13-notebooks/linux_lifecycle.py':'72277c1af6ad0e5615d55589fc852f22232a26b11efa5ee7b5dc9789cd496dc1',
+              'windows/dev13-notebooks/test_linux_execution.py':'45b3de764f508586ea86e098aa6c2f1508a63b027ccf5b2c5c7593b999c7819e',
+              'diagnostics/notebook-linux-qiskit/inputs.zip':'9ae2fc258ad60ec4a1ee404febf3e2f738c09edc0a3e154f8442280211f90c72',
+              'diagnostics/notebook-linux-qiskit/exact-requirements.txt':'2e79d9f979e06329f3c07cca4baca637d2c0622de29174eb842109397136d8d6'}
+          for name, digest in fixed.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          assert Path('diagnostics/notebook-linux-qiskit/inputs.zip').stat().st_size == 311293
+          paths = list(fixed) + ['diagnostics/notebook-linux-qiskit/acquire_environment.py', '.github/workflows/notebook-linux-qiskit.yml']
+          hashes = {name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in paths}
+          record = dict(source_revision=source, source_tree=git('rev-parse','HEAD^{tree}'),
+              preflight_base='0f9586221dae9604cdef72dd0d3a3015767246af', source_hashes=hashes,
+              event_revision=os.environ['GITHUB_SHA'], workflow_sha=os.environ['ACQUISITION_WORKFLOW_SHA'],
+              workflow_ref=os.environ['ACQUISITION_WORKFLOW_REF'], run_id=os.environ['GITHUB_RUN_ID'],
+              attempt=os.environ['GITHUB_RUN_ATTEMPT'], python=sys.version, platform=platform.platform(),
+              machine=platform.machine(), image_os=os.environ.get('ImageOS'), image_version=os.environ.get('ImageVersion'),
+              scope='Actual Linux acquisition/offline inventory/import prerequisite only; no original notebook, provider, CUDA-Q or release acceptance.')
+          (root / 'identity.json').write_text(json.dumps(record,indent=2),encoding='utf-8')
+          for name in paths:
+              target = root / 'source-snapshot' / name
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_bytes(Path(name).read_bytes())
+          PY
+      - name: Require actual owned-service capability before acquisition
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/notebook-linux-qiskit"
+          python -B -E -s windows/dev13-notebooks/test_linux_execution.py --preflight --output "$root/preflight" 2>&1 | tee "$root/preflight.log"
+      - name: Acquire exact Linux wheels and verify offline environment imports
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/notebook-linux-qiskit"
+          python -I diagnostics/notebook-linux-qiskit/acquire_environment.py --inputs "$GITHUB_WORKSPACE/diagnostics/notebook-linux-qiskit/inputs.zip" --requirements "$GITHUB_WORKSPACE/diagnostics/notebook-linux-qiskit/exact-requirements.txt" --output "$root/acquisition" 2>&1 | tee "$root/acquisition.log"
+      - name: Require finite acquisition result and unchanged source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'notebook-linux-qiskit'
+          status = json.loads((root / 'acquisition/status.json').read_bytes())
+          assert status['state'] == 'succeeded' and status['stage'] == 'complete'
+          assert status['wheels'] == 54 and status['public_wheels'] == 53 and status['custom_wheels'] == 1
+          assert status['exact_inventory'] is True and status['imports_verified'] is True
+          assert status['notebook_acceptance'] is False and status['lifecycle_acceptance'] is False
+          identity = json.loads((root / 'identity.json').read_bytes())
+          for name, digest in identity['source_hashes'].items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],text=True).strip()
+          (root / 'acquisition-acceptance.json').write_text(json.dumps(dict(passed=True,
+              source_revision=identity['source_revision'], wheels=54, public_wheels=53, retained_custom_wheels=1,
+              exact_inventory=True, imports_verified=True, notebook_acceptance=False, lifecycle_acceptance=False,
+              scope='Acquisition/import prerequisite; original notebook execution and lifecycle acceptance remain separate.'),indent=2),encoding='utf-8')
+          PY
+      - name: Seal all retained inputs and failure evidence without installed environment
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'notebook-linux-qiskit'
+          root.mkdir(exist_ok=True)
+          excluded = root / 'acquisition/environment'
+          records = {}
+          for directory, folders, files in os.walk(root,followlinks=False):
+              parent = Path(directory)
+              folders[:] = [name for name in folders if parent/name != excluded and not (parent/name).is_symlink()]
+              for name in sorted(files):
+                  path = parent/name
+                  if path.is_symlink() or path == root/'evidence-manifest.json':
+                      continue
+                  assert path.resolve().is_relative_to(root.resolve())
+                  with path.open('rb') as stream:
+                      digest = hashlib.file_digest(stream,'sha256').hexdigest()
+                  records[path.relative_to(root).as_posix()] = dict(bytes=path.stat().st_size,sha256=digest)
+          (root/'evidence-manifest.json').write_text(json.dumps(records,indent=2,sort_keys=True),encoding='utf-8')
+          PY
+      - name: Retain inputs, wheels, metadata and actual failure logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: notebook-linux-qiskit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/notebook-linux-qiskit
+            !${{ runner.temp }}/notebook-linux-qiskit/acquisition/environment/**
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

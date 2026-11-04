@@ -338,3 +338,9 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/README.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/probe.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/fixtures.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/baseline-summary.json
+
+# Retained Linux Qiskit acquisition prerequisite; no notebook acceptance.
+EXTRA_DIST += .github/workflows/notebook-linux-qiskit.yml
+EXTRA_DIST += diagnostics/notebook-linux-qiskit/acquire_environment.py
+EXTRA_DIST += diagnostics/notebook-linux-qiskit/exact-requirements.txt
+EXTRA_DIST += diagnostics/notebook-linux-qiskit/inputs.zip
