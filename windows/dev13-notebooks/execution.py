@@ -35,7 +35,17 @@ def canonical(path):
 def atomic_json(path, value):
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False), encoding="utf-8")
-    os.replace(temporary, path)
+    # A Windows reader may briefly hold the target without FILE_SHARE_DELETE.
+    # Keep the previous complete checkpoint and bound retries; never truncate it.
+    deadline = time.monotonic() + 2
+    while True:
+        try:
+            os.replace(temporary, path)
+            break
+        except PermissionError:
+            if sys.platform != "win32" or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.02)
 
 
 def cell_text(cell):
@@ -305,6 +315,13 @@ def _supervise(output, config, events=None):
                         cell.setdefault("error", {"type": "SupervisorCancellation",
                                         "message": "Run cancelled; only checkpointed outputs are available"})
                 atomic_json(cells_path, cells)
+                original_states = [cell["state"] for cell in cells
+                                   if cell["original_index"] is not None and cell["type"] == "code"]
+                status["original_execution"] = (
+                    "succeeded" if original_states and all(s == "succeeded" for s in original_states)
+                    else "incomplete" if any(s != "not_run" for s in original_states) else "not_run")
+                if not result_path.exists():
+                    status["authored_verification"] = cells[-1]["state"]
         elif process.returncode != 0 or status["state"] != "succeeded":
             status["state"] = "failed"
         if remaining or (status["state"] == "succeeded" and membership is not True):
@@ -361,7 +378,7 @@ async def _run_notebook(output, config):
         kernels = Path(temp) / "kernels"
         spec = kernels / "contract"
         spec.mkdir(parents=True)
-        atomic_json(spec / "kernel.json", dict(argv=[sys.executable, "-m", "ipykernel_launcher", "-f", "{connection_file}"],
+        atomic_json(spec / "kernel.json", dict(argv=[sys.executable, "-I", "-m", "ipykernel_launcher", "-f", "{connection_file}"],
                                                display_name="Pinned notebook contract", language="python",
                                                env={"MPLBACKEND": "module://matplotlib_inline.backend_inline"}))
         manager = AsyncKernelManager(kernel_name="contract", kernel_spec_manager=KernelSpecManager(kernel_dirs=[str(kernels)]))

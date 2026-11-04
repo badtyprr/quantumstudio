@@ -46,6 +46,19 @@ class LifecycleTests(unittest.TestCase):
     def records(self):
         return json.loads((self.output / "cells.json").read_bytes())
 
+    def test_checkpoint_waits_for_brief_windows_reader(self):
+        path = self.output / "checkpoint.json"
+        execution.atomic_json(path, {"version": 1})
+        reader = path.open("rb")
+        closer = threading.Timer(0.2, reader.close)
+        closer.start()
+        try:
+            execution.atomic_json(path, {"version": 2})
+        finally:
+            closer.join()
+            reader.close()
+        self.assertEqual(json.loads(path.read_bytes()), {"version": 2})
+
     def assert_cleanup(self, result):
         self.assertEqual(result["cleanup"]["active_processes"], 0)
         self.assertIs(result["cleanup"]["kernel_job_membership"], True)
@@ -79,6 +92,16 @@ class LifecycleTests(unittest.TestCase):
     def test_wrong_interpreter_profile_rejected(self):
         with self.assertRaisesRegex(ValueError, "ENVIRONMENT_MISMATCH: python"):
             execution.inspect_environment(Path(sys.executable), dict(self.profile, python="0.0.0"))
+
+    def test_ambient_pythonpath_cannot_replace_locked_package(self):
+        foreign = self.output / "foreign"
+        foreign.mkdir()
+        (foreign / "qiskit.py").write_text('raise RuntimeError("ambient package replaced locked Qiskit")', encoding="utf-8")
+        config = self.fixture(['import qiskit; assert qiskit.__version__ == "2.2.3"'])
+        with patch.dict(os.environ, {"PYTHONPATH": str(foreign)}):
+            result = execution._supervise(self.output, config)
+        self.assertEqual(result["state"], "succeeded")
+        self.assert_cleanup(result)
 
     def test_kernel_crash_is_failure(self):
         result = execution._supervise(self.output, self.fixture(['print("retained")', 'import os; os._exit(23)', '42']))
@@ -125,6 +148,7 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue(requested_at)
         self.assertLess(time.monotonic() - requested_at[0], 17)
         self.assertEqual(result["state"], "cancelled")
+        self.assertEqual(result["original_execution"], "incomplete")
         self.assert_cleanup(result)
         self.assertIsNone(unrelated.poll())
         self.assertEqual(self.records()[0]["state"], "succeeded")

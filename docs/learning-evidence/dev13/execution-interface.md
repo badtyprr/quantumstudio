@@ -78,13 +78,17 @@ contracts are exposed. Provider submission, arbitrary notebooks, runtime package
 installation in source cells, remote kernels and other frameworks are outside
 this finite implementation. The job uses CPython's Windows `Popen._handle`; the
 supported interpreter/profile and 64-bit structure layouts are checked.
+Validation, engine and kernel all use Python isolated startup (`-I`), so inherited
+`PYTHONPATH` cannot replace the validated packages. Checkpoint replacement retries
+brief Windows reader locks for up to two seconds while preserving the old file.
 
 ## Verification and remaining work
 
 Evidence root: `cleanup-audit/notebook-lane-20261104/runtime-tests/` in the shared
 audit workspace. `ibm019-01` and `ibm020-01` passed using the retained environments;
 both `*-clean-replay` runs passed using the new environment installed by this
-interface entirely offline. All runs recorded kernel job membership and zero
+interface entirely offline. Both `*-isolated` runs then passed with the corrected
+isolated kernel invocation. All runs recorded kernel job membership and zero
 remaining owned processes. All original cells were compared to retained source;
 source result assertions and authored witnesses passed.
 
@@ -95,15 +99,21 @@ NEW_ENV/Scripts/python.exe windows/dev13-notebooks/test_execution.py
 ```
 
 Set `DEV13_TEST_EVIDENCE` to a new directory to retain fixture artifacts. The final
-`lifecycle-04.log` records 10 passing tests: source error with previous outputs,
+`lifecycle-06.log` records 12 passing tests: source error with previous outputs,
 timeout, kernel crash, cooperative and forced cancellation with a kernel-created
 child and unrelated-process survival, failed job assignment, unknown/changed
 source, existing output preservation, wrong interpreter, and wrong original
-displayed result. Earlier failures remain retained, including the test assertion
-correction and Jupyter cancellation classification regression.
+displayed result, inherited Python-path contamination, and transient Windows
+reader locks. Forced cancellation also requires an `incomplete` aggregate when
+original cells already executed. `review-red.log` reproduces both independent
+review findings before their fixes. Earlier failures remain retained, including
+the test assertion correction and Jupyter cancellation classification regression.
 
 External markdown SVG/page rendering and full lesson/native-mathematics
-interpretation remain outstanding. The five source-generated circuit drawings
+interpretation remain outstanding. The external-resource manifest records HTTP403
+for Deutsch-circuit.svg and Deutsch-Jozsa.svg, and verifies the previously retained
+Deutsch-circuit-states.svg hash without claiming a new rendering review.
+The five source-generated circuit drawings
 were inspected in prior source probes; this runner verifies their PNG output
 presence, not pixel equivalence. No provider/hardware verification, QIR/CUDA-Q,
 pulse adapters, non-Qiskit frameworks, GUI execution, or completed AUD-04 claim
