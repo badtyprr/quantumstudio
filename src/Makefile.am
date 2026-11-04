@@ -324,3 +324,6 @@ EXTRA_DIST += quantum-bit-complement-worker-test.py
 
 TESTS += quantum-tensor-repetition-worker-test.py
 EXTRA_DIST += quantum-tensor-repetition-worker-test.py
+
+TESTS += quantum-vector-xor-worker-test.py
+EXTRA_DIST += quantum-vector-xor-worker-test.py
