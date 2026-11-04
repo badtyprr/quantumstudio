@@ -42,6 +42,14 @@ def _empty_group(path):
     return {"empty": events.get("populated") == "0", "observation": "cgroup.events", "events": events}
 
 
+def _close_control(process, report):
+    if process is not None and process.stdin:
+        try:
+            process.stdin.close()
+        except OSError as error:
+            report.update(state="failed", control_close_error=str(error))
+
+
 def preflight(output):
     """Probe one uniquely owned disposable service without framework imports.
 
@@ -142,8 +150,7 @@ def preflight(output):
     except Exception as error:
         report["error"] = {"type": type(error).__name__, "message": str(error)}
     finally:
-        if process is not None and process.stdin:
-            process.stdin.close()
+        _close_control(process, report)
         if requested:
             try:
                 snapshot = _unit_snapshot(unit)
@@ -158,8 +165,13 @@ def preflight(output):
             try:
                 process.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                process.kill()  # Only the directly owned launcher, not a unit or PID search.
-                process.wait(timeout=5)
                 report.update(state="failed", launcher_cleanup="forced; service state requires retained evidence")
+                try:
+                    process.kill()  # Only the directly owned launcher, not a unit or PID search.
+                    process.wait(timeout=5)
+                except Exception as error:
+                    report["launcher_cleanup_error"] = str(error)
+            except Exception as error:
+                report.update(state="failed", launcher_cleanup_error=str(error))
         save()
     return report
