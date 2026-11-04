@@ -441,6 +441,94 @@ class PostCellObserverTests(unittest.TestCase):
             inspect.assert_not_called()
 
 
+class ProfileInventoryTests(unittest.TestCase):
+    """Mock inventory/pip; never inspect an environment or import an SDK."""
+
+    def line(self, requirement):
+        return requirement + " --hash=sha256:" + "0" * 64
+
+    def inspect(self, requirement, packages, exact=True):
+        from types import SimpleNamespace
+        identity = dict(python="3.12.10", platform="win32", architecture="64bit", packages=packages)
+        profile = dict(python="3.12.10", platform="win32", architecture="64bit", lock="test.lock", exact_packages=exact)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "test.lock").write_text(self.line(requirement), encoding="utf-8")
+            with patch.object(execution, "ROOT", root), patch.object(execution.subprocess, "run",
+                    return_value=SimpleNamespace(stdout=json.dumps(identity))) as run:
+                result = execution.inspect_environment(Path("synthetic-python"), profile)
+                self.assertEqual(run.call_count, 2)
+                compile(run.call_args_list[0].args[0][-1], "inventory-probe-not-executed", "exec")
+                self.assertEqual(run.call_args_list[-1].args[0][-3:], ["-m", "pip", "check"])
+                return result
+
+    def test_qiskit_all_inventory_uses_distribution_name(self):
+        result = self.inspect("qiskit[all]==2.6.1", [["qiskit", "2.6.1"]])
+        self.assertEqual(result["packages"], {"qiskit": "2.6.1"})
+
+    def test_normal_and_multiple_extras_and_name_canonicalization(self):
+        for requirement in ("Some.Pkg==1.2.3", "Some_Pkg[one]==1.2.3", "Some-Pkg[one,two.extra]==1.2.3"):
+            with self.subTest(requirement=requirement):
+                self.assertEqual(self.inspect(requirement, [["SOME__pkg", "1.2.3"]])["packages"], {"some-pkg": "1.2.3"})
+
+    def test_exact_inventory_missing_version_and_unexpected(self):
+        for packages in ([], [["qiskit", "2.6.0"]], [["qiskit", "2.6.1"], ["unexpected", "1.0"]]):
+            with self.subTest(packages=packages), self.assertRaises(ValueError):
+                self.inspect("qiskit[all]==2.6.1", packages)
+        self.assertEqual(len(self.inspect("qiskit==2.6.1", [["qiskit", "2.6.1"], ["extra", "1.0"]], exact=False)["packages"]), 2)
+
+    def test_duplicate_expected_names_and_extra_collisions_rejected(self):
+        for names in [("qiskit", "qiskit[all]"), ("some-pkg", "Some__Pkg"), ("some.pkg", "some_pkg")]:
+            text = "\n".join(self.line(n+"==1.0") for n in names)
+            with self.subTest(names=names), self.assertRaisesRegex(ValueError, "DUPLICATE_LOCK_DISTRIBUTION"):
+                execution._locked_distribution_versions(text)
+        for extras in ("one,one", "one-extra,One_Extra"):
+            with self.subTest(extras=extras), self.assertRaisesRegex(ValueError, "DUPLICATE_LOCK_EXTRA"):
+                execution._locked_distribution_versions(self.line("pkg["+extras+"]==1.0"))
+
+    def test_observed_collisions_are_not_lost_in_dictionary_conversion(self):
+        for rows in ([["pkg", "1"], ["pkg", "1"]], [["Some.Pkg", "1"], ["some_pkg", "2"]]):
+            with self.subTest(rows=rows), self.assertRaisesRegex(ValueError, "DUPLICATE_INSTALLED_DISTRIBUTION"):
+                self.inspect("pkg==1", rows)
+
+    def test_malformed_and_unsupported_requirements_rejected(self):
+        requirements = ["pkg>=1", "pkg~=1.0", "pkg===1", "pkg==1.*", "pkg==1,!=1.2",
+                        "pkg[bad extra]==1", "pkg[]==1", "pkg[one,]==1", "pkg[,one]==1",
+                        "pkg[one][two]==1", "-pkg==1", "pkg-==1", "pkg==banana",
+                        "pkg @ https://example.invalid/file.whl", "pkg==1; python_version>'3'",
+                        "--index-url=https://example.invalid", "pkg==1 # ignored?", "pkg==1 --no-deps"]
+        for requirement in requirements:
+            with self.subTest(requirement=requirement), self.assertRaisesRegex(ValueError, "UNSUPPORTED_LOCK_REQUIREMENT"):
+                execution._locked_distribution_versions(self.line(requirement))
+        for text in ("pkg==1", "pkg==1 --hash=sha256:bad", "pkg==1 --hash=md5:"+"0"*32):
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                execution._locked_distribution_versions(text)
+        with self.assertRaisesRegex(ValueError, "EMPTY_DEPENDENCY_LOCK"):
+            execution._locked_distribution_versions("\n")
+
+    def test_invalid_installed_rows_rejected(self):
+        for rows in ({"pkg": "1"}, [None], [["pkg"]], [[None, "1"]], [["pkg", None]],
+                     [["pkg[all]", "1"]], [["pkg", ""]], [["pkg", "1", "extra"]]):
+            with self.subTest(rows=rows), self.assertRaises(ValueError):
+                execution._installed_distribution_versions(rows)
+
+    def test_every_existing_lock_compatible_and_bytes_unchanged(self):
+        paths = sorted(execution.ROOT.glob("*.lock"))
+        self.assertGreaterEqual(len(paths), 5)
+        for path in paths:
+            with self.subTest(path=path.name):
+                before = path.read_bytes()
+                parsed = execution._locked_distribution_versions(execution.canonical(path).decode())
+                self.assertEqual(len(parsed), len([line for line in before.decode().splitlines() if line.strip()]))
+                self.assertEqual(path.read_bytes(), before)
+
+    def test_finite_prerelease_local_versions_and_multiple_hashes(self):
+        for version in ("1.0rc1", "1.0.post2", "1.0.dev3", "1!2.0", "2.0+local.1"):
+            with self.subTest(version=version):
+                text = self.line("pkg[one,two]=="+version) + " --hash=sha256:" + "1"*64
+                self.assertEqual(execution._locked_distribution_versions(text), {"pkg": version})
+
+
 class PlatformProfileTests(unittest.TestCase):
     def test_both_original_contracts_select_only_the_host_profile(self):
         for name in ("ibm019", "ibm020"):

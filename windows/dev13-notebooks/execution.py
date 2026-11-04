@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -81,22 +82,71 @@ def contract_profile(contract):
     return profile
 
 
+_DISTRIBUTION_NAME = r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?"
+# Deliberately finite exact-pin grammar, not a resolver or general requirement parser.
+_LOCK_VERSION = (r"(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*(?:(?:a|b|rc)[0-9]+)?"
+                 r"(?:\.post[0-9]+)?(?:\.dev[0-9]+)?(?:\+[a-z0-9]+(?:[._-][a-z0-9]+)*)?")
+_LOCK_LINE = re.compile(
+    rf"(?P<name>{_DISTRIBUTION_NAME})(?:\[(?P<extras>{_DISTRIBUTION_NAME}(?:,{_DISTRIBUTION_NAME})*)\])?"
+    rf"==(?P<version>{_LOCK_VERSION})(?: --hash=sha256:[0-9a-f]{{64}})+", re.IGNORECASE)
+
+
+def _distribution_name(name):
+    if type(name) is not str or re.fullmatch(_DISTRIBUTION_NAME, name) is None:
+        raise ValueError("INVALID_DISTRIBUTION_NAME")
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def _locked_distribution_versions(text):
+    """Extras remain in the lock for pip; inventory uses canonical base names."""
+    expected = {}
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        match = _LOCK_LINE.fullmatch(line)
+        if match is None:
+            raise ValueError("UNSUPPORTED_LOCK_REQUIREMENT: " + line)
+        name = _distribution_name(match['name'])
+        extras = [_distribution_name(extra) for extra in (match['extras'] or '').split(',') if extra]
+        if len(extras) != len(set(extras)):
+            raise ValueError("DUPLICATE_LOCK_EXTRA: " + name)
+        if name in expected:
+            raise ValueError("DUPLICATE_LOCK_DISTRIBUTION: " + name)
+        expected[name] = match['version']
+    if not expected:
+        raise ValueError("EMPTY_DEPENDENCY_LOCK")
+    return expected
+
+
+def _installed_distribution_versions(rows):
+    if type(rows) is not list:
+        raise ValueError("INVALID_INSTALLED_DISTRIBUTIONS")
+    packages = {}
+    for row in rows:
+        if (type(row) is not list or len(row) != 2 or type(row[1]) is not str or not row[1]):
+            raise ValueError("INVALID_INSTALLED_DISTRIBUTION")
+        name = _distribution_name(row[0])
+        if name in packages:
+            raise ValueError("DUPLICATE_INSTALLED_DISTRIBUTION: " + name)
+        packages[name] = row[1]
+    return packages
+
+
 def inspect_environment(python, profile, dependencies=True):
     code = ("import json,sys,platform,importlib.metadata as m; "
             "print(json.dumps(dict(python=platform.python_version(),platform=sys.platform,"
             "architecture=platform.architecture()[0],executable=sys.executable,"
-            "packages={d.metadata['Name'].lower().replace('_','-'):d.version for d in m.distributions()})))")
+            "packages=[[d.metadata['Name'],d.version] for d in m.distributions()])))")
     result = subprocess.run([str(python), "-I", "-c", code], capture_output=True, text=True, timeout=30, check=True)
     identity = json.loads(result.stdout)
+    identity["packages"] = _installed_distribution_versions(identity["packages"])
     for key in ("python", "platform", "architecture"):
         if identity[key] != profile[key]:
             raise ValueError("ENVIRONMENT_MISMATCH: " + key)
     if dependencies:
-        expected = {}
-        for line in canonical(ROOT / profile["lock"]).decode().splitlines():
-            name, version = line.split()[0].split("==")
-            expected[name.lower().replace("_", "-")] = version
-            if identity["packages"].get(name.lower().replace("_", "-")) != version:
+        expected = _locked_distribution_versions(canonical(ROOT / profile["lock"]).decode())
+        for name, version in expected.items():
+            if identity["packages"].get(name) != version:
                 raise ValueError("DEPENDENCY_MISMATCH: " + name)
         if profile.get("exact_packages") and identity["packages"] != expected:
             raise ValueError("DEPENDENCY_INVENTORY_MISMATCH")
