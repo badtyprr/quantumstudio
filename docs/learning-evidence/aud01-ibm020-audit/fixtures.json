@@ -1,0 +1,9056 @@
+{
+  "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+  "counts": {
+    "original": 10,
+    "primary": 164,
+    "context": 10,
+    "deferred": 2
+  },
+  "fixtures": [
+    {
+      "id": "g1-m01-literal",
+      "source": "M01",
+      "cohort": "original",
+      "input": "quantum:\nH = \\begin{pmatrix}\n\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix},\n",
+      "adaptation": [
+        "Remove only outer display delimiters $$; retain internal whitespace, punctuation, aligned environment, all equality terms and unbound source symbols.",
+        "Prefix quantum: selects native notation and is not part of source."
+      ],
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unexpected notation at byte 79\r\n"
+      }
+    },
+    {
+      "id": "g1-m02-literal",
+      "source": "M02",
+      "cohort": "original",
+      "input": "quantum:\n\\begin{aligned}\nH \\vert 0\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\\\\[3mm]\nH \\vert 1\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle.\n\\end{aligned}\n",
+      "adaptation": [
+        "Remove only outer display delimiters $$; retain internal whitespace, punctuation, aligned environment, all equality terms and unbound source symbols.",
+        "Prefix quantum: selects native notation and is not part of source."
+      ],
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Expected ')' at byte 120\r\n"
+      }
+    },
+    {
+      "id": "g1-m03-literal",
+      "source": "M03",
+      "cohort": "original",
+      "input": "quantum:\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n",
+      "adaptation": [
+        "Remove only outer display delimiters $$; retain internal whitespace, punctuation, aligned environment, all equality terms and unbound source symbols.",
+        "Prefix quantum: selects native notation and is not part of source."
+      ],
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unexpected notation at byte 128\r\n"
+      }
+    },
+    {
+      "id": "g1-m01-gate",
+      "source": "M01",
+      "cohort": "primary",
+      "input": "quantum:H",
+      "adaptation": "Extract left term; H retains its native Hadamard meaning.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ],
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ],
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m01-matrix",
+      "source": "M01",
+      "cohort": "primary",
+      "input": "quantum:\\begin{pmatrix}\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\\end{pmatrix}",
+      "adaptation": "Extract matrix term, remove trailing prose comma, and join source newlines/indentation without changing TeX tokens. The exact unmodified display remains in the literal fixture.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ],
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ],
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m02-ket-0",
+      "source": "M02",
+      "cohort": "primary",
+      "input": "quantum:H \\vert 0\\rangle",
+      "adaptation": "Extract left side of the relevant aligned row; no substitutions.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m02-rhs-0",
+      "source": "M02",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle",
+      "adaptation": "Extract right side; remove aligned-row delimiter and final sentence period where present.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-ket-0",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:H \\vert 0 \\rangle",
+      "adaptation": "Extract first term and substitute bit a; overlaps M02 numerically but retains separate occurrence provenance.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-phase-0",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^0 \\vert 1 \\rangle",
+      "adaptation": "Extract middle term and substitute a as a single unbraced exponent digit, preserving the source numeric-adjacency spelling.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-set-sum-0",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{0b} \\vert b\\rangle",
+      "adaptation": "Extract last term, remove final comma and substitute only free a. Keep b bound by original explicit two-element set.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ],
+      "known_context_diagnostic": "A named ket must evaluate to a column vector"
+    },
+    {
+      "id": "g1-m03-expanded-0",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}}\\bigl((-1)^{0*0}\\vert 0\\rangle+(-1)^{0*1}\\vert 1\\rangle\\bigr)",
+      "adaptation": "Authored two-term expansion of the finite source sum. Explicit * in scalar exponents and outer grouping are disclosed adaptations. This cannot certify literal set-binder support.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m02-ket-1",
+      "source": "M02",
+      "cohort": "primary",
+      "input": "quantum:H \\vert 1\\rangle",
+      "adaptation": "Extract left side of the relevant aligned row; no substitutions.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m02-rhs-1",
+      "source": "M02",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle",
+      "adaptation": "Extract right side; remove aligned-row delimiter and final sentence period where present.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-ket-1",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:H \\vert 1 \\rangle",
+      "adaptation": "Extract first term and substitute bit a; overlaps M02 numerically but retains separate occurrence provenance.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-phase-1",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^1 \\vert 1 \\rangle",
+      "adaptation": "Extract middle term and substitute a as a single unbraced exponent digit, preserving the source numeric-adjacency spelling.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-set-sum-1",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{1b} \\vert b\\rangle",
+      "adaptation": "Extract last term, remove final comma and substitute only free a. Keep b bound by original explicit two-element set.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ],
+      "known_context_diagnostic": "A named ket must evaluate to a column vector"
+    },
+    {
+      "id": "g1-m03-expanded-1",
+      "source": "M03",
+      "cohort": "primary",
+      "input": "quantum:\\frac{1}{\\sqrt{2}}\\bigl((-1)^{1*0}\\vert 0\\rangle+(-1)^{1*1}\\vert 1\\rangle\\bigr)",
+      "adaptation": "Authored two-term expansion of the finite source sum. Explicit * in scalar exponents and outer grouping are disclosed adaptations. This cannot certify literal set-binder support.",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "literal-M07",
+      "source": "M07",
+      "input": "quantum:H\\otimes \\cdots \\otimes H",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 16\r\n"
+      }
+    },
+    {
+      "id": "literal-M09",
+      "source": "M09",
+      "input": "quantum:H^{\\otimes n}",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 0,
+        "stderr": "",
+        "actual": {
+          "copy_text": "qtensorpow(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),n)",
+          "rows": 0,
+          "columns": 0,
+          "approximate": false
+        },
+        "copy_actual": {
+          "copy_text": "qtensorpow(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),n)",
+          "rows": 0,
+          "columns": 0,
+          "approximate": false
+        }
+      }
+    },
+    {
+      "id": "literal-M11",
+      "source": "M11",
+      "input": "quantum:\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Invalid summation index at byte 249\r\n"
+      }
+    },
+    {
+      "id": "literal-M16",
+      "source": "M16",
+      "input": "quantum:\n\\bigl( H \\vert 1 \\rangle \\bigr) \\bigl( H^{\\otimes n} \\vert 0 \\cdots 0 \\rangle \\bigr)\n= \\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} \\vert x_{n-1} \\cdots x_0 \\rangle.\n",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 68\r\n"
+      }
+    },
+    {
+      "id": "literal-M18",
+      "source": "M18",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} (-1)^{f(x_{n-1}\\cdots x_0)} \\vert x_{n-1} \\cdots x_0 \\rangle\n",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 65\r\n"
+      }
+    },
+    {
+      "id": "literal-M19",
+      "source": "M19",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n\\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0) + x_{n-1}y_{n-1} + \\cdots + x_0 y_0}\n\\vert y_{n-1} \\cdots y_0 \\rangle.\n",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 58\r\n"
+      }
+    },
+    {
+      "id": "literal-M23",
+      "source": "M23",
+      "input": "quantum:\n\\Biggl\\vert\n\\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0)}\n\\Biggr\\vert^2\n= \\begin{cases}\n1 & \\text{if $f$ is constant}\\\\[1mm]\n0 & \\text{if $f$ is balanced}\n\\end{cases}\n",
+      "adaptation": "Remove only outer math delimiters; add quantum route prefix",
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 46\r\n"
+      }
+    },
+    {
+      "id": "tensor-expanded-2",
+      "source": "M07",
+      "input": "quantum:H \u2297 H",
+      "adaptation": "Bind prose count n; expand exactly n factors, no ellipsis inference",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "tensor-power-2",
+      "source": "M09",
+      "input": "quantum:H^{\\otimes 2}",
+      "adaptation": "Substitute positive integer n only",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "-1/2",
+            "0"
+          ],
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-0-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 2}*|00>",
+      "adaptation": "Bind n=2, x=00 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-0-term2",
+      "source": "M11",
+      "input": "quantum:(H|0>) \u2297 (H|0>)",
+      "adaptation": "Bind n=2, x=00 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-0-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2))",
+      "adaptation": "Bind n=2, x=00 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-0-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(4))*((-1)^(0*0+0*0)*|0>_4+(-1)^(0*0+0*1)*|1>_4+(-1)^(0*1+0*0)*|2>_4+(-1)^(0*1+0*1)*|3>_4)",
+      "adaptation": "Bind n=2, x=00 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-1-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 2}*|01>",
+      "adaptation": "Bind n=2, x=01 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-1-term2",
+      "source": "M11",
+      "input": "quantum:(H|0>) \u2297 (H|1>)",
+      "adaptation": "Bind n=2, x=01 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-1-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2))",
+      "adaptation": "Bind n=2, x=01 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-1-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(4))*((-1)^(0*0+1*0)*|0>_4+(-1)^(0*0+1*1)*|1>_4+(-1)^(0*1+1*0)*|2>_4+(-1)^(0*1+1*1)*|3>_4)",
+      "adaptation": "Bind n=2, x=01 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-2-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 2}*|10>",
+      "adaptation": "Bind n=2, x=10 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-2-term2",
+      "source": "M11",
+      "input": "quantum:(H|1>) \u2297 (H|0>)",
+      "adaptation": "Bind n=2, x=10 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-2-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2))",
+      "adaptation": "Bind n=2, x=10 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-2-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(4))*((-1)^(1*0+0*0)*|0>_4+(-1)^(1*0+0*1)*|1>_4+(-1)^(1*1+0*0)*|2>_4+(-1)^(1*1+0*1)*|3>_4)",
+      "adaptation": "Bind n=2, x=10 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-3-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 2}*|11>",
+      "adaptation": "Bind n=2, x=11 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-3-term2",
+      "source": "M11",
+      "input": "quantum:(H|1>) \u2297 (H|1>)",
+      "adaptation": "Bind n=2, x=11 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-3-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2))",
+      "adaptation": "Bind n=2, x=11 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-2-3-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(4))*((-1)^(1*0+1*0)*|0>_4+(-1)^(1*0+1*1)*|1>_4+(-1)^(1*1+1*0)*|2>_4+(-1)^(1*1+1*1)*|3>_4)",
+      "adaptation": "Bind n=2, x=11 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "-1/2",
+            "0"
+          ]
+        ],
+        [
+          [
+            "1/2",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "tensor-expanded-3",
+      "source": "M07",
+      "input": "quantum:H \u2297 H \u2297 H",
+      "adaptation": "Bind prose count n; expand exactly n factors, no ellipsis inference",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "tensor-power-3",
+      "source": "M09",
+      "input": "quantum:H^{\\otimes 3}",
+      "adaptation": "Substitute positive integer n only",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "1/4"
+          ],
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-0-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|000>",
+      "adaptation": "Bind n=3, x=000 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-0-term2",
+      "source": "M11",
+      "input": "quantum:(H|0>) \u2297 (H|0>) \u2297 (H|0>)",
+      "adaptation": "Bind n=3, x=000 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-0-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=000 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-0-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(0*0+0*0+0*0)*|0>_8+(-1)^(0*0+0*0+0*1)*|1>_8+(-1)^(0*0+0*1+0*0)*|2>_8+(-1)^(0*0+0*1+0*1)*|3>_8+(-1)^(0*1+0*0+0*0)*|4>_8+(-1)^(0*1+0*0+0*1)*|5>_8+(-1)^(0*1+0*1+0*0)*|6>_8+(-1)^(0*1+0*1+0*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=000 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-1-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|001>",
+      "adaptation": "Bind n=3, x=001 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-1-term2",
+      "source": "M11",
+      "input": "quantum:(H|0>) \u2297 (H|0>) \u2297 (H|1>)",
+      "adaptation": "Bind n=3, x=001 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-1-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=001 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-1-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(0*0+0*0+1*0)*|0>_8+(-1)^(0*0+0*0+1*1)*|1>_8+(-1)^(0*0+0*1+1*0)*|2>_8+(-1)^(0*0+0*1+1*1)*|3>_8+(-1)^(0*1+0*0+1*0)*|4>_8+(-1)^(0*1+0*0+1*1)*|5>_8+(-1)^(0*1+0*1+1*0)*|6>_8+(-1)^(0*1+0*1+1*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=001 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-2-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|010>",
+      "adaptation": "Bind n=3, x=010 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-2-term2",
+      "source": "M11",
+      "input": "quantum:(H|0>) \u2297 (H|1>) \u2297 (H|0>)",
+      "adaptation": "Bind n=3, x=010 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-2-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=010 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-2-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(0*0+1*0+0*0)*|0>_8+(-1)^(0*0+1*0+0*1)*|1>_8+(-1)^(0*0+1*1+0*0)*|2>_8+(-1)^(0*0+1*1+0*1)*|3>_8+(-1)^(0*1+1*0+0*0)*|4>_8+(-1)^(0*1+1*0+0*1)*|5>_8+(-1)^(0*1+1*1+0*0)*|6>_8+(-1)^(0*1+1*1+0*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=010 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-3-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|011>",
+      "adaptation": "Bind n=3, x=011 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-3-term2",
+      "source": "M11",
+      "input": "quantum:(H|0>) \u2297 (H|1>) \u2297 (H|1>)",
+      "adaptation": "Bind n=3, x=011 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-3-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=011 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-3-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(0*0+1*0+1*0)*|0>_8+(-1)^(0*0+1*0+1*1)*|1>_8+(-1)^(0*0+1*1+1*0)*|2>_8+(-1)^(0*0+1*1+1*1)*|3>_8+(-1)^(0*1+1*0+1*0)*|4>_8+(-1)^(0*1+1*0+1*1)*|5>_8+(-1)^(0*1+1*1+1*0)*|6>_8+(-1)^(0*1+1*1+1*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=011 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-4-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|100>",
+      "adaptation": "Bind n=3, x=100 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-4-term2",
+      "source": "M11",
+      "input": "quantum:(H|1>) \u2297 (H|0>) \u2297 (H|0>)",
+      "adaptation": "Bind n=3, x=100 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-4-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=100 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-4-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(1*0+0*0+0*0)*|0>_8+(-1)^(1*0+0*0+0*1)*|1>_8+(-1)^(1*0+0*1+0*0)*|2>_8+(-1)^(1*0+0*1+0*1)*|3>_8+(-1)^(1*1+0*0+0*0)*|4>_8+(-1)^(1*1+0*0+0*1)*|5>_8+(-1)^(1*1+0*1+0*0)*|6>_8+(-1)^(1*1+0*1+0*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=100 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-5-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|101>",
+      "adaptation": "Bind n=3, x=101 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-5-term2",
+      "source": "M11",
+      "input": "quantum:(H|1>) \u2297 (H|0>) \u2297 (H|1>)",
+      "adaptation": "Bind n=3, x=101 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-5-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=101 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-5-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(1*0+0*0+1*0)*|0>_8+(-1)^(1*0+0*0+1*1)*|1>_8+(-1)^(1*0+0*1+1*0)*|2>_8+(-1)^(1*0+0*1+1*1)*|3>_8+(-1)^(1*1+0*0+1*0)*|4>_8+(-1)^(1*1+0*0+1*1)*|5>_8+(-1)^(1*1+0*1+1*0)*|6>_8+(-1)^(1*1+0*1+1*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=101 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-6-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|110>",
+      "adaptation": "Bind n=3, x=110 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-6-term2",
+      "source": "M11",
+      "input": "quantum:(H|1>) \u2297 (H|1>) \u2297 (H|0>)",
+      "adaptation": "Bind n=3, x=110 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-6-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^0*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=110 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-6-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(1*0+1*0+0*0)*|0>_8+(-1)^(1*0+1*0+0*1)*|1>_8+(-1)^(1*0+1*1+0*0)*|2>_8+(-1)^(1*0+1*1+0*1)*|3>_8+(-1)^(1*1+1*0+0*0)*|4>_8+(-1)^(1*1+1*0+0*1)*|5>_8+(-1)^(1*1+1*1+0*0)*|6>_8+(-1)^(1*1+1*1+0*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=110 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-7-term1",
+      "source": "M11",
+      "input": "quantum:H^{\\otimes 3}*|111>",
+      "adaptation": "Bind n=3, x=111 in declared descending-bit order; collapse overlapping endpoint notation to length n; term1; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-7-term2",
+      "source": "M11",
+      "input": "quantum:(H|1>) \u2297 (H|1>) \u2297 (H|1>)",
+      "adaptation": "Bind n=3, x=111 in declared descending-bit order; collapse overlapping endpoint notation to length n; term2; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-7-term3",
+      "source": "M11",
+      "input": "quantum:((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2)) \u2297 ((|0>+(-1)^1*|1>)/sqrt(2))",
+      "adaptation": "Bind n=3, x=111 in declared descending-bit order; collapse overlapping endpoint notation to length n; term3; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "column-3-7-term4",
+      "source": "M11",
+      "input": "quantum:(1/sqrt(8))*((-1)^(1*0+1*0+1*0)*|0>_8+(-1)^(1*0+1*0+1*1)*|1>_8+(-1)^(1*0+1*1+1*0)*|2>_8+(-1)^(1*0+1*1+1*1)*|3>_8+(-1)^(1*1+1*0+1*0)*|4>_8+(-1)^(1*1+1*0+1*1)*|5>_8+(-1)^(1*1+1*1+1*0)*|6>_8+(-1)^(1*1+1*1+1*1)*|7>_8)",
+      "adaptation": "Bind n=3, x=111 in declared descending-bit order; collapse overlapping endpoint notation to length n; term4; expand finite sums/ellipsis; explicit multiplication; term4 uses authored integer basis labels with dimension8",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "preparation-left",
+      "source": "M16",
+      "input": "quantum:(H|1>) \u2297 (H^{\\otimes 2}*|00>)",
+      "adaptation": "Bind n2; replace bare zero ellipsis by explicit width2; explicit tensor product",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "preparation-right",
+      "source": "M16",
+      "input": "quantum:|-> \u2297 (1/2*(|0>_4+|1>_4+|2>_4+|3>_4))",
+      "adaptation": "Bind n2; expand four-string sum; map integer basis indices to explicit dimension4",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0000",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^0*|1>_4+(-1)^0*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0000",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0000",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0000",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0000",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^0+(-1)^0+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0000",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0001",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^0*|1>_4+(-1)^0*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0001",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0001",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0001",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0001",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^0+(-1)^0+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0001",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0010",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^0*|1>_4+(-1)^1*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0010",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0010",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0010",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0010",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^0+(-1)^1+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0010",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0011",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^0*|1>_4+(-1)^1*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0011",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0011",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0011",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0011",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^0+(-1)^1+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0011",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0100",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^1*|1>_4+(-1)^0*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0100",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0100",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0100",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0100",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^1+(-1)^0+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0100",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0101",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^1*|1>_4+(-1)^0*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0101",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0101",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0101",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0101",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^1+(-1)^0+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0101",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0110",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^1*|1>_4+(-1)^1*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0110",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0110",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0110",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0110",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^1+(-1)^1+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0110",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-0111",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^0*|0>_4+(-1)^1*|1>_4+(-1)^1*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-0111",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(0+0*0+0*0)*|0>_4+(-1)^(0+0*0+0*1)*|1>_4+(-1)^(0+0*1+0*0)*|2>_4+(-1)^(0+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-0111",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-0111",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-0111",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^0+(-1)^1+(-1)^1+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-0111",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=0111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1000",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^0*|1>_4+(-1)^0*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1000",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1000",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1000",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1000",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^0+(-1)^0+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1000",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1000; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1001",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^0*|1>_4+(-1)^0*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1001",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1001",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1001",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1001",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^0+(-1)^0+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1001",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1001; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1010",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^0*|1>_4+(-1)^1*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1010",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1010",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1010",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1010",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^0+(-1)^1+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1010",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1010; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1011",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^0*|1>_4+(-1)^1*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1011",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(0+0*0+1*0)*|0>_4+(-1)^(0+0*0+1*1)*|1>_4+(-1)^(0+0*1+1*0)*|2>_4+(-1)^(0+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1011",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1011",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1011",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^0+(-1)^1+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1011",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1011; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1100",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^1*|1>_4+(-1)^0*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1100",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1100",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1100",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1100",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^1+(-1)^0+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1100",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1100; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1101",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^1*|1>_4+(-1)^0*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1101",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(0+1*0+0*0)*|0>_4+(-1)^(0+1*0+0*1)*|1>_4+(-1)^(0+1*1+0*0)*|2>_4+(-1)^(0+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1101",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1101",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1101",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^1+(-1)^0+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1101",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1101; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1110",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^1*|1>_4+(-1)^1*|2>_4+(-1)^0*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1110",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(0+1*0+1*0)*|0>_4+(-1)^(0+1*0+1*1)*|1>_4+(-1)^(0+1*1+1*0)*|2>_4+(-1)^(0+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1110",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1110",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1110",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^1+(-1)^1+(-1)^0))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1110",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1110; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1/4",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "phase-1111",
+      "source": "M18",
+      "input": "quantum:|-> \u2297 (1/2*((-1)^1*|0>_4+(-1)^1*|1>_4+(-1)^1*|2>_4+(-1)^1*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "double-sum-1111",
+      "source": "M19",
+      "input": "quantum:|-> \u2297 (1/4*((-1)^(1+0*0+0*0)*|0>_4+(-1)^(1+0*0+0*1)*|1>_4+(-1)^(1+0*1+0*0)*|2>_4+(-1)^(1+0*1+0*1)*|3>_4+(-1)^(1+0*0+1*0)*|0>_4+(-1)^(1+0*0+1*1)*|1>_4+(-1)^(1+0*1+1*0)*|2>_4+(-1)^(1+0*1+1*1)*|3>_4+(-1)^(1+1*0+0*0)*|0>_4+(-1)^(1+1*0+0*1)*|1>_4+(-1)^(1+1*1+0*0)*|2>_4+(-1)^(1+1*1+0*1)*|3>_4+(-1)^(1+1*0+1*0)*|0>_4+(-1)^(1+1*0+1*1)*|1>_4+(-1)^(1+1*1+1*0)*|2>_4+(-1)^(1+1*1+1*1)*|3>_4))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "oracle-action-1111",
+      "source": "M18",
+      "input": "quantum:matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored explicit8x8 permutation cross-check, not native oracle generation",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "final-action-1111",
+      "source": "M19",
+      "input": "quantum:(I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored final Hadamard layer cross-check",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-sum-1111",
+      "source": "M23",
+      "input": "quantum:abs(1/4*((-1)^1+(-1)^1+(-1)^1+(-1)^1))^2",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; expand source scalar sum; retain absolute square",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "probability-state-1111",
+      "source": "M23",
+      "input": "quantum:expect(I \u2297 (|00><00|),((I \u2297 H^{\\otimes 2})*(matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])*((H|1>) \u2297 (H^{\\otimes 2}*|00>)))))",
+      "adaptation": "Bind n2 and f(00),f(01),f(10),f(11)=1111; ancilla leftmost; x0 least significant; explicit finite sums/multiplication and dimension4 labels; authored all-zero-data projector on complete final state",
+      "cohort": "primary",
+      "expected": [
+        [
+          [
+            "1",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-set-sum-0-dimension-control",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{0b} \\vert b\\rangle_2",
+      "adaptation": "Add explicit qubit dimension2 to the scalar-bound basis label; new adaptation not original source literal",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "g1-m03-set-sum-1-dimension-control",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:\\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{1b} \\vert b\\rangle_2",
+      "adaptation": "Add explicit qubit dimension2 to the scalar-bound basis label; new adaptation not original source literal",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "complete-range-0",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:1/sqrt(2)*sum((-1)^(0*b)*|b>,0,1,b)",
+      "adaptation": "Replace binary alphabet by complete integer range0..1; existing binder suppliesdimension2",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "typed-direct-0",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:1/sqrt(2)*sumset((-1)^(0*bitvalue(b))*|b>,bitstrings(1),b)",
+      "adaptation": "Declare typedbinary width1 domain and explicitly extract scalarbit value forphase",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "deferred-domain-0",
+      "source": "M03",
+      "cohort": "deferred",
+      "input": "quantum:1/sqrt(2)*\\sum_{b\\in\\Sigma} {(-1)^(0*bitvalue(b))*|b>}",
+      "adaptation": "Retain typed-phase expression until source Sigma receives a width-carrying domain"
+    },
+    {
+      "id": "typed-substitution-0",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:replace(1/sqrt(2)*\\sum_{b\\in\\Sigma} {(-1)^(0*bitvalue(b))*|b>},\\Sigma,bitstrings(1))",
+      "adaptation": "Bind source Sigma totyped width1 domain; scalarphase usesbitvalue",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "typed-copied-domain-0",
+      "source": "M03",
+      "cohort": "context",
+      "adaptation": "Ordinary canonical copy route then bind typedwidth1 domain; no repeated notation translation",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ],
+      "copy_parent": "deferred-domain-0",
+      "input_template": "replace({canonical},'\u03a3',qbitstrings(1))"
+    },
+    {
+      "id": "complete-range-1",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:1/sqrt(2)*sum((-1)^(1*b)*|b>,0,1,b)",
+      "adaptation": "Replace binary alphabet by complete integer range0..1; existing binder suppliesdimension2",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "typed-direct-1",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:1/sqrt(2)*sumset((-1)^(1*bitvalue(b))*|b>,bitstrings(1),b)",
+      "adaptation": "Declare typedbinary width1 domain and explicitly extract scalarbit value forphase",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "deferred-domain-1",
+      "source": "M03",
+      "cohort": "deferred",
+      "input": "quantum:1/sqrt(2)*\\sum_{b\\in\\Sigma} {(-1)^(1*bitvalue(b))*|b>}",
+      "adaptation": "Retain typed-phase expression until source Sigma receives a width-carrying domain"
+    },
+    {
+      "id": "typed-substitution-1",
+      "source": "M03",
+      "cohort": "context",
+      "input": "quantum:replace(1/sqrt(2)*\\sum_{b\\in\\Sigma} {(-1)^(1*bitvalue(b))*|b>},\\Sigma,bitstrings(1))",
+      "adaptation": "Bind source Sigma totyped width1 domain; scalarphase usesbitvalue",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "typed-copied-domain-1",
+      "source": "M03",
+      "cohort": "context",
+      "adaptation": "Ordinary canonical copy route then bind typedwidth1 domain; no repeated notation translation",
+      "expected": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ],
+      "copy_parent": "deferred-domain-1",
+      "input_template": "replace({canonical},'\u03a3',qbitstrings(1))"
+    }
+  ],
+  "truth_tables": [
+    {
+      "table": "0000",
+      "walsh": [
+        4,
+        0,
+        0,
+        0
+      ],
+      "data_probabilities": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "promise": "constant",
+      "complete_final": [
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0001",
+      "walsh": [
+        2,
+        2,
+        2,
+        -2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0010",
+      "walsh": [
+        2,
+        -2,
+        2,
+        2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0011",
+      "walsh": [
+        0,
+        0,
+        4,
+        0
+      ],
+      "data_probabilities": [
+        "0",
+        "0",
+        "1",
+        "0"
+      ],
+      "promise": "balanced",
+      "complete_final": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0100",
+      "walsh": [
+        2,
+        2,
+        -2,
+        2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0101",
+      "walsh": [
+        0,
+        4,
+        0,
+        0
+      ],
+      "data_probabilities": [
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "promise": "balanced",
+      "complete_final": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0110",
+      "walsh": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "data_probabilities": [
+        "0",
+        "0",
+        "0",
+        "1"
+      ],
+      "promise": "balanced",
+      "complete_final": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "0111",
+      "walsh": [
+        -2,
+        2,
+        2,
+        2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1000",
+      "walsh": [
+        2,
+        -2,
+        -2,
+        -2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1001",
+      "walsh": [
+        0,
+        0,
+        0,
+        -4
+      ],
+      "data_probabilities": [
+        "0",
+        "0",
+        "0",
+        "1"
+      ],
+      "promise": "balanced",
+      "complete_final": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1010",
+      "walsh": [
+        0,
+        -4,
+        0,
+        0
+      ],
+      "data_probabilities": [
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "promise": "balanced",
+      "complete_final": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1011",
+      "walsh": [
+        -2,
+        -2,
+        2,
+        -2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1100",
+      "walsh": [
+        0,
+        0,
+        -4,
+        0
+      ],
+      "data_probabilities": [
+        "0",
+        "0",
+        "1",
+        "0"
+      ],
+      "promise": "balanced",
+      "complete_final": [
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1101",
+      "walsh": [
+        -2,
+        2,
+        -2,
+        -2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1110",
+      "walsh": [
+        -2,
+        -2,
+        -2,
+        2
+      ],
+      "data_probabilities": [
+        "1/4",
+        "1/4",
+        "1/4",
+        "1/4"
+      ],
+      "promise": "unpromised",
+      "complete_final": [
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/4"
+          ]
+        ],
+        [
+          [
+            "0",
+            "-1/4"
+          ]
+        ]
+      ]
+    },
+    {
+      "table": "1111",
+      "walsh": [
+        -4,
+        0,
+        0,
+        0
+      ],
+      "data_probabilities": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "promise": "constant",
+      "complete_final": [
+        [
+          [
+            "0",
+            "-1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "1/2"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ],
+        [
+          [
+            "0",
+            "0"
+          ]
+        ]
+      ]
+    }
+  ]
+}
