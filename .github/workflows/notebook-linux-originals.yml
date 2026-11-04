@@ -96,4 +96,5 @@ jobs:
           name: notebook-linux-originals-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/notebook-linux-originals/
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 30
