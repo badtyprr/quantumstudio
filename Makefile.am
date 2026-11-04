@@ -326,3 +326,4 @@ EXTRA_DIST += diagnostics/notebook-linux/direct-requirements.txt
 EXTRA_DIST += .github/workflows/notebook-linux.yml
 EXTRA_DIST += docs/learning-evidence/aud02/dependency-classification.md
 EXTRA_DIST += docs/learning-evidence/aud02/dependency-classification.json
+EXTRA_DIST += .github/workflows/dev16-package-acceptance.yml
