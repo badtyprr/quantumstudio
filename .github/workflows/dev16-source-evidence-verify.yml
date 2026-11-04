@@ -1,0 +1,348 @@
+# Retrospective immutable-evidence audit. Never executes the saved application or worker.
+name: DEV16 immutable source matrix evidence audit
+on:
+  pull_request:
+    paths:
+      - .github/workflows/dev16-source-evidence-verify.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: dev16-source-evidence-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 20
+    env:
+      AUDIT_WORKFLOW_SHA: ${{ github.workflow_sha }}
+      AUDIT_WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Select existing Python and isolated directories without installation
+        shell: pwsh
+        run: |
+          $python = Join-Path $env:RUNNER_TOOL_CACHE 'Python/3.12.10/x64'
+          if (!(Test-Path -LiteralPath (Join-Path $python 'python.exe'))) { throw 'Required existing Python 3.12.10 is unavailable' }
+          $python >> $env:GITHUB_PATH
+          "VERIFY_OUTPUT=$(Join-Path $env:RUNNER_TEMP 'dev16-evidence-audit')" >> $env:GITHUB_ENV
+          "VERIFY_INPUT=$(Join-Path $env:RUNNER_TEMP 'dev16-immutable-input')" >> $env:GITHUB_ENV
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: acac77ab9c2408b16d3e7c7bb76c3881adc17ccb
+          persist-credentials: false
+      - name: Acquire and safely preserve the exact failed-run artifact
+        shell: python
+        env:
+          ACTIONS_READ_TOKEN: ${{ github.token }}
+        run: |
+          import base64, hashlib, json, os, platform, shutil, stat, subprocess, sys, time, traceback, unicodedata
+          import urllib.error, urllib.parse, urllib.request, zipfile
+          from pathlib import Path, PurePosixPath
+          output = Path(os.environ['VERIFY_OUTPUT'])
+          output.mkdir()
+          def failure(kind, value, tb):
+              (output/'acquisition-failure.txt').write_text(''.join(traceback.format_exception(kind,value,tb)), encoding='utf-8')
+              sys.__excepthook__(kind,value,tb)
+          sys.excepthook = failure
+          def require(value, message):
+              if not value:
+                  raise ValueError(message)
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          def write(name, value):
+              (output/name).write_text(json.dumps(value, indent=2)+'\n', encoding='utf-8')
+          def safe_parts(name):
+              require(name and '\\' not in name and not any(ord(c)<32 or c in ':<>"|?*' for c in name), 'Unsafe archive name')
+              path = PurePosixPath(name)
+              parts = path.parts
+              require(parts and not path.is_absolute() and '/'.join(parts)==name.rstrip('/'), 'Noncanonical archive path')
+              devices = {'CON','PRN','AUX','NUL','CONIN$','CONOUT$',*('COM'+n for n in '123456789¹²³'),*('LPT'+n for n in '123456789¹²³')}
+              for part in parts:
+                  require(part not in ('.','..') and not part.endswith((' ','.')) and part.split('.')[0].upper() not in devices, 'Unsafe Windows component')
+              return parts
+          def validate_index(archive):
+              entries = archive.infolist()
+              require(0<len(entries)<=1000 and sum(item.file_size for item in entries)<=1024**3, 'Archive exceeds bounds')
+              seen, files = set(), set()
+              for item in entries:
+                  require(item.orig_filename==item.filename and not item.flag_bits&1, 'Normalized/encrypted ZIP name')
+                  parts = safe_parts(item.orig_filename)
+                  mode = stat.S_IFMT(item.external_attr>>16)
+                  require(mode in (0,stat.S_IFREG,stat.S_IFDIR) and not (mode==stat.S_IFDIR and not item.is_dir()), 'Special or inconsistent ZIP entry')
+                  key = unicodedata.normalize('NFC','/'.join(parts)).casefold()
+                  require(key not in seen, 'Archive alias collision')
+                  seen.add(key)
+                  if not item.is_dir():
+                      files.add(key)
+              for key in seen:
+                  parts=key.split('/')
+                  require(not any('/'.join(parts[:i]) in files for i in range(1,len(parts))), 'Archive ancestor collision')
+              return entries
+          def validate_artifact(metadata):
+              require(metadata['id']==13355650758 and metadata['size_in_bytes']==264687449, 'Wrong artifact identity/size')
+              require(metadata['expired'] is False and metadata['workflow_run']['id']==41895225501, 'Expired/wrong-run artifact')
+              require(metadata['workflow_run']['head_sha']=='d33d9f9eefabf6365f0ded21c82ba04b75520213', 'Wrong producing head')
+              require(metadata['digest']=='sha256:d10e0a68e6f4b8eb5d6ffdf0548cfdd744e4e8a58c3ee8bde55336a3c2b98097', 'Wrong artifact digest')
+          require(sys.version_info[:3]==(3,12,10), 'Wrong Python version')
+          require(os.environ['GITHUB_REPOSITORY']=='badtyprr/quantumstudio', 'Wrong repository')
+          head = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          require(head=='acac77ab9c2408b16d3e7c7bb76c3881adc17ccb', 'Wrong pure-helper source checkout')
+          require(not subprocess.check_output(['git','status','--porcelain'],text=True).strip(), 'Dirty source checkout')
+          canonical = subprocess.check_output(['git','show','HEAD:windows/test-dev16-source-failures.py'])
+          require(hashlib.sha256(canonical).hexdigest()=='2fbece39236d1300276dea6d9e318e5c2758c87b48c033602e97def466944ff6', 'Wrong canonical helper')
+          (output/'canonical-helper-source.py').write_bytes(canonical)
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          opener=urllib.request.build_opener(NoRedirect)
+          headers={'Authorization':'Bearer '+os.environ['ACTIONS_READ_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'dev16-evidence-audit'}
+          base='https://api.github.com/repos/badtyprr/quantumstudio/'
+          def api(path):
+              with opener.open(urllib.request.Request(base+path,headers=headers),timeout=30) as response:
+                  raw=response.read(1024*1024+1)
+              require(len(raw)<=1024*1024,'API response exceeds bound')
+              return json.loads(raw)
+          original_run=api('actions/runs/41895225501')
+          require(original_run['id']==41895225501 and original_run['head_sha']=='d33d9f9eefabf6365f0ded21c82ba04b75520213' and original_run['status']=='completed' and original_run['conclusion']=='failure', 'Original failed-run identity changed')
+          write('original-run-api.json',original_run)
+          revision=os.environ['AUDIT_WORKFLOW_SHA']
+          require(len(revision)==40 and all(c in '0123456789abcdef' for c in revision),'Invalid audit workflow revision')
+          workflow_path='.github/workflows/dev16-source-evidence-verify.yml'
+          workflow=api('contents/'+workflow_path+'?ref='+revision)
+          require(workflow['type']=='file' and workflow['path']==workflow_path and workflow['encoding']=='base64','Wrong audit workflow contents')
+          raw=base64.b64decode(workflow['content'])
+          require(len(raw)==workflow['size'] and 0<len(raw)<128*1024,'Workflow size mismatch')
+          require(hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()==workflow['sha'],'Workflow Git identity mismatch')
+          (output/'audit-workflow.yml').write_bytes(raw)
+          write('audit-identity.json',dict(workflow_sha=revision,workflow_ref=os.environ['AUDIT_WORKFLOW_REF'],workflow_sha256=digest(output/'audit-workflow.yml'),run_id=os.environ['GITHUB_RUN_ID'],attempt=os.environ['GITHUB_RUN_ATTEMPT'],product_source=head,python=sys.version,platform=platform.platform(),kind='retrospective-evidence-audit',product_execution=False))
+          metadata=api('actions/artifacts/13355650758')
+          validate_artifact(metadata)
+          write('artifact-api.json',metadata)
+          try:
+              opener.open(urllib.request.Request(base+'actions/artifacts/13355650758/zip',headers=headers),timeout=30)
+              raise ValueError('Expected download redirect')
+          except urllib.error.HTTPError as response:
+              require(response.code==302,'No signed artifact redirect')
+              location=response.headers['Location']
+          url=urllib.parse.urlsplit(location)
+          require(url.scheme=='https' and url.hostname and not url.username and not url.password,'Unsafe signed download URL')
+          archive=output/'immutable-input-artifact.zip'
+          deadline,count=time.monotonic()+300,0
+          with urllib.request.urlopen(urllib.request.Request(location,headers={'User-Agent':'dev16-evidence-audit'}),timeout=30) as source,archive.open('xb') as target:
+              while True:
+                  require(time.monotonic()<=deadline,'Download deadline exceeded')
+                  chunk=source.read(1024*1024)
+                  if not chunk:
+                      break
+                  count+=len(chunk)
+                  require(count<=264687449,'Download exceeds exact size')
+                  target.write(chunk)
+          require(count==264687449 and digest(archive)=='d10e0a68e6f4b8eb5d6ffdf0548cfdd744e4e8a58c3ee8bde55336a3c2b98097','Downloaded artifact mismatch')
+          root=Path(os.environ['VERIFY_INPUT'])
+          root.mkdir()
+          with zipfile.ZipFile(archive) as package:
+              for item in validate_index(package):
+                  target=root.joinpath(*safe_parts(item.filename))
+                  require(target.resolve().is_relative_to(root.resolve()),'Extraction path escape')
+                  if item.is_dir():
+                      target.mkdir(parents=True,exist_ok=True)
+                  else:
+                      target.parent.mkdir(parents=True,exist_ok=True)
+                      with package.open(item) as source,target.open('xb') as destination:
+                          shutil.copyfileobj(source,destination)
+          before={p.relative_to(root).as_posix():dict(bytes=p.stat().st_size,sha256=digest(p)) for p in root.rglob('*') if p.is_file()}
+          require(len(before)==201,'Unexpected retained file set size')
+          write('immutable-before.json',before)
+      - name: Audit saved identities, histories, twelve raw results and twenty-four images only
+        shell: python
+        run: |
+          import ast, hashlib, json, math, os, stat, struct, sys, tarfile, traceback, unicodedata, zipfile, zlib
+          from pathlib import Path, PurePosixPath, PureWindowsPath
+          root=Path(os.environ['VERIFY_INPUT'])
+          output=Path(os.environ['VERIFY_OUTPUT'])
+          def failure(kind,value,tb):
+              (output/'verification-failure.txt').write_text(''.join(traceback.format_exception(kind,value,tb)),encoding='utf-8')
+              sys.__excepthook__(kind,value,tb)
+          sys.excepthook=failure
+          def require(value,message):
+              if not value:
+                  raise ValueError(message)
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream,'sha256').hexdigest()
+          def load(path):
+              return json.loads(path.read_text(encoding='utf-8-sig'))
+          def write(name,value):
+              (output/name).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
+          def inventory(directory):
+              return {p.relative_to(directory).as_posix():dict(bytes=p.stat().st_size,sha256=digest(p)) for p in directory.rglob('*') if p.is_file()}
+          # Obtain only named pure guard definitions from this exact audit workflow.
+          workflow=(output/'audit-workflow.yml').read_text(encoding='utf-8')
+          lines=workflow.splitlines();blocks=[]
+          for index,line in enumerate(lines):
+              if line=='        run: |':
+                  body=[]
+                  for item in lines[index+1:]:
+                      if item and not item.startswith('          '):
+                          break
+                      body.append(item[10:])
+                  blocks.append('\n'.join(body))
+          acquisition=next(code for code in blocks if 'def validate_index(' in code)
+          guard_names={'safe_parts','validate_index'}
+          nodes=[node for node in ast.parse(acquisition).body if isinstance(node,ast.FunctionDef) and node.name in guard_names]
+          require({node.name for node in nodes}==guard_names,'Missing archive guard definitions')
+          guard_namespace=dict(require=require,stat=stat,PurePosixPath=PurePosixPath,unicodedata=unicodedata)
+          exec(compile(ast.Module(body=nodes,type_ignores=[]),'pure-archive-guards','exec'),guard_namespace)
+          safe_parts,validate_index=guard_namespace['safe_parts'],guard_namespace['validate_index']
+          before=load(output/'immutable-before.json')
+          require(inventory(root)==before,'Input changed before verification')
+          outer=load(root/'evidence-manifest.json')
+          require(len(outer)==200 and outer=={k:v for k,v in before.items() if k!='evidence-manifest.json'},'Outer evidence manifest/set mismatch')
+          matrix=root/'matrix'
+          embedded=load(matrix/'evidence-manifest.json')
+          require(len(embedded)==173 and embedded=={k:v for k,v in inventory(matrix).items() if k!='evidence-manifest.json'},'Matrix evidence manifest/set mismatch')
+          identity=load(root/'identity.json')
+          require(identity['product']=='acac77ab9c2408b16d3e7c7bb76c3881adc17ccb' and identity['tree']=='53f6084b45c1aef2f6c01da569f2ac3805f1da66','Wrong recorded product')
+          require(identity['run_id']=='41895225501' and identity['run_attempt']=='1' and identity['workflow_sha']=='98f861af7231ad40fc1c7eefbf24f254f6e82b88','Wrong recorded execution identity')
+          workflow_binding=load(root/'workflow-source.json')
+          require(workflow_binding['revision']==identity['workflow_sha'] and digest(root/'executed-workflow.yml')==workflow_binding['sha256']=='11c9c54eb01aee00890648c2f74222a4d1caf59de53a655dbb3edc595af6b0c6','Original executed workflow differs')
+          require('assert command ==' in (root/'stage-3-failure.txt').read_text(encoding='utf-8'),'Original verifier failure missing')
+          archives=load(root/'archives-before.json')
+          require(set(archives)=={'original-artifact.zip','QuantumStudio-candidate-Windows-x64.zip','QuantumStudio-source.tar.gz','acac-gui-source.tar'},'Wrong archive set')
+          require(all((root/name).stat().st_size==record['bytes'] and digest(root/name)==record['sha256'] for name,record in archives.items()),'Retained archive bytes differ')
+          require(digest(root/'QuantumStudio-candidate-Windows-x64.zip')=='28351a2270e241c33378f93838e4e16e5b70ef25bc072f4933fb3e3fb801ed31' and digest(root/'QuantumStudio-source.tar.gz')=='c4192c70585a833a5ce3a449a458d3cba3bde361538ba92e49cbf9d9bbbdc512','Wrong original candidate/source bytes')
+          original={}
+          with zipfile.ZipFile(root/'QuantumStudio-candidate-Windows-x64.zip') as archive:
+              for item in validate_index(archive):
+                  parts=safe_parts(item.filename)
+                  require(parts[0]=='QuantumStudio','Wrong candidate root')
+                  if not item.is_dir():
+                      name='/'.join(parts[1:])
+                      with archive.open(item) as stream:
+                          original[name]=hashlib.file_digest(stream,'sha256').hexdigest()
+              manifest=json.loads(archive.read('QuantumStudio/build-manifest.json').decode('utf-8-sig'))
+          require(len(original)==361 and original==load(root/'original-before.json')==load(root/'original-finally.json')['files'],'Original physical bytes/recorded inventories disagree')
+          require(manifest['revision']=='f3b4f55a426622551f8597d7fc25f4b82ded266d' and manifest['candidate'] is True,'Original package provenance changed')
+          require(len(manifest['files'])==360 and {row['path']:row['sha256'].lower() for row in manifest['files']}=={k:v for k,v in original.items() if k!='build-manifest.json'},'Original package manifest mismatch')
+          build=load(root/'gui-build.json');assembly=load(root/'assembly.json')
+          require(build['compiled'] is True and build['source']==identity['product'],'No recorded new GUI build')
+          require(build['sha256']==digest(root/'new-QuantumStudio.exe')=='31dd43e774bd73f48e36cac24010ff03c30c9da236bf3d28db1f5211a2c14cb5' and build['bytes']==(root/'new-QuantumStudio.exe').stat().st_size==689664,'Wrong retained new GUI bytes')
+          reconstructed=dict(original);removed=reconstructed.pop('build-manifest.json');reconstructed['QuantumStudio.exe']=build['sha256']
+          require(removed==digest(root/'original-build-manifest.json')==assembly['original_manifest_sha256'],'Removed manifest provenance mismatch')
+          require(assembly['gui_source']==identity['product'] and assembly['dependency_source']==manifest['revision'] and assembly['dependency_artifact']==13348651284,'Assembly source binding mismatch')
+          require(assembly['kind']=='assembled-test-payload' and assembly['clean_candidate_build'] is False and assembly['release'] is False and assembly['publication'] is False,'Assembly claim changed')
+          require(len(reconstructed)==360 and reconstructed==assembly['files']==load(root/'assembled-before.json')==load(root/'assembled-finally.json')['files'],'Reconstructed bytes/recorded assembled inventories disagree')
+          source_files={};seen=set();source_hashes=load(root/'source-before.json')
+          with tarfile.open(root/'acac-gui-source.tar','r:') as archive:
+              members=archive.getmembers()
+              require(0<len(members)<=300 and sum(item.size for item in members)<32*1024**2,'Source tar exceeds bounds')
+              for item in members:
+                  parts=safe_parts(item.name);key=unicodedata.normalize('NFC','/'.join(parts)).casefold()
+                  require(key not in seen and item.type in (tarfile.REGTYPE,tarfile.AREGTYPE,tarfile.DIRTYPE),'Unsafe/duplicate source tar entry')
+                  seen.add(key)
+                  if item.isfile():
+                      source_files[item.name]=archive.extractfile(item).read()
+          tar_file_keys={unicodedata.normalize('NFC',name).casefold() for name in source_files}
+          require(not any('/'.join(key.split('/')[:i]) in tar_file_keys for key in seen for i in range(1,len(key.split('/')))),'Source tar ancestor collision')
+          require(set(source_files)==set(source_hashes)|{'Makefile.am'},'Source archive file set mismatch')
+          for name,expected in source_hashes.items():
+              raw=source_files[name]
+              require(hashlib.sha256(raw).hexdigest()==expected,'Recorded working source hash mismatch: '+name)
+              normalized=raw.replace(b'\r\n',b'\n')
+              git_hash=lambda data:hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+              require(identity['git_blobs'][name] in (git_hash(raw),git_hash(normalized)),'Source Git/working bytes disagree: '+name)
+          helper_bytes=source_files['windows/test-dev16-source-failures.py']
+          require(hashlib.sha256(helper_bytes).hexdigest()==source_hashes['windows/test-dev16-source-failures.py']=='d4b37eb549e6d896e7e2024eef75d6cba6110f1165b19e06c39876e1b8676705','Wrong retained CRLF helper')
+          require(helper_bytes.replace(b'\r\n',b'\n')==(output/'canonical-helper-source.py').read_bytes(),'Canonical Git LF / retained working CRLF binding failed')
+          # No module import, main, subprocess, application or compiler execution.
+          allowed={'require','digest','png_record','residual_value','circuit_expression','source_bytes','plain_history','history_entry_equal','history_chain_equal','history_equal','check_history'}
+          parsed=ast.parse(helper_bytes.decode('utf-8'));pure=[node for node in parsed.body if isinstance(node,ast.FunctionDef) and node.name in allowed]
+          require({node.name for node in pure}==allowed,'Missing pure helper definitions')
+          constants={}
+          for node in parsed.body:
+              if isinstance(node,ast.Assign) and len(node.targets)==1 and isinstance(node.targets[0],ast.Name) and node.targets[0].id in {'FIXTURES','STATES','CAPTURES'}:
+                  constants[node.targets[0].id]=ast.literal_eval(node.value)
+          require(set(constants)=={'FIXTURES','STATES','CAPTURES'},'Missing literal helper constants')
+          namespace=dict(hashlib=hashlib,json=json,math=math,struct=struct,zlib=zlib,Path=Path,**constants)
+          exec(compile(ast.Module(body=pure,type_ignores=[]),'verified-pure-acac-helpers','exec'),namespace)
+          audit=load(matrix/'audit.json')
+          require(audit['passed'] is True and audit['product_revision']==identity['product'] and audit['harness_sha256']==hashlib.sha256(helper_bytes).hexdigest(),'Runner identity/result mismatch')
+          require(audit['package_before']==audit['package_after']==reconstructed and audit['fixtures_after']==constants['FIXTURES'],'Runner package/fixture identity mismatch')
+          contract_bytes=source_files['windows/fixtures/dev16-composer-contract.json']
+          require(audit['contract_sha256']==hashlib.sha256(contract_bytes).hexdigest(),'Contract identity mismatch')
+          require(json.loads(contract_bytes)['fixtures']==constants['FIXTURES'],'Unexpected finite fixture contract')
+          expected_cases={editor+'-'+module for editor in ('composer','classical') for module in ('oracle','bernvaz')}
+          rows=audit['results'];require(len(rows)==4 and {row['name'] for row in rows}==expected_cases,'Missing/extra/duplicate cases')
+          old_root=PureWindowsPath('D:/a/_temp/dev16-matrix-evidence/matrix')
+          old_payload=PureWindowsPath('D:/a/_temp/dev16-matrix-assembled')
+          checks=0;images=[]
+          for row in rows:
+              label=row['name'];editor,module=label.split('-');relative=label+' Unicode κ'
+              folder=matrix/relative;old_folder=old_root/relative;report=folder/'gui.txt';old_report=old_folder/'gui.txt'
+              require(row['passed'] is True and 'restoration_blocked' not in row,'Failed/incomplete GUI case')
+              require(report.read_text(encoding='utf-8-sig').startswith('PASS:') and load(folder/'gui-process.exit.json')=={'code':0},'GUI did not pass')
+              expected=[str(old_payload/'QuantumStudio.exe'),'--dev16-source-failure-test',editor,str(old_folder/'main κ.qasm'),str(old_report)]
+              require(load(folder/'gui-process.command.json')==expected,'Exact original GUI arguments differ')
+              saved={state:Path(str(report)+'.'+state+'.qcircuit').read_text(encoding='utf-8-sig') for state in constants['STATES']}
+              namespace['check_history'](load(Path(str(report)+'.history.json')),saved)
+              initial={p.relative_to(folder/'inputs').as_posix():p.read_bytes() for p in (folder/'inputs').rglob('*') if p.is_file()}
+              require(set(initial)=={'main κ.qasm','wrapper.inc','nested modules λ/'+module+'.qasm'},'Wrong graph file set')
+              require(row['inputs']=={name:hashlib.sha256(raw).hexdigest() for name,raw in initial.items()},'Original graph hash mismatch')
+              require(initial['nested modules λ/'+module+'.qasm']==source_files['windows/fixtures/qb004/'+module+'.qasm'],'Original fixture bytes differ')
+              require(row['module_after_gui_sha256']==row['module_restored_sha256']==constants['FIXTURES'][module+'.qasm'],'Module restoration differs')
+              changed=dict(initial);changed['wrapper.inc']=initial['wrapper.inc'].replace(b'x a; x a;',b'x a;')
+              require(changed!=initial and all((folder/name).read_bytes()==raw for name,raw in changed.items()),'Authored wrapper/final graph mismatch')
+              for state in constants['STATES']:
+                  require(namespace['source_bytes'](json.loads(saved[state]),'main κ.qasm')==(changed if state=='reimported' else initial),'Saved source bytes differ')
+              semantics=row['semantic'];require(len(semantics)==3 and {value['state'] for value in semantics}==set(constants['STATES']),'Wrong numerical state set')
+              for value in semantics:
+                  state=value['state'];prefix=folder/(state+'-worker')
+                  expected=('|0001>' if state=='reimported' else '|1001>') if module=='oracle' else ('(|1110>-|1111>)/sqrt(2)' if state=='reimported' else '(|0110>-|0111>)/sqrt(2)')
+                  require(value['expected']==expected and type(value['residual']) in (int,float) and math.isfinite(value['residual']) and 0<=value['residual']<1e-12,'Expected state/residual mismatch')
+                  require(load(Path(str(prefix)+'.exit.json'))=={'code':0} and load(Path(str(prefix)+'.command.json'))==[str(old_payload/'quantum-worker.exe'),'--json','--approx'],'Exact worker command/exit differs')
+                  expression=namespace['circuit_expression'](json.loads(saved[state]),editor=='classical')
+                  require(Path(str(prefix)+'.stdin').read_text(encoding='utf-8')==f'quantum:norm(vec(({expression})-({expected})))','Worker request differs')
+                  require(namespace['residual_value'](Path(str(prefix)+'.stdout').read_bytes())==value['residual'] and Path(str(prefix)+'.stderr').is_file(),'Raw numerical result differs')
+                  checks+=1
+              captures=row['captures'];require(len(captures)==6,'Wrong capture count')
+              for recorded,stage in zip(captures,constants['CAPTURES']):
+                  path=Path(str(report)+'.'+stage+'.png')
+                  require(recorded['path']==str(old_report)+'.'+stage+'.png','Original capture path differs')
+                  actual=namespace['png_record'](path);actual['path']=recorded['path']
+                  require(actual==recorded,'Capture bytes/dimensions differ')
+                  images.append(dict(case=label,path=path.relative_to(root).as_posix(),sha256=digest(path),visual_review='pending'))
+          require(checks==12 and len(images)==24 and {p.relative_to(root).as_posix() for p in matrix.rglob('*.png')}=={row['path'] for row in images},'Exact numerical/capture totals differ')
+          after=inventory(root);require(after==before,'Immutable input changed during audit')
+          require(digest(output/'immutable-input-artifact.zip')=='d10e0a68e6f4b8eb5d6ffdf0548cfdd744e4e8a58c3ee8bde55336a3c2b98097','Input archive changed')
+          write('immutable-after.json',after)
+          write('retrospective-audit.json',dict(machine_evidence_verified=True,kind='retrospective-evidence-audit',original_run=41895225501,original_conclusion='failure',product_execution=False,cases=4,numerical_checks=12,captures=images,visual_review='pending',finite_acceptance_complete=False,clean_candidate_build=False,release=False,publication=False,original_physical_files=361,reconstructed_assembled_files=360,post_run_payload_evidence='recorded before/final inventories; no separately retained physical post-run assembled tree'))
+      - name: Hash immutable inputs and available audit output on every outcome
+        if: always()
+        shell: python
+        run: |
+          import hashlib, json, os, traceback
+          from pathlib import Path
+          output=Path(os.environ['VERIFY_OUTPUT']);output.mkdir(exist_ok=True)
+          root=Path(os.environ['VERIFY_INPUT'])
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream,'sha256').hexdigest()
+          try:
+              final={p.relative_to(root).as_posix():dict(bytes=p.stat().st_size,sha256=digest(p)) for p in root.rglob('*') if p.is_file()}
+              before_path=output/'immutable-before.json'
+              unchanged=before_path.is_file() and final==json.loads(before_path.read_text(encoding='utf-8'))
+              (output/'immutable-finally.json').write_text(json.dumps(dict(exists=root.exists(),unchanged=unchanged,files=final),indent=2),encoding='utf-8')
+          except Exception:
+              (output/'immutable-finally-error.txt').write_text(traceback.format_exc(),encoding='utf-8')
+          records={p.relative_to(output).as_posix():dict(bytes=p.stat().st_size,sha256=digest(p)) for p in output.rglob('*') if p.is_file() and p!=output/'evidence-manifest.json'}
+          (output/'evidence-manifest.json').write_text(json.dumps(records,indent=2),encoding='utf-8')
+      - name: Retain original immutable archive and separate retrospective reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev16-evidence-recheck-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: ${{ runner.temp }}/dev16-evidence-audit/
