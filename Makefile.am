@@ -297,3 +297,5 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm020-repetition/inventory.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-repetition/source-manifest.json
 
 EXTRA_DIST += docs/learning-evidence/dev11/vector-xor.md
+EXTRA_DIST += docs/learning-evidence/aud02/catalog-20261104.json
+EXTRA_DIST += docs/learning-evidence/aud02/catalog-20261104.md
