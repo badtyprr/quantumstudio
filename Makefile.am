@@ -290,3 +290,10 @@ EXTRA_DIST += docs/learning-evidence/dev12/regularized-overlap.md
 
 EXTRA_DIST += docs/learning-evidence/dev11/hamming-decoder-probe.py
 EXTRA_DIST += docs/learning-evidence/dev11/hamming-decoder.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/baseline-summary.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-analysis.md
