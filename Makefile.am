@@ -330,3 +330,7 @@ EXTRA_DIST += .github/workflows/notebook-linux.yml
 EXTRA_DIST += docs/learning-evidence/aud02/dependency-classification.md
 EXTRA_DIST += docs/learning-evidence/aud02/dependency-classification.json
 EXTRA_DIST += .github/workflows/dev16-package-acceptance.yml
+EXTRA_DIST += windows/dev13-notebooks/profiles/notebook-linux-py312.json
+EXTRA_DIST += windows/dev13-notebooks/linux-notebook-requirements.lock
+EXTRA_DIST += docs/learning-evidence/dev14/linux-lifecycle.md
+EXTRA_DIST += .github/workflows/notebook-linux-lifecycle.yml

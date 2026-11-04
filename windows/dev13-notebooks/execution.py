@@ -21,7 +21,7 @@ import traceback
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
 CONTRACTS = {"ibm019", "ibm020", "qb017"}
-PROFILES = {"qiskit-aer-win-py312", "qir-win-py312"}
+PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "notebook-linux-py312"}
 
 
 def digest(raw):
@@ -95,7 +95,7 @@ def create_environment(profile_name, python, wheelhouse, destination):
     try:
         with (destination / "install.log").open("w", encoding="utf-8") as log:
             subprocess.run([str(python), "-I", "-m", "venv", str(destination)], stdout=log, stderr=log, check=True, timeout=120)
-            target = destination / "Scripts" / "python.exe"
+            target = environment_python(destination, profile)
             subprocess.run([str(target), "-I", "-m", "pip", "--isolated", "install", "--no-index", "--no-cache-dir",
                             "--find-links", str(wheelhouse), "--require-hashes", "-r", str(ROOT / profile["lock"])],
                            stdout=log, stderr=log, check=True, timeout=300)
@@ -107,6 +107,14 @@ def create_environment(profile_name, python, wheelhouse, destination):
     finally:
         atomic_json(destination / "environment.json", report)
     return report
+
+
+def environment_python(destination, profile):
+    if profile['platform'] == 'win32':
+        return Path(destination) / 'Scripts' / 'python.exe'
+    if profile['platform'] == 'linux':
+        return Path(destination) / 'bin' / 'python'
+    raise ValueError('UNSUPPORTED_PROFILE_PLATFORM')
 
 
 def validate_request(request):
@@ -133,7 +141,7 @@ def validate_request(request):
             raise ValueError("SETUP_OBSERVER_HASH_MISMATCH")
         if digest(SETUP_CHECK.encode("utf-8")) != setup["check_sha256"]:
             raise ValueError("SETUP_CHECK_HASH_MISMATCH")
-    python = Path(request["environment"]).resolve() / "Scripts" / "python.exe"
+    python = environment_python(Path(request["environment"]).resolve(), profile)
     identity = inspect_environment(python, profile)
     return raw, dict(contract=contract, contract_sha256=digest(contract_bytes), profile=profile,
                      witness=witness.decode(), identity=identity, python=str(python))
@@ -266,6 +274,10 @@ class _WindowsJob:
     def assign(self, process):
         # Borrowed CPython Windows Popen handle; never close it here.
         self.check(self.api.AssignProcessToJobObject(self.handle, int(process._handle)))
+        self.engine_pid = process.pid
+
+    def command(self, command):
+        return command
 
     def contains(self, pid):
         process = self.api.OpenProcess(0x1000, False, pid)  # QUERY_LIMITED_INFORMATION
@@ -331,7 +343,11 @@ def _supervise(output, config, events=None):
 
     publish()
     try:
-        job = _WindowsJob()
+        if sys.platform == 'linux':
+            from linux_lifecycle import LinuxService
+            job = LinuxService(output, config['profile']['service_runtime_seconds'])
+        else:
+            job = _WindowsJob()
     except Exception as error:
         status.update(state="failed", error=str(error), cleanup={"method": "not_started"})
         publish()
@@ -340,19 +356,29 @@ def _supervise(output, config, events=None):
     requested = False
     forced = False
     membership = None
+    launcher_lost = False
     try:
         with (output / "engine.stdout").open("w", encoding="utf-8") as stdout, (output / "engine.stderr").open("w", encoding="utf-8") as stderr:
-            process = subprocess.Popen([config["python"], "-I", str(Path(__file__).resolve()), "--engine", str(output)],
+            command = job.command([config["python"], "-I", str(Path(__file__).resolve()), "--engine", str(output)])
+            process = subprocess.Popen(command,
                                        stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, text=True,
-                                       creationflags=subprocess.CREATE_NO_WINDOW)
+                                       close_fds=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0)
             job.assign(process)
-            status["engine_pid"] = process.pid
+            status["engine_pid"] = job.engine_pid
+            status['launcher_pid'] = process.pid
+            if sys.platform == 'linux':
+                status['client_pid'] = job.client_pid
             process.stdin.write("start\n")
             process.stdin.flush()
             status["state"] = "running"
             publish()
             deadline = None
             while process.poll() is None:
+                if sys.platform == 'linux' and job.client_exited() and job.active():
+                    launcher_lost = True
+                    _close_control_pipe(process)
+                    job.terminate()
+                    break
                 if membership is None and (output / "kernel.json").exists():
                     kernel = json.loads((output / "kernel.json").read_bytes())
                     membership = job.contains(kernel["pid"])
@@ -374,6 +400,12 @@ def _supervise(output, config, events=None):
                     break
                 time.sleep(0.05)
             process.wait(timeout=10)
+            if sys.platform == 'linux':
+                _close_control_pipe(process)
+                unit = job.observe()
+                status['service_result'] = unit.get('Result') if unit.get('LoadState') != 'not-found' else 'unit_collected'
+                if job.active():
+                    launcher_lost = True
         if job.active():
             forced = True
             job.terminate()
@@ -384,8 +416,17 @@ def _supervise(output, config, events=None):
         result_path = output / "engine-result.json"
         if result_path.exists():
             status.update(json.loads(result_path.read_bytes()))
+        else:
+            _recover_checkpoint_disposition(output, status)
         status["cleanup"] = dict(active_processes=remaining, kernel_job_membership=membership,
                                  method="forced" if forced else "graceful", engine_exit=process.returncode)
+        if sys.platform == 'linux':
+            status['cleanup'].update(containment='systemd_service', population_semantics='zero or populated indicator',
+                                     launcher_exit=process.returncode, engine_exit=None)
+            if status.get('service_result') == 'timeout':
+                status.update(state='failed', failure_cause='service_runtime_timeout')
+            elif launcher_lost:
+                status.update(state='failed', failure_cause='launcher_loss', launcher_lost_with_live_service=True)
         if requested:
             status["state"] = "cancelled"
             cells_path = output / "cells.json"
@@ -411,21 +452,65 @@ def _supervise(output, config, events=None):
         publish()
         return status
     except BaseException as error:
-        # Assignment failure leaves an engine behind its gate, with no children.
+        cleanup_errors = []
+
+        def attempt(label, operation):
+            try:
+                return operation()
+            except Exception as cleanup_error:
+                cleanup_errors.append(dict(step=label, error=str(cleanup_error)))
+
         if process is not None:
-            if process.stdin:
-                process.stdin.close()
-            job.terminate()
+            _close_control_pipe(process)
+            attempt('terminate_owned_containment', job.terminate)
             if process.poll() is None:
-                process.kill()
-            process.wait(timeout=10)
-        status.update(state="failed", error=str(error), cleanup={"active_processes": job.active(), "method": "exception"})
+                if sys.platform == 'linux':
+                    attempt('terminate_verified_client', job.stop_client)
+                else:
+                    attempt('terminate_owned_launcher', process.kill)
+            attempt('collect_owned_launcher', lambda: process.wait(timeout=10))
+        remaining = attempt('observe_population', job.active)
+        if not (output / 'engine-result.json').exists():
+            attempt('recover_checkpoints', lambda: _recover_checkpoint_disposition(output, status))
+        status.update(state="failed", error=str(error), cleanup={"active_processes": remaining, "method": "exception",
+                      'errors': cleanup_errors, 'unconfirmed': remaining is None or bool(remaining) or bool(cleanup_errors)})
         publish()
         raise
     finally:
-        if process is not None and process.stdin and not process.stdin.closed:
+        _close_control_pipe(process)
+        try:
+            job.close()
+        except Exception as error:
+            status['state'] = 'failed'
+            status.setdefault('cleanup', {})['unconfirmed'] = True
+            status['cleanup'].setdefault('errors', []).append(dict(step='close_containment', error=str(error)))
+            publish()
+
+
+def _close_control_pipe(process):
+    if process is not None and process.stdin and not process.stdin.closed:
+        try:
             process.stdin.close()
-        job.close()
+        except OSError:
+            pass  # Teardown still has to stop the owned job/service.
+
+
+def _recover_checkpoint_disposition(output, status):
+    path = output / 'cells.json'
+    if not path.exists():
+        return
+    cells = json.loads(path.read_bytes())
+    for cell in cells:
+        if cell['state'] == 'running':
+            cell.update(state='interrupted', error=dict(type='EngineReportMissing',
+                        message='Engine stopped before a terminal report; last checkpoint retained'))
+    original = [cell['state'] for cell in cells if cell['original_index'] is not None and cell['type'] == 'code']
+    status['original_execution'] = ('succeeded' if original and all(state == 'succeeded' for state in original)
+                                    else 'incomplete' if any(state != 'not_run' for state in original) else 'not_run')
+    witness = [cell for cell in cells if cell.get('authored_role') == 'independent-witness']
+    status['authored_verification'] = witness[0]['state'] if witness else 'not_run'
+    status['terminal_engine_report_missing'] = True
+    atomic_json(path, cells)
 
 
 async def _run_notebook(output, config, control_state=None):
