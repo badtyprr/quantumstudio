@@ -258,10 +258,34 @@ def finite_json(value):
     raise ValueError('UNSUPPORTED_DRAWING_VALUE:' + type(value).__module__ + '.' + type(value).__qualname__)
 
 
+def canvas_bit_identity(circuit, bit, quantum_type, classical_type):
+    """Use the captured program's canonical bit membership, never repr/id."""
+    quantum = type(bit) is quantum_type
+    classical = type(bit) is classical_type
+    require(quantum != classical, 'UNSUPPORTED_CANVAS_BIT_TYPE')
+    require(all(type(item) is quantum_type for item in circuit.qubits)
+            and all(type(item) is classical_type for item in circuit.clbits), 'INVALID_CANVAS_BIT_CONTEXT')
+    domain = circuit.qubits if quantum else circuit.clbits
+    opposite = circuit.clbits if quantum else circuit.qubits
+    matches = [index for index, item in enumerate(domain) if item == bit]
+    require(len(matches) == 1 and not any(item == bit for item in opposite), 'AMBIGUOUS_OR_FOREIGN_CANVAS_BIT')
+    index = circuit.find_bit(bit).index
+    require(type(index) is int and index >= 0 and index == matches[0], 'CANVAS_BIT_INDEX_MISMATCH')
+    return dict(kind='qubit' if quantum else 'clbit', index=index)
+
+
 def serialize_datum(datum, bit_identity):
+    meta = datum.meta
+    if type(meta) is dict and 'bits' in meta:
+        require(type(meta['bits']) in (list, tuple), 'INVALID_DRAWING_METADATA_BITS')
+        require(all(type(key) is str for key in meta), 'NONSTRING_DRAWING_KEY')
+        meta = {key: ([bit_identity(bit) for bit in value] if key == 'bits' else finite_json(value))
+                for key, value in meta.items()}
+    else:
+        meta = finite_json(meta)
     result = dict(kind=type(datum).__name__, data_type=finite_json(datum.data_type),
                   xvals=finite_json(datum.xvals), yvals=finite_json(datum.yvals),
-                  bits=None if datum.bits is None else [bit_identity(bit) for bit in datum.bits], meta=finite_json(datum.meta),
+                  bits=None if datum.bits is None else [bit_identity(bit) for bit in datum.bits], meta=meta,
                   styles=finite_json(datum.styles))
     if hasattr(datum, 'text'):
         result.update(text=finite_json(datum.text), latex=finite_json(datum.latex))
@@ -378,6 +402,7 @@ def bind_timing(reference, notebook_namespace, source_hashes):
                 'INSTALLED_QISKIT_SOURCE_CHANGED:' + relative)
     # No Qiskit import or hook is installed until every Python/extension gate passes.
     import qiskit
+    from qiskit.circuit import Qubit, Clbit
     from qiskit.visualization import timeline
     from qiskit.visualization.timeline.core import DrawerCanvas
     from qiskit.visualization.timeline.plotters import MplPlotter
@@ -484,11 +509,7 @@ def bind_timing(reference, notebook_namespace, source_hashes):
             record['data']['isa_operations'], record['data']['pre_alap_operations'], record['data']['layout_b']['mapping'])
 
     def bit_identity(record, bit):
-        circuit = record['scheduled']
-        if bit in circuit.qubits:
-            return 'q:' + str(circuit.find_bit(bit).index)
-        require(bit in circuit.clbits, 'UNMAPPED_CANVAS_BIT')
-        return 'c:' + str(circuit.find_bit(bit).index)
+        return canvas_bit_identity(record['scheduled'], bit, Qubit, Clbit)
 
     def dataset(record, items):
         result = []
@@ -510,7 +531,8 @@ def bind_timing(reference, notebook_namespace, source_hashes):
         record['plotter'] = plotter
         record['data'].update(filtered_canvas_data=dataset(record, plotter.canvas.collections),
             canvas_time_range=finite_json(plotter.canvas.time_range),
-            canvas_lanes={bit_identity(record, bit): finite_json(position) for bit, position in plotter.canvas.assigned_coordinates.items()},
+            canvas_lanes=[dict(bit=bit_identity(record, bit), position=finite_json(position))
+                          for bit, position in plotter.canvas.assigned_coordinates.items()],
             formatter=finite_json(plotter.canvas.formatter))
 
     def image_after(record, args, kwargs, result):

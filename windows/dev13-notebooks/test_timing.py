@@ -439,7 +439,7 @@ class BindingPathTests(unittest.TestCase):
         (output/'qiskit').mkdir()
         (output/'qiskit/source.py').write_bytes(b'authored fake SDK')
         modules = {}
-        names = ['qiskit', 'qiskit.visualization', 'qiskit.visualization.timeline',
+        names = ['qiskit', 'qiskit.circuit', 'qiskit.visualization', 'qiskit.visualization.timeline',
             'qiskit.visualization.timeline.core', 'qiskit.visualization.timeline.plotters',
             'qiskit.transpiler', 'qiskit.transpiler.passes', 'qiskit.transpiler.passes.scheduling',
             'qiskit.transpiler.passes.scheduling.scheduling', 'qiskit.transpiler.passes.scheduling.scheduling.alap',
@@ -449,6 +449,10 @@ class BindingPathTests(unittest.TestCase):
             modules[name] = ModuleType(name)
             modules[name].__path__ = []
         qiskit, timeline = modules['qiskit'], modules['qiskit.visualization.timeline']
+        class Qubit: pass
+        class Clbit: pass
+        modules['qiskit.circuit'].Qubit = Qubit
+        modules['qiskit.circuit'].Clbit = Clbit
         modules['qiskit.visualization'].timeline = timeline
         class Circuit:
             def __init__(self, qubits, clbits, specs, layout=None, times=None):
@@ -519,9 +523,9 @@ class BindingPathTests(unittest.TestCase):
         class Canvas:
             def load_program(self, program, target):
                 scheduled=qiskit.transpile(program,scheduling_method='alap',target=target,optimization_level=0)
-                datum=SimpleNamespace(data_type='gate',xvals=[0,2],yvals=[0,1],bits=[scheduled.qubits[0]],meta=None,styles={})
+                datum=SimpleNamespace(data_type='gate',xvals=[0,2],yvals=[0,1],bits=[scheduled.qubits[0]],meta={'bits': tuple(scheduled.qubits[:2]), 'name':'cx'},styles={})
                 self._collections={'local-key':datum};self.collections=list(self._collections.items())
-                self.assigned_coordinates={q:float(i) for i,q in enumerate(scheduled.qubits)}
+                self.assigned_coordinates={bit:float(i) for i,bit in enumerate(scheduled.qubits + scheduled.clbits)}
                 self.time_range=(0,12);self.formatter={}
         class Plotter:
             def __init__(self, canvas): self.canvas=canvas;self.figure=object()
@@ -540,7 +544,7 @@ class BindingPathTests(unittest.TestCase):
             capture=bind_timing(ref,namespace,{'source.py':hashlib.sha256(b'authored fake SDK').hexdigest()})
             capture.output=output
             for measured in (False,True):
-                source_bits=[object(),object()];physical=[object() for _ in range(5)];clbits=[object(),object()] if measured else []
+                source_bits=[Qubit(),Qubit()];physical=[Qubit() for _ in range(5)];clbits=[Clbit(),Clbit()] if measured else []
                 specs=[('h',[0],[],2),('cx',[0,1],[],3)]
                 if measured: specs += [('barrier',[0,1],[],0),('measure',[0],[0],4),('measure',[1],[1],7)]
                 source=Circuit(source_bits,clbits,specs)
@@ -685,6 +689,92 @@ class IsaBridgeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'MISSING_ORIGINAL_OPERATION'):
             match_isa_to_pre_alap(isa,[dict(op,id='n'+str(i)) for i,op in enumerate(isa[:2])],list(range(5)))
 
+
+
+
+class DrawingBitSerializationTests(unittest.TestCase):
+    def fixture(self):
+        from types import SimpleNamespace
+        from observers.ibm_timing import canvas_bit_identity
+        class Qubit:
+            def __init__(self,key):self.key=key
+            def __eq__(self,other):return type(self) is type(other) and self.key==other.key
+            def __hash__(self):return hash((type(self),self.key))
+        class Clbit(Qubit):pass
+        q0,q1,c0=Qubit(0),Qubit(1),Clbit(0)
+        circuit=SimpleNamespace(qubits=[q0,q1],clbits=[c0])
+        circuit.find_bit=lambda bit:SimpleNamespace(index=(circuit.qubits if type(bit) is Qubit else circuit.clbits).index(bit))
+        resolve=lambda bit:canvas_bit_identity(circuit,bit,Qubit,Clbit)
+        datum=SimpleNamespace(data_type='Box.ScheduledGate',xvals=[0,10],yvals=[-.3,.3],bits=[q0],
+            meta=dict(name='cx',label='n/a',bits=(q0,q1),t0=0,duration=10,parameters=''),styles={'facecolor':'blue','alpha':.5})
+        return circuit,q0,q1,c0,resolve,datum,Qubit,Clbit
+    def test_retained_metadata_shape_maps_all_bit_references(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture()
+        value=serialize_datum(datum,resolve)
+        self.assertEqual(value['bits'],[{'kind':'qubit','index':0}])
+        self.assertEqual(value['meta']['bits'],[{'kind':'qubit','index':0},{'kind':'qubit','index':1}])
+        self.assertIs(datum.meta['bits'][0],q0)
+    def test_single_bit_and_scalar_style_preservation(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();datum.meta['bits']=[q0]
+        value=serialize_datum(datum,resolve)
+        for key in ('name','label','t0','duration','parameters'):self.assertEqual(value['meta'][key],datum.meta[key])
+        self.assertEqual(value['styles'],datum.styles);self.assertEqual(value['xvals'],datum.xvals);self.assertEqual(value['yvals'],datum.yvals)
+    def test_measurement_quantum_and_classical_zero_are_distinct(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();datum.bits=[q0,c0];datum.meta['bits']=(q0,c0)
+        value=serialize_datum(datum,resolve)
+        self.assertEqual(value['bits'],[{'kind':'qubit','index':0},{'kind':'clbit','index':0}])
+        self.assertEqual(value['bits'],value['meta']['bits'])
+    def test_canonical_equal_wrapper_matches_context(self):
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();wrapper=Q(0)
+        self.assertIsNot(wrapper,q0);self.assertEqual(resolve(wrapper),{'kind':'qubit','index':0})
+    def test_repeated_references_are_preserved(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();datum.meta['bits']=(q0,q0)
+        self.assertEqual(serialize_datum(datum,resolve)['meta']['bits'],[resolve(q0),resolve(q0)])
+    def test_foreign_and_ambiguous_membership_reject(self):
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture()
+        with self.assertRaisesRegex(ValueError,'AMBIGUOUS_OR_FOREIGN_CANVAS_BIT'):resolve(Q(9))
+        circuit.qubits.append(Q(0))
+        with self.assertRaisesRegex(ValueError,'AMBIGUOUS_OR_FOREIGN_CANVAS_BIT'):resolve(q0)
+    def test_cross_domain_and_type_ambiguity_reject(self):
+        from observers.ibm_timing import canvas_bit_identity
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();circuit.clbits.append(q0)
+        with self.assertRaisesRegex(ValueError,'INVALID_CANVAS_BIT_CONTEXT'):resolve(q0)
+        with self.assertRaisesRegex(ValueError,'UNSUPPORTED_CANVAS_BIT_TYPE'):canvas_bit_identity(circuit,q0,Q,Q)
+    def test_inconsistent_negative_bool_or_noninteger_index_reject(self):
+        from types import SimpleNamespace
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture()
+        for index in (-1,1,True,0.0):
+            circuit.find_bit=lambda bit,index=index:SimpleNamespace(index=index)
+            with self.assertRaisesRegex(ValueError,'CANVAS_BIT_INDEX_MISMATCH'):resolve(q0)
+    def test_wrong_metadata_bits_shape_reject(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture()
+        for value in (None,{},q0,'q:0'):
+            datum.meta['bits']=value
+            with self.assertRaisesRegex(ValueError,'INVALID_DRAWING_METADATA_BITS'):serialize_datum(datum,resolve)
+    def test_unrelated_unknown_metadata_still_rejects(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();datum.meta['other']=q0
+        with self.assertRaisesRegex(ValueError,'UNSUPPORTED_DRAWING_VALUE'):serialize_datum(datum,resolve)
+    def test_nonstring_metadata_key_and_unknown_bit_reject(self):
+        from observers.ibm_timing import serialize_datum
+        circuit,q0,q1,c0,resolve,datum,Q,C=self.fixture();datum.meta[1]='invalid'
+        with self.assertRaisesRegex(ValueError,'NONSTRING_DRAWING_KEY'):serialize_datum(datum,resolve)
+        with self.assertRaisesRegex(ValueError,'UNSUPPORTED_CANVAS_BIT_TYPE'):resolve(object())
+    def test_actual_callback_lane_coordinates_keep_typed_refs(self):
+        fixture=BindingPathTests();self.addCleanup(fixture.doCleanups)
+        capture,figures,accepted=fixture.run_path();self.assertTrue(accepted)
+        for record in capture.records:
+            import json
+            expected=[dict(bit={'kind':'qubit','index':i},position=float(i)) for i in range(5)]
+            if record['data']['ordinal']==2:
+                expected += [dict(bit={'kind':'clbit','index':i},position=float(5+i)) for i in range(2)]
+            self.assertEqual(record['data']['canvas_lanes'],expected)
+            self.assertEqual(json.loads(json.dumps(record['data']['canvas_lanes'])),expected)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

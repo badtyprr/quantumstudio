@@ -81,7 +81,7 @@
   "observer_lifecycle": {
     "bootstrap": {
       "path": "observers/ibm_timing.py",
-      "sha256": "dae631f70f82445e21a74ef5ebf5141d90361333bc21ddd3cbfb6fadd795b676"
+      "sha256": "44b79aa43b5120a074e7e1fad9e70606c3d83c838f9a6020742ed9d108d794fd"
     },
     "cleanup": {
       "path": "observers/ibm_timing_cleanup.py",
