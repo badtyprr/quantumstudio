@@ -24,6 +24,17 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ // IBM-019 phase-kickback complement is a single bit, not an opaque label.
+ for(const std::string &operand:{"0","1","b","x_0"}) {
+  const std::string complemented=translateQuantum("basis(1-("+operand+"),2)");
+  equal("|¬"+operand+">",complemented);
+  equal("<¬"+operand+"|","qdag("+complemented+")");
+  equal("\\vert \\neg "+operand+"\\rangle",complemented);
+  equal("\\langle \\neg "+operand+"\\vert","qdag("+complemented+")");
+ }
+ for(const std::string &invalid:{"|¬2>","|¬01>","|¬-1>","|¬(b+1)>","|¬b ⊕ 1>","|¬b>_3"})rejects(invalid);
+ equal("|notable>","qnamedket(\"notable\")");
+ equal("|not0>","qnamedket(\"not0\")");
  // Copied large matrices have many shallow entries, not deep expressions.
  std::string copied=basis(0,509);
  equal(copied,"q"+copied);

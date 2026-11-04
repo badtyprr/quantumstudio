@@ -636,6 +636,24 @@ class Parser {
   return "";
  }
  std::string basisState(const std::string &label,const std::string &dimension="") {
+  // IBM's single-bit complement uses the same strict domain as a two-state
+  // basis index. Both TeX neg and Unicode negation normalize to "not ".
+  // Require the word boundary so opaque labels such as |notable> stay opaque.
+  size_t first=label.find_first_not_of(" \t\r\n");
+  if(first!=std::string::npos && label.compare(first,3,"not")==0 &&
+     first+3<label.size() && std::isspace((unsigned char)label[first+3])) {
+   if(!dimension.empty())throw std::runtime_error("A complemented bit already has dimension two; omit the dimension suffix.");
+   size_t begin=label.find_first_not_of(" \t\r\n",first+3);
+   size_t end=label.find_last_not_of(" \t\r\n");
+   std::string bit=begin==std::string::npos ? "" : label.substr(begin,end-begin+1);
+   bool identifier=!bit.empty() && std::isalpha((unsigned char)bit[0]);
+   for(unsigned char c:bit)if(c>=128 || (!std::isalnum(c) && c!='_'))identifier=false;
+   if(bit!="0" && bit!="1" && !identifier)
+    throw std::runtime_error("A complemented basis bit requires 0, 1, or one scalar bit identifier.");
+   // The affine index is in {0,1} exactly when the original bit is in {0,1}.
+   // Retaining qbasis preserves validation after symbolic substitution/copy.
+   return basisState("1-("+bit+")","2");
+  }
   std::string registerState=registerFamily(label,dimension);
   if(!registerState.empty())return registerState;
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);

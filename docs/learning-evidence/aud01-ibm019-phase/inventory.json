@@ -1,0 +1,313 @@
+{
+  "section": "Further remarks on the phase kickback",
+  "source_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "notebook_sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+  "cell_id": "7e5d320e",
+  "cell_index": 0,
+  "start_offset": 7157,
+  "boundary": "heading inclusive to end of markdown cell 0",
+  "section_sha256": "50ee0688790ae063e2ef8e2b2e30ae8dafc03b860786cabf8fc27f6ff4e4c1c9",
+  "formulas": [
+    {
+      "id": "P01",
+      "kind": "inline",
+      "original": "b,c\\in\\Sigma",
+      "offset": 256,
+      "cell_offset": 7413,
+      "sha256": "8d76f5efd5f990e72192e820d953a13d80ca57a27f4d762e81da14a7029ef4d4"
+    },
+    {
+      "id": "P02",
+      "kind": "display",
+      "original": "\n\\vert b \\oplus c\\rangle = X^c \\vert b \\rangle\n",
+      "offset": 273,
+      "cell_offset": 7430,
+      "sha256": "41df8cb894c657cd34233fe8056b195c851e8d708ae0a4b34d7106c82b4734d1"
+    },
+    {
+      "id": "P03",
+      "kind": "inline",
+      "original": "c = 0",
+      "offset": 390,
+      "cell_offset": 7547,
+      "sha256": "77f74adae4f489664d55531eb9070e9b7d836b2b35707abf994ec45918377a41"
+    },
+    {
+      "id": "P04",
+      "kind": "inline",
+      "original": "c = 1",
+      "offset": 402,
+      "cell_offset": 7559,
+      "sha256": "d98d0d7044453873989fe8b5c4800e8a90291c3006db58a3ebfdabefdfde0b23"
+    },
+    {
+      "id": "P05",
+      "kind": "display",
+      "original": "\n\\begin{aligned}\n\\vert b \\oplus 0 \\rangle & = \\vert b\\rangle = \\mathbb{I} \\vert b \\rangle = X^0 \\vert b \\rangle\\\\\n\\vert b \\oplus 1 \\rangle & = \\vert \\neg b\\rangle = X \\vert b \\rangle = X^1 \\vert b \\rangle.\n\\end{aligned}\n",
+      "offset": 412,
+      "cell_offset": 7569,
+      "sha256": "342f8995840da93a151d24d2421541141916690b4da3244d8fef4d970e3895f0"
+    },
+    {
+      "id": "P06",
+      "kind": "display",
+      "original": "\nU_f \\bigl(\\vert b\\rangle \\vert a \\rangle\\bigr)\n= \\vert b \\oplus f(a) \\rangle \\vert a \\rangle\n= \\bigl(X^{f(a)}\\vert b \\rangle\\bigr) \\vert a \\rangle\n",
+      "offset": 671,
+      "cell_offset": 7828,
+      "sha256": "f3b35b6e716980b42947c0e2d177ccfdc9855141a765e68873ebe0c21f1769dc"
+    },
+    {
+      "id": "P07",
+      "kind": "inline",
+      "original": "a,b\\in\\Sigma",
+      "offset": 850,
+      "cell_offset": 8007,
+      "sha256": "85fdbc08e9047738f5b2ed6b1465c18054f1286fc09536eb6556f9ad0be7c680"
+    },
+    {
+      "id": "P08",
+      "kind": "inline",
+      "original": "b=0",
+      "offset": 899,
+      "cell_offset": 8056,
+      "sha256": "a9472a91b2b007e86b7a37077e84ec7a99ae99473eaa6db999bb43e4675fb789"
+    },
+    {
+      "id": "P09",
+      "kind": "inline",
+      "original": "b=1",
+      "offset": 909,
+      "cell_offset": 8066,
+      "sha256": "cbe78bac8689bf95bcd287d4cccb0080cfaf95f7d65549758ae6297709f1193d"
+    },
+    {
+      "id": "P10",
+      "kind": "display",
+      "original": "\nU_f \\bigl( \\vert \\psi \\rangle \\vert a \\rangle \\bigr) = \\bigl(X^{f(a)}\\vert \\psi \\rangle\\bigr) \\vert a \\rangle\n",
+      "offset": 942,
+      "cell_offset": 8099,
+      "sha256": "04361e3cd6f8a10e7e6c789bd7770b2251b25065476bce51b34c7e347f57b44c"
+    },
+    {
+      "id": "P11",
+      "kind": "inline",
+      "original": "\\vert \\psi\\rangle",
+      "offset": 1087,
+      "cell_offset": 8244,
+      "sha256": "6004d4dfe30fad4d5d8db2a277b104d8eb991d40687997ca30e449705f757a9b"
+    },
+    {
+      "id": "P12",
+      "kind": "display",
+      "original": "\nU_f \\bigl( \\vert - \\rangle \\vert a \\rangle \\bigr) = \\bigl(X^{f(a)} \\vert - \\rangle \\bigr) \\vert a \\rangle\n= (-1)^{f(a)} \\vert - \\rangle \\vert a \\rangle.\n",
+      "offset": 1123,
+      "cell_offset": 8280,
+      "sha256": "79f12331c9e50d9518f11230e09fca782a361d9d56773047bd44c789ee5e269a"
+    },
+    {
+      "id": "P13",
+      "kind": "inline",
+      "original": "X\\vert - \\rangle = - \\vert - \\rangle",
+      "offset": 1320,
+      "cell_offset": 8477,
+      "sha256": "4d06a47c3d13a739063dae508f6836e1058e703e12db3504c41fb55bf67b6de8"
+    },
+    {
+      "id": "P14",
+      "kind": "inline",
+      "original": "\\vert - \\rangle",
+      "offset": 1394,
+      "cell_offset": 8551,
+      "sha256": "432bdc0e9c6ae70d3c72495a2dfbf2092b4d492366fdf64ce328586eb63f8354"
+    },
+    {
+      "id": "P15",
+      "kind": "inline",
+      "original": "X",
+      "offset": 1446,
+      "cell_offset": 8603,
+      "sha256": "4b68ab3847feda7d6c62c1fbcbeebfa35eab7351ed5e78f4ddadea5df64b8015"
+    },
+    {
+      "id": "P16",
+      "kind": "inline",
+      "original": "-1",
+      "offset": 1470,
+      "cell_offset": 8627,
+      "sha256": "1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464"
+    },
+    {
+      "id": "P17",
+      "kind": "inline",
+      "original": "U_f",
+      "offset": 1804,
+      "cell_offset": 8961,
+      "sha256": "ada27fd6e08006d56c59d3c246751ed2bacc55c8161a9a164bb9e2d671bba433"
+    },
+    {
+      "id": "P18",
+      "kind": "inline",
+      "original": "\\vert \\pi_1\\rangle",
+      "offset": 1821,
+      "cell_offset": 8978,
+      "sha256": "959a0036a234ae57560c470b7ce2188a5bc5fda69476e4c2a84950a06fd784a2"
+    },
+    {
+      "id": "P19",
+      "kind": "inline",
+      "original": "\\vert \\pi_2\\rangle",
+      "offset": 1847,
+      "cell_offset": 9004,
+      "sha256": "454072338b4be938e61e794d5db1778756b718131107e83e1b4eef8136c6b03b"
+    },
+    {
+      "id": "P20",
+      "kind": "display",
+      "original": "\n\\begin{aligned}\n  \\vert \\pi_2 \\rangle\n  & = U_f \\bigl( \\vert - \\rangle \\vert + \\rangle \\bigr)\\\\\n  & = \\frac{1}{\\sqrt{2}} U_f \\bigl(\\vert - \\rangle \\vert 0\\rangle \\bigr)\n    + \\frac{1}{\\sqrt{2}} U_f \\bigl(\\vert - \\rangle \\vert 1\\rangle \\bigr)\\\\\n  & = \\vert - \\rangle \\biggl( \\frac{(-1)^{f(0)} \\vert 0\\rangle + (-1)^{f(1)} \\vert 1\\rangle}{\\sqrt{2}}\\biggr).\n\\end{aligned}\n",
+      "offset": 1892,
+      "cell_offset": 9049,
+      "sha256": "bcbfb3aad30622900d333a0032323de22568d53249d713ce2090a93444ac1d2a"
+    }
+  ],
+  "diagrams": [],
+  "code_cells": [],
+  "notebook_cells": [
+    {
+      "index": 0,
+      "id": "7e5d320e",
+      "type": "markdown",
+      "sha256": "a3155143e8613156279f9d03c7bba3b83bc1aaced25ff48bfc137a920f0cf5d9",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 1,
+      "id": "d0cff57e",
+      "type": "markdown",
+      "sha256": "f7f66d07663b76f87d6965c90d285cc7cec1ce8bcc43de958352cf787ef30445",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 2,
+      "id": "baa9bc2c",
+      "type": "code",
+      "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80",
+      "execution": "not executed",
+      "source": "from qiskit import __version__\n\nprint(__version__)"
+    },
+    {
+      "index": 3,
+      "id": "0a706449",
+      "type": "code",
+      "sha256": "0f8cd08c48a98dd1d530a9045b0c726ac7361de4bd0d8acba93ae00e5518db61",
+      "execution": "not executed",
+      "source": "from qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator"
+    },
+    {
+      "index": 4,
+      "id": "0af39df9",
+      "type": "markdown",
+      "sha256": "fa373c884d885872e8c8845ea465efa7bd1254bb074c9eb1768c3de7bf40cb39",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 5,
+      "id": "ba5a708f",
+      "type": "code",
+      "sha256": "890c5cf7a475ca211c14a959bfbb5e6accf78c7644c5f3fc68910c2bba9bb87e",
+      "execution": "not executed",
+      "source": "def deutsch_function(case: int):\n    # This function generates a quantum circuit for one of the 4 functions\n    # from one bit to one bit\n\n    if case not in [1, 2, 3, 4]:\n        raise ValueError(\"`case` must be 1, 2, 3, or 4.\")\n\n    f = QuantumCircuit(2)\n    if case in [2, 3]:\n        f.cx(0, 1)\n    if case in [3, 4]:\n        f.x(1)\n    return f"
+    },
+    {
+      "index": 6,
+      "id": "46eccf09",
+      "type": "markdown",
+      "sha256": "ce4b48ac27444e2cd6d5908323f4fed7586e22830e851b297daac555f90c916a",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 7,
+      "id": "787e3c81",
+      "type": "code",
+      "sha256": "b7072258896520d0823a1834e24bfe4f8d66486c55aa2b61c423a9938573ae99",
+      "execution": "not executed",
+      "source": "display(deutsch_function(3).draw(output=\"mpl\"))"
+    },
+    {
+      "index": 8,
+      "id": "b6fa5b7b",
+      "type": "markdown",
+      "sha256": "4baa8eb611932f62c25062a3e704a3b694945b5b2c504f43f562c53b709eda69",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 9,
+      "id": "379aac92",
+      "type": "code",
+      "sha256": "ae6a4337303cc4dcdef6b8c1a0a6ddb156c9260057c54694f97355e3def597b8",
+      "execution": "not executed",
+      "source": "def compile_circuit(function: QuantumCircuit):\n    # Compiles a circuit for use in Deutsch's algorithm.\n\n    n = function.num_qubits - 1\n    qc = QuantumCircuit(n + 1, n)\n\n    qc.x(n)\n    qc.h(range(n + 1))\n\n    qc.barrier()\n    qc.compose(function, inplace=True)\n    qc.barrier()\n\n    qc.h(range(n))\n    qc.measure(range(n), range(n))\n\n    return qc"
+    },
+    {
+      "index": 10,
+      "id": "e5112614",
+      "type": "markdown",
+      "sha256": "d72806450d10501e4524900e5ebe8996a1a5642edd9a1fc1a2230b9e9a8818cb",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 11,
+      "id": "27b41067",
+      "type": "code",
+      "sha256": "5cf7801fff08ffc6da621b4ab00f565bf5c268bd13e2058caef62c715100ca96",
+      "execution": "not executed",
+      "source": "display(compile_circuit(deutsch_function(3)).draw(output=\"mpl\"))"
+    },
+    {
+      "index": 12,
+      "id": "d24d14eb",
+      "type": "markdown",
+      "sha256": "96d9ba626e2b6b246339373dfcaa477d11b3ed08b24f9019445120eeb59ae6b0",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 13,
+      "id": "5b31e311",
+      "type": "code",
+      "sha256": "a12dd3741f410b738ec09a1b965ea0e67df188e034ac38a9ce7f536c0d6d6714",
+      "execution": "not executed",
+      "source": "def deutsch_algorithm(function: QuantumCircuit):\n    # Determine if a one-bit function is constant or balanced.\n\n    qc = compile_circuit(function)\n\n    result = AerSimulator().run(qc, shots=1, memory=True).result()\n    measurements = result.get_memory()\n    if measurements[0] == \"0\":\n        return \"constant\"\n    return \"balanced\""
+    },
+    {
+      "index": 14,
+      "id": "3d0868ed",
+      "type": "markdown",
+      "sha256": "992056cf3eccf4c30c9e96ceb3b1ff26a8229955909d6d239765ecf39985c878",
+      "execution": "not executed",
+      "source": null
+    },
+    {
+      "index": 15,
+      "id": "33b8355d",
+      "type": "code",
+      "sha256": "e6c54a1d2d0a3aa92f5e029e71fbb3262dd67b9636b6b603b5a0f356c4d18c30",
+      "execution": "not executed",
+      "source": "f = deutsch_function(3)\ndisplay(deutsch_algorithm(f))"
+    },
+    {
+      "index": 16,
+      "id": "a1b8767d",
+      "type": "markdown",
+      "sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65",
+      "execution": "not executed",
+      "source": null
+    }
+  ],
+  "note": "Notebook code inventory is routing information, not SDK execution or coverage."
+}
