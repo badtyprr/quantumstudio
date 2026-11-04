@@ -36,33 +36,36 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 
 ## Dated development staging checkpoint - 2026-11-04
 
-This is a record of reviewed preparation, not a release announcement. Live master
-was `02d5ca3f5713385818e80db15b1a58e3b518e569` at this checkpoint. The draft PRs
-below were unmerged; no new public release is established. Recheck exact heads,
-required CI and actual merged trees before integration. The existing release
-ledger and whole-source checkboxes remain unchanged.
+This records reviewed preparation, not a release announcement. Live master remains
+`02d5ca3f5713385818e80db15b1a58e3b518e569`; PR428 remains open at reviewed head
+`7c41e31cb8f12d99a00a6578e344bf86f262f808`. No new merge or public release is
+credited. Recheck exact heads, required CI and actual merged trees before action.
+The release ledger and all 188 whole-source checkboxes remain unchanged.
 
-| Scope | Reviewed preparation | Evidence established | Remaining acceptance |
-|---|---|---|---|
-| DEV-17 | [PR428](https://github.com/badtyprr/quantumstudio/pull/428), `7c41e31cb`; [PR429](https://github.com/badtyprr/quantumstudio/pull/429), `abd843427` | Candidate acceptance and independent reviews; new non-Candidate workflow reviewed | Exact merge authorization, actual master CI/tree, newly built final bytes, final visual/native acceptance, separate publication authorization and public-download hashes |
-| DEV-16 | [PR431](https://github.com/badtyprr/quantumstudio/pull/431), `f3b4f55a` | Reviewed diagnostics and editor acceptance; hosted classical 1,184 checks, six imports and 12 round trips | Hosted composer route was explicitly structural only; full package numerical acceptance and source-specific remaining failure matrix stay open |
-| DEV-05 complement | [PR430](https://github.com/badtyprr/quantumstudio/pull/430), `3fdf7ebd`; [PR435](https://github.com/badtyprr/quantumstudio/pull/435), harness `74212d518` | Reviewed finite grammar; fresh native suite 79 passed / one existing skip; dedicated integrated-worker checks passed | Local Clipboard/session attempt blocked by locked desktop; reviewed hosted candidate route pending. Its newly built bytes must be identified separately from the local worker |
-| DEV-05 tensor marker | [PR437](https://github.com/badtyprr/quantumstudio/pull/437), `ec2610d7` | Reviewed source-backed IBM-020 M24 increment; standalone-parser and retained-evaluator checks passed | Fresh integrated worker, GUI/session and actual release acceptance; the other 45 inventoried source occurrences are not certified |
-| DEV-11 vector XOR | [PR438](https://github.com/badtyprr/quantumstudio/pull/438), `577dbb657` | Repeated real-worker failure and reviewed corresponding-index correction; the defect exists in the baseline | Fresh corrected-worker regression and integrated/release acceptance. Static review is not a green test result |
-| DEV-13 external notebooks | [PR432](https://github.com/badtyprr/quantumstudio/pull/432), `3b62cd56e`; [PR434](https://github.com/badtyprr/quantumstudio/pull/434), `57844c51b` | Original IBM-019/020 cells executed in pinned offline environments; shared environment/run/cancel interface independently reviewed; 12 lifecycle tests passed | Application runtime integration, other frameworks, external resources and full interpretation remain open. Authored seed/witness cells are separately identified; finite external execution does not complete AUD-04 |
-| AUD-02 discovery | [PR433](https://github.com/badtyprr/quantumstudio/pull/433), `4a788743`; [PR436](https://github.com/badtyprr/quantumstudio/pull/436), `945efea7a` | Reviewed dated repository comparison and additional source/dependency accounting; 188 known source rows, all unchecked | DISC-01/02/04/05 and full source acceptance remain open. Retained landing shells do not establish question/path content or authentication requirements |
+| Scope | Reviewed preparation and verified evidence | Remaining acceptance |
+|---|---|---|
+| DEV-17 | [PR428](https://github.com/badtyprr/quantumstudio/pull/428), `7c41e31cb`; [PR429](https://github.com/badtyprr/quantumstudio/pull/429), `abd843427`: candidate acceptance and final-release workflow reviewed | Exact merge authorization, actual master tree/CI, newly built non-Candidate bytes, final visual/native acceptance, separate publication authorization and public-download hashes |
+| DEV-16 | [PR431](https://github.com/badtyprr/quantumstudio/pull/431), `f3b4f55a`: hosted classical 1,184 checks, six structural imports and 12 round trips. [PR446](https://github.com/badtyprr/quantumstudio/pull/446), `b7eaa7190`, adds reviewed actual-package numerical acceptance | Full six-case/36-check hosted numerical result and source-specific remaining acceptance; structural checks do not establish numerical equivalence |
+| DEV-05 complement | [PR430](https://github.com/badtyprr/quantumstudio/pull/430), `3fdf7ebd`; [PR435](https://github.com/badtyprr/quantumstudio/pull/435), harness `74212d518`. Native finite checks pass; hosted attempt 2 built a 361-file Candidate ZIP, SHA256 `4d0c028494116a47c8a3ac674c6b5a824e13673fb4d2d34a36edfc612c556b56` | Hosted GUI acceptance stopped before cases at a harness PowerShell binding error. Corrected-harness replay against those retained bytes, GUI/session and actual release acceptance remain open. Candidate bytes are distinct from local workers |
+| DEV-05 tensor and DEV-11 XOR | [PR437](https://github.com/badtyprr/quantumstudio/pull/437), `ec2610d7`; [PR438](https://github.com/badtyprr/quantumstudio/pull/438), `577dbb657`. Fresh Windows source577db: 81 passed/one existing skip; notation589, tensor253, complement108 and direct vector577 pass. Fresh Linux82/82 pass | Combined rehearsal, GUI/session and release acceptance; finite M24 and vector checks certify no whole source |
+| DEV-11 decoder and DEV-12 composition | [PR441](https://github.com/badtyprr/quantumstudio/pull/441), `fdf434bb6`; [PR439](https://github.com/badtyprr/quantumstudio/pull/439), `e2854eebc`. Fresh577db replay: decoder128 inputs/513 checks and copies; composition seven cases/nine policy checks/90 stages and copies | Authored witnesses and projected residuals remain distinct from original-source operations; no arbitrary-error, full-source, GUI or release acceptance |
+| DEV-13 and Linux prerequisites | [PR432](https://github.com/badtyprr/quantumstudio/pull/432)/[PR434](https://github.com/badtyprr/quantumstudio/pull/434): original IBM019/020 execution in pinned offline environments. [PR442](https://github.com/badtyprr/quantumstudio/pull/442), `bfe2c8944`: actual Linux service gate/ordinary cleanup and 46-wheel offline inventory verified. [PR443](https://github.com/badtyprr/quantumstudio/pull/443), `3bcdc0afc`: control-loss fix,20 Windows lifecycle tests and unchanged original results | Actual Linux failure/descendant containment, original-framework execution on Linux, application integration, other frameworks and full interpretation remain open; bootstrap and authored fixtures cannot certify AUD-04 |
+| DEV-14 QIR | [PR440](https://github.com/badtyprr/quantumstudio/pull/440), `c0152f210`: original QB017 cells and offline setup execute, LLVM validates; original unmeasured result outputs correctly fail semantic acceptance. Separate authored measured controls pass | Original semantic execution, provider requirements and whole-source interpretation remain unaccepted; valid LLVM alone is insufficient |
+| AUD-01 | [PR445](https://github.com/badtyprr/quantumstudio/pull/445), `c68bc989c`: IBM020 inventory168 math/eight code cells; fresh577db replay preserves162 primary passes, two failed adaptations, ten context passes,172 numeric copies, nine rejected literals and one deferred original | Literal, Bernstein–Vazirani, unrestricted-family, notebook, media and GUI/session acceptance remain open. Zero probe exit means baseline observations reproduced, not all math passed |
+| AUD-02 | [PR433](https://github.com/badtyprr/quantumstudio/pull/433)/[PR436](https://github.com/badtyprr/quantumstudio/pull/436)/[PR444](https://github.com/badtyprr/quantumstudio/pull/444), `b013a4bba`: 188 known source rows; 47 retained assets/333 classified links plus17 separate parent fields; IBM138's152 links remain separate | DISC-01/02/04/05 and full source acceptance stay open. Link roles and landing shells do not establish rendered content, exam questions, provider access or authentication requirements |
 
-The reviewed DEV-16 reconciliation evidence is already included in PR428; original
-commit IDs differing after cherry-pick do not justify applying it again. The
-reviewed branches have also been combined in a local rehearsal, with distribution
-conflicts resolved by preserving every entry. That rehearsal is not actual master
-integration and has no combined runtime/package acceptance yet.
-
-DEV-12 regularized-overlap composition and DEV-14 QIR prerequisites are additional
-external investigations, not completed feature or source rows. A successful
-composition pilot does not justify a new API; valid LLVM artifacts do not by
-themselves prove QIR semantic execution. Access-blocked, external-runtime and
-unexecuted acceptance must retain their separate evidence and disposition.
+The original DEV-16 reconciliation blobs already exist in PR428; differing
+cherry-pick commit IDs do not justify applying them again. Reviewed branches are
+combined in a preserved rehearsal whose distribution conflicts retain every entry.
+That rehearsal is not master integration and has no combined runtime/package
+acceptance. Separate probe and worker revisions are recorded explicitly: fresh
+Windows worker SHA256 is `1d9fbc1e42a1b001d73665fee5f7cbf46df02fdf5eb180f9ebd73345bd1daff9`.
+External evidence remains under `cleanup-audit/coordinator-20261104/`, including
+`dev11-vector-xor-native`, `combined-worker-577db-attempt01`,
+`ibm020-577db-attempt01`, `linux-bootstrap-run41872076629` and
+`dev05-hosted-run41862013549-attempt2`; these are retained dependencies, not shipped
+release payloads. Access-blocked, external-runtime and unexecuted acceptance stay
+separate. Finite adaptations never certify complete lessons or notebooks.
 
 ## Release queue
 
