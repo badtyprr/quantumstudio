@@ -1,0 +1,107 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "source_repository_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "source_git_blob": "6db27732a25e8c47911b1dc9a3d89f4f72499ea6",
+  "worker_revision": "577dbb6572a9442e1d654e4b2264709f603d77ab",
+  "worker_sha256": "1d9fbc1e42a1b001d73665fee5f7cbf46df02fdf5eb180f9ebd73345bd1daff9",
+  "counts": {
+    "total": 44,
+    "original_rejections": 9,
+    "pilot_adaptations": 20,
+    "joint_adaptations": 3,
+    "authored_gf2_controls": 12,
+    "value_copy_pairs": 35
+  },
+  "native_runs": {
+    "pilot": {
+      "folder": "cleanup-audit/math-lane-20261104/ibm021/pilot-01",
+      "files": {
+        "fixtures.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\pilot-01\\fixtures.json",
+          "sha256": "175cccd59938248e8293332b1b5de1f05e3fcff289873eb326ca2b540d8b5a7a",
+          "bytes": 21217
+        },
+        "results.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\pilot-01\\results.json",
+          "sha256": "5ae5a9f550e5c6e937b829f87bb981570db6483d65142d0990cecb138f32ed34",
+          "bytes": 78109
+        },
+        "probe-snapshot.py": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\pilot-01\\probe-snapshot.py",
+          "sha256": "3b765693c3ecfa3f6ad9e1687f2c5edf80ea334c4a80207159426c388f9643f8",
+          "bytes": 4272
+        },
+        "verification.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\pilot-01\\verification.json",
+          "sha256": "57614e6c3041fe54e0c6b8ad6fc6acf48358a552800880a8193d8dcd8032a21a",
+          "bytes": 1057
+        },
+        "reviews.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\pilot-01\\reviews.json",
+          "sha256": "70a208257fcf35370d8695f45c01c4c53ab1e534aa6c7d651c9a0ac0db38f461",
+          "bytes": 496
+        }
+      }
+    },
+    "joint": {
+      "folder": "cleanup-audit/math-lane-20261104/ibm021/joint-proposal/run-01",
+      "files": {
+        "fixtures.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\joint-proposal\\fixtures.json",
+          "sha256": "2972a8a0d964f3de2584e455ca30fe46db394428f2cdb8cd0351969b7ffb7f99",
+          "bytes": 89860
+        },
+        "results.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\joint-proposal\\run-01\\results.json",
+          "sha256": "bbad053709cf3570aa18ec43898fd33d4554d626ed8562d49e608ba60b2da4e5",
+          "bytes": 63937
+        },
+        "probe-snapshot.py": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\joint-proposal\\run-01\\probe-snapshot.py",
+          "sha256": "a4607d11c4b4cf0ac27d4d66fa4fa76c571781ab86fe25de2e4a0980ca544073",
+          "bytes": 7916
+        },
+        "audit.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\joint-proposal\\run-01\\audit.json",
+          "sha256": "70f50b7791c649d404720cff92f73a66a012685349fe3cf37243d2e85f71d81a",
+          "bytes": 2317
+        },
+        "reviews.json": {
+          "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261104\\ibm021\\joint-proposal\\run-01\\reviews.json",
+          "sha256": "a0fce8b131c64435d5735721bfa6ba7aacff4891459d97ea3ac6bdf55fc5ffd8",
+          "bytes": 679
+        }
+      }
+    }
+  },
+  "exact_reference": "Rational/Q(sqrt2), no tolerance or phase alignment; full canonical matrices and binary spans",
+  "reviews": {
+    "pilot": {
+      "standards": 0,
+      "spec": 0
+    },
+    "joint": {
+      "standards": 0,
+      "spec": 0
+    },
+    "packaged_final": "Recorded separately in the integration handoff; not inferred from prior increment reviews."
+  },
+  "remaining": [
+    "Original literal notation",
+    "Random-shot sampling and independence",
+    "General register widths/families",
+    "Actual GUI/Clipboard and saved sessions",
+    "Whole source completion"
+  ],
+  "external_history_not_baseline": [
+    "The pilot verifier initially rejected displayed decimal0.25 syntax; parsing corrected and full canonical1/4 entries also checked. This was not a native failure.",
+    "Joint proposal original-copy failure guard was corrected after synthetic red/green injection. Synthetic artifacts remain outside this native baseline under joint-proposal/copy-fault-before and copy-fault-after."
+  ],
+  "media": {
+    "status": "Separate recovered pinned repository original rendered and independently reviewed; not calculator acceptance",
+    "source_sha256": "d310a30cf1768134b0105f0dfa757cc2346a1a41b6ab3e03fc42724a1e3d8e8f",
+    "git_blob": "46fa8df5994bcee266b6ede0d5fb82af1e23e6de",
+    "external_manifest": "cleanup-audit/math-lane-20261104/ibm021/media/manifest.json",
+    "historical_cloud_equivalence": "unverified"
+  }
+}
