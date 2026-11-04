@@ -252,3 +252,8 @@ EXTRA_DIST += windows/Dev17GuiTests.cs windows/test-named-subsystems-gui.ps1
 EXTRA_DIST += docs/learning-evidence/dev17/validation.md
 
 EXTRA_DIST += docs/learning-evidence/dev17/integration.md
+EXTRA_DIST += docs/learning-evidence/dev16/reconciliation.md
+EXTRA_DIST += docs/learning-evidence/dev16/rel09-composer.json
+EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
+EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
+EXTRA_DIST += docs/learning-evidence/dev16/verification.json
