@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "timing-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "timing-requirements.lock",
+  "lock_sha256": "e212293aefe95ae61a6ddfdd93b5dc34b511ab301cd8c635fb5645a46a78860b",
+  "offline_only": true,
+  "wheel_requirement": "Reviewed62-distribution Windows closure including qiskit[all]2.6.1 and two reviewed custom pure-Python wheels; exact inventory required",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}

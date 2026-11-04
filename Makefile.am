@@ -380,3 +380,14 @@ EXTRA_DIST += docs/learning-evidence/dev15/provider-offline.md
 EXTRA_DIST += .github/workflows/dev16-source-failure-acceptance.yml
 
 EXTRA_DIST += .github/workflows/dev16-source-evidence-verify.yml
+
+EXTRA_DIST += docs/learning-evidence/dev15/ibm-timing.md
+EXTRA_DIST += windows/dev13-notebooks/contracts/ibm-timing.json
+EXTRA_DIST += windows/dev13-notebooks/observers/ibm_timing.py
+EXTRA_DIST += windows/dev13-notebooks/observers/ibm_timing_checkpoint.py
+EXTRA_DIST += windows/dev13-notebooks/observers/ibm_timing_cleanup.py
+EXTRA_DIST += windows/dev13-notebooks/profiles/timing-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/test_timing.py
+EXTRA_DIST += windows/dev13-notebooks/timing-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/timing_reference.py
+EXTRA_DIST += windows/dev13-notebooks/witnesses/ibm_timing.py
