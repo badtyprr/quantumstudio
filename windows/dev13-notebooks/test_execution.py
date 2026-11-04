@@ -17,6 +17,53 @@ from unittest.mock import patch
 import execution
 
 
+class PlatformProfileTests(unittest.TestCase):
+    def test_both_original_contracts_select_only_the_host_profile(self):
+        for name in ("ibm019", "ibm020"):
+            contract = json.loads((execution.ROOT / "contracts" / (name + ".json")).read_bytes())
+            for platform, expected in (("win32", "qiskit-aer-win-py312"), ("linux", "qiskit-aer-linux-py312")):
+                with self.subTest(contract=name, platform=platform), patch.object(execution.sys, "platform", platform):
+                    with patch.object(execution, "profile_for", return_value={"platform": platform}) as lookup:
+                        self.assertEqual(execution.contract_profile(contract), {"platform": platform})
+                        lookup.assert_called_once_with(expected)
+
+    def test_unsupported_host_rejected_before_environment_or_source_access(self):
+        for name in ("ibm019", "ibm020"):
+            with self.subTest(contract=name), patch.object(execution.sys, "platform", "darwin"):
+                with patch.object(execution, "profile_for") as lookup, patch.object(execution, "inspect_environment") as inspect:
+                    with self.assertRaisesRegex(ValueError, "UNSUPPORTED_CONTRACT_PLATFORM"):
+                        execution.validate_request({"contract": name, "source": "must-not-be-read"})
+                    lookup.assert_not_called()
+                    inspect.assert_not_called()
+
+    def test_legacy_profile_still_requires_matching_platform(self):
+        with patch.object(execution.sys, "platform", "linux"):
+            with patch.object(execution, "profile_for", return_value={"platform": "win32"}):
+                with self.assertRaisesRegex(ValueError, "UNSUPPORTED_CONTRACT_PLATFORM"):
+                    execution.contract_profile({"profile": "qir-win-py312"})
+        with patch.object(execution.sys, "platform", "win32"):
+            with patch.object(execution, "profile_for", return_value={"platform": "win32"}) as lookup:
+                execution.contract_profile({"profile": "qir-win-py312"})
+                lookup.assert_called_once_with("qir-win-py312")
+
+    def test_malformed_maps_rejected(self):
+        for mapping in ([], {"darwin": "x"}, {"win32": 1}):
+            with self.subTest(mapping=mapping), patch.object(execution.sys, "platform", "win32"):
+                with self.assertRaisesRegex(ValueError, "INVALID_PLATFORM_PROFILES"):
+                    execution.contract_profile({"profiles": mapping})
+
+    def test_mapped_unknown_profile_cannot_bypass_allowlist(self):
+        with patch.object(execution.sys, "platform", "linux"):
+            with self.assertRaisesRegex(ValueError, "UNKNOWN_PROFILE"):
+                execution.contract_profile({"profiles": {"linux": "arbitrary-unreviewed"}})
+
+    def test_mapped_profile_cannot_claim_a_different_platform(self):
+        with patch.object(execution.sys, "platform", "linux"):
+            with patch.object(execution, "profile_for", return_value={"platform": "win32"}):
+                with self.assertRaisesRegex(ValueError, "UNSUPPORTED_CONTRACT_PLATFORM"):
+                    execution.contract_profile({"profiles": {"linux": "qiskit-aer-linux-py312"}})
+
+
 class LifecycleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
