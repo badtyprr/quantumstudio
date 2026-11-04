@@ -1,0 +1,150 @@
+# Fresh non-Candidate package from the dispatched current master; no publication.
+name: DEV17 verified master release build
+on:
+  workflow_dispatch:
+    inputs:
+      expected_revision:
+        description: Full reviewed current master SHA (including this workflow)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: dev17-final-release
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    env:
+      DEV17_EXPECTED_REVISION: ${{ inputs.expected_revision }}
+      DEV17_WORKFLOW_SHA: ${{ github.workflow_sha }}
+      DEV17_WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Require reviewed workflow and current master identity
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $expected = $env:DEV17_EXPECTED_REVISION
+          if ($expected -cnotmatch '^[0-9a-f]{40}$') { throw 'Expected a full lowercase commit SHA.' }
+          if ($env:GITHUB_EVENT_NAME -ne 'workflow_dispatch' -or
+              $env:GITHUB_REPOSITORY -ne 'badtyprr/quantumstudio' -or
+              $env:GITHUB_REF -ne 'refs/heads/master') { throw 'Dispatch only the canonical master workflow.' }
+          if ($env:GITHUB_SHA -ne $expected -or $env:DEV17_WORKFLOW_SHA -ne $expected -or
+              $env:DEV17_WORKFLOW_REF -ne 'badtyprr/quantumstudio/.github/workflows/dev17-release.yml@refs/heads/master') {
+            throw 'Dispatched source/workflow differs from expected reviewed master.'
+          }
+          $remote = @(git ls-remote --exit-code https://github.com/badtyprr/quantumstudio.git refs/heads/master)
+          if ($LASTEXITCODE -ne 0 -or $remote.Count -ne 1) { throw 'Cannot establish current master.' }
+          $master = ($remote[0] -split '\s+')[0]
+          if ($master -ne $expected) { throw 'Master moved; reconcile before dispatching a new attempt.' }
+          @{
+            expected_revision=$expected; remote_master=$master; event_revision=$env:GITHUB_SHA
+            workflow_revision=$env:DEV17_WORKFLOW_SHA; workflow_ref=$env:DEV17_WORKFLOW_REF
+            candidate=$false; publication=$false
+          } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-dispatch-identity.json"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Read-only session preflight
+        shell: pwsh
+        run: |
+          ./diagnostics/dev17-unattended/Inspect-Environment.ps1 -Evidence "$env:RUNNER_TEMP/dev17-preflight"
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE) { throw 'Revision lookup failed' }
+          if ($revision -ne $env:DEV17_EXPECTED_REVISION) { throw 'Checkout revision mismatch.' }
+          $tree = git rev-parse 'HEAD^{tree}'
+          if ($LASTEXITCODE) { throw 'Tree lookup failed' }
+          $original = @{
+            'windows/Dev17GuiTests.cs'='e71ce87793009de5b6bdbd32e690355f56836856b73bab14dbdb938ec32716aa'
+            'windows/test-named-subsystems-gui.ps1'='718576564b3ff9fd7b4c4fe16da3498ad0cb5b8195dee1e6e9118495b01a99d8'
+          }
+          foreach ($name in $original.Keys) {
+            if ((Get-FileHash -LiteralPath $name).Hash.ToLower() -ne $original[$name]) { throw "Original fixture changed: $name" }
+          }
+          @{
+            revision=$revision; tree=$tree; event_revision=$env:GITHUB_SHA
+            candidate=$false; publication=$false; original_fixture_hashes=$original
+            expected_revision=$env:DEV17_EXPECTED_REVISION; workflow_revision=$env:DEV17_WORKFLOW_SHA
+            workflow_ref=$env:DEV17_WORKFLOW_REF
+            powershell=$PSVersionTable.PSVersion.ToString()
+          } | ConvertTo-Json -Depth 5 | Set-Content "$env:RUNNER_TEMP/dev17-preflight/source.json"
+          Copy-Item -LiteralPath .github/workflows/dev17-release.yml -Destination "$env:RUNNER_TEMP/dev17-preflight/workflow.yml"
+          Get-FileHash -LiteralPath .github/workflows/dev17-release.yml,windows/package.ps1,diagnostics/dev17-unattended/Run-Acceptance.ps1,diagnostics/dev17-unattended/KeywordGuiTests.cs | Select-Object Path,Hash | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-preflight/source-helper-hashes.json"
+          $probe = Get-Content "$env:RUNNER_TEMP/dev17-preflight/environment.json" -Raw | ConvertFrom-Json
+          if (!$probe.clipboard_open) { throw 'Hosted Clipboard denied; preserve evidence and stop.' }
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        id: msys
+        with:
+          msystem: UCRT64
+          update: true
+          cache: false
+          install: >-
+            autoconf automake libtool gettext-devel make
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-pkgconf
+      - name: Prepare compiler dependencies outside clean source
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/dev17-python"
+          if ($LASTEXITCODE) { throw 'venv failed' }
+          & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip install -r windows/qasm-import-requirements.txt
+          if ($LASTEXITCODE) { throw 'pip install failed' }
+          & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip check
+          if ($LASTEXITCODE) { throw 'pip check failed' }
+          & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:RUNNER_TEMP/dev17-preflight/python-packages.txt"
+      - name: Build unchanged package workflow as final release
+        shell: pwsh
+        env:
+          DEV17_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP/dev17-preflight/package.log"
+          try {
+            & "$env:DEV17_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:RUNNER_TEMP/dev17-preflight/msys-packages.txt"
+            if ($LASTEXITCODE) { throw 'MSYS inventory failed' }
+            ./windows/package.ps1 -MsysRoot $env:DEV17_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe"
+          } finally { Stop-Transcript }
+      - name: Actual Copy acceptance against hosted-built payload
+        shell: pwsh
+        run: |
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE) { throw 'Revision lookup failed' }
+          $archive = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-Windows-x64.zip"
+          $source = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-source.tar.gz"
+          python windows/test-package.py $archive --revision $revision
+          if ($LASTEXITCODE) { throw 'Release ZIP/manifest verification failed' }
+          $before = @(Get-FileHash -LiteralPath $archive,$source | Select-Object Path,Hash)
+          $before | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-preflight/archive-hashes.json"
+          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/dev17-release-payload"
+          try {
+            ./diagnostics/dev17-unattended/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/dev17-release-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev17-acceptance" -Revision $revision
+          } finally {
+            foreach ($entry in $before) {
+              if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance' }
+            }
+          }
+      - name: Retain evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev17-release-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/dev17-dispatch-identity.json
+            ${{ runner.temp }}/dev17-preflight/
+            ${{ runner.temp }}/dev17-acceptance/
+            src/*.log
+            src/*.trs
+            config.log
+            *.log
+            *.trs
+            diagnostics/dev17-unattended/
+            windows/Dev17GuiTests.cs
+            windows/test-named-subsystems-gui.ps1
+            dist/
