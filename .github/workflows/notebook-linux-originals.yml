@@ -1,0 +1,99 @@
+name: Original IBM019 and IBM020 Linux execution
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/notebook-linux-originals.yml
+      - diagnostics/notebook-linux-originals/**
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: notebook-linux-originals
+  cancel-in-progress: false
+jobs:
+  originals:
+    if: github.repository == 'badtyprr/quantumstudio' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == 'badtyprr/quantumstudio')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      PRODUCT_REVISION: 244681403225583af607d6839ec39511d83fc2ab
+      HARNESS_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      WORKFLOW_REVISION: ${{ github.workflow_sha }}
+      WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.PRODUCT_REVISION }}
+          persist-credentials: false
+          path: product
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.HARNESS_REVISION }}
+          persist-credentials: false
+          path: harness
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Bind exact source and retain harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C harness rev-parse HEAD)" = "$HARNESS_REVISION"
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          root="$RUNNER_TEMP/notebook-linux-originals"
+          mkdir "$root"
+          mkdir "$root/harness-source"
+          cp harness/diagnostics/notebook-linux-originals/retained_execution.py "$root/harness-source/"
+          cp harness/.github/workflows/notebook-linux-originals.yml "$root/harness-source/"
+          python -I harness/diagnostics/notebook-linux-originals/retained_execution.py bind --root "$root" --product "$GITHUB_WORKSPACE/product" --environment "$RUNNER_TEMP/originals-environment"
+      - name: Actual owned service preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -E -s product/windows/dev13-notebooks/test_linux_execution.py --preflight --output "$RUNNER_TEMP/notebook-linux-originals/preflight" 2>&1 | tee "$RUNNER_TEMP/notebook-linux-originals/preflight.log"
+      - name: Verify immutable retained acquisition and source inputs
+        shell: bash
+        env:
+          ARTIFACT_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -I harness/diagnostics/notebook-linux-originals/retained_execution.py prepare --root "$RUNNER_TEMP/notebook-linux-originals" --product "$GITHUB_WORKSPACE/product" --environment "$RUNNER_TEMP/originals-environment"
+      - name: Offline environment through shared public command
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -E -s product/windows/dev13-notebooks/run.py environment --profile qiskit-aer-linux-py312 --python "$(command -v python)" --wheelhouse "$RUNNER_TEMP/notebook-linux-originals/retained/acquisition/wheels" --destination "$RUNNER_TEMP/originals-environment" 2>&1 | tee "$RUNNER_TEMP/notebook-linux-originals/environment.log"
+      - name: Execute both originals and retain separate outcomes
+        shell: bash
+        run: |
+          set -uo pipefail
+          root="$RUNNER_TEMP/notebook-linux-originals"
+          failed=0
+          for contract in ibm019 ibm020; do
+            set +e
+            timeout --signal=TERM --kill-after=20s 720s python -B -E -s product/windows/dev13-notebooks/run.py run --contract "$contract" --source "$root/retained/acquisition/inputs/sources/$contract.ipynb" --environment "$RUNNER_TEMP/originals-environment" --output "$root/$contract" >"$root/$contract-command.log" 2>&1
+            result=$?
+            set -e
+            printf '%s\n' "$result" >"$root/$contract-exit.txt"
+            if [ "$result" -ne 0 ]; then failed=1; fi
+          done
+          exit "$failed"
+      - name: Audit originals, authored witnesses, rich outputs and cleanup
+        if: always()
+        shell: bash
+        run: |
+          python -I harness/diagnostics/notebook-linux-originals/retained_execution.py audit --root "$RUNNER_TEMP/notebook-linux-originals" --product "$GITHUB_WORKSPACE/product" --environment "$RUNNER_TEMP/originals-environment"
+      - name: Retain available reports and hash all evidence
+        if: always()
+        shell: bash
+        run: |
+          python -I harness/diagnostics/notebook-linux-originals/retained_execution.py seal --root "$RUNNER_TEMP/notebook-linux-originals" --product "$GITHUB_WORKSPACE/product" --environment "$RUNNER_TEMP/originals-environment"
+      - name: Preserve evidence without installed environment
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: notebook-linux-originals-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/notebook-linux-originals/
+          if-no-files-found: error
+          retention-days: 30
