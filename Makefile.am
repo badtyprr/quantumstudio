@@ -266,3 +266,4 @@ EXTRA_DIST += docs/learning-evidence/dev16/rel09-composer.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
 EXTRA_DIST += docs/learning-evidence/dev16/verification.json
+EXTRA_DIST += .github/workflows/dev17-release.yml
