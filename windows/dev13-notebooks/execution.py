@@ -20,7 +20,7 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"ibm019", "ibm020", "qb017", "qb007"}
+CONTRACTS = {"ibm019", "ibm020", "qb017", "qb007", "qb027"}
 SELECTED_ROUTE = "selected-cells/direct-native-execution"
 PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312"}
 
