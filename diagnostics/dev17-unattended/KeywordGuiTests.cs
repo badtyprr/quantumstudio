@@ -47,6 +47,57 @@ class KeywordGuiTests {
   Require(Normalize(copied)==expected,"Wrong full exact matrix: "+expression+" => "+copied);
   await Calculate(copied);Require(Normalize(await Copy())==expected,"Matrix Copy/re-entry changed exact cells");
  }
+ // Calculate launches a fresh worker. save creates a real KnownVariable before
+ // function parses the inner quantum expression (a finite sum binder is not an assignment).
+ // Only fixture-authored expressions without single quotes enter this wrapper.
+ static string AssignedK(string expression,int value=0) {
+  if(expression.Contains("'"))throw new ArgumentException("AssignedK requires a single-quote-free fixture expression");
+  return "if(save("+value+",\"k\")="+value+",function('quantum: "+expression+"'),-1)";
+ }
+ static async Task NumericK(string rho,string mixture,string half) {
+  int initial=checks;
+  // Native oracle: quantum-named-subsystem-test.cc. Independently, summing
+  // rho[2*a+b,2*a+d] over a gives [[3/4,1/4],[1/4,1/4]].
+  foreach(string selector in new[]{"k","[k]","k,[2,2]"})
+   await Matrix(AssignedK("ptrace("+rho+","+selector+")"),mixture);
+  await Matrix(AssignedK("ptrace("+rho+",k)",1),half);
+
+  // With k=0 and the quoted binder not=1, both factors of I4 are traced: 4.
+  string compatibility=AssignedK("sum(ptrace(identity(4),[k,\"not\"]),1,1,\"not\")");
+  await Calculate(compatibility);string scalar=await Copy();
+  Require(Normalize(scalar)=="4","Assigned k / quoted not compatibility must be exactly 4");
+  Capture(Path.Combine(evidence,"numeric-k-compatibility.png"));
+  string session=Path.Combine(evidence,"numeric-k.qsession");object snapshot=Call("CaptureSession");
+  assembly.GetType("SessionStore").GetMethod("Save").Invoke(null,new object[]{session,snapshot});
+  var serializer=new JavaScriptSerializer();string saved=serializer.Serialize(snapshot);
+  await Calculate(scalar);Require(Normalize(await Copy())=="4","Compatibility scalar Copy/re-entry changed");
+  Call("OpenSession",session);Require(serializer.Serialize(Call("CaptureSession"))==saved,"Assigned-k expression/history changed on reopen");
+  await Calculate(((TextBox)Field("input")).Text);Require(Normalize(await Copy())=="4","Reopened assigned-k compatibility changed");
+  Capture(Path.Combine(evidence,"numeric-k-reopened.png"));
+
+  // Deliberately put k second: literal k must differ from numeric index zero.
+  // function's generic x/y/z rewriting recognizes the registered qsubsystems
+  // spelling; the unregistered subsystems alias is not safe inside that wrapper.
+  string mapping="qsubsystems("+rho+",[not,k],[2,2])";
+  await Matrix(AssignedK("ptrace("+mapping+",k)"),half);
+  await Calculate(AssignedK(mapping));string declaration=await Copy();
+  string expected="qsubsystems(matrix(4,4,[1/2,0,0,0,0,0,0,0,0,0,1/4,1/4,0,0,1/4,1/4]),vector(\"not\",\"k\"),vector(2,2))";
+  Require(Normalize(declaration).Replace("'","\"")==expected,"Assigned k changed ordered mapping metadata or matrix");
+  await Calculate(declaration);Require(await Copy()==declaration,"Assigned-k declaration Copy/re-entry changed");
+  session=Path.Combine(evidence,"numeric-k-mapping.qsession");snapshot=Call("CaptureSession");
+  assembly.GetType("SessionStore").GetMethod("Save").Invoke(null,new object[]{session,snapshot});
+  saved=serializer.Serialize(snapshot);
+  await Matrix(AssignedK("ptrace(qsubsystems("+rho+",[k,not],[2,2]),k)"),mixture);
+  Call("OpenSession",session);Require(serializer.Serialize(Call("CaptureSession"))==saved,"Assigned-k mapping/history changed on reopen");
+  string reopened=((TextBox)Field("input")).Text;
+  await Calculate(reopened);Require(await Copy()==declaration,"Reopened assigned-k mapping changed");
+  Capture(Path.Combine(evidence,"numeric-k-mapping-reopened.png"));
+  await Matrix("ptrace("+reopened+",k)",half);
+  await Matrix("ptrace("+reopened+",not)",mixture);
+  await Calculate(AssignedK("ptrace("+mapping+",0)"),"not numeric indices");
+  Capture(Path.Combine(evidence,"numeric-k-mapped-index-rejected.png"));
+  File.WriteAllText(Path.Combine(evidence,"numeric-k-result.txt"),"PASS: "+(checks-initial)+" assigned numeric-k GUI checks; clipboard retries="+clipboardRetries);
+ }
  [STAThread] static int Main(string[] args) {
   string output=Path.GetFullPath(args[1]);Directory.CreateDirectory(output);evidence=output;
   assembly=Assembly.LoadFrom(Path.GetFullPath(args[0]));app=assembly.GetType("QuantumStudio");app.GetField("root",flags).SetValue(null,Path.GetDirectoryName(Path.GetFullPath(args[0])));int code=1;
@@ -73,8 +124,9 @@ class KeywordGuiTests {
      Capture(Path.Combine(output,keyword+"-trace.png"));
     }
     await Matrix("ptrace(subsystems(density(|101>),[not,and,xor],[2,2,2]),[xor,not])","matrix(2,2,[1,0,0,0])");
+    await NumericK(rho,mixture,half);
     File.WriteAllText(Path.Combine(output,"result.txt"),"PASS: "+checks+" DEV-17 supplemental keyword GUI checks; clipboard retries="+clipboardRetries);code=0;
-   }catch(Exception ex){File.WriteAllText(Path.Combine(output,"result.txt"),ex.ToString());}
+   }catch(Exception ex){File.WriteAllText(Path.Combine(output,"result.txt"),ex.ToString());try{Capture(Path.Combine(output,"failure.png"));}catch(Exception captureError){File.WriteAllText(Path.Combine(output,"capture-error.txt"),captureError.ToString());}}
    finally{Application.Current.Shutdown();}
   }),DispatcherPriority.ApplicationIdle);
   app.GetMethod("Main",BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,new object[]{new string[0]});return code;
