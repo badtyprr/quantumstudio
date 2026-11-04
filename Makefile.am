@@ -112,6 +112,15 @@ EXTRA_DIST = config.rpath  \
 	windows/fixtures/dev16-composer-contract.json \
 	windows/dev13-notebooks/execute_ibm019.py \
 	windows/dev13-notebooks/ibm019-requirements.lock \
+	docs/learning-evidence/dev13/execution-interface.md \
+	windows/dev13-notebooks/contracts/ibm019.json \
+	windows/dev13-notebooks/contracts/ibm020.json \
+	windows/dev13-notebooks/execution.py \
+	windows/dev13-notebooks/profiles/qiskit-aer-win-py312.json \
+	windows/dev13-notebooks/run.py \
+	windows/dev13-notebooks/test_execution.py \
+	windows/dev13-notebooks/witnesses/ibm019.py \
+	windows/dev13-notebooks/witnesses/ibm020.py \
 	docs/learning-evidence/dev13/IBM-019-execution.md \
 	windows/test-classical-module-import.py \
 	windows/test-source-files-ui.py \
