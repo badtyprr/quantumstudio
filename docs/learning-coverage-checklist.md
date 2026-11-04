@@ -309,7 +309,7 @@ those semantics when adding whole-program serialization.
 
 ## Source checklist
 
-The pinned inventory contains **137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows)**. The [2026-11-04 supplement](learning-evidence/aud02/catalog-20261104.md) adds three qBraid notebooks as QB-036–038, giving **187 known source rows**. The original inventory and its hashes remain unchanged; 48 supplemental IBM repository assets are a separate discovery queue. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
+The pinned inventory contains **137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows)**. The [2026-11-04 supplement](learning-evidence/aud02/catalog-20261104.md) adds three qBraid notebooks as QB-036–038, giving 187 known source rows before the [2026-11-04 discovery expansion](learning-evidence/aud02/discovery-expansion-20261104.md). That expansion appends IBM-138, giving **188 known source rows**. The original inventory and its hashes remain unchanged; 47 other supplemental IBM repository assets remain a separate discovery queue. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
 
 Each row closes only after an evidence record lists every relevant formula/code cell, direct input versus adaptation, exact/approximate results, copy/save/import behavior where relevant, and all failures linked to development IDs. Mark access restrictions as blocked with a reason. Do not check a row merely because its title or one example is supported.
 
@@ -484,6 +484,8 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-135** [early-stages](https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/early-stages) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-136** [standing-up-team](https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/standing-up-team) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-137** [grant-writing](https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/grant-writing) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-138** [error-correction-ii](https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/error-correction-ii) — P2 / AUD-03; DEV-11 mathematical and DEV-13 runtime prerequisites; AUD-04 full notebook execution/interpretation pending; [pinned identity and finite audit tasks](learning-evidence/aud02/discovery-expansion-20261104.md).
+
 ### ibm_module
 
 - [ ] **MOD-001** [quantum-mechanics/get-started-with-qiskit](https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/get-started-with-qiskit) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
@@ -542,8 +544,8 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 
 ## Discovery checklist (beyond the original 184 pinned rows)
 
-- [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs.
-- [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks.
+- [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs. Retained expansion records 17 metadata assets and identifies IBM-138; six production learning-path sequences and broader content-change accounting remain unverified. See the [bounded expansion evidence](learning-evidence/aud02/discovery-expansion-20261104.md).
+- [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks. Retained expansion inventories 18 overviews, 12 exam descriptions and one notebook, with 485 lexical link occurrences / 304 unique targets across 48 assets. Required/optional classification, underlying exam/path contents and broader media/practice/download/tutorial discovery remain open; landing shells are not content acceptance.
 - [x] DISC-03 — [Dated snapshot reconciliation](learning-evidence/aud02/catalog-20261104.md) completed for observed `4deeced918b79c10a4f7585fafbc65d4250dc6e7` against pinned `86787e1ba372facc224f925189755e69c479828b`: 33 unchanged, QB-025/026 changed, none removed, three new notebooks. This is source discovery at the retained 2026-11-04 snapshot, not execution acceptance or a claim about later HEADs.
 - [ ] DISC-04 — Inventory qBraid SDK, PyQASM, QIR, Algorithms and runtime syntax references beyond demonstration notebooks; separate syntax support from provider execution.
 - [ ] DISC-05 — Inventory qBook courses and chapters through authorized access; record unavailable/account-only content as access-blocked rather than complete.
