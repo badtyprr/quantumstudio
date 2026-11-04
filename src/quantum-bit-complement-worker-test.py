@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Source-backed single-bit complement acceptance, including copied guards."""
 import argparse
 import hashlib
@@ -9,13 +10,16 @@ import subprocess
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('--worker',type=Path,required=True)
-    ap.add_argument('--definitions',type=Path,required=True)
+    ap.add_argument('--worker',type=Path,default=Path(os.environ.get('QUANTUM_WORKER','quantum-worker.exe' if os.name=='nt' else 'quantum-worker')))
+    ap.add_argument('--definitions',type=Path)
     ap.add_argument('--translator',type=Path)
-    ap.add_argument('--output',type=Path,required=True)
+    ap.add_argument('--output',type=Path)
     args=ap.parse_args()
+    args.worker=args.worker.resolve()
     records=[]
-    env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(args.definitions))
+    env=dict(os.environ)
+    if args.definitions:env['QALCULATE_DEFINITIONS_DIR']=str(args.definitions)
+    elif (args.worker.parent/'data').is_dir():env['QALCULATE_DEFINITIONS_DIR']=str(args.worker.parent/'data')
     def execute(expression):
         d=dict(input=expression)
         if args.translator:
@@ -87,8 +91,9 @@ def main():
                  route='standalone parser plus retained evaluator' if args.translator else 'integrated worker',
                  checks=len(records),passed=sum(r['passed'] for r in records),
                  failures=[r['id'] for r in records if not r['passed']])
-    args.output.parent.mkdir(parents=True,exist_ok=True)
-    args.output.write_text(json.dumps(dict(summary=summary,records=records),indent=2),encoding='utf-8')
+    if args.output:
+        args.output.parent.mkdir(parents=True,exist_ok=True)
+        args.output.write_text(json.dumps(dict(summary=summary,records=records),indent=2),encoding='utf-8')
     print(json.dumps(summary))
     return int(bool(summary['failures']))
 
