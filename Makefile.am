@@ -297,3 +297,7 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/inventory.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/baseline-summary.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-inventory.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-analysis.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/baseline-summary.json
