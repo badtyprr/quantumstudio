@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import platform
 import shutil
+import select
 import subprocess
 import sys
 import time
@@ -50,6 +51,40 @@ def _close_control(process, report):
             report.update(state="failed", control_close_error=str(error))
 
 
+_CLIENT_EXEC = '''import json,os,pathlib,sys
+assert os.geteuid()==0
+record={'pid':os.getpid(),'starttime':pathlib.Path('/proc/self/stat').read_text().rpartition(')')[2].split()[19]}
+with open(sys.argv[1],'x',encoding='utf-8') as stream:
+    json.dump(record,stream);stream.flush();os.fsync(stream.fileno())
+os.execv('/usr/bin/systemd-run',['/usr/bin/systemd-run',*sys.argv[2:]])
+'''
+
+_CLIENT_CHECK = '''import json,os,pathlib,signal,sys
+record=json.loads(pathlib.Path(sys.argv[1]).read_bytes());pid=record['pid']
+fd=os.pidfd_open(pid)
+try:
+    root=pathlib.Path('/proc')/str(pid)
+    start=(root/'stat').read_text().rpartition(')')[2].split()[19]
+    executable=str((root/'exe').resolve(strict=True))
+    args=(root/'cmdline').read_bytes().split(b'\\0')
+    uid=next(line for line in (root/'status').read_text().splitlines() if line.startswith('Uid:'))
+    assert start==record['starttime'] and executable==str(pathlib.Path('/usr/bin/systemd-run').resolve())
+    assert ('--unit='+sys.argv[2]).encode() in args and all(int(v)==0 for v in uid.split()[1:])
+    if sys.argv[3]=='kill':signal.pidfd_send_signal(fd,signal.SIGKILL)
+    print(json.dumps(dict(pid=pid,starttime=start,executable=executable,uid=uid,unit=sys.argv[2],signalled=sys.argv[3]=='kill')))
+finally:os.close(fd)
+'''
+
+
+def inspect_client(python, record, unit, kill=False):
+    """Verify the exact recorded client before any privileged pidfd signal."""
+    result = _command(['sudo', '-n', str(python), '-I', '-c', _CLIENT_CHECK,
+                       str(record), unit, 'kill' if kill else 'inspect'])
+    if result['exit_code']:
+        raise RuntimeError('CLIENT_IDENTITY_UNCONFIRMED: ' + result['stderr'])
+    return json.loads(result['stdout'])
+
+
 class LinuxService:
     """One gated engine and its descendants, owned by a unique systemd service.
 
@@ -74,6 +109,7 @@ class LinuxService:
         self.description = 'Qalculate owned engine ' + self.unit
         self.group = None
         self.engine_pid = None
+        self.client_fd = None
         self.requested = False
         self.evidence = dict(unit=self.unit, description=self.description, runtime_seconds=self.runtime,
                              population_semantics='cgroup subtree populated indicator, not process count')
@@ -94,7 +130,8 @@ class LinuxService:
         self.requested = True
         # env -i removes inherited manager variables as well as caller settings.
         # env execs Python in place, so the gated Python remains MainPID.
-        return ['sudo', '-n', 'systemd-run', '--quiet', '--pipe', '--wait', '--expand-environment=no',
+        return ['sudo', '-n', str(self.python), '-I', '-c', _CLIENT_EXEC,
+                str(self.output / 'client-identity.json'), '--quiet', '--pipe', '--wait', '--expand-environment=no',
                 '--unit=' + self.unit, '--description=' + self.description,
                 '--property=User=' + self.account.pw_name, '--property=Type=exec',
                 '--property=ExitType=main', '--property=RemainAfterExit=no', '--property=Restart=no',
@@ -147,7 +184,22 @@ class LinuxService:
             raise RuntimeError('KERNEL_STARTED_BEFORE_GATE')
         self.evidence.update(engine_pid=pid, engine_cgroup=membership, engine_uid=uid,
                              runtime_property=duration, gate_held=True)
+        client = inspect_client(self.python, self.output / 'client-identity.json', self.unit)
+        self.client_pid = client['pid']
+        self.client_fd = os.pidfd_open(self.client_pid)
+        # Revalidate after opening our non-signalling observation handle.
+        if inspect_client(self.python, self.output / 'client-identity.json', self.unit) != client:
+            raise RuntimeError('CLIENT_IDENTITY_CHANGED')
+        self.evidence['client'] = client
         self.save()
+
+    def client_exited(self):
+        return self.client_fd is not None and bool(select.select([self.client_fd], [], [], 0)[0])
+
+    def stop_client(self):
+        if self.client_fd is not None and not self.client_exited():
+            self.evidence['client_signal'] = inspect_client(self.python, self.output / 'client-identity.json', self.unit, kill=True)
+            self.save()
 
     def contains(self, pid):
         if self.group is None:
@@ -194,14 +246,19 @@ class LinuxService:
             raise RuntimeError('OWNED_SERVICE_STOP_FAILED')
 
     def close(self):
-        if not self.requested:
-            return
-        if self.active():
-            self.terminate()
-        props = self.observe()
-        if props.get('Description') == self.description and props.get('User') == self.account.pw_name:
-            self.evidence['reset'] = _command(['sudo', '-n', 'systemctl', 'reset-failed', self.unit])
-            self.save()
+        try:
+            if not self.requested:
+                return
+            if self.active():
+                self.terminate()
+            props = self.observe()
+            if props.get('Description') == self.description and props.get('User') == self.account.pw_name:
+                self.evidence['reset'] = _command(['sudo', '-n', 'systemctl', 'reset-failed', self.unit])
+                self.save()
+        finally:
+            if self.client_fd is not None:
+                os.close(self.client_fd)
+                self.client_fd = None
 
 
 def preflight(output):

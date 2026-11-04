@@ -167,13 +167,21 @@ class LinuxLifecycleTests(unittest.TestCase):
     def test_engine_sigkill(self):
         self.start(['print("retained")', 'import time; time.sleep(120)', '42'])
         status = self.running(); os.kill(status['engine_pid'], signal.SIGKILL)
-        self.finish('failed')
+        result = self.finish('failed')
+        self.assertEqual(result['original_execution'], 'incomplete')
+        cells = json.loads((self.output / 'cells.json').read_bytes())
+        self.assertEqual([cell['state'] for cell in cells], ['succeeded', 'interrupted', 'not_run', 'not_run'])
+        notebook = json.loads((self.output / 'executed.ipynb').read_bytes())
+        self.assertEqual(notebook['cells'][0]['outputs'][0]['text'], 'retained\n')
 
-    def test_launcher_loss(self):
+    def test_client_loss(self):
+        from linux_lifecycle import inspect_client
         self.start(['print("retained")', 'import time; time.sleep(120)', '42'])
         status = self.running()
-        # sudo may retain a privileged monitor as the directly owned launcher.
-        self.assertEqual(_command(['sudo', '-n', 'kill', '-KILL', str(status['launcher_pid'])])['exit_code'], 0)
+        service = json.loads((self.output / 'service.json').read_bytes())
+        observation = inspect_client(sys.executable, self.output / 'client-identity.json', service['unit'], kill=True)
+        self.assertEqual(observation['pid'], status['client_pid'])
+        (self.output / 'client-signal.json').write_text(json.dumps(observation, indent=2))
         self.assertEqual(self.finish('failed')['failure_cause'], 'launcher_loss')
 
     def test_supervisor_loss(self):
@@ -192,11 +200,13 @@ class LinuxLifecycleTests(unittest.TestCase):
 
     def test_detached_descendants_forced_cancel(self):
         import execution
-        escaped = ('import os,signal,time\nos.setsid()\n'
+        escaped = ('import os,signal,time,pathlib\nos.setsid()\n'
                    'if os.fork(): os._exit(0)\n'
                    'signal.signal(signal.SIGTERM,signal.SIG_IGN)\n'
-                   'for i in range(4):\n'
+                   'pathlib.Path("escaped-ready").write_text(str(os.getpid()))\n'
+                   'for i in range(8):\n'
                    ' if os.fork()==0: time.sleep(120); os._exit(0)\n'
+                   ' time.sleep(0.2)\n'
                    'time.sleep(120)')
         code = ('import subprocess,sys,time,pathlib\n'
                 f'subprocess.Popen([sys.executable,"-c",{escaped!r}])\n'
@@ -207,6 +217,7 @@ class LinuxLifecycleTests(unittest.TestCase):
         while not (self.output / 'descendants-ready').exists() and time.monotonic() < deadline:
             time.sleep(0.05)
         self.assertTrue((self.output / 'descendants-ready').exists())
+        self.assertTrue((self.output / 'escaped-ready').exists())
         execution.cancel(self.output)
         self.assertEqual(self.finish('cancelled')['cleanup']['method'], 'forced')
 
@@ -227,6 +238,7 @@ class LinuxLifecycleTests(unittest.TestCase):
             finally:
                 _close_control(process, {})
                 service.terminate(); service.close()
+                process.wait(timeout=15)
 
     def test_wrong_unit_identity_cannot_be_stopped(self):
         from unittest.mock import patch
@@ -250,6 +262,34 @@ class LinuxLifecycleTests(unittest.TestCase):
             finally:
                 _close_control(process, {})
                 service.terminate(); service.close()
+                process.wait(timeout=15)
+
+    def test_failed_engine_start(self):
+        from linux_lifecycle import LinuxService
+        service = LinuxService(self.output, 30)
+        with (self.output / 'direct.stdout').open('w') as stdout, (self.output / 'direct.stderr').open('w') as stderr:
+            process = subprocess.Popen(service.command([sys.executable, '-I', str(self.output / 'missing-engine.py')]),
+                                       stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, text=True, close_fds=True)
+            try:
+                with self.assertRaises((RuntimeError, FileNotFoundError, ProcessLookupError)):
+                    service.assign(process)
+                self.assertNotEqual(process.wait(timeout=15), 0)
+                self.assertFalse((self.output / 'kernel.json').exists())
+            finally:
+                _close_control(process, {})
+                service.terminate(); service.close(); process.wait(timeout=15)
+        self.assertEqual(_unit_snapshot(service.unit)['properties'].get('MainPID', '0'), '0')
+
+    def test_repeated_runs_use_distinct_units(self):
+        root = self.output
+        units = []
+        for index in range(3):
+            self.output = root / str(index)
+            self.output.mkdir()
+            self.start(['print("repeat")'])
+            self.finish('succeeded')
+            units.append(json.loads((self.output / 'service.json').read_bytes())['unit'])
+        self.assertEqual(len(set(units)), 3)
 
 
 def main():

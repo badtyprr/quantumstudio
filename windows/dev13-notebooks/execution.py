@@ -366,12 +366,19 @@ def _supervise(output, config, events=None):
             job.assign(process)
             status["engine_pid"] = job.engine_pid
             status['launcher_pid'] = process.pid
+            if sys.platform == 'linux':
+                status['client_pid'] = job.client_pid
             process.stdin.write("start\n")
             process.stdin.flush()
             status["state"] = "running"
             publish()
             deadline = None
             while process.poll() is None:
+                if sys.platform == 'linux' and job.client_exited() and job.active():
+                    launcher_lost = True
+                    _close_control_pipe(process)
+                    job.terminate()
+                    break
                 if membership is None and (output / "kernel.json").exists():
                     kernel = json.loads((output / "kernel.json").read_bytes())
                     membership = job.contains(kernel["pid"])
@@ -409,6 +416,8 @@ def _supervise(output, config, events=None):
         result_path = output / "engine-result.json"
         if result_path.exists():
             status.update(json.loads(result_path.read_bytes()))
+        else:
+            _recover_checkpoint_disposition(output, status)
         status["cleanup"] = dict(active_processes=remaining, kernel_job_membership=membership,
                                  method="forced" if forced else "graceful", engine_exit=process.returncode)
         if sys.platform == 'linux':
@@ -443,19 +452,39 @@ def _supervise(output, config, events=None):
         publish()
         return status
     except BaseException as error:
-        # Assignment failure leaves an engine behind its gate, with no children.
+        cleanup_errors = []
+
+        def attempt(label, operation):
+            try:
+                return operation()
+            except Exception as cleanup_error:
+                cleanup_errors.append(dict(step=label, error=str(cleanup_error)))
+
         if process is not None:
             _close_control_pipe(process)
-            job.terminate()
+            attempt('terminate_owned_containment', job.terminate)
             if process.poll() is None:
-                process.kill()
-            process.wait(timeout=10)
-        status.update(state="failed", error=str(error), cleanup={"active_processes": job.active(), "method": "exception"})
+                if sys.platform == 'linux':
+                    attempt('terminate_verified_client', job.stop_client)
+                else:
+                    attempt('terminate_owned_launcher', process.kill)
+            attempt('collect_owned_launcher', lambda: process.wait(timeout=10))
+        remaining = attempt('observe_population', job.active)
+        if not (output / 'engine-result.json').exists():
+            attempt('recover_checkpoints', lambda: _recover_checkpoint_disposition(output, status))
+        status.update(state="failed", error=str(error), cleanup={"active_processes": remaining, "method": "exception",
+                      'errors': cleanup_errors, 'unconfirmed': remaining is None or bool(remaining) or bool(cleanup_errors)})
         publish()
         raise
     finally:
         _close_control_pipe(process)
-        job.close()
+        try:
+            job.close()
+        except Exception as error:
+            status['state'] = 'failed'
+            status.setdefault('cleanup', {})['unconfirmed'] = True
+            status['cleanup'].setdefault('errors', []).append(dict(step='close_containment', error=str(error)))
+            publish()
 
 
 def _close_control_pipe(process):
@@ -464,6 +493,24 @@ def _close_control_pipe(process):
             process.stdin.close()
         except OSError:
             pass  # Teardown still has to stop the owned job/service.
+
+
+def _recover_checkpoint_disposition(output, status):
+    path = output / 'cells.json'
+    if not path.exists():
+        return
+    cells = json.loads(path.read_bytes())
+    for cell in cells:
+        if cell['state'] == 'running':
+            cell.update(state='interrupted', error=dict(type='EngineReportMissing',
+                        message='Engine stopped before a terminal report; last checkpoint retained'))
+    original = [cell['state'] for cell in cells if cell['original_index'] is not None and cell['type'] == 'code']
+    status['original_execution'] = ('succeeded' if original and all(state == 'succeeded' for state in original)
+                                    else 'incomplete' if any(state != 'not_run' for state in original) else 'not_run')
+    witness = [cell for cell in cells if cell.get('authored_role') == 'independent-witness']
+    status['authored_verification'] = witness[0]['state'] if witness else 'not_run'
+    status['terminal_engine_report_missing'] = True
+    atomic_json(path, cells)
 
 
 async def _run_notebook(output, config, control_state=None):
