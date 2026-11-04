@@ -287,3 +287,6 @@ EXTRA_DIST += docs/learning-evidence/dev11/vector-xor.md
 
 EXTRA_DIST += docs/learning-evidence/dev12/regularized-overlap-probe.py
 EXTRA_DIST += docs/learning-evidence/dev12/regularized-overlap.md
+
+EXTRA_DIST += docs/learning-evidence/dev11/hamming-decoder-probe.py
+EXTRA_DIST += docs/learning-evidence/dev11/hamming-decoder.md
