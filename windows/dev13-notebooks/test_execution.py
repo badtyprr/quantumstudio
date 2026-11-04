@@ -17,6 +17,168 @@ from unittest.mock import patch
 import execution
 
 
+class SelectedCellTests(unittest.TestCase):
+    """Synthetic private-engine checks; never execute the QB007 source or SDK."""
+
+    def fixture(self):
+        import nbformat
+        cells = [nbformat.v4.new_code_cell("value += 1"),
+                 nbformat.v4.new_code_cell("raise RuntimeError('OMITTED_SENTINEL')"),
+                 nbformat.v4.new_markdown_cell("Original retained prose"),
+                 nbformat.v4.new_code_cell("value += 10")]
+        contract = dict(id="synthetic-selected", route=execution.SELECTED_ROUTE,
+                        selected_cells=[0, 3], code_cells=[0, 3], excluded_code_cells={"1": "not selected"},
+                        preamble="value = 0", required_images=[], required_text={})
+        return cells, contract
+
+    def run_synthetic(self, cells, contract, fail_at=None):
+        import asyncio
+        import contextlib
+        import io
+        from types import SimpleNamespace
+        import nbformat
+
+        temporary = tempfile.TemporaryDirectory(prefix="dev13-selected-unit-")
+        self.addCleanup(temporary.cleanup)
+        output = Path(temporary.name)
+        raw = nbformat.writes(nbformat.v4.new_notebook(cells=cells)).encode()
+        (output / "source-original.ipynb").write_bytes(raw)
+        calls = []
+
+        class Client:
+            def __init__(self, notebook, **kwargs):
+                self.namespace = {}
+
+            @contextlib.asynccontextmanager
+            async def async_setup_kernel(self, **kwargs):
+                yield
+
+            async def async_execute_cell(self, cell, index):
+                calls.append(cell.source)
+                if index == fail_at:
+                    raise asyncio.CancelledError()
+                stdout = io.StringIO()
+                with contextlib.redirect_stdout(stdout):
+                    exec(compile(cell.source, "authored-synthetic-fixture", "exec"), self.namespace)
+                cell.execution_count = index + 1
+                if stdout.getvalue():
+                    cell.outputs = [nbformat.v4.new_output("stream", name="stdout", text=stdout.getvalue())]
+
+        config = dict(contract=contract, profile={"default_cell_timeout_seconds": 3},
+                      witness='print("{\\"accepted\\": true}")')
+        with patch("nbclient.NotebookClient", Client), patch("jupyter_client.AsyncKernelManager",
+                return_value=SimpleNamespace(provisioner=SimpleNamespace(pid=123))):
+            outcome = asyncio.run(execution._run_notebook(output, config))
+        return output, outcome, calls, raw
+
+    def test_selected_engine_never_executes_omitted_sentinel(self):
+        cells, contract = self.fixture()
+        output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result["state"], "succeeded")
+        self.assertEqual(result["selected_execution"], "succeeded")
+        self.assertEqual(result["original_execution"], "not_executed_as_whole")
+        self.assertFalse(result["whole_notebook_complete"])
+        self.assertFalse(any("OMITTED_SENTINEL" in code for code in calls))
+        self.assertEqual((output / "source-original.ipynb").read_bytes(), raw)
+        rows = json.loads((output / "source-disposition.json").read_bytes())["cells"]
+        self.assertEqual([r["state"] for r in rows], ["succeeded", "excluded_by_contract", "not_executable", "succeeded"])
+        executed = json.loads((output / "executed.ipynb").read_bytes())["cells"]
+        self.assertEqual([c["source"] for c in executed][1:3], ["value += 1", "value += 10"])
+
+    def test_whole_route_still_executes_every_code_cell(self):
+        cells, contract = self.fixture()
+        cells[1].source = "value += 100"
+        contract.pop("selected_cells")
+        contract.pop("excluded_code_cells")
+        contract.update(route="notebook", code_cells=[0, 1, 3])
+        output, result, calls, _ = self.run_synthetic(cells, contract)
+        self.assertIn("value += 100", calls)
+        self.assertEqual(result["original_execution"], "succeeded")
+        self.assertNotIn("selected_execution", result)
+        self.assertFalse((output / "source-disposition.json").exists())
+        self.assertEqual(len(json.loads((output / "executed.ipynb").read_bytes())["cells"]), 6)
+
+    def test_cancelled_selected_checkpoint_keeps_all_dispositions(self):
+        cells, contract = self.fixture()
+        output, result, _, _ = self.run_synthetic(cells, contract, fail_at=2)
+        self.assertEqual(result["selected_execution"], "incomplete")
+        self.assertEqual(result["original_execution"], "not_executed_as_whole")
+        self.assertFalse(result["whole_notebook_complete"])
+        rows = json.loads((output / "source-disposition.json").read_bytes())["cells"]
+        self.assertEqual([r["state"] for r in rows], ["succeeded", "excluded_by_contract", "not_executable", "interrupted"])
+
+    def test_lost_report_recovery_retains_selected_scope(self):
+        cells, contract = self.fixture()
+        output, _, _, _ = self.run_synthetic(cells, contract)
+        records = json.loads((output / "cells.json").read_bytes())
+        records[2]["state"] = "running"
+        execution.atomic_json(output / "cells.json", records)
+        status = dict(route=execution.SELECTED_ROUTE)
+        execution._recover_checkpoint_disposition(output, status)
+        self.assertEqual(status["selected_execution"], "incomplete")
+        self.assertEqual(status["original_execution"], "not_executed_as_whole")
+        rows = json.loads((output / "source-disposition.json").read_bytes())["cells"]
+        self.assertEqual(rows[3]["state"], "interrupted")
+        self.assertEqual(rows[1]["state"], "excluded_by_contract")
+
+    def test_selection_schema_rejects_malformed_indices(self):
+        cells, original = self.fixture()
+        for selection in ([], [True], [-1], [4], [0, 0], [3, 0], [2], "0,3", None):
+            with self.subTest(selection=selection):
+                contract = dict(original, selected_cells=selection, code_cells=selection)
+                with self.assertRaisesRegex(ValueError, "INVALID_CELL_SELECTION"):
+                    execution._execution_indices(contract, cells)
+
+    def test_exclusions_and_output_requirements_are_complete(self):
+        cells, original = self.fixture()
+        for change in ({"excluded_code_cells": {}}, {"excluded_code_cells": {"1": ""}},
+                       {"excluded_code_cells": {"1": "reason", "2": "extra"}},
+                       {"required_images": [1]}, {"required_text": {"1": "bad"}},
+                       {"setup": {"cell": 0}}, {"code_cells": [0]}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                execution._execution_indices(dict(original, **change), cells)
+
+    def test_selection_requires_explicit_route(self):
+        cells, contract = self.fixture()
+        for route in ("notebook", "unknown"):
+            with self.subTest(route=route), self.assertRaises(ValueError):
+                execution._execution_indices(dict(contract, route=route), cells)
+
+    def test_public_changed_source_witness_or_selection_rejected_before_environment(self):
+        import copy
+        import nbformat
+        cells, contract = self.fixture()
+        raw = nbformat.writes(nbformat.v4.new_notebook(cells=cells)).encode()
+        contract.update(source={"sha256": execution.digest(raw), "cells": [
+            dict(index=i, type=c.cell_type, sha256=execution.digest(c.source.encode())) for i, c in enumerate(cells)]},
+            witness={"path": "witness.py", "sha256": execution.digest(b'print("{}")')})
+        for kind in ("source", "witness", "selection"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "contracts").mkdir()
+                current = copy.deepcopy(contract)
+                if kind == "selection":
+                    current["selected_cells"] = [1, 0]
+                (root / "contracts/qb007.json").write_text(json.dumps(current))
+                (root / "source.ipynb").write_bytes(raw + (b" " if kind == "source" else b""))
+                (root / "witness.py").write_bytes(b'print("changed")' if kind == "witness" else b'print("{}")')
+                with patch.object(execution, "ROOT", root), patch.object(execution, "contract_profile", return_value={"platform": "win32"}), patch.object(execution, "inspect_environment") as inspect:
+                    with self.assertRaises(ValueError):
+                        execution.validate_request(dict(contract="qb007", source=root / "source.ipynb", environment=root))
+                    inspect.assert_not_called()
+
+    def test_qb007_contract_accounts_all_original_cells_without_running_them(self):
+        contract = json.loads((execution.ROOT / "contracts/qb007.json").read_bytes())
+        descriptors = [{"cell_type": c["type"]} for c in contract["source"]["cells"]]
+        self.assertEqual(execution._execution_indices(contract, descriptors), [7, 9, 11, 14, 23, 25])
+        self.assertEqual(len(descriptors), 33)
+        self.assertEqual(len(contract["excluded_code_cells"]), 15)
+        self.assertEqual(sum(c["cell_type"] == "markdown" for c in descriptors), 12)
+        witness = execution.canonical(execution.ROOT / contract["witness"]["path"])
+        self.assertEqual(execution.digest(witness), contract["witness"]["sha256"])
+        compile(witness, "authored-qb007-witness-not-executed", "exec")
+
+
 class PlatformProfileTests(unittest.TestCase):
     def test_both_original_contracts_select_only_the_host_profile(self):
         for name in ("ibm019", "ibm020"):
