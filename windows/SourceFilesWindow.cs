@@ -106,6 +106,68 @@ sealed class SourceFilesWindow : Window {
    undo();if(snapshot()!=before)throw new Exception("Reimport undo did not restore the original document.");
   } finally {dialog.Close();}
  }
+ // Test-only observation uses real reversible editor operations, never private history state.
+ internal sealed class ObservedHistory {
+  public string Current {get;set;}
+  public List<string> Undo {get;set;}
+  public List<string> Redo {get;set;}
+ }
+ static void Require(bool value,string message) {if(!value)throw new InvalidDataException(message);}
+ static ObservedHistory Observe(Func<string> snapshot,Func<bool> undo,Func<bool> redo,int limit) {
+  var record=new ObservedHistory {Current=snapshot(),Undo=new List<string>(),Redo=new List<string>()};
+  while(undo()) {Require(record.Undo.Count<limit,"Undo history exceeded bound.");record.Undo.Add(snapshot());}
+  for(int i=record.Undo.Count-1;i>=0;i--)Require(redo() && snapshot()==(i==0 ? record.Current : record.Undo[i-1]),"Undo probe could not restore chain.");
+  while(redo()) {Require(record.Redo.Count<limit,"Redo history exceeded bound.");record.Redo.Add(snapshot());}
+  for(int i=record.Redo.Count-1;i>=0;i--)Require(undo() && snapshot()==(i==0 ? record.Current : record.Redo[i-1]),"Redo probe could not restore chain.");
+  Require(snapshot()==record.Current,"History probe changed current document.");return record;
+ }
+ internal static async Task VerifyFailures(Window owner,SourceCircuitDocument source,string folder,string report,
+  Action<string> importEnvelope,Func<string> snapshot,Func<bool> undo,Func<bool> redo,int limit,
+  Action seed,Action<string> save,Action<string> capture) {
+  var json=new JavaScriptSerializer {MaxJsonLength=Int32.MaxValue,RecursionLimit=128};
+  var records=new Dictionary<string,object>();
+  Func<ObservedHistory> probe=()=>Observe(snapshot,undo,redo,limit);
+  Action<string,object> record=(stage,value)=>{records.Add(stage,value);File.WriteAllText(report+".history.json",json.Serialize(records),new UTF8Encoding(false));};
+  var baseline=probe();record("reopened",baseline);
+  seed();string marker=snapshot();Require(marker!=baseline.Current,"Marker did not change document.");
+  Require(undo() && snapshot()==baseline.Current,"Marker undo failed.");
+  var seeded=probe();record("seeded",seeded);
+  Require(json.Serialize(seeded.Undo)==json.Serialize(baseline.Undo) && seeded.Redo.Count==1 && seeded.Redo[0]==marker,"Marker history differs from baseline.");
+  Action<string> preserved=stage=>{var value=probe();record(stage,value);Require(json.Serialize(value)==json.Serialize(seeded),stage+" changed document or history.");};
+  string wrapper=Path.Combine(folder,"wrapper.inc");string originalWrapper=File.ReadAllText(wrapper,new UTF8Encoding(false,true));
+  Require(originalWrapper.EndsWith("gate after a { x a; x a; }\n"),"Unexpected authored wrapper.");
+  string module=originalWrapper.StartsWith("include \"nested modules λ/oracle.qasm\";\n") ? "oracle" : "bernvaz";
+  string relative="nested modules λ/"+module+".qasm";
+  Require(originalWrapper=="include \""+relative+"\";\ngate after a { x a; x a; }\n","Unexpected wrapper graph.");
+  string dependency=Path.Combine(folder,relative.Replace('/',Path.DirectorySeparatorChar));byte[] original=File.ReadAllBytes(dependency);
+  var dialog=new SourceFilesWindow(owner,source,importEnvelope);
+  Action<string> reportText=stage=>File.WriteAllText(report+"."+stage+".txt",dialog.result.Text,new UTF8Encoding(false));
+  try {
+   dialog.Show();Require(dialog.root.Text=="","Initial root was not blank.");await dialog.Run(false);reportText("blank");
+   Require(dialog.result.Text.Contains("Select a source folder first.") && !dialog.Imported,"Blank selection accepted.");preserved("blank");dialog.Capture(report+".blank.png");
+   dialog.root.Text=folder;await dialog.Run(false);reportText("unchanged");
+   Require(dialog.result.Text.StartsWith("All source files match") && dialog.result.Text.Contains(relative+" · unchanged") && dialog.result.Text.Contains("wrapper.inc · unchanged") && dialog.result.Text.Contains("main κ.qasm · unchanged"),"Unchanged graph check failed.");preserved("unchanged");dialog.Capture(report+".unchanged.png");
+   File.Delete(dependency);await dialog.Run(false);reportText("missing-check");Require(dialog.result.Text.Contains(relative+" · missing"),"Missing dependency not identified.");preserved("missing-check");
+   await dialog.Run(true);reportText("missing-reimport");Require(!dialog.Imported && dialog.result.Text.StartsWith("Could not reimport:"),"Missing dependency import did not fail.");preserved("missing-reimport");
+   dialog.Width=dialog.MinWidth;dialog.Height=dialog.MinHeight;dialog.Capture(report+".missing.png");
+   File.WriteAllBytes(dependency,original);Require(Convert.ToBase64String(File.ReadAllBytes(dependency))==Convert.ToBase64String(original),"Module restoration changed bytes.");
+   await dialog.Run(false);reportText("restored");Require(dialog.result.Text.StartsWith("All source files match"),"Restored graph did not match.");preserved("restored");
+   File.WriteAllText(wrapper,originalWrapper.Replace("x a; x a;","x a;"),new UTF8Encoding(false));
+   await dialog.Run(false);reportText("changed");Require(dialog.result.Text.Contains("wrapper.inc · changed") && dialog.result.Text.Contains(relative+" · unchanged") && dialog.result.Text.Contains("main κ.qasm · unchanged"),"Changed wrapper report failed.");preserved("changed");
+   dialog.Width=720;dialog.Height=560;dialog.Capture(report+".changed.png");await dialog.Run(true);reportText("reimport");
+   Require(dialog.Imported && snapshot()!=baseline.Current,"Successful reimport did not change document.");
+   var replaced=probe();record("reimported",replaced);var expectedUndo=new List<string> {baseline.Current};expectedUndo.AddRange(baseline.Undo);
+   Require(replaced.Redo.Count==0 && json.Serialize(replaced.Undo)==json.Serialize(expectedUndo),"Reimport history transition incorrect.");
+   save(report+".reimported.qcircuit");capture(report+".reimported.png");
+   Require(undo() && snapshot()==baseline.Current,"Reimport undo did not restore exact document.");var undone=probe();record("undone",undone);
+   Require(json.Serialize(undone.Undo)==json.Serialize(baseline.Undo) && undone.Redo.Count==1 && undone.Redo[0]==replaced.Current,"Undo history transition incorrect.");
+   Require(redo(),"Reimport redo unavailable.");var redone=probe();record("redone",redone);Require(json.Serialize(redone)==json.Serialize(replaced),"Redo did not restore full history.");
+   Require(undo(),"Final undo unavailable.");var final=probe();record("final",final);Require(json.Serialize(final)==json.Serialize(undone),"Final undo changed history.");
+   save(report+".undone.qcircuit");capture(report+".undone.png");
+   var fresh=new SourceFilesWindow(owner,source,importEnvelope);try {fresh.Show();Require(fresh.root.Text=="","Fresh dialog reused selected root.");}finally {fresh.Close();}
+   record("fresh-root",true);
+  } finally {File.WriteAllBytes(dependency,original);dialog.Close();}
+ }
  void Capture(string path) {
   UpdateLayout();
   var bitmap=new System.Windows.Media.Imaging.RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);

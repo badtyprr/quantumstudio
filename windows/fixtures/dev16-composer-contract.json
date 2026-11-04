@@ -1,0 +1,59 @@
+{
+  "base": "02d5ca3f5713385818e80db15b1a58e3b518e569",
+  "source": {
+    "repository": "https://github.com/qBraid/qbraid-lab-demo",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "notebook": "qBraid-Algorithms/bernstein_vazirani.ipynb",
+    "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce"
+  },
+  "fixtures": {
+    "oracle.qasm": "00ca08a9b091c46c942bc1f1878ccc69e922a0500b61c79a11b87c8c4debc4b1",
+    "bernvaz.qasm": "9f9eb3c6537bf209ff7c98fae8a5e2e77e1e135597d81569bf978498100f977e"
+  },
+  "edit": "GUI appends X(q0) after imported operations; oracle parity retains original input parity.",
+  "cases": [
+    {
+      "name": "strict-0",
+      "original": "(|00>+|11>)/sqrt(2)",
+      "edited": "(|10>+|01>)/sqrt(2)"
+    },
+    {
+      "name": "oracle-0",
+      "original": "|0000>",
+      "edited": "|1000>"
+    },
+    {
+      "name": "oracle-1",
+      "original": "|1001>",
+      "edited": "|0001>"
+    },
+    {
+      "name": "oracle-2",
+      "original": "|0101>",
+      "edited": "|1101>"
+    },
+    {
+      "name": "oracle-4",
+      "original": "|0011>",
+      "edited": "|1011>"
+    },
+    {
+      "name": "bernvaz-0",
+      "original": "(|0110>-|0111>)/sqrt(2)",
+      "edited": "(|1110>-|1111>)/sqrt(2)"
+    }
+  ],
+  "acceptance": [
+    "Unchanged fixture bytes in nested spaced Unicode dependency graph and captured snapshots",
+    "Actual GUI original and edited qcircuit, qasm and expression outputs",
+    "Undo/redo and original qcircuit save/reopen checks retained",
+    "Twelve standalone compiler round trips preserve reset prefix and circuit operations",
+    "Thirty-six independent full-state/density residuals below1e-12"
+  ],
+  "limitations": [
+    "GUI invocation pending; preparation and source/manual-model preflight do not meet GUI acceptance",
+    "Failure-recovery matrix beyond existing malformed-open check remains separate",
+    "No qsession schema, notebook execution, provider or release claim"
+  ],
+  "classical_evidence": "Reuse existing REL09 classical module evidence; appended composer edit differs from prepended classical edit."
+}
