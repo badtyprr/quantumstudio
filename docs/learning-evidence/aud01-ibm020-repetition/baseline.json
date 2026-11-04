@@ -1,0 +1,168 @@
+{
+  "scope": "M24 only; 6 finite attempts, not section coverage",
+  "worker_sha256": "ea0467a5ca5ce58d043c08bed80043361aca4305a5bb92d029781e4035e76913",
+  "rows": [
+    {
+      "source_id": "M24",
+      "original": "$\\vert 0^{\\otimes n} \\rangle$",
+      "n": 1,
+      "route": "source-count-substitution",
+      "input": "\\vert 0^{\\otimes 1} \\rangle",
+      "expected": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "exit": 2,
+      "stdout": "",
+      "stderr": "Expected a quantum expression at byte 1\r\n",
+      "passed": false
+    },
+    {
+      "source_id": "M24",
+      "original": "$\\vert 0^{\\otimes n} \\rangle$",
+      "n": 1,
+      "route": "existing-repetition-adaptation",
+      "input": "|0^1>",
+      "expected": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "exit": 0,
+      "stdout": "{\"text\":\"[1; 0]\",\"display_text\":\"[1; 0]\",\"copy_text\":\"matrix(2,1,[1,0])\",\"approximate\":false,\"rows\":2,\"columns\":1,\"cells\":[[\"1\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "source_id": "M24",
+      "original": "$\\vert 0^{\\otimes n} \\rangle$",
+      "n": 2,
+      "route": "source-count-substitution",
+      "input": "\\vert 0^{\\otimes 2} \\rangle",
+      "expected": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "exit": 2,
+      "stdout": "",
+      "stderr": "Expected a quantum expression at byte 1\r\n",
+      "passed": false
+    },
+    {
+      "source_id": "M24",
+      "original": "$\\vert 0^{\\otimes n} \\rangle$",
+      "n": 2,
+      "route": "existing-repetition-adaptation",
+      "input": "|0^2>",
+      "expected": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "exit": 0,
+      "stdout": "{\"text\":\"[1; 0; 0; 0]\",\"display_text\":\"[1; 0; 0; 0]\",\"copy_text\":\"matrix(4,1,[1,0,0,0])\",\"approximate\":false,\"rows\":4,\"columns\":1,\"cells\":[[\"1\"],[\"0\"],[\"0\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "source_id": "M24",
+      "original": "$\\vert 0^{\\otimes n} \\rangle$",
+      "n": 3,
+      "route": "source-count-substitution",
+      "input": "\\vert 0^{\\otimes 3} \\rangle",
+      "expected": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "exit": 2,
+      "stdout": "",
+      "stderr": "Expected a quantum expression at byte 1\r\n",
+      "passed": false
+    },
+    {
+      "source_id": "M24",
+      "original": "$\\vert 0^{\\otimes n} \\rangle$",
+      "n": 3,
+      "route": "existing-repetition-adaptation",
+      "input": "|0^3>",
+      "expected": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "exit": 0,
+      "stdout": "{\"text\":\"[1; 0; 0; 0; 0; 0; 0; 0]\",\"display_text\":\"[1; 0; 0; 0; 0; 0; 0; 0]\",\"copy_text\":\"matrix(8,1,[1,0,0,0,0,0,0,0])\",\"approximate\":false,\"rows\":8,\"columns\":1,\"cells\":[[\"1\"],[\"0\"],[\"0\"],[\"0\"],[\"0\"],[\"0\"],[\"0\"],[\"0\"]],\"probabilities\":[],\"bloch\":[]}\r\n",
+      "stderr": "",
+      "passed": true
+    }
+  ]
+}

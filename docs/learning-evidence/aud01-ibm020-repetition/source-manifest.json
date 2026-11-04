@@ -1,0 +1,25 @@
+{
+  "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "final_url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "retrieved_utc": "2026-11-04T14:59:19.344732+00:00",
+  "sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+  "bytes": 33974,
+  "response_headers": {
+    "Date": "Wed, 04 Nov 2026 14:59:19 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "Connection": "close",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "strict-transport-security": "max-age=31536000",
+    "reporting-endpoints": "csp-report=\"https://quantum.cloud.ibm.com/endpoints-docs-learning/api/csp-report\"",
+    "content-security-policy": "frame-ancestors 'none';default-src 'none';report-to csp-report",
+    "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "x-envoy-upstream-service-time": "154",
+    "Server": "cloudflare",
+    "cf-cache-status": "DYNAMIC",
+    "set-cookie": "__cf_bm=2qbR1.o5A8HPxqrJdl0YpoLst5Bla7G54pFYI2wQbfo-1793804358.8602822-1.0.1.1-Mz6BKOFsKLXVj9wDs2z4ZqUrJIBXS8OU0KjiTJfY1IEO5x0nPbLyhHnrkqwmUR_svWZHfe13ZQamFnR65mTqZcnIEiLbYDtyMLk00O0Lt4gOtobdB73fVv3xuPM9yQgH; HttpOnly; SameSite=None; Secure; Path=/; Domain=quantum.cloud.ibm.com; Expires=Wed, 04 Nov 2026 15:29:19 GMT",
+    "CF-RAY": "a5547b5adb7f14c7-SJC"
+  }
+}
