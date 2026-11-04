@@ -1,0 +1,85 @@
+# Recheck the exact archived candidate; do not rebuild or publish it.
+name: DEV17 retained candidate Clipboard acceptance
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/dev17-clipboard.yml
+      - diagnostics/dev17-unattended/**
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: dev17-clipboard-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 20
+    env:
+      CANDIDATE_REVISION: 6005e1de0e36c985a1319d6255274c430d06b634
+      CANDIDATE_ZIP_SHA256: f655f8e09f64c16419b9e13bc33404417fe0ae93bd69e8855f00b6374b11ebcf
+      CANDIDATE_SOURCE_SHA256: a727f5cd46b2f15a61c6e76f2e3512cd2419eedf170733f18b8ac23d00a1630e
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Download retained candidate attempt
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          repository: badtyprr/quantumstudio
+          run-id: 41781100599
+          artifact-ids: 13300832478
+          path: ${{ runner.temp }}/dev17-retained
+      - name: Verify archives and unchanged original fixtures
+        shell: pwsh
+        run: |
+          $archives = @(Get-ChildItem "$env:RUNNER_TEMP/dev17-retained" -Recurse -File -Filter QuantumStudio-candidate-Windows-x64.zip)
+          if ($archives.Count -ne 1) { throw 'Expected exactly one retained candidate ZIP.' }
+          $archive = $archives[0].FullName
+          $source = Join-Path $archives[0].DirectoryName 'QuantumStudio-source.tar.gz'
+          if ((Get-FileHash -LiteralPath $archive).Hash.ToLower() -ne $env:CANDIDATE_ZIP_SHA256) { throw 'Candidate ZIP hash mismatch.' }
+          if ((Get-FileHash -LiteralPath $source).Hash.ToLower() -ne $env:CANDIDATE_SOURCE_SHA256) { throw 'Candidate source archive hash mismatch.' }
+          python windows/test-package.py $archive --candidate --revision $env:CANDIDATE_REVISION
+          if ($LASTEXITCODE) { throw 'Candidate ZIP/manifest verification failed.' }
+          $original = @{
+            'windows/Dev17GuiTests.cs'='e71ce87793009de5b6bdbd32e690355f56836856b73bab14dbdb938ec32716aa'
+            'windows/test-named-subsystems-gui.ps1'='718576564b3ff9fd7b4c4fe16da3498ad0cb5b8195dee1e6e9118495b01a99d8'
+          }
+          foreach ($name in $original.Keys) {
+            if ((Get-FileHash -LiteralPath $name).Hash.ToLower() -ne $original[$name]) { throw "Original fixture changed: $name" }
+          }
+          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/dev17-payload"
+          New-Item -ItemType Directory -Path "$env:RUNNER_TEMP/dev17-recheck" | Out-Null
+          @{
+            candidate_revision=$env:CANDIDATE_REVISION
+            candidate_zip_sha256=$env:CANDIDATE_ZIP_SHA256
+            candidate_source_sha256=$env:CANDIDATE_SOURCE_SHA256
+            source_run=41781100599; source_artifact=13300832478
+            acceptance_source_revision=(git rev-parse HEAD)
+            original_fixture_hashes=$original
+            rebuilt=$false; publication=$false
+          } | ConvertTo-Json -Depth 5 | Set-Content "$env:RUNNER_TEMP/dev17-recheck/candidate-binding.json"
+      - name: Actual Copy acceptance against unchanged retained bytes
+        shell: pwsh
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP/dev17-recheck/acceptance-launch.log"
+          try {
+            ./diagnostics/dev17-unattended/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/dev17-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev17-recheck/acceptance" -Revision $env:CANDIDATE_REVISION
+          } finally { Stop-Transcript }
+      - name: Retain recheck evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev17-recheck-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/dev17-recheck/
+            diagnostics/dev17-unattended/
+            windows/Dev17GuiTests.cs
+            windows/test-named-subsystems-gui.ps1

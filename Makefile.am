@@ -250,3 +250,19 @@ EXTRA_DIST += docs/learning-evidence/dev11/reassess-performance.py \
 EXTRA_DIST += docs/learning-evidence/dev17/contract.md
 EXTRA_DIST += windows/Dev17GuiTests.cs windows/test-named-subsystems-gui.ps1
 EXTRA_DIST += docs/learning-evidence/dev17/validation.md
+
+EXTRA_DIST += docs/learning-evidence/dev17/integration.md
+EXTRA_DIST += docs/learning-evidence/dev17/numeric-k-gui.md
+EXTRA_DIST += docs/learning-evidence/dev17/release-proposal.md
+EXTRA_DIST += diagnostics/dev17-unattended/KeywordGuiTests.cs \
+ diagnostics/dev17-unattended/Run-Acceptance.ps1 \
+ diagnostics/dev17-unattended/Inspect-Environment.ps1 \
+ diagnostics/dev17-unattended/Test-ChildShell.ps1 \
+ diagnostics/dev17-unattended/FEASIBILITY.md \
+ diagnostics/dev17-unattended/hosted-workflow.yml.proposed \
+ .github/workflows/dev17-release-candidate.yml
+EXTRA_DIST += docs/learning-evidence/dev16/reconciliation.md
+EXTRA_DIST += docs/learning-evidence/dev16/rel09-composer.json
+EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
+EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
+EXTRA_DIST += docs/learning-evidence/dev16/verification.json
