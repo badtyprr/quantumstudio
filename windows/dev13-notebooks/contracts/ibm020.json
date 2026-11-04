@@ -2,7 +2,6 @@
   "version": 1,
   "id": "ibm020",
   "route": "notebook",
-  "profile": "qiskit-aer-win-py312",
   "source": {
     "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
     "sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
@@ -142,5 +141,9 @@
     "Original markdown SVG/page rendering",
     "Native mathematics and lesson interpretation"
   ],
-  "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance"
+  "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance",
+  "profiles": {
+    "win32": "qiskit-aer-win-py312",
+    "linux": "qiskit-aer-linux-py312"
+  }
 }

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "id": "qiskit-aer-linux-py312",
+  "python": "3.12.10",
+  "platform": "linux",
+  "architecture": "64bit",
+  "lock": "ibm019-linux-requirements.lock",
+  "lock_sha256": "39206d4cf230cd8b21d46698b72a3092fd4c0d2a5f4eccc7dd18ec2b1ad16769",
+  "offline_only": true,
+  "exact_packages": true,
+  "wheel_requirement": "Retained custom pylatexenc2.10 wheel required; not reproducible from PyPI alone",
+  "default_cell_timeout_seconds": 120,
+  "cancel_grace_seconds": 5,
+  "service_runtime_seconds": 600,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "provenance": {
+    "source_revision": "890eb5b99fc4035fc3fb8144c744ff79bda4d387",
+    "run_id": "41883503640",
+    "artifact_id": "13350182532",
+    "artifact_sha256": "0ca0632ef9fc390126f52743dc7967c4e6107f9b8428ae5bc8e7d8859ee5d40b",
+    "wheel_count": 54,
+    "public_wheels": 53,
+    "custom_wheels": 1
+  },
+  "acceptance_scope": "Verified acquisition/offline installation/imports; original IBM019/020 notebook execution remains a separate gate"
+}
