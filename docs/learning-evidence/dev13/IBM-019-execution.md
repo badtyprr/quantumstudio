@@ -39,12 +39,19 @@ kernel's `display` capability is supplied by IPython; no display call is rewritt
 [Aer installation documentation](https://qiskit.github.io/qiskit-aer/getting_started.html)
 describes the separate local simulator package. No GPU/provider credentials are used.
 
-Use a fresh Python environment; download the hash-locked wheels or use the
-retained wheelhouse, then install with `--no-index --find-links WHEELS
+Use a fresh Python environment and the retained wheelhouse at
+`F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm019/wheels`.
+This exact lock requires that artifact set; a fresh PyPI-only download cannot
+satisfy its locally built pylatexenc wheel hash. Install with
+`--no-index --find-links WHEELS
 --require-hashes -r windows/dev13-notebooks/ibm019-requirements.lock`.
 The pylatexenc 2.10 wheel was built from its source distribution using a
-pure-Python build; its exact resulting wheel, source archive and build log are
-retained separately. The wheel lock is an artifact identity, not a claim that a
+pure-Python build. The required `pylatexenc-2.10-py3-none-any.whl` has SHA-256
+`7211b83dc685ec8e5e25d09c5538d867279a4bb41058c00ab12fa8a8250bfcd2`;
+`../wheel-manifest.json` records all 51 wheel hashes relative to that wheelhouse.
+The source archive and build log are retained alongside the manifest. Access to
+these retained artifacts is a prerequisite; they are not included in the
+application or source archive by this change. The wheel lock is an artifact identity, not a claim that a
 fresh rebuild yields identical wheel bytes. The acquired wheelhouse is 105,348,254
 bytes. No shared environment was modified.
 
