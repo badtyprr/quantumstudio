@@ -253,6 +253,9 @@ class CircuitComposer : Window {
   if(!Undo() || Snapshot()!=before || !Redo() || Snapshot()!=imported)throw new Exception("Composer source import history changed data.");
   SaveCircuit(report+".qcircuit");
   if(!AddGate("X","0","") || !sourceDocument.CircuitEdited)throw new Exception("Composer source edit was not recorded.");
+  SaveCircuit(report+".edited.qcircuit");
+  File.WriteAllText(report+".edited.qasm",OpenQasm(),new UTF8Encoding(false));
+  File.WriteAllText(report+".edited.expression.txt",Expression(),new UTF8Encoding(false));
   FitWires();CaptureSource(report+".edited.png");
   if(!Undo() || Snapshot()!=imported)throw new Exception("Composer edit undo lost source.");
   OpenCircuit(report+".qcircuit");
