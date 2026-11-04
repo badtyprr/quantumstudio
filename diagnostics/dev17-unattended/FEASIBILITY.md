@@ -106,3 +106,16 @@ bound to the local candidate and says nothing about a locked host. See the curre
 [coordinator record](../../docs/learning-evidence/dev17/integration.md) for hashes,
 new validation and still-open release gates. Earlier sections retain the initial
 investigation and proposal as historical context, not current acceptance claims.
+
+## Coordinator acceptance result -- 2026-11-03 Pacific
+
+Run 41787703905 attempts 1 and 2 both passed original 72 and supplemental 306 real
+Clipboard checks with zero retries on the same retained candidate bytes. All 16
+GUI captures were inspected. Different hosted runner and provisioner worker IDs,
+in westcentralus and eastus3, establish the two isolated executions; the repeated
+image hostname does not identify the guest. Full artifacts, binary/fixture hashes,
+logs and visual reviews are retained outside the checkout in the coordinator audit
+directory. The current integration record links these results and distinguishes
+local from hosted candidates. Hosted acceptance/repeatability is now demonstrated
+for this runner image and these bytes, not guaranteed for every future image or a
+locked local desktop. Final release/publication remains separate and unclaimed.

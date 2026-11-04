@@ -89,8 +89,25 @@ A reviewed narrow correction launches the original wrapper with the current
 PowerShell 7 executable. The installed workflow rechecks the exact retained ZIP
 `f655f8e09f64c16419b9e13bc33404417fe0ae93bd69e8855f00b6374b11ebcf`, with
 pinned source archive and original fixture hashes. It does not rebuild or publish;
-it fails closed if the retained artifact expires. Hosted Clipboard acceptance,
-repeatability and final release coordination remain open at this checkpoint.
+it fails closed if the retained artifact expires. Hosted Clipboard acceptance and repeatability subsequently passed in
+[run 41787703905](https://github.com/badtyprr/quantumstudio/actions/runs/41787703905),
+attempts 1 and 2. Each passed the original 72 and supplemental 306 actual Clipboard
+checks with zero retries, unchanged payload/fixture hashes and inspected captures.
+The provisioner worker IDs and runner IDs differ (westcentralus and eastus3);
+the image hostname repeats and is not used as proof of guest independence.
+Acceptance merge `d5f5bcbad629f133b4717aab91c54fa671b23086` has the exact tree of
+independently reviewed head `97544c67cf13683af550a07f50f644fb2a6db3e0`.
+All 16 acceptance captures and the hosted package smoke capture were inspected.
+External `hosted-acceptance-summary.json`, `recheck-source.json` and each retained
+attempt's `visual-review.json`, full logs and artifacts bind these results.
+
+Hosted GUI SHA-256:
+`e4ccc430852a196b23b69e451c55d93fb84838291ea67e45f438df0289250a6e`.
+Hosted worker SHA-256:
+`ef5bc7947b0df1f1fdfd41a3b03a2646db663598b671a7248b0cbfeaf573937d`.
+The local extra audit/exponent/286 replay results above belong to the local
+candidate; they are not relabeled as hosted execution. Final release coordination
+and a tested final release revision remain open.
 
 DEV-17 remains Partial and DEV-17d remains unchecked pending the tested release
 revision and release gates. Internal copy-text checks and generic GUI CI do not
