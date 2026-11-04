@@ -15,7 +15,11 @@
       "adaptation": [
         "Remove only outer display delimiters $$; retain internal whitespace, punctuation, aligned environment, all equality terms and unbound source symbols.",
         "Prefix quantum: selects native notation and is not part of source."
-      ]
+      ],
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unexpected notation at byte 79\r\n"
+      }
     },
     {
       "id": "g1-m02-literal",
@@ -25,7 +29,11 @@
       "adaptation": [
         "Remove only outer display delimiters $$; retain internal whitespace, punctuation, aligned environment, all equality terms and unbound source symbols.",
         "Prefix quantum: selects native notation and is not part of source."
-      ]
+      ],
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Expected ')' at byte 120\r\n"
+      }
     },
     {
       "id": "g1-m03-literal",
@@ -35,7 +43,11 @@
       "adaptation": [
         "Remove only outer display delimiters $$; retain internal whitespace, punctuation, aligned environment, all equality terms and unbound source symbols.",
         "Prefix quantum: selects native notation and is not part of source."
-      ]
+      ],
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unexpected notation at byte 128\r\n"
+      }
     },
     {
       "id": "g1-m01-gate",
@@ -354,49 +366,89 @@
       "source": "M07",
       "input": "quantum:H\\otimes \\cdots \\otimes H",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 16\r\n"
+      }
     },
     {
       "id": "literal-M09",
       "source": "M09",
       "input": "quantum:H^{\\otimes n}",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 0,
+        "stderr": "",
+        "actual": {
+          "copy_text": "qtensorpow(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),n)",
+          "rows": 0,
+          "columns": 0,
+          "approximate": false
+        },
+        "copy_actual": {
+          "copy_text": "qtensorpow(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),n)",
+          "rows": 0,
+          "columns": 0,
+          "approximate": false
+        }
+      }
     },
     {
       "id": "literal-M11",
       "source": "M11",
       "input": "quantum:\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Invalid summation index at byte 249\r\n"
+      }
     },
     {
       "id": "literal-M16",
       "source": "M16",
       "input": "quantum:\n\\bigl( H \\vert 1 \\rangle \\bigr) \\bigl( H^{\\otimes n} \\vert 0 \\cdots 0 \\rangle \\bigr)\n= \\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} \\vert x_{n-1} \\cdots x_0 \\rangle.\n",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 68\r\n"
+      }
     },
     {
       "id": "literal-M18",
       "source": "M18",
       "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} (-1)^{f(x_{n-1}\\cdots x_0)} \\vert x_{n-1} \\cdots x_0 \\rangle\n",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 65\r\n"
+      }
     },
     {
       "id": "literal-M19",
       "source": "M19",
       "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n\\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0) + x_{n-1}y_{n-1} + \\cdots + x_0 y_0}\n\\vert y_{n-1} \\cdots y_0 \\rangle.\n",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 58\r\n"
+      }
     },
     {
       "id": "literal-M23",
       "source": "M23",
       "input": "quantum:\n\\Biggl\\vert\n\\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0)}\n\\Biggr\\vert^2\n= \\begin{cases}\n1 & \\text{if $f$ is constant}\\\\[1mm]\n0 & \\text{if $f$ is balanced}\n\\end{cases}\n",
       "adaptation": "Remove only outer math delimiters; add quantum route prefix",
-      "cohort": "original"
+      "cohort": "original",
+      "literal_baseline": {
+        "returncode": 2,
+        "stderr": "Unsupported TeX command: \\cdots at byte 46\r\n"
+      }
     },
     {
       "id": "tensor-expanded-2",

@@ -99,10 +99,15 @@ def main():
         d=execute(expression);d.update(id=f['id'],source=f['source'],cohort=f['cohort'])
         try:
             if f['cohort']=='original':
-                d['status']='literal_rejected' if d['returncode']==2 else 'literal_observed_unverified' if d['returncode']==0 else 'unexpected_failure'
-                if d['returncode']==0:
-                    d['copy_observation']=execute(d['actual']['copy_text'])
-                    if d['copy_observation']['returncode']!=0:d['status']='unexpected_failure'
+                baseline=f['literal_baseline']
+                same=(d['returncode']==baseline['returncode'] and d['stderr']==baseline['stderr'])
+                if same and d['returncode']==0:
+                    same=all(d.get('actual',{}).get(k)==v for k,v in baseline['actual'].items())
+                    if same:
+                        c=execute(d['actual']['copy_text']);d['copy_observation']=c
+                        same=(c['returncode']==0 and all(c.get('actual',{}).get(k)==v for k,v in baseline['copy_actual'].items()))
+                d['literal_baseline_matches']=same
+                d['status']=('literal_rejected' if d['returncode']==2 else 'literal_observed_unverified') if same else 'unexpected_failure'
             elif f['cohort']=='deferred':
                 a=d.get('actual',{});copy=a.get('copy_text','')
                 if d['returncode']==0 and 'qsumset' in copy:
