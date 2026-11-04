@@ -324,3 +324,5 @@ EXTRA_DIST += windows/dev13-notebooks/test_linux_execution.py
 EXTRA_DIST += diagnostics/notebook-linux/resolve_environment.py
 EXTRA_DIST += diagnostics/notebook-linux/direct-requirements.txt
 EXTRA_DIST += .github/workflows/notebook-linux.yml
+EXTRA_DIST += docs/learning-evidence/aud02/dependency-classification.md
+EXTRA_DIST += docs/learning-evidence/aud02/dependency-classification.json
