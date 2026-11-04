@@ -129,6 +129,38 @@ class FileImportTests(unittest.TestCase):
                             message = self.run_import(command, mode, source='OPENQASM 3;\n' + body, success=False)
                             self.assertEqual(message.strip(), expected)
 
+    def test_operation_limit_locations_and_boundary(self):
+        messages = {
+            False: "The compiled circuit exceeds the editor limit of 512 steps.",
+            True: "Classical circuits support at most 512 total operations.",
+        }
+        for module in (False, True):
+            prologue = 'OPENQASM 3;\ninclude "stdgates.inc";\n' if module else '// original\n// dependency\n'
+            main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "sub dir/wrapper.inc";')
+            self.put("sub dir/wrapper.inc", '// nested\ninclude "limit κ.inc";')
+            # Exercise both gate_steps and the numerical non-gate append guard.
+            for operation in ('x q;', 'reset q;'):
+                for count in (512, 513):
+                    body = 'qubit q;\n' + ('    ' + operation + '\n') * count
+                    self.put("sub dir/limit κ.inc", prologue + body)
+                    for command in COMMANDS:
+                        for classical in (False, True):
+                            with self.subTest(module=module, operation=operation, count=count,
+                                              command=command, classical=classical):
+                                mode = ["--classical"] if classical else []
+                                args = ["--source-file", str(main), *mode] + (["--module-headers"] if module else [])
+                                stdin = 'OPENQASM 3; include "stdgates.inc";\n' + body
+                                if count == 512:
+                                    result = self.run_import(command, args)
+                                    self.assertEqual(len(result["Circuit"]["Steps"]), 512)
+                                    self.assertEqual(result["Circuit"], self.run_import(command, mode, source=stdin))
+                                else:
+                                    expected = messages[classical]
+                                    message = self.run_import(command, args, success=False)
+                                    self.assertEqual(message.strip(), "sub dir/limit κ.inc:516:5: " + expected)
+                                    self.assertEqual(self.run_import(command, mode, source=stdin,
+                                                                    success=False).strip(), expected)
+
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:
             module = (HERE / "fixtures/qb004" / (name + ".qasm")).read_text(encoding="utf-8")

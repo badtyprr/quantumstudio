@@ -578,13 +578,24 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             raise ValueError("Controlled global phase currently supports one or two controls.")
         return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
+    def with_source_origin(visit):
+        def located(visitor, operation, *args, **kwargs):
+            result = visit(visitor, operation, *args, **kwargs)
+            # Unrolling can synthesize operations without spans. Attribute those
+            # operations to the input operation that produced them, preserving
+            # more specific origins already carried by recursively visited nodes.
+            for item in result:
+                if getattr(item, 'span', None) is None:
+                    item.span = copy.deepcopy(getattr(operation, 'span', None))
+            return result
+        return located
     QasmVisitor._visit_forin_loop = for_loop
-    QasmVisitor._visit_phase_operation = phase
+    QasmVisitor._visit_phase_operation = with_source_origin(phase)
+    QasmVisitor._visit_generic_gate_operation = with_source_origin(indexed_gate if preserve_branches else original_gate)
+    QasmVisitor._visit_measurement = with_source_origin(indexed_measurement if preserve_branches else original_measurement)
+    QasmVisitor._visit_reset = with_source_origin(indexed_reset if preserve_branches else original_reset)
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
-        QasmVisitor._visit_generic_gate_operation = indexed_gate
-        QasmVisitor._visit_measurement = indexed_measurement
-        QasmVisitor._visit_reset = indexed_reset
         QasmVisitor._visit_function_call = function_call
         QasmVisitor._construct_visit_map = visit_map
         QasmVisitor._visit_switch_statement = switch
@@ -1104,7 +1115,7 @@ def convert(source, published_u=False, classical=False):
                 raise ValueError('Timed gates are not supported.')
             steps.extend(gate_steps(statement, wire, published_u))
             if len(steps) > 512:
-                raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
+                raise error_at(statement, 'The compiled circuit exceeds the editor limit of 512 steps.')
             continue
         elif isinstance(statement, ast.QuantumPhase):
             if statement.modifiers:
@@ -1126,7 +1137,7 @@ def convert(source, published_u=False, classical=False):
                              '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
         steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
         if len(steps) > 512:
-            raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
+            raise error_at(statement, 'The compiled circuit exceeds the editor limit of 512 steps.')
     return {'Version': 1, 'Qubits': count, 'Steps': steps}
 
 
@@ -1488,7 +1499,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             if 'IntegerValue' in step:version=max(version,expression_version(step['IntegerValue']))
             count += 1
             if count > 512:
-                raise ValueError('Classical circuits support at most 512 total operations.')
+                raise error_at(statement, 'Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
             if isinstance(statement,WireReferenceCheck):
