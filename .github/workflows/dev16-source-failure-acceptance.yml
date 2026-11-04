@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-2025-vs2026
     timeout-minutes: 45
     env:
-      MATRIX_SOURCE: e2b652b765a14688589ebaa0ef84b04e1889af0e
+      MATRIX_SOURCE: acac77ab9c2408b16d3e7c7bb76c3881adc17ccb
       DEPENDENCY_SOURCE: f3b4f55a426622551f8597d7fc25f4b82ded266d
       MATRIX_WORKFLOW_SHA: ${{ github.workflow_sha }}
       MATRIX_WORKFLOW_REF: ${{ github.workflow_ref }}
@@ -29,7 +29,7 @@ jobs:
           "MATRIX_PAYLOAD=$(Join-Path $env:RUNNER_TEMP 'dev16-matrix-assembled')" >> $env:GITHUB_ENV
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: e2b652b765a14688589ebaa0ef84b04e1889af0e
+          ref: acac77ab9c2408b16d3e7c7bb76c3881adc17ccb
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
@@ -101,7 +101,7 @@ jobs:
                   return None
           require(os.environ['GITHUB_REPOSITORY'] == 'badtyprr/quantumstudio', 'Unexpected repository')
           require(git('rev-parse', 'HEAD') == os.environ['MATRIX_SOURCE'], 'Wrong product revision')
-          require(git('rev-parse', 'HEAD^{tree}') == '6b9a2c28c03dd69583f7985e48d9004619739949', 'Wrong product tree')
+          require(git('rev-parse', 'HEAD^{tree}') == '53f6084b45c1aef2f6c01da569f2ac3805f1da66', 'Wrong product tree')
           require(git('rev-parse', os.environ['DEPENDENCY_SOURCE']+'^{tree}') == 'b76d38f9a8cef3ea3457d9feac7865748189015b', 'Wrong dependency tree')
           require(not git('status', '--porcelain', '--untracked-files=all'), 'Dirty product checkout')
           expected_diff = ['M\tMakefile.am', 'M\twindows/CircuitComposer.cs', 'M\twindows/ClassicalProgramWindow.cs',
@@ -116,7 +116,7 @@ jobs:
               platform=platform.platform(), python=sys.version, autocrlf=git('config', '--get', 'core.autocrlf'),
               kind='assembled-test-payload', clean_candidate_build=False, release=False, publication=False,
               changed_paths=expected_diff, git_blobs={p:git('rev-parse', 'HEAD:'+p) for p in paths}))
-          with (evidence / 'e2-gui-source.tar').open('wb') as output:
+          with (evidence / 'acac-gui-source.tar').open('wb') as output:
               subprocess.run(['git', 'archive', '--format=tar', 'HEAD', 'windows', 'Makefile.am'], stdout=output, check=True)
           contract = json.loads(Path('windows/fixtures/dev16-composer-contract.json').read_text(encoding='utf-8'))
           for name, expected in {'oracle.qasm':'00ca08a9b091c46c942bc1f1878ccc69e922a0500b61c79a11b87c8c4debc4b1',
@@ -206,7 +206,7 @@ jobs:
           require(before['quantum-worker.exe'] == '869814b4797416217322e26ddbd5f63ccfc3332a60faacfc4164f3fa931c1e7d', 'Wrong worker')
           require(before['qasm-import/qasm-import.exe'] == '8131c4c0ca4277fb311d38b4d289abd58c15c367fbf4add02b6a2f2b71051207', 'Wrong compiler')
           write('original-before.json', before)
-          write('archives-before.json', {p.name:dict(bytes=p.stat().st_size, sha256=digest(p)) for p in [archive_path, candidate, evidence/'QuantumStudio-source.tar.gz', evidence/'e2-gui-source.tar']})
+          write('archives-before.json', {p.name:dict(bytes=p.stat().st_size, sha256=digest(p)) for p in [archive_path, candidate, evidence/'QuantumStudio-source.tar.gz', evidence/'acac-gui-source.tar']})
       - name: Compile complete GUI from the exact new product source
         shell: pwsh
         run: |
@@ -407,7 +407,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: dev16-source-matrix-e2b652b-${{ github.run_id }}-${{ github.run_attempt }}
+          name: dev16-source-matrix-acac77ab-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 14
           if-no-files-found: error
           path: ${{ runner.temp }}/dev16-matrix-evidence/
