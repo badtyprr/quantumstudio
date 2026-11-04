@@ -301,3 +301,9 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/README.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/probe.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/fixtures.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/baseline-summary.json
+
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/baseline-summary.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/source-inventory.json
