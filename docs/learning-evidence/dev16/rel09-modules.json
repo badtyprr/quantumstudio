@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "hashes": {
+    "gui": "0cfdcf497fe0ad2883f5b98aa914ded642a009514c39cc60809747b4f4a35947",
+    "compiler": "66a2ec429d2c7bcbeeae75fb3a64ab24f93a6b589ad7527e72ace31973efeacb"
+  },
+  "results": [
+    {
+      "name": "oracle-0",
+      "screenshots": {
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-0 Unicode \u03ba\\export.png": "aec71bd76df649810b9510821a9caa4b1dfb203145850ca8d315ec30d29df953",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-0 Unicode \u03ba\\export.rejected.png": "6d04e0c0a94fe9e486c612418fa4cdb8cbb0e92d59a27f2ba1a291db6aa163a1",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-0 Unicode \u03ba\\export.minimum.png": "138de334df6197926c6e7923354cd11cd2b8cba538d0ef8b143fbbcb08d480a2"
+      }
+    },
+    {
+      "name": "oracle-1",
+      "screenshots": {
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-1 Unicode \u03ba\\export.png": "c3a9acf42e3afd453b1735216684f57457bb84c3b2fffab305a618bf307c010f",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-1 Unicode \u03ba\\export.rejected.png": "ec22b32be6a2f83eae70b6a2ccfe3c0ce29ec79f2f6f426ba862e7f879f1b462",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-1 Unicode \u03ba\\export.minimum.png": "138de334df6197926c6e7923354cd11cd2b8cba538d0ef8b143fbbcb08d480a2"
+      }
+    },
+    {
+      "name": "oracle-2",
+      "screenshots": {
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-2 Unicode \u03ba\\export.png": "030064660ef5c942fbbd8ad8a31bf3f0b7cba83362799b4c0923c75725cdb50b",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-2 Unicode \u03ba\\export.rejected.png": "b5dd46ad1be9d903b80f4df544fa531fcccec01377e14339dbdbd2f5a3a6e314",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-2 Unicode \u03ba\\export.minimum.png": "138de334df6197926c6e7923354cd11cd2b8cba538d0ef8b143fbbcb08d480a2"
+      }
+    },
+    {
+      "name": "oracle-4",
+      "screenshots": {
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-4 Unicode \u03ba\\export.png": "e69e477880d2e398f7b3a738bc984625d154dcff63e9f21a378a461429e753a6",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-4 Unicode \u03ba\\export.rejected.png": "3007900768131ce351d3668dba61bc6a402a2751962a4ba807cb5ae34971d697",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-4 Unicode \u03ba\\export.minimum.png": "138de334df6197926c6e7923354cd11cd2b8cba538d0ef8b143fbbcb08d480a2"
+      }
+    },
+    {
+      "name": "bernvaz-0",
+      "screenshots": {
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\bernvaz-0 Unicode \u03ba\\export.png": "06b62e67cf658cd693331afcb8f039b5975ea065258e16d107d84fb40c632e9a",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\bernvaz-0 Unicode \u03ba\\export.rejected.png": "0015afb4231437b759a9144c432cd6078356d4bad4958e55cc91b2adf1bedaa3",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\bernvaz-0 Unicode \u03ba\\export.minimum.png": "44e095d5d74c52ba449cfa932faab6bbe19967c8f70f794790b3f0c7b404f490"
+      }
+    },
+    {
+      "name": "oracle-1-end",
+      "screenshots": {
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-1-end Unicode \u03ba\\export.png": "1424d6223e8747e5109ae9f939dd52070aaa13efef64afbfbb91376ef24fcf44",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-1-end Unicode \u03ba\\export.rejected.png": "6bb0d7bfb6144bbd3897d1a57e762d8f4b62ba012688da974e3074864a3a1ebc",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-export\\modules\\oracle-1-end Unicode \u03ba\\export.minimum.png": "138de334df6197926c6e7923354cd11cd2b8cba538d0ef8b143fbbcb08d480a2"
+      }
+    }
+  ],
+  "cases": 12,
+  "semantic_checks": 24,
+  "worker_sha256": "162f76124a32ec0f6d4356f564dfc884117385e48d7b14c8f9fdb28b19db5c00",
+  "scope": "Unchanged QB-004 module export with basis/algorithm probes, edits, selected outputs and early end; not complete notebooks."
+}
