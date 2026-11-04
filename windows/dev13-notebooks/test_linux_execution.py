@@ -143,7 +143,8 @@ class LinuxLifecycleTests(unittest.TestCase):
         self.assertEqual(result['original_execution'], 'succeeded')
         source = json.loads((self.output / 'source-original.ipynb').read_bytes())
         rendered = json.loads((self.output / 'executed.ipynb').read_bytes())
-        self.assertEqual([c['source'] for c in source['cells']], [c['source'] for c in rendered['cells'][:-1]])
+        self.assertEqual([''.join(c['source']) for c in source['cells']],
+                         [''.join(c['source']) for c in rendered['cells'][:-1]])
 
     def test_source_error(self):
         self.start(['print("retained")', 'raise ValueError("source failure")', '42'])
