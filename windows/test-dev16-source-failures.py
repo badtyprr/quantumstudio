@@ -116,10 +116,72 @@ def png_record(path):
     return dict(path=str(path), sha256=digest(path), width=width, height=height, visual_review="pending")
 
 
+def plain_history(text):
+    """Only compact, typed, unsourced H/X/CNOT CircuitFile history may reorder keys."""
+    if not isinstance(text, str) or len(text) > 262144:
+        return None
+    def unique_members(pairs):
+        value = {}
+        for key, item in pairs:
+            require(key not in value, "Duplicate history member")
+            value[key] = item
+        return value
+    try:
+        value = json.loads(text, object_pairs_hook=unique_members)
+        if type(value) is not dict or set(value) != {"Version", "Qubits", "Steps"}:
+            return None
+        # Match the C# guard: no duplicate members, alternate numeric spelling,
+        # whitespace normalization or other serialization changes are excused.
+        if json.dumps(value, separators=(",", ":"), ensure_ascii=False) != text:
+            return None
+        if type(value["Version"]) is not int or value["Version"] != 1:
+            return None
+        if type(value["Qubits"]) is not int or not 1 <= value["Qubits"] <= 25:
+            return None
+        steps = value["Steps"]
+        if type(steps) is not list or len(steps) > 512:
+            return None
+        for step in steps:
+            if type(step) is not dict or set(step) != {"Gate", "Angle", "Wires"}:
+                return None
+            if type(step["Gate"]) is not str or step["Gate"] not in ("H", "X", "CNOT"):
+                return None
+            if type(step["Angle"]) is not str or step["Angle"] != "":
+                return None
+            wires = step["Wires"]
+            if type(wires) is not list or len(wires) != (2 if step["Gate"] == "CNOT" else 1):
+                return None
+            if not all(type(wire) is int and 0 <= wire < value["Qubits"] for wire in wires):
+                return None
+            if len(set(wires)) != len(wires):
+                return None
+        return value
+    except (ValueError, TypeError, RecursionError):
+        return None
+
+
+def history_entry_equal(left, right):
+    if left == right:
+        return True
+    first, second = plain_history(left), plain_history(right)
+    return first is not None and second is not None and first == second
+
+
+def history_chain_equal(left, right):
+    return len(left) == len(right) and all(history_entry_equal(a, b) for a, b in zip(left, right))
+
+
+def history_equal(left, right):
+    return (set(left) == set(right) == {"Current", "Undo", "Redo"}
+            and left["Current"] == right["Current"]
+            and history_chain_equal(left["Undo"], right["Undo"])
+            and history_chain_equal(left["Redo"], right["Redo"]))
+
+
 def check_history(records, saved):
     baseline, seeded = records["reopened"], records["seeded"]
     require(baseline["Current"] == saved["reopened"], "Reopened history mismatch")
-    require(seeded["Current"] == baseline["Current"] and seeded["Undo"] == baseline["Undo"] and len(seeded["Redo"]) == 1, "Invalid seeded history")
+    require(seeded["Current"] == baseline["Current"] and history_chain_equal(seeded["Undo"], baseline["Undo"]) and len(seeded["Redo"]) == 1, "Invalid seeded history")
     marker = json.loads(seeded["Redo"][0])
     original = json.loads(baseline["Current"])
     require(marker["Source"] == original["Source"], "Marker modified retained sources")
@@ -127,12 +189,12 @@ def check_history(records, saved):
     last = marker["Circuit"]["Steps"][-1]
     require(last.get("Expression" if original["Classical"] else "Gate") == "X" and last["Wires"] == [0], "Incorrect marker")
     for stage in ("blank", "unchanged", "missing-check", "missing-reimport", "restored", "changed"):
-        require(records[stage] == seeded, stage + " lost document/history")
+        require(history_equal(records[stage], seeded), stage + " lost document/history")
     replaced = records["reimported"]
-    require(replaced == dict(Current=saved["reimported"], Undo=[baseline["Current"]] + baseline["Undo"], Redo=[]), "Replacement history mismatch")
+    require(history_equal(replaced, dict(Current=saved["reimported"], Undo=[baseline["Current"]] + baseline["Undo"], Redo=[])), "Replacement history mismatch")
     undone = dict(Current=saved["undone"], Undo=baseline["Undo"], Redo=[replaced["Current"]])
-    require(saved["undone"] == saved["reopened"] and records["undone"] == records["final"] == undone, "Undo history mismatch")
-    require(records["redone"] == replaced and records["fresh-root"] is True, "Redo/fresh-root mismatch")
+    require(saved["undone"] == saved["reopened"] and history_equal(records["undone"], undone) and history_equal(records["final"], undone), "Undo history mismatch")
+    require(history_equal(records["redone"], replaced) and records["fresh-root"] is True, "Redo/fresh-root mismatch")
 
 
 def run_logged(command, prefix, *, timeout, input_bytes=None, env=None):
