@@ -266,6 +266,37 @@ class LifecycleTests(unittest.TestCase):
         self.assertFalse((self.output / "kernel.json").exists())
         self.assertEqual(json.loads((self.output / "status.json").read_bytes())["state"], "failed")
 
+    def cleanup_failure(self, error):
+        config = self.fixture(['42'])
+        with patch.object(execution._WindowsJob, 'assign', side_effect=OSError('assignment test')), \
+                patch.object(execution._WindowsJob, 'terminate', side_effect=error):
+            with self.assertRaisesRegex(OSError, 'assignment test'):
+                execution._supervise(self.output, config)
+        result = json.loads((self.output / 'status.json').read_bytes())
+        self.assertEqual(result['state'], 'failed')
+        self.assertTrue(result['cleanup']['unconfirmed'])
+        self.assertEqual(result['cleanup']['errors'][0]['step'], 'terminate_owned_containment')
+        self.assertFalse((self.output / 'kernel.json').exists())
+
+    def test_stop_timeout_preserves_terminal_failure(self):
+        self.cleanup_failure(TimeoutError('stop deadline'))
+
+    def test_ownership_refusal_preserves_terminal_failure(self):
+        self.cleanup_failure(RuntimeError('UNIT_OWNERSHIP_NOT_CONFIRMED'))
+
+    def test_final_close_failure_revokes_success(self):
+        real_close = execution._WindowsJob.close
+
+        def failed_close(job):
+            real_close(job)
+            raise OSError('close failure')
+
+        with patch.object(execution._WindowsJob, 'close', failed_close):
+            result = execution._supervise(self.output, self.fixture(['42']))
+        self.assertEqual(result['state'], 'failed')
+        self.assertTrue(result['cleanup']['unconfirmed'])
+        self.assertEqual(json.loads((self.output / 'status.json').read_bytes())['state'], 'failed')
+
     def control_eof(self, started):
         config = self.fixture(['print("retained")', 'import time; time.sleep(120)', '42'], timeout=180)
         execution.atomic_json(self.output / 'engine-request.json', config)

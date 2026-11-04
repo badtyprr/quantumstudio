@@ -290,3 +290,7 @@ EXTRA_DIST += windows/dev13-notebooks/test_linux_execution.py
 EXTRA_DIST += diagnostics/notebook-linux/resolve_environment.py
 EXTRA_DIST += diagnostics/notebook-linux/direct-requirements.txt
 EXTRA_DIST += .github/workflows/notebook-linux.yml
+EXTRA_DIST += windows/dev13-notebooks/profiles/notebook-linux-py312.json
+EXTRA_DIST += windows/dev13-notebooks/linux-notebook-requirements.lock
+EXTRA_DIST += docs/learning-evidence/dev14/linux-lifecycle.md
+EXTRA_DIST += .github/workflows/notebook-linux-lifecycle.yml
