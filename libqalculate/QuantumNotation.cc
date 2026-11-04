@@ -719,6 +719,9 @@ class Parser {
    size_t mark=repeatedRegister(label);
    if(mark==std::string::npos)return ket(label);
    std::string outer=s;size_t outerPosition=p;s=label.substr(mark+1);p=0;
+   // Source kets may spell repetition as 0^{\otimes n}; TeX uses the same
+   // ^@ marker as operator tensor powers. The count keeps the existing route.
+   take('@');
    std::string count=unary();ws();
    if(p!=s.size())throw std::runtime_error("Group a compound repeated-register count, for example |0^(n+1)>.");
    s=outer;p=outerPosition;
