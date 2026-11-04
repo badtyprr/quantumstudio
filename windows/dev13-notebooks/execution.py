@@ -1,0 +1,441 @@
+"""Finite, reviewed notebook contracts and an owned Windows kernel lifecycle.
+
+This is local execution, not a security sandbox. Only execute() is the public
+run seam; the engine protocol is private and starts behind a process-job gate.
+"""
+import argparse
+import asyncio
+import ctypes
+from ctypes import wintypes
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import traceback
+
+ROOT = Path(__file__).resolve().parent
+TERMINAL = {"succeeded", "failed", "cancelled"}
+CONTRACTS = {"ibm019", "ibm020"}
+PROFILES = {"qiskit-aer-win-py312"}
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def canonical(path):
+    return path.read_text(encoding="utf-8").encode("utf-8")
+
+
+def atomic_json(path, value):
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False), encoding="utf-8")
+    os.replace(temporary, path)
+
+
+def cell_text(cell):
+    return "".join(cell["source"])
+
+
+def profile_for(name):
+    if name not in PROFILES:
+        raise ValueError("UNKNOWN_PROFILE")
+    profile = json.loads((ROOT / "profiles" / (name + ".json")).read_bytes())
+    if digest(canonical(ROOT / profile["lock"])) != profile["lock_sha256"]:
+        raise ValueError("LOCK_HASH_MISMATCH")
+    return profile
+
+
+def inspect_environment(python, profile, dependencies=True):
+    code = ("import json,sys,platform,importlib.metadata as m; "
+            "print(json.dumps(dict(python=platform.python_version(),platform=sys.platform,"
+            "architecture=platform.architecture()[0],executable=sys.executable,"
+            "packages={d.metadata['Name'].lower().replace('_','-'):d.version for d in m.distributions()})))")
+    result = subprocess.run([str(python), "-I", "-c", code], capture_output=True, text=True, timeout=30, check=True)
+    identity = json.loads(result.stdout)
+    for key in ("python", "platform", "architecture"):
+        if identity[key] != profile[key]:
+            raise ValueError("ENVIRONMENT_MISMATCH: " + key)
+    if dependencies:
+        for line in canonical(ROOT / profile["lock"]).decode().splitlines():
+            name, version = line.split()[0].split("==")
+            if identity["packages"].get(name.lower().replace("_", "-")) != version:
+                raise ValueError("DEPENDENCY_MISMATCH: " + name)
+        subprocess.run([str(python), "-I", "-m", "pip", "check"], capture_output=True, text=True, timeout=30, check=True)
+    return identity
+
+
+def create_environment(profile_name, python, wheelhouse, destination):
+    profile = profile_for(profile_name)
+    inspect_environment(python, profile, dependencies=False)
+    destination = Path(destination).resolve()
+    wheelhouse = Path(wheelhouse).resolve(strict=True)
+    destination.mkdir(parents=True, exist_ok=False)
+    report = {"state": "starting", "profile": profile, "offline_only": True,
+              "wheels": {p.name: digest(p.read_bytes()) for p in sorted(wheelhouse.glob("*.whl"))}}
+    try:
+        with (destination / "install.log").open("w", encoding="utf-8") as log:
+            subprocess.run([str(python), "-I", "-m", "venv", str(destination)], stdout=log, stderr=log, check=True, timeout=120)
+            target = destination / "Scripts" / "python.exe"
+            subprocess.run([str(target), "-I", "-m", "pip", "--isolated", "install", "--no-index", "--no-cache-dir",
+                            "--find-links", str(wheelhouse), "--require-hashes", "-r", str(ROOT / profile["lock"])],
+                           stdout=log, stderr=log, check=True, timeout=300)
+        report["identity"] = inspect_environment(target, profile)
+        report["state"] = "succeeded"
+    except Exception as error:
+        report.update(state="failed", error=str(error))
+        raise
+    finally:
+        atomic_json(destination / "environment.json", report)
+    return report
+
+
+def validate_request(request):
+    name = request["contract"]
+    if name not in CONTRACTS:
+        raise ValueError("UNKNOWN_CONTRACT")
+    contract_bytes = (ROOT / "contracts" / (name + ".json")).read_bytes()
+    contract = json.loads(contract_bytes)
+    profile = profile_for(contract["profile"])
+    raw = Path(request["source"]).read_bytes()
+    if digest(raw) != contract["source"]["sha256"]:
+        raise ValueError("SOURCE_HASH_MISMATCH")
+    original = json.loads(raw)
+    cells = [{"index": i, "type": c["cell_type"], "sha256": digest(cell_text(c).encode("utf-8"))}
+             for i, c in enumerate(original["cells"])]
+    if cells != contract["source"]["cells"]:
+        raise ValueError("SOURCE_CELL_MISMATCH")
+    witness = canonical(ROOT / contract["witness"]["path"])
+    if digest(witness) != contract["witness"]["sha256"]:
+        raise ValueError("WITNESS_HASH_MISMATCH")
+    python = Path(request["environment"]).resolve() / "Scripts" / "python.exe"
+    identity = inspect_environment(python, profile)
+    return raw, dict(contract=contract, contract_sha256=digest(contract_bytes), profile=profile,
+                     witness=witness.decode(), identity=identity, python=str(python))
+
+
+class _WindowsJob:
+    """Own only this run's descendants; no process-name or PID-tree killing."""
+
+    def __init__(self):
+        if sys.platform != "win32":
+            raise RuntimeError("WINDOWS_PROFILE_REQUIRED")
+        class Basic(ctypes.Structure):
+            _fields_ = [("ProcessTime", ctypes.c_int64), ("JobTime", ctypes.c_int64),
+                        ("Flags", wintypes.DWORD), ("MinWS", ctypes.c_size_t), ("MaxWS", ctypes.c_size_t),
+                        ("ActiveLimit", wintypes.DWORD), ("Affinity", ctypes.c_size_t),
+                        ("Priority", wintypes.DWORD), ("Scheduling", wintypes.DWORD)]
+        class IO(ctypes.Structure):
+            _fields_ = [("c" + str(i), ctypes.c_uint64) for i in range(6)]
+        class Extended(ctypes.Structure):
+            _fields_ = [("Basic", Basic), ("IO", IO)] + [("m" + str(i), ctypes.c_size_t) for i in range(4)]
+        class Accounting(ctypes.Structure):
+            _fields_ = [("t" + str(i), ctypes.c_int64) for i in range(4)] + [
+                ("Faults", wintypes.DWORD), ("Total", wintypes.DWORD),
+                ("Active", wintypes.DWORD), ("Terminated", wintypes.DWORD)]
+        if (ctypes.sizeof(Basic), ctypes.sizeof(IO), ctypes.sizeof(Extended)) != (64, 48, 144):
+            raise RuntimeError("UNSUPPORTED_JOB_ABI")
+        self.accounting = Accounting
+        self.api = ctypes.WinDLL("kernel32", use_last_error=True)
+        signatures = {
+            "CreateJobObjectW": ([ctypes.c_void_p, wintypes.LPCWSTR], wintypes.HANDLE),
+            "SetInformationJobObject": ([wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD], wintypes.BOOL),
+            "AssignProcessToJobObject": ([wintypes.HANDLE, wintypes.HANDLE], wintypes.BOOL),
+            "QueryInformationJobObject": ([wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD, ctypes.c_void_p], wintypes.BOOL),
+            "TerminateJobObject": ([wintypes.HANDLE, wintypes.UINT], wintypes.BOOL),
+            "OpenProcess": ([wintypes.DWORD, wintypes.BOOL, wintypes.DWORD], wintypes.HANDLE),
+            "IsProcessInJob": ([wintypes.HANDLE, wintypes.HANDLE, ctypes.POINTER(wintypes.BOOL)], wintypes.BOOL),
+            "CloseHandle": ([wintypes.HANDLE], wintypes.BOOL),
+        }
+        for name, (args, result) in signatures.items():
+            function = getattr(self.api, name)
+            function.argtypes, function.restype = args, result
+        self.handle = self.api.CreateJobObjectW(None, None)
+        if not self.handle:
+            raise ctypes.WinError(ctypes.get_last_error())
+        limits = Extended()
+        limits.Basic.Flags = 0x2000  # KILL_ON_JOB_CLOSE; never allow breakaway.
+        try:
+            self.check(self.api.SetInformationJobObject(self.handle, 9, ctypes.byref(limits), ctypes.sizeof(limits)))
+        except BaseException:
+            self.close()
+            raise
+
+    @staticmethod
+    def check(ok):
+        if not ok:
+            raise ctypes.WinError(ctypes.get_last_error())
+
+    def assign(self, process):
+        # Borrowed CPython Windows Popen handle; never close it here.
+        self.check(self.api.AssignProcessToJobObject(self.handle, int(process._handle)))
+
+    def contains(self, pid):
+        process = self.api.OpenProcess(0x1000, False, pid)  # QUERY_LIMITED_INFORMATION
+        if not process:
+            raise ctypes.WinError(ctypes.get_last_error())
+        try:
+            member = wintypes.BOOL()
+            self.check(self.api.IsProcessInJob(process, self.handle, ctypes.byref(member)))
+            return bool(member.value)
+        finally:
+            self.api.CloseHandle(process)
+
+    def active(self):
+        info = self.accounting()
+        self.check(self.api.QueryInformationJobObject(self.handle, 1, ctypes.byref(info), ctypes.sizeof(info), None))
+        return info.Active
+
+    def terminate(self):
+        self.check(self.api.TerminateJobObject(self.handle, 1))
+
+    def close(self):
+        if self.handle:
+            self.check(self.api.CloseHandle(self.handle))
+            self.handle = None
+
+
+def cancel(directory):
+    directory = Path(directory).resolve(strict=True)
+    status = json.loads((directory / "status.json").read_bytes())
+    if status["state"] not in TERMINAL:
+        (directory / "cancel.request").touch(exist_ok=True)
+    return status
+
+
+def execute(request, events=None):
+    """Validate a reviewed source, then return terminal evidence after cleanup.
+
+    request: contract, source, environment, output. events receives supervisor
+    state dictionaries; durable events.jsonl remains authoritative.
+    """
+    output = Path(request["output"]).resolve()
+    if output.exists():
+        raise FileExistsError(output)
+    raw, config = validate_request(request)
+    output.mkdir(parents=True, exist_ok=False)
+    (output / "source-original.ipynb").write_bytes(raw)
+    return _supervise(output, config, events)
+
+
+def _supervise(output, config, events=None):
+    atomic_json(output / "engine-request.json", config)
+    status = dict(version=1, state="starting", contract=config["contract"]["id"], route="notebook",
+                  source_sha256=config["contract"]["source"]["sha256"], contract_sha256=config["contract_sha256"],
+                  identity=config["identity"], profile=config["profile"], original_execution="not_run",
+                  authored_verification="not_run", external_resources="outstanding", interpretation="outstanding")
+
+    def publish():
+        atomic_json(output / "status.json", status)
+        with (output / "events.jsonl").open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(dict(time=time.time(), **status)) + "\n")
+        if events is not None:
+            events(dict(status))
+
+    publish()
+    try:
+        job = _WindowsJob()
+    except Exception as error:
+        status.update(state="failed", error=str(error), cleanup={"method": "not_started"})
+        publish()
+        raise
+    process = None
+    requested = False
+    forced = False
+    membership = None
+    try:
+        with (output / "engine.stdout").open("w", encoding="utf-8") as stdout, (output / "engine.stderr").open("w", encoding="utf-8") as stderr:
+            process = subprocess.Popen([config["python"], "-I", str(Path(__file__).resolve()), "--engine", str(output)],
+                                       stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, text=True,
+                                       creationflags=subprocess.CREATE_NO_WINDOW)
+            job.assign(process)
+            status["engine_pid"] = process.pid
+            process.stdin.write("start\n")
+            process.stdin.flush()
+            status["state"] = "running"
+            publish()
+            deadline = None
+            while process.poll() is None:
+                if membership is None and (output / "kernel.json").exists():
+                    kernel = json.loads((output / "kernel.json").read_bytes())
+                    membership = job.contains(kernel["pid"])
+                    if not membership:
+                        raise RuntimeError("KERNEL_OUTSIDE_OWNED_JOB")
+                if (output / "cancel.request").exists() and not requested:
+                    requested = True
+                    status["cancellation_requested"] = True
+                    publish()
+                    deadline = time.monotonic() + config["profile"]["cancel_grace_seconds"]
+                    try:
+                        process.stdin.write("cancel\n")
+                        process.stdin.flush()
+                    except (BrokenPipeError, OSError):
+                        pass
+                if deadline is not None and time.monotonic() >= deadline:
+                    forced = True
+                    job.terminate()
+                    break
+                time.sleep(0.05)
+            process.wait(timeout=10)
+        if job.active():
+            forced = True
+            job.terminate()
+        deadline = time.monotonic() + 10
+        while job.active() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        remaining = job.active()
+        result_path = output / "engine-result.json"
+        if result_path.exists():
+            status.update(json.loads(result_path.read_bytes()))
+        status["cleanup"] = dict(active_processes=remaining, kernel_job_membership=membership,
+                                 method="forced" if forced else "graceful", engine_exit=process.returncode)
+        if requested:
+            status["state"] = "cancelled"
+            cells_path = output / "cells.json"
+            if cells_path.exists():
+                cells = json.loads(cells_path.read_bytes())
+                for cell in cells:
+                    if cell["state"] in {"running", "failed"}:
+                        cell.update(state="interrupted", cancellation_requested=True)
+                        cell.setdefault("error", {"type": "SupervisorCancellation",
+                                        "message": "Run cancelled; only checkpointed outputs are available"})
+                atomic_json(cells_path, cells)
+        elif process.returncode != 0 or status["state"] != "succeeded":
+            status["state"] = "failed"
+        if remaining or (status["state"] == "succeeded" and membership is not True):
+            status.update(state="failed", error="CLEANUP_OR_MEMBERSHIP_UNCONFIRMED")
+        publish()
+        return status
+    except BaseException as error:
+        # Assignment failure leaves an engine behind its gate, with no children.
+        if process is not None:
+            if process.stdin:
+                process.stdin.close()
+            job.terminate()
+            if process.poll() is None:
+                process.kill()
+            process.wait(timeout=10)
+        status.update(state="failed", error=str(error), cleanup={"active_processes": job.active(), "method": "exception"})
+        publish()
+        raise
+    finally:
+        if process is not None and process.stdin and not process.stdin.closed:
+            process.stdin.close()
+        job.close()
+
+
+async def _run_notebook(output, config):
+    import nbformat
+    from nbclient import NotebookClient
+    from jupyter_client import AsyncKernelManager
+    from jupyter_client.kernelspec import KernelSpecManager
+
+    raw = (output / "source-original.ipynb").read_bytes()
+    notebook = nbformat.reads(raw.decode("utf-8"), as_version=4)
+    contract = config["contract"]
+    original = [(c.cell_type, c.source) for c in notebook.cells]
+    for cell in notebook.cells:
+        if cell.cell_type == "code":
+            cell.outputs, cell.execution_count = [], None
+            cell.metadata.pop("execution", None)
+    offset = int(bool(contract["preamble"]))
+    if offset:
+        notebook.cells.insert(0, nbformat.v4.new_code_cell(contract["preamble"], metadata={"tags": ["authored-preamble"]}))
+    notebook.cells.append(nbformat.v4.new_code_cell(config["witness"], metadata={"tags": ["authored-independent-witness"]}))
+    records = [dict(index=i, original_index=i-offset if offset <= i < offset+len(original) else None,
+                    type=c.cell_type, state="not_run" if c.cell_type == "code" else "not_executable")
+               for i, c in enumerate(notebook.cells)]
+    result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
+
+    def checkpoint():
+        atomic_json(output / "executed.ipynb", notebook)
+        atomic_json(output / "cells.json", records)
+
+    checkpoint()
+    with tempfile.TemporaryDirectory(prefix="dev13-kernel-") as temp:
+        kernels = Path(temp) / "kernels"
+        spec = kernels / "contract"
+        spec.mkdir(parents=True)
+        atomic_json(spec / "kernel.json", dict(argv=[sys.executable, "-m", "ipykernel_launcher", "-f", "{connection_file}"],
+                                               display_name="Pinned notebook contract", language="python",
+                                               env={"MPLBACKEND": "module://matplotlib_inline.backend_inline"}))
+        manager = AsyncKernelManager(kernel_name="contract", kernel_spec_manager=KernelSpecManager(kernel_dirs=[str(kernels)]))
+        client = NotebookClient(notebook, km=manager, timeout=config["profile"]["default_cell_timeout_seconds"],
+                                allow_errors=False, interrupt_on_timeout=False, resources={"metadata": {"path": str(output)}})
+        try:
+            async with client.async_setup_kernel(cleanup_kc=True):
+                atomic_json(output / "kernel.json", {"pid": manager.provisioner.pid, "executable": sys.executable})
+                for i, cell in enumerate(notebook.cells):
+                    if cell.cell_type != "code":
+                        continue
+                    records[i]["state"] = "running"
+                    checkpoint()
+                    started = time.monotonic()
+                    try:
+                        await client.async_execute_cell(cell, i)
+                        records[i]["state"] = "succeeded"
+                    except BaseException as error:
+                        records[i].update(state="interrupted" if isinstance(error, asyncio.CancelledError) else "failed",
+                                          error={"type": type(error).__name__, "message": str(error)})
+                        raise
+                    finally:
+                        records[i]["elapsed_seconds"] = time.monotonic() - started
+                        checkpoint()
+            preserved = [(c.cell_type, c.source) for c in notebook.cells[offset:offset+len(original)]]
+            if preserved != original:
+                raise AssertionError("SOURCE_CELLS_CHANGED")
+            for index in contract["required_images"]:
+                if not any(o.get("data", {}).get("image/png") for o in notebook.cells[index+offset].outputs):
+                    raise AssertionError("MISSING_DRAWING: " + str(index))
+            for index, text in contract["required_text"].items():
+                if not any(o.get("data", {}).get("text/plain") == text for o in notebook.cells[int(index)+offset].outputs):
+                    raise AssertionError("SOURCE_RESULT_MISMATCH: " + index)
+            witness_text = "".join(o.get("text", "") for o in notebook.cells[-1].outputs if o.output_type == "stream")
+            result.update(state="succeeded", original_execution="succeeded", authored_verification="succeeded",
+                          independent_results=json.loads(witness_text), source_cells_preserved=True)
+        except BaseException as error:
+            result["error"] = dict(type=type(error).__name__, message=str(error), traceback=traceback.format_exc())
+            codes = [records[i+offset]["state"] for i in contract["code_cells"]]
+            result["original_execution"] = "succeeded" if all(x == "succeeded" for x in codes) else "incomplete"
+            result["authored_verification"] = "failed" if records[-1]["state"] == "succeeded" else records[-1]["state"]
+        finally:
+            checkpoint()
+            atomic_json(output / "engine-result.json", result)
+    return result
+
+
+def _engine(output):
+    # No third-party runtime imports or child processes before ownership gate.
+    if sys.stdin.readline() != "start\n":
+        return 1
+    config = json.loads((output / "engine-request.json").read_bytes())
+
+    async def main():
+        task = asyncio.create_task(_run_notebook(output, config))
+        loop = asyncio.get_running_loop()
+
+        def control():
+            for line in sys.stdin:
+                if line.strip() == "cancel":
+                    try:
+                        loop.call_soon_threadsafe(task.cancel)
+                    except RuntimeError:
+                        pass
+                    return
+
+        threading.Thread(target=control, daemon=True).start()
+        return await task
+
+    result = asyncio.run(main())
+    return 0 if result["state"] == "succeeded" else 1
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--engine", type=Path, required=True)
+    sys.exit(_engine(parser.parse_args().engine))
