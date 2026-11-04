@@ -1,0 +1,88 @@
+{
+  "version": 2,
+  "id": "qb030",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "pulser-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "fb1586a0689937b050937926f70909f2ffded272b5a83752660c2f5ddfb7aec7"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "0c0682ed337fb55f5fecaaa2f1a79cd2dc1d66fba6532fa5af506f7b6b014a28"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "7a51d8ffa24c6b66f82c08a2ab600f5a090df0e49082550aa47874adf5661762"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "824c905f477584d55b360f6705f0703016bd3f7df1626912995371515c5be08d"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "355c978c818215ecede2528fa715ace49a9ddeeebea2d1c1483986593f3b065a"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "1f03891cec6ab60d669511f4162d06dd8b7faacb9032a1212a36fd5791a94160"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "3755c4578536cecdfc642df00432e7f362a4c2f17090f914eeb792b6c23d39ab"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "c34d9beef1242d055201dda148ed1b68b29012b3038d3944ce0f8ea02fe85e6f"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "0d50ad8a8b38da002eef4bff59fadf03825e49e58c567a2961cfd77963f0f5c6"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    6
+  ],
+  "code_cells": [
+    6
+  ],
+  "excluded_code_cells": {
+    "1": "Unpinned source installation replaced by disclosed exact observed49-package profile",
+    "3": "Pasqal credentials and provider construction excluded",
+    "4": "Remote device discovery excluded",
+    "7": "Original EMU_FREE 200-shot provider job and result excluded",
+    "8": "Remote result histogram depends on excluded job"
+  },
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb030.py",
+    "sha256": "10d0ce1b9b2aaa098c9c1f2ebf878b01333104f25dd0e328f758362f20981e16",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "required_images": [
+    6
+  ],
+  "required_text": {},
+  "output_artifacts": [],
+  "acceptance_field": "accepted"
+}
