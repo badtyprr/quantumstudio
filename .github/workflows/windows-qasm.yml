@@ -47,7 +47,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Classical module export validation failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-classical-export-ui.py
           if ($LASTEXITCODE -ne 0) { throw 'Classical export GUI validation failed.' }
-          & .tools/qasm-venv/Scripts/python.exe windows/test-composer-source-import.py
+          & .tools/qasm-venv/Scripts/python.exe windows/test-composer-source-import.py --structural-only
           if ($LASTEXITCODE -ne 0) { throw 'Composer source import tests failed.' }
           & .tools/qasm-venv/Scripts/python.exe windows/test-source-files-ui.py
           if ($LASTEXITCODE -ne 0) { throw 'Source check/reimport GUI tests failed.' }

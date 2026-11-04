@@ -109,6 +109,7 @@ EXTRA_DIST = config.rpath  \
 	windows/test-classical-module-export.py \
 	windows/test-classical-export-ui.py \
 	windows/test-composer-source-import.py \
+	windows/fixtures/dev16-composer-contract.json \
 	windows/test-classical-module-import.py \
 	windows/test-source-files-ui.py \
 	windows/CssCircuitTests.cs \

@@ -50,8 +50,6 @@ Copy-Item -LiteralPath $archives[0].FullName -Destination (Join-Path $repo 'dist
 & (Join-Path $PSScriptRoot 'test-source-import-bridge.ps1') -Distribution $output
 & $PythonPath (Join-Path $PSScriptRoot 'test-classical-export-ui.py') --package $output
 if ($LASTEXITCODE -ne 0) { throw 'Classical export GUI validation failed.' }
-& $PythonPath (Join-Path $PSScriptRoot 'test-composer-source-import.py') --package $output
-if ($LASTEXITCODE -ne 0) { throw 'Composer source import validation failed.' }
 & $PythonPath (Join-Path $PSScriptRoot 'test-classical-module-import.py') --package $output
 if ($LASTEXITCODE -ne 0) { throw 'Classical module import validation failed.' }
 & $PythonPath (Join-Path $PSScriptRoot 'test-source-files-ui.py') --package $output
@@ -83,6 +81,8 @@ while ($queue.Count) {
 }
 New-Item -ItemType Directory -Path (Join-Path $output 'data') | Out-Null
 Copy-Item (Join-Path $repo 'data\*.xml') (Join-Path $output 'data')
+& $PythonPath (Join-Path $PSScriptRoot 'test-composer-source-import.py') --package $output
+if ($LASTEXITCODE -ne 0) { throw 'Composer source import validation failed.' }
 Copy-Item (Join-Path $repo 'COPYING') (Join-Path $output 'LICENSE.txt')
 Copy-Item (Join-Path $PSScriptRoot 'Notation-guide.html') $output
 Copy-Item (Join-Path $PSScriptRoot 'README.txt') $output
