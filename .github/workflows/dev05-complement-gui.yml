@@ -1,0 +1,134 @@
+# Product and acceptance-harness revisions are independent. No release publication.
+name: DEV05 complement hosted Clipboard acceptance
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/dev05-complement-gui.yml
+      - diagnostics/dev05-complement/**
+permissions:
+  contents: read
+concurrency:
+  group: dev05-complement-gui
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    if: github.repository == 'badtyprr/quantumstudio' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == 'badtyprr/quantumstudio')
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    env:
+      PRODUCT_REVISION: 3fdf7ebd6141feec7c48005c4e3557229ed794c0
+      HARNESS_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      ACCEPTANCE_WORKFLOW_REVISION: ${{ github.workflow_sha }}
+      ACCEPTANCE_WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Check out exact acceptance harness
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: ${{ env.HARNESS_REVISION }}
+          path: harness
+      - name: Check out pinned complement product separately
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: 3fdf7ebd6141feec7c48005c4e3557229ed794c0
+          path: product
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Bind source identities and inspect hosted Clipboard
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $product = git -C product rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $product -cne $env:PRODUCT_REVISION) { throw 'Product revision mismatch.' }
+          $harness = git -C harness rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $harness -cne $env:HARNESS_REVISION) { throw 'Harness revision mismatch.' }
+          foreach ($checkout in @('product','harness')) {
+            $dirty = git -C $checkout status --porcelain --untracked-files=all
+            if ($LASTEXITCODE -ne 0 -or $dirty) { throw "Clean $checkout checkout required." }
+          }
+          $tree = git -C product rev-parse 'HEAD^{tree}'
+          if ($LASTEXITCODE -ne 0) { throw 'Product tree lookup failed.' }
+          ./product/diagnostics/dev17-unattended/Inspect-Environment.ps1 -Evidence "$env:RUNNER_TEMP/dev05-preflight"
+          @{
+            product_revision=$product; product_tree=$tree; harness_revision=$harness
+            event_revision=$env:GITHUB_SHA; workflow_revision=$env:ACCEPTANCE_WORKFLOW_REVISION
+            workflow_ref=$env:ACCEPTANCE_WORKFLOW_REF; candidate=$true; publication=$false
+            scope='Fresh hosted bytes from pinned product; not reuse of the local development worker.'
+            powershell=$PSVersionTable.PSVersion.ToString()
+          } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev05-preflight/source.json"
+          Get-FileHash product/windows/package.ps1,product/diagnostics/dev17-unattended/Inspect-Environment.ps1,harness/diagnostics/dev05-complement/ComplementGuiTests.cs,harness/diagnostics/dev05-complement/Run-Acceptance.ps1,harness/.github/workflows/dev05-complement-gui.yml |
+            Select-Object Path,Hash | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev05-preflight/source-hashes.json"
+          Copy-Item -LiteralPath harness/.github/workflows/dev05-complement-gui.yml -Destination "$env:RUNNER_TEMP/dev05-preflight/workflow.yml"
+          $probe = Get-Content "$env:RUNNER_TEMP/dev05-preflight/environment.json" -Raw | ConvertFrom-Json
+          if (!$probe.clipboard_open) { throw 'Hosted Clipboard denied; preserve evidence and stop.' }
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        id: msys
+        with:
+          msystem: UCRT64
+          update: true
+          cache: false
+          install: >-
+            autoconf automake libtool gettext-devel make
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-pkgconf
+      - name: Prepare compiler dependencies outside both checkouts
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/dev05-python"
+          if ($LASTEXITCODE -ne 0) { throw 'venv failed.' }
+          & "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -m pip install -r product/windows/qasm-import-requirements.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency install failed.' }
+          & "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -m pip check
+          if ($LASTEXITCODE -ne 0) { throw 'Compiler dependency check failed.' }
+          & "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:RUNNER_TEMP/dev05-preflight/python-packages.txt"
+          if ($LASTEXITCODE -ne 0) { throw 'Compiler inventory failed.' }
+      - name: Build unchanged pinned product as Candidate
+        shell: pwsh
+        working-directory: product
+        env:
+          DEV05_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP/dev05-preflight/package.log"
+          try {
+            & "$env:DEV05_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:RUNNER_TEMP/dev05-preflight/msys-packages.txt"
+            if ($LASTEXITCODE -ne 0) { throw 'MSYS inventory failed.' }
+            ./windows/package.ps1 -MsysRoot $env:DEV05_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev05-python/Scripts/python.exe" -Candidate
+          } finally { Stop-Transcript }
+      - name: Verify actual Candidate ZIP and run complement controls
+        shell: pwsh
+        run: |
+          $archive = "$env:GITHUB_WORKSPACE/product/dist/QuantumStudio-candidate-Windows-x64.zip"
+          $source = "$env:GITHUB_WORKSPACE/product/dist/QuantumStudio-source.tar.gz"
+          python product/windows/test-package.py $archive --candidate --revision $env:PRODUCT_REVISION
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate archive failed independent manifest verification.' }
+          $before = @(Get-FileHash -LiteralPath $archive,$source | Select-Object Path,Hash)
+          $before | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev05-preflight/archive-hashes.json"
+          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/dev05-payload"
+          try {
+            ./harness/diagnostics/dev05-complement/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/dev05-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev05-acceptance" -Revision $env:PRODUCT_REVISION -ProductSource "$env:GITHUB_WORKSPACE/product" -HarnessRevision $env:HARNESS_REVISION -CandidateArchive $archive -SourceArchive $source
+          } finally {
+            foreach ($entry in $before) {
+              if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance.' }
+            }
+          }
+      - name: Retain actual bytes and evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev05-complement-${{ env.PRODUCT_REVISION }}-${{ env.HARNESS_REVISION }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/dev05-preflight/
+            ${{ runner.temp }}/dev05-acceptance/
+            harness/diagnostics/dev05-complement/
+            product/src/*.log
+            product/src/*.trs
+            product/config.log
+            product/*.log
+            product/*.trs
+            product/dist/

@@ -267,6 +267,9 @@ EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
 EXTRA_DIST += docs/learning-evidence/dev16/verification.json
 EXTRA_DIST += .github/workflows/dev17-release.yml
+EXTRA_DIST += .github/workflows/dev05-complement-gui.yml
+EXTRA_DIST += diagnostics/dev05-complement/ComplementGuiTests.cs
+EXTRA_DIST += diagnostics/dev05-complement/Run-Acceptance.ps1
 
 # Source-backed IBM-019 phase-kickback audit.
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/baseline-summary.json
