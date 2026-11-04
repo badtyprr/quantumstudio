@@ -34,7 +34,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
 | [AUD-04](#aud-04) | P2 | M | Pending | AUD-02 | Audit remaining notebooks end to end |
 
-## Dated development staging checkpoint — 2026-11-04
+## Dated development staging checkpoint - 2026-11-04
 
 This is a record of reviewed preparation, not a release announcement. Live master
 was `02d5ca3f5713385818e80db15b1a58e3b518e569` at this checkpoint. The draft PRs
