@@ -1,0 +1,245 @@
+# Finite PR431 candidate acceptance; no merge, release or publication.
+name: DEV16 extracted candidate composer acceptance
+on:
+  pull_request:
+    paths:
+      - .github/workflows/dev16-package-acceptance.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dev16-package-acceptance
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    env:
+      DEV16_SOURCE: f3b4f55a426622551f8597d7fc25f4b82ded266d
+      DEV16_WORKFLOW_SHA: ${{ github.workflow_sha }}
+      DEV16_WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: f3b4f55a426622551f8597d7fc25f4b82ded266d
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Bind exact product and workflow identity
+        shell: python
+        run: |
+          import hashlib, json, os, platform, subprocess, sys
+          from pathlib import Path
+          evidence = Path(os.environ['RUNNER_TEMP']) / 'dev16-package-evidence'
+          evidence.mkdir()
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as stream:
+              stream.write('DEV16_EVIDENCE=' + str(evidence) + '\n')
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          revision = git('rev-parse', 'HEAD')
+          assert revision == os.environ['DEV16_SOURCE']
+          assert not git('status', '--porcelain', '--untracked-files=all'), 'Dirty product checkout'
+          paths = ['windows/package.ps1', 'windows/test-package.py',
+                   'windows/test-composer-source-import.py', 'windows/fixtures/dev16-composer-contract.json']
+          identity = dict(revision=revision, tree=git('rev-parse', 'HEAD^{tree}'),
+                          workflow_sha=os.environ['DEV16_WORKFLOW_SHA'],
+                          workflow_ref=os.environ['DEV16_WORKFLOW_REF'],
+                          event_revision=os.environ['GITHUB_SHA'], run_id=os.environ['GITHUB_RUN_ID'],
+                          run_attempt=os.environ['GITHUB_RUN_ATTEMPT'], candidate=True, publication=False,
+                          platform=platform.platform(), python=sys.version,
+                          source_hashes={p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in paths})
+          (evidence / 'identity.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        id: msys
+        with:
+          msystem: UCRT64
+          update: true
+          cache: false
+          install: >-
+            autoconf automake libtool gettext-devel make
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-pkgconf
+      - name: Prepare compiler dependencies outside product checkout
+        shell: pwsh
+        run: |
+          Start-Transcript -Path "$env:DEV16_EVIDENCE/dependencies.log"
+          try {
+            python -m venv "$env:RUNNER_TEMP/dev16-python"
+            if ($LASTEXITCODE) { throw 'venv failed' }
+            & "$env:RUNNER_TEMP/dev16-python/Scripts/python.exe" -m pip install -r windows/qasm-import-requirements.txt
+            if ($LASTEXITCODE) { throw 'Dependency install failed' }
+            & "$env:RUNNER_TEMP/dev16-python/Scripts/python.exe" -m pip check
+            if ($LASTEXITCODE) { throw 'Dependency check failed' }
+            & "$env:RUNNER_TEMP/dev16-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:DEV16_EVIDENCE/python-packages.txt"
+            if ($LASTEXITCODE) { throw 'Dependency inventory failed' }
+            $PSVersionTable | Out-String | Set-Content "$env:DEV16_EVIDENCE/powershell.txt"
+          } finally { Stop-Transcript }
+      - name: Build unchanged candidate package and staged numerical acceptance
+        shell: pwsh
+        env:
+          DEV16_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
+        run: |
+          Start-Transcript -Path "$env:DEV16_EVIDENCE/package.log"
+          try {
+            & "$env:DEV16_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:DEV16_EVIDENCE/msys-packages.txt"
+            if ($LASTEXITCODE) { throw 'MSYS inventory failed' }
+            ./windows/package.ps1 -MsysRoot $env:DEV16_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev16-python/Scripts/python.exe" -Candidate
+            if ($LASTEXITCODE) { throw 'Candidate package failed' }
+          } finally { Stop-Transcript }
+      - name: Verify and safely extract actual candidate ZIP
+        shell: python
+        run: |
+          import hashlib, json, os, stat, subprocess, sys, zipfile
+          from pathlib import Path, PurePosixPath
+          evidence = Path(os.environ['DEV16_EVIDENCE'])
+          archive = Path('dist/QuantumStudio-candidate-Windows-x64.zip').resolve()
+          source = Path('dist/QuantumStudio-source.tar.gz').resolve()
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          subprocess.run([sys.executable, 'windows/test-package.py', str(archive), '--candidate',
+                          '--revision', os.environ['DEV16_SOURCE']], check=True)
+          archives = {str(p):dict(sha256=digest(p), bytes=p.stat().st_size) for p in (archive, source)}
+          (evidence / 'archives-before.json').write_text(json.dumps(archives, indent=2), encoding='utf-8')
+          root = Path(os.environ['RUNNER_TEMP']) / 'dev16-extracted-candidate'
+          root.mkdir()
+          seen = set()
+          with zipfile.ZipFile(archive) as package:
+              for item in package.infolist():
+                  parts = PurePosixPath(item.filename).parts
+                  assert parts and parts[0] == 'QuantumStudio'
+                  assert not PurePosixPath(item.filename).is_absolute()
+                  assert '\\' not in item.filename and ':' not in item.filename
+                  assert all(p not in ('.', '..') and not p.endswith((' ', '.')) for p in parts)
+                  assert all(p.split('.')[0].upper() not in {'CON','PRN','AUX','NUL',
+                      *('COM'+str(i) for i in range(1,10)), *('LPT'+str(i) for i in range(1,10))} for p in parts)
+                  key = '/'.join(parts).casefold()
+                  assert key not in seen, 'Case-insensitive ZIP collision'
+                  seen.add(key)
+                  mode = item.external_attr >> 16
+                  assert stat.S_IFMT(mode) in (0, stat.S_IFREG, stat.S_IFDIR), 'Special ZIP entry'
+                  target = root.joinpath(*parts).resolve()
+                  assert target.is_relative_to(root.resolve()) and target != root.resolve()
+              package.extractall(root)
+          payload = root / 'QuantumStudio'
+          manifest = json.loads((payload / 'build-manifest.json').read_text(encoding='utf-8-sig'))
+          assert manifest['revision'] == os.environ['DEV16_SOURCE'] and manifest['candidate'] is True
+          expected = {row['path']:row['sha256'].lower() for row in manifest['files']}
+          assert len(expected) == len(manifest['files'])
+          actual = {p.relative_to(payload).as_posix():digest(p) for p in payload.rglob('*') if p.is_file()}
+          manifest_hash = actual.pop('build-manifest.json')
+          assert actual == expected, 'Extracted bytes differ from ZIP manifest'
+          actual['build-manifest.json'] = manifest_hash
+          (evidence / 'payload-before.json').write_text(json.dumps(actual, indent=2), encoding='utf-8')
+      - name: Run full numerical composer acceptance on extracted bytes
+        shell: pwsh
+        run: |
+          Start-Transcript -Path "$env:DEV16_EVIDENCE/extracted-composer.log"
+          try {
+            & "$env:RUNNER_TEMP/dev16-python/Scripts/python.exe" windows/test-composer-source-import.py --package "$env:RUNNER_TEMP/dev16-extracted-candidate/QuantumStudio" --output "$env:DEV16_EVIDENCE/composer"
+            if ($LASTEXITCODE) { throw 'Extracted candidate composer acceptance failed' }
+          } finally { Stop-Transcript }
+      - name: Validate 36 numerical checks and bind retained evidence
+        shell: python
+        run: |
+          import hashlib, json, math, os, struct, zlib
+          from pathlib import Path
+          evidence = Path(os.environ['DEV16_EVIDENCE'])
+          out = (evidence / 'composer').resolve()
+          payload = (Path(os.environ['RUNNER_TEMP']) / 'dev16-extracted-candidate/QuantumStudio').resolve()
+          def digest(path):
+              with path.open('rb') as stream:
+                  return hashlib.file_digest(stream, 'sha256').hexdigest()
+          audit = json.loads((out / 'audit.json').read_text())
+          contract = json.loads(Path('windows/fixtures/dev16-composer-contract.json').read_text())
+          cases = {row['name']:row for row in contract['cases']}
+          assert audit['passed'] is True and audit['acceptance'] == 'full-numerical'
+          assert audit['numerical_acceptance'] is True and audit['semantic_checks'] == 36
+          assert Path(audit['package']).resolve() == payload
+          binaries = {'gui':'QuantumStudio.exe', 'compiler':'qasm-import/qasm-import.exe', 'worker':'quantum-worker.exe'}
+          before = json.loads((evidence / 'payload-before.json').read_text())
+          assert audit['hashes'] == {key:before[name] for key,name in binaries.items()}
+          rows = audit['results']
+          assert len(rows) == 6 and {row['name'] for row in rows} == set(cases)
+          checks = 0
+          captures = []
+          for row in rows:
+              assert row['passed'] is True
+              semantics = row['semantic']
+              assert len(semantics) == 2 and {type(s['edited']) for s in semantics} == {bool}
+              assert {s['edited'] for s in semantics} == {False, True}
+              for semantic in semantics:
+                  assert semantic['expected'] == cases[row['name']]['edited' if semantic['edited'] else 'original']
+                  for field in ('editor_residual', 'saved_residual', 'reimport_residual'):
+                      value = semantic[field]
+                      assert type(value) in (int,float) and math.isfinite(value) and 0 <= value < 1e-12
+                      checks += 1
+              folder = out / (row['name'] + ' Unicode κ')
+              report = folder / 'composer.txt'
+              assert report.read_text().startswith('PASS:')
+              for suffix in ('', '.edited'):
+                  for extension in ('.qcircuit', '.qasm', '.expression.txt'):
+                      assert Path(str(report)+suffix+extension).stat().st_size > 0
+              expected = [Path(str(report)+suffix).resolve() for suffix in ('.png','.edited.png','.minimum.png')]
+              assert [Path(p).resolve() for p in row['screenshots']] == expected
+              for path in expected:
+                  assert path.is_relative_to(out)
+                  raw = path.read_bytes()
+                  assert raw[:8] == b'\x89PNG\r\n\x1a\n'
+                  position = 8
+                  chunks = []
+                  while position < len(raw):
+                      size = struct.unpack('>I', raw[position:position+4])[0]
+                      tag = raw[position+4:position+8]
+                      data = raw[position+8:position+8+size]
+                      crc = struct.unpack('>I', raw[position+8+size:position+12+size])[0]
+                      assert zlib.crc32(tag+data) & 0xffffffff == crc
+                      chunks.append(tag)
+                      if tag == b'IHDR':
+                          assert size == 13 and all(struct.unpack('>II', data[:8]))
+                      position += size+12
+                  assert position == len(raw) and chunks[0] == b'IHDR' and chunks[-1] == b'IEND' and b'IDAT' in chunks
+                  captures.append(path.relative_to(out).as_posix())
+          assert checks == 36 and len(captures) == 18
+          actual = {p.relative_to(payload).as_posix():digest(p) for p in payload.rglob('*') if p.is_file()}
+          assert actual == before, 'Payload changed during execution'
+          for filename, record in json.loads((evidence / 'archives-before.json').read_text()).items():
+              path = Path(filename)
+              assert digest(path) == record['sha256'] and path.stat().st_size == record['bytes']
+          (evidence / 'acceptance.json').write_text(json.dumps(dict(passed=True, source=os.environ['DEV16_SOURCE'],
+              candidate=True, publication=False, cases=6, numerical_checks=checks, captures=captures,
+              scope='Finite composer source imports; no whole-notebook, release or visual-review claim.'), indent=2), encoding='utf-8')
+      - name: Hash evidence available on success or failure
+        if: always()
+        shell: python
+        run: |
+          import hashlib, json, os
+          from pathlib import Path
+          evidence = Path(os.environ['RUNNER_TEMP']) / 'dev16-package-evidence'
+          evidence.mkdir(exist_ok=True)
+          roots = {'evidence':evidence, 'dist':Path('dist')}
+          records = []
+          for label, root in roots.items():
+              for path in sorted(root.rglob('*')):
+                  if path.is_file() and path != evidence / 'evidence-manifest.json':
+                      with path.open('rb') as stream:
+                          sha = hashlib.file_digest(stream, 'sha256').hexdigest()
+                      records.append(dict(root=label, path=path.relative_to(root).as_posix(), bytes=path.stat().st_size, sha256=sha))
+          (evidence / 'evidence-manifest.json').write_text(json.dumps(records, indent=2), encoding='utf-8')
+      - name: Retain candidate and evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dev16-f3b4f55a-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/dev16-package-evidence/
+            dist/
+            src/*.log
+            src/*.trs
+            config.log
+            *.log
+            *.trs
