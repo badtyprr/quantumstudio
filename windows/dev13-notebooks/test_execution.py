@@ -266,6 +266,54 @@ class LifecycleTests(unittest.TestCase):
         self.assertFalse((self.output / "kernel.json").exists())
         self.assertEqual(json.loads((self.output / "status.json").read_bytes())["state"], "failed")
 
+    def control_eof(self, started):
+        config = self.fixture(['print("retained")', 'import time; time.sleep(120)', '42'], timeout=180)
+        execution.atomic_json(self.output / 'engine-request.json', config)
+        job = execution._WindowsJob()
+        process = None
+        try:
+            with (self.output / 'engine.stdout').open('w') as stdout, (self.output / 'engine.stderr').open('w') as stderr:
+                process = subprocess.Popen([sys.executable, '-I', str(Path(execution.__file__).resolve()),
+                                            '--engine', str(self.output)], stdin=subprocess.PIPE,
+                                           stdout=stdout, stderr=stderr, text=True,
+                                           creationflags=subprocess.CREATE_NO_WINDOW)
+                job.assign(process)
+                if started:
+                    process.stdin.write('start\n')
+                    process.stdin.flush()
+                    deadline = time.monotonic() + 30
+                    while time.monotonic() < deadline:
+                        path = self.output / 'cells.json'
+                        if path.exists() and json.loads(path.read_bytes())[1]['state'] == 'running':
+                            break
+                        time.sleep(0.05)
+                    else:
+                        self.fail('Second cell never started')
+                process.stdin.close()
+                self.assertNotEqual(process.wait(timeout=15), 0)
+            if started:
+                result = json.loads((self.output / 'engine-result.json').read_bytes())
+                self.assertEqual(result['state'], 'failed')
+                self.assertEqual(result['control_event'], 'control_eof')
+                self.assertEqual([r['state'] for r in self.records()], ['succeeded', 'interrupted', 'not_run', 'not_run'])
+                notebook = json.loads((self.output / 'executed.ipynb').read_bytes())
+                self.assertEqual(notebook['cells'][0]['outputs'][0]['text'], 'retained\n')
+            else:
+                self.assertFalse((self.output / 'kernel.json').exists())
+        finally:
+            if process is not None and process.stdin and not process.stdin.closed:
+                process.stdin.close()
+            job.terminate()
+            if process is not None:
+                process.wait(timeout=10)
+            job.close()
+
+    def test_control_eof_before_gate_never_starts_kernel(self):
+        self.control_eof(False)
+
+    def test_control_eof_after_checkpoint_interrupts_execution(self):
+        self.control_eof(True)
+
     def test_public_route_rejects_unknown_and_changed_source(self):
         source = self.output / "source.ipynb"
         source.write_text("{}", encoding="utf-8")
