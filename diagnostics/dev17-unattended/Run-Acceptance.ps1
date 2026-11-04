@@ -89,6 +89,11 @@ try {
  if(!(Get-Content (Join-Path $keyword 'result.txt') -Raw).StartsWith('PASS:')){throw 'Keyword fixture did not pass.'}
  foreach($name in @('evaluated-mapping','tex-trace-reopened','unequal-dimensions','unknown-label')){if(!(Test-Path (Join-Path $Evidence "original/$name.png"))){throw 'Missing original capture.'}}
  foreach($name in @('not','and','or','xor')){foreach($extension in @('-trace.png','.qsession')){if(!(Test-Path (Join-Path $keyword ($name+$extension)))){throw 'Missing keyword evidence.'}}}
+ foreach($name in @('numeric-k-compatibility.png','numeric-k-reopened.png','numeric-k-mapping-reopened.png','numeric-k-mapped-index-rejected.png','numeric-k.qsession','numeric-k-mapping.qsession')){
+  if(!(Test-Path (Join-Path $keyword $name))){throw "Missing numeric-k evidence: $name"}
+ }
+ if(!(Get-Content (Join-Path $keyword 'numeric-k-result.txt') -Raw).StartsWith('PASS: 71 ')){throw 'Numeric-k fixture did not complete all 71 checks.'}
+ if(!(Get-Content (Join-Path $keyword 'result.txt') -Raw).StartsWith('PASS: 377 ')){throw 'Supplement did not complete all 377 checks.'}
  Verify-Payload
  $passed=$true
 } finally {

@@ -60,8 +60,10 @@ actual Copy controls, Windows Clipboard reads, re-entry and saved/reopened
 mappings. Both recorded zero Clipboard retries and verified post-run binary hashes.
 All eight GUI captures and the package smoke capture were visually inspected.
 This local desktop pass does not prove locked-workstation or unattended operation.
-The assigned numeric `k=0` compatibility case still has native/worker evidence
-rather than supplemental GUI coverage.
+This 306-check supplement did not exercise assigned numeric `k=0`. The new
+[numeric-k supplement](numeric-k-gui.md) distinguishes the direct native oracle
+from worker-route probes and pending actual-candidate GUI acceptance; see the
+[final revision proposal](release-proposal.md) for the separate build/release gates.
 
 Candidate ZIP SHA-256:
 `77a044ab1c27c1f3bef93e25d229e2f42ae04cb6d6a0c1d97d04b65e25b3b938`.
