@@ -453,7 +453,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         try:
             yes = visitor.visit_basic_block(statement.if_block)
             no = visitor.visit_basic_block(statement.else_block)
-            return [] if visitor._check_only else [ast.BranchingStatement(condition=condition, if_block=yes, else_block=no)]
+            return [] if visitor._check_only else [copy_span(ast.BranchingStatement(condition=condition, if_block=yes, else_block=no), statement)]
         finally:
             visitor._quantum_runtime_branch_depth-=1
             visitor._scope_manager.decrement_scope_level()
@@ -539,7 +539,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 if runtime(visitor,label):raise ValueError('Switch case labels must be integer constants.')
                 value=Qasm3ExprEvaluator.evaluate_expression(label,const_expr=True,reqd_type=ast.IntType)[0]
                 if type(value) is not int:raise ValueError('Switch case labels must be integer constants.')
-                if value in seen:raise ValueError('Duplicate switch case value: '+str(value))
+                if value in seen:raise error_at(statement,'Duplicate switch case value: '+str(value))
                 seen.add(value);values.append(value)
             if not values:raise ValueError('Switch cases require at least one label.')
             cases.append((values,body.statements))
@@ -769,7 +769,7 @@ def resolve_integer_scopes(program):
         for statement in body:
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
                 name=statement.identifier.name
-                if name in declared:raise ValueError('Duplicate declaration in one scope: '+name)
+                if name in declared:raise error_at(statement,'Duplicate declaration in one scope: '+name)
                 declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,RUNTIME_SCALAR_TYPES)
                 if depth and name in env and not integer:raise ValueError('Non-integer shadowing is not yet supported by the importer.')
                 expression(statement.type,env)
@@ -1380,6 +1380,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     inferred_ranges=set()
     numeric_variables,numeric_declarations={},[]
     nq = nc = 0
+    budget_origin = None
     declarations_in_order=list(nodes(statements))
     # Allocate generated bits last so original register indices do not move.
     declarations_in_order.sort(key=lambda n:isinstance(n,ast.ClassicalDeclaration) and n.identifier.name in hidden_registers)
@@ -1388,6 +1389,8 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             size = 1 if statement.size is None else statement.size.value
             quantum[statement.qubit.name] = (nq, size)
             nq += size
+            if budget_origin is None and not 0 <= nq <= 25:
+                budget_origin = statement
         elif isinstance(statement, ast.ClassicalDeclaration):
             if isinstance(statement.type,NUMERIC_TYPES):
                 name=statement.identifier.name;size=statement.type.size.value;kind='Float' if isinstance(statement.type,ast.FloatType) else 'Angle'
@@ -1419,8 +1422,10 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             classical[name] = (nc, size)
             named.append({'Name': name, 'Size': size})
             nc += size
+            if budget_origin is None and not 0 <= nc <= 64:
+                budget_origin = statement
     if not 0 <= nq <= 25 or not 0 <= nc <= 64:
-        raise ValueError('Classical circuits support 0–25 qubits and up to 64 classical bits.')
+        raise error_at(budget_origin,'Classical circuits support 0–25 qubits and up to 64 classical bits.')
 
     if len(variables)+len(numeric_variables)>4096:raise ValueError('Use at most 4096 variable slots.')
     def classical_value(value,registers,expected_width=None,variables=variables,integer_only=False):
@@ -1581,7 +1586,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
-                    raise ValueError('Whole-register truth conditions require an explicit comparison.')
+                    raise error_at(statement,'Whole-register truth conditions require an explicit comparison.')
                 if type(expected) is not int or not 0 <= expected < (1 << size):
                     raise ValueError('Condition constant is outside its register range.')
                 yes, no = lower(statement.if_block, depth+1), lower(statement.else_block, depth+1)
