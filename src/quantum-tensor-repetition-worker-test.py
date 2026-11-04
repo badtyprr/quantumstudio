@@ -23,14 +23,14 @@ def main():
         env['QALCULATE_DEFINITIONS_DIR'] = str(args.worker.parent / 'data')
     records = []
 
-    def execute(expression):
+    def execute(expression, ordinary=False):
         d = dict(input=expression)
-        if args.translator:
+        if args.translator and not ordinary:
             p = subprocess.run([str(args.translator)], input=expression.encode(), capture_output=True, timeout=10)
             if p.returncode:
                 return dict(d, returncode=p.returncode, stderr=p.stderr.decode())
             expression = p.stdout.decode().strip()
-        d['evaluator_input'] = 'quantum:' + expression
+        d['evaluator_input'] = expression if ordinary else 'quantum:' + expression
         p = subprocess.run([str(args.worker), '--json'], input=d['evaluator_input'].encode(), capture_output=True, timeout=20, env=env)
         d.update(returncode=p.returncode, stdout=p.stdout.decode(), stderr=p.stderr.decode())
         if p.returncode == 0:
@@ -41,18 +41,22 @@ def main():
         if a.get('approximate') is not False:
             return False
         if n == 0:
-            return a.get('copy_text') == '1' and a.get('rows') == 0 and a.get('columns') == 0
+            return a.get('rows') == 1 and a.get('columns') == 1 and a.get('cells') == [['1']]
         bits = [str(int(i == index)) for i in range(2 ** n)]
         if bra:
             return a.get('rows') == 0 and a.get('columns') == 0 and a.get('copy_text') == 'vector(' + ','.join(bits) + ')'
-        return a.get('rows') == 2 ** n and a.get('columns') == 1 and a.get('cells') == [[v] for v in bits]
+        shape = a.get('rows') == 2 ** n and a.get('columns') == 1
+        # The worker omits cells above 128 entries; compare the complete copy.
+        content = a.get('cells') == [[v] for v in bits] if n <= 7 else a.get('copy_text') == f'matrix({2 ** n},1,[' + ','.join(bits) + '])'
+        return shape and content
 
     def value(name, expression, n, index, bra=False):
         d = execute(expression)
         d.update(id=name, expected=dict(qubits=n, index=index, bra=bra), passed=matches(d.get('actual', {}), n, index, bra))
         records.append(d)
         if d['passed']:
-            c = execute(d['actual']['copy_text'])
+            # GUI Copy/re-entry uses the ordinary evaluator for canonical output.
+            c = execute(d['actual']['copy_text'], ordinary=True)
             c.update(id=name + '-copy', expected=d['expected'], passed=matches(c.get('actual', {}), n, index, bra))
             records.append(c)
 
@@ -86,6 +90,7 @@ def main():
         value(f'flip-{n}', f'tensorpow(X,{n})*' + tex(0, n), n, 2 ** n - 1)
         value(f'append-{n}', tex(0, n) + '|1>', n + 1, 1)
         value(f'prepend-{n}', '|1>' + tex(0, n), n + 1, 2 ** n)
+        reject(f'dimension-{n}', f'tensorpow(X,{n})*' + tex(0, n + 1), 'Quantum operation has incompatible declared matrix dimensions')
     summary = dict(worker_sha256=hashlib.sha256(args.worker.read_bytes()).hexdigest(),
                    translator_sha256=hashlib.sha256(args.translator.read_bytes()).hexdigest() if args.translator else None,
                    route='standalone parser plus retained evaluator' if args.translator else 'integrated worker',

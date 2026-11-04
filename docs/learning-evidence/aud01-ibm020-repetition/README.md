@@ -18,7 +18,7 @@ Accept an explicit tensor marker in the existing repeated binary ket/bra route.
 Supported counts remain integers 0 through 10. For positive n the independent
 expectation is a 2^n-dimensional unit vector: index 0 for repeated zero and index
 2^n-1 for repeated one. Bras use the established row-vector serialization.
-Zero repetition preserves the existing scalar 1 convention. Copy and symbolic
+Zero repetition preserves the existing 1×1 identity state (entry 1) convention. Copy and symbolic
 substitution must retain the count constraints. Numerical tolerance: none;
 these are exact integer identities and must report non-approximate results.
 
@@ -37,6 +37,14 @@ oracle/operator/Walsh/count checks are separate SDK evidence, retained in
 That success does not certify these native Markdown formulas. Historical inventory
 'not executed' dispositions describe the original native analysis checkpoint.
 
-Validation and independent review are pending for this increment. Actual GUI
+Standalone parser validation: 589 notation checks, 253 dedicated worker checks,
+108 inherited complement checks and 30 inherited exponent checks. Worker checks
+use the new standalone parser plus frozen integrated worker d72b59ef; this is not
+a rebuilt integrated worker. The dedicated test compares complete canonical copies
+above the worker JSON cell limit of 128 entries and re-enters those copies through
+the ordinary evaluator, as the GUI does. The initial failed harness attempts are
+retained externally: they assumed scalar-shaped zero and sent large copied row
+vectors through an unnecessary notation pass. Existing natural controls establish
+the correct conventions. Independent review and integrated validation are pending. Actual GUI
 entry, Clipboard, and saved-session checks require an available desktop and a
 coordinator reservation; no GUI acceptance is currently claimed.
