@@ -20,8 +20,9 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"ibm019", "ibm020", "qb017"}
-PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312"}
+CONTRACTS = {"ibm019", "ibm020", "qb017", "qb007", "qb027", "qb030"}
+SELECTED_ROUTE = "selected-cells/direct-native-execution"
+PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312"}
 
 
 def digest(raw):
@@ -151,6 +152,7 @@ def validate_request(request):
              for i, c in enumerate(original["cells"])]
     if cells != contract["source"]["cells"]:
         raise ValueError("SOURCE_CELL_MISMATCH")
+    _execution_indices(contract, original["cells"])
     witness = canonical(ROOT / contract["witness"]["path"])
     if digest(witness) != contract["witness"]["sha256"]:
         raise ValueError("WITNESS_HASH_MISMATCH")
@@ -164,6 +166,80 @@ def validate_request(request):
     identity = inspect_environment(python, profile)
     return raw, dict(contract=contract, contract_sha256=digest(contract_bytes), profile=profile,
                      witness=witness.decode(), identity=identity, python=str(python))
+
+
+def _execution_indices(contract, cells):
+    """Validate selection before launch; whole routes still retain every cell."""
+    route = contract.get("route", "notebook")
+    if route == "notebook":
+        if "selected_cells" in contract or "excluded_code_cells" in contract:
+            raise ValueError("SELECTION_REQUIRES_SELECTED_ROUTE")
+        return list(range(len(cells)))
+    if route != SELECTED_ROUTE:
+        raise ValueError("UNKNOWN_EXECUTION_ROUTE")
+    selected = contract.get("selected_cells")
+    if (type(selected) is not list or not selected
+            or any(type(i) is not int or not 0 <= i < len(cells) for i in selected)
+            or selected != sorted(set(selected))
+            or any(cells[i]["cell_type"] != "code" for i in selected)
+            or type(contract.get("code_cells")) is not list
+            or any(type(i) is not int for i in contract["code_cells"])
+            or contract["code_cells"] != selected or contract.get("setup")):
+        raise ValueError("INVALID_CELL_SELECTION")
+    omitted = {str(i) for i, c in enumerate(cells) if c["cell_type"] == "code" and i not in selected}
+    reasons = contract.get("excluded_code_cells")
+    if (type(reasons) is not dict or set(reasons) != omitted
+            or any(type(reason) is not str or not reason.strip() for reason in reasons.values())):
+        raise ValueError("INVALID_EXCLUSION_DISPOSITION")
+    images, texts = contract.get("required_images", []), contract.get("required_text", {})
+    if (type(images) is not list or type(texts) is not dict
+            or any(type(i) is not int or i not in selected for i in images)
+            or any(type(i) is not str or i not in {str(s) for s in selected} for i in texts)):
+        raise ValueError("OUTPUT_REQUIREMENT_OUTSIDE_SELECTION")
+    return selected[:]
+
+
+def _scope_progress(route, outcome):
+    if route == SELECTED_ROUTE:
+        return dict(route=route, source_scope="selected_cells", whole_notebook_complete=False,
+                    original_execution="not_executed_as_whole", selected_execution=outcome)
+    return dict(original_execution=outcome)
+
+
+def _original_outcome(records):
+    states = [r["state"] for r in records if r["original_index"] is not None and r["type"] == "code"]
+    return ("succeeded" if states and all(s == "succeeded" for s in states)
+            else "incomplete" if any(s != "not_run" for s in states) else "not_run")
+
+
+def _initialize_disposition(output, contract, cells):
+    indices = _execution_indices(contract, cells)
+    if contract.get("route") != SELECTED_ROUTE:
+        return
+    rows = []
+    for index, cell in enumerate(cells):
+        included = index in indices
+        state = "not_run" if included else "excluded_by_contract" if cell["cell_type"] == "code" else "not_executable"
+        rows.append(dict(original_index=index, type=cell["cell_type"],
+                         source_sha256=digest(cell_text(cell).encode("utf-8")), state=state,
+                         reason=None if included else contract["excluded_code_cells"].get(str(index), "Markdown retained in original source; not executable")))
+    atomic_json(output / "source-disposition.json", dict(route=SELECTED_ROUTE,
+                whole_notebook_complete=False, selected_cells=indices, cells=rows))
+
+
+def _update_disposition(output, records):
+    path = output / "source-disposition.json"
+    if not path.exists():
+        return
+    disposition = json.loads(path.read_bytes())
+    by_index = {r["original_index"]: r for r in records if r["original_index"] is not None}
+    for row in disposition["cells"]:
+        if row["original_index"] in by_index:
+            record = by_index[row["original_index"]]
+            if record["source_sha256"] != row["source_sha256"] or record["type"] != row["type"]:
+                raise ValueError("DISPOSITION_SOURCE_MISMATCH")
+            row["state"] = record["state"]
+    atomic_json(path, disposition)
 
 
 def _setup_observer(commands):
@@ -347,11 +423,13 @@ def execute(request, events=None):
 
 
 def _supervise(output, config, events=None):
+    _initialize_disposition(output, config["contract"], json.loads((output / "source-original.ipynb").read_bytes())["cells"])
     atomic_json(output / "engine-request.json", config)
     status = dict(version=1, state="starting", contract=config["contract"]["id"], route="notebook",
                   source_sha256=config["contract"]["source"]["sha256"], contract_sha256=config["contract_sha256"],
                   identity=config["identity"], profile=config["profile"], original_execution="not_run",
                   authored_verification="not_run", external_resources="outstanding", interpretation="outstanding")
+    status.update(_scope_progress(config["contract"].get("route"), "not_run"))
 
     def publish():
         atomic_json(output / "status.json", status)
@@ -457,11 +535,8 @@ def _supervise(output, config, events=None):
                         cell.setdefault("error", {"type": "SupervisorCancellation",
                                         "message": "Run cancelled; only checkpointed outputs are available"})
                 atomic_json(cells_path, cells)
-                original_states = [cell["state"] for cell in cells
-                                   if cell["original_index"] is not None and cell["type"] == "code"]
-                status["original_execution"] = (
-                    "succeeded" if original_states and all(s == "succeeded" for s in original_states)
-                    else "incomplete" if any(s != "not_run" for s in original_states) else "not_run")
+                _update_disposition(output, cells)
+                status.update(_scope_progress(status.get("route"), _original_outcome(cells)))
                 if not result_path.exists():
                     status["authored_verification"] = cells[-1]["state"]
         elif process.returncode != 0 or status["state"] != "succeeded":
@@ -523,13 +598,12 @@ def _recover_checkpoint_disposition(output, status):
         if cell['state'] == 'running':
             cell.update(state='interrupted', error=dict(type='EngineReportMissing',
                         message='Engine stopped before a terminal report; last checkpoint retained'))
-    original = [cell['state'] for cell in cells if cell['original_index'] is not None and cell['type'] == 'code']
-    status['original_execution'] = ('succeeded' if original and all(state == 'succeeded' for state in original)
-                                    else 'incomplete' if any(state != 'not_run' for state in original) else 'not_run')
+    status.update(_scope_progress(status.get('route'), _original_outcome(cells)))
     witness = [cell for cell in cells if cell.get('authored_role') == 'independent-witness']
     status['authored_verification'] = witness[0]['state'] if witness else 'not_run'
     status['terminal_engine_report_missing'] = True
     atomic_json(path, cells)
+    _update_disposition(output, cells)
 
 
 async def _run_notebook(output, config, control_state=None):
@@ -547,6 +621,9 @@ async def _run_notebook(output, config, control_state=None):
             cell.outputs, cell.execution_count = [], None
             cell.metadata.pop("execution", None)
     original_cells = list(notebook.cells)
+    execution_indices = _execution_indices(contract, original_cells)
+    if contract.get("route") == SELECTED_ROUTE and not (output / "source-disposition.json").exists():
+        _initialize_disposition(output, contract, original_cells)
     notebook.cells = []
     records = []
     source_positions = {}
@@ -566,7 +643,8 @@ async def _run_notebook(output, config, control_state=None):
     if contract["preamble"]:
         authored(contract["preamble"], "preamble")
     setup = contract.get("setup")
-    for index, cell in enumerate(original_cells):
+    for index in execution_indices:
+        cell = original_cells[index]
         if setup and index == setup["cell"]:
             authored(_setup_observer(setup["commands"]), "setup-observer")
         append(cell, original_index=index)
@@ -574,10 +652,12 @@ async def _run_notebook(output, config, control_state=None):
             authored(SETUP_CHECK, "setup-check")
     authored(config["witness"], "independent-witness")
     result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
+    result.update(_scope_progress(contract.get("route"), "not_run"))
 
     def checkpoint():
         atomic_json(output / "executed.ipynb", notebook)
         atomic_json(output / "cells.json", records)
+        _update_disposition(output, records)
 
     checkpoint()
     with tempfile.TemporaryDirectory(prefix="dev13-kernel-") as temp:
@@ -611,8 +691,8 @@ async def _run_notebook(output, config, control_state=None):
                         records[i]["elapsed_seconds"] = time.monotonic() - started
                         checkpoint()
             preserved = [(notebook.cells[source_positions[i]].cell_type, notebook.cells[source_positions[i]].source)
-                         for i in range(len(original))]
-            if preserved != original:
+                         for i in execution_indices]
+            if preserved != [original[i] for i in execution_indices]:
                 raise AssertionError("SOURCE_CELLS_CHANGED")
             for index in contract["required_images"]:
                 if not any(o.get("data", {}).get("image/png") for o in notebook.cells[source_positions[index]].outputs):
@@ -623,6 +703,7 @@ async def _run_notebook(output, config, control_state=None):
             witness_text = "".join(o.get("text", "") for o in notebook.cells[-1].outputs if o.output_type == "stream")
             result.update(state="succeeded", original_execution="succeeded", authored_verification="succeeded",
                           independent_results=json.loads(witness_text), source_cells_preserved=True)
+            result.update(_scope_progress(contract.get("route"), "succeeded"))
             if contract.get("acceptance_field"):
                 if result["independent_results"].get(contract["acceptance_field"]) is not True:
                     raise AssertionError("SEMANTIC_ACCEPTANCE_FAILED")
@@ -630,7 +711,7 @@ async def _run_notebook(output, config, control_state=None):
             result["error"] = dict(type=type(error).__name__, message=str(error), traceback=traceback.format_exc())
             codes = [records[source_positions[i]]["state"] for i in contract["code_cells"]]
             result["state"] = "failed"
-            result["original_execution"] = "succeeded" if all(x == "succeeded" for x in codes) else "incomplete"
+            result.update(_scope_progress(contract.get("route"), "succeeded" if all(x == "succeeded" for x in codes) else "incomplete"))
             result["authored_verification"] = "failed" if records[-1]["state"] == "succeeded" else records[-1]["state"]
         finally:
             artifacts = {}
@@ -679,6 +760,7 @@ def _engine(output):
             result = await task
         except asyncio.CancelledError:
             result = dict(state="failed", original_execution="not_run", authored_verification="not_run")
+            result.update(_scope_progress(config["contract"].get("route"), "not_run"))
         if control_event is not None:
             result.update(state="failed", control_event=control_event)
             atomic_json(output / "engine-result.json", result)

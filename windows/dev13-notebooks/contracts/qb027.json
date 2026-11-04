@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "id": "qb027",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "qir-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "201c93a4dd2234da7a8e0aed0fbea169dadaea1bdcba2c1dbc11fe0a2a6acb11"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "58a243cdfba9a646d5b321b199dcc998d0bb5cd48fe150f11e15922ab5da0621"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "d39c16b5d0f4a9e25658b032d0ad7c7713bb5ac2c4bd6bb27bbc15a1639e207d"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "54ab055edb18045a584bf83689164092d4134ecf2f7ccdca0df289480bf067f2"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "ce9e2293722f2d5ed5ca12d1b11d0cd103d581da2ce9eab8c7fc1801d279ab56"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "8c6b2d39552f99c1d42d25e5459353516c5c283ce472f12241e6133623093a21"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "8c3c0187eab2a7b828c0d8b00c11bb3f6ee89c5b1c07417bbc17dd7eeec28c1b"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "ee7ec330a0cf9f64e84444cafb741a1e8635b30d2c3342c419f349b1dc2c85b5"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    6
+  ],
+  "code_cells": [
+    6
+  ],
+  "excluded_code_cells": {
+    "1": "Unpinned original setup; exact retained profile used instead",
+    "3": "AWS credentials and provider construction; no authorization or access verification",
+    "4": "Remote device discovery",
+    "7": "Original SV1 100-shot provider submission; not local simulation",
+    "8": "Remote result histogram depends on excluded job"
+  },
+  "preamble": null,
+  "required_images": [],
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "witness": {
+    "path": "witnesses/qb027.py",
+    "sha256": "f93c4b3c94040105ccf102e181322f96f219ca6b05ce971e3625d33f2f59352b",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "output_artifacts": []
+}
