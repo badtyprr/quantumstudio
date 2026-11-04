@@ -334,3 +334,7 @@ EXTRA_DIST += windows/dev13-notebooks/profiles/notebook-linux-py312.json
 EXTRA_DIST += windows/dev13-notebooks/linux-notebook-requirements.lock
 EXTRA_DIST += docs/learning-evidence/dev14/linux-lifecycle.md
 EXTRA_DIST += .github/workflows/notebook-linux-lifecycle.yml
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-bv/baseline-summary.json
