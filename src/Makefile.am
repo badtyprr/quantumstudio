@@ -321,3 +321,6 @@ EXTRA_DIST += quantum-named-subsystem-worker-test.py
 
 TESTS += quantum-bit-complement-worker-test.py
 EXTRA_DIST += quantum-bit-complement-worker-test.py
+
+TESTS += quantum-tensor-repetition-worker-test.py
+EXTRA_DIST += quantum-tensor-repetition-worker-test.py

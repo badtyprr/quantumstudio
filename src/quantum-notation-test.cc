@@ -24,6 +24,14 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ // IBM-020 supplies an explicit tensor repetition count inside the ket.
+ for(const std::string &bit:{"0","1"})for(const std::string &count:{"0","1","3","n","n+1"}) {
+  equal("\\vert "+bit+"^{\\otimes "+count+"} \\rangle",translateQuantum("|"+bit+"^("+count+")>"));
+  equal("\\langle "+bit+"^{\\otimes "+count+"} \\vert",translateQuantum("<"+bit+"^("+count+")|"));
+ }
+ equal("|0^⊗n>",translateQuantum("|0^n>"));
+ rejects("|0^⊗⊗n>");
+ rejects("|0^⊗n+1>");
  // IBM-019 phase-kickback complement is a single bit, not an opaque label.
  for(const std::string &operand:{"0","1","b","x_0"}) {
   const std::string complemented=translateQuantum("basis(1-("+operand+"),2)");

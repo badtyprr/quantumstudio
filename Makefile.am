@@ -276,3 +276,9 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/inventory.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/negation-repro.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/probe.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm019-phase/README.md
+
+# Source-backed IBM-020 tensor-repetition audit.
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-repetition/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-repetition/baseline.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-repetition/inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-repetition/source-manifest.json
