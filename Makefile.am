@@ -304,3 +304,6 @@ EXTRA_DIST += diagnostics/notebook-linux-qiskit/inputs.zip
 EXTRA_DIST += windows/dev13-notebooks/profiles/qiskit-aer-linux-py312.json
 EXTRA_DIST += windows/dev13-notebooks/ibm019-linux-requirements.lock
 EXTRA_DIST += docs/learning-evidence/dev13/linux-original-notebooks.md
+
+EXTRA_DIST += .github/workflows/notebook-linux-originals.yml
+EXTRA_DIST += diagnostics/notebook-linux-originals/retained_execution.py
