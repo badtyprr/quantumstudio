@@ -1,0 +1,127 @@
+{
+  "scope": "Unchanged original8SVG rasterization only; not interpretation or calculator execution",
+  "acquisition_manifest_sha256": "6377ceb37b0e164ac2c89905360ca3946bcbd00e9e6ae2cec0314b98cd9e8ad7",
+  "source_notebook_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "renderer": "sharp 0.35.5",
+  "renderer_versions": {
+    "aom": "3.15.1",
+    "archive": "3.8.9",
+    "cairo": "1.18.6",
+    "cgif": "0.5.4",
+    "exif": "0.6.26",
+    "expat": "2.8.5",
+    "ffi": "3.8.0",
+    "fontconfig": "2.18.3",
+    "freetype": "2.14.3",
+    "fribidi": "1.0.17",
+    "glib": "2.90.0",
+    "harfbuzz": "14.5.0",
+    "heif": "1.23.5",
+    "highway": "1.4.0",
+    "imagequant": "2.4.1",
+    "lcms": "2.19.1",
+    "mozjpeg": "0826579",
+    "pango": "1.58.2",
+    "pixman": "0.46.4",
+    "png": "1.6.58",
+    "proxy-libintl": "0.5",
+    "rsvg": "2.63.2",
+    "tiff": "4.7.2",
+    "uhdr": "2.0.2",
+    "vips": "8.18.7",
+    "webp": "1.6.0",
+    "xml2": "2.15.4",
+    "zlib-ng": "2.3.3",
+    "sharp": "0.35.5"
+  },
+  "argv": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\render.cjs"
+  ],
+  "resource_policy": "Reject script/foreignObject/event handlers/DOCTYPE/ENTITY/CSSimports and all nonfragment href/src/url resources before rendering SVG buffers; no SVG scripting engine invoked",
+  "method": "180dpi white background, no SVG alterations",
+  "script_sha256": "d7eb073822b0b50bc5e26627559d07298ead09860682d98e742da92865b41fda",
+  "records": [
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\Toffoli-gate.svg",
+      "source_sha256": "e486742533ecdc04d79ca30fd85bc81148f42c8fdf7e6efd28819f59996816e6",
+      "git_blob": "819dd0484145db0c619c70edf922ffe8f78d1f49",
+      "original_bytes": 17380,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\Toffoli-gate.png",
+      "output_sha256": "e7795b95ec4c04ef925d491ff91360d397c237db55ab71a7c289cdb0c0993a6a",
+      "width": 808,
+      "height": 530
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\build-Toffoli.svg",
+      "source_sha256": "0c41256d3b7e2aca625fd47d080c4bdf5726e186b6961586d294f07279c278a4",
+      "git_blob": "7d890d69217e70d3dcb01007f30e62c481384447",
+      "original_bytes": 34200,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\build-Toffoli.png",
+      "output_sha256": "46d8a772427cad8aba91db77723393662bd7538bcd8ee28f10fc9a875a8287ce",
+      "width": 1261,
+      "height": 347
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\AND-OR-FANOUT-with-Toffoli.svg",
+      "source_sha256": "be24ebfd5b146935a6b3e8498aa907de855b30715292e1d90a1e524ff6c29cdd",
+      "git_blob": "881dd7a59fbcc923347fe4634c2a21d8324ed68c",
+      "original_bytes": 64704,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\AND-OR-FANOUT-with-Toffoli.png",
+      "output_sha256": "b67cb3082d1c56512e07b8572816ffd3ad4bc1bad9c04271586ab21dabb1862c",
+      "width": 1209,
+      "height": 764
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\reversible-circuit-simulation.svg",
+      "source_sha256": "c207d1a1ff338a3ed31a910c21743d0786d4b857fba541bba45e6c290eea836c",
+      "git_blob": "9cfea6413e61fc529261bc56f0f2fb4b60af0881",
+      "original_bytes": 67605,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\reversible-circuit-simulation.png",
+      "output_sha256": "0fffe7eb1ae9dd48212850115f4eaae8070382ea40779100bf58575a881d1f8e",
+      "width": 1293,
+      "height": 514
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\swap.svg",
+      "source_sha256": "f7e51dee252b722faeb9583e4416b8386602d32b9a05a51526035eb48d9de68c",
+      "git_blob": "0def9b42cb94d0ce6531083ca949f9d4a391201a",
+      "original_bytes": 12792,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\swap.png",
+      "output_sha256": "aef31aa8c6ac77d3326e4e15eb34be2b8c28a57322f5ec884182c01be7556237",
+      "width": 1043,
+      "height": 311
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\garbage-free-computation.svg",
+      "source_sha256": "303dac4d1bdc923ccfa62a3ee4bd4412702b0c36656cb873e07ebd6f3302a05f",
+      "git_blob": "85d21c0199b668b1f1c75a03be9c5b68e80dc596",
+      "original_bytes": 77038,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\garbage-free-computation.png",
+      "output_sha256": "8a3e0d33ef73035ea9482dbe969cdd7024bf0350efea89d7bfe876b4f1c33bad",
+      "width": 1349,
+      "height": 628
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\simulation-as-query-gate.svg",
+      "source_sha256": "a0454fc83acd1a972ac085dfdc22a73509489c645945a507a255b1b381afa839",
+      "git_blob": "ab9999ddc6baab0e19b49c446675062f2cd46756",
+      "original_bytes": 52216,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\simulation-as-query-gate.png",
+      "output_sha256": "9427fddba732fa8e85538d5555c2c9f6bdd30fd38c05c3d8f214f13260b86592",
+      "width": 1039,
+      "height": 777
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm025-svg-acquisition-20261105\\assets\\fully-reversible-simulation.svg",
+      "source_sha256": "a821d01ff51ed8b74dd67a09e00a6926484cb3d77611bc874ed6f41c0baeca52",
+      "git_blob": "6d767645c9373982a03d0dd52e2c8ea049c01c13",
+      "original_bytes": 69455,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm025-figure-audit\\fully-reversible-simulation.png",
+      "output_sha256": "9d7983e5a4845441a5cbb694cff96e2ea83e8d0db5c00de533b46477cf240cb5",
+      "width": 1329,
+      "height": 646
+    }
+  ]
+}

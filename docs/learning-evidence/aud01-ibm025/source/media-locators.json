@@ -1,0 +1,102 @@
+{
+  "source_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "scope": "locators only; no acquisition/render/diagram verification",
+  "references": [
+    {
+      "id": "IBM025-c0-images-001",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 1406,
+      "end": 1531,
+      "original": "![Toffoli gate](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Toffoli-gate.svg)",
+      "sha256": "de9baedc4ccd73a6e134446ac979813af203209b505a9c0d203493d86f8634b3",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Toffoli-gate.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-002",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 2497,
+      "end": 2645,
+      "original": "![Quantum circuit for a Toffoli gate](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/build-Toffoli.svg)",
+      "sha256": "4daaa3d95d6c2b45e5f8468714d63adfec830e4787835a587cbd955d4da3ca13",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/build-Toffoli.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-003",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 2927,
+      "end": 3100,
+      "original": "![Simulating AND and OR gates with Toffoli gates](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/AND-OR-FANOUT-with-Toffoli.svg)",
+      "sha256": "9197f90193af45160f4e8c38bcdb16ee5a5285dfef7e71703584c9d30efb20d8",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/AND-OR-FANOUT-with-Toffoli.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-004",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 4915,
+      "end": 5074,
+      "original": "![Reversible circuit simulation](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/reversible-circuit-simulation.svg)",
+      "sha256": "3010c16611ceb5105a248eace3d1f74531083c65260d6bc0ec5ee30cb57ff770",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/reversible-circuit-simulation.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-005",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 5648,
+      "end": 5777,
+      "original": "![Swapping with cNOT gates](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/swap.svg)",
+      "sha256": "81a165ae10f88dd7732804f35fba0de6730453faf0228924ba48e8331f107fd6",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/swap.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-006",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 7925,
+      "end": 8074,
+      "original": "![Garbage-free computation](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/garbage-free-computation.svg)",
+      "sha256": "23fffde04ed58af3126544124c6328cf3e65b8234573feac418d338d6490d942",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/garbage-free-computation.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-007",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 8156,
+      "end": 8307,
+      "original": "![Simulation as a query gate](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulation-as-query-gate.svg)",
+      "sha256": "2ca68815b06e848964a963c2a32a8843dec41be5eaa84765f1b0791cda5b3d9b",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulation-as-query-gate.svg",
+      "acquired": false
+    },
+    {
+      "id": "IBM025-c0-images-008",
+      "cell_index": 0,
+      "cell_id": "dee8cce0",
+      "start": 11778,
+      "end": 11942,
+      "original": "![Simulation of an invertible function](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/fully-reversible-simulation.svg)",
+      "sha256": "4f5116504dfde9e7a56df6880f85ccc3a1ef4be903a86c4f1828580ffb07dccc",
+      "status": "unverified source occurrence; no native/media acceptance",
+      "locator": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/fully-reversible-simulation.svg",
+      "acquired": false
+    }
+  ]
+}

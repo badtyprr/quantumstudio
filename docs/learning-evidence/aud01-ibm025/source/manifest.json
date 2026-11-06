@@ -1,0 +1,44 @@
+{
+  "assigned_base": "78bf6cf7fb6ca52c884320cc7ec2a53958627109",
+  "scope": "external source/reference analysis only",
+  "upstream_manifest_path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-source-bodies\\manifest.json",
+  "upstream_manifest_sha256": "91cd1b1f283c1e8101aa9980d93f7569259f619fc2ba33f6cdf31fef976e0e0a",
+  "upstream_entry": {
+    "id": "IBM-025",
+    "kind": "ibm_course_section",
+    "baseline_url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulating-classical-computations",
+    "baseline_content_comparison": "not_claimed; baseline inventory lacks complete body hashes",
+    "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+    "source_paths": [
+      "learning/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulating-classical-computations.ipynb"
+    ],
+    "path": "learning/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulating-classical-computations.ipynb",
+    "git_blob_expected": "7060659cf1b57309a9119cb95a46ae2a7b9e0b09",
+    "bytes_expected": 14004,
+    "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulating-classical-computations.ipynb",
+    "http_status": 200,
+    "acquisition": "immutable-public-raw-GET",
+    "sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+    "git_blob": "7060659cf1b57309a9119cb95a46ae2a7b9e0b09",
+    "bytes": 14004,
+    "cell_count": 1,
+    "code_indices": [],
+    "cell_type_counts": {
+      "markdown": 1
+    },
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "source_sha256": "6d753b185d0f6d11c946228e4dd37ad17614e7df88fed5dda3a2422a76defa9c"
+      }
+    ],
+    "cell_hash_encoding": "UTF-8 exact concatenated source; no newline normalization",
+    "status": "verified",
+    "original_local_path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-source-bodies\\sources\\learning\\courses\\fundamentals-of-quantum-algorithms\\quantum-algorithmic-foundations\\simulating-classical-computations.ipynb",
+    "original_source_bytes_preserved": true
+  },
+  "observed_utc": "2026-11-06T05:48:50.244619+00:00",
+  "source_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "inventory_sha256": "d16e2b18210505e880fe3fe25d7e0704566a318a258cea1dbfba9e3c34f07c1f"
+}
