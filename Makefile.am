@@ -528,3 +528,6 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm027/README.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm027/evidence-index.json
 EXTRA_DIST += docs/learning-evidence/discovery-reconciliation/README.md
 EXTRA_DIST += docs/learning-evidence/discovery-reconciliation/index.json
+
+EXTRA_DIST += docs/learning-evidence/aud01-ibm028/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm028/index.json

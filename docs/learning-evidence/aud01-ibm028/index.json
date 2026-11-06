@@ -1,0 +1,1574 @@
+{
+  "schema_version": 1,
+  "source_id": "IBM-028",
+  "base_revision": "3877f53f70684e8f28c4ff1a6d492b825e09577d",
+  "external_dependency_notice": "This index is not self-contained. Absolute external evidence paths must be retained or restored with exact raw bytes; no payload is embedded in these two repository documents.",
+  "repository_source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "source_counts": {
+    "math_occurrences": 396,
+    "display_math": 69,
+    "inline_math": 327,
+    "images": 17
+  },
+  "finite_reference": {
+    "primary": 112,
+    "negative_controls": 8,
+    "normal_optimized_case_bytes_identical": true,
+    "case_bytes_each_mode": 361381,
+    "case_sha256": "5d3900fc0beb22d47c963f148c0fcb3ba6d3d6af690ee92ef340c126fa95ddb6",
+    "grid": 17,
+    "nongrid": 40,
+    "ties": 16,
+    "amplitudes": 266,
+    "supplemental": {
+      "literal_entries": 94,
+      "ordered_Gram_pairs": 94,
+      "inverse_comparisons": 5,
+      "basis_roundtrips": 18
+    },
+    "actual_artifact_count": 11
+  },
+  "hash_policy": "SHA256 and bytes apply to retained raw external files, without CRLF/LF conversion. Repository proposal files are UTF-8 LF; Git text normalization must not be applied to these external identities.",
+  "limits": [
+    "17 SVG acquisitions and 17 PNG observations are finite descriptive evidence, not circuit equivalence or equation proofs.",
+    "112 primary and eight negative exact reference cases do not cover all 396 source occurrences or arbitrary dimensions/theorems.",
+    "No original product notation, Copy/GUI/native acceptance, original notebook/external-runtime execution, whole-lesson or release claim.",
+    "Seven negatives retain expected/observed exception outcomes; NEG02 retains both explicit matrix and diagonal-Gram actual/expected mismatch payloads.",
+    "Initial P2 packets and reviews are preserved historical findings, not promoted final passes."
+  ],
+  "files": [
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/inventory.json",
+      "bytes": 293375,
+      "sha256": "88e1d18cf2516ebbc28c6f84063c0b63cf88a88bcbdde244cb42250b115e106e",
+      "role": "source inventory and independent reviews/inventory.json",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/manifest.json",
+      "bytes": 5571,
+      "sha256": "456ec9f61da6a0821bf0c8c596761d3165c5b583908bf0cf823f54016869544d",
+      "role": "source inventory and independent reviews/manifest.json",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/media-locators.json",
+      "bytes": 61118,
+      "sha256": "28a9496dd9f10b186930f70240e09e81da030ecdbd53be0644b3efec5ed64e94",
+      "role": "source inventory and independent reviews/media-locators.json",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/REPORT.md",
+      "bytes": 6005,
+      "sha256": "e160be27bea8d09ca9f116e028df2af9bff45ae96244531509e94c1f33d86e60",
+      "role": "source inventory and independent reviews/REPORT.md",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/source.ipynb",
+      "bytes": 53240,
+      "sha256": "2ff07f29f923364ca6d47b07a36266bebe64e335cce6d50cdeed2d1cbf39af4e",
+      "role": "source inventory and independent reviews/source.ipynb",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/spec-review.json",
+      "bytes": 3545,
+      "sha256": "5d218a47923ac9babe3f816b10897fb6f6082e33f379f61b7724d925e2c29347",
+      "role": "source inventory and independent reviews/spec-review.json",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/spec-review.md",
+      "bytes": 1017,
+      "sha256": "3fd1169ac083f5393bb04067f11a36051534a221db4254dbd6dccd181fb4a329",
+      "role": "source inventory and independent reviews/spec-review.md",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/standards-review.json",
+      "bytes": 6103,
+      "sha256": "a5296ebf2ec298722954bd76f7f204c76490cb41fb8fe48219b7d2103dc2d6a0",
+      "role": "source inventory and independent reviews/standards-review.json",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-inventory-20261105/standards-review.md",
+      "bytes": 1161,
+      "sha256": "e0ee9698e01048c3ffe27fa7078c4622c21add06b18c8c6b2e4ad5dbf230b0c0",
+      "role": "source inventory and independent reviews/standards-review.md",
+      "evidence_state": "reviewed source inventory; not complete lesson"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/acquire.py",
+      "bytes": 7093,
+      "sha256": "90519418b4b7e319ca6f2458b503d61a23704c9ebbcf7107538ddf9df64dfca0",
+      "role": "pinned acquisition and HTTP/static scan evidence/acquire.py",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/local-search.json",
+      "bytes": 17296,
+      "sha256": "9fbc7886d2a1826bf3db42f7efaff0c8c12f0593f1e6d419f10c9cb6581e0aa9",
+      "role": "pinned acquisition and HTTP/static scan evidence/local-search.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/locators.json",
+      "bytes": 61124,
+      "sha256": "47dfe2d4ab391eca6b1d373b9b1c4087ac607feb9988e3c63883da25fcb6161d",
+      "role": "pinned acquisition and HTTP/static scan evidence/locators.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/manifest.json",
+      "bytes": 125548,
+      "sha256": "7e3161215989b18f94d886a9255a0a1fc9cda779f2604f0fa918ee82671914a9",
+      "role": "pinned acquisition and HTTP/static scan evidence/manifest.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/PLAN.md",
+      "bytes": 760,
+      "sha256": "3aadc764c5ecb3ae1cba3607e79f5742fda91e0bee43a2b593c464395c77e409",
+      "role": "pinned acquisition and HTTP/static scan evidence/PLAN.md",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/progress.json",
+      "bytes": 108634,
+      "sha256": "ad52bd67f8bd2c4b1656b3a94ee98b80f838d363b7d9e9678ee9ad9db6cea1b3",
+      "role": "pinned acquisition and HTTP/static scan evidence/progress.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/01.headers.txt",
+      "bytes": 917,
+      "sha256": "2867ab2614c1c885957bd35829be23491be4b7a0ed2e32ccb2c9de0147da1e9b",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/01.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/01.metadata.json",
+      "bytes": 16273,
+      "sha256": "3e35185b23d62560d2f0bbe6e70c98676d59474e76fb8d481a7c0b9625407a14",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/01.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/01.request.json",
+      "bytes": 5206,
+      "sha256": "cabed2391bf40f7b8fcd6f0e98a9a3740f12538a65d5a92714b40fe2ec49ca54",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/01.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/01.result.json",
+      "bytes": 6112,
+      "sha256": "97c130b0761296cdd796142d4cb4f77291cdc6fb7d986502a4bb81408639a329",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/01.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/01.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/01.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/02.headers.txt",
+      "bytes": 917,
+      "sha256": "80140e1303d677e6100b5e75943f03c5b3c21ececebfed0c98562bcc149bc199",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/02.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/02.metadata.json",
+      "bytes": 16239,
+      "sha256": "430e623e1cafd549c67d80b9364139345680fbd207189a085c85fdde366ad63e",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/02.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/02.request.json",
+      "bytes": 5082,
+      "sha256": "50f024f6395cdce770bb703bc88a2b6e858fbc4a7ab1c9a0c4e47342a72e5e62",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/02.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/02.result.json",
+      "bytes": 5981,
+      "sha256": "bdf975f6f0769d17d022b5a4fc905c75f0436e903b49479326d3d891cab57345",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/02.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/02.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/02.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/03.headers.txt",
+      "bytes": 917,
+      "sha256": "6ce7f43daa46eca7ce88d0e790f3a156114624e83b750b78de3854db3fb0bbc8",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/03.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/03.metadata.json",
+      "bytes": 16284,
+      "sha256": "5d281805f03f201da6bc132e18f01bcac886ef724e3f2d00b7e6a6edcd301b71",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/03.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/03.request.json",
+      "bytes": 5234,
+      "sha256": "c71510f53776b6e49c8a40d0b485f1b4cb5dc5cb4767925ff295ed4e7994645c",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/03.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/03.result.json",
+      "bytes": 6142,
+      "sha256": "f4a591433053030f6cdbaf6c9f12708295ec8660be52bcbb3cc3ea12799e7fa8",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/03.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/03.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/03.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/04.headers.txt",
+      "bytes": 917,
+      "sha256": "1187aeda00cd4026ffcff54d75d8d97cd777baa8a3695f0fecb0cb307b7a155d",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/04.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/04.metadata.json",
+      "bytes": 16209,
+      "sha256": "432dcd12baa7fa4b7f95503b460afb4bd721dacf0b37fb25d71958de531f2333",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/04.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/04.request.json",
+      "bytes": 5009,
+      "sha256": "c76841f38e2e52387cc945580edb794a453b0ab12a9e6c7a89dd64a19d166347",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/04.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/04.result.json",
+      "bytes": 5902,
+      "sha256": "7ecfb00af44fd9444523988cc482b2df58d301ee4d8c53d32ecd21821e2f6b6e",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/04.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/04.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/04.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/05.headers.txt",
+      "bytes": 917,
+      "sha256": "dd6b9553f13ad08e26b9e7e9ef9eda8c78cad8473b92f166f6efc9cadd3f45c8",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/05.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/05.metadata.json",
+      "bytes": 16204,
+      "sha256": "f0d125e64bd4419885dc541c721a6c77932bd201db504c00db081078db372a75",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/05.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/05.request.json",
+      "bytes": 4974,
+      "sha256": "997b7f2a2f7dae428a571d36279c51223fa9daeba33d176740d83082f7529c58",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/05.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/05.result.json",
+      "bytes": 5865,
+      "sha256": "c6bc86603a0fa7c3c2b2192c3e11d2ac47ad86b0f656e1513d4b6457d97fd46d",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/05.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/05.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/05.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/06.headers.txt",
+      "bytes": 916,
+      "sha256": "122fa9bd2d065593fe4f4bed56f66db932a2e8e7411607d8cd7193a53ad00208",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/06.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/06.metadata.json",
+      "bytes": 16244,
+      "sha256": "21f68c5a5d9072ab167b74553754899d075bc252a9c8814304c29c44c993698d",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/06.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/06.request.json",
+      "bytes": 5113,
+      "sha256": "a2d349c020907a986480453e7837505db805979db0e480af0e7347de8dffb816",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/06.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/06.result.json",
+      "bytes": 6013,
+      "sha256": "5334a9aca1a46683121169fafbb04d0da9e5d4ea1302a9c1cf91a8e0caba5b62",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/06.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/06.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/06.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/07.headers.txt",
+      "bytes": 916,
+      "sha256": "71c58e3dbf82f1c88c09366e5ea9a9a82a7fa48dae5302d0ab67348a3c6a887e",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/07.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/07.metadata.json",
+      "bytes": 16259,
+      "sha256": "051ca00b2a2439eb47a53c70c511ead5a161ab1f9cbc8a4cf8ceffc2c81b7bb5",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/07.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/07.request.json",
+      "bytes": 5165,
+      "sha256": "b2eb468662b3a9b2ff906ecc72fb7bc398ea724217325336e75b2e1f0a0f7654",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/07.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/07.result.json",
+      "bytes": 6068,
+      "sha256": "272c48d2707b81cad327d6970ab7342d1e3ad322a4c231243e9629208b1ea64b",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/07.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/07.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/07.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/08.headers.txt",
+      "bytes": 917,
+      "sha256": "b73e7c0a7599c9bfee9b2f51d9c9cf283f9b672a2ae519f08c4180eac0ace36f",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/08.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/08.metadata.json",
+      "bytes": 16254,
+      "sha256": "42d4836688e0d2b3a9431072136fe316996f5889f51b14a5af36fb20c9496ef9",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/08.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/08.request.json",
+      "bytes": 5134,
+      "sha256": "3299976d8acb0eceb7d8c62820e196285b014de00d27f20d7929b53c485a1377",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/08.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/08.result.json",
+      "bytes": 6036,
+      "sha256": "ee37f8ddaeccfc44f959454d5d82865ce7055779d3108a0d153267d3637394de",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/08.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/08.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/08.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/09.headers.txt",
+      "bytes": 916,
+      "sha256": "e00705ff67eccc64419b6ceabae83188bedce6c78ff57f778631fd6dc34dcdf9",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/09.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/09.metadata.json",
+      "bytes": 16219,
+      "sha256": "ab2e13f6f0022adb885fdf00b83f5fa7e4b6d2e703a4f421f9f2accb0bb4d1dd",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/09.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/09.request.json",
+      "bytes": 5010,
+      "sha256": "72aef69d3d2fe41047aeb6319a25a8108d894c037dfc0d26e5c5ce7763764247",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/09.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/09.result.json",
+      "bytes": 5905,
+      "sha256": "c8e8bb464c594b8a52e30926f430fd68711ab9d01a8b75ce43cd5de26b0feff1",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/09.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/09.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/09.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/10.headers.txt",
+      "bytes": 916,
+      "sha256": "e6c3eb12a7b134ba27e661bb73875198a919aac32799aaff1b53af33d708bcb2",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/10.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/10.metadata.json",
+      "bytes": 16205,
+      "sha256": "922ac1fa2e4cf8a069a5ec2421990f54f462b92f1072d12203887088b0e01b92",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/10.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/10.request.json",
+      "bytes": 5042,
+      "sha256": "dd59df639bad4e0eb17a4e91f347166115194a678f713fb0444561e11c213c31",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/10.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/10.result.json",
+      "bytes": 5936,
+      "sha256": "1cae600ef6318751ff34d507cb1a231b3f0b5bc6f1818bcf2770e6c4bf9030ab",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/10.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/10.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/10.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/11.headers.txt",
+      "bytes": 917,
+      "sha256": "418f3cb5de8c8f4c34502a335ea50f380727620639fa514229be7c1b8dba3a01",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/11.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/11.metadata.json",
+      "bytes": 16208,
+      "sha256": "6688cd36b17d52ecaecd9eb2fba5bdfc83eea17b15844006f8ed6e1be56d520d",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/11.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/11.request.json",
+      "bytes": 5076,
+      "sha256": "d06260930e8f6a51f9f1c09c3c51089bbfacf18dcbe3cfd8146f806f4e955777",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/11.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/11.result.json",
+      "bytes": 5969,
+      "sha256": "ea013b1dd2780ae4679a4943889fe9802aa193482f428bfcc623f1050a873448",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/11.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/11.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/11.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/12.headers.txt",
+      "bytes": 916,
+      "sha256": "89e87e3dce1e7b8f3f069895e8fa0c3e60e3e7f75a3fef74566946de41853fd6",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/12.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/12.metadata.json",
+      "bytes": 16174,
+      "sha256": "c102cba8578c214357e8a0e40b1ba7ba622b5f70e88f47ed94a556160b9d7709",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/12.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/12.request.json",
+      "bytes": 4925,
+      "sha256": "8a851e733e395964e77dc6ab9d4ab5097365aa76fc37031e9a933bfdf1d97964",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/12.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/12.result.json",
+      "bytes": 5811,
+      "sha256": "85027dff052efbe4142b9cb1d422a79f87d41d05c55dc0941ec282179a8058fb",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/12.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/12.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/12.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/13.headers.txt",
+      "bytes": 917,
+      "sha256": "5f563a4a793e77489f7e73a990cdb9c3bc2a6f95b99407718b91ffa431f96e79",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/13.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/13.metadata.json",
+      "bytes": 16129,
+      "sha256": "20967effd9c33e462fa39dece03899d21f66a755004c55e3f5176693a0197f16",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/13.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/13.request.json",
+      "bytes": 4914,
+      "sha256": "eb681f6cd41c432db2a4c80ea59388112f886cd16e3b7813f3b31965c0f3e33c",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/13.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/13.result.json",
+      "bytes": 5791,
+      "sha256": "223de3f849e2966721396dab084fc7bda57f4681305181d7c194040f32ab306f",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/13.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/13.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/14.headers.txt",
+      "bytes": 917,
+      "sha256": "d13aba717b928804eee6af267ee9e95c4697c620c2f3f268a965a75b216884dc",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/14.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/14.metadata.json",
+      "bytes": 16229,
+      "sha256": "78a087c2ee0d5bf4ec7e5aa2d2fda22ec6be3c2259fd23c07dfa8a80e792c78f",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/14.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/14.request.json",
+      "bytes": 5005,
+      "sha256": "edabecccd36abcfee0ac8894b9eafa6a14110482b06729549cb43fbd54822350",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/14.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/14.result.json",
+      "bytes": 5903,
+      "sha256": "8776ffb3899852a0cd3017f174483263724ea73b27473bb52866a205eb310ba7",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/14.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/14.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/14.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/15.headers.txt",
+      "bytes": 917,
+      "sha256": "e046c1b7a1f8c9cadd8e03dbd1ab3dc838c640539a584c7e5a8f4e5378c5e403",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/15.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/15.metadata.json",
+      "bytes": 16164,
+      "sha256": "0dcd315743dd2b1ed63b25bf9142ceab1fd57c05c4d9cefeacecd0574e74326a",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/15.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/15.request.json",
+      "bytes": 4973,
+      "sha256": "fb006e630e512478a3010b69a45c9f9307e9a34f7f832bb4bdd42bdf873d4992",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/15.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/15.result.json",
+      "bytes": 5857,
+      "sha256": "a7b4478d5a56e46015babc699ed6439704bf73f460060ba1f1896f2765ee4a67",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/15.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/15.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/15.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/16.headers.txt",
+      "bytes": 917,
+      "sha256": "c4379059ed9139a5f36e5a3cf7fdc4eba8b75d0fb438b5daaecee1a14a6888be",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/16.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/16.metadata.json",
+      "bytes": 16224,
+      "sha256": "dd518b15371b3c075928073588a5015e27c068bc2f45c462cf2565bb64f17fcc",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/16.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/16.request.json",
+      "bytes": 5116,
+      "sha256": "0c2c85dcce6fecfc2e6eedb1e6c389751fb5d59010d5acd971a7950bb78421be",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/16.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/16.result.json",
+      "bytes": 6011,
+      "sha256": "13b9278f1c0ef3c181478be339f73f838a5b82fe8f93d05232732fcc4e745f99",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/16.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/16.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/16.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/17.headers.txt",
+      "bytes": 917,
+      "sha256": "da989818586ada3541df24195fd045c7eefcbdd57ecfeca55a38da2009908100",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/17.headers.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/17.metadata.json",
+      "bytes": 16219,
+      "sha256": "afbab63abe16da6be3859b5af916309f768d1cf9f87a98d0fd00ca1b65796477",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/17.metadata.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/17.request.json",
+      "bytes": 4937,
+      "sha256": "59f9638a07b3852dd8ac80a6c76d68129f7767a5d89acc45fbb199328bf857c3",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/17.request.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/17.result.json",
+      "bytes": 5832,
+      "sha256": "4196ffd9f4fe400980786aa095135f5ca8504d63bc4e429a335fdfc7f1344ae0",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/17.result.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/records/17.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "pinned acquisition and HTTP/static scan evidence/records/17.stderr.txt",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/REPORT.md",
+      "bytes": 734,
+      "sha256": "a23b5884c6af30eb32cf880e2d0441be68848f1b685dd17b1d1826f35dc37b0b",
+      "role": "pinned acquisition and HTTP/static scan evidence/REPORT.md",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/spec-review.json",
+      "bytes": 4472,
+      "sha256": "b573e533202009ed3a5519493ede6e5de99f0af9849f61ca780c33f79d41c741",
+      "role": "pinned acquisition and HTTP/static scan evidence/spec-review.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/spec-review.md",
+      "bytes": 807,
+      "sha256": "1fb0950e7695d1f6c845df06804360ac7b1b8b2f2477a14f72c253167d7b9493",
+      "role": "pinned acquisition and HTTP/static scan evidence/spec-review.md",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/standards-review.json",
+      "bytes": 2651,
+      "sha256": "c578116536260527d4dec0d9550c7af7980bb26c67ac08921e1e3eb27af5930a",
+      "role": "pinned acquisition and HTTP/static scan evidence/standards-review.json",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/standards-review.md",
+      "bytes": 919,
+      "sha256": "c348a71f85aac9e07660eb5400414f92bd7f357680c48e044de820e116b52aea",
+      "role": "pinned acquisition and HTTP/static scan evidence/standards-review.md",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/arc-and-chord.svg",
+      "bytes": 20388,
+      "sha256": "5ba09f7537e134d06f1194af83c80b345c0b0100a051e8157996a72583989677",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/arc-and-chord.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/controlled-phase-gates.svg",
+      "bytes": 12311,
+      "sha256": "5bb78afe9f40baf115cd3a976d42b8dce977450e8c51b8657f5ea196014753a7",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/controlled-phase-gates.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/double-kickback-probabilities.svg",
+      "bytes": 76384,
+      "sha256": "1e4c7773b7a4019171f17c78e05eb5df2ffb20c412d10e5ac98b3bd47792c353",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/double-kickback-probabilities.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/double-phase-kickback.svg",
+      "bytes": 28057,
+      "sha256": "a79aa78b6b1ca06e80e9b1263fcf4b129b0f6f0a87736fe432f9e586d9adaa71",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/double-phase-kickback.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/estimate-phase-with-kickback-analysis.svg",
+      "bytes": 34190,
+      "sha256": "5fa7c37960ed2ed1c3754ff20d02faebc4b39131bb3ce0a2840a77c3db8633d6",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/estimate-phase-with-kickback-analysis.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/estimate-phase-with-kickback.svg",
+      "bytes": 22235,
+      "sha256": "504cdb3eebcc106ec5a8f8c742d5aceb2c53f6b740a55e896fd5d7a14910d5be",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/estimate-phase-with-kickback.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/four-qubit-probabilities.svg",
+      "bytes": 89411,
+      "sha256": "99a3da09d933ff4511523029dc7f6953b5f6a0e766073cbe8b429437a0a32880",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/four-qubit-probabilities.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/kickback-probabilities.svg",
+      "bytes": 78376,
+      "sha256": "f0ce96df166127ef49cbd71724ebb50c0593a1869296d0ef8409dc8a4f5474c1",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/kickback-probabilities.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/phase-estimation-procedure.svg",
+      "bytes": 62305,
+      "sha256": "e020bab4e585bbaf1668d2195de555013bb1209a3288b83bcabcdf1446521dc0",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/phase-estimation-procedure.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/phase-injection.svg",
+      "bytes": 31039,
+      "sha256": "2bc6ce75baeb27fbc15f9de9de625c2a1b2b7a50c2c35d57b4751a1e6ee0c3a8",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/phase-injection.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/QFT_32.svg",
+      "bytes": 58539,
+      "sha256": "42f01e56839b4bbd1bd70780d6f40d2e784bac201af908ffafd4f38762a7edbf",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/QFT_32.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/three-qubit-probabilities.svg",
+      "bytes": 90252,
+      "sha256": "8ee76b89866471ab32f1794b6986393344e2e509ab7b9086403a159e2e9f8627",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/three-qubit-probabilities.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/two-bit-phase-estimation-initial.svg",
+      "bytes": 33871,
+      "sha256": "bca642db5f5e1840831657534f406d38e35feb6f281b01ae5715dcba6d63f021",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/two-bit-phase-estimation-initial.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/two-bit-phase-estimation-states.svg",
+      "bytes": 42964,
+      "sha256": "bfbdc88ba76f7bbd83d5fbe0a178d2a1e6ac091b41c9467b5cdae4faec31e696",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/two-bit-phase-estimation-states.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/two-bit-phase-estimation.svg",
+      "bytes": 41963,
+      "sha256": "0e2a9c1aae8e02e4cc47f3b96ad9a9fde77e351454186e62a65c3e6942a9b4ef",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/two-bit-phase-estimation.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/two-bit-probabilities.svg",
+      "bytes": 106893,
+      "sha256": "318318c09994cf5a64891ff3dbdce7367a7b5c86e41f4eda3f763404509cd76e",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/two-bit-probabilities.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-acquisition-20261105/svg/uncontrolled-and-controlled-unitary.svg",
+      "bytes": 16913,
+      "sha256": "6b1b0e577c2e2a71aaa0d94f9cceaa089d9ea9159ee31d5e47a537c69c1abec6",
+      "role": "pinned acquisition and HTTP/static scan evidence/svg/uncontrolled-and-controlled-unitary.svg",
+      "evidence_state": "reviewed acquisition; not visual or mathematical acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/arc-and-chord.png",
+      "bytes": 37805,
+      "sha256": "5e539a06f8ed818d63ba85611eeec073732dfc2cbe3194f31050da5686b963a7",
+      "role": "static render and visual observations/images/arc-and-chord.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/controlled-phase-gates.png",
+      "bytes": 6299,
+      "sha256": "a31b1d232bdb355041f1da948045d7f83343e5df6a5757e2e7a1bd1d2a9946f7",
+      "role": "static render and visual observations/images/controlled-phase-gates.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/double-kickback-probabilities.png",
+      "bytes": 73549,
+      "sha256": "d539f21e52dd80e915f72b2347ba6a1a15f869f2bdb24168dbddf9703ac853fa",
+      "role": "static render and visual observations/images/double-kickback-probabilities.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/double-phase-kickback.png",
+      "bytes": 16507,
+      "sha256": "5af543c6dfbf1d9547b6973cd6f505de1aebc0d4dd6df0dcc529addae3bb8aab",
+      "role": "static render and visual observations/images/double-phase-kickback.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/estimate-phase-with-kickback-analysis.png",
+      "bytes": 33506,
+      "sha256": "0171e2766f4ad2e6ca986c22cd2c710baff961433c5fceb41bb1ab510e3600a1",
+      "role": "static render and visual observations/images/estimate-phase-with-kickback-analysis.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/estimate-phase-with-kickback.png",
+      "bytes": 18326,
+      "sha256": "84dfd6e24c5475739ed1fa3ab4d472c7cae463e5ee3ee7faadcef54c4da07582",
+      "role": "static render and visual observations/images/estimate-phase-with-kickback.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/four-qubit-probabilities.png",
+      "bytes": 69939,
+      "sha256": "f370557a028045b6ff38d3c0debee78370ec53538e9a9fd1263538a5985038b6",
+      "role": "static render and visual observations/images/four-qubit-probabilities.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/kickback-probabilities.png",
+      "bytes": 53828,
+      "sha256": "483293149115d7e7bab6ce36f83166353dbe78abced98e7bae38576def408f9a",
+      "role": "static render and visual observations/images/kickback-probabilities.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/phase-estimation-procedure.png",
+      "bytes": 26373,
+      "sha256": "54563f541d55ee79ebfafeb4d55ba53d73922e8fdbd41d3de3293064d143241b",
+      "role": "static render and visual observations/images/phase-estimation-procedure.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/phase-injection.png",
+      "bytes": 19893,
+      "sha256": "78d114e99f7c4ee31b23c2b849890236a4850c83895fa3bd802a0c73ab3a2e9c",
+      "role": "static render and visual observations/images/phase-injection.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/QFT_32.png",
+      "bytes": 32589,
+      "sha256": "3e334ce2d00145ed254303f138e18b6979ee03ad903bbc3e8635b3d89ddedb2d",
+      "role": "static render and visual observations/images/QFT_32.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/three-qubit-probabilities.png",
+      "bytes": 71532,
+      "sha256": "2f973ec468ee5f0b1f8057a66e92dad5d5d6d43ce3ad3e81028e7fc94182d843",
+      "role": "static render and visual observations/images/three-qubit-probabilities.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/two-bit-phase-estimation-initial.png",
+      "bytes": 20133,
+      "sha256": "a1664727cee1190e9fa8f2c06cd63ac684c74c9b32c485f8ce9d9e58535dc1e4",
+      "role": "static render and visual observations/images/two-bit-phase-estimation-initial.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/two-bit-phase-estimation-states.png",
+      "bytes": 32825,
+      "sha256": "36442b99065a6b8af772725b551f550c02810ca260f977850ea08807a0e71324",
+      "role": "static render and visual observations/images/two-bit-phase-estimation-states.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/two-bit-phase-estimation.png",
+      "bytes": 21307,
+      "sha256": "aa4051e795527c75697f4688c57887123b6b4ce8d8a3f5e4b9f37d4ab8e313b4",
+      "role": "static render and visual observations/images/two-bit-phase-estimation.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/two-bit-probabilities.png",
+      "bytes": 87400,
+      "sha256": "9f700ffaace942e2ce75e03a51fa4601b50a038f6d68ca3a5dfddb26633131b3",
+      "role": "static render and visual observations/images/two-bit-probabilities.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/images/uncontrolled-and-controlled-unitary.png",
+      "bytes": 10322,
+      "sha256": "12961012586bd70b14c7705374ea09ac3d442fde010714d5780f8d3992535bed",
+      "role": "static render and visual observations/images/uncontrolled-and-controlled-unitary.png",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/PLAN.md",
+      "bytes": 687,
+      "sha256": "100cfce926cca94300096a4d0522acbf48184022471b41e8a846545fc0b78218",
+      "role": "static render and visual observations/PLAN.md",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/render-manifest.json",
+      "bytes": 77077,
+      "sha256": "5bb8711c3b06072c1583e78878d10817fcdd2d10043c9905c636a51dcf414e3b",
+      "role": "static render and visual observations/render-manifest.json",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/render-terminal.json",
+      "bytes": 393,
+      "sha256": "37f0d3ae0d6c20aa331ba6ddec35ebf628eb42ca27b4eacdb38f24fa2bb24c55",
+      "role": "static render and visual observations/render-terminal.json",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/render.cjs",
+      "bytes": 2627,
+      "sha256": "9a61de228aca88d1353093dd556280858bb8a71ac1fd5252db40e2b1bb8ea751",
+      "role": "static render and visual observations/render.cjs",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/render.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "static render and visual observations/render.stderr.log",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/render.stdout.log",
+      "bytes": 1126,
+      "sha256": "6656cff079fc56fdc15859512233c2bf9a794a92906faa9b0446f1053ca7ea63",
+      "role": "static render and visual observations/render.stdout.log",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/REPORT.md",
+      "bytes": 1698,
+      "sha256": "4601dedc36a160b4a1a3ba8b4ae51a869b55a836bf0887699244c6b3a18894eb",
+      "role": "static render and visual observations/REPORT.md",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-inventory-20261105/visual-inventory.json",
+      "bytes": 99999,
+      "sha256": "feb1887c9d707219476b0420418509bd632b5323ad1f68d9ed2426d24efe7520",
+      "role": "static render and visual observations/visual-inventory.json",
+      "evidence_state": "reviewed finite visual inventory; not circuit proof"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-standards-review.json",
+      "bytes": 11457,
+      "sha256": "e8de70dd76e676c071a247aa94ba13cd45a420968291c03bdde14ff2bd2ab72a",
+      "role": "independent visual standards review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-svg-visual-spec-review.json",
+      "bytes": 2760,
+      "sha256": "0f4024d64dea6b4f6b5bbc403e91c4638e93caf7338cf49c85a9dca09cb5829e",
+      "role": "independent visual spec review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-20261105-revision01/bindings.json",
+      "bytes": 16081,
+      "sha256": "f387a5e6dc53558f529cbcd933efdcb8d50f07405b7952b4ed8bf37e7bf212d2",
+      "role": "corrected finite reference plan/bindings.json",
+      "evidence_state": "reviewed corrected plan"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-20261105-revision01/fixtures.json",
+      "bytes": 48565,
+      "sha256": "42dd1c8442ff07c3e01ae807ee06260966d0e33332172f91e275dd8793e54be6",
+      "role": "corrected finite reference plan/fixtures.json",
+      "evidence_state": "reviewed corrected plan"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-20261105-revision01/PLAN.md",
+      "bytes": 10261,
+      "sha256": "725621e22ccf37215f2a2865a88293f2e7de25d889ade2221c354ccce2016ffd",
+      "role": "corrected finite reference plan/PLAN.md",
+      "evidence_state": "reviewed corrected plan"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-revision01-standards-review.json",
+      "bytes": 2234,
+      "sha256": "7e78ff848f6a06d78291943be2dc86f66c53598c3c2b9d14007463ad756dd043",
+      "role": "independent corrected plan standards review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-revision01-spec-review.json",
+      "bytes": 1696,
+      "sha256": "dea1d730c92c5abf737260ef29827649e1621c44dda4c4f071f511783698ab8f",
+      "role": "independent corrected plan spec review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/acceptance-normal-01/cases.jsonl",
+      "bytes": 361381,
+      "sha256": "5d3900fc0beb22d47c963f148c0fcb3ba6d3d6af690ee92ef340c126fa95ddb6",
+      "role": "reference implementation, synthetic tests and actual results/acceptance-normal-01/cases.jsonl",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/acceptance-normal-01/summary.json",
+      "bytes": 787,
+      "sha256": "ef0847e55122d578a6c98930a5660fd8f22d739afc3b80a87f9de12eaf607944",
+      "role": "reference implementation, synthetic tests and actual results/acceptance-normal-01/summary.json",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/acceptance-optimized-01/cases.jsonl",
+      "bytes": 361381,
+      "sha256": "5d3900fc0beb22d47c963f148c0fcb3ba6d3d6af690ee92ef340c126fa95ddb6",
+      "role": "reference implementation, synthetic tests and actual results/acceptance-optimized-01/cases.jsonl",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/acceptance-optimized-01/summary.json",
+      "bytes": 787,
+      "sha256": "cfb7b6a4f7c6d3fa9af424c99a0550689aa4693c6a4a955a48727fa8dad8a5aa",
+      "role": "reference implementation, synthetic tests and actual results/acceptance-optimized-01/summary.json",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/bindings.json",
+      "bytes": 4145,
+      "sha256": "71743e7ecf02718be3faee653d1a959d3b338f1e687bcd07b3a26b6c4d4518ce",
+      "role": "reference implementation, synthetic tests and actual results/bindings.json",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/manifest.json",
+      "bytes": 3309,
+      "sha256": "4e819b15b9ca9a30bc873ade60fda066fa6a365c280764f73cd44be8c81abe96",
+      "role": "reference implementation, synthetic tests and actual results/manifest.json",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/README.md",
+      "bytes": 6186,
+      "sha256": "10eefee7e8b0ea442ee1fcf16141f5fdf16a7e19e17eb615890e0db1c953dd11",
+      "role": "reference implementation, synthetic tests and actual results/README.md",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/reference.py",
+      "bytes": 23333,
+      "sha256": "945d0935f682eb539c6c6bc5f97942e4c76b616e9e70757305f8ce7919681e02",
+      "role": "reference implementation, synthetic tests and actual results/reference.py",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/test_reference.py",
+      "bytes": 12112,
+      "sha256": "81532ec8366f1992a9e706d12eb4fbc70edeb11a7b68199f9912f732a7f74010",
+      "role": "reference implementation, synthetic tests and actual results/test_reference.py",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/unit-normal.json",
+      "bytes": 345,
+      "sha256": "271e6937e7e43942a8755e982cb2c94a8416237200e04732fd31eeb285e45336",
+      "role": "reference implementation, synthetic tests and actual results/unit-normal.json",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/unit-normal.stderr.log",
+      "bytes": 3502,
+      "sha256": "ebe92c9c078ddad24048dad98b6f7b93b7c97344776ef7b8b0b235b983774545",
+      "role": "reference implementation, synthetic tests and actual results/unit-normal.stderr.log",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/unit-normal.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "reference implementation, synthetic tests and actual results/unit-normal.stdout.log",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/unit-optimized.json",
+      "bytes": 356,
+      "sha256": "55b7efbaf680cf101f1af76b5fc450a01ead83705fda1992e711cc6a71dba701",
+      "role": "reference implementation, synthetic tests and actual results/unit-optimized.json",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/unit-optimized.stderr.log",
+      "bytes": 3502,
+      "sha256": "eaa1d06ad08438e973c451b6e43a382c37a6fc7ef3d014b0a2d3fae24cfa3335",
+      "role": "reference implementation, synthetic tests and actual results/unit-optimized.stderr.log",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/unit-optimized.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "reference implementation, synthetic tests and actual results/unit-optimized.stdout.log",
+      "evidence_state": "reviewed finite implementation; actual outputs separately accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-revision01-standards-review.json",
+      "bytes": 3748,
+      "sha256": "69a7500ebb2dd1031719e2a311feba05d2b91e7ff40be075ed10a197cbf86475",
+      "role": "independent corrected implementation standards review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-revision01-spec-review.json",
+      "bytes": 2804,
+      "sha256": "36a84f9f2419500c4221da72131aa52811828e6f143b6103435bad195a214abf",
+      "role": "independent corrected implementation spec review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/comparison.json",
+      "bytes": 338,
+      "sha256": "732aa395decc5c0765b971e511f02dca6797552c2ae7ae173de1d00e577d7482",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/comparison.json",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/normal/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/normal/stderr.log",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/normal/stdout.log",
+      "bytes": 702,
+      "sha256": "2bf9d0e5ba45091be79937d9b60152e8ded0ee3c9d6b31b22a69cac708edf673",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/normal/stdout.log",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/normal/terminal.json",
+      "bytes": 1078,
+      "sha256": "d417797f67af47d033a6cb75ef47feffaf3a65d7f257ae2b59039489c1c15ecf",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/normal/terminal.json",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/optimized/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/optimized/stderr.log",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/optimized/stdout.log",
+      "bytes": 702,
+      "sha256": "3f0e1681a6c411a680d0c0194d1056378ca39b01faa95f7e801745b4c7b0cbae",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/optimized/stdout.log",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/actual-attempt01/optimized/terminal.json",
+      "bytes": 1093,
+      "sha256": "6204b0f8678c4cdc7c123bb179118c1bf7075035c4defee5a2f1f389a6577b66",
+      "role": "bounded invocation and terminal evidence/actual-attempt01/optimized/terminal.json",
+      "evidence_state": "accepted finite actual reference evidence; not product or lesson acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/commands.json",
+      "bytes": 15244,
+      "sha256": "fd169578acfcc1fe5c922e9111a391776590ab6a5b9684000696a2414f4c2766",
+      "role": "bounded invocation and terminal evidence/commands.json",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/manifest.json",
+      "bytes": 2953,
+      "sha256": "5803a645f0b7b7cc7c66e8aefc18f855842cb94b7647599faf0f92228a39a820",
+      "role": "bounded invocation and terminal evidence/manifest.json",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/README.md",
+      "bytes": 6085,
+      "sha256": "a7d10233dc6658f7d5b31b61c5100d3db1af8282c395695a5fe238ed3de5a2ca",
+      "role": "bounded invocation and terminal evidence/README.md",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/run_bounded.py",
+      "bytes": 10733,
+      "sha256": "06be98f09b1f9d5d76644f9c48c8241a55e13bdf94ee6c8c7533e8c28f8980a6",
+      "role": "bounded invocation and terminal evidence/run_bounded.py",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/test_run_bounded.py",
+      "bytes": 9869,
+      "sha256": "a55dd884067ced35e59777f7ddf83f29c3ee22f3d002e413500098ee9309b07e",
+      "role": "bounded invocation and terminal evidence/test_run_bounded.py",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/tests-normal.json",
+      "bytes": 306,
+      "sha256": "56b418df057c35a27ee8802fd7e53461cb2ea4410bb87662ceaa5bd392934661",
+      "role": "bounded invocation and terminal evidence/tests-normal.json",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/tests-normal.stderr.log",
+      "bytes": 2080,
+      "sha256": "e9813f6f3310eda884736c1300fc774448337e78ac62d3abcd84188064dbba4d",
+      "role": "bounded invocation and terminal evidence/tests-normal.stderr.log",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/tests-normal.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "bounded invocation and terminal evidence/tests-normal.stdout.log",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/tests-optimized.json",
+      "bytes": 316,
+      "sha256": "fe8ea11869e7f0e5626712732103b2d9a3bd761834f7fc7858e6a98e7d163e15",
+      "role": "bounded invocation and terminal evidence/tests-optimized.json",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/tests-optimized.stderr.log",
+      "bytes": 2080,
+      "sha256": "e9224899643c2d00b2ed0d1a28ab11cb16414d366a69d46a306db677ad964a45",
+      "role": "bounded invocation and terminal evidence/tests-optimized.stderr.log",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-20261106/tests-optimized.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "bounded invocation and terminal evidence/tests-optimized.stdout.log",
+      "evidence_state": "reviewed wrapper; actual finite execution completed"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-standards-review.json",
+      "bytes": 4198,
+      "sha256": "3416cdf7389a71381352c9dba60be58da1682481f12268d10fb9a66ecf41af01",
+      "role": "independent invocation standards review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-actual-standards-review.json",
+      "bytes": 7537,
+      "sha256": "6038c00c2a531aa85fec9e144eaaaacba6d00357b14f5217670a0f7bb4cf966f",
+      "role": "independent actual finite reference standards acceptance",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-invocation-spec-review.json",
+      "bytes": 2848,
+      "sha256": "e8de3f546d3fd5e26228ebc068b41cca8905b788a719344231def5e5203e1e90",
+      "role": "independent invocation spec review",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-actual-spec-review.json",
+      "bytes": 3523,
+      "sha256": "f3f7e1b8b008ea705e987ef032a5439097d0a33f036e9dddcfd1e7488ece9a6a",
+      "role": "independent actual finite reference spec acceptance",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-actual-spec-file-pins.json",
+      "bytes": 2994,
+      "sha256": "8e6fc33294e9097a8114740bb15699ca155b16c2267719d2a786461afff5b940",
+      "role": "coordinator evidence/ibm028-reference-actual-spec-file-pins.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-actual-owner-reconciliation-20261106.json",
+      "bytes": 849,
+      "sha256": "9f5c7f247fa6a80c22eb846cbf009454099fe84ff59dfdd89efd7dca8404333d",
+      "role": "coordinator evidence/ibm028-reference-actual-owner-reconciliation-20261106.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-final-owner-acceptance-20261106.json",
+      "bytes": 646,
+      "sha256": "669aa5fd65c00df227e6fc7c74bc6c49994e2bfabb4f13c70dc6b2a5474eddf2",
+      "role": "coordinator evidence/ibm028-reference-final-owner-acceptance-20261106.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-execution-grant-20261106.json",
+      "bytes": 546,
+      "sha256": "6ec4e5b4adb947a5a0bdf199e6bff4a21adc3e9e93b3803af17bfff0bfd35944",
+      "role": "coordinator evidence/ibm028-reference-execution-grant-20261106.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-implementation-owner-acceptance-20261106.json",
+      "bytes": 446,
+      "sha256": "e369566f2d0275f6d88702664419229a0e66287afd576312b44eac717a5363b8",
+      "role": "coordinator evidence/ibm028-reference-implementation-owner-acceptance-20261106.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-owner-acceptance-20261105.json",
+      "bytes": 717,
+      "sha256": "40549bb68160128fc445740b7e4c65aecb038902ec1c52ccd5d895b8557efb24",
+      "role": "coordinator evidence/ibm028-reference-plan-owner-acceptance-20261105.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-source-acquisition-owner-verification-20261105.json",
+      "bytes": 1428,
+      "sha256": "c12016c056a920fa9db20aba10c03b149b92700ac61d3675c4a533ed2a0aaad2",
+      "role": "coordinator evidence/ibm028-source-acquisition-owner-verification-20261105.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-visual-owner-acceptance-20261105.json",
+      "bytes": 1042,
+      "sha256": "6c0df929afbf52e7d469ca91c43a8edd67850f21403d3eed5dfdcc0e0fc2fef2",
+      "role": "coordinator evidence/ibm028-visual-owner-acceptance-20261105.json",
+      "evidence_state": "reviewed finite evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-20261105/bindings.json",
+      "bytes": 14592,
+      "sha256": "5c00a54aa181736c80a970cc73d630bcacea3c5aebf8ef4a65a91e00a324f0ad",
+      "role": "preserved initial packet/ibm028-reference-plan/bindings.json",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-20261105/fixtures.json",
+      "bytes": 47923,
+      "sha256": "d1755ea21c49d260442d0f54fcbebfb360c08564fd6d3861f57cfc25fcacf94a",
+      "role": "preserved initial packet/ibm028-reference-plan/fixtures.json",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-20261105/PLAN.md",
+      "bytes": 9968,
+      "sha256": "4cf52728a8bc14b11c8f0455fe4b95f21f8a71e9fdad50ebc3ac43183a8d0641",
+      "role": "preserved initial packet/ibm028-reference-plan/PLAN.md",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-standards-review.json",
+      "bytes": 2945,
+      "sha256": "eb506be8c06e6585033dec81fa03205427b770cffbefa3fede43a3328033cd3a",
+      "role": "initial standards findings/ibm028-reference-plan",
+      "evidence_state": "preserved initial findings; superseded by revision01"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-reference-plan-spec-review.json",
+      "bytes": 4279,
+      "sha256": "1d7436eb3cb1daa9b34ff07cf36ec555d41209af68fb7e29fb36ba534f7b9de9",
+      "role": "initial spec findings/ibm028-reference-plan",
+      "evidence_state": "preserved initial findings; superseded by revision01"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/bindings.json",
+      "bytes": 3013,
+      "sha256": "25d4f869e4047207a4a13fe290c541751aad8eeaa5443d808c0619b48c6dc328",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/bindings.json",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/manifest.json",
+      "bytes": 2904,
+      "sha256": "661d973adfa1d62120cee0c1c90a095f4dfa22a15f7642326ef3016f77caff38",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/manifest.json",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/README.md",
+      "bytes": 5109,
+      "sha256": "3c144fbaae2cc22aec5fd50db9b804ef6e55edbf569929a0a571d839774fd798",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/README.md",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/reference.py",
+      "bytes": 19367,
+      "sha256": "0963c9283fa08d1efaf3631b9ca02f7d05d3153b381992d6076ac92b7a36a90d",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/reference.py",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/test_reference.py",
+      "bytes": 5609,
+      "sha256": "344e8fcbcb9a974aabf0d1394cb5303ed2e2396adaadc9e436f24fa3a0c89bb3",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/test_reference.py",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/unit-normal.json",
+      "bytes": 335,
+      "sha256": "1bbba97b5fa8b9114c2f1d97436b867da27909ff8cd391bc36e1622ff90009c5",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/unit-normal.json",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/unit-normal.stderr.log",
+      "bytes": 2166,
+      "sha256": "544a7ccc87c9f69581123b140fc10fd759f83d06c51f3c2b9a784df2a438ac03",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/unit-normal.stderr.log",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/unit-normal.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/unit-normal.stdout.log",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/unit-optimized.json",
+      "bytes": 345,
+      "sha256": "479fe9fc6d85a81fc6809aac44c309ccd0421c77c08772420c48796bfc59044f",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/unit-optimized.json",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/unit-optimized.stderr.log",
+      "bytes": 2166,
+      "sha256": "c317c8160d8f141193e38ce96d1b3d58647a7a7a26a72e2c6871d2d79bdff9f9",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/unit-optimized.stderr.log",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105/unit-optimized.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "preserved initial packet/ibm028-exact-reference-implementation/unit-optimized.stdout.log",
+      "evidence_state": "superseded initial packet; P2 findings, not final acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-standards-review.json",
+      "bytes": 5298,
+      "sha256": "2eccadc4f6c9ad4d04f32b2bbc91567d859c0b465b9e243d5d189acbca3cf784",
+      "role": "initial standards findings/ibm028-exact-reference-implementation",
+      "evidence_state": "preserved initial findings; superseded by revision01"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-spec-review.json",
+      "bytes": 4442,
+      "sha256": "d70296f84290907b97c19dfd4e7a9ba65debe9f0f5178e9ea27360d6dae6e70c",
+      "role": "initial spec findings/ibm028-exact-reference-implementation",
+      "evidence_state": "preserved initial findings; superseded by revision01"
+    }
+  ]
+}
