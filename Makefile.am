@@ -391,3 +391,10 @@ EXTRA_DIST += windows/dev13-notebooks/test_timing.py
 EXTRA_DIST += windows/dev13-notebooks/timing-requirements.lock
 EXTRA_DIST += windows/dev13-notebooks/timing_reference.py
 EXTRA_DIST += windows/dev13-notebooks/witnesses/ibm_timing.py
+
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/bindings.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/reference-results.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/reference.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/reviews.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/source-claims.json

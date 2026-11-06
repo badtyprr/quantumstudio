@@ -1,0 +1,42 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "cell_id": "e17fb8b5",
+  "offset_unit": "Unicode codepoints of joined cell source, end exclusive",
+  "claims": [
+    {
+      "id": "C1",
+      "start": 10761,
+      "end": 11133,
+      "text": "Let's suppose that we run the circuit independently $k$ times, for $k = n + 10$.\nThere's nothing special about this particular number of iterations \u2014 we could take $k$ to be larger (or smaller) depending on the probability of failure we're willing to tolerate, as we will see.\nChoosing $k = n + 10$ will ensure that we have greater than a $99.9$% chance of recovering $s$.",
+      "sha256": "a4bdccb0e50d58c999132665a1a0e746f997c80cd6e82b8da53a357f6fc5393f"
+    },
+    {
+      "id": "C2",
+      "start": 13304,
+      "end": 13539,
+      "text": "More generally, if we replace $k = n + 10$ with $k = n + r$ for an arbitrary choice of a positive integer $r$, the probability that the vectors corresponding to $0^n$ and $s$ are alone in the null space of $M$ is at least $1 - 2^{-r}$.",
+      "sha256": "58f6f8acd04c6876257e07d3219a1fb169541ec73d9a9fca4da3b251a3f7a16b"
+    },
+    {
+      "id": "C3",
+      "start": 14275,
+      "end": 14529,
+      "text": "If we have any probabilistic query algorithm, and that algorithm makes fewer than $2^{n/2 - 1} - 1$ queries, which is a number of queries that's *exponential* in $n$, then that algorithm will fail to solve Simon's problem with probability at least $1/2$.",
+      "sha256": "a940340c0cbfb7ce8d7977962a37105b1590e59965b36522fac30425071967f2"
+    },
+    {
+      "id": "C4",
+      "start": 1738,
+      "end": 1880,
+      "text": "There are two main cases: the first case is that $s$ is the all-zero string $0^n$, and the second case is that $s$ is not the all-zero string.",
+      "sha256": "8380eccab73f6ef23554a95db7503af85fda88ef685532fb4102aeeff9f6ec69"
+    },
+    {
+      "id": "C5",
+      "start": 2665,
+      "end": 2799,
+      "text": "Here's an example of a function taking the form $f:\\Sigma^3 \\rightarrow \\Sigma^5$ that satisfies the promise for the string $s = 011$.",
+      "sha256": "ea6d0df170d36c6fca4ba156a904ad8af3c58cecbe3205d0d14dcaaa8ad59a7e"
+    }
+  ]
+}

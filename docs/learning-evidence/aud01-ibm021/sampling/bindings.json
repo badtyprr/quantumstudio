@@ -1,0 +1,18 @@
+{
+  "scope": "Coordinator-assigned external-only source/math reference",
+  "base": "874c0f9588fd827dbaa6110ceb863e4da7f1c411",
+  "comparison_integration": "985faaeeedf80e8e3c4a7430c08f930b16d9e12c",
+  "source_path": "F:/src/libqalculate/cleanup-audit/math-lane-20261104/ibm021/source.ipynb",
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "source_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/simon-algorithm.ipynb",
+  "original_table": [19,5,5,19,26,1,1,26],
+  "original_dimensions": {"n": 3, "m": 5, "secret": "011"},
+  "authored_extensions": ["all other secrets", "n=1", "k=0..4 exhaustive sequences", "n=1..12 rank probabilities", "invalid tables and sample values"],
+  "existing_native_evidence": {"value_copy_pairs": 35, "rejected_originals": 9, "new_sampling_observations": 0},
+  "product_execution": false,
+  "numerical_tolerance": null,
+  "shared_files_changed": [],
+  "proposed_future_files": ["docs/learning-evidence/aud01-ibm021/sampling/"],
+  "future_base": "Requires fresh coordinator assignment",
+  "parser_algebra_change_required": "Not demonstrated; no failing native reproduction"
+}

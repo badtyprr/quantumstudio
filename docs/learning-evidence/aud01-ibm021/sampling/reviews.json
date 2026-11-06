@@ -1,0 +1,23 @@
+{
+  "scope": "Independent reference-plan reviews, not product acceptance",
+  "standards": {
+    "findings": 0,
+    "agent": "/root/standards_review",
+    "verification": "In-memory stdlib rerun reproduced both retained JSON objects exactly"
+  },
+  "spec": {
+    "findings": 0,
+    "agent": "/root/spec_review",
+    "verification": "Independently verified source bindings, distribution, 50 histograms, 7104 sequences and 420 probability cases"
+  },
+  "reviewed_sha256": {
+    "bindings.json": "72e6443a78fd0864b854e72fe5e6d1516ceb51aa8c79985d689e8f8342a525ec",
+    "reference-results.json": "e035e3a4042eb6671fef469cbf3768deb239a7743be5ff270a883e2e79b44080",
+    "reference.py": "282d88275d03ff076ad4c6529d0fdb0d578eab5f834cdcf3d30583980408425b",
+    "source-claims.json": "7c15449f61a05808b6249201f18945582f5d754d0d60fa3035bf524face27ae7",
+    "PLAN.md": "ca0f6a99a433d480a933a3dda3d7459cf01927b32c556d4a255d60554183b140"
+  },
+  "native_execution": false,
+  "sdk_execution": false,
+  "gui_execution": false
+}
