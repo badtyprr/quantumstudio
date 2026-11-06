@@ -1,0 +1,292 @@
+{
+  "schema": 1,
+  "proposal_base": "9febd49268d83ea03e0ef20015537dae2a722988",
+  "proposal_tree": "373e9edb139c4c96f5a4f6dc68340a24003daeaf",
+  "scope": "Reviewed IBM117/118 readiness and dependency evidence only; no implementation or actual notebook acceptance",
+  "sources": [
+    {
+      "id": "IBM-117",
+      "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "path": "learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+      "pin": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+        "bytes": 31171,
+        "sha256": "2c47467fed30021fc7b9495c0a97f927aee6c177dc48ebf34923fa33d296775e"
+      },
+      "git_blob": "26c680e1c0e51e26fba8a87350123b15e1b9f2ac",
+      "cells": 58,
+      "code_cells": 35
+    },
+    {
+      "id": "IBM-118",
+      "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "path": "learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+      "pin": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+        "bytes": 42487,
+        "sha256": "249d761a7b4e566c1ebd25d126df2ac3cc49e7c7dc129a919f6f179c423ee2d4"
+      },
+      "git_blob": "86c93cb3cf92742e4049effe01da2f1f0869a3f1",
+      "cells": 80,
+      "code_cells": 38
+    }
+  ],
+  "packets": [
+    {
+      "key": "readiness",
+      "summary": "All138 original cells accounted;73code65Markdown, exact source/output/dependency/exercise/link bindings. No current execution; original52outputs historical text only.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117118-cell-readiness-20261106-revision01/manifest.json",
+        "bytes": 1217,
+        "sha256": "9612ee647463cae41f3de6acc06408f03d10bb1b96ee2f9f3eee798c010c3957"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117118-cell-readiness-20261106-revision01/README.md",
+          "bytes": 9310,
+          "sha256": "e8c04bb126e27f210b6e11a35de5d95eb55b0be3789862d20ee6edc3ccf68d28"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117118-cell-readiness-20261106-revision01/accounting.json",
+          "bytes": 212441,
+          "sha256": "0fa7ec0a4eb62f4e56628904f9218e6d4fb0eab478dde316c107ce3ae5224fb8"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117118-cell-readiness-20261106-revision01/revision.json",
+          "bytes": 1534,
+          "sha256": "971284a426a4dc8b0d186dea82bb88f20aeb5074b66828538a3f889171352ce2"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117118-cell-readiness-20261106-revision01-standards-review.json",
+            "bytes": 989,
+            "sha256": "bdf63f64d259a8b24767ea284cdc91e4044cbc07317343ac4b6f5c3cf5610d73"
+          },
+          "recorded_verdict": "PASS_P3_RESOLVED",
+          "findings": 0
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117118-cell-readiness-20261106-revision01-spec-review.json",
+            "bytes": 830,
+            "sha256": "63e97db86b01f6e3c03b98b2a715b32bf2b068981858221b6797fbb9e4a6cd29"
+          },
+          "recorded_verdict": "PASS finite readiness; P3 resolved",
+          "findings": 0
+        }
+      }
+    },
+    {
+      "key": "reference_reuse",
+      "summary": "Two accepted IBM028 reference records extracted: QFT-8 expected column5 and PE-3-2 theta1/8 probabilities. Source-order/sign/register bridge not established.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm118-reference-reuse-assessment-20261106/manifest.json",
+        "bytes": 294,
+        "sha256": "cfcffabc23c679e1161fe07998b6889255be95b2272e8957186c9ab78045f133"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm118-reference-reuse-assessment-20261106/assessment.json",
+          "bytes": 10189,
+          "sha256": "2e79469117073dbd661383eb1fd397eeba3f3f97c843fc4cc5b860fc661587f3"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm118-reference-reuse-assessment-20261106-standards-review.json",
+            "bytes": 1370,
+            "sha256": "e250c578319022c686da6211eff7c4ad684c97e975f5aba5a47404a7c36c5ab3"
+          },
+          "recorded_verdict": "PASS_REUSE_CANDIDATE_ONLY",
+          "findings": 0
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm118-reference-reuse-assessment-20261106-spec-review.json",
+            "bytes": 1584,
+            "sha256": "157ee6477dc2000e1fa53345374c89520ad46db68fa7c1c84c9541cfec1ea1f6"
+          },
+          "recorded_verdict": "PASS extraction/provenance only",
+          "findings": 0
+        }
+      }
+    },
+    {
+      "key": "runtime_source",
+      "summary": "Immutable Runtime0.40.1/Qiskit2.2.3 source supports original Sampler alias, positional/keyword mode, local dispatch/counts and deprecated but present QFT inverse. No runtime acceptance.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-runtime-compatibility-research-20261106/manifest.json",
+        "bytes": 10317,
+        "sha256": "3281f1603b991a499c6990b6bde082dfbe873564a5eb9b9e4f2b23bd6aa694dc"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-runtime-compatibility-research-20261106/README.md",
+          "bytes": 8912,
+          "sha256": "0c7c629cfa04263f868f449193136c0010af8a83014a7e45d0288183eec1b678"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-runtime-compatibility-research-20261106/bindings.json",
+          "bytes": 13319,
+          "sha256": "e43236d91ab4f1636a8dc1ad4f574d7d720c39d291dc86f2b2442e8c9dc1d560"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-runtime-compatibility-research-20261106-standards-review.json",
+            "bytes": 2011,
+            "sha256": "f9e3742421abead939e3c6b52386bd132e5b5678bad5992b2a6a2854473285cc"
+          },
+          "recorded_verdict": "PASS finite primary-source research only",
+          "findings": 0
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-runtime-compatibility-research-20261106-spec-review.json",
+            "bytes": 1989,
+            "sha256": "79eab2db775935738e912abb71b6f7c9abeabe5e1b4f33bb3258da294f2560c4"
+          },
+          "recorded_verdict": "PASS finite research; no runtime compatibility acceptance",
+          "findings": 0
+        }
+      }
+    },
+    {
+      "key": "retained_pool",
+      "summary": "51 exact base wheels plus9 retained candidates verified;60wheels108740139bytes. Not a complete closure or accepted new environment.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-retained-dependency-pool-20261106/manifest.json",
+        "bytes": 927,
+        "sha256": "fb95c2f088704560dd09c4c1d4e7117ee075451fdaf509b4937b3814bd0d0baa"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-retained-dependency-pool-20261106/README.md",
+          "bytes": 6539,
+          "sha256": "a37a6a40fc45a4053f20733c7c8a1cb4926d7310df25045ff0ac09ed77830de1"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-retained-dependency-pool-20261106/pool.json",
+          "bytes": 170784,
+          "sha256": "e7847a69d747623025b8b4972aa89747df857e886cfbe3d5bfb584a76f15f876"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-retained-dependency-pool-20261106/verification.json",
+          "bytes": 1674,
+          "sha256": "80c8c4570a130063eb01156842065684efa3d60d62e3d90a00ff7c235d9d1eaf"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-retained-dependency-pool-20261106-standards-review.json",
+            "bytes": 1686,
+            "sha256": "f0fcf142106b7c574ceba36f41bf5bdad394a136568ae18dff90048ad79e4921"
+          },
+          "recorded_verdict": "PASS finite retained pool only",
+          "findings": 0
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-retained-dependency-pool-20261106-spec-review.json",
+            "bytes": 1480,
+            "sha256": "bd29e1d938fd6751731933c9a13d0bbb56115b310132d2eccb51d3e9e5e54de5"
+          },
+          "recorded_verdict": "PASS artifact inventory only",
+          "findings": 0
+        }
+      }
+    },
+    {
+      "key": "metadata_gap",
+      "summary": "Selected platform-services0.77.2/core3.28.1 conflicts with fixed dateutil4.0.0; core requires>=3,<3.1. Three missing edges; no backtracking or base relaxation.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-dependency-metadata-20261106/manifest.json",
+        "bytes": 2988,
+        "sha256": "93b85a0c088fd79bb910f1c04292b1b4902fbc8f18fa2fc4fbbb4f4cffccf47d"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-dependency-metadata-20261106/README.md",
+          "bytes": 6235,
+          "sha256": "d72c6a368325a201d69bdaed28f9826f54091e564c55c12a0ce6b68f6cd41ef9"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-dependency-metadata-20261106/edge-analysis.json",
+          "bytes": 182789,
+          "sha256": "5cc86080eb2dff5cb35d14090faf22f87c3cf35d63cc387c61168f4ad76497e5"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-dependency-metadata-20261106/verification.json",
+          "bytes": 1295,
+          "sha256": "fbcaa1f66b45ba8f833c344fcbaa05df86e23cf44513320138e287d4fdff1ce2"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-dependency-metadata-20261106-standards-review.json",
+            "bytes": 2165,
+            "sha256": "45b4db25e658aca95db9b14f3bc47482a474d86ea31bf140db9abbcb65d53317"
+          },
+          "recorded_verdict": "PASS finite metadata conflict evidence",
+          "findings": 0
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-dependency-metadata-20261106-spec-review.json",
+            "bytes": 1687,
+            "sha256": "706ab4f647551e8872c7ff381552e985756cc17b92e308ccc9da8a14aa087834"
+          },
+          "recorded_verdict": "PASS specific candidate conflict evidence",
+          "findings": 0
+        }
+      }
+    }
+  ],
+  "candidate": {
+    "qiskit-ibm-runtime": "0.40.1",
+    "runtime_source_commit": "1052d14ff505506ac50f08104eec5354e8af3079",
+    "qiskit": "2.2.3",
+    "qiskit_source_commit": "8f33595f5b9e9c99b7aa81002655d13f48c8ac1b",
+    "qiskit-aer": "0.18.2",
+    "python": "3.12.10"
+  },
+  "specific_conflict": {
+    "selected_ibm-platform-services": "0.77.2",
+    "selected_ibm-cloud-sdk-core": "3.28.1",
+    "requires": "python_dateutil>=3.0.0,<3.1.0",
+    "fixed_base": "python-dateutil==4.0.0",
+    "universal_conflict_claim": false,
+    "backtracking_performed": false
+  },
+  "missing_edges": [
+    "requests-ntlm1.3.0 -> cryptography>=1.3",
+    "requests-ntlm1.3.0 -> pyspnego>=0.4.0",
+    "ibm-cloud-sdk-core3.28.1 -> PyJWT>=2.11,<3"
+  ],
+  "unchanged_base_pin_count": 51,
+  "gates": [
+    "Complete reviewed dependency closure and any separate candidate pin changes; no existing profile mutation",
+    "Original unchanged local source execution, observer/lifecycle/error evidence and finite independent state/count comparison",
+    "Source-to-reference ordering/sign/register bridge; uncovered Grover/state14/phase1/3 expectations",
+    "IBM117c26 literal backend placeholder and both provider submission/retrieval workflows; credentials/paid jobs only when concrete work ready",
+    "Comment-only IBM118c27/c29/c61 exercises versus separately supplied original solutions",
+    "PDF content/rendering, video/IFRAME interpretation, actual figures and Markdown/TeX/MDX acceptance"
+  ],
+  "acceptance": {
+    "actual_notebook_execution": false,
+    "full_dependency_closure": false,
+    "source_reference_bridge": false,
+    "provider_hardware": false,
+    "whole_notebook_complete": false,
+    "checkbox_promotion": false
+  },
+  "external_evidence_note": "Raw external payloads/code and large accounting JSON remain at hash-bound external paths; not copied into this index."
+}

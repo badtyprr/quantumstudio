@@ -549,3 +549,6 @@ EXTRA_DIST += docs/learning-evidence/dev13/windows-native-acceptance/index.json
 
 EXTRA_DIST += docs/learning-evidence/discovery-linked-archives/README.md
 EXTRA_DIST += docs/learning-evidence/discovery-linked-archives/index.json
+
+EXTRA_DIST += docs/learning-evidence/dev13/ibm117118-readiness/README.md
+EXTRA_DIST += docs/learning-evidence/dev13/ibm117118-readiness/index.json
