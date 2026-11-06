@@ -2,7 +2,7 @@
   "schema": 1,
   "proposal_base": "9febd49268d83ea03e0ef20015537dae2a722988",
   "proposal_tree": "373e9edb139c4c96f5a4f6dc68340a24003daeaf",
-  "scope": "Reviewed source readiness, metadata-only closure and two accepted finite ideal-gate source bridges; no implementation or actual notebook acceptance",
+  "scope": "Reviewed source readiness, metadata-only closure, two ideal source bridges and two accepted finite exact-reference extension cases; no actual SDK/notebook acceptance",
   "sources": [
     {
       "id": "IBM-117",
@@ -386,6 +386,289 @@
         "bytes": 720,
         "sha256": "f473f567f4dbaf600c4994ac7646e80ecceba885573b457ce85d75c02add619d"
       }
+    },
+    {
+      "key": "accepted_exact_reference_extension",
+      "summary": "Owner accepted exactly QFT16/state14 and PE3/theta1/3 ideal exact references: two cases/five negatives, normal and optimized complete case data equal. No certified numeric conversion, original SDK/notebook or release acceptance.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/manifest.json",
+        "bytes": 1213,
+        "sha256": "2bc992ec78c94c775d4b28039990500c7fe530f2e7b8faf6429730886b03c79e"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-pair-final-standards-review-20261106.json",
+          "bytes": 2828,
+          "sha256": "042289262fec84cb21e547a97487bafc39c094612c5fee263317637d36e75ac0"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-pair-final-spec-review-20261106.json",
+          "bytes": 14203,
+          "sha256": "54abb440b580dca1728e3dfd6f9eb2030cd42c233402b35b2f9bb854269a6847"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/acceptance-normal-01/results.json",
+          "bytes": 47549,
+          "sha256": "c0069146d79124338ce59872a4f470e7dd3ed88a596de1d63370bd8b85bceb25"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/acceptance-optimized-01/results.json",
+          "bytes": 47549,
+          "sha256": "48810747d17da158e37c800321bcdc462155a0a3f3647b69c3f0d59014b8b541"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-optimized-owner-verification-20261106.json",
+          "bytes": 1160,
+          "sha256": "9ea11623bebd7b04df4e64b03329b393abc25a57cbb6bd6509fb07cf1517e133"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-normal-actual-spec-review-20261106.json",
+          "bytes": 12936,
+          "sha256": "7191baca37296167d7400fa7f99b49e555dbb1312a82058b11383ae0a7f113a0"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-reference-envelope-01/reference-optimized-ticket-issued.json",
+          "bytes": 357421,
+          "sha256": "fcdfe465d01859d878e637dc0af30edb9ba2e8c3c161065c226a8007dbc4c5f8"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/supervisor-reference_optimized-01/receipt.json",
+          "bytes": 2270,
+          "sha256": "b568a7f523f53b931a145398511fdfff34f640bb01b286c5eb813b9f192cb5f1"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+          "bytes": 42487,
+          "sha256": "249d761a7b4e566c1ebd25d126df2ac3cc49e7c7dc129a919f6f179c423ee2d4"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/manifest.json",
+          "bytes": 594,
+          "sha256": "04c2a734546c09a071630915dad4416a6a74b1ea5e3e3893d7324782e6cce1a7"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/handoff.json",
+          "bytes": 2355,
+          "sha256": "544da3fac1919b9d7b1502365d5a6ba1eae3c8919b46169ac3b999c255c1b07e"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-source-bridge-owner-acceptance-20261106.json",
+          "bytes": 720,
+          "sha256": "f473f567f4dbaf600c4994ac7646e80ecceba885573b457ce85d75c02add619d"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/acceptance-normal-01/cases.jsonl",
+          "bytes": 361381,
+          "sha256": "5d3900fc0beb22d47c963f148c0fcb3ba6d3d6af690ee92ef340c126fa95ddb6"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/acceptance-optimized-01/cases.jsonl",
+          "bytes": 361381,
+          "sha256": "5d3900fc0beb22d47c963f148c0fcb3ba6d3d6af690ee92ef340c126fa95ddb6"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm028-exact-reference-implementation-20261105-revision01/reference.py",
+          "bytes": 23333,
+          "sha256": "945d0935f682eb539c6c6bc5f97942e4c76b616e9e70757305f8ce7919681e02"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-reference-extension-plan-01/manifest.json",
+          "bytes": 578,
+          "sha256": "3b783f3e2c30466defc131c46dbf7d3b15cd85e438a05af8abd3220b0853a5e6"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-reference-extension-plan-01/README.md",
+          "bytes": 7540,
+          "sha256": "0edc4630b2faf657027d8d7f5838dfea149b0978fc2db8dae24f42fc21de954a"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-reference-extension-plan-01/plan.json",
+          "bytes": 21688,
+          "sha256": "ea44a90864a312f3c041b54296c153332df0069fefab05b1960c995670350009"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-extension-plan-owner-20261106.json",
+          "bytes": 874,
+          "sha256": "00b3f4e10b04174459fc106cf5d772c8aefb71e503161326c290ba945cdad45f"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/extension.py",
+          "bytes": 9136,
+          "sha256": "e2c1d4d3e8a4c5060c9725d05d456fd1277788ef2165623b129a7755a1b08574"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/test_extension.py",
+          "bytes": 4812,
+          "sha256": "0230b5ea07db3b75d1495b8465fa7a627e68a879dffd81ed25d26930d22c9e10"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/fixtures.json",
+          "bytes": 1646,
+          "sha256": "5507fefb8bb02b069b55288b23cd0566f2af4fbbc983c6350fdadc001f6eb40f"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/bindings.json",
+          "bytes": 3587,
+          "sha256": "ddba0eec11a91b0df885297b6e0cac3aa69c880d95037a7ca56f5212edb310f0"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/README.md",
+          "bytes": 4577,
+          "sha256": "f2a6348aca580e5ffdc54d036f69fe234ac8f1575ad512cc4c59d0a427eba3bc"
+        },
+        {
+          "path": "F:/src/libqalculate/.tools/python31210/tools/python.exe",
+          "bytes": 104952,
+          "sha256": "4d6f5f81a4bca11191c4c7c6b43632694d0a4ce74e068619d8fdc161d469859a"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/manifest.json",
+          "bytes": 1213,
+          "sha256": "2bc992ec78c94c775d4b28039990500c7fe530f2e7b8faf6429730886b03c79e"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/handoff.json",
+          "bytes": 3969,
+          "sha256": "1205b4b069c8495371634a83df31ecd8d4b99910b9856e9aeb5ead12428ecd99"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/invocation-proposal.json",
+          "bytes": 2388,
+          "sha256": "cd56cd28675ff2a41b03a901a2af73559cff5a933d4ffa8ab46697d18983ffeb"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01-standards-review.json",
+          "bytes": 11621,
+          "sha256": "14322cf9d19d1e61ee822d1dcd052216024218b2027fa7eefe778e33f9b00ccd"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01-spec-review.json",
+          "bytes": 7878,
+          "sha256": "a86738be830daa93359641b30619f6bdad498a3b99c211ad5642e3dbc19bb248"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-cohort-20261106-revision02/manifest.json",
+          "bytes": 4597,
+          "sha256": "86753198d0f0def8df96b2079c354a5c1f7ac642b8b452e6882207ffdef8cf7b"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-cohort-20261106-revision02/finalstandards-review.json",
+          "bytes": 6193,
+          "sha256": "10ed569c1535aac5f30c2c24476ecbe2396b904e90e27b630eec509b61c4cab4"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-cohort-20261106-revision02/finalspec-review.json",
+          "bytes": 5026,
+          "sha256": "1b6be107d0ddbaf56d8cb0f4122ade2a3f003d5239260158dd64e89b834464b0"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-acceptance-owner-20261106.json",
+          "bytes": 1506,
+          "sha256": "92ed64fb3ad1bfc031ff11c5a2b5d55c1dd2e40e9091edc12d34fb975a98dde3"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-cohort-20261106-revision02/supervisor.py",
+          "bytes": 31997,
+          "sha256": "5f169be451edbe0ddaf6286dfc27c9d610102ec8ffd009a39e4a8a057ecc4619"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/unit-normal.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/unit-normal.stderr",
+          "bytes": 1453,
+          "sha256": "d66e1b4b71ddcc51bcbde27aff97e8466ba1230f011acd366915bb40f4186a73"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/unit-optimized.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/unit-optimized.stderr",
+          "bytes": 1453,
+          "sha256": "ddbe56a6b5d6ba3e12f02008deb0b0eb1cca309a4cdcf0ff78c385ef3ae3369e"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-reference-envelope-01-standards-review.json",
+          "bytes": 5056,
+          "sha256": "9011b4d9384e3fda2d12170335857bdb61c56dd182705ab4291d24d74b96f958"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-reference-envelope-01-spec-review.json",
+          "bytes": 4884,
+          "sha256": "13de66dfc113298249b1213f3ca30ff1966073720d2009db1c805cb7d449d70d"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/supervisor-reference_normal-01/stdout.bin",
+          "bytes": 153,
+          "sha256": "c75ab8e503d70efc2f48e1f7a38f88093a9c0d42b74e7bbacfa67f3ad7c0f8e6"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/supervisor-reference_normal-01/stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/supervisor-reference_normal-01/receipt.json",
+          "bytes": 2247,
+          "sha256": "cabed2fb713f30950166fa5b2f1503d3b261235bf648fadb5ef45c9c5b9635af"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/supervisor-reference_optimized-01/stdout.bin",
+          "bytes": 153,
+          "sha256": "1dacf47afb1dbe5ef0274391973870131839fd325439bd2a30f13045df2ab1f6"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-exact-extension-01/supervisor-reference_optimized-01/stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-pair-owner-acceptance-20261106.json",
+          "bytes": 1945,
+          "sha256": "6f5a733e892d91b33faf1086af7f8acc0493be065736d5e95b1b4c1d49ba9d66"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-pair-final-standards-review-20261106.json",
+            "bytes": 2828,
+            "sha256": "042289262fec84cb21e547a97487bafc39c094612c5fee263317637d36e75ac0"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite actual reference pair"
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-pair-final-spec-review-20261106.json",
+            "bytes": 14203,
+            "sha256": "54abb440b580dca1728e3dfd6f9eb2030cd42c233402b35b2f9bb854269a6847"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite actual reference pair"
+        }
+      },
+      "owner_acceptance": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-reference-pair-owner-acceptance-20261106.json",
+        "bytes": 1945,
+        "sha256": "6f5a733e892d91b33faf1086af7f8acc0493be065736d5e95b1b4c1d49ba9d66"
+      },
+      "reference_scope": {
+        "cases": 2,
+        "negative_controls": 5,
+        "modes": [
+          "normal",
+          "optimized"
+        ],
+        "all_case_data_equal": true,
+        "whole_notebook_accepted": false,
+        "released": false
+      },
+      "terminal_limit": "Saved complete owned-process receipt; no terminal tool exit asserted for unavailable87988. Optimized terminal14327/c4f15e exit0 retained."
     }
   ],
   "candidate": {
@@ -422,7 +705,11 @@
       "Original source execution, transpilation, reviewed numeric tolerances and raw state/count capture",
       "Lifecycle/error acceptance and provider/account/hardware requirements",
       "Placeholder exercises and media/Markdown/TeX/MDX interpretation",
-      "QFT16 state14, phase1/3 and Grover reference coverage"
+      "IBM117 Grover actual reference acceptance; IBM118 certified numerical conversion and original SDK/index/layout/state/count comparisons"
+    ],
+    "accepted_exact_reference_extension": [
+      "QFT16 state14",
+      "PE3 theta1/3"
     ]
   },
   "historical_fixed_base_status": {
@@ -455,5 +742,6 @@
       "whole_notebook_complete": false,
       "checkbox_promotion": false
     }
-  }
+  },
+  "reference_reconciliation_base": "7f539b8628fc6bcb05c6dbdc721bfec8f9fda2d7"
 }
