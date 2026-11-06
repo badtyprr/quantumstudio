@@ -1,0 +1,107 @@
+{
+  "scope": "Unchanged original6SVG rasterization only; not interpretation or calculator execution",
+  "acquisition_manifest_sha256": "0dd8a62ad176057577dfef7c6cfe7d9057a8137abd60032353c728d16d6572b2",
+  "source_notebook_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "renderer": "sharp 0.35.5",
+  "renderer_versions": {
+    "aom": "3.15.1",
+    "archive": "3.8.9",
+    "cairo": "1.18.6",
+    "cgif": "0.5.4",
+    "exif": "0.6.26",
+    "expat": "2.8.5",
+    "ffi": "3.8.0",
+    "fontconfig": "2.18.3",
+    "freetype": "2.14.3",
+    "fribidi": "1.0.17",
+    "glib": "2.90.0",
+    "harfbuzz": "14.5.0",
+    "heif": "1.23.5",
+    "highway": "1.4.0",
+    "imagequant": "2.4.1",
+    "lcms": "2.19.1",
+    "mozjpeg": "0826579",
+    "pango": "1.58.2",
+    "pixman": "0.46.4",
+    "png": "1.6.58",
+    "proxy-libintl": "0.5",
+    "rsvg": "2.63.2",
+    "tiff": "4.7.2",
+    "uhdr": "2.0.2",
+    "vips": "8.18.7",
+    "webp": "1.6.0",
+    "xml2": "2.15.4",
+    "zlib-ng": "2.3.3",
+    "sharp": "0.35.5"
+  },
+  "argv": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\render.cjs"
+  ],
+  "resource_policy": "Reject script/foreignObject/event handlers/DOCTYPE/ENTITY/CSSimports and all nonfragment href/src/url resources before rendering SVG buffers; no SVG scripting engine invoked",
+  "method": "180dpi white background, no SVG alterations",
+  "script_sha256": "cb5a69143bbcc09f642d8a263735c99630d5a7eb1eec8e59cf788e79d3bd410b",
+  "records": [
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm024-svg-acquisition-20261105\\assets\\standard-computation.svg",
+      "source_sha256": "9e5ebec265e9dff30cb00a80a56b66daff3cf7b08221863fc4da60894fcd9cc0",
+      "git_blob": "5f6595018aa55daeb1f4539923716caf2bc25599",
+      "original_bytes": 12088,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\standard-computation.png",
+      "output_sha256": "8ebeb42b35d14b3b279316fcc7c24ce581bb698d0e054774f3aeb852695abb21",
+      "width": 1178,
+      "height": 329
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm024-svg-acquisition-20261105\\assets\\deferred-measurement.svg",
+      "source_sha256": "83df1b30d9aeb6926942716db1ce1c1e37bcf0f07814178f98b8496cb5255fa3",
+      "git_blob": "65d71857b9269299ae958641c3cdd9b169d8a4f1",
+      "original_bytes": 9234,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\deferred-measurement.png",
+      "output_sha256": "075a432cdb6062e8bf10c7d8b3a75014be5ccf91331814db700f430a56a12868",
+      "width": 1141,
+      "height": 367
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm024-svg-acquisition-20261105\\assets\\Boolean-circuit-XOR.svg",
+      "source_sha256": "514e2a7827b87c79b0cd2585fd452c7ab6660c46b48e03cbf702f9189792c3f8",
+      "git_blob": "9fbc3dfcf262e8f24877dfa2c60c736b48dea7b5",
+      "original_bytes": 8308,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\Boolean-circuit-XOR.png",
+      "output_sha256": "ecf72578aec58b2e532c337c7b139f75d6d0d3e055312746d6af70760f46c603",
+      "width": 1142,
+      "height": 561
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm024-svg-acquisition-20261105\\assets\\half-adder.svg",
+      "source_sha256": "bd2a73833fd8238d633634bcb56cac1e26f83e9408c1e55f8d13e5d38d1d9478",
+      "git_blob": "7f4a2c780c87d1a358ecf7a12b4027d1373e3380",
+      "original_bytes": 11500,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\half-adder.png",
+      "output_sha256": "4927050eb8b5a42fcf82f58d73904c348d86cbe7bf4c50fd5a099374e816bd04",
+      "width": 901,
+      "height": 767
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm024-svg-acquisition-20261105\\assets\\full-adder.svg",
+      "source_sha256": "16b9d6b3d7a8780f7e0de0e76ca2ee0982abb61d2d73e27705efa2d75f37fedf",
+      "git_blob": "99ff5aefc549317e3963e334ab2eb48c2f0d8803",
+      "original_bytes": 17712,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\full-adder.png",
+      "output_sha256": "8061fee128ee9618cbafdfe2b18d99bcd80ec0ca15cb33d3eace1ce55ca8c2da",
+      "width": 1196,
+      "height": 705
+    },
+    {
+      "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm024-svg-acquisition-20261105\\assets\\addition-circuit.svg",
+      "source_sha256": "69d87124345de80b93bd4cb18050a9ee764341ed8447b81f36b3d71f1926364b",
+      "git_blob": "345a801a52c411fb61b8364beb314e0fcc925b36",
+      "original_bytes": 22588,
+      "output": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm024-figure-audit\\addition-circuit.png",
+      "output_sha256": "3b3492148e4cf1861026a13940aa8223e96be480a8ce35d43e5ea4ba61d28e22",
+      "width": 1228,
+      "height": 772
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "scope": "Acquisition locators only; no media downloaded or interpreted",
+  "revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "tree_sha256": "abb0dacd10941727b29780f1b10834a7153e05625f7b655d1785757dfbf983a3",
+  "records": [
+    {
+      "source_occurrence": {
+        "id": "IBM024-c0-images-001",
+        "cell_index": 0,
+        "cell_id": "5c5b90e6",
+        "start": 674,
+        "end": 834,
+        "original": "![Illustration of a standard computation.](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/standard-computation.svg)",
+        "sha256": "46424b8277737b0d5b63afb05bc58901204ec659144a3399ffbe08cd5eca9b6e",
+        "status": "unverified source occurrence; no native/SDK/media acceptance",
+        "classification": "external SVG dependency; not fetched or visually inspected"
+      },
+      "repository_path": "public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/standard-computation.svg",
+      "git_blob": "5f6595018aa55daeb1f4539923716caf2bc25599",
+      "bytes": 12088,
+      "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/standard-computation.svg"
+    },
+    {
+      "source_occurrence": {
+        "id": "IBM024-c0-images-002",
+        "cell_index": 0,
+        "cell_id": "5c5b90e6",
+        "start": 10778,
+        "end": 10921,
+        "original": "![Deferring measurements](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/deferred-measurement.svg)",
+        "sha256": "66d25bc59b13beb421770430803476be993a20f618648f365b1a9880a497cb92",
+        "status": "unverified source occurrence; no native/SDK/media acceptance",
+        "classification": "external SVG dependency; not fetched or visually inspected"
+      },
+      "repository_path": "public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/deferred-measurement.svg",
+      "git_blob": "65d71857b9269299ae958641c3cdd9b169d8a4f1",
+      "bytes": 9234,
+      "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/deferred-measurement.svg"
+    },
+    {
+      "source_occurrence": {
+        "id": "IBM024-c0-images-003",
+        "cell_index": 0,
+        "cell_id": "5c5b90e6",
+        "start": 12303,
+        "end": 12446,
+        "original": "![Boolean circuit for XOR](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Boolean-circuit-XOR.svg)",
+        "sha256": "7e1c5b0f7056c0901b64356b6bdc7780f15d13a3832568bb94ac3c060547ca09",
+        "status": "unverified source occurrence; no native/SDK/media acceptance",
+        "classification": "external SVG dependency; not fetched or visually inspected"
+      },
+      "repository_path": "public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Boolean-circuit-XOR.svg",
+      "git_blob": "9fbc3dfcf262e8f24877dfa2c60c736b48dea7b5",
+      "bytes": 8308,
+      "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Boolean-circuit-XOR.svg"
+    },
+    {
+      "source_occurrence": {
+        "id": "IBM024-c0-images-004",
+        "cell_index": 0,
+        "cell_id": "5c5b90e6",
+        "start": 19266,
+        "end": 19389,
+        "original": "![A half-adder](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/half-adder.svg)",
+        "sha256": "131eebdb83284f7cc60234a7d7001c8ff20eb6faea1082520119c044913486ba",
+        "status": "unverified source occurrence; no native/SDK/media acceptance",
+        "classification": "external SVG dependency; not fetched or visually inspected"
+      },
+      "repository_path": "public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/half-adder.svg",
+      "git_blob": "7f4a2c780c87d1a358ecf7a12b4027d1373e3380",
+      "bytes": 11500,
+      "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/half-adder.svg"
+    },
+    {
+      "source_occurrence": {
+        "id": "IBM024-c0-images-005",
+        "cell_index": 0,
+        "cell_id": "5c5b90e6",
+        "start": 20006,
+        "end": 20129,
+        "original": "![A full-adder](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/full-adder.svg)",
+        "sha256": "b9416e5fbe214bc42f3dd823be7a7dadf43858615373c65c9b2201a1c0178fb0",
+        "status": "unverified source occurrence; no native/SDK/media acceptance",
+        "classification": "external SVG dependency; not fetched or visually inspected"
+      },
+      "repository_path": "public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/full-adder.svg",
+      "git_blob": "99ff5aefc549317e3963e334ab2eb48c2f0d8803",
+      "bytes": 17712,
+      "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/full-adder.svg"
+    },
+    {
+      "source_occurrence": {
+        "id": "IBM024-c0-images-006",
+        "cell_index": 0,
+        "cell_id": "5c5b90e6",
+        "start": 20439,
+        "end": 20600,
+        "original": "![A circuit for addition of two 4-bit integers](/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/addition-circuit.svg)",
+        "sha256": "2301d8a47a4d22cc8f0c59941adda0c00563ffb7fea7a9740724c9bee5c3b9e5",
+        "status": "unverified source occurrence; no native/SDK/media acceptance",
+        "classification": "external SVG dependency; not fetched or visually inspected"
+      },
+      "repository_path": "public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/addition-circuit.svg",
+      "git_blob": "345a801a52c411fb61b8364beb314e0fcc925b36",
+      "bytes": 22588,
+      "raw_url": "https://raw.githubusercontent.com/Qiskit/documentation/a500b17f8b1f156a6bba42ab11f90f3104cad6d4/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/addition-circuit.svg"
+    }
+  ]
+}
