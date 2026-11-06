@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-11-04. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-11-05. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -24,7 +24,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-10](#dev-10) | P2 | L | Released in REL-26 | DEV-05 | Symbolic domains, sets and indexed families |
 | [DEV-11](#dev-11) | P2 | L | Partial | DEV-04 | Error-correction lesson operations |
 | [DEV-12](#dev-12) | P2 | L | Partial | DEV-04 | Variational and numerical operator coverage |
-| [DEV-13](#dev-13) | P2 | L | Discovery needed | AUD-02 | Python/SDK notebook execution route |
+| [DEV-13](#dev-13) | P2 | L | Partial prerequisites; runtime acceptance open | AUD-02 | Python/SDK notebook execution route |
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
@@ -50,6 +50,7 @@ The release ledger and all 188 whole-source checkboxes remain unchanged.
 | DEV-05 tensor and DEV-11 XOR | [PR437](https://github.com/badtyprr/quantumstudio/pull/437), `ec2610d7`; [PR438](https://github.com/badtyprr/quantumstudio/pull/438), `577dbb657`. Fresh Windows source577db: 81 passed/one existing skip; notation589, tensor253, complement108 and direct vector577 pass. Fresh Linux82/82 pass | Combined rehearsal, GUI/session and release acceptance; finite M24 and vector checks certify no whole source |
 | DEV-11 decoder and DEV-12 composition | [PR441](https://github.com/badtyprr/quantumstudio/pull/441), `fdf434bb6`; [PR439](https://github.com/badtyprr/quantumstudio/pull/439), `e2854eebc`. Fresh577db replay: decoder128 inputs/513 checks and copies; composition seven cases/nine policy checks/90 stages and copies | Authored witnesses and projected residuals remain distinct from original-source operations; no arbitrary-error, full-source, GUI or release acceptance |
 | DEV-13 and Linux prerequisites | [PR448](https://github.com/badtyprr/quantumstudio/pull/448): fourteen authored Linux lifecycle cases. [PR454](https://github.com/badtyprr/quantumstudio/pull/454), harness `15be0961a`, product `2446814032`: corrected run41890346235 independently verifies 37 unchanged original IBM019/020 cells, 16 code completions, exact 54-package environment, five inspected rich images and owned cleanup. Complete 214-file artifact/213-record manifest verified | The earlier hidden-file upload omission is preserved and corrected by the new run. Full Markdown rendering/interpretation, historical media equivalence, application integration and other framework acceptance remain separate |
+| DEV-13 runtime ownership | Rehearsal `9d001ca74`: creation-time Windows launcher ownership and the exact 41-file runtime inventory passed independent source/integration reviews; 53 injected-API tests passed normally and with optimized Python. Rehearsal `88f58b912` binds the unchanged 23-case Linux regression to those source bytes | Native Windows ownership, current-source Linux execution and remaining lifecycle/legacy cases are pending. The manual Linux workflow requires default-branch availability under the release-first merge order. Historical `7c75fa2da` timing acceptance does not transfer to these changed bytes; no master merge or release is credited |
 | DEV-13 selected Cirq | [PR459](https://github.com/badtyprr/quantumstudio/pull/459), `2ece476d9`: six unchanged selected QB007 functions, all 33 dispositions, five 8192-shot cases, full 16-amplitude states, sixteen energies and ordering controls passed. Independent runtime reviews verify 124 frozen artifacts and prior full-route regressions; selected cancellation fixtures preserve partial scope | Fifteen code cells remain excluded and twelve Markdown cells accounted for. Original 5x5/GPU/timing and whole QB007 remain open. Forced cancellation lacks final running-cell stdout, so no independently captured descendant PID is claimed |
 | DEV-13 selected Braket | [PR460](https://github.com/badtyprr/quantumstudio/pull/460), `a24352a11`: one unchanged QB027 construction cell/all ten dispositions, 18 full-state checks, 17 sampling executions/6144 shots, fourteen authored DJ/BV cases and three expected API errors passed; final runtime reviews verify 46 artifacts | Local execution and algorithms are authored witnesses. SDK-internal OpenQASM serialization and unseeded sampling are disclosed; original AWS/provider work, hardware and whole QB027 remain open |
 | DEV-15 selected Pulser | [PR462](https://github.com/badtyprr/quantumstudio/pull/462), `25f6c825e`: unchanged QB030 construction cell/all ten dispositions, serialization, ten fixed solver runs/seventy Hamiltonian comparisons and expected amplitude rejection passed. Final runtime reviews verify 54 artifacts and the actual figure | Modelled drawing modulation overlay is separate from unmodulated simulation. Noise/modulation execution, hardware/provider and whole QB030 remain open; no tolerance/device changes or retries were used |
@@ -238,7 +239,7 @@ separate. Finite adaptations never certify complete lessons or notebooks.
 
 ### DEV-13
 
-- [ ] **Python/SDK notebook execution route** — P2; Discovery needed; size L; dependencies: AUD-02.
+- [ ] **Python/SDK notebook execution route** — P2; Partial prerequisites; runtime acceptance open; size L; dependencies: AUD-02.
 - Source focus: qBraid SDK, algorithms and IBM code examples. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Specify and implement a reproducible notebook/program import or execution route for each required framework. Distinguish direct execution from manual QASM adaptation. Pin dependencies and test equivalent states, counts and errors.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
