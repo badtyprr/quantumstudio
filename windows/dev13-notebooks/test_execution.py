@@ -819,7 +819,7 @@ class LifecycleTests(unittest.TestCase):
 
     def test_assignment_failure_never_starts_kernel(self):
         config = self.fixture(['42'])
-        with patch.object(execution._WindowsJob, "assign", side_effect=OSError("assignment test")):
+        with patch.object(execution, "_launch_engine", side_effect=OSError("assignment test")):
             with self.assertRaisesRegex(OSError, "assignment test"):
                 execution._supervise(self.output, config)
         self.assertFalse((self.output / "kernel.json").exists())
@@ -827,7 +827,7 @@ class LifecycleTests(unittest.TestCase):
 
     def cleanup_failure(self, error):
         config = self.fixture(['42'])
-        with patch.object(execution._WindowsJob, 'assign', side_effect=OSError('assignment test')), \
+        with patch.object(execution, '_launch_engine', side_effect=OSError('assignment test')), \
                 patch.object(execution._WindowsJob, 'terminate', side_effect=error):
             with self.assertRaisesRegex(OSError, 'assignment test'):
                 execution._supervise(self.output, config)
@@ -863,11 +863,8 @@ class LifecycleTests(unittest.TestCase):
         process = None
         try:
             with (self.output / 'engine.stdout').open('w') as stdout, (self.output / 'engine.stderr').open('w') as stderr:
-                process = subprocess.Popen([sys.executable, '-I', str(Path(execution.__file__).resolve()),
-                                            '--engine', str(self.output)], stdin=subprocess.PIPE,
-                                           stdout=stdout, stderr=stderr, text=True,
-                                           creationflags=subprocess.CREATE_NO_WINDOW)
-                job.assign(process)
+                process = execution._launch_engine(job, [sys.executable, '-I',
+                    str(Path(execution.__file__).resolve()), '--engine', str(self.output)], stdout, stderr)
                 if started:
                     process.stdin.write('start\n')
                     process.stdin.flush()
@@ -896,7 +893,11 @@ class LifecycleTests(unittest.TestCase):
             job.terminate()
             if process is not None:
                 process.wait(timeout=10)
-            job.close()
+            try:
+                if process is not None:
+                    process.close()
+            finally:
+                job.close()
 
     def test_control_eof_before_gate_never_starts_kernel(self):
         self.control_eof(False)
@@ -922,6 +923,205 @@ class LifecycleTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             execution.execute(dict(output=self.output))
         self.assertEqual(marker.read_bytes(), b"original")
+
+
+class WindowsLaunchTests(unittest.TestCase):
+    """Injected caller checks only; no interpreter, SDK or Win32 call runs."""
+    def fixture(self):
+        import io
+        from unittest.mock import Mock
+        temporary = tempfile.TemporaryDirectory(prefix='owned-launch-unit-')
+        self.addCleanup(temporary.cleanup)
+        output = Path(temporary.name)
+        (output / 'source-original.ipynb').write_text('{"cells": []}', encoding='utf-8')
+        (output / 'engine-result.json').write_text('{"state":"succeeded"}', encoding='utf-8')
+        (output / 'kernel.json').write_text('{"pid": 123}', encoding='utf-8')
+        process = Mock(pid=42, returncode=0, stdin=io.StringIO(),
+                       identity={'launcher_pid': 42, 'specific_job_member': True})
+        process.poll.side_effect = [None, 0]
+        process.wait.return_value = 0
+        job = Mock(handle=99)
+        job.command.side_effect = lambda command: command
+        job.active.return_value = 0
+        job.contains.return_value = True
+        config = dict(python='C:/Profile Ω/python.exe', identity={}, contract_sha256='fixture',
+                      profile={'cancel_grace_seconds': 1},
+                      contract={'id': 'fixture', 'source': {'sha256': 'fixture'}})
+        return output, config, process, job
+
+    def test_windows_dispatch_uses_owned_launch_and_never_assigns(self):
+        import windows_lifecycle
+        output, config, process, job = self.fixture()
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(windows_lifecycle, 'launch_owned', return_value=process) as launch, \
+                patch.object(execution.subprocess, 'Popen', side_effect=AssertionError('NO_POPEN')), \
+                patch.object(execution.time, 'sleep'):
+            result = execution._supervise(output, config)
+        self.assertEqual(result['state'], 'succeeded')
+        self.assertIsNone(result['engine_pid'])
+        self.assertEqual(result['launcher_pid'], 42)
+        self.assertEqual(result['cleanup']['launcher_exit'], 0)
+        self.assertIsNone(result['cleanup']['engine_exit'])
+        self.assertEqual(launch.call_args.args[0][0], config['python'])
+        self.assertEqual(launch.call_args.kwargs['job_handle'], 99)
+        job.assign.assert_not_called()
+        process.close.assert_called_once()
+        job.close.assert_called_once()
+
+    def test_constructor_failure_still_terminates_observes_and_closes_job(self):
+        output, config, process, job = self.fixture()
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(execution, '_launch_engine', side_effect=OSError('constructor primary')):
+            with self.assertRaisesRegex(OSError, 'constructor primary'):
+                execution._supervise(output, config)
+        job.terminate.assert_called_once()
+        job.active.assert_called()
+        job.close.assert_called_once()
+        process.close.assert_not_called()
+
+    def test_broken_start_pipe_preserves_primary_and_closes_both_owners(self):
+        from unittest.mock import Mock
+        output, config, process, job = self.fixture()
+        process.stdin = Mock(closed=False)
+        process.stdin.write.side_effect = BrokenPipeError('gate primary')
+        process.close.side_effect = OSError('close secondary')
+        job.terminate.side_effect = OSError('terminate secondary')
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(execution, '_launch_engine', return_value=process):
+            with self.assertRaisesRegex(BrokenPipeError, 'gate primary'):
+                execution._supervise(output, config)
+        job.close.assert_called_once()
+        process.close.assert_called_once()
+        result = json.loads((output / 'status.json').read_bytes())
+        self.assertTrue(result['cleanup']['unconfirmed'])
+        self.assertIn('close_owned_process', [e['step'] for e in result['cleanup']['errors']])
+
+    def test_publication_failure_cannot_skip_owned_handle_cleanup(self):
+        output, config, process, job = self.fixture()
+        def events(status):
+            if status['state'] != 'starting':
+                raise OSError('publication primary')
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(execution, '_launch_engine', return_value=process):
+            with self.assertRaisesRegex(OSError, 'publication primary'):
+                execution._supervise(output, config, events)
+        process.close.assert_called_once()
+        job.close.assert_called_once()
+
+    def test_cleanup_baseexceptions_never_replace_original_failure(self):
+        from unittest.mock import Mock
+        for step in ('terminate', 'poll', 'wait', 'population'):
+            with self.subTest(step=step):
+                output, config, process, job = self.fixture()
+                primary = OSError('original gate failure')
+                process.stdin = Mock(closed=False)
+                process.stdin.write.side_effect = primary
+                target = {'terminate': job.terminate, 'poll': process.poll,
+                          'wait': process.wait, 'population': job.active}[step]
+                target.side_effect = KeyboardInterrupt('cleanup interruption')
+                with patch.object(execution.sys, 'platform', 'win32'), \
+                        patch.object(execution, '_WindowsJob', return_value=job), \
+                        patch.object(execution, '_launch_engine', return_value=process):
+                    with self.assertRaises(OSError) as caught:
+                        execution._supervise(output, config)
+                self.assertIs(caught.exception, primary)
+                process.wait.assert_called_once()
+                job.active.assert_called()
+                process.close.assert_called_once()
+                job.close.assert_called_once()
+                status = json.loads((output / 'status.json').read_bytes())
+                self.assertTrue(status['cleanup']['unconfirmed'])
+
+    def test_constructor_primary_survives_cleanup_and_publication_baseexceptions(self):
+        output, config, process, job = self.fixture()
+        primary = OSError('original constructor failure')
+        job.terminate.side_effect = KeyboardInterrupt('secondary terminate')
+        def events(status):
+            if status['state'] == 'failed':
+                raise SystemExit('secondary publication')
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(execution, '_launch_engine', side_effect=primary):
+            with self.assertRaises(OSError) as caught:
+                execution._supervise(output, config, events)
+        self.assertIs(caught.exception, primary)
+        job.active.assert_called_once()
+        job.close.assert_called_once()
+
+    def test_close_failure_revokes_success_after_independent_job_close(self):
+        output, config, process, job = self.fixture()
+        process.close.side_effect = OSError('close failed')
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(execution, '_launch_engine', return_value=process), \
+                patch.object(execution.time, 'sleep'):
+            result = execution._supervise(output, config)
+        self.assertEqual(result['state'], 'failed')
+        self.assertTrue(result['cleanup']['unconfirmed'])
+        job.close.assert_called_once()
+
+    def test_linux_launch_retains_existing_popen_arguments(self):
+        from unittest.mock import Mock
+        job, stdout, stderr = Mock(), Mock(), Mock()
+        with patch.object(execution.sys, 'platform', 'linux'), \
+                patch.object(execution.subprocess, 'Popen') as popen:
+            process = execution._launch_engine(job, ['systemd-run', 'command'], stdout, stderr)
+        self.assertIs(process, popen.return_value)
+        popen.assert_called_once_with(['systemd-run', 'command'], stdin=subprocess.PIPE,
+                stdout=stdout, stderr=stderr, text=True, close_fds=True, creationflags=0)
+        job.assign.assert_not_called()  # Supervisor still owns the assign/cleanup order.
+
+    def test_linux_supervisor_still_assigns_before_gate_and_never_closes_owned_adapter(self):
+        from unittest.mock import Mock
+        import types
+        output, config, process, job = self.fixture()
+        config['profile']['service_runtime_seconds'] = 100
+        job.engine_pid, job.client_pid = 123, 456
+        job.client_exited.return_value = False
+        job.observe.return_value = {'LoadState': 'loaded', 'Result': 'success'}
+        order = []
+        job.assign.side_effect = lambda p: order.append('assign')
+        process.stdin = Mock(closed=False)
+        process.stdin.write.side_effect = lambda text: order.append(text)
+        module = types.SimpleNamespace(LinuxService=Mock(return_value=job))
+        with patch.dict(sys.modules, {'linux_lifecycle': module}), \
+                patch.object(execution.sys, 'platform', 'linux'), \
+                patch.object(execution, '_launch_engine', return_value=process), \
+                patch.object(execution.time, 'sleep'):
+            result = execution._supervise(output, config)
+        self.assertEqual(order[:2], ['assign', 'start\n'])
+        self.assertEqual(result['engine_pid'], 123)
+        self.assertEqual(result['client_pid'], 456)
+        self.assertEqual(result['cleanup']['containment'], 'systemd_service')
+        process.close.assert_not_called()
+
+    def test_metadata_launches_share_canonical_lock_and_linux_does_not(self):
+        import windows_lifecycle
+        from contextlib import contextmanager
+        entered = []
+        @contextmanager
+        def lock():
+            entered.append('locked')
+            yield
+            entered.append('released')
+        def run(*args, **kwargs):
+            entered.append('run')
+            return 'result'
+        with patch.object(windows_lifecycle, 'launch_lock', lock), \
+                patch.object(execution.subprocess, 'run', side_effect=run), \
+                patch.object(execution.sys, 'platform', 'win32'):
+            self.assertEqual(execution._supervisor_run(['p'], timeout=1), 'result')
+        self.assertEqual(entered, ['locked', 'run', 'released'])
+        entered.clear()
+        with patch.object(windows_lifecycle, 'launch_lock', side_effect=AssertionError('LINUX_LOCK')), \
+                patch.object(execution.subprocess, 'run', side_effect=run), \
+                patch.object(execution.sys, 'platform', 'linux'):
+            execution._supervisor_run(['p'], timeout=1)
+        self.assertEqual(entered, ['run'])
 
 
 if __name__ == "__main__":

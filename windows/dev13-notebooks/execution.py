@@ -132,12 +132,31 @@ def _installed_distribution_versions(rows):
     return packages
 
 
+def _supervisor_run(*args, **kwargs):
+    # All four metadata/install launches cooperate with the engine launcher.
+    # No third-party SDK runs in this dedicated supervisor process.
+    if sys.platform == 'win32':
+        from windows_lifecycle import launch_lock
+        with launch_lock():
+            return subprocess.run(*args, **kwargs)
+    return subprocess.run(*args, **kwargs)
+
+
+def _launch_engine(job, command, stdout, stderr):
+    if sys.platform == 'win32':
+        from windows_lifecycle import launch_owned
+        return launch_owned(command, job_handle=job.handle, stdout=stdout, stderr=stderr)
+    process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=stdout,
+                               stderr=stderr, text=True, close_fds=True, creationflags=0)
+    return process
+
+
 def inspect_environment(python, profile, dependencies=True):
     code = ("import json,sys,platform,importlib.metadata as m; "
             "print(json.dumps(dict(python=platform.python_version(),platform=sys.platform,"
             "architecture=platform.architecture()[0],executable=sys.executable,"
             "packages=[[d.metadata['Name'],d.version] for d in m.distributions()])))")
-    result = subprocess.run([str(python), "-I", "-c", code], capture_output=True, text=True, timeout=30, check=True)
+    result = _supervisor_run([str(python), "-I", "-c", code], capture_output=True, text=True, timeout=30, check=True)
     identity = json.loads(result.stdout)
     identity["packages"] = _installed_distribution_versions(identity["packages"])
     for key in ("python", "platform", "architecture"):
@@ -150,7 +169,7 @@ def inspect_environment(python, profile, dependencies=True):
                 raise ValueError("DEPENDENCY_MISMATCH: " + name)
         if profile.get("exact_packages") and identity["packages"] != expected:
             raise ValueError("DEPENDENCY_INVENTORY_MISMATCH")
-        subprocess.run([str(python), "-I", "-m", "pip", "check"], capture_output=True, text=True, timeout=30, check=True)
+        _supervisor_run([str(python), "-I", "-m", "pip", "check"], capture_output=True, text=True, timeout=30, check=True)
     return identity
 
 
@@ -164,9 +183,9 @@ def create_environment(profile_name, python, wheelhouse, destination):
               "wheels": {p.name: digest(p.read_bytes()) for p in sorted(wheelhouse.glob("*.whl"))}}
     try:
         with (destination / "install.log").open("w", encoding="utf-8") as log:
-            subprocess.run([str(python), "-I", "-m", "venv", str(destination)], stdout=log, stderr=log, check=True, timeout=120)
+            _supervisor_run([str(python), "-I", "-m", "venv", str(destination)], stdout=log, stderr=log, check=True, timeout=120)
             target = environment_python(destination, profile)
-            subprocess.run([str(target), "-I", "-m", "pip", "--isolated", "install", "--no-index", "--no-cache-dir",
+            _supervisor_run([str(target), "-I", "-m", "pip", "--isolated", "install", "--no-index", "--no-cache-dir",
                             "--find-links", str(wheelhouse), "--require-hashes", "-r", str(ROOT / profile["lock"])],
                            stdout=log, stderr=log, check=True, timeout=300)
         report["identity"] = inspect_environment(target, profile)
@@ -460,7 +479,6 @@ class _WindowsJob:
         signatures = {
             "CreateJobObjectW": ([ctypes.c_void_p, wintypes.LPCWSTR], wintypes.HANDLE),
             "SetInformationJobObject": ([wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD], wintypes.BOOL),
-            "AssignProcessToJobObject": ([wintypes.HANDLE, wintypes.HANDLE], wintypes.BOOL),
             "QueryInformationJobObject": ([wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD, ctypes.c_void_p], wintypes.BOOL),
             "TerminateJobObject": ([wintypes.HANDLE, wintypes.UINT], wintypes.BOOL),
             "OpenProcess": ([wintypes.DWORD, wintypes.BOOL, wintypes.DWORD], wintypes.HANDLE),
@@ -485,11 +503,6 @@ class _WindowsJob:
     def check(ok):
         if not ok:
             raise ctypes.WinError(ctypes.get_last_error())
-
-    def assign(self, process):
-        # Borrowed CPython Windows Popen handle; never close it here.
-        self.check(self.api.AssignProcessToJobObject(self.handle, int(process._handle)))
-        self.engine_pid = process.pid
 
     def command(self, command):
         return command
@@ -577,14 +590,16 @@ def _supervise(output, config, events=None):
     try:
         with (output / "engine.stdout").open("w", encoding="utf-8") as stdout, (output / "engine.stderr").open("w", encoding="utf-8") as stderr:
             command = job.command([config["python"], "-I", str(Path(__file__).resolve()), "--engine", str(output)])
-            process = subprocess.Popen(command,
-                                       stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, text=True,
-                                       close_fds=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0)
-            job.assign(process)
-            status["engine_pid"] = job.engine_pid
+            process = _launch_engine(job, command, stdout, stderr)
             status['launcher_pid'] = process.pid
             if sys.platform == 'linux':
+                job.assign(process)
+                status['engine_pid'] = job.engine_pid
                 status['client_pid'] = job.client_pid
+            else:
+                # A venv redirector PID is not proof of the eventual engine PID.
+                status['engine_pid'] = None
+                status['launcher_identity'] = process.identity
             process.stdin.write("start\n")
             process.stdin.flush()
             status["state"] = "running"
@@ -637,6 +652,8 @@ def _supervise(output, config, events=None):
             _recover_checkpoint_disposition(output, status)
         status["cleanup"] = dict(active_processes=remaining, kernel_job_membership=membership,
                                  method="forced" if forced else "graceful", engine_exit=process.returncode)
+        if sys.platform == 'win32':
+            status['cleanup'].update(launcher_exit=process.returncode, engine_exit=None)
         if sys.platform == 'linux':
             status['cleanup'].update(containment='systemd_service', population_semantics='zero or populated indicator',
                                      launcher_exit=process.returncode, engine_exit=None)
@@ -672,13 +689,15 @@ def _supervise(output, config, events=None):
         def attempt(label, operation):
             try:
                 return operation()
-            except Exception as cleanup_error:
+            except BaseException as cleanup_error:
                 cleanup_errors.append(dict(step=label, error=str(cleanup_error)))
 
-        if process is not None:
-            _close_control_pipe(process)
+        # Failed Windows construction may have created a process before returning.
+        if process is not None or sys.platform == 'win32':
             attempt('terminate_owned_containment', job.terminate)
-            if process.poll() is None:
+        if process is not None:
+            attempt('close_control_pipe', lambda: _close_control_pipe(process))
+            if attempt('observe_launcher', process.poll) is None:
                 if sys.platform == 'linux':
                     attempt('terminate_verified_client', job.stop_client)
                 else:
@@ -689,17 +708,30 @@ def _supervise(output, config, events=None):
             attempt('recover_checkpoints', lambda: _recover_checkpoint_disposition(output, status))
         status.update(state="failed", error=str(error), cleanup={"active_processes": remaining, "method": "exception",
                       'errors': cleanup_errors, 'unconfirmed': remaining is None or bool(remaining) or bool(cleanup_errors)})
-        publish()
+        attempt('publish_failure', publish)
         raise
     finally:
-        _close_control_pipe(process)
-        try:
-            job.close()
-        except Exception as error:
+        primary = sys.exception()
+        final_errors = []
+        def final_attempt(label, operation):
+            try:
+                operation()
+            except BaseException as error:
+                final_errors.append(dict(step=label, error=str(error)))
+        final_attempt('close_control_pipe', lambda: _close_control_pipe(process))
+        if sys.platform == 'win32' and process is not None:
+            final_attempt('close_owned_process', process.close)
+        final_attempt('close_containment', job.close)
+        if final_errors:
             status['state'] = 'failed'
             status.setdefault('cleanup', {})['unconfirmed'] = True
-            status['cleanup'].setdefault('errors', []).append(dict(step='close_containment', error=str(error)))
-            publish()
+            status['cleanup'].setdefault('errors', []).extend(final_errors)
+            try:
+                publish()
+            except BaseException as publication_error:
+                if primary is None:
+                    raise
+                primary.add_note('Final cleanup publication failed: ' + repr(publication_error))
 
 
 def _close_control_pipe(process):

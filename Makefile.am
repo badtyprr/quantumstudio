@@ -428,3 +428,5 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm024/source/media-locators.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm024/source/reference-results.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm024/source/reference.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm024/source/research.md
+EXTRA_DIST += windows/dev13-notebooks/windows_lifecycle.py
+EXTRA_DIST += windows/dev13-notebooks/test_windows_lifecycle.py
