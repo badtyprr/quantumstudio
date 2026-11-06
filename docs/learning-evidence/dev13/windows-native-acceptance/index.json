@@ -1,0 +1,790 @@
+{
+  "schema_version": 1,
+  "base_revision": "003ff1ac7a78ec72db5731ece56656dde1618738",
+  "product_revision": "9d001ca743d031f9cafb67476d025dd83daa84b7",
+  "runtime_manifest_sha256": "e568ee7837882160d4f73ed40f729dd42e1f7558005363cec95259aff467e234",
+  "accepted_cases": 12,
+  "actual_raw_files": 340,
+  "scope": "Finite host/cooperative-launch prerequisite only",
+  "external_notice": "Not self-contained; no actual payload trees copied; absolute external paths and raw manifests must remain available. Hash raw bytes without newline normalization.",
+  "case11": "AccessDenied WinError5 write denial; not INVALID_HANDLE identity proof",
+  "case12": "Null Job preflight OSError6; not CreateProcess failure",
+  "pending": [
+    "eight lifecycle cases",
+    "actual QB013 51-file runtime and notebook acceptance (composition implemented, reviewed and integrated at 003ff1ac7a78ec72db5731ece56656dde1618738; 9d001ca74 41-file acceptance does not transfer)",
+    "current-source Linux and remaining legacy acceptance",
+    "SDK/provider/GUI and whole-source acceptance",
+    "default-branch CI, master merge and releases"
+  ],
+  "actual_manifest_groups": [
+    {
+      "attempt": 1,
+      "root": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt01",
+      "manifest": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt01-diagnosis/actual-files.json",
+      "raw_files_verified": 25,
+      "state": "historical failed attempt; no acceptance promotion",
+      "resolution": "Manifest keys or path fields are relative to root; verify exact raw bytes and SHA256."
+    },
+    {
+      "attempt": 2,
+      "root": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt02",
+      "manifest": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt02-diagnosis/actual-files.json",
+      "raw_files_verified": 171,
+      "state": "historical failed attempt; no acceptance promotion",
+      "resolution": "Manifest keys or path fields are relative to root; verify exact raw bytes and SHA256."
+    },
+    {
+      "attempt": 3,
+      "root": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt03",
+      "manifest": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/actual-files.json",
+      "raw_files_verified": 336,
+      "state": "historical failed attempt; no acceptance promotion",
+      "resolution": "Manifest keys or path fields are relative to root; verify exact raw bytes and SHA256."
+    },
+    {
+      "attempt": 4,
+      "root": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt04",
+      "manifest": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt04-review/actual-files.json",
+      "raw_files_verified": 340,
+      "state": "finite native prerequisite accepted",
+      "resolution": "Manifest keys or path fields are relative to root; verify exact raw bytes and SHA256."
+    }
+  ],
+  "files": [
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt01/live-pid-query.json",
+      "bytes": 140,
+      "sha256": "a06b89d90706e1e2c5be2ba921a5004bdbe862e7565be96952f5cf2737cedcc6",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt01/terminal-reconciliation.json",
+      "bytes": 11440,
+      "sha256": "ca8e5fadeae1c7351da60ca02c67f1ab282280c85f2994161a65d239c74bd49f",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt01-diagnosis/actual-files.json",
+      "bytes": 3600,
+      "sha256": "5aef2945a7c2c85c187d2389bf066e666c5a1db8088615a18caeb456eb96accc",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt01-diagnosis/actual-spec-review.json",
+      "bytes": 1976,
+      "sha256": "c57fe385872e38c39031e6a4700e3e265da50eb5f3d74977b1298b3abaea2cb6",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt01-diagnosis/actual-standards-review.json",
+      "bytes": 2316,
+      "sha256": "c52d0fe7aac3da7f1d97f679385a4b82c1cf4441c3f10a3b96ffefa890a7f33f",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt01-diagnosis/diagnosis.json",
+      "bytes": 4016,
+      "sha256": "02e8b5e04e3ab6d372716d8a2098afdef9c3795b4b03ca6374b33114257c9442",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt01-diagnosis/regression-red.log",
+      "bytes": 813,
+      "sha256": "a0186edfeead33ce65a7efe2e84a039dbdf560b061aa619e13aaffa28cce0e9a",
+      "role": "attempt01 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt02/known-pids.json",
+      "bytes": 132,
+      "sha256": "0cf263bab73328125780a6398160cfa04c3893b32ba0d6e60c8a29d83b6cfb19",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt02/live-pid-query.json",
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt02/postrun-hash-verification.json",
+      "bytes": 14080,
+      "sha256": "c46c72005236f85e699c59173d6f1c3cc08cfd5e2061be394ee936f3373e7609",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt02/terminal-reconciliation.json",
+      "bytes": 949,
+      "sha256": "30f218da7f8d83ceaa28e7691f812376b911ef86be87903aa1c6eb46e5e6e6cb",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt02-diagnosis/actual-files.json",
+      "bytes": 24650,
+      "sha256": "90258d9ebc766713022133b39ad8165a1af245e1193eba8f16f8fc2b232b5f37",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt02-diagnosis/actual-spec-review.json",
+      "bytes": 2524,
+      "sha256": "75e1fc5e9eb0317feaad646df9ed6d2225ef1eafc29fc2108d4f1b59533f2b6d",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt02-diagnosis/actual-standards-review.json",
+      "bytes": 2750,
+      "sha256": "af0981860c3ea6247b306ebeccc0863e780ddc019ee888569dec557840e3eebc",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt02-diagnosis/diagnosis.json",
+      "bytes": 2961,
+      "sha256": "2823c61622feecff1b309bf11f0e4694553adb9760905e9bfb03a20468422338",
+      "role": "attempt02 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt03/known-pids.json",
+      "bytes": 284,
+      "sha256": "0a9088080897288a644d696e3a08007c43d59df6d859dec80b09f5ebfc446540",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt03/live-pid-query.json",
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt03/postrun-hash-verification.json",
+      "bytes": 14113,
+      "sha256": "8964df398de395056c5588c18bb6233a3f63ac599a42da72177bb55b2d99691a",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt03/terminal-reconciliation.json",
+      "bytes": 978,
+      "sha256": "b09083a1d1c990771aa7b518f89bcc24315968a1fd43923a0a3637b4e287a7f6",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/actual-files.json",
+      "bytes": 53177,
+      "sha256": "2f6da6199553bc7fb2e47d4b704779fd2ef89c85c7fbf4c40a2cf935b5a6a62a",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/actual-spec-review.json",
+      "bytes": 54933,
+      "sha256": "b7e1e739941bfa1b7abe9758fedea9a5a33c07908900551f73822b4b7f1d26a2",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/actual-standards-review.json",
+      "bytes": 52425,
+      "sha256": "730ddf42e2f97692f0df907802a2cccdf02244c38d62097231e36340b963a148",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/decoded-a.stdout.raw",
+      "bytes": 342,
+      "sha256": "2150e641d7c1a9204b4da3eda528fd9147260a36b8c62fa83992d10796c9b911",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/decoded-b.stderr.raw",
+      "bytes": 1601,
+      "sha256": "0b635bfd8979428e953606cc25043e1ea19a66016e324d8a9d1df63af3a300b7",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/diagnosis.json",
+      "bytes": 1593,
+      "sha256": "d047d4d1feb4f648716ea54dbd574060353e9e49272489874fb4c81d841cac5d",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt03-diagnosis/newline-replay.json",
+      "bytes": 443,
+      "sha256": "b998adcde29641fb8753ad9d1314c2bd5eb09ee6bfb69a179b89587382ec3d0e",
+      "role": "attempt03 receipt/review/diagnosis",
+      "state": "historical failed attempt; no acceptance promotion"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt04/known-pids.json",
+      "bytes": 293,
+      "sha256": "a586ec2bd446a31e99027a294a0ce6c46bd1f73ed65dfba81332c28a2884ad7c",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt04/live-pid-query.json",
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt04/postrun-hash-verification.json",
+      "bytes": 14080,
+      "sha256": "14db5ad4766fffb79988636d090ffb3094471a5a4a1103cdc081095946f7eaad",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt04/result.json",
+      "bytes": 3918,
+      "sha256": "eecd555cf4984f8ad34c4c1661378f827003c2a45fe9dbaa27e07f3cf2643c8c",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-acceptance-9d001ca7-attempt04/terminal-reconciliation.json",
+      "bytes": 774,
+      "sha256": "cc27768472c90ddce5ad2374bdf5536252ebacee624582fcff9dc9e0191042c3",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt04-review/actual-files.json",
+      "bytes": 49047,
+      "sha256": "ae5123e07e518255c580a438a685fbfecee7f7c84a678fda9ad1b5feb5a282e3",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt04-review/actual-spec-review.json",
+      "bytes": 3717,
+      "sha256": "99838f3a0350fa798daa07f52f39a9d04af914e5eb7faf5c4502395c0cda826e",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt04-review/actual-standards-review.json",
+      "bytes": 2179,
+      "sha256": "5c2124725a35d39b78659ec823e68dd2be69856fed1fe9b551c9e8202bf7458a",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/windows-launch-native-attempt04-review/summary.json",
+      "bytes": 4472,
+      "sha256": "5b764f3716122b1523024a75bac66cd51fd357d212d85d5cbaeca9ff413448af",
+      "role": "attempt04 receipt/review/diagnosis",
+      "state": "finite native prerequisite accepted"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-launch-integration-20261105/committed-runtime-manifest.json",
+      "bytes": 7223,
+      "sha256": "e568ee7837882160d4f73ed40f729dd42e1f7558005363cec95259aff467e234",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/windows_lifecycle.py",
+      "bytes": 18087,
+      "sha256": "a3efcf6a361604d86825774724b140f6b41b10b471d3273fd30eebf3627bdb06",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/execution.py",
+      "bytes": 47080,
+      "sha256": "4b2f2b2991c7022f1104aecaf53b60bbb1246e7bf65910e89070bd4becc63a87",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/.tools/python31210/tools/python.exe",
+      "bytes": 104952,
+      "sha256": "4d6f5f81a4bca11191c4c7c6b43632694d0a4ce74e068619d8fdc161d469859a",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/.tools/dev13-runtime-replay-20261104/Scripts/python.exe",
+      "bytes": 274424,
+      "sha256": "0b471133e110cfb53a061cad528ce8e517d7b9ac41a0a396c39ad795a487fc14",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/.tools/dev13-runtime-replay-20261104/pyvenv.cfg",
+      "bytes": 336,
+      "sha256": "6f5751c894fd8742cedfaa90bb855659abe9803f5f5c1527884b1d81c016c9e8",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/ibm-timing.json",
+      "bytes": 22594,
+      "sha256": "e7f2af42314c55c5e309b5f265c30ae68c7711af149781756ae3f877b4fee126",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/ibm019.json",
+      "bytes": 3672,
+      "sha256": "74ece437462fc7408b2b944bc1d98a90bc6172604147e8b65f7f20a7659800a6",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/ibm020.json",
+      "bytes": 4195,
+      "sha256": "6366a32c3592d4974eba48f95669c239d49baabead4281e529337e0a64342862",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/qb007.json",
+      "bytes": 7405,
+      "sha256": "61d8a21e92ad0ffe756e188c5d19e368ab13ef6d89cc7577d6b604422da9d127",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/qb017.json",
+      "bytes": 3724,
+      "sha256": "ff56a9cb2d265f8774f2350f4ebbb2cdceeead81b09fb16c816f3eb3c6f7fc06",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/qb027.json",
+      "bytes": 2686,
+      "sha256": "0ce00b16d2ca36757124bbc540b3d8d01a4fd9d0999d79337519032d214cbac5",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/contracts/qb030.json",
+      "bytes": 2697,
+      "sha256": "7f4af789bc68497eb0b40ca0a7f066c3f8e32f93ba2639bd6d51fda9c6771a88",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/execute_ibm019.py",
+      "bytes": 7032,
+      "sha256": "96c1fc6686afbef963499b1f595a8d2a7cf672d940b24d49b7eb71d68ae62007",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/ibm019-linux-requirements.lock",
+      "bytes": 5223,
+      "sha256": "39206d4cf230cd8b21d46698b72a3092fd4c0d2a5f4eccc7dd18ec2b1ad16769",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/ibm019-requirements.lock",
+      "bytes": 4943,
+      "sha256": "0ac7a06688424d9260aaf75af2cab390519ff587cf367891f36dd74da30ae45a",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/linux-notebook-requirements.lock",
+      "bytes": 4466,
+      "sha256": "18848dd56acfa26d5a107454eeb30fb38c1388f3eff532254fed9d2b11eba4c4",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/linux_lifecycle.py",
+      "bytes": 20187,
+      "sha256": "72277c1af6ad0e5615d55589fc852f22232a26b11efa5ee7b5dc9789cd496dc1",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/observers/ibm_timing.py",
+      "bytes": 39689,
+      "sha256": "44b79aa43b5120a074e7e1fad9e70606c3d83c838f9a6020742ed9d108d794fd",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/observers/ibm_timing_checkpoint.py",
+      "bytes": 139,
+      "sha256": "f8602da556c73ff62e012dc62ecb0e87a4113dc59557ecd5294cda8de3eeb6e1",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/observers/ibm_timing_cleanup.py",
+      "bytes": 133,
+      "sha256": "b98ab40081d8bfe63d0f578cd80a8f485a5ec264d49cb3d3a95a6606e46a8cbb",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/profiles/notebook-linux-py312.json",
+      "bytes": 731,
+      "sha256": "bd60bdca2efc59f666dec765e571d96db355bfcf0ec29e5d7ef003499fd552f4",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/profiles/pulser-win-py312.json",
+      "bytes": 547,
+      "sha256": "45272dd305db2c4eb05f28f1d26c40d16ec85c7d8e0d23fcfb5934bdd22c26f9",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/profiles/qir-win-py312.json",
+      "bytes": 518,
+      "sha256": "ea93bf1a2e21641d2bff168503c279721999eb60a8c94fd6c75af0aad07100d3",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/profiles/qiskit-aer-linux-py312.json",
+      "bytes": 1030,
+      "sha256": "7f429bd7fe023baa5263761e4cc6536eee68a08362d3f5feb72f2d9a6a73f1b7",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/profiles/qiskit-aer-win-py312.json",
+      "bytes": 508,
+      "sha256": "f07a42bb98fca56d9b8f0094fa3a080f0c6ca38e07435bf345ffc0bfa71f2629",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/profiles/timing-win-py312.json",
+      "bytes": 586,
+      "sha256": "394a8541b3c829ac421f78f2ff473dcf0fea574dce5e5db87f0bfec2d74fd657",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/pulser-requirements.lock",
+      "bytes": 4757,
+      "sha256": "b04970f6b9552e416caaea4270d7da93089444c527076c2d4f83a61b641f6502",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/qir-requirements.lock",
+      "bytes": 9134,
+      "sha256": "70faf49c835ed96a1d6bf6941690536af4c47515b91659d908a7b57efaabb282",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/run.py",
+      "bytes": 1836,
+      "sha256": "227ae70033fe2c36f0bf338631469a85c8e7243d6eb3e4d68df1e1eb201902c0",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/test_execution.py",
+      "bytes": 64315,
+      "sha256": "8e3f95d7710a670c3e06048be36e559f073794469a7571262d14f2086f687984",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/test_linux_execution.py",
+      "bytes": 17166,
+      "sha256": "45b3de764f508586ea86e098aa6c2f1508a63b027ccf5b2c5c7593b999c7819e",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/test_qb027.py",
+      "bytes": 6072,
+      "sha256": "c6b5bb73a4d5837433a9433e19fa1814ab6fd7a46712b11afb258d390a2f074d",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/test_qb030.py",
+      "bytes": 6814,
+      "sha256": "cab3ae385e9fa1333e9746804cfe34b0f254b8525f8f1d429b6fac2100f38068",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/test_timing.py",
+      "bytes": 44596,
+      "sha256": "a0ab6e3384ce480c1ce7d9ae42c5f9047bc6ab2a3b0acc34ac641504175f46a2",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/test_windows_lifecycle.py",
+      "bytes": 22634,
+      "sha256": "4eb15bfc554cd23ea98f2b8207b8f3a082975bf009a52a6e32b0cc5f7ef3625c",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/timing-requirements.lock",
+      "bytes": 6016,
+      "sha256": "e212293aefe95ae61a6ddfdd93b5dc34b511ab301cd8c635fb5645a46a78860b",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/timing_reference.py",
+      "bytes": 16974,
+      "sha256": "0fd56c4cb1afa5e696ab788f9fa2465b2177b5de38250483d78fc816608fb84b",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/ibm019.py",
+      "bytes": 2172,
+      "sha256": "ce9b6e3b5359582241ccb5ddc38d998171b853f785b66ff38f3792a1b99c9c70",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/ibm020.py",
+      "bytes": 3262,
+      "sha256": "23c20f3c7eeb023170af030ebbe2fb35f7a05f661888ba36dd56eb7a5d451f5d",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/ibm_timing.py",
+      "bytes": 332,
+      "sha256": "e21da3df506435b3cf06d0f9b7f4c9607cc31767f7e6057df35d561f0e1530b5",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/qb007.py",
+      "bytes": 11173,
+      "sha256": "26ee163ea1c24d60775bb604c3502755a84e76757172f95ffde26506a7eb0699",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/qb017.py",
+      "bytes": 10991,
+      "sha256": "fdfadeecf7ad2a998103a416355075085d148cafa67ff69a5274ce91386b5ef1",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/qb027.py",
+      "bytes": 7803,
+      "sha256": "f93c4b3c94040105ccf102e181322f96f219ca6b05ce971e3625d33f2f59352b",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-owned-implementation-01-revision01/windows/dev13-notebooks/witnesses/qb030.py",
+      "bytes": 13703,
+      "sha256": "10d0ce1b9b2aaa098c9c1f2ebf878b01333104f25dd0e328f758362f20981e16",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-ready-04/bindings.json",
+      "bytes": 18555,
+      "sha256": "9b3f79360c58e6497540e379d39f1d45132cf3bf7e5f9fb40f7fb2230019da2e",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-ready-04/commands.json",
+      "bytes": 1139,
+      "sha256": "feef198600a5c2bea13d983e331b38bedd1556a721396eaddc6ccce446c61d3a",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-ready-04/README.md",
+      "bytes": 1008,
+      "sha256": "ecbec77d99439f334af65cb6432371a11c7e60a0df3c43317a7f20a598aeb56b",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/bindings.json",
+      "bytes": 18622,
+      "sha256": "8d24c55e1aeee66385351f21eb3df8bd5324019adf9e6174ff81cd085cbd0ad1",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/commands.json",
+      "bytes": 775,
+      "sha256": "63acd3781d6b0308910bd36f9232cd24559f49b0cedef106d96cac8eb2504597",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/diagnosis-reference.json",
+      "bytes": 1137,
+      "sha256": "0abc750223f2e8f72373e2569e46751e05bb7c4e045b0c599cc467e78f887748",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/fixtures.py",
+      "bytes": 46942,
+      "sha256": "3a4a4f176025b00cf7f65b4d495f9a6ca3b6beaa138d7a6ea029e8fbe7a3cec4",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/observation.py",
+      "bytes": 14933,
+      "sha256": "bcf9b1a04481be369cc96419ff58fe3221d5ed8755b5b2f791ab7348ef38b68f",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/probe.py",
+      "bytes": 59471,
+      "sha256": "faba453dc579b3b3581c032775e3ed7f0df856670b291e5a934e505a242107b5",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/README.md",
+      "bytes": 7512,
+      "sha256": "c1ea1b23c28c13eafc46b3432087c0409f5091105c438397146e8b10f98dceb0",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/test_probe.py",
+      "bytes": 55583,
+      "sha256": "4d83ca16aeeed902e2d7fef53a6c160310ddf3c2e9ad1ba2c00e509770d7ddd5",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/tests-normal.log",
+      "bytes": 10300,
+      "sha256": "c5e6b9014d56586f00f73552ac73aab383688807ca47feaf04ff94e88fdc5323",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/tests-optimized.log",
+      "bytes": 10300,
+      "sha256": "cdc9fe9d9045928d72135d7b420f605e241d50c842d35e246330614f26a343dd",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/windows-launch-native-full-01-revision04/tests.json",
+      "bytes": 797,
+      "sha256": "0b9ef7d1782bcb57db6939e8e3437f7c700945a88110f3c52044f029fe7142d0",
+      "role": "attempt04 bound source/runtime/runner input",
+      "state": "raw dependency identity; not additional acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-acceptance-owner-20261106.json",
+      "bytes": 1506,
+      "sha256": "92ed64fb3ad1bfc031ff11c5a2b5d55c1dd2e40e9091edc12d34fb975a98dde3",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "final finite acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-attempt02-owner-review-20261105.json",
+      "bytes": 683,
+      "sha256": "7e6ff98f10624d46b4644f789dbbb0e5dae72c5f7bca757ae57a39d0e5179e04",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-attempt03-owner-review-20261106.json",
+      "bytes": 592,
+      "sha256": "4737b6d37de4d72ea471c7417d1f48803416ee8832f9745a456865b475f84f13",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-full-initial-findings-20261105.json",
+      "bytes": 875,
+      "sha256": "9e8b2e87ed3fe7031cb155b1ae6dfb28f7685fa96f198c8dfc096eb9a1e1f6b2",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-full-initial-owner-verification-20261105.json",
+      "bytes": 463,
+      "sha256": "2d96f995ad83d334033d5b4be9a993f3ada839a905238a1088d32e7c405a8a3b",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-full-revision01-owner-verification-20261105.json",
+      "bytes": 953,
+      "sha256": "11548a44dfc2b18ac38f7e8cc70f89b1e12163b8b11764ccb1f2533073bf59a0",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-full-revision02-owner-verification-20261105.json",
+      "bytes": 949,
+      "sha256": "33b70e628698b79dc90f54f636b9ccd2a62fdfbecec862755009a0ecb1f673f7",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-ready-reservation-20261105.json",
+      "bytes": 1963,
+      "sha256": "d865a476fb12c7e94aee6d98c3a0207a17bfaa360f8fbdcfe8e83410d9ad7e86",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-ready02-reservation-20261105.json",
+      "bytes": 1003,
+      "sha256": "4cbc8b0d0bb6dd96983ec669cb47f96f96ebbc7f35bebcdbfde33e4106034bf3",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-ready03-reservation-20261105.json",
+      "bytes": 1006,
+      "sha256": "285b98810a1eb963834e7ed8b9aeabaf785894f32b3876e93cde30d4593ea7ca",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/windows-native-ready04-reservation-20261106.json",
+      "bytes": 995,
+      "sha256": "db29828a8afd6434af58709c8492dd7db4edf128b25c3902ccf4a58b5d135f0f",
+      "role": "coordinator acceptance/preparation/reservation/history",
+      "state": "historical coordinator evidence"
+    }
+  ]
+}

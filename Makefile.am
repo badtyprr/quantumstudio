@@ -543,3 +543,6 @@ EXTRA_DIST += windows/dev13-notebooks/qb013_reference.py
 EXTRA_DIST += windows/dev13-notebooks/qb013_output_audit.py
 EXTRA_DIST += windows/dev13-notebooks/test_qb013.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb013-stim.md
+
+EXTRA_DIST += docs/learning-evidence/dev13/windows-native-acceptance/README.md
+EXTRA_DIST += docs/learning-evidence/dev13/windows-native-acceptance/index.json
