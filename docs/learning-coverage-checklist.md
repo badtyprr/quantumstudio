@@ -330,7 +330,7 @@ those semantics when adding whole-program serialization.
 ### AUD-02
 
 - [ ] **Complete source discovery** — P1; Partial; size M; dependencies: None.
-- Dated discovery: [2026-11-04 reconciliation](learning-evidence/aud02/catalog-20261104.md) verifies the qBraid snapshot comparison and appends three unchecked notebooks. IBM content, learning paths, supplemental material, syntax references and authorized qBook inventory remain incomplete.
+- Dated discovery: [2026-11-04 reconciliation](learning-evidence/aud02/catalog-20261104.md) verifies the qBraid snapshot comparison and appends three unchecked notebooks. IBM content, learning paths, supplemental material, syntax references and authorized qBook inventory remain incomplete. [Reviewed lexical and access reconciliation](learning-evidence/discovery-reconciliation/README.md) preserves 149 source IDs and 1,241 occurrences/872 canonical targets, corrects five MOD-012 link records with four historical aliases, and records only the existing IBM026 PDF access observation; twelve ZIP statuses and whole-source acceptance remain unchanged.
 - Source focus: All IBM/qBraid catalogs. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Reconcile the pinned inventory with current catalogs. Inventory overviews, exams, videos, downloads, linked examples, SDK references and qBook chapters. Track access-blocked sources explicitly; a missing chapter cannot count as covered.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.

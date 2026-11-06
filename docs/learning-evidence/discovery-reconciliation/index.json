@@ -1,0 +1,295 @@
+{
+  "scope": "Finite external evidence index; not self-contained or complete discovery",
+  "base": "1554eb5e6c3b5a1ed1d29daffa73402066c871d3",
+  "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "discovery": {
+    "source_ids": 149,
+    "occurrences": 1241,
+    "canonical_targets": 872,
+    "registry_entries": 876,
+    "historical_aliases": 4,
+    "changed_occurrences": 5,
+    "corrected_URLs": 4,
+    "changed_source": "MOD-012 cell71",
+    "parser_tests_each_mode": 22,
+    "full_CommonMark": false,
+    "unresolved_followup": {
+      "source_id": "MOD-012",
+      "cell": 5,
+      "offset": 1607,
+      "expression": "ref 4",
+      "bibliography_cell": 71,
+      "bibliography_label": "ref 4",
+      "canonical_target_key": "IBM-LINK-bde84bd2f10a5e4f",
+      "target_url": "https://ieeexplore.ieee.org/document/8585034",
+      "status": "Bibliographic target identified by explicit matching label; Markdown reference definition still absent; lexical unresolved candidate preserved"
+    }
+  },
+  "access_overlay": {
+    "stable_target_key": "IBM-LINK-a05433c8805b05ab",
+    "source_id": "IBM-026",
+    "offsets": [
+      1203,
+      1296
+    ],
+    "url": "https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf",
+    "access": "acquired exact public URL; HTTP200 anonymous; reviewed retained bytes",
+    "payload_sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab",
+    "payload_bytes": 474120,
+    "pages": 41,
+    "requirement_status": "ambiguous",
+    "requirement_status_changed": false,
+    "existing_ZIP_targets": 12,
+    "ZIP_status_changes": 0
+  },
+  "final_reviews": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\standards-review.json",
+      "bytes": 1484,
+      "sha256": "7864d81ac0ba2d9287d386ccf987e264272d5f1601658facf51abfbab6d267e5",
+      "role": "Final finite lexical reconciliation packet/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\spec-review.json",
+      "bytes": 1279,
+      "sha256": "0eeae755c28ce6701710a405ef4298d5139bfb3bf2babfb05f1827f903b512e9",
+      "role": "Final finite lexical reconciliation packet/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-access-update-20261105\\standards-review.json",
+      "bytes": 1455,
+      "sha256": "b7ae20be6ef724259c489aa97ad7a0bef27ad921b32519eb5d083a341a854a0d",
+      "role": "Final additive IBM026 access update/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-access-update-20261105\\spec-review.json",
+      "bytes": 1117,
+      "sha256": "08c95be1847a9218d673efd87bf292526b4c153c69d8cfacfd0acbbd05276ab2",
+      "role": "Final additive IBM026 access update/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\manifest.json",
+      "bytes": 1420,
+      "sha256": "2745c261c6b915a1d7e537adf73ca037f2c650e81fb70d0927ddb6db2618f2e0",
+      "role": "Final finite lexical reconciliation packet/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\standards-review.json",
+      "bytes": 1484,
+      "sha256": "7864d81ac0ba2d9287d386ccf987e264272d5f1601658facf51abfbab6d267e5",
+      "role": "Final finite lexical reconciliation packet/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\spec-review.json",
+      "bytes": 1279,
+      "sha256": "0eeae755c28ce6701710a405ef4298d5139bfb3bf2babfb05f1827f903b512e9",
+      "role": "Final finite lexical reconciliation packet/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-access-update-20261105\\update.json",
+      "bytes": 2663,
+      "sha256": "28324d4c9355e49d1d24202e00649ffb196af9f6669aa567cf3798fd806d6aed",
+      "role": "Final additive IBM026 access update/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-access-update-20261105\\standards-review.json",
+      "bytes": 1455,
+      "sha256": "b7ae20be6ef724259c489aa97ad7a0bef27ad921b32519eb5d083a341a854a0d",
+      "role": "Final additive IBM026 access update/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-access-update-20261105\\spec-review.json",
+      "bytes": 1117,
+      "sha256": "08c95be1847a9218d673efd87bf292526b4c153c69d8cfacfd0acbbd05276ab2",
+      "role": "Final additive IBM026 access update/review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\inventory.json",
+      "bytes": 2346750,
+      "sha256": "a5f38647e0e5556a1c15616e6b39b4f93aa9916ffca29f76cd878b3dae6e6da4",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\inventory.py",
+      "bytes": 16187,
+      "sha256": "18b9b79d6b4f695ed5f4eb67fabdc4395ea7717e42c9b440a19cffd9f4a2a957",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\reconciliation.json",
+      "bytes": 16304,
+      "sha256": "06c4eb518c38036f187c398b240402bb8794b0bf341b645f529e5faf5b44109d",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\stable-target-registry.json",
+      "bytes": 244242,
+      "sha256": "2a3e036a711b4a4d06ac1688f612561a32fcf413add8bf6cbe9b934a972027a7",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\test_inventory.py",
+      "bytes": 4595,
+      "sha256": "0a4bf98c55e135ef31633ca8d956ce5afdbb6265bb39153031c60cfb0281c53a",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\tests-normal.log",
+      "bytes": 126,
+      "sha256": "b1f25efadd7cb3e17b3b226f0487d5357db81abdc889cde27e5c5a33e734b604",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\tests-optimized.log",
+      "bytes": 126,
+      "sha256": "b1f25efadd7cb3e17b3b226f0487d5357db81abdc889cde27e5c5a33e734b604",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\tests.json",
+      "bytes": 519,
+      "sha256": "54e325247a6aef1714068f64a0c8cc9444509be30401e2b351629f272618e4f8",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements-revision01\\verify_reconciliation.py",
+      "bytes": 2643,
+      "sha256": "dbf142471c1ee3c3ef678205c07393c771f80c4cf6b6030ea121d97738ff8e5c",
+      "role": "Finite parser/inventory/alias or retained22-test evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements\\inventory.json",
+      "bytes": 2346551,
+      "sha256": "21b63486688a071f10a4e3a976a03d54ee8f3e30a7a79237deae2f3c0c697e03",
+      "role": "Preserved original frozen inventory",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-source-bodies\\manifest.json",
+      "bytes": 807017,
+      "sha256": "91cd1b1f283c1e8101aa9980d93f7569259f619fc2ba33f6cdf31fef976e0e0a",
+      "role": "Pinned149-body acquisition manifest",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\manifest.json",
+      "bytes": 4979,
+      "sha256": "7f30b13222c5aed06d53c4da28fda5f7e3b67ac68af795d39def60c2bd636913",
+      "role": "Reviewed IBM026 access/payload evidence",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\slides.pdf",
+      "bytes": 474120,
+      "sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\standards-review.json",
+      "bytes": 5385,
+      "sha256": "a51aedd8f56aa2430bb699bf886dd4acca6b39de76f910ae65417bd75410d01a",
+      "role": "Independent IBM026 acquisition review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\spec-review.json",
+      "bytes": 4664,
+      "sha256": "b54c77215ceaa4562283bfe6a998472108d48a20bb85cc8c9182c36417c7077d",
+      "role": "Independent IBM026 acquisition review",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\curl-metadata.json",
+      "bytes": 13064,
+      "sha256": "d9afffeb02464a5bf3776033a05844e427a31512ed1dc319e7644f27351570fe",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\curl-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\page-inventory.json",
+      "bytes": 54041,
+      "sha256": "b41454ef0162e610843e09554c61f028aefb93dc2ff9dab169edbe6e416da3b2",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\REPORT.md",
+      "bytes": 2181,
+      "sha256": "1c190f7fa887d1b40e41540e80ba8f659756b70f09c9d8803d2ece869f1726d4",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\request-receipt.json",
+      "bytes": 994,
+      "sha256": "f237d1cd30afdae2f329327b52c7d743338294ab506ab0965e382a7e4fb9d7a4",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\response-body.bin",
+      "bytes": 474120,
+      "sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\response-headers.txt",
+      "bytes": 4038,
+      "sha256": "1b62ea1b88d9d31a5923354c5cbfd5b4d9d807ad8985a9907d9f4f653e069d7e",
+      "role": "Raw IBM026 HTTP/parse acquisition receipt",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm026-source-analysis\\source.ipynb",
+      "bytes": 2247,
+      "sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787",
+      "role": "Original IBM026 source-link identity",
+      "storage": "External retained audit evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm026-source-analysis\\media-locators.json",
+      "bytes": 1647,
+      "sha256": "cd2c307a6c789ee7f99d2bf638138a95530830ac9a7252ca06e8e40654c50a59",
+      "role": "Original IBM026 source-link identity",
+      "storage": "External retained audit evidence; not copied into repository"
+    }
+  ],
+  "limits": [
+    "Canonical target counts exclude unresolved media-ID tokens; these occurrences are retained.",
+    "No new or removed source IDs/targets; four old malformed keys retained as aliases.",
+    "PDF access observed at recorded acquisition time only; no historical/perpetual access guarantee.",
+    "No full CommonMark, requirement promotion, ZIP status change, visual/math/native/notebook/GUI/release or whole-source acceptance.",
+    "External raw bytes/paths, not normalized repository copies; no self-contained reproduction environment.",
+    "No tests/network/runtime executed for this index."
+  ]
+}
