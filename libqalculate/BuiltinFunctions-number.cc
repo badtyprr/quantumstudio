@@ -327,10 +327,25 @@ int AbsFunction::calculate(MathStructure &mstruct, const MathStructure &vargs, c
 	}
 	return -1;
 }
+namespace {
+class GcdArgument : public Argument {
+public:
+	GcdArgument(bool handle_vector) : Argument() {setHandleVector(handle_vector);}
+	Argument *copy() const {return new GcdArgument(*this);}
+protected:
+	bool subtest(MathStructure &value, const EvaluationOptions &eo) const {
+		value.eval(eo);
+		// The shared polynomial predicate excludes zero; GCD's arithmetic accepts it.
+		return (value.isNumber() && value.number().isZero() && !value.number().isApproximate()) || value.isRationalPolynomial();
+	}
+	string subprintlong() const {return _("an exact zero or a rational polynomial");}
+};
+}
+
 GcdFunction::GcdFunction() : MathFunction("gcd", 2, -1) {
-	RATIONAL_POLYNOMIAL_ARGUMENT_HV(1)
-	RATIONAL_POLYNOMIAL_ARGUMENT_HV(2)
-	RATIONAL_POLYNOMIAL_ARGUMENT(3)
+	setArgumentDefinition(1, new GcdArgument(true));
+	setArgumentDefinition(2, new GcdArgument(true));
+	setArgumentDefinition(3, new GcdArgument(false));
 }
 int GcdFunction::calculate(MathStructure &mstruct, const MathStructure &vargs, const EvaluationOptions &eo) {
 	mstruct = vargs[0];
