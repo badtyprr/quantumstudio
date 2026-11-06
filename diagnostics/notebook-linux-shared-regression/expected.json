@@ -1,0 +1,868 @@
+{
+  "version": 1,
+  "base_revision": "47668f733467260233b1aa6e65b4abc42c3c0b26",
+  "product_revision": "7c75fa2da833aa4f03c844317745e611119cac12",
+  "product_tree": "7611c24374fc416d39e95d00be9f4abb20277328",
+  "source_files": {
+    "contracts/ibm-timing.json": {
+      "bytes": 22594,
+      "sha256": "e7f2af42314c55c5e309b5f265c30ae68c7711af149781756ae3f877b4fee126"
+    },
+    "contracts/ibm019.json": {
+      "bytes": 3672,
+      "sha256": "74ece437462fc7408b2b944bc1d98a90bc6172604147e8b65f7f20a7659800a6"
+    },
+    "contracts/ibm020.json": {
+      "bytes": 4195,
+      "sha256": "6366a32c3592d4974eba48f95669c239d49baabead4281e529337e0a64342862"
+    },
+    "contracts/qb007.json": {
+      "bytes": 7405,
+      "sha256": "61d8a21e92ad0ffe756e188c5d19e368ab13ef6d89cc7577d6b604422da9d127"
+    },
+    "contracts/qb017.json": {
+      "bytes": 3724,
+      "sha256": "ff56a9cb2d265f8774f2350f4ebbb2cdceeead81b09fb16c816f3eb3c6f7fc06"
+    },
+    "contracts/qb027.json": {
+      "bytes": 2686,
+      "sha256": "0ce00b16d2ca36757124bbc540b3d8d01a4fd9d0999d79337519032d214cbac5"
+    },
+    "contracts/qb030.json": {
+      "bytes": 2697,
+      "sha256": "7f4af789bc68497eb0b40ca0a7f066c3f8e32f93ba2639bd6d51fda9c6771a88"
+    },
+    "execute_ibm019.py": {
+      "bytes": 7032,
+      "sha256": "96c1fc6686afbef963499b1f595a8d2a7cf672d940b24d49b7eb71d68ae62007"
+    },
+    "execution.py": {
+      "bytes": 45596,
+      "sha256": "01e5ce830ae7639bc6b0314fe07f72bc25e3823f1a5a338e6f763cd70178cc6c"
+    },
+    "ibm019-linux-requirements.lock": {
+      "bytes": 5223,
+      "sha256": "39206d4cf230cd8b21d46698b72a3092fd4c0d2a5f4eccc7dd18ec2b1ad16769"
+    },
+    "ibm019-requirements.lock": {
+      "bytes": 4943,
+      "sha256": "0ac7a06688424d9260aaf75af2cab390519ff587cf367891f36dd74da30ae45a"
+    },
+    "linux-notebook-requirements.lock": {
+      "bytes": 4466,
+      "sha256": "18848dd56acfa26d5a107454eeb30fb38c1388f3eff532254fed9d2b11eba4c4"
+    },
+    "linux_lifecycle.py": {
+      "bytes": 20187,
+      "sha256": "72277c1af6ad0e5615d55589fc852f22232a26b11efa5ee7b5dc9789cd496dc1"
+    },
+    "observers/ibm_timing.py": {
+      "bytes": 39689,
+      "sha256": "44b79aa43b5120a074e7e1fad9e70606c3d83c838f9a6020742ed9d108d794fd"
+    },
+    "observers/ibm_timing_checkpoint.py": {
+      "bytes": 139,
+      "sha256": "f8602da556c73ff62e012dc62ecb0e87a4113dc59557ecd5294cda8de3eeb6e1"
+    },
+    "observers/ibm_timing_cleanup.py": {
+      "bytes": 133,
+      "sha256": "b98ab40081d8bfe63d0f578cd80a8f485a5ec264d49cb3d3a95a6606e46a8cbb"
+    },
+    "profiles/notebook-linux-py312.json": {
+      "bytes": 731,
+      "sha256": "bd60bdca2efc59f666dec765e571d96db355bfcf0ec29e5d7ef003499fd552f4"
+    },
+    "profiles/pulser-win-py312.json": {
+      "bytes": 547,
+      "sha256": "45272dd305db2c4eb05f28f1d26c40d16ec85c7d8e0d23fcfb5934bdd22c26f9"
+    },
+    "profiles/qir-win-py312.json": {
+      "bytes": 518,
+      "sha256": "ea93bf1a2e21641d2bff168503c279721999eb60a8c94fd6c75af0aad07100d3"
+    },
+    "profiles/qiskit-aer-linux-py312.json": {
+      "bytes": 1030,
+      "sha256": "7f429bd7fe023baa5263761e4cc6536eee68a08362d3f5feb72f2d9a6a73f1b7"
+    },
+    "profiles/qiskit-aer-win-py312.json": {
+      "bytes": 508,
+      "sha256": "f07a42bb98fca56d9b8f0094fa3a080f0c6ca38e07435bf345ffc0bfa71f2629"
+    },
+    "profiles/timing-win-py312.json": {
+      "bytes": 586,
+      "sha256": "394a8541b3c829ac421f78f2ff473dcf0fea574dce5e5db87f0bfec2d74fd657"
+    },
+    "pulser-requirements.lock": {
+      "bytes": 4757,
+      "sha256": "b04970f6b9552e416caaea4270d7da93089444c527076c2d4f83a61b641f6502"
+    },
+    "qir-requirements.lock": {
+      "bytes": 9134,
+      "sha256": "70faf49c835ed96a1d6bf6941690536af4c47515b91659d908a7b57efaabb282"
+    },
+    "run.py": {
+      "bytes": 1836,
+      "sha256": "227ae70033fe2c36f0bf338631469a85c8e7243d6eb3e4d68df1e1eb201902c0"
+    },
+    "test_execution.py": {
+      "bytes": 53344,
+      "sha256": "2566f9db2f154140e6e859d8b6f102e8b4de56d7fb91e9566330a674a727706b"
+    },
+    "test_linux_execution.py": {
+      "bytes": 17166,
+      "sha256": "45b3de764f508586ea86e098aa6c2f1508a63b027ccf5b2c5c7593b999c7819e"
+    },
+    "test_qb027.py": {
+      "bytes": 6072,
+      "sha256": "c6b5bb73a4d5837433a9433e19fa1814ab6fd7a46712b11afb258d390a2f074d"
+    },
+    "test_qb030.py": {
+      "bytes": 6814,
+      "sha256": "cab3ae385e9fa1333e9746804cfe34b0f254b8525f8f1d429b6fac2100f38068"
+    },
+    "test_timing.py": {
+      "bytes": 44596,
+      "sha256": "a0ab6e3384ce480c1ce7d9ae42c5f9047bc6ab2a3b0acc34ac641504175f46a2"
+    },
+    "timing-requirements.lock": {
+      "bytes": 6016,
+      "sha256": "e212293aefe95ae61a6ddfdd93b5dc34b511ab301cd8c635fb5645a46a78860b"
+    },
+    "timing_reference.py": {
+      "bytes": 16974,
+      "sha256": "0fd56c4cb1afa5e696ab788f9fa2465b2177b5de38250483d78fc816608fb84b"
+    },
+    "witnesses/ibm019.py": {
+      "bytes": 2172,
+      "sha256": "ce9b6e3b5359582241ccb5ddc38d998171b853f785b66ff38f3792a1b99c9c70"
+    },
+    "witnesses/ibm020.py": {
+      "bytes": 3262,
+      "sha256": "23c20f3c7eeb023170af030ebbe2fb35f7a05f661888ba36dd56eb7a5d451f5d"
+    },
+    "witnesses/ibm_timing.py": {
+      "bytes": 332,
+      "sha256": "e21da3df506435b3cf06d0f9b7f4c9607cc31767f7e6057df35d561f0e1530b5"
+    },
+    "witnesses/qb007.py": {
+      "bytes": 11173,
+      "sha256": "26ee163ea1c24d60775bb604c3502755a84e76757172f95ffde26506a7eb0699"
+    },
+    "witnesses/qb017.py": {
+      "bytes": 10991,
+      "sha256": "fdfadeecf7ad2a998103a416355075085d148cafa67ff69a5274ce91386b5ef1"
+    },
+    "witnesses/qb027.py": {
+      "bytes": 7803,
+      "sha256": "f93c4b3c94040105ccf102e181322f96f219ca6b05ce971e3625d33f2f59352b"
+    },
+    "witnesses/qb030.py": {
+      "bytes": 13703,
+      "sha256": "10d0ce1b9b2aaa098c9c1f2ebf878b01333104f25dd0e328f758362f20981e16"
+    }
+  },
+  "artifacts": [
+    {
+      "id": 13343839049,
+      "run": 41872076629,
+      "head": "bfe2c8944e329a3b47157593b3601103d3a4a879",
+      "bytes": 55696731,
+      "sha256": "56070077ff4f05db60ff3ce5681d53dc65162d3f75ff2f8bd3572c8730b5ad9b",
+      "name": "notebook-linux-bootstrap-41872076629-1",
+      "wheels": 46,
+      "entries": 122,
+      "subdir": "bootstrap",
+      "profile": "notebook-linux-py312",
+      "lock": "linux-notebook-requirements.lock"
+    },
+    {
+      "id": 13350182532,
+      "run": 41883503640,
+      "head": "890eb5b99fc4035fc3fb8144c744ff79bda4d387",
+      "bytes": 117705532,
+      "sha256": "0ca0632ef9fc390126f52743dc7967c4e6107f9b8428ae5bc8e7d8859ee5d40b",
+      "name": "notebook-linux-qiskit-41883503640-1",
+      "wheels": 54,
+      "entries": 160,
+      "subdir": "acquisition",
+      "profile": "qiskit-aer-linux-py312",
+      "lock": "ibm019-linux-requirements.lock"
+    }
+  ],
+  "contracts": {
+    "ibm019": {
+      "version": 1,
+      "id": "ibm019",
+      "route": "notebook",
+      "source": {
+        "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+        "sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+        "cells": [
+          {
+            "index": 0,
+            "type": "markdown",
+            "sha256": "a3155143e8613156279f9d03c7bba3b83bc1aaced25ff48bfc137a920f0cf5d9"
+          },
+          {
+            "index": 1,
+            "type": "markdown",
+            "sha256": "f7f66d07663b76f87d6965c90d285cc7cec1ce8bcc43de958352cf787ef30445"
+          },
+          {
+            "index": 2,
+            "type": "code",
+            "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80"
+          },
+          {
+            "index": 3,
+            "type": "code",
+            "sha256": "0f8cd08c48a98dd1d530a9045b0c726ac7361de4bd0d8acba93ae00e5518db61"
+          },
+          {
+            "index": 4,
+            "type": "markdown",
+            "sha256": "fa373c884d885872e8c8845ea465efa7bd1254bb074c9eb1768c3de7bf40cb39"
+          },
+          {
+            "index": 5,
+            "type": "code",
+            "sha256": "890c5cf7a475ca211c14a959bfbb5e6accf78c7644c5f3fc68910c2bba9bb87e"
+          },
+          {
+            "index": 6,
+            "type": "markdown",
+            "sha256": "ce4b48ac27444e2cd6d5908323f4fed7586e22830e851b297daac555f90c916a"
+          },
+          {
+            "index": 7,
+            "type": "code",
+            "sha256": "b7072258896520d0823a1834e24bfe4f8d66486c55aa2b61c423a9938573ae99"
+          },
+          {
+            "index": 8,
+            "type": "markdown",
+            "sha256": "4baa8eb611932f62c25062a3e704a3b694945b5b2c504f43f562c53b709eda69"
+          },
+          {
+            "index": 9,
+            "type": "code",
+            "sha256": "ae6a4337303cc4dcdef6b8c1a0a6ddb156c9260057c54694f97355e3def597b8"
+          },
+          {
+            "index": 10,
+            "type": "markdown",
+            "sha256": "d72806450d10501e4524900e5ebe8996a1a5642edd9a1fc1a2230b9e9a8818cb"
+          },
+          {
+            "index": 11,
+            "type": "code",
+            "sha256": "5cf7801fff08ffc6da621b4ab00f565bf5c268bd13e2058caef62c715100ca96"
+          },
+          {
+            "index": 12,
+            "type": "markdown",
+            "sha256": "96d9ba626e2b6b246339373dfcaa477d11b3ed08b24f9019445120eeb59ae6b0"
+          },
+          {
+            "index": 13,
+            "type": "code",
+            "sha256": "a12dd3741f410b738ec09a1b965ea0e67df188e034ac38a9ce7f536c0d6d6714"
+          },
+          {
+            "index": 14,
+            "type": "markdown",
+            "sha256": "992056cf3eccf4c30c9e96ceb3b1ff26a8229955909d6d239765ecf39985c878"
+          },
+          {
+            "index": 15,
+            "type": "code",
+            "sha256": "e6c54a1d2d0a3aa92f5e029e71fbb3262dd67b9636b6b603b5a0f356c4d18c30"
+          },
+          {
+            "index": 16,
+            "type": "markdown",
+            "sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65"
+          }
+        ]
+      },
+      "code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "preamble": null,
+      "witness": {
+        "path": "witnesses/ibm019.py",
+        "sha256": "ce9b6e3b5359582241ccb5ddc38d998171b853f785b66ff38f3792a1b99c9c70",
+        "hash_encoding": "UTF-8 with LF; authored witness only"
+      },
+      "required_images": [
+        7,
+        11
+      ],
+      "required_text": {
+        "15": "'balanced'"
+      },
+      "capabilities": [
+        "local-computation",
+        "rich-display"
+      ],
+      "external_requirements": [
+        "Original markdown SVG/page rendering",
+        "Native mathematics and lesson interpretation"
+      ],
+      "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance",
+      "profiles": {
+        "win32": "qiskit-aer-win-py312",
+        "linux": "qiskit-aer-linux-py312"
+      }
+    },
+    "ibm020": {
+      "version": 1,
+      "id": "ibm020",
+      "route": "notebook",
+      "source": {
+        "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+        "sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+        "cells": [
+          {
+            "index": 0,
+            "type": "markdown",
+            "sha256": "92d8d40378e9055ccc93efb79eff921b7decc5326f36a7fd7c27d3b68abd0f83"
+          },
+          {
+            "index": 1,
+            "type": "markdown",
+            "sha256": "b1024fb4e8af74bb85f9aea26d7c4d0c83e13630ff0d5c3dd7b8a8357c8af213"
+          },
+          {
+            "index": 2,
+            "type": "code",
+            "sha256": "55de482fb264ff236ec5f5ce7f6d562ddb37e3be098e1b42bccacf536469f4de"
+          },
+          {
+            "index": 3,
+            "type": "markdown",
+            "sha256": "e981f9c38a8c9daf3e5dabb1d831e89c4fcfaa28c879005cb37abe8a0724673f"
+          },
+          {
+            "index": 4,
+            "type": "code",
+            "sha256": "a80ceebf7cb87bb6b02a585280d44b650cfc2948df619628c7841e32b9f0fb38"
+          },
+          {
+            "index": 5,
+            "type": "markdown",
+            "sha256": "9d3ea9cd4c6689c71c53dbaa1a61c0d2622417f0f953e3ecc1a1e301c90fd972"
+          },
+          {
+            "index": 6,
+            "type": "code",
+            "sha256": "4f844a38e54c0a6aca7bd314a2d08a1b23e5780ae18795e9b634db49901b6ebb"
+          },
+          {
+            "index": 7,
+            "type": "markdown",
+            "sha256": "7afeaa254c97ec7e7187a7deca9cb808cfaf00c4e94be59b1ecb0930c70216ee"
+          },
+          {
+            "index": 8,
+            "type": "code",
+            "sha256": "435f56063750609363d4e3c6716e5d149d213b9619f4ea7829a5d623f0c779a6"
+          },
+          {
+            "index": 9,
+            "type": "markdown",
+            "sha256": "6dbe6da8fba313ed60db825fb58a12db1470216f9da534967d7a28ccea2ba85f"
+          },
+          {
+            "index": 10,
+            "type": "code",
+            "sha256": "0fbe03cfb90c1fff3bf6801aa44dfaf1729e1e638a1d631832026fecec6ebd4b"
+          },
+          {
+            "index": 11,
+            "type": "markdown",
+            "sha256": "9bc306e53844be09b9fc25d5cda94e5b11796927fafa50a5765882cb2f5b279d"
+          },
+          {
+            "index": 12,
+            "type": "code",
+            "sha256": "8d3392c23a52da52c143928dab952137507f4fe80bbf3ae0e881393a27671668"
+          },
+          {
+            "index": 13,
+            "type": "markdown",
+            "sha256": "72ad18b0ff92b79d2177f61fe4141b37a9478e3b5ef69a658f579b7f4aa2ebbc"
+          },
+          {
+            "index": 14,
+            "type": "markdown",
+            "sha256": "68cee3024ef13aa9d7671744c898710eeb16a65d7c5bd1d30ab6a3412da96f2c"
+          },
+          {
+            "index": 15,
+            "type": "code",
+            "sha256": "7f1ed2e27d71d405e802e63a3b541c3b7d5f0928645709369abf177c1106e5c9"
+          },
+          {
+            "index": 16,
+            "type": "markdown",
+            "sha256": "28cc9ff0824922790217becc96ae9c8ff925eab346b4eda18f68c697299db129"
+          },
+          {
+            "index": 17,
+            "type": "code",
+            "sha256": "5c6a291e1ce98ed0f886533578880e59afa4b8b4ee3974f3927665f27a34dab8"
+          },
+          {
+            "index": 18,
+            "type": "markdown",
+            "sha256": "6d1932efc7dfe5b53a6756397b3153605b9bf27b95bf14378e00af886b3fe5d5"
+          },
+          {
+            "index": 19,
+            "type": "markdown",
+            "sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65"
+          }
+        ]
+      },
+      "code_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "preamble": "import numpy as np; np.random.seed(0)",
+      "witness": {
+        "path": "witnesses/ibm020.py",
+        "sha256": "23c20f3c7eeb023170af030ebbe2fb35f7a05f661888ba36dd56eb7a5d451f5d",
+        "hash_encoding": "UTF-8 with LF; authored witness only"
+      },
+      "required_images": [
+        6,
+        12,
+        15
+      ],
+      "required_text": {
+        "12": "'balanced'",
+        "17": "'1011'"
+      },
+      "capabilities": [
+        "local-computation",
+        "rich-display"
+      ],
+      "external_requirements": [
+        "Original markdown SVG/page rendering",
+        "Native mathematics and lesson interpretation"
+      ],
+      "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance",
+      "profiles": {
+        "win32": "qiskit-aer-win-py312",
+        "linux": "qiskit-aer-linux-py312"
+      }
+    }
+  },
+  "windows_references": {
+    "ibm019": {
+      "sha256": "9b1eeb767de8e750c0b27070f360d27822967f6297feb49979c97b0d3d2367d6",
+      "results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ],
+        "kernel_executable": "F:\\src\\libqalculate\\.tools\\dev13-runtime-replay-20261104\\Scripts\\python.exe",
+        "kernel_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      }
+    },
+    "ibm020": {
+      "sha256": "043f5c936d4512391400f466ec23cc0f32813b2a1c587eaa2c6cbd2cc9d5d059",
+      "results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "001": 1042,
+          "101": 985,
+          "110": 1037,
+          "010": 1032
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      }
+    }
+  },
+  "lifecycle_methods": [
+    "test_complete_notebook_and_rich_output",
+    "test_source_error",
+    "test_cell_timeout",
+    "test_kernel_crash",
+    "test_cancel",
+    "test_engine_sigkill",
+    "test_client_loss",
+    "test_supervisor_loss",
+    "test_runtime_deadline",
+    "test_detached_descendants_forced_cancel",
+    "test_gate_eof_without_kernel",
+    "test_wrong_unit_identity_cannot_be_stopped",
+    "test_failed_engine_start",
+    "test_repeated_runs_use_distinct_units"
+  ],
+  "synthetic_classes": [
+    "ProfileInventoryTests",
+    "SelectedCellTests",
+    "PlatformProfileTests",
+    "PostCellObserverTests"
+  ],
+  "cases": [
+    "observer_success",
+    "observer_failure",
+    "source_primary_cleanup_error",
+    "observer_primary_cleanup_error",
+    "cleanup_deadline",
+    "observer_cancel_grace5",
+    "observer_cancel_force0"
+  ],
+  "bounds": {
+    "preflight": 120,
+    "acquisition": 240,
+    "install": 300,
+    "synthetic": 120,
+    "original": 720,
+    "lifecycle": 120,
+    "observer": 120
+  },
+  "deadline": {
+    "nbclient_version": "0.11.0",
+    "member": "nbclient/client.py",
+    "sha256": "5a61fded74a94fd0851c8a85d55d12a9e9fb44be34324a44583efe48e874da8a",
+    "lines": [
+      1004,
+      1009
+    ],
+    "error_type": "DeadKernelError",
+    "message": "Kernel died",
+    "allowance_seconds": 1,
+    "elapsed_min": 0.9,
+    "elapsed_max": 2.0,
+    "classification": "Deadline-compatible diagnostic, not unique causal proof. Configured asyncio.wait_for remains1 second. The0.9\u20132.0 elapsed window permits up to1 second scheduling/reporting latency; it never changes execution allowance. Exact cleanup source only prints then sleeps30 seconds. An independent external kill inside the window cannot be excluded by these checkpoints. Restoration remains unconfirmed.",
+    "cleanup_source_sha256": "bc046eda36f04d2884f8c57bd9fe79cb41b128f96833d3128b9b0328670a697b"
+  },
+  "reuse_provenance": {
+    "path": "diagnostics/notebook-linux-originals/retained_execution.py",
+    "revision": "7c75fa2da833aa4f03c844317745e611119cac12",
+    "sha256": "94202ae45007fb6ffb69e7add36ab6e00387542c1619dadd5daae3766fa5902e",
+    "copied_functions": [
+      "require",
+      "digest",
+      "read",
+      "write",
+      "safe_parts",
+      "verify_manifest",
+      "png",
+      "finite",
+      "witness",
+      "audit_run"
+    ]
+  },
+  "scope": "Finite original code plus authored fixtures only; external resources, interpretation, visual review and release acceptance remain separate",
+  "argv_schema": {
+    "interpreter_flags": [
+      "-B",
+      "-E",
+      "-s"
+    ],
+    "preflight": [
+      "{base_python}",
+      "-B",
+      "-E",
+      "-s",
+      "{case_runtime}/test_linux_execution.py",
+      "--preflight",
+      "--output",
+      "{case_output}"
+    ],
+    "environment": [
+      "{base_python}",
+      "-B",
+      "-E",
+      "-s",
+      "{product}/windows/dev13-notebooks/run.py",
+      "environment",
+      "--profile",
+      "{artifact.profile}",
+      "--python",
+      "{base_python}",
+      "--wheelhouse",
+      "{dependency}/retained/{artifact.subdir}/wheels",
+      "--destination",
+      "{fresh_environment}"
+    ],
+    "original": [
+      "{base_python}",
+      "-B",
+      "-E",
+      "-s",
+      "{case_runtime}/run.py",
+      "run",
+      "--contract",
+      "{ibm019|ibm020}",
+      "--source",
+      "{dependency54}/retained/acquisition/inputs/sources/{contract}.ipynb",
+      "--environment",
+      "{environment54}",
+      "--output",
+      "{case_output}"
+    ],
+    "worker": [
+      "{environment46|54}/bin/python",
+      "-B",
+      "-E",
+      "-s",
+      "{harness}/run_regression.py",
+      "worker",
+      "--kind",
+      "{synthetic|lifecycle|observer}",
+      "--case",
+      "{frozen_case_if_applicable}",
+      "--runtime",
+      "{case_runtime}",
+      "--root",
+      "{case_output}"
+    ],
+    "installer_gated_entry": [
+      "{base_python}",
+      "-I",
+      "-B",
+      "{harness}/run_regression.py",
+      "install-worker",
+      "--root",
+      "{install_evidence}"
+    ]
+  },
+  "case_limits": {
+    "observer_success": {
+      "command_seconds": 120,
+      "cell_seconds": 10,
+      "cleanup_seconds": 5,
+      "grace_seconds": 5,
+      "service_seconds": 90,
+      "ready_seconds": null
+    },
+    "observer_failure": {
+      "command_seconds": 120,
+      "cell_seconds": 10,
+      "cleanup_seconds": 5,
+      "grace_seconds": 5,
+      "service_seconds": 90,
+      "ready_seconds": null
+    },
+    "source_primary_cleanup_error": {
+      "command_seconds": 120,
+      "cell_seconds": 10,
+      "cleanup_seconds": 5,
+      "grace_seconds": 5,
+      "service_seconds": 90,
+      "ready_seconds": null
+    },
+    "observer_primary_cleanup_error": {
+      "command_seconds": 120,
+      "cell_seconds": 10,
+      "cleanup_seconds": 5,
+      "grace_seconds": 5,
+      "service_seconds": 90,
+      "ready_seconds": null
+    },
+    "cleanup_deadline": {
+      "command_seconds": 120,
+      "cell_seconds": 10,
+      "cleanup_seconds": 1,
+      "grace_seconds": 5,
+      "service_seconds": 90,
+      "ready_seconds": null
+    },
+    "observer_cancel_grace5": {
+      "command_seconds": 120,
+      "cell_seconds": 60,
+      "cleanup_seconds": 5,
+      "grace_seconds": 5,
+      "service_seconds": 90,
+      "ready_seconds": 30
+    },
+    "observer_cancel_force0": {
+      "command_seconds": 120,
+      "cell_seconds": 60,
+      "cleanup_seconds": 5,
+      "grace_seconds": 0,
+      "service_seconds": 90,
+      "ready_seconds": 30
+    }
+  },
+  "generated_file_policy": "Hash installed source, METADATA, RECORD, native libraries and interpreter before/after; exclude generated __pycache__ bytecode from immutable comparison. Preserve runtime-copy bytecode in evidence. Never exclude product source or fixtures.",
+  "revision02_repairs": {
+    "preserved_previous_manifest_sha256": "75f928bf092864c77a57faab3c340f476e73868ca77c11a791e6271ce746e69f",
+    "supervisor_exit": {
+      "observer_success": 0,
+      "other_observer_cases": 1,
+      "raw_receipt": "supervisor-exit.json"
+    },
+    "artifact_metadata": "Bounded public body and fixed endpoint/status context persisted before JSON parse or identity checks; no headers or signed storage URL.",
+    "installer_containment": {
+      "implementation": "unchanged windows/dev13-notebooks/linux_lifecycle.py LinuxService",
+      "source_sha256": "72277c1af6ad0e5615d55589fc852f22232a26b11efa5ee7b5dc9789cd496dc1",
+      "worker_mode": "install-worker",
+      "gate": "start newline required after exact LinuxService.assign ownership verification; EOF/wrong input launches no installer",
+      "RuntimeMaxSec": 300,
+      "outer_wait_budget_seconds": 300,
+      "existing_TimeoutStartSec": 10,
+      "existing_TimeoutStopSec": 5,
+      "collection_seconds": 10,
+      "KillMode": "control-group",
+      "claim": "Specific verified transient unit only; no broader process-group/user/job ownership. Startup/stop/collection/audit I/O can extend cleanup beyond wait budget; no hard total.",
+      "failure_policy": "Preserve primary and every secondary cleanup/write failure. Independently attempt verified exact-unit recovery if LinuxService diagnostic persistence fails. Unknown population remains unconfirmed; no acceptance on nonzero exit, live descendants or cleanup errors."
+    }
+  }
+}

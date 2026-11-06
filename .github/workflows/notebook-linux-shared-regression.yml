@@ -1,0 +1,62 @@
+name: Finite current-engine Linux regression
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: notebook-linux-shared-regression
+  cancel-in-progress: false
+jobs:
+  regression:
+    if: github.repository == 'badtyprr/quantumstudio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      HARNESS_REVISION: ${{ github.sha }}
+      WORKFLOW_REVISION: ${{ github.workflow_sha }}
+      WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Check out immutable product
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 7c75fa2da833aa4f03c844317745e611119cac12
+          persist-credentials: false
+          path: product
+      - name: Check out exact reviewed harness
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          path: harness
+      - name: Set up fixed Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: SDK-free harness checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -I -B harness/diagnostics/notebook-linux-shared-regression/test_regression.py
+          python -I -B -O harness/diagnostics/notebook-linux-shared-regression/test_regression.py
+      - name: Serial pinned finite regression
+        shell: bash
+        env:
+          ARTIFACT_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -I -B harness/diagnostics/notebook-linux-shared-regression/run_regression.py run --root "$RUNNER_TEMP/notebook-linux-shared-regression" --product "$GITHUB_WORKSPACE/product"
+      - name: Seal partial evidence even on failure
+        if: always()
+        shell: bash
+        run: |
+          python -I -B harness/diagnostics/notebook-linux-shared-regression/run_regression.py seal --root "$RUNNER_TEMP/notebook-linux-shared-regression"
+      - name: Retain finite evidence without installed environments
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: notebook-linux-shared-regression-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/notebook-linux-shared-regression/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

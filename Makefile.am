@@ -398,3 +398,9 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/reference-results.jso
 EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/reference.py
 EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/reviews.json
 EXTRA_DIST += docs/learning-evidence/aud01-ibm021/sampling/source-claims.json
+
+EXTRA_DIST += .github/workflows/notebook-linux-shared-regression.yml
+EXTRA_DIST += diagnostics/notebook-linux-shared-regression/run_regression.py
+EXTRA_DIST += diagnostics/notebook-linux-shared-regression/fixtures.py
+EXTRA_DIST += diagnostics/notebook-linux-shared-regression/test_regression.py
+EXTRA_DIST += diagnostics/notebook-linux-shared-regression/expected.json
