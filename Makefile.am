@@ -523,3 +523,6 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm026/visual/visual-inventory.json
 
 EXTRA_DIST += docs/learning-evidence/aud01-ibm023/README.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm023/evidence-index.json
+
+EXTRA_DIST += docs/learning-evidence/aud01-ibm027/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm027/evidence-index.json

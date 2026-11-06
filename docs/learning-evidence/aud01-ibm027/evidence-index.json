@@ -1,0 +1,430 @@
+{
+  "scope": "Finite source/reference and legacy-route evidence index; not self-contained repository evidence",
+  "proposal_base": "42307601e7f02eac805de814afa5456e97798c5b",
+  "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "source_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "reference_cases": 41,
+  "legacy_worker_revision": "577dbb6572a9442e1d654e4b2264709f603d77ab",
+  "legacy_worker_sha256": "1d9fbc1e42a1b001d73665fee5f7cbf46df02fdf5eb180f9ebd73345bd1daff9",
+  "cohorts": {
+    "ibm027-native-baseline-run-01": {
+      "status": "failed",
+      "calls": 3,
+      "raw_bytes": 461,
+      "primaries": 2,
+      "copies": 1,
+      "returned_primaries": 1,
+      "rejected_primaries": 1,
+      "unrun_primary": [
+        "original-A-dagger-A-chain",
+        "adapted-AA-dagger",
+        "adapted-A-dagger-A",
+        "adapted-Pplus",
+        "adapted-Pminus",
+        "adapted-projector-sum",
+        "adapted-projector-difference",
+        "adapted-positive-eigenresidual",
+        "adapted-negative-eigenresidual",
+        "adapted-projector-idempotence"
+      ]
+    },
+    "ibm027-dagger-route-run-01": {
+      "status": "characterization_pass",
+      "calls": 14,
+      "raw_bytes": 2220,
+      "primaries": 8,
+      "copies": 6,
+      "returned_primaries": 6,
+      "rejected_primaries": 2,
+      "unrun_primary": []
+    }
+  },
+  "evidence": [
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/source.ipynb",
+      "sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+      "bytes": 13341,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/manifest.json",
+      "sha256": "07c6fd9440d7e5da758a94d60016e334a706c1513a38c586fcf4596e3e94399d",
+      "bytes": 2371,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/inventory.json",
+      "sha256": "46d2fa911cb410fe33fd280333122aaa3130b81fb9d7039c9f2d5716af9c0afb",
+      "bytes": 53523,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/media-locators.json",
+      "sha256": "047ec4837f8c051d3e4d01e62955c49b19d8520e5e6d1c809d2c51e6fc37c5ff",
+      "bytes": 253,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/research.md",
+      "sha256": "fa57e549bf397be7a4d0c4179bc4e822254e8338cf509ac9625d601e3756a55f",
+      "bytes": 6464,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/reference.py",
+      "sha256": "230c493cc6f7f8453ea449874a97421cc77d23221c66cc6280dc73b65271da88",
+      "bytes": 5021,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/reference-results.json",
+      "sha256": "9828e660aaec46d2cdc4c5e6c4ef37fcf851c100c9d09bbc8d6dcb2a3a6889a7",
+      "bytes": 18513,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/spec-review.json",
+      "sha256": "d8165e40693e67b823be78de05727c5ac0417c4ac6e8d4412a06b7b209b142c0",
+      "bytes": 1779,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/standards-review.json",
+      "sha256": "b03c8c57d2ce29c58be3fb9022c3cdd2552b871f4426bda5e346c8d500eefe74",
+      "bytes": 3271,
+      "receipt_role": "Source, finite exact reference or independent final source review",
+      "stage": "source_reference",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/bindings.json",
+      "sha256": "613f1487078ba2088aaa214c3f9f17625cbfb9f8e296f198d416871c47e2ba4d",
+      "bytes": 5002,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/fixtures.json",
+      "sha256": "7b1a28ba5b3a122bb9da0be305daf98533b7e20dcde6da64b6b5c65e1de90623",
+      "bytes": 17817,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/frozen-manifest.json",
+      "sha256": "b60c7e20bddb80bdcf7068ae918d1e09e659a48174d5e6dc3d6300d05eab99ab",
+      "bytes": 732,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/probe.py",
+      "sha256": "0310dac4acf8d0ede285a0fb3048ee5c2dfbb87911663fe2ee2a924e62dee70a",
+      "bytes": 16942,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/README.md",
+      "sha256": "7e7781d4b1a1a33f773bd9374b3f52c39bac0568697ff526c349c627d039eb4c",
+      "bytes": 3768,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/results.json",
+      "sha256": "6368fbebaa5d9d984497804ca444c60787e98b925e7418493f749b0588ca0991",
+      "bytes": 9955,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/terminal-reconciliation.json",
+      "sha256": "9692aa2655693e10a56290390c58cfc906072a8e2fe6fee123e434060575a7a2",
+      "bytes": 5102,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/live-pid-query.json",
+      "sha256": "71a11ff3359875a9f65b7f2a78845517e655a58e0e34c90d9a7aac7ebd41c956",
+      "bytes": 140,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/actual-spec-review.json",
+      "sha256": "f03a7e36f38c7efbde055b5991af4c0c9f72e6e01d5e577ff94bc2eae6bdd49d",
+      "bytes": 2953,
+      "receipt_role": "Independent actual-run final review",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/actual-standards-review.json",
+      "sha256": "8afac150f088e1d8cc090918d8fa6906dff506cf2a20d72ca0e23efe22e40246",
+      "bytes": 9651,
+      "receipt_role": "Independent actual-run final review",
+      "stage": "ibm027-native-baseline-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/bindings.json",
+      "sha256": "707ed0949b1dcea0bd8c7c90f591c1669a934c6f2f4f6d7de3de7c79b7aa2938",
+      "bytes": 5406,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/fixtures.json",
+      "sha256": "0e71964d0f83d26f7563358fba01e8db5788d29f9faa916ea3917ad0a5fc2e0b",
+      "bytes": 13515,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/frozen-manifest.json",
+      "sha256": "04d1a2b63f0f319026e2aa895ef2385b2c0c5fa7afd090b70486402f28403ad8",
+      "bytes": 557,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/probe.py",
+      "sha256": "16268f8bd283f75aee58bfc255def32f9d830a5c9698f095076e6d3ae810dad4",
+      "bytes": 18490,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/README.md",
+      "sha256": "618b45cb1357a0f0f8850a5a1e2662a71598d132137874c35320a422712d7f02",
+      "bytes": 3450,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/results.json",
+      "sha256": "a49aece9a6aacfd3f51e722120193e079963a4b180b54c050a5f2dddaa362662",
+      "bytes": 22137,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/terminal-reconciliation.json",
+      "sha256": "7b48d12a7dc0cee594cf276e78888aea1c24da2400662bf5629a0bfec219ac12",
+      "bytes": 5443,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/live-pid-query.json",
+      "sha256": "48ebfd34383d66d0eec2e9f835820dcf311152750699c83de4b54682b48c3f07",
+      "bytes": 271,
+      "receipt_role": "Frozen inputs, retained actual records or process/provenance receipt",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/actual-spec-review.json",
+      "sha256": "ed116cc1cb4a7c5ffe00bef291f9e593ce4ccdb73aab6cfc79d10fac61286199",
+      "bytes": 2925,
+      "receipt_role": "Independent actual-run final review",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/actual-standards-review.json",
+      "sha256": "44d877845381750f1672145a69af9acf21fd710d349746867eb847b54f61d939",
+      "bytes": 9981,
+      "receipt_role": "Independent actual-run final review",
+      "stage": "ibm027-dagger-route-run-01",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/source-routing-triage.json",
+      "sha256": "f61b78bef64c0b44f6b4695f9c86202d2ea061288bf084e69cd00db9d6cc6cf2",
+      "bytes": 3025,
+      "receipt_role": "Retained initial source routing triage / review",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/source-routing-spec-review.json",
+      "sha256": "1ceeaa9cef49d907540679c0f5aab4d3a6486dbe6218e751f66780e71253a009",
+      "bytes": 2123,
+      "receipt_role": "Retained initial source routing triage / review",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/source-routing-standards-review.json",
+      "sha256": "32aae4e9ff90ddcb8c3ed3874937196bdb444fb7a2a25ce8943d014b6b25cd67",
+      "bytes": 2962,
+      "receipt_role": "Retained initial source routing triage / review",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-diagnosis-01/PLAN.md",
+      "sha256": "5c3bcfd032b91f9214d629021a99020d8d1919ad95ba2c2e08245da79c8a07ef",
+      "bytes": 5108,
+      "receipt_role": "Frozen seven-blob source route diagnosis and finite eight-case proposal",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-diagnosis-01/REPORT.md",
+      "sha256": "82eac35ffea3d295fd4872ba7484f594a8beaa60783f9b69bb55657c290ac918",
+      "bytes": 6294,
+      "receipt_role": "Frozen seven-blob source route diagnosis and finite eight-case proposal",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-diagnosis-01/source-bindings.json",
+      "sha256": "33780c68d135c890b70bff6270ba5600391383b12e52daf695ef1345e4a4b034",
+      "bytes": 22424,
+      "receipt_role": "Frozen seven-blob source route diagnosis and finite eight-case proposal",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-diagnosis-01/proposed-fixtures.json",
+      "sha256": "0e71964d0f83d26f7563358fba01e8db5788d29f9faa916ea3917ad0a5fc2e0b",
+      "bytes": 13515,
+      "receipt_role": "Frozen seven-blob source route diagnosis and finite eight-case proposal",
+      "stage": "routing_diagnosis",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-spec-review.json",
+      "sha256": "03be236ab1fc266eed35516e8cfd6a641015b7ccba6af10ead9c70268f1a1bfc",
+      "bytes": 3460,
+      "receipt_role": "Prior finding retained or final independent diagnosis review; final filenames identify final disposition",
+      "stage": "routing_reviews",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-standards-review.json",
+      "sha256": "a7135273e89793c32c8181689cd1961b58ad679d20add26b4b6788c9a969f082",
+      "bytes": 4164,
+      "receipt_role": "Prior finding retained or final independent diagnosis review; final filenames identify final disposition",
+      "stage": "routing_reviews",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-spec-final-review.json",
+      "sha256": "855803ad80f599622376707dc81191aae0759cfc3446c907d75f4e040237f0d2",
+      "bytes": 1805,
+      "receipt_role": "Prior finding retained or final independent diagnosis review; final filenames identify final disposition",
+      "stage": "routing_reviews",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-standards-final-review.json",
+      "sha256": "f89356dd6e10c47e0692fb23c176486096700650bf4b9953958e04b367351706",
+      "bytes": 1482,
+      "receipt_role": "Prior finding retained or final independent diagnosis review; final filenames identify final disposition",
+      "stage": "routing_reviews",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm027-baseline-final-verification-20261105.json",
+      "sha256": "81453e76904a54198427f1ed1021f7cbe48da39e5b4b446e6cc922255b0b20e0",
+      "bytes": 838,
+      "receipt_role": "Coordinator finite final acceptance / review verification",
+      "stage": "owner_verification",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm027-dagger-diagnosis-owner-verification-20261105.json",
+      "sha256": "7f288fd881b9f8a63987b92b00e46f1620321070b8b6eaa7977733d462b7f456",
+      "bytes": 949,
+      "receipt_role": "Coordinator finite final acceptance / review verification",
+      "stage": "owner_verification",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm027-dagger-actual-owner-verification-20261105.json",
+      "sha256": "89ed0ab87ecb039322a7bd1a261bdc102c1e8225d190f7e4e4d98496fc14b462",
+      "bytes": 788,
+      "receipt_role": "Coordinator finite final acceptance / review verification",
+      "stage": "owner_verification",
+      "storage": "External retained cleanup-audit evidence, outside disposable clones; payload not copied"
+    }
+  ],
+  "final_review_identities": [
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/spec-review.json",
+      "sha256": "d8165e40693e67b823be78de05727c5ac0417c4ac6e8d4412a06b7b209b142c0"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-source-analysis/standards-review.json",
+      "sha256": "b03c8c57d2ce29c58be3fb9022c3cdd2552b871f4426bda5e346c8d500eefe74"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/actual-spec-review.json",
+      "sha256": "f03a7e36f38c7efbde055b5991af4c0c9f72e6e01d5e577ff94bc2eae6bdd49d"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-native-baseline-run-01/actual-standards-review.json",
+      "sha256": "8afac150f088e1d8cc090918d8fa6906dff506cf2a20d72ca0e23efe22e40246"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/actual-spec-review.json",
+      "sha256": "ed116cc1cb4a7c5ffe00bef291f9e593ce4ccdb73aab6cfc79d10fac61286199"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-run-01/actual-standards-review.json",
+      "sha256": "44d877845381750f1672145a69af9acf21fd710d349746867eb847b54f61d939"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-spec-final-review.json",
+      "sha256": "855803ad80f599622376707dc81191aae0759cfc3446c907d75f4e040237f0d2"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm027-dagger-route-standards-final-review.json",
+      "sha256": "f89356dd6e10c47e0692fb23c176486096700650bf4b9953958e04b367351706"
+    }
+  ],
+  "limits": [
+    "Raw external paths/hashes preserve evidence outside disposable clones; no raw run/session/credential payload is copied.",
+    "41 exact source references are distinct from native observations and do not prove the general spectral theorem.",
+    "Baseline ten unrun primaries remain unaccepted; the separate eight-case route cohort does not complete them.",
+    "Unchanged original dagger chain still rejects; prefix-only adaptation is disclosed and limited.",
+    "No current-build, product-fix, GUI/session, whole-source or release claim.",
+    "Mutable pending gap-design artifacts and claims are excluded."
+  ]
+}
