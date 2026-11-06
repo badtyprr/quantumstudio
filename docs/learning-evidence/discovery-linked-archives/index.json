@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "proposal_base": "1b16f936b4e250b3b531e5f64004a15ec51d0c8d",
-  "scope": "Additive finite IBM109 and IBM114 linked-archive access evidence",
+  "scope": "Additive finite IBM109, IBM114, IBM117 and IBM118 linked-archive access evidence",
   "observations": [
     {
       "source_id": "IBM-109",
@@ -138,6 +138,74 @@
       "historical_archive_equivalence": false,
       "execution": false,
       "inspection": "Reviewed ZIP metadata, bounded member decompression/hash/CRC and PDF 1.7 magic only; no PDF parser, pages, content or rendering."
+    },
+    {
+      "source_id": "IBM-117",
+      "target_key": "IBM-LINK-6560dbd3a8590886",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "source_path": "learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+      "source_pin_key": "117/source_pin",
+      "source_git_blob": "26c680e1c0e51e26fba8a87350123b15e1b9f2ac",
+      "cell": 0,
+      "offset": 268,
+      "end_offset": 362,
+      "offset_units": "Unicode codepoints in exact cell/body source",
+      "exact_link_span": "[Download the pdf](https://ibm.ent.box.com/public/static/3s99zptw6c7nrfzmneogs4y7ezrx5nbh.zip)",
+      "original_inventory_access": "not_checked; repository presence is not HTTP access",
+      "requirement_status": "ambiguous",
+      "new_observation": "Anonymous HTTP 200 according to retained receipt; no fresh availability check by index author",
+      "archive_pin_key": "117/download.zip",
+      "member": {
+        "name": "4_utility_lecture_Grover.pdf",
+        "bytes": 638209,
+        "compressed_bytes": 599219,
+        "sha256": "1fe702263df476f28cbb16506798f238d3a29a923281dfb4dc77535e89e9606b",
+        "crc32_hex": "776bb6db",
+        "magic_hex": "255044462d312e37",
+        "pdf_magic": true,
+        "is_directory": false
+      },
+      "review_pin_keys": [
+        "117/standards",
+        "117/spec"
+      ],
+      "inspection": "Independently reviewed ZIP metadata, bounded member bytes/hash/CRC and PDF 1.7 magic only; no PDF parsing, pages, content or rendering.",
+      "historical_archive_equivalence": false,
+      "execution": false
+    },
+    {
+      "source_id": "IBM-118",
+      "target_key": "IBM-LINK-7cca562ac9e386c3",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "source_path": "learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+      "source_pin_key": "118/source_pin",
+      "source_git_blob": "86c93cb3cf92742e4049effe01da2f1f0869a3f1",
+      "cell": 0,
+      "offset": 387,
+      "end_offset": 481,
+      "offset_units": "Unicode codepoints in exact cell/body source",
+      "exact_link_span": "[Download the pdf](https://ibm.ent.box.com/public/static/srgnll6u8ame7gk186pkthq7erc7l6rw.zip)",
+      "original_inventory_access": "not_checked; repository presence is not HTTP access",
+      "requirement_status": "ambiguous",
+      "new_observation": "Anonymous HTTP 200 according to retained receipt; no fresh availability check by index author",
+      "archive_pin_key": "118/download.zip",
+      "member": {
+        "name": "5_utility_lecture_QPE.pdf",
+        "bytes": 1317790,
+        "compressed_bytes": 947961,
+        "sha256": "9a9b803442584b765faefd31c696c170141bb5987a84bbf28c884788d1565554",
+        "crc32_hex": "4d54b4cb",
+        "magic_hex": "255044462d312e37",
+        "pdf_magic": true,
+        "is_directory": false
+      },
+      "review_pin_keys": [
+        "118/standards",
+        "118/spec"
+      ],
+      "inspection": "Independently reviewed ZIP metadata, bounded member bytes/hash/CRC and PDF 1.7 magic only; no PDF parsing, pages, content or rendering.",
+      "historical_archive_equivalence": false,
+      "execution": false
     }
   ],
   "historical_context": {
@@ -157,12 +225,12 @@
     }
   },
   "limitations": [
-    "Requirement remains ambiguous for both targets; access does not establish mandatory dependencies.",
+    "Requirement remains ambiguous for all four targets; access does not establish mandatory dependencies.",
     "No historical archive byte equality, current execution, scientific correctness, release or whole-source acceptance.",
     "IBM109 six stored residual output records are historical; dependency pinning and full notebook execution remain pending.",
     "IBM114 PDF magic is not structure, page, content or rendering validation.",
     "IBM109 successful packet lacks full redirect-hop chain and collector implementation; no independent runtime-bound enforcement claim.",
-    "Other ten ZIP statuses and all stable IDs and checkboxes unchanged."
+    "Other eight ZIP statuses are unchanged, not newly verified; all stable IDs and checkboxes unchanged."
   ],
   "external_pins": {
     "reviewed_inventory": {
@@ -264,6 +332,136 @@
       "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105/acquisition.json",
       "bytes": 4698,
       "sha256": "19f99c5bce2c9d92240c4f644ba3bc4b30d2f6a99a70c7ea72fac9482814ff14"
+    },
+    "117/manifest": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/manifest.json",
+      "bytes": 1564,
+      "sha256": "a3e80099295a72d18b79021fe1a944516cc4a6abc02b725e13bebcbc9c8e08b9"
+    },
+    "117/acquire.py": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/acquire.py",
+      "bytes": 11256,
+      "sha256": "73af62d044e9d35a2d847b69e9209b06a966685d2f373ff92f472d397692d8a3"
+    },
+    "117/acquisition.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/acquisition.json",
+      "bytes": 4845,
+      "sha256": "59b354dce82b21db24465f2e1132f024773b4804dce92dc118de835edb96978b"
+    },
+    "117/download.zip": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/download.zip",
+      "bytes": 599445,
+      "sha256": "712da30eccd274cffc3d15201715b189a8dc334191eab7ddd54124a2c3abae44"
+    },
+    "117/members.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/members.json",
+      "bytes": 318,
+      "sha256": "088800a17b81a03b21e072afcc7d9f18ddf8ca0ef29ee3dbb10b31f4a5f8311e"
+    },
+    "117/provenance.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/provenance.json",
+      "bytes": 2650,
+      "sha256": "7673165bd69993c61bd0a2e2fbb52fb4992ae89dbeca2398ea30300023dff950"
+    },
+    "117/README.md": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01/README.md",
+      "bytes": 2015,
+      "sha256": "65414abf44cb34df7300178892b8f6a996db78360d3a2d3036056e0061b2b702"
+    },
+    "117/standards": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01-standards-review.json",
+      "bytes": 1922,
+      "sha256": "f2ac1b7a711eba86225938b190b2228e8c0caa3cd8d756d925aeec90371bcef2"
+    },
+    "117/spec": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm117-linked-archive-20261106-attempt01-spec-review.json",
+      "bytes": 1593,
+      "sha256": "71ddf2cbde091cb5fecbb6513f7a609345858c08254b01e5f5589c6a4730717a"
+    },
+    "117/source_pin": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+      "bytes": 31171,
+      "sha256": "2c47467fed30021fc7b9495c0a97f927aee6c177dc48ebf34923fa33d296775e"
+    },
+    "117/inventory_pin": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-linked-requirements-revision01/inventory.json",
+      "bytes": 2346750,
+      "sha256": "a5f38647e0e5556a1c15616e6b39b4f93aa9916ffca29f76cd878b3dae6e6da4"
+    },
+    "117/ledger_pin": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/manifest.json",
+      "bytes": 807017,
+      "sha256": "91cd1b1f283c1e8101aa9980d93f7569259f619fc2ba33f6cdf31fef976e0e0a"
+    },
+    "118/manifest": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/manifest.json",
+      "bytes": 1564,
+      "sha256": "31e5b6453378059df7d96430f6e8a1504438c1838fddf14cb454fe4746a872ba"
+    },
+    "118/acquire.py": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/acquire.py",
+      "bytes": 11256,
+      "sha256": "73af62d044e9d35a2d847b69e9209b06a966685d2f373ff92f472d397692d8a3"
+    },
+    "118/acquisition.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/acquisition.json",
+      "bytes": 4861,
+      "sha256": "ae719064d8226aa460a50ef655d2a503fbc48f8bd3763e224f0284b75ecc5a00"
+    },
+    "118/download.zip": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/download.zip",
+      "bytes": 948181,
+      "sha256": "001d0bdc042d352974a95d38739cc6563243226e6ccfecf208cb31207f9ce05c"
+    },
+    "118/members.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/members.json",
+      "bytes": 316,
+      "sha256": "0126f8763bd166446c56208a7ee1ecedc518520702e83485305273a8733a5184"
+    },
+    "118/provenance.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/provenance.json",
+      "bytes": 2663,
+      "sha256": "4b656c10b23e53b2b2b8359c5b0dc9f77d41bbfa5fa80c02b63ff29088e7262b"
+    },
+    "118/README.md": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01/README.md",
+      "bytes": 1988,
+      "sha256": "1498d36efe576c43bc31f1485a1585ef69232a14a8a31a85af34373402a61371"
+    },
+    "118/standards": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01-standards-review.json",
+      "bytes": 1920,
+      "sha256": "ebd013412c473b451cb5838c2e32300a6e0684b6bc1d43c1009866e1856fe9f2"
+    },
+    "118/spec": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm118-linked-archive-20261106-attempt01-spec-review.json",
+      "bytes": 1593,
+      "sha256": "a352228f09a5e6e117107843bb8b8da32faf43efc3108e12ae40e8baa055271d"
+    },
+    "118/source_pin": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+      "bytes": 42487,
+      "sha256": "249d761a7b4e566c1ebd25d126df2ac3cc49e7c7dc129a919f6f179c423ee2d4"
+    },
+    "118/inventory_pin": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-linked-requirements-revision01/inventory.json",
+      "bytes": 2346750,
+      "sha256": "a5f38647e0e5556a1c15616e6b39b4f93aa9916ffca29f76cd878b3dae6e6da4"
+    },
+    "118/ledger_pin": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/manifest.json",
+      "bytes": 807017,
+      "sha256": "91cd1b1f283c1e8101aa9980d93f7569259f619fc2ba33f6cdf31fef976e0e0a"
     }
+  },
+  "later_access_snapshot": {
+    "proposal_base": "43a0f40e45531f3af224f4515a6cd5bb986991f3",
+    "previous_observations": 2,
+    "additional_observations": 2,
+    "total_retained_observations": 4,
+    "original_zip_targets": 12,
+    "other_zip_statuses_unchanged": 8,
+    "remaining_eight_newly_verified": false,
+    "note": "historical_context and its twelve/ten counts describe the earlier IBM109/114 snapshot; original inventory unchanged"
   }
 }
