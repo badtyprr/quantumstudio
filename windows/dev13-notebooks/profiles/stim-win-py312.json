@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "stim-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "stim-requirements.lock",
+  "lock_sha256": "77ca89424d928dfae1267975702c0a524f385724b0aea7b5fc6c3e5868b21a44",
+  "offline_only": true,
+  "wheel_requirement": "Reviewed 76-distribution Windows closure for QB013 including qbraid0.13, Cirq1.5, Stim/stimcirq1.15 and Qiskit2.6.1; exact inventory required",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}

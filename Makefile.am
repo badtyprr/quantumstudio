@@ -531,3 +531,15 @@ EXTRA_DIST += docs/learning-evidence/discovery-reconciliation/index.json
 
 EXTRA_DIST += docs/learning-evidence/aud01-ibm028/README.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm028/index.json
+
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb013.json
+EXTRA_DIST += windows/dev13-notebooks/profiles/stim-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/stim-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/observers/qb013.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb013_checkpoint.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb013_cleanup.py
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb013.py
+EXTRA_DIST += windows/dev13-notebooks/qb013_reference.py
+EXTRA_DIST += windows/dev13-notebooks/qb013_output_audit.py
+EXTRA_DIST += windows/dev13-notebooks/test_qb013.py
+EXTRA_DIST += docs/learning-evidence/dev13/qb013-stim.md
