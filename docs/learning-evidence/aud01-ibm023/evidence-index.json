@@ -1,0 +1,681 @@
+{
+  "scope": "External evidence index only, not self-contained repository evidence or whole-source certification",
+  "proposal_base": "a007839747ad619952d9e38e3c98b16a9bae6c2f",
+  "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+  "ibm023_original_sha256": "cf02361b6238447bf11a13732a81dc0009c3522e4c5de3721235d0a55bcf2fe3",
+  "legacy_worker": {
+    "revision": "577dbb6572a9442e1d654e4b2264709f603d77ab",
+    "sha256": "1d9fbc1e42a1b001d73665fee5f7cbf46df02fdf5eb180f9ebd73345bd1daff9",
+    "definitions": "23 files bound in external bindings; no current-engine or release equivalence inferred"
+  },
+  "candidate": {
+    "base": "78bf6cf7fb6ca52c884320cc7ec2a53958627109",
+    "product_scope": [
+      "libqalculate/BuiltinFunctions-number.cc",
+      "tests/polynomial.batch"
+    ],
+    "state": "source-reviewed, not built; no candidate-native acceptance or release claim"
+  },
+  "observed_counts": {
+    "ibm023-native-pilot-run-01": {
+      "status": "first_failure_stop",
+      "calls": 1,
+      "raw_bytes": 70,
+      "primary_requests": 1,
+      "copy_requests": 0,
+      "returned_primaries": 0,
+      "rejected_primaries": 1
+    },
+    "ibm023-route-diagnostic-run-01": {
+      "status": "pass",
+      "calls": 7,
+      "raw_bytes": 856,
+      "primary_requests": 4,
+      "copy_requests": 3,
+      "returned_primaries": 3,
+      "rejected_primaries": 1
+    },
+    "ibm023-deferred-arithmetic-run-01": {
+      "status": "first_failure_stop",
+      "calls": 27,
+      "raw_bytes": 5855,
+      "primary_requests": 14,
+      "copy_requests": 13,
+      "returned_primaries": 13,
+      "rejected_primaries": 1
+    },
+    "gcd-zero-legacy-characterization-run-01": {
+      "status": "observations_complete",
+      "calls": 47,
+      "raw_bytes": 5947,
+      "primary_requests": 33,
+      "copy_requests": 14,
+      "returned_primaries": 14,
+      "rejected_primaries": 19
+    }
+  },
+  "final_review_identities": [
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/reviews.json",
+      "sha256": "05ba849b5c1eb59e92126c42a2c0aaa9907a654c4d7e52bec61257017aa03b37",
+      "role": "Source inventory / exact arithmetic / independent source review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/spec-review.json",
+      "sha256": "53590fc1ae61635e67b76484e5675e11ccfd3d663528e68617c6c0a5a4b6adba",
+      "role": "Independent final recorded-run review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/standards-review.json",
+      "sha256": "210816be78d64abb18bd88bbbf37e7889fa91e76db2cba3a69a3390022b7bbd8",
+      "role": "Independent final recorded-run review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/spec-review.json",
+      "sha256": "9ba5cb639ef7dcb454bb8b609ec418642a8200deb87fc339b5d7d05a2823de0b",
+      "role": "Independent final recorded-run review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/standards-review.json",
+      "sha256": "c6bb402687394de6e7e2755fee7471d5defbf156e84a41b572fab6171f8ff581",
+      "role": "Independent final recorded-run review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/spec-review.json",
+      "sha256": "e62c5d5d48952436edeb320fb0a011d85b57c0c55e2dde94cd86d53c88751b37",
+      "role": "Independent final recorded-run review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/standards-review.json",
+      "sha256": "ea01e3f45802a02e655a3ba7bd5c77f03e5940ddacc82e60ae26ec01875d55de",
+      "role": "Independent final recorded-run review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/actual-spec-review.json",
+      "sha256": "b9fa47e94bd772eab2ce0d6b711f25c323580e35aae847252cd55a24ff995a88",
+      "role": "Independent final actual legacy review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/actual-standards-review.json",
+      "sha256": "8553732524d2c1786aa52bec5fb4cb428daaeeb14534fea5b0bcc9e24bcf5521",
+      "role": "Independent final actual legacy review"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-legacy-final-acceptance-20261105.json",
+      "sha256": "da003ed502a11f5db8911e399cf3d901b909c08d06723561811e14b1ad3c1133",
+      "role": "Coordinator acceptance, source diagnosis or build-preparation status; not candidate execution"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/spec-review.json",
+      "sha256": "23f497d3f0b8ab2205e98fd89935f8f2d4085c39daa71ee325bc5c74292d92c5",
+      "role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/standards-review.json",
+      "sha256": "8473d74582c8bd973e8b2a0a7d0a4899bcc56914f4231efb045f540c13461c70",
+      "role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/direct-controls-spec-review.json",
+      "sha256": "b8644c3fc6922e4b0fd85798008614c0412aa6cef2bf2ff5d850df6b816529f1",
+      "role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/direct-controls-standards-review-final.json",
+      "sha256": "2793b7017909553a6f23f334d4d145e4877203fe6ee2cf9d13741293e94c5ec7",
+      "role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-candidate-acceptance-revision02/spec-review.json",
+      "sha256": "34306fff44bb797dee3cd30d64aa51f96f9be9bbbfc1f58c2abbda8536e0b44a",
+      "role": "Final candidate acceptance preparation review, not executed acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-candidate-acceptance-revision02/standards-review.json",
+      "sha256": "895e51bb0fd2ac446bec77b465a2103ac967fc581d58f58d48253f5b67c5eded",
+      "role": "Final candidate acceptance preparation review, not executed acceptance"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-native-build-plan-20261105-revision02/spec-review.json",
+      "sha256": "e3eaa1c83b2141e7e08efa20c7ef70ddd155af8eb9f9771670124b61ee950a19",
+      "role": "Final finite build preparation / supervisor review; no built GCD candidate evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-native-build-plan-20261105-revision02/standards-review.json",
+      "sha256": "60276588dded336bbcc3d87b036b0ff78aef02a73daeb8c64c9a6784c668a785",
+      "role": "Final finite build preparation / supervisor review; no built GCD candidate evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-20261105-revision03/finalspec-review.json",
+      "sha256": "e2b8eb79e3226a5108cb400a4294ddc6f49500b819cafd5c23a9cdbb745f13b1",
+      "role": "Final finite build preparation / supervisor review; no built GCD candidate evidence"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-20261105-revision03/finalstandards-review.json",
+      "sha256": "c9e8dc7f8717c6e25c1a5760ee04df4411767cc3f11fcf62257de0b19689a895",
+      "role": "Final finite build preparation / supervisor review; no built GCD candidate evidence"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/IBM-022.ipynb",
+      "sha256": "57bff76fa779ad3f46c72ae08daf1fb31fe0731d8e4d823ab0c26e1541df99ea",
+      "bytes": 4005,
+      "receipt_role": "Original source",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/IBM-023.ipynb",
+      "sha256": "cf02361b6238447bf11a13732a81dc0009c3522e4c5de3721235d0a55bcf2fe3",
+      "bytes": 10666,
+      "receipt_role": "Original source",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/inventory.json",
+      "sha256": "9f8294d7197b6a1bc1713f7847b0cdc9a984ee9a547a3cda4797e1771f4c1de3",
+      "bytes": 38630,
+      "receipt_role": "Source inventory / exact arithmetic / independent source review",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/reference-results.json",
+      "sha256": "54b4f84516f34ae1b8ed319f9db70a996d7fcda1ac4c09607cb0ed70889aa39d",
+      "bytes": 92330,
+      "receipt_role": "Source inventory / exact arithmetic / independent source review",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/REPORT.md",
+      "sha256": "821c6ae027f5b8a1ea33c401c4abf47935a1b8bf496d5cccd227a2c1471c172b",
+      "bytes": 6375,
+      "receipt_role": "Source inventory / exact arithmetic / independent source review",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/analyze.py",
+      "sha256": "2652877c82f13453065132f94472c3184d32c907ef392295d35a38a041f796b4",
+      "bytes": 6390,
+      "receipt_role": "Source inventory / exact arithmetic / independent source review",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm022023-source-analysis/reviews.json",
+      "sha256": "05ba849b5c1eb59e92126c42a2c0aaa9907a654c4d7e52bec61257017aa03b37",
+      "bytes": 1263,
+      "receipt_role": "Source inventory / exact arithmetic / independent source review",
+      "stage": "source_reference",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/bindings.json",
+      "sha256": "3be703140f703faf2c9472631e5dde352641892cdabd9ea7fcdfbd3461dc892d",
+      "bytes": 3324,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/fixtures.json",
+      "sha256": "8ba92e0a4306a4096b511bcaa61b9e5ecd850cba2b5cf3feec58ed94c4ad2920",
+      "bytes": 10790,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/probe.py",
+      "sha256": "972f65b93441d93cb6952764ae61aaa358d544de1b450dfe4ab9e2b13b190c57",
+      "bytes": 9681,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/README.md",
+      "sha256": "254b76e23a0c6bb108d71e67bfe829a837bd5d721698c3a84f847e4009e8c231",
+      "bytes": 3577,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/results.json",
+      "sha256": "182b656318f236336ef22243030861f369bebafc68599870ae59468d9c17072f",
+      "bytes": 5225,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/terminal-audit.json",
+      "sha256": "d2a469e1b6beee7b97958e3d14071ded0b16ebcdf318cf4b4e8ffc3e03987ffa",
+      "bytes": 2611,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/spec-review.json",
+      "sha256": "53590fc1ae61635e67b76484e5675e11ccfd3d663528e68617c6c0a5a4b6adba",
+      "bytes": 1833,
+      "receipt_role": "Independent final recorded-run review",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-native-pilot-run-01/standards-review.json",
+      "sha256": "210816be78d64abb18bd88bbbf37e7889fa91e76db2cba3a69a3390022b7bbd8",
+      "bytes": 4048,
+      "receipt_role": "Independent final recorded-run review",
+      "stage": "failed_bare_adaptation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/bindings.json",
+      "sha256": "49839e98e9865c740f866ac0c4660a727ec946c8d738abad3f18ff070ca94557",
+      "bytes": 3888,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/fixtures.json",
+      "sha256": "c1f88d250af0ddcaf90eeae47f944c006c4cc61d50486b22a41932dbb048e966",
+      "bytes": 1423,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/probe.py",
+      "sha256": "3e1eecaf826a4b97f2b6c715a0f70234acca4c1ee6208f8107f76fb26ad304c1",
+      "bytes": 12567,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/README.md",
+      "sha256": "ba59efda3a3f198d10b6fb287039110120a780aa8966a73c17255b946ed765a5",
+      "bytes": 3637,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/results.json",
+      "sha256": "6d5b46fa25024e319ce312433a760f7e7a1a189dae3a9a19ca6f73e00e3acf5e",
+      "bytes": 11823,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/terminal-audit.json",
+      "sha256": "f0bc2267edece297a5b767f001deb8a7af5c4aec6005b49b1208076a65ddc7ec",
+      "bytes": 2878,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/spec-review.json",
+      "sha256": "9ba5cb639ef7dcb454bb8b609ec418642a8200deb87fc339b5d7d05a2823de0b",
+      "bytes": 1538,
+      "receipt_role": "Independent final recorded-run review",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-route-diagnostic-run-01/standards-review.json",
+      "sha256": "c6bb402687394de6e7e2755fee7471d5defbf156e84a41b572fab6171f8ff581",
+      "bytes": 3279,
+      "receipt_role": "Independent final recorded-run review",
+      "stage": "original_wrapper_route",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/bindings.json",
+      "sha256": "56e8ab32751cba4cc5c80fcaedc2df410b0b58adafd030f8415245ed4794935f",
+      "bytes": 3433,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/fixtures.json",
+      "sha256": "97406d1ecddab1d81f276c31df2c8419fb054b66d9418176ab3e3e7653ff3e75",
+      "bytes": 10453,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/probe.py",
+      "sha256": "b149919cf0b43d772ed712584ebf594cd1f8866815a8a9c095afa54b387a9aff",
+      "bytes": 9689,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/README.md",
+      "sha256": "fadea8143b422a22971264ede109abeeace623d749dd0e3c7b8fd0746dbf1486",
+      "bytes": 3294,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/results.json",
+      "sha256": "a44956c626cec4d8c065b2fee56bead44dc0d30779c53534b3596d49cf732ee9",
+      "bytes": 39157,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/terminal-audit.json",
+      "sha256": "539f5391c60f1d25441c5828bebd233f25990bc02ceaa28e68bf4010d0df6b6c",
+      "bytes": 3060,
+      "receipt_role": "Frozen run inputs, actual raw results or terminal/provenance audit",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/spec-review.json",
+      "sha256": "e62c5d5d48952436edeb320fb0a011d85b57c0c55e2dde94cd86d53c88751b37",
+      "bytes": 2089,
+      "receipt_role": "Independent final recorded-run review",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/ibm023-deferred-arithmetic-run-01/standards-review.json",
+      "sha256": "ea01e3f45802a02e655a3ba7bd5c77f03e5940ddacc82e60ae26ec01875d55de",
+      "bytes": 4477,
+      "receipt_role": "Independent final recorded-run review",
+      "stage": "finite_arithmetic_then_zero_failure",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/bindings.json",
+      "sha256": "56e8ab32751cba4cc5c80fcaedc2df410b0b58adafd030f8415245ed4794935f",
+      "bytes": 3433,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/fixtures.json",
+      "sha256": "f9909cc21981337c4e6a5c66f780c4b761eb76142a84d37ab8ac8a635c4b5e96",
+      "bytes": 683,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/probe.py",
+      "sha256": "0601c6c713900627b3d1cbb090113900ad952083e6bd89627784c7d87e9d28fd",
+      "bytes": 10852,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/README.md",
+      "sha256": "edf7462b22e5970f289c2128c252d0fe9c2d44e6f24670696b6be24a8e42b4ea",
+      "bytes": 2735,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/results.json",
+      "sha256": "cd289f112a90b99c3ea250b025d2713141777c91e76c40d45401365788d457b9",
+      "bytes": 51370,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/audit.json",
+      "sha256": "50c026b726d5165f031a22b742f05e6d897a019eb2b1965821dee8661533f6e2",
+      "bytes": 8991,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/terminal-reconciliation.json",
+      "sha256": "5a8c273239c9e7702edc67293c8edb294014a06e68704e0fefa2993e7dddfea9",
+      "bytes": 1091,
+      "receipt_role": "Legacy observations and console/terminal reconciliation",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/actual-spec-review.json",
+      "sha256": "b9fa47e94bd772eab2ce0d6b711f25c323580e35aae847252cd55a24ff995a88",
+      "bytes": 2226,
+      "receipt_role": "Independent final actual legacy review",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-legacy-characterization-run-01/actual-standards-review.json",
+      "sha256": "8553732524d2c1786aa52bec5fb4cb428daaeeb14534fea5b0bcc9e24bcf5521",
+      "bytes": 4040,
+      "receipt_role": "Independent final actual legacy review",
+      "stage": "legacy_characterization",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-legacy-final-acceptance-20261105.json",
+      "sha256": "da003ed502a11f5db8911e399cf3d901b909c08d06723561811e14b1ad3c1133",
+      "bytes": 745,
+      "receipt_role": "Coordinator acceptance, source diagnosis or build-preparation status; not candidate execution",
+      "stage": "diagnosis_and_preparation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm023-gcd-zero-source-diagnosis-20261105.json",
+      "sha256": "25319ff8dfef116419f609426c65866a6bd7ef66ff2a7adc38faaaae46c98cfe",
+      "bytes": 9282,
+      "receipt_role": "Coordinator acceptance, source diagnosis or build-preparation status; not candidate execution",
+      "stage": "diagnosis_and_preparation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-preparation-final-verification-20261105.json",
+      "sha256": "de92c942fffdcb2b42cc555e803e9772b3a1f6cf72e461ac824a30d5e2e2ee3a",
+      "bytes": 800,
+      "receipt_role": "Coordinator acceptance, source diagnosis or build-preparation status; not candidate execution",
+      "stage": "diagnosis_and_preparation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-final-verification-20261105.json",
+      "sha256": "9b1dc985cce49e7a087b1eead13d535d0a2058abc8e0a89095b49661f83b2986",
+      "bytes": 571,
+      "receipt_role": "Coordinator acceptance, source diagnosis or build-preparation status; not candidate execution",
+      "stage": "diagnosis_and_preparation",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/PLAN.md",
+      "sha256": "aa82b5f8618582395a180434905face2f28f5ce6bf8d947b3968bc95cf158c9d",
+      "bytes": 5309,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/libqalculate/BuiltinFunctions-number.cc",
+      "sha256": "3597227425cc60dc5f2fe95c5047678c2cbe50943633d8b6ef83b394a3f4a3a9",
+      "bytes": 114951,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/tests/polynomial.batch",
+      "sha256": "43235b7609f63eece5805414c4ded43ea25fc5c1ff48366b78e9983cbe4f5b65",
+      "bytes": 1938,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/base/libqalculate/BuiltinFunctions-number.cc",
+      "sha256": "42e2d093e98f301cacf0783ca8f2b89a9ea5d21bf794db22be4c0cc63ed264fc",
+      "bytes": 114312,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/base/tests/polynomial.batch",
+      "sha256": "345bb51cf11c79918e6f9c97e66fc5b3d54eb728629b081120008271aae1048e",
+      "bytes": 1584,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/spec-review.json",
+      "sha256": "23f497d3f0b8ab2205e98fd89935f8f2d4085c39daa71ee325bc5c74292d92c5",
+      "bytes": 2427,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/standards-review.json",
+      "sha256": "8473d74582c8bd973e8b2a0a7d0a4899bcc56914f4231efb045f540c13461c70",
+      "bytes": 4587,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/direct-controls.cc",
+      "sha256": "aecce82101a4a94abee419b975773a32a4e86979bcaf45b30f66e940bc083621",
+      "bytes": 3506,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/direct-controls-spec-review.json",
+      "sha256": "b8644c3fc6922e4b0fd85798008614c0412aa6cef2bf2ff5d850df6b816529f1",
+      "bytes": 1669,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-implementation/direct-controls-standards-review-final.json",
+      "sha256": "2793b7017909553a6f23f334d4d145e4877203fe6ee2cf9d13741293e94c5ec7",
+      "bytes": 3266,
+      "receipt_role": "Source-only candidate / retained base / finite direct controls or final source review; unbuilt",
+      "stage": "unbuilt_fix",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-candidate-acceptance-revision02/frozen-manifest.json",
+      "sha256": "8d03a5bb61ade14ee1a1055ea1f8ead4cc3456de48863eea65e22eb93e428d4f",
+      "bytes": 600,
+      "receipt_role": "Final candidate acceptance preparation review, not executed acceptance",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-candidate-acceptance-revision02/README.md",
+      "sha256": "b2c8fc05ab90c0cf4ad1f822ec90577a4a79def9f3b3e7ce7fcc9c590430fd5a",
+      "bytes": 5163,
+      "receipt_role": "Final candidate acceptance preparation review, not executed acceptance",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-candidate-acceptance-revision02/spec-review.json",
+      "sha256": "34306fff44bb797dee3cd30d64aa51f96f9be9bbbfc1f58c2abbda8536e0b44a",
+      "bytes": 2276,
+      "receipt_role": "Final candidate acceptance preparation review, not executed acceptance",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261105/gcd-zero-candidate-acceptance-revision02/standards-review.json",
+      "sha256": "895e51bb0fd2ac446bec77b465a2103ac967fc581d58f58d48253f5b67c5eded",
+      "bytes": 3145,
+      "receipt_role": "Final candidate acceptance preparation review, not executed acceptance",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-native-build-plan-20261105-revision02/bindings.json",
+      "sha256": "231bd436d929fd45af79f323df9fabb97f23a3f2f7bcada7d864a784228f865a",
+      "bytes": 148648,
+      "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-native-build-plan-20261105-revision02/spec-review.json",
+      "sha256": "e3eaa1c83b2141e7e08efa20c7ef70ddd155af8eb9f9771670124b61ee950a19",
+      "bytes": 5388,
+      "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-native-build-plan-20261105-revision02/standards-review.json",
+      "sha256": "60276588dded336bbcc3d87b036b0ff78aef02a73daeb8c64c9a6784c668a785",
+      "bytes": 4082,
+      "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-20261105-revision03/manifest.json",
+      "sha256": "b321409d4b8700777298933c36208fba30e236b7fd2bdf15e66f44a02a94486e",
+      "bytes": 3584,
+      "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-20261105-revision03/finalspec-review.json",
+      "sha256": "e2b8eb79e3226a5108cb400a4294ddc6f49500b819cafd5c23a9cdbb745f13b1",
+      "bytes": 3437,
+      "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-20261105-revision03/finalstandards-review.json",
+      "sha256": "c9e8dc7f8717c6e25c1a5760ee04df4411767cc3f11fcf62257de0b19689a895",
+      "bytes": 6002,
+      "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
+      "stage": "ready_fix_dependencies",
+      "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    }
+  ],
+  "limits": [
+    "All paths are exact external retained audit locations; no raw run, credential or session payload is copied.",
+    "Hashes bind current external raw bytes, not normalized Git copies.",
+    "The original source-analysis reviews name /root/standards_review and /root/spec_review; later review document identities are their exact file hashes, without inferring unnamed author identities.",
+    "Historical pending states in earlier plans/reviews are superseded only by explicitly indexed later evidence within its finite scope.",
+    "Build supervisor review and source-only candidate reviews do not prove compilation or candidate behavior.",
+    "No original Python/SymPy notebook execution, general primality, GUI Clipboard/saved-session, whole-lesson, current-release or source-wide certification."
+  ]
+}

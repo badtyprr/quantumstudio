@@ -1,0 +1,36 @@
+# IBM023 factoring and GCD evidence index
+
+This index reconciles accepted finite external evidence with the source-required zero-GCD gap. It is not a self-contained evidence package: [evidence-index.json](evidence-index.json) records exact absolute audit paths, raw-byte SHA256, receipt roles and final review identities. Those receipts remain outside disposable release clones. No large raw packet, credentials or session payloads are copied here.
+
+## Original source and independent reference
+
+The immutable Qiskit documentation source revision is `a500b17f8b1f156a6bba42ab11f90f3104cad6d4`. IBM023's notebook SHA256 is `cf02361b6238447bf11a13732a81dc0009c3522e4c5de3721235d0a55bcf2fe3`. The combined IBM022/023 source analysis retains the originals, complete cell text/outputs and occurrence offsets. IBM023 contains seven Markdown cells, six code cells, 23 math occurrences (22 inline, one display), two textual Figures and five stored stdout outputs. Overlapping Figure/math occurrences are explicitly counted; they are not separate proofs.
+
+Independent exact-integer reference work checks 12's factorization, the supplied stored large-factor product, RSA1024 literal/309-digit/1024-bit identity, RSA250 product/250-digit/829-bit identity and the original large GCD with an 82-step Euclidean chain and Bezout certificate. Authored coefficient/product corruptions fail their controls. Original stored outputs remain historical source data. Product checks do not prove large-factor primality or execute the original `factorint`, `math.gcd`, imports or notebook workflow. No RSA1024 factoring computation was invented. The source-only Standards and Spec review identities are retained in `ibm022023-source-analysis/reviews.json` and indexed by hash.
+
+## Actual legacy observations, including failures
+
+All four run cohorts below use legacy worker revision `577dbb6572a9442e1d654e4b2264709f603d77ab`, binary SHA256 `1d9fbc1e42a1b001d73665fee5f7cbf46df02fdf5eb180f9ebd73345bd1daff9`, with 23 bound definitions. They do not test the current integration engine. Independent actual-run Standards/Spec reviews and terminal/provenance audits are indexed separately.
+
+| Retained cohort | Actual outcome | Boundary |
+|---|---|---|
+| `ibm023-native-pilot-run-01` | One primary, zero Copy calls, 70 raw bytes; return code 2 with the `dot()` argument diagnostic; stopped with 15 planned primaries unexecuted | Input `12 = 2^2 \cdot 3` removed the original display wrappers. This failed bare adaptation is not failure of the unchanged original source block. |
+| `ibm023-route-diagnostic-run-01` | Four primaries and three actual canonical Copy reentries, seven calls/856 raw bytes; three exact scalar-one results plus one expected rejection | The full original `$$`-wrapped source expression passes. Explicit `quantum:` and ASCII multiplication are separate successful adaptations; the bare rejection is retained. This does not establish generalized TeX support. |
+| `ibm023-deferred-arithmetic-run-01` | Thirteen successful exact-integer primary/Copy pairs, then a failed zero-left primary: 27 calls/5,855 raw bytes | `gcd(0,RSA1024literal)` returns 2 with argument-1 rational-polynomial diagnostic. The run stops; its zero-left Copy and zero-right primary are unexecuted. The thirteen successes are calculator adaptations, not original Python execution. |
+| `gcd-zero-legacy-characterization-run-01` | 33 primaries and 14 actual canonical Copy reentries: 47 calls/5,947 raw bytes; 14 returned primaries and 19 rejections | Observations include minimal `gcd(0,1)` and `gcd(1,0)` argument-admission failures and broader vector/rational/polynomial/LCM controls. Completion means observation accounting, not candidate correctness. |
+
+Copy here means feeding actual returned canonical text back into the worker, not GUI Clipboard testing. The characterization's main cohort exited 0 with completed observations. A separate post-run summary print exited 1 because the CP1252 console could not encode U+2212; it wrote no run files and launched no worker. The subsequent ASCII-safe audit and `terminal-reconciliation.json` retain that distinction. No native rerun was performed to erase the console error. The coordinator's final legacy acceptance accepts this characterization only: no candidate, whole-lesson or runtime-retry claim.
+
+## Diagnosed gap and unbuilt source-reviewed fix
+
+IBM023's GCD Figure (cell `2e98fa14`, Unicode offsets 323:506) permits nonnegative integer operands with at least one positive. Thus both one-zero boundaries are source-required. The retained diagnosis traces rejection to GCD's rational-polynomial argument gate: the shared predicate rejects exact numeric zero before the already zero-capable arithmetic is reached. Relevant sources agree across the diagnosed legacy/current revisions, supporting the source diagnosis without substituting for a current build. No P0 or newly introduced regression attribution is established.
+
+The external candidate is based on `78bf6cf7fb6ca52c884320cc7ec2a53958627109` and changes only `libqalculate/BuiltinFunctions-number.cc` and `tests/polynomial.batch`. It uses GCD-local exact-zero admission while retaining the rational-polynomial fallback, copied argument behavior and vector flags. Shared validators, parser, XML, GCD arithmetic and LCM remain outside that fix. Source-only independent Standards and Spec reviews report no findings; their exact identities, the two candidate files and base originals are indexed. Twenty batch additions and a separately reviewed direct-control driver are preparation, not executed acceptance.
+
+The fix is **source-reviewed, not built**. Candidate acceptance preparation, isolated build preparation and supervisor reviews are indexed as readiness dependencies only. Fresh identified candidate binaries/definitions, direct and batch controls, replay of all 15 deferred fixtures and their actual Copy reentries, integration and release evidence remain required. Signs, all-zero, vectors, rational/polynomial inputs and variadics are broader calculator compatibility controls, not additional IBM Figure requirements. Legacy zero rejections are observed gaps, not golden outcomes for the candidate.
+
+## Remaining scope and preservation
+
+No whole notebook/lesson acceptance, current-release certification, original Python/SymPy execution, general primality proof, historical/complexity claims, linked media acceptance, GUI Clipboard or saved-session acceptance follows. The IBM023 checklist remains unchecked. Earlier documents' pending language describes their historical stage; later indexed receipts supersede only the specific completed observation or review. This proposal does not execute any plan or authorize runtime work.
+
+External absolute paths and hashes identify retained raw evidence; a repository-only clone cannot reproduce the indexed runs. The legacy binary/definitions locations named inside run bindings are historical dependencies, not portable repository files. Preserve the external audit receipts when disposable runtime clones are removed. The two authored repository files use UTF-8 LF; historical receipt hashes are not hashes of normalized Git copies. Final integration must verify the proposed bytes and keep these limits intact.
