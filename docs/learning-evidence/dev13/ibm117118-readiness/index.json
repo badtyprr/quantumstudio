@@ -2,7 +2,7 @@
   "schema": 1,
   "proposal_base": "9febd49268d83ea03e0ef20015537dae2a722988",
   "proposal_tree": "373e9edb139c4c96f5a4f6dc68340a24003daeaf",
-  "scope": "Reviewed IBM117/118 readiness and dependency evidence only; no implementation or actual notebook acceptance",
+  "scope": "Reviewed source readiness, metadata-only closure and two accepted finite ideal-gate source bridges; no implementation or actual notebook acceptance",
   "sources": [
     {
       "id": "IBM-117",
@@ -248,6 +248,144 @@
           "findings": 0
         }
       }
+    },
+    {
+      "key": "separate_profile_metadata",
+      "summary": "Prospective dateutil3.0.0 replaces only old4.0.0; other50 baseline pins unchanged. Intermediate68records; cffi/sspilib frontier. Ten requests: eight retained payloads, two failed; no erasure/retry or accepted environment change.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-separate-profile-metadata-20261106/manifest.json",
+        "bytes": 4399,
+        "sha256": "28015c6bf138f0a36a6ef3d7322684285dcddcf89bf22ff382678224e16ec8e0"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-separate-profile-metadata-20261106/README.md",
+          "bytes": 6323,
+          "sha256": "63839eaa7240f1d90dcef6f894a303287ce85179e7a4c10605137de4df215538"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-separate-profile-metadata-20261106/edge-analysis.json",
+          "bytes": 230364,
+          "sha256": "b552a7db46aececd4e3a1b91b8db314afa8e36d06c0eeb8408e8eb5027fe4e4f"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-separate-profile-metadata-20261106-standards-review.json",
+            "bytes": 2107,
+            "sha256": "ca91c1ea0a4d5af2010567c765f848f024418ca367e98e2a143180264034ac11"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite metadata-only scope"
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-separate-profile-metadata-20261106-spec-review.json",
+            "bytes": 1778,
+            "sha256": "950735b6324f6b3635048bf47349a27b055bcacae4d0bba7ac81d9ee9d6a027e"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite metadata-only scope"
+        }
+      }
+    },
+    {
+      "key": "metadata_closure",
+      "summary": "Reviewed metadata-only71 distributions/107 active edges/52 roots on fixedCPython3.12.10 Windows. Normal/optimized parser outputs agree. Actual wheel embedded metadata, installation and execution remain unverified.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-metadata-closure-20261106/manifest.json",
+        "bytes": 1853,
+        "sha256": "75d0f2763a80dda723dd1ed988cba2a4805309a6789600183f66448b34ac61c7"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-metadata-closure-20261106/README.md",
+          "bytes": 6164,
+          "sha256": "1da9b0697ad9b8760c6f4ef3ab6c822e446a319e989b0f01778c53c21b293a37"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-metadata-closure-20261106/analysis.json",
+          "bytes": 56588,
+          "sha256": "437b5cd2c8b2b5bf7d25f384b33fe7a21d0ca3aaf8d42fb4971991de2f715c4f"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-metadata-closure-20261106-standards-review.json",
+            "bytes": 2169,
+            "sha256": "a87bd962fee890aee938514a83986f0c96770c9a28fbb3a3ba0d6d8b654d4ba8"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite metadata-only scope"
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/runtime-design/ibm117118-metadata-closure-20261106-spec-review.json",
+            "bytes": 2127,
+            "sha256": "fa50e69053927b6b4b88b9cb58670018a99d5c1b3cc2b60548a077c86928b4ce"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite metadata-only scope"
+        }
+      }
+    },
+    {
+      "key": "ideal_source_bridge",
+      "summary": "Owner accepted finite ideal-gate source correspondence only: originalIBM118 QFT8/state5 and PE3/theta1/8, retaining sign/swaps/basis/register mapping. No installed SDK/synthesis/transpilation/index-array or actual state/count/tolerance acceptance; QFT16,phase1/3,Grover excluded.",
+      "manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/manifest.json",
+        "bytes": 594,
+        "sha256": "04c2a734546c09a071630915dad4416a6a74b1ea5e3e3893d7324782e6cce1a7"
+      },
+      "artifacts": [
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/README.md",
+          "bytes": 10335,
+          "sha256": "2972d5fe8d0015d6f9d9e41ae9e8f853a0d2b5b4d4d46cd28590eecb9cd54a7e"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/bridge.json",
+          "bytes": 321196,
+          "sha256": "6c4812c09760ec6646357b64680e3778f05020f87321775ae7840339a07d5e1b"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/handoff.json",
+          "bytes": 2355,
+          "sha256": "544da3fac1919b9d7b1502365d5a6ba1eae3c8919b46169ac3b999c255c1b07e"
+        },
+        {
+          "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01/validation.json",
+          "bytes": 914,
+          "sha256": "a795faa443cf156d641badbefb171eaf804346c9c04f9e1ccc99240eaa570e81"
+        }
+      ],
+      "reviews": {
+        "standards": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01-standards-review.json",
+            "bytes": 8380,
+            "sha256": "8b50af0c4289b65fa43903dad4a81f8fc838a6a5fdf8dd8a91bc9ca2b928009d"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite ideal source bridge"
+        },
+        "spec": {
+          "pin": {
+            "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261106/ibm118-original-circuit-bridge-01-spec-review.json",
+            "bytes": 2802,
+            "sha256": "5374ea85b1e5eac06415cd25e85004d626c1b9bdbeb55bc4aa58f8cc65773e76"
+          },
+          "findings": 0,
+          "recorded_verdict": "PASS finite ideal source bridge"
+        }
+      },
+      "owner_acceptance": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm118-source-bridge-owner-acceptance-20261106.json",
+        "bytes": 720,
+        "sha256": "f473f567f4dbaf600c4994ac7646e80ecceba885573b457ce85d75c02add619d"
+      }
     }
   ],
   "candidate": {
@@ -258,35 +396,64 @@
     "qiskit-aer": "0.18.2",
     "python": "3.12.10"
   },
-  "specific_conflict": {
-    "selected_ibm-platform-services": "0.77.2",
-    "selected_ibm-cloud-sdk-core": "3.28.1",
-    "requires": "python_dateutil>=3.0.0,<3.1.0",
-    "fixed_base": "python-dateutil==4.0.0",
-    "universal_conflict_claim": false,
-    "backtracking_performed": false
-  },
-  "missing_edges": [
-    "requests-ntlm1.3.0 -> cryptography>=1.3",
-    "requests-ntlm1.3.0 -> pyspnego>=0.4.0",
-    "ibm-cloud-sdk-core3.28.1 -> PyJWT>=2.11,<3"
-  ],
   "unchanged_base_pin_count": 51,
-  "gates": [
-    "Complete reviewed dependency closure and any separate candidate pin changes; no existing profile mutation",
-    "Original unchanged local source execution, observer/lifecycle/error evidence and finite independent state/count comparison",
-    "Source-to-reference ordering/sign/register bridge; uncovered Grover/state14/phase1/3 expectations",
-    "IBM117c26 literal backend placeholder and both provider submission/retrieval workflows; credentials/paid jobs only when concrete work ready",
-    "Comment-only IBM118c27/c29/c61 exercises versus separately supplied original solutions",
-    "PDF content/rendering, video/IFRAME interpretation, actual figures and Markdown/TeX/MDX acceptance"
-  ],
-  "acceptance": {
-    "actual_notebook_execution": false,
-    "full_dependency_closure": false,
-    "source_reference_bridge": false,
-    "provider_hardware": false,
+  "external_evidence_note": "Raw external payloads/code and large accounting JSON remain at hash-bound external paths; not copied into this index.",
+  "reconciliation_base": "79a6eae4dda4269fa2e758ddbd8597887f4648de",
+  "reconciliation_tree": "2d62c99e3c9d15a026f803d165b5b7970a985d41",
+  "historical_stage": "First five packet records retain their original dated 2026-11-06 fixed-base findings unchanged; later records below supersede only stated pending gates.",
+  "current_readiness": {
+    "metadata_only_closure": {
+      "packages": 71,
+      "active_edges": 107,
+      "roots": 52
+    },
+    "accepted_ideal_source_bridge": [
+      "QFT8 state5",
+      "PE3 theta1/8"
+    ],
+    "prospective_base_change": "python-dateutil4.0.0 ->3.0.0 only; other50 exact baseline pins unchanged",
+    "accepted_51_profile_changed": false,
+    "actual_wheel_installed_SDK_acceptance": false,
     "whole_notebook_complete": false,
-    "checkbox_promotion": false
+    "acquisition_plan_indexed_as_accepted": false,
+    "remaining": [
+      "Actual wheel embedded metadata/full artifact verification and installation",
+      "Installed gate/QFT delegated synthesis and Statevector index mapping",
+      "Original source execution, transpilation, reviewed numeric tolerances and raw state/count capture",
+      "Lifecycle/error acceptance and provider/account/hardware requirements",
+      "Placeholder exercises and media/Markdown/TeX/MDX interpretation",
+      "QFT16 state14, phase1/3 and Grover reference coverage"
+    ]
   },
-  "external_evidence_note": "Raw external payloads/code and large accounting JSON remain at hash-bound external paths; not copied into this index."
+  "historical_fixed_base_status": {
+    "specific_conflict": {
+      "selected_ibm-platform-services": "0.77.2",
+      "selected_ibm-cloud-sdk-core": "3.28.1",
+      "requires": "python_dateutil>=3.0.0,<3.1.0",
+      "fixed_base": "python-dateutil==4.0.0",
+      "universal_conflict_claim": false,
+      "backtracking_performed": false
+    },
+    "missing_edges": [
+      "requests-ntlm1.3.0 -> cryptography>=1.3",
+      "requests-ntlm1.3.0 -> pyspnego>=0.4.0",
+      "ibm-cloud-sdk-core3.28.1 -> PyJWT>=2.11,<3"
+    ],
+    "gates": [
+      "Complete reviewed dependency closure and any separate candidate pin changes; no existing profile mutation",
+      "Original unchanged local source execution, observer/lifecycle/error evidence and finite independent state/count comparison",
+      "Source-to-reference ordering/sign/register bridge; uncovered Grover/state14/phase1/3 expectations",
+      "IBM117c26 literal backend placeholder and both provider submission/retrieval workflows; credentials/paid jobs only when concrete work ready",
+      "Comment-only IBM118c27/c29/c61 exercises versus separately supplied original solutions",
+      "PDF content/rendering, video/IFRAME interpretation, actual figures and Markdown/TeX/MDX acceptance"
+    ],
+    "acceptance": {
+      "actual_notebook_execution": false,
+      "full_dependency_closure": false,
+      "source_reference_bridge": false,
+      "provider_hardware": false,
+      "whole_notebook_complete": false,
+      "checkbox_promotion": false
+    }
+  }
 }

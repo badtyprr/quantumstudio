@@ -243,7 +243,7 @@ separate. Finite adaptations never certify complete lessons or notebooks.
 - Source focus: qBraid SDK, algorithms and IBM code examples. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Specify and implement a reproducible notebook/program import or execution route for each required framework. Distinguish direct execution from manual QASM adaptation. Pin dependencies and test equivalent states, counts and errors.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
-- Reviewed IBM117/IBM118 readiness and dependency evidence: [index](learning-evidence/dev13/ibm117118-readiness/README.md). All138 original cells are accounted; actual notebook/provider/media/exercise acceptance remains open. Two prior mathematical reference records have a pending source bridge. Selected Runtime0.40.1 dependency path through core3.28.1 conflicts with fixed dateutil4.0.0; no universal version conflict or profile change is claimed.
+- Reviewed IBM117/IBM118 readiness and dependency evidence: [index](learning-evidence/dev13/ibm117118-readiness/README.md). All138 original cells are accounted; the separate prospective profile has metadata-only71/107 closure, and finite ideal QFT8/state5 and PE3/theta1/8 source bridges are accepted. The existing51-package profile is unchanged. Actual artifact, SDK, notebook, provider, media and exercise acceptance remains open; historical fixed-base conflicts and failed metadata requests are preserved.
 
 ### DEV-14
 
