@@ -1,8 +1,8 @@
 {
   "version": 1,
   "base_revision": "47668f733467260233b1aa6e65b4abc42c3c0b26",
-  "product_revision": "7c75fa2da833aa4f03c844317745e611119cac12",
-  "product_tree": "7611c24374fc416d39e95d00be9f4abb20277328",
+  "product_revision": "9d001ca743d031f9cafb67476d025dd83daa84b7",
+  "product_tree": "1efefec3256910e1540a97bfcc4a31a3f2c8ebc2",
   "source_files": {
     "contracts/ibm-timing.json": {
       "bytes": 22594,
@@ -37,8 +37,8 @@
       "sha256": "96c1fc6686afbef963499b1f595a8d2a7cf672d940b24d49b7eb71d68ae62007"
     },
     "execution.py": {
-      "bytes": 45596,
-      "sha256": "01e5ce830ae7639bc6b0314fe07f72bc25e3823f1a5a338e6f763cd70178cc6c"
+      "bytes": 47080,
+      "sha256": "4b2f2b2991c7022f1104aecaf53b60bbb1246e7bf65910e89070bd4becc63a87"
     },
     "ibm019-linux-requirements.lock": {
       "bytes": 5223,
@@ -105,8 +105,8 @@
       "sha256": "227ae70033fe2c36f0bf338631469a85c8e7243d6eb3e4d68df1e1eb201902c0"
     },
     "test_execution.py": {
-      "bytes": 53344,
-      "sha256": "2566f9db2f154140e6e859d8b6f102e8b4de56d7fb91e9566330a674a727706b"
+      "bytes": 64315,
+      "sha256": "8e3f95d7710a670c3e06048be36e559f073794469a7571262d14f2086f687984"
     },
     "test_linux_execution.py": {
       "bytes": 17166,
@@ -124,6 +124,10 @@
       "bytes": 44596,
       "sha256": "a0ab6e3384ce480c1ce7d9ae42c5f9047bc6ab2a3b0acc34ac641504175f46a2"
     },
+    "test_windows_lifecycle.py": {
+      "bytes": 22634,
+      "sha256": "4eb15bfc554cd23ea98f2b8207b8f3a082975bf009a52a6e32b0cc5f7ef3625c"
+    },
     "timing-requirements.lock": {
       "bytes": 6016,
       "sha256": "e212293aefe95ae61a6ddfdd93b5dc34b511ab301cd8c635fb5645a46a78860b"
@@ -131,6 +135,10 @@
     "timing_reference.py": {
       "bytes": 16974,
       "sha256": "0fd56c4cb1afa5e696ab788f9fa2465b2177b5de38250483d78fc816608fb84b"
+    },
+    "windows_lifecycle.py": {
+      "bytes": 18087,
+      "sha256": "a3efcf6a361604d86825774724b140f6b41b10b471d3273fd30eebf3627bdb06"
     },
     "witnesses/ibm019.py": {
       "bytes": 2172,

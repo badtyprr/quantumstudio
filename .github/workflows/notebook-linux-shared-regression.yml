@@ -20,7 +20,7 @@ jobs:
       - name: Check out immutable product
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: 7c75fa2da833aa4f03c844317745e611119cac12
+          ref: 9d001ca743d031f9cafb67476d025dd83daa84b7
           persist-credentials: false
           path: product
       - name: Check out exact reviewed harness
