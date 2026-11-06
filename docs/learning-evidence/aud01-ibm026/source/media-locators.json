@@ -1,0 +1,40 @@
+{
+  "source_sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787",
+  "acquired": false,
+  "scope": "locators only; links may be alternate references to one media item",
+  "images": [],
+  "links": [
+    {
+      "id": "IBM-026-c0-links-001",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 1079,
+      "end": 1164,
+      "original": "[YouTube video](https://youtu.be/4nT0BTUxhJY?list=PLOFEBzvs-VvqKKMXX4vbi4EB1uaErFMSO)",
+      "sha256": "13930ed994f6c065fdee2c415da4693cc89cfe4bfd3a32223ab7fd2611f732b5",
+      "status": "unverified source occurrence; no native/media acceptance"
+    },
+    {
+      "id": "IBM-026-c0-links-002",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 1203,
+      "end": 1296,
+      "original": "[Download the slides](https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf)",
+      "sha256": "b8d444444cd5cd2372725df6f5fdd3ef0f8b19601f664f817930854553a2004b",
+      "status": "unverified source occurrence; no native/media acceptance"
+    }
+  ],
+  "video_embeds": [
+    {
+      "id": "IBM-026-c0-video_embeds-001",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 1315,
+      "end": 1518,
+      "original": "<IBMVideo id=\"134056217\" title=\"In this video, John Watrous reviews the phase estimation problem and steps through the phase estimation procedure. With this in hand, John moves on to Shor's algorithm.\"/>",
+      "sha256": "23912b6c59ee88bee63e44fe6cdebed5ed0650f984574eae2d76cf4d3d382fd3",
+      "status": "unverified source occurrence; no native/media acceptance"
+    }
+  ]
+}

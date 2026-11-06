@@ -1,0 +1,83 @@
+{
+  "scope": "IBM026 exact slide URL availability/provenance/page inventory only",
+  "status": "acquired_parsed_inventory_complete",
+  "source_url": "https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf",
+  "source_notebook": {
+    "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm026-source-analysis\\source.ipynb",
+    "sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787"
+  },
+  "source_locator_file": {
+    "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\ibm026-source-analysis\\media-locators.json",
+    "sha256": "cd2c307a6c789ee7f99d2bf638138a95530830ac9a7252ca06e8e40654c50a59"
+  },
+  "source_occurrence": {
+    "id": "IBM-026-c0-links-002",
+    "cell_index": 0,
+    "cell_id": "e2df0850",
+    "start": 1203,
+    "end": 1296,
+    "original": "[Download the slides](https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf)",
+    "sha256": "b8d444444cd5cd2372725df6f5fdd3ef0f8b19601f664f817930854553a2004b",
+    "status": "unverified source occurrence; no native/media acceptance"
+  },
+  "prior_exact_url_relation": {
+    "inventory": "F:\\src\\libqalculate\\cleanup-audit\\notebook-lane-20261104\\ibm-linked-requirements\\inventory.json",
+    "sha256": "21b63486688a071f10a4e3a976a03d54ee8f3e30a7a79237deae2f3c0c697e03",
+    "target_key": "IBM-LINK-a05433c8805b05ab",
+    "prior_access": "not_checked",
+    "retained_matching_acquisition_found": false,
+    "search": "rg exact URL token across cleanup-audit *.json/*.md/*.txt; matches only locators/inventory/context"
+  },
+  "http_status": 200,
+  "redirects": 2,
+  "final_url": "https://public.boxcloud.com/d/1/b1!xqQPbCtUklcQ7WpRAbVLPQOaasR7EfK2Sarqw23UCUK3IKX2gjVZ_u1tWENomm6Fjozscl0cu4yBayrsBSTFoUjPOgmsoEGH5zCtqFqqWht9TirJhj7-zSlslgKFn_tgldUDX9lz3LUNZYEhcDE07V2YnimWJfKCRapbPIy-yW4qjRce9uHw0K4QMA7D93CwfaFDRTAjxFWYTI_qLKDbsiYN4eXnVPnM4Q_ORebMAgFhxdQV-5HOBuF-P6bDMsMlPcKQ6CslA2xtoj-eRE28DAgClFjJ10IA1RMq1rAjGYm4hXbf72jba3jKEH4gywFe_XEo5RqbP1K7PWblK-L0PblAaxwL3_Los-s9rCqde88p-kjdkp7uWYrBNzRqC9XYRpMsoUXA62JXhyCwirw5-Dy36IYvXb6JB18Tw_QKUAoHL0rxkxoSAMHjtnCNa3cv9ljy7_OBTFc4tKi2mMI8YF6jt-4iEDFEZjkV4F5p786wEjhFr9VwVPHehasskJ9lGpWXKlMzxJO8iboYtslW1V7hSp3K2-d-BrR25wDwBUK9SCdTVx4oIJ3uGpQ3QMzEfIvtoo3hK_v61ihUWnvSa_EDwGbahLkmKb99l86XofeDIWx9309byvqoAeOoo-YgF4yiAOMXiCxnuEnee2KaYWdwHHQe_Nhvp27ndnw-nOWziFKgQJfA5d0dtkEf1-vmFQWHrqx0zYn0ss_OU4QsQYxMB4S92FTkaH0ltV5pwtihQgFCd5rgCWyWvh5IfZa0rWaN_lXSKKTmt0KZkhSx837XXtHEFc1J9uRUu6wJrtQlxfIe9dHu33NxXBJ8CoQKkjDJ5rpb9UYQknRxqW-DPVPv-gYjyqiGfx9rSRbjLOCmkfEpDrdtDSrWf_v8GJHBpRi8ik1CmupbD_Lzw9d3d71_xVzRFSjs79YiyKan7xnYoYUneMzq8ZpoL4YS2ZwW4Woxg_JOUtKn-iYjszDW5zoXsGHX9pJAtZo61ITa196ZLlV3qeNWUWRq09CfqfateH8fnAoHc9SPnOSicP8N1EClqDQfAUQpmb_8rVawVjUjXMd1s4ZEnXKy9WUPyNG-gByauU-bXJSKiggqO4eh6dAFhwoLCuH6uPnotTnzy6t9kWh1t1UjFL78yg6vvbA1uw3UwVynDJqNn58V6MoW_n4OdsmWC4VN0TZZeU0UtRu2c3whM8luyxt4mYc-OfW78id5odFZ-hMhdAfKi0qBDYcszyuHQq9vgLKSkXnfx13_Xe0fIawSFJu7nZ8NjCnTRJhN8WBPWkr8oAA1U1C_zA9A7i0j87lyn8_DB3uTqzZIWKfvVyKPiaG-0Bu4qDJ06ZfACt4HbsXfS4F2p3pKSYTFC5YVvqAuc09xKXIN8-ESiFotveOcuioQdRIxzwhKc1APzcKxOyx7VeLeyl_IKUb18_maZz6aIS9jYR3KBgWXMtF7sWKRBDMABUYJR6JwgzQ7ypN376QvsYIqI6o7HB1cCNy00oCdKzCZL6to4s-kyOo4BXk-UMHtLP-TW8cu3m7IHpxS3lI04xT6F3kg4Pe9MThFdnz4vfC71UlFTZUfzETCkBfxlP5-RkEqYZeWFls./download",
+  "pdf": {
+    "bytes": 474120,
+    "sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab",
+    "signature": "%PDF-1.3",
+    "pages": 41,
+    "title": "Phase estimation and factoring (slides)",
+    "author": "John Watrous",
+    "parser": "pypdf",
+    "parser_version": "6.10.0"
+  },
+  "files": {
+    "curl-metadata.json": {
+      "bytes": 13064,
+      "sha256": "d9afffeb02464a5bf3776033a05844e427a31512ed1dc319e7644f27351570fe"
+    },
+    "curl-stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "page-inventory.json": {
+      "bytes": 54041,
+      "sha256": "b41454ef0162e610843e09554c61f028aefb93dc2ff9dab169edbe6e416da3b2"
+    },
+    "REPORT.md": {
+      "bytes": 2181,
+      "sha256": "1c190f7fa887d1b40e41540e80ba8f659756b70f09c9d8803d2ece869f1726d4"
+    },
+    "request-receipt.json": {
+      "bytes": 994,
+      "sha256": "f237d1cd30afdae2f329327b52c7d743338294ab506ab0965e382a7e4fb9d7a4"
+    },
+    "response-body.bin": {
+      "bytes": 474120,
+      "sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab"
+    },
+    "response-headers.txt": {
+      "bytes": 4038,
+      "sha256": "1b62ea1b88d9d31a5923354c5cbfd5b4d9d807ad8985a9907d9f4f653e069d7e"
+    },
+    "slides.pdf": {
+      "bytes": 474120,
+      "sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab"
+    }
+  },
+  "limits": [
+    "No historical-byte equivalence or mathematical/visual coverage claim",
+    "YouTube/IBMVideo out of scope and not accessed",
+    "No native/SDK/GUI/build/shared edits"
+  ]
+}

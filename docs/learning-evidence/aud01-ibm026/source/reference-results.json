@@ -1,0 +1,22 @@
+{
+  "status": "source/accounting checks passed; no mathematical validation claimed",
+  "source_sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787",
+  "plan_before_execution_sha256": "e3769e521d047c56a71055f934e61002cea8aa2f8630b55d3d71e9aa0d45cb1d",
+  "reference_script_sha256": "212725ded3f36c8b4fad45348ba8e2b2d27a27fce7d23acf032fa7fff00692cf",
+  "mathematical_case_count": 0,
+  "counts": {
+    "math": 0,
+    "images": 0,
+    "figures": 0,
+    "headings": 2,
+    "links": 2,
+    "video_embeds": 1,
+    "code_cells": 0
+  },
+  "media_acquired": false,
+  "limitations": [
+    "No mathematical examples in this body",
+    "Video/slides uninspected",
+    "No native/SDK/GUI execution or whole-lesson acceptance"
+  ]
+}

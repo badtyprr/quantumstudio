@@ -1,0 +1,38 @@
+{
+  "started_utc": "2026-11-06T06:29:01.183376+00:00",
+  "argv": [
+    "C:/Windows/system32/curl.exe",
+    "-q",
+    "--silent",
+    "--show-error",
+    "--location",
+    "--max-redirs",
+    "5",
+    "--proto",
+    "=https",
+    "--proto-redir",
+    "=https",
+    "--connect-timeout",
+    "10",
+    "--max-time",
+    "30",
+    "--max-filesize",
+    "33554432",
+    "--dump-header",
+    "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\response-headers.txt",
+    "--output",
+    "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\response-body.bin",
+    "--write-out",
+    "%{json}",
+    "https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf"
+  ],
+  "returncode": 0,
+  "anonymous": true,
+  "authentication_supplied": false,
+  "retry_count": 0,
+  "limits": {
+    "total_seconds": 30,
+    "maximum_bytes": 33554432,
+    "maximum_redirects": 5
+  }
+}

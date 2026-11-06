@@ -1,0 +1,50 @@
+HTTP/1.1 301 Moved Permanently
+date: Fri, 06 Nov 2026 06:29:01 GMT
+content-type: text/html; charset=UTF-8
+x-envoy-upstream-service-time: 36
+strict-transport-security: max-age=31536000
+location: https://ibm.ent.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf
+box-request-id: 0beae14d75b6222890ea5cad889bfca1d
+via: 1.1 google
+Content-Length: 0
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+HTTP/1.1 302 Found
+date: Fri, 06 Nov 2026 06:29:01 GMT
+content-type: text/html; charset=utf-8
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+x-envoy-upstream-service-time: 400
+strict-transport-security: max-age=31536000
+pragma: no-cache
+set-cookie: z=om6f5mdj36rbrj6gc6ikeft0oa; path=/; domain=.ent.box.com; secure; HttpOnly
+set-cookie: z=om6f5mdj36rbrj6gc6ikeft0oa; Path=/; Domain=.ent.box.com; Secure; HttpOnly; SameSite=None
+set-cookie: box_ext_http_referrer=value; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/; domain=.box.com; secure
+set-cookie: box_visitor_id=6aed73ad9800c7.81730536; expires=Sat, 06 Nov 2027 05:29:01 GMT; Max-Age=31532400; path=/; domain=.box.com; secure; SameSite=None
+set-cookie: bv=FSYS-18466; expires=Fri, 13 Nov 2026 06:29:01 GMT; Max-Age=604800; path=/; domain=.ent.box.com; secure
+set-cookie: cn=59; expires=Sat, 06 Nov 2027 05:29:01 GMT; Max-Age=31532400; path=/; domain=.ent.box.com; secure
+set-cookie: site_preference=desktop; path=/; domain=.box.com; secure
+x-robots-tag: noindex, nofollow
+location: https://public.boxcloud.com/d/1/b1!xqQPbCtUklcQ7WpRAbVLPQOaasR7EfK2Sarqw23UCUK3IKX2gjVZ_u1tWENomm6Fjozscl0cu4yBayrsBSTFoUjPOgmsoEGH5zCtqFqqWht9TirJhj7-zSlslgKFn_tgldUDX9lz3LUNZYEhcDE07V2YnimWJfKCRapbPIy-yW4qjRce9uHw0K4QMA7D93CwfaFDRTAjxFWYTI_qLKDbsiYN4eXnVPnM4Q_ORebMAgFhxdQV-5HOBuF-P6bDMsMlPcKQ6CslA2xtoj-eRE28DAgClFjJ10IA1RMq1rAjGYm4hXbf72jba3jKEH4gywFe_XEo5RqbP1K7PWblK-L0PblAaxwL3_Los-s9rCqde88p-kjdkp7uWYrBNzRqC9XYRpMsoUXA62JXhyCwirw5-Dy36IYvXb6JB18Tw_QKUAoHL0rxkxoSAMHjtnCNa3cv9ljy7_OBTFc4tKi2mMI8YF6jt-4iEDFEZjkV4F5p786wEjhFr9VwVPHehasskJ9lGpWXKlMzxJO8iboYtslW1V7hSp3K2-d-BrR25wDwBUK9SCdTVx4oIJ3uGpQ3QMzEfIvtoo3hK_v61ihUWnvSa_EDwGbahLkmKb99l86XofeDIWx9309byvqoAeOoo-YgF4yiAOMXiCxnuEnee2KaYWdwHHQe_Nhvp27ndnw-nOWziFKgQJfA5d0dtkEf1-vmFQWHrqx0zYn0ss_OU4QsQYxMB4S92FTkaH0ltV5pwtihQgFCd5rgCWyWvh5IfZa0rWaN_lXSKKTmt0KZkhSx837XXtHEFc1J9uRUu6wJrtQlxfIe9dHu33NxXBJ8CoQKkjDJ5rpb9UYQknRxqW-DPVPv-gYjyqiGfx9rSRbjLOCmkfEpDrdtDSrWf_v8GJHBpRi8ik1CmupbD_Lzw9d3d71_xVzRFSjs79YiyKan7xnYoYUneMzq8ZpoL4YS2ZwW4Woxg_JOUtKn-iYjszDW5zoXsGHX9pJAtZo61ITa196ZLlV3qeNWUWRq09CfqfateH8fnAoHc9SPnOSicP8N1EClqDQfAUQpmb_8rVawVjUjXMd1s4ZEnXKy9WUPyNG-gByauU-bXJSKiggqO4eh6dAFhwoLCuH6uPnotTnzy6t9kWh1t1UjFL78yg6vvbA1uw3UwVynDJqNn58V6MoW_n4OdsmWC4VN0TZZeU0UtRu2c3whM8luyxt4mYc-OfW78id5odFZ-hMhdAfKi0qBDYcszyuHQq9vgLKSkXnfx13_Xe0fIawSFJu7nZ8NjCnTRJhN8WBPWkr8oAA1U1C_zA9A7i0j87lyn8_DB3uTqzZIWKfvVyKPiaG-0Bu4qDJ06ZfACt4HbsXfS4F2p3pKSYTFC5YVvqAuc09xKXIN8-ESiFotveOcuioQdRIxzwhKc1APzcKxOyx7VeLeyl_IKUb18_maZz6aIS9jYR3KBgWXMtF7sWKRBDMABUYJR6JwgzQ7ypN376QvsYIqI6o7HB1cCNy00oCdKzCZL6to4s-kyOo4BXk-UMHtLP-TW8cu3m7IHpxS3lI04xT6F3kg4Pe9MThFdnz4vfC71UlFTZUfzETCkBfxlP5-RkEqYZeWFls./download
+box-request-id: 04079319bf44f8770a3aa3d415dd3b2bf
+cache-control: no-store, no-cache, must-revalidate
+via: 1.1 google
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+Transfer-Encoding: chunked
+
+HTTP/1.1 200 OK
+server: nginx
+date: Fri, 06 Nov 2026 06:29:02 GMT
+content-type: application/pdf
+Content-Length: 474120
+set-cookie: b=2f26eeef04b6f4e0e55842f6ccc0e1157539a367db802a3e3779a70314b8e193; Path=/; Domain=.public.boxcloud.com; Secure; HttpOnly
+expires: Thu, 01 Jan 1970 00:00:00 GMT
+accept-ranges: bytes
+cache-control: private
+x-envoy-upstream-service-time: 209
+content-disposition: attachment;filename="07-Phase-estimation-and-factoring.pdf";filename*=UTF-8''07-Phase-estimation-and-factoring.pdf
+x-robots-tag: noindex, nofollow
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000
+via: 1.1 google
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+

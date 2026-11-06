@@ -1,0 +1,82 @@
+{
+  "source_sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787",
+  "offset_convention": "zero-based half-open Unicode character offsets in original concatenated cell; UTF-8 hashes, no newline normalization",
+  "cells": [
+    {
+      "index": 0,
+      "id": "e2df0850",
+      "type": "markdown",
+      "source": "---\ntitle: Introduction\ndescription: A free IBM course on quantum information and computation\n---\n\n\n{/* cspell:ignore autoplay */}\n{/* cspell:ignore allowfullscreen */}\n\n# Introduction\n\nIn this lesson, we'll discuss the phase estimation problem and how to solve it with a quantum computer.\nWe'll then use this solution to obtain\n<DefinitionTooltip definition=\"In addition to his integer factorization algorithm, Peter Shor also discovered an efficient quantum algorithm for the different but related problem of computing discrete logarithms. The two algorithms appeared in the same paper, first published as a conference paper in 1994 and then as a journal paper in 1997.\">Shor's algorithm</DefinitionTooltip> — an efficient quantum algorithm for the integer factorization problem.\nAlong the way, we'll encounter the quantum Fourier transform, and we'll see how it can be implemented efficiently by a quantum circuit.\n\n## Lesson video\n\nIn the following video, John Watrous steps you through the content in this lesson on quantum phase estimation. Alternatively, you can open the [YouTube video](https://youtu.be/4nT0BTUxhJY?list=PLOFEBzvs-VvqKKMXX4vbi4EB1uaErFMSO) for this lesson in a separate window. [Download the slides](https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf) for this lesson.\n\n<IBMVideo id=\"134056217\" title=\"In this video, John Watrous reviews the phase estimation problem and steps through the phase estimation procedure. With this in hand, John moves on to Shor's algorithm.\"/>",
+      "sha256": "95f2b5c4788e660e6882b9c99dbd56b4c1b09356f60e07106e22f2ed5be9ff3e"
+    }
+  ],
+  "math": [],
+  "images": [],
+  "figures": [],
+  "headings": [
+    {
+      "id": "IBM-026-c0-headings-001",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 170,
+      "end": 184,
+      "original": "# Introduction",
+      "sha256": "1cfabb9fbf64272210f460dda2e83849fc87153cd78f2a983507fc8c332e19fd",
+      "status": "unverified source occurrence; no native/media acceptance"
+    },
+    {
+      "id": "IBM-026-c0-headings-002",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 919,
+      "end": 934,
+      "original": "## Lesson video",
+      "sha256": "e18dad7a0e5a414cdb5c4b1bec842a930fb6ce8285a6f2b032d5e48b7880f7ef",
+      "status": "unverified source occurrence; no native/media acceptance"
+    }
+  ],
+  "links": [
+    {
+      "id": "IBM-026-c0-links-001",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 1079,
+      "end": 1164,
+      "original": "[YouTube video](https://youtu.be/4nT0BTUxhJY?list=PLOFEBzvs-VvqKKMXX4vbi4EB1uaErFMSO)",
+      "sha256": "13930ed994f6c065fdee2c415da4693cc89cfe4bfd3a32223ab7fd2611f732b5",
+      "status": "unverified source occurrence; no native/media acceptance"
+    },
+    {
+      "id": "IBM-026-c0-links-002",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 1203,
+      "end": 1296,
+      "original": "[Download the slides](https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf)",
+      "sha256": "b8d444444cd5cd2372725df6f5fdd3ef0f8b19601f664f817930854553a2004b",
+      "status": "unverified source occurrence; no native/media acceptance"
+    }
+  ],
+  "video_embeds": [
+    {
+      "id": "IBM-026-c0-video_embeds-001",
+      "cell_index": 0,
+      "cell_id": "e2df0850",
+      "start": 1315,
+      "end": 1518,
+      "original": "<IBMVideo id=\"134056217\" title=\"In this video, John Watrous reviews the phase estimation problem and steps through the phase estimation procedure. With this in hand, John moves on to Shor's algorithm.\"/>",
+      "sha256": "23912b6c59ee88bee63e44fe6cdebed5ed0650f984574eae2d76cf4d3d382fd3",
+      "status": "unverified source occurrence; no native/media acceptance"
+    }
+  ],
+  "code_cells": [],
+  "counts": {
+    "math": 0,
+    "images": 0,
+    "figures": 0,
+    "headings": 2,
+    "links": 2,
+    "video_embeds": 1,
+    "code_cells": 0
+  }
+}

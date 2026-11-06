@@ -1,0 +1,437 @@
+{
+  "input": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\slides.pdf",
+  "input_sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab",
+  "renderer": "C:\\Users\\Simeon\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\poppler\\Library\\bin\\pdftoppm.exe",
+  "renderer_sha256": "2a239fe83c6ebed47013ea1292a073d149ab2e6d89f3f5acf3294d1a94956094",
+  "version": "pdftoppm version 26.07.0\r\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\r\nCopyright 1996-2011, 2022 Glyph & Cog, LLC\r\n",
+  "argv": [
+    "C:\\Users\\Simeon\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\poppler\\Library\\bin\\pdftoppm.exe",
+    "-r",
+    "150",
+    "-png",
+    "-f",
+    "1",
+    "-l",
+    "41",
+    "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\slides.pdf",
+    "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\render"
+  ],
+  "pid": 45252,
+  "exit_code": 0,
+  "terminal_reaped": true,
+  "elapsed_seconds": 6.625,
+  "dpi": 150,
+  "rename_rule": "Poppler render-01.png through render-41.png renamed page-001.png through page-041.png without pixel/byte changes",
+  "pages": [
+    {
+      "page": 1,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-001.png",
+      "bytes": 189721,
+      "sha256": "e1cfa27b5a827ed18a6ac6f270822f5ef71fa02a80cb580f831a632239cdd6e7",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 2,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-002.png",
+      "bytes": 89981,
+      "sha256": "580607ad82b02d63b7cac1ee91d5fd51948d6054d77b2b830c729c0d6c4835ee",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 3,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-003.png",
+      "bytes": 85773,
+      "sha256": "64cd32d5c7d956255ac1a0cbcafe4d93a47ecc5887f1cfd2449cd607d51268aa",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 4,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-004.png",
+      "bytes": 113442,
+      "sha256": "232957e7bea38d10c41f998d35b56072ec32466620aae5e59cfa5cab1cd18b72",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 5,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-005.png",
+      "bytes": 94356,
+      "sha256": "dd537502490dd6ddad707aaed9a6c3007a3d7c7d6b60995d7454c5c7ace09f1b",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 6,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-006.png",
+      "bytes": 44416,
+      "sha256": "f3447e85278c1b97c73d5e1919ff31edd9c5e1946ea2673bc78fca4d26d8c93e",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 7,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-007.png",
+      "bytes": 50864,
+      "sha256": "07c8c2b9df56bb25845a85c0c60bea9aa5fa0c375910ce443bb65db2bec1bfee",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 8,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-008.png",
+      "bytes": 50011,
+      "sha256": "1f51319a5fc5230bf34ae11322e2f9d6730cd509385c633beaa82811ef80e0f1",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 9,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-009.png",
+      "bytes": 78529,
+      "sha256": "95d99a838c0d8c7bcf2d265ff33cb57d3090360ba6a9e20dd0ae5b676bcd379f",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 10,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-010.png",
+      "bytes": 73650,
+      "sha256": "7240431ab7ad77f25818d019e0439189e5503e62bf81b47e5fdf8e961fb5a800",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 11,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-011.png",
+      "bytes": 55514,
+      "sha256": "9c673f637f7547597e8ea6f873c99fcb2110e4794576df1429349b828ba21577",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 12,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-012.png",
+      "bytes": 54304,
+      "sha256": "ecda4e695ae828d92cb9b39fdb63064988750c53cb3804bc5e0231cb35d0f851",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 13,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-013.png",
+      "bytes": 81916,
+      "sha256": "7c678707eb31d88bb6d6baa3015f2e4d5c3705e030cc1e7f7b8b518f2f2e0f4d",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 14,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-014.png",
+      "bytes": 81665,
+      "sha256": "844e6548065742bc0bf580e68accc0b7d326b80217458f17daa0193e251ad31a",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 15,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-015.png",
+      "bytes": 65888,
+      "sha256": "2848ad85b03323a4990cbe7d1e38dfb4147eb68dff32fc7516882dffe7f87ff5",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 16,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-016.png",
+      "bytes": 79612,
+      "sha256": "e1ac5c83120bcffaaa67936dc2f54d20dc73638d9d85038b5d5115309b6b3377",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 17,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-017.png",
+      "bytes": 60093,
+      "sha256": "614d9aec416433fb9d5ea92c1a72c101977847dbb3831bc93fd5a452487e5629",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 18,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-018.png",
+      "bytes": 50372,
+      "sha256": "de03ee3c97e29fe8773f98c0fa90d21ff53a535b8c0a51c404c646a8c37d3ee5",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 19,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-019.png",
+      "bytes": 67183,
+      "sha256": "3255ad0b01c6b9ca0e084b715578a93e8cf2c3bc1ac0d40fafc8bf46df3b06cb",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 20,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-020.png",
+      "bytes": 63276,
+      "sha256": "41e9642423c51d3a38899d2b40afe300f86542586ec8317d9f5fc51bd1a9af84",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 21,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-021.png",
+      "bytes": 62278,
+      "sha256": "4ef4186babeac3915d247df0ba82c91bcbc8621a5ff027045300f74f239efe48",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 22,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-022.png",
+      "bytes": 94294,
+      "sha256": "b7c171716f13139d59ea6ea413222e06eaaa44b1efe8e09522c03e97cae88a41",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 23,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-023.png",
+      "bytes": 56993,
+      "sha256": "4b6c105a912438d9b18a921d281606cc5b15e147cbd757c61897cd1d78631377",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 24,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-024.png",
+      "bytes": 48897,
+      "sha256": "45d5c3c1a620754d3afcce8013b554503a21d53e2a174f85300b8d767996d0c5",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 25,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-025.png",
+      "bytes": 94492,
+      "sha256": "589a1563ae0d995747c5e2377e7640c9f77a92ebb371dee5b13a53c6c8d8385b",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 26,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-026.png",
+      "bytes": 93409,
+      "sha256": "a618ad3b20024e84318f40d29788a0fa6e207bec794c950a2dfddf53ea9d07d3",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 27,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-027.png",
+      "bytes": 93137,
+      "sha256": "71ab441f48a23eca49499c7ea5920887906a9c58100b69d1bdca6f960836288d",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 28,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-028.png",
+      "bytes": 106808,
+      "sha256": "26b4b377040281b3b26747d1546f4e3dc085ae30be2e24d84614c71687731d22",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 29,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-029.png",
+      "bytes": 95592,
+      "sha256": "b3e8268eb9fcf63114fc52a67dee1330d75be741dd2826b41dd241f5f7393f45",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 30,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-030.png",
+      "bytes": 92525,
+      "sha256": "4c7c20c7998cf78fe579bcd08a8bf2282d88bad058715f439f86d0c4ba222d78",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 31,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-031.png",
+      "bytes": 95104,
+      "sha256": "28aa96b6e76cf88a17d7d723b6c583fb7ced388e694e9d4601552d94a871707b",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 32,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-032.png",
+      "bytes": 92080,
+      "sha256": "e875ae690d5e036be13a2953d54786aff8e4a64deefe474b275ff9246604bf8b",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 33,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-033.png",
+      "bytes": 65648,
+      "sha256": "8269d05413477a2404019462f01a26efbb134a670a3c021f469c4896b626bfd1",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 34,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-034.png",
+      "bytes": 72743,
+      "sha256": "6fcb7b455698a9f04337949c8a8ffc7e5bf9b175276b09bc1faddc86199e6da5",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 35,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-035.png",
+      "bytes": 97932,
+      "sha256": "766084decdcb02d42302077ac6470e0668b7dcb413b4679c24032facc38e080d",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 36,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-036.png",
+      "bytes": 130313,
+      "sha256": "6422d2bf538c39ccbe86db88dfcc11d38a550e706806fd9ad8e0afacce43a395",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 37,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-037.png",
+      "bytes": 137863,
+      "sha256": "3a3b2bbf250b97f2f548fb942c6923114c425d20377e4f7b3af0dd21026a6c02",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 38,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-038.png",
+      "bytes": 83728,
+      "sha256": "d4b53bee0b06f7a1396d35953ca4eba27f913ba5ba341a8f81e875c9a1259a19",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 39,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-039.png",
+      "bytes": 68289,
+      "sha256": "c7ca8c43cae87d7b2c1ba9eed01025ccb214479bd8f46d655c6f83af15be163a",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 40,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-040.png",
+      "bytes": 60987,
+      "sha256": "83ef1ff44be57556677d3bf7ecaf69d575ab8655842b558c6cf92d32182bc86f",
+      "dimensions": [
+        1575,
+        886
+      ]
+    },
+    {
+      "page": 41,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-041.png",
+      "bytes": 118115,
+      "sha256": "6582b9e4f5c1556fce692779ca943a78add02ef28751b2e58da0bac241f81292",
+      "dimensions": [
+        1575,
+        886
+      ]
+    }
+  ]
+}

@@ -1,0 +1,730 @@
+{
+  "scope": "All 41 page images directly viewed and reconciled with retained extracted text; no mathematical or whole-lesson acceptance",
+  "input_pdf": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slide-acquisition-20261105\\slides.pdf",
+  "input_pdf_sha256": "a79cc94cc28ebf9efd214364ffb616796fab520abe7a22a9f920659b40ff95ab",
+  "render_manifest_sha256": "435c7ad8c3991fe2976c9559edfec27dcdd52d239481aa0d204b45949a313bff",
+  "text_inventory_sha256": "b41454ef0162e610843e09554c61f028aefb93dc2ff9dab169edbe6e416da3b2",
+  "acquisition_manifest_sha256": "7f30b13222c5aed06d53c4da28fda5f7e3b67ac68af795d39def60c2bd636913",
+  "source_join": {
+    "notebook_sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787",
+    "cell": 0,
+    "cell_id": "e2df0850",
+    "unicode_start": 1203,
+    "unicode_end": 1296,
+    "url": "https://ibm.box.com/public/static/jxase3mly99ui1n1fg8pvp6bzymbdgrh.pdf",
+    "occurrence_id": "IBM-026-c0-links-002"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-001.png",
+      "image_sha256": "e1cfa27b5a827ed18a6ac6f270822f5ef71fa02a80cb580f831a632239cdd6e7",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "1566885c386e665b1b9548c6c534d8542d1b651016d9f76e93e5bdca1a72574a",
+      "directly_viewed": true,
+      "visual_notes": "Cover: Lesson 7, Phase estimation and factoring, John Watrous; geometric artwork and IBM copyright. Extraction places footer before title.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 2,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-002.png",
+      "image_sha256": "580607ad82b02d63b7cac1ee91d5fd51948d6054d77b2b830c729c0d6c4835ee",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "e763c57403cae857e83e7fef219bcfff03e64df63081d76f541372de88bac307",
+      "directly_viewed": true,
+      "visual_notes": "Spectral theorem box: orthonormal basis, complex eigenvalues and spectral sum; indices and exponential grouping visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 3,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-003.png",
+      "image_sha256": "64cd32d5c7d956255ac1a0cbcafe4d93a47ecc5887f1cfd2449cd607d51268aa",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "3cdeb87d6ecc8239653c2edab31a2f4babb87d32e580f43ce0f24cee4cf8bded",
+      "directly_viewed": true,
+      "visual_notes": "Theorem repeated with eigenvector equation below; no clipping.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 4,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-004.png",
+      "image_sha256": "232957e7bea38d10c41f998d35b56072ec32466620aae5e59cfa5cab1cd18b72",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "87fd40cf654e0010d8b51ccac3b3c15146f65cdc11e00cbcb9fa70ddd5c73e47",
+      "directly_viewed": true,
+      "visual_notes": "Phase estimation input, promise and output box, with theta interval and eigenvector equation.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 5,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-005.png",
+      "image_sha256": "dd537502490dd6ddad707aaed9a6c3007a3d7c7d6b60995d7454c5c7ace09f1b",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "a3eed1cffa60dfe6e8f9eef48aaf1a5a5faebbea2548d09c5ab9592dbc1914c1",
+      "directly_viewed": true,
+      "visual_notes": "Problem box plus unit circle labeled 1,i,-1,-i and angle; modulo-one approximation prose. Diagram geometry absent from extracted text.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 6,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-006.png",
+      "image_sha256": "f3447e85278c1b97c73d5e1919ff31edd9c5e1946ea2673bc78fca4d26d8c93e",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "2041c4e9491a6eb431830c1690fdd01180e248b4a99dcde234393f20df978002",
+      "directly_viewed": true,
+      "visual_notes": "Controlled-U schematic and H-controlled-U-H measurement circuit; bundled target wires are schematic, not a dimension count.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 7,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-007.png",
+      "image_sha256": "07c8c2b9df56bb25845a85c0c60bea9aa5fa0c375910ce443bb65db2bec1bfee",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "afc5c0d770c043fc840ae3c388d10f0744c338d48114037195b87adde9178471",
+      "directly_viewed": true,
+      "visual_notes": "Kickback circuit with pi0 through pi3 checkpoint lines and first three state expressions.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 8,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-008.png",
+      "image_sha256": "1f51319a5fc5230bf34ae11322e2f9d6730cd509385c633beaa82811ef80e0f1",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "dd7267d2aef8610cb0c15ae6bbbce70310536546c7c5fe86b6dd3fd9540be1ac",
+      "directly_viewed": true,
+      "visual_notes": "Kickback circuit and pi2/pi3 expressions; fraction and exponential grouping visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 9,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-009.png",
+      "image_sha256": "95d99a838c0d8c7bcf2d265ff33cb57d3090360ba6a9e20dd0ae5b676bcd379f",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "8bd73370dc79a62d191de158959f4af8e0219277d11b77d4ca04a80bc9568c7b",
+      "directly_viewed": true,
+      "visual_notes": "Outcome probability equations and blue/purple 0/1 curves. Extracted absolute-value bars are malformed /sym tokens; image is readable.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 10,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-010.png",
+      "image_sha256": "7240431ab7ad77f25818d019e0439189e5503e62bf81b47e5fdf8e961fb5a800",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "3b8394dc11cb96fbec6c5dcc171c6ed44b350db8079b0ccd16f826a2a291689d",
+      "directly_viewed": true,
+      "visual_notes": "Two controlled-U operations and probability plot 0/1, with doubled oscillation relative to page 9.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 11,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-011.png",
+      "image_sha256": "9c673f637f7547597e8ea6f873c99fcb2110e4794576df1429349b828ba21577",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "a6872fcfb3ada97cfcaaf51abf6535f9fb6351064664d62ddfd3184eb86494df",
+      "directly_viewed": true,
+      "visual_notes": "Two control wires, three U blocks, checkpoint pi1/pi2 and nested sums; control connectivity visible only in image.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 12,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-012.png",
+      "image_sha256": "ecda4e695ae828d92cb9b39fdb63064988750c53cb3804bc5e0231cb35d0f851",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "9838d09da0bb29a463a7442359dfff8c9d3b895ec9769a91aa39b5d13c568297",
+      "directly_viewed": true,
+      "visual_notes": "Same circuit at pi3; binary weighted exponent and single sum over x displayed.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 13,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-013.png",
+      "image_sha256": "7c678707eb31d88bb6d6baa3015f2e4d5c3705e030cc1e7f7b8b518f2f2e0f4d",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "b85a73ce147a27a878fb539ab68c04b16b73a61cf3c12f1843c1764c4a14a93c",
+      "directly_viewed": true,
+      "visual_notes": "Four explicit two-qubit states, quarter-phase promise and orthonormality statement; highlight preserved.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 14,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-014.png",
+      "image_sha256": "844e6548065742bc0bf580e68accc0b7d326b80217458f17daa0193e251ad31a",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "6b74a8222b39e9af2fad8f3cb01e97d85c0ef34ce7a29e2200fb5ec4872537e2",
+      "directly_viewed": true,
+      "visual_notes": "Four states alongside matrix V; columns statement and inverse action below. Extraction flattens matrix rows.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 15,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-015.png",
+      "image_sha256": "2848ad85b03323a4990cbe7d1e38dfb4147eb68dff32fc7516882dffe7f87ff5",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "48d68d1e897d4f515150d6ebff6c739f10f66c51c9fe7a48722587eb624518ac",
+      "directly_viewed": true,
+      "visual_notes": "QFT4 matrix and inverse-QFT measurement circuit on two controls; target bundle below.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 16,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-016.png",
+      "image_sha256": "e1ac5c83120bcffaaa67936dc2f54d20dc73638d9d85038b5d5115309b6b3377",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "10cb65acb966ce3d3c8896cf496fdb1c3c3a645787b5509945e8b54deab6458e",
+      "directly_viewed": true,
+      "visual_notes": "Two-control circuit plus four probability curves labeled 0,1,2,3; color correspondence visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 17,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-017.png",
+      "image_sha256": "614d9aec416433fb9d5ea92c1a72c101977847dbb3831bc93fd5a452487e5629",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "0f0e0674e3900e1503673aa906272dddc9ab018a553526c5300d19782d452d39",
+      "directly_viewed": true,
+      "visual_notes": "General QFT definition and action; QFT2 and QFT3 matrix examples. Fraction/radical matrix layout not safely represented by flattened text.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 18,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-018.png",
+      "image_sha256": "de03ee3c97e29fe8773f98c0fa90d21ff53a535b8c0a51c404c646a8c37d3ee5",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "32363a17a05dac86bdddf9e8c14f8c6f10789bd96b5a3909acdb0b564607009e",
+      "directly_viewed": true,
+      "visual_notes": "General QFT definition and QFT4 matrix example.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 19,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-019.png",
+      "image_sha256": "3255ad0b01c6b9ca0e084b715578a93e8cf2c3bc1ac0d40fafc8bf46df3b06cb",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "e7020fa58ebb2c8256ebd852e0c6bee2eda46be1dbc2f2859fe534ea1e83da7a",
+      "directly_viewed": true,
+      "visual_notes": "General QFT definition and full QFT8 matrix; entries readable at retained resolution; no entrywise verification performed.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 20,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-020.png",
+      "image_sha256": "41e9642423c51d3a38899d2b40afe300f86542586ec8317d9f5fc51bd1a9af84",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "db2c0d6de16412547df91dfbe0bc7d9a050a8897d3a74cc0e55a0b42ed23d294",
+      "directly_viewed": true,
+      "visual_notes": "QFT root-of-unity shorthand and circle points labeled omega1,2,3,4,8,16. Text extraction loses positions.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 21,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-021.png",
+      "image_sha256": "4ef4186babeac3915d247df0ba82c91bcbc8621a5ff027045300f74f239efe48",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "1b43236d2391796d09233f2236c0cd5f70d21c9f7fde371aabeca5e9908da924",
+      "directly_viewed": true,
+      "visual_notes": "Controlled-phase gate and diagonal matrix; recursive QFT32 circuit with QFT16 block, pi/16,pi/8,pi/4,pi/2 controls, H and swap chain. Text alone loses wiring.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 22,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-022.png",
+      "image_sha256": "b7c171716f13139d59ea6ea413222e06eaaa44b1efe8e09522c03e97cae88a41",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "76f9bd4f2525f7cb22cba4d44a3886971838d098b84666605a3006af47e15607",
+      "directly_viewed": true,
+      "visual_notes": "Gate-cost recurrence, sum and m-squared statement, plus swap/approximation remarks; piecewise cases readable.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 23,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-023.png",
+      "image_sha256": "4b6c105a912438d9b18a921d281606cc5b15e147cbd757c61897cd1d78631377",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "8f806502a5d7cac3149aa23956586c6994ea8e07998194bfaf14e7e677c5094c",
+      "directly_viewed": true,
+      "visual_notes": "General phase-estimation circuit with controlled powers and inverse QFT; warning about repeated-operation cost. Nested exponents require image.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 24,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-024.png",
+      "image_sha256": "45d5c3c1a620754d3afcce8013b554503a21d53e2a174f85300b8d767996d0c5",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "2b8ae6b3f388308349860a1a506a0557c4bec1f8931b20e79eb219f9a9d6fd82",
+      "directly_viewed": true,
+      "visual_notes": "General circuit at pi checkpoint and amplitude/probability sums. Extracted absolute-value delimiters malformed; visible bars and square are readable.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 25,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-025.png",
+      "image_sha256": "589a1563ae0d995747c5e2377e7640c9f77a92ebb371dee5b13a53c6c8d8385b",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "b97103d13a27b39ee4b30c22d5a75dea452a918b25086dbfded4968f7467af2c",
+      "directly_viewed": true,
+      "visual_notes": "Best/worse approximation panels and m=3 plot, legends 3,4,5. Modulo-one distance subscript and probability bounds visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 26,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-026.png",
+      "image_sha256": "a618ad3b20024e84318f40d29788a0fa6e207bec794c950a2dfddf53ea9d07d3",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "3567f9f3023a8f52d23290a6e3766080482992e83867ec875a9e332567d422fc",
+      "directly_viewed": true,
+      "visual_notes": "Same panels and m=4 plot, legends 7,8,9; horizontal axis has visible break near left, not a clipping artifact.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 27,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-027.png",
+      "image_sha256": "71ab441f48a23eca49499c7ea5920887906a9c58100b69d1bdca6f960836288d",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "34748157436914e15cc3e77a303e310cb074e42ae821790cb06401f134423090",
+      "directly_viewed": true,
+      "visual_notes": "Same panels and m=5 plot, legends 15,16,17; horizontal axis break and narrowed scale visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 28,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-028.png",
+      "image_sha256": "26b4b377040281b3b26747d1546f4e3dc085ae30be2e24d84614c71687731d22",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "288cb3689c8e80e484b5d0dcb73fb24823f771f2983b615bd2bfc7ce6fee116e",
+      "directly_viewed": true,
+      "visual_notes": "Best/worse panels plus repeated-run mode and eigenvector reuse statements. Extracted distance bars malformed; image shows subscript-one distance.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 29,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-029.png",
+      "image_sha256": "b3e8268eb9fcf63114fc52a67dee1330d75be741dd2826b41dd241f5f7393f45",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "901ea99392e5ba1b7754e29f30db99c74fa9f1c3d49e6ff82be069c16ed78747",
+      "directly_viewed": true,
+      "visual_notes": "Modular residue definitions, modulo-7 product example and unit set modulo21. Stars/subscripts readable.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 30,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-030.png",
+      "image_sha256": "4c7c20c7998cf78fe579bcd08a8bf2282d88bad058715f439f86d0c4ba222d78",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "96f194d915188944826d5c85c29bd3882dfe512b0d707645bade37d2a71ccab6",
+      "directly_viewed": true,
+      "visual_notes": "Order definition, modulo21 powers in four columns, input/output box. Text extraction joins adjacent column values; image needed for individual examples.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 31,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-031.png",
+      "image_sha256": "28aa96b6e76cf88a17d7d723b6c583fb7ced388e694e9d4601552d94a871707b",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "3f6eb6962dd3b97c92aca61e65b79fa8148fb448491b9556fb199b42c06b03c2",
+      "directly_viewed": true,
+      "visual_notes": "Modular multiplication operator and N=15,a=2 mapping in three columns; all rows within frame.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 32,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-032.png",
+      "image_sha256": "e875ae690d5e036be13a2953d54786aff8e4a64deefe474b275ff9246604bf8b",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "7987e07235f63903d318b533bd3ab4a4017a24423ee8e186b7a85ad868602eed",
+      "directly_viewed": true,
+      "visual_notes": "Modular multiplication definition with eigenvalue/order connection prose.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 33,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-033.png",
+      "image_sha256": "8269d05413477a2404019462f01a26efbb134a670a3c021f469c4896b626bfd1",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "1276d699ba64f4352bab067ca4c1dd0e5f008566b49afdcfae57f159d772309d",
+      "directly_viewed": true,
+      "visual_notes": "Uniform orbit eigenvector, eigenvalue-one derivation and next eigenvector with negative root exponents.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 34,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-034.png",
+      "image_sha256": "6fcb7b455698a9f04337949c8a8ffc7e5bf9b175276b09bc1faddc86199e6da5",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "c17fadedf508fc91b046cc519624a679f0c7bb7908c8ca236a05bd6d7e722ed5",
+      "directly_viewed": true,
+      "visual_notes": "Derivation for psi1 and general psij eigenvector/eigenvalue statement; nested superscripts visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 35,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-035.png",
+      "image_sha256": "766084decdcb02d42302077ac6470e0668b7dcb413b4679c24032facc38e080d",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "b22ec48f6c29f66d849d4d9c11003470896642d1bd25011aad532285d0d97d89",
+      "directly_viewed": true,
+      "visual_notes": "Convenient eigenvector, reciprocal rounding and precision bound. Extracted absolute-value bars malformed; floor brackets visible.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 36,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-036.png",
+      "image_sha256": "6422d2bf538c39ccbe86db88dfcc11d38a550e706806fd9ad8e0afacce43a395",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "e7348da66a55a7698f28cb394eaf7b8fde642db22921eebecbabd0f9b5eef9e3",
+      "directly_viewed": true,
+      "visual_notes": "Random eigenvector and continued-fraction recovery. Top equation visibly uses psij on left but psi1 in both right-hand state factors; same discrepancy exists in extracted text. Flag for later interpretation; do not silently correct.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 37,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-037.png",
+      "image_sha256": "3a3b2bbf250b97f2f548fb942c6923114c425d20377e4f7b3af0dd21026a6c02",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "83e867652e59c5641af1e0defc5a0b52da173ceec50d2f34331c248f1c77b873",
+      "directly_viewed": true,
+      "visual_notes": "Random eigenvector repeated with independent-sampling/LCM prose. Top equation repeats page36 psij/psi1 discrepancy; visible and extracted, not only OCR.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 38,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-038.png",
+      "image_sha256": "d4b53bee0b06f7a1396d35953ca4eba27f913ba5ba341a8f81e875c9a1259a19",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "33a2386e72d0f325b6a9724fc620867a42f80d51cdcac378ba08aae502fef23b",
+      "directly_viewed": true,
+      "visual_notes": "Modular-multiplication controlled-power circuit; per-unitary cost and Lesson6 dependency. Nested powers and circuit geometry require image.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 39,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-039.png",
+      "image_sha256": "c7ca8c43cae87d7b2c1ba9eed01025ccb214479bd8f46d655c6f83af15be163a",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "dc4099c2d1c415a5cff0bbe6297742f6c81d664662611ca4a241a48379ebe07f",
+      "directly_viewed": true,
+      "visual_notes": "Same circuit and cost bullets culminating in O(n cubed); statement inventoried, not validated.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 40,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-040.png",
+      "image_sha256": "83ef1ff44be57556677d3bf7ecaf69d575ab8655842b558c6cf92d32182bc86f",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "0be7534504e94eaef2efc23dbd1d2ac717413ed0bf4665bd9a0d4a824abb3aac",
+      "directly_viewed": true,
+      "visual_notes": "Circuit input label visibly overlaps psi and 1 near target brace; extraction retains both. Prose explicitly says replace psi by state1, and shows its eigenvector expansion. Preserve label ambiguity for later interpretation.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    },
+    {
+      "page": 41,
+      "image": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\ibm026-slides-visual-inventory-20261105\\pages\\page-041.png",
+      "image_sha256": "6582b9e4f5c1556fce692779ca943a78add02ef28751b2e58da0bac241f81292",
+      "dimensions": [
+        1575,
+        886
+      ],
+      "extracted_text_sha256": "c435cf3bc8293ee8a54876be00b350a04af3200d8bed3076071e57caf9be4421",
+      "directly_viewed": true,
+      "visual_notes": "Factor-finding five-step method, odd/non-prime-power condition and probability statement; algebraic factorization reasoning below. All content within frame.",
+      "clipping": "No page-edge clipping observed",
+      "readability": "Readable at retained 150dpi; exceptions explicitly noted",
+      "acceptance": "Visual inventory only; mathematical claims not tested"
+    }
+  ],
+  "topic_ranges": {
+    "title": [
+      1,
+      1
+    ],
+    "spectral_theorem": [
+      2,
+      3
+    ],
+    "phase_estimation_problem": [
+      4,
+      5
+    ],
+    "kickback": [
+      6,
+      9
+    ],
+    "iteration": [
+      10,
+      10
+    ],
+    "two_controls": [
+      11,
+      14
+    ],
+    "two_qubit_phase_estimation": [
+      15,
+      16
+    ],
+    "QFT": [
+      17,
+      20
+    ],
+    "QFT_circuits_cost": [
+      21,
+      22
+    ],
+    "phase_estimation_procedure": [
+      23,
+      28
+    ],
+    "order_finding": [
+      29,
+      32
+    ],
+    "eigenvectors": [
+      33,
+      37
+    ],
+    "implementation": [
+      38,
+      40
+    ],
+    "factoring": [
+      41,
+      41
+    ]
+  },
+  "interpretation_flags": [
+    {
+      "pages": [
+        36,
+        37
+      ],
+      "kind": "visible source notation discrepancy",
+      "detail": "LHS psij, RHS psi1 in top eigenvalue equation; retain as printed pending mathematical interpretation."
+    },
+    {
+      "pages": [
+        40
+      ],
+      "kind": "visible label overlap",
+      "detail": "Target input psi and 1 overlap; prose and extracted text retain both, and prose specifies replacement."
+    },
+    {
+      "pages": [
+        9,
+        24,
+        25,
+        26,
+        27,
+        28,
+        35,
+        36,
+        37
+      ],
+      "kind": "extraction corruption",
+      "detail": "Absolute-value delimiters become /sym tokens; use visible notation."
+    }
+  ],
+  "limits": [
+    "No formula proof, circuit equivalence, numerical checks or source-row completion.",
+    "No native/SDK/GUI/video activity or additional download.",
+    "Current acquired bytes only; no historical byte-equivalence claim.",
+    "No correction to original PDF or shared repository."
+  ]
+}
