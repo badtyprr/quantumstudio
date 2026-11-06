@@ -546,3 +546,6 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb013-stim.md
 
 EXTRA_DIST += docs/learning-evidence/dev13/windows-native-acceptance/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/windows-native-acceptance/index.json
+
+EXTRA_DIST += docs/learning-evidence/discovery-linked-archives/README.md
+EXTRA_DIST += docs/learning-evidence/discovery-linked-archives/index.json

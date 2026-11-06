@@ -1,0 +1,269 @@
+{
+  "schema": 1,
+  "proposal_base": "1b16f936b4e250b3b531e5f64004a15ec51d0c8d",
+  "scope": "Additive finite IBM109 and IBM114 linked-archive access evidence",
+  "observations": [
+    {
+      "source_id": "IBM-109",
+      "target_key": "IBM-LINK-8109d15d2cbf413f",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "source_path": "learning/courses/quantum-chem-with-vqe/hamiltonian-construction.ipynb",
+      "source_pin_key": "109/source",
+      "cell": 26,
+      "offset": 5,
+      "end_offset": 108,
+      "offset_units": "Unicode codepoints, half-open in joined cell source",
+      "exact_link_span": "[example molecule notebook](https://ibm.ent.box.com/public/static/59c2kjqefvjy5wy5lct099thr4y0ry8c.zip)",
+      "original_inventory_access": "not_checked; repository presence is not HTTP access",
+      "requirement_status": "ambiguous",
+      "new_observation": "Anonymous HTTP 200 according to retained acquisition receipt; no fresh network check",
+      "archive_pin_key": "109/download.zip",
+      "member": {
+        "name": "linked-example-molecules-pyscf.ipynb",
+        "bytes": 13897,
+        "sha256": "70445fe2b4d57c1fe9e95f707def87b493f3ba22bbaa0bf155c3fb2460360b3b"
+      },
+      "review_pin_keys": [
+        "109/standards",
+        "109/spec"
+      ],
+      "historical_archive_equivalence": false,
+      "execution": false,
+      "cells": [
+        {
+          "index": 0,
+          "cell_type": "code",
+          "source_sha256": "b800caa3de2168dcf567781ba0c38767619d51fa697e9660e47aa947ee250dd1",
+          "imports": [
+            "matplotlib.pyplot",
+            "numpy",
+            "pyscf",
+            "qiskit.quantum_info"
+          ],
+          "retained_output_count": 0,
+          "executed_here": false
+        },
+        {
+          "index": 1,
+          "cell_type": "markdown",
+          "source_sha256": "0969c95cd2b501490270fa4d6f4f0826744400cde720aea0c866e2a847e0121b",
+          "imports": [],
+          "retained_output_count": 0,
+          "executed_here": false
+        },
+        {
+          "index": 2,
+          "cell_type": "code",
+          "source_sha256": "5607fb143cebe2d3f4f86f9eef221f9f4ca5355b86dbccdc2b39151ee26c6dfd",
+          "imports": [],
+          "retained_output_count": 1,
+          "executed_here": false
+        },
+        {
+          "index": 3,
+          "cell_type": "code",
+          "source_sha256": "2f7b78ffcdd4e13cf04334c25ee6f7bd9b7c5ee3b62b6953cf7bb7e5705995f5",
+          "imports": [],
+          "retained_output_count": 1,
+          "executed_here": false
+        },
+        {
+          "index": 4,
+          "cell_type": "code",
+          "source_sha256": "824af325c9fa1eb195b40c4b78466fc9816cc06a34c6367e36b6d9cd83d1d853",
+          "imports": [],
+          "retained_output_count": 1,
+          "executed_here": false
+        },
+        {
+          "index": 5,
+          "cell_type": "code",
+          "source_sha256": "0819aea977e6d0f2b23a51a31366806db181b025177c4b9e0b423c95b8dc9570",
+          "imports": [],
+          "retained_output_count": 1,
+          "executed_here": false
+        },
+        {
+          "index": 6,
+          "cell_type": "code",
+          "source_sha256": "30153c45c3ddcedd6d04cce1683c5fbbb771fc53e659ade7cc414c494912f8ea",
+          "imports": [],
+          "retained_output_count": 1,
+          "executed_here": false
+        },
+        {
+          "index": 7,
+          "cell_type": "code",
+          "source_sha256": "10cb7e95a8aa66f2cd95ebed6abeb8c31e0a72df08cbba0e336ff8cbf3c0fa18",
+          "imports": [],
+          "retained_output_count": 1,
+          "executed_here": false
+        }
+      ],
+      "code_cells": 7,
+      "markdown_cells": 1,
+      "historical_output_records": 6,
+      "dependency_note": "Source comment declares PySCF2.5.0; NumPy, Matplotlib, Qiskit versions not pinned by notebook. No packages installed.",
+      "inspection": "Reviewed AST syntax only; no notebook execution or scientific validation."
+    },
+    {
+      "source_id": "IBM-114",
+      "target_key": "IBM-LINK-d700ecaa16f91cd4",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "source_path": "learning/courses/utility-scale-quantum-computing/introduction.ipynb",
+      "source_pin_key": "114/source",
+      "cell": 0,
+      "offset": 2009,
+      "end_offset": 2103,
+      "offset_units": "Unicode codepoints, half-open in joined cell source",
+      "exact_link_span": "[Download the pdf](https://ibm.ent.box.com/public/static/pnb9vhw1ruz72r3wp4pwfilwc7rzmufw.zip)",
+      "original_inventory_access": "not_checked; repository presence is not HTTP access",
+      "requirement_status": "ambiguous",
+      "new_observation": "Anonymous HTTP 200 according to retained acquisition receipt; no fresh network check",
+      "archive_pin_key": "114/download.zip",
+      "member": {
+        "name": "1_utility_lecture_Invitation_to_Utility_era.pdf",
+        "bytes": 2953157,
+        "sha256": "42d5ad74acc707ced1f9ecd4e2f75585e19f1349b74eda48bd866c9287a4ef27",
+        "compressed_bytes": 2671144,
+        "compression_method": 8,
+        "crc32_hex": "8cfa74fe",
+        "magic_hex": "255044462d312e37",
+        "pdf_magic_only": true
+      },
+      "review_pin_keys": [
+        "114/standards",
+        "114/spec"
+      ],
+      "historical_archive_equivalence": false,
+      "execution": false,
+      "inspection": "Reviewed ZIP metadata, bounded member decompression/hash/CRC and PDF 1.7 magic only; no PDF parser, pages, content or rendering."
+    }
+  ],
+  "historical_context": {
+    "inventory_sources": 149,
+    "occurrences": 1241,
+    "canonical_targets": 872,
+    "zip_targets": 12,
+    "new_observations": 2,
+    "other_zip_statuses_unchanged": 10,
+    "original_inventory_not_rewritten": true,
+    "prior_ibm109_failure": {
+      "pin_key": "109/prior_failed_collector",
+      "http_status": 200,
+      "state": "access-failed",
+      "error_type": "AttributeError",
+      "payload_retained": false
+    }
+  },
+  "limitations": [
+    "Requirement remains ambiguous for both targets; access does not establish mandatory dependencies.",
+    "No historical archive byte equality, current execution, scientific correctness, release or whole-source acceptance.",
+    "IBM109 six stored residual output records are historical; dependency pinning and full notebook execution remain pending.",
+    "IBM114 PDF magic is not structure, page, content or rendering validation.",
+    "IBM109 successful packet lacks full redirect-hop chain and collector implementation; no independent runtime-bound enforcement claim.",
+    "Other ten ZIP statuses and all stable IDs and checkboxes unchanged."
+  ],
+  "external_pins": {
+    "reviewed_inventory": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-linked-requirements-revision01/inventory.json",
+      "bytes": 2346750,
+      "sha256": "a5f38647e0e5556a1c15616e6b39b4f93aa9916ffca29f76cd878b3dae6e6da4"
+    },
+    "109/acquisition.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02/acquisition.json",
+      "bytes": 2387,
+      "sha256": "9f3a9779ad8c08cef2ce54a20e42ffbe462de644826d1f47234f6f68b0a89a1b"
+    },
+    "109/download.zip": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02/download.zip",
+      "bytes": 2807,
+      "sha256": "1e252c4acd4daaa2e806531cc5ed7b9d0c11eb922982b601a2493581c12031ad"
+    },
+    "109/members.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02/members.json",
+      "bytes": 11558,
+      "sha256": "05f7bd16efc388a9c5d3b312e1f11c84bdab87dac7d972c3c8ff91ff30ac5388"
+    },
+    "109/provenance.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02/provenance.json",
+      "bytes": 4509,
+      "sha256": "5f2896c12cc6f4d941fc7e40a13d8a5970097493928be04282d0e577aefa0439"
+    },
+    "109/README.md": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02/README.md",
+      "bytes": 1157,
+      "sha256": "115f1926df1046f369bda0bf4c5347ee22d54e6f04ab66b5bb4d1a62fa276040"
+    },
+    "109/manifest": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02/manifest.json",
+      "bytes": 714,
+      "sha256": "c12539fd398ce275256c9a7f5eff34c2843beaf7d1d775aa2d64d321597fe313"
+    },
+    "109/standards": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02-standards-review.json",
+      "bytes": 1605,
+      "sha256": "433f29995b245ab015fb5355dd21ec2773a92bae11c8b2954f1b7b89198720f8"
+    },
+    "109/spec": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105-attempt02-spec-review.json",
+      "bytes": 1089,
+      "sha256": "d0afa7229452c84d39138df351735e7a94a22091289956a7e8dbc2bc462101cd"
+    },
+    "109/source": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/quantum-chem-with-vqe/hamiltonian-construction.ipynb",
+      "bytes": 33337,
+      "sha256": "0f3a767995ca2b9d4d161107d64bdaf12500687e611b5f16d22292dd67456c6d"
+    },
+    "114/acquisition.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01/acquisition.json",
+      "bytes": 3990,
+      "sha256": "827eb9937fb51106e4baa7320eb91f2cd80173e11fadf8daa82e0156e480a0f9"
+    },
+    "114/download.zip": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01/download.zip",
+      "bytes": 2671408,
+      "sha256": "d1f9fbe4ead2b513c2cf5e792d1ff7330d4a6f6a78eed937141d23d44d1d42e9"
+    },
+    "114/members.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01/members.json",
+      "bytes": 309,
+      "sha256": "5beffb8e034435c4543fae0c77f58569f8a2b7008df2952ad1a4291376388273"
+    },
+    "114/provenance.json": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01/provenance.json",
+      "bytes": 4564,
+      "sha256": "4a5fc17156ebf40309575ba9b7d875db3513a44620b02f3dc4f3bbee1b3d12d9"
+    },
+    "114/README.md": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01/README.md",
+      "bytes": 2634,
+      "sha256": "84f01f1cd0a0c693f5fa4a9811cd5ecc70bd7e8e546d96dd4b73248c72565a70"
+    },
+    "114/manifest": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01/manifest.json",
+      "bytes": 884,
+      "sha256": "e9743e2cde5e14c2b1ca6509a50595d9a72839a652b6b958c1cbf9d4649e828a"
+    },
+    "114/standards": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01-standards-review.json",
+      "bytes": 1329,
+      "sha256": "e1d97dcd6ec153d187804f2e4d8a9cabedc16af6b36c3121125edf37dcd4b535"
+    },
+    "114/spec": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm114-linked-archive-20261106-attempt01-spec-review.json",
+      "bytes": 1410,
+      "sha256": "a904bcf85c14a3bce1cbe1c11fdefbd1dd69a88b1ca88cad946775b302fd79ee"
+    },
+    "114/source": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/introduction.ipynb",
+      "bytes": 3160,
+      "sha256": "0e79f291609466eb1a03ec1c3d2a08f0454f127a7a1d65ae9b79c99025b53d6c"
+    },
+    "109/prior_failed_collector": {
+      "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm109-linked-archive-20261105/acquisition.json",
+      "bytes": 4698,
+      "sha256": "19f99c5bce2c9d92240c4f644ba3bc4b30d2f6a99a70c7ea72fac9482814ff14"
+    }
+  }
+}
