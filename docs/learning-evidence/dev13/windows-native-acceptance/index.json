@@ -2039,5 +2039,81 @@
         "role": "Prerequisite source/DATA owner, not actual acceptance"
       }
     ]
+  },
+  "suspended_case11_unsupported_failure_20261107": {
+    "state": "FAILED_NOT_ACCEPTED",
+    "candidate_acceptance": false,
+    "public_files": 373,
+    "public_bytes": 153200,
+    "controls_before_candidate": {
+      "same": 4,
+      "different": 6
+    },
+    "observation": "Candidate duplication WinError6 before snapshot; unsupported missing observation, no object-absence or implementation-fault proof. No second ACK/resume/channel success.",
+    "outer": "failed; forced=true; NONZERO_EXIT: 1; launcher_exit1; active0; complete EOF/readers; outer cleanup/capture/persistence errors empty",
+    "inner_limit": "No individual B thread/process close results; exception cleanup attributes may not serialize. Outer zero does not prove all inner closes.",
+    "coverage": "No aggregate/case12 or cases01-10 acceptance. Candidate060aaa/dependent negative remain blocked. Prior history unchanged. Writer-lifetime SOURCE in progress only; no moving helper dependency.",
+    "records": [
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-suspended-native-owner-failure-20261107.json",
+        "bytes": 2015,
+        "sha256": "d271c786ea381f5b8eaf8bac85df95aca1efcf282984a70d3aaf473d73beaada",
+        "role": "Final failure decision; evidence accepted, candidate not accepted"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-case11-suspended-native-attempt01-failure-standards-review.json",
+        "bytes": 6282,
+        "sha256": "bc28da01200d87a311133db8e633457879fd22a8401d342fde4c3eec04cdee0a",
+        "role": "Final review or public inventory/qualification"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-case11-suspended-native-attempt01-failure-spec-review.json",
+        "bytes": 6059,
+        "sha256": "a928ded10c0b53377c8cea67fcd46c262f6c9c8ecd4322b4dc4aef3509c2f30b",
+        "role": "Final review or public inventory/qualification"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-suspended-native-public-manifest-20261107.json",
+        "bytes": 102760,
+        "sha256": "3dec21690e32f17847f4bbb7f2be45365dc0c8c93b3f9990a6e72af5f6e3a4f9",
+        "role": "Final review or public inventory/qualification"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-suspended-native-owner-qualification-20261107.json",
+        "bytes": 1131,
+        "sha256": "ab95057bb347da325b330cb9c8bd6bf5d4d669f8db50eeba5bf10d19f5e6734d",
+        "role": "Final review or public inventory/qualification"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-packet-prelaunch-20261107.json",
+        "bytes": 2915,
+        "sha256": "05f7fd0d7418538fdb53f3cc0e74f0b38460481c9d31ece0f1fce45610ff6027",
+        "role": "Preserved packet/terminal/provisional evidence; final owner controls acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-packet-postterminal-20261107.json",
+        "bytes": 2918,
+        "sha256": "cf769a645b4119cc8745b2088eb2e27a4150b62760323b6ecd6fd9ad187b0273",
+        "role": "Preserved packet/terminal/provisional evidence; final owner controls acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-packet-preservation-policy-20261107.json",
+        "bytes": 1327,
+        "sha256": "68fe9bea2e43f304e34d03bfd12dc03a13ada727f771d042f82490c0d36122eb",
+        "role": "Preserved packet/terminal/provisional evidence; final owner controls acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-suspended-native-owner-terminal-20261107.json",
+        "bytes": 252,
+        "sha256": "99ac646638955cecb350731402832c44f38d9e4f03be48afb77a70ca34aaeda3",
+        "role": "Preserved packet/terminal/provisional evidence; final owner controls acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-case11-suspended-native-owner-provisional-failure-20261107.json",
+        "bytes": 1296,
+        "sha256": "b0a5e948251d3c4066b51bb68010999836ef1a04d37c0c8b2bf3fc4493f32041",
+        "role": "Preserved packet/terminal/provisional evidence; final owner controls acceptance"
+      }
+    ]
   }
 }
