@@ -1,6 +1,6 @@
 {
   "scope": "External evidence index only, not self-contained repository evidence or whole-source certification",
-  "proposal_base": "a007839747ad619952d9e38e3c98b16a9bae6c2f",
+  "proposal_base": "8d3160ccf7cfb0811d915b50874e041f07b45a3a",
   "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
   "ibm023_original_sha256": "cf02361b6238447bf11a13732a81dc0009c3522e4c5de3721235d0a55bcf2fe3",
   "legacy_worker": {
@@ -14,7 +14,22 @@
       "libqalculate/BuiltinFunctions-number.cc",
       "tests/polynomial.batch"
     ],
-    "state": "source-reviewed, not built; no candidate-native acceptance or release claim"
+    "state": "Finite external candidate build/functionality/preservation accepted. Exact two tested source overlays committed and pushed on integration branch at69a793e3; this integration commit is not itself release-built, merged or released.",
+    "worker": {
+      "path": "F:\\src\\libqalculate\\.tools\\gcd-zero-native-78bf6cf7-20261105-attempt01\\build\\src\\quantum-worker.exe",
+      "bytes": 86784251,
+      "sha256": "c0ee1c961e5cf5150a4965ba49ad5f84516313c83c51570e811c204bfccf21c3"
+    },
+    "overlays": {
+      "libqalculate/BuiltinFunctions-number.cc": {
+        "sha256": "3597227425cc60dc5f2fe95c5047678c2cbe50943633d8b6ef83b394a3f4a3a9",
+        "bytes": 114951
+      },
+      "tests/polynomial.batch": {
+        "sha256": "43235b7609f63eece5805414c4ded43ea25fc5c1ff48366b78e9983cbe4f5b65",
+        "bytes": 1938
+      }
+    }
   },
   "observed_counts": {
     "ibm023-native-pilot-run-01": {
@@ -154,6 +169,21 @@
       "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/gcd-build-supervisor-20261105-revision03/finalstandards-review.json",
       "sha256": "c9e8dc7f8717c6e25c1a5760ee04df4411767cc3f11fcf62257de0b19689a895",
       "role": "Final finite build preparation / supervisor review; no built GCD candidate evidence"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-final-standards-review-20261106.json",
+      "sha256": "fdc9b9dad56ae23d66d469b96b3859b49843e3028598462bf5e781676ddfd5d4",
+      "role": "Final finite candidate functionality/preservation review"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-final-spec-review-20261106.json",
+      "sha256": "67725874ba4bc932aaf9e162592a46ba7766688bebcfe22df06452772d3eb1a5",
+      "role": "Final finite candidate functionality/preservation review"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-finite-candidate-owner-acceptance-20261106-revision01.json",
+      "sha256": "9ca773962db3163a124b20592c55c93eadfa7a3b5fe2b9a79aa61cbdc65a856b",
+      "role": "Authoritative revised finite candidate owner acceptance"
     }
   ],
   "evidence": [
@@ -668,6 +698,318 @@
       "receipt_role": "Final finite build preparation / supervisor review; no built GCD candidate evidence",
       "stage": "ready_fix_dependencies",
       "storage": "External retained audit evidence outside disposable release clones; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-finite-build-owner-acceptance-20261106.json",
+      "bytes": 1433,
+      "sha256": "fe5d41fb1cd3040165e05ec4842edc4fe5cdb033746e3997b8765c148dc8c90c",
+      "receipt_role": "Owner acceptance of seven-phase build and preservation endpoints only",
+      "stage": "accepted_candidate_build",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-build-actual-final-standards-review-20261106.json",
+      "bytes": 3342,
+      "sha256": "d3f0ced09b00778fa461de8cb140bd6c4b5c0656ba3ec4ddbf5841cdf9fba6ca",
+      "receipt_role": "Actual seven-phase build final review/preservation evidence",
+      "stage": "accepted_candidate_build",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-build-cohort-final-spec-review-20261106.json",
+      "bytes": 5559,
+      "sha256": "8616e528f8773abde08fc1e2c88a57f5d52c75a16b3b74de5802ea6c3fba1853",
+      "receipt_role": "Actual seven-phase build final review/preservation evidence",
+      "stage": "accepted_candidate_build",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-cohort-78bf9d-20261106-attempt01\\final-preservation.json",
+      "bytes": 9610426,
+      "sha256": "5b5dc601c9413adebc3f0accdfa4333fdfb33086f00860207f19b25eff06a5c4",
+      "receipt_role": "Actual seven-phase build final review/preservation evidence",
+      "stage": "accepted_candidate_build",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-compile-owner-verification-20261106.json",
+      "bytes": 1508,
+      "sha256": "bb0afbc9827e08a84dcedcd76ade728c0b8e48fd3422b7b77286c00e6d9a264d",
+      "receipt_role": "Build artifact identity and compile observation",
+      "stage": "accepted_candidate_build",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-native-build-20261105-attempt01\\preparation.json",
+      "bytes": 176035,
+      "sha256": "9f40b715f9e10fc6f1d1c416f1ae1cf4d997e0e28ba7789156fd6e11352b405b",
+      "receipt_role": "Original base/composed source maps and two-overlay identity",
+      "stage": "candidate_source_identity",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-prepare-owner-verification-20261106.json",
+      "bytes": 273549,
+      "sha256": "0955741c8cfb0339624417e8718edb5586e4c2f38fe9afb361857198c663b004",
+      "receipt_role": "Pristine source versus composed build verification",
+      "stage": "candidate_source_identity",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-standards-provisional-20261106.json",
+      "bytes": 8672,
+      "sha256": "fb1572dddc3629b922ad4cd5770e0fb70652fd91c9ffdf2608f349f689ee8100",
+      "receipt_role": "Independent provisional functional review; final preservation not accepted",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-spec-provisional-20261106.json",
+      "bytes": 13661,
+      "sha256": "11abc60387216744caaf4e809cce07b93127d634a1166c531e30169a3c153818",
+      "receipt_role": "Independent provisional functional review; final preservation not accepted",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_compile-ticket-issued.json",
+      "bytes": 9986339,
+      "sha256": "c4dc82003afbb60e0d1d4489196423485ad0114c2ee5405a9327dd38cd19ea27",
+      "receipt_role": "Actual driver_compile ticket; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_compile\\receipt.json",
+      "bytes": 3154,
+      "sha256": "a079cc61974e5762eb43a3eddaca67e8a2d84be24f9a8eba97541108eef71810",
+      "receipt_role": "Actual driver_compile receipt; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_compile\\stdout.bin",
+      "bytes": 516,
+      "sha256": "629f5276dbdf45b0280aa9c79d55ea1683e9cbb4a9581c74696cca140a434bf7",
+      "receipt_role": "Raw driver_compile stdout",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_compile\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipt_role": "Raw driver_compile stderr",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_run-ticket-ready.json",
+      "bytes": 9987359,
+      "sha256": "bf569180351a78c2741cd023b20c5e903bb47fa60ea581b15b3b567c058ae830",
+      "receipt_role": "Actual driver_run ticket; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_run\\receipt.json",
+      "bytes": 2818,
+      "sha256": "64d7f6b4eb6cdd066f36c7023722d82e103dbaf5df68bfff7479592de2ef223d",
+      "receipt_role": "Actual driver_run receipt; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_run\\stdout.bin",
+      "bytes": 34,
+      "sha256": "62937b76d2b4c9b2837f105f4e3352794342b4a7034b8f1a7eb26444d47146bc",
+      "receipt_role": "Raw driver_run stdout",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\driver_run\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipt_role": "Raw driver_run stderr",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\worker15_copy-ticket-issued.json",
+      "bytes": 9987412,
+      "sha256": "42dd84d826f1464cf6fe6f3af737c39eb0d209e276d3c08d17aee7402179236d",
+      "receipt_role": "Actual worker15_copy ticket; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\worker15_copy\\receipt.json",
+      "bytes": 2598,
+      "sha256": "e753083dfb980ceb2d7352d805975ac681752eb098635ae7ddca1abbe8b59777",
+      "receipt_role": "Actual worker15_copy receipt; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\worker15_copy\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipt_role": "Raw worker15_copy stdout",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\worker15_copy\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipt_role": "Raw worker15_copy stderr",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\compatibility-ticket-issued.json",
+      "bytes": 9987886,
+      "sha256": "f2b2a6a85997b814ebf9fbbf10b1478fc1e61dabedee90c2afd8fce217b1bc84",
+      "receipt_role": "Actual compatibility ticket; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\compatibility\\receipt.json",
+      "bytes": 2839,
+      "sha256": "22f87d8f635be2eddd787c01609f92823eadc34e17a13d9e47b1d57dc1035fe5",
+      "receipt_role": "Actual compatibility receipt; pending four-phase final preservation",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\compatibility\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipt_role": "Raw compatibility stdout",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\compatibility\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipt_role": "Raw compatibility stderr",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-results-78bf9d-20261106-attempt01\\worker15-copy\\results.json",
+      "bytes": 47796,
+      "sha256": "7fb9c1b3b48a642d284c806c9fb71c32d3e6f656a20dd207a7cbb2d8a4c28fce",
+      "receipt_role": "Finite adapted results; not original Python execution",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-draft-20261106-revision01\\deferred-adapter\\fixtures.json",
+      "bytes": 10453,
+      "sha256": "97406d1ecddab1d81f276c31df2c8419fb054b66d9418176ab3e3e7653ff3e75",
+      "receipt_role": "Finite adapted fixture; not original Python execution",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-results-78bf9d-20261106-attempt01\\compatibility\\results.json",
+      "bytes": 57183,
+      "sha256": "060bf2b232e368495e1b5aba7a85fc59f66ec557ae5740c83ea5991fdd05ab47",
+      "receipt_role": "Finite adapted results; not original Python execution",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261105\\gcd-zero-candidate-acceptance-revision02\\fixtures.json",
+      "bytes": 13644,
+      "sha256": "8147b29ebd6a3ab38175bb0674553e8c88cb0b3bcce277d4566e3949cf8844e8",
+      "receipt_role": "Finite adapted fixture; not original Python execution",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-driver-run-owner-verification-20261106.json",
+      "bytes": 1010,
+      "sha256": "271cc69b68498539ae834260cca330e0c7c38d36c0e07d45321892779ad56278",
+      "receipt_role": "Owner finite phase observation; final preservation/reviews pending",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-worker15-owner-verification-20261106.json",
+      "bytes": 944,
+      "sha256": "2c8e8673a5389037c9b9a0a1d16f0af3d3cea6335e3540f06f438b22cf0dedc2",
+      "receipt_role": "Owner finite phase observation; final preservation/reviews pending",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-compatibility-owner-verification-20261106.json",
+      "bytes": 1020,
+      "sha256": "0637e49ef00dc719d61ee72af5c00aa4aa6a76f63d59e43b798ffdaa77bd10b3",
+      "receipt_role": "Owner finite phase observation; final preservation/reviews pending",
+      "stage": "provisional_candidate_functionality",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-finite-candidate-owner-acceptance-20261106-revision01.json",
+      "bytes": 2774,
+      "sha256": "9ca773962db3163a124b20592c55c93eadfa7a3b5fe2b9a79aa61cbdc65a856b",
+      "receipt_role": "Authoritative revised owner finite candidate acceptance; supersedes typo receipt",
+      "stage": "final_finite_candidate_acceptance",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\final-preservation.json",
+      "bytes": 9608821,
+      "sha256": "b61bd32edbdec4e54b76690e70a68abbf12b36688c6ba5aba42b1336c0fc6c52",
+      "receipt_role": "Complete four-phase endpoint preservation report; overall_acceptance false retained as supervisor scope",
+      "stage": "final_finite_candidate_acceptance",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-final-standards-review-20261106.json",
+      "bytes": 7181,
+      "sha256": "fdc9b9dad56ae23d66d469b96b3859b49843e3028598462bf5e781676ddfd5d4",
+      "receipt_role": "Independent final finite functionality and preservation review",
+      "stage": "final_finite_candidate_acceptance",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-final-spec-review-20261106.json",
+      "bytes": 15428,
+      "sha256": "67725874ba4bc932aaf9e162592a46ba7766688bebcfe22df06452772d3eb1a5",
+      "receipt_role": "Independent final finite functionality and preservation review",
+      "stage": "final_finite_candidate_acceptance",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-final-audit-owner-verification-20261106.json",
+      "bytes": 810,
+      "sha256": "8647d24405fa42b2238162ca67702498db67e82900e1ffd4353a956d97f202a2",
+      "receipt_role": "Owner terminal/final endpoint verification",
+      "stage": "final_finite_candidate_acceptance",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-finite-candidate-owner-acceptance-20261106.json",
+      "bytes": 2343,
+      "sha256": "75b6464874c814c67533f04caf8048082bad67b4b89b93b0bf5aeba3ea1aba96",
+      "receipt_role": "Superseded owner transcription typo; historical only, never authority",
+      "stage": "final_finite_candidate_acceptance",
+      "storage": "External retained raw evidence; not copied into repository"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-source-integration-owner-20261106.json",
+      "bytes": 1055,
+      "sha256": "43e1cc95c33bcfef1fee7c0ca8ccfb5ae0d1b7f10f2014a8e99418e6881d0ad1",
+      "receipt_role": "Owner source integration receipt for exact tested overlays; no new build/master/release claim",
+      "stage": "source_integrated_only",
+      "storage": "External retained raw evidence; not copied into repository"
     }
   ],
   "limits": [
@@ -676,6 +1018,128 @@
     "The original source-analysis reviews name /root/standards_review and /root/spec_review; later review document identities are their exact file hashes, without inferring unnamed author identities.",
     "Historical pending states in earlier plans/reviews are superseded only by explicitly indexed later evidence within its finite scope.",
     "Build supervisor review and source-only candidate reviews do not prove compilation or candidate behavior.",
-    "No original Python/SymPy notebook execution, general primality, GUI Clipboard/saved-session, whole-lesson, current-release or source-wide certification."
-  ]
+    "No original Python/SymPy notebook execution, general primality, GUI Clipboard/saved-session, whole-lesson, current-release or source-wide certification.",
+    "Final finite candidate functionality and preservation are accepted only by the explicitly indexed final reviews and revised owner receipt. Historical unbuilt/provisional roles remain their original stages. Integration/current-master/release and full source/GUI claims require separate evidence."
+  ],
+  "previous_proposal_base": "a007839747ad619952d9e38e3c98b16a9bae6c2f",
+  "historical_candidate_preparation": {
+    "base": "78bf6cf7fb6ca52c884320cc7ec2a53958627109",
+    "product_scope": [
+      "libqalculate/BuiltinFunctions-number.cc",
+      "tests/polynomial.batch"
+    ],
+    "state": "source-reviewed, not built; no candidate-native acceptance or release claim"
+  },
+  "candidate_actual_evidence": {
+    "promotion_state": "FINAL_FINITE_EVIDENCE_REVIEW_PROPOSAL",
+    "seven_phase_build_owner": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-finite-build-owner-acceptance-20261106.json",
+      "bytes": 1433,
+      "sha256": "fe5d41fb1cd3040165e05ec4842edc4fe5cdb033746e3997b8765c148dc8c90c"
+    },
+    "seven_phase_build_counts": {
+      "polynomial_checks": 69,
+      "native_pass": 81,
+      "native_expected_thread_skip": 1
+    },
+    "source_integrated": true,
+    "release": false,
+    "functional_provisional_reviews": [
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-standards-provisional-20261106.json",
+        "bytes": 8672,
+        "sha256": "fb1572dddc3629b922ad4cd5770e0fb70652fd91c9ffdf2608f349f689ee8100"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-spec-provisional-20261106.json",
+        "bytes": 13661,
+        "sha256": "11abc60387216744caaf4e809cce07b93127d634a1166c531e30169a3c153818"
+      }
+    ],
+    "functional_counts": {
+      "direct_controls": 90,
+      "deferred": {
+        "primary": 15,
+        "actual_copy": 15,
+        "calls": 30,
+        "raw_bytes": 7800
+      },
+      "compatibility": {
+        "primary": 33,
+        "actual_copy": 25,
+        "calls": 58,
+        "raw_bytes": 8050,
+        "intended_zero_admission": 11,
+        "invariant_return": 14,
+        "invariant_rejection": 8
+      }
+    },
+    "deferred_source_classifications": {
+      "Calculator spelling adaptation of original display RHS": 1,
+      "Authored product of ORIGINAL STORED OUTPUT factors; NOT original factorint execution": 1,
+      "Adapted original operands; tests complete integer product, not just boolean or primality": 1,
+      "Original integer token, extracted from Python assignment; not original Python execution": 1,
+      "Calculator adaptation of math.gcd using exact original operands": 1,
+      "Authored integer bounds to verify prose digit/bit claims; not an original code cell": 8,
+      "Authored source-domain boundary; one operand zero allowed": 2
+    },
+    "four_phase_final_preservation": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-cohort-78bf9d-20261106-attempt01\\final-preservation.json",
+      "bytes": 9608821,
+      "sha256": "b61bd32edbdec4e54b76690e70a68abbf12b36688c6ba5aba42b1336c0fc6c52"
+    },
+    "four_phase_final_standards": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-final-standards-review-20261106.json",
+      "bytes": 7181,
+      "sha256": "fdc9b9dad56ae23d66d469b96b3859b49843e3028598462bf5e781676ddfd5d4"
+    },
+    "four_phase_final_spec": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-four-phase-actual-final-spec-review-20261106.json",
+      "bytes": 15428,
+      "sha256": "67725874ba4bc932aaf9e162592a46ba7766688bebcfe22df06452772d3eb1a5"
+    },
+    "four_phase_final_owner_acceptance": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-finite-candidate-owner-acceptance-20261106-revision01.json",
+      "bytes": 2774,
+      "sha256": "9ca773962db3163a124b20592c55c93eadfa7a3b5fe2b9a79aa61cbdc65a856b"
+    },
+    "containment": "Outer creation-owned Job and ordinary inherited descendants, not per-worker direct launch_owned identity",
+    "copy_meaning": "Actual returned canonical worker text reentry, not GUI Clipboard or saved sessions",
+    "four_phase_endpoint_owner": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-acceptance-final-audit-owner-verification-20261106.json",
+      "bytes": 810,
+      "sha256": "8647d24405fa42b2238162ca67702498db67e82900e1ffd4353a956d97f202a2"
+    },
+    "preservation_scope": {
+      "state": "verified_endpoints",
+      "dist_files": 42159,
+      "reference_files": 1420,
+      "atomic_or_continuous_invariance": false,
+      "supervisor_overall_acceptance": false
+    },
+    "integration_commit": "69a793e3f8b22a4672e9228fc35710e4768c010f",
+    "integration_state": "Exact source patch committed/pushed on coordinator integration branch; no new build/master/release acceptance inferred",
+    "owner_receipt_historical_integration_flags": {
+      "integrated": false,
+      "merged": false,
+      "released": false
+    },
+    "superseded_owner_receipt": {
+      "pin": {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-finite-candidate-owner-acceptance-20261106.json",
+        "bytes": 2343,
+        "sha256": "75b6464874c814c67533f04caf8048082bad67b4b89b93b0bf5aeba3ea1aba96"
+      },
+      "reason": "Owner transcription typo in first overlay hash; corrected from actual source/build identical bytes before any use or integration. Original receipt preserved, not authoritative.",
+      "authoritative": false
+    },
+    "integration_tree": "a1dfb17921db1ad5ad5901b26b2f90e00a6ee6c0",
+    "integration_owner": {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\gcd-zero-source-integration-owner-20261106.json",
+      "bytes": 1055,
+      "sha256": "43e1cc95c33bcfef1fee7c0ca8ccfb5ae0d1b7f10f2014a8e99418e6881d0ad1"
+    },
+    "integration_commit_release_built": false,
+    "merged": false
+  }
 }
