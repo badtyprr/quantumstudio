@@ -861,5 +861,223 @@
       "No payload or raw sensitive receipt is copied into repository documentation. Transport/header/error records remain external and are not echoed by this proposal.",
       "Recorded access does not guarantee current or future availability, equality to archive bytes from the original lesson, mandatory dependency, PDF content, notebook/SDK/native/GUI execution, release acceptance or whole-source completion."
     ]
+  },
+  "ibm122_part1_access_snapshot": {
+    "proposal_base": "c332f151c08c372eb63f2740d0ec460637f54eb8",
+    "scope": "Additive IBM122 part1 finite access/archive-integrity observation; all earlier snapshots unchanged",
+    "previous_retained_observations": 6,
+    "additional_observations": 1,
+    "total_retained_observations": 7,
+    "original_zip_targets": 12,
+    "remaining_unattempted_in_retained_scope": 5,
+    "remaining_target_keys": [
+      "IBM-LINK-a37c4774e4d7d195",
+      "IBM-LINK-480a322a8209bc0b",
+      "IBM-LINK-013238176d361fad",
+      "IBM-LINK-c438bb98114e2743",
+      "IBM-LINK-f038f1ea301825a8"
+    ],
+    "observation": {
+      "source_id": "IBM-122",
+      "part": 1,
+      "target_key": "IBM-LINK-9d7e7b5ba683260b",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "original_source": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/hardware.ipynb",
+        "bytes": 16815,
+        "sha256": "8b7fe23b420ee951639f3f0f07bd213235dbfd74ac5f26a91e516044f60c416f"
+      },
+      "source_git_blob": "36433289d0e755ef295bf997e4809cf9925377f3",
+      "cell": 0,
+      "offset": 379,
+      "end_offset": 472,
+      "offset_units": "Unicode codepoints; half-open in exact joined cell source",
+      "label": "Download part 1",
+      "cell_sha256": "8e176f5ed2cdd476b896cdaef13ae4d72c79ca1dc79c5a2853ab175ca19f0ab5",
+      "requirement_status": "ambiguous",
+      "state": "acquired_and_archive_metadata_validated",
+      "http_status": 200,
+      "initial_requests": 1,
+      "automatic_retries": 0,
+      "archive": {
+        "bytes": 1751551,
+        "sha256": "625213940d20e06c9238d2c3ea87a9dce3c143b9f18c35b2c99848d7871c475a"
+      },
+      "members": [
+        {
+          "name": "9_UTokyo_hardware_1.pdf",
+          "bytes": 1894818,
+          "compressed_bytes": 1751335,
+          "sha256": "863d74c26d050479ff9549c77ae10b85f8e29fe2c652a3aeaaecd7db695a3453",
+          "crc32_hex": "bcfe8df4",
+          "pdf_magic": true,
+          "magic_version": "1.7"
+        }
+      ],
+      "actual_evidence_files": 7,
+      "input_inventory_files": 1993,
+      "standards_findings": 0,
+      "spec_findings": 0,
+      "verification": "Independent bounded in-memory ZIP member decompression/hash/CRC/magic; complete receipts and preserved inputs. No PDF parser/content/extraction/rendering or lesson execution."
+    },
+    "external_pins": [
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-source-01/manifest.json",
+        "bytes": 3443,
+        "sha256": "3fab813da2e9aa31496adefb572e288a4efaf14d9f44038bff8eda04b3a2e1bc"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-source-01/acquire.py",
+        "bytes": 12994,
+        "sha256": "354c9eae5f9e240d573c49c861f67ff6ac4a204ee1bc24594394cd7d63733b1b"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-source-01/bindings.json",
+        "bytes": 6487,
+        "sha256": "38ef807afc01a57c8a09b980a725c0dbc5a046bf4649bded584a23f8ce9cc44e"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-source-01-standards-review.json",
+        "bytes": 7219,
+        "sha256": "a0d833473cb73d28235ca64b6cdb92ae1b0a642351fecf41a6e3dd3b20d08783"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-source-01-spec-review.json",
+        "bytes": 3886,
+        "sha256": "df1fc56757ef0cd94c12602750a2fe0442c6438771c634365a9f08a81b13c948"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm122-part1-acquisition-source-owner-20261107.json",
+        "bytes": 1063,
+        "sha256": "af027e15669bd94f7c5fe242ddf260da3994c177492ee15e381bddb552a38167"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/manifest.json",
+        "bytes": 868,
+        "sha256": "27cc35d51a96d75fe1f90339b98224220072032e7a5da33868da042d3abff10d"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/binding.json",
+        "bytes": 26405,
+        "sha256": "944b182e77dc8885183e156ccf97542acaae9648dd990b266ff49666dfcf93b2"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/acquisition-ticket-draft.json",
+        "bytes": 358727,
+        "sha256": "e2ba28cf29dd7d2e56454d502ac72be9f042644cc7c34c39744b04232882b3c4"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/preparation.json",
+        "bytes": 3480,
+        "sha256": "16a6f07f8dfac700199039c17a4d0c164dd93ae390c8634b470664fd8f76c094"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/acceptance.json",
+        "bytes": 2868,
+        "sha256": "cbe3f23899ff6e5717c34cc23f212145662bd3b756a2b3630cf2b890704880af"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01-standards-review.json",
+        "bytes": 4916,
+        "sha256": "64f066017743567fb8f110e5b83a013d80ed5f67eb249cc43d143f82a1f9ae8b"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01-spec-review.json",
+        "bytes": 3099,
+        "sha256": "b32e77252e1e1e307f69efc200207d0ca124aba448b8667c0df3565046d028ba"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/staging-receipt.json",
+        "bytes": 1130,
+        "sha256": "055d092b258b94f378f13fa8c137d3b542e38c0b313efa6911db3f72c02fc885"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm122-part1-acquisition-ticket-20261107.json",
+        "bytes": 369657,
+        "sha256": "ff26c7dbbc0cd96d0163d75e1697ef045347303d8f53a1d3cabcf15b44c9ab3b"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-envelope-01/supervisor-acquisition-01/receipt.json",
+        "bytes": 2056,
+        "sha256": "aba520369aedf8b44b9b94b2c057b37f03a46cc8e2279db02ff98127a86adeeb"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm122-part1-acquisition-owner-provisional-20261107.json",
+        "bytes": 3724,
+        "sha256": "1cc358a5ec629736b88b4aaedbe830640f058127fd78964919f0dc3742dc219e"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\acquire.py",
+        "bytes": 12994,
+        "sha256": "354c9eae5f9e240d573c49c861f67ff6ac4a204ee1bc24594394cd7d63733b1b"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\acquisition.json",
+        "bytes": 8252,
+        "sha256": "69802558fbc9ec2232f663bac432d6ad05e8b4806dde98065cc3a4fa50a64486"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\download.zip",
+        "bytes": 1751551,
+        "sha256": "625213940d20e06c9238d2c3ea87a9dce3c143b9f18c35b2c99848d7871c475a"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\manifest.json",
+        "bytes": 1523,
+        "sha256": "fb595056a7a6408bbb9467a96c5d5ca296d0053356d07af1fcd1a470db166fe6"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\members.json",
+        "bytes": 315,
+        "sha256": "8e28e2eda5981c85cf463d784be333261107f2d7656f4e459cf474325ddcbee2"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\provenance.json",
+        "bytes": 2611,
+        "sha256": "bb2dccf4a149320ff9c5c21ef5ed8bedb9e36a6c367a175af7b27a801f7a086a"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm122-part1-linked-archive-attempt01\\README.md",
+        "bytes": 2022,
+        "sha256": "c85d79b252b9e5228ad5061c19a6b8419dace0e9a240efb1343e3c748f8246f2"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-actual-standards-review.json",
+        "bytes": 4805,
+        "sha256": "0846dfb430935a843313986b11bf4cca3d5a9faf5d88d217103cba0d0462064c"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm122-part1-acquisition-actual-spec-review.json",
+        "bytes": 3933,
+        "sha256": "6df47c4ba08b1fe7dcd3193466a83abbd080fa90249720d2296f17f8b7dd2558"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/hardware.ipynb",
+        "bytes": 16815,
+        "sha256": "8b7fe23b420ee951639f3f0f07bd213235dbfd74ac5f26a91e516044f60c416f"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/aud02-remaining-eight-zip-inventory-01/manifest.json",
+        "bytes": 2784,
+        "sha256": "4ccc143808101a95ef6b22bd6bc07e2998e60016b5ccfcf963c9e3765b05e12e"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm122-part1-acquisition-owner-acceptance-20261107.json",
+        "bytes": 2110,
+        "sha256": "f8b47214d93fa82cfa6913ddf0f43bc2c2a0295f84804a09e2a0460c37742234"
+      }
+    ],
+    "limitations": [
+      "Finite observation of one completed request, not current/future availability or historical archive-byte equality.",
+      "Part2 remains unattempted in this retained evidence scope.",
+      "Requirement stays ambiguous; successful access does not promote obligation.",
+      "No PDF content, mathematics, diagrams, SDK/native acceptance or whole-lesson completion.",
+      "Raw captures, signed transport URLs, headers and error details remain restricted external; none is reproduced here."
+    ],
+    "owner_acceptance": {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm122-part1-acquisition-owner-acceptance-20261107.json",
+      "bytes": 2110,
+      "sha256": "f8b47214d93fa82cfa6913ddf0f43bc2c2a0295f84804a09e2a0460c37742234"
+    }
   }
 }
