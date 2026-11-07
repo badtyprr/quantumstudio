@@ -1864,5 +1864,180 @@
         "role": "Prerequisite manifest/review"
       }
     ]
+  },
+  "requester_failure_negative_not_accepted": {
+    "status": "NOT ACCEPTED; independently confirmed P2 inner cleanup failure",
+    "final_owner_sha256": "8561e0e3054aff3bbdf91e89637e7ce479c15f0064ddeb7eacdb98b6f726baa4",
+    "blocking_cleanup": {
+      "active_processes": 0,
+      "method": "exception",
+      "errors": [
+        {
+          "step": "terminate_owned_launcher",
+          "error": "[WinError 5] Access is denied."
+        }
+      ],
+      "unconfirmed": true
+    },
+    "passing_observations_separate_from_acceptance": [
+      "Valid baseline before one local parent=0 validation fault",
+      "Original ValueError READY_PARENT_TYPE retained, zero admitted cancellation calls",
+      "0.031000000017229468 seconds through synthetic exception cleanup, not proof of error-free cleanup",
+      "Same continuously held child terminal signaled/exit1 with prior-live identity label",
+      "Requester quiescent; unrelated sentinel survives inner cleanup then owned teardown",
+      "Final owned populations zero; no outer cleanup/capture/persistence errors; outer/supervisor receipts nevertheless failed on NONZERO_EXIT1"
+    ],
+    "complete_public_manifest": {
+      "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-owner-provisional-20261107.json",
+      "bytes": 24796,
+      "sha256": "be30069dae997601802339a768cd0fbc3430d7ebc69186fb50823ab4faea3eda",
+      "records_field": "public_files",
+      "record_count": 81,
+      "status_note": "Provisional acceptance wording superseded by final owner failure; raw record identities retained.",
+      "verification_here": "Manifest identity and81-record count verified; selected core receipts rehashed. No duplicate81-file sweep or SDK payload audit performed."
+    },
+    "diagnosis": "Actual cause not established; ongoing; no fix claimed",
+    "prior_firstcase": "Accepted one authored graceful case remains unchanged; failure does not erase it.",
+    "pending": [
+      "Full deterministic requester-failure negative acceptance",
+      "Seven other lifecycle cases",
+      "Original notebooks/whole-source",
+      "Master integration and verified release"
+    ],
+    "restoration_claim": false,
+    "files": [
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-owner-failure-20261107.json",
+        "bytes": 1796,
+        "sha256": "8561e0e3054aff3bbdf91e89637e7ce479c15f0064ddeb7eacdb98b6f726baa4",
+        "role": "Final NOT ACCEPTED owner decision"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-actual-standards-review-20261107.json",
+        "bytes": 30064,
+        "sha256": "83f3ec17ead488a0e287b1dfed7a464a72e3345ebb166be81e47a02cf88a5c77",
+        "role": "Final review/provisional inventory/failure observation"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-actual-spec-review-20261107.json",
+        "bytes": 10273,
+        "sha256": "48b09ef954740abf396d9f906f14e0f2552d73c073a183944fe14fb99835f1ea",
+        "role": "Final review/provisional inventory/failure observation"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-owner-provisional-20261107.json",
+        "bytes": 24796,
+        "sha256": "be30069dae997601802339a768cd0fbc3430d7ebc69186fb50823ab4faea3eda",
+        "role": "Final review/provisional inventory/failure observation"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-owner-review-failure-20261107.json",
+        "bytes": 1417,
+        "sha256": "d421bae2dc25ae4a6906860c7836b76597fc4d36b61eefbe442fccfa447eb6fa",
+        "role": "Final review/provisional inventory/failure observation"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-source-20261107/manifest.json",
+        "bytes": 3209,
+        "sha256": "12241e719094f57ddd7812bbe80944997d1d375f3108fe1bf4133bc66f793d3f",
+        "role": "Source/DATA provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-envelope-20261107/manifest.json",
+        "bytes": 1972,
+        "sha256": "1bd5de0a504be1e0ac600e698d01932f163812203bfc17513a508cba2fab9721",
+        "role": "Source/DATA provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-envelope-20261107/binding.json",
+        "bytes": 31914,
+        "sha256": "779bd963662840fbfb26e1ef66bcc1c1f9c8c3192e6ae1190b3a6c4171ed7459",
+        "role": "Source/DATA provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-envelope-20261107/proposed-activation-binding.json",
+        "bytes": 42455,
+        "sha256": "25d85a7deeaf33cce709aa59cb3a2eece0aeeb2fdd3bffd91ead2b02b432cd23",
+        "role": "Source/DATA provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-ticket-20261107.json",
+        "bytes": 4155228,
+        "sha256": "25f3d53c96c961e0661f3c7a62228a73bbb980a30ee49adbd0cb611e3b8c97be",
+        "role": "Source/DATA provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/negative-fault.json",
+        "bytes": 726,
+        "sha256": "9e64b403bbb929272a2c537edca28f477629ae81e13065dab2c3bb47207b412d",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/cancel-evidence.json",
+        "bytes": 5426,
+        "sha256": "36a19322d24ab538ea0e0a6b51e32d9f8e4ab9b18e87e3c59ccd02a0c593b7e9",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/child-terminal.json",
+        "bytes": 442,
+        "sha256": "1dda08cb9dbeb12aef55ab9685cb266a19bbdd7936ed7261fdf35d79a2d91fbc",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/request-error.json",
+        "bytes": 77,
+        "sha256": "5e8756ece263a4e03fe5a8859ecf2a17cf84ae035755e44eed6aafe53c230258",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/worker-error.json",
+        "bytes": 88,
+        "sha256": "a8d83993778afb60f05e050e4b8607e07c3eb5ccac99f09276a61e1ace8a0bc6",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/requester-shutdown.json",
+        "bytes": 128,
+        "sha256": "d280ecd54acea526070e0f548076a7ebf9afb5eabfab8717f5cb129e79b1608b",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/sentinel.json",
+        "bytes": 210,
+        "sha256": "61d40ad721b730074c114139c6a38fdfba82f33f3a64034b56cca23a5cbe7ca7",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/outer.json",
+        "bytes": 1483,
+        "sha256": "ccaa628b83460c3ca962cdff9a78f8b103bb114abc1b245015c1de5db006c365",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-attempt01/cancel_graceful/run/status.json",
+        "bytes": 3531,
+        "sha256": "227a9219675f365dbe7213b90d2bca545f76151e8884b22bdbce2919dd26d718",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-negative-supervisor-attempt01/receipt.json",
+        "bytes": 4335,
+        "sha256": "4c8810bc13bcfd202216f122793ab9a79f8f4a68ec85c4fc087072bc40dbfd4f",
+        "role": "Selected exact public actual evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-source-owner-acceptance-20261107.json",
+        "bytes": 1931,
+        "sha256": "05a077ff9703f26f8fecdadf32420eacc95eae0b9cd836d034956b32d48ac2c1",
+        "role": "Prerequisite source/DATA owner, not actual acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-negative-data-owner-acceptance-20261107.json",
+        "bytes": 2947,
+        "sha256": "4558b1796555acc6f9cfbd2b93db4c2565dd958e49565497b8988a48884b0848",
+        "role": "Prerequisite source/DATA owner, not actual acceptance"
+      }
+    ]
   }
 }
