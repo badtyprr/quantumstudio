@@ -1,0 +1,38 @@
+{
+  "base": "02d5ca3f5713385818e80db15b1a58e3b518e569",
+  "release_revision": "6f0790927533e9d5007a544a24a02597a74ff5b6",
+  "zip_sha256": "2bfd30346932843aec49e7f55302637186d11ae720360adc764971a0f749337e",
+  "verified_payload_files": 340,
+  "binaries": {
+    "QuantumStudio.exe": "0cfdcf497fe0ad2883f5b98aa914ded642a009514c39cc60809747b4f4a35947",
+    "quantum-worker.exe": "162f76124a32ec0f6d4356f564dfc884117385e48d7b14c8f9fdb28b19db5c00",
+    "qasm-import/qasm-import.exe": "66a2ec429d2c7bcbeeae75fb3a64ab24f93a6b589ad7527e72ace31973efeacb"
+  },
+  "fixtures": {
+    "oracle.qasm": "00ca08a9b091c46c942bc1f1878ccc69e922a0500b61c79a11b87c8c4debc4b1",
+    "bernvaz.qasm": "9f9eb3c6537bf209ff7c98fae8a5e2e77e1e135597d81569bf978498100f977e"
+  },
+  "expected_outputs": {
+    "oracle-0-original": "0000",
+    "oracle-0-edited": "1001",
+    "oracle-1-original": "1001",
+    "oracle-1-edited": "0000",
+    "oracle-2-original": "0101",
+    "oracle-2-edited": "1100",
+    "oracle-4-original": "0011",
+    "oracle-4-edited": "1010",
+    "oracle-1-end-original": "1001",
+    "bernvaz-0-original": "011",
+    "oracle-1-end-edited": "0000",
+    "bernvaz-0-edited": "111"
+  },
+  "checks": {
+    "archive_copies": 141,
+    "payload_hashes": true,
+    "zip_hash": true,
+    "fixture_bytes": true,
+    "independent_expected_strings": 12
+  },
+  "scope": "Read-only verification of retained release evidence; no GUI, worker or notebook execution rerun.",
+  "archive_root": "F:\\src\\libqalculate\\cleanup-audit\\dev16-reconcile-20261103"
+}

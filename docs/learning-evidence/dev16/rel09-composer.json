@@ -1,0 +1,87 @@
+{
+  "passed": true,
+  "package": "C:\\src\\libqalculate\\.tools\\classical-program-followups-release-clone\\dist\\QuantumStudio",
+  "hashes": {
+    "gui": "0cfdcf497fe0ad2883f5b98aa914ded642a009514c39cc60809747b4f4a35947",
+    "compiler": "66a2ec429d2c7bcbeeae75fb3a64ab24f93a6b589ad7527e72ace31973efeacb"
+  },
+  "results": [
+    {
+      "name": "strict",
+      "passed": true,
+      "operations": 2,
+      "source_files": 2,
+      "screenshots": [
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\strict Unicode \u03ba\\composer.txt.png",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\strict Unicode \u03ba\\composer.txt.edited.png",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\strict Unicode \u03ba\\composer.txt.minimum.png"
+      ]
+    },
+    {
+      "name": "oracle",
+      "passed": true,
+      "operations": 3,
+      "source_files": 2,
+      "screenshots": [
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\oracle Unicode \u03ba\\composer.txt.png",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\oracle Unicode \u03ba\\composer.txt.edited.png",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\oracle Unicode \u03ba\\composer.txt.minimum.png"
+      ]
+    },
+    {
+      "name": "bernvaz",
+      "passed": true,
+      "operations": 10,
+      "source_files": 2,
+      "screenshots": [
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\bernvaz Unicode \u03ba\\composer.txt.png",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\bernvaz Unicode \u03ba\\composer.txt.edited.png",
+        "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\bernvaz Unicode \u03ba\\composer.txt.minimum.png"
+      ]
+    }
+  ],
+  "scope": "Numerical composer source import and standalone circuit equivalence; no complete notebook or changed-dependency claim.",
+  "development_worker": false,
+  "revision": "6f0790927533e9d5007a544a24a02597a74ff5b6",
+  "worker_sha256": "162f76124a32ec0f6d4356f564dfc884117385e48d7b14c8f9fdb28b19db5c00",
+  "gui_sha256": "0cfdcf497fe0ad2883f5b98aa914ded642a009514c39cc60809747b4f4a35947",
+  "importer_sha256": "66a2ec429d2c7bcbeeae75fb3a64ab24f93a6b589ad7527e72ace31973efeacb",
+  "screenshots": [
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\strict Unicode \u03ba\\composer.txt.png",
+      "sha256": "f1c466623f45e0b598d66524978cb0135bd754970ccf10d96a4a5fa229e45cee"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\strict Unicode \u03ba\\composer.txt.edited.png",
+      "sha256": "0a8a69eca1205bab4d62b0e58f825ac8c795fbfb7036b27ef52207bb4e38b2e2"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\strict Unicode \u03ba\\composer.txt.minimum.png",
+      "sha256": "ccc150f6d88e8d63be7b529afd83b96a27f5a415b5d6499611126df3c477d129"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\oracle Unicode \u03ba\\composer.txt.png",
+      "sha256": "505e5c07fd35f370b0c413699da078b3a862c43ace0c0acab7baf1caeff425a4"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\oracle Unicode \u03ba\\composer.txt.edited.png",
+      "sha256": "59c5f251bae0575a41c5d75488068e4971b40385cef68e5cf2220860fb05597d"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\oracle Unicode \u03ba\\composer.txt.minimum.png",
+      "sha256": "c7be7ca76913b8c34eae68ade840ba74fddd332b505e331c604432e108bc0d31"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\bernvaz Unicode \u03ba\\composer.txt.png",
+      "sha256": "7659f094ca331f773f9abec90ac2f857ab0ed7c2d7e25a0e51ecac0314cbd551"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\bernvaz Unicode \u03ba\\composer.txt.edited.png",
+      "sha256": "6d7f4ae1890fe3683f14e3be7568d1dbda3219199c0a1e8b6ce607ab95430732"
+    },
+    {
+      "path": "C:\\src\\libqalculate\\.tools\\classical-program-followups-packaged-composer-source\\bernvaz Unicode \u03ba\\composer.txt.minimum.png",
+      "sha256": "dff0d3feef64233b05f5c8a21bdfc4fbcf95f4b77fc7bb2fd117e82e97e61d30"
+    }
+  ]
+}

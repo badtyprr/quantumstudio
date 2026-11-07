@@ -1,5 +1,9 @@
 # DEV-17 validation and integration handoff
 
+The subsequent [integration status](integration.md) records merged PR #427,
+corrected complete-suite results and successful required CI. The development
+records and failures below are historical; actual Clipboard and release remain open.
+
 ## Integration-review correction: operator keyword labels
 
 Integration review found that valid labels `not`, `and`, `or`, and `xor` were

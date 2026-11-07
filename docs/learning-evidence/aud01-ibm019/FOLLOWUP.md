@@ -1,5 +1,10 @@
 # AUD-01 P1 follow-up — 2026-11-02
 
+Subsequent coordinator update (2026-11-03): [PR #427 integration](../dev17/integration.md)
+passed the integrated worker regressions, corrected complete native suite and
+required CI, and merged. A new packaged release remains open. Standalone results
+and original failures below are retained as historical evidence.
+
 The user requested completion of the remaining parser defect and fallback-clone cleanup. The historical ledger and original failing runs remain unchanged. This follow-up is authoritative for the new work; it does not change what released 52c37a2a did in the original audit.
 
 ## Fix and ownership
