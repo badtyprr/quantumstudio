@@ -984,5 +984,269 @@
         "role": "Exact diagnostic DATA binding/reservation"
       }
     ]
+  },
+  "authored_same_kernel_trace": {
+    "status": "owner-accepted finite authored same-kernel trace; lifecycle not accepted",
+    "owner_sha256": "16220420fe1b49cccb8792aaf5745162368a38eeee3faac51b0f4812b3ca866c",
+    "public_artifacts": 19,
+    "trace_stages": 12,
+    "authored_observation_cells": 2,
+    "authored_witness_cells": 1,
+    "classification": "stable_launcher_parent",
+    "identity": {
+      "held_provisioner_pid": 33228,
+      "interpreter_pid": 51068,
+      "interpreter_parent_pid": 33228,
+      "outer_launcher_pid": 51328,
+      "generations": 1,
+      "same_held_handle_terminal_exit": 0,
+      "outer_population_after_cleanup": 0
+    },
+    "audits": "Complete passed full-per-phase pre/post input/runtime audits according to retained receipt and final actual reviews; no duplicate SDK payload audit performed for proposal.",
+    "timing": {
+      "raw_adapter_seconds": 1.36,
+      "outer_including_postaudit_seconds": 67.453,
+      "historical_110_second_attribution": false
+    },
+    "warnings": "All 673 stderr bytes preserved: ZMQ Proactor selector-thread and TCP-without-encryption warnings; no encryption/security acceptance.",
+    "original_execution_scope": "Authored two-cell fixture and witness only; source-original serialization is semantically equal, not byte-identical; executed source-cell strings preserved.",
+    "limits": [
+      "No cancellation or full eight-case lifecycle acceptance or lifecycle fix.",
+      "No historical kernel-lineage or timeout-cause proof; no product regression established.",
+      "No original notebook, whole-source, master or release credit.",
+      "No private scratch/connection contents inspected, hashed or included; no SDK payload reads.",
+      "Existing native12/runtime41 and all prior failures/probes unchanged; no transfer to integrated runtime51.",
+      "External path/hash dependencies are not self-contained."
+    ],
+    "files": [
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-kernel-trace-owner-acceptance-20261107.json",
+        "bytes": 2096,
+        "sha256": "16220420fe1b49cccb8792aaf5745162368a38eeee3faac51b0f4812b3ca866c",
+        "role": "Final finite trace owner acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-kernel-trace-actual-standards-review-20261107.json",
+        "bytes": 10846,
+        "sha256": "2f083a4b8b9dea9784f9a6070a8c3b0480af84a93565148c7703a0771607f318",
+        "role": "Final actual Standards review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-kernel-trace-actual-spec-review-20261107.json",
+        "bytes": 12543,
+        "sha256": "fa4104b5944911336e24ddcf3d30cd0abae3dd899c04f547fa1dca6745cb22ed",
+        "role": "Final actual Spec review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-envelope-20261107/binding.json",
+        "bytes": 21566,
+        "sha256": "380ca2ef3fce43d7d0f3009eb7df9430383383622a74417cc05fc6e9303a1255",
+        "role": "binding"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-kernel-trace-ticket-20261107.json",
+        "bytes": 4152772,
+        "sha256": "5e36f01d3648d84bec6f67a95f21f633b7bc04b26c6c3efa32fc3c15bbd52244",
+        "role": "ticket"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-kernel-trace-owner-reservation-20261107.json",
+        "bytes": 5001,
+        "sha256": "1e5615c6a631b782722a177167145a639b9201a972a14c6773f4f4f2428b63e3",
+        "role": "reservation"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01/trace_adapter.py",
+        "bytes": 19763,
+        "sha256": "dfd4d4aa8d41d49868dcc41c00bad46891c321d822bd769f19ec440a6921ceea",
+        "role": "source"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-supervisor-attempt01/receipt.json",
+        "bytes": 4160,
+        "sha256": "eb6f25ed422eff27437ec81caec1af1fef9511a7106b118606245c81b01d86a1",
+        "role": "receipt"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01-standards-review.json",
+        "bytes": 2280,
+        "sha256": "3a1e04f0debda680b314b2dbad41a8cf06ab9a14a7f3bb6f25bea31af020a204",
+        "role": "source_reviews"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01-spec-review.json",
+        "bytes": 1813,
+        "sha256": "337c1111cba9db11e156f3b7b1a3ab60f3772e2e35a5b6f2180e40f7d89e61bc",
+        "role": "source_reviews"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-envelope-20261107-standards-review.json",
+        "bytes": 2487,
+        "sha256": "49d47b826283db0270ccc999f49735f295c984f24cda056d3e824860a23129b7",
+        "role": "data_reviews"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-envelope-20261107-spec-review.json",
+        "bytes": 2553,
+        "sha256": "b2c2454af353074d2d3d6aa74fd3452e49c6083a57600ea5ca425b4e32aefcf1",
+        "role": "data_reviews"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-supervisor-attempt01/stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "captures"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-supervisor-attempt01/stderr.bin",
+        "bytes": 673,
+        "sha256": "0354299208503380265a02535492cae11c2b54b9f66f4ef4327f94c9083ebc75",
+        "role": "captures"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/cells.json",
+        "bytes": 784,
+        "sha256": "3915f46d3a234780c8750f3138953e9819c098d2c0761cd560dbcff39a2527d8",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/engine-result.json",
+        "bytes": 239,
+        "sha256": "2e30557808a44422fd2a93599a7d5595e26cc48c6f746de3a0197233ff91398d",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/executed.ipynb",
+        "bytes": 4751,
+        "sha256": "8a5d770dafdfc3bc4e7132200a42496027e7ba8a1eb17f8e6d564bd199a1a8ae",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/kernel.json",
+        "bytes": 122,
+        "sha256": "f2e9f0c34afab392a9f58146513721bd0ec1aceb94a71255a2abf9612c3a447f",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/source-original.ipynb",
+        "bytes": 2242,
+        "sha256": "895238895b8256a2735d7f4c8dbd68f7dbb2120602f539e3a50621b456aafe45",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-00.json",
+        "bytes": 170,
+        "sha256": "6e6d1f2ebfbd5f629b81ea331c6eed5c5d7ff19221ee850a3eb820d40e7ddb39",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-01.json",
+        "bytes": 168,
+        "sha256": "38598ae54894f403c49306c43af90f22bf17e29f6343f87d7fdc8360875ac0cc",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-02.json",
+        "bytes": 191,
+        "sha256": "4b0ea32ce686bfbd552a83610445af10fd8692c7fe6194166783e58e2aebaf3e",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-03.json",
+        "bytes": 419,
+        "sha256": "669b020994b471d3bc3b60e454935c35261dce8a5d2700dddc6c48ef984fd412",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-04.json",
+        "bytes": 447,
+        "sha256": "2656dd025da490cea579e8607f553498c51a3c2af4530b61151a954a3d28c5ec",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-05.json",
+        "bytes": 463,
+        "sha256": "912fab11123f9f419c3df9b727ec8705065af9c9463e3014b77bd0c9f18f9663",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-06.json",
+        "bytes": 960,
+        "sha256": "f6100ba059a884359a617a688f00eaed2093043b7eac4a044fa6a025f0e4cb90",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-07.json",
+        "bytes": 463,
+        "sha256": "d2178bb1b10e3e8aff0b5601ba0e186bc14ba26313861e4d9dc4d06b66ae8f3d",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-08.json",
+        "bytes": 960,
+        "sha256": "62d7049c6336426ada514934ea234f4a7ec08aab7025e10074feae16338e0f0e",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-09.json",
+        "bytes": 449,
+        "sha256": "3b8cf6fef0bd7a0c823f1d6a13f927f2f5f28b81d0099a79c2160e2b394f4116",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-10.json",
+        "bytes": 679,
+        "sha256": "caba9b955f052087cb4dad6cd14d7bc815d5d60e009c12917da06c71d50f7d9a",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-11.json",
+        "bytes": 174,
+        "sha256": "9e8716e340ad16182667e29e5a600940fb77a8fb75506ac0f0ea8cbc37c28c33",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-context.json",
+        "bytes": 396,
+        "sha256": "41784f30956fc60060741fa8d5b5e36f48a3d81a8492da4eb70356d06863cef6",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-attempt01/trace-result.json",
+        "bytes": 153,
+        "sha256": "7c72f9b91cf427deec5152ed64bde92cfbfb3c43d2cbc1380293ed38f87281fa",
+        "role": "public_files"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01/manifest.json",
+        "bytes": 4515,
+        "sha256": "75c436f353d714fd4fec95f52463e0002ad53bd7567a0f7827945c1114b29ad1",
+        "role": "Frozen source/DATA manifest"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-envelope-20261107/manifest.json",
+        "bytes": 1657,
+        "sha256": "dd693906a4d7dabc67e34dc1043a45af7b541fe4ea4aab3a608141790ea79581",
+        "role": "Frozen source/DATA manifest"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01/trace.ipynb",
+        "bytes": 2244,
+        "sha256": "c32d75394b2f18990d676d188edba0da629702d20a2a906706142cee8aaad7bf",
+        "role": "Authored fixture/witness/contract"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01/trace-witness.py",
+        "bytes": 43,
+        "sha256": "238bb7abb4703a39dfc9e25fdff1f7edce7c565983ede8fdb463d569c0361b5d",
+        "role": "Authored fixture/witness/contract"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-kernel-trace-implementation-20261107-revision01/trace-contract.json",
+        "bytes": 165,
+        "sha256": "1d3ab0f05cf21a6a6cbc7f8e1724fb0fd6fc3785f63cf19f358c7efc7cf9a2e2",
+        "role": "Authored fixture/witness/contract"
+      }
+    ]
   }
 }

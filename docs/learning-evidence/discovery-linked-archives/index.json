@@ -463,5 +463,194 @@
     "other_zip_statuses_unchanged": 8,
     "remaining_eight_newly_verified": false,
     "note": "historical_context and its twelve/ten counts describe the earlier IBM109/114 snapshot; original inventory unchanged"
+  },
+  "ibm115_access_snapshot": {
+    "proposal_base": "4219b81824434890e69db36c150e6abc59fdecea",
+    "scope": "Later owner-accepted IBM115 access observation; historical four/eight and eight-target inventory remain unchanged",
+    "previous_retained_observations": 4,
+    "additional_observations": 1,
+    "total_retained_observations": 5,
+    "original_zip_targets": 12,
+    "remaining_unattempted_in_retained_scope": 7,
+    "remaining_target_keys": [
+      "IBM-LINK-fbb823b8d820b498",
+      "IBM-LINK-9d7e7b5ba683260b",
+      "IBM-LINK-a37c4774e4d7d195",
+      "IBM-LINK-480a322a8209bc0b",
+      "IBM-LINK-013238176d361fad",
+      "IBM-LINK-c438bb98114e2743",
+      "IBM-LINK-f038f1ea301825a8"
+    ],
+    "observation": {
+      "source_id": "IBM-115",
+      "target_key": "IBM-LINK-1cee1fa9085dc5f2",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "source_path": "learning/courses/utility-scale-quantum-computing/bits-gates-and-circuits.ipynb",
+      "source_pin_key": "source_original",
+      "cell": 0,
+      "offset": 247,
+      "end_offset": 329,
+      "offset_units": "Unicode codepoints, half-open in exact joined source",
+      "exact_link_span": "[here](https://ibm.ent.box.com/public/static/vee9e1kkxxiih5g8yqdhoo6t0o3dw7xf.zip)",
+      "original_label": "here",
+      "source_context": "Original lecture PDF download; static-image code snippets may become deprecated. Topic comes from the original bits, gates, and circuits notebook, not unread PDF content.",
+      "requirement_status": "ambiguous",
+      "original_inventory_access": "not_checked; repository presence is not HTTP access",
+      "new_observation": "Owner-accepted anonymous HTTP 200 with one contiguous HTTPS redirect, according to retained acquisition and independent actual reviews; no new availability check by documentation author",
+      "http_status": 200,
+      "https_redirect_hops": 1,
+      "rejected_redirect_hops": 0,
+      "collector_state": "acquired_and_archive_metadata_validated",
+      "archive_pin_key": "actual/download.zip",
+      "member": {
+        "name": "2_utility_lecture_gate_circuit_measurement.pdf",
+        "bytes": 343345,
+        "compressed_bytes": 284077,
+        "sha256": "d98f2f6cc900c3e0b3a6ca694184c7b41661663b80ce0058b1a57708063325c2",
+        "crc32_hex": "97d9889f",
+        "magic_hex": "255044462d312e37",
+        "pdf_magic": true,
+        "is_directory": false
+      },
+      "actual_manifest_pin_key": "actual/manifest.json",
+      "review_pin_keys": [
+        "actual_standards",
+        "actual_spec"
+      ],
+      "owner_pin_key": "actual_owner",
+      "inspection": "Bounded in-memory ZIP member decompression, raw archive/member hash, CRC and PDF 1.7 magic only. No PDF parser, extraction, rendering, page count, content or mathematical validation.",
+      "historical_archive_equivalence": false,
+      "lesson_execution": false,
+      "supervision": "One bounded owner invocation; complete passed receipt, natural exit0, active population0, readers collected, no cleanup/capture/persistence errors, full pre/post input audit. Collector success state and actual-file hashes required in addition to exit0."
+    },
+    "external_pins": {
+      "source_eight_inventory_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/aud02-eight-zip-inventory-owner-acceptance-20261107.json",
+        "bytes": 1663,
+        "sha256": "f268124d55565e11501d805a21b6658940fe592e6cdd7b4f503c4e5009e21db6"
+      },
+      "source_eight_inventory_manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/aud02-remaining-eight-zip-inventory-01/manifest.json",
+        "bytes": 2784,
+        "sha256": "4ccc143808101a95ef6b22bd6bc07e2998e60016b5ccfcf963c9e3765b05e12e"
+      },
+      "source_eight_inventory_index": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/aud02-remaining-eight-zip-inventory-01/index.json",
+        "bytes": 39268,
+        "sha256": "044156906e6945589b384c48f448710ec56419c737123f477a793344ab76bcf8"
+      },
+      "actual_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm115-acquisition-owner-acceptance-20261107.json",
+        "bytes": 4349,
+        "sha256": "b16f8206e7a817a49c46b19ede436bb1053103bc476ea4a0f2c0b16dd89c4658"
+      },
+      "actual_standards": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01-standards-review.json",
+        "bytes": 4817,
+        "sha256": "3b0f86c6a4ea8633ee3b43743838a2695d2974b83a123117bd08a0433262a331"
+      },
+      "actual_spec": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01-spec-review.json",
+        "bytes": 3401,
+        "sha256": "6567de95ea492cd66dbc36538cd7b196421f998bae4a706fc82477707ab8fbd0"
+      },
+      "collector_source": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-acquisition-source-01/acquire.py",
+        "bytes": 12921,
+        "sha256": "956c7ac9d74b255d6f01ba0d011ca8ffd59436d9e2f1d1791bbe60a68d831361"
+      },
+      "collector_source_manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-acquisition-source-01/manifest.json",
+        "bytes": 1650,
+        "sha256": "acbcce1702c64efa1a803a7dc78addb99669d612f0f606504d1cbbdd8cab3c6b"
+      },
+      "collector_source_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm115-acquisition-source-owner-acceptance-20261107.json",
+        "bytes": 2946,
+        "sha256": "3a6d2ca36666f280606df7aca38873a33d5995dacbe53049090c8c765cdd9f1f"
+      },
+      "data_binding": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-acquisition-envelope-01/binding.json",
+        "bytes": 17666,
+        "sha256": "1a53f5550f822bb3f2423b47c4cbb11672c59be7cda6188156da9546709bbf57"
+      },
+      "data_manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-acquisition-envelope-01/manifest.json",
+        "bytes": 862,
+        "sha256": "3e9033ea9086ee792bd5dfda57c94c806b6c131be66c8a91ec15c70746169eb5"
+      },
+      "data_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm115-acquisition-data-owner-acceptance-20261107.json",
+        "bytes": 2315,
+        "sha256": "c1df0c2c7fd247942f5788040f37f26ec170abce5f623429eeb41d302ee74c67"
+      },
+      "issued_ticket": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm115-acquisition-ticket-20261107.json",
+        "bytes": 360670,
+        "sha256": "fbe2551811a449763e29fa6e33cc930993c0a2437eac354a78c4e283f10b1cd6"
+      },
+      "staging": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-acquisition-envelope-01/staging-receipt.json",
+        "bytes": 964,
+        "sha256": "7d5ab91b9e75123b29f7855c774e3267b91e4d4fab7bc596c5411c66f557fd8b"
+      },
+      "reservation": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm115-acquisition-owner-reservation-20261107.json",
+        "bytes": 2767,
+        "sha256": "92547ca26c74c27c0e5c6fac51d76cf78692807ff815d8ab6fddc5ab071e9bef"
+      },
+      "supervisor_receipt": {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\math-lane-20261107\\ibm115-acquisition-envelope-01\\supervisor-acquisition-01/receipt.json",
+        "bytes": 2032,
+        "sha256": "32bbcb7b01a123d4995531edc39dba36f7a43350fa37356b933e26c59f95d8c2"
+      },
+      "source_original": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/bits-gates-and-circuits.ipynb",
+        "bytes": 61772,
+        "sha256": "c0d1ff5bc8bb156889c8c1958e74cbd3069ac4fbbea0a8db2db367dd785b2a3f"
+      },
+      "actual/README.md": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/README.md",
+        "bytes": 2020,
+        "sha256": "38e25d533987bc034ae8d701f3c01782fc65a3f6fef38210e0d72d223d8a8de9"
+      },
+      "actual/acquire.py": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/acquire.py",
+        "bytes": 12921,
+        "sha256": "956c7ac9d74b255d6f01ba0d011ca8ffd59436d9e2f1d1791bbe60a68d831361"
+      },
+      "actual/acquisition.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/acquisition.json",
+        "bytes": 8539,
+        "sha256": "f3c3c0b42968586d9647009abeca04f8c8c25a5b84beef921fa318cd5a294f28"
+      },
+      "actual/download.zip": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/download.zip",
+        "bytes": 284339,
+        "sha256": "bb7e8da2f2a9b62bc603eb1b67f67ea533674a5978fa3690196de7b12008d76d"
+      },
+      "actual/manifest.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/manifest.json",
+        "bytes": 1486,
+        "sha256": "aea903c2c4362068b1da70c5e98ada6456dcca69b6da0ca001a2b6406b9256f6"
+      },
+      "actual/members.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/members.json",
+        "bytes": 336,
+        "sha256": "bcd2d7922a02a4721c0829e5dbc2a23f290e5d5347f0d9d91217ffa1a09a63c9"
+      },
+      "actual/provenance.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm115-linked-archive-attempt01/provenance.json",
+        "bytes": 2644,
+        "sha256": "318ad50f3275a15f503d8b0eb6834537f943a619503a48470b1a1e3c4d2b846c"
+      }
+    },
+    "limitations": [
+      "Seven remaining targets are unattempted within this pinned retained-evidence scope, not demonstrated inaccessible and not freshly checked.",
+      "Historical inventory, stable IDs, prior observations and four/eight snapshot are preserved. The later snapshot supplements their chronology.",
+      "Source956c, DATA binding, issued ticket, staging and actual receipts are separate evidence layers; preparation or exit0 alone was not access acceptance.",
+      "Exact redirect/header/error data remains restricted external; only sanitized counts/status and external paths/hashes are recorded here. No archive payload or raw sensitive receipt is copied into the repository.",
+      "Retained access does not prove current or future availability, equality to historical archive bytes, mandatory dependency, PDF content, notebook/SDK/native/GUI execution, release readiness or whole-source completion."
+    ]
   }
 }
