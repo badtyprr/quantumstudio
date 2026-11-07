@@ -1248,5 +1248,621 @@
         "role": "Authored fixture/witness/contract"
       }
     ]
+  },
+  "authored_first_graceful_cancellation": {
+    "status": "Accepted one authored cancel_graceful actual case only",
+    "owner_sha256": "574abbaf875eb51f9f31c765d1de5805e093f2086247d4796bc40429267a0573",
+    "public_actual_files": 81,
+    "checks": 41,
+    "admitted_cancel_calls": 2,
+    "elapsed_after_first_request_seconds": 2.719000000040978,
+    "case_bound_seconds": 17,
+    "typed_identity": {
+      "startup_launcher_pid": 54700,
+      "interpreter_pid": 37564,
+      "held_child_pid": 31488,
+      "held_child_parent_pid": 37564,
+      "same_held_handle_terminal_exit": 15,
+      "terminal_identity_label": "prior_live_not_terminal"
+    },
+    "cleanup": "Inner graceful owned population zero; requester stopped/quiescent; unrelated sentinel alive after inner cleanup then separate owned teardown; outer final population zero and complete passed receipt.",
+    "observer_cleanup": {
+      "status": "not_run",
+      "reason": "kernel_interrupted_or_unavailable",
+      "restoration_accepted": false
+    },
+    "engine": "Interrupted DeadKernelError retained; original_execution incomplete; authored fixture only; next source and witness not_run.",
+    "preservation": "Canonical9d41 unchanged; accepted full six-tree endpoint evidence reused, not a fresh SDK payload audit or continuous-invariance proof.",
+    "remaining": [
+      "Separate deterministic requester-failure negative",
+      "Seven other lifecycle cases before suite acceptance",
+      "Original notebook/source-specific acceptance",
+      "Actual newer51-file runtime acceptance",
+      "Master integration and verified release"
+    ],
+    "limits": [
+      "No historical110-second attribution or retroactive acceptance of failed first attempt.",
+      "No full-suite/lifecycle-fix/original-notebook/release credit.",
+      "No private scratch/connection/case mplconfig contents read, hashed or included.",
+      "All old fields and pins retained; external dependencies not self-contained."
+    ],
+    "files": [
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-firstcase-owner-acceptance-20261107.json",
+        "bytes": 1927,
+        "sha256": "574abbaf875eb51f9f31c765d1de5805e093f2086247d4796bc40429267a0573",
+        "role": "Final one-case owner acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-firstcase-owner-provisional-20261107.json",
+        "bytes": 24562,
+        "sha256": "7d90e41b815f2a7ea5707921a42bf32171f0aafd51568f1fc3b567b7a0c24816",
+        "role": "Actual review/provisional public inventory"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-firstcase-actual-standards-review-20261107.json",
+        "bytes": 27847,
+        "sha256": "8ce286766e5424300782ecba1204a8bf727e20ee8ac09506dc3f36bb406af34e",
+        "role": "Actual review/provisional public inventory"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-firstcase-actual-spec-review-20261107.json",
+        "bytes": 9963,
+        "sha256": "01548d3b2865a9013d29392b00b10f3a5e0088f6e8b4212a6f1d0867e0486e04",
+        "role": "Actual review/provisional public inventory"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/acceptance.json",
+        "bytes": 3496,
+        "sha256": "acda8e92b36b4997fd9a6956f0662a7a877beccc5ff751fb9aefb22d9a4f3f67",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/cancel-evidence.json",
+        "bytes": 5892,
+        "sha256": "025ae9b35a2afacc948af00ed276e181ca047fbb29031ae4b01376c446b0a9f4",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/child-terminal.json",
+        "bytes": 443,
+        "sha256": "22ba4d95db8dd76d66bd7aa4a4d24a35ccc9ea478676bb78a964a637b12728db",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/engine-entry.json",
+        "bytes": 929,
+        "sha256": "a5def6cc8e8c9ec538c68a2ed2deb7892a2f6e0dda73652f5b6b7dcf236f159a",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/environment-after.json",
+        "bytes": 2544866,
+        "sha256": "b7a5e383dea019f0c9c323e03ee8b40fac4710de9e28738b176e50a579af2cc2",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/environment-before.json",
+        "bytes": 2544866,
+        "sha256": "b7a5e383dea019f0c9c323e03ee8b40fac4710de9e28738b176e50a579af2cc2",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/environment-comparison.json",
+        "bytes": 21,
+        "sha256": "fa55c8481382ed3874c424ace7bfd399507b94041079776d7ff3f76c7fcecb78",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/outer.json",
+        "bytes": 1406,
+        "sha256": "b1aa09c03429d7c3000300e13fc2ce3184bd3e9d5cb9b559e2e4a2005a1cc49f",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/raw-supervise-result.json",
+        "bytes": 4309,
+        "sha256": "2c73fde215bba0f0a3e623c1b2820f97d27e640ee8cdfa24a5a18062bf7daf92",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/requester-shutdown.json",
+        "bytes": 128,
+        "sha256": "d280ecd54acea526070e0f548076a7ebf9afb5eabfab8717f5cb129e79b1608b",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/cancel.request",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/cells.json",
+        "bytes": 1930,
+        "sha256": "8f2d362d1a6cb78afb01a66f3cfb4f831d475a1f54f94c9c432577120353f582",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/child-launch.json",
+        "bytes": 1904,
+        "sha256": "c26342ff5cfa1a63dcee942c50da40cb232ef4dbbf7dd6e9cdb9b36acdc621dc",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/child-ready.json",
+        "bytes": 482,
+        "sha256": "20a0554bdd56b1fc74133ea6809c1aa4c60a16175ecc0d6482d7cb3fed3fba5d",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/child-start.json",
+        "bytes": 280,
+        "sha256": "5f98eddae576562ea0e7c1547f1d5d072b5a329ccf05fcb70476087891944a55",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/engine-request.json",
+        "bytes": 3562,
+        "sha256": "3fd8ea68d8c34858946e454ac3b61aec77b3a48f3db248e3254a14deaf64a0f6",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/engine-result.json",
+        "bytes": 1112,
+        "sha256": "17beab12b0c5d54b663d0bfa87f677bf82e8ce9d1c782373599f7f887d9f893c",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/engine.stderr",
+        "bytes": 673,
+        "sha256": "0354299208503380265a02535492cae11c2b54b9f66f4ef4327f94c9083ebc75",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/engine.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/events.jsonl",
+        "bytes": 11227,
+        "sha256": "fba6eb7ae7ce9858310b1c79f084740626507d1cfefb572e693cfee3417f72ba",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/executed.ipynb",
+        "bytes": 3160,
+        "sha256": "4681c75fbf23ccd2ff039123c924128d4fddc2b7d9d4791aee3aa4872a66555e",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/identity-context.json",
+        "bytes": 960,
+        "sha256": "58c6141618f7bbca1ad065cde4b928639b41d80a0fa807e281a4672a6c7c29ce",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/kernel.json",
+        "bytes": 895,
+        "sha256": "dd6366c0b544e877937853678d87a0faa60f201031df5872c42803f448964faa",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/observer-ready-raw.json",
+        "bytes": 2516,
+        "sha256": "e281a1e0c529deadf7f44ba2acc655b5e19b7470db843a2b4846d391baf767cd",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/observer-ready.json",
+        "bytes": 1904,
+        "sha256": "c26342ff5cfa1a63dcee942c50da40cb232ef4dbbf7dd6e9cdb9b36acdc621dc",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/source-original.ipynb",
+        "bytes": 488,
+        "sha256": "9794481f93d3131a49818b756eec3fee4417aeadf5327adc6560f0d091b359c4",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/run/status.json",
+        "bytes": 4309,
+        "sha256": "2c73fde215bba0f0a3e623c1b2820f97d27e640ee8cdfa24a5a18062bf7daf92",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/authored-fixtures/bootstrap.py",
+        "bytes": 37,
+        "sha256": "633559817226126173abd76dfc4edb044797a586317d1170e3c977abd7cd1633",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/authored-fixtures/cleanup.py",
+        "bytes": 83,
+        "sha256": "bf376281f3bc01097ea9f7be4d298d02e62cb09336f6bc54294d072c1a79c0fa",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/authored-fixtures/engine_readiness_entry.py",
+        "bytes": 5369,
+        "sha256": "0360d9a7a1f26bfe5e1ae0f8f809a7ba2082c31e16939f2bf8a59c98d482da28",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/authored-fixtures/identity.py",
+        "bytes": 14185,
+        "sha256": "e385ccc1aa71b51cb00999c847d4cf62006bb9cbc09c6426239867d4276aff31",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/authored-fixtures/observer.py",
+        "bytes": 482,
+        "sha256": "322e2aec1c68ce6af467db196686d66214faf014af9999951c37b3c5e4bb4bc7",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/ibm-timing.json",
+        "bytes": 22594,
+        "sha256": "e7f2af42314c55c5e309b5f265c30ae68c7711af149781756ae3f877b4fee126",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/ibm019.json",
+        "bytes": 3672,
+        "sha256": "74ece437462fc7408b2b944bc1d98a90bc6172604147e8b65f7f20a7659800a6",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/ibm020.json",
+        "bytes": 4195,
+        "sha256": "6366a32c3592d4974eba48f95669c239d49baabead4281e529337e0a64342862",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/qb007.json",
+        "bytes": 7405,
+        "sha256": "61d8a21e92ad0ffe756e188c5d19e368ab13ef6d89cc7577d6b604422da9d127",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/qb017.json",
+        "bytes": 3724,
+        "sha256": "ff56a9cb2d265f8774f2350f4ebbb2cdceeead81b09fb16c816f3eb3c6f7fc06",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/qb027.json",
+        "bytes": 2686,
+        "sha256": "0ce00b16d2ca36757124bbc540b3d8d01a4fd9d0999d79337519032d214cbac5",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/contracts/qb030.json",
+        "bytes": 2697,
+        "sha256": "7f4af789bc68497eb0b40ca0a7f066c3f8e32f93ba2639bd6d51fda9c6771a88",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/execute_ibm019.py",
+        "bytes": 7032,
+        "sha256": "96c1fc6686afbef963499b1f595a8d2a7cf672d940b24d49b7eb71d68ae62007",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/execution.py",
+        "bytes": 47080,
+        "sha256": "4b2f2b2991c7022f1104aecaf53b60bbb1246e7bf65910e89070bd4becc63a87",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/ibm019-linux-requirements.lock",
+        "bytes": 5223,
+        "sha256": "39206d4cf230cd8b21d46698b72a3092fd4c0d2a5f4eccc7dd18ec2b1ad16769",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/ibm019-requirements.lock",
+        "bytes": 4943,
+        "sha256": "0ac7a06688424d9260aaf75af2cab390519ff587cf367891f36dd74da30ae45a",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/linux-notebook-requirements.lock",
+        "bytes": 4466,
+        "sha256": "18848dd56acfa26d5a107454eeb30fb38c1388f3eff532254fed9d2b11eba4c4",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/linux_lifecycle.py",
+        "bytes": 20187,
+        "sha256": "72277c1af6ad0e5615d55589fc852f22232a26b11efa5ee7b5dc9789cd496dc1",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/observers/ibm_timing.py",
+        "bytes": 39689,
+        "sha256": "44b79aa43b5120a074e7e1fad9e70606c3d83c838f9a6020742ed9d108d794fd",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/observers/ibm_timing_checkpoint.py",
+        "bytes": 139,
+        "sha256": "f8602da556c73ff62e012dc62ecb0e87a4113dc59557ecd5294cda8de3eeb6e1",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/observers/ibm_timing_cleanup.py",
+        "bytes": 133,
+        "sha256": "b98ab40081d8bfe63d0f578cd80a8f485a5ec264d49cb3d3a95a6606e46a8cbb",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/profiles/notebook-linux-py312.json",
+        "bytes": 731,
+        "sha256": "bd60bdca2efc59f666dec765e571d96db355bfcf0ec29e5d7ef003499fd552f4",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/profiles/pulser-win-py312.json",
+        "bytes": 547,
+        "sha256": "45272dd305db2c4eb05f28f1d26c40d16ec85c7d8e0d23fcfb5934bdd22c26f9",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/profiles/qir-win-py312.json",
+        "bytes": 518,
+        "sha256": "ea93bf1a2e21641d2bff168503c279721999eb60a8c94fd6c75af0aad07100d3",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/profiles/qiskit-aer-linux-py312.json",
+        "bytes": 1030,
+        "sha256": "7f429bd7fe023baa5263761e4cc6536eee68a08362d3f5feb72f2d9a6a73f1b7",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/profiles/qiskit-aer-win-py312.json",
+        "bytes": 508,
+        "sha256": "f07a42bb98fca56d9b8f0094fa3a080f0c6ca38e07435bf345ffc0bfa71f2629",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/profiles/timing-win-py312.json",
+        "bytes": 586,
+        "sha256": "394a8541b3c829ac421f78f2ff473dcf0fea574dce5e5db87f0bfec2d74fd657",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/pulser-requirements.lock",
+        "bytes": 4757,
+        "sha256": "b04970f6b9552e416caaea4270d7da93089444c527076c2d4f83a61b641f6502",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/qir-requirements.lock",
+        "bytes": 9134,
+        "sha256": "70faf49c835ed96a1d6bf6941690536af4c47515b91659d908a7b57efaabb282",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/run.py",
+        "bytes": 1836,
+        "sha256": "227ae70033fe2c36f0bf338631469a85c8e7243d6eb3e4d68df1e1eb201902c0",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/test_execution.py",
+        "bytes": 64315,
+        "sha256": "8e3f95d7710a670c3e06048be36e559f073794469a7571262d14f2086f687984",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/test_linux_execution.py",
+        "bytes": 17166,
+        "sha256": "45b3de764f508586ea86e098aa6c2f1508a63b027ccf5b2c5c7593b999c7819e",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/test_qb027.py",
+        "bytes": 6072,
+        "sha256": "c6b5bb73a4d5837433a9433e19fa1814ab6fd7a46712b11afb258d390a2f074d",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/test_qb030.py",
+        "bytes": 6814,
+        "sha256": "cab3ae385e9fa1333e9746804cfe34b0f254b8525f8f1d429b6fac2100f38068",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/test_timing.py",
+        "bytes": 44596,
+        "sha256": "a0ab6e3384ce480c1ce7d9ae42c5f9047bc6ab2a3b0acc34ac641504175f46a2",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/test_windows_lifecycle.py",
+        "bytes": 22634,
+        "sha256": "4eb15bfc554cd23ea98f2b8207b8f3a082975bf009a52a6e32b0cc5f7ef3625c",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/timing-requirements.lock",
+        "bytes": 6016,
+        "sha256": "e212293aefe95ae61a6ddfdd93b5dc34b511ab301cd8c635fb5645a46a78860b",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/timing_reference.py",
+        "bytes": 16974,
+        "sha256": "0fd56c4cb1afa5e696ab788f9fa2465b2177b5de38250483d78fc816608fb84b",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/windows_lifecycle.py",
+        "bytes": 18087,
+        "sha256": "a3efcf6a361604d86825774724b140f6b41b10b471d3273fd30eebf3627bdb06",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/ibm019.py",
+        "bytes": 2172,
+        "sha256": "ce9b6e3b5359582241ccb5ddc38d998171b853f785b66ff38f3792a1b99c9c70",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/ibm020.py",
+        "bytes": 3262,
+        "sha256": "23c20f3c7eeb023170af030ebbe2fb35f7a05f661888ba36dd56eb7a5d451f5d",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/ibm_timing.py",
+        "bytes": 332,
+        "sha256": "e21da3df506435b3cf06d0f9b7f4c9607cc31767f7e6057df35d561f0e1530b5",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/qb007.py",
+        "bytes": 11173,
+        "sha256": "26ee163ea1c24d60775bb604c3502755a84e76757172f95ffde26506a7eb0699",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/qb017.py",
+        "bytes": 10991,
+        "sha256": "fdfadeecf7ad2a998103a416355075085d148cafa67ff69a5274ce91386b5ef1",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/qb027.py",
+        "bytes": 7803,
+        "sha256": "f93c4b3c94040105ccf102e181322f96f219ca6b05ce971e3625d33f2f59352b",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime/witnesses/qb030.py",
+        "bytes": 13703,
+        "sha256": "10d0ce1b9b2aaa098c9c1f2ebf878b01333104f25dd0e328f758362f20981e16",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/runtime-copy.json",
+        "bytes": 28918,
+        "sha256": "add941e6a91bcc90a563ea9520f75ce2f64cef57f775fa51b1f835bef2bfbcaa",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/sentinel.json",
+        "bytes": 210,
+        "sha256": "9ee7a944857de2a805debc67b1fc5bb9ed647ed4fa3fa067e07a202547e0215b",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/worker.stderr.log",
+        "bytes": 1184,
+        "sha256": "81691b415470401f5359cd624597513c0cb758a4a74bd93226eab4f1741cac33",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/cancel_graceful/worker.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-attempt01/progress.json",
+        "bytes": 71,
+        "sha256": "c877d74b549c64c7d11c1e7e649f95b98ded89860747172c087b02543ed2a8ea",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-supervisor-attempt01/receipt.json",
+        "bytes": 4261,
+        "sha256": "1b8ceb37d23c5a43be0a50b1854771a836d5bbaef138fd88e9c4fb01f4969d38",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-supervisor-attempt01/stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-supervisor-attempt01/stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Explicit actual public artifact"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-envelope-20261107/binding.json",
+        "bytes": 26907,
+        "sha256": "38806463653a853c9508ab119d7112d0915e00a3cf56427b62b99222a0a91c66",
+        "role": "Immutable source/DATA/issued-ticket provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-firstcase-ticket-20261107.json",
+        "bytes": 4153247,
+        "sha256": "126621dfbf0068f3fb7d94fb1a16d7efc427a28bf6fe5d9a1b74011170a4dff6",
+        "role": "Immutable source/DATA/issued-ticket provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-repair-implementation-20261107-revision01/manifest.json",
+        "bytes": 4306,
+        "sha256": "fcc5b44c92402255ecd7284cac5c4ed083c91f644cac9b7ab5400a515fd7f688",
+        "role": "Immutable source/DATA/issued-ticket provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-envelope-20261107/proposed-activation-binding.json",
+        "bytes": 35631,
+        "sha256": "92718653d7f61b48d745458e24f6396726b11e7de25c7a472c345e5a251dd7b7",
+        "role": "Immutable source/DATA/issued-ticket provenance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-repair-source-owner-acceptance-20261107.json",
+        "bytes": 1609,
+        "sha256": "9634651f1990409600b62ae4ed8343dd52a040fbe7c5d90ac62cff4334ccc0b6",
+        "role": "Prerequisite owner acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-repair-implementation-20261107-revision01-standards-review.json",
+        "bytes": 1391,
+        "sha256": "71e59c0ac4379e6d64808a359df6154c9bdb8d810a9e9538e6b5792a92c83071",
+        "role": "Prerequisite manifest/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-repair-implementation-20261107-revision01-spec-review.json",
+        "bytes": 1825,
+        "sha256": "4b3b10448de2ba440e77e553fbc8f161c325393da3a2689bc5dfa58b9c3285b2",
+        "role": "Prerequisite manifest/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-readiness-firstcase-data-owner-acceptance-20261107.json",
+        "bytes": 2844,
+        "sha256": "284cc547df432d226bcea4b2e0fc4c588d9bb966c4c72d7173d4bf9bd136b5a8",
+        "role": "Prerequisite owner acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-envelope-20261107-revision01/manifest.json",
+        "bytes": 1984,
+        "sha256": "4514e0f8f37f1943370eafd49d6c9e4fbda459c9c72e30f662efd77a78a0704f",
+        "role": "Prerequisite manifest/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-envelope-20261107-revision01-standards-review.json",
+        "bytes": 1732,
+        "sha256": "7a4ff14fbc5a4415d581b9093feac500daeb4c20b2fc532ccef569fcec26e3b0",
+        "role": "Prerequisite manifest/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-readiness-firstcase-envelope-20261107-revision01-spec-review.json",
+        "bytes": 1576,
+        "sha256": "df94381630a01cc4a2a45c38c3b37e3492231bdd832a5156f985bb24ceef4d39",
+        "role": "Prerequisite manifest/review"
+      }
+    ]
   }
 }
