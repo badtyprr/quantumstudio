@@ -695,6 +695,7 @@ def _supervise(output, config, events=None):
         # Failed Windows construction may have created a process before returning.
         if process is not None or sys.platform == 'win32':
             attempt('terminate_owned_containment', job.terminate)
+        launcher_exit = None
         if process is not None:
             attempt('close_control_pipe', lambda: _close_control_pipe(process))
             if attempt('observe_launcher', process.poll) is None:
@@ -702,12 +703,18 @@ def _supervise(output, config, events=None):
                     attempt('terminate_verified_client', job.stop_client)
                 else:
                     attempt('terminate_owned_launcher', process.kill)
-            attempt('collect_owned_launcher', lambda: process.wait(timeout=10))
+            launcher_exit = attempt('collect_owned_launcher', lambda: process.wait(timeout=10))
         remaining = attempt('observe_population', job.active)
         if not (output / 'engine-result.json').exists():
             attempt('recover_checkpoints', lambda: _recover_checkpoint_disposition(output, status))
         status.update(state="failed", error=str(error), cleanup={"active_processes": remaining, "method": "exception",
                       'errors': cleanup_errors, 'unconfirmed': remaining is None or bool(remaining) or bool(cleanup_errors)})
+        if sys.platform == 'win32' and process is not None:
+            status['cleanup'].update(launcher_exit=launcher_exit, engine_exit=None)
+            observation = getattr(process, 'termination_observation', None)
+            if isinstance(observation, dict):
+                # Persist raw error and same-held-handle confirmation before close.
+                status['cleanup']['launcher_termination'] = observation
         attempt('publish_failure', publish)
         raise
     finally:

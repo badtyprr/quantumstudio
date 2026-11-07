@@ -124,6 +124,7 @@ class OwnedProcess:
         self._api, self.args = api, list(argv)
         self._handle, self.pid, self.stdin = process, pid, stdin
         self.identity, self.returncode = identity, None
+        self.termination_observation = None
 
     @property
     def process_handle(self):
@@ -149,7 +150,39 @@ class OwnedProcess:
 
     def kill(self):
         if self.poll() is None:
-            self._api.terminate_process(self.process_handle)
+            handle = self.process_handle
+            try:
+                self._api.terminate_process(handle)
+            except OSError as error:
+                observation = dict(api='TerminateProcess',
+                                   error=dict(type=type(error).__name__, message=str(error),
+                                              winerror=getattr(error, 'winerror', None)),
+                                   launcher_identity=dict(self.identity),
+                                   same_continuously_held_handle=False,
+                                   wait_signaled=None, exit_query_succeeded=False,
+                                   terminal_confirmed=False)
+                self.termination_observation = observation
+                if getattr(error, 'winerror', None) != 5:
+                    raise
+                try:
+                    # Job termination can finish between poll and TerminateProcess.
+                    # Confirm using this handle, never a PID or cached exit code.
+                    if self.process_handle != handle:
+                        raise ValueError('PROCESS_HANDLE_CHANGED')
+                    observation['same_continuously_held_handle'] = True
+                    observation['wait_signaled'] = self._api.wait(handle, 0)
+                    if observation['wait_signaled']:
+                        code = self._api.exit_code(handle)
+                        observation.update(exit_query_succeeded=True, exit_code=code,
+                                           terminal_confirmed=True)
+                        self.returncode = code  # A signaled exit259 is terminal too.
+                except BaseException as confirmation_error:
+                    observation['confirmation_error'] = dict(type=type(confirmation_error).__name__,
+                                                             message=str(confirmation_error))
+                    error.add_note('Held process terminal confirmation failed: ' + repr(confirmation_error))
+                    raise error from confirmation_error
+                if not observation['terminal_confirmed']:
+                    raise
 
     terminate = kill
 

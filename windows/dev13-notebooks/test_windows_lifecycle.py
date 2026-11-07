@@ -383,6 +383,91 @@ class LaunchTests(unittest.TestCase):
             process.close()
 
 
+class TerminationRaceTests(unittest.TestCase):
+    """Real OwnedProcess methods, fake system boundary; never launch a process."""
+    def fixture(self, mode='terminal', code=1):
+        api = FakeAPI()
+        api.open.add(10)
+        process = lifecycle.OwnedProcess(api, ['fixture'], 10, 42, io.StringIO(),
+                                         dict(launcher_pid=42, held_handle=True, specific_job_member=True))
+        self.addCleanup(process.close)
+        primary = OSError('access denied')
+        primary.winerror = 5 if mode != 'other_error' else 6
+        secondary = OSError('confirmation failed')
+        def terminate(handle):
+            api.event('terminate_process', handle)
+            api.terminal, api.code = mode != 'alive', code
+            if mode == 'closed':
+                process.close()
+            if mode == 'wait_error':
+                api.wait = Mock(side_effect=secondary)
+            if mode == 'query_error':
+                api.exit_code = Mock(side_effect=secondary)
+            raise primary
+        api.terminate_process = terminate
+        return process, api, primary, secondary
+
+    def test_error5_confirmed_by_same_handle_wait_and_query(self):
+        process, api, primary, _ = self.fixture()
+        process.kill()
+        observation = process.termination_observation
+        self.assertTrue(observation['terminal_confirmed'])
+        self.assertTrue(observation['same_continuously_held_handle'])
+        self.assertTrue(observation['wait_signaled'])
+        self.assertTrue(observation['exit_query_succeeded'])
+        self.assertEqual(observation['exit_code'], 1)
+        self.assertEqual(observation['error'], dict(type='OSError', message=str(primary), winerror=5))
+        self.assertEqual(observation['launcher_identity'], process.identity)
+        self.assertEqual(api.events, [('wait', 10, 0), ('terminate_process', 10), ('wait', 10, 0), ('exit_code', 10)])
+        self.assertEqual(process.wait(), 1)
+
+    def test_signaled_exit259_is_terminal(self):
+        process, api, _, _ = self.fixture(code=259)
+        process.kill()
+        self.assertEqual(process.returncode, 259)
+        self.assertTrue(process.termination_observation['terminal_confirmed'])
+        self.assertIn(('wait', 10, 0), api.events)
+
+    def test_alive_error5_not_suppressed_or_queried(self):
+        process, api, primary, _ = self.fixture('alive', 259)
+        with self.assertRaises(OSError) as caught:
+            process.kill()
+        self.assertIs(caught.exception, primary)
+        self.assertFalse(process.termination_observation['terminal_confirmed'])
+        self.assertFalse(process.termination_observation['wait_signaled'])
+        self.assertFalse(any(event[0] == 'exit_code' for event in api.events))
+        self.assertIsNone(process.returncode)
+
+    def test_confirmation_errors_preserve_original_exception(self):
+        for mode in ('wait_error', 'query_error', 'closed'):
+            with self.subTest(mode=mode):
+                process, api, primary, secondary = self.fixture(mode)
+                with self.assertRaises(OSError) as caught:
+                    process.kill()
+                self.assertIs(caught.exception, primary)
+                self.assertFalse(process.termination_observation['terminal_confirmed'])
+                self.assertIn('confirmation_error', process.termination_observation)
+                if mode != 'closed': self.assertIs(caught.exception.__cause__, secondary)
+                self.assertIsNone(process.returncode)
+
+    def test_other_error_never_classified_even_if_terminal(self):
+        process, api, primary, _ = self.fixture('other_error')
+        with self.assertRaises(OSError) as caught:
+            process.kill()
+        self.assertIs(caught.exception, primary)
+        self.assertFalse(process.termination_observation['terminal_confirmed'])
+        self.assertEqual([e[0] for e in api.events], ['wait', 'terminate_process'])
+
+    def test_terminal_noop_preserves_raw_observation(self):
+        process, api, _, _ = self.fixture()
+        process.kill()
+        observation = dict(process.termination_observation)
+        events = list(api.events)
+        process.kill()
+        self.assertEqual(api.events, events)
+        self.assertEqual(process.termination_observation, observation)
+
+
 class NativeLayoutTests(unittest.TestCase):
     """Only ctypes data and injected function objects; never load a native DLL."""
     def test_windows_64_bit_structure_sizes_and_offsets(self):

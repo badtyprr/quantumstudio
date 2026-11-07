@@ -1124,5 +1124,86 @@ class WindowsLaunchTests(unittest.TestCase):
         self.assertEqual(entered, ['run'])
 
 
+class WindowsTerminationRaceTests(unittest.TestCase):
+    """Full supervisor and real held-process methods against fake native calls."""
+    def exercise(self, mode='terminal', code=1):
+        import io
+        import windows_lifecycle
+        from test_windows_lifecycle import FakeAPI
+        output, config, _, job = WindowsLaunchTests.fixture(self)
+        api = FakeAPI()
+        api.open.add(10)
+        process = windows_lifecycle.OwnedProcess(api, ['fake'], 10, 42, io.StringIO(),
+                                                 dict(launcher_pid=42, held_handle=True, specific_job_member=True))
+        primary = ValueError('READY_PARENT_TYPE')
+        native_error = OSError('access denied')
+        native_error.winerror = 6 if mode == 'other_error' else 5
+        original_poll = process.poll
+        delivered = False
+        def poll():
+            nonlocal delivered
+            if not delivered:
+                delivered = True
+                raise primary
+            return original_poll()
+        process.poll = poll
+        def terminate(handle):
+            api.event('terminate_process', handle)
+            api.terminal, api.code = mode != 'alive', code
+            if mode == 'query_error': api.fail = 'exit_code'
+            raise native_error
+        api.terminate_process = terminate
+        if mode == 'close_error': api.fail = ('close', 10)
+        if mode == 'alive': job.active.return_value = 1
+        original_write = execution.atomic_json
+        publications = []
+        def publish(path, value):
+            if path.name == 'status.json' and value['state'] == 'failed':
+                publications.append(json.loads(json.dumps(value)))
+                if mode == 'publication_error': raise OSError('failure publication')
+            return original_write(path, value)
+        with patch.object(execution.sys, 'platform', 'win32'), \
+                patch.object(execution, '_WindowsJob', return_value=job), \
+                patch.object(execution, '_launch_engine', return_value=process), \
+                patch.object(execution, 'atomic_json', side_effect=publish), \
+                patch.object(windows_lifecycle, '_NativeAPI', side_effect=AssertionError('NO_NATIVE')):
+            with self.assertRaises(ValueError) as caught:
+                execution._supervise(output, config)
+        self.assertIs(caught.exception, primary)
+        self.assertFalse((output/'cancel.request').exists())
+        self.assertEqual(api.events.count(('terminate_process', 10)), 1)
+        self.assertIn(('close', 10), api.events)
+        job.terminate.assert_called_once(); job.close.assert_called_once()
+        status = json.loads((output/'status.json').read_bytes())
+        if mode == 'publication_error':
+            self.assertNotEqual(status['state'], 'succeeded')
+            self.assertTrue(publications[0]['cleanup']['launcher_termination']['terminal_confirmed'])
+            return
+        self.assertEqual(status['state'], 'failed')
+        self.assertEqual(status['error'], 'READY_PARENT_TYPE')
+        observation = status['cleanup']['launcher_termination']
+        self.assertEqual(observation['error']['message'], str(native_error))
+        self.assertEqual(observation['same_continuously_held_handle'], mode != 'other_error')
+        if mode in ('terminal', 'close_error'):
+            self.assertTrue(observation['terminal_confirmed'])
+            self.assertEqual(observation['exit_code'], code)
+            self.assertEqual(status['cleanup']['launcher_exit'], code)
+            self.assertIsNone(status['cleanup']['engine_exit'])
+            self.assertEqual(status['cleanup']['unconfirmed'], mode == 'close_error')
+            if mode == 'terminal': self.assertEqual(status['cleanup']['errors'], [])
+        else:
+            self.assertFalse(observation['terminal_confirmed'])
+            self.assertTrue(status['cleanup']['unconfirmed'])
+            self.assertIn('terminate_owned_launcher', [e['step'] for e in status['cleanup']['errors']])
+
+    def test_race_confirmation_published_before_close(self): self.exercise()
+    def test_terminal259_confirmation(self): self.exercise(code=259)
+    def test_alive_error_not_erased(self): self.exercise('alive')
+    def test_query_failure_not_erased(self): self.exercise('query_error')
+    def test_other_error_not_erased(self): self.exercise('other_error')
+    def test_close_failure_remains_unconfirmed(self): self.exercise('close_error')
+    def test_publication_failure_preserves_requester_and_closes(self): self.exercise('publication_error')
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
