@@ -1,25 +1,39 @@
-# Fresh candidate from the exact PR head; no merge or publication.
-name: DEV17 release revision candidate
+# Fresh non-Candidate package from exact merged master; no tag or publication.
+name: DEV17 verified merged-master release build
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - .github/workflows/dev17-release-candidate.yml
-      - diagnostics/dev17-unattended/**
 permissions:
   contents: read
+env:
+  RELEASE_REVISION: f9f43bf9dcfc18a550dae60af98cb167047371a5
+  RELEASE_TREE: 93a63ed859940f33c00b67c421bf07aa6550d24c
 concurrency:
-  group: dev17-release-candidate-${{ github.ref }}
+  group: dev17-noncandidate-release
   cancel-in-progress: false
 jobs:
   acceptance:
     runs-on: windows-2025-vs2026
     timeout-minutes: 120
     steps:
+      - name: Record orchestration and require reviewed release pins
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path "$env:RUNNER_TEMP/dev17-orchestration" | Out-Null
+          @{
+            orchestration_revision=$env:GITHUB_SHA; orchestration_ref=$env:GITHUB_REF
+            package_revision=$env:RELEASE_REVISION; package_tree=$env:RELEASE_TREE
+            run=$env:GITHUB_RUN_ID; attempt=$env:GITHUB_RUN_ATTEMPT
+            candidate=$false; publication=$false
+          } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-orchestration/invocation.json"
+          if ($env:RELEASE_REVISION -notmatch '^[0-9a-f]{40}$' -or $env:RELEASE_TREE -notmatch '^[0-9a-f]{40}$') {
+            throw 'Owner must substitute actual merged master SHA/tree and obtain final exact workflow review before dispatch.'
+          }
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ env.RELEASE_REVISION }}
+          fetch-depth: 0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.12.10'
@@ -31,6 +45,13 @@ jobs:
           if ($LASTEXITCODE) { throw 'Revision lookup failed' }
           $tree = git rev-parse 'HEAD^{tree}'
           if ($LASTEXITCODE) { throw 'Tree lookup failed' }
+          if ($revision -ne $env:RELEASE_REVISION -or $tree -ne $env:RELEASE_TREE) { throw 'Pinned merged source identity mismatch' }
+          git fetch origin master
+          if ($LASTEXITCODE) { throw 'Master fetch failed' }
+          $master = git rev-parse origin/master
+          if ($LASTEXITCODE -or $master -ne $revision) { throw 'Pinned package revision is not current origin/master' }
+          $dirty = git status --porcelain --untracked-files=all
+          if ($LASTEXITCODE -or $dirty) { throw 'Release source must be clean' }
           $original = @{
             'windows/Dev17GuiTests.cs'='e71ce87793009de5b6bdbd32e690355f56836856b73bab14dbdb938ec32716aa'
             'windows/test-named-subsystems-gui.ps1'='718576564b3ff9fd7b4c4fe16da3498ad0cb5b8195dee1e6e9118495b01a99d8'
@@ -39,8 +60,8 @@ jobs:
             if ((Get-FileHash -LiteralPath $name).Hash.ToLower() -ne $original[$name]) { throw "Original fixture changed: $name" }
           }
           @{
-            revision=$revision; tree=$tree; event_revision=$env:GITHUB_SHA
-            candidate=$true; publication=$false; original_fixture_hashes=$original
+            revision=$revision; tree=$tree; orchestration_revision=$env:GITHUB_SHA; package_revision=$env:RELEASE_REVISION; package_tree=$env:RELEASE_TREE
+            candidate=$false; publication=$false; original_fixture_hashes=$original
             powershell=$PSVersionTable.PSVersion.ToString()
           } | ConvertTo-Json -Depth 5 | Set-Content "$env:RUNNER_TEMP/dev17-preflight/source.json"
           $probe = Get-Content "$env:RUNNER_TEMP/dev17-preflight/environment.json" -Raw | ConvertFrom-Json
@@ -66,7 +87,7 @@ jobs:
           & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip check
           if ($LASTEXITCODE) { throw 'pip check failed' }
           & "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:RUNNER_TEMP/dev17-preflight/python-packages.txt"
-      - name: Build unchanged package workflow as candidate
+      - name: Build unchanged package workflow in release mode
         shell: pwsh
         env:
           DEV17_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
@@ -75,35 +96,57 @@ jobs:
           try {
             & "$env:DEV17_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:RUNNER_TEMP/dev17-preflight/msys-packages.txt"
             if ($LASTEXITCODE) { throw 'MSYS inventory failed' }
-            ./windows/package.ps1 -MsysRoot $env:DEV17_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe" -Candidate
+            ./windows/package.ps1 -MsysRoot $env:DEV17_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/dev17-python/Scripts/python.exe"
           } finally { Stop-Transcript }
       - name: Actual Copy acceptance against hosted-built payload
         shell: pwsh
         run: |
           $revision = git rev-parse HEAD
           if ($LASTEXITCODE) { throw 'Revision lookup failed' }
-          $archive = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-candidate-Windows-x64.zip"
+          $archive = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-Windows-x64.zip"
           $source = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-source.tar.gz"
-          python windows/test-package.py $archive --candidate --revision $revision
-          if ($LASTEXITCODE) { throw 'Candidate ZIP/manifest verification failed' }
+          python windows/test-package.py $archive --revision $revision
+          if ($LASTEXITCODE) { throw 'Release ZIP/manifest verification failed' }
           $before = @(Get-FileHash -LiteralPath $archive,$source | Select-Object Path,Hash)
           $before | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-preflight/archive-hashes.json"
-          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/dev17-candidate-payload"
+          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/dev17-release-payload"
+          $payloadManifest = Get-Content "$env:RUNNER_TEMP/dev17-release-payload/QuantumStudio/build-manifest.json" -Raw | ConvertFrom-Json
+          if ($payloadManifest.candidate -ne $false -or $payloadManifest.revision -ne $env:RELEASE_REVISION) { throw 'Extracted payload is not the pinned non-Candidate release' }
           try {
-            ./diagnostics/dev17-unattended/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/dev17-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev17-acceptance" -Revision $revision
+            ./diagnostics/dev17-unattended/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/dev17-release-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/dev17-acceptance" -Revision $revision
           } finally {
             foreach ($entry in $before) {
               if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance' }
             }
           }
+      - name: Reverify release bytes and source identity after GUI acceptance
+        shell: pwsh
+        run: |
+          python windows/test-package.py "$env:GITHUB_WORKSPACE/dist/QuantumStudio-Windows-x64.zip" --revision $env:RELEASE_REVISION
+          if ($LASTEXITCODE) { throw 'Final release ZIP verification failed' }
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE -or $revision -ne $env:RELEASE_REVISION) { throw 'Release HEAD changed' }
+          $tree = git rev-parse 'HEAD^{tree}'
+          if ($LASTEXITCODE -or $tree -ne $env:RELEASE_TREE) { throw 'Release tree changed' }
+          git fetch origin master
+          if ($LASTEXITCODE) { throw 'Final master fetch failed' }
+          $master = git rev-parse origin/master
+          if ($LASTEXITCODE -or $master -ne $revision) { throw 'Master advanced; owner must review a fresh release plan' }
+          @{
+            package_revision=$revision; package_tree=$tree; master=$master
+            orchestration_revision=$env:GITHUB_SHA; candidate=$false; publication=$false
+            automated_acceptance=$true; independent_visual_review='pending'; publication_authorized=$false
+          } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/dev17-preflight/release-verification.json"
       - name: Retain evidence even on failure
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: dev17-release-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: dev17-noncandidate-${{ env.RELEASE_REVISION }}-orchestrator-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 14
           if-no-files-found: error
+          include-hidden-files: true
           path: |
+            ${{ runner.temp }}/dev17-orchestration/
             ${{ runner.temp }}/dev17-preflight/
             ${{ runner.temp }}/dev17-acceptance/
             src/*.log
