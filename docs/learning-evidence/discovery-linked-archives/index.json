@@ -652,5 +652,214 @@
       "Exact redirect/header/error data remains restricted external; only sanitized counts/status and external paths/hashes are recorded here. No archive payload or raw sensitive receipt is copied into the repository.",
       "Retained access does not prove current or future availability, equality to historical archive bytes, mandatory dependency, PDF content, notebook/SDK/native/GUI execution, release readiness or whole-source completion."
     ]
+  },
+  "ibm116_access_snapshot": {
+    "proposal_base": "a21c5150b6a937a44db92dae7b5994fa741913bb",
+    "scope": "Later owner-accepted IBM116 access observation; all earlier snapshots and inventories remain historical and unchanged",
+    "previous_retained_observations": 5,
+    "additional_observations": 1,
+    "total_retained_observations": 6,
+    "original_zip_targets": 12,
+    "remaining_unattempted_in_retained_scope": 6,
+    "remaining_target_keys": [
+      "IBM-LINK-9d7e7b5ba683260b",
+      "IBM-LINK-a37c4774e4d7d195",
+      "IBM-LINK-480a322a8209bc0b",
+      "IBM-LINK-013238176d361fad",
+      "IBM-LINK-c438bb98114e2743",
+      "IBM-LINK-f038f1ea301825a8"
+    ],
+    "observation": {
+      "source_id": "IBM-116",
+      "target_key": "IBM-LINK-fbb823b8d820b498",
+      "source_revision": "a500b17f8b1f156a6bba42ab11f90f3104cad6d4",
+      "source_path": "learning/courses/utility-scale-quantum-computing/teleportation.ipynb",
+      "source_pin_key": "source_original",
+      "cell": 0,
+      "offset": 299,
+      "end_offset": 393,
+      "offset_units": "Unicode codepoints, half-open in exact joined source",
+      "exact_link_span": "[Download the pdf](https://ibm.ent.box.com/public/static/ws8x00xu0pksjzixyyspxzrilvt36iff.zip)",
+      "original_label": "Download the pdf",
+      "source_context": "Original quantum teleportation and superdense coding lecture PDF download; the source warns static-image code snippets may become deprecated. This describes the original notebook context, not unread PDF content.",
+      "requirement_status": "ambiguous",
+      "original_inventory_access": "not_checked; repository presence is not HTTP access",
+      "new_observation": "Owner-accepted anonymous HTTP 200 with one contiguous HTTPS redirect, according to retained acquisition and final independent actual reviews; documentation preparation did not check availability",
+      "http_status": 200,
+      "https_redirect_hops": 1,
+      "rejected_redirect_hops": 0,
+      "collector_state": "acquired_and_archive_metadata_validated",
+      "archive_pin_key": "actual/download.zip",
+      "member": {
+        "name": "3_utility_lecture_teleportation.pdf",
+        "bytes": 681482,
+        "compressed_bytes": 583316,
+        "sha256": "02980390af86795623921b905290d2e3ad4ce1c82d3c0aacb56de63f4ffb7731",
+        "crc32_hex": "1da5f0cd",
+        "magic_hex": "255044462d312e37",
+        "pdf_magic": true,
+        "is_directory": false
+      },
+      "actual_manifest_pin_key": "actual/manifest.json",
+      "review_pin_keys": [
+        "actual_standards",
+        "actual_spec"
+      ],
+      "owner_pin_key": "actual_owner",
+      "inspection": "Bounded in-memory ZIP member decompression, archive/member hash, CRC and PDF 1.7 magic only. No PDF parser, extraction, content, rendering, page count or mathematical validation.",
+      "historical_archive_equivalence": false,
+      "lesson_execution": false,
+      "supervision": "Complete passed owner supervisor receipt, natural exit0, active population0, readers collected and no cleanup/capture/persistence errors; successful collector state and complete raw-file/hash evidence required beyond exit0."
+    },
+    "review_process_limitation": {
+      "owner_record_pin_key": "actual_owner",
+      "incident": "During the actual independent reviews, both review agents accidentally printed signed transport URL text to tool output while treating redirect_hops as a numeric field.",
+      "disposition": "The output path was stopped and frozen artifacts were unchanged. The owner retains this limitation separately from finite correctness acceptance. Reports and repository proposal do not reproduce the signed values.",
+      "subsequent_handling": "Use an explicit safe scalar allowlist. Never print raw redirect_hops, headers, final_url, errors or complete sensitive receipts."
+    },
+    "external_pins": {
+      "actual_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-owner-acceptance-20261107.json",
+        "bytes": 2034,
+        "sha256": "ce463c2a81489ff5ba19d01a521ac9984171ff791f9218a6a98aa2c19c89f90e"
+      },
+      "actual_provisional": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-owner-provisional-20261107.json",
+        "bytes": 2415,
+        "sha256": "77cf10fc68f9c0ddbd2f04405ac5b48b7f8dcc67663f7f0d4dc8b8458b081ff5"
+      },
+      "actual_standards": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-actual-standards-review-20261107.json",
+        "bytes": 7129,
+        "sha256": "70f4f94177b551e961868140cf26a5a113703d888a0cb43f814ceadee8ae54bd"
+      },
+      "actual_spec": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-actual-spec-review-20261107.json",
+        "bytes": 5536,
+        "sha256": "d50a55f06584b4914bf8e1a4f6cc7dbf8e9e375d01944d18e5d41f13ee5087f3"
+      },
+      "source_original": {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/ibm-source-bodies/sources/learning/courses/utility-scale-quantum-computing/teleportation.ipynb",
+        "bytes": 61538,
+        "sha256": "2621d5efc94bbb3a6761a0cf49918448675b742f3d2f17e8749aeb2e08e55901"
+      },
+      "source_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-source-owner-acceptance-20261107.json",
+        "bytes": 1540,
+        "sha256": "6d742ec78b7ce792c721a39e5e3766ecd83927c8a7c93f6ba80fc95e94ce949d"
+      },
+      "source_manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-source-01/manifest.json",
+        "bytes": 3051,
+        "sha256": "0f41930dfaef898c522411d57333dac16e0e4e630fd5f2e17bf8e0f1077e38d2"
+      },
+      "collector_source": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-source-01/acquire.py",
+        "bytes": 12931,
+        "sha256": "c07859484eb1d321857bf0997edae9f2dd718b07ad5a508bfc2003c1befd0e13"
+      },
+      "source_bindings": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-source-01/bindings.json",
+        "bytes": 4705,
+        "sha256": "46436aa5f0ddd6b8265a941db0994496949b7d7ed28cff6226b98538c44628fc"
+      },
+      "source_standards": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-source-01-standards-review.json",
+        "bytes": 5324,
+        "sha256": "edf410627a37a6d3a0574e3719cc2c66e3c622ad71f828d73fc0e758ce8dac5f"
+      },
+      "source_spec": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-source-01-spec-review.json",
+        "bytes": 5162,
+        "sha256": "c588051cf825f6ea7587e55aa99ef45388cc7ed26be604234c0320d2ae75c6b3"
+      },
+      "data_binding": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-envelope-01/binding.json",
+        "bytes": 19709,
+        "sha256": "22d409e61f869a3691709becccee8405d8825b4856f3da31610e2f591dabf4a1"
+      },
+      "data_manifest": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-envelope-01/manifest.json",
+        "bytes": 862,
+        "sha256": "be846a9676275ea60eb6cbb26f33d4aceb602c41e2dc76d84a7842c93ebc1b2e"
+      },
+      "data_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-data-owner-acceptance-20261107.json",
+        "bytes": 1724,
+        "sha256": "fc83dc704a0b3447d298ada47a25770b8741ea0a24f9da42ad0b7630e8751f2e"
+      },
+      "issued_ticket": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-ticket-20261107.json",
+        "bytes": 361294,
+        "sha256": "237ac953081466f5e7e9f15d00c1bcbf6c67f05485b6cb47f629674fa2505aca"
+      },
+      "reservation": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/ibm116-acquisition-owner-reservation-20261107.json",
+        "bytes": 1901,
+        "sha256": "8b24e3ddfb0d1d051bdd5f71240c01da8b9f3bda248f054d5dd82a83b6a0a360"
+      },
+      "staging": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-envelope-01/staging-receipt.json",
+        "bytes": 1073,
+        "sha256": "629825f25004cda6da869a4ba830eadeec0ab5d794b13eb4556121b28b340e69"
+      },
+      "supervisor_receipt": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-acquisition-envelope-01/supervisor-acquisition-01/receipt.json",
+        "bytes": 2032,
+        "sha256": "330fa6e292c03ca0a611328c16e816f7b10464770e96ff61f06a8a2922691653"
+      },
+      "remaining_eight_inventory": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/aud02-remaining-eight-zip-inventory-01/manifest.json",
+        "bytes": 2784,
+        "sha256": "4ccc143808101a95ef6b22bd6bc07e2998e60016b5ccfcf963c9e3765b05e12e"
+      },
+      "remaining_eight_owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/aud02-eight-zip-inventory-owner-acceptance-20261107.json",
+        "bytes": 1663,
+        "sha256": "f268124d55565e11501d805a21b6658940fe592e6cdd7b4f503c4e5009e21db6"
+      },
+      "actual/acquire.py": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/acquire.py",
+        "bytes": 12931,
+        "sha256": "c07859484eb1d321857bf0997edae9f2dd718b07ad5a508bfc2003c1befd0e13"
+      },
+      "actual/acquisition.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/acquisition.json",
+        "bytes": 8302,
+        "sha256": "de9101f9954b8c31592b26f3322921e2026bf186a34b21f267bf83c0ce986e60"
+      },
+      "actual/download.zip": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/download.zip",
+        "bytes": 583556,
+        "sha256": "72aac9aee30f951f56d1a44d8077607b204563131f5521a5190dcd5183860896"
+      },
+      "actual/manifest.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/manifest.json",
+        "bytes": 1486,
+        "sha256": "81ec591587417b51815a831932578926024350a3f0c78f2dbcda328f85ce4243"
+      },
+      "actual/members.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/members.json",
+        "bytes": 325,
+        "sha256": "fda0903ec8ccb3fd4026bc2b1523ace3e0219d2d973cc5cdab505208612de66a"
+      },
+      "actual/provenance.json": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/provenance.json",
+        "bytes": 2641,
+        "sha256": "589e105b947df74ea23ca32fa4020693e31abc2fc8bbd97f5a77e0d807d49c75"
+      },
+      "actual/README.md": {
+        "path": "F:/src/libqalculate/cleanup-audit/math-lane-20261107/ibm116-linked-archive-attempt01/README.md",
+        "bytes": 2020,
+        "sha256": "638f38f4f3232c9c63a17ab713c86864e928a55b7b86808ef5ea7cb44a053e4b"
+      }
+    },
+    "limitations": [
+      "Six remaining targets are unattempted within the pinned retained-evidence scope; this is not an access-blocking finding, global absence claim or fresh verification.",
+      "The earlier IBM115 five-of-twelve snapshot, earlier four/eight snapshot, original inventory and stable target IDs remain unchanged.",
+      "Final actual reviews found no correctness issues; that does not erase the separately retained review-process disclosure incident.",
+      "No payload or raw sensitive receipt is copied into repository documentation. Transport/header/error records remain external and are not echoed by this proposal.",
+      "Recorded access does not guarantee current or future availability, equality to archive bytes from the original lesson, mandatory dependency, PDF content, notebook/SDK/native/GUI execution, release acceptance or whole-source completion."
+    ]
   }
 }
