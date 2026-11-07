@@ -786,5 +786,203 @@
       "role": "coordinator acceptance/preparation/reservation/history",
       "state": "historical coordinator evidence"
     }
-  ]
+  ],
+  "lifecycle_first_attempt_and_launcher_diagnostic": {
+    "documentation_base": "af7f96d0e039a54685c26d320846c5af879d1c3b",
+    "scope": "Separate failed lifecycle first-case evidence and accepted finite launcher probes; original native12 acceptance and105 index records unchanged",
+    "lifecycle_attempt": {
+      "terminal": {
+        "session": 14612,
+        "chunk": "b41b71",
+        "exit_code": 1
+      },
+      "case": "cancel_graceful",
+      "state": "failed before cancellation request; no lifecycle acceptance",
+      "request_error": "READY_PARENT_MISMATCH",
+      "cancel_calls": 0,
+      "outer_timeout_seconds": 120,
+      "owned_population_before_cleanup": 13,
+      "owned_population_after_cleanup": 0,
+      "cleanup_errors": [],
+      "remaining_cases_unrun": 7,
+      "historical_kernel_lineage_proved": false,
+      "product_regression_established": false
+    },
+    "accepted_launcher_probes": {
+      "owner": {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-launcher-diagnostic-owner-acceptance-20261107.json",
+        "bytes": 1860,
+        "sha256": "b8fcca58170e123ea854a5cf985ce3c9701d00bc20da1d8ec3dea842cefded5c"
+      },
+      "classification": {
+        "direct_base": "self21656 equals held21656",
+        "venv": "self7156 differs from held31760; parent31760 equals held31760"
+      },
+      "terminal": {
+        "base": "51643/243e46 exit0",
+        "venv": "9448/83dda0 exit0"
+      },
+      "scope": "Two exact stdlib-only -I -S -B probe invocations; complete captures, exit0, owned population0 and no forced cleanup/errors",
+      "historical_kernel_proof": false,
+      "full_timeout_fix": false,
+      "cancellation_or_lifecycle_accepted": false
+    },
+    "preserved_boundaries": {
+      "native_acceptance": "Existing12/12 finite9d001ca7/41-file host ownership prerequisite unchanged",
+      "newer_composition": "003ff1ac7 51-file composition implemented/reviewed/integrated; its actual51 runtime/notebook acceptance remains pending",
+      "no_new_execution_grant": true
+    },
+    "files": [
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-attempt01-owner-failure-20261106.json",
+        "bytes": 2376,
+        "sha256": "05f1e68d1d2e95b4e4e55a7e92c2a26d22d8cfcc69f5b34c04d6a97328437d10",
+        "role": "Original failed lifecycle owner terminal and cleanup evidence"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-attempt01-failure-standards-review-20261106.json",
+        "bytes": 5379,
+        "sha256": "ff5f8890d42f039031ba9d1e8c1e01914e4361415fd792aad6d0dd7a37d2056a",
+        "role": "Independent failure evidence review; no lifecycle acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-launcher-diagnostic-owner-acceptance-20261107.json",
+        "bytes": 1860,
+        "sha256": "b8fcca58170e123ea854a5cf985ce3c9701d00bc20da1d8ec3dea842cefded5c",
+        "role": "Finite diagnostic owner acceptance"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-actual-standards-review-20261107.json",
+        "bytes": 8023,
+        "sha256": "5dbcd7751744279eb66227db3a227a556220faf21bd41c025c535f5e7a3a4430",
+        "role": "Diagnostic owner acceptance dependency/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-actual-spec-review-20261107.json",
+        "bytes": 10742,
+        "sha256": "7572651790ab63198eace93eaa4acc0ffd152ad47a91153b2aeb68d60fc3f9f8",
+        "role": "Diagnostic owner acceptance dependency/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/timing-lifecycle-legacy-9d001ca7-attempt01/progress.json",
+        "bytes": 1809,
+        "sha256": "00bfe41b1b0e7127c4d312b7d774db2b69be7e7267df9187fb664344e6c10a1f",
+        "role": "Original failed first-case raw receipt or capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/timing-lifecycle-legacy-9d001ca7-attempt01/cancel_graceful/outer.json",
+        "bytes": 1624,
+        "sha256": "b4d44a821195fd1abce2d0e5b98070ca9ae7b470a9f18e51260528b03516a835",
+        "role": "Original failed first-case raw receipt or capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/timing-lifecycle-legacy-9d001ca7-attempt01/cancel_graceful/request-error.json",
+        "bytes": 81,
+        "sha256": "996f14ae391b1c654e02ad8b4b98ff38e38af8e213a8d17073ff93e57e901c3c",
+        "role": "Original failed first-case raw receipt or capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/timing-lifecycle-legacy-9d001ca7-attempt01/cancel_graceful/cancel-evidence.json",
+        "bytes": 3310,
+        "sha256": "1b01a217ce1cd0c2efb5e607f4a76c49358c184ad63fb753509df57bcc0b7afb",
+        "role": "Original failed first-case raw receipt or capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/timing-lifecycle-legacy-9d001ca7-attempt01/cancel_graceful/worker.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Original failed first-case raw receipt or capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/timing-lifecycle-legacy-9d001ca7-attempt01/cancel_graceful/worker.stderr.log",
+        "bytes": 592,
+        "sha256": "bbc824fb033e82e3d67134faa15725cca00fac0aa7f0cabd3b6e5d2b37ac16ff",
+        "role": "Original failed first-case raw receipt or capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-base-owner-20261107.json",
+        "bytes": 1095,
+        "sha256": "98e676fbfb69fc187ccb552309fc1a98318fcfbfa34dc9bf5a899274e3389607",
+        "role": "Diagnostic owner acceptance dependency/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-venv-owner-20261107.json",
+        "bytes": 1823,
+        "sha256": "8ac6438d362b36cf74e6e399b2ac1b708043250700d826d5b4a10470fedf7f43",
+        "role": "Diagnostic owner acceptance dependency/review"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-base-ticket-20261107.json",
+        "bytes": 359493,
+        "sha256": "645f08791910fc7cd0308a8c0f5a298fa9bee48816f9c177513d0da0ff6dac02",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-base_python-01/receipt.json",
+        "bytes": 2369,
+        "sha256": "89ad84611e3b9aae7e1d554f3ef68df932d2a5d20b024554fb2440d3542206b9",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-base_python-01/stdout.bin",
+        "bytes": 282,
+        "sha256": "e26a8ebdd70fda0da00ebd6a91cbeabde7eca3031e677cd6641b49e6f8db77ad",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-base_python-01/stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-base_python-01/receipt.json.checkpoint",
+        "bytes": 1838,
+        "sha256": "6fb3d3a65daf767c39d49031482426eb4379176d4bb3838eb9a5c04f8777cf29",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-venv-ticket-20261107.json",
+        "bytes": 360003,
+        "sha256": "1c44f32ac3146c834b36a9ae614b8d1bc100e071b82766dbf126510af68ae534",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-venv_python-01/receipt.json",
+        "bytes": 2409,
+        "sha256": "fbe037c16c86f35ca469bc6fb8868d4423ad7a795df871f6311a1777cb6f01c4",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-venv_python-01/stdout.bin",
+        "bytes": 301,
+        "sha256": "4b66755f3ee089340d245bfbcb1d36a1a09ea7cb73f7c293f4b48b8f247c1b38",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-venv_python-01/stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-timeout-diagnosis-20261106/native-venv_python-01/receipt.json.checkpoint",
+        "bytes": 1878,
+        "sha256": "46c45d53bd920e732bc0270d3e77798eeebc011d1496b0c0021f73a090db9eaf",
+        "role": "Issued diagnostic ticket, actual receipt or raw capture"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/notebook-lane-20261104/lifecycle-launcher-diagnostic-envelope-20261106/binding.json",
+        "bytes": 17387,
+        "sha256": "56e973e1da96b36b8a8d9cf8e193282ea8c859f90890206b4a62e1932c4df0e3",
+        "role": "Exact diagnostic DATA binding/reservation"
+      },
+      {
+        "path": "F:/src/libqalculate/cleanup-audit/coordinator-20261104/lifecycle-diagnostic-owner-reservation-20261107.json",
+        "bytes": 2799,
+        "sha256": "1121e64ab29e86533c3856dbe20754a5a98f7a43404db1927a7de16a0b8e6303",
+        "role": "Exact diagnostic DATA binding/reservation"
+      }
+    ]
+  }
 }
