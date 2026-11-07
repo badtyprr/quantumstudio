@@ -161,6 +161,66 @@ class FileImportTests(unittest.TestCase):
                                     self.assertEqual(self.run_import(command, mode, source=stdin,
                                                                     success=False).strip(), expected)
 
+
+    def test_residual_branch_depth_location_and_boundaries(self):
+        error = "Classical circuits support at most 32 nested branches."
+        for width in (31, 32, 33):
+            source = f"OPENQASM 3.0;\ndef probe() {{\n  bit[{width}] c;\n  if (c == 0) {{}}\n}}\nprobe();\n"
+            main = self.put("residual-control.qasm", source)
+            for command in COMMANDS:
+                with self.subTest(width=width, command=command):
+                    if width == 33:
+                        # Keep the exact independently observed 69-byte RED input.
+                        self.assertEqual(len(source.encode("utf-8")), 69)
+                        self.assertEqual(hashlib.sha256(source.encode("utf-8")).hexdigest(),
+                                         "fbdf45ed974804112acbe56c6a9c959032909b81fe77bc4b138d839aa028784e")
+                        message = self.run_import(command, ["--classical", "--source-file", str(main)], success=False)
+                        self.assertEqual(message.strip(), "residual-control.qasm:4:3: " + error)
+                        self.assertEqual(self.run_import(command, ["--classical"], source, success=False).strip(), error)
+                    else:
+                        circuit = self.run_import(command, ["--classical", "--source-file", str(main)])["Circuit"]
+                        self.assertEqual(circuit, self.run_import(command, ["--classical"], source))
+                        # Equality with zero expands to one zero-valued bit test
+                        # per wire. Both arms are empty after the last test.
+                        steps = circuit["Steps"]
+                        for bit in range(width):
+                            self.assertEqual(len(steps), 1)
+                            branch = steps[0]
+                            self.assertEqual(branch["Kind"], "ExpressionBranch")
+                            self.assertEqual(branch["ClassicalValue"], {
+                                "Kind": "Binary", "Operator": "Equal",
+                                "Left": {"Kind": "Read", "Bits": [bit]},
+                                "Right": {"Kind": "Constant", "Width": 1, "Value": "0"},
+                            })
+                            self.assertEqual(branch["WhenFalse"], [])
+                            steps = branch["WhenTrue"]
+                        self.assertEqual(steps, [])
+
+    def test_residual_branch_dependency_and_child_origins(self):
+        error = "Classical circuits support at most 32 nested branches."
+        for module in (False, True):
+            prologue = 'OPENQASM 3.0;\ninclude "stdgates.inc";\n' if module else '// original\n// dependency\n'
+            main = self.put("main.qasm", 'OPENQASM 3.0; include "stdgates.inc"; include "sub dir/wrapper.inc";')
+            self.put("sub dir/wrapper.inc", '// nested\ninclude "branch κ.inc";')
+            cases = [
+                ("def probe() {\n  bit[33] c;\n  if (c == 0) {}\n}\nprobe();\n", 5, 3),
+                # A static outer predicate is removed; it must not claim the
+                # child comparison's generated branches.
+                ("def probe() {\n  bit[33] c;\n  if (true) {\n    if (c == 0) {}\n  }\n}\nprobe();\n", 6, 5),
+                # The outer bit contributes depth one; the 32-bit child's last
+                # generated test reaches the guard and belongs to the child.
+                ("def probe() {\n  bit b;\n  bit[32] c;\n  if (b == 0) {\n    if (c == 0) {}\n  }\n}\nprobe();\n", 7, 5),
+            ]
+            for body, line, column in cases:
+                self.put("sub dir/branch κ.inc", prologue + body)
+                for command in COMMANDS:
+                    with self.subTest(module=module, line=line, command=command):
+                        args = ["--classical", "--source-file", str(main)] + (["--module-headers"] if module else [])
+                        message = self.run_import(command, args, success=False)
+                        self.assertEqual(message.strip(), f"sub dir/branch κ.inc:{line}:{column}: {error}")
+                        self.assertEqual(self.run_import(command, ["--classical"], "OPENQASM 3.0;\n" + body,
+                                                        success=False).strip(), error)
+
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:
             module = (HERE / "fixtures/qb004" / (name + ".qasm")).read_text(encoding="utf-8")
@@ -273,6 +333,77 @@ class FileImportTests(unittest.TestCase):
         self.put("main.qasm", 'OPENQASM 3; include "module.inc"; include "module.inc"; qubit q; g q;')
         for command in COMMANDS:
             self.run_import(command, ["--source-file", str(main), "--module-headers"], success=False)
+
+
+class ResidualBranchOriginTests(unittest.TestCase):
+    """Exercise provenance policy without importing the compiler or its SDK."""
+    @classmethod
+    def setUpClass(cls):
+        import ast as python_ast
+        from dataclasses import fields, is_dataclass, make_dataclass, field
+        from types import SimpleNamespace
+
+        cls.Branch = make_dataclass("Branch", [
+            ("span", object, None),
+            ("if_block", list, field(default_factory=list)),
+            ("else_block", list, field(default_factory=list)),
+        ])
+        parsed = python_ast.parse((HERE / "qasm-import.py").read_text(encoding="utf-8"))
+        selected = [node for node in parsed.body if isinstance(node, python_ast.FunctionDef)
+                    and node.name in ("nodes", "preserve_residual_branch_origins")]
+        if len(selected) != 2:
+            raise AssertionError("Expected the traversal and residual provenance functions")
+        def copy_span(node, original):
+            node.span = original.span
+            return node
+        namespace = {"ast": SimpleNamespace(BranchingStatement=cls.Branch),
+                     "fields": fields, "is_dataclass": is_dataclass, "copy_span": copy_span}
+        exec(compile(python_ast.Module(body=selected, type_ignores=[]), "residual-origin-functions", "exec"), namespace)
+        cls.preserve = staticmethod(namespace["preserve_residual_branch_origins"])
+
+    def original(self, span):
+        result = self.Branch(span=span)
+        result._quantum_original_branch = True
+        return result
+
+    def test_generated_chain_uses_its_original_comparison(self):
+        original = self.original((4, 2))
+        leaf = self.Branch()
+        outer = self.Branch(if_block=[leaf])
+        result = [outer]
+        self.assertIs(self.preserve(result, original), result)
+        self.assertEqual((outer.span, leaf.span), ((4, 2), (4, 2)))
+
+    def test_copied_unknown_child_does_not_borrow_parent_location(self):
+        import copy
+        for copier in (copy.copy, copy.deepcopy):
+            with self.subTest(copier=copier.__name__):
+                child = copier(self.original(None))
+                emitted_child = self.Branch()
+                self.preserve([emitted_child], child)
+                outer = self.Branch(if_block=[emitted_child])
+                self.preserve([outer], self.original((4, 2)))
+                self.assertEqual(outer.span, (4, 2))
+                self.assertIsNone(emitted_child.span)
+                self.assertTrue(emitted_child._quantum_original_branch)
+
+    def test_nested_and_flattened_children_keep_distinct_origins(self):
+        child = self.Branch()
+        self.preserve([child], self.original((7, 4)))
+        outer = self.Branch(if_block=[child])
+        self.preserve([outer], self.original((5, 2)))
+        self.assertEqual((outer.span, child.span), ((5, 2), (7, 4)))
+        self.preserve([child], self.original((3, 0)))
+        self.assertEqual(child.span, (7, 4))
+
+    def test_unattributed_generator_and_existing_span_remain_honest(self):
+        child = self.Branch()
+        self.preserve([child], self.Branch(span=(3, 0)))
+        self.assertIsNone(child.span)
+        self.assertFalse(hasattr(child, "_quantum_original_branch"))
+        located = self.Branch(span=(8, 6))
+        self.preserve([located], self.original((3, 0)))
+        self.assertEqual(located.span, (8, 6))
 
 
 if __name__ == "__main__":

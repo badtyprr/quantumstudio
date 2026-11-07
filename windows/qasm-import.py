@@ -29,6 +29,20 @@ from qasm_runtime_numeric import NUMERIC_TYPES, FUNCTIONS as NUMERIC_FUNCTIONS, 
 RUNTIME_SCALAR_TYPES=(ast.IntType,ast.UintType,ast.BoolType)+NUMERIC_TYPES
 
 
+def preserve_residual_branch_origins(statements, original):
+    """Attribute PyQASM replacements without overwriting original child origins."""
+    if not getattr(original, '_quantum_original_branch', False):
+        return statements
+    for statement in nodes(statements):
+        if isinstance(statement, ast.BranchingStatement) and not getattr(statement, '_quantum_original_branch', False):
+            if getattr(statement, 'span', None) is None:
+                copy_span(statement, original)
+            # None is an explicit unknown origin, not permission to borrow a
+            # surrounding branch's span when its result is visited later.
+            statement._quantum_original_branch = True
+    return statements
+
+
 def unroll_preserving_phase(module, primitives, preserve_branches=False):
     """Adapt the pinned compiler's controlled-gphase lowering.
 
@@ -434,7 +448,8 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         initial = copy_span(ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression), statement)
         return result+assignment(visitor,initial)
     def branch(visitor, statement, force=False):
-        if in_function(visitor):return original_branch(visitor,statement)
+        if in_function(visitor):
+            return preserve_residual_branch_origins(original_branch(visitor, statement), statement)
         force=force or any(isinstance(item,(WireReferenceCheck,QuantumSelectorTypeCheck)) for item in nodes(statement))
         if not force and not runtime(visitor,statement.condition) and not bit_function(statement.condition) and not bitstring_boolean(statement.condition):
             return original_branch(visitor, statement)
@@ -596,6 +611,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     QasmVisitor._visit_reset = with_source_origin(indexed_reset if preserve_branches else original_reset)
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
+        # PyQASM copies source branches but constructs fresh, spanless branches
+        # for register comparisons. Mark originals, including unknown spans,
+        # so residual replacements cannot borrow a child or parent's location.
+        for statement in nodes(module.original_program):
+            if isinstance(statement, ast.BranchingStatement):
+                statement._quantum_original_branch = True
         QasmVisitor._visit_function_call = function_call
         QasmVisitor._construct_visit_map = visit_map
         QasmVisitor._visit_switch_statement = switch
@@ -1572,7 +1593,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement, ast.BranchingStatement):
                 if depth >= 32:
-                    raise ValueError('Classical circuits support at most 32 nested branches.')
+                    raise error_at(statement, 'Classical circuits support at most 32 nested branches.')
                 condition = statement.condition
                 simple = (isinstance(condition,(ast.Identifier,ast.IndexExpression)) or
                           isinstance(condition,ast.UnaryExpression) and condition.op.name=='!' or
