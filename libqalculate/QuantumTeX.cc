@@ -11,6 +11,52 @@ std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
 }
+// A shared Hadamard acting on each indexed bit is a tensor power acting on
+// the whole register. Recognize the complete contextual pattern before an
+// isolated indexed ket becomes a named state. General tensor ellipses remain
+// unsupported; the existing register owns bit, width and substitution checks.
+std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t &end) {
+ size_t at=start;
+ auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto token=[&](const std::string &text) {
+  space();if(input.compare(at,text.size(),text)!=0)return false;
+  const size_t next=at+text.size();
+  if(text[0]=='\\' && next<input.size() && asciiLetter((unsigned char)input[next]))return false;
+  at=next;return true;
+ };
+ auto factor=[&](std::string &family,std::string &index) {
+  const bool sized=token("\\bigl");
+  if(!token("(") || !token("H") || !token("\\vert"))return false;
+  space();size_t begin=at;while(at<input.size() && asciiLetter((unsigned char)input[at]))++at;
+  if(at==begin || at-begin>127)return false;
+  family=input.substr(begin,at-begin);if(!token("_"))return false;
+  space();if(at==input.size())return false;
+  if(input[at]=='{') {
+   ++at;while(at<input.size() && input[at]!='}') {
+    if(!std::isspace((unsigned char)input[at]))index+=input[at];
+    if(index.size()>32)return false;++at;
+   }
+   if(at==input.size())return false;++at;
+  } else if(input[at]>='0' && input[at]<='9')index+=input[at++];
+  else return false;
+  if(!token("\\rangle"))return false;
+  if(sized && !token("\\bigr"))return false;
+  return token(")");
+ };
+ std::string first,last,upper,lower;
+ if(!factor(first,upper) || !token("\\otimes") || !token("\\cdots") || !token("\\otimes") || !factor(last,lower))return "";
+ if(first!=last || lower!="0")return "";
+ space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
+ std::string width;
+ if(upper.size()==3 && asciiLetter((unsigned char)upper[0]) && upper.substr(1)=="-1")width=upper.substr(0,1);
+ else {
+  // Concrete upper endpoints 0..9 denote one through ten indexed qubits.
+  if(upper.size()!=1 || upper[0]<'0' || upper[0]>'9')return "";
+  width=std::to_string(upper[0]-'0'+1);
+ }
+ end=at;
+ return "(tensorpow(H,"+width+")*|"+first+"_("+upper+") ... "+first+"_0>)";
+}
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
 std::string scalarProductSum(const std::string &input,size_t start,size_t &end) {
@@ -569,7 +615,8 @@ class TeXReader {
    if(!matrixDepth && !stateLabel && !setExpressions && !setBound) {
     const std::string preceding=trim(result);
     if(preceding.empty() || preceding.back()==',') {
-     size_t end=pos;std::string product=scalarProductSum(input,pos,end);
+     size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end);
+     if(product.empty())product=scalarProductSum(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
    }

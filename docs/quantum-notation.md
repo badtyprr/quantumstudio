@@ -270,6 +270,22 @@ register length of one through ten qubits. Every bit must resolve to zero or
 one. This implements descending indexed qubit families, not arbitrary
 ellipsis patterns or symbolic equations between different register widths.
 
+The repeated Hadamard pattern
+`\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_0 \rangle \bigr)`
+uses the same indexed-qubit constraints. It is translated to a Hadamard tensor
+power acting on the descending register, preserving the order from `x_(n-1)`
+through `x_0`. Unlike a register explicitly containing `x_1`, this pattern
+permits width one and contributes just one factor.
+
+Both endpoint factors must use `H` and the same ASCII-letter bit-family name;
+the lower endpoint must be zero. The grouped upper endpoint may be one letter
+minus one or a concrete index from zero through nine. Parentheses are required
+around both factors; the `\bigl`/`\bigr` sizing pair is optional. The pattern
+must occupy a complete expression, group or function argument. Widths and bit
+values can be supplied later through nested single-variable `replace` calls.
+Copy retains the existing tensor-power and register-family operations. This
+does not infer arbitrary tensor ellipses or varying operators from endpoints.
+
 Cardinality bars around an explicit finite set, such as `|\{0,1,1\}|` or `\lvert\{0,1,1\}\rvert`, give `2`. Empty sets count as zero. Ranges and filtering comprehensions also work: `|\{k\in\{0,\ldots,7\}:k>3\}|` gives `4`. Use `cardinality(S)` for a named finite flat scalar collection.
 
 An unspecified domain in `\sum_{a\in\Sigma}{|a>}` remains symbolic as `qsumset`. Bars around a bare unknown remain `qbars`, so substitution can select scalar magnitude or distinct-member cardinality. For example, `replace(|S|,S,-3)` gives `3`, while `replace(|S|,S,vector(2,3,3))` gives `2`. IBM's uniform-state expression `1/sqrt(|\Sigma|)\sum_{a\in\Sigma}{|a>}` stays symbolic; substituting `bitstrings(1)` for `\Sigma` gives `|+>`. Concrete domains still require at most 1024 scalar or typed binary-string entries. This does not infer dimensions for arbitrary scalar basis labels or implement arbitrary symbolic set operations.

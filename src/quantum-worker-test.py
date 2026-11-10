@@ -219,6 +219,44 @@ for flags in ((), ("--approx",)):
         cells = [[Decimal(cell.replace("−", "-")) for cell in row] for row in actual["cells"]]
         assert (actual["rows"], actual["columns"], cells) == (4, 1, expected), (expression, actual, expected)
 
+# Original M11-T2, actual ordinary Copy, both binding orders and every signed
+# Walsh column for widths one through three. The source does not write x_1,
+# so width one must collapse to one factor rather than duplicating x_0.
+hadamard_family = r"\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_{0} \rangle \bigr)"
+
+
+def hadamard_data(expression):
+    result = run(expression, "--json")
+    assert not result.stderr, (expression, result.stderr)
+    value = json.loads(result.stdout.decode("utf-8"))
+    assert value["approximate"] is False
+    return value
+
+
+hadamard_symbolic = hadamard_data("quantum:" + hadamard_family)
+hadamard_copy = hadamard_data(hadamard_symbolic["copy_text"])
+assert hadamard_data(hadamard_copy["copy_text"])["copy_text"] == hadamard_copy["copy_text"]
+for width in range(1, 4):
+    for x in range(1 << width):
+        signs = [str(-1 if (x & y).bit_count() % 2 else 1) for y in range(1 << width)]
+        size = str(1 << width)
+        reference = hadamard_data("matrix(" + size + ",1,[" + ",".join(signs) + "])/sqrt(" + size + ")")
+        for source, width_first in ((hadamard_family, True), (hadamard_copy["copy_text"], False)):
+            bindings = [("x_" + str(bit), (x >> bit) & 1) for bit in range(width)]
+            bindings.insert(0 if width_first else len(bindings), ("n", width))
+            expression = source
+            for name, value in bindings:
+                expression = "replace(" + expression + "," + name + "," + str(value) + ")"
+            actual = hadamard_data("quantum:" + expression)
+            copied = hadamard_data(actual["copy_text"])
+            for value in (actual, copied):
+                assert (value["rows"], value["columns"], value["cells"]) == (
+                    1 << width, 1, reference["cells"]
+                ), (width, x, width_first, value, reference)
+for name, value in (("n", "0"), ("n", "11"), ("n", "3/2"), ("x_0", "2"), ("x_0", "-1"), ("x_0", "1/2")):
+    rejected = run("quantum:replace(" + hadamard_copy["copy_text"] + "," + name + "," + value + ")", "--json", success=False)
+    assert rejected.returncode == 2 and not rejected.stdout and rejected.stderr
+
 # Tensor powers retain their matrix and count constraints until substitution.
 for flags in ((), ("--approx",)):
     for expression, resolved, expected in (

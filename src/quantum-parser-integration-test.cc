@@ -21,6 +21,20 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ // IBM-020 M11-T2: every signed coefficient, including the one-bit case.
+ // The reference is the independent Walsh sign formula, not a tensor rewrite.
+ const std::string hadamardFamily=R"(\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_{0} \rangle \bigr))";
+ for(unsigned n=1;n<=3;++n)for(unsigned x=0;x<(1u<<n);++x) {
+  std::string expression="replace("+hadamardFamily+",n,"+std::to_string(n)+")";
+  for(unsigned bit=0;bit<n;++bit)expression="replace("+expression+",x_"+std::to_string(bit)+","+std::to_string((x>>bit)&1)+")";
+  std::string entries;
+  for(unsigned y=0;y<(1u<<n);++y) {
+   unsigned parity=0;for(unsigned bits=x&y;bits;bits>>=1)parity^=bits&1;
+   if(y)entries+=",";entries+=parity ? "-1" : "1";
+  }
+  const std::string size=std::to_string(1u<<n);
+  equal("quantum:"+expression,"matrix("+size+",1,["+entries+"])/sqrt("+size+")");
+ }
  equal(R"(quantum: \sum_{x=0}^{2}\sum_{y=0}^{3} xy)","18");
  equal(R"(quantum: \sum_{x=0}^{2}{\sum_{y=0}^{3}{xy}})","18");
  equal("quantum: ∑_{x=0}^{2}{∑_{y=0}^{3}{xy}}","18");
