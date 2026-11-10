@@ -103,11 +103,66 @@ this is not scalar-gradient support. No missing general optimizer or matrix
 derivative implementation is inferred from the finite scalar audit.
 
 The first regression attempt encountered `Division by zero` while formatting
-an approximately zero cancellation of a normalized-vector norm. The test now
-compares the returned scalar against the independent reference in Python,
+an approximately zero cancellation of a normalized-vector norm. At that point,
+the test compared the returned scalar against the independent reference in Python,
 without asking the product to format that cancellation. The original input
 and response remain in `baseline-regression-attempt-1.json`; that numerical
-cancellation diagnostic is unresolved and is not counted as newly supported.
+cancellation diagnostic remained unresolved in that release.
+
+A fresh two-request replay on 2026-11-09 reproduced this failure on the verified
+non-Candidate `f9f43bf9` package (worker SHA-256
+`8da52b1a0a54c3c7b2ba3841f600f38b2fd1d411c6415fd700a6e93f3eea800a`).
+The unchanged authored cancellation expression returned exit 0 but emitted
+`Division by zero.` on stderr, `0±(0 ∕ 0)` for display and an undefined
+`uncertainty(...,... ∕ 0,0)` copy expression. The paired direct-norm control
+returned finite 1 with empty stderr. Thus normal process exit does not establish
+numerical acceptance. The two requests completed without retry, within the
+reviewed 30-second/64-KiB per-request bounds; the outer job ended with zero
+active processes and no cleanup errors. All 2,348 pinned input files remained
+unchanged. Raw requests and responses are retained at
+`F:/src/libqalculate/cleanup-audit/coordinator-20261104/dev12-cancellation-results-20261109/`;
+the sibling `dev12-cancellation-envelope-20261109-revision02/` binds the runtime,
+package and reviews. This confirms the finite diagnostic failure on those package
+bytes; it neither identifies the cause nor establishes the newer rehearsal's
+behavior. Minimization and a source-backed fix were still open at that checkpoint. This authored
+diagnostic is not an original notebook cell or whole-source acceptance.
+
+### Finite absolute-value interval correction (2026-11-10)
+
+Subsequent minimization reproduced the same undefined uncertainty with
+`abs(interval(-1e-20,1e-20))`, independently of quantum operations. The
+uncertainty path differentiated `abs` at a zero midpoint, introducing
+`x/abs(x)`. The correction applies the existing numeric interval absolute-value
+operation directly to finite real intervals containing zero, preserving their
+enclosure. Symbolic differentiation and nonfinite/complex arguments retain
+their existing paths.
+
+A fresh build from `63ed9a49f` plus this correction passed nine native endpoint
+checks and 79 variational worker requests. The original authored cancellation
+expression is now a permanent regression; its text, display and copy fields
+all return finite zero with empty stderr. Endpoint tests independently verify
+the interval bounds, so rounded display output alone is not the acceptance
+criterion.
+
+The broader registered suite ran all 83 tests: 81 passed, the existing Windows
+`threadtest` skipped, and `unittest` failed before starting `qalc`. The isolated
+runner omitted `ComSpec` while its shell PATH excluded Windows System32.
+Supplying explicit `COMSPEC` in a targeted run of the unchanged binaries let
+all 17 batch files complete with 676 assertions. All 1,678 build files stayed
+unchanged. This supplies the missing unit coverage alongside the original 81
+passes; the original full-suite invocation remains recorded as failed, not
+retroactively green.
+
+Raw minimization, interval, build, focused-test, full-suite and targeted-unit
+evidence is retained outside disposable build directories under
+`F:/src/libqalculate/cleanup-audit/coordinator-20261104/`, in the
+`dev12-minimization-*`, `dev12-interval-probe-*`, `dev12-candidate-compile-*`,
+`dev12-candidate-test-*`, `dev12-candidate-suite-*` and `dev12-candidate-unit-*`
+directories dated `20261109`. Failed setup attempts and the original launcher
+failure remain preserved. This is local finite regression evidence, not a
+published release, GUI verification or certification of an original notebook
+row. DEV-12 remains **Partial**.
+
 Attempt 2 exposed a test-parser assumption that tiny complex residuals would
 print as real; accepting complex numerical output corrected the harness.
 

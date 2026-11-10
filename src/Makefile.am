@@ -318,3 +318,8 @@ quantum_named_subsystem_test_SOURCES = quantum-named-subsystem-test.cc
 quantum_named_subsystem_test_LDADD = $(test_LDADD)
 TESTS += quantum-named-subsystem-worker-test.py
 EXTRA_DIST += quantum-named-subsystem-worker-test.py
+
+check_PROGRAMS += absolute-interval-test
+TESTS += absolute-interval-test
+absolute_interval_test_SOURCES = absolute-interval-test.cc
+absolute_interval_test_LDADD = $(test_LDADD)
