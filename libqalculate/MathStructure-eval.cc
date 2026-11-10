@@ -627,6 +627,16 @@ bool calculate_dataset_functions(MathStructure &m, MathStructure *mtop, const Ev
 	}
 	return b;
 }
+static bool calculate_absolute_interval(MathStructure &m, const MathStructure &argument) {
+	if(!argument.isNumber() || !argument.number().isReal() || !argument.number().isInterval() || argument.number().isNonZero() || argument.number().includesInfinity()) return false;
+	// abs is not differentiable at zero. Preserve the interval enclosure instead
+	// of propagating uncertainty through x/abs(x) at its zero midpoint.
+	Number value(argument.number());
+	if(!value.abs()) return false;
+	m.set(value);
+	return true;
+}
+
 bool calculate_nondifferentiable_functions(MathStructure &m, const EvaluationOptions &eo, bool recursive, bool do_unformat, int i_type, size_t depth) {
 	if(recursive && !check_recursive_function_depth(depth)) return false;
 	if(depth == 0 && recursive && i_type <= 0 && i_type > -10 && eo.interval_calculation != INTERVAL_CALCULATION_NONE) {
@@ -654,6 +664,7 @@ bool calculate_nondifferentiable_functions(MathStructure &m, const EvaluationOpt
 			else eo3.approximation = APPROXIMATION_EXACT;
 			m[0].calculatesub(eo3, eo);
 			m.childUpdated(1);
+			if(calculate_absolute_interval(m, m[0])) return true;
 			if(m[0].representsNegative(true)) {
 				m.setToChild(1);
 				m.negate();
@@ -678,6 +689,7 @@ bool calculate_nondifferentiable_functions(MathStructure &m, const EvaluationOpt
 				eo3.approximation = APPROXIMATION_APPROXIMATE;
 				MathStructure mtest(m[0]);
 				mtest.calculatesub(eo3, eo);
+				if(calculate_absolute_interval(m, mtest)) return true;
 				if(mtest.representsNegative(true)) {
 					m.setToChild(1);
 					m.negate();

@@ -128,6 +128,9 @@ def sample(gates, expected_zero):
 
 
 def run():
+    # Keep the original worker-side cancellation regression: comparing a norm
+    # to one only in Python cannot catch undefined uncertainty produced by abs.
+    close('abs((norm(vec(apply(X,apply(CX,apply(Rx(1.0471975511965976),|000>,[2]),[2,1]),[0]))))-((1+(0)*i)))', 0)
     # IBM-102 cells 3,5; IBM-103 cells 2,3. Relative phases are compared directly.
     exact('norm(vec(apply(X,|000>,[2])-|001>))')
     exact('norm(vec(apply(X,apply(CX,apply(H,|000>,[2]),[2,1]),[0])-(|100>+|111>)/sqrt(2)))')
