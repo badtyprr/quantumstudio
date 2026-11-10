@@ -15,6 +15,7 @@ args = parser.parse_args()
 tracked = subprocess.run(['git', 'ls-files', '-z'], cwd=root, check=True,
                          capture_output=True).stdout.decode('utf-8').split('\0')
 expected = [name for name in tracked if name.startswith('windows/')
+            or name.startswith('diagnostics/scalar-product/')
             or name.startswith('libqalculate/Quantum')
             or name.startswith('src/quantum')
             or name in ('src/quantum-worker.cc', 'tests/quantum.batch',

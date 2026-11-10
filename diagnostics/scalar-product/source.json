@@ -1,0 +1,15 @@
+{
+  "source": "IBM quantum query algorithms / Deutsch-Jozsa notebook snapshot",
+  "notebook_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+  "notebook_bytes": 33974,
+  "cell_index": 0,
+  "cell_id": "17463a96",
+  "unicode_range": [
+    4750,
+    4783
+  ],
+  "fragment_sha256": "f0bda37dd3f8102ac6a33962a090e081e2115557bf06d00fcdbfa2f094b69827",
+  "scope": "Isolated scalar-product component, not whole notebook acceptance. Hosted job verifies this fragment, not the full notebook snapshot.",
+  "adaptation": "Separate numerical check substitutes n=2 and x_0=x_1=y_0=y_1=1; ordinary sum 2 versus separate bitdot parity 0.",
+  "session_route": "Production Save/Open methods invoked directly; native file dialogs are not exercised."
+}

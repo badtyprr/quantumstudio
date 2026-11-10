@@ -1278,3 +1278,52 @@ Compact output uses normal vector serialization and can be copied/re-entered.
 Dense `pauli`, `qpauliword` and existing dense stabilizer APIs keep their
 original nine-qubit limits and matrix contracts. Compact values are accepted
 only by the separate compact operations above.
+
+## Indexed scalar-product sums
+
+The bounded TeX pattern `x_{n-1}y_{n-1} + \cdots + x_0 y_0` denotes
+ordinary scalar multiplication and addition over indices zero through `n-1`.
+For example, in quantum notation:
+
+```text
+replace(x_{n-1}y_{n-1} + \cdots + x_0 y_0,
+        vector(n,x_0,x_1,y_0,y_1),vector(2,1,1,1,1))
+```
+
+returns `2`. This is distinct from the binary parity operation `bitdot`, which
+returns `0` for those two all-one bit strings. The scalar notation does not
+declare its coefficients to be binary.
+
+The two family names may differ or be identical. Names contain ASCII letters;
+the symbolic width is one ASCII letter in the grouped upper endpoint `{n-1}`.
+A concrete upper endpoint is also accepted. The final endpoint must be zero,
+and the two products must use the same corresponding names and upper indices.
+The pattern must occupy a complete scalar expression, group or function
+argument. Other ellipsis spellings and arbitrary ellipsis patterns are not
+part of this syntax.
+
+Width must resolve to an integer from 1 through 1024. Width one contributes
+one product. Coefficients may be finite, dimensionless real or complex numbers,
+or unresolved scalar expressions; intervals, units, matrices and operators
+are rejected. Missing coefficients are retained, never assumed to be zero.
+The result remains compact until the width and all required coefficients are
+numeric. An assignment made before the width is known is retained; if the
+eventual width excludes that index, its value does not contribute.
+
+Copy preserves the width and supplied values, including partially assigned
+states, and can reenter through ordinary calculator syntax. Use quantum
+`replace` or the canonical `qreplace` function to supply further coefficients;
+ordinary generic `replace` does not bind the implicit coefficient names.
+Assignments in one vector call are applied left to right, as with existing
+replacement, rather than as simultaneous mathematical substitution. A width
+whose name collides with a constant must be targeted explicitly as a quoted
+symbol, for example `"i"`.
+
+Canonical copies use `qscalarproductsum(prefixA,prefixB,width,bindings)`.
+The prefixes are literal names ending in `_`; bindings are flat triples of
+numeric family slot, numeric index and value. Equal family names share slot
+zero. Duplicate supplied keys are invalid. These keys and prefixes are
+metadata, not free expressions for quantum substitution.
+
+See the [finite source-component evidence](learning-evidence/dev05-scalar-product/README.md)
+for the development and integration checkpoints and their explicit limits.
