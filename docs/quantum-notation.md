@@ -1324,3 +1324,6 @@ The prefixes are literal names ending in `_`; bindings are flat triples of
 numeric family slot, numeric index and value. Equal family names share slot
 zero. Duplicate supplied keys are invalid. These keys and prefixes are
 metadata, not free expressions for quantum substitution.
+
+See the [finite source-component evidence](learning-evidence/dev05-scalar-product/README.md)
+for the development and integration checkpoints and their explicit limits.

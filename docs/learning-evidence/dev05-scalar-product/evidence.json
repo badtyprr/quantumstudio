@@ -1,0 +1,406 @@
+{
+  "schema": 1,
+  "checkpoint_date": "2026-11-10",
+  "scope": "Finite original scalar-product component only. No whole M11/IBM020, GUI/session or release acceptance.",
+  "source": {
+    "bytes": 33974,
+    "sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+    "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm",
+    "cell_index": 0,
+    "cell_id": "17463a96",
+    "cell_source_join": "Concatenate original source array without separators.",
+    "offset_unit": "Unicode code points; zero-based half-open intervals; hashes SHA256 over exact UTF8 substring."
+  },
+  "component": {
+    "id": "M11-T4-phase-indexed-scalar-ellipsis",
+    "cell_offset": 4750,
+    "end_cell_offset": 4783,
+    "text": "x_{n-1}y_{n-1} + \\cdots + x_0 y_0",
+    "sha256": "f0bda37dd3f8102ac6a33962a090e081e2115557bf06d00fcdbfa2f094b69827",
+    "parent": "M11-T4 phase exponent",
+    "transformation": "None: exact original contiguous substring; no authored sum, replacements or routeprefix included.",
+    "mathematical_role": "Ordinary integer sum of pairwise products x_j*y_j over the same n descendingindexed binarydigits. It lies between0 andn; only its parity controls(-1) phase. Existing bitdot yields parity, so it is not by itself an exact scalar-value oracle for this component."
+  },
+  "development": {
+    "product_commit": "1fc304f1aeb29a417c9593b577f116ec262383c2",
+    "test_commit": "028a6d954af704e2b4621fe398a9df5afa1d2a3f",
+    "products": {
+      "quantum-worker.exe": {
+        "bytes": 87072223,
+        "sha256": "3321b19108e860a001d3eb5db3ce629aeb2ec77caf3fd556269d0722a91c1921"
+      },
+      "libqalculate.a": {
+        "bytes": 113302370,
+        "sha256": "95daf96dfa0415b359c93c68c0467c5bc560f563a0c23b571e55f39e9863cb92"
+      }
+    },
+    "suite": {
+      "total": 85,
+      "passed": 84,
+      "skipped": 1,
+      "skip": "threadtest: Windows source returns77",
+      "failed": 0,
+      "errors": 0
+    },
+    "unit_batches": 17,
+    "unit_assertions": 676,
+    "focused_native_checks": 381,
+    "worker_calls": 55,
+    "source_probe_calls": [
+      {
+        "id": "original-symbolic",
+        "request": "quantum:x_{n-1}y_{n-1} + \\cdots + x_0 y_0",
+        "response": {
+          "text": "qscalarproductsum(\"x_\", \"y_\", 'n', [])",
+          "display_text": "qscalarproductsum(\"x_\", \"y_\", 'n', [])",
+          "copy_text": "qscalarproductsum(\"x_\",\"y_\",'n',vector())",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        },
+        "returncode": 0,
+        "seconds": 0.4379999999946449,
+        "stdout": {
+          "bytes": 257,
+          "sha256": "4dc2050111555e5617d90b41cbc11de9e979e8db27d06001e2eca8c55bf50895"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "startup_module_count": 29
+      },
+      {
+        "id": "actual-copy-ordinary",
+        "request": "qscalarproductsum(\"x_\",\"y_\",'n',vector())",
+        "response": {
+          "text": "qscalarproductsum(\"x_\", \"y_\", 'n', [])",
+          "display_text": "qscalarproductsum(\"x_\", \"y_\", 'n', [])",
+          "copy_text": "qscalarproductsum(\"x_\",\"y_\",'n',vector())",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        },
+        "returncode": 0,
+        "seconds": 0.375,
+        "stdout": {
+          "bytes": 257,
+          "sha256": "4dc2050111555e5617d90b41cbc11de9e979e8db27d06001e2eca8c55bf50895"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "startup_module_count": 29
+      },
+      {
+        "id": "disclosed-width-two-binding",
+        "request": "quantum:replace(qscalarproductsum(\"x_\",\"y_\",'n',vector()),vector(n,x_0,x_1,y_0,y_1),vector(2,1,1,1,1))",
+        "response": {
+          "text": "2",
+          "display_text": "2",
+          "copy_text": "2",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        },
+        "returncode": 0,
+        "seconds": 0.40599999998812564,
+        "stdout": {
+          "bytes": 131,
+          "sha256": "2c95207584aee2549b3bb6de4087bcadd4bb3fe660b3063bbeb078149f68fe0f"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "startup_module_count": 29
+      },
+      {
+        "id": "binary-parity-control",
+        "request": "quantum:bitdot(bitstring(3,2),bitstring(3,2))",
+        "response": {
+          "text": "0",
+          "display_text": "0",
+          "copy_text": "0",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        },
+        "returncode": 0,
+        "seconds": 0.39100000000325963,
+        "stdout": {
+          "bytes": 131,
+          "sha256": "7dfe3c5bb69ec90caefa5068cf11188dd80d9cfebb0ff34af88532193d528305"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "startup_module_count": 29
+      }
+    ],
+    "source_probe_capture_bytes": 776,
+    "startup_modules": [
+      {
+        "name": "KernelBase.dll",
+        "recorded_path": "C:\\Windows\\System32\\KernelBase.dll",
+        "role": "host-os",
+        "bytes": 4038440,
+        "sha256": "0eabe006872acc19c3938db00faf1754ce1e56b02a87a32a1483001d37064676"
+      },
+      {
+        "name": "WinTypes.dll",
+        "recorded_path": "C:\\Windows\\System32\\WinTypes.dll",
+        "role": "host-os",
+        "bytes": 1323712,
+        "sha256": "6a73118bb48b98ebf55528ed7460e50d8cbca911d0eb6233b20cdadf445159e8"
+      },
+      {
+        "name": "advapi32.dll",
+        "recorded_path": "C:\\Windows\\System32\\advapi32.dll",
+        "role": "host-os",
+        "bytes": 732824,
+        "sha256": "97acb6c630cd23ee4122b75ed0d7309a0ab10943dc7a9f26bdbf631b0b97c688"
+      },
+      {
+        "name": "bcrypt.dll",
+        "recorded_path": "C:\\Windows\\System32\\bcrypt.dll",
+        "role": "host-os",
+        "bytes": 175056,
+        "sha256": "8d2ac5c5884baed588ad581bf79307107ddf9347291ad56829e355999ea6e163"
+      },
+      {
+        "name": "bcryptprimitives.dll",
+        "recorded_path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+        "role": "host-os",
+        "bytes": 518080,
+        "sha256": "e353c108029299a2d8a35ceb9306095580b56ad2e20ca0baf7219b3602fa697a"
+      },
+      {
+        "name": "combase.dll",
+        "recorded_path": "C:\\Windows\\System32\\combase.dll",
+        "role": "host-os",
+        "bytes": 3765688,
+        "sha256": "c87d472baf750a6182a69017aef2ff1f07075f02aa162db4c5dc37bcf4107472"
+      },
+      {
+        "name": "cryptbase.dll",
+        "recorded_path": "C:\\Windows\\System32\\cryptbase.dll",
+        "role": "host-os",
+        "bytes": 59376,
+        "sha256": "4e3f948747b554a01b25260cfbe8c838c52ee92888160eb9681a4d0d208f642d"
+      },
+      {
+        "name": "gdi32.dll",
+        "recorded_path": "C:\\Windows\\System32\\gdi32.dll",
+        "role": "host-os",
+        "bytes": 179112,
+        "sha256": "ea69413ec073b6e9b2749beea2b0eb19fc9de701344c0033051a11f272cfb1d4"
+      },
+      {
+        "name": "gdi32full.dll",
+        "recorded_path": "C:\\Windows\\System32\\gdi32full.dll",
+        "role": "host-os",
+        "bytes": 1162528,
+        "sha256": "cb672742cf306801c01364ddca10107a64221d663b0faeedf628652ec3bee0ab"
+      },
+      {
+        "name": "imm32.dll",
+        "recorded_path": "C:\\Windows\\System32\\imm32.dll",
+        "role": "host-os",
+        "bytes": 212192,
+        "sha256": "f7266fa69b360cf8d7c1bd301f1b98914e49589a3ffe1d24dad76ef4e62de681"
+      },
+      {
+        "name": "kernel32.dll",
+        "recorded_path": "C:\\Windows\\System32\\kernel32.dll",
+        "role": "host-os",
+        "bytes": 815520,
+        "sha256": "70f1e69a1d0602ec9e02c713ff2fc1238ddc7fe02ad28fa344954dda446e5236"
+      },
+      {
+        "name": "msvcp_win.dll",
+        "recorded_path": "C:\\Windows\\System32\\msvcp_win.dll",
+        "role": "host-os",
+        "bytes": 637880,
+        "sha256": "08f2fe38501a88a7d3c13976733c2ca08b5597c3328d51fa1f5f5d8474c33ecf"
+      },
+      {
+        "name": "msvcrt.dll",
+        "recorded_path": "C:\\Windows\\System32\\msvcrt.dll",
+        "role": "host-os",
+        "bytes": 691608,
+        "sha256": "bfc7d55f0756a4f0b4c9288a67e91c6144a980cdef10b3fe3f260c8cb26f5b3f"
+      },
+      {
+        "name": "ntdll.dll",
+        "recorded_path": "C:\\Windows\\System32\\ntdll.dll",
+        "role": "host-os",
+        "bytes": 2191440,
+        "sha256": "6d4730b4553dc7912b5e2988222c6605991b72b4046ff6214355d4386097a488"
+      },
+      {
+        "name": "rpcrt4.dll",
+        "recorded_path": "C:\\Windows\\System32\\rpcrt4.dll",
+        "role": "host-os",
+        "bytes": 1162552,
+        "sha256": "502a3fa64f4c677602a07160488d354609da0b0beb7e154b37fa358cb1f8ef13"
+      },
+      {
+        "name": "sechost.dll",
+        "recorded_path": "C:\\Windows\\System32\\sechost.dll",
+        "role": "host-os",
+        "bytes": 699768,
+        "sha256": "2fd28147875a828680469f354aebc69dfba055fd96ab50e6a7defc2fdd2a6399"
+      },
+      {
+        "name": "shell32.dll",
+        "recorded_path": "C:\\Windows\\System32\\shell32.dll",
+        "role": "host-os",
+        "bytes": 9083632,
+        "sha256": "f23b80b9ec33518643f753db1b5b8dbe8317e398f2b9dd1c055ccdcf1189cae2"
+      },
+      {
+        "name": "ucrtbase.dll",
+        "recorded_path": "C:\\Windows\\System32\\ucrtbase.dll",
+        "role": "host-os",
+        "bytes": 1133624,
+        "sha256": "d93ce42cd625510b2355de086bcd19e2c11307ccade7bad62b09c7f340a866ba"
+      },
+      {
+        "name": "user32.dll",
+        "recorded_path": "C:\\Windows\\System32\\user32.dll",
+        "role": "host-os",
+        "bytes": 1798856,
+        "sha256": "301a1a0b26af813ef40c18626b87babbfe2fe6792471d0f30101f5a8d25fb0ba"
+      },
+      {
+        "name": "win32u.dll",
+        "recorded_path": "C:\\Windows\\System32\\win32u.dll",
+        "role": "host-os",
+        "bytes": 166760,
+        "sha256": "5b6b26efe97f6ac4205d0a34e21e66f28a49f718ffa45b396a2023d14f226195"
+      },
+      {
+        "name": "quantum-worker.exe",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\dev05-m11-candidate-1fc304f1-20261110\\src\\quantum-worker.exe",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 87072223,
+        "sha256": "3321b19108e860a001d3eb5db3ce629aeb2ec77caf3fd556269d0722a91c1921"
+      },
+      {
+        "name": "libgcc_s_seh-1.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libgcc_s_seh-1.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 150537,
+        "sha256": "08ab5e874e7ec066a4cbd0edd09d31779d6ee4d857ed84033d6b93b0334856c4"
+      },
+      {
+        "name": "libgmp-10.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libgmp-10.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 681231,
+        "sha256": "c2567ccf3f410c3411ba7cd4b7ba14f393a0e70a1d0c0593297df6706b5fba96"
+      },
+      {
+        "name": "libiconv-2.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libiconv-2.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 1141951,
+        "sha256": "94ec68fb8d342b6c91b6b48a8d95092819cdcd006a7166e0b68062f946afd08a"
+      },
+      {
+        "name": "libmpfr-6.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libmpfr-6.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 713692,
+        "sha256": "b881beb5ed7e3413283ab94f24ab25cd47ed27127774867ae105642ff2fc2e47"
+      },
+      {
+        "name": "libstdc++-6.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libstdc++-6.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 2659194,
+        "sha256": "b70223508ddf99b98bacfb9d1484e729dcb9922982137f842e601a969da7a17c"
+      },
+      {
+        "name": "libwinpthread-1.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libwinpthread-1.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 64574,
+        "sha256": "76cc52adfcdb8c800813b2ae8da42a908934eb1ee54ce8e9744fc8d703c76ee1"
+      },
+      {
+        "name": "libxml2-16.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\libxml2-16.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 1247552,
+        "sha256": "5cf84e4be1d9da56a6269b1bd18c8ab5fcce11087aa24002dfce57e46238455b"
+      },
+      {
+        "name": "zlib1.dll",
+        "recorded_path": "F:\\src\\libqalculate\\.tools\\msys64\\ucrt64\\bin\\zlib1.dll",
+        "role": "pinned-product-or-toolchain",
+        "bytes": 127291,
+        "sha256": "11cd91171765cd65f1c3362e3df67e5f5a618a6b88c8cdec899b802eaf1c7b0d"
+      }
+    ],
+    "unchanged_build_files": 1686,
+    "suite_acceptance": {
+      "bytes": 274921,
+      "sha256": "1d6d7d031d330634e27239a7e0f45cad2b2fa62c9c8293842b5ae568e991f018"
+    },
+    "module_acceptance": {
+      "bytes": 275259,
+      "sha256": "1b22ec1219fdbdf15b2408efaf980ad69e0a5183bc5ed4dd8c3d7b9fcdd1ef9e"
+    }
+  },
+  "integration": {
+    "pr": 464,
+    "head": "d4f7dba818910eaae9956178c5d350542bd145dd",
+    "base": "f9f43bf9dcfc18a550dae60af98cb167047371a5",
+    "native_ci_run": 42807830906,
+    "tested_merge": "d9454487e7690bf039cc08373824b645cf753e64",
+    "tree": "3b52d42e54c62ac30691f603307a3c8c5e809921",
+    "head_tree_equals_tested_merge_tree": true,
+    "counts": {
+      "TOTAL": 81,
+      "PASS": 81,
+      "SKIP": 0,
+      "XFAIL": 0,
+      "FAIL": 0,
+      "XPASS": 0,
+      "ERROR": 0
+    },
+    "native_log": {
+      "bytes": 224269,
+      "sha256": "1ade7553a662ba0fce455978d011324bb8a214d386e43e13abfedccec1f08dfd"
+    },
+    "windows_build": "Pending separate exact-commit verification",
+    "gui_feature_and_release": "Open"
+  },
+  "retained_failure": {
+    "suite": "First fresh development run:83PASS/1SKIP/1FAIL; unittest command syntax before firstbatch. Forward-slash COMSPEC reproduced CRT error; backslash COMSPEC fixed it. Original run remains failed.",
+    "original_component": {
+      "product_commit": "eebcd8e01135bc92afeaa4ed46f85b0936765b0e",
+      "returncode": 2,
+      "stdout": "",
+      "stderr": "Unsupported TeX command: \\cdots at byte 24\n",
+      "scope": "Historical unchanged original-fragment rejection; source-controlled implementation preceded this feature."
+    }
+  },
+  "external_evidence_root": "F:/src/libqalculate/cleanup-audit/coordinator-20261104"
+}
