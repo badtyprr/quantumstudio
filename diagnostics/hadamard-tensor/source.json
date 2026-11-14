@@ -1,0 +1,27 @@
+{
+  "source": "IBM quantum query algorithms / Deutsch-Jozsa notebook snapshot, M11-T2",
+  "notebook_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+  "notebook_bytes": 33974,
+  "cell_index": 0,
+  "cell_id": "17463a96",
+  "unicode_range": [
+    4329,
+    4423
+  ],
+  "fragment_sha256": "243da002914ee274ddb0305989247fb673610ca4ef419170e84828206ce10d6f",
+  "scope": "Exact isolated T2 expression; hosted GUI finite n1/n2 cases, not whole notebook acceptance.",
+  "adaptation": "Separate nested Quantum replacements: n=2,x0=1,x1=0 and n=1,x0=1. Original symbolic input remains unchanged.",
+  "expected_provenance": {
+    "product_commit": "82c2965d7a667b7bf30bf0ed90d4392d9d34f648",
+    "worker_sha256": "b293aab08d14cbf58d418afd56914e12c099fe2871bcee06d1df97d8f152bcf5",
+    "acceptance_sha256": "9b8f1adff503efd8a9a781c56e39dd2818b5db7e2d38b6617f86280b977069ca",
+    "method": "Expected Copy/display strings captured from independently verified exact worker outputs; numeric vectors checked over Q(sqrt2). Hosted payload is freshly built and must match these semantics.",
+    "raw_response_sha256": {
+      "0": "af8b075a449278c24adb37e8b265c5ad6da199368fc27c056130d6cd43c0d000",
+      "2": "1c969251321d27ed6d20eb7681ea538e8319ccfe39005626aff9a785468a4b1f",
+      "7": "e19558b3d12715d470004581aee96987b1a70c71fa8995c6230045eb7fe9c1b9",
+      "15": "176e1dd94ab388c0414cfbf69c4b65acab03c13dcc1e46224bc909ff2c362037"
+    }
+  },
+  "session_route": "Production Save/Open methods invoked directly; native file dialogs are not exercised."
+}

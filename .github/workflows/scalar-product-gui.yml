@@ -1,12 +1,14 @@
 # Fresh candidate from the exact PR head; no merge or publication.
-name: Scalar product GUI candidate
+name: Indexed expression GUI candidate
 on:
   workflow_dispatch:
   pull_request:
     paths:
       - .github/workflows/scalar-product-gui.yml
       - diagnostics/scalar-product/**
+      - diagnostics/hadamard-tensor/**
       - windows/ScalarProductGuiTests.cs
+      - windows/HadamardTensorGuiTests.cs
       - libqalculate/Quantum*
       - windows/QuantumStudio.cs
 permissions:
@@ -87,6 +89,7 @@ jobs:
           Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/scalar-product-candidate-payload"
           try {
             ./diagnostics/scalar-product/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/scalar-product-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/scalar-product-acceptance" -Revision $revision
+            ./diagnostics/hadamard-tensor/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/scalar-product-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/hadamard-tensor-acceptance" -Revision $revision
           } finally {
             foreach ($entry in $before) {
               if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance' }
@@ -102,11 +105,14 @@ jobs:
           path: |
             ${{ runner.temp }}/scalar-product-preflight/
             ${{ runner.temp }}/scalar-product-acceptance/
+            ${{ runner.temp }}/hadamard-tensor-acceptance/
             src/*.log
             src/*.trs
             config.log
             *.log
             *.trs
             diagnostics/scalar-product/
+            diagnostics/hadamard-tensor/
             windows/ScalarProductGuiTests.cs
+            windows/HadamardTensorGuiTests.cs
             dist/
