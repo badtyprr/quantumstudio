@@ -41,5 +41,34 @@ int main() {
  MathStructure boundPrefix("y_",true);family.set(calculator.getFunction("qregisterfamily"),&boundPrefix,&first,&last,&assignments,NULL);
  unsupported.set(calculator.getFunction("abs"),&family,NULL);
  expect(show(unsupported),"qregistersum", "∑_");
+ // Deferred quantum Copy uses qmatrix and can retain a horzcat argument.
+ // Render entries recursively without evaluating the constructor or its cells.
+ MathStructure two(2),one(1),zero(0),exponent("n",true),power,entries,constructor;
+ power.set(calculator.getFunction("qpower"),&two,&exponent,NULL);
+ for(const char *name:{"matrix","qmatrix"})for(bool concatenated:{false,true}) {
+  entries.clearVector();entries.addChild(power);entries.addChild(one);entries.addChild(zero);entries.addChild(one);
+  if(concatenated) {
+   entries.set(calculator.getFunction("horzcat"),&power,&one,&zero,&one,NULL);
+  }
+  constructor.set(calculator.getFunction(name),&two,&two,&entries,NULL);
+  MathStructure before(constructor);
+  std::string text=QuantumDisplay::print(constructor,options);
+  expect(text,"2^n","qpower");expect(text,"[","matrix");
+  ++checks;if(!constructor.equals(before)) {++failures;std::cerr << "Display changed matrix input\n";}
+ }
+ // Malformed or oversized constructors must retain the original fallback.
+ entries.clearVector();entries.addChild(one);
+ constructor.set(calculator.getFunction("qmatrix"),&two,&two,&entries,NULL);
+ expect(QuantumDisplay::print(constructor,options),"qmatrix","");
+ MathStructure large(2049);
+ constructor.set(calculator.getFunction("qmatrix"),&large,&one,&entries,NULL);
+ expect(QuantumDisplay::print(constructor,options),"qmatrix","");
+ MathStructure nested(entries);entries.addChild(nested);
+ constructor.set(calculator.getFunction("qmatrix"),&one,&two,&entries,NULL);
+ expect(QuantumDisplay::print(constructor,options),"qmatrix","");
+ // Recursive cells must use the surrounding register binder's fresh name.
+ entries.clearVector();entries.addChild(component);
+ constructor.set(calculator.getFunction("qmatrix"),&one,&one,&entries,NULL);
+ expect(show(constructor),"[k_0]","y_0");
  if(failures)return 1;std::cout << "Indexed display binding checks: " << checks << '\n';return 0;
 }

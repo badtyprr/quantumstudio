@@ -150,15 +150,31 @@ class Printer {
   const std::string name=value.function()->referenceName();
   // Ordinary Copy can retain a matrix constructor inside a deferred product.
   // Display the same literal grid without evaluating any of its entries.
-  if(name=="matrix" && value.size()==3 && value[0].isNumber() && value[1].isNumber() &&
+  if((name=="matrix" || name=="qmatrix") && value.size()==3 && value[0].isNumber() && value[1].isNumber() &&
      value[0].number().isInteger() && value[1].number().isInteger() &&
-     value[0].number()>0 && value[0].number()<=2048 && value[1].number()>0 && value[1].number()<=2048 && value[2].isVector()) {
+     value[0].number()>0 && value[0].number()<=2048 && value[1].number()>0 && value[1].number()<=2048 &&
+     (value[2].isVector() || (value[2].isFunction() &&
+      (value[2].function()->referenceName()=="horzcat" || value[2].function()->referenceName()=="vector")))) {
    size_t rows=value[0].number().intValue(),columns=value[1].number().intValue();
-   if(rows<=2048/columns && value[2].size()==rows*columns) {
+   bool flat=true;
+   for(size_t i=0;i<value[2].size();++i) {
+    const MathStructure &entry=value[2][i];
+    if(entry.isVector() || (entry.isFunction() &&
+       (entry.function()->referenceName()=="horzcat" || entry.function()->referenceName()=="vector")))flat=false;
+   }
+   if(flat && rows<=2048/columns && value[2].size()==rows*columns) {
     MathStructure literal;literal.clearMatrix();literal.resizeMatrix(rows,columns,MathStructure(0));
-    for(size_t row=0;row<rows;++row)for(size_t column=0;column<columns;++column)
-     literal.setElement(value[2][row*columns+column],row+1,column+1);
-    return fallback(literal);
+    std::string text="[";bool changed=false;
+    for(size_t row=0;row<rows;++row) {
+     if(row)text+="; ";
+     for(size_t column=0;column<columns;++column) {
+      const MathStructure &entry=value[2][row*columns+column];
+      literal.setElement(entry,row+1,column+1);
+      Fragment rendered=render(entry,depth+1);changed=changed || rendered.text!=entry.print(options);
+      if(column)text+="  ";text+=rendered.text;
+     }
+    }
+    return changed ? Fragment(text+"]") : fallback(literal);
    }
   }
   if(name=="qset" && value.size()==1) {
