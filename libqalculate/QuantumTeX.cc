@@ -11,6 +11,42 @@ std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
 }
+// Recognize a complete scalar argument before ordinary subscript handling
+// flattens its grouped upper endpoint. No general ellipsis token is enabled.
+std::string scalarProductSum(const std::string &input,size_t start,size_t &end) {
+ size_t at=start;
+ auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto token=[&](const std::string &text) {space();if(input.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
+ auto factor=[&](std::string &family,std::string &index) {
+  space();size_t begin=at;while(at<input.size() && asciiLetter((unsigned char)input[at]))++at;
+  if(at==begin || at-begin>127)return false;
+  family=input.substr(begin,at-begin);if(!token("_"))return false;
+  space();if(at==input.size())return false;
+  if(input[at]=='{') {
+   ++at;while(at<input.size() && input[at]!='}') {
+    if(!std::isspace((unsigned char)input[at]))index+=input[at];
+    if(index.size()>32)return false;++at;
+   }
+   if(at==input.size())return false;++at;
+  } else if(input[at]>='0' && input[at]<='9')index+=input[at++];
+  else return false;
+  return !index.empty();
+ };
+ std::string first,second,lastFirst,lastSecond,upperA,upperB,lowerA,lowerB;
+ if(!factor(first,upperA) || !factor(second,upperB) || !token("+") || !token("\\cdots") || !token("+") ||
+    !factor(lastFirst,lowerA) || !factor(lastSecond,lowerB))return "";
+ if(first!=lastFirst || second!=lastSecond || upperA!=upperB || lowerA!="0" || lowerB!="0")return "";
+ space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
+ std::string width;
+ if(upperA.size()==3 && asciiLetter((unsigned char)upperA[0]) && upperA.substr(1)=="-1")width="\""+upperA.substr(0,1)+"\"";
+ else {
+  if(upperA.empty() || upperA.size()>4 || (upperA.size()>1 && upperA[0]=='0'))return "";
+  unsigned upper=0;for(char c:upperA) {if(c<'0' || c>'9')return "";upper=10*upper+c-'0';}
+  if(upper>=1024)throw std::runtime_error("Indexed scalar products support widths 1 to 1024");
+  width=std::to_string(upper+1);
+ }
+ end=at;return "qscalarproductsum(\""+first+"_\",\""+second+"_\","+width+",vector())";
+}
 // Infer only a contiguous, zero-based column family. Keep the raw subscript
 // groups: flattening alpha_{n-1} first would confuse it with alpha_n - 1.
 std::string indexedColumn(const std::string &raw, bool tex) {
@@ -135,6 +171,7 @@ class TeXReader {
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
  unsigned setExpressions=0;
+ unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  std::string group() {
@@ -477,6 +514,11 @@ class TeXReader {
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
  std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="") {
+  struct MatrixScope {
+   unsigned &depth;bool active;
+   MatrixScope(unsigned &depth_,bool active_):depth(depth_),active(active_) {if(active)++depth;}
+   ~MatrixScope() {if(active)--depth;}
+  } matrixScope(matrixDepth,matrix || close==']');
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
   std::string result; int norms=0; bool closed=false;
   const bool alignment=environment=="aligned" || environment=="align" || environment=="align*" || environment=="gathered" || environment=="gather" || environment=="gather*" || environment=="split";
@@ -523,6 +565,13 @@ class TeXReader {
    if(close && input[pos]==close) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
+   }
+   if(!matrixDepth && !stateLabel && !setExpressions && !setBound) {
+    const std::string preceding=trim(result);
+    if(preceding.empty() || preceding.back()==',') {
+     size_t end=pos;std::string product=scalarProductSum(input,pos,end);
+     if(!product.empty()) {result+=product;pos=end;continue;}
+    }
    }
    // Quoted labels are literal data; do not reinterpret operator subscripts.
    if(input[pos]=='"' || input[pos]=='\'') {

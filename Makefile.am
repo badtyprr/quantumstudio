@@ -266,3 +266,6 @@ EXTRA_DIST += docs/learning-evidence/dev16/rel09-composer.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-export.json
 EXTRA_DIST += docs/learning-evidence/dev16/rel09-modules.json
 EXTRA_DIST += docs/learning-evidence/dev16/verification.json
+EXTRA_DIST += docs/learning-evidence/dev05-scalar-product/README.md docs/learning-evidence/dev05-scalar-product/evidence.json
+
+EXTRA_DIST += windows/ScalarProductGuiTests.cs diagnostics/scalar-product/Run-Acceptance.ps1 diagnostics/scalar-product/fragment.txt diagnostics/scalar-product/source.json

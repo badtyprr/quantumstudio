@@ -24,6 +24,74 @@ QuantumBitLabelState validateQuantumBitLabel(MathStructure &index,MathStructure 
 }
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
+// A scalar family keeps assignments even before its width is known. Slots and
+// indices are metadata; only the width and assignment values are expressions.
+const unsigned scalarProductLimit=1024;
+bool scalarProductNode(const MathStructure &value) {
+ return value.isFunction() && value.function()->referenceName()=="qscalarproductsum" && value.size()==4;
+}
+bool scalarProductPrefix(const MathStructure &value) {
+ if(!value.isSymbolic())return false;
+ const std::string &prefix=value.symbol();
+ if(prefix.size()<2 || prefix.size()>128 || prefix.back()!='_')return false;
+ for(size_t k=0;k+1<prefix.size();++k)if(!((prefix[k]>='a' && prefix[k]<='z') || (prefix[k]>='A' && prefix[k]<='Z')))return false;
+ return true;
+}
+bool pendingScalar(const MathStructure &value) {
+ return !value.isNumber() && value.representsScalar() && value.containsUnknowns() &&
+  !value.isUndefined() && !value.containsType(STRUCT_UNIT,false,true,true) &&
+  !value.containsInterval(true,false,false,0,true);
+}
+// Validate the entire representation before evaluating or substituting it.
+// Equal prefixes describe one family, including when supplied via both slots.
+bool scalarProductArguments(MathStructure &arguments,const EvaluationOptions &eo,bool &pendingWidth) {
+ if(arguments.size()!=4 || !scalarProductPrefix(arguments[0]) || !scalarProductPrefix(arguments[1]) ||
+    !arguments[3].isVector() || arguments[3].size()%3 || arguments[3].size()>6*scalarProductLimit)return false;
+ EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+ arguments[2].eval(exact);pendingWidth=pendingScalar(arguments[2]);
+ if(!pendingWidth && (!arguments[2].isNumber() || !arguments[2].number().isInteger() ||
+    arguments[2].number()<1 || arguments[2].number()>Number(scalarProductLimit)))return false;
+ bool seen[2][scalarProductLimit]={};
+ for(size_t k=0;k<arguments[3].size();k+=3) {
+  auto &slot=arguments[3][k];auto &index=arguments[3][k+1];auto &value=arguments[3][k+2];
+  if(!slot.isNumber() || !slot.number().isInteger() || slot.number()<0 || slot.number()>1 ||
+     !index.isNumber() || !index.number().isInteger() || index.number()<0 || index.number()>=Number(scalarProductLimit))return false;
+  if(arguments[0].equals(arguments[1]))slot=MathStructure(0);
+  unsigned family=slot.number().intValue(),offset=index.number().intValue();
+  if(seen[family][offset])return false;
+  seen[family][offset]=true;value.eval(exact);
+  if(value.isNumber()) {
+   if(value.number().isInfinite(false) || value.number().isInterval(false))return false;
+  } else if(!pendingScalar(value))return false;
+ }
+ arguments.childrenUpdated();return true;
+}
+int calculateScalarProduct(MathStructure &out,const MathStructure &raw,MathFunction *function,const EvaluationOptions &eo) {
+ MathStructure arguments=raw;bool pendingWidth=false;
+ if(!scalarProductArguments(arguments,eo,pendingWidth)) {
+  CALCULATOR->error(true,"Indexed scalar products require literal families, width 1 to 1024, and unique finite dimensionless scalar assignments (without intervals).",NULL);return 0;
+ }
+ const MathStructure *values[2][scalarProductLimit]={};
+ for(size_t k=0;k<arguments[3].size();k+=3)
+  values[arguments[3][k].number().intValue()][arguments[3][k+1].number().intValue()]=&arguments[3][k+2];
+ bool pending=pendingWidth;unsigned width=pendingWidth ? 0 : arguments[2].number().intValue();
+ unsigned second=arguments[0].equals(arguments[1]) ? 0 : 1;
+ for(unsigned k=0;k<width;++k)for(unsigned slot:{0u,second})
+  pending=pending || !values[slot][k] || !values[slot][k]->isNumber();
+ if(pending) {
+  if(arguments.equals(raw))return 0;
+  out.set(function,&arguments[0],&arguments[1],&arguments[2],NULL);out.addChild(arguments[3]);return 1;
+ }
+ Number sum(0);
+ for(unsigned k=0;k<width;++k) {
+  if(CALCULATOR->aborted())return 0;
+  Number term=values[0][k]->number();
+  if(!term.multiply(values[second][k]->number()) || !sum.add(term) || sum.isInfinite(false)) {
+   CALCULATOR->error(true,"Indexed scalar product could not produce a finite result.",NULL);return 0;
+  }
+ }
+ out=MathStructure(sum);return 1;
+}
 // Labels passed here have already been validated and canonicalized.
 enum class SetEquality { Equal, Different, Unknown };
 SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
@@ -121,7 +189,8 @@ bool registerBitIndex(const MathStructure &label,const std::string &prefix,long 
  index=0;for(char c:suffix) {if(c<'0' || c>'9')return false;index=index*10+c-'0';}
  return index<=1000000 && suffix==std::to_string(index);
 }
-bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathStructure &bit) {
+int quantumIndexBinder(const MathStructure &value,const MathStructure &index);
+bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathStructure &bit,bool scoped=false) {
  bool changed=false;
  if(value.isFunction() && value.function()->referenceName()=="qregisterfamily" && value.size()==4 && value[0].isSymbolic()) {
   long index;
@@ -138,7 +207,11 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value[3].addChild(MathStructure(Number(index)));value[3].addChild(bit);value.childrenUpdated();return true;
   }
  }
- for(size_t k=0;k<value.size();++k)changed=bindRegisterBit(value[k],label,bit) || changed;
+ int bound=scoped ? quantumIndexBinder(value,label) : -1;
+ for(size_t k=0;k<value.size();++k) {
+  if(bound>=0 && (k==0 || k==size_t(bound)))continue;
+  changed=bindRegisterBit(value[k],label,bit,scoped) || changed;
+ }
  if(changed)value.childrenUpdated();return changed;
 }
 // These operations bind an index in their first argument only.
@@ -155,26 +228,98 @@ int quantumIndexBinder(const MathStructure &value,const MathStructure &index) {
  int bound=quantumBinderPosition(value);
  return bound>=0 && value[bound].equals(index) ? bound : -1;
 }
+bool hasScalarProduct(const MathStructure &value) {
+ auto function=CALCULATOR->getFunction("qscalarproductsum");
+ return function && value.containsFunction(function,true,true);
+}
+bool scalarProductKey(const MathStructure &value,const MathStructure &label,unsigned &slot,unsigned &index) {
+ if(!scalarProductNode(value) || !scalarProductPrefix(value[0]) || !scalarProductPrefix(value[1]) ||
+    !value[3].isVector() || value[3].size()%3)return false;
+ std::string name;
+ if(label.isSymbolic())name=label.symbol();
+ else if(label.isVariable() && !label.variable()->isKnown())name=label.variable()->referenceName();
+ else return false;
+ for(slot=0;slot<2;++slot) {
+  const std::string &prefix=value[slot].symbol();
+  if(name.compare(0,prefix.size(),prefix)!=0)continue;
+  std::string suffix=name.substr(prefix.size());
+  if(suffix.empty() || suffix.size()>4)continue;
+  index=0;bool valid=true;
+  for(char c:suffix) {if(c<'0' || c>'9') {valid=false;break;}index=index*10+c-'0';}
+  if(!valid || index>=scalarProductLimit || suffix!=std::to_string(index))continue;
+  if(value[2].isNumber() && value[2].number().isInteger() && Number(index)>=value[2].number())return false;
+  if(value[0].equals(value[1]))slot=0;
+  for(size_t k=0;k<value[3].size();k+=3)
+   if(value[3][k].isNumber() && value[3][k+1].isNumber() &&
+      (value[0].equals(value[1]) || value[3][k].number()==Number(slot)) && value[3][k+1].number()==Number(index))return false;
+  return true;
+ }
+ return false;
+}
+// Count implicit family labels as free occurrences, but not metadata or bound
+// names. The same policy drives substitution and capture avoidance.
+bool scalarSymbolEqual(const MathStructure &value,const MathStructure &name) {
+ if(value.equals(name))return true;
+ if(value.isSymbolic() && name.isVariable() && !name.variable()->isKnown())return value.symbol()==name.variable()->referenceName();
+ if(name.isSymbolic() && value.isVariable() && !value.variable()->isKnown())return name.symbol()==value.variable()->referenceName();
+ return false;
+}
+bool scalarProductFree(const MathStructure &value,const MathStructure &name,bool scalarNames=false) {
+ if(scalarNames ? scalarSymbolEqual(value,name) : value.equals(name))return true;
+ if(value.isVariable() && value.variable()->isKnown() && hasScalarProduct(value))
+  return scalarProductFree(static_cast<KnownVariable *>(value.variable())->get(),name);
+ if(scalarProductNode(value)) {
+  unsigned slot,index;if(scalarProductKey(value,name,slot,index))return true;
+  if(scalarProductFree(value[2],name,true))return true;
+  if(value[3].isVector())for(size_t k=2;k<value[3].size();k+=3)if(scalarProductFree(value[3][k],name,true))return true;
+  return false;
+ }
+ int bound=quantumIndexBinder(value,name);
+ for(size_t k=0;k<value.size();++k) {
+  if(bound>=0 && (k==0 || k==size_t(bound)))continue;
+  if(scalarProductFree(value[k],name,scalarNames))return true;
+ }
+ return false;
+}
 // Substitute a free index without capturing a nested finite-product/sum index.
-void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement,bool preserveComplexDomain=false) {
+void replaceQuantumIndex(MathStructure &value,const MathStructure &index,const MathStructure &replacement,bool preserveComplexDomain=false,bool scalarNames=false,bool genericReplacement=false) {
  if(preserveComplexDomain && value.isFunction() && value.function()->referenceName()=="complexparam")return;
- if(value.equals(index)) {value=replacement;return;}
+ if(scalarNames ? scalarSymbolEqual(value,index) : value.equals(index)) {value=replacement;return;}
+ if(genericReplacement && !scalarNames && !hasScalarProduct(value) && !hasScalarProduct(replacement)) {
+  value.replace(index,replacement,false,false,index.containsUnknowns());return;
+ }
+ if(value.isVariable() && value.variable()->isKnown() && hasScalarProduct(value)) {
+  MathStructure body=static_cast<KnownVariable *>(value.variable())->get();
+  replaceQuantumIndex(body,index,replacement,preserveComplexDomain,scalarNames,genericReplacement);value=body;return;
+ }
+ if(scalarProductNode(value)) {
+  unsigned slot,offset;bool bind=scalarProductKey(value,index,slot,offset);
+  replaceQuantumIndex(value[2],index,replacement,preserveComplexDomain,true,genericReplacement);
+  if(value[3].isVector())for(size_t k=2;k<value[3].size();k+=3)
+   replaceQuantumIndex(value[3][k],index,replacement,preserveComplexDomain,true,genericReplacement);
+  if(bind) {
+   if(value[3].size()>=6*scalarProductLimit) {CALCULATOR->error(true,"Too many indexed scalar assignments.",NULL);return;}
+   value[3].addChild(MathStructure(Number(slot)));value[3].addChild(MathStructure(Number(offset)));value[3].addChild(replacement);
+  }
+  value.childrenUpdated();return;
+ }
  int declaration=quantumBinderPosition(value);
  if(declaration>=0 && !value[declaration].equals(index) &&
     (value[declaration].isSymbolic() || value[declaration].isVariable()) &&
-    replacement.contains(value[declaration]) && value[0].contains(index)) {
+    (hasScalarProduct(replacement) ? scalarProductFree(replacement,value[declaration]) : replacement.contains(value[declaration])) &&
+    (hasScalarProduct(value[0]) ? scalarProductFree(value[0],index) : value[0].contains(index))) {
   // A free name in a symbolic replacement must not become a nested index.
   // Rename only its bound body; range endpoints and initial states are free.
   unsigned serial=0;MathStructure fresh;
   do {fresh=MathStructure("__qbound_index_"+std::to_string(serial++),true);}
-  while(value.contains(fresh) || replacement.contains(fresh) || index.equals(fresh));
+  while(value.contains(fresh) || scalarProductFree(value,fresh) || replacement.contains(fresh) || scalarProductFree(replacement,fresh) || index.equals(fresh));
   MathStructure old=value[declaration];
   replaceQuantumIndex(value[0],old,fresh);value[declaration]=fresh;
  }
  int bound=quantumIndexBinder(value,index);
  for(size_t k=0;k<value.size();++k) {
   if(bound>=0 && (k==0 || k==size_t(bound)))continue;
-  replaceQuantumIndex(value[k],index,replacement,preserveComplexDomain);
+  replaceQuantumIndex(value[k],index,replacement,preserveComplexDomain,scalarNames,genericReplacement);
  }
  value.childrenUpdated();
 }
@@ -229,10 +374,13 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
+ bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
+ bool representsNonMatrix(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsNonMatrix(value);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qscalarproductsum")return calculateScalarProduct(out,raw,this,eo);
   if(op=="qsetunion" || op=="qsetintersect" || op=="qsetdiff") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure left,right;DomainState first=finiteDomain(raw[0],left,exact),second=finiteDomain(raw[1],right,exact);
@@ -421,6 +569,52 @@ class QuantumIndexedFunction: public MathFunction {
    out.set(CALCULATOR->getFunction("qnamedket"),&label,NULL);out.eval(eo);return 1;
   }
   if(op=="qreplace") {
+   if(hasScalarProduct(raw[0])) {
+    // Validate the complete chain, including vector assignments, before
+    // changing any expression. Unsupported forms must not silently fall back
+    // to generic replacement, which cannot see implicit coefficient labels.
+    std::vector<std::pair<MathStructure,MathStructure>> replacements;
+    MathStructure body=raw;
+    do {
+     MathStructure from=body[1],to=body[2];
+     auto literalVector=[](MathStructure &value) {
+      if(value.isFunction() && value.function()->referenceName()=="vector") {
+       MathStructure entries;entries.clearVector();
+       for(size_t k=0;k<value.size();++k)entries.addChild(value[k]);value=entries;
+      }
+     };
+     literalVector(from);literalVector(to);
+     std::vector<std::pair<MathStructure,MathStructure>> group;
+     if(from.isVector()) {
+      if(!to.isVector() || from.size()!=to.size() || from.size()>2049) {
+       CALCULATOR->error(true,"Indexed scalar substitution requires matching vectors of at most 2049 assignments.",NULL);return 0;
+      }
+      for(size_t k=0;k<from.size();++k)group.push_back({from[k],to[k]});
+     } else group.push_back({from,to});
+     for(const auto &entry:group)if((!entry.first.isSymbolic() && (!entry.first.isVariable() || entry.first.variable()->isKnown())) ||
+        entry.second.containsInterval(true,false,false,0,true)) {
+      CALCULATOR->error(true,"Indexed scalar substitution requires plain symbols and values without intervals.",NULL);return 0;
+     }
+     // The outer call is collected first. Reverse groups but preserve each
+     // vector's existing left-to-right replacement semantics.
+     replacements.insert(replacements.begin(),group.begin(),group.end());
+     MathStructure next=body[0];body=next;
+    } while(body.isFunction() && body.function()==this && body.size()==3);
+    out=body;
+    for(const auto &entry:replacements) {
+     if(CALCULATOR->aborted())return 0;
+     bool found=scalarProductFree(out,entry.first);
+     replaceQuantumIndex(out,entry.first,entry.second,false,false,true);
+     found=bindRegisterBit(out,entry.first,entry.second,true) || found;
+     if(!found) {
+      out.eval(eo);found=scalarProductFree(out,entry.first);
+      if(found)replaceQuantumIndex(out,entry.first,entry.second,false,false,true);
+      found=bindRegisterBit(out,entry.first,entry.second,true) || found;
+     }
+     if(!found)CALCULATOR->error(false,"Original value was not found during quantum substitution.",NULL);
+    }
+    return 1;
+   }
    // Apply a chain of ordinary symbol substitutions before evaluating its
    // partial results. Otherwise an as-yet unknown matrix can be broadcast as
    // a scalar when an earlier replacement introduces the first matrix.
@@ -786,6 +980,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qregisterfamily",4));
+ calculator.addFunction(new QuantumIndexedFunction("qscalarproductsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qreplace",3));
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));

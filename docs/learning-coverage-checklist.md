@@ -129,6 +129,8 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
   - [x] **DEV-05e — Variable-length indexed families:** [#333](https://github.com/badtyprr/quantumstudio/pull/333), released in REL-11. Natural `|x_(n-1) ... x_0>` and IBM TeX ellipses preserve descending inclusive bounds, bit assignments and explicit trailing-bit constraints. Packaged validation included 1,832 worker checks, 526 notation checks, 249 TeX checks and 12 dedicated family GUI calculations; independent two-bit Hadamard controls included. Concrete expansion supports one through ten qubits. This does not establish whole-lesson coverage.
 - Regression locations for DEV-05a–e: `src/quantum-worker-test.py` and `src/quantum-notation-test.cc`. REL-10 records released DEV-05a–d evidence; REL-11 records released DEV-05e evidence. DEV-10 delivers symbolic binary-string domains and deferred integer ranges in REL-26. Remaining scope includes general symbolic register-width equations, arbitrary indexed ellipsis patterns and widths beyond the finite numerical limit.
 
+- Development follow-up, not released: [indexed scalar-product component evidence](learning-evidence/dev05-scalar-product/README.md) records accepted source/copy checks on the development worker and separate Linux integration tests. This isolated component does not complete DEV-05 or whole-lesson coverage; Windows integration, GUI/session and release acceptance remain open at that checkpoint.
+
 ### DEV-06
 
 - [x] **Runtime gate parameters** — P1; Released in REL-22; size L; dependencies: None. Complete for the documented finite gate/type contract and selected source audit; whole-notebook coverage remains separate.

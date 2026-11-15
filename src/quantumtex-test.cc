@@ -17,6 +17,11 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(x_{n-1}y_{n-1} + \cdots + x_0 y_0)","qscalarproductsum(\"x_\",\"y_\",\"n\",vector())");
+  equal(R"(replace(u_{m-1}v_{m-1}+\cdots+u_0 v_0,m,2))","replace(qscalarproductsum(\"u_\",\"v_\",\"m\",vector()),m,2)");
+  equal(R"(x_0y_0+\cdots+x_0y_0)","qscalarproductsum(\"x_\",\"y_\",1,vector())");
+  equal(R"("x_{n-1}y_{n-1} + \cdots + x_0 y_0")",R"("x_{n-1}y_{n-1} + \cdots + x_0 y_0")");
+  for(const char *input:{R"(-x_{n-1}y_{n-1}+\cdots+x_0y_0)",R"(x_{n-1}y_{m-1}+\cdots+x_0y_0)",R"(x_{n-1}y_{n-1}+\cdots+x_0z_0)",R"(x_{n-1}y_{n-1}+\cdots+x_0y_0+1)"})rejects(input);
   equal(R"(\vert{+i}\rangle)","|+i>");
   equal(R"(\langle{-i}\vert)","<-i|");
   equal(R"(\vert{1+2}\vert)","|(1+2)|");

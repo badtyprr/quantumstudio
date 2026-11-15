@@ -1,0 +1,112 @@
+# Fresh candidate from the exact PR head; no merge or publication.
+name: Scalar product GUI candidate
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/scalar-product-gui.yml
+      - diagnostics/scalar-product/**
+      - windows/ScalarProductGuiTests.cs
+      - libqalculate/Quantum*
+      - windows/QuantumStudio.cs
+permissions:
+  contents: read
+concurrency:
+  group: scalar-product-gui-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.10'
+      - name: Read-only session preflight
+        shell: pwsh
+        run: |
+          ./diagnostics/dev17-unattended/Inspect-Environment.ps1 -Evidence "$env:RUNNER_TEMP/scalar-product-preflight"
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE) { throw 'Revision lookup failed' }
+          $tree = git rev-parse 'HEAD^{tree}'
+          if ($LASTEXITCODE) { throw 'Tree lookup failed' }
+          @{
+            revision=$revision; tree=$tree; event_revision=$env:GITHUB_SHA
+            candidate=$true; publication=$false
+            powershell=$PSVersionTable.PSVersion.ToString()
+          } | ConvertTo-Json -Depth 5 | Set-Content "$env:RUNNER_TEMP/scalar-product-preflight/source.json"
+          $probe = Get-Content "$env:RUNNER_TEMP/scalar-product-preflight/environment.json" -Raw | ConvertFrom-Json
+          if (!$probe.clipboard_open -or !$probe.clipboard_handle_closed) { throw 'Hosted Clipboard denied; preserve evidence and stop.' }
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        id: msys
+        with:
+          msystem: UCRT64
+          update: true
+          cache: false
+          install: >-
+            autoconf automake libtool gettext-devel make
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-pkgconf
+      - name: Prepare compiler dependencies outside clean source
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/scalar-product-python"
+          if ($LASTEXITCODE) { throw 'venv failed' }
+          & "$env:RUNNER_TEMP/scalar-product-python/Scripts/python.exe" -m pip install -r windows/qasm-import-requirements.txt
+          if ($LASTEXITCODE) { throw 'pip install failed' }
+          & "$env:RUNNER_TEMP/scalar-product-python/Scripts/python.exe" -m pip check
+          if ($LASTEXITCODE) { throw 'pip check failed' }
+          & "$env:RUNNER_TEMP/scalar-product-python/Scripts/python.exe" -m pip freeze | Set-Content "$env:RUNNER_TEMP/scalar-product-preflight/python-packages.txt"
+      - name: Build unchanged package workflow as candidate
+        shell: pwsh
+        env:
+          SCALAR_MSYS_ROOT: ${{ steps.msys.outputs.msys2-location }}
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP/scalar-product-preflight/package.log"
+          try {
+            & "$env:SCALAR_MSYS_ROOT/usr/bin/bash.exe" -lc 'pacman -Q' | Set-Content "$env:RUNNER_TEMP/scalar-product-preflight/msys-packages.txt"
+            if ($LASTEXITCODE) { throw 'MSYS inventory failed' }
+            ./windows/package.ps1 -MsysRoot $env:SCALAR_MSYS_ROOT -PythonPath "$env:RUNNER_TEMP/scalar-product-python/Scripts/python.exe" -Candidate
+          } finally { Stop-Transcript }
+      - name: Actual Copy acceptance against hosted-built payload
+        shell: pwsh
+        run: |
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE) { throw 'Revision lookup failed' }
+          $archive = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-candidate-Windows-x64.zip"
+          $source = "$env:GITHUB_WORKSPACE/dist/QuantumStudio-source.tar.gz"
+          python windows/test-package.py $archive --candidate --revision $revision
+          if ($LASTEXITCODE) { throw 'Candidate ZIP/manifest verification failed' }
+          $before = @(Get-FileHash -LiteralPath $archive,$source | Select-Object Path,Hash)
+          $before | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/scalar-product-preflight/archive-hashes.json"
+          Expand-Archive -LiteralPath $archive -DestinationPath "$env:RUNNER_TEMP/scalar-product-candidate-payload"
+          try {
+            ./diagnostics/scalar-product/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/scalar-product-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/scalar-product-acceptance" -Revision $revision
+          } finally {
+            foreach ($entry in $before) {
+              if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance' }
+            }
+          }
+      - name: Retain evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: scalar-product-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/scalar-product-preflight/
+            ${{ runner.temp }}/scalar-product-acceptance/
+            src/*.log
+            src/*.trs
+            config.log
+            *.log
+            *.trs
+            diagnostics/scalar-product/
+            windows/ScalarProductGuiTests.cs
+            dist/
