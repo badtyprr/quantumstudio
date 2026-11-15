@@ -75,7 +75,15 @@ class QuantumOrderFunction: public MathFunction {
  QuantumOrderFunction():MathFunction("qcompare",3) {}
  ExpressionItem *copy() const {return new QuantumOrderFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
-  MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
+  MathStructure args=raw;args[2].eval(eo);
+  args[0].eval(eo);
+  bool equality=args[2].isNumber() && args[2].number()==4;
+  MathStructure rows,columns;
+  if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
+   quantumResolveBasisDimension(args[1],rows);
+  args[1].eval(eo);
+  if(equality && quantumMatrixShape(args[1],rows,columns,eo) && columns.isOne() &&
+     quantumResolveBasisDimension(args[0],rows))args[0].eval(eo);
   {
    if(!args[2].isNumber() || !args[2].number().isInteger() || args[2].number()<0 || args[2].number()>5) {
     CALCULATOR->error(true,"Invalid quantum comparison kind.",NULL);return 0;
@@ -90,5 +98,50 @@ class QuantumOrderFunction: public MathFunction {
   }
  }
 };
+class QuantumEqualityChain: public MathFunction {
+ public:
+ QuantumEqualityChain():MathFunction("qequalchain",1) {}
+ ExpressionItem *copy() const {return new QuantumEqualityChain(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(!raw[0].isVector() || raw[0].size()<3 || raw[0].size()>128) {
+   CALCULATOR->error(true,"An equality chain requires 3 to 128 operands.",NULL);return 0;
+  }
+  MathStructure operands=raw[0],dimension;bool known=false,consistent=true;
+  for(size_t k=0;k<operands.size();++k) {
+   if(CALCULATOR->aborted())return 0;
+   operands[k].eval(eo);MathStructure rows,columns;
+   if(quantumMatrixShape(operands[k],rows,columns,eo) && columns.isOne()) {
+    if(!known) {dimension=rows;known=true;}
+    else if(!dimension.equals(rows))consistent=false;
+   }
+  }
+  // All operands belong to the same equality, but only a consistent known
+  // column dimension supplies context. Tensor factors keep their own widths.
+  if(known && consistent)for(size_t k=0;k<operands.size();++k)
+   if(quantumResolveBasisDimension(operands[k],dimension))operands[k].eval(eo);
+  operands.childrenUpdated();
+  auto pending=CALCULATOR->getFunction("qcomputationalket");
+  bool deferred=pending && operands.containsFunction(pending)>0;
+  for(size_t k=0;k<operands.size();++k)
+   if(!operands[k].representsScalar() && operands[k].containsUnknowns())deferred=true;
+  bool equal=true;
+  if(!deferred)for(size_t k=1;k<operands.size();++k) {
+   if(CALCULATOR->aborted())return 0;
+   MathStructure comparison=operands[k-1];comparison.transform(COMPARISON_EQUALS,operands[k]);comparison.eval(eo);
+   if(comparison.isNumber() && comparison.number().isZero())equal=false;
+   else if(!comparison.isNumber() || !comparison.number().isOne())deferred=true;
+  }
+  // Keep the shared context through Copy and later substitutions until the
+  // chain is decidable; separate native comparisons would discard it.
+  if(deferred) {
+   if(operands.equals(raw[0]))return 0;
+   out.set(this,&operands,NULL);return 1;
+  }
+  out=equal ? 1 : 0;return 1;
+ }
+};
 }
-void registerQuantumOrder(Calculator &calculator) {calculator.addFunction(new QuantumOrderFunction());}
+void registerQuantumOrder(Calculator &calculator) {
+ calculator.addFunction(new QuantumOrderFunction());
+ calculator.addFunction(new QuantumEqualityChain());
+}

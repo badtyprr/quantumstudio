@@ -1,0 +1,208 @@
+{
+  "state": "REGRESSION_FIXTURES_NOT_EXECUTION_EVIDENCE",
+  "environment": "Dedicated GitHub-hosted Windows guest, as existing GUI acceptance scripts require.",
+  "fixture_count": 9,
+  "fixtures": [
+    {
+      "name": "symbolic-bits",
+      "expression": "bits(1,n)",
+      "descriptor": "qbits",
+      "substitutions": [
+        [
+          "n",
+          "4"
+        ]
+      ],
+      "reference": "[0,0,0,1]",
+      "comparison": "vector-equality",
+      "display_contains": [
+        "bits("
+      ]
+    },
+    {
+      "name": "wide-bits",
+      "expression": "bits(1,10^12)",
+      "descriptor": "qbits",
+      "substitutions": [],
+      "reference": "1",
+      "comparison": "bitvalue",
+      "display_contains": [
+        "bits("
+      ]
+    },
+    {
+      "name": "empty-register",
+      "expression": "bits(0,0)",
+      "reference": "vector()",
+      "comparison": "vector-equality"
+    },
+    {
+      "name": "symbolic-basis",
+      "expression": "qbasis(x,n)",
+      "descriptor": "qbasis",
+      "substitutions": [
+        [
+          "n",
+          "4"
+        ],
+        [
+          "x",
+          "1"
+        ]
+      ],
+      "reference": "[0;1;0;0]",
+      "comparison": "ket-norm",
+      "display_contains": [
+        "|",
+        "\u27e9"
+      ]
+    },
+    {
+      "name": "symbolic-tensor",
+      "expression": "tensorpow(H,n)",
+      "descriptor": "qtensorpow",
+      "substitutions": [
+        [
+          "n",
+          "2"
+        ]
+      ],
+      "reference": "[1,1,1,1;1,-1,1,-1;1,1,-1,-1;1,-1,-1,1]/2",
+      "comparison": "frobenius",
+      "display_contains": [
+        "\u2297"
+      ]
+    },
+    {
+      "name": "huge-arithmetic-basis",
+      "expression": "fourier(10^12)|2x+1>",
+      "descriptor": "qbasis",
+      "substitutions": [],
+      "comparison": "deferred-width",
+      "dimension": "1000000000000",
+      "display_contains": [
+        "QFT_",
+        "1000000000000"
+      ],
+      "copy_contains": [
+        "qadjacent(qfourier(",
+        "qbasis(qadd(qadjacent(2,x),1),1000000000000)"
+      ],
+      "copy_excludes": [
+        "qcomputationalket",
+        "matrix("
+      ]
+    },
+    {
+      "name": "original-fourier275",
+      "expression": "$$\n\\begin{aligned}\n\\mathrm{QFT}_{2^m} \\vert 2x + a\\rangle\n& =\n\\frac{1}{\\sqrt{2^m}}\n\\sum_{y = 0}^{2^{m-1} - 1}\n\\sum_{b=0}^1\n\\omega_{2^m}^{(2x+ a)(2^{m-1}b + y)} \\vert b 2^{m-1} + y\\rangle\\\\[2mm]\n& =\n\\frac{1}{\\sqrt{2^m}}\n\\sum_{y = 0}^{2^{m-1} - 1}\n\\sum_{b=0}^1\n(-1)^{ab}\n\\omega_{2^{m-1}}^{xy}\n\\omega_{2^m}^{ay}\n\\vert b 2^{m-1} + y\\rangle.\n\\end{aligned}\n$$",
+      "descriptor": "qequalchain",
+      "substitutions": [
+        [
+          "'m'",
+          "2"
+        ],
+        [
+          "x",
+          "1"
+        ],
+        [
+          "'a'",
+          "1"
+        ],
+        [
+          "'\u03c9_4'",
+          "i"
+        ],
+        [
+          "'\u03c9_2'",
+          "-1"
+        ]
+      ],
+      "reference": "1",
+      "comparison": "exact-scalar",
+      "adaptation": "Unchanged source; explicit finite parameter/root substitutions after real Copy and session restore.",
+      "display_contains": [
+        "QFT_",
+        "="
+      ]
+    },
+    {
+      "name": "original-indexed-tensor",
+      "expression": "\\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr)",
+      "descriptor": "qtensorseries",
+      "substitutions": [
+        [
+          "n",
+          "2"
+        ],
+        [
+          "'\u03a3'",
+          "vector(0,1)"
+        ],
+        [
+          "'x_1'",
+          "1"
+        ],
+        [
+          "'x_0'",
+          "0"
+        ]
+      ],
+      "reference": "[1;1;-1;-1]/2",
+      "comparison": "ket-norm",
+      "adaptation": "Original source formula retained from accepted source audit; binary alphabet and two-bit substitution explicitly supplied only after Copy/session restore.",
+      "formula_sha256": "97400ad6d38e8eaaea07a73dd6e3fc2698048b14e7efb4d44efa5eb71c1087b4",
+      "display_contains": [
+        "\u2297"
+      ]
+    },
+    {
+      "name": "original-register-sum",
+      "expression": "\\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle",
+      "descriptor": "qregistersum",
+      "substitutions": [
+        [
+          "n",
+          "2"
+        ],
+        [
+          "'\u03a3'",
+          "vector(0,1)"
+        ],
+        [
+          "'x_1'",
+          "1"
+        ],
+        [
+          "'x_0'",
+          "0"
+        ]
+      ],
+      "reference": "[1;1;-1;-1]/2",
+      "comparison": "ket-norm",
+      "adaptation": "Original source formula retained from accepted source audit; binary alphabet and two-bit substitution explicitly supplied only after Copy/session restore.",
+      "formula_sha256": "7ae5c0bf313cb9f9612b1adcce52785cca9951a7d8955014895f385b4e0f7cd9",
+      "display_contains": [
+        "\u2211"
+      ]
+    }
+  ],
+  "steps": [
+    "Evaluate in quantum mode, require exact result and readable display.",
+    "Use actual Copy button and clipboard; reenter in ordinary mode twice and require stable canonical result.",
+    "Save session containing expression, mode and history; calculate an intervening expression; reopen and compare full session snapshot.",
+    "Recalculate restored input, then perform declared substitutions and compare independent finite reference.",
+    "Capture rendered result and retain evidence outside disposable candidate."
+  ],
+  "negative_cases": [
+    {
+      "expression": "replace(bits(1,n),n,0)",
+      "diagnostic": "Binary-string labels require a nonnegative integer width"
+    },
+    {
+      "expression": "qbitdot(bits(1,1025),bits(1,1026))",
+      "diagnostic": "Binary bit operations require equally long bit vectors."
+    }
+  ]
+}

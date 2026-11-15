@@ -40,11 +40,12 @@ int main(){try {
    if(!resolved.isNumber() || !resolved.number().isOne())throw std::runtime_error("Substituted exact Fourier operator differs");
   }
   ++checks;
-  expression.replace(symbol,MathStructure(0));expression.eval(symbolicOptions);bool invalid=false;
+  expression.replace(symbol,MathStructure(-1));expression.eval(symbolicOptions);bool invalid=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)invalid=true;calculator.nextMessage();}
   if(!invalid)throw std::runtime_error("Invalid substituted Fourier dimension accepted");++checks;
  }
 
+ equal("qft(0)","matrix(1,1,[1])");
  equal("qft(1)","[1,1;1,-1]/sqrt(2)");
  equal("qfourier(4)","[1,1,1,1;1,i,-1,-i;1,-1,1,-1;1,-i,-1,i]/2");
  equal("qft(2)","qfourier(4)");
@@ -62,7 +63,7 @@ int main(){try {
   unsigned x=state>>1,y=state&1,result=2*x+(y^((table>>x)&1));
   equal("qmul(qoracle("+entries+",1),qbasis("+std::to_string(state)+",8))","qbasis("+std::to_string(result)+",8)");
  }
- for(const auto &expression:{"qmodmul(2,4)","qmodmul(1,513)","qoracle([0,2],1)","qoracle([0,1,0],1)","qphaseoracle(2,[0,0])","qphaseoracle(2,4)","qdiffusion(10)","qsumgate(64,64)","qft(7)","qfourier(0)","qshift(65)","qclock(0)"}) {
+ for(const auto &expression:{"qmodmul(2,4)","qmodmul(1,513)","qoracle([0,2],1)","qoracle([0,1,0],1)","qphaseoracle(2,[0,0])","qphaseoracle(2,4)","qdiffusion(10)","qsumgate(64,64)","qfourier(0)","qshift(65)","qclock(0)"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

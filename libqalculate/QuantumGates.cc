@@ -95,7 +95,10 @@ class QuantumGateFunction: public MathFunction {
    bool qubits=op=="qft";
    // Keep scalar dimensions symbolic until substitution supplies a value.
    if((op=="qft" || op=="qfourier") && !a.isNumber() && a.representsScalar() && a.containsUnknowns())return 0;
-   if(!a.isNumber() || !a.number().isInteger() || a.number()<((qubits || op=="qfourier") ? 1 : 2) || a.number()>(qubits ? 6 : 64)) { CALCULATOR->error(true,"QFT requires 1 to 6 qubits; fourier requires dimension 1 to 64; shift and clock require dimension 2 to 64.",NULL); return 0; }
+   bool fourier=qubits || op=="qfourier";
+   if(!a.isNumber() || !a.number().isInteger() || a.number()<(qubits ? 0 : op=="qfourier" ? 1 : 2) || (!fourier && a.number()>64)) { CALCULATOR->error(true,"QFT requires a nonnegative integer qubit count; fourier requires a positive integer dimension; shift and clock require dimension 2 to 64.",NULL); return 0; }
+   // Dense construction limits do not invalidate a larger Fourier operator.
+   if(fourier && a.number()>(qubits ? 6 : 64))return 0;
    size_t n=qubits ? size_t(1)<<a.number().intValue() : a.number().intValue(); out.clearMatrix(); out.resizeMatrix(n,n,m_zero);
    if(op=="qshift") { for(size_t c=0;c<n;++c) element(out,(c+1)%n,c)=m_one; return 1; }
    if(op=="qclock") {

@@ -11,6 +11,22 @@ std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
 }
+// Display mathematics may end with a sentence period. Preserve decimals,
+// quoted labels, ellipses and dots following incomplete operators.
+std::string withoutSentencePeriod(std::string value) {
+ size_t dot=value.find_last_not_of(" \t\r\n");
+ if(dot==std::string::npos || value[dot]!='.' || dot==0 || std::isdigit((unsigned char)value[dot-1]))return value;
+ size_t before=value.find_last_not_of(" \t\r\n",dot-1);
+ if(before==std::string::npos)return value;
+ unsigned char end=value[before];
+ if(end<128 && !std::isalnum(end) && end!=')' && end!=']' && end!='}' && end!='>' && end!='\'' && end!='"')return value;
+ char quote=0;
+ for(size_t k=0;k<dot;++k)if(value[k]=='\'' || value[k]=='"') {
+  if(quote==value[k])quote=0;else if(!quote)quote=value[k];
+ }
+ if(!quote)value.erase(dot,1);
+ return value;
+}
 // A shared Hadamard acting on each indexed bit is a tensor power acting on
 // the whole register. Recognize the complete contextual pattern before an
 // isolated indexed ket becomes a named state. General tensor ellipses remain
@@ -57,6 +73,117 @@ std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t 
  end=at;
  return "(tensorpow(H,"+width+")*|"+first+"_("+upper+") ... "+first+"_0>)";
 }
+struct TensorSeriesPattern {
+ std::string body,first,last,index,direction;
+ size_t end=0;
+};
+// Compare corresponding endpoint factors, varying only scalar subscripts.
+// Operators, coefficients, domains and fixed subscripts must agree. Keep the
+// original first factor text for the ordinary TeX and lexical-binder parsers.
+bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPattern &pattern) {
+ size_t at=start;
+ auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto token=[&](const std::string &text) {
+  space();if(input.compare(at,text.size(),text)!=0)return false;
+  size_t next=at+text.size();
+  if(text[0]=='\\' && next<input.size() && asciiLetter((unsigned char)input[next]))return false;
+  at=next;return true;
+ };
+ auto factor=[&](std::string &body) {
+  space();
+  for(const auto *size:{"\\left","\\bigl","\\Bigl","\\biggl","\\Biggl"})if(token(size))break;
+  if(!token("("))return false;
+  size_t begin=at;unsigned depth=1;char quote=0;
+  while(at<input.size()) {
+   char c=input[at++];
+   if(c=='\'' || c=='"') {if(!quote)quote=c;else if(quote==c)quote=0;}
+   if(quote)continue;
+   if(c=='(')++depth;
+   if(c==')' && --depth==0) {
+    body=input.substr(begin,at-begin-1);
+    for(const auto *size:{"\\right","\\bigr","\\Bigr","\\biggr","\\Biggr"}) {
+     size_t end=body.find_last_not_of(" \t\r\n");
+     std::string suffix=size;
+     if(end!=std::string::npos && end+1>=suffix.size() && body.compare(end+1-suffix.size(),suffix.size(),suffix)==0) {
+      body.resize(end+1-suffix.size());break;
+     }
+    }
+    return true;
+   }
+  }
+  return false;
+ };
+ std::string left,right;
+ if(!factor(left) || !token("\\otimes") || !token("\\cdots") || !token("\\otimes") || !factor(right))return false;
+ struct Subscript {size_t begin,end;std::string index;};
+ auto subscripts=[](const std::string &text) {
+  std::vector<Subscript> found;char quote=0;
+  for(size_t k=0;k<text.size();++k) {
+   if(text[k]=='\'' || text[k]=='"') {if(!quote)quote=text[k];else if(quote==text[k])quote=0;}
+   if(quote || text[k]!='_')continue;
+   size_t begin=k+1;while(begin<text.size() && std::isspace((unsigned char)text[begin]))++begin;
+   if(begin==text.size())continue;
+   size_t end=begin;std::string index;
+   if(text[begin]=='{') {
+    unsigned depth=1;end=begin+1;
+    while(end<text.size() && depth) {if(text[end]=='{')++depth;if(text[end]=='}')--depth;++end;}
+    if(depth)continue;index=text.substr(begin+1,end-begin-2);
+   } else {end=begin+1;index=text.substr(begin,1);}
+   std::string compact;bool scalar=true;
+   for(unsigned char c:index) {
+    if(std::isspace(c))continue;
+    if(!std::isalnum(c) && c!='+' && c!='-' && c!='*' && c!='/' && c!='(' && c!=')')scalar=false;
+    compact+=char(c);
+   }
+   if(scalar && !compact.empty()) {found.push_back({k,end,compact});k=end-1;}
+  }
+  return found;
+ };
+ auto canonical=[](const std::string &text) {
+  std::string out;
+  for(size_t k=0;k<text.size();++k) {
+   if(std::isspace((unsigned char)text[k]))continue;
+   out+=text[k];
+   if(text[k]=='\'' || text[k]=='"') {
+    const char quote=text[k];
+    while(k+1<text.size()) {out+=text[++k];if(text[k]==quote)break;}
+   } else if(text[k]=='\\') {
+    while(k+1<text.size() && asciiLetter((unsigned char)text[k+1]))out+=text[++k];
+    out+='\x1f';
+   } else if(std::isalnum((unsigned char)text[k]) || (unsigned char)text[k]>=128 || text[k]=='_') {
+    while(k+1<text.size() && (std::isalnum((unsigned char)text[k+1]) || (unsigned char)text[k+1]>=128 || text[k+1]=='_'))out+=text[++k];
+    out+='\x1f';
+   }
+  }
+  return out;
+ };
+ auto a=subscripts(left),b=subscripts(right);
+ if(a.empty() || a.size()!=b.size())return false;
+ size_t previousA=0,previousB=0;std::vector<size_t> varying;
+ for(size_t k=0;k<a.size();++k) {
+  if(canonical(left.substr(previousA,a[k].begin-previousA))!=canonical(right.substr(previousB,b[k].begin-previousB)))return false;
+  previousA=a[k].end;previousB=b[k].end;
+  if(a[k].index==b[k].index)continue;
+  if(varying.empty()) {pattern.first=a[k].index;pattern.last=b[k].index;}
+  else if(pattern.first!=a[k].index || pattern.last!=b[k].index)return false;
+  varying.push_back(k);
+ }
+ if(varying.empty() || canonical(left.substr(previousA))!=canonical(right.substr(previousB)))return false;
+ auto decimal=[](const std::string &s) {return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos;};
+ if(decimal(pattern.first) && decimal(pattern.last)) {
+  auto normalized=[](const std::string &s) {size_t first=s.find_first_not_of('0');return first==std::string::npos ? std::string("0") : s.substr(first);};
+  std::string first=normalized(pattern.first),last=normalized(pattern.last);
+  pattern.direction=(first.size()>last.size() || (first.size()==last.size() && first>last)) ? "-1" : "1";
+ } else if(pattern.last=="0")pattern.direction="-1";
+ else if(pattern.first=="0")pattern.direction="1";
+ else return false; // Two unspecified endpoints do not establish direction.
+ pattern.index="qseriesindex";
+ while(input.find(pattern.index)!=std::string::npos)pattern.index+="q";
+ pattern.body=left;
+ for(auto k=varying.rbegin();k!=varying.rend();++k)
+  pattern.body.replace(a[*k].begin,a[*k].end-a[*k].begin,"_{"+pattern.index+"}");
+ pattern.end=at;return true;
+}
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
 std::string scalarProductSum(const std::string &input,size_t start,size_t &end) {
@@ -86,10 +213,12 @@ std::string scalarProductSum(const std::string &input,size_t start,size_t &end) 
  std::string width;
  if(upperA.size()==3 && asciiLetter((unsigned char)upperA[0]) && upperA.substr(1)=="-1")width="\""+upperA.substr(0,1)+"\"";
  else {
-  if(upperA.empty() || upperA.size()>4 || (upperA.size()>1 && upperA[0]=='0'))return "";
-  unsigned upper=0;for(char c:upperA) {if(c<'0' || c>'9')return "";upper=10*upper+c-'0';}
-  if(upper>=1024)throw std::runtime_error("Indexed scalar products support widths 1 to 1024");
-  width=std::to_string(upper+1);
+  if(upperA.empty() || (upperA.size()>1 && upperA[0]=='0') || upperA.find_first_not_of("0123456789")!=std::string::npos)return "";
+  // Decimal increment avoids converting an arbitrary-precision endpoint to a
+  // machine integer merely to preserve the symbolic scalar-product width.
+  width=upperA;size_t digit=width.size();
+  while(digit && width[digit-1]=='9')width[--digit]='0';
+  if(digit)++width[digit-1];else width.insert(width.begin(),'1');
  }
  end=at;return "qscalarproductsum(\""+first+"_\",\""+second+"_\","+width+",vector())";
 }
@@ -205,6 +334,46 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
   }
  }
  return "qindexedmatrix(\""+quantumTeX(family)+"_\",("+lastRow+"),("+lastColumn+"),"+std::to_string(height-3)+","+std::to_string(width-3)+")";
+}
+bool registerSumDeclaration(const std::string &variable,const std::string &domain,
+                            std::string &prefix,std::string &first,std::string &last,
+                            std::string &alphabet,std::string &width) {
+ size_t dots=variable.find("...");
+ if(dots==std::string::npos || variable.find("...",dots+3)!=std::string::npos)return false;
+ auto endpoint=[&](std::string text,std::string &index) {
+  text=trim(text);size_t mark=text.find('_');
+  if(mark==std::string::npos || !mark)return false;
+  std::string name=text.substr(0,mark+1);
+  for(size_t k=0;k<mark;++k)if(!asciiLetter((unsigned char)name[k]))return false;
+  if(!prefix.empty() && prefix!=name)return false;prefix=name;
+  index=trim(text.substr(mark+1));
+  if(index.size()>1 && ((index.front()=='{' && index.back()=='}') || (index.front()=='(' && index.back()==')')))
+   index=trim(index.substr(1,index.size()-2));
+  return !index.empty();
+ };
+ if(!endpoint(variable.substr(0,dots),first) || !endpoint(variable.substr(dots+3),last))return false;
+ // Require a single Cartesian-power spelling. Ungrouped additions outside
+ // the power must not silently become part of its alphabet or exponent.
+ std::string text=trim(domain);size_t power=std::string::npos;unsigned depth=0;
+ for(size_t k=0;k<text.size();++k) {
+  if(text[k]=='(' || text[k]=='[' || text[k]=='{')++depth;
+  else if(text[k]==')' || text[k]==']' || text[k]=='}') {if(!depth)return false;--depth;}
+  else if(text[k]=='^' && !depth) {if(power!=std::string::npos)return false;power=k;}
+ }
+ if(depth || power==std::string::npos)return false;
+ auto atom=[](const std::string &s) {
+  if(s.empty())return false;
+  unsigned depth=0;
+  for(size_t k=0;k<s.size();++k) {
+   unsigned char c=s[k];
+   if(c=='(' || c=='[' || c=='{')++depth;
+   else if(c==')' || c==']' || c=='}') {if(!depth)return false;--depth;if(!depth && k+1!=s.size())return false;}
+   else if(!depth && c<128 && !std::isalnum(c) && c!='_' && c!='.')return false;
+  }
+  return depth==0;
+ };
+ alphabet=trim(text.substr(0,power));width=trim(text.substr(power+1));
+ return atom(alphabet) && atom(width);
 }
 class TeXReader {
  const std::string &input;
@@ -395,7 +564,7 @@ class TeXReader {
   if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
   if(name=="mid" && setExpressions)return ":";
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
-  if((stateLabel || registerLabel) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
+  if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="overline") {
    if(stateLabel)throw std::runtime_error(error("Use conj around the whole ket or bra to conjugate a state"));
@@ -445,8 +614,27 @@ class TeXReader {
    size_t first=variable.find_first_not_of(" \t\r\n"), last=variable.find_last_not_of(" \t\r\n");
    if(first==std::string::npos) throw std::runtime_error(error("Missing summation index"));
    variable=variable.substr(first,last-first+1);
+   if(setSum && variable.find("...")!=std::string::npos) {
+    std::string prefix,begin,end,alphabet,width;
+    if(!registerSumDeclaration(variable,startValue,prefix,begin,end,alphabet,width))
+     throw std::runtime_error(error("A register sum requires matching indexed endpoints and an explicit alphabet power"));
+    std::string arguments=alphabet+","+width+","+begin+","+end+",\""+prefix+"\"";
+    space();if(pos==input.size())throw std::runtime_error(error("Missing register sum body"));
+    if(input[pos]!='{')return "qtexregistersum("+arguments+") ";
+    return "qtexgroupregistersum("+arguments+","+group()+")";
+   }
    if(variable[0]>='0' && variable[0]<='9') throw std::runtime_error(error("A summation index cannot begin with a digit"));
-   for(unsigned char c:variable) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && variable.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
+   // A grouped arithmetic subscript is part of the variable's identity,
+   // not arithmetic applied to the variable. Keep its expression for the
+   // notation parser, which owns lexical binding and expression validation.
+   size_t indexed=variable.find("_{");
+   std::string identifier=variable;
+   if(indexed!=std::string::npos) {
+    if(!indexed || variable.back()!='}' || trim(variable.substr(indexed+2,variable.size()-indexed-3)).empty())
+     throw std::runtime_error(error("Invalid summation index"));
+    identifier=variable.substr(0,indexed);
+   }
+   for(unsigned char c:identifier) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && identifier.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
    space();
    if(pos==input.size())throw std::runtime_error(error("Missing finite sum/product body"));
    if(input[pos]!='{') {
@@ -578,7 +766,7 @@ class TeXReader {
    for(size_t cell=0;cell<alignmentCells.size();cell+=2) {
     std::string value=alignmentCells[cell];bool indented=value.empty() && cell+1<alignmentCells.size();
     if(cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
-    value=trim(value);
+    value=trim(withoutSentencePeriod(value));
     if(value.empty())throw std::runtime_error(error("Empty aligned expression"));
     size_t column=cell/2;
     if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
@@ -616,6 +804,13 @@ class TeXReader {
     const std::string preceding=trim(result);
     if(preceding.empty() || preceding.back()==',') {
      size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end);
+     if(product.empty()) {
+      TensorSeriesPattern series;
+      if(tensorSeriesPattern(input,pos,series)) {
+       product="qtexgrouptensorseries("+series.first+","+series.last+","+series.index+","+series.direction+","+
+        TeXReader(series.body).run(nullptr)+")";end=series.end;
+      }
+     }
      if(product.empty())product=scalarProductSum(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
@@ -698,9 +893,9 @@ class TeXReader {
     } else if(grouped && !result.empty() && (result.back()=='>' || result.back()=='|'))result+="_("+index+")";
     else {
      bool compound=false;for(unsigned char c:index)if(c<128 && !std::isalnum(c) && c!='_' && !std::isspace(c))compound=true;
-     // Preserve the scope of an expression used as a state-family parameter.
-     // Atomic labels and Bell signs retain their existing spelling.
-     result+=stateSubscript && grouped && compound && index!="+" && index!="-" ? "_{"+index+"}" : "_"+index;
+     // Preserve arithmetic subscripts for scalar references and declarations
+     // as well as state families. Atomic labels retain their spelling.
+     result+=grouped && compound && index!="+" && index!="-" ? "_{"+index+"}" : "_"+index;
     }
    }
    else if(input[pos]=='{') {
@@ -785,9 +980,12 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  size_t first=input.find_first_not_of(" \t\r\n"), last=input.find_last_not_of(" \t\r\n");
  if(first==std::string::npos) return "";
  std::string s=input.substr(first,last-first+1);
+ bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
+ else mathWrapper=false;
+ if(mathWrapper)s=withoutSentencePeriod(s);
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},

@@ -165,7 +165,19 @@ std::string ket(const std::string &label, size_t dimension=0) {
   if(s.find_first_not_of("01+-")!=std::string::npos)throw std::runtime_error("Spin-arrow product kets contain only arrows, binary digits, or +/- qubit labels.");
  }
  if(!s.empty() && s.find_first_not_of("01") == std::string::npos) {
-  if(s.size() > 10) throw std::runtime_error("Basis kets are limited to 10 qubits.");
+  if(s.size()>10) {
+   // Keep the lexical width, including leading zeros, without a dense vector.
+   std::string decimal="0";
+   for(char bit:s) {
+    unsigned carry=bit-'0';
+    for(size_t j=decimal.size();j>0;--j) {
+     unsigned digit=2*(decimal[j-1]-'0')+carry;
+     decimal[j-1]=char('0'+digit%10);carry=digit/10;
+    }
+    if(carry)decimal.insert(decimal.begin(),char('0'+carry));
+   }
+   return "qketstate(qbitlabel("+decimal+","+std::to_string(s.size())+"))";
+  }
   size_t n = size_t(1) << s.size(), k = 0;
   for(char c : s) k = k * 2 + c - '0';
   std::string out = "matrix(" + std::to_string(n) + ",1,[";
@@ -173,7 +185,15 @@ std::string ket(const std::string &label, size_t dimension=0) {
   return out + "])";
  }
  if(s.size()>1 && s.find_first_not_of("01+-")==std::string::npos) {
-  if(s.size()>10)throw std::runtime_error("Product kets are limited to 10 qubits.");
+  if(s.size()>10) {
+   if(s.find_first_not_of(s.front())==std::string::npos)
+    return "qtensorpow("+ket(s.substr(0,1))+","+std::to_string(s.size())+")";
+   // Balance mixed products so register length does not become nesting depth.
+   size_t middle=s.size()/2;
+   std::string product="qtensor("+ket(s.substr(0,middle))+","+ket(s.substr(middle))+")";
+   if(product.size()>131072)throw std::runtime_error("Expanded quantum expression exceeds 131072 bytes.");
+   return product;
+  }
   std::string product=ket(s.substr(0,1));
   for(size_t k=1;k<s.size();++k)product="qtensor("+product+","+ket(s.substr(k,1))+")";
   return product;
@@ -204,7 +224,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qbasis",2},
  {"qindexxor",2},
  {"qoplus",2},
- {"qcompare",3},
+ {"qcompare",3},{"qequalchain",1},
  {"qbitdot",2},
  {"qbitxor",2},
  {"qbits",2},
@@ -294,7 +314,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qmodmul",2},
  {"qmul",2},
  {"qadd",2},{"qsub",2},
- {"qadjacent",2},{"qfourierdomain",3},
+ {"qadjacent",2},{"qtensorchain",2},{"qfourierdomain",3},{"qcomputationalket",1},
  {"qspinadd",2},
  {"qnorm",1},
  {"qschatten",2},
@@ -346,6 +366,9 @@ const std::map<std::string,int> quantumSignatures = {
  {"qtensor",2},
  {"qtensorpow",2},
  {"qtensorproduct",4},
+ {"qtensorseries",5},
+ {"qboundtensorseries",6},
+ {"qregistersum",7},{"qregisterelement",2},
  {"qblocksum",4},
  {"qtrace",1},
  {"qtracedistance",2},
@@ -398,18 +421,24 @@ class Parser {
  bool parsingMatrixEntries=false, nextMatrixEntries=false;
  unsigned scalarProductDepth=0;
  unsigned nextBoundIndex=0,indexedReferences=0;
- // TeX binds single-letter indices before parsing its body. Only products
- // composed entirely of these indices are implicit; quoted names stay atomic.
+ // TeX binds indices before parsing its body. A joined letter product may
+ // also contain free coefficients; quoted and declared names stay atomic.
  std::vector<std::string> texIndices;
  bool texIndexDeclaration=false;
  std::string texIndexProduct(const std::string &name) {
   if(texIndexDeclaration || name.size()<2 || name=="pi" || gates.count(name) || (name.size()>=2 && name.compare(name.size()-2,2,"Hz")==0))return name;
   for(const auto &index:texIndices)if(name==index)return name;
-  for(char c:name) {
-   bool bound=false;
+  // TeX juxtaposition can mix a bound index with a free coefficient (uv).
+  // Split before alpha-renaming: leaving the token intact lets the ordinary
+  // parser split it later, after the index has already lost its lexical scope.
+  // Explicit multi-letter declarations, quoted names and gate aliases retain
+  // their atomic meaning. Non-letter tokens take their usual parsing path.
+  bool bound=false;
+  for(unsigned char c:name) {
+   if(c>=128 || !std::isalpha(c))return name;
    for(const auto &index:texIndices)if(index==std::string(1,c))bound=true;
-   if(!bound)return name;
   }
+  if(!bound)return name;
   // Implicit factors must obey the same complexity budget as explicit ones.
   if(name.size()-1>nodeLimit-nodes)throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
   nodes+=name.size()-1;
@@ -464,9 +493,9 @@ class Parser {
     std::string prefix=familyName(fields[slot]);if(prefix.empty())continue;
     if(label.compare(0,prefix.size(),prefix)!=0)continue;
     std::string suffix=label.substr(prefix.size());
-    unsigned index=0;bool valid=!suffix.empty() && suffix.size()<=4;
-    for(char c:suffix) {if(c<'0' || c>'9') {valid=false;break;}index=10*index+c-'0';}
-    if(!valid || index>=1024 || suffix!=std::to_string(index))continue;
+    bool valid=!suffix.empty() && (suffix.size()==1 || suffix.front()!='0');
+    for(char c:suffix)if(c<'0' || c>'9') {valid=false;break;}
+    if(!valid)continue;
     if(sameFamily)slot=0;
     // Only an empty canonical list is generated by the TeX recognizer. For
     // copied bindings, parse top-level entries rather than searching values.
@@ -481,7 +510,7 @@ class Parser {
      else if(c==',' && !depth) {if(k || !list.empty())entries.push_back(list.substr(start,k-start));start=k+1;}
     }
     bool supplied=false;
-    auto literalKey=[](std::string text,unsigned expected) {
+    auto literalKey=[](std::string text,const std::string &expected) {
      text.erase(std::remove_if(text.begin(),text.end(),[](unsigned char c){return std::isspace(c);}),text.end());
      while(text.size()>2 && text.front()=='(' && text.back()==')') {
       unsigned nesting=0;bool whole=true;
@@ -491,12 +520,12 @@ class Parser {
       if(!whole)break;text=text.substr(1,text.size()-2);
      }
      if(!text.empty() && text.front()=='+')text.erase(0,1);
-     if(text.empty() || text.size()>10)return false;
-     unsigned value=0;for(char c:text) {if(c<'0' || c>'9')return false;value=10*value+c-'0';if(value>1023)return false;}
-     return value==expected;
+     if(text.empty() || text.find_first_not_of("0123456789")!=std::string::npos)return false;
+     size_t first=text.find_first_not_of('0');text=first==std::string::npos ? "0" : text.substr(first);
+     return text==expected;
     };
     for(size_t k=0;k+2<entries.size();k+=3)
-     if((literalKey(entries[k],slot) || (sameFamily && literalKey(entries[k],1))) && literalKey(entries[k+1],index))supplied=true;
+     if((literalKey(entries[k],std::to_string(slot)) || (sameFamily && literalKey(entries[k],"1"))) && literalKey(entries[k+1],suffix))supplied=true;
     if(!supplied) {
      if(++indexedReferences>128)throw std::runtime_error("Quantum expression exceeds 128 bound subscript references.");
      if(!list.empty())list+=",";list+=std::to_string(slot)+","+suffix+","+symbol;fields[3]="vector("+list+")";
@@ -510,7 +539,7 @@ class Parser {
  }
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
-   ((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4 ? 3 : 0);
+   (((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4) || (name=="qtensorseries" && args.size()==5) ? 3 : 0);
   if(!index)return;
   size_t body=name=="select" ? 1 : 0;
   std::string original=args[index];
@@ -519,9 +548,10 @@ class Parser {
   const std::string occurrence=original;
   const bool lexicalConstant=original.size()>2 && original.front()==constantMarkerBegin && original.back()==constantMarkerEnd;
   original=withoutLabelMarkers(original);
-  bool plain=(name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="sum" || name=="qsum" || name=="product" || name=="select") && !original.empty() && (lexicalConstant || (original!="pi" && original!="i" && original!="e"));
+  const bool indexed=original.compare(0,14,"qindexedlabel(")==0 && original.back()==')';
+  bool plain=(name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="sum" || name=="qsum" || name=="product" || name=="qtensorseries" || name=="select") && !original.empty() && (lexicalConstant || (original!="pi" && original!="i" && original!="e"));
   for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
-  if(!plain && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
+  if(!plain && !indexed && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
      original.find('"',1)!=original.size()-1))return;
   std::string symbol;
   bool used;
@@ -533,6 +563,7 @@ class Parser {
   // A subscript that names this binder is a reference, not an opaque label.
   // Keep the index as a separate expression so nested binders and later
   // substitutions can operate structurally without editing quoted names.
+  if(!indexed) {
   const std::string labelIndex=plain ? original : original.substr(1,original.size()-2);
   scopeScalarProducts(args[body],labelIndex,symbol);
   // Bare |i> remains undecided until its lexical binder is known. Explicit
@@ -563,6 +594,7 @@ class Parser {
    // Scan the new prefix and suffix too: a label may contain several indices.
    --start;
   }
+  }
   // Nested calls are already scoped. Rename only this body and declaration;
   // bounds and widths may refer to an enclosing index with the same spelling.
   size_t at=0;
@@ -570,6 +602,10 @@ class Parser {
    // A quoted binder may capture quoted scalar symbols, but never immutable
    // subsystem metadata. Keep that provenance until every binder is scoped.
    if(at && args[body][at-1]==subsystemLabelBegin) {at+=occurrence.size();continue;}
+   if(indexed) {
+    char quoted=0;for(size_t k=0;k<at;++k) {char c=args[body][k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;}}
+    if(quoted) {at+=occurrence.size();continue;}
+   }
    if(plain && !lexicalConstant) {
     auto identifier=[](unsigned char c){return std::isalnum(c) || c=='_' || c>=128;};
     char quoted=0;for(size_t k=0;k<at;++k) {char c=args[body][k];if(c=='"' || c=='\''){if(quoted==c)quoted=0;else if(!quoted)quoted=c;}}
@@ -727,15 +763,24 @@ class Parser {
   std::string registerState=registerFamily(label,dimension);
   if(!registerState.empty())return registerState;
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
-  if(dimension.empty() && familyOpen!=std::string::npos) {
+  // Inside a sum, an indexed binder denotes a basis value rather than an
+  // independently declared named-state family. Outside that lexical scope,
+  // preserve the established state-family interpretation.
+  bool indexedBinder=false;for(const auto &index:texIndices)if(index.compare(0,14,"qindexedlabel(")==0)indexedBinder=true;
+  if(familyOpen!=std::string::npos && (dimension.empty() || (indexedBinder && familyLabel[familyOpen]=='{'))) {
    std::string outer=s;size_t outerPosition=p;s=familyLabel.substr(familyOpen+1,familyLabel.size()-familyOpen-2);p=0;
    std::string argument=expression();size_t count=1;
    while(take(',')) {if(++count>16)throw std::runtime_error("State families support at most 16 parameters.");argument+=","+expression();}
    ws();if(p!=s.size())throw std::runtime_error("Invalid state-family arguments.");
    s=outer;p=outerPosition;
    std::string familyName=familyLabel.substr(0,familyOpen);
+   if(indexedBinder && count==1 && familyLabel[familyOpen]=='{') {
+    std::string reference="qindexedlabel("+indexableLabel(familyName)+","+argument+","+indexableLabel("")+")";
+    if(std::find(texIndices.begin(),texIndices.end(),withoutLabelMarkers(reference))!=texIndices.end())
+     return dimension.empty() ? "qketstate("+reference+")" : "qbasis("+reference+","+dimension+")";
+   }
    if(familyLabel[familyOpen]=='{')familyName.pop_back();
-   return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
+   if(dimension.empty())return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
   }
   // Commas at the top level separate registers. Commas inside a computed
   // basis index, such as mod(k,3), remain ordinary function arguments.
@@ -782,7 +827,18 @@ class Parser {
     return state;
    }
    size_t mark=repeatedRegister(label);
-   if(mark==std::string::npos)return ket(label);
+   if(mark==std::string::npos) {
+    const std::string compact=labelText(label);
+    bool arithmetic=label.find_first_of("+-*/^()")!=std::string::npos &&
+     compact.find_first_not_of("01+-")!=std::string::npos &&
+     compact!="+i" && compact!="-i" && bellState(compact).empty();
+    if(!arithmetic)return ket(label);
+    std::string outer=s;size_t outerPosition=p;s=label;p=0;
+    std::string index=expression();ws();
+    if(p!=s.size())throw std::runtime_error("Invalid arithmetic basis index.");
+    s=outer;p=outerPosition;
+    return "qcomputationalket("+index+")";
+   }
    std::string outer=s;size_t outerPosition=p;s=label.substr(mark+1);p=0;
    std::string count=unary();ws();
    if(p!=s.size())throw std::runtime_error("Group a compound repeated-register count, for example |0^(n+1)>.");
@@ -1074,7 +1130,12 @@ class Parser {
    ws(); size_t b=p;
    bool numericToken=p<s.size() && (std::isdigit((unsigned char)s[p]) || s[p]=='.');
    if(numericToken) {
-    while(p<s.size() && (std::isdigit((unsigned char)s[p]) || s[p]=='.')) ++p;
+    unsigned dots=0;bool digits=false;
+    while(p<s.size() && (std::isdigit((unsigned char)s[p]) || s[p]=='.')) {
+     if(s[p]=='.')++dots;else digits=true;
+     ++p;
+    }
+    if(!digits || dots>1)throw std::runtime_error("Invalid decimal number at byte "+std::to_string(b+1));
     if(p<s.size() && (s[p]=='e' || s[p]=='E')) {
      size_t exponent=p++; if(p<s.size() && (s[p]=='+' || s[p]=='-')) ++p;
      size_t digits=p; while(p<s.size() && std::isdigit((unsigned char)s[p])) ++p;
@@ -1085,7 +1146,13 @@ class Parser {
    }
    if(b==p) throw std::runtime_error("Expected a quantum expression at byte "+std::to_string(p+1));
    a=s.substr(b,p-b); ws();
-   if(a=="cirq" && take('.')) {
+   bool indexedScalar=false;
+   if(!numericToken && a.back()=='_' && take('{')) {
+    std::string index=expression();need('}');
+    a="qindexedlabel("+indexableLabel(a)+","+index+","+indexableLabel("")+")";
+    indexedScalar=true;
+   }
+   else if(a=="cirq" && take('.')) {
     ws();size_t start=p;
     while(p<s.size() && (std::isalnum((unsigned char)s[p]) || s[p]=='_'))++p;
     a=s.substr(start,p-start);ws();
@@ -1114,7 +1181,7 @@ class Parser {
    else if(gates.find(a)!=gates.end()) { a=gates.at(a); }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.
-   else if(!numericToken && take('(')) {
+   else if(!numericToken && !indexedScalar && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     if(name=="J_x" || name=="Jₓ") name="Jx";
     if(name=="J_y") name="Jy";
@@ -1320,6 +1387,22 @@ class Parser {
     } else if(name=="cardinality") {
      std::string collection=expression();need(')');
      a="qsumset(1,"+collection+",'__cardinality_index')";
+    } else if(name=="qtexregistersum" || name=="qtexgroupregistersum") {
+     const bool grouped=name=="qtexgroupregistersum";
+     std::vector<std::string> args;
+     for(unsigned k=0;k<5;++k) {if(k)need(',');args.push_back(expression());}
+     need(grouped ? ',' : ')');std::string body=grouped ? expression() : product();
+     if(grouped)need(')');
+     a="qregistersum("+body+","+args[0]+","+args[2]+","+args[3]+","+withoutLabelMarkers(args[4])+","+args[1]+",vector())";
+    } else if(name=="qtexgrouptensorseries") {
+     std::vector<std::string> args;
+     args.push_back(expression());need(',');args.push_back(expression());need(',');
+     texIndexDeclaration=true;args.push_back(expression());texIndexDeclaration=false;need(',');
+     std::string direction=expression();need(',');
+     texIndices.push_back(withoutLabelMarkers(args.back()));
+     std::string body=expression();texIndices.pop_back();need(')');
+     args.insert(args.begin(),body);args.push_back(direction);scopeIndex("qtensorseries",args);
+     a="qtensorseries(";for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
     } else if(name=="qtexgroupsum" || name=="qtexgroupprod" || name=="qtexgroupbigotimes" || name=="qtexgroupbigoplus" || name=="qtexgroupsumset" ||
               name=="qtexsum" || name=="qtexprod" || name=="qtexbigotimes" || name=="qtexbigoplus" || name=="qtexsumset") {
      const bool grouped=name.compare(0,9,"qtexgroup")==0;
@@ -1508,6 +1591,7 @@ class Parser {
      };
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
+     else if(name=="qregistersum")protect(4);
      else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily")protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
@@ -1538,7 +1622,7 @@ class Parser {
     auto signature=quantumSignatures.find(name);
     if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }
-   } else {
+   } else if(!indexedScalar) {
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
@@ -1561,12 +1645,12 @@ class Parser {
      auto factor=[&](const std::string &value){if(factors++)product+="*";product+=value;};
      for(size_t at=0;at+1<a.size();++at) {
       if(((unsigned char)a[at]==0xce || (unsigned char)a[at]==0xcf) && letters.find(a.substr(at,2))!=std::string::npos) {
-       if(at>begin)factor(a.substr(begin,at-begin));
+       if(at>begin)factor(texIndexProduct(a.substr(begin,at-begin)));
        factor("\""+a.substr(at,2)+"\"");begin=at+2;++at;
       }
      }
      if(begin) {
-      if(begin<a.size())factor(a.substr(begin));
+      if(begin<a.size())factor(texIndexProduct(a.substr(begin)));
       a=factors==1 ? product : "("+product+")";
      }
     }
@@ -1636,7 +1720,17 @@ class Parser {
    if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
-   else if(take('@')) a="qtensor("+a+","+diracFactor()+")";
+   else if(take('@')) {
+    std::string right=diracFactor();
+    if(startsAtom()) {
+     // Scalar coefficients belong to the following tensor factor, whereas
+     // a tensor of operators may act on a following state. Preserve this
+     // unparenthesized run until evaluation can distinguish the two cases.
+     std::string factors="vector("+right;
+     while(startsAtom()) {factors+=","+diracFactor();checkSize(factors);}
+     a="qtensorchain("+a+","+factors+"))";
+    } else a="qtensor("+a+","+right+")";
+   }
    else if(take('#')) a="qoplus("+a+","+diracFactor()+")";
    else if(startsAtom()) a="qadjacent("+a+","+diracFactor()+")";
    else break;
@@ -1673,6 +1767,7 @@ class Parser {
  }
  std::string comparison() {
   std::string left=setUnion(),result;
+  std::vector<std::string> operands{left};bool equalities=true;
   while(true) {
    ws();std::string relation;
    if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
@@ -1682,10 +1777,17 @@ class Parser {
     if(s.compare(p,candidate.size(),candidate)==0) {relation=candidate;p+=candidate.size();break;}
    }
    if(relation.empty())break;
+   equalities=equalities && (relation=="=" || relation=="==");
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
    std::string right=setUnion(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
+  }
+  if(equalities && operands.size()>2) {
+   result="qequalchain(vector(";
+   for(size_t k=0;k<operands.size();++k) {if(k)result+=",";result+=operands[k];checkSize(result);}
+   return result+"))";
   }
   return result.empty() ? left : result;
  }

@@ -135,6 +135,56 @@ quantum_negativity_test_LDADD = $(test_LDADD)
 quantum_parser_integration_test_SOURCES = quantum-parser-integration-test.cc
 quantum_parser_integration_test_LDADD = $(test_LDADD)
 
+check_PROGRAMS += quantum-register-width-test
+TESTS += quantum-register-width-test
+quantum_register_width_test_SOURCES = quantum-register-width-test.cc
+quantum_register_width_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-set-basis-test
+TESTS += quantum-set-basis-test
+quantum_set_basis_test_SOURCES = quantum-set-basis-test.cc
+quantum_set_basis_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-wide-source-test
+TESTS += quantum-wide-source-test
+quantum_wide_source_test_SOURCES = quantum-wide-source-test.cc
+quantum_wide_source_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-indexed-width-test
+TESTS += quantum-indexed-width-test
+quantum_indexed_width_test_SOURCES = quantum-indexed-width-test.cc
+quantum_indexed_width_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-tensor-series-test
+TESTS += quantum-tensor-series-test
+quantum_tensor_series_test_SOURCES = quantum-tensor-series-test.cc
+quantum_tensor_series_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-tensor-series-width-test
+TESTS += quantum-tensor-series-width-test
+quantum_tensor_series_width_test_SOURCES = quantum-tensor-series-width-test.cc
+quantum_tensor_series_width_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-register-sum-test
+TESTS += quantum-register-sum-test
+quantum_register_sum_test_SOURCES = quantum-register-sum-test.cc
+quantum_register_sum_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-register-sum-width-test
+TESTS += quantum-register-sum-width-test
+quantum_register_sum_width_test_SOURCES = quantum-register-sum-width-test.cc
+quantum_register_sum_width_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-indexed-display-test
+TESTS += quantum-indexed-display-test
+quantum_indexed_display_test_SOURCES = quantum-indexed-display-test.cc quantum-display.h
+quantum_indexed_display_test_LDADD = $(test_LDADD)
+
+check_PROGRAMS += quantum-wide-basis-test
+TESTS += quantum-wide-basis-test
+quantum_wide_basis_test_SOURCES = quantum-wide-basis-test.cc
+quantum_wide_basis_test_LDADD = $(test_LDADD)
+
 quantum_worker_SOURCES = quantum-worker.cc quantum-display.h quantum-sampling-request.cc quantum-sampling-request.h quantum-exact-request.cc quantum-exact-request.h quantum-classical-request.h
 quantum_worker_LDADD = $(test_LDADD)
 TEST_EXTENSIONS = .py
@@ -323,3 +373,11 @@ EXTRA_DIST += quantum-named-subsystem-worker-test.py
 
 TESTS += quantum-scalar-product-worker-test.py
 EXTRA_DIST += quantum-scalar-product-worker-test.py
+
+TESTS += quantum-indexed-display-worker-test.py
+EXTRA_DIST += quantum-indexed-display-worker-test.py
+
+TESTS += quantum-wide-basis-worker-test.py quantum-tensor-chain-worker-test.py
+EXTRA_DIST += quantum-wide-basis-worker-test.py quantum-tensor-chain-worker-test.py
+TESTS += quantum-arithmetic-basis-worker-test.py
+EXTRA_DIST += quantum-arithmetic-basis-worker-test.py

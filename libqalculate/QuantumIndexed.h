@@ -14,4 +14,11 @@ void declareQuantumComplexParameter(Calculator &,MathStructure &,const MathStruc
 enum class QuantumBitLabelState { Invalid, Symbolic, Concrete };
 // Evaluate and validate both fields before deciding whether a label must defer.
 QuantumBitLabelState validateQuantumBitLabel(MathStructure &,MathStructure &,const EvaluationOptions &);
+// Internal shape inputs. Preserve the original expression's domain constraints;
+// never expand a series or evaluate a factor merely to obtain its dimensions.
+bool quantumTensorSeriesShapeInput(const MathStructure &,MathStructure &factor,MathStructure &count,const EvaluationOptions &);
+bool quantumSetSumShapeInput(const MathStructure &,MathStructure &term,const EvaluationOptions &);
+bool quantumRegisterSumShapeInput(const MathStructure &,MathStructure &term,MathStructure &dependentMarkers,const EvaluationOptions &);
+bool quantumReplacementShapeInput(const MathStructure &,MathStructure &term,const EvaluationOptions &);
+bool quantumScalarExpression(const MathStructure &);
 #endif

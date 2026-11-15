@@ -24,6 +24,16 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("x=y=z","qequalchain(vector(x,y,z))");
+ equal("x=y!=z","(qcompare(x,y,4)&&qcompare(y,z,5))");
+ equal("|x+y>","qcomputationalket(qadd(x,y))");
+ equal("|psi>","qnamedket(\"psi\")");
+ equal("a @ b c","qtensorchain(a,vector(b,c))");
+ equal("(a @ b)c","qadjacent((qtensor(a,b)),c)");
+ equal("a @ (b c)","qtensor(a,(qadjacent(b,c)))");
+ equal("a @ b c @ d","qtensor(qtensorchain(a,vector(b,c)),d)");
+ for(const char *number:{".5","1.","1.5","1.e2",".5e-2","0.5E+2"})equal(number,number);
+ for(const char *bad:{".","..","1..","1.2.3",".e2","x+.","[1..;0]"})rejects(bad);
  // Copied large matrices have many shallow entries, not deep expressions.
  std::string copied=basis(0,509);
  equal(copied,"q"+copied);
@@ -72,6 +82,11 @@ int main(){try {
  equal("|psi(pi/8)>","qstatecall(\"psi\",(pi/(8)))");
  equal("<psi(0)|psi(1)>","qmul(qdag(qstatecall(\"psi\",0)),qstatecall(\"psi\",1))");
  rejects("|psi()>");equal("|psi(1,2)>","qstatecalls(\"psi\",vector(1,2))");
+ // Undeclared families retain their arguments inside an indexed sum too.
+ equal(R"(\sum_{y_{n-1}\in\{0,1\}}{\vert f_{a,b}\rangle})",
+       translateQuantum("qsumset(qstatecalls(\"f\",vector(a,b)),qset(vector(0,1)),z)"));
+ equal(R"(\sum_{y_{n-1}\in\{0,1\}}{\vert y_{a,b}\rangle})",
+       translateQuantum("qsumset(qstatecalls(\"y\",vector(a,b)),qset(vector(0,1)),z)"));
  const std::string zero=basis(0,2), one=basis(1,2);
  for(const std::string sign:{"+","-"}) {
   equal("0.5*|0><0|"+sign+"0.5*|1><1|",(sign=="+" ? "qadd(" : "qsub(")+std::string("qadjacent(qmul(0.5,")+zero+"),qdag("+zero+")),qadjacent(qmul(0.5,"+one+"),qdag("+one+")))");
@@ -201,13 +216,16 @@ int main(){try {
   {R"(\sum_{x=0}^{2}{xxx})",R"(\sum_{x=0}^{2}{x*x*x})"},
   {R"(\sum_{p=0}^{1}{\sum_{i=0}^{1}{pi}})",R"(sum(sum(pi,0,1,i),0,1,p))"},
   {R"(\sum_{i=0}^{2}{ii})",R"(\sum_{i=0}^{2}{i*i})"},
-  {R"(\sum_{x=0}^{1}{xy})",R"(sum(xy,0,1,x))"},
+  {R"(\sum_{x=0}^{1}{xy})",R"(sum(x*y,0,1,x))"},
+  {R"(\sum_{z=0}^{1}{Hz})",R"(sum(Hz,0,1,z))"},
+  {R"(\sum_{A=0}^{1}{SWAP})",R"(sum(SWAP,0,1,A))"},
+  {R"(\sum_{i=0}^{1}{sin(i)})",R"(sum(sin(i),0,1,i))"},
   {R"(\sum_{x=0}^{1}{\sum_{y=0}^{1}{"xy"}})",R"(sum(sum("xy",0,1,y),0,1,x))"},
   {R"(\sum_{xy=0}^{2}{xy})",R"(sum(xy,0,2,xy))"},
   {R"(\sum_{x=0}^{1}{xx}+xx)",R"(sum(x*x,0,1,x)+xx)"}
  })equal(pair.first,translateQuantum(pair.second));
  rejects("qtexgroupsum(0,1,x,"+std::string(600,'x')+")");
- equal("qtexgroupsum(0,1,x,"+std::string(600,'x')+"z)",translateQuantum("sum("+std::string(600,'x')+"z,0,1,x)"));
+ rejects("qtexgroupsum(0,1,x,"+std::string(600,'x')+"z)");
  std::string nestedSums;
  for(unsigned k=0;k<300;++k)nestedSums+="qtexsum(0,1,k) ";
  rejects(nestedSums+"1");

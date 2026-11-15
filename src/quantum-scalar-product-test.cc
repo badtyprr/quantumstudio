@@ -58,9 +58,11 @@ int main() {try {
   }
   equal("qscalarproductsum(\"x_\",\"y_\","+std::to_string(width)+",vector("+bindings+"))",std::to_string(expected));
  }
- for(const char *width:{"0","-1","1/2","1025","infinity"})
+ equal("qscalarproductsum(\"x_\",\"y_\",0,vector())","0");
+ equal("qreplace("+family+",\"n\",0)","0");
+ for(const char *width:{"-1","1/2","infinity"})
   rejects("qscalarproductsum(\"x_\",\"y_\","+std::string(width)+",vector())");
- for(const char *bindings:{"0,0,1,0,0,2","2,0,1","0,-1,1","0,1024,1","0,0,infinity","0,0,interval(0,1)","0,0,[1;2]","0,0,2*m"})
+ for(const char *bindings:{"0,0,1,0,0,2","2,0,1","0,-1,1","0,1/2,1","0,0,infinity","0,0,interval(0,1)","0,0,[1;2]","0,0,2*m"})
   rejects("qscalarproductsum(\"x_\",\"y_\",1,vector("+std::string(bindings)+"))");
  rejects("qscalarproductsum(\"x_\",\"x_\",1,vector(0,0,1,1,0,1))");
  rejects("qreplace("+family+",\"x_0\",interval(0,1))");
@@ -74,6 +76,29 @@ int main() {try {
  MathStructure prefixX("x_",true),prefixY("y_",true),width(1024),value;
  value.set(calculator.getFunction("qscalarproductsum"),&prefixX,&prefixY,&width,NULL);value.addChild(bindings);value.eval(eo);
  if(!value.isNumber() || value.number()!=1024)throw std::runtime_error("Width 1024 boundary failed");
+ ++checks;
+ auto retained=[&](const std::string &expression,const std::string &width,const std::string &bindings) {
+  while(calculator.message())calculator.nextMessage();
+  MathStructure result=calculator.calculate(expression,eo),expectedWidth=calculator.calculate(width,eo),expectedBindings=calculator.calculate(bindings,eo);
+  bool error=false;while(calculator.message()) {error=error || calculator.message()->type()==MESSAGE_ERROR;calculator.nextMessage();}
+  if(error || !result.isFunction() || result.function()!=calculator.getFunction("qscalarproductsum") || result.size()!=4 ||
+     !result[2].equals(expectedWidth) || !result[3].equals(expectedBindings))throw std::runtime_error("Wide scalar product was not retained: "+expression);
+  ++checks;
+ };
+ for(const char *largeWidth:{"1025","1000000000000","100000000000000000000000000000000"})
+  retained("qscalarproductsum(\"x_\",\"y_\","+std::string(largeWidth)+",vector())",largeWidth,"vector()");
+ retained("qscalarproductsum(\"x_\",\"y_\",n+1,vector())","n+1","vector()");
+ retained("qreplace(qscalarproductsum(\"x_\",\"y_\",n+1,vector()),\"n\",3)","4","vector()");
+ rejects("qscalarproductsum(\"x_\",\"y_\",1*m,vector())");
+ const std::string largeIndex="99999999999999999999999999999999",largeWidth="100000000000000000000000000000000";
+ retained("qreplace(qreplace("+family+",\"x_"+largeIndex+"\",7),\"n\","+largeWidth+")",largeWidth,"vector(0,"+largeIndex+",7)");
+ retained("qreplace(qreplace("+family+",\"n\","+largeWidth+"),\"x_"+largeIndex+"\",7)",largeWidth,"vector(0,"+largeIndex+",7)");
+ retained("qreplace(qreplace(qreplace("+family+",\"x_"+largeIndex+"\",\"x_"+largeIndex+"\"+1),\"x_"+largeIndex+"\",2),\"n\","+largeWidth+")",largeWidth,"vector(0,"+largeIndex+",3)");
+ retained(translateQuantum(R"(x_{999999999999}y_{999999999999}+\cdots+x_0 y_0)"),"1000000000000","vector()");
+ rejects("qscalarproductsum(\"x_\",\"x_\","+largeWidth+",vector(0,"+largeIndex+",1,1,"+largeIndex+",2))");
+ rejects("qscalarproductsum(\"x_\",\"y_\","+largeWidth+",vector(0,"+largeIndex+",interval(0,1)))");
+ const std::string largeScope=translateQuantum("sum(qscalarproductsum(\"x_\",\"y_\","+largeWidth+",vector()),0,1,\"x_"+largeIndex+"\")");
+ if(largeScope.find("vector(0,"+largeIndex+",\"qboundindex_0\")")==std::string::npos)throw std::runtime_error("Large scalar-product binding was not scoped");
  ++checks;
  const std::string source=R"(x_{n-1}y_{n-1} + \cdots + x_0 y_0)";
  equal(translateQuantum("replace("+source+",vector(n,x_0,x_1,y_0,y_1),vector(2,1,1,1,1))"),"2");

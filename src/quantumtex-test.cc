@@ -17,19 +17,26 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal("$$x.$$","x");equal(R"(\[\ket{0}.\])","|0>");
+  equal("$$1.5$$","1.5");equal("$$1.$$","1.");
+  equal("$$x..$$","x..");equal("$$x+.$$","x+.");
+  equal("$$\"x.\"$$","\"x.\"");equal("x.","x.");
+  equal(R"(\begin{aligned}x &= y.\end{aligned})",quantumTeX(R"(\begin{aligned}x &= y\end{aligned})"));
   const std::string hadamardFamily=R"(\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_{0} \rangle \bigr))";
   equal(hadamardFamily,"(tensorpow(H,n)*|x_(n-1) ... x_0>)");
   equal("replace("+hadamardFamily+",n,2)","replace((tensorpow(H,n)*|x_(n-1) ... x_0>),n,2)");
   equal(R"((H \vert b_{m-1}\rangle)\otimes\cdots\otimes(H \vert b_0\rangle))","(tensorpow(H,m)*|b_(m-1) ... b_0>)");
   equal(R"((H \vert x_0\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))","(tensorpow(H,1)*|x_(0) ... x_0>)");
   equal("\""+hadamardFamily+"\"","\""+hadamardFamily+"\"");
+  equal(R"((H \vert x_{10}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))",
+        "qtexgrouptensorseries(10,0,qseriesindex,-1,H | x_qseriesindex>)");
+  equal(R"((H \vert x_{n+1}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))",
+        "qtexgrouptensorseries(n+1,0,qseriesindex,-1,H | x_qseriesindex>)");
   for(const char *input:{
    R"((H \vert x_{n-1}\rangle)\otimes\cdots\otimes(X \vert x_0\rangle))",
    R"((H \vert x_{n-1}\rangle)\otimes\cdots\otimes(H \vert y_0\rangle))",
    R"((H \vert x_{n-1}\rangle)\otimes\cdots\otimes(H \vert x_1\rangle))",
-   R"((H \vertx_{n-1}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))",
-   R"((H \vert x_{10}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))",
-   R"((H \vert x_{n+1}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))"
+   R"((H \vertx_{n-1}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))"
   })rejects(input);
   equal(R"(x_{n-1}y_{n-1} + \cdots + x_0 y_0)","qscalarproductsum(\"x_\",\"y_\",\"n\",vector())");
   equal(R"(replace(u_{m-1}v_{m-1}+\cdots+u_0 v_0,m,2))","replace(qscalarproductsum(\"u_\",\"v_\",\"m\",vector()),m,2)");
@@ -70,7 +77,10 @@ int main() {
   equal(R"(\ket{psi_{a+b}})","|psi_{a+b}>");
   equal("|Phi_{+}>","|Phi_+>");
   rejects("|psi_{}>");
-  equal("<0|+A_{i+j}","<0|+A_i+j");
+  equal("<0|+A_{i+j}","<0|+A_{i+j}");
+  equal("<0|+A_i+j","<0|+A_i+j");
+  equal("x_{n-1}","x_{n-1}");
+  equal("x_n-1","x_n-1");
   equal(R"(\ket{\psi_\alpha})","|ψ_α>");
   equal(R"(\braket{psi_{a+b}}{psi_{c+d}})","<psi_{a+b}|psi_{c+d}>");
   equal(R"(\dyad{psi_{a+b}}{psi_{c+d}})","(|psi_{a+b}><psi_{c+d}|)");

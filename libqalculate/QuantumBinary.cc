@@ -7,6 +7,9 @@
 #include <vector>
 #include <utility>
 namespace {
+bool encodedBits(const MathStructure &value) {
+ return value.isFunction() && (value.function()->referenceName()=="qbitlabel" || value.function()->referenceName()=="qbits");
+}
 const MathStructure &element(const MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 bool binaryMatrix(const MathStructure &a,std::vector<std::vector<unsigned char>> &matrix) {
@@ -104,30 +107,66 @@ class QuantumBinaryFunction: public MathFunction {
    return 1;
   }
   if(op=="qbits") {
-   const MathStructure &width=args[1];
-   if(!a.isNumber() || !a.number().isInteger() || a.number().isNegative() || !width.isNumber() || !width.number().isInteger() || width.number()<1 || width.number()>1024) {CALCULATOR->error(true,"bits(value,width) requires a nonnegative integer and a width from 1 to 1024.",NULL);return 0;}
-   Number limit(1);limit.shiftLeft(width.number());
-   if(a.number()>=limit) {CALCULATOR->error(true,"The integer does not fit in the requested binary width.",NULL);return 0;}
+   MathStructure index=a,width=args[1];
+   QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
+   if(state==QuantumBitLabelState::Invalid)return 0;
+   // Width validity does not depend on the vector expansion budget. Keep the
+   // constructor so later substitutions can expand and still validate it.
+   if(state==QuantumBitLabelState::Symbolic || width.number()>1024) {
+    if(!index.equals(raw[0]) || !width.equals(raw[1])) {out.set(this,&index,&width,NULL);return 1;}
+    return 0;
+   }
    out.clearVector();
-   for(int k=width.number().intValue();k>0;--k)out.addChild(a.number().bitGet(k) ? m_one : m_zero);
+   for(int k=width.number().intValue();k>0;--k)out.addChild(index.number().bitGet(k) ? m_one : m_zero);
    return 1;
   }
   if(op=="qbitdot" || op=="qbitxor" || op=="qbitvalue") {
+   unsigned operands=op=="qbitvalue" ? 1U : 2U;
+   bool allLabels=true;
+   for(unsigned j=0;j<operands;++j)
+    allLabels=allLabels && encodedBits(args[j]);
+   if(allLabels) {
+    MathStructure indices[2],widths[2];bool pending=false;
+    for(unsigned j=0;j<operands;++j) {
+     if(args[j].size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
+     indices[j]=args[j][0];widths[j]=args[j][1];
+     QuantumBitLabelState state=validateQuantumBitLabel(indices[j],widths[j],eo);
+     if(state==QuantumBitLabelState::Invalid)return 0;
+     pending=pending || state==QuantumBitLabelState::Symbolic;
+    }
+    if(operands==2 && widths[0].isNumber() && widths[1].isNumber() && widths[0].number()!=widths[1].number()) {
+     CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;
+    }
+    if(pending)return 0;
+    if(op=="qbitvalue") {out=indices[0];return 1;}
+    Number value=indices[0].number();
+    if(op=="qbitxor") {
+     if(!value.bitXor(indices[1].number()))return 0;
+     MathStructure index(value);out.set(args[0].function(),&index,&widths[0],NULL);return 1;
+    }
+    if(!value.bitAnd(indices[1].number()))return 0;
+    bool parity=false;
+    for(int bit=1;bit<=value.integerLength();++bit) {
+     if(CALCULATOR->aborted())return 0;
+     if(value.bitGet(bit))parity=!parity;
+    }
+    out=parity ? m_one : m_zero;return 1;
+   }
    bool symbolicLabel=false;
-   int knownWidths[2]={-1,-1};
+   Number knownWidths[2]={Number(-1),Number(-1)};
    std::vector<MathStructure> bits[2];
    bool labels[2]={false,false};
    for(size_t j=0;j<(op=="qbitvalue" ? 1U : 2U);++j) {
     const MathStructure &value=args[j];
-    labels[j]=value.isFunction() && value.function()->referenceName()=="qbitlabel";
+    labels[j]=encodedBits(value);
     if(labels[j]) {
      if(value.size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
      MathStructure index=value[0],width=value[1];
      QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
      if(state==QuantumBitLabelState::Invalid)return 0;
-     if(width.isNumber())knownWidths[j]=width.number().intValue();
-     if(state==QuantumBitLabelState::Symbolic) {symbolicLabel=true;continue;}
-     for(int k=width.number().intValue()-1;k>=0;--k)bits[j].push_back((index.number().intValue()>>k)&1 ? m_one : m_zero);
+     if(width.isNumber())knownWidths[j]=width.number();
+     if(state==QuantumBitLabelState::Symbolic || width.number()>1024) {symbolicLabel=true;continue;}
+     for(int k=width.number().intValue();k>0;--k)bits[j].push_back(index.number().bitGet(k) ? m_one : m_zero);
     } else if(value.isMatrix()) {
      if(value.rows()!=1 && value.columns()!=1) {CALCULATOR->error(true,"Binary bit operations require vectors, not multi-row matrices.",NULL);return 0;}
      if(value.rows()*value.columns()>1024) {CALCULATOR->error(true,"Binary bit operations support at most 1024 bits.",NULL);return 0;}
@@ -136,7 +175,6 @@ class QuantumBinaryFunction: public MathFunction {
      if(value.size()>1024) {CALCULATOR->error(true,"Binary bit operations support at most 1024 bits.",NULL);return 0;}
      for(size_t k=0;k<value.size();++k)bits[j].push_back(value[k]);
     } else bits[j].push_back(value);
-    if(bits[j].empty() && !labels[j]) {CALCULATOR->error(true,"Binary bit operations require nonempty bit vectors.",NULL);return 0;}
     for(const auto &bit:bits[j])if(!bit.isNumber() || (!bit.number().isZero() && !bit.number().isOne())) {CALCULATOR->error(true,"Binary bit operations require each entry to be 0 or 1.",NULL);return 0;}
     knownWidths[j]=static_cast<int>(bits[j].size());
    }
@@ -150,12 +188,6 @@ class QuantumBinaryFunction: public MathFunction {
    }
    if(bits[0].size()!=bits[1].size()) {CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;}
    if(op=="qbitxor") {
-    if(labels[0] && labels[1]) {
-     int value=0;
-     for(size_t k=0;k<bits[0].size();++k)value=2*value+(bits[0][k].number().isOne()!=bits[1][k].number().isOne());
-     MathStructure index(value),width(static_cast<int>(bits[0].size()));
-     out.set(args[0].function(),&index,&width,NULL);return 1;
-    }
     out.clearVector();
     for(size_t k=0;k<bits[0].size();++k)out.addChild(bits[0][k].number().isOne()!=bits[1][k].number().isOne() ? m_one : m_zero);
     return 1;
