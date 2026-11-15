@@ -32,6 +32,16 @@ int main(){try {
  equal("qlineargate([0,1;1,0])","[1,0,0,0;0,0,1,0;0,1,0,0;0,0,0,1]");
  for(unsigned value=0;value<64;++value)equal("qbitvalue(qbits("+std::to_string(value)+",6))",std::to_string(value));
  equal("qbitvalue(qbits(2^1023+1,1024))","2^1023+1");
+ equal("qbits(0,0)","vector()");
+ equal("qbitvalue(qbits(0,0))","0");
+ equal("qbitdot(qbits(0,0),qbits(0,0))","0");
+ equal("qbitxor(qbits(0,0),qbits(0,0))","vector()");
+ equal("qbitvalue(qbits(1,1025))","1");
+ equal("qbitvalue(qbits(1,10^12))","1");
+ equal("qbitdot(qbits(3,10^12),qbits(1,10^12))","1");
+ equal("qbitvalue(qbitxor(qbits(3,10^12),qbits(1,10^12)))","2");
+ equal("replace(qbits(1,n),n,4)","[0,0,0,1]");
+ equal("replace(qbits(x,4),x,1)","[0,0,0,1]");
  // Exhaust all 2x2 matrices; determinant parity independently determines rank.
  for(unsigned mask=0;mask<16;++mask) {
   unsigned a=(mask>>3)&1,b=(mask>>2)&1,c=(mask>>1)&1,d=mask&1;
@@ -47,7 +57,7 @@ int main(){try {
    }
   }
  }
- for(const auto &expression:{"qbits(4,2)","qbits(-1,2)","qbits(1,0)","qbits(1,1025)","qbitvalue([1,2])","qbitdot([1,0],[1])","qbitxor(vector(),vector())","qbitvalue([1,0;0,1])","qgf2rank([1,i])","qgf2rank(identity(129))","qgf2mul([1,0],[1,0])","qgf2inverse([1,1;1,1])","qgf2inverse([1,0,0;0,1,0])","qlineargate([1,1;1,1])","qlineargate(identity(10))"}) {
+ for(const auto &expression:{"qbits(4,2)","qbits(-1,2)","qbits(1,0)","qbits(1,-1)","qbits(1,1/2)","qbits(1/2,1025)","replace(qbits(1,n),n,0)","qbitdot(qbits(1,1025),qbits(1,1026))","qbitvalue([1,2])","qbitdot([1,0],[1])","qbitvalue([1,0;0,1])","qgf2rank([1,i])","qgf2rank(identity(129))","qgf2mul([1,0],[1,0])","qgf2inverse([1,1;1,1])","qgf2inverse([1,0,0;0,1,0])","qlineargate([1,1;1,1])","qlineargate(identity(10))"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

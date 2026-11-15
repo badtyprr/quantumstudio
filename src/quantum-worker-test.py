@@ -200,10 +200,22 @@ for flags in ((), ("--approx",)):
         assert (actual["rows"], actual["columns"], actual["cells"]) == (
             reference["rows"], reference["columns"], reference["cells"]
         ), (expression, flags, actual, reference)
+    # Empty registers are the one-dimensional tensor identity. Wide registers
+    # retain a symbolic family until their bits and a manageable width are known.
+    empty = data("quantum:replace(" + family + ",n,0)", *flags)
+    assert (empty["rows"], empty["columns"], empty["cells"]) == (1, 1, [["1"]])
+    empty_copy = data(empty["copy_text"], *flags)
+    assert (empty_copy["rows"], empty_copy["columns"], empty_copy["cells"]) == (1, 1, [["1"]])
+    wide = data("quantum:replace(" + family + ",n,11)", *flags)
+    assert wide["rows"] == wide["columns"] == 0 and wide["cells"] == []
+    assert "x_10" in wide["display_text"] and "qregisterfamily" not in wide["display_text"]
+    wide_copy = data(wide["copy_text"], *flags)
+    assert wide_copy["copy_text"] == wide["copy_text"]
+    assert wide_copy["display_text"] == wide["display_text"]
     for expression in (
         "replace(" + family + ",x_0,2)",
-        "replace(" + family + ",n,0)",
-        "replace(" + family + ",n,11)",
+        "replace(" + family + ",n,-1)",
+        "replace(" + family + ",n,1/2)",
         "replace(replace(" + family + ",x_2,1),n,2)",
         "replace(|x_(n-1) ... x_1 x_0>,n,1)",
         "|x_1 ... x_2 x_1 x_0>",
@@ -253,7 +265,22 @@ for width in range(1, 4):
                 assert (value["rows"], value["columns"], value["cells"]) == (
                     1 << width, 1, reference["cells"]
                 ), (width, x, width_first, value, reference)
-for name, value in (("n", "0"), ("n", "11"), ("n", "3/2"), ("x_0", "2"), ("x_0", "-1"), ("x_0", "1/2")):
+empty_product = hadamard_data("quantum:qmul(qidentity(1),qidentity(1))")
+for width in (0, 11):
+    actual = hadamard_data("quantum:replace(" + hadamard_copy["copy_text"] + ",n," + str(width) + ")")
+    copied = hadamard_data(actual["copy_text"])
+    for value in (actual, copied):
+        if width == 0:
+            assert value["copy_text"] == empty_product["copy_text"] == "1"
+            assert (value["rows"], value["columns"], value["cells"]) == (
+                empty_product["rows"], empty_product["columns"], empty_product["cells"])
+        else:
+            assert value["rows"] == value["columns"] == 0 and value["cells"] == []
+            assert "x_" in value["display_text"] and "11" in value["display_text"]
+            for internal in ("qregisterfamily", "qmatrix", "qpower", "qtensorpow"):
+                assert internal not in value["display_text"], value
+    assert copied["copy_text"] == actual["copy_text"]
+for name, value in (("n", "-1"), ("n", "3/2"), ("x_0", "2"), ("x_0", "-1"), ("x_0", "1/2")):
     rejected = run("quantum:replace(" + hadamard_copy["copy_text"] + "," + name + "," + value + ")", "--json", success=False)
     assert rejected.returncode == 2 and not rejected.stdout and rejected.stderr
 
@@ -275,11 +302,21 @@ for flags in ((), ("--approx",)):
         assert (actual["rows"], actual["columns"], actual["cells"]) == (
             reference["rows"], reference["columns"], reference["cells"]
         ), (expression, flags, actual, reference)
-        for invalid in ("-1", "1/2", "11"):
+        for width in (0, 11):
+            retained = data("quantum:replace((" + copied["copy_text"] + "),n," + str(width) + ")", *flags)
+            reentered = data(retained["copy_text"], *flags)
+            for value in (retained, reentered):
+                if width == 0:
+                    assert (value["rows"], value["columns"], value["cells"]) == (1, 1, [["1"]])
+                else:
+                    assert value["rows"] == value["columns"] == 0 and value["cells"] == []
+                    assert "qtensorpow" in value["copy_text"] and "qtensorpow" not in value["display_text"]
+            assert reentered["copy_text"] == retained["copy_text"]
+        for invalid in ("-1", "1/2"):
             rejected = run("quantum:replace((" + copied["copy_text"] + "),n," + invalid + ")",
                            "--json", *flags, success=False)
             assert rejected.returncode == 2 and not rejected.stdout
-            assert b"Tensor power requires an integer exponent" in rejected.stderr
+            assert b"Tensor power requires a nonnegative integer exponent" in rejected.stderr
     for expression in ("tensorpow(2,n)", "tensorpow(2,0)"):
         rejected = run("quantum:" + expression, "--json", *flags, success=False)
         assert rejected.returncode == 2 and not rejected.stdout
@@ -287,7 +324,7 @@ for flags in ((), ("--approx",)):
     for expression in ("tensorpow(basis(x,2),-1)", "tensorpow(H,[1,2])"):
         rejected = run("quantum:" + expression, "--json", *flags, success=False)
         assert rejected.returncode == 2 and not rejected.stdout
-        assert b"Tensor power requires an integer exponent" in rejected.stderr
+        assert b"Tensor power requires a nonnegative integer exponent" in rejected.stderr
     for count, expected in (("0", "matrix(1,1,[1])"), ("1", "|1>"), ("2", "|11>")):
         symbolic = data("quantum:tensorpow(basis(x,2),n)", *flags)
         copied = data("quantum:" + symbolic["copy_text"], *flags)
@@ -400,9 +437,16 @@ for flags in ((), ("--approx",)):
         copied=data("quantum:"+value["copy_text"],*flags)
         assert "qbitlabel" in copied["copy_text"]
         run("quantum:replace(replace(("+copied["copy_text"]+"),x,8),n,2)","--json",*flags,success=False)
+    wide = data("quantum:bitstring(x,11)", *flags)
+    copied_wide = data(wide["copy_text"], *flags)
+    assert copied_wide["copy_text"] == wide["copy_text"]
+    assert "bitstring(x, 11)" == wide["display_text"]
+    assert data("quantum:bitvalue(replace(" + copied_wide["copy_text"] + ",x,2047))", *flags)["text"] == "2047"
+    rejected = run("quantum:replace(" + copied_wide["copy_text"] + ",x,2048)", "--json", *flags, success=False)
+    assert rejected.returncode == 2 and not rejected.stdout and rejected.stderr
     for expression in [
         "bitstring(-1,n)", "bitstring(1/2,n)", "bitstring(x,-1)",
-        "bitstring(x,1/2)", "bitstring(x,11)", "bitstring(1,0)",
+        "bitstring(x,1/2)", "bitstring(1,0)",
         "bitxor(bitstring(x,2),bitstring(y,3))",
         "bitdot(bitstring(x,2),bitstring(y,3))",
         "bitxor(bitstring(x,n),[0,2])",
@@ -493,7 +537,14 @@ for flags in [(), ("--approx",)]:
             reference=operator.replace('_N','_'+str(n))+'|'+str(x)+'>_'+str(n)
             residual=data('quantum:norm(('+substituted+')-('+reference+'))',*flags)['text'].replace('−','-')
             assert all(abs(Decimal(part.rstrip('i')))<Decimal('1e-25') for part in residual.split(' + '))
-        for n,x in [('4','4'),('4','-1'),('4','1/2'),('0','0'),('65','0'),('4','i')]:
+        wide = data('quantum:replace(replace(('+expanded['copy_text']+'),N,65),x,0)', *flags)
+        wide_copy = data(wide['copy_text'], *flags)
+        for value in (wide, wide_copy):
+            assert value['rows'] == value['columns'] == 0 and value['cells'] == []
+            assert 'qfourierdomain' in value['copy_text'] and '65' in value['copy_text']
+            assert '∑' in value['display_text'] and 'qfourierdomain' not in value['display_text']
+        assert wide_copy['copy_text'] == wide['copy_text']
+        for n,x in [('4','4'),('4','-1'),('4','1/2'),('0','0'),('65','65'),('4','i')]:
             rejected=run('quantum:replace(replace(('+expanded['copy_text']+'),N,'+n+'),x,'+x+')','--json',*flags,success=False)
             assert rejected.returncode==2 and not rejected.stdout and rejected.stderr
     free=data('quantum:QFT_N|k>_N',*flags)
@@ -1037,7 +1088,15 @@ for flags in [(), ("--approx",)]:
         value = data("quantum: " + expression, *flags)
         assert value["rows"] == value["columns"] == 1, (expression, value)
         assert value["cells"][0][0].replace("−", "-") == expected, (expression, value)
-for expression in [r"\sum_{k=0}^{1024}{|k>}", r"\sum_{k=1}^{2}{|k>}",
+# Wide basis columns remain exact symbolic terms instead of allocating a dense state.
+wide_sum = data(r"quantum: \sum_{k=0}^{1024}{|k>}")
+wide_sum_copy = data(wide_sum["copy_text"])
+for value in (wide_sum, wide_sum_copy):
+    assert value["rows"] == value["columns"] == 0 and value["cells"] == []
+    indices = re.findall(r"qbasis\((\d+),\s*1025\)", value["copy_text"])
+    assert len(indices) == 1025 and set(map(int, indices)) == set(range(1025))
+assert wide_sum_copy["copy_text"] == wide_sum["copy_text"]
+for expression in [r"\sum_{k=1}^{2}{|k>}",
                    r"\sum_{k=0}^{2}{|k>_2}", "basis(0,0)", "basis(1,1)", "basis(-1,1)"]:
     assert run("quantum: " + expression, "--json", success=False).stdout == b""
 

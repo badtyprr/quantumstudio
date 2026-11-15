@@ -21,6 +21,118 @@ int main(){try {
  registerQuantumIndexed(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ equal("quantum:1=1=1","1");equal("quantum:1=1=2","0");
+ equal("quantum:x=x=x","1");
+ equal("quantum:replace(([0;0;0;1]=|2x+1>=|x+2>),x,1)","1");
+ equal("quantum:replace((|2x+1>=|x+2>=[0;0;0;1]),x,1)","1");
+ equal("quantum:replace((|2x+1>=|x+2>=[0;0;0;1]),x,0)","0");
+ {
+  MathStructure inequality=calculator.calculate("quantum:|2x+1> != [0;0;0;1]",eo);
+  if(inequality.containsFunction(calculator.getFunction("qcomputationalket"))==0)
+   throw std::runtime_error("Inequality assigned an unsupported ambient dimension");
+  ++checks;
+ }
+ for(const char *bad:{"quantum:replace(([0;0;0;1]=|2x+1>=|x+2>),x,2)","quantum:qequalchain(vector(1,1))"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(bad,eo);bool error=false;
+  while(calculator.message()) {error=error || calculator.message()->type()==MESSAGE_ERROR;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid equality chain accepted: ")+bad);++checks;
+ }
+ {
+  auto variable=new UnknownVariable("","ambient_width");calculator.addVariable(variable);
+  MathStructure dimension(variable),index("ambient_width",true),body,sum;
+  body.set(calculator.getFunction("qcomputationalket"),&index,NULL);
+  sum.set(calculator.getFunction("qsum"),&body,&m_zero,&m_one,NULL);sum.addChild(index);
+  MathStructure original=sum;
+  if(quantumResolveBasisDimension(sum,dimension) || !sum.equals(original))
+   throw std::runtime_error("Ambient dimension captured a differently represented bound name");
+  ++checks;
+ }
+ equal("quantum:replace(replace(norm((fourier(4)|2x+a>)-([1;-i;-1;i]/2)),x,1),a,1)","0");
+ equal("quantum:replace(replace(replace(norm((fourier(d)|2x+a>)-([1;-i;-1;i]/2)),d,4),x,1),a,1)","0");
+ equal("quantum:replace((|2x+1>=[0;0;0;1]),x,1)","1");
+ equal("quantum:replace(([0;0;0;1]=|2x+1>),x,1)","1");
+ equal(R"(quantum:[0;1;0;1]=\sum_{b=0}^1\ket{2b+1})","1");
+ equal(R"(quantum:fourier(4)(\sum_{b=0}^1\ket{2b+1}))","[1;0;-1;0]");
+ equal("quantum:|2x+1>_4", "qbasis(2*x+1,4)");
+ for(const char *bad:{"quantum:fourier(4)|2*2+1>","quantum:fourier(4)|(-1)>","quantum:fourier(4)|(1/2)>","quantum:replace((fourier(4)|2x+1>),x,2)"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(bad,eo);bool error=false;
+  while(calculator.message()) {error=error || calculator.message()->type()==MESSAGE_ERROR;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid inferred basis accepted: ")+bad);++checks;
+ }
+ equal("quantum:|0> @ (1/2)|0>","[1;0;0;0]/2");
+ equal("quantum:|0> @ ((1/2)|0>)","[1;0;0;0]/2");
+ equal(R"(quantum:\ket{0}\otimes\frac{1}{2}\ket{0})","[1;0;0;0]/2");
+ equal("quantum:H @ H |00>","[1;1;1;1]/2");
+ equal("quantum:replace((H @ c|00>),c,H)","[1;1;1;1]/2");
+ equal("quantum:qtensorchain([1;0],vector([1;0],[1;0]))","[1;0;0;0;0;0;0;0]");
+ equal("quantum:H @ (1/2)H |00>","[1;1;1;1]/4");
+ equal("quantum:|0> @ (1/2)(1/3)|1>","[0;1;0;0]/6");
+ equal("quantum:replace((|0> @ c|1>),c,3)","[0;3;0;0]");
+ equal("quantum:|0> @ 0|1>","[0;0;0;0]");
+ equal("quantum:|0> @ (-2)|1>","[0;-2;0;0]");
+ equal("quantum:<0| @ (1/2)<1|","[0,1,0,0]/2");
+ equal(R"(quantum:\ket{0}\otimes\frac{1}{2}\sum_{a=0}^1\ket{a})","[1;1;0;0]/2");
+ equal("quantum:|0> @ (1/2)|1> @ |0>","[0;0;1;0;0;0;0;0]/2");
+ for(const char *bad:{"quantum:tensor(|0>,1/2)","quantum:(|0> @ (1/2))|0>","quantum:|0> @ (1/2)(1/3)","quantum:qtensorchain([1;0],vector())"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(bad,eo);bool error=false;
+  while(calculator.message()) {error=error || calculator.message()->type()==MESSAGE_ERROR;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Invalid tensor factors accepted: ")+bad);++checks;
+ }
+ equal("quantum:.5","1/2");equal("quantum:1.e2","100");
+ equal("quantum:.5e-2","1/200");equal("quantum:0.5E+2","50");
+ equal(R"(quantum:$$\ket{0}.$$)","[1;0]");
+ equal(R"(quantum:\[\ket{1}.\])","[0;1]");
+ equal("quantum:$$1.5+0.5$$","2");equal("quantum:$$1.$$","1");
+ equal(R"(quantum:\begin{aligned}\ket{0}&=\ket{0}.\end{aligned})","1");
+ for(const char *bad:{"quantum:$$1..$$","quantum:$$x+.$$","quantum:$$x.y$$","quantum:x.","quantum:.","quantum:1.2.3","quantum:[1..;0]"}) {
+  while(calculator.message())calculator.nextMessage();calculator.calculate(bad,eo);bool error=false;
+  while(calculator.message()) {error=error || calculator.message()->type()==MESSAGE_ERROR;calculator.nextMessage();}
+  if(!error)throw std::runtime_error(std::string("Punctuation hid malformed expression: ")+bad);++checks;
+ }
+ // IBM-028 Fourier exponents mix free coefficients and summation indices.
+ // Juxtaposition must be split while the TeX binder is still in scope.
+ equal(R"(quantum:replace((\sum_{v=0}^1 uv),u,2))","2");
+ equal(R"(quantum:replace((\sum_{v=0}^1 u v),u,2))","2");
+ equal(R"(quantum:replace((\sum_{v=0}^1 u*v),u,2))","2");
+ equal(R"(quantum:replace((\sum_{v=0}^1 uvu),u,2))","4");
+ equal(R"(quantum:\sum_{u=0}^1{\sum_{v=0}^1 uv})","1");
+ equal(R"(quantum:replace((\sum_{v=0}^1 {v+\sum_{v=0}^1 uv}),u,2))","5");
+ equal(R"(quantum:(\sum_{v=0}^1 ev)/e)","1");
+ equal(R"(quantum:replace((\sum_{v=0}^1 "uv"),"uv",3))","6");
+ equal(R"(quantum:\sum_{uv=0}^1 uv)","1");
+ equal(R"(quantum:replace(replace((\sum_{v=0}^1 uv\theta),u,2),\theta,3))","6");
+ // Original269 RHS, with the explicitly disclosed finite witness m=1,u=1,
+ // omega_2=-1. The source's computational basis follows the zero-based sum.
+ equal(R"(quantum:replace(replace(replace(\frac{1}{\sqrt{2^m}}\sum_{v=0}^{2^m-1}\omega_{2^m}^{uv}\vert v\rangle,m,1),u,1),ω_2,-1))","[1;-1]/sqrt(2)");
+ {
+  MathStructure wide=calculator.calculate("quantum: QFT_65",eo),rows,columns;
+  if(wide.isMatrix() || !quantumMatrixShape(wide,rows,columns,eo) || !rows.equals(MathStructure(65)) || !columns.equals(rows))throw std::runtime_error("Wide Fourier notation lost its shape");
+  while(calculator.message()) {if(calculator.message()->type()==MESSAGE_ERROR)throw std::runtime_error("Wide Fourier notation rejected");calculator.nextMessage();}
+  ++checks;
+ }
+ // DEV-05: an arithmetic subscript names the bound variable; it is not
+ // subtraction from that variable. The domain is explicit in these controls.
+ equal(R"(quantum:\sum_{y_{n-1}\in\{0,1\}} 1)","2");
+ equal(R"(quantum:\sum_{y_{n-1}\in\{0,1\}} y_{n-1})","1");
+ equal(R"(quantum:\sum_{y_{n-1}\in\{0,1\}} \vert y_{n-1}\rangle)","matrix(2,1,[1,1])");
+ equal(R"(quantum:\sum_{y\in\{0,1\}} \vert y\rangle)","matrix(2,1,[1,1])");
+ equal(R"(quantum:\sum_{y=0}^{1} \vert y\rangle)","matrix(2,1,[1,1])");
+ equal("quantum:qsumset(qketstate(y),vector(1,0,1),y)","matrix(2,1,[1,1])");
+ equal("quantum:qsumset(qketstate(y),vector(2,0,1),y)","matrix(3,1,[1,1,1])");
+ equal("quantum:qsumset(basis(y,3),vector(0,1),y)","matrix(3,1,[1,1,0])");
+ equal("quantum:qsumset(qsumset(qketstate(y),vector(0,1,2),y),vector(0,1),y)","matrix(3,1,[2,2,2])");
+ equal(R"(quantum:\sum_{y_{n-1}\in\{0,1\}}{\sum_{y_{n-1}\in\{0,1\}}{y_{n-1}}})","2");
+ equal(R"(quantum:\sum_{y_{n-1}\in\{0,1\}}{\sum_{z_{n-1}\in\{0,1\}}{y_{n-1}+z_{n-1}}})","4");
+ // Check family arguments against independent matrix values, without relying
+ // on normalization of products of undeclared, unknown-shape state families.
+ for(const char *name:{"devpair","devindex"})
+  defineQuantumStateFamily(calculator,name,calculator.parse("matrix(2,1,vector(x,y))"),
+                           std::vector<MathStructure>{calculator.parse("x"),calculator.parse("y")});
+ equal(R"(quantum:\sum_{y_{n-1}\in\{0,1\}}{\vert devpair_{2,3}\rangle})","matrix(2,1,[4,6])");
+ equal(R"(quantum:\sum_{devindex_{n-1}\in\{0,1\}}{\vert devindex_{2,3}\rangle})","matrix(2,1,[4,6])");
+ equal(R"(quantum:replace(x_{n-1},n,1))","quantum:x_0");
+ equal(R"(quantum:replace(replace(x_{n-1},n,1),x_0,3))","3");
+ equal(R"(quantum:replace(x_n-1,x_n,3))","2");
  // IBM-020 M11-T2: every signed coefficient, including the one-bit case.
  // The reference is the independent Walsh sign formula, not a tensor rewrite.
  const std::string hadamardFamily=R"(\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_{0} \rangle \bigr))";
@@ -337,7 +449,8 @@ int main(){try {
  equal("quantum: bitdot(bitstring(0,0),bitstring(0,0))","0");
  equal("quantum: bitvalue(bitxor(bitstring(0,0),bitstring(0,0)))","0");
  equal("quantum: bitvalue(bitstring(1023,10))","1023");
- for(const char *expression:{"quantum: bitdot(bitstring(1,2),bitstring(1,3))","quantum: bitxor(bitstring(0,0),[0])","quantum: bitvalue(bitstring(4,2))","quantum: bitvalue(bitstring(0,11))"}) {
+ equal("quantum: bitvalue(bitstring(0,11))","0");
+ for(const char *expression:{"quantum: bitdot(bitstring(1,2),bitstring(1,3))","quantum: bitxor(bitstring(0,0),[0])","quantum: bitvalue(bitstring(4,2))","quantum: bitvalue(bitstring(2048,11))"}) {
   while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
   if(!error)throw std::runtime_error(std::string("Invalid binary operation accepted: ")+expression);++checks;
@@ -348,10 +461,11 @@ int main(){try {
  equal(R"(quantum: |\{0,1\}^3|)","8");
  equal("quantum: cardinality(bitstrings(0))","1");
  equal("quantum: cardinality(bitstrings(10))","1024");
+ equal("quantum: cardinality(bitstrings(11))","2048");
  equal(R"(quantum: \sum_{x\in\{0,1\}^2}{\sum_{x\in\{0,1\}^1}{|x>}})","[4;4]");
  equal("quantum: qketstate(bitstring(1,3))","[0;1;0;0;0;0;0;0]");
  equal("quantum: replace(cardinality(bitstrings(n)),n,3)","8");
- for(const char *expression:{"quantum: bitstrings(-1)","quantum: bitstrings(11)","quantum: bitstrings(1/2)","quantum: bitstring(4,2)","quantum: bitstring(-1,2)"}) {
+ for(const char *expression:{"quantum: bitstrings(-1)","quantum: bitstrings(1/2)","quantum: bitstring(4,2)","quantum: bitstring(-1,2)"}) {
   while(calculator.message())calculator.nextMessage();calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
   if(!error)throw std::runtime_error(std::string("Invalid binary domain accepted: ")+expression);++checks;
@@ -404,7 +518,8 @@ int main(){try {
  equal("quantum: <statevector|statevector>","1");
  equal("quantum: |statevector><statevector|","[1,-i;i,1]/2");
  equal(R"(quantum: \sum_{x\in\{0,1,2\}}{|x>_3})","[1;1;1]");
- for(const char *expression:{"quantum: cardinality(3)","quantum: cardinality([[1]])","quantum: cardinality(identity(2))","quantum: cardinality(indexrange(0,1024))","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})"}) {
+ equal(R"(quantum: \sum_{x\in\{0,1,2\}}{|x>})","[1;1;1]");
+ for(const char *expression:{"quantum: cardinality(3)","quantum: cardinality([[1]])","quantum: cardinality(identity(2))","quantum: cardinality(indexrange(0,1024))","quantum: |scalarstate>","quantum: <scalarstate|",R"(quantum: \sum_{x\in\{0,1/2\}}{|x>})"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
@@ -596,7 +711,7 @@ int main(){try {
  }
  if(!calculator.hasToExpression("1 m -> cm",true,eo))throw std::runtime_error("Ordinary conversion disabled");
  ++checks;
- for(const auto &expression:{"quantum: sequence([1],|0>,s_0)","quantum: sequence([],1,s_0)","quantum: sequence([s_0],|0>,1)","quantum: sequence([apply(X,s_0,[2])],|0>,s_0)","quantum: sequence([apply(X,s_0,[0]);s_0],|0>,s_0)","quantum: -1⊕1","quantum: 0.5⊕1","quantum: i⊕1","quantum: X⊕1","quantum: |-1⊕-2>_2","quantum: |0.5⊕1>_2","quantum: |i⊕1>_2","quantum: |2⊕1>_2","quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_65","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
+ for(const auto &expression:{"quantum: sequence([1],|0>,s_0)","quantum: sequence([],1,s_0)","quantum: sequence([s_0],|0>,1)","quantum: sequence([apply(X,s_0,[2])],|0>,s_0)","quantum: sequence([apply(X,s_0,[0]);s_0],|0>,s_0)","quantum: -1⊕1","quantum: 0.5⊕1","quantum: i⊕1","quantum: X⊕1","quantum: |-1⊕-2>_2","quantum: |0.5⊕1>_2","quantum: |i⊕1>_2","quantum: |2⊕1>_2","quantum: (|0>+|1>)*|0>","quantum: QFT_0","quantum: QFT_{1/2}","quantum: QFT_{-1}",R"(quantum: \sum_{k=0}^{2})",R"(quantum: (\sum_{k=0}^{2}))","quantum: |0","quantum: <0|H|", "quantum: |0> +",
      R"(quantum: |a_0 0 0 0 0 0 0 0 0 0 0>)",R"(quantum: \sum_{a_0=2}^{2}{|a_0 0>})",R"(quantum: \sum_{a_0=-1}^{-1}{|a_0 0>})",
      R"(quantum: \sum_{0_a=0}^{2}{0_a})",R"(quantum: \sum_{a_0+1=0}^{2}{a_0})"}) {
   while(calculator.message())calculator.nextMessage();

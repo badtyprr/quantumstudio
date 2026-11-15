@@ -25,10 +25,40 @@ class Printer {
  bool lostBinding=false;
  std::set<std::string> names;
  std::vector<std::pair<MathStructure,std::string>> bindings;
+ std::vector<std::pair<std::string,std::string>> familyBindings;
+ std::string familyName(const std::string &name,bool metadata=false) const {
+  for(auto i=familyBindings.rbegin();i!=familyBindings.rend();++i) {
+   if(metadata) {if(name==i->first)return i->second;continue;}
+   if(name.compare(0,i->first.size(),i->first)!=0)continue;
+   std::string suffix=name.substr(i->first.size());
+   if(!suffix.empty() && !(suffix.size()>1 && suffix.front()=='0') && suffix.find_first_not_of("0123456789")==std::string::npos)return i->second+suffix;
+  }
+  return name;
+ }
+ bool containsFamilyBinding(const MathStructure &value,unsigned depth=0) const {
+  if(depth>128)return true;
+  if(value.isSymbolic() && familyName(value.symbol())!=value.symbol())return true;
+  if(value.isFunction()) {
+   const std::string &name=value.function()->referenceName();
+   if((name=="qregisterfamily" || name=="qindexedlabel" || name=="qscalarproductsum") && value.size()>0 && value[0].isSymbolic() && familyName(value[0].symbol(),true)!=value[0].symbol())return true;
+   if(name=="qscalarproductsum" && value.size()>1 && value[1].isSymbolic() && familyName(value[1].symbol(),true)!=value[1].symbol())return true;
+  }
+  for(size_t k=0;k<value.size();++k)if(containsFamilyBinding(value[k],depth+1))return true;
+  return false;
+ }
+ std::string historyText(const MathStructure &history,unsigned depth) {
+  if(!history.size())return "";
+  std::string text=" [body substitutions, in order: ";
+  for(size_t k=0;k<history.size();k+=2) {
+   if(k)text+="; then ";
+   text+=render(history[k],depth+1).text+" ← "+render(history[k+1],depth+1).text;
+  }
+  return text+"]";
+ }
  bool collect(const MathStructure &value,unsigned depth=0) {
   if(depth>128 || ++collected>2048)return false;
-  if(value.isSymbolic()) {
-   const std::string name=value.symbol();names.insert(name);
+  if(value.isSymbolic() || value.isVariable()) {
+   const std::string name=value.isSymbolic() ? value.symbol() : value.variable()->referenceName();names.insert(name);
    // A fixed subscript remains free even inside a generated indexed label.
    // Reserve its components so choosing a displayed binder cannot capture it.
    size_t start=0;
@@ -37,7 +67,6 @@ class Printer {
     start=end+1;
    }
   }
-  if(value.isVariable())names.insert(value.variable()->referenceName());
   for(size_t i=0;i<value.size();++i)if(!collect(value[i],depth+1))return false;
   return true;
  }
@@ -56,6 +85,7 @@ class Printer {
  }
  Fragment fallback(const MathStructure &value) {
   for(const auto &binding:bindings)if(value.contains(binding.first))lostBinding=true;
+  if(!familyBindings.empty() && containsFamilyBinding(value))lostBinding=true;
   int precedence=value.isComparison() ? 5 : value.isAddition() ? 20 : value.isMultiplication() || value.isInverse() || value.isDivision() ? 40 : value.isNegate() ? 70 : value.isPower() ? 80 : 100;
   if(value.isNumber() && value.number().isNegative())precedence=70;
   if(value.isNumber() && value.number().isComplex())precedence=20;
@@ -73,6 +103,7 @@ class Printer {
    }
   }
   for(auto i=bindings.rbegin();i!=bindings.rend();++i)if(value.equals(i->first))return Fragment(i->second);
+  if(value.isSymbolic() && familyName(value.symbol())!=value.symbol())return Fragment(familyName(value.symbol()));
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
   // Evaluation can turn scalar quantum operations into ordinary arithmetic.
@@ -117,6 +148,35 @@ class Printer {
   }
   if(!value.isFunction())return fallback(value);
   const std::string name=value.function()->referenceName();
+  // Ordinary Copy can retain a matrix constructor inside a deferred product.
+  // Display the same literal grid without evaluating any of its entries.
+  if((name=="matrix" || name=="qmatrix") && value.size()==3 && value[0].isNumber() && value[1].isNumber() &&
+     value[0].number().isInteger() && value[1].number().isInteger() &&
+     value[0].number()>0 && value[0].number()<=2048 && value[1].number()>0 && value[1].number()<=2048 &&
+     (value[2].isVector() || (value[2].isFunction() &&
+      (value[2].function()->referenceName()=="horzcat" || value[2].function()->referenceName()=="vector")))) {
+   size_t rows=value[0].number().intValue(),columns=value[1].number().intValue();
+   bool flat=true;
+   for(size_t i=0;i<value[2].size();++i) {
+    const MathStructure &entry=value[2][i];
+    if(entry.isVector() || (entry.isFunction() &&
+       (entry.function()->referenceName()=="horzcat" || entry.function()->referenceName()=="vector")))flat=false;
+   }
+   if(flat && rows<=2048/columns && value[2].size()==rows*columns) {
+    MathStructure literal;literal.clearMatrix();literal.resizeMatrix(rows,columns,MathStructure(0));
+    std::string text="[";bool changed=false;
+    for(size_t row=0;row<rows;++row) {
+     if(row)text+="; ";
+     for(size_t column=0;column<columns;++column) {
+      const MathStructure &entry=value[2][row*columns+column];
+      literal.setElement(entry,row+1,column+1);
+      Fragment rendered=render(entry,depth+1);changed=changed || rendered.text!=entry.print(options);
+      if(column)text+="  ";text+=rendered.text;
+     }
+    }
+    return changed ? Fragment(text+"]") : fallback(literal);
+   }
+  }
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.
@@ -175,7 +235,7 @@ class Printer {
   if(name=="qindexedlabel" && value.size()==3) {
    auto part=[&](const MathStructure &v){return v.isSymbolic() ? v.symbol() : render(v,depth+1).text;};
    Fragment index=render(value[1],depth+1);
-   return Fragment(part(value[0])+grouped(index,100)+part(value[2]));
+   return Fragment(familyName(part(value[0]),true)+grouped(index,100)+part(value[2]));
   }
   if(name=="qorthoket" && value.size()==3 && value[0].isSymbolic() && value[1].isSymbolic())
    return Fragment("|"+value[0].symbol()+"⟩ (basis "+value[1].symbol()+")");
@@ -189,6 +249,8 @@ class Printer {
   }
   if(name=="qbitlabel" && value.size()==2)
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qbits" && value.size()==2)
+   return Fragment("bits("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
@@ -202,7 +264,7 @@ class Printer {
   if(name=="qcartesianpower" && value.size()==2)
    return Fragment("("+render(value[0],depth+1).text+")^("+render(value[1],depth+1).text+") (Cartesian power; nonnegative integer count)");
   if(name=="qbitstrings" && value.size()==1)
-   return Fragment("{0,1}^("+render(value[0],depth+1).text+") (integer width 0 to 10)");
+   return Fragment("{0,1}^("+render(value[0],depth+1).text+") (nonnegative integer width)");
   if(name=="qindexrange" && value.size()==2)
    return Fragment("{"+render(value[0],depth+1).text+", …, "+render(value[1],depth+1).text+"} (integer endpoints)");
   if((name=="qsetimage" || name=="qsetfilter") && value.size()==3) {
@@ -214,6 +276,38 @@ class Printer {
    Fragment domain=render(value[1],depth+1);std::string index=fresh();
    bindings.push_back({value[2],index});Fragment body=render(value[0],depth+1);bindings.pop_back();
    return Fragment("∑_{"+index+" ∈ "+domain.text+"} ("+body.text+")",10);
+  }
+  if(name=="qscalarproductsum" && value.size()==4 && value[0].isSymbolic() && value[1].isSymbolic() && value[3].isVector() && value[3].size()%3==0) {
+   bool valid=true;
+   for(size_t k=0;k<value[3].size();k+=3)if(!value[3][k].isNumber() || !value[3][k].number().isInteger() || value[3][k].number()<0 || value[3][k].number()>1)valid=false;
+   if(valid) {
+    std::string index=fresh(),width=render(value[2],depth+1).text;
+    std::string left=familyName(value[0].symbol(),true),right=familyName(value[1].symbol(),true);
+    std::string term=left+index+" · "+right+index;
+    if(value[3].size()) {
+     term+=" [component assignments: ";
+     for(size_t k=0;k<value[3].size();k+=3) {
+      if(k)term+=", ";
+      term+=(value[3][k].number().isZero() ? left : right)+render(value[3][k+1],depth+1).text+" = "+render(value[3][k+2],depth+1).text;
+     }
+     term+="]";
+    }
+    return Fragment("∑_{"+index+"=0}^{("+width+")−1} ("+term+") (nonnegative integer width)",10);
+   }
+  }
+  if((name=="qtensorseries" && value.size()==5) || (name=="qboundtensorseries" && value.size()==6 && value[5].isVector() && value[5].size()%2==0)) {
+   std::string first=render(value[1],depth+1).text,last=render(value[2],depth+1).text,step=render(value[4],depth+1).text;
+   std::string history=value.size()==6 ? historyText(value[5],depth+1) : "";
+   std::string index=fresh();bindings.push_back({value[3],index});
+   Fragment body=render(value[0],depth+1);bindings.pop_back();
+   return Fragment("⊗_{"+index+"="+first+" to "+last+"; step "+step+"} ("+body.text+history+")",30);
+  }
+  if(name=="qregistersum" && value.size()==7 && value[4].isSymbolic() && value[6].isVector() && value[6].size()%2==0) {
+   std::string domain=render(value[1],depth+1).text,first=render(value[2],depth+1).text,last=render(value[3],depth+1).text,width=render(value[5],depth+1).text;
+   std::string history=historyText(value[6],depth+1),prefix=fresh()+"_";
+   familyBindings.push_back({value[4].symbol(),prefix});
+   Fragment body=render(value[0],depth+1);familyBindings.pop_back();
+   return Fragment("∑_{"+prefix+"("+first+") ⋯ "+prefix+"("+last+") ∈ ("+domain+")^("+width+")} ("+body.text+history+") (width = first − last + 1; nonnegative integer width)",10);
   }
   if(name=="qbars" && value.size()==1)
    return Fragment("|"+render(value[0],depth+1).text+"|");
@@ -235,7 +329,7 @@ class Printer {
    if(labels)return Fragment(text+"})");
   }
   if((name=="qketstate" || name=="qnamedket" || name=="qindexedket") && value.size()==1) {
-   std::string label=value[0].isSymbolic() ? value[0].symbol() : render(value[0],depth+1).text;
+   std::string label=value[0].isSymbolic() ? familyName(value[0].symbol()) : render(value[0],depth+1).text;
    // Bound labels must use the same fresh name as their displayed sum index.
    // Unbound single-letter named kets still retain the canonical fallback.
    bool bound=false;
@@ -246,7 +340,7 @@ class Printer {
    if(!literalCollision && safeLabel(label))return Fragment("|"+label+"⟩",100,Ket,label);
   }
   if(name=="qregisterfamily" && value.size()==4 && value[0].isSymbolic() && value[3].isVector() && value[3].size()%2==0) {
-   const std::string prefix=value[0].symbol();
+   const std::string prefix=familyName(value[0].symbol(),true);
    std::string label=prefix+grouped(render(value[1],depth+1),100)+" ⋯ "+prefix+grouped(render(value[2],depth+1),100);
    std::string text="|"+label+"⟩";
    if(!value[3].size())return Fragment(text,100,Ket,label);
@@ -258,12 +352,29 @@ class Printer {
     if(k)text+=", ";
     std::string bit=prefix+render(value[3][k],depth+1).text;
     text+=bit;
-    if(value[3][k+1].isSymbolic() && value[3][k+1].symbol()==bit)text+=" present";
+    if(value[3][k+1].isSymbolic() && familyName(value[3][k+1].symbol())==bit)text+=" present";
     else text+=" = "+render(value[3][k+1],depth+1).text;
    }
    return Fragment(text+")",10);
   }
   if(name=="qpower" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^"+grouped(render(value[1],depth+1),81),80);
+  if(name=="qsqrt" && value.size()==1)return Fragment("√("+render(value[0],depth+1).text+")");
+  if(name=="qequalchain" && value.size()==1 && value[0].isVector() && value[0].size()>=3 && value[0].size()<=128) {
+   std::string text;
+   for(size_t k=0;k<value[0].size();++k) {
+    if(k)text+=" = ";text+=grouped(render(value[0][k],depth+1),11);
+   }
+   return Fragment(text,10);
+  }
+  if(name=="qcomputationalket" && value.size()==1)
+   return Fragment("|"+render(value[0],depth+1).text+"⟩ (dimension unresolved)");
+  if(name=="qtensorchain" && value.size()==2 && value[1].isVector() && value[1].size()>=2 && value[1].size()<=2048) {
+   std::string text=grouped(render(value[0],depth+1),31)+" ⊗ ";
+   for(size_t k=0;k<value[1].size();++k) {
+    if(k)text+=" ";text+=grouped(render(value[1][k],depth+1),61);
+   }
+   return Fragment(text,30);
+  }
   if(name=="qtensorpow" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^{⊗ "+render(value[1],depth+1).text+"}",80);
   // Keep the basis dimension explicit; treating this as an ordinary named ket
   // would let bra/ket composition accidentally omit that dimension.

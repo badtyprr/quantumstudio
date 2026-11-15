@@ -95,7 +95,12 @@ for assignments in (
 value(r'quantum:replace(u_{m-1}v_{m-1}+\cdots+u_0 v_0,vector(m,u_0,v_0),vector(1,3,4))', "12")
 value(r'quantum:replace(u_{i-1}v_{i-1}+\cdots+u_0 v_0,vector("i",u_0,v_0),vector(1,3,4))', "12")
 value(r'quantum:sum(replace(x_0 y_0+\cdots+x_0 y_0,y_0,1),0,1,"x_0")', "1")
-for bad in ("0", "-1", "1/2", "1025"):
+value(f"quantum:replace({symbolic},n,0)", "0")
+for width in ("1025", "1000000000000"):
+    wide = copied(f"quantum:replace({symbolic},n,{width})")
+    if "qscalarproductsum" not in wide or width not in wide:
+        raise RuntimeError(f"Wide scalar product lost its width: {wide}")
+for bad in ("-1", "1/2"):
     run(f"quantum:replace({symbolic},n,{bad})", success=False)
 for bad in ("[1;2]", "interval(0,1)", "infinity"):
     run(f"quantum:replace({symbolic},x_0,{bad})", success=False)

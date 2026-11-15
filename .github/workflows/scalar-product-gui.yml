@@ -7,8 +7,10 @@ on:
       - .github/workflows/scalar-product-gui.yml
       - diagnostics/scalar-product/**
       - diagnostics/hadamard-tensor/**
+      - diagnostics/register-width/**
       - windows/ScalarProductGuiTests.cs
       - windows/HadamardTensorGuiTests.cs
+      - windows/RegisterWidthGuiTests.cs
       - libqalculate/Quantum*
       - windows/QuantumStudio.cs
 permissions:
@@ -90,6 +92,7 @@ jobs:
           try {
             ./diagnostics/scalar-product/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/scalar-product-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/scalar-product-acceptance" -Revision $revision
             ./diagnostics/hadamard-tensor/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/scalar-product-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/hadamard-tensor-acceptance" -Revision $revision
+            ./diagnostics/register-width/Run-Acceptance.ps1 -Distribution "$env:RUNNER_TEMP/scalar-product-candidate-payload/QuantumStudio" -Evidence "$env:RUNNER_TEMP/register-width-acceptance" -Revision $revision
           } finally {
             foreach ($entry in $before) {
               if ((Get-FileHash -LiteralPath $entry.Path).Hash -ne $entry.Hash) { throw 'Archive changed during acceptance' }
@@ -106,6 +109,7 @@ jobs:
             ${{ runner.temp }}/scalar-product-preflight/
             ${{ runner.temp }}/scalar-product-acceptance/
             ${{ runner.temp }}/hadamard-tensor-acceptance/
+            ${{ runner.temp }}/register-width-acceptance/
             src/*.log
             src/*.trs
             config.log
@@ -113,6 +117,8 @@ jobs:
             *.trs
             diagnostics/scalar-product/
             diagnostics/hadamard-tensor/
+            diagnostics/register-width/
             windows/ScalarProductGuiTests.cs
             windows/HadamardTensorGuiTests.cs
+            windows/RegisterWidthGuiTests.cs
             dist/

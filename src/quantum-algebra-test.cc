@@ -207,7 +207,7 @@ int main(){try {
  MathStructure delayedKet=calculator.calculate("qmul([0,1;1,0],qketstate(x))",eo),zeroKet=calculator.calculate("[1;0]",eo);
  delayedKet.replace(symbolicX,zeroKet);delayedKet.eval(eo);delayedKet.transform(COMPARISON_EQUALS,calculator.calculate("[0;1]",eo));delayedKet.eval(eo);
  if(!delayedKet.isNumber() || !delayedKet.number().isOne())throw std::runtime_error("Named ket substitution failed");++checks;
- for(const char *source:{"qbasis(-1,x)","qbasis(x,0)","qbasis(x,1025)","qbasis(x,1/2)","qbasis([1,2],x)"}) {
+ for(const char *source:{"qbasis(-1,x)","qbasis(x,0)","qbasis(x,1/2)","qbasis([1,2],x)"}) {
   while(calculator.message())calculator.nextMessage();calculator.calculate(source,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}
   if(!error)throw std::runtime_error("Symbolic parameter hid an invalid basis argument");++checks;
@@ -263,7 +263,7 @@ int main(){try {
  equal("qanticomm([0,1;1,0],[0,-i;i,0])","[0,0;0,0]");
  for(unsigned i=0;i<8;++i)for(unsigned j=0;j<8;++j)
   equal("qmul(qdag(qbasis("+std::to_string(i)+",8)),qbasis("+std::to_string(j)+",8))",i==j ? "1" : "0");
- for(const auto &expression:{"complexparam(x+y)","complexparam([1;2])","complexparam(inf)","complexparam(1 m)","qadjacent([1,0;0,1],[1;2;3])","qadjacent(qbasis(0,64),qbasis(0,64))","qbasis(8,8)","qbasis(0,1025)","qnormalize([0;0])","qcontrol([0,1;1,0],9,0)","qcontrolpattern([0,1;1,0],1,1,2)","qtrace([1;2])","qmul([1,0;0,1],[1;2;3])"}) {
+ for(const auto &expression:{"complexparam(x+y)","complexparam([1;2])","complexparam(inf)","complexparam(1 m)","qadjacent([1,0;0,1],[1;2;3])","qbasis(8,8)","qnormalize([0;0])","qcontrol([0,1;1,0],9,0)","qcontrolpattern([0,1;1,0],1,1,2)","qtrace([1;2])","qmul([1,0;0,1],[1;2;3])"}) {
   while(calculator.message())calculator.nextMessage();
   calculator.calculate(expression,eo);bool error=false;
   while(calculator.message()){if(calculator.message()->type()==MESSAGE_ERROR)error=true;calculator.nextMessage();}

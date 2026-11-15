@@ -338,6 +338,26 @@ bool unresolvedMatrixOperand(const MathStructure &value,unsigned depth=0) {
 bool adjacentStateShapes(const MathStructure &ar,const MathStructure &ac,const MathStructure &br,const MathStructure &bc) {
  return (ac.isOne() && bc.isOne()) || (ar.isOne() && br.isOne());
 }
+// Shape metadata must not expand a large dimension just to describe a deferred
+// matrix. Normalize small powers and symbolic algebra, retaining large powers.
+bool normalizeDimension(MathStructure &value,const EvaluationOptions &eo,unsigned depth=0) {
+ if(depth>64)return false;
+ bool bounded=true;
+ for(size_t k=0;k<value.size();++k)
+  bounded=normalizeDimension(value[k],eo,depth+1) && bounded;
+ if(!bounded)return false;
+ if(value.isPower() && value.size()==2 && value[1].isNumber()) {
+  Number exponent=value[1].number();exponent.abs();
+  if(exponent>4096)return false;
+  if(value[0].isNumber() && value[0].number().isInteger()) {
+   Number bits(value[0].number().integerLength());bits.multiply(exponent);
+   if(bits>4096)return false;
+  }
+ }
+ value.childrenUpdated();
+ EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+ value.eval(exact);return true;
+}
 bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &columns,const EvaluationOptions &eo,unsigned depth=0) {
  if(depth>64)return false;
  if(value.isMatrix()) {rows.set(Number(static_cast<long>(value.rows())));columns.set(Number(static_cast<long>(value.columns())));return true;}
@@ -347,6 +367,10 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  }
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
+ if(name=="qreplace" && value.size()==3) {
+  MathStructure term;
+  return quantumReplacementShapeInput(value,term,eo) && matrixShape(term,rows,columns,eo,depth+1);
+ }
  if(name=="matrix") {
   // Deferred tensors retain their original arguments, which may include a
   // concrete constructor. Reuse its validation before trusting its shape.
@@ -356,6 +380,30 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
   columns.set(Number(static_cast<long>(concrete.columns())));return true;
  }
  if(name=="qbasis" && value.size()==2) {rows=value[1];columns=m_one;return true;}
+ if((name=="qfourier" || name=="qft") && value.size()==1) {
+  MathStructure size=value[0];normalizeDimension(size,eo);
+  if(size.isNumber()) {
+   if(!size.number().isInteger() || size.number()<(name=="qft" ? 0 : 1))return false;
+  } else if(!size.representsScalar() || !size.containsUnknowns())return false;
+  rows=name=="qft" ? MathStructure(2) : size;
+  if(name=="qft")rows.raise(size);
+  normalizeDimension(rows,eo);columns=rows;return true;
+ }
+ if(name=="qregisterfamily" && value.size()==4) {
+  MathStructure width=value[1];width-=value[2];width+=m_one;
+  normalizeDimension(width,eo);
+  if(width.isNumber() && (!width.number().isInteger() || width.number()<0))return false;
+  if(!width.isNumber() && (!width.representsScalar() || !width.containsUnknowns()))return false;
+  rows=MathStructure(2);rows.raise(width);columns=m_one;
+  normalizeDimension(rows,eo);return true;
+ }
+ if(name=="qketstate" && value.size()==1 && value[0].isFunction() &&
+    value[0].function()->referenceName()=="qbitlabel" && value[0].size()==2) {
+  MathStructure index=value[0][0],width=value[0][1];
+  if(validateQuantumBitLabel(index,width,eo)==QuantumBitLabelState::Invalid)return false;
+  rows=MathStructure(2);rows.raise(width);columns=m_one;
+  normalizeDimension(rows,eo);return true;
+ }
  if(name=="qorthofamilyket" && value.size()==4) {rows=value[3];columns=m_one;return true;}
  if(name=="qorthoidentity" && value.size()==1) {rows=value[0];columns=rows;return true;}
  if(name=="qorthoket" && value.size()==3) {
@@ -366,18 +414,48 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
  if(name=="qfourierdomain" && value.size()==3) {rows=value[2];columns=m_one;return true;}
  if(name=="matrixparam" && value.size()==3) {
   rows=value[1];columns=value[2];EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
-  rows.eval(exact);columns.eval(exact);return true;
+  normalizeDimension(rows,exact);normalizeDimension(columns,exact);return true;
  }
  if(quantumOperatorDimension(value,rows,eo)) {columns=rows;return true;}
  if((name=="qdag" || name=="qtranspose") && value.size()==1)
   return matrixShape(value[0],columns,rows,eo,depth+1);
+ if(name=="qsumset" && value.size()==3) {
+  MathStructure term;
+  if(!quantumSetSumShapeInput(value,term,eo) || !matrixShape(term,rows,columns,eo,depth+1))return false;
+  // A single summand only determines the result's shape when its dimensions
+  // are independent of the bound value. Do not guess a heterogeneous sum.
+  return !rows.contains(value[2]) && !columns.contains(value[2]);
+ }
+ if(name=="qregistersum" && value.size()==7) {
+  MathStructure term,dependent;
+  if(!quantumRegisterSumShapeInput(value,term,dependent,eo) || !matrixShape(term,rows,columns,eo,depth+1))return false;
+  for(size_t k=0;k<dependent.size();++k)if(rows.contains(dependent[k]) || columns.contains(dependent[k]))return false;
+  normalizeDimension(rows,eo);normalizeDimension(columns,eo);return true;
+ }
+ if(name=="qtensorseries" || name=="qboundtensorseries") {
+  MathStructure factor,count;
+  if(!quantumTensorSeriesShapeInput(value,factor,count,eo))return false;
+  if(count.isZero()) {rows=m_one;columns=m_one;return true;}
+  if(!matrixShape(factor,rows,columns,eo,depth+1) || rows.contains(value[3]) || columns.contains(value[3]))return false;
+  if(!rows.isOne())rows.raise(count);if(!columns.isOne())columns.raise(count);
+  normalizeDimension(rows,eo);normalizeDimension(columns,eo);return true;
+ }
+ if(name=="qtensorpow" && value.size()==2) {
+  MathStructure count=value[1];EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+  count.eval(exact);
+  bool unknown=!count.isNumber() && count.representsScalar() && count.containsUnknowns();
+  if(!unknown && (!count.isNumber() || !count.number().isInteger() || count.number()<0))return false;
+  if(!matrixShape(value[0],rows,columns,eo,depth+1))return false;
+  if(!rows.isOne())rows.raise(count);if(!columns.isOne())columns.raise(count);
+  normalizeDimension(rows,exact);normalizeDimension(columns,exact);return true;
+ }
  if(value.size()!=2)return false;
  MathStructure ar,ac,br,bc;
  bool left=matrixShape(value[0],ar,ac,eo,depth+1),right=matrixShape(value[1],br,bc,eo,depth+1);
  if(left && right && (name=="qtensor" || (name=="qadjacent" && adjacentStateShapes(ar,ac,br,bc)))) {
   rows=ar;rows*=br;columns=ac;columns*=bc;
   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
-  rows.eval(exact);columns.eval(exact);return true;
+  normalizeDimension(rows,exact);normalizeDimension(columns,exact);return true;
  }
  if((name=="qadd" || name=="qsub") && left && right && ar.equals(br) && ac.equals(bc)) {rows=ar;columns=ac;return true;}
  if(name=="qmul" || name=="qadjacent") {
@@ -386,13 +464,75 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
    if(ar.isOne() && bc.isOne())return false;
    rows=ar;columns=bc;return true;
   }
-  if(left && value[1].representsScalar()) {rows=ar;columns=ac;return true;}
-  if(right && value[0].representsScalar()) {rows=br;columns=bc;return true;}
+  if(left && quantumScalarExpression(value[1])) {rows=ar;columns=ac;return true;}
+  if(right && quantumScalarExpression(value[0])) {rows=br;columns=bc;return true;}
  }
  return false;
 }
+bool containsBasisIndex(const MathStructure &dimension,const MathStructure &index,unsigned depth=0) {
+ if(depth>64 || CALCULATOR->aborted())return true;
+ if(dimension.equals(index))return true;
+ auto name=[](const MathStructure &value) {
+  return value.isSymbolic() ? value.symbol() :
+   value.isVariable() && !value.variable()->isKnown() ? value.variable()->referenceName() : std::string();
+ };
+ const std::string bound=name(index);
+ if(!bound.empty() && name(dimension)==bound)return true;
+ for(size_t k=0;k<dimension.size();++k)if(containsBasisIndex(dimension[k],index,depth+1))return true;
+ return false;
+}
+bool resolveBasisDimension(MathStructure &value,const MathStructure &dimension,unsigned depth=0) {
+ if(depth>64 || CALCULATOR->aborted())return false;
+ bool changed=false;
+ if(value.isFunction()) {
+  const std::string &name=value.function()->referenceName();
+  if(name=="qcomputationalket" && value.size()==1) {
+   MathStructure index=value[0];value.set(CALCULATOR->getFunction("qbasis"),&index,&dimension,NULL);return true;
+  }
+  if((name=="qadd" || name=="qsub") && value.size()==2) {
+   for(size_t k=0;k<2;++k)changed=resolveBasisDimension(value[k],dimension,depth+1) || changed;
+  } else if((name=="qmul" || name=="qadjacent") && value.size()==2) {
+   if(quantumScalarExpression(value[0]))changed=resolveBasisDimension(value[1],dimension,depth+1);
+   else if(quantumScalarExpression(value[1]))changed=resolveBasisDimension(value[0],dimension,depth+1);
+  } else if((name=="qsum" && value.size()==4) || (name=="qsumset" && value.size()==3)) {
+   // An ambient dimension cannot capture the summation's bound index.
+   if(!containsBasisIndex(dimension,value[value.size()-1]))changed=resolveBasisDimension(value[0],dimension,depth+1);
+  }
+ } else if(value.isAddition()) {
+  for(size_t k=0;k<value.size();++k)changed=resolveBasisDimension(value[k],dimension,depth+1) || changed;
+ } else if(value.isMultiplication()) {
+  size_t factor=value.size();
+  for(size_t k=0;k<value.size();++k)if(!quantumScalarExpression(value[k])) {
+   if(factor!=value.size())return false;factor=k;
+  }
+  if(factor<value.size())changed=resolveBasisDimension(value[factor],dimension,depth+1);
+ }
+ if(changed)value.childrenUpdated();return changed;
+}
 bool unequalKnownDimensions(const MathStructure &a,const MathStructure &b) {
- return a.isNumber() && b.isNumber() && a.number()!=b.number();
+ if(a.isNumber() && b.isNumber())return a.number()!=b.number();
+ // Normalization may turn 2^(n+1) into 2*2^n. Compare the complete scalar
+ // expressions as well as their power syntax, requiring a definite nonzero
+ // difference so overlapping intervals and unresolved relations stay pending.
+ MathStructure difference=a;difference-=b;
+ normalizeDimension(difference,default_evaluation_options);
+ if(difference.representsNonZero())return true;
+ if(a.isPower() && b.isPower() && a.size()==2 && b.size()==2 &&
+    a[0].equals(b[0]) && a[0].isNumber() && a[0].number()>1) {
+  MathStructure difference=a[1];difference-=b[1];
+  normalizeDimension(difference,default_evaluation_options);
+  if(difference.isNumber() && difference.number().isReal() && difference.number().isNonZero())return true;
+ }
+ // A huge retained power can still contradict a small explicit dimension.
+ for(unsigned side=0;side<2;++side) {
+  const MathStructure &number=side ? b : a,&power=side ? a : b;
+  if(number.isNumber() && number.number().isInteger() && number.number()>0 &&
+     power.isPower() && power.size()==2 && power[0].isNumber() &&
+     power[0].number().isInteger() && power[0].number()>=2 &&
+     power[1].isNumber() && power[1].number().isInteger() &&
+     power[1].number()>=Number(number.number().integerLength()))return true;
+ }
+ return false;
 }
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
@@ -409,19 +549,61 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qcomputationalket") {
+   MathStructure index=raw[0];index.eval(eo);
+   bool pending=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
+   if(!pending && (!index.isNumber() || !index.number().isInteger() || index.number()<0)) {
+    CALCULATOR->error(true,"A computational basis index must be a nonnegative integer.",NULL);return 0;
+   }
+   if(index.equals(raw[0]))return 0;
+   out.set(this,&index,NULL);return 1;
+  }
+  if(op=="qtensorchain") {
+   // Only notation in one unparenthesized product emits this form. Explicit
+   // qtensor calls keep their strict two-matrix contract.
+   const MathStructure &factors=raw[1];
+   if(!factors.isVector() || factors.size()<2 || factors.size()>2048) {
+    CALCULATOR->error(true,"A tensor factor chain requires 2 to 2048 adjacent factors.",NULL);return 0;
+   }
+   MathStructure right=factors[0];right.eval(eo);size_t next=1;
+   while(right.representsScalar()) {
+    // An unassigned scalar name may later be replaced by an operator. Keep
+    // the original grouping decision available until its type is settled.
+    if(right.containsUnknowns())return 0;
+    if(next==factors.size())break;
+    if(CALCULATOR->aborted())return 0;
+    MathStructure scaled;
+    scaled.set(CALCULATOR->getFunction("qadjacent"),&right,&factors[next],NULL);
+    scaled.eval(eo);right=scaled;++next;
+   }
+   out.set(CALCULATOR->getFunction("qtensor"),&raw[0],&right,NULL);
+   while(next<factors.size()) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure previous=out;
+    out.set(CALCULATOR->getFunction("qadjacent"),&previous,&factors[next],NULL);++next;
+   }
+   out.eval(eo);return 1;
+  }
   if(op=="qfourierdomain") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure index=raw[1],dimension=raw[2];index.eval(exact);dimension.eval(exact);
    bool unknownIndex=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
    bool unknownDimension=!dimension.isNumber() && dimension.representsScalar() && dimension.containsUnknowns();
    if((!unknownIndex && (!index.isNumber() || !index.number().isInteger() || index.number()<0)) ||
-      (!unknownDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<1 || dimension.number()>64)) ||
+      (!unknownDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<1)) ||
       (!unknownIndex && !unknownDimension && index.number()>=dimension.number())) {
-    CALCULATOR->error(true,"Fourier basis expansion requires integer dimension 1 to 64 and a zero-based index in range.",NULL);return 0;
+    CALCULATOR->error(true,"Fourier basis expansion requires a positive integer dimension and a zero-based index in range.",NULL);return 0;
    }
    // Keep the guard and actual sum together until substitution validates both
    // parameters. Periodic exponentials alone cannot enforce basis membership.
    if(unknownIndex || unknownDimension)return 0;
+   if(dimension.number()>64) {
+    MathStructure rows,columns;
+    if(matrixShape(raw[0],rows,columns,exact) &&
+       (unequalKnownDimensions(rows,dimension) || unequalKnownDimensions(columns,m_one)))
+     CALCULATOR->error(true,"A Fourier basis expansion must produce a column with the declared dimension.",NULL);
+    return 0;
+   }
    out=raw[0];out.eval(eo);
    if(!out.isMatrix() || out.columns()!=1 || out.rows()!=size_t(dimension.number().intValue())) {
     CALCULATOR->error(true,"A Fourier basis expansion must produce a column with the declared dimension.",NULL);return 0;
@@ -508,7 +690,17 @@ class QuantumAlgebraFunction: public MathFunction {
     }
    }
   }
-  for(size_t j=0;j<args.size();++j)args[j].eval(eo);
+  size_t evaluatedArguments=0;
+  if((op=="qmul" || op=="qadjacent") && args.size()==2) {
+   args[0].eval(eo);MathStructure rows,columns;
+   evaluatedArguments=1;
+   // Juxtaposed columns mean a tensor product, not operator application.
+   if(matrixShape(args[0],rows,columns,eo) && (op=="qmul" || !columns.isOne()) &&
+      resolveBasisDimension(args[1],columns)) {
+    out.set(this,&args[0],&args[1],NULL);out.eval(eo);return 1;
+   }
+  }
+  for(size_t j=evaluatedArguments;j<args.size();++j)args[j].eval(eo);
   // Retain evaluated basis declarations even when the surrounding operation
   // must remain symbolic (for example, an overlap between distinct bases).
   if(!args.equals(raw) && (args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0 ||
@@ -575,7 +767,7 @@ class QuantumAlgebraFunction: public MathFunction {
   if(op=="qketstate") {
    if(a.isUnknown())return 0;
    if(a.isVector() && !a.isMatrix() && a.size()>0 && a.size()<=1024) {
-    std::set<int> indices;int registerWidth=-1;bool deferred=false;
+    std::set<int> indices;Number registerWidth(-1);bool deferred=false;
     for(size_t k=0;k<a.size();++k) {
      if(CALCULATOR->aborted())return 0;
      const MathStructure &label=a[k];
@@ -584,21 +776,22 @@ class QuantumAlgebraFunction: public MathFunction {
      QuantumBitLabelState state=validateQuantumBitLabel(index,width,eo);
      if(state==QuantumBitLabelState::Invalid)return 0;
      if(width.isNumber()) {
-      if(registerWidth>=0 && registerWidth!=width.number().intValue()) {CALCULATOR->error(true,"A set ket requires binary-string labels of one width.",NULL);return 0;}
-      registerWidth=width.number().intValue();
+      if(registerWidth>=0 && registerWidth!=width.number()) {CALCULATOR->error(true,"A set ket requires binary-string labels of one width.",NULL);return 0;}
+      registerWidth=width.number();
      }
-     if(state==QuantumBitLabelState::Symbolic)deferred=true;
+     if(state==QuantumBitLabelState::Symbolic || width.number()>10)deferred=true;
      else indices.insert(index.number().intValue());
     }
     if(deferred)return 0;
     MathStructure amplitude(static_cast<int>(indices.size()));amplitude.raise(Number(-1,2));amplitude.eval(eo);
-    out.clearMatrix();out.resizeMatrix(1<<registerWidth,1,m_zero);
+    out.clearMatrix();out.resizeMatrix(1<<registerWidth.intValue(),1,m_zero);
     for(int index:indices)element(out,index,0)=amplitude;
     return 1;
    }
    if(a.isFunction() && a.function()->referenceName()=="qbitlabel" && a.size()==2) {
     MathStructure index=a[0],width=a[1];
     if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return 0;
+    if(width.number()>10)return 0;
     int dimension=1<<width.number().intValue();out.clearMatrix();out.resizeMatrix(dimension,1,m_zero);
     element(out,index.number().intValue(),0)=m_one;return 1;
    }
@@ -624,11 +817,16 @@ class QuantumAlgebraFunction: public MathFunction {
    bool symbolicIndex=!a.isNumber() && a.representsScalar() && a.containsUnknowns();
    bool symbolicDimension=!dimension.isNumber() && dimension.representsScalar() && dimension.containsUnknowns();
    if((!symbolicIndex && (!a.isNumber() || !a.number().isInteger() || a.number()<0)) ||
-      (!symbolicDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<1 || dimension.number()>1024)) ||
+      (!symbolicDimension && (!dimension.isNumber() || !dimension.number().isInteger() || dimension.number()<1)) ||
       (!symbolicIndex && !symbolicDimension && a.number()>=dimension.number())) {
-    CALCULATOR->error(true,"basis(index,dimension) requires an integer dimension from 1 to 1024 and a zero-based index in range.",NULL); return 0;
+    CALCULATOR->error(true,"basis(index,dimension) requires a positive integer dimension and a zero-based index in range.",NULL); return 0;
    }
-   if(symbolicIndex || symbolicDimension)return 0;
+   if(symbolicIndex || symbolicDimension || dimension.number()>1024) {
+    // Retain validated scalar normalization while keeping the basis wrapper
+    // and its domain checks for later substitutions.
+    if(!args.equals(raw)) {out.set(this,&a,&dimension,NULL);return 1;}
+    return 0;
+   }
    out.clearMatrix(); out.resizeMatrix(dimension.number().intValue(),1,m_zero); element(out,a.number().intValue(),0)=m_one; return 1;
   }
   // Each of these operations is an involution, including on unresolved states.
@@ -714,10 +912,20 @@ class QuantumAlgebraFunction: public MathFunction {
    // Preserve both operands until substitution can validate the repeat count
    // and the matrix domain, including when the eventual count is zero.
    bool unknownCount=!args[1].isNumber() && args[1].representsScalar() && args[1].containsUnknowns();
-   if(!unknownCount && (!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0 || args[1].number()>10)) {
-    CALCULATOR->error(true,"Tensor power requires an integer exponent from 0 to 10.",NULL);return 0;
+   if(!unknownCount && (!args[1].isNumber() || !args[1].number().isInteger() || args[1].number()<0)) {
+    CALCULATOR->error(true,"Tensor power requires a nonnegative integer exponent.",NULL);return 0;
    }
-   if((!a.isMatrix() && unresolvedMatrixOperand(a)) || (a.isMatrix() && unknownCount)) {
+   // The expansion limit is not a limit on valid register widths. Keep wide
+   // powers intact before converting the count or allocating any matrices.
+   bool deferredCount=unknownCount || args[1].number()>10;
+   if(a.isMatrix() && a.rows() && a.columns() && !deferredCount) {
+    size_t rows=1,columns=1;
+    for(int k=0;k<args[1].number().intValue();++k) {
+     if(a.rows()>1024/rows || a.columns()>1024/columns) {deferredCount=true;break;}
+     rows*=a.rows();columns*=a.columns();
+    }
+   }
+   if((!a.isMatrix() && unresolvedMatrixOperand(a)) || (a.isMatrix() && deferredCount)) {
     // Retain evaluated constructors so copying and re-entry display the same
     // matrix, while the tensor-power wrapper keeps its deferred constraints.
     if(!args.equals(raw)) {
@@ -783,7 +991,13 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   size_t rows=op=="qtensor" ? a.rows()*b.rows() : a.rows()+b.rows();
   size_t cols=op=="qtensor" ? a.columns()*b.columns() : a.columns()+b.columns();
-  if(rows>1024 || cols>1024 || rows*cols>1048576) { CALCULATOR->error(true,"Quantum matrix allocation limit exceeded (1048576 elements).",NULL); return 0; }
+  if(rows>1024 || cols>1024 || rows*cols>1048576) {
+   if(op=="qtensor") {
+    if(!args.equals(raw)) {out.set(this,&args[0],&args[1],NULL);return 1;}
+    return 0;
+   }
+   CALCULATOR->error(true,"Quantum matrix allocation limit exceeded (1048576 elements).",NULL); return 0;
+  }
   out.clearMatrix(); out.resizeMatrix(rows,cols,m_zero);
   for(size_t r=0;r<a.rows();++r) for(size_t c=0;c<a.columns();++c) {
    if(CALCULATOR->aborted()) return 0;
@@ -800,6 +1014,9 @@ MathStructure quantumAdjoint(const MathStructure &value, const EvaluationOptions
 }
 bool quantumMatrixShape(const MathStructure &value, MathStructure &rows, MathStructure &columns, const EvaluationOptions &options) {
  return matrixShape(value,rows,columns,options);
+}
+bool quantumResolveBasisDimension(MathStructure &value,const MathStructure &dimension) {
+ return resolveBasisDimension(value,dimension);
 }
 void registerQuantumAlgebra(Calculator &calculator) {
  registerQuantumOperatorDomain(calculator);
@@ -818,6 +1035,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ calculator.addFunction(new QuantumAlgebraFunction("qcomputationalket",1));
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }
