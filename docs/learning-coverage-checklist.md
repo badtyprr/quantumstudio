@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-11-03. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-11-15. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -8,7 +8,7 @@ P0 = broken release, data loss or incorrect established behavior: stop feature w
 
 Effort is a rough relative size: S = one scoped change; M = several changes; L = an epic that must be split after a source reproduction. No calendar estimate is implied. Dependencies name prerequisites, not automatic proof that every linked lesson needs that feature.
 
-Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07, the finite DEV-08 contract, DEV-09 and DEV-10 are released. DEV-05a–e shipped in REL-10/REL-11; DEV-05 remains partial. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
+Recommended order: Run AUD-01 and AUD-02 alongside development and select the first ready P1 item supported by a failing source fixture. DEV-03, DEV-06, DEV-07, the finite DEV-08 contract, DEV-09 and DEV-10 are released. DEV-05a–e shipped in REL-10/REL-11; symbolic register-width and indexed-expression follow-ups shipped in checkpoint-c5a456cd. Broader source coverage remains open. DEV-08 arrays, collection snapshots and remaining supported parameter forms shipped in REL-24; see [evidence and explicit limits](learning-evidence/DEV-08.md). Whole-source notebook/provider acceptance remains open. Promote newly discovered widespread failures above isolated features.
 
 | ID | Priority | Size | State | Depends on | Work |
 |---|---|---|---|---|---|
@@ -16,7 +16,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-02](#dev-02) | P1 | L | Released | DEV-01 | Domain-preserving symbolic Fourier expansion |
 | [DEV-03](#dev-03) | P1 | L | Released | None | Declared orthonormal bases |
 | [DEV-04](#dev-04) | P1 | L | Released | DEV-03 | Symbolic operator assumptions and identities |
-| [DEV-05](#dev-05) | P1 | M | Partial | None | Register dimensions and symbolic bit strings |
+| [DEV-05](#dev-05) | P1 | M | Released scope; broader coverage open | None | Register dimensions and symbolic bit strings |
 | [DEV-06](#dev-06) | P1 | L | Released | None | Runtime gate parameters |
 | [DEV-07](#dev-07) | P1 | L | Released | None | Dynamic wire indexing |
 | [DEV-08](#dev-08) | P1 | L | Released in REL-24 | DEV-07 for dynamic indexing | Array/set iteration and subroutine-local storage |
@@ -116,7 +116,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 
 ### DEV-05
 
-- [ ] **Register dimensions and symbolic bit strings** — P1; Partial; size M; dependencies: None.
+- [ ] **Register dimensions and symbolic bit strings** — P1; released scope, broader coverage open; size M; dependencies: None.
 - Source focus: Fundamentals: query algorithms and Fourier algorithms. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Carry widths through tensor products, basis labels and bit operations. Test leading zeros, empty registers, concatenation, indexed registers, and contradictory dimensions; ambiguous widths remain symbolic.
 - Released portion in REL-04: [#299](https://github.com/badtyprr/quantumstudio/pull/299) preserves typed symbolic binary labels through operations, set kets and copy/substitution, including deferred cardinality when labels may become equal. Required CI and packaged validation passed, including 1,540 worker checks and 18 symbolic-label GUI checks.
@@ -127,9 +127,9 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
   - [x] **DEV-05c — Declared register dimensions:** [#330](https://github.com/badtyprr/quantumstudio/pull/330), released in REL-10; depends on DEV-05b. Reject incompatible explicit shapes such as `H|x_1 x_0>`, retain `tensor(H,H)|x_1 x_0>`, and defer genuinely unknown dimensions.
   - [x] **DEV-05d — Symbolic tensor repetition:** [#332](https://github.com/badtyprr/quantumstudio/pull/332), released in REL-10; depends on DEV-05c. Preserve unresolved `H^{\otimes n}` and natural `tensorpow(H,n)` through copy and substitution, including zero repetitions and invalid-count checks. Copy and saved sessions retain readable notation.
   - [x] **DEV-05e — Variable-length indexed families:** [#333](https://github.com/badtyprr/quantumstudio/pull/333), released in REL-11. Natural `|x_(n-1) ... x_0>` and IBM TeX ellipses preserve descending inclusive bounds, bit assignments and explicit trailing-bit constraints. Packaged validation included 1,832 worker checks, 526 notation checks, 249 TeX checks and 12 dedicated family GUI calculations; independent two-bit Hadamard controls included. Concrete expansion supports one through ten qubits. This does not establish whole-lesson coverage.
-- Regression locations for DEV-05a–e: `src/quantum-worker-test.py` and `src/quantum-notation-test.cc`. REL-10 records released DEV-05a–d evidence; REL-11 records released DEV-05e evidence. DEV-10 delivers symbolic binary-string domains and deferred integer ranges in REL-26. Remaining scope includes general symbolic register-width equations, arbitrary indexed ellipsis patterns and widths beyond the finite numerical limit.
+- Regression locations for DEV-05a–e: `src/quantum-worker-test.py` and `src/quantum-notation-test.cc`. REL-10 records released DEV-05a–d evidence; REL-11 records released DEV-05e evidence. DEV-10 delivers symbolic binary-string domains and deferred integer ranges in REL-26. The follow-up release preserves symbolic width constraints, indexed tensor/register sums and valid widths beyond finite numerical expansion limits. General symbolic equation solving, arbitrary new ellipsis grammars and whole-source coverage are not established by the finite fixtures; retain those broader audit targets.
 
-- Development follow-up, not released: [indexed scalar-product component evidence](learning-evidence/dev05-scalar-product/README.md) records accepted source/copy checks on the development worker and separate Linux integration tests. This isolated component does not complete DEV-05 or whole-lesson coverage; Windows integration, GUI/session and release acceptance remain open at that checkpoint.
+- Released follow-up: [checkpoint-c5a456cd](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c5a456cd), merged revision `c5a456cde595b3e1211cfc51a233dea511322a56`, includes indexed scalar products, Hadamard tensor expressions, symbolic/wide/empty registers, indexed tensor series and complete-alphabet register sums from PRs #464–#466. [Register-width release evidence and limits](learning-evidence/dev05-register-width/README.md). All required merged checks passed; fresh Windows package: 94 native passes/one established thread-test skip, 2,308 worker checks, 71 DEV-05 GUI calculations, 11 session round trips and 50 scoped screenshots reviewed. Both published archives were downloaded anonymously and matched the tested hashes. Whole-notebook acceptance remains open.
 
 ### DEV-06
 
