@@ -17,6 +17,20 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  const std::string hadamardFamily=R"(\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_{0} \rangle \bigr))";
+  equal(hadamardFamily,"(tensorpow(H,n)*|x_(n-1) ... x_0>)");
+  equal("replace("+hadamardFamily+",n,2)","replace((tensorpow(H,n)*|x_(n-1) ... x_0>),n,2)");
+  equal(R"((H \vert b_{m-1}\rangle)\otimes\cdots\otimes(H \vert b_0\rangle))","(tensorpow(H,m)*|b_(m-1) ... b_0>)");
+  equal(R"((H \vert x_0\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))","(tensorpow(H,1)*|x_(0) ... x_0>)");
+  equal("\""+hadamardFamily+"\"","\""+hadamardFamily+"\"");
+  for(const char *input:{
+   R"((H \vert x_{n-1}\rangle)\otimes\cdots\otimes(X \vert x_0\rangle))",
+   R"((H \vert x_{n-1}\rangle)\otimes\cdots\otimes(H \vert y_0\rangle))",
+   R"((H \vert x_{n-1}\rangle)\otimes\cdots\otimes(H \vert x_1\rangle))",
+   R"((H \vertx_{n-1}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))",
+   R"((H \vert x_{10}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))",
+   R"((H \vert x_{n+1}\rangle)\otimes\cdots\otimes(H \vert x_0\rangle))"
+  })rejects(input);
   equal(R"(x_{n-1}y_{n-1} + \cdots + x_0 y_0)","qscalarproductsum(\"x_\",\"y_\",\"n\",vector())");
   equal(R"(replace(u_{m-1}v_{m-1}+\cdots+u_0 v_0,m,2))","replace(qscalarproductsum(\"u_\",\"v_\",\"m\",vector()),m,2)");
   equal(R"(x_0y_0+\cdots+x_0y_0)","qscalarproductsum(\"x_\",\"y_\",1,vector())");

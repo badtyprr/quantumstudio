@@ -1,0 +1,8 @@
+{
+  "symbolic_first": "qmul(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qregisterfamily(\"x_\",qsub(n,1),0,vector()))",
+  "symbolic_stable": "qmul(qtensorpow(matrix(2,2,vector(1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2))),n),qregisterfamily(\"x_\",qsub(n,1),0,vector()))",
+  "two_qubit_copy": "matrix(4,1,[1 ∕ 2,−1 ∕ 2,1 ∕ 2,−1 ∕ 2])",
+  "two_qubit_display": "[0.5; −0.5; 0.5; −0.5]",
+  "one_qubit_copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])",
+  "one_qubit_display": "[(1 ∕ √(2)); (−1 ∕ √(2))]"
+}
