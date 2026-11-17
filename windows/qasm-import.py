@@ -67,11 +67,11 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         visitor._quantum_call_depth=depth+1;visitor._quantum_call_count=calls
         try:return original_function(visitor,statement)
         finally:visitor._quantum_call_depth=depth
-    def require_range_integer(value):
+    def require_range_integer(value,origin):
         if (isinstance(value,ast.BooleanLiteral) or isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
             isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
             isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
-            raise ValueError('For-loop range bounds and step require integers; cast Boolean values explicitly.')
+            raise error_at(origin,'For-loop range bounds and step require integers; cast Boolean values explicitly.')
     def for_loop(visitor, statement):
         bounds=statement.set_declaration
         if getattr(statement,'_quantum_runtime_for',False):
@@ -80,7 +80,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             captured=ast.RangeDefinition(start=normalize(visitor,bounds.start,typed=True),
                                         end=normalize(visitor,bounds.end,typed=True),
                                         step=normalize(visitor,bounds.step or ast.IntegerLiteral(1),typed=True))
-            for value in (captured.start,captured.end,captured.step):require_range_integer(value)
+            for value in (captured.start,captured.end,captured.step):require_range_integer(value,statement)
             proxy=ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=statement.block,else_block=[])
             compiled=branch(visitor,proxy,force=True)
             return [ast.ForInLoop(type=statement.type,identifier=statement.identifier,set_declaration=captured,block=item.if_block) for item in compiled]
@@ -417,12 +417,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             return result
         if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
             if getattr(statement,'_quantum_range_capture',False):
-                require_range_integer(normalize(visitor,statement.init_expression,typed=True))
+                require_range_integer(normalize(visitor,statement.init_expression,typed=True),statement)
             boolean=isinstance(statement.type,ast.BoolType)
             size = ast.IntegerLiteral(1) if boolean else statement.type.size
-            if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
+            if size is not None and runtime(visitor,size):raise error_at(statement,'Integer widths must be compile-time constants.')
             width = 0 if size is None else Qasm3ExprEvaluator.evaluate_expression(size, const_expr=True)[0]
-            if type(width) is not int or not 0<=width<=64 or (width==0 and size is not None):raise ValueError('Integer width must be 1–64, or omitted.')
+            if type(width) is not int or not 0<=width<=64 or (width==0 and size is not None):raise error_at(statement,'Integer width must be 1–64, or omitted.')
             bare=copy.deepcopy(statement);bare.init_expression=None
             # Let the compiler validate the declaration and register its name,
             # but keep the value undefined for the runtime interpreter.
@@ -542,7 +542,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 value.lhs=promote_operands(value.lhs);value.rhs=promote_operands(value.rhs)
             return value
         target=promote_operands(copy.deepcopy(statement.target))
-        if not statement.cases:raise ValueError('Switch statements require at least one case.')
+        if not statement.cases:raise error_at(statement,'Switch statements require at least one case.')
         seen=set();cases=[]
         for labels,body in statement.cases:
             values=[]
@@ -635,6 +635,11 @@ GATES.update(u1='P')
 GATES.update(iswap='iSWAP')
 
 def gate_steps(statement, wire, published_u=False):
+    with diagnostic_context(statement):
+        return _gate_steps(statement, wire, published_u)
+
+
+def _gate_steps(statement, wire, published_u=False):
     name = statement.name.name
     if name not in GATES and name not in ('id', 'i', 'u2'):
         raise ValueError('The editor cannot represent compiled gate: ' + name)

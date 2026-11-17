@@ -344,3 +344,17 @@ The lowering validates declarations in each original block before adding guards,
 including the for-loop binding. Synthetic scopes cannot legalize same-scope
 redeclarations. Regression cases preserve the reviewed duplicate-declaration
 failures alongside the valid nested-shadowing control.
+
+### Additional validation origins (development)
+
+Invalid runtime range bounds, integer-width validation, unsupported switch forms
+and non-finite primitive gate parameters now retain their original source
+locations. Range-bound snapshots generated while expanding subroutine calls
+retain the original bound expression's span before it is replaced. Gate emission
+uses the existing diagnostic context to keep nested, already located failures.
+
+These changes preserve rejection rules and messages. Regressions include direct
+and generated range bounds, numerical/classical gate failures, ordinary and
+module dependencies, and accepted width/range/finite-angle controls. This is
+additional DEV-16d coverage, not completion of its full diagnostic or release
+acceptance.
