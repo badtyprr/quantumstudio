@@ -1,0 +1,827 @@
+{
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "6740a8ca76b64140a5dda1ba32034c64bc511e87e74d7cad9b41b060955df46d"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "ac665faebd2db263584417d1cec509c336c6f84e2e1c59a95475f0a24835f8f2"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "ecd7639ce29eb3815341f43c808654ca2542affc6d01b975c72fe4252d1ec79a"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "bfb203294a71adbcf30125679f19a2a47e7cab98c8821e09a3161c8a735b56ad"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "a8027ce11e2f53d9056410299239f37786d62078b5f2b3d21afb6f1024048088"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "32e871989f498f3a19e6ef8e6bbe38d8f9a72443ddbb51581d5de342f08c7557"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "832e489b4e0c84cd7243c5d0734c1968df7c1bb89cd55675ab76042f7b7ec0fc"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "eb5a297c3c7a2c72ec2c1c4ed33f2f7bd4371fe20e04321e822795ddeec19e68"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "dfe2a1b024e415a86d5099bfee98fcf928a8fa78aa270ebc6478a166ebd73e27"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "f5e29a3f72be4d7c9819bf8a72e1dced1312ce82e11d5c1c4f04c9473ea025c2"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "cf103fbb2e71188c647716a32eab608d4d5cb770fcfc0f8836e7b6b5637b6e83"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "3dc5f3f534200b4a902e8fe70c3c87a1b5b1404bb296f0ecb3e62ea3bedaac12"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "ac634ce94d05d736ea70114d62e3a07f1dd055142014563a1be16d83c410b276"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+      },
+      {
+        "index": 14,
+        "type": "code",
+        "sha256": "3f195b9d5ab09e2898a0c13e4293190ba0db11fed9d93f6a1717a8ee5a6ad107"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "6c45499a61560cf4319accd6a54d4a7cc75eba2aae3719e60e24c652642e1353"
+      },
+      {
+        "index": 16,
+        "type": "code",
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "5412e3ab152205b4b81e0f3212d98582c4b5a1a63bc4e6fe3e7accff48f809cc"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+      },
+      {
+        "index": 19,
+        "type": "markdown",
+        "sha256": "d3cc414105d9d9250e43bf0472dec405aa723322337c0b84f8cdf0bcdce82a70"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "3dc8ec176e2f7d8d9a1c9459bcbfcda84aa270ead8bd80e23f7c6dba03a94fa3"
+      },
+      {
+        "index": 21,
+        "type": "markdown",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 22,
+        "type": "markdown",
+        "sha256": "69ac579df59179ec80daa9dcac4fe70e157eb5ae3c7ba6aae62a97262d5c2b13"
+      },
+      {
+        "index": 23,
+        "type": "code",
+        "sha256": "4378cd2bb596bdf50feabc49f696950b8af99d0477be0a4dd6eb8d15e6f7f1c2"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "62ed199f5df9e011ca8109714a050fdf65f7083cbe1c2d0ab0ef5de15d1ab911"
+      },
+      {
+        "index": 25,
+        "type": "code",
+        "sha256": "11319e0dd0c23b4b7103ae6d831f62ada12047223bc5ebb88c47a78b059cacb7"
+      },
+      {
+        "index": 26,
+        "type": "markdown",
+        "sha256": "99dc7fe70c77ff1f4a588277579e126d47e7e01f0c6d8d2cbd741685d9149366"
+      },
+      {
+        "index": 27,
+        "type": "code",
+        "sha256": "332de6a974ca2ae44431bb4e40b23d79456da24e2d1475836a595ac4131a18a8"
+      },
+      {
+        "index": 28,
+        "type": "markdown",
+        "sha256": "ece86d91e7f5d23050033a4e6fe27838d835178be9bfae33e512b9ba38d96926"
+      },
+      {
+        "index": 29,
+        "type": "code",
+        "sha256": "31760495d45e4463c5df6e561366675819e958c76e2121875a37bdcd0f067a8b"
+      },
+      {
+        "index": 30,
+        "type": "markdown",
+        "sha256": "87b91454d2fbb1e55d39f477015094a2e288a946790f4e5c3de8c91aea0e741a"
+      },
+      {
+        "index": 31,
+        "type": "code",
+        "sha256": "e6fad47ae8a7f6627928d83aadb24b58106ceb134a7609c086053af9126db663"
+      },
+      {
+        "index": 32,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "source_audit": {
+    "all_cell_hashes_verified": true,
+    "original_cells": 33,
+    "original_code_cells": 21,
+    "selected_cells": [
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      23,
+      25,
+      27
+    ],
+    "excluded_code_cells": {
+      "20": "Original mixed CPU/GPU construction fails because cuStateVec is unavailable; CPU initialization is separately authored",
+      "29": "Original GPU benchmark requires unavailable cuStateVec backend",
+      "31": "Original CPU/GPU speedup requires excluded GPU benchmark"
+    }
+  },
+  "verification": {
+    "runs": [
+      {
+        "run": "run01",
+        "selected_cells": [
+          2,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          23,
+          25,
+          27
+        ],
+        "source_preserved": true,
+        "cpu_printed_output_verified": true,
+        "report": {
+          "accepted": true,
+          "original_grid": 5,
+          "qubits": 25,
+          "shots": 10000,
+          "coefficients": {
+            "h": [
+              [
+                -1,
+                1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                -1,
+                -1,
+                1,
+                -1,
+                -1
+              ],
+              [
+                1,
+                1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                1,
+                1,
+                -1,
+                -1,
+                1
+              ],
+              [
+                1,
+                -1,
+                1,
+                -1,
+                -1
+              ]
+            ],
+            "jr": [
+              [
+                1,
+                -1,
+                1,
+                -1,
+                1
+              ],
+              [
+                -1,
+                1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                -1,
+                -1,
+                -1,
+                1,
+                -1
+              ],
+              [
+                1,
+                1,
+                1,
+                -1,
+                1
+              ]
+            ],
+            "jc": [
+              [
+                1,
+                -1,
+                1,
+                -1
+              ],
+              [
+                1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                1,
+                -1,
+                1,
+                -1
+              ],
+              [
+                -1,
+                -1,
+                1,
+                1
+              ],
+              [
+                -1,
+                1,
+                1,
+                1
+              ]
+            ]
+          },
+          "sampled_energy": 3.9228,
+          "exact_classical_minimum": -37,
+          "minimizing_bits": [
+            [
+              0,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0
+            ]
+          ],
+          "source_row_energy_checks": 10000,
+          "original_cpu_seconds": 7.2059245109558105,
+          "measurement_sha256": "ef6a1c1e65dc459dd226b731e7549dc916ca53af457372e80c8cf466294c53b6",
+          "ground_state_optimization_performed": false,
+          "gpu_benchmark_executed": false,
+          "speedup_verified": false,
+          "whole_notebook_complete": false,
+          "scope": "Original full CPU workload with authored CPU initialization and independent sample-cost audit",
+          "limitations": [
+            "Random coefficients and samples are original and unseeded; timings are observations only",
+            "Classical minimum concerns the source diagonal cost function, not a general quantum Hamiltonian",
+            "No independent full 25-qubit state-vector equivalence or native QuantumStudio execution claim",
+            "GPU construction/benchmark and speedup cells excluded"
+          ]
+        }
+      },
+      {
+        "run": "run02",
+        "selected_cells": [
+          2,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          23,
+          25,
+          27
+        ],
+        "source_preserved": true,
+        "cpu_printed_output_verified": true,
+        "report": {
+          "accepted": true,
+          "original_grid": 5,
+          "qubits": 25,
+          "shots": 10000,
+          "coefficients": {
+            "h": [
+              [
+                -1,
+                -1,
+                -1,
+                -1,
+                1
+              ],
+              [
+                1,
+                -1,
+                1,
+                1,
+                1
+              ],
+              [
+                -1,
+                1,
+                1,
+                -1,
+                1
+              ],
+              [
+                1,
+                -1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                -1,
+                -1,
+                1,
+                1,
+                1
+              ]
+            ],
+            "jr": [
+              [
+                -1,
+                1,
+                -1,
+                -1,
+                1
+              ],
+              [
+                1,
+                1,
+                -1,
+                -1,
+                1
+              ],
+              [
+                -1,
+                -1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                -1,
+                1,
+                1,
+                -1,
+                1
+              ]
+            ],
+            "jc": [
+              [
+                -1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                1,
+                1,
+                -1,
+                -1
+              ],
+              [
+                -1,
+                1,
+                1,
+                -1
+              ],
+              [
+                -1,
+                -1,
+                -1,
+                -1
+              ],
+              [
+                1,
+                1,
+                -1,
+                1
+              ]
+            ]
+          },
+          "sampled_energy": 9.465,
+          "exact_classical_minimum": -35,
+          "minimizing_bits": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_row_energy_checks": 10000,
+          "original_cpu_seconds": 6.357921123504639,
+          "measurement_sha256": "d548a139974320eeb62de8c7b45d04c9ad7df6f6a507db7bc255bc940aa1af2d",
+          "ground_state_optimization_performed": false,
+          "gpu_benchmark_executed": false,
+          "speedup_verified": false,
+          "whole_notebook_complete": false,
+          "scope": "Original full CPU workload with authored CPU initialization and independent sample-cost audit",
+          "limitations": [
+            "Random coefficients and samples are original and unseeded; timings are observations only",
+            "Classical minimum concerns the source diagonal cost function, not a general quantum Hamiltonian",
+            "No independent full 25-qubit state-vector equivalence or native QuantumStudio execution claim",
+            "GPU construction/benchmark and speedup cells excluded"
+          ]
+        }
+      }
+    ],
+    "file_count": 29536,
+    "total_bytes": 602366249,
+    "before_after_equal": true,
+    "limitations": [
+      "Unseeded random instances are validated separately, not equated across runs",
+      "Endpoint file integrity does not rule out transient writes",
+      "No whole-notebook GPU/speedup, optimizer or native QuantumStudio acceptance"
+    ]
+  },
+  "dependency_closure": {
+    "distributions": 60,
+    "active_requirements": 88
+  },
+  "focused_tests": 48,
+  "artifact_bindings": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\after02.json",
+      "sha256": "f504d679a157a8bf531456d2268453f51af91d7b0238e59ec9f3556b68f64c62",
+      "size": 6798516
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\before02.json",
+      "sha256": "444385b87d793b3e9591be90e5e14e40820e8a2a457c23c1f45e11df7111575e",
+      "size": 6798517
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\file_inventory.py",
+      "sha256": "f2e8ee04ca5d9ee8d7050783592e5d69be902761024d7f68ed9e7e6a288183e8",
+      "size": 1492
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\focused-tests.json",
+      "sha256": "d7e47c7bfca6f76eed3a4c5d7cabd5ef3d6f5534206487e0ef7c0ce57012fedd",
+      "size": 371
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\focused-tests.log",
+      "sha256": "a98d07f724258b6617f721e64f5dbd8803e6ba27765bc5197b6f12a0c0e76930",
+      "size": 152
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\cells.json",
+      "sha256": "c9dc8e60425cb85f89d0f1f9229963c237819357284cba5c820ea6cf3b1e8403",
+      "size": 5243
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\engine-request.json",
+      "sha256": "5cf488fac6d25fa4a1fe71caee3578c75597c1d733ddea98cfaccdbe4454951d",
+      "size": 15746
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\engine-result.json",
+      "sha256": "c6e3e3e36e6f8d790bbc2d4e9b8bf912fd401aa15cb24dc1cca594610d87821e",
+      "size": 3495
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\engine.stderr",
+      "sha256": "0140a2903188b8712d2d5b63f6c48b5d3eb70aca6148fa6f32b07048fc56cc24",
+      "size": 667
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\engine.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\events.jsonl",
+      "sha256": "5af0b17086e0535c9fcd247e4e13b3b792cd3a7069df815f20dfd7063eb32cae",
+      "size": 10093
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\executed.ipynb",
+      "sha256": "0460a62de787fc5131f40fc83017d87c01d9ca5552e657f83cbde1d139dc90a8",
+      "size": 49867
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\kernel.json",
+      "sha256": "5c6745d5e39d40c1298bf63f3a7b2a3ee1538c0380e361ba69a96352de91baef",
+      "size": 116
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\qb007-cpu-counts.json",
+      "sha256": "4b41e34be02cd40baf374c97bbfd2eeb7325a06ea219234178974fe97ea9ab76",
+      "size": 315072
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\qb007-cpu-witness.json",
+      "sha256": "10e40e83acaa699080e73cfa4d5ee409eee251d54b112fdbf579db05cb724418",
+      "size": 2479
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\source-disposition.json",
+      "sha256": "261aa2724870d7efcee22af8bfea3c5d4ed40847106bb9f6cd1187e6f08110e3",
+      "size": 8188
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\source-original.ipynb",
+      "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "size": 11817
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run01\\status.json",
+      "sha256": "856162f0f9745e6aa2f72ecd7b96249341db27d16c19846c8fca8f7ffd5b0663",
+      "size": 6819
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\cells.json",
+      "sha256": "f57ce1cc14eee1cf886da0098e339a52740440f5ebe0f2d91b8420d47fd806eb",
+      "size": 5258
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\engine-request.json",
+      "sha256": "5cf488fac6d25fa4a1fe71caee3578c75597c1d733ddea98cfaccdbe4454951d",
+      "size": 15746
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\engine-result.json",
+      "sha256": "a880147b00e8906f497f7ffc988113e98175664b4cd5a23a4de50dbdc31ffe94",
+      "size": 3494
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\engine.stderr",
+      "sha256": "0140a2903188b8712d2d5b63f6c48b5d3eb70aca6148fa6f32b07048fc56cc24",
+      "size": 667
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\engine.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\events.jsonl",
+      "sha256": "9dcbafc397651e7b5bef1aeddf5bc053d0fa54f85f669491e100b626bd82323a",
+      "size": 10093
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\executed.ipynb",
+      "sha256": "9bd2ca3c29978f729b9872d27b94db8136c07fc5eb20ce8f7cfcada832665be5",
+      "size": 54203
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\kernel.json",
+      "sha256": "b0fcc4b65851baec654aba93f9c7643cb71b6dd39f5da33655cdda5d876bd269",
+      "size": 116
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\qb007-cpu-counts.json",
+      "sha256": "35dc48cea076e2d124508400d99d1a01293bb645dc4b5341dc78bbedf07625f5",
+      "size": 304672
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\qb007-cpu-witness.json",
+      "sha256": "95e0f57a0e0fd37bff5a5d4b71bc4c8bfc220284e3e750668c8d2c0bfbd672b8",
+      "size": 2478
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\source-disposition.json",
+      "sha256": "261aa2724870d7efcee22af8bfea3c5d4ed40847106bb9f6cd1187e6f08110e3",
+      "size": 8188
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\source-original.ipynb",
+      "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "size": 11817
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\run02\\status.json",
+      "sha256": "685e1e0d703f576fdb8a374a08bf43a8d140da91ba577ff79e4b62d119e8e50b",
+      "size": 6818
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\verification02.json",
+      "sha256": "ae54a50da18d2a934697c80342bf4e0bda882b85511c7157d48700cc0b832314",
+      "size": 7643
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-cpu\\verify_replay.py",
+      "sha256": "9a3959f9820b09f538f46e3ecad26ea335dd41840d4818d77a43b223d25bcbf7",
+      "size": 2681
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\cpu-probe\\progress.json",
+      "sha256": "0426e14946379b8a0fefca2288b3c9bb4059f7688a85185e81523d6721dcb8bc",
+      "size": 58784
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\cpu-probe\\results.json",
+      "sha256": "272010dfd9108c56f959bfa0f6670634834269f2552ac52b71d636d372fde431",
+      "size": 409644
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\cpu_probe.py",
+      "sha256": "d991346de234da835e81d356daf99ba4dc86c89cdf0430abe7fb1379e8100033",
+      "size": 4101
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\dependency-closure.json",
+      "sha256": "b0c874ff59fc443fab65a1aea954c5b5965a5b72603739f80a6e09d9c8672b4c",
+      "size": 15916
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\download.log",
+      "sha256": "72dac48c4a7e153b13eaa242f85d2d0dfdcaa87a284b62c7ca7021f39fa983c1",
+      "size": 19823
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\hardware.json",
+      "sha256": "3e379c8194489ce48e0f035425ac38727b23fc4a5c6e1f75f9e0734ed1bc8aac",
+      "size": 391
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\install.log",
+      "sha256": "2a21916f787bd41d0ef01d7aacd5871e0edcde358b62907001e195cfc7d83f31",
+      "size": 14074
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\pypi.json",
+      "sha256": "9714748da4b7bc05d30d104b269fbf85d90c19a5640e983f5483620ec4684aa6",
+      "size": 450048
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\requirements.lock",
+      "sha256": "873f8a5184776f2912d797ca42c53de63b974e62a69f5bf1e7e04d9a8ca7f1a3",
+      "size": 5796
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\resolution.json",
+      "sha256": "4ade4cae96c58fc7ebaf81934247f2ab211e3d2a6c6de0660086bd1c3f0ad414",
+      "size": 826020
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\resolution.log",
+      "sha256": "c627aa4f0ca8941e21ed6ff526c93ce259e2a9416b5ec30a703e5d298c79569e",
+      "size": 19052
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\roots.txt",
+      "sha256": "a5aa5c556fcf3302dcb6f46ea886c66cbeceec45f377f7a00ff1552a1069fb3d",
+      "size": 97
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb007-prerequisites\\wheel-manifest.json",
+      "sha256": "b852e248ec92af7c8652f6ccf9ef312dfa34bd4a35e5539afa1bab5a9e15b066",
+      "size": 9658
+    }
+  ],
+  "review": "pending",
+  "hosted_ci": false,
+  "released": false,
+  "whole_checklist_row_complete": false
+}
