@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "squin-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "squin-requirements.lock",
+  "lock_sha256": "d8e8e5d049ba8034fc384867b2f933de002515652b936085631752da6fc2371a",
+  "offline_only": true,
+  "wheel_requirement": "172 retained Windows wheels including locally built ffmpeg1.4 and PyLaTeX1.4.2",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}

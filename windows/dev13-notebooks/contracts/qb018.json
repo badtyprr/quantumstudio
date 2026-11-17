@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "id": "qb018",
+  "route": "notebook",
+  "profile": "squin-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qir_to_squin_conversion.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "3958cde980500df81d85b56c178435983a5ca3d77c58c39884f09943fccc2a7f"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "8d3d1f36b5ea115fb1799d276c95c6d20647f6bdc907bf3bd081f393979ac6fe"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "ef36945830015077f4d20b839e2a29d4eb11efdd3c46560235dc9fbc94a013c1"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "702ee97b536c55d69e2e19cb4d09635b9ed3512adca14ec750bcd762ca22e75e"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "76815d80eb0a1216e95ce70762ae1c609417dd86c91eb0917b37039938fbf275"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "cc5669068160ced8a5b66bca38394e6875a9671eab77c216a36d7e8f481cc57b"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "81c1a4fd2f58460f775302adf910731ccaf32ac0ad860991d9437616c607c9b8"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "67eb78e7a4b47d967abb4bdbc20147d75dcde739c481cc0336f65f4a47caf023"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "2d5019b4eff3a2b4cefb419243918d13fcc6be7859130434a6efec3f6b134363"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "5557ce387ac2d287560216808c9288681fd5a537fc45f51c9020e63438f4eb4c"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "4737b50d09bbcf09364a5ef57d45f0c55255b54b345079dc46c581aee091c411"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "a69bd07d11d1c37e119ef5da97eb2889ad03f90a54639b420b35ba4aa85a7157"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "2706b34270fab01599d27cb0e2ac5268d9ada74a2ce579a2ac61da0ef1970d03"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "1d2b0fc4808a0e64160f1d265c1c7e48c682dd3544e8aff3f17f11467497d4ad"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "09b03cd322850715d4df19e7b931a915476aa8cb9992979696d6519354763fe1"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "e1516bf338bc281e6b812bfde1fa7f2a3e5ab30586747aa2676b9c60214260dc"
+      },
+      {
+        "index": 16,
+        "type": "code",
+        "sha256": "7e39dc3182016011febb86005b3e4f283748643d44163a7ac660cdbe2f7839d6"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 18,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    2,
+    4,
+    5,
+    7,
+    8,
+    9,
+    11,
+    13,
+    15,
+    16,
+    17
+  ],
+  "preamble": null,
+  "required_images": [],
+  "required_text": {},
+  "setup": {
+    "cell": 1,
+    "commands": [
+      "install pyqir qbraid-qir \"bloqade>=0.33\" \"pyqrack-cpu<2\" cirq-core --quiet"
+    ],
+    "observer_sha256": "b1e0dea82928499ef7c8757a416a70a68c6f42ef46afad32edb9f1af17b1a62b",
+    "check_sha256": "5e74fd4cec9def11757cf98c8b3490f3f54e1b65fede8cb868c4c43d6421872a"
+  },
+  "witness": {
+    "path": "witnesses/qb018.py",
+    "sha256": "b38c3afb45d9b8f483f4ea4cc377aeba42b87676ac6a108b7f789c197bc9d6da",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "acceptance_field": "accepted",
+  "output_artifacts": [
+    "setup-evidence.json",
+    "qb018-state-evidence.json"
+  ],
+  "external_requirements": [
+    "Read all markdown and inspect printed kernels/state vectors",
+    "Whole notebook acceptance requires reviewed environment and state evidence"
+  ]
+}
