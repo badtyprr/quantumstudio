@@ -177,6 +177,42 @@ class FileImportTests(unittest.TestCase):
                     self.assertEqual(message.strip(),
                                      f"scope.inc:2:{body.index(token) + 3}: Re-declaration of variable '{name}'")
 
+    def test_validation_origin_file_locations(self):
+        cases = [('qubit q; int n; for int i in [true:n] { x q; }',
+          True,
+          'for int',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('def stop() -> int { return 2; } for int i in [true:stop()] { }',
+          True,
+          'true',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('def start() -> bool { return true; } int n; for int i in [start():n] { }',
+          True,
+          'start():n',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('def stop() -> int { return 2; } for int i in [0:true:stop()] { }',
+          True,
+          'true',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('qubit q; int n; while(n) { int[65] k; }', True, 'int[65]', 'Integer width must be 1–64, or omitted.'),
+         ('qubit q; int n; int[n] k;', True, 'int[n]', 'Integer widths must be compile-time constants.'),
+         ('qubit q; int n; switch(n) { default { x q; } }',
+          True,
+          'switch',
+          'Switch statements require at least one case.'),
+         ('qubit q; rx(sqrt(-1)) q;', False, 'rx(', 'Gate parameters must be finite.'),
+         ('qubit q; rx(sqrt(-1)) q;', True, 'rx(', 'Gate parameters must be finite.')]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/validation.inc";')
+        for body, classical, token, detail in cases:
+            self.put('nested κ/validation.inc', 'OPENQASM 3;\r\n  ' + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command, classical=classical):
+                    args = ['--source-file', str(main), '--module-headers']
+                    if classical:
+                        args.append('--classical')
+                    message = self.run_import(command, args, success=False)
+                    self.assertIn(f'nested κ/validation.inc:2:{body.index(token) + 3}: {detail}', message)
+
     def test_timed_gate_rejection(self):
         cases = [
             ('qubit q; x[1ns] q;', 'x['),
