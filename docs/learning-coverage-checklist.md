@@ -1,6 +1,6 @@
 # Learning coverage and development priorities
 
-Updated: 2026-11-15. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
+Updated: 2026-11-17. This is the decision queue for the full IBM Quantum Learning and qBraid goal, not a reduction of its scope.
 
 ## Choose the next development task
 
@@ -28,7 +28,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
-| [DEV-17](#dev-17) | P2 | M | Partial | Candidate Clipboard passed; release open | Named subsystem partial traces |
+| [DEV-17](#dev-17) | P2 | M | Released | None | Named subsystem partial traces |
 | [AUD-01](#aud-01) | P1 | M | Pending | None | Audit algorithms first |
 | [AUD-02](#aud-02) | P1 | M | Pending | None | Complete source discovery |
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
@@ -268,16 +268,14 @@ those semantics when adding whole-program serialization.
 
 ### DEV-17
 
-- Final revision preparation: [numeric-k GUI supplement](learning-evidence/dev17/numeric-k-gui.md) and [concrete candidate/release proposal](learning-evidence/dev17/release-proposal.md) extend draft PR #428. The new workflow builds the exact integrated PR head and tests its extracted candidate ZIP. Completed results are bound to the full revision and hashes in the durable handoff/PR; prior candidate passes are not transferred to a new build. Merge, release rebuilding and publication remain open gates.
-- [ ] **Named subsystem partial traces** — P2; Partial; size M. Explicit ordered expression-local mappings and named trace-out syntax merged in PR #427; corrected integrated validation and required CI passed. Fresh local package and actual Clipboard acceptance passed; the distinct hosted candidate also passed twice on independent hosted runners. Release coordination remains open. See the [verified integration status](learning-evidence/dev17/integration.md). See the [contract](learning-evidence/dev17/contract.md) and [validation with preserved failures](learning-evidence/dev17/validation.md).
-- Source and reproduction: [IBM-005 evidence](learning-evidence/IBM-005.md), published revision `3254e5d4`. With the explicit matrix `R` in that evidence, `ptrace(R,1)` returns `identity(2)/2`, while `\operatorname{Tr}_{\mathsf{B}}(R)` rejects its named subscript. This is a literal source operator prefix with an adapted operand, not a whole-lesson compatibility test.
-- [x] DEV-17a: Implemented explicit ordered labels/dimensions through expression-local `subsystems` values; scope, literal-label binder protection, conflicts and persistence contract documented. No alphabetical position inference; selections name factors traced out. Candidate GUI Copy persistence is recorded under DEV-17d; release remains gated.
-- [x] DEV-17b: Implemented human-entered and supported source TeX named trace forms; full exact Bell, asymmetric mixture and product-order controls plus specific invalid-label/dimension diagnostics validated on the scoped development worker.
-- [x] DEV-17c: Scoped checks cover unequal dimensions `[2,3]`, a middle factor, multiple traced factors, retained order and renamed/permuted labels. The legacy retained-dimension-one scalar convention is explicit.
-- [ ] DEV-17d: Verify GUI entry, copied expressions and saved/reopened declarations retain the same mapping and result. Attach exact-head tests, required CI and the tested release revision before marking this feature released.
-- Development evidence: 112/112 direct worker checks; original corrected-registration suite 77 pass/1 existing skip/1 test-only assertion failure, followed by a corrected 62-check native rerun. These historical development runs remain separate; the subsequent corrected integrated run passed 78 tests with one existing skip and zero failures/errors, as recorded in the [integration evidence](learning-evidence/dev17/integration.md). Supplemental 72 GUI Calculate/session checks exclude Clipboard. Historical actual Copy failed on the locked desktop and in a private-station experiment; those failures remain preserved. The fresh candidate evidence now records actual Clipboard success locally and twice on independent hosted runners. No local privilege remedy is claimed. No release is claimed.
-- Follow-up integration review found accepted operator-keyword labels failing as unquoted selectors. The reviewed correction preserves numeric and quoted-binder compatibility; subsequent scoped checks pass 88 native named-subsystem, 212 worker, 538 notation, 116 subsystem and 249 TeX checks. Original keyword failures remain preserved; these scoped runs do not replace the separately recorded integrated validation or DEV-17d.
-- Boundaries: Symbolic dimension identities, set-indexed sums, block matrices and the linked notebook remain separate unverified IBM-005 coverage. Successful numeric adaptations cannot complete that lesson. Owner: release coordinator; implementation PR: [#427](https://github.com/badtyprr/quantumstudio/pull/427), merged; release pending.
+- [x] **Named subsystem partial traces** — P2; Released in [checkpoint-c5a456cd](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c5a456cd). The finite mapping contract and its GUI/Clipboard/session acceptance are reconciled against fresh final-package evidence in the [release reconciliation](learning-evidence/dev17/release-reconciliation.md). This closes DEV-17, not the whole IBM-005 lesson.
+- Source and reproduction: [IBM-005 evidence](learning-evidence/IBM-005.md) records the original named-subscript failure on `3254e5d4`. Explicit matrix operands adapt the source operator prefix; whole-lesson compatibility remains unverified.
+- [x] DEV-17a: Explicit ordered labels/dimensions through expression-local `subsystems` values; scope, literal-label protection, conflicts and persistence follow the [contract](learning-evidence/dev17/contract.md). No alphabetical position inference; selected factors are traced out.
+- [x] DEV-17b: Named and supported source TeX forms preserve exact Bell, asymmetric-mixture and product-order results, with specific label/dimension diagnostics. Released worker and original GUI fixtures check full exact matrices and Copy/re-entry.
+- [x] DEV-17c: Released controls cover unequal `[2,3]` dimensions, a middle factor, multiple traced factors, retained order and renamed/permuted labels. Retained dimension one follows the documented scalar convention.
+- [x] DEV-17d: Final `c5a456cde595b3e1211cfc51a233dea511322a56` package passed 72 original GUI assertions and 377 supplemental keyword assertions, including 71 assigned numeric-k assertions; zero Clipboard retries. Actual Copy/re-entry and production save/reopen preserve mappings and exact results after conflicting intervening mappings. Three required CI checks passed on that revision; public source/Windows assets were downloaded and verified. [Requirement mapping and hashes](learning-evidence/dev17/release-reconciliation.json).
+- Validation boundaries: 212 released named-subsystem worker checks passed. Final independent semantic and visual reviews are retained separately from automated harness verdicts. Production Save/Open methods were tested, not native file dialogs. Earlier candidate failures and review history remain in the [integration](learning-evidence/dev17/integration.md) and [validation](learning-evidence/dev17/validation.md) records; they are not transferred to the final package.
+- Broader symbolic dimension identities, set-indexed sums, block matrices and the linked notebook remain separate IBM-005 audit targets. The finite release does not complete that source row.
 
 ### AUD-01
 

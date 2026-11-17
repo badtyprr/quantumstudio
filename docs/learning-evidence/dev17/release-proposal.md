@@ -1,5 +1,7 @@
 # DEV-17 final revision proposal
 
+Current status: the finite DEV-17 contract is released in checkpoint-c5a456cd. See the [final release reconciliation](release-reconciliation.md). Development, candidate and pending statements below record the earlier stage; whole-source acceptance remains open.
+
 This proposal extends draft [PR #428](https://github.com/badtyprr/quantumstudio/pull/428)
 with assigned numeric-k GUI acceptance. It does not authorize merging or publication.
 DEV-17 remains Partial and DEV-17d remains unchecked.
