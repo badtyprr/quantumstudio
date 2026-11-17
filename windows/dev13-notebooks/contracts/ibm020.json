@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "id": "ibm020",
+  "route": "notebook",
+  "profile": "qiskit-aer-win-py312",
+  "source": {
+    "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+    "sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "92d8d40378e9055ccc93efb79eff921b7decc5326f36a7fd7c27d3b68abd0f83"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "b1024fb4e8af74bb85f9aea26d7c4d0c83e13630ff0d5c3dd7b8a8357c8af213"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "55de482fb264ff236ec5f5ce7f6d562ddb37e3be098e1b42bccacf536469f4de"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "e981f9c38a8c9daf3e5dabb1d831e89c4fcfaa28c879005cb37abe8a0724673f"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "a80ceebf7cb87bb6b02a585280d44b650cfc2948df619628c7841e32b9f0fb38"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "9d3ea9cd4c6689c71c53dbaa1a61c0d2622417f0f953e3ecc1a1e301c90fd972"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "4f844a38e54c0a6aca7bd314a2d08a1b23e5780ae18795e9b634db49901b6ebb"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "7afeaa254c97ec7e7187a7deca9cb808cfaf00c4e94be59b1ecb0930c70216ee"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "435f56063750609363d4e3c6716e5d149d213b9619f4ea7829a5d623f0c779a6"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "6dbe6da8fba313ed60db825fb58a12db1470216f9da534967d7a28ccea2ba85f"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "0fbe03cfb90c1fff3bf6801aa44dfaf1729e1e638a1d631832026fecec6ebd4b"
+      },
+      {
+        "index": 11,
+        "type": "markdown",
+        "sha256": "9bc306e53844be09b9fc25d5cda94e5b11796927fafa50a5765882cb2f5b279d"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "8d3392c23a52da52c143928dab952137507f4fe80bbf3ae0e881393a27671668"
+      },
+      {
+        "index": 13,
+        "type": "markdown",
+        "sha256": "72ad18b0ff92b79d2177f61fe4141b37a9478e3b5ef69a658f579b7f4aa2ebbc"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "68cee3024ef13aa9d7671744c898710eeb16a65d7c5bd1d30ab6a3412da96f2c"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "7f1ed2e27d71d405e802e63a3b541c3b7d5f0928645709369abf177c1106e5c9"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "28cc9ff0824922790217becc96ae9c8ff925eab346b4eda18f68c697299db129"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "5c6a291e1ce98ed0f886533578880e59afa4b8b4ee3974f3927665f27a34dab8"
+      },
+      {
+        "index": 18,
+        "type": "markdown",
+        "sha256": "6d1932efc7dfe5b53a6756397b3153605b9bf27b95bf14378e00af886b3fe5d5"
+      },
+      {
+        "index": 19,
+        "type": "markdown",
+        "sha256": "d64da6446fdee316a7c86d823685fb93de9d35b4d326555839b2b18c4769ea65"
+      }
+    ]
+  },
+  "code_cells": [
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    17
+  ],
+  "preamble": "import numpy as np; np.random.seed(0)",
+  "witness": {
+    "path": "witnesses/ibm020.py",
+    "sha256": "23c20f3c7eeb023170af030ebbe2fb35f7a05f661888ba36dd56eb7a5d451f5d",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "required_images": [
+    6,
+    12,
+    15
+  ],
+  "required_text": {
+    "12": "'balanced'",
+    "17": "'1011'"
+  },
+  "capabilities": [
+    "local-computation",
+    "rich-display"
+  ],
+  "external_requirements": [
+    "Original markdown SVG/page rendering",
+    "Native mathematics and lesson interpretation"
+  ],
+  "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance"
+}
