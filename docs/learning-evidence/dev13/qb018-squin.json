@@ -136,5 +136,163 @@
       "sha256": "b7d557dbcb2f4e488252c9c65157656411a54a9df16eec051d945552d2f8eb12",
       "size": 11296
     }
-  ]
+  ],
+  "full_file_replay": {
+    "runtime_revision": "c98c701adddffe07d3639e44c9776014cf0822f5",
+    "comparison": {
+      "files": 46771,
+      "bytes": 1468072338,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "dependency_results_identical": false,
+      "accepted": true,
+      "fresh_install": false,
+      "dependency_semantics_identical": true,
+      "active_requirement_entries": 400,
+      "comparison_note": "Only active_requirements list order differs; compared exact records with multiplicity, all other fields identical."
+    },
+    "captured_source": {
+      "source_cells": 19,
+      "original_code_cells": 12,
+      "empty_code_cells": [
+        17
+      ],
+      "captured_vectors": [
+        {
+          "source": "cell11_cirq",
+          "norm": 0.9999999541022148,
+          "endpoint_residual": 0.0,
+          "interior_residual": 0.0
+        },
+        {
+          "source": "cell11_qir",
+          "norm": 0.9999999431033441,
+          "endpoint_residual": 0.0,
+          "interior_residual": 0.0
+        },
+        {
+          "source": "cell16_direct",
+          "norm": 1.0000001685054443,
+          "endpoint_residual": 0.0,
+          "interior_residual": 0.0
+        }
+      ],
+      "witness_reruns_separate": true,
+      "source_printed_dot_product": "1.000000",
+      "whole_source_acceptance": false
+    },
+    "artifacts": [
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\captured-source-audit.json",
+        "sha256": "b704a73d5e8594ba65c4363a58f5f732e54f547fde1f9731754db703330f1e74",
+        "size": 657
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\comparison-raw-order.json",
+        "sha256": "482df818ac3d3947c747182cd16969077710daa87356bfc52c649b2da2f189d0",
+        "size": 181
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\comparison.json",
+        "sha256": "008279b59183a785ad49f3731c9a89f5346bd8fdaa05c1d5f691a8d77dd22647",
+        "size": 398
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\dependency-after.json",
+        "sha256": "2542e59072d906447877b7f8687129c2019769c4239570386bded28964bb6e8d",
+        "size": 67434
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\dependency-before.json",
+        "sha256": "0ae362668ac8e31ee95fbb1445b069f8601d06e40b8bf0b30ba170180a077267",
+        "size": 67434
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\file_inventory.py",
+        "sha256": "1b485769e3736fd079270841f1741ebe827299b8b9e45dd7f80ac90de32bdd9f",
+        "size": 1493
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\files-after.json",
+        "sha256": "b1af76bc152292306270191e81abdb5f10b310cd1482abf5d8aef558bce92985",
+        "size": 10732462
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\files-before.json",
+        "sha256": "25feaa90bcd936aeae31840f7507df1e2473a82e34d7cb4faa711fddf94d821e",
+        "size": 10732462
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\output-comparison.json",
+        "sha256": "8639ef2a64833c11a2b107da7cfa4d69ce82afadec0538d3917848216b972d14",
+        "size": 392
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\cells.json",
+        "sha256": "be79256b13c59c62150bafcbb34a9d389441140cdb989e9ab70b00669e7cbb12",
+        "size": 5534
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\engine-request.json",
+        "sha256": "19c24635af4c437dede2554532375db65cb3033d58499e2477e5eb7e6c556c78",
+        "size": 13075
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\engine-result.json",
+        "sha256": "fa3e95d4d461dfbfaca96ebbc8c4a70493a42b5fb5e195d4a64e15647f54bf92",
+        "size": 4579
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\engine.stderr",
+        "sha256": "64c94afa64ab5cafca71679fb4dfcce5566b443d8cdf294f82d96bd936e5b28b",
+        "size": 668
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\engine.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\events.jsonl",
+        "sha256": "c0dddf86817c563574a4bf95de953695f922ac79e68e84d61cca973a2da58092",
+        "size": 17548
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\executed.ipynb",
+        "sha256": "add391aed8227075524fd8a929c8e10b79f55bc76d630b0383220d74e8ad9ed9",
+        "size": 89345
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\kernel.json",
+        "sha256": "0854b32d16f1c4f7869a8e7ead6b2d0e2f665404901191c27eeb94ddf27788cb",
+        "size": 117
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\qb018-state-evidence.json",
+        "sha256": "5037c3dce75b1da7cd410368ed19aaad1c95dc01d50dd56061ac6d01bbadd1c8",
+        "size": 3422
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\setup-evidence.json",
+        "sha256": "627e077864cc232bc8d757a7c9172af6fccd4f8820eb5c2ff8388955e732ec16",
+        "size": 83136
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\source-original.ipynb",
+        "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+        "size": 7624
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run\\status.json",
+        "sha256": "d725ec45053a208d71b94a336107bf866e36a807f900e142c81dd682d72f6a67",
+        "size": 11301
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-environment-replay\\run.log",
+        "sha256": "4fe934d3a532d87c312553b4ad3396c105e8efd35c36e2f098eb745898ccbc81",
+        "size": 167
+      }
+    ]
+  }
 }

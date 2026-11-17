@@ -83,6 +83,33 @@ Both runs succeeded with kernel job membership and zero remaining processes afte
 forced cleanup. This is not graceful-shutdown evidence.
 
 Validation: four witness tests, 24 request/profile tests, and the complete source
-run. The JSON index binds actual artifacts. Full file integrity across a run,
-packaged UI behavior, hosted CI, release verification, general Squin/CUDA-Q support
-and the wider source inventory remain separate work.
+run. The JSON index binds actual artifacts. Packaged UI behavior, hosted CI,
+release verification, general Squin/CUDA-Q support and the wider source inventory
+remain separate work.
+
+## Full-file replay integrity
+
+A further complete source execution at
+`c98c701adddffe07d3639e44c9776014cf0822f5` reused the fresh installation described
+above. All 46,771 files across the environment, base interpreter and notebook
+runtime retained their bytes (1,468,072,338 bytes total): no additions, removals
+or changes. This is a before/after consistency check, not independent package
+authenticity or a second fresh installation.
+
+Both dependency checks passed with 172 distributions and 400 active requirements.
+The requirement lists appeared in different traversal orders; comparison of the
+exact entries, including multiplicities, was identical, as were all other fields.
+The initial order-sensitive comparison is retained alongside that diagnosis.
+
+All original cells and the three authored reruns passed again. The three original
+captured vectors were separately checked against GHZ; their largest norm error
+was below `1.7e-7`. The original printed kernels, Cirq circuit and comparison text
+match the earlier run after joining stream chunks. Stream chunk boundaries are
+transport details and did differ. Vector phases may vary across executions and
+are audited against the expected state rather than against an earlier sample.
+Cleanup recorded owned kernel membership, forced termination and zero remaining
+processes.
+
+The full inventories and replay are retained in
+`cleanup-audit/learning-coverage-20261117/qb018-environment-replay/`; their bindings
+are appended to the JSON evidence index. Earlier runs remain unchanged.
