@@ -796,11 +796,11 @@ def resolve_integer_scopes(program):
                 name=statement.identifier.name
                 if name in declared:raise error_at(statement,'Duplicate declaration in one scope: '+name)
                 declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,RUNTIME_SCALAR_TYPES)
-                if depth and name in env and not integer:raise ValueError('Non-integer shadowing is not yet supported by the importer.')
+                if depth and name in env and not integer:raise error_at(statement,'Non-integer shadowing is not yet supported by the importer.')
                 expression(statement.type,env)
                 renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
                 if integer:
-                    if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                    if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
                     statement._quantum_scoped=depth>0
                     env[name]=renamed
                     if depth:scoped.add(renamed);local.append(renamed)
@@ -934,7 +934,7 @@ def mark_runtime_ranges(program):
                     if not isinstance(statement.set_declaration,ast.RangeDefinition) or not isinstance(statement.type,(ast.IntType,ast.UintType)):
                         raise ValueError('Runtime for loops currently require an integer binding and a range.')
                     if statement.set_declaration.start is None or statement.set_declaration.end is None:
-                        raise ValueError('For-loop ranges require both endpoints.')
+                        raise error_at(statement,'For-loop ranges require both endpoints.')
                     statement._quantum_runtime_for=True
             elif isinstance(statement,ast.WhileLoop):block(statement.block,env)
             elif isinstance(statement,ast.BranchingStatement):block(statement.if_block,env);block(statement.else_block,env)
