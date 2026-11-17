@@ -40,6 +40,18 @@ class SourceBundleTests(unittest.TestCase):
              'Global declarations are not allowed in switch cases.'),
             ('bit b; if(b) { bit b; }', 'bit b; }',
              'Non-integer shadowing is not yet supported by the importer.'),
+            ('float t; if(t) { }', 'if(t)',
+             'A bit expression requires an explicit cast or comparison.'),
+            ('float t; while(t) { }', 'while(t)',
+             'A bit expression requires an explicit cast or comparison.'),
+            ('int n; if(bit[2](n)) { }', 'if(bit',
+             'Integer-to-bit casts require equal explicit widths.'),
+            ('int n; while(bit[2](n)) { }', 'while(bit',
+             'Integer-to-bit casts require equal explicit widths.'),
+            ('int n; for int i in [:n] { }', 'for int',
+             'For-loop ranges require both endpoints.'),
+            ('bit[2] a; bit[3] b; if(a==b) { }', 'if(a',
+             'Classical operands have incompatible widths.'),
         ]
         main = self.put('main.qasm', 'OPENQASM 3; include "sub dir/wrapper.inc";')
         self.put('sub dir/wrapper.inc', 'include "bad κ.inc";')

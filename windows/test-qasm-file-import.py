@@ -58,6 +58,12 @@ class FileImportTests(unittest.TestCase):
              'Global declarations are not allowed in switch cases.', 'qubit q'),
             ('bit b; if(b) { bit b; }',
              'Non-integer shadowing is not yet supported by the importer.', 'bit b; }'),
+            ('float t; if(t) { }', 'A bit expression requires an explicit cast or comparison.', 'if(t)'),
+            ('float t; while(t) { }', 'A bit expression requires an explicit cast or comparison.', 'while(t)'),
+            ('int n; if(bit[2](n)) { }', 'Integer-to-bit casts require equal explicit widths.', 'if(bit'),
+            ('int n; while(bit[2](n)) { }', 'Integer-to-bit casts require equal explicit widths.', 'while(bit'),
+            ('int n; for int i in [:n] { }', 'For-loop ranges require both endpoints.', 'for int'),
+            ('bit[2] a; bit[3] b; if(a==b) { }', 'Classical operands have incompatible widths.', 'if(a'),
         ]
         main = self.put('main.qasm', 'OPENQASM 3; include "nested κ/helper.inc";')
         for source, detail, token in cases:

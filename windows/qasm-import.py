@@ -502,9 +502,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         # Branch compilation supplies the same scoped block and gate bookkeeping.
         if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
             raise ValueError('Global declarations are not allowed in runtime loops.')
-        proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
+        proxy=copy_span(ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[]),statement)
         compiled=branch(visitor,proxy,force=True)
-        return [ast.WhileLoop(while_condition=item.condition,block=item.if_block) for item in compiled]
+        return [copy_span(ast.WhileLoop(while_condition=item.condition,block=item.if_block),statement) for item in compiled]
     def switch(visitor, statement):
         if in_function(visitor):return original_switch(visitor,statement)
         target=normalize(visitor,statement.target)
@@ -918,7 +918,7 @@ def mark_runtime_ranges(program):
                     if not isinstance(statement.set_declaration,ast.RangeDefinition) or not isinstance(statement.type,(ast.IntType,ast.UintType)):
                         raise error_at(statement,'Runtime for loops currently require an integer binding and a range.')
                     if statement.set_declaration.start is None or statement.set_declaration.end is None:
-                        raise ValueError('For-loop ranges require both endpoints.')
+                        raise error_at(statement,'For-loop ranges require both endpoints.')
                     statement._quantum_runtime_for=True
             elif isinstance(statement,ast.WhileLoop):block(statement.block,env)
             elif isinstance(statement,ast.BranchingStatement):block(statement.if_block,env);block(statement.else_block,env)
@@ -1442,6 +1442,9 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     if len(variables)+len(numeric_variables)>4096:raise ValueError('Use at most 4096 variable slots.')
     def classical_value(value,registers,expected_width=None,variables=variables,integer_only=False):
         return classical_expression(value,registers,expected_width,variables,integer_only,numeric_variables)
+    def condition_value(statement,condition):
+        with diagnostic_context(statement):
+            return classical_value(condition,classical,1,variables)
     def numeric(value,target_float_width=64):
         return lower_numeric(value,numeric_variables,
             lambda node:classical_expression(node,classical,variables=variables,integer_only=True,numeric_variables=numeric_variables),
@@ -1562,7 +1565,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.WhileLoop):
                 if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
                 version=max(version,7)
-                append({'Kind':'While','ClassicalValue':classical_value(statement.while_condition,classical,1,variables),
+                append({'Kind':'While','ClassicalValue':condition_value(statement,statement.while_condition),
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement,ast.ForInLoop):
                 if depth>=32:raise ValueError('Classical circuits support at most 32 nested blocks.')
@@ -1580,7 +1583,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                           isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
                 simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition)) and not contains_numeric(condition,numeric_variables)
                 if not simple:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':condition_value(statement,condition),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 negate = False
@@ -1594,7 +1597,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 try:
                     start, size = reference(target, classical, whole=True)
                 except ValueError:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':condition_value(statement,condition),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
