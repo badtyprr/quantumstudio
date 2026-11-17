@@ -1,0 +1,30 @@
+[
+  {
+    "after_original_cell": 10,
+    "qubits": 10,
+    "classical_bits": 10,
+    "qasm": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[10] q;\nbit[10] c;\nh q[0];\nh q[1];\ncx q[0], q[1];\nrx(0.5) q[3];\nrx(0.5) q[4];\nrx(0.5) q[5];\nrx(0.5) q[6];\nccx q[0], q[1], q[2];\nbarrier q[0], q[1], q[2], q[3], q[4], q[5];\nc[0] = measure q[0];\nc[1] = measure q[1];\nc[2] = measure q[2];\nc[3] = measure q[3];\nc[4] = measure q[4];\nc[5] = measure q[5];\n"
+  },
+  {
+    "after_original_cell": 13,
+    "qubits": 7,
+    "classical_bits": 10,
+    "qasm": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[7] q;\nbit[10] c;\nh q[0];\nh q[1];\ncx q[0], q[1];\nrx(0.5) q[3];\nrx(0.5) q[4];\nrx(0.5) q[5];\nrx(0.5) q[6];\nccx q[0], q[1], q[2];\nbarrier q[0], q[1], q[2], q[3], q[4], q[5];\nc[0] = measure q[0];\nc[1] = measure q[1];\nc[2] = measure q[2];\nc[3] = measure q[3];\nc[4] = measure q[4];\nc[5] = measure q[5];\n"
+  },
+  {
+    "after_original_cell": 20,
+    "qubits": 7,
+    "classical_bits": 10,
+    "qasm": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[7] q;\nbit[10] c;\nh q[0];\nh q[1];\ncx q[0], q[1];\nrx(0.5) q[3];\nrx(0.5) q[4];\nrx(0.5) q[5];\nrx(0.5) q[6];\nccx q[0], q[1], q[2];\nc[0] = measure q[0];\nc[1] = measure q[1];\nc[2] = measure q[2];\nc[3] = measure q[3];\nc[4] = measure q[4];\nc[5] = measure q[5];\n",
+    "new_qasm": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[7] q;\nbit[10] c;\nh q[0];\nh q[1];\ncx q[0], q[1];\nrx(0.5) q[3];\nrx(0.5) q[4];\nrx(0.5) q[5];\nrx(0.5) q[6];\nccx q[0], q[1], q[2];\n",
+    "distinct_objects": true
+  },
+  {
+    "after_original_cell": 25,
+    "qubits": 7,
+    "classical_bits": 10,
+    "qasm": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[7] q;\nbit[10] c;\nh q[6];\nh q[5];\ncx q[6], q[5];\nrx(0.5) q[3];\nrx(0.5) q[2];\nrx(0.5) q[1];\nrx(0.5) q[0];\nccx q[6], q[5], q[4];\nc[0] = measure q[6];\nc[1] = measure q[5];\nc[2] = measure q[4];\nc[3] = measure q[3];\nc[4] = measure q[2];\nc[5] = measure q[1];\n",
+    "new_qasm": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[7] q;\nbit[10] c;\nh q[0];\nh q[1];\ncx q[0], q[1];\nrx(0.5) q[3];\nrx(0.5) q[4];\nrx(0.5) q[5];\nrx(0.5) q[6];\nccx q[0], q[1], q[2];\n",
+    "distinct_objects": true
+  }
+]
