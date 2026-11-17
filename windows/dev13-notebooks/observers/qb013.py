@@ -255,7 +255,7 @@ postcell check, so qBraid cannot mistake a capture error for a failed path.
             raise ValueError('AUTHORED_CAPTURE_FAILED')
         for edge, original, wrapper in self.saved:
             if edge._conversion_func is not original:
-                raise ValueError('OBSERVER_NOT_RESTORED')
+                raise ValueError('OBSERVER_NOT_RESTORED')
 
 class ObservedTranspile:
     """Observe one delegated call at a time; installation is a separate step.
@@ -718,7 +718,7 @@ program/gate/target forms are capture errors, never silently omitted.
                                        args=[self._number(a) for a in arguments]))
             return dict(format='stim', text=str(program), qubits=program.num_qubits,
                         measurements=program.num_measurements, operations=operations)
-        raise ValueError('UNSUPPORTED_PROGRAM_TYPE')
+        raise ValueError('UNSUPPORTED_PROGRAM_TYPE')
 
 def cached_graph_inventory(graph, conversion_method):
     """Read actual cached graph callables; do not compute or steer any route.
@@ -755,7 +755,7 @@ must defer any capture failure until the authored postcell checkpoint.
                     listed_and_cached_identity_sets_match=(len(listed) == len(cached)
                         and len({id(edge) for edge in listed}) == len(listed)
                         and {id(edge) for edge in listed} == set(identities)))
-    return cached, evidence
+    return cached, evidence
 
 class ScopedQasmParser:
     """Observe the actual normalized parser input, never regenerate it."""
@@ -844,7 +844,7 @@ class ScopedQasmParser:
 
     def require_complete(self):
         if self.active or self.owner.parse is not self.original or self.diagnostics:
-            raise ValueError('AUTHORED_PARSER_CAPTURE_FAILED')
+            raise ValueError('AUTHORED_PARSER_CAPTURE_FAILED')
 
 
 def start_notebook_capture(namespace):
