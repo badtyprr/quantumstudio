@@ -1079,13 +1079,16 @@ def convert(source, published_u=False, classical=False):
     if classical:
         return classical_circuit(statements, published_u, hidden_registers, output_registers, allocations)
     registers, count = {}, 0
+    budget_origin = None
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
             size = 1 if statement.size is None else statement.size.value
             registers[statement.qubit.name] = (count, size)
             count += size
+            if budget_origin is None and count > 25:
+                budget_origin = statement
     if not 1 <= count <= 25:
-        raise ValueError('The circuit editor currently supports 1–25 qubits.')
+        raise error_at(budget_origin, 'The circuit editor currently supports 1–25 qubits.')
 
     def wire(value):
         if isinstance(value, ast.Identifier):

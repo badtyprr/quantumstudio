@@ -92,6 +92,10 @@ class FileImportTests(unittest.TestCase):
     def test_lowering_and_assignment_emission_locations(self):
         cases = [
             ("// register\nqubit[26] q;", 4,
+             "The circuit editor currently supports 1–25 qubits.", (False,)),
+            ("qubit[25] q;\nqubit extra;", 4,
+             "The circuit editor currently supports 1–25 qubits.", (False,)),
+            ("// register\nqubit[26] q;", 4,
              "Classical circuits support 0–25 qubits and up to 64 classical bits.", (True,)),
             ("qubit[25] q;\nqubit extra;", 4,
              "Classical circuits support 0–25 qubits and up to 64 classical bits.", (True,)),

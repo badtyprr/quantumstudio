@@ -247,6 +247,10 @@ when that declaration has an original span. Source tests cover these failures
 through nested dependencies and module-header adaptation, and preserve the same
 unlocated stdin messages. These are authored negative cases, not notebook runs.
 
+The numerical editor's 25-qubit limit likewise identifies the first overflowing
+declaration. A program with no qubit declaration retains the entry-file fallback;
+there is no declaration to which its minimum-qubit error can be attributed.
+
 The 512-operation limit also reports the source operation that crosses the
 budget in both editors. Unrolling retains origins for generated gates,
 measurements, resets and phase operations without replacing a more specific

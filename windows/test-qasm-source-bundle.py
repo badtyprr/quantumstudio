@@ -12,6 +12,28 @@ from qasm_source_diagnostics import compile_source, error_at, copy_span, diagnos
 
 
 class SourceBundleTests(unittest.TestCase):
+    def test_numerical_register_budget_origin(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/registers.inc";')
+        message = 'The circuit editor currently supports 1–25 qubits.'
+        for body in ('// register\n  qubit[26] q;', 'qubit[25] q;\n  qubit extra;\nqubit another;'):
+            with self.subTest(body=body):
+                self.put("nested κ/registers.inc", body)
+                with self.assertRaises(SourceError) as caught:
+                    compile_source(capture_source(main), compiler.convert)
+                self.assertEqual(str(caught.exception), 'nested κ/registers.inc:2:3: ' + message)
+                with self.assertRaises(ValueError) as stdin:
+                    compiler.convert('OPENQASM 3;\n' + body)
+                self.assertEqual(str(stdin.exception), message)
+        self.put("nested κ/registers.inc", 'qubit[25] q;')
+        self.assertEqual(compile_source(capture_source(main), compiler.convert)['Qubits'], 25)
+        self.put("nested κ/registers.inc", '// no qubits')
+        with self.assertRaises(SourceError) as absent:
+            compile_source(capture_source(main), compiler.convert)
+        self.assertEqual(str(absent.exception), 'main.qasm: ' + message)
+
     def test_synthesized_operation_limit_origins_and_recovery(self):
         spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
         compiler = importlib.util.module_from_spec(spec)
