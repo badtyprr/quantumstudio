@@ -38,7 +38,7 @@ The 186 fixture records do not represent 186 original source examples. Successfu
 numerical values have 172 ordinary canonical Copy/re-entry checks; the two
 deferred contexts have separate copy checks. The original deferred tensor power
 also receives an unverified copy observation in the reusable runner. Source
-[repetition M24](../aud01-ibm020-repetition/README.md) is linked as prior finite
+[repetition M24](https://github.com/badtyprr/quantumstudio/blob/c68bc989c65fd29d9f3f693c0a877235da35b5a3/docs/learning-evidence/aud01-ibm020-repetition/README.md) is linked as prior finite
 evidence and contributes zero new requests here. No source occurrence is silently
 dropped because another route passed.
 
