@@ -25,6 +25,57 @@ Their exact hashes are in [verification.json](verification.json).
 
 ## Requirement-by-requirement gap list
 
+### Local development update — 2026-11-16
+
+The table below remains the historical released-evidence assessment. The following
+stack adds local evidence; none of these results changes a completion checkbox or
+claims a release:
+
+- [#468](https://github.com/badtyprr/quantumstudio/pull/468) and
+  [#469](https://github.com/badtyprr/quantumstudio/pull/469) extend diagnostic
+  attribution through later visitor and emission failures. This is bounded
+  regression coverage, not proof that every compiler error has a source span.
+- [#470](https://github.com/badtyprr/quantumstudio/pull/470), tested at
+  `57e5b6ef5bf74d6816ec1b51bd5c324502c21354`, exercises both original modules
+  through both editors with nested includes and spaced Unicode paths. Four
+  authored source graphs cover `.qcircuit` save/reopen, blank/unchanged/missing/
+  changed source checks, failed atomic reimport, successful reimport and complete
+  bounded history preservation. Twelve full-state comparisons passed with zero
+  residual. All 24 captures were inspected; long diagnostics and lower editor
+  content extend beyond some viewports and are not visually certified there.
+- [#471](https://github.com/badtyprr/quantumstudio/pull/471), tested at
+  `56c4af73bfd0d095b431534ff7e510066f88d673`, adds six composer preparations,
+  twelve original/edited standalone export round trips and 36 independent
+  state/density comparisons, all with zero residual. All 18 full-run captures
+  were inspected, with offscreen content at minimum size explicitly excluded.
+  Compiler-only CI runs explicit structural coverage; package builds require
+  numerical validation after staging the native runtime and definitions.
+
+The package script also requires the four-document failure/reimport matrix after
+runtime staging. Its per-run evidence stays outside the distributable payload,
+under `dist/dev16-source-failures/`, and records the exact build revision. A failed
+matrix stops packaging. The automatic result still leaves capture inspection to
+the release reviewer; it does not itself certify visual acceptance.
+
+Local provenance and raw evidence are retained under
+`cleanup-audit/coordinator-20261104/`: `dev16-editor-validation-20261116.json`,
+`dev16-editor-package-20261116.json`, `dev16-editor-matrix-20261116/`,
+`dev16-composer-validation-20261116.json`, and
+`dev16-composer-exports-final-20261116/`. These are local artifacts, not uploaded
+PR attachments. The development assembly used freshly built GUI code, a verified
+compiler and verified released native components with unchanged source. It was
+not a clean full native/package build. The final composer test harness ran at
+the stated final revision; its GUI was built at `7fbe08226` with identical GUI
+source. Original module bytes were preserved.
+
+At the time these PRs were opened, GitHub Actions was disabled and no hosted
+checks ran. Integration, merged-package validation, capture review and release
+remain pending. `.qsession` restoration, actual Clipboard coverage and whole
+notebook/provider execution are not established by this stack. DEV-16, DEV-16e
+and QB-004 remain unchecked.
+
+### Historical released coverage
+
 | Requirement | Evidence already present | Remaining limit / disposition |
 | --- | --- | --- |
 | Resolve local dependencies | DEV-16a–c, REL-04–07; file-import/source-bundle tests, explicit module-header option | Shipped; do not reimplement. Strict mode and adapted generated-module mode remain distinct. |
