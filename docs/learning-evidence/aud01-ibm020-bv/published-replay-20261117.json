@@ -1,0 +1,72 @@
+{
+  "imported_revision": "7a0c6720143d3dc0e8250362d834b75ec6d141d1",
+  "provenance": {
+    "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+    "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+    "worker_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+    "script_sha256": "f9ae61c26b5914fcbdfce50b573dafc9227f3d5a0bee0863bd0035af1898d698",
+    "fixtures_sha256": "54696ce3ee3b0553bf3f00e181a3f4479b58ad91ea2f31127030e3c09592ddae",
+    "definitions_before": {
+      "currencies.xml": "2e3755f4c689cdfb9f3ba58a4479247414cb00d2dbfba649732e0a872a82b1ce",
+      "datasets.xml": "b5d06c6698152e2dd7fb99136e15a0c7e480b09f48bc71af61836a64c16cb2ac",
+      "elements.xml": "00dfd53ebb19e2f44166a73da8b8ad59d8e18336342175be7373aadc82f2af3c",
+      "eurofxref-daily.xml": "2634d30efde68a04cf777f4f45f5d67530e09179f311fe6ccf81f0efba12ee24",
+      "functions.xml": "675f8005bf8a7f8cc4623135f838efd91eed69184dd66a791f81c428987607ef",
+      "planets.xml": "84071a736558cb39d0851f96060404ab4264cd011324ec8d47520d63706158ff",
+      "prefixes.xml": "62b001d17848abb7d1ffe26af5a2f2bc1cd11bb91c67c4830a32a137c05f9b3f",
+      "units.xml": "8df64e5185ecca43fd1697cb3841382c578251332e10e2898e5883fe8699bb41",
+      "variables.xml": "7af8b57a8dea98b77635266b5253762d39fb408ef953e5cc5c7e8aa95d35059c"
+    },
+    "route": "Actual worker exact mode; canonical copies use ordinary evaluation",
+    "definitions_after": {
+      "currencies.xml": "2e3755f4c689cdfb9f3ba58a4479247414cb00d2dbfba649732e0a872a82b1ce",
+      "datasets.xml": "b5d06c6698152e2dd7fb99136e15a0c7e480b09f48bc71af61836a64c16cb2ac",
+      "elements.xml": "00dfd53ebb19e2f44166a73da8b8ad59d8e18336342175be7373aadc82f2af3c",
+      "eurofxref-daily.xml": "2634d30efde68a04cf777f4f45f5d67530e09179f311fe6ccf81f0efba12ee24",
+      "functions.xml": "675f8005bf8a7f8cc4623135f838efd91eed69184dd66a791f81c428987607ef",
+      "planets.xml": "84071a736558cb39d0851f96060404ab4264cd011324ec8d47520d63706158ff",
+      "prefixes.xml": "62b001d17848abb7d1ffe26af5a2f2bc1cd11bb91c67c4830a32a137c05f9b3f",
+      "units.xml": "8df64e5185ecca43fd1697cb3841382c578251332e10e2898e5883fe8699bb41",
+      "variables.xml": "7af8b57a8dea98b77635266b5253762d39fb408ef953e5cc5c7e8aa95d35059c"
+    },
+    "definitions_unchanged": true,
+    "worker_unchanged": true
+  },
+  "summary": {
+    "requests": 159,
+    "planned_value_passes": 81,
+    "compact_value_passes": 32,
+    "numeric_copies": 113,
+    "literal_rejections": 14,
+    "expanded_guard_rejections": 32,
+    "unexpected_failures": []
+  },
+  "external_evidence": [
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-bv-published-replay/binding.json",
+      "bytes": 898,
+      "sha256": "fe8c8cd14015d2e810e72f23e90534b432fc49c487b03a6b888604614cb5e930"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-bv-published-replay/completion.json",
+      "bytes": 16,
+      "sha256": "124fd50cb6d223cdd18fedc166d00af7254199b6e6dedf9be82f71db87af6d01"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-bv-published-replay/probe.log",
+      "bytes": 184,
+      "sha256": "eb5210c29136d7b0d748f068ec5ea7cedbcdc509852dd07bafd3e5894d4a563d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-bv-published-replay/results/probe-snapshot.py",
+      "bytes": 9428,
+      "sha256": "f9ae61c26b5914fcbdfce50b573dafc9227f3d5a0bee0863bd0035af1898d698"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-bv-published-replay/results/results.json",
+      "bytes": 2337959,
+      "sha256": "b577678e024ccf63a0d7fb516fac28eb2d9a11b251a2110bc0d592f674104e12"
+    }
+  ],
+  "scope": "Finite Bernstein-Vazirani source adaptations and authored4bit controls;14original literals and32expanded sums remain rejected. No notebook or GUI acceptance."
+}

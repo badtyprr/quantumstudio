@@ -1,0 +1,101 @@
+{
+  "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+  "worker_revision": "577dbb6572a9442e1d654e4b2264709f603d77ab",
+  "worker_sha256": "1d9fbc1e42a1b001d73665fee5f7cbf46df02fdf5eb180f9ebd73345bd1daff9",
+  "planned_requests": 127,
+  "planned_value_and_copy_passes": 81,
+  "expanded_guard_failures": 32,
+  "original_literal_rejections": 14,
+  "separate_compact_value_and_copy_passes": 32,
+  "total_value_and_copy_passes": 113,
+  "exact_field": "Q(sqrt(2)); no tolerance or global-phase alignment",
+  "review": {
+    "standards_findings": 0,
+    "spec_findings": 0,
+    "scope": "External execution; packaged final review separately required"
+  },
+  "history": "Initial pilot treated omitted JSON cells above128entries as failed value. Preserved original output; corrected comparison reads full canonical32x32integer matrix then ordinary re-entry. All3pilot script snapshots recovered with original recorded SHA256 equality and independently verified.",
+  "external_artifacts": {
+    "bv-plan/fixtures.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-plan/fixtures.json",
+      "sha256": "a758d7db4e90468a26d0d4f97859da4d721e30a0bbcc4720761f1b44603ef482",
+      "bytes": 1145799
+    },
+    "bv-plan/reviews.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-plan/reviews.json",
+      "sha256": "d15c0ac277c1a3926225e8de5413f9c327b359783d1269e556cc35d40e2e50dc",
+      "bytes": 980
+    },
+    "bv-plan/independent-oracle-check.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-plan/independent-oracle-check.json",
+      "sha256": "529afdb0b9f551bf831a1c142b56878e94c2235da4446ddcb06b028a2939bca9",
+      "bytes": 469
+    },
+    "bv-execution-reviews.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-execution-reviews.json",
+      "sha256": "b849bcd58cb0747968805ebfb3b5f690cce3e451e351d76abec6c495671c0562",
+      "bytes": 506
+    },
+    "bv-script-recovery.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-script-recovery.json",
+      "sha256": "7fe8a261ac80a5405b6f73a80dbf6d08dbd0f9673713055417a12a8a1380c61d",
+      "bytes": 582
+    },
+    "bv-pilot/results.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-pilot/results.json",
+      "sha256": "35f9265136a1f236d4e9fe76b9a19f6574e13f998630e0d18b6ba7277cc40074",
+      "bytes": 148732
+    },
+    "bv-pilot-corrected/results.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-pilot-corrected/results.json",
+      "sha256": "05e2532e12af3f576db1020aff337f732efe382226ee8157cdef02ab8bc5bc3b",
+      "bytes": 167809
+    },
+    "bv-compact-pilot/results.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-compact-pilot/results.json",
+      "sha256": "90636866505288e31d4b1c2aea71163c512fa9741106bba0a1e42a84e8c7f34d",
+      "bytes": 19151
+    },
+    "bv-remaining/results.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-remaining/results.json",
+      "sha256": "37a638b5c91aa2cc2ef27a4629d845fbf96d05712329e67b3a1e5eb699ea2d90",
+      "bytes": 1980719
+    },
+    "bv-compact-remaining/results.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-compact-remaining/results.json",
+      "sha256": "a1955e2bdabe9e0cea86091466f17e985571c8d696379d3dc71902d3719af63b",
+      "bytes": 213932
+    },
+    "bv-pilot/probe-snapshot-recovered.py": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-pilot/probe-snapshot-recovered.py",
+      "sha256": "ef74ce3ed3d84cc8e38aea704fb2595b9cf87b63b2d42287a6c391343bb41ec4",
+      "bytes": 4742
+    },
+    "bv-pilot-corrected/probe-snapshot-recovered.py": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-pilot-corrected/probe-snapshot-recovered.py",
+      "sha256": "5ecfd37c6a5968cd5ebf2e00b8c605caaef48bf8111b534cae4258224fc7c1e7",
+      "bytes": 5246
+    },
+    "bv-compact-pilot/probe-snapshot-recovered.py": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-compact-pilot/probe-snapshot-recovered.py",
+      "sha256": "dc8453d0d15cdb2f64c126b7ab712e21dfe3a6abdc0beb06d7fcea72160ffff3",
+      "bytes": 5825
+    },
+    "bv-packaged-recorded-baseline/NOT-NATIVE-EXECUTION.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-packaged-recorded-baseline/NOT-NATIVE-EXECUTION.json",
+      "sha256": "7c74b99c356e377b3dc43ce04be33cc74cb6fc91b2300a3d4de09bf91e072a8a",
+      "bytes": 399
+    },
+    "bv-packaged-recorded-changed-diagnostic/NOT-NATIVE-EXECUTION.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-packaged-recorded-changed-diagnostic/NOT-NATIVE-EXECUTION.json",
+      "sha256": "8e8368256fbde91fc97404f1fae2e213a7003143116c3c088a7c4118075abe4e",
+      "bytes": 435
+    },
+    "bv-packaged-recorded-wrong-matrix/NOT-NATIVE-EXECUTION.json": {
+      "path": "cleanup-audit/math-lane-20261104/ibm020/bv-packaged-recorded-wrong-matrix/NOT-NATIVE-EXECUTION.json",
+      "sha256": "f7dd90191f27c7d64ca99235eaecf1affcad94ace24cbcfd0b88c336ef8869d1",
+      "bytes": 449
+    }
+  },
+  "packaged_verifier_checks": "Recorded-response baseline159 and fault injections for changed original diagnostic and wrong canonical oracle entry pass; this is not a new native execution."
+}
