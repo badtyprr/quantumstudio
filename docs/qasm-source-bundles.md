@@ -259,6 +259,10 @@ they have no existing span, so nested custom-gate locations remain specific.
 The zero-qubit numerical-program rejection has no offending declaration and
 continues to name only the entry file. Tests preserve the accepted 512-operation
 boundary and locate the first overflowing operation.
+Condition-expression errors retain their enclosing `if` or `while` location,
+including incompatible numeric/bit expressions and casts. Runtime `while`
+lowering preserves its original span through the temporary branch representation.
+Missing runtime range endpoints identify the originating `for` statement.
 
 DEV-16d is still incomplete. Other control-flow transformations,
 numerical emission and synthesized nodes without original spans need further
