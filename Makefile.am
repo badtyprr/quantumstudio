@@ -272,3 +272,13 @@ EXTRA_DIST += windows/ScalarProductGuiTests.cs diagnostics/scalar-product/Run-Ac
 EXTRA_DIST += windows/HadamardTensorGuiTests.cs diagnostics/hadamard-tensor/Run-Acceptance.ps1 diagnostics/hadamard-tensor/fragment.txt diagnostics/hadamard-tensor/source.json diagnostics/hadamard-tensor/expected.json
 EXTRA_DIST += windows/RegisterWidthGuiTests.cs diagnostics/register-width/Run-Acceptance.ps1 diagnostics/register-width/fixtures.json
 EXTRA_DIST += docs/learning-evidence/dev05-register-width/README.md
+
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/baseline-summary.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/fixtures.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/probe.py
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/published-replay-20261117.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/published-replay-20261117.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/README.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-analysis.md
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-inventory.json

@@ -1,5 +1,7 @@
 # AUD-01: IBM-020 source inventory and finite analysis audit
 
+Historical audit follows. See the [2026-11-17 published-worker replay](published-replay-20261117.md) for current finite outcomes; original baseline failures below are preserved observations. Whole-source acceptance remains open.
+
 The first Deutsch–Jozsa analysis section has 46 math occurrences:8 display blocks
 and38 inline occurrences. The remainder inventory covers the complementary
 source regions with 122 more occurrences,15 display and107 inline. Together they
