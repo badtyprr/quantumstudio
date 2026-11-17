@@ -13,6 +13,28 @@ def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 hashes={} if a.prepare_only else {"gui":digest(app),"compiler":digest(compiler),"worker":digest(worker)}
 startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
 results=[]
+contract=json.loads((repo/"windows/fixtures/dev16-composer-contract.json").read_text(encoding="utf-8"))
+for filename,expected_digest in contract["fixtures"].items():
+    assert digest(repo/"windows/fixtures/qb004"/filename)==expected_digest,filename
+process_count=0
+
+def recorded_run(command,**kwargs):
+    global process_count
+    process_count+=1
+    prefix=out/f"process-{process_count:03d}"
+    prefix.with_suffix(".command.json").write_text(json.dumps(command),encoding="utf-8")
+    if "input" in kwargs:prefix.with_suffix(".stdin").write_bytes(kwargs["input"])
+    try:
+        run=subprocess.run(command,capture_output=True,**kwargs)
+    except subprocess.TimeoutExpired as error:
+        prefix.with_suffix(".stdout").write_bytes(error.stdout or b"")
+        prefix.with_suffix(".stderr").write_bytes(error.stderr or b"")
+        prefix.with_suffix(".exit.json").write_text(json.dumps(dict(timeout=True)),encoding="utf-8")
+        raise
+    prefix.with_suffix(".stdout").write_bytes(run.stdout)
+    prefix.with_suffix(".stderr").write_bytes(run.stderr)
+    prefix.with_suffix(".exit.json").write_text(json.dumps(dict(returncode=run.returncode)),encoding="utf-8")
+    return run
 
 def expected_state(name,value,edited):
     # Native ket digits are q0,q1,..., not the displayed count-string order.
@@ -35,7 +57,7 @@ def circuit_expression(circuit):
 def verify_state(expression,expected,mixed=False):
     target=f"density({expected})" if mixed else expected
     query=f"quantum:norm(vec(({expression})-({target})))"
-    run=subprocess.run([str(worker),"--json","--approx"],input=query.encode("utf-8"),capture_output=True,timeout=30,
+    run=recorded_run([str(worker),"--json","--approx"],input=query.encode("utf-8"),timeout=30,
                        env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
     assert run.returncode==0,(query,run.stderr)
     residual=complex(json.loads(run.stdout)["text"].replace("−","-").replace(" ","").replace("i","j"))
@@ -46,6 +68,9 @@ def normalized(circuit):
             "Steps":[dict(Gate=s["Gate"],Wires=s["Wires"],Angle=s.get("Angle") or "") for s in circuit["Steps"]]}
 for name,value,count in (("strict",0,2),("oracle",0,3),("oracle",1,4),("oracle",2,4),("oracle",4,4),("bernvaz",0,10)):
     label=f"{name}-{value}"
+    expectation=next(case for case in contract["cases"] if case["name"]==label)
+    assert expected_state(name,value,False)==expectation["original"]
+    assert expected_state(name,value,True)==expectation["edited"]
     folder=out/(label+" Unicode κ");folder.mkdir()
     entry=folder/"main κ.qasm"
     if name=="strict":
@@ -70,7 +95,7 @@ for name,value,count in (("strict",0,2),("oracle",0,3),("oracle",1,4),("oracle",
     report=folder/"composer.txt"
     command=[str(app),"--composer-source-qasm-test",str(entry),str(report)]
     if name!="strict":command.append("modules")
-    run=subprocess.run(command,capture_output=True,timeout=90,startupinfo=startup)
+    run=recorded_run(command,timeout=90,startupinfo=startup)
     assert run.returncode==0 and report.exists(),(name,run.returncode,report.read_text() if report.exists() else run.stderr)
     assert report.read_text().startswith("PASS:"),report.read_text()
     document=json.loads(Path(str(report)+".qcircuit").read_text(encoding="utf-8-sig"))
@@ -92,7 +117,7 @@ for name,value,count in (("strict",0,2),("oracle",0,3),("oracle",1,4),("oracle",
         if edited:expected_circuit["Steps"].append(dict(Gate="X",Wires=[0],Angle=""))
         assert normalized(saved["Circuit"])==expected_circuit
         exported=Path(str(report)+suffix+".qasm").read_bytes()
-        rebuilt=subprocess.run([str(compiler)],input=exported,capture_output=True,timeout=30)
+        rebuilt=recorded_run([str(compiler)],input=exported,timeout=30)
         assert rebuilt.returncode==0,(label,edited,rebuilt.stderr)
         restored=json.loads(rebuilt.stdout)
         expected_circuit["Steps"]=[dict(Gate="Reset",Wires=[i],Angle="") for i in range(expected_circuit["Qubits"])]+expected_circuit["Steps"]
@@ -111,6 +136,8 @@ if a.prepare_only:
     print("Prepared six cases; no GUI, compiler or worker execution.")
     raise SystemExit(0)
 assert {"gui":digest(app),"compiler":digest(compiler),"worker":digest(worker)}==hashes
+for filename,expected_digest in contract["fixtures"].items():
+    assert digest(repo/"windows/fixtures/qb004"/filename)==expected_digest,filename
 (out/"audit.json").write_text(json.dumps(dict(passed=True,package=str(package),hashes=hashes,results=results,
     scope="Numerical composer source import and standalone circuit equivalence; no complete notebook or changed-dependency claim."),indent=2)+"\n")
 print("PASS: six frozen composer source imports, twelve original/edited round trips and 36 independent state checks.")
