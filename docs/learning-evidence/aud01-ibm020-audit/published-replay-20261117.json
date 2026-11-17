@@ -1,0 +1,165 @@
+{
+  "release_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+  "script_sha256": "246dd15c0c87f0db4efc1fe67578efeb2ee37b1b396ebef3a8b22c2d7761f136",
+  "fixture_sha256": "1e231c3c5dbfca7f1e44548b1331ca407428c6fa6bef6e8b7670e14f6275b8cb",
+  "probe_revision": "ae7a45d98789dbea980e82d1469705499b0db1f8",
+  "summary": {
+    "cohort_counts": {
+      "original": 10,
+      "primary": 164,
+      "context": 10,
+      "deferred": 2
+    },
+    "statuses": {
+      "deferred_context_retained": 2,
+      "literal_observed_unverified": 1,
+      "literal_rejected": 4,
+      "unexpected_failure": 5,
+      "verified_value": 174
+    },
+    "primary_mathematical_passes": 164,
+    "primary_mathematical_failures": [],
+    "context_mathematical_passes": 10,
+    "verified_numeric_copies": 174,
+    "deferred_context_copies": 2,
+    "literal_copy_observations": 1,
+    "unexpected_failures": [
+      "g1-m02-literal",
+      "literal-M11",
+      "literal-M18",
+      "literal-M19",
+      "literal-M23"
+    ]
+  },
+  "reconciliation": {
+    "primary_passes": 164,
+    "context_passes": 10,
+    "numeric_copy_passes": 174,
+    "deferred_contexts": 2,
+    "changed_literal_cases": [
+      "g1-m02-literal",
+      "literal-M11",
+      "literal-M18",
+      "literal-M19",
+      "literal-M23"
+    ],
+    "literal_copy_quantum_route": {
+      "exit": 0,
+      "actual": {
+        "text": "[1  1]",
+        "display_text": "1.  1\n\n2.  1",
+        "copy_text": "\\begin{gathered}1\\\\1\\end{gathered}",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    "classification": "All finite values pass. One aligned literal newly succeeds; ordinary copy route rejects generated TeX but documented Quantum mode copy route passes. Four other changed literals retain unsupported cdots diagnostics. No new native defect established; whole-source remains open."
+  },
+  "changed_literal_records": [
+    {
+      "input": "quantum:\n\\begin{aligned}\nH \\vert 0\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\\\\[3mm]\nH \\vert 1\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle.\n\\end{aligned}\n",
+      "returncode": 0,
+      "stdout": "{\"text\":\"[1  1]\",\"display_text\":\"1.  1\\u000a\\u000a2.  1\",\"copy_text\":\"\\\\begin{gathered}1\\\\\\\\1\\\\end{gathered}\",\"approximate\":false,\"rows\":0,\"columns\":0,\"cells\":[],\"probabilities\":[],\"bloch\":[]}\r\n",
+      "stderr": "",
+      "actual": {
+        "text": "[1  1]",
+        "display_text": "1.  1\n\n2.  1",
+        "copy_text": "\\begin{gathered}1\\\\1\\end{gathered}",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      },
+      "id": "g1-m02-literal",
+      "source": "M02",
+      "cohort": "original",
+      "literal_baseline_matches": false,
+      "status": "unexpected_failure"
+    },
+    {
+      "input": "quantum:\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n",
+      "returncode": 2,
+      "stdout": "",
+      "stderr": "Unsupported TeX command: \\cdots at byte 532\r\n",
+      "id": "literal-M11",
+      "source": "M11",
+      "cohort": "original",
+      "literal_baseline_matches": false,
+      "status": "unexpected_failure"
+    },
+    {
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} (-1)^{f(x_{n-1}\\cdots x_0)} \\vert x_{n-1} \\cdots x_0 \\rangle\n",
+      "returncode": 2,
+      "stdout": "",
+      "stderr": "Unsupported TeX command: \\cdots at byte 105\r\n",
+      "id": "literal-M18",
+      "source": "M18",
+      "cohort": "original",
+      "literal_baseline_matches": false,
+      "status": "unexpected_failure"
+    },
+    {
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n\\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0) + x_{n-1}y_{n-1} + \\cdots + x_0 y_0}\n\\vert y_{n-1} \\cdots y_0 \\rangle.\n",
+      "returncode": 2,
+      "stdout": "",
+      "stderr": "Unsupported TeX command: \\cdots at byte 136\r\n",
+      "id": "literal-M19",
+      "source": "M19",
+      "cohort": "original",
+      "literal_baseline_matches": false,
+      "status": "unexpected_failure"
+    },
+    {
+      "input": "quantum:\n\\Biggl\\vert\n\\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0)}\n\\Biggr\\vert^2\n= \\begin{cases}\n1 & \\text{if $f$ is constant}\\\\[1mm]\n0 & \\text{if $f$ is balanced}\n\\end{cases}\n",
+      "returncode": 2,
+      "stdout": "",
+      "stderr": "Unsupported TeX command: \\cdots at byte 86\r\n",
+      "id": "literal-M23",
+      "source": "M23",
+      "cohort": "original",
+      "literal_baseline_matches": false,
+      "status": "unexpected_failure"
+    }
+  ],
+  "external_evidence": [
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-published-replay/binding.json",
+      "bytes": 4551,
+      "sha256": "9a26b6fde15ac5050715b4d2017d9f474370298d56d90f1b9ff6b173fc199db9"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-published-replay/completion.json",
+      "bytes": 47,
+      "sha256": "a5a5da54059aace281d99bf4bf641dc8d51f9f40ab55930d942f4871677e3603"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-published-replay/literal-copy-controls.json",
+      "bytes": 907,
+      "sha256": "f2055be28909e42fcaa002ef667a3f13e9c6567c45c175895fc0b73fb9dfe025"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-published-replay/probe.log",
+      "bytes": 539,
+      "sha256": "2ed60728c39ffcc20b7b72838db77cfb46963b89a39911df42c4b6e4d8d9b927"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-published-replay/reconciliation.json",
+      "bytes": 896,
+      "sha256": "04279485d5a52f493e3efa1a9b74bfd90bef5b87e4d75abba933c6a105ea7681"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm020-published-replay/results/results.json",
+      "bytes": 877279,
+      "sha256": "52be00d0baeb08b93e619bc38b0889a19bb7504e22eb1cd79b486512607405dc"
+    }
+  ],
+  "scope": "Finite source expressions on published worker; original notebook workflow and whole-source acceptance remain open."
+}
