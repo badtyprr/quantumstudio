@@ -1,0 +1,499 @@
+{
+  "scope": "selected original construction and authored failure diagnostics only",
+  "source_sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+  "selected_source_cells": [
+    8,
+    10,
+    11,
+    18
+  ],
+  "result": {
+    "state": "succeeded",
+    "original_execution": "not_executed_as_whole",
+    "authored_verification": "succeeded",
+    "route": "selected-cells/direct-native-execution",
+    "source_scope": "selected_cells",
+    "whole_notebook_complete": false,
+    "selected_execution": "succeeded",
+    "independent_results": {
+      "accepted": true,
+      "acceptance_scope": "selected definitions build and pinned failures reproduced",
+      "selected_source_cells": [
+        8,
+        10,
+        11,
+        18
+      ],
+      "whole_notebook_complete": false,
+      "provider_jobs_submitted": false,
+      "observations": [
+        {
+          "case": "constant",
+          "qasm_sha256": "4d858b2fea891d3bfd32ea1ba0934f0830ee3fa06c047dc43ab85029a5aa769a",
+          "llvm_verifies": true,
+          "qir_semantically_accepted": false,
+          "output_diagnostic": {
+            "declared_results": 4,
+            "recorded_result_ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "out_of_range": [
+              4
+            ]
+          },
+          "local_simulator_error": "Measurements were recorded into 4 classical registers: `__bit_0__`, `__bit_1__`, `__bit_2__`, `__bit_3__`. Measure into a single register, or declare the values to return with `output`, e.g. `output bit[2] c;`.",
+          "local_simulator_counts": null
+        },
+        {
+          "case": "balanced",
+          "qasm_sha256": "2d7afe709b5132c440829681e57a78a008253492427d80b3bab5df85dbf6e3d6",
+          "llvm_verifies": true,
+          "qir_semantically_accepted": false,
+          "output_diagnostic": {
+            "declared_results": 4,
+            "recorded_result_ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "out_of_range": [
+              4
+            ]
+          },
+          "local_simulator_error": "Measurements were recorded into 4 classical registers: `__bit_0__`, `__bit_1__`, `__bit_2__`, `__bit_3__`. Measure into a single register, or declare the values to return with `output`, e.g. `output bit[2] c;`.",
+          "local_simulator_counts": null
+        }
+      ],
+      "limitations": [
+        "Build, serialization, conversion and local simulation calls are authored observations",
+        "LLVM verification does not establish QIR semantic validity",
+        "No corrected source, successful circuit execution or cloud result is claimed"
+      ]
+    },
+    "witness_stderr": "This program uses OpenQASM language features that may not be supported on QPUs or on-demand simulators.\nThis program uses OpenQASM language features that may not be supported on QPUs or on-demand simulators.\n",
+    "source_cells_preserved": true,
+    "output_artifacts": {
+      "balanced.qasm": {
+        "bytes": 573,
+        "sha256": "2d7afe709b5132c440829681e57a78a008253492427d80b3bab5df85dbf6e3d6"
+      },
+      "constant.qasm": {
+        "bytes": 556,
+        "sha256": "4d858b2fea891d3bfd32ea1ba0934f0830ee3fa06c047dc43ab85029a5aa769a"
+      },
+      "balanced.ll": {
+        "bytes": 2437,
+        "sha256": "6ce2be02b1ee5b5ab3753d8808edaa9b506979a1e05468418fd7e7b87fddf8f6"
+      },
+      "constant.ll": {
+        "bytes": 2287,
+        "sha256": "b6258afaf04903e4de90d56c834758b65415508d6a0955623bd6e3d4e5db6c4e"
+      },
+      "balanced.bc": {
+        "bytes": 2372,
+        "sha256": "fc0d0ae4dc6ca182475083fa0c657cbdf75ab62d1f37e0be8e1fdaeaec3b2c7b"
+      },
+      "constant.bc": {
+        "bytes": 2316,
+        "sha256": "19a5217419d861cd41c9ee0cc6b7137e95c3734ee9187c2944fabdcc2d2458e1"
+      }
+    }
+  },
+  "status": {
+    "version": 1,
+    "state": "succeeded",
+    "contract": "qb015",
+    "route": "selected-cells/direct-native-execution",
+    "source_sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+    "contract_sha256": "b119dcabe528967e8daadd812fbdd1430e3f071a1b863a6e6efe4a66621047c4",
+    "identity": {
+      "python": "3.12.10",
+      "platform": "win32",
+      "architecture": "64bit",
+      "executable": "F:\\src\\libqalculate\\.tools\\qb015-autoqasm-env-20261117\\Scripts\\python.exe",
+      "packages": {
+        "amazon-braket-default-simulator": "1.43.1",
+        "amazon-braket-schemas": "1.33.0",
+        "amazon-braket-sdk": "1.127.8",
+        "annotated-types": "0.8.0",
+        "antlr4-python3-runtime": "4.13.2",
+        "asttokens": "3.0.2",
+        "astunparse": "1.6.3",
+        "attrs": "26.1.0",
+        "autoqasm": "0.7.0",
+        "backoff": "2.2.1",
+        "boltons": "26.2.0",
+        "boto3": "1.44.4",
+        "botocore": "1.44.4",
+        "certifi": "2026.10.23",
+        "charset-normalizer": "3.5.2",
+        "cloudpickle": "2.2.1",
+        "colorama": "0.4.6",
+        "comm": "0.2.3",
+        "contourpy": "1.4.0",
+        "cycler": "0.12.1",
+        "debugpy": "1.8.22",
+        "diastatic-malt": "2.15.3",
+        "executing": "2.3.0",
+        "fastjsonschema": "2.22.3",
+        "fonttools": "4.68.0",
+        "idna": "3.20",
+        "ipykernel": "7.4.0",
+        "ipython": "9.18.1",
+        "ipython-pygments-lexers": "1.1.1",
+        "jedi": "0.20.1",
+        "jmespath": "1.1.0",
+        "jsonschema": "4.26.0",
+        "jsonschema-specifications": "2025.9.1",
+        "jupyter-client": "8.10.0",
+        "jupyter-core": "5.9.1",
+        "kiwisolver": "1.5.1",
+        "llvmlite": "0.50.0",
+        "matplotlib": "3.11.2",
+        "matplotlib-inline": "0.2.2",
+        "mpmath": "1.3.0",
+        "mypy-extensions": "1.2.0",
+        "nbclient": "0.11.0",
+        "nbformat": "5.11.1",
+        "nest-asyncio": "1.6.0",
+        "nest-asyncio2": "1.7.4",
+        "networkx": "3.7",
+        "numba": "0.68.1",
+        "numpy": "2.5.5",
+        "openpulse": "1.0.1",
+        "openqasm3": "1.0.2",
+        "openqasm-pygments": "0.2.0",
+        "opt-einsum": "3.4.0",
+        "oqpy": "0.3.11",
+        "packaging": "26.3",
+        "parso": "0.8.7",
+        "pillow": "13.0.0",
+        "pip": "25.0.1",
+        "platformdirs": "4.14.5",
+        "prompt-toolkit": "3.0.53",
+        "psutil": "7.2.2",
+        "pure-eval": "0.2.4",
+        "pydantic": "2.14.3",
+        "pydantic-core": "2.50.4",
+        "pygments": "2.21.0",
+        "pyparsing": "3.3.3",
+        "pyqasm": "1.3.0",
+        "pyqir": "0.12.8",
+        "python-dateutil": "2.9.0.post0",
+        "pyzmq": "27.3.0",
+        "qbraid": "0.13.0",
+        "qbraid-core": "0.6.54",
+        "qbraid-qir": "0.6.1",
+        "referencing": "0.37.0",
+        "requests": "2.34.2",
+        "rpds-py": "2026.9.1",
+        "rustworkx": "0.18.1",
+        "s3transfer": "0.19.3",
+        "scipy": "1.18.1",
+        "six": "1.17.0",
+        "stack-data": "0.6.3",
+        "sympy": "1.14.0",
+        "termcolor": "3.3.0",
+        "tornado": "6.6.1",
+        "traitlets": "5.16.1",
+        "typing-extensions": "4.16.0",
+        "typing-inspection": "0.4.5",
+        "urllib3": "2.8.0",
+        "wcwidth": "0.9.4",
+        "wheel": "0.48.0"
+      }
+    },
+    "profile": {
+      "version": 2,
+      "id": "autoqasm-win-py312",
+      "python": "3.12.10",
+      "platform": "win32",
+      "architecture": "64bit",
+      "lock": "autoqasm-requirements.lock",
+      "lock_sha256": "d12b3f58bb97c13d87205d989ee70dd57027923456844e671abee55785c3992e",
+      "offline_only": true,
+      "wheel_requirement": "89 retained hash-pinned Windows-compatible wheels",
+      "default_cell_timeout_seconds": 180,
+      "cancel_grace_seconds": 5,
+      "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+      "exact_packages": true
+    },
+    "original_execution": "not_executed_as_whole",
+    "authored_verification": "succeeded",
+    "external_resources": "outstanding",
+    "interpretation": "outstanding",
+    "source_scope": "selected_cells",
+    "whole_notebook_complete": false,
+    "selected_execution": "succeeded",
+    "launcher_pid": 27508,
+    "engine_pid": null,
+    "launcher_identity": {
+      "launcher_pid": 27508,
+      "creation_filetime": 134393951728082652,
+      "image": "F:\\src\\libqalculate\\.tools\\qb015-autoqasm-env-20261117\\Scripts\\python.exe",
+      "specific_job_member": true,
+      "held_handle": true
+    },
+    "independent_results": {
+      "accepted": true,
+      "acceptance_scope": "selected definitions build and pinned failures reproduced",
+      "selected_source_cells": [
+        8,
+        10,
+        11,
+        18
+      ],
+      "whole_notebook_complete": false,
+      "provider_jobs_submitted": false,
+      "observations": [
+        {
+          "case": "constant",
+          "qasm_sha256": "4d858b2fea891d3bfd32ea1ba0934f0830ee3fa06c047dc43ab85029a5aa769a",
+          "llvm_verifies": true,
+          "qir_semantically_accepted": false,
+          "output_diagnostic": {
+            "declared_results": 4,
+            "recorded_result_ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "out_of_range": [
+              4
+            ]
+          },
+          "local_simulator_error": "Measurements were recorded into 4 classical registers: `__bit_0__`, `__bit_1__`, `__bit_2__`, `__bit_3__`. Measure into a single register, or declare the values to return with `output`, e.g. `output bit[2] c;`.",
+          "local_simulator_counts": null
+        },
+        {
+          "case": "balanced",
+          "qasm_sha256": "2d7afe709b5132c440829681e57a78a008253492427d80b3bab5df85dbf6e3d6",
+          "llvm_verifies": true,
+          "qir_semantically_accepted": false,
+          "output_diagnostic": {
+            "declared_results": 4,
+            "recorded_result_ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "out_of_range": [
+              4
+            ]
+          },
+          "local_simulator_error": "Measurements were recorded into 4 classical registers: `__bit_0__`, `__bit_1__`, `__bit_2__`, `__bit_3__`. Measure into a single register, or declare the values to return with `output`, e.g. `output bit[2] c;`.",
+          "local_simulator_counts": null
+        }
+      ],
+      "limitations": [
+        "Build, serialization, conversion and local simulation calls are authored observations",
+        "LLVM verification does not establish QIR semantic validity",
+        "No corrected source, successful circuit execution or cloud result is claimed"
+      ]
+    },
+    "witness_stderr": "This program uses OpenQASM language features that may not be supported on QPUs or on-demand simulators.\nThis program uses OpenQASM language features that may not be supported on QPUs or on-demand simulators.\n",
+    "source_cells_preserved": true,
+    "output_artifacts": {
+      "balanced.qasm": {
+        "bytes": 573,
+        "sha256": "2d7afe709b5132c440829681e57a78a008253492427d80b3bab5df85dbf6e3d6"
+      },
+      "constant.qasm": {
+        "bytes": 556,
+        "sha256": "4d858b2fea891d3bfd32ea1ba0934f0830ee3fa06c047dc43ab85029a5aa769a"
+      },
+      "balanced.ll": {
+        "bytes": 2437,
+        "sha256": "6ce2be02b1ee5b5ab3753d8808edaa9b506979a1e05468418fd7e7b87fddf8f6"
+      },
+      "constant.ll": {
+        "bytes": 2287,
+        "sha256": "b6258afaf04903e4de90d56c834758b65415508d6a0955623bd6e3d4e5db6c4e"
+      },
+      "balanced.bc": {
+        "bytes": 2372,
+        "sha256": "fc0d0ae4dc6ca182475083fa0c657cbdf75ab62d1f37e0be8e1fdaeaec3b2c7b"
+      },
+      "constant.bc": {
+        "bytes": 2316,
+        "sha256": "19a5217419d861cd41c9ee0cc6b7137e95c3734ee9187c2944fabdcc2d2458e1"
+      }
+    },
+    "cleanup": {
+      "active_processes": 0,
+      "kernel_job_membership": true,
+      "method": "forced",
+      "engine_exit": null,
+      "launcher_exit": 0
+    }
+  },
+  "artifacts": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\balanced.bc",
+      "sha256": "fc0d0ae4dc6ca182475083fa0c657cbdf75ab62d1f37e0be8e1fdaeaec3b2c7b",
+      "size": 2372
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\balanced.ll",
+      "sha256": "6ce2be02b1ee5b5ab3753d8808edaa9b506979a1e05468418fd7e7b87fddf8f6",
+      "size": 2437
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\balanced.qasm",
+      "sha256": "2d7afe709b5132c440829681e57a78a008253492427d80b3bab5df85dbf6e3d6",
+      "size": 573
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\cells.json",
+      "sha256": "fe52f40ef16c779d825244dc525112a14294e64a3e358e22af3907804fbbe47e",
+      "size": 1298
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\constant.bc",
+      "sha256": "19a5217419d861cd41c9ee0cc6b7137e95c3734ee9187c2944fabdcc2d2458e1",
+      "size": 2316
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\constant.ll",
+      "sha256": "b6258afaf04903e4de90d56c834758b65415508d6a0955623bd6e3d4e5db6c4e",
+      "size": 2287
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\constant.qasm",
+      "sha256": "4d858b2fea891d3bfd32ea1ba0934f0830ee3fa06c047dc43ab85029a5aa769a",
+      "size": 556
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\engine-request.json",
+      "sha256": "6b8019d72320cb83b1bb8842c767e3ae045a0ffa23c17e8e412f3a4e7fb65b5a",
+      "size": 12418
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\engine-result.json",
+      "sha256": "82976203baf60d0b879fd96f0a69f6762ee28b9b2860a1c1a198ec0f6cb25b88",
+      "size": 3554
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\engine.stderr",
+      "sha256": "8dbde07422f124f69cc18973f2aca76f64d845c6bd6ab618ac2e9be5f3d80d67",
+      "size": 671
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\engine.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\events.jsonl",
+      "sha256": "7f78beabb2087d72309d2a40afa6eeb6aa00e552b1ace13d4c43432786df4d49",
+      "size": 13212
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\executed.ipynb",
+      "sha256": "c84c7032a876d28bcb853ea7776f919bd86ff0b41be801b0ff8c010e287bd01e",
+      "size": 9378
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\kernel.json",
+      "sha256": "9d3204b7f7010b1bd7b549d5a3d51bfd3ee69667558e1cfab7ded4735dab7392",
+      "size": 120
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\source-disposition.json",
+      "sha256": "80b2ab24829a51248de7e5eb7ffc23c06c46db6a948e44c171c3e210c52c78c1",
+      "size": 6192
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\source-original.ipynb",
+      "sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+      "size": 10474
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\status.json",
+      "sha256": "a26bb8315254ee2bcc2dbbdf2af5011af1443eee68be4e87226d422806723871",
+      "size": 7829
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\handoff.json",
+      "sha256": "7863725ff975106d85f494f866976444edee696be00bf8814fb0a62946347745",
+      "size": 1297
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\dependencies.json",
+      "sha256": "b6c5758d78d56b46acc58940af3e15a1556726eddc1ad42b522ebaa950fc2d13",
+      "size": 25774
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\resolution.json",
+      "sha256": "55b555e6e91979e49748fea32f994f0066138909ca0eec4e71f5d5f85e9e111e",
+      "size": 1133014
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\wheel-manifest.json",
+      "sha256": "c3df915e1a4514ad3b7d5c98670f73dbc6a8662a0e646d163f1242cd16184d6e",
+      "size": 24560
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\route01.log",
+      "sha256": "9831fed814415c35cd9f47afff25071d83749cd482cfccd8ef36a1a7c983fe4b",
+      "size": 1216
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\route02.log",
+      "sha256": "4fe934d3a532d87c312553b4ad3396c105e8efd35c36e2f098eb745898ccbc81",
+      "size": 167
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\qbraid-qir-profile-core.py",
+      "sha256": "011a45f33637300ba20a693b9b7286cb83e4c7b9a9cf2e14cb2542e4d01db12d",
+      "size": 8499
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\downstream01\\deutsch_jozsa_balanced.bc",
+      "sha256": "46b350c77215a74a07f6778442ba0831d9d65e98a63cda3ad26ac71a3326ae92",
+      "size": 2384
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\downstream01\\deutsch_jozsa_balanced.ll",
+      "sha256": "d294305739d2324242bcc91d274d7c39c93f26fed25dc9c740ad5228c96f5201",
+      "size": 2461
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\downstream01\\deutsch_jozsa_constant.bc",
+      "sha256": "9dbd43c503f97a7321d384e3fe1d71a96dd988630748c9053d4d9cf6efbb3540",
+      "size": 2332
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\downstream01\\deutsch_jozsa_constant.ll",
+      "sha256": "f9e61f757a5a8775c2cd070e7e457f0048f1c25df6e26de6074634a1b11b6e1c",
+      "size": 2311
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\downstream01\\import-diagnostics.json",
+      "sha256": "e7af7ad4f5afc8ee16fc0401ad9120353880e1f771465dff5dbfad8e2e44821d",
+      "size": 807
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-prerequisites\\downstream01\\results.json",
+      "sha256": "a7acd3bc602417cecaf93f377d21f8031a113df7b6cf782859fc79c94f433098",
+      "size": 3271
+    }
+  ],
+  "tests": {
+    "focused": 6,
+    "selection_profiles": 24
+  },
+  "whole_notebook_complete": false,
+  "review": "pending",
+  "hosted_ci": false
+}
