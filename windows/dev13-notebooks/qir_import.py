@@ -1,0 +1,154 @@
+"""Explicit finite static-QIR import; never execute LLVM or repair its semantics."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+import pyqir
+
+MAX_BYTES = 1024 * 1024
+MAX_INSTRUCTIONS = 4096
+GATES = {
+    "h__body": ("h", 1), "x__body": ("x", 1), "y__body": ("y", 1),
+    "z__body": ("z", 1), "s__body": ("s", 1), "s__adj": ("sdg", 1),
+    "t__body": ("t", 1), "t__adj": ("tdg", 1),
+    "cnot__body": ("cx", 2), "cz__body": ("cz", 2),
+}
+
+
+def import_qir(raw, *, bitcode=False):
+    """Translate one void, argument-free, static entry point to OpenQASM3.
+
+    Preserve measurement writes and output snapshots in instruction order.
+    Unsupported features reject the entire input before any output is written.
+    """
+    if type(raw) is not bytes or not raw or len(raw) > MAX_BYTES:
+        raise ValueError("QIR_INPUT_SIZE")
+    context = pyqir.Context()
+    try:
+        module = (pyqir.Module.from_bitcode(context, raw) if bitcode
+                  else pyqir.Module.from_ir(context, raw.decode("utf-8")))
+    except Exception as error:
+        raise ValueError("QIR_PARSE_FAILED") from error
+    if module.verify() is not None:
+        raise ValueError("QIR_INVALID_LLVM")
+    if (pyqir.qir_major_version(module) != 1
+            or pyqir.qir_minor_version(module) not in (0, 1)
+            or pyqir.dynamic_qubit_management(module) is not False
+            or pyqir.dynamic_result_management(module) is not False):
+        raise ValueError("QIR_UNSUPPORTED_PROFILE")
+    entries = [f for f in module.functions if pyqir.is_entry_point(f)]
+    if len(entries) != 1:
+        raise ValueError("QIR_ENTRY_POINT_COUNT")
+    entry = entries[0]
+    if entry.params or not entry.type.ret.is_void or len(entry.basic_blocks) != 1:
+        raise ValueError("QIR_ENTRY_POINT_SHAPE")
+    qubits = pyqir.required_num_qubits(entry)
+    results = pyqir.required_num_results(entry)
+    if type(qubits) is not int or not 1 <= qubits <= 4:
+        raise ValueError("QIR_QUBIT_LIMIT")
+    if type(results) is not int or not 0 <= results <= 64:
+        raise ValueError("QIR_RESULT_LIMIT")
+    instructions = entry.basic_blocks[0].instructions
+    if len(instructions) > MAX_INSTRUCTIONS:
+        raise ValueError("QIR_INSTRUCTION_LIMIT")
+    if not instructions or instructions[-1].opcode != pyqir.Opcode.RET:
+        raise ValueError("QIR_TERMINATOR")
+    statements = []
+    measured = set()
+    outputs = 0
+    initialized = False
+
+    def static_id(value, bound, label):
+        if not isinstance(value.type, pyqir.PointerType):
+            raise ValueError("QIR_POINTER_TYPE:" + label)
+        number = pyqir.ptr_id(value)
+        if type(number) is not int or not 0 <= number < bound:
+            raise ValueError("QIR_STATIC_ID:" + label)
+        return number
+
+    for ordinal, instruction in enumerate(instructions[:-1]):
+        if not isinstance(instruction, pyqir.Call):
+            raise ValueError("QIR_UNSUPPORTED_INSTRUCTION:" + str(ordinal))
+        callee = instruction.callee
+        if (not isinstance(callee, pyqir.Function) or callee.basic_blocks
+                or not callee.type.ret.is_void or "..." in str(callee.type)):
+            raise ValueError("QIR_UNSUPPORTED_CALLEE:" + str(ordinal))
+        name = callee.name
+        args = instruction.args
+        if len(args) != len(callee.params) or any(not isinstance(a.type, pyqir.PointerType) for a in args):
+            raise ValueError("QIR_CALL_SIGNATURE:" + name)
+        if name == "__quantum__rt__initialize":
+            if initialized or ordinal != 0 or len(args) != 1 or pyqir.ptr_id(args[0]) != 0:
+                raise ValueError("QIR_INITIALIZE")
+            initialized = True
+        elif name == "__quantum__rt__result_record_output":
+            if len(args) != 2 or pyqir.ptr_id(args[1]) != 0:
+                raise ValueError("QIR_OUTPUT_SIGNATURE")
+            result = static_id(args[0], results, "result")
+            if result not in measured:
+                raise ValueError("QIR_UNMEASURED_OUTPUT:" + str(result))
+            if outputs >= 64:
+                raise ValueError("QIR_OUTPUT_LIMIT")
+            statements.append(("output", outputs, result))
+            outputs += 1
+        elif name == "__quantum__qis__mz__body":
+            if len(args) != 2:
+                raise ValueError("QIR_MEASUREMENT_SIGNATURE")
+            qubit = static_id(args[0], qubits, "qubit")
+            result = static_id(args[1], results, "result")
+            statements.append(("measure", qubit, result))
+            measured.add(result)
+        elif name.startswith("__quantum__qis__") and name[len("__quantum__qis__"):] in GATES:
+            gate, arity = GATES[name[len("__quantum__qis__"):]]
+            if len(args) != arity:
+                raise ValueError("QIR_GATE_ARITY:" + name)
+            targets = [static_id(a, qubits, "qubit") for a in args]
+            if len(set(targets)) != arity:
+                raise ValueError("QIR_GATE_TARGET_ALIAS")
+            statements.append(gate + " " + ", ".join(f"q[{q}]" for q in targets) + ";")
+        else:
+            raise ValueError("QIR_UNSUPPORTED_CALL:" + name)
+    if outputs and results + outputs > 64:
+        raise ValueError("QIR_CLASSICAL_STORAGE_LIMIT")
+    lines = ['OPENQASM 3.0;', 'include "stdgates.inc";', f'qubit[{qubits}] q;']
+    if outputs:
+        lines.append(f"bit[{results}] result;")
+        lines.append(f"output bit[{outputs}] out;")
+    for statement in statements:
+        if isinstance(statement, str):
+            lines.append(statement)
+        elif statement[0] == "measure":
+            _, qubit, result = statement
+            prefix = f"result[{result}] = " if outputs else ""
+            lines.append(prefix + f"measure q[{qubit}];")
+        else:
+            _, ordinal, result = statement
+            # OpenQASM bitstrings display highest index first; QIR records
+            # appear chronologically. Snapshot each record at its call site.
+            lines.append(f"out[{outputs - 1 - ordinal}] = result[{result}];")
+    qasm = "\n".join(lines) + "\n"
+    return dict(route="qir-to-openqasm3", source_sha256=hashlib.sha256(raw).hexdigest(),
+                source_format="bitcode" if bitcode else "llvm-ir", entry_point=entry.name,
+                qubits=qubits, result_slots=results, output_slots=outputs,
+                output_order="QIR record order, leftmost bit first",
+                openqasm=qasm, execution_performed=False)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", type=Path)
+    parser.add_argument("--bitcode", action="store_true")
+    parser.add_argument("--output", type=Path, help="New OpenQASM file; existing files are refused")
+    args = parser.parse_args()
+    with args.source.open("rb") as stream:
+        raw = stream.read(MAX_BYTES + 1)
+    result = import_qir(raw, bitcode=args.bitcode)
+    if args.output:
+        with args.output.open("xb") as stream:
+            stream.write(result["openqasm"].encode("utf-8"))
+    print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main()

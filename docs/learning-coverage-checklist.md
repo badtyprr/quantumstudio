@@ -209,6 +209,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 ### DEV-14
 
 - [ ] **QIR and CUDA-Q compatibility** — P3; Not implemented; size L; dependencies: DEV-13.
+- Local implementation: [finite static QIR import](learning-evidence/dev14-static-qir-import.md); broader compatibility, review, CI and release acceptance remain pending.
 - Source focus: qBraid QIR and CUDA-Q notebooks. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Audit entry points and program semantics; implement explicit supported imports/execution and verify small circuits. Unsupported compiler/runtime features must be recorded per notebook, not silently dropped.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
