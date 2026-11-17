@@ -502,7 +502,8 @@ def audit_qiskit_parser_measurements(qiskit, parser_record):
     Reject renamed/reordered declarations instead of guessing correspondence.
     The source-gated parser emits NamedQubit(reg_index) and one measurement per
     classical destination key. This checks those captured facts against the
-    original Qiskit measurement sequence; gate equivalence is a separate gate.
+    original Qiskit destinations. Independent terminal measurements may change
+    occurrence order; gate equivalence remains a separate gate.
     """
     def require(ok, message):
         if not ok:
@@ -557,7 +558,29 @@ def audit_qiskit_parser_measurements(qiskit, parser_record):
                     and isinstance(mask, list) and len(mask) <= 1
                     and all(type(x) is bool and x is False for x in mask), 'PARSER_MEASUREMENT_MAPPING')
             actual.append((sorted_to_original[qubits[0]], classical[key]))
-    require(bool(expected) and actual == expected, 'QISKIT_PARSER_MEASUREMENTS_CHANGED')
+    def terminal_measurements(operations, is_measurement, is_annotation):
+        measured = set()
+        for operation in operations:
+            qubits = set(operation['qubits'])
+            if is_measurement(operation):
+                measured.update(qubits)
+            elif not is_annotation(operation):
+                if measured & qubits or operation.get('clbits'):
+                    return False
+        return True
+
+    unchanged = actual == expected
+    if not unchanged:
+        # Distinct terminal Z measurements commute. Keep the observed parser
+        # order for downstream sample columns; never sort the returned mapping.
+        independent = (len({q for q, _ in expected}) == len(expected)
+                       and len({c for _, c in expected}) == len(expected))
+        unchanged = (independent and sorted(actual) == sorted(expected)
+                     and terminal_measurements(qiskit['operations'],
+                         lambda op: op['name'] == 'measure', lambda op: op['name'] == 'barrier')
+                     and terminal_measurements(cirq['operations'],
+                         lambda op: 'measurement_key' in op, lambda op: False))
+    require(bool(expected) and unchanged, 'QISKIT_PARSER_MEASUREMENTS_CHANGED')
     return dict(sorted_qid_to_qiskit=sorted_to_original,
                 occurrence_to_logical=[q for q, _ in actual], occurrence_to_clbit=[c for _, c in actual],
                 unused_clbits=sorted(set(range(qiskit['clbits'])) - {c for _, c in actual}),

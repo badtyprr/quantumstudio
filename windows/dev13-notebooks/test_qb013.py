@@ -892,6 +892,38 @@ class ParserRegisterMappingTests(unittest.TestCase):
             qiskit,parser=self.fixtures();mutation(qiskit,parser)
             with self.assertRaises(ValueError):self.audit(qiskit,parser)
 
+    def test_independent_measurements_keep_actual_parser_order(self):
+        qiskit, parser = self.fixtures()
+        parser['parsed_circuit']['operations'].reverse()
+        result = self.audit(qiskit, parser)
+        self.assertEqual(result['occurrence_to_logical'], [1, 0])
+        self.assertEqual(result['occurrence_to_clbit'], [3, 2])
+        self.assertEqual(result['unused_clbits'], [0, 1])
+
+    def test_reordering_cannot_cross_later_gate_on_measured_qubit(self):
+        for side in ('qiskit', 'cirq'):
+            qiskit, parser = self.fixtures()
+            parser['parsed_circuit']['operations'].reverse()
+            if side == 'qiskit':
+                qiskit['operations'].insert(1, dict(name='x', qubits=[0], clbits=[], params=[]))
+            else:
+                parser['parsed_circuit']['operations'].insert(1, dict(gate_family='XPowGate', qubits=[0]))
+            with self.assertRaisesRegex(ValueError, 'QISKIT_PARSER_MEASUREMENTS_CHANGED'):
+                self.audit(qiskit, parser)
+
+    def test_reordering_preserves_repeated_qubit_or_destination_order(self):
+        for repeated in ('qubit', 'destination'):
+            qiskit, parser = self.fixtures()
+            if repeated == 'qubit':
+                qiskit['operations'][1]['qubits'] = [0]
+                parser['parsed_circuit']['operations'][1]['qubits'] = [1]
+            else:
+                qiskit['operations'][1]['clbits'] = [2]
+                parser['parsed_circuit']['operations'][1]['measurement_key'] = 'meas_0'
+            parser['parsed_circuit']['operations'].reverse()
+            with self.assertRaisesRegex(ValueError, 'QISKIT_PARSER_MEASUREMENTS_CHANGED'):
+                self.audit(qiskit, parser)
+
     def test_no_measurement_is_not_vacuous_success(self):
         qiskit,parser=self.fixtures();qiskit['operations']=[];parser['parsed_circuit']['operations']=[]
         with self.assertRaisesRegex(ValueError,'QISKIT_PARSER_MEASUREMENTS_CHANGED'):self.audit(qiskit,parser)
