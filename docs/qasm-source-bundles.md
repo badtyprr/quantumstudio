@@ -221,6 +221,37 @@ not which programs the adapter supports. The message text for stdin-only
 compilation remains unchanged. Missing or invalid spans still fall back to the
 entry filename; errors in later lowering/emission stages need separate coverage.
 
+## Bounded DEV-16d lowering diagnostics (development)
+
+Assignment lowering now retains the source statement span on synthesized
+assignments, including assignments produced from declaration initializers.
+Adapter assignment failures during normalization and final classical emission
+use that span. The compile-time for-range integer, zero-step and iteration-limit
+rejections also retain their original loop location. This changes diagnostics
+only; it does not make previously rejected programs supported.
+
+The focused development cases are authored negative tests, not QB-004 source
+examples: a zero-step range, a Boolean compound assignment, and incompatible
+integer-to-bit casts in an assignment and declaration initializer. Nested
+includes with spaces/Unicode, nonzero columns, matching module-header adaptation,
+unchanged stdin messages, and absent/invalid spans are covered. Frozen C# bridge
+checks require failed imports to preserve both the saved document and usable
+undo/redo history. Existing unchanged QB-004 fixture comparisons remain separate
+scoped source-example coverage.
+
+Duplicate switch labels now identify the repeated label; duplicate declarations
+identify the second declaration. Whole-register truth-condition errors preserve
+the original branch location through runtime lowering. Aggregate qubit/bit limits
+identify the first declaration that exceeds the limit, including limits reached
+across multiple declarations. These locations are covered by authored dependency
+tests with module headers, Unicode paths and exact line/column checks.
+
+DEV-16d is still incomplete. Other control-flow transformations,
+numerical emission and synthesized nodes without original spans need further
+coverage. Errors without a usable span continue to name only the entry file;
+no nearest statement or invented coordinate is substituted. These changes are
+unreleased development behavior, not a new published-artifact claim.
+
 ## Subroutine locals resolved during compilation
 
 Classical import can now use the pinned compiler's own local scopes when a
