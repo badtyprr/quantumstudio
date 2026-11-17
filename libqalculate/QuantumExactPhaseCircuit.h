@@ -8,7 +8,8 @@ namespace QuantumExact {
 struct PhaseCircuitLimits {
  std::size_t maxTerms,maxProbabilityCharacters,maxTotalCharacters;
 };
-// Zero-input unitary circuits followed by computational measurements. Returns
+// Zero-input unitary circuits followed by computational measurements, optionally
+// preceded by resets of the initial zero state. Returns
 // false for unsupported gates or circuit structure, without changing output.
 // Invalid recognized inputs and resource/cancellation failures throw. No
 // numerical substitution is used. Large probabilities retain exact |amplitude|²
