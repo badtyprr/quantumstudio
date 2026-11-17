@@ -788,8 +788,8 @@ def resolve_integer_scopes(program):
         result=ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=ast.IntegerLiteral(0))
         result._quantum_clear=True
         return result
-    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None):
-        if depth>32:raise ValueError('Classical scopes exceed 32 levels.')
+    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None,origin=None):
+        if depth>32:raise error_at(origin,'Classical scopes exceed 32 levels.')
         env=dict(parent);declared=set() if declared is None else set(declared);local=[];result=[]
         for statement in body:
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
@@ -809,17 +809,17 @@ def resolve_integer_scopes(program):
                 result.append(statement)
             elif isinstance(statement,ast.BranchingStatement):
                 expression(statement.condition,env)
-                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement)
                 result.append(statement)
             elif isinstance(statement,ast.SwitchStatement):
                 expression(statement.target,env)
                 for labels,case in statement.cases:
-                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
-                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement)
+                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement)
                 result.append(statement)
             elif isinstance(statement,ast.WhileLoop):
                 expression(statement.while_condition,env)
-                block(statement.block,env,depth+1,loop_kind="while");result.append(statement)
+                block(statement.block,env,depth+1,loop_kind="while",origin=statement);result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
                 if getattr(statement,'_quantum_runtime_for',False):
@@ -829,12 +829,12 @@ def resolve_integer_scopes(program):
                     binding=ast.ClassicalDeclaration(type=copy.deepcopy(statement.type),identifier=copy.deepcopy(statement.identifier))
                     binding._quantum_for_binding=True
                     statement.block.insert(0,binding)
-                    block(statement.block,env,depth+1,loop_kind="while")
+                    block(statement.block,env,depth+1,loop_kind="while",origin=statement)
                     statement.identifier=copy.deepcopy(binding.identifier)
                     result.append(statement);continue
                 name=statement.identifier.name;renamed=fresh(name) if name in env else name
                 statement.identifier.name=renamed;inner=dict(env);inner[name]=renamed
-                block(statement.block,inner,depth+1,{name},loop_kind="for");result.append(statement)
+                block(statement.block,inner,depth+1,{name},loop_kind="for",origin=statement);result.append(statement)
             elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
                 if loop_kind!="while":
                     raise ValueError("Break and continue currently require an enclosing while loop; for-loop transfer lowering is not yet supported.")
@@ -843,12 +843,12 @@ def resolve_integer_scopes(program):
                     result.extend(clear(name) for name in reversed(scope))
                 statement._quantum_loop_transfer=True;result.append(statement)
             elif isinstance(statement,ast.CompoundStatement):
-                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);result.extend(statement.statements)
+                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement);result.extend(statement.statements)
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
                 result.append(statement)
             else:
                 if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
-                    raise ValueError('Integer declarations in this control structure are not yet supported.')
+                    raise error_at(statement,'Integer declarations in this control structure are not yet supported.')
                 if isinstance(statement,ast.QuantumGate):
                     expression(statement.arguments,env);expression(statement.modifiers,env);expression(statement.qubits,env)
                 elif isinstance(statement,ast.QubitDeclaration):
@@ -1408,6 +1408,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     variables, declarations = {}, []
     inferred_ranges=set()
     numeric_variables,numeric_declarations={},[]
+    variable_budget_origin = None
     nq = nc = 0
     budget_origin = None
     declarations_in_order=list(nodes(statements))
@@ -1429,6 +1430,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 if len(name.encode('utf-16-le'))//2>64:raise ValueError('Numeric names must fit 64 UTF-16 code units.')
                 numeric_variables[name]=(len(numeric_variables),kind,size)
                 numeric_declarations.append({'Name':name,'NumericKind':kind,'Width':size})
+                if len(variables)+len(numeric_variables)==4097:variable_budget_origin=statement
                 continue
             if isinstance(statement.type,(ast.IntType,ast.UintType)):
                 name=statement.identifier.name;size=statement.type.size.value
@@ -1437,10 +1439,11 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 if name in variables:
                     if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
                     continue
-                if len(variables)>=4096:raise ValueError('Excessive integer declarations.')
+                if len(variables)>=4096:raise error_at(statement,'Excessive integer declarations.')
                 if getattr(statement,'_quantum_range_capture',False):inferred_ranges.add(name)
                 variables[name]=(len(variables),sign,size)
                 declarations.append({'Name':name,'Signedness':sign,'Width':size})
+                if len(variables)+len(numeric_variables)==4097:variable_budget_origin=statement
                 continue
             if not isinstance(statement.type, ast.BitType) or statement.init_expression is not None:
                 raise ValueError('Unresolved classical initialization after compilation.')
@@ -1456,7 +1459,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     if not 0 <= nq <= 25 or not 0 <= nc <= 64:
         raise error_at(budget_origin,'Classical circuits support 0–25 qubits and up to 64 classical bits.')
 
-    if len(variables)+len(numeric_variables)>4096:raise ValueError('Use at most 4096 variable slots.')
+    if len(variables)+len(numeric_variables)>4096:raise error_at(variable_budget_origin,'Use at most 4096 variable slots.')
     def classical_value(value,registers,expected_width=None,variables=variables,integer_only=False):
         return classical_expression(value,registers,expected_width,variables,integer_only,numeric_variables)
     def numeric(value,target_float_width=64):

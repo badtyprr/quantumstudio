@@ -13,6 +13,42 @@ COMMANDS = [[sys.executable, str(HERE / "qasm-import.py")]]
 
 
 class FileImportTests(unittest.TestCase):
+    def test_scope_and_variable_budget_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/failure.inc";')
+        cases = [
+            ('qubit q; bit b;\n' + 'if (b==1) {\n' * 33 + 'x q;\n' + '}\n' * 33, 34, 'Classical scopes exceed 32 levels.'),
+            ('qubit q;\n' + 'if (true) {\n' * 33 + '}\n' * 33, 34, 'Classical scopes exceed 32 levels.'),
+            ('qubit q;\nbox { int n=1; x q; }', 2, 'Integer declarations in this control structure are not yet supported.'),
+            ('qubit q;\n' + '\n'.join('int v%d=0;' % i for i in range(4097)), 4098, 'Excessive integer declarations.'),
+            ('qubit q;\n' + '\n'.join(('float[64] f%d=0.0;' if i % 2 else 'int v%d=0;') % i for i in range(4097)), 4098, 'Use at most 4096 variable slots.'),
+            ('qubit q;\n' + '\n'.join(('int v%d=0;' if i % 2 else 'float[64] f%d=0.0;') % i for i in range(4098)), 4098, 'Use at most 4096 variable slots.'),
+        ]
+        for body, line, expected in cases:
+            self.put('nested κ/failure.inc', body)
+            for command in COMMANDS:
+                with self.subTest(expected=expected, command=command):
+                    message = self.run_import(command, ['--source-file', str(main), '--classical'], success=False).strip()
+                    self.assertTrue(message.startswith('nested κ/failure.inc:%d:' % line), message)
+                    self.assertTrue(message.endswith(': ' + expected), message)
+                    self.assertEqual(self.run_import(command, ['--classical'], source='OPENQASM 3; include "stdgates.inc";\n' + body, success=False).strip(), expected)
+
+    def test_scope_and_variable_budget_boundaries(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/boundary.inc";')
+        cases = [
+            'qubit q;\n' + 'if (true) {\n' * 32 + 'x q;\n' + '}\n' * 32,
+            'qubit q;\n' + '\n'.join('int v%d;' % i for i in range(4096)),
+            'qubit q;\n' + '\n'.join(('float[64] f%d;' if i % 2 else 'int v%d;') % i for i in range(4096)),
+        ]
+        for index, body in enumerate(cases):
+            self.put('nested κ/boundary.inc', body)
+            for command in COMMANDS:
+                with self.subTest(case=index, command=command):
+                    result = self.run_import(command, ['--source-file', str(main), '--classical'])
+                    self.assertIn('Circuit', result)
+                    if index:
+                        circuit = result['Circuit']
+                        self.assertEqual(len(circuit.get('Variables', [])) + len(circuit.get('NumericVariables', [])), 4096)
+
     def test_early_scope_file_locations(self):
         main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/failure.inc";')
         cases = [
