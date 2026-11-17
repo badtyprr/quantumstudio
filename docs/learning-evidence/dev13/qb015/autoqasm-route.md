@@ -9,8 +9,9 @@ open. This is not whole-notebook, provider, or successful circuit acceptance.
 The `autoqasm-win-py312` profile pins 89 distributions including pip, with
 retained wheel hashes. Dependency verification found 145 active requirements
 satisfied. The actual installed AutoQASM version is 0.7.0; qbraid-qir is 0.6.1.
-The runner's before/after metadata inventory passed. A before/after hash of every
-environment file was not performed, so that stronger integrity claim is absent.
+The runner checks the exact installed package versions before launch. No
+before/after metadata or full-file integrity comparison was performed for this
+selected-cell route; neither integrity claim is established.
 
 ## Authored observations after original definitions
 
