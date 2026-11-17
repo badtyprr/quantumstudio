@@ -2,6 +2,14 @@
 
 Status: partial discovery and development proof only. DEV-13, AUD-02 and all source completion boxes remain open. No product execution route, release, provider adapter, QIR or CUDA-Q implementation is added.
 
+## Reconciliation on 2026-11-17
+
+This document preserves the discovery performed on 2026-11-01 against the base below. Statements about current support in the historical sections refer to that base. It is integrated here on master `7b1370354602d9226aaa4950ec4f898805bde4bd`; it does not supersede the separate IBM-019/020 notebook runner proposed in [PR487](https://github.com/badtyprr/quantumstudio/pull/487).
+
+Fresh verification matched all 39 retained notebook hashes and all 417 indexed code-cell hashes. For each of the 35 qBraid notebooks, the inventory contains every code cell. The four IBM entries record notebook hashes only. These checks establish the integrity of this historical inventory, not completeness against today's upstream catalogs. The fixed QB-012 cell proof was replayed in the retained hash-locked environment: amplitudes, seeded counts, asymmetric ordering witness, negative controls and installed package versions matched the historical result. No fresh environment installation or QuantumStudio execution is claimed. Local verification receipts are retained outside this checkout in `cleanup-audit/learning-coverage-20261117/dev13-discovery-revalidation.json` and `dev13-fixed-reference-replay.json`.
+
+DEV-13, AUD-02 and all source completion boxes remain open. Provider execution, arbitrary notebook support, current catalog reconciliation and whole-source audits still require their own evidence.
+
 ## Identity and scope
 
 Base verified against live origin/master before branching: `0fed41cb5637c578737278bf13f59590a56d6cf4`. Branch: `codex/dev13-aud02-20261101-b6e2`. Review checkout: `F:/src/libqalculate/.tools/dev13-aud02-20261101-b6e2`. Evidence outside the checkout: `F:/src/libqalculate/cleanup-audit/dev13-aud02-20261101-b6e2/`.
