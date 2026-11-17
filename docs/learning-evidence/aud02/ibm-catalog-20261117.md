@@ -26,6 +26,12 @@ Original checklist source URLs remain unchanged. New IDs below identify addition
 
 For MOD-013, require separate evidence for Rabi probability sweeps, T1 decay, Ramsey/echo fitting, chemical-shift/J-coupling spectra, observables/layout mapping and Trotterized evolution. Preserve timing units, actual delay quantization, fit constraints and uncertainty. Source cells 21/31/34 depend on backend coherence/timing information; a noiseless gate-only simulation cannot prove relaxation behavior. Hardware execution, service access, outputs and figures are all unverified. Extracting local construction or providing synthetic calibration would be an explicit adaptation.
 
+## Public access observations
+
+A separate anonymous HTTP check on 2026-11-17 retained the landing, course and module catalog HTML. All returned 200; their extracted learning anchor sets were unchanged from the retained 2026-11-04 catalogs. This does not enumerate JavaScript/modal content, and neither the new near-term course nor NMR module appeared in those catalog HTML bytes.
+
+Direct route checks returned 404 for the near-term course overview and introduction, and 200 for modern-workflows, its course exam landing page and the NMR module. The machine record includes exact URLs, statuses, final URLs, timestamps and response hashes. A 200 response is only an access observation: rendered content equivalence, embedded media, actual exam questions and execution are unverified. A 404 here does not erase the publicly available repository source or establish why the route is unavailable.
+
 ## Retention and remaining work
 
 Raw current and prior sources are outside the disposable checkout under `cleanup-audit/learning-coverage-20261117/aud02-ibm-current-sources` and `aud02-ibm-prior-sources`. Repository JSON carries hashes and immutable URLs, not full upstream notebooks. Earlier mappings come from the preserved `cleanup-audit/notebook-lane-20261104/catalog-reconciliation.json`; this new comparison does not replace the original source baseline.

@@ -15037,5 +15037,127 @@
       "cell_alignment": "positional; inserted/deleted cells can shift later indexes"
     }
   ],
-  "scope": "Repository source snapshot comparison only. Public route visibility, full catalogs, linked content and execution remain unverified."
+  "scope": "Repository source snapshot comparison only. Public route visibility, full catalogs, linked content and execution remain unverified.",
+  "public_catalog_observations": {
+    "checked_utc": "2026-11-17T10:39:28.901562+00:00",
+    "catalogs": [
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en",
+        "http_status": 200,
+        "sha256": "eeedf9c191a943a82c23e253de52128c0bc2e8e48d6a2cb385145fb9c76b9c5e",
+        "bytes": 250673,
+        "links": [
+          "/learning/en",
+          "/learning/en/courses",
+          "/learning/en/courses/basics-of-quantum-information",
+          "/learning/en/courses/use-a-qc-today",
+          "/learning/en/modules",
+          "/learning/en/modules/computer-science/quantum-key-distribution",
+          "/learning/en/modules/computer-science/quantum-teleportation",
+          "/learning/en/modules/quantum-mechanics/exploring-uncertainty-with-qiskit",
+          "/learning/en/modules/quantum-mechanics/superposition-with-qiskit"
+        ],
+        "added_anchor_hrefs": [],
+        "removed_anchor_hrefs": []
+      },
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/courses",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/courses",
+        "http_status": 200,
+        "sha256": "2b4f847de323872f8300b5f5eea46bd8659479c834e7d77cc80fd49008f6623f",
+        "bytes": 250019,
+        "links": [
+          "/learning/en",
+          "/learning/en/courses",
+          "/learning/en/courses/basics-of-quantum-information",
+          "/learning/en/courses/designing-and-leading-quantum-projects",
+          "/learning/en/courses/foundations-of-quantum-error-correction",
+          "/learning/en/courses/fundamentals-of-quantum-algorithms",
+          "/learning/en/courses/general-formulation-of-quantum-information",
+          "/learning/en/courses/integrating-quantum-and-high-performance-computing",
+          "/learning/en/courses/quantum-business-foundations",
+          "/learning/en/courses/quantum-chem-with-vqe",
+          "/learning/en/courses/quantum-computing-in-practice",
+          "/learning/en/courses/quantum-diagonalization-algorithms",
+          "/learning/en/courses/quantum-machine-learning",
+          "/learning/en/courses/tools-for-quantum-advantage",
+          "/learning/en/courses/use-a-qc-today",
+          "/learning/en/courses/utility-scale-quantum-computing",
+          "/learning/en/courses/variational-algorithm-design",
+          "/learning/en/modules"
+        ],
+        "added_anchor_hrefs": [],
+        "removed_anchor_hrefs": []
+      },
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/modules",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/modules",
+        "http_status": 200,
+        "sha256": "f54ca035c0b31989d50aacbc346c345927a46783d14cb2cbf0fc0583afc92340",
+        "bytes": 225124,
+        "links": [
+          "/learning/en",
+          "/learning/en/courses",
+          "/learning/en/modules",
+          "/learning/en/modules/computer-science/deutsch-jozsa",
+          "/learning/en/modules/computer-science/grovers",
+          "/learning/en/modules/computer-science/qft",
+          "/learning/en/modules/computer-science/quantum-key-distribution",
+          "/learning/en/modules/computer-science/quantum-teleportation",
+          "/learning/en/modules/computer-science/shors-algorithm",
+          "/learning/en/modules/computer-science/vqe",
+          "/learning/en/modules/quantum-mechanics/bells-inequality-with-qiskit",
+          "/learning/en/modules/quantum-mechanics/exploring-uncertainty-with-qiskit",
+          "/learning/en/modules/quantum-mechanics/get-started-with-qiskit",
+          "/learning/en/modules/quantum-mechanics/stern-gerlach-measurements-with-qiskit",
+          "/learning/en/modules/quantum-mechanics/superposition-with-qiskit"
+        ],
+        "added_anchor_hrefs": [],
+        "removed_anchor_hrefs": []
+      }
+    ],
+    "scope": "HTML anchor discovery; modal contents, rendered interactions and destination access are not established"
+  },
+  "public_route_observations": {
+    "checked_utc": "2026-11-17T10:39:54.692326+00:00",
+    "routes": [
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/courses/practical-near-term-qc",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/courses/practical-near-term-qc",
+        "http_status": 404,
+        "sha256": "fde1f5d656598962861fd86685b392e4bc83dee11eec391c41d4f337e8f4fe30",
+        "bytes": 208913
+      },
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/courses/practical-near-term-qc/introduction",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/courses/practical-near-term-qc/introduction",
+        "http_status": 404,
+        "sha256": "0c7b253f46d76cd8a0ff49c64421bb9eecd2987d800a0ccf55d8035825f90914",
+        "bytes": 208943
+      },
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/modern-workflows",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/modern-workflows",
+        "http_status": 200,
+        "sha256": "5445199d138f78af0f2f25cb7f9f48f07cdfb42827dd81440825381f335472bc",
+        "bytes": 502029
+      },
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/exam",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage/exam",
+        "http_status": 200,
+        "sha256": "e064c4819a406aca539406127e44f84fcee09de0dc71f7951a1ebeaf5850ca21",
+        "bytes": 263472
+      },
+      {
+        "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/nmr-with-qiskit",
+        "final_url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/nmr-with-qiskit",
+        "http_status": 200,
+        "sha256": "446f8d014e8870dcf600d0936f44df3ddfd9d8ccede0f7b6d2a20346d45f9d9b",
+        "bytes": 1907704
+      }
+    ],
+    "scope": "HTTP availability only; does not prove content equivalence or execution"
+  }
 }
