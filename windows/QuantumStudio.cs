@@ -287,6 +287,18 @@ class QuantumStudio {
     finally {if(sampling!=null)sampling.Close();if(composer!=null)composer.Close();window.Close();}
    };
   }
+  if(args.Length==4 && args[0]=="--dev16-source-failure-test") {
+   window.Loaded+=async delegate {
+    CircuitComposer composer=null;ClassicalProgramWindow editor=null;
+    try {
+     if(args[1]=="composer") {composer=new CircuitComposer(window,delegate(string value){});composer.Show();await composer.VerifySourceFailures(args[2],args[3]);}
+     else if(args[1]=="classical") {editor=new ClassicalProgramWindow(window);editor.Show();await editor.VerifySourceFailures(args[2],args[3]);}
+     else throw new InvalidDataException("Unknown source failure test editor.");
+     File.WriteAllText(args[3],"PASS: finite source failure/history matrix.");
+    } catch(Exception error) {File.WriteAllText(args[3],"FAIL: "+error);Environment.ExitCode=1;}
+    finally {if(editor!=null)editor.Close();if(composer!=null)composer.Close();window.Close();}
+   };
+  }
   if(args.Length==3 && args[0]=="--source-files-test") {
    window.Loaded+=async delegate {
     CircuitComposer composer=null;ClassicalProgramWindow editor=null;

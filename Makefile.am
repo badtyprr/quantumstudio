@@ -272,3 +272,5 @@ EXTRA_DIST += windows/ScalarProductGuiTests.cs diagnostics/scalar-product/Run-Ac
 EXTRA_DIST += windows/HadamardTensorGuiTests.cs diagnostics/hadamard-tensor/Run-Acceptance.ps1 diagnostics/hadamard-tensor/fragment.txt diagnostics/hadamard-tensor/source.json diagnostics/hadamard-tensor/expected.json
 EXTRA_DIST += windows/RegisterWidthGuiTests.cs diagnostics/register-width/Run-Acceptance.ps1 diagnostics/register-width/fixtures.json
 EXTRA_DIST += docs/learning-evidence/dev05-register-width/README.md
+EXTRA_DIST += windows/test-dev16-source-failures.py
+EXTRA_DIST += windows/fixtures/dev16-composer-contract.json
