@@ -321,3 +321,26 @@ imports, including an error inside a custom gate definition. Original error
 messages remain intact; valid arithmetic expressions retain their compiled
 output. This adds diagnostic coverage without changing arithmetic semantics or
 completing the remaining DEV-16d acceptance and release gates.
+
+### Numerical loop transfers (development correction)
+
+Numerical import now preserves operations executed before `break` and `continue`
+in compile-time `for` and `while` loops. Previously, the pinned compiler let
+`for` transfer signals escape and silently discarded the operations preceding
+`while` transfers. The adapter lowers these transfers to private Boolean control
+variables before unrolling, after the existing source preflight. Nested loops
+retain separate transfer targets; a while condition is reevaluated outside its
+body's local declarations and is not reevaluated after a break.
+
+Seventeen explicit gate-sequence cases cover direct and conditional transfers,
+nesting, local shadowing, name collisions, discrete sets, empty loops and normal
+loops. File-import tests exercise the same behavior through nested Unicode
+module dependencies. These are authored regressions, not a whole-source audit.
+Classical import retains its existing runtime lowering. Numerical measurement
+feedback remains unsupported; existing operation and iteration budgets remain
+in force. Hosted CI and published-artifact acceptance remain required.
+
+The lowering validates declarations in each original block before adding guards,
+including the for-loop binding. Synthetic scopes cannot legalize same-scope
+redeclarations. Regression cases preserve the reviewed duplicate-declaration
+failures alongside the valid nested-shadowing control.
