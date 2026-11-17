@@ -377,3 +377,5 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb003/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb003/index.json
 EXTRA_DIST += docs/learning-evidence/dev13/selected-setup.md
 EXTRA_DIST += docs/learning-evidence/dev13/selected-setup.json
+EXTRA_DIST += docs/learning-evidence/dev13/qb003/clean-build.md
+EXTRA_DIST += docs/learning-evidence/dev13/qb003/clean-build.json

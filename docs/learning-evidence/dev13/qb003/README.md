@@ -1,5 +1,9 @@
 # QB-003: original notebook and initial-reset exact execution
 
+Follow-up: the reset fix now has a [clean native build and complete native suite](clean-build.md)
+at `ae30847d2c5033638027097ee6966134b42742b4`. The overlay evidence below is retained
+as the earlier diagnostic stage; hosted CI, GUI/package and release remain pending.
+
 All nine cells of the [pinned qBraid notebook](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb)
 are preserved; its six code cells execute unchanged with PyQASM 1.3.0.
 Source SHA-256: `ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4`.
@@ -77,5 +81,6 @@ changes. Owned kernel cleanup reports zero active processes.
 The adjacent index binds local evidence under
 `cleanup-audit/learning-coverage-20261117/qb003-notebook/`. Historical packaged
 sampling/editor acceptance remains in [QB-003](../../QB-003.md); this new route,
-reset optimization, exact GUI behavior, clean build, CI and release remain
-unreleased. No cloud/provider execution is claimed.
+reset optimization, exact GUI behavior, CI and release remain unreleased. The local
+clean-native-build follow-up above does not establish those delivery gates.
+No cloud/provider execution is claimed.
