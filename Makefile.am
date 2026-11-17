@@ -274,3 +274,5 @@ EXTRA_DIST += windows/RegisterWidthGuiTests.cs diagnostics/register-width/Run-Ac
 EXTRA_DIST += docs/learning-evidence/dev05-register-width/README.md
 
 EXTRA_DIST += docs/learning-evidence/aud02/qbraid-catalog-20261117.md docs/learning-evidence/aud02/qbraid-catalog-20261117.json
+
+EXTRA_DIST += docs/learning-evidence/aud02/ibm-catalog-20261117.md docs/learning-evidence/aud02/ibm-catalog-20261117.json
