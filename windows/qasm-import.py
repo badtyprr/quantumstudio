@@ -133,7 +133,10 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             return {'Kind':'Binary','Operator':'Multiply','Left':{'Kind':'Constant','ValueBits':'13830554455654793216'},'Right':operand}
         return integer()
     def source_gate(visitor,operation,ctrls=None):
-        result=original_gate(visitor,operation,ctrls)
+        try:
+            result=original_gate(visitor,operation,ctrls)
+        except ArithmeticError as error:
+            raise error_at(operation,str(error)) from error
         for item in result:
             if getattr(item,'span',None) is None:
                 copy_span(item,operation)

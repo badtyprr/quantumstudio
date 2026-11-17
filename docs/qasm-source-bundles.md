@@ -311,3 +311,13 @@ coverage includes accepted boundary values, Unicode names, module headers,
 CRLF dependencies, and both numerical and classical register-range failures.
 This is an additional DEV-16d diagnostic slice; full diagnostic acceptance and
 release verification remain open.
+
+### Constant gate arithmetic diagnostics (development)
+
+Arithmetic failures while evaluating constant gate parameters now retain the
+original gate statement's dependency location. Division by zero, modulo by zero
+and zero raised to a negative power are covered in numerical and classical
+imports, including an error inside a custom gate definition. Original error
+messages remain intact; valid arithmetic expressions retain their compiled
+output. This adds diagnostic coverage without changing arithmetic semantics or
+completing the remaining DEV-16d acceptance and release gates.

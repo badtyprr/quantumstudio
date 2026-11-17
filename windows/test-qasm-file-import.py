@@ -131,6 +131,19 @@ class FileImportTests(unittest.TestCase):
                         message = self.run_import(command, args, success=False)
                         self.assertEqual(message.strip(), f'nested κ/limits.inc:2:{offset + 3}: {detail}')
 
+    def test_gate_arithmetic_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/angles.inc";')
+        for body in ('qubit q; rx(1/0) q;', 'gate g a { rx(1/0) a; } qubit q; g q;'):
+            self.put('nested κ/angles.inc', 'OPENQASM 3;\r\n  ' + body)
+            for command in COMMANDS:
+                for classical in (False, True):
+                    with self.subTest(body=body, command=command, classical=classical):
+                        args = ['--source-file', str(main), '--module-headers']
+                        if classical:
+                            args.append('--classical')
+                        message = self.run_import(command, args, success=False)
+                        self.assertEqual(message.strip(), f'nested κ/angles.inc:2:{body.index("rx(") + 3}: division by zero')
+
     def test_timed_gate_rejection(self):
         cases = [
             ('qubit q; x[1ns] q;', 'x['),
