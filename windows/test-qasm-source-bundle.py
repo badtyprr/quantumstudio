@@ -51,6 +51,58 @@ class SourceBundleTests(unittest.TestCase):
             self.put('nested κ/body.inc', 'qubit q; rx(1/2) q;')
             self.assertEqual(compile_source(capture_source(main), compiler.convert, classical=classical), expected)
 
+    def test_numerical_loop_transfers_preserve_gate_sequence(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [('while-break', 'OPENQASM 3; qubit q; while(true) { x q; break; h q; }', ['X']),
+         ('while-continue',
+          'OPENQASM 3; qubit q; int i=0; while(i<3) { i+=1; x q; continue; h q; }',
+          ['X', 'X', 'X']),
+         ('for-break', 'OPENQASM 3; qubit q; for int i in [0:2] { x q; break; h q; }', ['X']),
+         ('for-continue', 'OPENQASM 3; qubit q; for int i in [0:2] { x q; continue; h q; }', ['X', 'X', 'X']),
+         ('conditional-break',
+          'OPENQASM 3; qubit q; for int i in [0:3] { x q; if(i==1) { break; } h q; }',
+          ['X', 'H', 'X']),
+         ('conditional-continue',
+          'OPENQASM 3; qubit q; for int i in [0:2] { x q; if(i==1) { continue; } h q; }',
+          ['X', 'H', 'X', 'X', 'H']),
+         ('nested-break',
+          'OPENQASM 3; qubit q; for int i in [0:1] { for int j in [0:2] { x q; break; } h q; }',
+          ['X', 'H', 'X', 'H']),
+         ('post-loop', 'OPENQASM 3; qubit q; for int i in [0:2] { x q; break; } h q;', ['X', 'H']),
+         ('zero-iteration', 'OPENQASM 3; qubit q; for int i in [2:0] { x q; break; } h q;', ['H']),
+         ('ordinary-loop',
+          'OPENQASM 3; qubit q; for int i in [0:2] { x q; h q; }',
+          ['X', 'H', 'X', 'H', 'X', 'H']),
+         ('shadow-condition',
+          'OPENQASM 3; qubit q; int n=2; while(n>0) { n-=1; int n=0; x q; continue; }',
+          ['X', 'X']),
+         ('nested-continue',
+          'OPENQASM 3; qubit q; for int i in [0:1] { for int j in [0:1] { x q; continue; h q; } z q; }',
+          ['X', 'X', 'Z', 'X', 'X', 'Z']),
+         ('while-conditional-break',
+          'OPENQASM 3; qubit q; int n=0; while(n<3) { n+=1; x q; if(n==2) { break; } h q; }',
+          ['X', 'H', 'X']),
+         ('branch-local',
+          'OPENQASM 3; qubit q; for int i in [0:2] { int n=i; if(i==1) { continue; } if(n==2) { x q; } h q; }',
+          ['H', 'X', 'H']),
+         ('collision',
+          'OPENQASM 3; qubit q; bool _numerical_loop_1=false; for int i in [0:2] { x q; break; } '
+          'if(_numerical_loop_1) { h q; }',
+          ['X']),
+         ('set-loop',
+          'OPENQASM 3; qubit q; for int i in {1,3,5} { x q; if(i==3) { break; } h q; }',
+          ['X', 'H', 'X']),
+         ('break-suppresses-condition',
+          'OPENQASM 3; qubit q; int n=1; while(1/n>0) { x q; n=0; break; }',
+          ['X'])]
+        for name, source, gates in cases:
+            with self.subTest(name=name):
+                expected = {'Version': 1, 'Qubits': 1, 'Steps': [
+                    {'Gate': gate, 'Angle': '', 'Wires': [0]} for gate in gates]}
+                self.assertEqual(compiler.convert(source), expected)
+
     def test_control_flow_dependency_diagnostics(self):
         spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
         compiler = importlib.util.module_from_spec(spec)

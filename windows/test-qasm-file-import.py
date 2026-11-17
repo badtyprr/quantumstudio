@@ -144,6 +144,24 @@ class FileImportTests(unittest.TestCase):
                         message = self.run_import(command, args, success=False)
                         self.assertEqual(message.strip(), f'nested κ/angles.inc:2:{body.index("rx(") + 3}: division by zero')
 
+    def test_numerical_loop_transfer_file_import(self):
+        cases = [
+            ('while(true) { x q; break; h q; }', ['X']),
+            ('int i=0; while(i<3) { i+=1; x q; continue; h q; }', ['X'] * 3),
+            ('for int i in [0:2] { x q; break; h q; }', ['X']),
+            ('for int i in [0:2] { x q; continue; h q; }', ['X'] * 3),
+            ('for int i in [0:1] { for int j in [0:2] { x q; break; } h q; }', ['X', 'H'] * 2),
+            ('int n=2; while(n>0) { n-=1; int n=0; x q; continue; }', ['X'] * 2),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/loops.inc";')
+        for body, gates in cases:
+            self.put('nested κ/loops.inc', 'OPENQASM 3;\r\nqubit q; ' + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command):
+                    result = self.run_import(command, ['--source-file', str(main), '--module-headers'])
+                    self.assertEqual(result['Circuit'], {'Version': 1, 'Qubits': 1, 'Steps': [
+                        {'Gate': gate, 'Angle': '', 'Wires': [0]} for gate in gates]})
+
     def test_timed_gate_rejection(self):
         cases = [
             ('qubit q; x[1ns] q;', 'x['),

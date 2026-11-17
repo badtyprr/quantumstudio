@@ -981,6 +981,69 @@ def lower_for_transfers(program):
     block(program.statements)
 
 
+def lower_numerical_transfers(program):
+    """Lower compile-time loop transfers without throwing away emitted gates."""
+    used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
+    serial=0
+    def fresh():
+        nonlocal serial
+        while True:
+            serial+=1;name='_numerical_loop_'+str(serial)
+            if name not in used:
+                used.add(name);return name
+    def declaration(name,value,origin):
+        return copy_span(ast.ClassicalDeclaration(type=ast.BoolType(),identifier=ast.Identifier(name),init_expression=value),origin)
+    def assign(name,value,origin):
+        return copy_span(ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=value),origin)
+    def guard(name,body,origin):
+        return copy_span(ast.BranchingStatement(condition=ast.Identifier(name),if_block=body,else_block=[]),origin)
+    def children(node):
+        if isinstance(node,ast.BranchingStatement):return [node.if_block,node.else_block]
+        if isinstance(node,ast.CompoundStatement):return [node.statements]
+        if isinstance(node,ast.SwitchStatement):return [case.statements for _,case in node.cases]+([] if node.default is None else [node.default.statements])
+        return []
+    def transfers(body):
+        return any(isinstance(node,(ast.BreakStatement,ast.ContinueStatement)) or any(transfers(child) for child in children(node)) for node in body)
+    def block(body,target=None):
+        result=[]
+        for index,node in enumerate(body):
+            if isinstance(node,(ast.ForInLoop,ast.WhileLoop)):
+                if transfers(node.block):
+                    active,more=fresh(),fresh()
+                    lowered=block(node.block,(active,more))
+                    if isinstance(node,ast.WhileLoop):
+                        # Evaluate the condition outside body-local bindings,
+                        # and never evaluate it again after a taken break.
+                        condition=copy.deepcopy(node.while_condition)
+                        initial=ast.Cast(type=ast.BoolType(),argument=copy.deepcopy(condition))
+                        result.append(declaration(active,initial,node))
+                        node.while_condition=ast.Identifier(active)
+                        node.block=[declaration(more,ast.BooleanLiteral(True),node),copy_span(ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=lowered,else_block=[]),node)]
+                        node.block.append(guard(active,[assign(active,ast.Cast(type=ast.BoolType(),argument=condition),node)],node))
+                    else:
+                        result.append(declaration(active,ast.BooleanLiteral(True),node))
+                        node.block=[guard(active,[declaration(more,ast.BooleanLiteral(True),node)]+lowered,node)]
+                else:node.block=block(node.block)
+                result.append(node)
+            elif isinstance(node,(ast.BreakStatement,ast.ContinueStatement)) and target is not None:
+                active,more=target
+                if isinstance(node,ast.BreakStatement):result.append(assign(active,ast.BooleanLiteral(False),node))
+                result.append(assign(more,ast.BooleanLiteral(False),node))
+                return result
+            else:
+                may_transfer=target is not None and any(transfers(child) for child in children(node))
+                for child in children(node):child[:]=block(child,target)
+                if isinstance(node,ast.SubroutineDefinition):node.body=block(node.body)
+                result.append(node)
+                # One guarded suffix keeps declarations visible to later
+                # statements without executing them after a taken transfer.
+                if may_transfer and index+1<len(body):
+                    result.append(guard(target[1],block(body[index+1:],target),node))
+                    return result
+        return result
+    program.statements[:]=block(program.statements)
+
+
 def lower_output_declarations(program, classical):
     """Retain explicit result selection while PyQASM lowers ordinary storage."""
     outputs = set()
@@ -1078,6 +1141,7 @@ def convert(source, published_u=False, classical=False):
     # only up to global phase. The calculator exposes exact state amplitudes.
     defined = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGateDefinition)}
     primitives = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGate)} - defined
+    if not classical:lower_numerical_transfers(module.original_program)
     unroll_preserving_phase(module, primitives, preserve_branches=classical)
     statements = module.unrolled_ast.statements
     if classical:
