@@ -1014,6 +1014,9 @@ def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(concatenation_program(source) or source)
+    for node in nodes(module.original_program):
+        if isinstance(node,ast.QuantumGate) and node.duration is not None:
+            raise error_at(node,'Timed gates are not supported.')
     output_registers = lower_output_declarations(module.original_program, classical)
     hidden_registers=set()
     allocations=[]
