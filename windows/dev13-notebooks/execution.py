@@ -21,7 +21,7 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
+CONTRACTS = {"qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
 SELECTED_ROUTE = "selected-cells/direct-native-execution"
 PROFILES = {"autoqasm-win-py312", "qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
 
