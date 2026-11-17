@@ -74,9 +74,18 @@ bool tryPhaseCircuitWeights(unsigned qubits,unsigned bits,const std::vector<Circ
  // Decide structural eligibility before converting any gates. A later branch
  // or channel must select the general evaluator rather than accidentally hit
  // a phase-conversion limit in an earlier gate.
+ bool initialResets=true;
  for(const auto &step:steps) {
   budget.charge();
   if(step.wireSelection)return false;
+  if(step.kind==CircuitStep::Kind::Reset && initialResets) {
+   if(step.wires.size()!=1 || step.wires[0]>=qubits)
+    throw std::out_of_range("Exact phase reset target is outside the register");
+   // This evaluator starts in |0...0>. Only a leading reset prefix is inert;
+   // resets after gates or measurements still require the general evaluator.
+   continue;
+  }
+  initialResets=false;
   if(step.kind==CircuitStep::Kind::Measure) {
    if(step.wires.size()!=1 || step.wires[0]>=qubits || step.classicalBit>=bits)
     throw std::out_of_range("Exact phase measurement target is outside the register");
@@ -87,6 +96,7 @@ bool tryPhaseCircuitWeights(unsigned qubits,unsigned bits,const std::vector<Circ
  std::size_t compiledTerms=0;
  for(const auto &step:steps) {
   budget.charge();if(step.kind==CircuitStep::Kind::Measure)break;
+  if(step.kind==CircuitStep::Kind::Reset)continue;
   std::size_t targets=0;
   for(unsigned wire:step.wires) {
    if(wire>=qubits)throw std::out_of_range("Exact phase gate wire is outside the register");

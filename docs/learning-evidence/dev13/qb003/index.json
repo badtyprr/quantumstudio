@@ -1,0 +1,423 @@
+{
+  "source": {
+    "cells": 9,
+    "code_cells": 6,
+    "all_original_sources_and_types_preserved": true,
+    "all_original_code_cells_succeeded": true,
+    "original_embedded_qasm_sha256": "503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad",
+    "basis_cases": 1024,
+    "original_source_comment_finding": "a_in[3]=1 encodes8, not1; original notebook computes8+15=23",
+    "linked_example_input": 1,
+    "linked_example_scope": "Reference read, not executed as the notebook",
+    "scope": "Full original notebook plus authored mathematical checks; GUI and release pending"
+  },
+  "integrity": {
+    "equal": true,
+    "files": 29295,
+    "bytes": 741399134,
+    "added": 0,
+    "removed": 0,
+    "changed": 0,
+    "scope": "Before/after snapshots only; not transient monitoring"
+  },
+  "native_candidate": {
+    "original_cells_preserved": 9,
+    "original_code_cells": 6,
+    "source_string_preserved": true,
+    "printed_unrolled_matches_artifact": true,
+    "pyqasm_version": [
+      "'1.3.0'"
+    ],
+    "setup_metadata_unchanged": true,
+    "native_checks": [
+      {
+        "source": "original",
+        "source_sha256": "503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad",
+        "engine": "exact",
+        "result": {
+          "qubits": 10,
+          "classical_bits": 5,
+          "bits": [
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "probabilities": {
+            "10111": "1"
+          }
+        }
+      },
+      {
+        "source": "original",
+        "source_sha256": "503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad",
+        "engine": "sampled",
+        "result": {
+          "qubits": 10,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 5,
+          "counts": {
+            "10111": 10000
+          }
+        }
+      },
+      {
+        "source": "unrolled",
+        "source_sha256": "9e98a5746ef1c7e2ec706bc081dc5f3211e67774502a9d1ccadb863ac6a92392",
+        "engine": "exact",
+        "result": {
+          "qubits": 10,
+          "classical_bits": 5,
+          "bits": [
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "probabilities": {
+            "10111": "1"
+          }
+        }
+      },
+      {
+        "source": "unrolled",
+        "source_sha256": "9e98a5746ef1c7e2ec706bc081dc5f3211e67774502a9d1ccadb863ac6a92392",
+        "engine": "sampled",
+        "result": {
+          "qubits": 10,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 5,
+          "counts": {
+            "10111": 10000
+          }
+        }
+      }
+    ],
+    "native_full_state_observed": false,
+    "provider_jobs_submitted": false,
+    "worker_sha256": "fb1ddccd3850f2444e85abc660347495458aa803f0e0a0136bbfc163322f6792",
+    "worker_scope": "Local candidate overlay build; not published worker"
+  },
+  "baseline_timeout": {
+    "session": 35886,
+    "exit_code": 1,
+    "source": "original unchanged QASM",
+    "engine": "exact",
+    "timeout_seconds": 180,
+    "original_sampled_pass": true,
+    "diagnostic_without_initial_resets_exact_pass": true
+  },
+  "unit_tests": 6,
+  "phase_checks": 128,
+  "protocol_checks": 71,
+  "qft_probability_checks": 8,
+  "artifacts": [
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/comparison.json",
+      "bytes": 173,
+      "sha256": "5dc1b0b7347592425ed210d6851e00b610b2c73c156a986fdc8aeb0a6ea43da2"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/dependencies.json",
+      "bytes": 25774,
+      "sha256": "b6c5758d78d56b46acc58940af3e15a1556726eddc1ad42b522ebaa950fc2d13"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/diagnostic-unrolled.qasm",
+      "bytes": 830,
+      "sha256": "9e98a5746ef1c7e2ec706bc081dc5f3211e67774502a9d1ccadb863ac6a92392"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/file_inventory.py",
+      "bytes": 1496,
+      "sha256": "c6523e122fe61c25ddd700f02d2e3071ce3bcdc4545e16c5af54ade440c0cbf4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/files-after.json",
+      "bytes": 6756592,
+      "sha256": "749974e2f42d686fd070d016753a19fa9d174612ba76a3354baa4635e3fc046a"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/files-before.json",
+      "bytes": 6756592,
+      "sha256": "2a6701437928591f60978228ce5db7015020ec2e3708947fc71b6d4a99792156"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/linked-adder.qasm",
+      "bytes": 803,
+      "sha256": "bd1800da8945bae7c48ec26bf8e0388ee01de4b7d96ebc98b29d120428180b8a"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/linked-reference.json",
+      "bytes": 508,
+      "sha256": "531a1b725767dcf13a5c773cf922b8629a98c38971cbb72ce11979907d549c80"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native/original-circuit.json",
+      "bytes": 2409,
+      "sha256": "ca018dd22a866c6f292c546c76209e516a162f82781e3170041a1358edb79b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-baseline-timeout.json",
+      "bytes": 215,
+      "sha256": "efc85d7881eb6c10f0055fe4f74117ab93baf4c98fe135fcc29c643cc61fd482"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/original-circuit.json",
+      "bytes": 2409,
+      "sha256": "ca018dd22a866c6f292c546c76209e516a162f82781e3170041a1358edb79b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/original-exact.json",
+      "bytes": 83,
+      "sha256": "e01c2c9e940644ebdefdeba40830a5dcc2d45bb25f093dc051bb7abd2c81d6cb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/original-sampled.json",
+      "bytes": 106,
+      "sha256": "5f5f2684fa543f7a149089bff0cec8786ff066da6f2ee66a1b95a760f8daa6eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/results.json",
+      "bytes": 2119,
+      "sha256": "bd0be552d36bdb551c5b4bcd85b314d087fbe670d49cf22b7e2979494de09497"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/unrolled-circuit.json",
+      "bytes": 2409,
+      "sha256": "ca018dd22a866c6f292c546c76209e516a162f82781e3170041a1358edb79b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/unrolled-exact.json",
+      "bytes": 83,
+      "sha256": "e01c2c9e940644ebdefdeba40830a5dcc2d45bb25f093dc051bb7abd2c81d6cb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/native-candidate/unrolled-sampled.json",
+      "bytes": 106,
+      "sha256": "5f5f2684fa543f7a149089bff0cec8786ff066da6f2ee66a1b95a760f8daa6eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-diagnostic/authored_no_initial_resets-circuit.json",
+      "bytes": 2079,
+      "sha256": "eb0928f0b76b74d922b76848614dd7125ec9788d42c68aca147429a7fd495b48"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-diagnostic/authored_no_initial_resets-exact.json",
+      "bytes": 83,
+      "sha256": "e01c2c9e940644ebdefdeba40830a5dcc2d45bb25f093dc051bb7abd2c81d6cb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-diagnostic/original-circuit.json",
+      "bytes": 2409,
+      "sha256": "ca018dd22a866c6f292c546c76209e516a162f82781e3170041a1358edb79b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-diagnostic/original-sampled.json",
+      "bytes": 106,
+      "sha256": "5f5f2684fa543f7a149089bff0cec8786ff066da6f2ee66a1b95a760f8daa6eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-diagnostic/results.json",
+      "bytes": 642,
+      "sha256": "299e52d001538bbeb036c0af246b74186d4b086980dc57ed480a10ad87cc2ed1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/archive-source-binding.json",
+      "bytes": 25200,
+      "sha256": "a8f30dcc113d9e4807f178273414df2fa95e1c86417c631c39f5b8302c2cb1c0"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/baseline-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/baseline-test-correct-data.log",
+      "bytes": 29,
+      "sha256": "7dc2b97fadca24c20d6219cb39ee5b1029441c42adc200506543a6159b1a58c2"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/baseline-test.exe",
+      "bytes": 80753196,
+      "sha256": "bfb3ef555a4625345580b6718ff07e3e632318cfe141e418af0116d11fb6cb61"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/baseline-test.log",
+      "bytes": 798,
+      "sha256": "388e845601477a4c4b049f440cd39bea49222d5b14beea07ece8528bc9b17b17"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/baseline.json",
+      "bytes": 983,
+      "sha256": "e2c777a6e46fd67dd77edfc7db03ec5fcde7714383f53df0e6b0451a1813ffe5"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-build.json",
+      "bytes": 1136,
+      "sha256": "1097f1c1e2bc39a7d267e30da89a2e97931e23f64068a0e2f5d9d238cc3cbb4e"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-test-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-test.exe",
+      "bytes": 79655979,
+      "sha256": "e58dd01abf6ef60a781820aea1a752043d3473c9b072d2e420d6bf1860c568fc"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-test.log",
+      "bytes": 38,
+      "sha256": "c0d8170d4641dffbe738609e4e9dd6a471c396f23b09c82e47b4f5c8c59f2433"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-worker-build.log",
+      "bytes": 329,
+      "sha256": "a43ccee90ab267051f282ec18db3369f39ff6aea7055ef54efdf610ef03115d9"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-worker-build02.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/candidate-worker.exe",
+      "bytes": 81363384,
+      "sha256": "fb1ddccd3850f2444e85abc660347495458aa803f0e0a0136bbfc163322f6792"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/protocol-tests.json",
+      "bytes": 305,
+      "sha256": "8d6a68dde63de221c144927114736b8b0ac365540ca9a5ce72415ef489a3ae17"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/quantum-exact-request-test.py.log",
+      "bytes": 39,
+      "sha256": "f1b23418850e163e00d5575521eb2d38e9d788d9e8d39963b932733018952e1f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/quantum-phase-circuit-request-test.py.log",
+      "bytes": 80,
+      "sha256": "71646479c6d109bc87e8fa8fd3f1c37f4cb27d3f6186a2eeaa356789e2ca1296"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/reset-optimization/worker-build.json",
+      "bytes": 2049,
+      "sha256": "d35f0d5de17f347d056ad9385965cce7db471625316e374c36a590c24fb60706"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/cells.json",
+      "bytes": 3079,
+      "sha256": "a20b854b0c9aceca16c7733396fd3d7fcc2938dc0262838cae764a61f604df24"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/engine-request.json",
+      "bytes": 12164,
+      "sha256": "69323b65cf8d2de9a8c36142f795f988b1e5b327fca6b317316a41f1ccf82ff5"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/engine-result.json",
+      "bytes": 1459,
+      "sha256": "75db9a0ba2dfccc8980c4572de34857e7e37688a1d12ee0305384e84b19bf498"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/engine.stderr",
+      "bytes": 671,
+      "sha256": "8dbde07422f124f69cc18973f2aca76f64d845c6bd6ab618ac2e9be5f3d80d67"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/engine.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/events.jsonl",
+      "bytes": 11360,
+      "sha256": "1a78362432428699b3852104c1b8bee0b8aecb10746188fd3a60fb02995aa5c0"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/executed.ipynb",
+      "bytes": 17451,
+      "sha256": "cf0cceb5ecfb6e2d155713319937e50da72c84cd3e5c6c68af6cdb1d690d285c"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/kernel.json",
+      "bytes": 120,
+      "sha256": "96a2279a6edced528d061de03824f54fdf81a200c33bc189c72e5926644f9955"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/original.qasm",
+      "bytes": 833,
+      "sha256": "503bda0e6df9ad1e0eb858606ef092c4eeab07be73cb1d29b0ee0ccbaa5d12ad"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/setup-evidence.json",
+      "bytes": 43245,
+      "sha256": "657907a484b0303dcc1fa112d3bb07b040031144ecd1ed9d75905accf9ec0cf5"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/source-original.ipynb",
+      "bytes": 3743,
+      "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/status.json",
+      "bytes": 5758,
+      "sha256": "5c09ef39d3a965af420a49c2780bedd1657b9c0e1ac94b08d39535e6a852c106"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/run01/unrolled.qasm",
+      "bytes": 830,
+      "sha256": "9e98a5746ef1c7e2ec706bc081dc5f3211e67774502a9d1ccadb863ac6a92392"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/source-audit.json",
+      "bytes": 557,
+      "sha256": "c2d1b235fb9d6f8ae0379b98b446cb051ba9793f2be67bd998eae64831cdc029"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/source-original.ipynb",
+      "bytes": 3743,
+      "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/unit-tests.json",
+      "bytes": 150,
+      "sha256": "e15fae17a0c5aecc69bd3e008234c96839cff816028182a47d6d87e0edaaf4ef"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/verify_native.py",
+      "bytes": 3185,
+      "sha256": "85adcc3bef03e086dbed4131618287cde350b3613eebacc4942217eda8992924"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-notebook/verify_native_candidate.py",
+      "bytes": 3401,
+      "sha256": "1e622392fc4a5a92c382929f56b3be5362c217f2202f857f6eb63c4e5992b872"
+    }
+  ],
+  "independent_review": "pending",
+  "ci": false,
+  "released": false,
+  "checklist_complete": false
+}

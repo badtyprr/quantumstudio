@@ -29,6 +29,9 @@ int main(){try {
   }
  };
  compare(0,0,{},{});check(out.at(0)=="1");
+ compare(1,1,{Step::reset(0)},{0});check(out.at(0)=="1");
+ compare(2,2,{Step::reset(1),Step::reset(0),Step::reset(1),gate("H",{0}),gate("CNOT",{0,1}),Step::measure(0,0),Step::measure(1,1)},{1,0});
+ compare(1,1,{Step::reset(0),gate("X",{0}),Step::measure(0,0)},{0});check(out.at(1)=="1");
  compare(1,1,{gate("H",{0}),Step::measure(0,0)},{0});check(out.at(0)=="0.5" && out.at(1)=="0.5");
  compare(2,2,{gate("H",{0}),gate("CNOT",{0,1}),Step::measure(0,0),Step::measure(1,1)},{1,0});
  compare(3,3,{gate("H",{2}),gate("CNOT",{2,1}),Step::measure(0,0),Step::measure(1,1),Step::measure(2,2)},{2,1,0});
@@ -48,7 +51,9 @@ int main(){try {
  const std::map<std::uint64_t,std::string> sentinel{{99,"unchanged"}};out=sentinel;
  check(!tryPhaseCircuitWeights(1,1,{gate("H",{0}),Step::measure(0,0),gate("H",{0})},{0},out,budget,limits));check(out==sentinel);
  check(!tryPhaseCircuitWeights(1,1,{gate("Ry(x)",{0}),Step::measure(0,0)},{0},out,budget,limits));check(out==sentinel);
- check(!tryPhaseCircuitWeights(1,1,{Step::reset(0)},{0},out,budget,limits));check(out==sentinel);
+ check(!tryPhaseCircuitWeights(1,1,{gate("X",{0}),Step::reset(0),Step::measure(0,0)},{0},out,budget,limits));check(out==sentinel);
+ check(!tryPhaseCircuitWeights(1,1,{Step::measure(0,0),Step::reset(0)},{0},out,budget,limits));check(out==sentinel);
+ rejects<std::out_of_range>([&]{tryPhaseCircuitWeights(1,1,{Step::reset(1)}, {0},out,budget,limits);});check(out==sentinel);
  PhaseBudget smallBits(100,4,10000);
  check(!tryPhaseCircuitWeights(1,1,{gate("Rz(0.12345678901234567)",{0}),Step::reset(0)},{0},out,smallBits,limits));check(out==sentinel);
  TracePreservingMap channel({calc("[1,0;0,0]"),calc("[0,0;0,1]")},16,exact);
