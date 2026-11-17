@@ -23,6 +23,40 @@ class SourceBundleTests(unittest.TestCase):
         path.write_text(text, encoding="utf-8", newline="")
         return path
 
+    def test_control_flow_dependency_diagnostics(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            ('bit[2] b; if(b == 4) { }', 'if(b',
+             'Condition constant is outside its register range.'),
+            ('bit[2] b; switch(b) { case 1 { } }', 'switch(b)',
+             'Switch targets require an integer expression; use an explicit integer cast.'),
+            ('bit b; if(b) { bit c; }', 'bit c',
+             'Register declarations inside runtime branches are not supported.'),
+            ('int n; int k; switch(n) { case k { } }', 'k {',
+             'Switch case labels must be integer constants.'),
+            ('int n; switch(n) { case 1 { qubit q; } }', 'qubit q',
+             'Global declarations are not allowed in switch cases.'),
+            ('bit b; if(b) { bit b; }', 'bit b; }',
+             'Non-integer shadowing is not yet supported by the importer.'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "sub dir/wrapper.inc";')
+        self.put('sub dir/wrapper.inc', 'include "bad κ.inc";')
+        for body, token, message in cases:
+            for module in (False, True):
+                with self.subTest(body=body, module=module):
+                    prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                    self.put('sub dir/bad κ.inc', prefix + '  ' + body)
+                    bundle = capture_source(main, module_headers=module)
+                    with self.assertRaises(SourceError) as caught:
+                        compile_source(bundle, compiler.convert, classical=True)
+                    self.assertEqual(str(caught.exception),
+                                     f'sub dir/bad κ.inc:2:{body.index(token) + 3}: {message}')
+            with self.assertRaises(ValueError) as caught:
+                compiler.convert('OPENQASM 3; ' + body, classical=True)
+            self.assertEqual(str(caught.exception), message)
+
     def mapped_token(self, bundle, token, name, original, occurrence=0):
         offset = -1
         for _ in range(occurrence + 1):

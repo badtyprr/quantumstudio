@@ -245,6 +245,13 @@ the original branch location through runtime lowering. Aggregate qubit/bit limit
 identify the first declaration that exceeds the limit, including limits reached
 across multiple declarations. These locations are covered by authored dependency
 tests with module headers, Unicode paths and exact line/column checks.
+Out-of-range branch constants and non-integer switch targets identify their
+control-flow statement; unsupported register declarations within runtime branches
+identify the declaration. Nested-dependency tests also verify that paste-only
+error text remains unchanged for these rejections.
+Runtime switch labels identify the nonconstant label. Global declarations in
+switch cases and unsupported non-integer shadowing identify the offending
+declaration rather than the enclosing switch or branch.
 
 DEV-16d is still incomplete. Other control-flow transformations,
 numerical emission and synthesized nodes without original spans need further
