@@ -36,8 +36,8 @@ class FileImportTests(unittest.TestCase):
         main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/boundary.inc";')
         cases = [
             'qubit q;\n' + 'if (true) {\n' * 32 + 'x q;\n' + '}\n' * 32,
-            'qubit q;\n' + '\n'.join('int v%d=0;' % i for i in range(4096)),
-            'qubit q;\n' + '\n'.join(('float[64] f%d=0.0;' if i % 2 else 'int v%d=0;') % i for i in range(4096)),
+            'qubit q;\n' + '\n'.join('int v%d;' % i for i in range(4096)),
+            'qubit q;\n' + '\n'.join(('float[64] f%d;' if i % 2 else 'int v%d;') % i for i in range(4096)),
         ]
         for index, body in enumerate(cases):
             self.put('nested κ/boundary.inc', body)
@@ -45,6 +45,9 @@ class FileImportTests(unittest.TestCase):
                 with self.subTest(case=index, command=command):
                     result = self.run_import(command, ['--source-file', str(main), '--classical'])
                     self.assertIn('Circuit', result)
+                    if index:
+                        circuit = result['Circuit']
+                        self.assertEqual(len(circuit.get('Variables', [])) + len(circuit.get('NumericVariables', [])), 4096)
 
     def test_early_scope_file_locations(self):
         main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/failure.inc";')
