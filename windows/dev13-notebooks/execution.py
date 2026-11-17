@@ -262,8 +262,15 @@ def _execution_indices(contract, cells):
             or any(cells[i]["cell_type"] != "code" for i in selected)
             or type(contract.get("code_cells")) is not list
             or any(type(i) is not int for i in contract["code_cells"])
-            or contract["code_cells"] != selected or contract.get("setup")):
+            or contract["code_cells"] != selected):
         raise ValueError("INVALID_CELL_SELECTION")
+    setup = contract.get("setup")
+    if setup is not None:
+        if (type(setup) is not dict or type(setup.get("cell")) is not int
+                or setup["cell"] != selected[0]
+                or type(setup.get("commands")) is not list or not setup["commands"]
+                or any(type(command) is not str or not command.strip() for command in setup["commands"])):
+            raise ValueError("INVALID_SELECTED_SETUP")
     omitted = {str(i) for i, c in enumerate(cells) if c["cell_type"] == "code" and i not in selected}
     reasons = contract.get("excluded_code_cells")
     if (type(reasons) is not dict or set(reasons) != omitted

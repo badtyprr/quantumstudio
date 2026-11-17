@@ -1,0 +1,251 @@
+{
+  "base": "ae30847d2c5033638027097ee6966134b42742b4",
+  "unit_tests": {
+    "baseline_revision": "ae30847d2c5033638027097ee6966134b42742b4",
+    "baseline": {
+      "new_test_methods": 3,
+      "errors": 2,
+      "subtest_failures": 8,
+      "tool_chunk": "f170ac",
+      "cause": "Blanket selected-setup rejection; empty configurations previously bypassed truthiness check"
+    },
+    "after": {
+      "tests": 38,
+      "exit_code": 0,
+      "seconds": 3.574,
+      "tool_chunk": "44ed15",
+      "classes": [
+        "SelectedCellTests",
+        "PostCellObserverTests",
+        "ProfileInventoryTests"
+      ]
+    }
+  },
+  "real_kernel_tests": 3,
+  "kernel_tests": {
+    "command": [
+      "F:\\src\\libqalculate\\.tools\\dev13-ibm019-20261104\\Scripts\\python.exe",
+      "-E",
+      "-s",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "test_execution.LifecycleTests.test_selected_capture_setup_records_real_pip_success",
+      "test_execution.LifecycleTests.test_selected_capture_cannot_hide_pip_failure",
+      "test_execution.LifecycleTests.test_reviewed_setup_preserves_source_and_inventory"
+    ],
+    "exit_code": 0
+  },
+  "artifacts": [
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernel-tests.json",
+      "bytes": 447,
+      "sha256": "9d249651038531129b5cc8f529d2554135bde03264132942f74b3522cd4c81be"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernel-tests.log",
+      "bytes": 524,
+      "sha256": "affb1e746a7b969322da02c9e8300cc25924b5a77a4966a9f1927f67757417b6"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/cells.json",
+      "bytes": 1313,
+      "sha256": "3c1d6b11fe6559b05bc708a074c20a4cce0efe65c825cdd8b887f2f36edf6870"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/engine-request.json",
+      "bytes": 2875,
+      "sha256": "d290e6f781cbbfe9de7bcadf51fc5f4657b9465ff3d88da8080f505033968f7b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/engine-result.json",
+      "bytes": 224,
+      "sha256": "05c8ce403c426cb5314fdc0c57e9d6641bf0388850dff3c7125492bed46d3c51"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/engine.stderr",
+      "bytes": 665,
+      "sha256": "b002afbccef8b0e135bd35e9d5ffd3d2b14bdbe092c6f5de2ffbf607fe27ee58"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/engine.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/events.jsonl",
+      "bytes": 7483,
+      "sha256": "fc22fbfc80395b057a0d64be227f2b2c22c267b14be9af8f42438880ef3fcd27"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/executed.ipynb",
+      "bytes": 5612,
+      "sha256": "7b457c0fd005b439f3e46054cd2beed69e7c43f715c811955871336488b5e9b3"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/kernel.json",
+      "bytes": 114,
+      "sha256": "08fdef56fca75bea5d69d329f975358c55b5dccf6d29a8b02caa95be53cc1b41"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/setup-evidence.json",
+      "bytes": 25282,
+      "sha256": "89639cb3f2fa9ba7c12b9689d255fdee1ac0d51fefbe8e00bd7fed428de1bd4b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/source-original.ipynb",
+      "bytes": 380,
+      "sha256": "c2303eac4bf9646e73ae20b9bbfeef18b89dea3966d3e86a6239e55348ee08dc"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_reviewed_setup_preserves_source_and_inventory/status.json",
+      "bytes": 3303,
+      "sha256": "ba51c90f930c26b81fb7483e54c04897049beb99ebcde8f145f39ad5bbbda46d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/cells.json",
+      "bytes": 2946,
+      "sha256": "d511c820a2fc0c55af6f400af67e135695dc01752aa059c3a4caebfc5b650a60"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/engine-request.json",
+      "bytes": 3069,
+      "sha256": "b135b700ffb4fa2293f216bbb1ba6a6a57448b2f337565c57155e43ab049b3c0"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/engine-result.json",
+      "bytes": 4436,
+      "sha256": "8b48f67307c3cf2fa1ea2833a773cdf1e3c2150f7551a8782863066bb2ef22bd"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/engine.stderr",
+      "bytes": 665,
+      "sha256": "b002afbccef8b0e135bd35e9d5ffd3d2b14bdbe092c6f5de2ffbf607fe27ee58"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/engine.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/events.jsonl",
+      "bytes": 11939,
+      "sha256": "0bbeaff2e37435d859020d556bc2dd282455e40db195f2ace4e5aba8790635c6"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/executed.ipynb",
+      "bytes": 7352,
+      "sha256": "a812d4d050c0cdd9f78fb0dd53c7427c345e2cafbde80e8a25447147aed98b3d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/kernel.json",
+      "bytes": 114,
+      "sha256": "0a4329970a4d45e0c7886eac87c466c51ea90d9770c0c609ddbf48c327b4a6db"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/setup-evidence.json",
+      "bytes": 25304,
+      "sha256": "fe4ee6066d72158e43e33e4791f12cd7d453f65b906676d8482dde73c379ccce"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/source-disposition.json",
+      "bytes": 803,
+      "sha256": "6cb9eec3831d8cf9065c8c2a59b30a350a47a4a62b3efa504df667e97e3bc597"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/source-original.ipynb",
+      "bytes": 606,
+      "sha256": "b19d18d9c3cb5b28111b632ce9f270a6c24361fb3f207575d59c437674dc371f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_cannot_hide_pip_failure/status.json",
+      "bytes": 7491,
+      "sha256": "0d8bcf78ea41709f93e56529e2083c4bc1bc892356ae0aadf2cdb29e27d473c8"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/cells.json",
+      "bytes": 1338,
+      "sha256": "dec849179a07edcdc7b215b02f060dfe8833efbcf5fd1a07d2cd5e3737cdabdd"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/engine-request.json",
+      "bytes": 3048,
+      "sha256": "fc132af2d09c589987ecd1c0886cc697c3cc9745f264dcaa8e743d23a405e780"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/engine-result.json",
+      "bytes": 402,
+      "sha256": "06ab3cd7f773e2be85424d0553b882023a931bf94b0d498e4b2284ddf5dc00c2"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/engine.stderr",
+      "bytes": 665,
+      "sha256": "b002afbccef8b0e135bd35e9d5ffd3d2b14bdbe092c6f5de2ffbf607fe27ee58"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/engine.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/events.jsonl",
+      "bytes": 7917,
+      "sha256": "bf8a618eedf3c128733e89d58e065f482f16fdb13d970c3e718d62032423f109"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/executed.ipynb",
+      "bytes": 5328,
+      "sha256": "69cbbea690bbc41d0be31b8d4fb8b649bc01648cbaf01685403bb4a0d12a058a"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/kernel.json",
+      "bytes": 114,
+      "sha256": "f95460b668cb3021c589fd4eec8e06a2fc812193e87ee342b7d99aa8e16b2942"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/setup-evidence.json",
+      "bytes": 25282,
+      "sha256": "89639cb3f2fa9ba7c12b9689d255fdee1ac0d51fefbe8e00bd7fed428de1bd4b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/source-disposition.json",
+      "bytes": 805,
+      "sha256": "45b06f165fa48db3d1b8b9ee9dfedc653f4671adebc1087a247fec9847868660"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/source-original.ipynb",
+      "bytes": 585,
+      "sha256": "5698f519710a2af29edc46a2246172431d9fb6a9accd1beb1eb620a167382d3a"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/kernels/test_selected_capture_setup_records_real_pip_success/status.json",
+      "bytes": 3455,
+      "sha256": "812d11f7cca77c1bd4a1512707c5b15ee60ad719b4acff1ab84a0bc387e5acdd"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/dev13-selected-setup/unit-test-receipt.json",
+      "bytes": 512,
+      "sha256": "81e4b83d40e37e961e63c4b13e352151c407b62d6b177b643972d8b9ab886a46"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb004-prerequisites/setup_probe.py",
+      "bytes": 1202,
+      "sha256": "5bcbbde954110fed6d3221a000eba5e6b05e34e8a0d56e7d47e94b804b125ee7"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb004-prerequisites/setup-probe/results.json",
+      "bytes": 603,
+      "sha256": "dec8023678b226cecceeda3ee49e6f0f6f0b436fa07ece2910eb395d805e3245"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/aud02-current-qbraid-sources/qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "bytes": 8888,
+      "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce"
+    }
+  ],
+  "scope": "Selected setup capability and finite fixtures; QB004 quote compatibility not fixed; no new public contract",
+  "independent_review": "pending",
+  "ci": false,
+  "released": false
+}
