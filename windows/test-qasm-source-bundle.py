@@ -12,6 +12,25 @@ from qasm_source_diagnostics import compile_source, error_at, copy_span, diagnos
 
 
 class SourceBundleTests(unittest.TestCase):
+    def test_synthesized_operation_limit_origins_and_recovery(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "nested κ/operations.inc";')
+        for operation in ('measure q;', 'gphase(pi/4);', 'ctrl @ gphase(pi/4) q;'):
+            for classical in (False, True):
+                with self.subTest(operation=operation, classical=classical):
+                    self.put("nested κ/operations.inc", 'qubit q;\nfor int i in [0:511] { x q; }\n  ' + operation)
+                    bundle = capture_source(main)
+                    message = ('Classical circuits support at most 512 total operations.' if classical else
+                               'The compiled circuit exceeds the editor limit of 512 steps.')
+                    with self.assertRaises(SourceError) as caught:
+                        compile_source(bundle, compiler.convert, classical=classical)
+                    self.assertEqual(str(caught.exception), 'nested κ/operations.inc:3:3: ' + message)
+                    # A failed conversion must restore the compiler visitor hooks.
+                    result = compiler.convert('OPENQASM 3; qubit q; x q;', classical=classical)
+                    self.assertEqual(len(result['Steps']), 1)
+
     def test_late_lowering_dependency_diagnostics(self):
         spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
         compiler = importlib.util.module_from_spec(spec)

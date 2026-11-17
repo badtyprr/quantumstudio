@@ -247,6 +247,12 @@ when that declaration has an original span. Source tests cover these failures
 through nested dependencies and module-header adaptation, and preserve the same
 unlocated stdin messages. These are authored negative cases, not notebook runs.
 
+The 512-operation limit also reports the source operation that crosses the
+budget in both editors. Unrolling retains origins for generated gates,
+measurements, resets and phase operations without replacing a more specific
+existing span. Tests cover the accepted 512-operation boundary, the rejected
+513th operation, nested dependency coordinates, and compilation after a failure.
+
 DEV-16d is still incomplete. Other control-flow transformations,
 numerical emission and synthesized nodes without original spans need further
 coverage. Errors without a usable span continue to name only the entry file;
