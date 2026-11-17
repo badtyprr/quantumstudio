@@ -197,8 +197,8 @@ class ReviewedInputsTests(unittest.TestCase):
         from pathlib import Path
         import qb013_reference
         raw=(Path(__file__).parent/'qb013_reference.py').read_bytes()
-        # Bind the complete reviewed Git file; its archived precursor had one CRLF.
-        self.assertEqual(hashlib.sha256(raw).hexdigest(),'e600232861f09c20533eec27535db9c1d2da22e19297dc8ae9489ab07bf56a88')
+        # Bind the complete reference, including the per-qubit terminal gate rule.
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'102ff7069664022f060dd07a09837df4a8e72fea729a55c58b098dc1e8e5631c')
         self.assertEqual(len(qb013_reference.cases()),14)
     def test_profile_binds_exact_76_package_lock(self):
         import hashlib,json,re
@@ -2274,6 +2274,41 @@ class IndependentStateTests(unittest.TestCase):
         result=compare_states(bell,[1j*x for x in bell])
         self.assertTrue(result['equivalent']);self.assertFalse(result['global_phase_sensitive'])
         self.assertFalse(result['all_input_unitary_equivalence'])
+    def terminal_schedule(self, kind, later_targets):
+        if kind == 'qiskit':
+            result = self.qiskit(2, [('h', [0]), ('cx', [0, 1])])
+            result['operations'] += [dict(name='measure', qubits=[0], clbits=[0], params=[]),
+                dict(name='x' if len(later_targets) == 1 else 'cx',
+                     qubits=later_targets, clbits=[], params=[])]
+            return result
+        if kind == 'cirq':
+            return dict(format=kind, sorted_qubits=[dict(dimension=2)] * 2, operations=[
+                dict(gate_family='HPowGate', qubits=[0], exponent=1, global_shift=0),
+                dict(gate_family='CXPowGate', qubits=[0, 1], exponent=1, global_shift=0),
+                dict(measurement_key='m', qubits=[0], invert_mask=[]),
+                dict(gate_family='XPowGate' if len(later_targets) == 1 else 'CXPowGate',
+                     qubits=later_targets, exponent=1, global_shift=0)])
+        return dict(format=kind, qubits=2, measurements=1, operations=[
+            dict(name=name, qubits=qubits, inverted=[False] * len(qubits), args=[])
+            for name, qubits in [('H', [0]), ('CX', [0, 1]), ('M', [0]),
+                                ('X' if len(later_targets) == 1 else 'CX', later_targets)]])
+
+    def test_disjoint_gate_commutes_past_entangled_terminal_measurement(self):
+        import math
+        for kind in ('qiskit', 'cirq', 'stim'):
+            with self.subTest(kind=kind):
+                result = self.state(self.terminal_schedule(kind, [1]))
+                self.assertVector(result['state'], [0, 1/math.sqrt(2), 1/math.sqrt(2), 0])
+                self.assertEqual(result['measurements'][0]['qubits'], [0])
+                self.assertEqual(result['measurements'][0]['index'], 2)
+
+    def test_gate_touching_measured_qubit_still_rejected_on_all_routes(self):
+        for kind in ('qiskit', 'cirq', 'stim'):
+            for targets in ([0], [0, 1], [1, 0]):
+                with self.subTest(kind=kind, targets=targets):
+                    with self.assertRaisesRegex(ValueError, 'POST_MEASUREMENT'):
+                        self.state(self.terminal_schedule(kind, targets))
+
     def test_midcircuit_measurement_and_unsupported_semantics_reject(self):
         program=self.qiskit(1,[])
         program['operations']=[dict(name='measure',qubits=[0],clbits=[0],params=[]),
