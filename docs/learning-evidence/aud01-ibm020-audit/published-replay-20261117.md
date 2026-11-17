@@ -24,6 +24,8 @@ The successful multiline result produces TeX `gathered` copy text. Sending that 
 
 ## Reproduction and remaining scope
 
+The scoped `.gitattributes` keeps Python and JSON files at LF in normal checkouts so their bytes match the recorded Git blobs.
+
 Run the unchanged `probe.py` with the pinned source, explicit published worker and definitions directory, and a fresh output directory. The historical probe is expected to return 1 for the five observation changes above; inspect exact values and raw results instead of treating exit status alone as coverage. Definitions were hashed before and after the replay and were unchanged. The external record retains raw stdout/stderr, fixture and script hashes, controls and per-case results. The repository receipt indexes these files; a repository-only clone lacks that retained raw evidence and published binary.
 
 The tested source is the pinned IBM-020 notebook, not a later upstream revision. Eight Python cells and the remainder's mathematical occurrences are inventoried but not executed by this finite probe. Notebook execution, figures/media, remaining literal notation, Bernstein–Vazirani coverage, general families and source-specific GUI/session workflows require separate evidence. IBM-020 and AUD-01 stay unchecked.

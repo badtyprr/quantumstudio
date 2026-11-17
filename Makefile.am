@@ -282,3 +282,4 @@ EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/published-replay-2026111
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/README.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-analysis.md
 EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/remainder-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01-ibm020-audit/.gitattributes
