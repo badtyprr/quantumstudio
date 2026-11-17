@@ -9,6 +9,7 @@ import sys
 import copy
 import struct
 from dataclasses import fields, is_dataclass
+from functools import wraps
 
 import openqasm3.ast as ast
 import pyqasm
@@ -55,6 +56,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
     original_reset = QasmVisitor._visit_reset
     runtime_integer_names={node.identifier.name for node in nodes(module.original_program,True)
                            if isinstance(node,ast.ClassicalDeclaration) and isinstance(node.type,RUNTIME_SCALAR_TYPES)}
+    def statement_diagnostics(visit):
+        @wraps(visit)
+        def located(visitor, statement, *args, **kwargs):
+            with diagnostic_context(statement):
+                return visit(visitor, statement, *args, **kwargs)
+        return located
     def in_function(visitor):
         # PyQASM pushes one mapping per activation, including {} for a call
         # with no quantum arguments. Nested block scopes retain this stack.
@@ -72,6 +79,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
             isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
             raise ValueError('For-loop range bounds and step require integers; cast Boolean values explicitly.')
+    @statement_diagnostics
     def for_loop(visitor, statement):
         bounds=statement.set_declaration
         if getattr(statement,'_quantum_runtime_for',False):
@@ -81,9 +89,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                                         end=normalize(visitor,bounds.end,typed=True),
                                         step=normalize(visitor,bounds.step or ast.IntegerLiteral(1),typed=True))
             for value in (captured.start,captured.end,captured.step):require_range_integer(value)
-            proxy=ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=statement.block,else_block=[])
+            proxy=copy_span(ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=statement.block,else_block=[]), statement)
             compiled=branch(visitor,proxy,force=True)
-            return [ast.ForInLoop(type=statement.type,identifier=statement.identifier,set_declaration=captured,block=item.if_block) for item in compiled]
+            return [copy_span(ast.ForInLoop(type=statement.type,identifier=statement.identifier,set_declaration=captured,block=item.if_block), statement) for item in compiled]
         if not isinstance(bounds,ast.RangeDefinition):
             return original_for(visitor,statement)
         start=Qasm3ExprEvaluator.evaluate_expression(bounds.start)[0]
@@ -380,6 +388,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 raise ValueError('Unsupported classical assignment: '+statement.op.name)
             value = ast.BinaryExpression(op=ast.BinaryOperator[operation],lhs=copy.deepcopy(target),rhs=value)
         return [] if visitor._check_only else [ast.ClassicalAssignment(lvalue=target,op=ast.AssignmentOperator['='],rvalue=value)]
+    @statement_diagnostics
     def declaration(visitor, statement):
         if isinstance(statement.type,ast.ArrayType):
             require_compile_time_array(visitor,statement,[statement.type,statement.init_expression])
@@ -433,6 +442,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         result = original_declaration(visitor,bare)
         initial = copy_span(ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression), statement)
         return result+assignment(visitor,initial)
+    @statement_diagnostics
     def branch(visitor, statement, force=False):
         if in_function(visitor):return original_branch(visitor,statement)
         force=force or any(isinstance(item,(WireReferenceCheck,QuantumSelectorTypeCheck)) for item in nodes(statement))
@@ -483,20 +493,23 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         mapping[ArrayReferenceCheck]=lambda statement: [] if visitor._check_only else [ArrayReferenceCheck(views=[map_view(view,lambda value:normalize(visitor,value,typed=True)) for view in statement.views],shapes=statement.shapes)]
         mapping[ast.EndStatement]=lambda statement: [] if visitor._check_only else [copy.deepcopy(statement)]
         return mapping
+    @statement_diagnostics
     def transfer(visitor, statement):
         if in_function(visitor):return (original_break if isinstance(statement,ast.BreakStatement) else original_continue)(visitor,statement)
         if not getattr(statement,"_quantum_loop_transfer",False):
             raise ValueError("A loop transfer must target a runtime while loop.")
         return [] if visitor._check_only else [copy.deepcopy(statement)]
+    @statement_diagnostics
     def while_loop(visitor, statement):
         if in_function(visitor):return original_while(visitor,statement)
         # Compile one body, never evaluate or unroll its runtime condition here.
         # Branch compilation supplies the same scoped block and gate bookkeeping.
         if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
             raise ValueError('Global declarations are not allowed in runtime loops.')
-        proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
+        proxy=copy_span(ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[]), statement)
         compiled=branch(visitor,proxy,force=True)
         return [copy_span(ast.WhileLoop(while_condition=item.condition,block=item.if_block), statement) for item in compiled]
+    @statement_diagnostics
     def switch(visitor, statement):
         if in_function(visitor):return original_switch(visitor,statement)
         target=normalize(visitor,statement.target)
@@ -556,7 +569,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             for value in values:
                 match=ast.BinaryExpression(op=ast.BinaryOperator['=='],lhs=copy.deepcopy(target),rhs=ast.IntegerLiteral(value))
                 condition=match if condition is None else ast.BinaryExpression(op=ast.BinaryOperator['||'],lhs=condition,rhs=match)
-            tail=[ast.BranchingStatement(condition=condition,if_block=body,else_block=tail)]
+            tail=[copy_span(ast.BranchingStatement(condition=condition,if_block=body,else_block=tail), statement)]
         return branch(visitor,tail[0])
     def register_range(range_def, qreg_size, is_qubit_reg, op_node=None):
         # OpenQASM index ranges include their endpoint, unlike Python slices.
@@ -579,6 +592,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
     def with_source_origin(visit):
+        @statement_diagnostics
         def located(visitor, operation, *args, **kwargs):
             result = visit(visitor, operation, *args, **kwargs)
             # Unrolling can synthesize operations without spans. Attribute those

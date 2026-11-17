@@ -56,6 +56,31 @@ class FileImportTests(unittest.TestCase):
                         self.assertEqual(self.run_import(command, mode, source='OPENQASM 3; include "stdgates.inc";\n' + body,
                                                          success=False).strip(), expected)
 
+    def test_visitor_file_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/wrapper.inc";')
+        self.put('nested κ/wrapper.inc', 'include "failure.inc";')
+        cases = [
+            ('int n=2;\n  int[n] i=1;', (True,), 'Integer widths must be compile-time constants.'),
+            ('bit[2] b;\n  switch(b) {case 0 {}}', (True,),
+             'Switch targets require an integer expression; use an explicit integer cast.'),
+            ('int n=1;\n  while(bit(n)) {break;}', (True,),
+             'Runtime bit-register casts require an explicit width.'),
+            ('bit[2] b;\n  for int i in [0:int[3](b)] {}', (True,),
+             'Bit-to-integer casts require matching widths.'),
+            ('qubit[2] q;\n  x q[0:0:1];', (False, True),
+             'Register ranges require integer bounds and a nonzero integer step.'),
+        ]
+        for body, modes, expected in cases:
+            self.put('nested κ/failure.inc', 'OPENQASM 3;\ninclude "stdgates.inc";\n' + body)
+            for command in COMMANDS:
+                for classical in modes:
+                    with self.subTest(body=body, classical=classical, command=command):
+                        mode = ['--classical'] if classical else []
+                        message = self.run_import(command, ['--source-file', str(main), '--module-headers', *mode], success=False)
+                        self.assertEqual(message.strip(), 'nested κ/failure.inc:4:3: ' + expected)
+                        self.assertEqual(self.run_import(command, mode, source='OPENQASM 3; include "stdgates.inc";\n' + body,
+                                                         success=False).strip(), expected)
+
     def test_dependency_parser_diagnostic(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/helper.inc"; qubit q;')
         self.put("nested κ/helper.inc", '// comment\r\ngate bad a { x a }\r\n')
