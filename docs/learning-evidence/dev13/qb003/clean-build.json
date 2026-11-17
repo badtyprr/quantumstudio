@@ -1,0 +1,1151 @@
+{
+  "summary": {
+    "revision": "ae30847d2c5033638027097ee6966134b42742b4",
+    "native_tests": {
+      "PASS": 94,
+      "SKIP": 1
+    },
+    "skipped": [
+      "threadtest"
+    ],
+    "native_adder_checks": 4,
+    "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+    "source_files_checked": 793,
+    "allowed_generated_changes": 22,
+    "distribution_inputs": 461,
+    "source_distribution": {
+      "name": "libqalculate-5.13.1.tar.gz",
+      "sha256": "7d53aec33d73a3050211540f3cfd144ac4fc65034a16f1411b6afe028240605c"
+    },
+    "pipeline_exit": 1,
+    "pipeline_final_failure": "Native Python could not locate git for final source-distribution verifier; native build/tests and archive generation completed",
+    "corrected_distribution_exit": 0,
+    "clean_compilation": true,
+    "reused_objects": false,
+    "hosted_ci": false,
+    "released": false
+  },
+  "artifacts": [
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/attempt01-superseded.json",
+      "bytes": 252,
+      "sha256": "5b37b83fcc9cdbe2b6b7ba1795828a929ce19f2470170a04d1b467f4218bb682"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/build-result.json",
+      "bytes": 85,
+      "sha256": "038f1f1bc08f15d18c1dc8c90959baa7f3d4d382d6a36627869625b473ee655b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/build.log",
+      "bytes": 1642,
+      "sha256": "6a412b147f088f2fb35f1eeeee23e78c8fcda5f696ade62337d00dd64feecf05"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/build.sh",
+      "bytes": 563,
+      "sha256": "153e64faa6cb06e6aa856baa54c6c13a228b204dff35193c711ffc2a60ad636e"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/build02-result.json",
+      "bytes": 87,
+      "sha256": "af67bb813866fd4b6714420bb9ae9b28ca4408540103741f6d0937ca1ed28683"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/build02.log",
+      "bytes": 186301,
+      "sha256": "f18f756dece43a553141374daab1f0ca08d0984777f3f391aa067ab93cf953ca"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/build02.sh",
+      "bytes": 310,
+      "sha256": "656337a17e1a3f7488cdef5f35d05781bbe29203ed77c40b79487ce682b46fa9"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/collect.py",
+      "bytes": 1589,
+      "sha256": "1d0d1258e6857a347a326b24f757c6ce5b309c602f61ad9ec8ba5a491a1ee4cf"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/compiler.txt",
+      "bytes": 253,
+      "sha256": "30b160ff3a5612b9fd3d1a1f90d8bd4c0f58fcf86e971c484e86116df133b155"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/config.log",
+      "bytes": 82201,
+      "sha256": "6a5a410e20121161ac95aafae78e0dba1dd2b872674272b49ba0bee318a4f837"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/config.status",
+      "bytes": 82255,
+      "sha256": "2b2cf1e160f32ce3aa00a9aaf7fefc7e3c2423f91174259e05e8f5fa1579869a"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/distribution-check.json",
+      "bytes": 530,
+      "sha256": "b277b4ba7e96997259a843049114bceab7d4316ce81dd91c6ba3fce666697a78"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/distribution-check.log",
+      "bytes": 91,
+      "sha256": "bb6e6a3525ac531ee97432aa71ddcd0d61074017073a0b9238f4a7655cc8a213"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/libqalculate-5.13.1.tar.gz",
+      "bytes": 5330666,
+      "sha256": "7d53aec33d73a3050211540f3cfd144ac4fc65034a16f1411b6afe028240605c"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/msys-packages.txt",
+      "bytes": 4670,
+      "sha256": "803716384c763a04f81df1bde7fba300c9dec0e092f34e492cb95262f99cbb0c"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/original-circuit.json",
+      "bytes": 2409,
+      "sha256": "ca018dd22a866c6f292c546c76209e516a162f82781e3170041a1358edb79b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/original-exact.json",
+      "bytes": 83,
+      "sha256": "e01c2c9e940644ebdefdeba40830a5dcc2d45bb25f093dc051bb7abd2c81d6cb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/original-sampled.json",
+      "bytes": 106,
+      "sha256": "5f5f2684fa543f7a149089bff0cec8786ff066da6f2ee66a1b95a760f8daa6eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/results.json",
+      "bytes": 2118,
+      "sha256": "9c227338e3807b3433aa8e58f7f03b5a5070d6f308c924bfd0d9ab7e48d3d797"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/unrolled-circuit.json",
+      "bytes": 2409,
+      "sha256": "ca018dd22a866c6f292c546c76209e516a162f82781e3170041a1358edb79b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/unrolled-exact.json",
+      "bytes": 83,
+      "sha256": "e01c2c9e940644ebdefdeba40830a5dcc2d45bb25f093dc051bb7abd2c81d6cb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/native/unrolled-sampled.json",
+      "bytes": 106,
+      "sha256": "5f5f2684fa543f7a149089bff0cec8786ff066da6f2ee66a1b95a760f8daa6eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/quantum-worker.exe",
+      "bytes": 88260621,
+      "sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/source-after-build.json",
+      "bytes": 5687,
+      "sha256": "4e171f36269f41040a51bba55349229260eabf981d0efbdf7aa4fa5a89bb6e83"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/source-binding.json",
+      "bytes": 135513,
+      "sha256": "3118f9f35dbac367db33c1b9006d3361dfc2e8062e3c2cf555ca6feaf7fb99ea"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/source.index",
+      "bytes": 82382,
+      "sha256": "3fbe47b4126a4393f3f2fc1741e212a07483b7c47ea074ec78494be1c2c1f496"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/source.tar",
+      "bytes": 19834880,
+      "sha256": "d6b1bccc547e557932126c87030132ef6702454e61878d6a1b95ee38517107cb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/summary.json",
+      "bytes": 833,
+      "sha256": "0b578879288237c854d7bc592cd80c5a653497c94a1ca654bb4f92833250341b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-algebra-test.log",
+      "bytes": 81,
+      "sha256": "3297e1d141c7664e1d9395296d1afc7e8d189f2889724dd95bd968e4df0cf7fd"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-algebra-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-arithmetic-basis-worker-test.log",
+      "bytes": 100,
+      "sha256": "913f34c55b6ad54b6397a62363f101768e08d1d77d46bf4677a89a65487b91ba"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-arithmetic-basis-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-binary-test.log",
+      "bytes": 79,
+      "sha256": "191382e295e34cd646d4b8ac0e7408bc64af005a325d744a1f781652175e66f1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-binary-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-cartesian-test.log",
+      "bytes": 96,
+      "sha256": "7c9e7982eba4475684ed20ee1401938c2bb8e6fa47b9990e7dde1bc00c2b9b4f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-cartesian-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-channel-representations-test.log",
+      "bytes": 111,
+      "sha256": "427fe6e431e78a140520649da65adcc448f692d457ca7c9650e196f1acccbaa5"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-channel-representations-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-array-request-test.log",
+      "bytes": 104,
+      "sha256": "3a1d0aeedce113323666c34a203d3d48028cdd1fc65539e7af0faf00af59ed4c"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-array-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-array-test.log",
+      "bytes": 110,
+      "sha256": "d2a56b513c3ee503fe0e395dbab0811000ecd5e9de762c18b32b123775eee6b1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-array-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-array-view-request-test.log",
+      "bytes": 106,
+      "sha256": "57f93569c36decc2f38c61a506ed366fb31f791eb215aa47ae13ada8c1214247"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-array-view-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-expression-test.log",
+      "bytes": 115,
+      "sha256": "d67c8593e9108a9b560978b962e1a2aaab98335ec99251b3b61492fceed6f22f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-expression-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-storage-test.log",
+      "bytes": 101,
+      "sha256": "cd12eb97e1415389e9f5326de7f63848ef7bd58ec2f1722c2c7d70d9f3e96384"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-storage-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-test.log",
+      "bytes": 94,
+      "sha256": "588ff3fe2f525690fad71ad38e9e3db7b672a60d2383b762119ef56f1e870a81"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-type-test.log",
+      "bytes": 96,
+      "sha256": "feab6afb2ad38f0fd2839d48124f1d6bde0b1430d5edbc4de406b17ce3391720"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-integer-type-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-numeric-test.log",
+      "bytes": 90,
+      "sha256": "cbc6b9eefcbd7b7045482c4ad11384131fa18069b8de75e5e1dbf3d475bdb4e6"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-numeric-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-range-test.log",
+      "bytes": 91,
+      "sha256": "9592332be1386cc4b54920d0fde329a1dae74de020c71f98927e9b9bd249e4c4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-range-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-real-expression-test.log",
+      "bytes": 109,
+      "sha256": "a03df6eab0afcb34b28710985286182b1d65d3232815daeed6a038b93d5e1e06"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-real-expression-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-request-test.log",
+      "bytes": 105,
+      "sha256": "35c10f05bf39bf061d586c639dd99fc523c67c40eb8b21aa534d6f75a69a1821"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-test.log",
+      "bytes": 97,
+      "sha256": "f61536cb42737c0240a03d1be120adf08996d5e48df5ce0b730366f6f4655c9d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-classical-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-compact-pauli-test.log",
+      "bytes": 85,
+      "sha256": "ddc25542e0f87ca1fcd0aa6f891f2f52406b972f2be86a1836b5c2ab965d160b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-compact-pauli-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-css-test.log",
+      "bytes": 70,
+      "sha256": "966bac02d3c449e7873bf8ea216308d4678aee8e1b7529c7ec60fd406beb1647"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-css-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-domains-test.log",
+      "bytes": 80,
+      "sha256": "2786cc94696cac837ee7362d1b50bf6830582f42cc969402a8c6f0fa02d5ff14"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-domains-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-eigensystem-test.log",
+      "bytes": 96,
+      "sha256": "bd8b77026df2b60f1378bade19c0d2d7316cce593ea537b0141819ecc759a3e5"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-eigensystem-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-eigensystem-worker-test.log",
+      "bytes": 105,
+      "sha256": "51d12c14827af27e4857c9d9b9f82d4c1ab6e8704c367ff03b1d54a04ffb522d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-eigensystem-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-evolution-test.log",
+      "bytes": 88,
+      "sha256": "4767361f6352bb562a01f99f6fb5b4b44b6025e78e5308db76cd0baf10746b89"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-evolution-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-circuit-test.log",
+      "bytes": 86,
+      "sha256": "f3bd1f20aa8fa00ff5e65eecb36b3a04ebf3e7a26fef398a262c22de8cfce4ea"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-circuit-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-operation-test.log",
+      "bytes": 100,
+      "sha256": "a5b25bb91eb603a1c6c0838408b641d8c706f16c9e4a44ecdcc91d3194272447"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-operation-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-phase-circuit-test.log",
+      "bytes": 97,
+      "sha256": "abdc505689790e4a625b4f50343fefdeb57cb84a79f530dd8635bacf7125941f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-phase-circuit-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-phase-expression-test.log",
+      "bytes": 103,
+      "sha256": "a13bdc320a0a0dbb786b320e128ef050469cc02abe19e5011569c2f42a0339f2"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-phase-expression-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-phase-test.log",
+      "bytes": 80,
+      "sha256": "dae3acede327be96f28c801af55c0b93268e3b2672b68cfb862b0f997d8c8976"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-phase-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-range-test.log",
+      "bytes": 81,
+      "sha256": "a6df711ec5a4b5a728755f7a946829d8022e6d0ca5d1d7f307c2baf3ea8fa7aa"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-range-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-readout-test.log",
+      "bytes": 85,
+      "sha256": "75b08c66d7bf5620098f082b20c2126874cdd31ef689f65e8c1fd626e8a4f8e1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-readout-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-records-test.log",
+      "bytes": 94,
+      "sha256": "940b0c49413e5927123ef5462e8ca9fe8cfc582b6a62d88a3dcd49c2c20b3353"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-records-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-request-test.log",
+      "bytes": 91,
+      "sha256": "65ed7e6300fa4e0e54bc9f084257c374b7d70c50a900eac7ab7509ec1e0317e6"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-rotation-chain-test.log",
+      "bytes": 104,
+      "sha256": "b5814cd42c53456b480c8106c689470d8fb8ab0ff81c346f907af328f7a9de4f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-rotation-chain-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-runtime-rotation-test.log",
+      "bytes": 103,
+      "sha256": "c40b877b485bf1e2988450ff643f66c72e569c7c0dc83b66260d730919b0b6d5"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-exact-runtime-rotation-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-gates-test.log",
+      "bytes": 76,
+      "sha256": "26bf0a46ef317a623e73179f3dc698e9821e47db1c77d199aa017e3e147823d1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-gates-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-geometry-test.log",
+      "bytes": 82,
+      "sha256": "247f405791baa60eacb4ca9754a3d9f5afbd158343f8651a4af9772e6df932d0"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-geometry-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-hellinger-test.log",
+      "bytes": 76,
+      "sha256": "ec928ac9c0ed15deebc0ee1310538f514c9ed1567d2e8b8fabdfa9da5513fbc6"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-hellinger-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-display-test.log",
+      "bytes": 91,
+      "sha256": "6f442b144d110e9a28ab81f1e0c68b8fc3cd83797d188be1d68df0dfe6a4f38b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-display-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-display-worker-test.log",
+      "bytes": 94,
+      "sha256": "5eccdd33331f365196556ff32712c5945f1f9363240d0f98597320bc8ddb3dfb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-display-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-test.log",
+      "bytes": 81,
+      "sha256": "0d467d06deaa869bf3c7c7e7f18d4e1618a9bf2c32c847acfd6cad39dcbb642b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-width-test.log",
+      "bytes": 79,
+      "sha256": "e82a07f95ade0866b258f726bda381966c319b2916820d20cf1c79a38e2176b4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-indexed-width-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-instruments-test.log",
+      "bytes": 2871,
+      "sha256": "64f437731d28a2ade2b0ee28f0a9d8125b538fd6011a18148e637f464678d41d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-instruments-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-instruments-worker-test.log",
+      "bytes": 89,
+      "sha256": "a7961aaf9cd7c5bc327f21ec3b01747ef20c3104832abebc6fdd3bbe951750ff"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-instruments-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-loop-request-test.log",
+      "bytes": 91,
+      "sha256": "e2377e9ef8481b7898154073363546b90248b9f9bed7e708c898e7e3b7555af7"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-loop-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-matrix-exp-test.log",
+      "bytes": 87,
+      "sha256": "bc69e4fde56220f6eff0521485bfb0e35576fd02ee80a0704a8911193d2a5cc4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-matrix-exp-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-matrix-power-test.log",
+      "bytes": 92,
+      "sha256": "dcd4bd8490b3e4dfd6c70fc7eec60e9cf25e331bbbd6db85b4778acfe8adbc41"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-matrix-power-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-measurement-test.log",
+      "bytes": 88,
+      "sha256": "a38a616b38bc951f1ecc24c973f64914c87de5dd9df8aa52802c2ce9262daf63"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-measurement-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-named-subsystem-test.log",
+      "bytes": 88,
+      "sha256": "70a0b6590b6685a45595aa4c3b5869104f961acc056922507927f23411731c24"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-named-subsystem-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-named-subsystem-worker-test.log",
+      "bytes": 109,
+      "sha256": "3201ab6677ff2d2d2a7a6c80d6e09b24e81b80a9e843dee6db7380ee958dbc96"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-named-subsystem-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-negativity-test.log",
+      "bytes": 78,
+      "sha256": "d1e93f6ad3ebbb1d27b2ed18c74626a62830407e5f79aa27d761923109f81c70"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-negativity-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-noise-test.log",
+      "bytes": 76,
+      "sha256": "7fad4cf4a84872fbc5031ad09d02be6a02b967bdf0b2a52e88d7ba0f3d85bcc1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-noise-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-notation-test.log",
+      "bytes": 75,
+      "sha256": "9008b9e9c1d79ea14ec1841a3576f86fe3fae9c4f57d435e42f831b316bb6517"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-notation-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-numerical-sampling-test.log",
+      "bytes": 95,
+      "sha256": "793d7fa97a6c5a032245790d8fac4bab4d4b74426d7a5cc84b97b3126c5a533d"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-numerical-sampling-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-numerical-state-test.log",
+      "bytes": 90,
+      "sha256": "34be39b891a3c669a1da2e83519adee7644a41efc1f05312507e0f7a26804662"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-numerical-state-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-operators-test.log",
+      "bytes": 83,
+      "sha256": "56f1bcd247d70c4415417688d088b7d5fe99d848b3f0b32356e9fefb9d36d334"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-operators-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-order-test.log",
+      "bytes": 76,
+      "sha256": "6021d457557708ae0e2672c103ad9d26254cd92a9077226528851d27a718a20e"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-order-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-parser-integration-test.log",
+      "bytes": 96,
+      "sha256": "622098eff23f54b3721a01e47d31b1ffbe3ad0e202edddd091e7173af6114c0f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-parser-integration-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-phase-circuit-request-test.log",
+      "bytes": 140,
+      "sha256": "82cb6827cff688bc075ba20940326c99afbdb4a62706788a7d30ed9c45ab639c"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-phase-circuit-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-readout-test.log",
+      "bytes": 94,
+      "sha256": "8b7c6df43e96511fbbe924ac445067f51fdef10aa911774835a4589d8e4ce449"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-readout-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-register-sum-test.log",
+      "bytes": 77,
+      "sha256": "e816e892b2a827d787c0cb6aefa9e1b73794cef0e891320eff26a9378187b59b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-register-sum-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-register-sum-width-test.log",
+      "bytes": 89,
+      "sha256": "9524b78018e0327dab2dfe45f0c094b13fdc909ebb0ea1ecb2271dfb44f61e46"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-register-sum-width-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-register-width-test.log",
+      "bytes": 81,
+      "sha256": "629d0a1910b73b6baa118311f8658e16324de2471a8abe35eb8114049d54b589"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-register-width-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-reset-test.log",
+      "bytes": 88,
+      "sha256": "674953ba6c8a0bae8876c1535fca15bab5343dd03df08ce6c32af9bfbeb70b4f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-reset-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-angle-request-test.log",
+      "bytes": 102,
+      "sha256": "003a75b37f33f25e13209d2c68b4f7533b83cdc56c153ff8eef28afa02da4b71"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-angle-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-gate-request-test.log",
+      "bytes": 100,
+      "sha256": "2681ed44f19d9b914053b798c457981992805d1592a3f1af9045f87d1d7e9dbd"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-gate-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-gate-test.log",
+      "bytes": 84,
+      "sha256": "0f58f7c74db45a265f851e575e1f0af10c7d06967fe0de22c66ca2b2c4dcba76"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-gate-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-numeric-request-test.log",
+      "bytes": 106,
+      "sha256": "cab1b6a52b7b8becb4b93bdc50ec6f2b436a7fe246df8e7480f2cbf27101cf83"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-numeric-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-numeric-test.log",
+      "bytes": 101,
+      "sha256": "63b0f0ef64d02e98a5541365232b87d78dace1ecb3fd90cad9384b277843d1fc"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-numeric-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-rotation-test.log",
+      "bytes": 91,
+      "sha256": "73502b8b3398c5394e77e5b993c6559f5a81b5a14abab252eb6fcf2a74a778c0"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-runtime-rotation-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-sampling-request-test.log",
+      "bytes": 101,
+      "sha256": "3eb916f54b854080257ba75675a56bef7aa9a78b5955f402a6a351dfea41e0eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-sampling-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-scalar-product-test.log",
+      "bytes": 87,
+      "sha256": "b99a709fc5c8bd625fb2287b0cf22c115f967ec12937c0011ab65acbce69f138"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-scalar-product-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-scalar-product-worker-test.log",
+      "bytes": 98,
+      "sha256": "01879bb69b7c54c13b3b4b7d02e975e341a9644264562919b251509ad640df79"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-scalar-product-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-set-basis-test.log",
+      "bytes": 71,
+      "sha256": "02f6e1fc1bda5d86d1d274a13c5c553ab665b023ad854454207108cdfd1b3142"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-set-basis-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-singular-test.log",
+      "bytes": 87,
+      "sha256": "7df987c56161854ea0c6bbbebf6d2758a8d802a22330321517ff3807c2d41954"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-singular-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-stabilizer-test.log",
+      "bytes": 79,
+      "sha256": "8cadb88b4d59794243c65ba963e9798cce4422e3325f751384fb35d0f2c55e64"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-stabilizer-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-state-functions-test.log",
+      "bytes": 98,
+      "sha256": "65c763368b40a37a5ce7468e50c233dbff2e98836ccffc390c9166b9f629b972"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-state-functions-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-state-test.log",
+      "bytes": 76,
+      "sha256": "b33b4cb7df3e0b146980894d156e4f415691126f0d1b5e7fd1f25896d9ac555f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-state-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-steane-transversal-test.log",
+      "bytes": 146,
+      "sha256": "f7237ed8b23407d8bb94715a8dd504af7220f42d847be27f0400daa0e1bb27f3"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-steane-transversal-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-subsystem-test.log",
+      "bytes": 85,
+      "sha256": "a7c9b6c1254c91a4f78f2acfd754d6bb874002b7f816331e6967271ac2dac5b1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-subsystem-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-superoperators-test.log",
+      "bytes": 93,
+      "sha256": "d312ffcda23842ebc881fe0343864bd7f09a845a4b453f9ef3e00dd729140150"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-superoperators-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-tensor-chain-worker-test.log",
+      "bytes": 91,
+      "sha256": "345dfcf373f4b26493b04fd3ff786df15ebfb546ceb1e124b057f99777a95de3"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-tensor-chain-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-tensor-series-test.log",
+      "bytes": 79,
+      "sha256": "cdfe7903c46e8de072c3c94f6d1610e4d0a8b013a7eaf7eb3b763d472e662430"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-tensor-series-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-tensor-series-width-test.log",
+      "bytes": 91,
+      "sha256": "93f9033fb436f912749b4009ad7d114631a166ab1aba8e6570f27650bc4068c8"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-tensor-series-width-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-trajectory-range-test.log",
+      "bytes": 91,
+      "sha256": "f7c3fe306aba78e327810e19893e8c81fd423f341575139fd3f6cddee8689eb1"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-trajectory-range-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-trajectory-test.log",
+      "bytes": 89,
+      "sha256": "d92ee27fd7784b2fec1d7453bd7da3567afa795fe76de00199077919fe450f49"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-trajectory-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-variational-test.log",
+      "bytes": 107,
+      "sha256": "9585ad851aa19900e4c56432a34813fbea984b1aa489443f594e5535cc92237e"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-variational-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wide-basis-test.log",
+      "bytes": 73,
+      "sha256": "3cf9a7bf37551f3e68f3ee11a2c1b0c7db5343db516a83ca21b6f7868e50d1f8"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wide-basis-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wide-basis-worker-test.log",
+      "bytes": 88,
+      "sha256": "2ce6d2efbf96e5e54037eace3c6c0168739d606811c03b24b9402f9c62e675ea"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wide-basis-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wide-source-test.log",
+      "bytes": 75,
+      "sha256": "a165c723d9404183d33f499430345d1a7f6af24e0fde813e37f8c41b36120ad4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wide-source-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wire-reference-request-test.log",
+      "bytes": 114,
+      "sha256": "13c32cd1445cd9fed042620b43567a5b7d5ee75f3c66f5a1750d658bfb1e7452"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wire-reference-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wire-selection-request-test.log",
+      "bytes": 112,
+      "sha256": "2b343fbb5a9cc1e1ebfcdd1b992d0fcb41fbeb15018571c164dfc0cf4be78adc"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-wire-selection-request-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-worker-test.log",
+      "bytes": 79,
+      "sha256": "8fc75f70059b020651411301552418a7c94a908d3e072a4c7891b492fa9ef59f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantum-worker-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantumtex-test.log",
+      "bytes": 90,
+      "sha256": "d87034971a9be3d208bfd4b8e954e689c797c3db5d8793e8eec7c0afbc5c48b0"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/quantumtex-test.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/test-suite.log",
+      "bytes": 623,
+      "sha256": "fbbddf55b51011e57558b83a8c8a9cae0948bcf95302abdd4ccca0e7b60de4fb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/threadtest.log",
+      "bytes": 38,
+      "sha256": "f1f6083f319cd060c8b432bd1c558b515bf3c10e160b2364240972f0317b6391"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/threadtest.trs",
+      "bytes": 83,
+      "sha256": "47d69a07c5e5b0364f275611b53108739cc75b36e6d9ec8cacf7ea35c60914e4"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/unittest.log",
+      "bytes": 1700,
+      "sha256": "e87c46257b3f185d3d528328a7d27d95183574bc429fc80db0ae6588e633f5cc"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/test-results/unittest.trs",
+      "bytes": 82,
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/toolchain.json",
+      "bytes": 480,
+      "sha256": "d8a441210af70e04439c31ceff8863bac0666b4fa16bf5612c92e5c0c3f324d3"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/verification.json",
+      "bytes": 4444,
+      "sha256": "5d6f41406ba8cdcd3b1b7daf02dde1de62af7a681006bc077bc87c04c69a252b"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/verify_distribution.py",
+      "bytes": 1340,
+      "sha256": "3fe1011b65eecae9469f61233c63f427362a4ac3bc167360ffd1eca764f003d9"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/verify_native.py",
+      "bytes": 3395,
+      "sha256": "f2775a0f532d07be3c685d565a3c0de53570d26f27e26a4f4dafd982738e2138"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/qb003-clean-build/verify_source.py",
+      "bytes": 1053,
+      "sha256": "e48d8bd2010b7068fa27778b2f7ca80de111454678539aefa250200fc81a7e71"
+    }
+  ],
+  "independent_review": "pending"
+}
