@@ -217,6 +217,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 ### DEV-15
 
 - [ ] **Cloud/provider and pulse workflows** — P3; Not implemented; size L; dependencies: DEV-13.
+- Local evidence: [all eight cells of the static timing guide](learning-evidence/dev13/ibm-timing-source-audit.md), including two original figures, recomputed schedules and six authored layout controls. Provider/dynamic timing and delivery gates remain open.
 - Source focus: qBraid Runtime/Provider-Jobs; IBM utility-scale courses. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Separate local mathematical semantics from credentials, hardware jobs and pulse/timing dependencies. Define tested adapters and observable unsupported cases; use deterministic offline fixtures, and record any required external verification.
 - Evidence to attach: source URL/section or notebook cell, minimal reproducer, expected result, automated test path, reviewed PR/head, CI run, and released revision. Owner: unassigned. PR: unassigned.
