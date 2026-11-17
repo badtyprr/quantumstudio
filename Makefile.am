@@ -356,3 +356,4 @@ EXTRA_DIST += windows/dev13-notebooks/witnesses/qb015.py
 EXTRA_DIST += windows/dev13-notebooks/test_qb015.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb015/autoqasm-route.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb015/autoqasm-route.json
+EXTRA_DIST += docs/learning-evidence/dev14-qir-width.json

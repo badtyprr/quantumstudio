@@ -18,6 +18,8 @@ def main():
     parser.add_argument('--adapter', type=Path, required=True)
     parser.add_argument('--worker', type=Path, required=True)
     parser.add_argument('--evidence', type=Path, required=True)
+    parser.add_argument('--case', action='append', help='Run only a named case; may be repeated')
+    parser.add_argument('--worker-timeout', type=int, default=180)
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=False)
     env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(args.worker.resolve().parent / 'data'))
@@ -34,6 +36,26 @@ def main():
         ('unitary', fixture(H, CX), {'': 1}),
         ('bell_inverse', fixture(H, CX, CX, H, M0, M1, O0, O1), {'00': 1}),
     ]
+    for width in range(5, 11):
+        def pointer(index):
+            return 'ptr null' if index == 0 else f'ptr inttoptr (i64 {index} to ptr)'
+        measurements = [f'  call void @__quantum__qis__mz__body({pointer(q)}, {pointer(q)})'
+                        for q in range(width)]
+        outputs = [f'  call void @__quantum__rt__result_record_output({pointer(q)}, ptr null)'
+                   for q in range(width)]
+        for label, gates, expected in [
+            ('high_wire', [f'  call void @__quantum__qis__x__body({pointer(width-1)})'],
+             {'0'*(width-1)+'1': 1}),
+            ('ghz', [H]+[f'  call void @__quantum__qis__cnot__body(ptr null, {pointer(q)})'
+                         for q in range(1, width)], {'0'*width: .5, '1'*width: .5})]:
+            raw = fixture(*(gates+measurements+outputs))
+            raw = raw.replace(b'required_num_qubits"="2', f'required_num_qubits"="{width}'.encode())
+            raw = raw.replace(b'required_num_results"="2', f'required_num_results"="{width}'.encode())
+            cases.append((f'{label}_{width}', raw, expected))
+    if args.case:
+        if set(args.case) - {case[0] for case in cases}:
+            parser.error('Unknown native case')
+        cases = [case for case in cases if case[0] in args.case]
     results = []
     for name, raw, expected in cases:
         module = pyqir.Module.from_ir(pyqir.Context(), raw.decode())
@@ -54,8 +76,10 @@ def main():
             (args.evidence / (label + '-circuit.json')).write_bytes(compiled.stdout)
             for kind, flag in (('exact', '--exact-circuit'), ('sampled', '--sample')):
                 run = subprocess.run([str(args.worker), flag], input=base64.b64decode(payloads[kind]),
-                    capture_output=True, env=env, timeout=30, check=True)
+                    capture_output=True, env=env, timeout=args.worker_timeout)
                 (args.evidence / (label + '-' + kind + '.json')).write_bytes(run.stdout)
+                (args.evidence / (label + '-' + kind + '.stderr')).write_bytes(run.stderr)
+                run.check_returncode()
                 data = json.loads(run.stdout)
                 if kind == 'exact':
                     actual = {}

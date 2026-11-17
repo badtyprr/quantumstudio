@@ -33,6 +33,19 @@ def fixture(*calls):
 
 
 class ImportTests(unittest.TestCase):
+    def test_terminal_output_permutation_uses_direct_measurement_targets(self):
+        report = import_qir(fixture(H, CX, M0, M1, O1, O0))
+        self.assertEqual(report['output_lowering'], 'terminal-measurement-aliases')
+        self.assertNotIn('] result;', report['openqasm'])
+        self.assertIn('out[0] = measure q[0];\nout[1] = measure q[1];', report['openqasm'])
+
+    def test_snapshot_cases_do_not_alias(self):
+        for calls in [(M0, O0, M1, O1), (M0, M0, O0), (M0, O0, O0),
+                      (M0, M1, O0), (M0, H, O0)]:
+            report = import_qir(fixture(*calls))
+            self.assertEqual(report['output_lowering'], 'record-snapshots')
+            self.assertIn('bit[2] result;', report['openqasm'])
+
     def test_bell_ir_and_bitcode_agree(self):
         raw = fixture(H, CX, M0, M1, O0, O1)
         text = import_qir(raw)
@@ -76,10 +89,29 @@ class ImportTests(unittest.TestCase):
     def test_static_resource_bounds_and_aliases(self):
         for raw in (fixture(CX).replace(b'(i64 1 to ptr)', b'(i64 2 to ptr)'),
                     fixture(CX).replace(b'ptr inttoptr (i64 1 to ptr)', b'ptr null'),
-                    fixture(H).replace(b'required_num_qubits"="2', b'required_num_qubits"="5'),
+                    fixture(H).replace(b'required_num_qubits"="2', b'required_num_qubits"="11'),
                     fixture(H).replace(b'required_num_results"="2', b'required_num_results"="65')):
             with self.assertRaises(ValueError):
                 import_qir(raw)
+
+    def test_native_width_boundary_preserves_highest_wire(self):
+        for width in range(5, 11):
+            raw = fixture(f'  call void @__quantum__qis__x__body(ptr inttoptr (i64 {width-1} to ptr))')
+            raw = raw.replace(b'required_num_qubits"="2', f'required_num_qubits"="{width}'.encode())
+            for bitcode, source in [(False, raw), (True, pyqir.Module.from_ir(pyqir.Context(), raw.decode()).bitcode)]:
+                report = import_qir(source, bitcode=bitcode)
+                self.assertEqual(report['qubits'], width)
+                self.assertIn(f'x q[{width-1}];', report['openqasm'])
+        with self.assertRaisesRegex(ValueError, 'QIR_STATIC_ID:qubit'):
+            import_qir(raw.replace(b'i64 9 to ptr', b'i64 10 to ptr'))
+
+    def test_five_qubit_invalid_result_is_not_repaired(self):
+        raw = fixture(M0, O0, '  call void @__quantum__rt__result_record_output(ptr inttoptr (i64 4 to ptr), ptr null)')
+        raw = raw.replace(b'required_num_qubits"="2', b'required_num_qubits"="5')
+        raw = raw.replace(b'required_num_results"="2', b'required_num_results"="4')
+        for bitcode, source in [(False, raw), (True, pyqir.Module.from_ir(pyqir.Context(), raw.decode()).bitcode)]:
+            with self.assertRaisesRegex(ValueError, 'QIR_STATIC_ID:result'):
+                import_qir(source, bitcode=bitcode)
 
     def test_dynamic_profile_and_multiple_blocks_rejected(self):
         for raw in (fixture(H).replace(b'i1 false', b'i1 true'),
