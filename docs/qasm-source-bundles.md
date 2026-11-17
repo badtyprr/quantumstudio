@@ -299,3 +299,15 @@ storage, or complete subroutine/array support. Those remain DEV-08 work. The
 classical GUI persistence/export acceptance for the QB-004 subroutines still
 requires merged-artifact validation; successful compilation alone is not that
 acceptance.
+
+### Declaration, register-range and scope limits (development)
+
+Oversized classical variable names, zero-step register ranges, and scope-depth
+limit failures now identify their originating dependency location. Synthesized
+runtime loop bindings retain the source `for` statement, and nested control
+blocks retain the statement or case block that exceeds the scope limit. Existing
+64 UTF-16 code-unit name and 32-level scope limits are unchanged. Regression
+coverage includes accepted boundary values, Unicode names, module headers,
+CRLF dependencies, and both numerical and classical register-range failures.
+This is an additional DEV-16d diagnostic slice; full diagnostic acceptance and
+release verification remain open.

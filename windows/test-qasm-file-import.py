@@ -108,6 +108,29 @@ class FileImportTests(unittest.TestCase):
                         message = self.run_import(command, args, success=False)
                         self.assertIn(f'nested κ/body.inc:2:{body.index(token) + 3}: {detail}', message)
 
+    def test_declaration_range_scope_locations(self):
+        cases = [
+            ('int ' + 'i' * 65 + ';', True, 0, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('int n; for int ' + 'i' * 65 + ' in [0:n] { }', True, 7, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('qubit[3] q; x q[0:0:2];', False, 12, 'Register ranges require integer bounds and a nonzero integer step.'),
+            ('qubit[3] q; x q[0:0:2];', True, 12, 'Register ranges require integer bounds and a nonzero integer step.'),
+            ('{' * 33 + 'int i;' + '}' * 33, True, 32, 'Classical scopes exceed 32 levels.'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/limits.inc";')
+        for body, classical, offset, detail in cases:
+            for command in COMMANDS:
+                for module in (False, True):
+                    with self.subTest(body=body, command=command, module=module, classical=classical):
+                        prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                        self.put('nested κ/limits.inc', prefix + '  ' + body)
+                        args = ['--source-file', str(main)]
+                        if classical:
+                            args.append('--classical')
+                        if module:
+                            args.append('--module-headers')
+                        message = self.run_import(command, args, success=False)
+                        self.assertEqual(message.strip(), f'nested κ/limits.inc:2:{offset + 3}: {detail}')
+
     def test_timed_gate_rejection(self):
         cases = [
             ('qubit q; x[1ns] q;', 'x['),
