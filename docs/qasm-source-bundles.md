@@ -310,6 +310,16 @@ accepted 32-level and 4096-variable boundaries. These checks extend DEV-16d
 diagnostic coverage; they do not establish complete compiler coverage or release
 acceptance.
 
+### Runtime-array declaration diagnostics (development)
+
+Runtime-array backing declarations retain the original array declaration span.
+Invalid integer and floating-point element widths can therefore identify the
+dependency declaration after lowering. The 4096-array declaration limit likewise
+identifies the first distinct selected array beyond the limit, in source order.
+Authored tests cover these rejection paths, unchanged stdin messages and the
+accepted 4096 empty-array boundary. This is additional development diagnostic
+coverage, not complete DEV-16d or release acceptance.
+
 ## Subroutine locals resolved during compilation
 
 Classical import can now use the pinned compiler's own local scopes when a

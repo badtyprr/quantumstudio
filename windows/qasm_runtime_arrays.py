@@ -2,7 +2,7 @@
 import copy
 from dataclasses import dataclass, fields, is_dataclass
 import openqasm3.ast as ast
-from qasm_source_diagnostics import error_at
+from qasm_source_diagnostics import copy_span, error_at
 from qasm_runtime_wires import SourceQuantumRegisterView
 from pyqasm.expressions import Qasm3ExprEvaluator
 
@@ -228,7 +228,14 @@ def lower_arrays(program):
         for statement in program.statements:remember(statement);scan(statement)
         if before==selected:break
     if not selected:return []
-    if len(selected)>4096:raise ValueError('Runtime storage exceeds 4096 array declarations.')
+    if len(selected)>4096:
+        seen=set();origin=None
+        for statement in program.statements:
+            if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,ast.ArrayType) and statement.identifier.name in selected:
+                seen.add(statement.identifier.name)
+                if len(seen)>4096:
+                    origin=statement;break
+        raise error_at(origin,'Runtime storage exceeds 4096 array declarations.')
     constants.clear()
 
     def marker(info, indices, source, prefix=False):
@@ -383,7 +390,7 @@ def lower_arrays(program):
         values = flatten(statement.init_expression, dimensions) if statement.init_expression is not None else [None] * size
         for target, value in zip(backing, values):
             if boolean and value is not None: value = ast.Cast(type=ast.BoolType(), argument=value)
-            result.append(ast.ClassicalDeclaration(type=copy.deepcopy(element), identifier=ast.Identifier(target), init_expression=value))
+            result.append(copy_span(ast.ClassicalDeclaration(type=copy.deepcopy(element), identifier=ast.Identifier(target), init_expression=value), statement))
     program.statements[:] = result
     return allocations
 
