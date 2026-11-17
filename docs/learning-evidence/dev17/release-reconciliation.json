@@ -1,0 +1,952 @@
+{
+  "release_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "release_url": "https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-c5a456cd",
+  "published_at": "2026-11-15T18:22:42Z",
+  "acceptance_evidence": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-actual-spec-review-20261115.json",
+      "sha256": "960fa6f88e24ce52dd36044d8eaa6eabe6ded703a58b054c6cdac3cd49e7ed06",
+      "bytes": 34392,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-actual-standards-review-20261115.json",
+      "sha256": "25573189a37c0b892b6853f29a39955ff6c04c21606f9d09faf60224109899b9",
+      "bytes": 24598,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-source-generated-standards-review-20261115.json",
+      "sha256": "bed3ea22c05a5f8dc3670be3650e8691e282787a769ed07cd79ded5ef263b455",
+      "bytes": 33794,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-publication-spec-review-revision02-20261115.json",
+      "sha256": "76ec62ae88e8ae40ec7b2c1e6988b693796ed66fd060c9849e7cacd985eb130d",
+      "bytes": 2898,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-publication-standards-review-revision02-20261115.json",
+      "sha256": "4164a56ee3aa600705f7f07ecb8be992824821de49dc3b8062dc9e595e2ecb11",
+      "bytes": 3046,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-public-download-spec-review-20261115.json",
+      "sha256": "2eb8adcbc3075f06c72da2f7f0f6a07134a18d22c72bf6f45f9ad4d8bc300a5b",
+      "bytes": 1693,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-public-download-standards-review-20261115.json",
+      "sha256": "d902c0714be81301b2db23cc7a5c583d291417a01b1026bc1f6601aa739d5a8a",
+      "bytes": 2288,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-visual-review-20261115.json",
+      "sha256": "e48265de268d3f89c53ca1da71ad3ed73e6ad134a91e2e27a6330ed6759dd12a",
+      "bytes": 20056,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-verified-43741675632\\verification.json",
+      "sha256": "dad2cfab2b2d58df88f589fb66a9bd040afa3294a1e6967e87569d5ceac1dc7b",
+      "bytes": 42405,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-verified-43741675632\\package-audit.json",
+      "sha256": "930af3b2447ad43c3e2f715817b1ede25a24c496d354124c2e51447668d1af05",
+      "bytes": 2239,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-source-archive-audit-20261115.json",
+      "sha256": "996b25af257fd5b4023378b32313b770d613a1652af2350c141b611b35a4843c",
+      "bytes": 329088,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-baseline286-20261115\\baseline286-summary.json",
+      "sha256": "c812fa0fcc50e482daf892416c5aa7edbdf9a69188908ce69b02eb93d5fd85a3",
+      "bytes": 540,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-baseline286-20261115\\baseline286-results.json",
+      "sha256": "6dea74268eda4d5ce770a4d4ec30650f18cea1ca37480a4eef65c6cde8ffbfb2",
+      "bytes": 4531825,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-worker-supplements-20261115\\worker-validation.json",
+      "sha256": "c424682652e8c155870c122e0cd1f8d37aaa947d9b0a53f8735b6afed8077a97",
+      "bytes": 2303,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-merged-ci-pass-20261115.json",
+      "sha256": "f8c658f489b40d5067e29a67042a399eafc0e021ca9fd06b59d18274575f25b0",
+      "bytes": 13336,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\publish-dev05-final-20261115.py",
+      "sha256": "aae6d64661c7b1c241f8e73cccd391cf572ed2873c020cdd9fe89065ccaf0612",
+      "bytes": 7768,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\download-dev05-public-20261115.py",
+      "sha256": "87fb8fa0ec504c83db6c79eca1d5ab328bc54a5708170e9a7cf4866edbd0f19a",
+      "bytes": 3740,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\publication-tooling-revision03-20261105\\publish-dev17-release.py",
+      "sha256": "fa611373b12e4ff1bdeddebe3c1382767a0fb2b151cfe729c74daf3f963f6014",
+      "bytes": 14831,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\publication-tooling-revision03-20261105\\verify-public-release.py",
+      "sha256": "1c26fbc6229ccc99ed16055c1877dd5bf24a52d4af9f0b732f55cef0f60e776d",
+      "bytes": 25684,
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\download-receipt.json",
+      "sha256": "72ebc096ed6ae3c9f03b42f2f0dc9116bf9988feb8b619640ebf165ee542f418",
+      "bytes": 447231,
+      "matches": true
+    }
+  ],
+  "public_assets": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-public-download-20261115\\QuantumStudio-source.tar.gz",
+      "sha256": "3e78894de44fa1d7f14651fe384ce702e3551f63a7a5a94406db2b4e14f93602",
+      "bytes": 5012600,
+      "matches_live_release": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-public-download-20261115\\QuantumStudio-Windows-x64.zip",
+      "sha256": "fc37b7d107a883afe2e06dc9ee438a7ac68533f5711db8e41d5439c4b39507f4",
+      "bytes": 82790916,
+      "matches_live_release": true
+    }
+  ],
+  "historically_reviewed_images": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\quantumstudio\\quantumstudio\\dist\\package-smoke.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\bound-two.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\numeric-copy.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\one-qubit.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\ordinary-copy.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\original.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\reopened.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\empty-register-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\empty-register-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\empty-register-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\huge-arithmetic-basis-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\huge-arithmetic-basis-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-fourier275-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-fourier275-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-fourier275-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-indexed-tensor-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-indexed-tensor-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-indexed-tensor-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-register-sum-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-register-sum-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-register-sum-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-basis-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-basis-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-basis-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-bits-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-bits-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-bits-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-tensor-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-tensor-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-tensor-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\wide-bits-initial.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\wide-bits-reference.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\wide-bits-restored.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\bound-two.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\ordinary-copy.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\original.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\parity-zero.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\reopened.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\and-trace.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\not-trace.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k-compatibility.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k-mapped-index-rejected.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k-mapping-reopened.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k-reopened.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\or-trace.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\xor-trace.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\evaluated-mapping.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\tex-trace-reopened.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\unequal-dimensions.png",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\unknown-label.png",
+      "matches": true
+    }
+  ],
+  "all_hashes_match": true,
+  "scope": "Current byte/hash reconciliation of retained final release evidence; not a new GUI or visual run. DEV17 closure criteria still need a reviewed requirement mapping.",
+  "actual_gui_review_evidence": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\build-manifest.json",
+      "sha256": "163e9bdf828a72ab9cc876b78011bc9e9516244bc66fc80bba28388e177c87f8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\hashes.json",
+      "sha256": "4318fc774a5457c7856592032fb552b62be4c5782150c92d01405b39956edec3",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords.processes.json",
+      "sha256": "a88681883190e545d07e2dcb0e193eb98dd7f703c98154bd7b99cd26cae34cf2",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original.processes.json",
+      "sha256": "149cc215aae452ebee3760d27924d0a52f56c875047d201191b660af2566caca",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original.stdout.log",
+      "sha256": "564108a8b3324ed8d4b1d146301370d32c35c6bae6e62f86da4a4b4b31bace1a",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\run.json",
+      "sha256": "f179573e23baffade4c8db75e579de0604247c512bf7b714fa912b3f5310f3b7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\verdict.json",
+      "sha256": "9866449755e7cde086eedbf32b499442dbbf2f7cf6da0e3880d47f4a52834131",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\environment\\environment.json",
+      "sha256": "ef29aaf0c8f3d8e508e5e900ec5f7109bb3f5e7cf092ef80722eafe54d180811",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\environment\\inspector-hash.json",
+      "sha256": "98fb63cad9ab59fb45d1b851f3872aca94744982702b8f811ae2cb1a0d34413d",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\actions.log",
+      "sha256": "d6f52f9ce1fc46b9a0660b2fb209cccd741f1c898734659cf3de4a69258274e6",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\and.qsession",
+      "sha256": "79bf73d8a19e8fb341c3f817c2bfb85617e7acb0f9a23d96f5c92329d9d5b731",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\not.qsession",
+      "sha256": "0817b16cae652809e5f02949f038d3b762667b2093b5d6e603a55c9416987de7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k-mapping.qsession",
+      "sha256": "722868072f4c68590e14fe8df87f370aa1b6bcfbc71339b700cad9b6844a45cd",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k-result.txt",
+      "sha256": "0fc747acd6d4b135e2c95370e37fbb0e8ae51afdf17546d3b427a770ef0cde30",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\numeric-k.qsession",
+      "sha256": "b72d0ea7308cc604ec86850aa48b6dc8d4a163807db328119b7be3fa48d45118",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\or.qsession",
+      "sha256": "2ae01bc3334bd0f6da6f47576fbb9852af45ff88fcbd8ac9745a154cc5561783",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\result.txt",
+      "sha256": "2d83c47ffcb057b8ee11a1b147d187124a881e1f8d701940239f9f8e518dbdc9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\keywords\\xor.qsession",
+      "sha256": "4236a9b32a08c748bc2e639ad03aecd3d9b4c768ebb8b58c0a70b4fc1c04f3a6",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\copied-declaration.txt",
+      "sha256": "2dc54937742009800b5dbc14723033a30c3c768220e1f3028f4e4021078263cb",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\mapping.qsession",
+      "sha256": "d4243a696c1801402245560754d8b478df9e1bc2b0c3fd43c3ed400936522e4a",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\provenance.json",
+      "sha256": "9d90e2e42c00cbd53d7efd3d183842475f6caf2d64f1f9eaada4bacda3deb5cd",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\dev17-acceptance\\original\\result.txt",
+      "sha256": "6f2321bcf990d36dc7e230f21b4a60e6a5f1c09004df452c3bbfe9957eef4add",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\build-manifest.json",
+      "sha256": "163e9bdf828a72ab9cc876b78011bc9e9516244bc66fc80bba28388e177c87f8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\final-session.json",
+      "sha256": "e0a7f0c53202b2056b01823a5ae051e6fb0afeefa0ac33e343e3d2fa23e1e2ae",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\fragment.txt",
+      "sha256": "f0bda37dd3f8102ac6a33962a090e081e2115557bf06d00fcdbfa2f094b69827",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\hashes.json",
+      "sha256": "2703395f5d687aa49fb2bba0a483bb4941d1478661975f05c27e9903acc216c8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\payload-after.json",
+      "sha256": "1e00c78a2ad71e24f8d2c6a82049042aa2a0f17268add7d3c7145423a8205dc9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\records.json",
+      "sha256": "135875190b73707b8b19fa32234ccdf179c315e9e2274dcb96ddb628b0a7f4c2",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\restored-session.json",
+      "sha256": "3d549743fd96aae746d6c889da7d6032cf15240fceeae5bdff2ccc24f6fe2f7f",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\result.json",
+      "sha256": "f87b408c19acbac3d5104dd599cb2594f3c0fda18028689e4b218da5a2473d21",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\run.json",
+      "sha256": "f179573e23baffade4c8db75e579de0604247c512bf7b714fa912b3f5310f3b7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\saved-session.json",
+      "sha256": "3d549743fd96aae746d6c889da7d6032cf15240fceeae5bdff2ccc24f6fe2f7f",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\scalar-product.processes.json",
+      "sha256": "84266e29e40bebd26c139c115bede0072b3c5a845566479f8e3fad286be4b929",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\scalar-product.qsession",
+      "sha256": "3d549743fd96aae746d6c889da7d6032cf15240fceeae5bdff2ccc24f6fe2f7f",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\scalar-product.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\scalar-product.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\source.json",
+      "sha256": "755e92d9dd3c9013786fb734ac4212f9f5052e47eb781722f7f2b668a95f1ca3",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\verdict.json",
+      "sha256": "d7ee36be36fd0ff7f5dc5939b8b0fc62adf5fcf739187b0de9bd76ac8a4c748a",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\environment\\environment.json",
+      "sha256": "3db6150a16957626124eadeefdae9d945480e6391d5b224d8f0cd6f3989c54f7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\scalar-product-acceptance\\environment\\inspector-hash.json",
+      "sha256": "98fb63cad9ab59fb45d1b851f3872aca94744982702b8f811ae2cb1a0d34413d",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\build-manifest.json",
+      "sha256": "163e9bdf828a72ab9cc876b78011bc9e9516244bc66fc80bba28388e177c87f8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\expected.json",
+      "sha256": "5c196d2873d4860298e2e776898af254e406015a9a5fc3bfb7bd0d6e9da02b15",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\final-session.json",
+      "sha256": "f3e270cf8c5f718734b81ab497a028adf201a21148901e7dab78217116c2a9be",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\fragment.txt",
+      "sha256": "243da002914ee274ddb0305989247fb673610ca4ef419170e84828206ce10d6f",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\hadamard-tensor.processes.json",
+      "sha256": "f0f373048c57babb0c6ce66bd3fc9f9ca69515c350709bfee3b9c4d2f652a9d9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\hadamard-tensor.qsession",
+      "sha256": "8f0cb72ee104c82d753798c05ba6d04d06c36ca36b230a9c25c99d4e05acd9d9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\hadamard-tensor.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\hadamard-tensor.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\hashes.json",
+      "sha256": "234bca868dd2b1a233dae7cc5a6820eebffb654e11361ce263e90dae936c12be",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\payload-after.json",
+      "sha256": "1e00c78a2ad71e24f8d2c6a82049042aa2a0f17268add7d3c7145423a8205dc9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\records.json",
+      "sha256": "ef4a5d226107111425e68bab5cca0d23320bb9c6620ad802c39cfec256927579",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\restored-session.json",
+      "sha256": "8f0cb72ee104c82d753798c05ba6d04d06c36ca36b230a9c25c99d4e05acd9d9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\result.json",
+      "sha256": "23d6baffdfb1bb259eba28f3eedf59d5a4dc0aa4d266160ad99cf04757898a9d",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\run.json",
+      "sha256": "f179573e23baffade4c8db75e579de0604247c512bf7b714fa912b3f5310f3b7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\saved-session.json",
+      "sha256": "8f0cb72ee104c82d753798c05ba6d04d06c36ca36b230a9c25c99d4e05acd9d9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\source.json",
+      "sha256": "f4a7b2ee033a707375ef2506a386e84918c5965a6c7c4f3b4ff605b8d98bfdcf",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\verdict.json",
+      "sha256": "abba20746619aa11fc3719f9fb0fe231ef7cc87e84526a196209bc4bb4d957ee",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\environment\\environment.json",
+      "sha256": "ece495f62d232f2530512900d379270aefe877a017ce278af163606593ff0bbd",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\hadamard-tensor-acceptance\\environment\\inspector-hash.json",
+      "sha256": "98fb63cad9ab59fb45d1b851f3872aca94744982702b8f811ae2cb1a0d34413d",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\build-manifest.json",
+      "sha256": "163e9bdf828a72ab9cc876b78011bc9e9516244bc66fc80bba28388e177c87f8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\empty-register-restored.json",
+      "sha256": "5f080255fb89091354a62a34b0df1ab4a520578b4655f50910613ba4c62bf738",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\empty-register-saved.json",
+      "sha256": "5f080255fb89091354a62a34b0df1ab4a520578b4655f50910613ba4c62bf738",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\empty-register.qsession",
+      "sha256": "5f080255fb89091354a62a34b0df1ab4a520578b4655f50910613ba4c62bf738",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\final-session.json",
+      "sha256": "8b91e22f15664ec3a9e51a36ab31fe04b9b7570574fd9e76ec34226fd83c14ec",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\fixtures.json",
+      "sha256": "de26c5f11862a34ba614c3e0a6c9148159847ac3db0afecc7c1bf1c59b7fb44f",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\hashes.json",
+      "sha256": "c400fcc6358e93985d03a5c0b8af6678c86b957cd6663b1b32d7b5eb8f2a8e3f",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\huge-arithmetic-basis-restored.json",
+      "sha256": "8f0aba797b85f2266da219aafa2cac47e42c6c9bd6da0503e1d321bc4d9c26aa",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\huge-arithmetic-basis-saved.json",
+      "sha256": "8f0aba797b85f2266da219aafa2cac47e42c6c9bd6da0503e1d321bc4d9c26aa",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\huge-arithmetic-basis.qsession",
+      "sha256": "8f0aba797b85f2266da219aafa2cac47e42c6c9bd6da0503e1d321bc4d9c26aa",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-fourier275-restored.json",
+      "sha256": "36090d7af437a8b98077ca770ba0dc26f3111f36eec3a81a18c96e2ad800f140",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-fourier275-saved.json",
+      "sha256": "36090d7af437a8b98077ca770ba0dc26f3111f36eec3a81a18c96e2ad800f140",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-fourier275.qsession",
+      "sha256": "36090d7af437a8b98077ca770ba0dc26f3111f36eec3a81a18c96e2ad800f140",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-indexed-tensor-restored.json",
+      "sha256": "d6f58d02be05cef96cdbb278a7b3171f8b5f82582f7ecc9ee0c013685d7ea820",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-indexed-tensor-saved.json",
+      "sha256": "d6f58d02be05cef96cdbb278a7b3171f8b5f82582f7ecc9ee0c013685d7ea820",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-indexed-tensor.qsession",
+      "sha256": "d6f58d02be05cef96cdbb278a7b3171f8b5f82582f7ecc9ee0c013685d7ea820",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-register-sum-restored.json",
+      "sha256": "1449b5d4eba5bed67bd039be19b26787190b88679cf4957827b4d13b007b6fb8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-register-sum-saved.json",
+      "sha256": "1449b5d4eba5bed67bd039be19b26787190b88679cf4957827b4d13b007b6fb8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\original-register-sum.qsession",
+      "sha256": "1449b5d4eba5bed67bd039be19b26787190b88679cf4957827b4d13b007b6fb8",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\payload-after.json",
+      "sha256": "1e00c78a2ad71e24f8d2c6a82049042aa2a0f17268add7d3c7145423a8205dc9",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\records.json",
+      "sha256": "9df918642dff6388455c93ec6dc39721eadc6ae78f9b4ff87959c0a8b5c3e174",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\register-width.processes.json",
+      "sha256": "9ed4973def8bda3e5c5b2c8161a92564357ce6c62b739657ffa56525ff611aaa",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\register-width.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\register-width.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\result.json",
+      "sha256": "8244e86df58adaa39b6dbfce3b117b26569197470d22d5f44c552a2bea817d45",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\run.json",
+      "sha256": "f179573e23baffade4c8db75e579de0604247c512bf7b714fa912b3f5310f3b7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-basis-restored.json",
+      "sha256": "018a7a3cdae3423e75f0946397940aaabe9221f063008cdd2313c99fb851a111",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-basis-saved.json",
+      "sha256": "018a7a3cdae3423e75f0946397940aaabe9221f063008cdd2313c99fb851a111",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-basis.qsession",
+      "sha256": "018a7a3cdae3423e75f0946397940aaabe9221f063008cdd2313c99fb851a111",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-bits-restored.json",
+      "sha256": "1f09e8c6d18bcb89ef4171fb4f8a4c9b652deb4e0dd0fa340665b43aa5445e19",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-bits-saved.json",
+      "sha256": "1f09e8c6d18bcb89ef4171fb4f8a4c9b652deb4e0dd0fa340665b43aa5445e19",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-bits.qsession",
+      "sha256": "1f09e8c6d18bcb89ef4171fb4f8a4c9b652deb4e0dd0fa340665b43aa5445e19",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-tensor-restored.json",
+      "sha256": "a737e19e3cbe5d7b21896da8cfb32dd9fa4b5496d21146a0a99144416cbda4dc",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-tensor-saved.json",
+      "sha256": "a737e19e3cbe5d7b21896da8cfb32dd9fa4b5496d21146a0a99144416cbda4dc",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\symbolic-tensor.qsession",
+      "sha256": "a737e19e3cbe5d7b21896da8cfb32dd9fa4b5496d21146a0a99144416cbda4dc",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\verdict.json",
+      "sha256": "ae4c97d04e6ac39bbc138339e77add3da6f1898bb3b1048ed477521b623d5b95",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\wide-bits-restored.json",
+      "sha256": "16e5a1e56aefcb6bc85e52758afe1d013503f60d16a861c03a2bdd8f502915c7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\wide-bits-saved.json",
+      "sha256": "16e5a1e56aefcb6bc85e52758afe1d013503f60d16a861c03a2bdd8f502915c7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\wide-bits.qsession",
+      "sha256": "16e5a1e56aefcb6bc85e52758afe1d013503f60d16a861c03a2bdd8f502915c7",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\environment\\environment.json",
+      "sha256": "969eb0efb13aecb8b6b0f68e226045ef0d586bec5d17135ae774fdbf7ece30bf",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\artifact\\_temp\\register-width-acceptance\\environment\\inspector-hash.json",
+      "sha256": "98fb63cad9ab59fb45d1b851f3872aca94744982702b8f811ae2cb1a0d34413d",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\download-receipt.json",
+      "sha256": "72ebc096ed6ae3c9f03b42f2f0dc9116bf9988feb8b619640ebf165ee542f418",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-download-43741675632\\run.json",
+      "sha256": "20ba2a607dc94a4f14d2fc3ef0b4a085319a9bb33f6420dba1a7589eb4d310de",
+      "matches": true
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\Dev17GuiTests.cs",
+      "sha256": "e71ce87793009de5b6bdbd32e690355f56836856b73bab14dbdb938ec32716aa",
+      "matches": true
+    }
+  ],
+  "released_source_files": [
+    {
+      "path": "libqalculate/QuantumSubsystem.cc",
+      "member": "libqalculate-5.13.1/libqalculate/QuantumSubsystem.cc",
+      "bytes": 18049,
+      "sha256": "87d42b55badb9c2e1f7cbc6249efa50c67da8880867115989998beb54cb7868f"
+    },
+    {
+      "path": "src/quantum-named-subsystem-test.cc",
+      "member": "libqalculate-5.13.1/src/quantum-named-subsystem-test.cc",
+      "bytes": 7627,
+      "sha256": "bbb1109292eca2534bff0791a25b79e9c856984ed4caf3305a8800fccc06735a"
+    },
+    {
+      "path": "src/quantum-named-subsystem-worker-test.py",
+      "member": "libqalculate-5.13.1/src/quantum-named-subsystem-worker-test.py",
+      "bytes": 12716,
+      "sha256": "a57cc16dcd4afad77acf0d70acc5a425172ffff42f433707fc3cc21719223d73"
+    },
+    {
+      "path": "windows/Dev17GuiTests.cs",
+      "member": "libqalculate-5.13.1/windows/Dev17GuiTests.cs",
+      "bytes": 6596,
+      "sha256": "e71ce87793009de5b6bdbd32e690355f56836856b73bab14dbdb938ec32716aa"
+    }
+  ],
+  "additional_records": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-worker-supplements-20261115\\named-worker.json",
+      "bytes": 141303,
+      "sha256": "786a4e1dba8493ece68d9e00f7cb015a1c30fcdf8fe9d2cf03cfd969f9bfc4d1"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-publication-20261115\\checks.json",
+      "bytes": 13281,
+      "sha256": "a85524a387ccb283476d0a2d067812128e500fd39d7de9824ff3fba0f7fb5de9"
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-public-download-20261115\\verification.json",
+      "bytes": 882,
+      "sha256": "5d0f2ebf59cc8df45ca71703283e370dd03f5d73bdb4f9bb722937297e4449b9"
+    }
+  ],
+  "required_ci": [
+    {
+      "name": "Windows OpenQASM build and tests",
+      "head_sha": "c5a456cde595b3e1211cfc51a233dea511322a56",
+      "conclusion": "success",
+      "html_url": "https://github.com/badtyprr/quantumstudio/actions/runs/43741472683/job/132895374708"
+    },
+    {
+      "name": "Windows GUI build and tests",
+      "head_sha": "c5a456cde595b3e1211cfc51a233dea511322a56",
+      "conclusion": "success",
+      "html_url": "https://github.com/badtyprr/quantumstudio/actions/runs/43741472688/job/132895374569"
+    },
+    {
+      "name": "Native build and tests",
+      "head_sha": "c5a456cde595b3e1211cfc51a233dea511322a56",
+      "conclusion": "success",
+      "html_url": "https://github.com/badtyprr/quantumstudio/actions/runs/43741472626/job/132895374504"
+    }
+  ],
+  "requirement_mapping": {
+    "DEV-17a": "Existing implementation plus released212-check worker suite; explicit ordered mappings and validation.",
+    "DEV-17b": "Released worker exact-matrix controls and original72 GUI checks of named/TeX traces; both factor orders independently asserted.",
+    "DEV-17c": "Released worker controls plus GUI unequal dimensions, middle factor and multiple labels; scalar retained-dimension-one convention unchanged.",
+    "DEV-17d": "Fresh final original72 and supplemental377 GUI assertions (71numeric-k included), actual Copy/Clipboard/re-entry, conflicting mapping, original and numeric-k .qsession save/reopen, final manifest-bound binaries; three required CI passes and published asset verification."
+  },
+  "not_claimed": [
+    "No new GUI or visual execution in this reconciliation.",
+    "No whole IBM-005 lesson or linked notebook completion.",
+    "Save/Open production methods tested, not native file dialogs.",
+    "No transfer of evidence from older f9f43bf9 candidate to c5a456cd; final c5a456cd runs are the basis."
+  ]
+}
