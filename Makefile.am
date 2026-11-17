@@ -375,3 +375,5 @@ EXTRA_DIST += windows/dev13-notebooks/test_qb003.py
 EXTRA_DIST += windows/dev13-notebooks/fixtures/qb003-unrolled.qasm
 EXTRA_DIST += docs/learning-evidence/dev13/qb003/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb003/index.json
+EXTRA_DIST += docs/learning-evidence/dev13/selected-setup.md
+EXTRA_DIST += docs/learning-evidence/dev13/selected-setup.json

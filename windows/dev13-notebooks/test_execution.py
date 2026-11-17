@@ -148,6 +148,41 @@ class SelectedCellTests(unittest.TestCase):
             with self.subTest(route=route), self.assertRaises(ValueError):
                 execution._execution_indices(dict(contract, route=route), cells)
 
+    def test_selected_setup_runs_before_later_original_cells(self):
+        cells, contract = self.fixture()
+        contract['setup'] = dict(cell=0, commands=['--version'])
+        with patch.object(execution, '_setup_observer', return_value='assert value == 0'), patch.object(
+                execution, 'SETUP_CHECK', 'assert value == 1'):
+            output, result, calls, raw = self.run_synthetic(cells, contract)
+        self.assertEqual(result['state'], 'succeeded')
+        self.assertFalse(result['whole_notebook_complete'])
+        self.assertEqual(calls[:5], ['value = 0', 'assert value == 0', 'value += 1',
+                                    'assert value == 1', 'value += 10'])
+        self.assertEqual((output / 'source-original.ipynb').read_bytes(), raw)
+
+    def test_selected_setup_failure_stops_later_cells(self):
+        cells, contract = self.fixture()
+        contract['setup'] = dict(cell=0, commands=['--version'])
+        with patch.object(execution, '_setup_observer', return_value='assert value == 0'), patch.object(
+                execution, 'SETUP_CHECK', "raise RuntimeError('SETUP_FAILED')"):
+            output, result, calls, _ = self.run_synthetic(cells, contract)
+        self.assertEqual(result['state'], 'failed')
+        self.assertNotIn('value += 10', calls)
+        self.assertFalse(result['whole_notebook_complete'])
+        rows = json.loads((output / 'source-disposition.json').read_bytes())['cells']
+        self.assertEqual(rows[0]['state'], 'succeeded')
+        self.assertEqual(rows[3]['state'], 'not_run')
+
+    def test_selected_setup_must_be_complete_and_first(self):
+        cells, contract = self.fixture()
+        for setup in ({}, [], {'cell': True, 'commands': ['--version']},
+                      {'cell': 1, 'commands': ['--version']},
+                      {'cell': 3, 'commands': ['--version']},
+                      {'cell': 0, 'commands': '--version'},
+                      {'cell': 0, 'commands': []}, {'cell': 0, 'commands': ['']}):
+            with self.subTest(setup=setup), self.assertRaisesRegex(ValueError, 'INVALID_SELECTED_SETUP'):
+                execution._execution_indices(dict(contract, setup=setup), cells)
+
     def test_public_changed_source_witness_or_selection_rejected_before_environment(self):
         import copy
         import nbformat
@@ -676,6 +711,42 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(len(setup['commands']), 1)
         self.assertNotEqual(setup['commands'][0]['exit_code'], 0)
         self.assertEqual(next(r['state'] for r in self.records() if r['original_index'] == 1), 'not_run')
+        self.assert_cleanup(result)
+
+    def test_selected_capture_setup_records_real_pip_success(self):
+        config = self.fixture(['%%capture\n%pip --version',
+                               'raise RuntimeError("OMITTED_SENTINEL")', '42'])
+        config['contract'].update(route=execution.SELECTED_ROUTE, selected_cells=[0, 2],
+                                  code_cells=[0, 2], excluded_code_cells={'1': 'not selected'},
+                                  setup={'cell': 0, 'commands': ['--version']})
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'succeeded')
+        self.assertFalse(result['whole_notebook_complete'])
+        setup = json.loads((self.output / 'setup-evidence.json').read_bytes())
+        self.assertTrue(setup['accepted'])
+        self.assertEqual(setup['before'], setup['after'])
+        self.assertEqual([row['exit_code'] for row in setup['commands']], [0])
+        disposition = json.loads((self.output / 'source-disposition.json').read_bytes())
+        self.assertEqual([row['state'] for row in disposition['cells']],
+                         ['succeeded', 'excluded_by_contract', 'succeeded'])
+        self.assert_cleanup(result)
+
+    def test_selected_capture_cannot_hide_pip_failure(self):
+        config = self.fixture(['%%capture\n%pip install --dev13-invalid-option',
+                               'raise RuntimeError("OMITTED_SENTINEL")', '42'])
+        config['contract'].update(route=execution.SELECTED_ROUTE, selected_cells=[0, 2],
+                                  code_cells=[0, 2], excluded_code_cells={'1': 'not selected'},
+                                  setup={'cell': 0, 'commands': ['install --dev13-invalid-option']})
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result['state'], 'failed')
+        self.assertFalse(result['whole_notebook_complete'])
+        setup = json.loads((self.output / 'setup-evidence.json').read_bytes())
+        self.assertFalse(setup['accepted'])
+        self.assertEqual(len(setup['commands']), 1)
+        self.assertNotEqual(setup['commands'][0]['exit_code'], 0)
+        disposition = json.loads((self.output / 'source-disposition.json').read_bytes())
+        self.assertEqual(disposition['cells'][1]['state'], 'excluded_by_contract')
+        self.assertEqual(disposition['cells'][2]['state'], 'not_run')
         self.assert_cleanup(result)
 
     def test_setup_metadata_drift_stops_later_cells(self):

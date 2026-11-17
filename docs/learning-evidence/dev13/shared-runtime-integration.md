@@ -30,6 +30,11 @@ terminal state is confirmed using the same continuously held process handle.
 Linux uses the owned service backend and requires its documented capabilities.
 Neither platform constitutes a security sandbox or network isolation.
 
+Selected routes can now opt into [reviewed first-cell setup](selected-setup.md).
+The setup cell must be selected first; pip exit status and metadata/RECORD
+inventory checks gate later execution. This does not make a selected route a
+whole-notebook execution or resolve source-specific shell compatibility.
+
 ## Current verification
 
 Fresh validation logs are retained under the evidence directory above. The
