@@ -7,6 +7,8 @@ $fx=Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319'
 $driver=Join-Path $Evidence 'measurement-gui-tests.exe'
 & "$fx/csc.exe" /nologo /target:exe /platform:x64 "/out:$driver" "/reference:$fx/WPF/PresentationFramework.dll" "/reference:$fx/WPF/PresentationCore.dll" "/reference:$fx/WPF/WindowsBase.dll" "/reference:$fx/System.Xaml.dll" "/reference:$fx/System.Web.Extensions.dll" (Join-Path $PSScriptRoot 'MeasurementGuiTests.cs')
 if($LASTEXITCODE -ne 0){throw 'Measurement GUI driver compilation failed.'}
+& $driver --clipboard-retry-test
+if($LASTEXITCODE -ne 0){throw 'Measurement clipboard retry contract failed.'}
 if($CompileOnly){return}
 $app=Join-Path $Distribution 'QuantumStudio.exe'
 if(!(Test-Path -LiteralPath (Join-Path $Distribution 'quantum-worker.exe'))){throw 'Actual worker is required.'}
