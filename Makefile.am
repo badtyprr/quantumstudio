@@ -379,3 +379,16 @@ EXTRA_DIST += docs/learning-evidence/dev13/selected-setup.md
 EXTRA_DIST += docs/learning-evidence/dev13/selected-setup.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb003/clean-build.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb003/clean-build.json
+
+EXTRA_DIST += windows/dev13-notebooks/algorithms-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/profiles/algorithms-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb004.json
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb004.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb004_windows.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb004_checkpoint.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb004_cleanup.py
+EXTRA_DIST += windows/dev13-notebooks/test_qb004.py
+EXTRA_DIST += windows/dev13-notebooks/fixtures/qb004-1011.qasm
+EXTRA_DIST += windows/dev13-notebooks/fixtures/qb004-101.qasm
+EXTRA_DIST += docs/learning-evidence/dev13/qb004/README.md
+EXTRA_DIST += docs/learning-evidence/dev13/qb004/index.json

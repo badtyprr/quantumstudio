@@ -1,0 +1,252 @@
+{
+  "version": 1,
+  "id": "qb004",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "algorithms-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "afb1f7dc85d7b41da29e914c2e48341d763f5e13c5b5a90d3453a6d9860ffa3e"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "f0d78e0d902343e8842f6ada30be360032492f49147b810522508c0e851eca24"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "086e2d825e5376930a7e6c86c4d86e7e1f9b477bc14b31487a2754b211ecf1e7"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "a52bff8518a911d1e020438ac138452f29e4d679e11ee6812ca6045c384cabeb"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "43f9dc521ca8d77f3e8c39e444727996d167d732c229469287fb35de258018bd"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "709becd5b0ddcaedc3f046923472b811deb1242e12978f4bd8e7ab4ccd39c640"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "0523136cfc9f3f33ee0a0009e78e7cae06320f92c00b4b6aa7698c4892a1bbdf"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "d853ee7212a4ce3e29ede1b62a7820087fada80c4bfca4fe0b35f92e875570a4"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "82541199495b5bf7438f0a15d06194c369a1ae6efece7d5358b6ac569a4b6cff"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "0f5d1277718e4b012eaaba2db485ff28e11021b61c6dea79fb8b34472f359631"
+      },
+      {
+        "index": 11,
+        "type": "markdown",
+        "sha256": "453a7540606061c37128072b59c3c09809bbc4294c7a8dc0af54b5929013939d"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "1e509340a8a69e63e29339c3cccf60f705b94a5519b2a5ad2c2619bda2423528"
+      },
+      {
+        "index": 13,
+        "type": "markdown",
+        "sha256": "c6eab0a0e0395aabcbeb6201fb22d37d16f033507cfdcad596bca49fef4db24d"
+      },
+      {
+        "index": 14,
+        "type": "code",
+        "sha256": "04853922042191412ba454cf58ab99c4f2d338ec9dfe66b42b4722f76148bea8"
+      },
+      {
+        "index": 15,
+        "type": "markdown",
+        "sha256": "7ba8c9d103a8fc7a73c3e33aa0e81ef43a4802218f2eb6ad6b080970ebf36f43"
+      },
+      {
+        "index": 16,
+        "type": "code",
+        "sha256": "63b000695858c365e1e7bf8208d5ee9e00570a8183453139246a7b1b7cdbf0b1"
+      },
+      {
+        "index": 17,
+        "type": "markdown",
+        "sha256": "93f997bfe77f2bc6b5173e6eb84efff9762af1ef641d0234d6b9d4a7798031c7"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2"
+      },
+      {
+        "index": 19,
+        "type": "markdown",
+        "sha256": "0f3dd747e737bd1ae4bd5c8219d734a026eeffe04303cc7cf437c00e398dd7b0"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14"
+      },
+      {
+        "index": 21,
+        "type": "markdown",
+        "sha256": "20fe789c2db33f70bd853384414e966b64c975967dd00dd94a6f88a5055ac791"
+      },
+      {
+        "index": 22,
+        "type": "code",
+        "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254"
+      },
+      {
+        "index": 23,
+        "type": "markdown",
+        "sha256": "4d0f96e6152c6e401519804f1bd433188910d0170b023e120f16e0d80c7ce3b8"
+      },
+      {
+        "index": 24,
+        "type": "code",
+        "sha256": "6888d02e33a9476792365197342c4169c2426d22e79bf39ca393c39baa2ed71e"
+      },
+      {
+        "index": 25,
+        "type": "code",
+        "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13"
+      },
+      {
+        "index": 26,
+        "type": "markdown",
+        "sha256": "ce8dc5005eea36775ff4101879f1d4d7f5b0585d93e2cd26e7f4e29682ad5da8"
+      },
+      {
+        "index": 27,
+        "type": "code",
+        "sha256": "b4fe4dced6a27cb4ef60bd53c7c5dc4cb7303d6b4c964a672f247864abc5f48f"
+      },
+      {
+        "index": 28,
+        "type": "markdown",
+        "sha256": "6f898c78167078ba9859d5bf44b92d06d8a1961b959cbbc8e43d6a59d91e18c2"
+      },
+      {
+        "index": 29,
+        "type": "code",
+        "sha256": "6b9b4fcf92043539f499b15bfb9ffecdacc613e6e7410c77292eb4249b15e70b"
+      },
+      {
+        "index": 30,
+        "type": "markdown",
+        "sha256": "6dc3d1b6bdf9de830276061cc3a906f46ae9dcb8aa59eace4ed8bb858d97abdd"
+      },
+      {
+        "index": 31,
+        "type": "code",
+        "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18"
+      },
+      {
+        "index": 32,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    24
+  ],
+  "selected_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    24
+  ],
+  "excluded_code_cells": {
+    "20": "Provider initialization and credentials not verified",
+    "22": "Remote device discovery not verified",
+    "25": "Cloud submission not verified",
+    "27": "Cloud result retrieval requires excluded job",
+    "29": "Original result processing requires excluded provider counts; separate collision diagnostic retained",
+    "31": "Original histogram requires excluded provider counts"
+  },
+  "preamble": null,
+  "required_images": [],
+  "required_text": {},
+  "setup": {
+    "cell": 1,
+    "commands": [
+      "install 'qbraid[visualization]' qbraid-algorithms"
+    ],
+    "observer_sha256": "01da4ac755af2bc324faa54fedbcd1673c4ac48bc5c5e281609320dbb6da2f23",
+    "check_sha256": "5e74fd4cec9def11757cf98c8b3490f3f54e1b65fede8cb868c4c43d6421872a"
+  },
+  "post_cell_observers": [
+    {
+      "after_original_index": 24,
+      "role": "postcell-observer",
+      "path": "observers/qb004_checkpoint.py",
+      "sha256": "2e749fe496475200a0d08481ae49f416d3f314e07bdd61556e0054bb87ccdc8b"
+    }
+  ],
+  "observer_lifecycle": {
+    "bootstrap": {
+      "path": "observers/qb004_windows.py",
+      "sha256": "3c65e70400a6df5a4a2b3029b198e58c98c25e66565a5afc20782ffed3359615"
+    },
+    "cleanup": {
+      "path": "observers/qb004_cleanup.py",
+      "sha256": "5e1bb0713f721a5f155fb8243927c8e63febdd9474726060cd600b16cd02d85b"
+    },
+    "cleanup_timeout_seconds": 5
+  },
+  "witness": {
+    "path": "witnesses/qb004.py",
+    "sha256": "c6d110ce4acef456b633333ea916c01ae16ca3746249ab9dfccf10d4b537e1a1"
+  },
+  "acceptance_field": "accepted",
+  "output_artifacts": [
+    "setup-evidence.json",
+    "qb004-compatibility.json",
+    "*.qasm"
+  ]
+}
