@@ -21,9 +21,9 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
+CONTRACTS = {"qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
 SELECTED_ROUTE = "selected-cells/direct-native-execution"
-PROFILES = {"qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
+PROFILES = {"autoqasm-win-py312", "qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
 
 
 def digest(raw):
@@ -52,6 +52,14 @@ def atomic_json(path, value):
 
 def cell_text(cell):
     return "".join(cell["source"])
+
+
+def witness_streams(outputs):
+    """Keep diagnostics separate from the witness's stdout JSON protocol."""
+    streams = {name: "".join(o.get("text", "") for o in outputs
+                            if o.get("output_type") == "stream" and o.get("name") == name)
+               for name in ("stdout", "stderr")}
+    return json.loads(streams["stdout"]), streams["stderr"]
 
 
 def profile_for(name):
@@ -896,9 +904,10 @@ async def _run_notebook(output, config, control_state=None):
             for index, text in contract["required_text"].items():
                 if not any(o.get("data", {}).get("text/plain") == text for o in notebook.cells[source_positions[int(index)]].outputs):
                     raise AssertionError("SOURCE_RESULT_MISMATCH: " + index)
-            witness_text = "".join(o.get("text", "") for o in notebook.cells[-1].outputs if o.output_type == "stream")
+            witness_result, witness_stderr = witness_streams(notebook.cells[-1].outputs)
             result.update(state="succeeded", original_execution="succeeded", authored_verification="succeeded",
-                          independent_results=json.loads(witness_text), source_cells_preserved=True)
+                          independent_results=witness_result, witness_stderr=witness_stderr,
+                          source_cells_preserved=True)
             result.update(_scope_progress(contract.get("route"), "succeeded"))
             if contract.get("acceptance_field"):
                 if result["independent_results"].get(contract["acceptance_field"]) is not True:

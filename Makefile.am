@@ -348,3 +348,11 @@ EXTRA_DIST += docs/learning-evidence/dev13/shared-runtime-integration.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb013-runtime-replay/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb013-runtime-replay/index.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb013-runtime-replay/.gitattributes
+
+EXTRA_DIST += windows/dev13-notebooks/autoqasm-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/profiles/autoqasm-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb015.json
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb015.py
+EXTRA_DIST += windows/dev13-notebooks/test_qb015.py
+EXTRA_DIST += docs/learning-evidence/dev13/qb015/autoqasm-route.md
+EXTRA_DIST += docs/learning-evidence/dev13/qb015/autoqasm-route.json

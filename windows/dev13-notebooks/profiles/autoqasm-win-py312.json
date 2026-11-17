@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "autoqasm-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "autoqasm-requirements.lock",
+  "lock_sha256": "d12b3f58bb97c13d87205d989ee70dd57027923456844e671abee55785c3992e",
+  "offline_only": true,
+  "wheel_requirement": "89 retained hash-pinned Windows-compatible wheels",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}
