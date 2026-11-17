@@ -23,6 +23,34 @@ class SourceBundleTests(unittest.TestCase):
         path.write_text(text, encoding="utf-8", newline="")
         return path
 
+    def test_gate_arithmetic_dependency_locations(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/body.inc";')
+        cases = [
+            ('qubit q; rx(1/0) q;', 'division by zero'),
+            ('qubit q; rx(1%0) q;', 'integer modulo by zero'),
+            ('qubit q; rx(0**(-1)) q;', '0.0 cannot be raised to a negative power'),
+            ('gate g a { rx(1/0) a; } qubit q; g q;', 'division by zero'),
+        ]
+        for body, detail in cases:
+            for module in (False, True):
+                prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                self.put('nested κ/body.inc', prefix + '  ' + body)
+                for classical in (False, True):
+                    with self.subTest(body=body, module=module, classical=classical):
+                        with self.assertRaises(SourceError) as caught:
+                            compile_source(capture_source(main, module_headers=module), compiler.convert, classical=classical)
+                        self.assertEqual(str(caught.exception), f'nested κ/body.inc:2:{body.index("rx(") + 3}: {detail}')
+                        with self.assertRaises(ValueError) as plain:
+                            compiler.convert('OPENQASM 3; ' + body, classical=classical)
+                        self.assertEqual(str(plain.exception), detail)
+        for classical in (False, True):
+            expected = compiler.convert('OPENQASM 3; qubit q; rx(0.5) q;', classical=classical)
+            self.put('nested κ/body.inc', 'qubit q; rx(1/2) q;')
+            self.assertEqual(compile_source(capture_source(main), compiler.convert, classical=classical), expected)
+
     def test_control_flow_dependency_diagnostics(self):
         spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
         compiler = importlib.util.module_from_spec(spec)
