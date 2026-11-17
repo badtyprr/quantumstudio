@@ -127,6 +127,58 @@ class SourceBundleTests(unittest.TestCase):
             compile_source(capture_source(main), compiler.convert)
         self.assertEqual(str(caught.exception), 'main.qasm: The circuit editor currently supports 1–25 qubits.')
 
+    def test_timed_gates_are_not_silently_converted(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            'qubit q; x[1ns] q;',
+            'qubit q; x[0ns] q;',
+            'gate g a { x[1ns] a; } qubit q; g q;',
+            'def f(qubit a) { x[1ns] a; } qubit q; f(q);',
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/timed.inc";')
+        for body in cases:
+            for classical in (False, True):
+                for module in (False, True):
+                    with self.subTest(body=body, classical=classical, module=module):
+                        prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                        self.put('nested κ/timed.inc', prefix + '  ' + body)
+                        with self.assertRaises(SourceError) as caught:
+                            compile_source(capture_source(main, module_headers=module), compiler.convert, classical=classical)
+                        self.assertEqual(str(caught.exception),
+                                         f'nested κ/timed.inc:2:{body.index("x[") + 3}: Timed gates are not supported.')
+                with self.subTest(body=body, classical=classical, route='stdin'):
+                    with self.assertRaises(ValueError) as caught:
+                        compiler.convert('OPENQASM 3; include "stdgates.inc"; ' + body, classical=classical)
+                    self.assertEqual(str(caught.exception), 'Timed gates are not supported.')
+                with self.subTest(body=body, classical=classical, route='untimed'):
+                    untimed = body.replace('x[1ns]', 'x').replace('x[0ns]', 'x')
+                    result = compiler.convert('OPENQASM 3; include "stdgates.inc"; ' + untimed, classical=classical)
+                    self.assertEqual(result['Qubits'], 1)
+                    expected = ({'Kind': 'Gate', 'Expression': 'X', 'Wires': [0]} if classical else
+                                {'Gate': 'X', 'Angle': '', 'Wires': [0]})
+                    self.assertEqual(result['Steps'], [expected])
+
+    def test_timed_global_phase_is_not_lost_by_parser(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            ('qubit q; gphase(pi)[1ns];', 'gphase'),
+            ('qubit q; ctrl @ gphase(pi)[1ns] q;', 'ctrl'),
+            ('qubit q; bit a; bit b; let c = a ++ b; gphase(pi)[1ns];', 'gphase'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "phase.inc";')
+        for body, token in cases:
+            self.put('phase.inc', '// dependency\n  ' + body)
+            for classical in (False, True):
+                with self.subTest(body=body, classical=classical):
+                    with self.assertRaises(SourceError) as caught:
+                        compile_source(capture_source(main), compiler.convert, classical=classical)
+                    self.assertEqual(str(caught.exception),
+                                     f'phase.inc:2:{body.index(token) + 3}: Timed gates are not supported.')
+
     def mapped_token(self, bundle, token, name, original, occurrence=0):
         offset = -1
         for _ in range(occurrence + 1):

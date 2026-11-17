@@ -264,6 +264,14 @@ including incompatible numeric/bit expressions and casts. Runtime `while`
 lowering preserves its original span through the temporary branch representation.
 Missing runtime range endpoints identify the originating `for` statement.
 
+Gate duration designators are rejected before lowering, including gates inside
+definitions and subroutines. The pinned parser drops durations on `gphase` AST
+nodes, so compatibility parsing rejects those designators while their grammar
+context is still available. This prevents timed instructions from silently
+becoming untimed gates. Untimed gates and global phases retain their existing
+behavior; timing and pulse execution remain unsupported. See the
+[OpenQASM timing contract](https://openqasm.com/versions/3.0/language/delays.html).
+
 DEV-16d is still incomplete. Other control-flow transformations,
 numerical emission and synthesized nodes without original spans need further
 coverage. Errors without a usable span continue to name only the entry file;

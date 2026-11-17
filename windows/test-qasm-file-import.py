@@ -108,6 +108,25 @@ class FileImportTests(unittest.TestCase):
                         message = self.run_import(command, args, success=False)
                         self.assertIn(f'nested κ/body.inc:2:{body.index(token) + 3}: {detail}', message)
 
+    def test_timed_gate_rejection(self):
+        cases = [
+            ('qubit q; x[1ns] q;', 'x['),
+            ('gate g a { x[1ns] a; } qubit q; g q;', 'x['),
+            ('def f(qubit a) { x[1ns] a; } qubit q; f(q);', 'x['),
+            ('qubit q; gphase(pi)[1ns];', 'gphase'),
+            ('qubit q; ctrl @ gphase(pi)[1ns] q;', 'ctrl'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/timed.inc";')
+        for body, token in cases:
+            self.put('nested κ/timed.inc', 'OPENQASM 3;\r\n  ' + body)
+            for command in COMMANDS:
+                for classical in (False, True):
+                    with self.subTest(body=body, command=command, classical=classical):
+                        mode = ['--classical'] if classical else []
+                        message = self.run_import(command, ['--source-file', str(main), '--module-headers', *mode], success=False)
+                        self.assertEqual(message.strip(),
+                                         f'nested κ/timed.inc:2:{body.index(token) + 3}: Timed gates are not supported.')
+
     def test_entry_suffix_parser_diagnostic(self):
         text = 'OPENQASM 3; include "helper.inc"; qubit q x q;'
         main = self.put("main.qasm", text)
