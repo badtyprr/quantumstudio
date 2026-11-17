@@ -86,8 +86,10 @@ def _apply(state, matrix, targets):
 def state_from_snapshot(program):
     """Return the zero-input state before terminal Z measurements, at most4q.
 
-    Preserve measurement/annotation records separately. Reject mid-circuit
-    measurement, noise, resets and unsupported gates; do not simulate collapse
+    Preserve measurement/annotation records separately. Terminal means no later
+    gate touches a measured qubit; disjoint gates commute past measurements,
+    including on entangled inputs. Reject gates on measured qubits, noise,
+    resets and unsupported gates; do not simulate collapse
     or infer sampling results. Snapshot provenance is the caller's obligation.
     """
     import cmath
@@ -116,9 +118,10 @@ def state_from_snapshot(program):
 
     def apply(matrix, qubits):
         nonlocal state
-        if measurements:
+        qubits = targets(qubits)
+        if any(set(qubits).intersection(row['qubits']) for row in measurements):
             raise ValueError('UNSUPPORTED_POST_MEASUREMENT_GATE')
-        state = _apply(state, matrix, targets(qubits))
+        state = _apply(state, matrix, qubits)
 
     for index, operation in enumerate(program['operations']):
         if kind == 'qiskit':
