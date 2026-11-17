@@ -1004,13 +1004,25 @@ def lower_numerical_transfers(program):
         return []
     def transfers(body):
         return any(isinstance(node,(ast.BreakStatement,ast.ContinueStatement)) or any(transfers(child) for child in children(node)) for node in body)
-    def block(body,target=None):
+    def block(body,target=None,bound=()):
+        if target is not None:
+            # Generated guards must not turn an invalid redeclaration in an
+            # original block into legal shadowing in a synthetic inner scope.
+            declared=set(bound)
+            for item in body:
+                identifier=(item.identifier if isinstance(item,(ast.ClassicalDeclaration,ast.ConstantDeclaration)) else
+                            item.qubit if isinstance(item,ast.QubitDeclaration) else
+                            item.target if isinstance(item,ast.AliasStatement) else None)
+                if identifier is not None:
+                    name=identifier.name
+                    if name in declared:raise error_at(item,"Re-declaration of variable '"+name+"'")
+                    declared.add(name)
         result=[]
         for index,node in enumerate(body):
             if isinstance(node,(ast.ForInLoop,ast.WhileLoop)):
                 if transfers(node.block):
                     active,more=fresh(),fresh()
-                    lowered=block(node.block,(active,more))
+                    lowered=block(node.block,(active,more),[node.identifier.name] if isinstance(node,ast.ForInLoop) else [])
                     if isinstance(node,ast.WhileLoop):
                         # Evaluate the condition outside body-local bindings,
                         # and never evaluate it again after a taken break.

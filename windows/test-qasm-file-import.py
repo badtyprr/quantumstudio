@@ -162,6 +162,21 @@ class FileImportTests(unittest.TestCase):
                     self.assertEqual(result['Circuit'], {'Version': 1, 'Qubits': 1, 'Steps': [
                         {'Gate': gate, 'Angle': '', 'Wires': [0]} for gate in gates]})
 
+    def test_numerical_transfer_scope_rejections(self):
+        cases = [
+            ('for int i in [0:0] { int n=0; if(false) { break; } int n=1; x q; }', 'int n=1', 'n'),
+            ('int k=0; while(k<1) { k+=1; int n=0; if(false) { continue; } int n=1; x q; }', 'int n=1', 'n'),
+            ('for int i in [0:0] { if(false) { break; } int i=1; x q; }', 'int i=1', 'i'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; qubit q; include "scope.inc";')
+        for body, token, name in cases:
+            self.put('scope.inc', '// original scope\n  ' + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command):
+                    message = self.run_import(command, ['--source-file', str(main)], success=False)
+                    self.assertEqual(message.strip(),
+                                     f"scope.inc:2:{body.index(token) + 3}: Re-declaration of variable '{name}'")
+
     def test_timed_gate_rejection(self):
         cases = [
             ('qubit q; x[1ns] q;', 'x['),

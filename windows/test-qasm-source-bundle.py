@@ -103,6 +103,27 @@ class SourceBundleTests(unittest.TestCase):
                     {'Gate': gate, 'Angle': '', 'Wires': [0]} for gate in gates]}
                 self.assertEqual(compiler.convert(source), expected)
 
+    def test_numerical_transfer_guards_preserve_declaration_rules(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            ('for int i in [0:0] { int n=0; if(false) { break; } int n=1; x q; }', 'int n=1', 'n'),
+            ('int k=0; while(k<1) { k+=1; int n=0; if(false) { continue; } int n=1; x q; }', 'int n=1', 'n'),
+            ('for int i in [0:0] { if(false) { break; } int i=1; x q; }', 'int i=1', 'i'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; qubit q; include "scope.inc";')
+        for body, token, name in cases:
+            with self.subTest(body=body):
+                self.put('scope.inc', '// original scope\n  ' + body)
+                with self.assertRaises(SourceError) as caught:
+                    compile_source(capture_source(main), compiler.convert)
+                self.assertEqual(str(caught.exception),
+                                 f"scope.inc:2:{body.index(token) + 3}: Re-declaration of variable '{name}'")
+                with self.assertRaises(ValueError) as plain:
+                    compiler.convert('OPENQASM 3; qubit q; ' + body)
+                self.assertEqual(str(plain.exception), f"Re-declaration of variable '{name}'")
+
     def test_control_flow_dependency_diagnostics(self):
         spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
         compiler = importlib.util.module_from_spec(spec)

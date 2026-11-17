@@ -339,3 +339,8 @@ module dependencies. These are authored regressions, not a whole-source audit.
 Classical import retains its existing runtime lowering. Numerical measurement
 feedback remains unsupported; existing operation and iteration budgets remain
 in force. Hosted CI and published-artifact acceptance remain required.
+
+The lowering validates declarations in each original block before adding guards,
+including the for-loop binding. Synthetic scopes cannot legalize same-scope
+redeclarations. Regression cases preserve the reviewed duplicate-declaration
+failures alongside the valid nested-shadowing control.
