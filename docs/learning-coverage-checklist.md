@@ -310,7 +310,7 @@ those semantics when adding whole-program serialization.
 
 ## Source checklist
 
-The pinned inventory contains **137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows)**. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
+The original inventory contained 137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows). The [2026-11-17 qBraid reconciliation](learning-evidence/aud02/qbraid-catalog-20261117.md) adds three notebooks, bringing the tracked inventory to **137 IBM course sections, 12 IBM modules and 38 qBraid notebooks (187 rows)**. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
 
 Each row closes only after an evidence record lists every relevant formula/code cell, direct input versus adaptation, exact/approximate results, copy/save/import behavior where relevant, and all failures linked to development IDs. Mark access restrictions as blocked with a reason. Do not check a row merely because its title or one example is supported.
 
@@ -537,11 +537,15 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **QB-034** [qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 - [ ] **QB-035** [qBraid-CUDAQ/cuda_quantum_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb) — P2 / AUD-04; full audit pending; evidence: not yet recorded.
 
-## Discovery checklist (outside the 184 pinned rows)
+- [ ] **QB-036** [qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb) — P2 / AUD-04; newly discovered; full notebook/provider audit pending; [static discovery](learning-evidence/aud02/qbraid-catalog-20261117.md).
+- [ ] **QB-037** [qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb) — P2 / AUD-04; newly discovered; full notebook/provider audit pending; [static discovery](learning-evidence/aud02/qbraid-catalog-20261117.md).
+- [ ] **QB-038** [qBraid-Runtime/qperfect_mimiq_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qperfect_mimiq_quickstart.ipynb) — P2 / AUD-04; newly discovered; full notebook/provider audit pending; [static discovery](learning-evidence/aud02/qbraid-catalog-20261117.md).
+
+## Discovery checklist (outside the 187 tracked rows)
 
 - [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs.
 - [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks.
-- [ ] DISC-03 — Reconcile qBraid demo repository HEAD with the pinned `86787e1ba372facc224f925189755e69c479828b` snapshot; record changed notebook hashes and new/deleted paths.
+- [ ] DISC-03 — Reconcile qBraid demo repository HEAD with the pinned `86787e1ba372facc224f925189755e69c479828b` snapshot; record changed notebook hashes and new/deleted paths. [2026-11-17 reconciliation](learning-evidence/aud02/qbraid-catalog-20261117.md): 33 unchanged, two modified, three added, none deleted; review and project verification pending.
 - [ ] DISC-04 — Inventory qBraid SDK, PyQASM, QIR, Algorithms and runtime syntax references beyond demonstration notebooks; separate syntax support from provider execution.
 - [ ] DISC-05 — Inventory qBook courses and chapters through authorized access; record unavailable/account-only content as access-blocked rather than complete.
 
