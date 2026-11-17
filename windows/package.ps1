@@ -97,6 +97,10 @@ try {
     $env:QALCULATE_DEFINITIONS_DIR = Join-Path $output 'data'
     & $PythonPath (Join-Path $PSScriptRoot 'test-composer-source-import.py') --package $output
     if ($LASTEXITCODE -ne 0) { throw 'Composer source import and numerical export validation failed.' }
+    $sourceFailureEvidence = Join-Path $repo ('dist/dev16-source-failures/' + [Guid]::NewGuid().ToString('N'))
+    & $PythonPath (Join-Path $PSScriptRoot 'test-dev16-source-failures.py') --package $output --output $sourceFailureEvidence --product-revision $revision
+    if ($LASTEXITCODE -ne 0) { throw 'Cross-editor source failure/reimport validation failed.' }
+    Write-Host "DEV-16 source failure evidence: $sourceFailureEvidence (24 captures require separate visual review)."
     & $PythonPath (Join-Path $repo 'src/quantum-variational-test.py') (Join-Path $output 'quantum-worker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Packaged variational checks failed.' }
     & $PythonPath (Join-Path $repo 'src/quantum-eigensystem-worker-test.py') (Join-Path $output 'quantum-worker.exe')
