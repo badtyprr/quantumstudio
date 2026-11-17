@@ -132,11 +132,17 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if operand['Kind']=='Integer' and not operand.get('_quantum_float'):return integer()
             return {'Kind':'Binary','Operator':'Multiply','Left':{'Kind':'Constant','ValueBits':'13830554455654793216'},'Right':operand}
         return integer()
+    def source_gate(visitor,operation,ctrls=None):
+        result=original_gate(visitor,operation,ctrls)
+        for item in result:
+            if getattr(item,'span',None) is None:
+                copy_span(item,operation)
+        return result
     def gate(visitor,operation,ctrls=None):
         phase_gate=isinstance(operation,ast.QuantumPhase)
         arguments=[operation.argument] if phase_gate else operation.arguments
         if not runtime(visitor,arguments) and not runtime(visitor,operation.modifiers):
-            return original_gate(visitor,operation,ctrls)
+            return source_gate(visitor,operation,ctrls)
         name='gphase' if phase_gate else operation.name.name
         kinds={'rx':'X','ry':'Y','rz':'Z','p':'Phase','phase':'Phase','u1':'Phase','gphase':'GlobalPhase',
                'u':'U3','U':'U3','u3':'U3','cp':'Phase','crx':'X','cry':'Y','crz':'Z'}
@@ -577,11 +583,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if inverse:
             value = -value
         if len(ctrls) not in (1,2):
-            raise ValueError("Controlled global phase currently supports one or two controls.")
+            raise error_at(operation,"Controlled global phase currently supports one or two controls.")
         return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
     QasmVisitor._visit_forin_loop = for_loop
     QasmVisitor._visit_phase_operation = phase
+    QasmVisitor._visit_generic_gate_operation = source_gate
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
         QasmVisitor._visit_generic_gate_operation = indexed_gate
@@ -909,7 +916,7 @@ def mark_runtime_ranges(program):
                     block(statement.block,inner)
                 if dynamic:
                     if not isinstance(statement.set_declaration,ast.RangeDefinition) or not isinstance(statement.type,(ast.IntType,ast.UintType)):
-                        raise ValueError('Runtime for loops currently require an integer binding and a range.')
+                        raise error_at(statement,'Runtime for loops currently require an integer binding and a range.')
                     if statement.set_declaration.start is None or statement.set_declaration.end is None:
                         raise ValueError('For-loop ranges require both endpoints.')
                     statement._quantum_runtime_for=True
@@ -1070,13 +1077,16 @@ def convert(source, published_u=False, classical=False):
     if classical:
         return classical_circuit(statements, published_u, hidden_registers, output_registers, allocations)
     registers, count = {}, 0
+    budget_origin = None
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
             size = 1 if statement.size is None else statement.size.value
             registers[statement.qubit.name] = (count, size)
             count += size
+            if budget_origin is None and count > 25:
+                budget_origin = statement
     if not 1 <= count <= 25:
-        raise ValueError('The circuit editor currently supports 1–25 qubits.')
+        raise error_at(budget_origin,'The circuit editor currently supports 1–25 qubits.')
 
     def wire(value):
         if isinstance(value, ast.Identifier):
@@ -1106,7 +1116,7 @@ def convert(source, published_u=False, classical=False):
                 raise ValueError('Timed gates are not supported.')
             steps.extend(gate_steps(statement, wire, published_u))
             if len(steps) > 512:
-                raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
+                raise error_at(statement,'The compiled circuit exceeds the editor limit of 512 steps.')
             continue
         elif isinstance(statement, ast.QuantumPhase):
             if statement.modifiers:
@@ -1124,11 +1134,11 @@ def convert(source, published_u=False, classical=False):
         elif isinstance(statement, ast.QuantumMeasurementStatement):
             gate, wires = 'Measure', [wire(statement.measure.qubit)]
         else:
-            raise ValueError('The editor cannot represent ' + type(statement).__name__ +
+            raise error_at(statement,'The editor cannot represent ' + type(statement).__name__ +
                              '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
         steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
         if len(steps) > 512:
-            raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
+            raise error_at(statement,'The compiled circuit exceeds the editor limit of 512 steps.')
     return {'Version': 1, 'Qubits': count, 'Steps': steps}
 
 
@@ -1490,7 +1500,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             if 'IntegerValue' in step:version=max(version,expression_version(step['IntegerValue']))
             count += 1
             if count > 512:
-                raise ValueError('Classical circuits support at most 512 total operations.')
+                raise error_at(statement,'Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
             if isinstance(statement,WireReferenceCheck):
@@ -1641,7 +1651,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.QuantumPhase) and not statement.modifiers:
                 append({'Kind': 'Gate', 'Expression': '(exp(i*('+number(statement.argument)+'))*I)', 'Wires': [0]})
             else:
-                raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
+                raise error_at(statement,'Classical circuit import cannot yet represent '+type(statement).__name__+'.')
         return result
     steps=lower(statements)
     visible_bits=[bit for name,(start,size) in classical.items()

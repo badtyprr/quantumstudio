@@ -252,6 +252,13 @@ error text remains unchanged for these rejections.
 Runtime switch labels identify the nonconstant label. Global declarations in
 switch cases and unsupported non-integer shadowing identify the offending
 declaration rather than the enclosing switch or branch.
+Numerical qubit and operation limits, unsupported delay operations, controlled
+global-phase limits and invalid runtime loop bindings also retain their original
+locations. Expanded gates inherit the originating operation's span only when
+they have no existing span, so nested custom-gate locations remain specific.
+The zero-qubit numerical-program rejection has no offending declaration and
+continues to name only the entry file. Tests preserve the accepted 512-operation
+boundary and locate the first overflowing operation.
 
 DEV-16d is still incomplete. Other control-flow transformations,
 numerical emission and synthesized nodes without original spans need further
