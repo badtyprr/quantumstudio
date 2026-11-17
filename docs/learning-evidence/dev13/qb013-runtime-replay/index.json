@@ -1,0 +1,111 @@
+{
+  "runtime_revision": "4c1e36d4a2f9782483232c6f80e4e91ebde3772d",
+  "evidence_root": "cleanup-audit/learning-coverage-20261117/qb013-environment-replay",
+  "scope": "Original pinned QB013 notebook finite code execution and output audit; whole-source checklist delivery gates remain open",
+  "original_cells": 24,
+  "original_code_cells": 17,
+  "authored_controls": 18,
+  "finite_semantics_accepted": true,
+  "file_inventory": {
+    "files_before": 31735,
+    "files_after": 31735,
+    "added": 0,
+    "removed": 0,
+    "changed": 0
+  },
+  "dependencies": {
+    "distributions": 76,
+    "module_files": 16159,
+    "active_requirements": 117,
+    "module_inventories_identical": true
+  },
+  "cleanup": {
+    "active_processes": 0,
+    "kernel_job_membership": true,
+    "method": "forced",
+    "engine_exit": null,
+    "launcher_exit": 0
+  },
+  "artifacts": [
+    {
+      "path": "modules-before.json",
+      "bytes": 3620667,
+      "sha256": "7b2581d7a11fc3c200ed4d4c54d0c0aa1d4cb455ed3cc3287e967d39cbdbe5d6"
+    },
+    {
+      "path": "modules-after.json",
+      "bytes": 3620667,
+      "sha256": "7b2581d7a11fc3c200ed4d4c54d0c0aa1d4cb455ed3cc3287e967d39cbdbe5d6"
+    },
+    {
+      "path": "files-before.json",
+      "bytes": 7312153,
+      "sha256": "61f6c07679087000c5176582ef3740343a9514e7e8257f8f6abb80998de58726"
+    },
+    {
+      "path": "files-after.json",
+      "bytes": 7312153,
+      "sha256": "69618f681657cd97b44f6cf8c17b34989558c168ebb67a01c67055d0d966f192"
+    },
+    {
+      "path": "dependency-closure.json",
+      "bytes": 20715,
+      "sha256": "8d404d89f8a98686d6e79cf04507b0df83bd0d2a7f0df87ee152cf36a1414e85"
+    },
+    {
+      "path": "comparison.json",
+      "bytes": 615,
+      "sha256": "9ab654ff3482bf5551a02a48082673d4cb551dcd6c3cd1c116f4e4cb5a3497a9"
+    },
+    {
+      "path": "host-audit.json",
+      "bytes": 21763,
+      "sha256": "668f6fa67391df41b99b8a2d5d9f9ef6f0b226553eae509f8561466234549b14"
+    },
+    {
+      "path": "run/status.json",
+      "bytes": 8078,
+      "sha256": "e1bf13623258d7dee227b8386d8ed41c66b375a30d9bd6eb9c16b8d4b94de82d"
+    },
+    {
+      "path": "run/engine-result.json",
+      "bytes": 4164,
+      "sha256": "bbb9e2293f2fa9a9f9f4b428f213f3561862f9034b60755d7f2e127042ca078a"
+    },
+    {
+      "path": "run/engine-request.json",
+      "bytes": 104940,
+      "sha256": "70257bd7530e8f19ccbb65a0bda9b03241d24292d63f498881d115f60ca3122b"
+    },
+    {
+      "path": "run/cells.json",
+      "bytes": 8886,
+      "sha256": "8f964c018037f3837356fe9c43af27d1b8262c170ae0ff442c9e315bc1f073d5"
+    },
+    {
+      "path": "run/executed.ipynb",
+      "bytes": 246529,
+      "sha256": "6f97f859e4d9899a20b8c4fa7c72c9ed16bfe32e6478eccd3888b9f901724226"
+    },
+    {
+      "path": "run/source-original.ipynb",
+      "bytes": 6649,
+      "sha256": "5b5ae29f1a5813111d1474d60a13aac6c06c2ef1904f75de73ec75a7224c8145"
+    },
+    {
+      "path": "file_inventory.py",
+      "bytes": 1495,
+      "sha256": "db2d33543511af96ee144acfeff08a7403129719305e6ad88dd746eeb5fae7b7"
+    },
+    {
+      "path": "dependency_closure.py",
+      "bytes": 2189,
+      "sha256": "0a4bad8740b64d9b8300ea79743d07f9b9f8ead1d2a689707e0b80658949870d"
+    }
+  ],
+  "remaining": [
+    "Independent actual-artifact review",
+    "Hosted CI",
+    "Package and release verification"
+  ]
+}

@@ -327,3 +327,6 @@ EXTRA_DIST += windows/dev13-notebooks/witnesses/qb027.py
 EXTRA_DIST += windows/dev13-notebooks/witnesses/qb030.py
 EXTRA_DIST += windows/dev13-notebooks/.gitattributes
 EXTRA_DIST += docs/learning-evidence/dev13/shared-runtime-integration.md
+EXTRA_DIST += docs/learning-evidence/dev13/qb013-runtime-replay/README.md
+EXTRA_DIST += docs/learning-evidence/dev13/qb013-runtime-replay/index.json
+EXTRA_DIST += docs/learning-evidence/dev13/qb013-runtime-replay/.gitattributes
