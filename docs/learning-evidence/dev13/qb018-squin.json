@@ -1,0 +1,140 @@
+{
+  "source_sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+  "source_cells": 19,
+  "code_cells": 12,
+  "empty_code_cells": [
+    17
+  ],
+  "authored_rerun_routes": 3,
+  "captured_original_vectors": 3,
+  "witness_tests": 4,
+  "request_profile_tests": 24,
+  "distributions": 172,
+  "active_requirements": 400,
+  "wheels_bytes": 331358442,
+  "review": "pending",
+  "hosted_ci": false,
+  "released": false,
+  "artifacts": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\binding.json",
+      "sha256": "4aa6ab669a9a2f9f72a4f5470be8af08b2e7cff5b3b27920b69fdf0876b484b6",
+      "size": 234
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\wheel-manifest.json",
+      "sha256": "ed1169cbaec5cbe67958757019cbaa4bf7f2111d7eef4f82016719a5fc69b834",
+      "size": 67235
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\qb018-requirements.lock",
+      "sha256": "d8e8e5d049ba8034fc384867b2f933de002515652b936085631752da6fc2371a",
+      "size": 16654
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\ffmpeg-wheel-audit.json",
+      "sha256": "4b0cd2ac26ed71b0634e4a326fdb831d3cc44cabf467bb0807c667d6f6db7605",
+      "size": 991
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\pylatex-wheel-audit.json",
+      "sha256": "0513650fd52d4282cddb199bef7b92a75fc66b6b690d440fbb48ad2f1c217ff7",
+      "size": 930
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\dependency-closure.json",
+      "sha256": "874ecc7380406f6c0c6789d75ed11763c0eede6c288243990e9982412482116c",
+      "size": 67434
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\captured-source-audit02.json",
+      "sha256": "24b6cc64aa4de208eff15e85f26918ed9aacf46a50a7fddf9ac717adb07279f5",
+      "size": 656
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\audit_source.py",
+      "sha256": "b45a84c4a71d207575b3f19d1e0a379fc1e0890058d8f70c88947c0778e16e07",
+      "size": 2237
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\witness-tests.log",
+      "sha256": "6d79ab2bde634aee743f64bca540cdb05e42969b70a95bff5f9e2677cafd5e8d",
+      "size": 581
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\request-tests.log",
+      "sha256": "690974d0890598ab6282f7d709d31ac2a504fc8a3ea3c075f9e27763dba63d96",
+      "size": 3774
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\install.log",
+      "sha256": "e478891a84223a81dca0de11c480842ae3994c07324d4b2f1c6d9a0658bc1930",
+      "size": 40625
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02.log",
+      "sha256": "4fe934d3a532d87c312553b4ad3396c105e8efd35c36e2f098eb745898ccbc81",
+      "size": 167
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\cells.json",
+      "sha256": "dc77acafda05ab7e4c84d715b63307443582afea6231760c4041f5398ff8899f",
+      "size": 5549
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\engine-request.json",
+      "sha256": "19c24635af4c437dede2554532375db65cb3033d58499e2477e5eb7e6c556c78",
+      "size": 13075
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\engine-result.json",
+      "sha256": "3a05cbad8e0390f848730f6a66fb0af9f500841913cb055a08d378427af1499e",
+      "size": 4576
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\engine.stderr",
+      "sha256": "64c94afa64ab5cafca71679fb4dfcce5566b443d8cdf294f82d96bd936e5b28b",
+      "size": 668
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\engine.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\events.jsonl",
+      "sha256": "0267e9a49a8559d1537c9f504a11f06b999c7d5864d92eac05d210225edb61bb",
+      "size": 17543
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\executed.ipynb",
+      "sha256": "7c1b219c171c66b790aa0fdbd593f2fe1bc715a15544115f03065bb56c7792ed",
+      "size": 89388
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\kernel.json",
+      "sha256": "7812fdb6574fd04dd91a5016c6c21beec554f939a6b90286e79ae51574939de8",
+      "size": 116
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\qb018-state-evidence.json",
+      "sha256": "30f5b9c706160b420409ef53c1a48015d8522ca867df17c19df9adf97c142178",
+      "size": 3419
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\setup-evidence.json",
+      "sha256": "627e077864cc232bc8d757a7c9172af6fccd4f8820eb5c2ff8388955e732ec16",
+      "size": 83136
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\source-original.ipynb",
+      "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+      "size": 7624
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb018-prerequisites\\run02\\status.json",
+      "sha256": "b7d557dbcb2f4e488252c9c65157656411a54a9df16eec051d945552d2f8eb12",
+      "size": 11296
+    }
+  ]
+}
