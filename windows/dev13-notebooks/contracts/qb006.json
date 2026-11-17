@@ -1,0 +1,251 @@
+{
+  "version": 1,
+  "id": "qb006",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "algorithms-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "2ad47566defcdcd5d97ceaada3386911459ac447f879efef04e78fc38b86fa3f"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "5b1b82616956ecd4e232989ec2d8b761f1fb9b9f15a7ebc5c2ec5f8d0c83d75e"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "92fe0a4261c72143abc47e1c12d734172813db3c131b3d37d2d83bc7620ef26f"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "7f44ce773deaa2ddc64b08625b6df2b6b166157ba28dcf62e4d95bca93741b22"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "43f9dc521ca8d77f3e8c39e444727996d167d732c229469287fb35de258018bd"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "709becd5b0ddcaedc3f046923472b811deb1242e12978f4bd8e7ab4ccd39c640"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "d4c68a6b218e348cd34a4eeebae47a99da6a15322c3593e2c4b1ca7c9b8bfdc0"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "d853ee7212a4ce3e29ede1b62a7820087fada80c4bfca4fe0b35f92e875570a4"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "16f8860c67b37552fdcfb9620d7c769a12a10e10eb54797393001de44679793b"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "958b87f02f84b17f8e33fdd219e2929d119275d7f075750c1159c04d3491a935"
+      },
+      {
+        "index": 11,
+        "type": "markdown",
+        "sha256": "ebc1a7f641735d7212d36c64c8abdc9d37f2c597e4d45b49e479ce361bfc7910"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "7c4687762f1153a6b6c6fab7dd296a7c0b79432db4e1cb7017abed02402ef01e"
+      },
+      {
+        "index": 13,
+        "type": "markdown",
+        "sha256": "93f997bfe77f2bc6b5173e6eb84efff9762af1ef641d0234d6b9d4a7798031c7"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "232c49874c6849e78346ad5b8a87236c90b4d28c427fea2940e3b99ee6e41346"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "0f3dd747e737bd1ae4bd5c8219d734a026eeffe04303cc7cf437c00e398dd7b0"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14"
+      },
+      {
+        "index": 18,
+        "type": "markdown",
+        "sha256": "20fe789c2db33f70bd853384414e966b64c975967dd00dd94a6f88a5055ac791"
+      },
+      {
+        "index": 19,
+        "type": "code",
+        "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "320fd628adc11a4b8c07d5c96b34b2027bc49c39702892c5073b27f1788a32c5"
+      },
+      {
+        "index": 21,
+        "type": "markdown",
+        "sha256": "4d0f96e6152c6e401519804f1bd433188910d0170b023e120f16e0d80c7ce3b8"
+      },
+      {
+        "index": 22,
+        "type": "code",
+        "sha256": "0f17424bc0201122b1acb0ca5fc9ed4af577169c322c0354594b758eb32fe9ce"
+      },
+      {
+        "index": 23,
+        "type": "code",
+        "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "dce1bdd9acb5647d828efe068b6d247cc5667e77eb86c7938457f1e0487dcd2b"
+      },
+      {
+        "index": 25,
+        "type": "code",
+        "sha256": "8a4a0ccb5e150454a7703e27478a3a338acd2f6d36d5fc061956c43a40d58128"
+      },
+      {
+        "index": 26,
+        "type": "markdown",
+        "sha256": "94fda25637f9296ae54a60a059dda80223ad0e5374428fd2b6cddba8d9927dab"
+      },
+      {
+        "index": 27,
+        "type": "code",
+        "sha256": "9d02a11f5fafae47f0412a626583e85cefd1535002f40939a1a39c0ff9f9122f"
+      },
+      {
+        "index": 28,
+        "type": "markdown",
+        "sha256": "6927337210ef30a274b593966acd82145b708634ba5e4072424e11a443d55907"
+      },
+      {
+        "index": 29,
+        "type": "code",
+        "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18"
+      },
+      {
+        "index": 30,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    22
+  ],
+  "selected_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    22
+  ],
+  "excluded_code_cells": {
+    "17": "Provider initialization and credentials not verified",
+    "19": "Remote device discovery not verified",
+    "20": "Provider device enumeration not verified",
+    "23": "Cloud job submission not verified",
+    "25": "Cloud results, bit processing and phase extraction require excluded job",
+    "27": "Printing provider-derived phase requires excluded result",
+    "29": "Original histogram requires excluded provider counts"
+  },
+  "preamble": "# Authored staging of unchanged pinned notebook companion files.\nfrom pathlib import Path as _qb006_Path\nimport hashlib as _qb006_hashlib\n_qb006_data = b'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\n\\ngate custom_t q {\\n    z q;\\n}'\nassert _qb006_hashlib.sha256(_qb006_data).hexdigest() == '09e04bf4c5c542219f681ba6a3e7d49a129906f0ab09e25fb4a84e43cbfcc980'\nwith _qb006_Path('unitary.qasm').open(\"xb\") as _qb006_file:\n    _qb006_file.write(_qb006_data)\n_qb006_data = b'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\n\\ngate prep q {\\n    x q;\\n}'\nassert _qb006_hashlib.sha256(_qb006_data).hexdigest() == 'aaaf45b8b30a2d1d022542ae79977363c5ae0a73e2814a3109eefc826b759a50'\nwith _qb006_Path('prepare_state.qasm').open(\"xb\") as _qb006_file:\n    _qb006_file.write(_qb006_data)\n",
+  "required_images": [],
+  "required_text": {},
+  "setup": {
+    "cell": 1,
+    "commands": [
+      "install 'qbraid[visualization]' qbraid-algorithms"
+    ],
+    "observer_sha256": "01da4ac755af2bc324faa54fedbcd1673c4ac48bc5c5e281609320dbb6da2f23",
+    "check_sha256": "5e74fd4cec9def11757cf98c8b3490f3f54e1b65fede8cb868c4c43d6421872a"
+  },
+  "post_cell_observers": [
+    {
+      "after_original_index": 22,
+      "role": "postcell-observer",
+      "path": "observers/qb004_checkpoint.py",
+      "sha256": "2e749fe496475200a0d08481ae49f416d3f314e07bdd61556e0054bb87ccdc8b"
+    }
+  ],
+  "observer_lifecycle": {
+    "bootstrap": {
+      "path": "observers/qb004_windows.py",
+      "sha256": "3c65e70400a6df5a4a2b3029b198e58c98c25e66565a5afc20782ffed3359615"
+    },
+    "cleanup": {
+      "path": "observers/qb004_cleanup.py",
+      "sha256": "5e1bb0713f721a5f155fb8243927c8e63febdd9474726060cd600b16cd02d85b"
+    },
+    "cleanup_timeout_seconds": 5
+  },
+  "witness": {
+    "path": "witnesses/qb006.py",
+    "sha256": "2198b7a623865b498334827e27715747f3ad2d56d64f0c0969af1865139cfb56"
+  },
+  "acceptance_field": "accepted",
+  "output_artifacts": [
+    "setup-evidence.json",
+    "qb004-compatibility.json",
+    "*.qasm"
+  ],
+  "companion_sources": [
+    {
+      "name": "unitary.qasm",
+      "sha256": "09e04bf4c5c542219f681ba6a3e7d49a129906f0ab09e25fb4a84e43cbfcc980",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/unitary.qasm"
+    },
+    {
+      "name": "prepare_state.qasm",
+      "sha256": "aaaf45b8b30a2d1d022542ae79977363c5ae0a73e2814a3109eefc826b759a50",
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/prepare_state.qasm"
+    }
+  ]
+}
