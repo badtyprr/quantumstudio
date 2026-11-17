@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "algorithms-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "algorithms-requirements.lock",
+  "lock_sha256": "906ff93543c4e6dac1a2e1ca94d494dd409b58be7a5157a4eb30def788e28ad3",
+  "offline_only": true,
+  "wheel_requirement": "71 retained hash-pinned Windows-compatible wheels",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}
