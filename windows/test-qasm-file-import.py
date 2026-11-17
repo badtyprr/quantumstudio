@@ -13,6 +13,22 @@ COMMANDS = [[sys.executable, str(HERE / "qasm-import.py")]]
 
 
 class FileImportTests(unittest.TestCase):
+    def test_early_scope_file_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/failure.inc";')
+        cases = [
+            ('qubit q;\nint ' + 'longname_' * 8 + '=1;', 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('qubit q; bit b;\nif (b==1) { bit b; }', 'Non-integer shadowing is not yet supported by the importer.'),
+            ('qubit q; int n=2;\nfor int i in [:n] { x q; }', 'For-loop ranges require both endpoints.'),
+        ]
+        for body, expected in cases:
+            self.put('nested κ/failure.inc', body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command):
+                    message = self.run_import(command, ['--source-file', str(main), '--classical'], success=False).strip()
+                    self.assertTrue(message.startswith('nested κ/failure.inc:2:'), message)
+                    self.assertTrue(message.endswith(': ' + expected), message)
+                    self.assertEqual(self.run_import(command, ['--classical'], source='OPENQASM 3; include "stdgates.inc";\n' + body, success=False).strip(), expected)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="qasm source ")
         self.addCleanup(self.temp.cleanup)
