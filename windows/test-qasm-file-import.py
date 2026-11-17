@@ -47,6 +47,17 @@ class FileImportTests(unittest.TestCase):
              'Duplicate switch case value: 1', '1 { } }'),
             ('int n=1; int n=2;', 'Duplicate declaration in one scope: n', 'int n=2'),
             ('bit[2] b; if(b) { }', 'Whole-register truth conditions', 'if(b)'),
+            ('bit[2] b; if(b == 4) { }', 'Condition constant is outside its register range.', 'if(b'),
+            ('bit[2] b; switch(b) { case 1 { } }',
+             'Switch targets require an integer expression;', 'switch(b)'),
+            ('bit b; if(b) { bit c; }',
+             'Register declarations inside runtime branches are not supported.', 'bit c'),
+            ('int n; int k; switch(n) { case k { } }',
+             'Switch case labels must be integer constants.', 'k {'),
+            ('int n; switch(n) { case 1 { qubit q; } }',
+             'Global declarations are not allowed in switch cases.', 'qubit q'),
+            ('bit b; if(b) { bit b; }',
+             'Non-integer shadowing is not yet supported by the importer.', 'bit b; }'),
         ]
         main = self.put('main.qasm', 'OPENQASM 3; include "nested κ/helper.inc";')
         for source, detail, token in cases:

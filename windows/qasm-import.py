@@ -523,7 +523,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if isinstance(value,ast.FunctionCall):
                 return value.name.name=='popcount' or value.name.name in ('rotl','rotr') and integer_target(value.arguments[0])
             return False
-        if not integer_target(target):raise ValueError('Switch targets require an integer expression; use an explicit integer cast.')
+        if not integer_target(target):raise error_at(statement,'Switch targets require an integer expression; use an explicit integer cast.')
         def promote_operands(value):
             # The integer evaluator represents predicates through a Boolean
             # cast so it can preserve short-circuiting and undefined reads.
@@ -538,9 +538,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         for labels,body in statement.cases:
             values=[]
             for label in labels:
-                if runtime(visitor,label):raise ValueError('Switch case labels must be integer constants.')
+                if runtime(visitor,label):raise error_at(label,'Switch case labels must be integer constants.')
                 value=Qasm3ExprEvaluator.evaluate_expression(label,const_expr=True,reqd_type=ast.IntType)[0]
-                if type(value) is not int:raise ValueError('Switch case labels must be integer constants.')
+                if type(value) is not int:raise error_at(label,'Switch case labels must be integer constants.')
                 if value in seen:raise error_at(label,'Duplicate switch case value: '+str(value))
                 seen.add(value);values.append(value)
             if not values:raise ValueError('Switch cases require at least one label.')
@@ -549,7 +549,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         for body in bodies:
             for item in body:
                 if isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) or isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,ast.ArrayType):
-                    raise ValueError('Global declarations are not allowed in switch cases.')
+                    raise error_at(item,'Global declarations are not allowed in switch cases.')
         # A branch chooses exactly one body. Repeated target reads happen only
         # while matching labels, before any selected body can change storage.
         tail=[] if statement.default is None else statement.default.statements
@@ -773,7 +773,7 @@ def resolve_integer_scopes(program):
                 name=statement.identifier.name
                 if name in declared:raise error_at(statement,'Duplicate declaration in one scope: '+name)
                 declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,RUNTIME_SCALAR_TYPES)
-                if depth and name in env and not integer:raise ValueError('Non-integer shadowing is not yet supported by the importer.')
+                if depth and name in env and not integer:raise error_at(statement,'Non-integer shadowing is not yet supported by the importer.')
                 expression(statement.type,env)
                 renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
                 if integer:
@@ -1514,7 +1514,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 continue
             if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
                 if depth:
-                    raise ValueError('Register declarations inside runtime branches are not supported.')
+                    raise error_at(statement,'Register declarations inside runtime branches are not supported.')
                 continue
             if isinstance(statement, ast.ClassicalAssignment):
                 with diagnostic_context(statement):
@@ -1590,7 +1590,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
                     raise error_at(statement,'Whole-register truth conditions require an explicit comparison.')
                 if type(expected) is not int or not 0 <= expected < (1 << size):
-                    raise ValueError('Condition constant is outside its register range.')
+                    raise error_at(statement,'Condition constant is outside its register range.')
                 yes, no = lower(statement.if_block, depth+1), lower(statement.else_block, depth+1)
                 if negate:
                     yes, no = no, yes
