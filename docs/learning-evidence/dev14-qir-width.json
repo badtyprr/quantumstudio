@@ -1,0 +1,1290 @@
+{
+  "scope": "static QIR widths1..10 and semantics-preserving terminal output aliases",
+  "unit_tests": 18,
+  "native_checks": 84,
+  "native_cases": 21,
+  "input_formats": [
+    "LLVM IR",
+    "bitcode"
+  ],
+  "engines": [
+    "exact",
+    "sampled"
+  ],
+  "generated_qasm_native_checks": 4,
+  "original_qir_rejections": 4,
+  "worker_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "terminal_output_semantics": "Gate prefix; terminal measurements each write a distinct result; final output records are a bijection of those results. Preserve measurement order and QIR output-record order.",
+  "snapshot_fallback": "Interleaved records, overwritten results, repeated outputs, partial outputs and gates after measurements.",
+  "baseline": {
+    "run01": "timeout at GHZ9 exact30s;72completed outputs independently rechecked",
+    "run02": "timeout at GHZ10 exact180s;8additional outputs independently rechecked",
+    "run03": "intentionally stopped superseded run; verified own worker PID14020, parent26016; no cell-budget error established"
+  },
+  "final_run": "run04;84checksPASS;terminal0",
+  "artifacts": [
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\qir_import.py",
+      "sha256": "b2cfaffbffaf3c317525c93f3c92bd7b61b06545318416ccfd90438ba6b3444c",
+      "size": 8553
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\test_qir_import.py",
+      "sha256": "a26f1ebc0706bb57439957fef35875022d0378f3259a5742d3fed7e8c69fdfce",
+      "size": 9049
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\test_qir_import_native.py",
+      "sha256": "5d6bad5a8834cf2393616ff971807b1f0e9ad806349ac21e20aa7ed2a68a50b5",
+      "size": 5915
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm-import.py",
+      "sha256": "707cf21e7d199f99e13805444f7700247add7a9ba12c7eadd88ee7f0ac972321",
+      "size": 120550
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_concat_parser.py",
+      "sha256": "76972aa5a6da22cc31c5a9d061079f347d75dd3f318eff4107132393bc06ebef",
+      "size": 2905
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_import_request.py",
+      "sha256": "7a8f725bd43067f4369ba056d76464f5bf8b85b78784248f667aa42a8ac5dea6",
+      "size": 2236
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_arrays.py",
+      "sha256": "b625ab06ccdf4701a01863fcd55711cd79f7867b9d5e3ff5949741f950a73919",
+      "size": 24413
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_bit_aliases.py",
+      "sha256": "9a254da88e8513c91857b7bac5da80a8f293862cb1a19ea9d274ada1ef8c315a",
+      "size": 9311
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_numeric.py",
+      "sha256": "8e60616240dab5ae261308cd312de17d7bf7252fde7e50d939e18b7ecbe0d81d",
+      "size": 13353
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_subroutines.py",
+      "sha256": "55257ba02e784d33bf189e6d7851a53c796d74128e3eafe97cd1a8c5f8d0a26a",
+      "size": 100594
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_wires.py",
+      "sha256": "b513445923797cdff677a5f73908db94210113c6435aa2ab12c92d5ab5bcf899",
+      "size": 7397
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_source_bundle.py",
+      "sha256": "63240cbade06e21eb57fa07d129c25884923c7f1e87c0643f9978141a1f7f758",
+      "size": 17572
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_source_diagnostics.py",
+      "sha256": "2548a71ab87a1e30736312a1871d54229a1bcb4e88d99ec6e0bd5cb83eaf1de1",
+      "size": 4742
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_subroutine_scope.py",
+      "sha256": "d8d1120abbe54a6c8aed2582a1725400c13cea60e4eb6b68f559919910145fdb",
+      "size": 3500
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\QirImportBridgeTests.cs",
+      "sha256": "d51a1b81ccde623563e2a94c8364ef0ffcafef477a3833b708ff22a284d27c67",
+      "size": 1191
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-verified-43741675632\\payload\\QuantumStudio\\quantum-worker.exe",
+      "sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "size": 88247092
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\balanced.bc",
+      "sha256": "fc0d0ae4dc6ca182475083fa0c657cbdf75ab62d1f37e0be8e1fdaeaec3b2c7b",
+      "size": 2372
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\balanced.ll",
+      "sha256": "6ce2be02b1ee5b5ab3753d8808edaa9b506979a1e05468418fd7e7b87fddf8f6",
+      "size": 2437
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\balanced.qasm",
+      "sha256": "2d7afe709b5132c440829681e57a78a008253492427d80b3bab5df85dbf6e3d6",
+      "size": 573
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\constant.bc",
+      "sha256": "19a5217419d861cd41c9ee0cc6b7137e95c3734ee9187c2944fabdcc2d2458e1",
+      "size": 2316
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\constant.ll",
+      "sha256": "b6258afaf04903e4de90d56c834758b65415508d6a0955623bd6e3d4e5db6c4e",
+      "size": 2287
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb015-autoqasm-route\\run02\\constant.qasm",
+      "sha256": "4d858b2fea891d3bfd32ea1ba0934f0830ee3fa06c047dc43ab85029a5aa769a",
+      "size": 556
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-import-native\\qir-adapter.exe",
+      "sha256": "c2cb48333e9872bf18ecc882ad26b7d8721ea9612bfbafedd05cf839ccf6ca5e",
+      "size": 128512
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\balanced-circuit.json",
+      "sha256": "24e64a50afe8ccb619374f7926ce970d5b773756f56162835656a09917ae06e7",
+      "size": 1051
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\balanced-exact.json",
+      "sha256": "32d123cc41b8b8851699d469a1ee1ab2b7ba8352e328c3211b34a61fe8c1db28",
+      "size": 79
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\balanced-sampled.json",
+      "sha256": "0b68e9e318d2a22d5d069a4f86bf3939a24dc352dea0876dfd6b1ae127fb815f",
+      "size": 102
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\constant-circuit.json",
+      "sha256": "12e50f0333c940dc0b90bda6e2126d34dd944158a10588a7398b863f01f40ace",
+      "size": 994
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\constant-exact.json",
+      "sha256": "5d43710ffc8710836773e87403a0f2df360e2a96c419e6b31177b8568b03b25a",
+      "size": 79
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\constant-sampled.json",
+      "sha256": "878feba3b4b742c48453ac492b1f3f33bd7dc5ba7964a7dfc38163ca02fe0eb0",
+      "size": 102
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native\\results.json",
+      "sha256": "0ba053213382587d41ccf4df64368b7b1ab95f6fd186bbf217ce3818286cf33b",
+      "size": 2649
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm-native.log",
+      "sha256": "869cf0c5c8a69bb685a0735d78e20ceeeefef605e2a461006899df178d7cebff",
+      "size": 56
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\autoqasm_native_probe.py",
+      "sha256": "0bd73fbe8b3d56e4c10b88e190f53083516f6df5891a563a4f34a29a3b5b9a4e",
+      "size": 1920
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\original-qb015-rejections-final.json",
+      "sha256": "88e076058e6d8f9ff58f4f9c7097b06b7cce3e1e08ac28fa60b5a49e7abd8363",
+      "size": 1127
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run01-retained-checks.json",
+      "sha256": "30911d6026ceb3f5231c3eb3590abc24d18ba0192c916b5df9686086d0148757",
+      "size": 16723
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run02-retained-checks.json",
+      "sha256": "888cf5a3ac975e131c195afd0379faf38a0ec27c16424c1db0a81c2e334d1792",
+      "size": 1875
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-bitcode-circuit.json",
+      "sha256": "d1e82c08017bfac584d9b51d98954e8c39302d14a8c475a06602835551289f69",
+      "size": 319
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-bitcode-exact.json",
+      "sha256": "3eeff4134c7c34de7c6a2c25e7c38f2fb8c241b04eac0ad59f97d97850ac1e48",
+      "size": 86
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-bitcode-sampled.json",
+      "sha256": "b011a8250fcfa3d3f583ecbc39f06f7f2f41f37df0be744bbb70c315e17b322f",
+      "size": 105
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-ir-circuit.json",
+      "sha256": "d1e82c08017bfac584d9b51d98954e8c39302d14a8c475a06602835551289f69",
+      "size": 319
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-ir-exact.json",
+      "sha256": "3eeff4134c7c34de7c6a2c25e7c38f2fb8c241b04eac0ad59f97d97850ac1e48",
+      "size": 86
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-ir-sampled.json",
+      "sha256": "b011a8250fcfa3d3f583ecbc39f06f7f2f41f37df0be744bbb70c315e17b322f",
+      "size": 105
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-bitcode-circuit.json",
+      "sha256": "7a7b964c0080176c41875efa0acd12d892a457c656f841fe6775d7d47a956729",
+      "size": 427
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-bitcode-exact.json",
+      "sha256": "3c61ce7c8cb26edd49a6c05313c081c388fb61e622cbe9222b1e616c9ce97d59",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-bitcode-sampled.json",
+      "sha256": "abd71f2a65d62f3b9460af7900f7d0bf56f884049c1f13a6e380f3606373f3a1",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-ir-circuit.json",
+      "sha256": "7a7b964c0080176c41875efa0acd12d892a457c656f841fe6775d7d47a956729",
+      "size": 427
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-ir-exact.json",
+      "sha256": "3c61ce7c8cb26edd49a6c05313c081c388fb61e622cbe9222b1e616c9ce97d59",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-ir-sampled.json",
+      "sha256": "abd71f2a65d62f3b9460af7900f7d0bf56f884049c1f13a6e380f3606373f3a1",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\bell_inverse-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-bitcode-circuit.json",
+      "sha256": "db741f378cf2358a49a216b3cb71f6dc57104b07b0511221efd2caac8bc8d4bf",
+      "size": 405
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-bitcode-exact.json",
+      "sha256": "69bc6fa96d9846b5ab2de6d874c87d5098d00c5019235bdcdd0530ab369bdb4f",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-bitcode-sampled.json",
+      "sha256": "da9117205ca326f3be78335fd27ad1698f56f7b19f22eb3b242835996d416d4c",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-ir-circuit.json",
+      "sha256": "db741f378cf2358a49a216b3cb71f6dc57104b07b0511221efd2caac8bc8d4bf",
+      "size": 405
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-ir-exact.json",
+      "sha256": "69bc6fa96d9846b5ab2de6d874c87d5098d00c5019235bdcdd0530ab369bdb4f",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-ir-sampled.json",
+      "sha256": "da9117205ca326f3be78335fd27ad1698f56f7b19f22eb3b242835996d416d4c",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\duplicate-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-bitcode-circuit.json",
+      "sha256": "9842c196239c960b9ff080256dcb6580ed3341bed3c38b23a6019ac67d9ecd45",
+      "size": 1233
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-bitcode-exact.json",
+      "sha256": "d00bcd0225d4699910ea7d6ac0026daea4605227d00c65e6911c227ca06b3bf3",
+      "size": 120
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-bitcode-sampled.json",
+      "sha256": "a4ba60f3ec6bcfb8e3f6f769859a8c7cc24751b2d967b9952d0b945a8004ad97",
+      "size": 139
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-ir-circuit.json",
+      "sha256": "9842c196239c960b9ff080256dcb6580ed3341bed3c38b23a6019ac67d9ecd45",
+      "size": 1233
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-ir-exact.json",
+      "sha256": "d00bcd0225d4699910ea7d6ac0026daea4605227d00c65e6911c227ca06b3bf3",
+      "size": 120
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-ir-sampled.json",
+      "sha256": "a4ba60f3ec6bcfb8e3f6f769859a8c7cc24751b2d967b9952d0b945a8004ad97",
+      "size": 139
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_10-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-bitcode-circuit.json",
+      "sha256": "df3d27eb90bca3a5fa6f9146498d4fa11dbdb0f9595412b7d2d70f8ea50707a2",
+      "size": 661
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-bitcode-exact.json",
+      "sha256": "1b23292f668ee76046b8a82df6d4f731370429e3bb90d71a40b38090cc4807d4",
+      "size": 98
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-bitcode-sampled.json",
+      "sha256": "eef4c899a8f1b71133c1e556469bba2b7aa40c8583ec87e9585e0e69555e2f4f",
+      "size": 117
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-ir-circuit.json",
+      "sha256": "df3d27eb90bca3a5fa6f9146498d4fa11dbdb0f9595412b7d2d70f8ea50707a2",
+      "size": 661
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-ir-exact.json",
+      "sha256": "1b23292f668ee76046b8a82df6d4f731370429e3bb90d71a40b38090cc4807d4",
+      "size": 98
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-ir-sampled.json",
+      "sha256": "eef4c899a8f1b71133c1e556469bba2b7aa40c8583ec87e9585e0e69555e2f4f",
+      "size": 117
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_5-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-bitcode-circuit.json",
+      "sha256": "be3352a143ca3376d469dc83b0954aee0e1da109731f774d861086f9887d4355",
+      "size": 775
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-bitcode-exact.json",
+      "sha256": "51e59414a1258afcdfcc4e94e29f3914544dec1fc97acc0f8c436b436fca349c",
+      "size": 102
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-bitcode-sampled.json",
+      "sha256": "6570c3a4e7053b6bee4552c18cdc877f71f5d6827bdd54e00d2c4dc1dd68a4c3",
+      "size": 121
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-ir-circuit.json",
+      "sha256": "be3352a143ca3376d469dc83b0954aee0e1da109731f774d861086f9887d4355",
+      "size": 775
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-ir-exact.json",
+      "sha256": "51e59414a1258afcdfcc4e94e29f3914544dec1fc97acc0f8c436b436fca349c",
+      "size": 102
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-ir-sampled.json",
+      "sha256": "6570c3a4e7053b6bee4552c18cdc877f71f5d6827bdd54e00d2c4dc1dd68a4c3",
+      "size": 121
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_6-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-bitcode-circuit.json",
+      "sha256": "f1f4e768c01fae3698e9bcb22484cce75c6a5239cbb505534e5e13e77d378022",
+      "size": 889
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-bitcode-exact.json",
+      "sha256": "3981a0dceee1c862fd4512efd7bc1dd67ddb940ef3c36bd7dbff542a8e25d9e2",
+      "size": 106
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-bitcode-sampled.json",
+      "sha256": "c3c87e53ca3e7bb0454228280b2b706d9886fc894e9f76423c6b1f2d0eca444e",
+      "size": 125
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-ir-circuit.json",
+      "sha256": "f1f4e768c01fae3698e9bcb22484cce75c6a5239cbb505534e5e13e77d378022",
+      "size": 889
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-ir-exact.json",
+      "sha256": "3981a0dceee1c862fd4512efd7bc1dd67ddb940ef3c36bd7dbff542a8e25d9e2",
+      "size": 106
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-ir-sampled.json",
+      "sha256": "c3c87e53ca3e7bb0454228280b2b706d9886fc894e9f76423c6b1f2d0eca444e",
+      "size": 125
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_7-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-bitcode-circuit.json",
+      "sha256": "2f279a3eecf87354a359f6aa401efa025e535e1f365d196e882d6b67ca013648",
+      "size": 1003
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-bitcode-exact.json",
+      "sha256": "6e5c3c180f2a7338eaac5e0133d2858410c8994fcbe54c014f2f5dc9cd43de99",
+      "size": 110
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-bitcode-sampled.json",
+      "sha256": "e09f0d9806e6945338616953962f18cbe2fcdb1e01cef577320da7a94899bc17",
+      "size": 129
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-ir-circuit.json",
+      "sha256": "2f279a3eecf87354a359f6aa401efa025e535e1f365d196e882d6b67ca013648",
+      "size": 1003
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-ir-exact.json",
+      "sha256": "6e5c3c180f2a7338eaac5e0133d2858410c8994fcbe54c014f2f5dc9cd43de99",
+      "size": 110
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-ir-sampled.json",
+      "sha256": "e09f0d9806e6945338616953962f18cbe2fcdb1e01cef577320da7a94899bc17",
+      "size": 129
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_8-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-bitcode-circuit.json",
+      "sha256": "7b3c75684caf26c40f55ba3c1e5550fa35a2233242c3600c29c240fc62de59b0",
+      "size": 1117
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-bitcode-exact.json",
+      "sha256": "bf58cef7697618a164328bd002eee308335d7ff9ea26224ad84d3fc99a553b25",
+      "size": 114
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-bitcode-sampled.json",
+      "sha256": "a27f9f4fce2da30a37d0b123e0354b533ae105e1ed4a22227891ecb94851080f",
+      "size": 133
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-ir-circuit.json",
+      "sha256": "7b3c75684caf26c40f55ba3c1e5550fa35a2233242c3600c29c240fc62de59b0",
+      "size": 1117
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-ir-exact.json",
+      "sha256": "bf58cef7697618a164328bd002eee308335d7ff9ea26224ad84d3fc99a553b25",
+      "size": 114
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-ir-sampled.json",
+      "sha256": "a27f9f4fce2da30a37d0b123e0354b533ae105e1ed4a22227891ecb94851080f",
+      "size": 133
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\ghz_9-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-bitcode-circuit.json",
+      "sha256": "83a6d2b8bb5f10c10ef843c43581a01d50f37c788d405309d77420e6589bb7a0",
+      "size": 720
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-bitcode-exact.json",
+      "sha256": "18ef45f26ea068df985b1ef44f489093b8ef759ecacbe2612526a15a1102a339",
+      "size": 99
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-bitcode-sampled.json",
+      "sha256": "36a8310ca4d61540fa9b9993ca0f1728139649bf7c328e15bac88ecebe59e992",
+      "size": 122
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-ir-circuit.json",
+      "sha256": "83a6d2b8bb5f10c10ef843c43581a01d50f37c788d405309d77420e6589bb7a0",
+      "size": 720
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-ir-exact.json",
+      "sha256": "18ef45f26ea068df985b1ef44f489093b8ef759ecacbe2612526a15a1102a339",
+      "size": 99
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-ir-sampled.json",
+      "sha256": "36a8310ca4d61540fa9b9993ca0f1728139649bf7c328e15bac88ecebe59e992",
+      "size": 122
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_10-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-bitcode-circuit.json",
+      "sha256": "03642d0c14767b0f63eaeb289cee73cc1e10a53a59feb6f7a03b1b388c704cc2",
+      "size": 433
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-bitcode-exact.json",
+      "sha256": "d6194fbfc13b65aff462606fa9fff0bc95529623315e68d9c9863dc6170d9d76",
+      "size": 82
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-bitcode-sampled.json",
+      "sha256": "845d85962523a6318bab12c76a16b255c7ebe5d5f04b0d7b8f27729ca40f358e",
+      "size": 105
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-ir-circuit.json",
+      "sha256": "03642d0c14767b0f63eaeb289cee73cc1e10a53a59feb6f7a03b1b388c704cc2",
+      "size": 433
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-ir-exact.json",
+      "sha256": "d6194fbfc13b65aff462606fa9fff0bc95529623315e68d9c9863dc6170d9d76",
+      "size": 82
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-ir-sampled.json",
+      "sha256": "845d85962523a6318bab12c76a16b255c7ebe5d5f04b0d7b8f27729ca40f358e",
+      "size": 105
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_5-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-bitcode-circuit.json",
+      "sha256": "47f54032fd06227afbb64ff10f31f7c9a1663964f583fa317f9c4636b916b5f7",
+      "size": 490
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-bitcode-exact.json",
+      "sha256": "d21b94b565ab00c4ab60c476d96ab648c2b80af4ef60e3b8db5eb09f3c46325f",
+      "size": 85
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-bitcode-sampled.json",
+      "sha256": "bb06419b9868343dd096e742cc5b82821c6c5be4b4c6cdda4300c9253fc23523",
+      "size": 108
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-ir-circuit.json",
+      "sha256": "47f54032fd06227afbb64ff10f31f7c9a1663964f583fa317f9c4636b916b5f7",
+      "size": 490
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-ir-exact.json",
+      "sha256": "d21b94b565ab00c4ab60c476d96ab648c2b80af4ef60e3b8db5eb09f3c46325f",
+      "size": 85
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-ir-sampled.json",
+      "sha256": "bb06419b9868343dd096e742cc5b82821c6c5be4b4c6cdda4300c9253fc23523",
+      "size": 108
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_6-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-bitcode-circuit.json",
+      "sha256": "35a3eff91e25b8b6c09735b346bafdcd10f25c82affd3b20c9d3150f743e4bad",
+      "size": 547
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-bitcode-exact.json",
+      "sha256": "0d5dad6252a327542928daed365d6101480a37a3bd62432926626cc98bd0472b",
+      "size": 88
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-bitcode-sampled.json",
+      "sha256": "2f711d678af4d7736c7e63b2060c71ed2102a039e7c8c94d0f4d9ed96b2a0b29",
+      "size": 111
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-ir-circuit.json",
+      "sha256": "35a3eff91e25b8b6c09735b346bafdcd10f25c82affd3b20c9d3150f743e4bad",
+      "size": 547
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-ir-exact.json",
+      "sha256": "0d5dad6252a327542928daed365d6101480a37a3bd62432926626cc98bd0472b",
+      "size": 88
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-ir-sampled.json",
+      "sha256": "2f711d678af4d7736c7e63b2060c71ed2102a039e7c8c94d0f4d9ed96b2a0b29",
+      "size": 111
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_7-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-bitcode-circuit.json",
+      "sha256": "74aec4b4d1275fea7a45abd6a6afbb9eaa8da497ef81952a30b919aec58a7e95",
+      "size": 604
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-bitcode-exact.json",
+      "sha256": "50a93ce2fa697b9a00eac856582932a4b8c2936feb8f5607f9279629379e5250",
+      "size": 91
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-bitcode-sampled.json",
+      "sha256": "c6b19bb757a2925318db4ade779f639f2af3f68871860e0bb2471c07cbd3bb9c",
+      "size": 114
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-ir-circuit.json",
+      "sha256": "74aec4b4d1275fea7a45abd6a6afbb9eaa8da497ef81952a30b919aec58a7e95",
+      "size": 604
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-ir-exact.json",
+      "sha256": "50a93ce2fa697b9a00eac856582932a4b8c2936feb8f5607f9279629379e5250",
+      "size": 91
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-ir-sampled.json",
+      "sha256": "c6b19bb757a2925318db4ade779f639f2af3f68871860e0bb2471c07cbd3bb9c",
+      "size": 114
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_8-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-bitcode-circuit.json",
+      "sha256": "248a95293ba5d7dbc46e82deac69e6d76627ec560b33c833d43a9c2d213738ea",
+      "size": 661
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-bitcode-exact.json",
+      "sha256": "a9445cfd149ea9cb28fcb0befb30f7e4cfa24c6b040feb9eeb22e5b519bb7fb2",
+      "size": 94
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-bitcode-sampled.json",
+      "sha256": "2bea67b387650000968944787703cea68a3b5482f506679d380d91e7b724a68d",
+      "size": 117
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-ir-circuit.json",
+      "sha256": "248a95293ba5d7dbc46e82deac69e6d76627ec560b33c833d43a9c2d213738ea",
+      "size": 661
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-ir-exact.json",
+      "sha256": "a9445cfd149ea9cb28fcb0befb30f7e4cfa24c6b040feb9eeb22e5b519bb7fb2",
+      "size": 94
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-ir-sampled.json",
+      "sha256": "2bea67b387650000968944787703cea68a3b5482f506679d380d91e7b724a68d",
+      "size": 117
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\high_wire_9-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-bitcode-circuit.json",
+      "sha256": "52128c68a7bf11d4aadb2ff038ee99a36b1feda8ef98a52e1ae373b516d8d678",
+      "size": 262
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-bitcode-exact.json",
+      "sha256": "265941bc2d376ca085d74dd49129190f1c31ba43e247a0477344bac379e92323",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-bitcode-sampled.json",
+      "sha256": "9f593d8bad7b4510a7bd26ddec69185aa09e3cbe35fb33ac06f05c506d016bd4",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-ir-circuit.json",
+      "sha256": "52128c68a7bf11d4aadb2ff038ee99a36b1feda8ef98a52e1ae373b516d8d678",
+      "size": 262
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-ir-exact.json",
+      "sha256": "265941bc2d376ca085d74dd49129190f1c31ba43e247a0477344bac379e92323",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-ir-sampled.json",
+      "sha256": "9f593d8bad7b4510a7bd26ddec69185aa09e3cbe35fb33ac06f05c506d016bd4",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\permuted-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-bitcode-circuit.json",
+      "sha256": "ef86e53253bc1d6fa8afebeb70da6330532bf3a69ce9de3a87afae100d881e21",
+      "size": 262
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-bitcode-exact.json",
+      "sha256": "609247ca82f67c5d70cca7307578006f7e7e0e5be07b0da0ab64660202f469b0",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-bitcode-sampled.json",
+      "sha256": "2e7e4807d5d2afb7653412f054372462f11513856d1553ff282589de32c67d63",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-ir-circuit.json",
+      "sha256": "ef86e53253bc1d6fa8afebeb70da6330532bf3a69ce9de3a87afae100d881e21",
+      "size": 262
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-ir-exact.json",
+      "sha256": "609247ca82f67c5d70cca7307578006f7e7e0e5be07b0da0ab64660202f469b0",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-ir-sampled.json",
+      "sha256": "2e7e4807d5d2afb7653412f054372462f11513856d1553ff282589de32c67d63",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q0-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-bitcode-circuit.json",
+      "sha256": "5c2b10a282679830f688da9382950e2d0b3a25c27e2f5b738d98ef29c7b70f4c",
+      "size": 262
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-bitcode-exact.json",
+      "sha256": "265941bc2d376ca085d74dd49129190f1c31ba43e247a0477344bac379e92323",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-bitcode-sampled.json",
+      "sha256": "9f593d8bad7b4510a7bd26ddec69185aa09e3cbe35fb33ac06f05c506d016bd4",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-ir-circuit.json",
+      "sha256": "5c2b10a282679830f688da9382950e2d0b3a25c27e2f5b738d98ef29c7b70f4c",
+      "size": 262
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-ir-exact.json",
+      "sha256": "265941bc2d376ca085d74dd49129190f1c31ba43e247a0477344bac379e92323",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-ir-sampled.json",
+      "sha256": "9f593d8bad7b4510a7bd26ddec69185aa09e3cbe35fb33ac06f05c506d016bd4",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\q1-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\results.json",
+      "sha256": "6e2e0d0efb210b05d4c41fde51d46798cf3f74026395c82c6dc643efd34d2cf3",
+      "size": 13537
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-bitcode-circuit.json",
+      "sha256": "271f6eb38c260df462e45ed588d256fce757b388d60471caf5a68e9d488e7135",
+      "size": 459
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-bitcode-exact.json",
+      "sha256": "55cedce03c875b5fd2479b079bb5917b3b5627e120e54ca7f404a3c1558d8eaf",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-bitcode-sampled.json",
+      "sha256": "f9069cbb404e220a84249e6ba773ba0cc15178bacfa804387dc879e6e33456c5",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-ir-circuit.json",
+      "sha256": "271f6eb38c260df462e45ed588d256fce757b388d60471caf5a68e9d488e7135",
+      "size": 459
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-ir-exact.json",
+      "sha256": "55cedce03c875b5fd2479b079bb5917b3b5627e120e54ca7f404a3c1558d8eaf",
+      "size": 73
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-ir-sampled.json",
+      "sha256": "f9069cbb404e220a84249e6ba773ba0cc15178bacfa804387dc879e6e33456c5",
+      "size": 96
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\snapshot-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-bitcode-circuit.json",
+      "sha256": "19bd964e6037513c54eff6a64cd58ac0dee5e2c0907bdb76840fc2fdb3f608ea",
+      "size": 181
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-bitcode-exact.json",
+      "sha256": "30caca458003f77e03acf73a1f7c7a66b35a33f5dea2058a54d7149795a00b2e",
+      "size": 68
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-bitcode-sampled.json",
+      "sha256": "4a825a0240fbe673d2b8be4e24d99c5de07e214a37618d95ad2e91c5e4dba6bb",
+      "size": 91
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-ir-circuit.json",
+      "sha256": "19bd964e6037513c54eff6a64cd58ac0dee5e2c0907bdb76840fc2fdb3f608ea",
+      "size": 181
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-ir-exact.json",
+      "sha256": "30caca458003f77e03acf73a1f7c7a66b35a33f5dea2058a54d7149795a00b2e",
+      "size": 68
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-ir-sampled.json",
+      "sha256": "4a825a0240fbe673d2b8be4e24d99c5de07e214a37618d95ad2e91c5e4dba6bb",
+      "size": 91
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unitary-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-bitcode-circuit.json",
+      "sha256": "b7700627b9eed57febd958a745c9b3aff56e7eee58e796abd76caef2b657c04b",
+      "size": 193
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-bitcode-exact.json",
+      "sha256": "30caca458003f77e03acf73a1f7c7a66b35a33f5dea2058a54d7149795a00b2e",
+      "size": 68
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-bitcode-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-bitcode-sampled.json",
+      "sha256": "4a825a0240fbe673d2b8be4e24d99c5de07e214a37618d95ad2e91c5e4dba6bb",
+      "size": 91
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-bitcode-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-ir-circuit.json",
+      "sha256": "b7700627b9eed57febd958a745c9b3aff56e7eee58e796abd76caef2b657c04b",
+      "size": 193
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-ir-exact.json",
+      "sha256": "30caca458003f77e03acf73a1f7c7a66b35a33f5dea2058a54d7149795a00b2e",
+      "size": 68
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-ir-exact.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-ir-sampled.json",
+      "sha256": "4a825a0240fbe673d2b8be4e24d99c5de07e214a37618d95ad2e91c5e4dba6bb",
+      "size": 91
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\run04\\unrecorded-ir-sampled.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native\\verify_retained.py",
+      "sha256": "bde3d149682bfa7675bafa8ccc6de31b8df337de2de05838c0794f0b53949c39",
+      "size": 1454
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native-run01.log",
+      "sha256": "f2dcf1ee377ccf6922cc59e03611f6c006ee201c3097ae0d0b65a900b2cdf14b",
+      "size": 1332
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native-run02.log",
+      "sha256": "0e4c4c84b777f0a3f22db4e02ecd5702ee617da5f2a6534f729cc61d4fd70dd3",
+      "size": 1334
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native-run03.log",
+      "sha256": "1d41b3cc75d07fa9f049fc4323679de8a992f2fbf686f61b4861a5de49b13781",
+      "size": 387
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-width-native-run04.log",
+      "sha256": "8bf74f86fe8a48d1b75f1696b0383423baab8d191edd0cd86ca843954a159300",
+      "size": 101
+    }
+  ],
+  "review": "pending",
+  "ci": false,
+  "release": false,
+  "limitations": [
+    "No general QIR, provider workflow or whole-source acceptance",
+    "Other native budgets remain in force",
+    "Empty-output cases establish output disposition only"
+  ]
+}

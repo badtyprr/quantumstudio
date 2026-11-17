@@ -8,12 +8,41 @@ import pyqir
 
 MAX_BYTES = 1024 * 1024
 MAX_INSTRUCTIONS = 4096
+# Matches the existing native exact-circuit wire limit; sampled execution can
+# support more, but this wire bound fits either engine. Other budgets still apply.
+MAX_QUBITS = 10
 GATES = {
     "h__body": ("h", 1), "x__body": ("x", 1), "y__body": ("y", 1),
     "z__body": ("z", 1), "s__body": ("s", 1), "s__adj": ("sdg", 1),
     "t__body": ("t", 1), "t__adj": ("tdg", 1),
     "cnot__body": ("cx", 2), "cz__body": ("cz", 2),
 }
+
+
+def terminal_output_targets(statements):
+    """Alias only a bijection of terminal measurements and final records.
+
+    Interleaved records, overwritten result slots and duplicate output records
+    need independent snapshots. Preserve their general lowering unchanged.
+    """
+    phase = 'gates'
+    measured, recorded = [], []
+    for statement in statements:
+        if isinstance(statement, str):
+            if phase != 'gates':
+                return None
+        elif statement[0] == 'measure':
+            if phase == 'outputs':
+                return None
+            phase = 'measurements'
+            measured.append(statement[2])
+        else:
+            phase = 'outputs'
+            recorded.append(statement[2])
+    if (not recorded or len(measured) != len(set(measured))
+            or len(recorded) != len(set(recorded)) or set(measured) != set(recorded)):
+        return None
+    return {result: len(recorded)-1-ordinal for ordinal, result in enumerate(recorded)}
 
 
 def import_qir(raw, *, bitcode=False):
@@ -45,7 +74,7 @@ def import_qir(raw, *, bitcode=False):
         raise ValueError("QIR_ENTRY_POINT_SHAPE")
     qubits = pyqir.required_num_qubits(entry)
     results = pyqir.required_num_results(entry)
-    if type(qubits) is not int or not 1 <= qubits <= 4:
+    if type(qubits) is not int or not 1 <= qubits <= MAX_QUBITS:
         raise ValueError("QIR_QUBIT_LIMIT")
     if type(results) is not int or not 0 <= results <= 64:
         raise ValueError("QIR_RESULT_LIMIT")
@@ -111,27 +140,32 @@ def import_qir(raw, *, bitcode=False):
             raise ValueError("QIR_UNSUPPORTED_CALL:" + name)
     if outputs and results + outputs > 64:
         raise ValueError("QIR_CLASSICAL_STORAGE_LIMIT")
+    targets = terminal_output_targets(statements)
     lines = ['OPENQASM 3.0;', 'include "stdgates.inc";', f'qubit[{qubits}] q;']
     if outputs:
-        lines.append(f"bit[{results}] result;")
+        if targets is None:
+            lines.append(f"bit[{results}] result;")
         lines.append(f"output bit[{outputs}] out;")
     for statement in statements:
         if isinstance(statement, str):
             lines.append(statement)
         elif statement[0] == "measure":
             _, qubit, result = statement
-            prefix = f"result[{result}] = " if outputs else ""
+            prefix = (f"out[{targets[result]}] = " if targets is not None
+                      else f"result[{result}] = " if outputs else "")
             lines.append(prefix + f"measure q[{qubit}];")
         else:
             _, ordinal, result = statement
             # OpenQASM bitstrings display highest index first; QIR records
             # appear chronologically. Snapshot each record at its call site.
-            lines.append(f"out[{outputs - 1 - ordinal}] = result[{result}];")
+            if targets is None:
+                lines.append(f"out[{outputs - 1 - ordinal}] = result[{result}];")
     qasm = "\n".join(lines) + "\n"
     return dict(route="qir-to-openqasm3", source_sha256=hashlib.sha256(raw).hexdigest(),
                 source_format="bitcode" if bitcode else "llvm-ir", entry_point=entry.name,
                 qubits=qubits, result_slots=results, output_slots=outputs,
                 output_order="QIR record order, leftmost bit first",
+                output_lowering="terminal-measurement-aliases" if targets is not None else "record-snapshots",
                 openqasm=qasm, execution_performed=False)
 
 

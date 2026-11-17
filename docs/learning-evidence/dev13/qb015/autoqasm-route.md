@@ -30,10 +30,12 @@ Two failures are preserved, not silently repaired:
   `module.num_qubits` when generating output records. LLVM verification is not
   evidence that these result references are semantically valid.
 
-Separate prerequisite diagnostics show QuantumStudio's current importer rejects
+Separate prerequisite diagnostics at the original audit revision show the importer rejects
 both original QIR forms at its four-qubit limit. Increasing that limit alone
-would not repair the invalid output record. No importer limit or external package
-was changed here. No cloud job was submitted and no provider bit order is inferred.
+would not repair the invalid output record. The later
+[native-width extension](../../dev14-static-qir-import.md) accepts up to ten qubits
+but still rejects these original inputs for the invalid result slot. No external
+package was changed. No cloud job was submitted and no provider bit order is inferred.
 
 `accepted: true` in this diagnostic witness means the selected definitions build
 and the pinned failures are reproduced. Its `qir_semantically_accepted` fields
