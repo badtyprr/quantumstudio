@@ -1,0 +1,192 @@
+{
+  "source_sha256": "fea8aac0228da80e41db72aec8de00d153286f2e44d61789f1b7c21eba56b6d0",
+  "source_cells_preserved": 8,
+  "original_code_cells": [
+    3,
+    5
+  ],
+  "observations": [
+    {
+      "ordinal": 1,
+      "horizon": 1437,
+      "idle": {
+        "0": [],
+        "1": [
+          [
+            0,
+            258
+          ]
+        ],
+        "2": [
+          [
+            0,
+            1437
+          ]
+        ],
+        "3": [
+          [
+            0,
+            1437
+          ]
+        ],
+        "4": [
+          [
+            0,
+            1437
+          ]
+        ]
+      },
+      "recomputed_states": [
+        "first_transpile_state",
+        "drawer_state"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "horizon": 7451,
+      "idle": {
+        "0": [
+          [
+            1621,
+            1801
+          ]
+        ],
+        "1": [
+          [
+            0,
+            256
+          ]
+        ],
+        "2": [
+          [
+            0,
+            7451
+          ]
+        ],
+        "3": [
+          [
+            0,
+            7451
+          ]
+        ],
+        "4": [
+          [
+            0,
+            7451
+          ]
+        ]
+      },
+      "recomputed_states": [
+        "first_transpile_state",
+        "drawer_state"
+      ]
+    }
+  ],
+  "controls_recomputed": 6,
+  "images": [
+    {
+      "original_cell": 3,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\rendered-outputs\\cell-5-output-0.png",
+      "sha256": "32b3f4f22fcad1f79b9ee984d88f77e15c452364ff5c3a81827ad030076041f3"
+    },
+    {
+      "original_cell": 5,
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\rendered-outputs\\cell-8-output-0.png",
+      "sha256": "d9a5278beb46c026ffebb0e524d0ddb480c0ab80a89a362395f1bfe61ce8cee0"
+    }
+  ],
+  "cleanup": {
+    "active_processes": 0,
+    "kernel_job_membership": true,
+    "method": "forced",
+    "engine_exit": null,
+    "launcher_exit": 0
+  },
+  "scope": "retained static schedules and pre-measurement scalar states; no dynamic/hardware or full dependency audit",
+  "reference_sha256": "0fd56c4cb1afa5e696ab788f9fa2465b2177b5de38250483d78fc816608fb84b",
+  "artifacts": [
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\cells.json",
+      "sha256": "ae067d14de2d61fdae16a00026282f10d1f86a369728d78bd9e5adea3cdcea44",
+      "size": 3647
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\engine-request.json",
+      "sha256": "de423c07855aec6f03a7d0487c9ac70b46dc8a8307bf6387fb93fd8dbb06717c",
+      "size": 26201
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\engine-result.json",
+      "sha256": "9849024601f0c1db6dd23eae31da5732c695c121319b940fa3b87a31cb1acad0",
+      "size": 290374
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\engine.stderr",
+      "sha256": "c1796c7e181c905250485f9e06e7638d9eecb5f737dae78411370772502896b5",
+      "size": 672
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\engine.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\events.jsonl",
+      "sha256": "f339fa040d0f63e31f543524b1b46c1be6c999ccb6d923c62860c98b192682da",
+      "size": 122007
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\executed.ipynb",
+      "sha256": "69ce1a04743663adfe491a35cf4c24b706973b05423f95e828bea7ed3d7b6fbb",
+      "size": 290017
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\kernel.json",
+      "sha256": "6e36514ee7862d7ea11eae75b4661275aaf47b6bddaa7fefc48f6014b099a7de",
+      "size": 121
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\rendered-outputs\\cell-5-output-0.png",
+      "sha256": "32b3f4f22fcad1f79b9ee984d88f77e15c452364ff5c3a81827ad030076041f3",
+      "size": 20420
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\rendered-outputs\\cell-8-output-0.png",
+      "sha256": "d9a5278beb46c026ffebb0e524d0ddb480c0ab80a89a362395f1bfe61ce8cee0",
+      "size": 50036
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\source-original.ipynb",
+      "sha256": "fea8aac0228da80e41db72aec8de00d153286f2e44d61789f1b7c21eba56b6d0",
+      "size": 5657
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\status.json",
+      "sha256": "7fc3638c5c375e2256108a278c2396a71a069459536bb6590c6c33d08504ca13",
+      "size": 293904
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\timing-cell-1.json",
+      "sha256": "454503be3e40015398ec518343b600c38ecf4e37243ef947fb6a0e01ba1613a5",
+      "size": 62356
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\timing-cell-2.json",
+      "sha256": "c30879f427e62deec890f6644dee23b71d6e6101463b01b23b91d4c9d5b50536",
+      "size": 103808
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\dev13-shared-runtime\\ibm-timing\\timing-controls.json",
+      "sha256": "a76c01b31b0d5c5bc866a24bd87dac52d3452ac7a000cbbefe3fd9c47b212f0b",
+      "size": 61854
+    }
+  ],
+  "audit_script": {
+    "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-source-audit\\audit.py",
+    "sha256": "61a48fd0c2c29a80f482769104ff09ae0aada25f7ede0c8faad2f3338dea289f"
+  },
+  "result_sha256": "a974802d56bdf9a4b7e2913f843c264c7af9eaf54172eaad5142616569404841",
+  "review": "pending",
+  "hosted_ci": false,
+  "released": false
+}
