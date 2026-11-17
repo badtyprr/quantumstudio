@@ -1,0 +1,5 @@
+*.py text eol=lf
+*.json text eol=lf
+*.lock text eol=lf
+# Preserve the reviewed observer byte stream bound by its source manifest.
+observers/qb013.py -text -whitespace

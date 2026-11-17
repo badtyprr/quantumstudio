@@ -2,7 +2,6 @@
   "version": 1,
   "id": "ibm019",
   "route": "notebook",
-  "profile": "qiskit-aer-win-py312",
   "source": {
     "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
     "sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
@@ -125,5 +124,9 @@
     "Original markdown SVG/page rendering",
     "Native mathematics and lesson interpretation"
   ],
-  "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance"
+  "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance",
+  "profiles": {
+    "win32": "qiskit-aer-win-py312",
+    "linux": "qiskit-aer-linux-py312"
+  }
 }

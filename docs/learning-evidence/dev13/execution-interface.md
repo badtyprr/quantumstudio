@@ -1,3 +1,5 @@
+> Historical two-contract interface. See [shared runtime integration](shared-runtime-integration.md) for the current implementation scope and pending validation.
+
 # DEV-13 reviewed notebook execution interface
 
 This increment executes the original IBM-019 and IBM-020 notebook cells in an
