@@ -263,6 +263,39 @@ coverage. Errors without a usable span continue to name only the entry file;
 no nearest statement or invented coordinate is substituted. These changes are
 unreleased development behavior, not a new published-artifact claim.
 
+### Final statement emission diagnostics (development)
+
+Both numerical and classical emitters attach the current statement's source
+span to otherwise unlocated adapter `ValueError` failures. Already located
+failures keep their more-specific origin, including failures within nested
+branches. Runtime while-loop reconstruction retains its original statement span
+so invalid conditions can identify the original loop. Compiler failures outside
+these emission stages and synthesized nodes with no source span retain their
+existing behavior; this is not complete DEV-16d coverage.
+
+Authored regressions cover unsupported controlled gates, delay/box statements,
+invalid branch/while casts and signed shift counts, nested dependency paths,
+module-header adaptation, unchanged stdin messages and recovery after failure.
+File-import tests also require failed compilations to emit no partial document
+on stdout. These diagnostics do not add timing, gate or classical semantics.
+
+### Adapter visitor diagnostics (development)
+
+The adapter's declaration, switch, branch, loop and transfer visitors annotate
+otherwise unlocated `ValueError` failures with their source statement. The
+gate/phase/measurement/reset wrappers apply the same rule while retaining their
+existing operation-origin propagation. Typed inner locations remain unchanged;
+upstream PyQASM validation and parser exception types keep their existing route.
+
+Branch nodes synthesized from a switch or runtime loop, and reconstructed
+runtime for-loops, retain the source statement they represent. Tests cover
+invalid runtime integer widths, switch targets/labels, branch/while casts,
+Boolean loop bounds, register slices and controlled phase counts. They also
+check generated control-flow conditions, nested inner failures, unchanged stdin
+text and compiler-hook restoration after failed imports. These authored tests
+do not establish whole-source coverage; earlier source transformations and
+upstream numerical runtime-condition failures remain separate audit targets.
+
 ## Subroutine locals resolved during compilation
 
 Classical import can now use the pinned compiler's own local scopes when a
