@@ -188,5 +188,151 @@
   "result_sha256": "a974802d56bdf9a4b7e2913f843c264c7af9eaf54172eaad5142616569404841",
   "review": "pending",
   "hosted_ci": false,
-  "released": false
+  "released": false,
+  "environment_replay": {
+    "runtime_revision": "31bb6fc379854973a2827a79cdcdf066b0e2ea26",
+    "comparison": {
+      "files": 26953,
+      "bytes": 701444778,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "module_inventories_identical": true,
+      "distributions": 62,
+      "module_files": 14353,
+      "accepted": true,
+      "fresh_install": false,
+      "visual_review": "Both original output PNGs inspected; same static layout; debug q0 delay866, measurements4589/5455, unused lanes7790; early labels overlap. Values from captured records, not pixels."
+    },
+    "dependency_requirements": 129,
+    "artifacts": [
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\file_inventory.py",
+        "sha256": "cf43df849a82b8a0246207dc53a57747fd77612069d02fa93575ea198feb9ae0",
+        "size": 1497
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\files-before.json",
+        "sha256": "fb05c072fd3df43a1640cd7dc8c0d7fa2a805d6aac10aeab96ea3c90ffc4644d",
+        "size": 6215126
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\files-after.json",
+        "sha256": "0f70f7385777b83395639384c3d3fed5195c104570fb9dbff43c411514e7d438",
+        "size": 6215126
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\modules-before.json",
+        "sha256": "377ac2046153c646bf2df6e26a469b8bd76222944472ab93535e7e34a5f52786",
+        "size": 3225932
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\modules-after.json",
+        "sha256": "377ac2046153c646bf2df6e26a469b8bd76222944472ab93535e7e34a5f52786",
+        "size": 3225932
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\dependency-closure.json",
+        "sha256": "44b45677749c3b80dec7d771840cc49c924fb927da569805f1eb2ff66f76f04f",
+        "size": 22955
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\audit.py",
+        "sha256": "67986651e1338364fa3b9fc1b9c36c0622fa9a687f99498465037e2a677e2b2a",
+        "size": 6121
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\result.json",
+        "sha256": "c910ef91ae739ae73ad18739b485cd1b60d0012a96a3f6647a5421987bba51a9",
+        "size": 6035
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\comparison.json",
+        "sha256": "bd3f491d7607e847bf8117e4260e24dfbba6ae83f320362057f4d5ad14f513e0",
+        "size": 429
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run.log",
+        "sha256": "4fe934d3a532d87c312553b4ad3396c105e8efd35c36e2f098eb745898ccbc81",
+        "size": 167
+      }
+    ],
+    "run_artifacts": [
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\cells.json",
+        "sha256": "4f097fd5bca47f3cc085761a1f5e2f0554f290873ad2cd9b475161ecd57bd39f",
+        "size": 3620
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\engine-request.json",
+        "sha256": "de423c07855aec6f03a7d0487c9ac70b46dc8a8307bf6387fb93fd8dbb06717c",
+        "size": 26201
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\engine-result.json",
+        "sha256": "ef3f17caee0ced886eabbc47dae96021b07d64bea2215ece556cc2857d955de2",
+        "size": 290213
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\engine.stderr",
+        "sha256": "c1796c7e181c905250485f9e06e7638d9eecb5f737dae78411370772502896b5",
+        "size": 672
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\engine.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\events.jsonl",
+        "sha256": "8a66d9d4be0c0dca31de13a885c421654059af30764f79818093055c89400488",
+        "size": 121847
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\executed.ipynb",
+        "sha256": "b866e732dc00e988e8bcb53a059cffdd1df2a17988f5bc1e68577d9f88cc23a8",
+        "size": 288984
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\kernel.json",
+        "sha256": "8be9c4fb95b2d3a480eee4ca22915d39bb09d9d96c7b8fd34419acb84f6d53cb",
+        "size": 121
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\rendered-outputs\\cell-5-output-0.png",
+        "sha256": "2ee6255cff9cdc1c377ac2eec3494ea1c9632cb39c46894c0a444b5a4a6ffeb9",
+        "size": 19750
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\rendered-outputs\\cell-8-output-0.png",
+        "sha256": "5b951607d6a1ec17bc81f90b43206897531aa0b51e73558274be4f2b36df74dc",
+        "size": 50050
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\source-original.ipynb",
+        "sha256": "fea8aac0228da80e41db72aec8de00d153286f2e44d61789f1b7c21eba56b6d0",
+        "size": 5657
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\status.json",
+        "sha256": "d398940c9a280969b784ea5999f42246aaced32efb944f7575e3f4ab7730ca31",
+        "size": 293743
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\timing-cell-1.json",
+        "sha256": "d952c2fb4bf17a2cb6a018052ef55a08f790d22933b47e809eee21b0172988de",
+        "size": 62208
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\timing-cell-2.json",
+        "sha256": "6afab350eb5ef17c44eb17e2f9c78b7117f1cb2894aa5bf766aaf2c738081d76",
+        "size": 103795
+      },
+      {
+        "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\timing-environment-replay\\run\\timing-controls.json",
+        "sha256": "306f037a7bd558d38282e6c79ca92d3b5f260a53664de7915495506cda2b9033",
+        "size": 61854
+      }
+    ]
+  }
 }

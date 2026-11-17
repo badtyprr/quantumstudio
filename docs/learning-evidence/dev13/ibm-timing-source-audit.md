@@ -9,8 +9,8 @@ SHA-256: `fea8aac0228da80e41db72aec8de00d153286f2e44d61789f1b7c21eba56b6d0`.
 The retained run used the restored runtime at `4c1e36d4a2f9782483232c6f80e4e91ebde3772d`
 and `timing-win-py312`: Python 3.12.10, Qiskit 2.6.1, Windows x64.
 The profile describes a 62-distribution closure including two custom pure-Python
-wheels. This audit does not establish a fresh install or before/after integrity
-of that full environment.
+wheels. The supplementary replay below checks before/after integrity of the
+retained environment; it does not establish a fresh install or wheel provenance.
 
 ## Cell-by-cell disposition
 
@@ -21,7 +21,7 @@ this is not an uninstrumented run of the original file.
 | Cell | Source requirement | Actual result / disposition |
 |---|---|---|
 | 0 | Title and purpose: visualize circuit timing | Non-executable framing; the two original figures are retained and inspected. |
-| 1 | Qiskit package requirement | Declares `qiskit[all]~=2.6.1`; run uses the pinned timing profile. Whole dependency integrity remains a separate gate. |
+| 1 | Qiskit package requirement | Declares `qiskit[all]~=2.6.1`; run uses the pinned timing profile. Supplementary replay checks exact pins, dependency closure and file integrity. |
 | 2 | Static scheduling, idle time, dynamic-circuit warning and default style | Interpretation retained: static fake-backend durations, with no dynamic scheduling or hardware accuracy claim. Linked content is classified below. |
 | 3 | Build H/CX circuit, five-qubit fake backend, transpile, draw | Passed unchanged. RZ/SX/RZ/CX preserves the Bell density; SX 258 plus CX 1179 gives horizon 1437 cycles. PNG is present in this original cell's output. |
 | 4 | Debug stylesheet heading | Non-executable introduction to cell 5. |
@@ -68,6 +68,32 @@ claim. Compiled-extension source correspondence remains unverified.
 - [Runtime timing guide](https://quantum.cloud.ibm.com/docs/en/ibm-quantum-compute/qiskit-runtime-circuit-timing): dynamic timing comes from Sampler job metadata requested with `scheduler_timing`, including branch/channel records. Its Plotly drawing route is separate. The current guide mentions dry-run jobs, but no service connection, job submission or dry-run was performed here.
 
 These live pages supplement the pinned source; they do not replace it or inherit
-its execution evidence. Remaining gates include environment integrity, broader
-linked examples, hosted CI, package/release verification and provider workflows.
+its execution evidence. Remaining gates include broader linked examples,
+hosted CI, package/release verification and provider workflows.
 No source checklist row or development checkbox closes in this change.
+
+## Supplementary environment replay
+
+A fresh execution at `31bb6fc379854973a2827a79cdcdf066b0e2ea26` reused the existing
+timing environment. All 62 installed distributions matched exact pins; Python
+requirements and 129 active dependency requirements, including requested extras,
+were satisfied. Installed module files were checked against available RECORD
+hashes. The 14,353-module inventory was identical before and after execution.
+All 26,953 files (701,444,778 bytes) across the environment, base interpreter and
+notebook runtime retained their bytes: zero additions, removals or changes.
+This checks consistency against installed metadata, not independent authenticity
+of the custom wheels or compiled-extension correspondence to upstream source.
+
+The new run again preserved eight original cells, executed both code cells and
+passed six authored controls. The host audit recomputed schedules, idle intervals
+and state comparisons from this run's records. Its random fake-backend targets
+gave horizons 1364 and 7790 cycles; the second q0 idle gap was 866 cycles, followed
+by a 4589-cycle measurement finishing alongside q1's 5455-cycle measurement.
+Both new original-output PNGs were inspected; early labels still overlap.
+Cleanup again reported job membership and zero active processes after forced
+termination. No hardware jobs were submitted.
+
+The full before/after inventories, dependency results, original outputs, scalar
+audit and comparison are in `timing-environment-replay/` under the evidence root.
+The committed JSON includes their hashes. The earlier run and its different
+durations remain intact; their evidence is not overwritten by this replay.
