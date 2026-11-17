@@ -13,6 +13,31 @@ COMMANDS = [[sys.executable, str(HERE / "qasm-import.py")]]
 
 
 class FileImportTests(unittest.TestCase):
+    def test_runtime_array_declaration_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/failure.inc";')
+        cases = [
+            ('qubit q; int i;\narray[int[65],1] a;\ni=a[0];', 2, 'Integer width must be 1–64, or omitted.'),
+            ('qubit q; float[64] x;\narray[float[16],1] a;\nx=a[0];', 2, 'Use float32/64 or angle widths 1–64.'),
+            ('qubit q;\n' + '\n'.join('array[int,0] a%d;' % i for i in range(4098)), 4098, 'Runtime storage exceeds 4096 array declarations.'),
+        ]
+        for body, line, expected in cases:
+            self.put('nested κ/failure.inc', body)
+            for command in COMMANDS:
+                with self.subTest(expected=expected, command=command):
+                    message = self.run_import(command, ['--source-file', str(main), '--classical'], success=False).strip()
+                    self.assertTrue(message.startswith('nested κ/failure.inc:%d:' % line), message)
+                    self.assertTrue(message.endswith(': ' + expected), message)
+                    self.assertEqual(self.run_import(command, ['--classical'], source='OPENQASM 3; include "stdgates.inc";\n' + body, success=False).strip(), expected)
+
+    def test_runtime_array_declaration_boundary(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "nested κ/boundary.inc";')
+        self.put('nested κ/boundary.inc', 'qubit q;\n' + '\n'.join('array[int,0] a%d;' % i for i in range(4096)))
+        for command in COMMANDS:
+            with self.subTest(command=command):
+                result = self.run_import(command, ['--source-file', str(main), '--classical'])
+                self.assertEqual(len(result['Circuit']['Arrays']), 4096)
+                self.assertEqual(result['Circuit']['Arrays'][-1]['Name'], 'a4095')
+
     def test_scope_and_variable_budget_locations(self):
         main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/failure.inc";')
         cases = [
