@@ -310,7 +310,7 @@ those semantics when adding whole-program serialization.
 
 ## Source checklist
 
-The original inventory contained 137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows). The [2026-11-17 qBraid reconciliation](learning-evidence/aud02/qbraid-catalog-20261117.md) adds three notebooks, bringing the tracked inventory to **137 IBM course sections, 12 IBM modules and 38 qBraid notebooks (187 rows)**. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
+The original inventory contained 137 IBM course sections, 12 IBM modules and 35 qBraid notebooks (184 rows). The [2026-11-17 qBraid reconciliation](learning-evidence/aud02/qbraid-catalog-20261117.md) adds three notebooks; the [IBM repository reconciliation](learning-evidence/aud02/ibm-catalog-20261117.md) adds two lessons and one module, bringing the tracked inventory to **139 IBM course sections, 13 IBM modules and 38 qBraid notebooks (190 rows)**. All whole-source audits below remain open: existing feature tests prove selected examples, not exhaustive coverage. These counts are inventory counts, not a percentage of the full goal. IDs below are stable; append new IDs when sources are discovered.
 
 Each row closes only after an evidence record lists every relevant formula/code cell, direct input versus adaptation, exact/approximate results, copy/save/import behavior where relevant, and all failures linked to development IDs. Mark access restrictions as blocked with a reason. Do not check a row merely because its title or one example is supported.
 
@@ -485,6 +485,10 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **IBM-135** [early-stages](https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/early-stages) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-136** [standing-up-team](https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/standing-up-team) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 - [ ] **IBM-137** [grant-writing](https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/grant-writing) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
+- [ ] **IBM-138** [courses/practical-near-term-qc/introduction.ipynb](https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/practical-near-term-qc/introduction.ipynb) — P2 / AUD-03; discovered in repository snapshot; public route and full source acceptance unverified; [static discovery](learning-evidence/aud02/ibm-catalog-20261117.md).
+
+- [ ] **IBM-139** [courses/tools-for-quantum-advantage/modern-workflows.mdx](https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/modern-workflows.mdx) — P2 / AUD-03; discovered in repository snapshot; public route and full source acceptance unverified; [static discovery](learning-evidence/aud02/ibm-catalog-20261117.md).
+
 ### ibm_module
 
 - [ ] **MOD-001** [quantum-mechanics/get-started-with-qiskit](https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/get-started-with-qiskit) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
@@ -499,6 +503,8 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **MOD-010** [computer-science/qft](https://quantum.cloud.ibm.com/learning/en/modules/computer-science/qft) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 - [ ] **MOD-011** [computer-science/shors-algorithm](https://quantum.cloud.ibm.com/learning/en/modules/computer-science/shors-algorithm) — P2 / AUD-03; full audit pending; evidence: not yet recorded.
 - [ ] **MOD-012** [computer-science/vqe](https://quantum.cloud.ibm.com/learning/en/modules/computer-science/vqe) — P2 / AUD-03; full audit pending; selected finite manual-adaptation evidence: [DEV-12](learning-evidence/DEV-12.md); whole-source audit remains pending.
+- [ ] **MOD-013** [modules/quantum-mechanics/nmr-with-qiskit.ipynb](https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/modules/quantum-mechanics/nmr-with-qiskit.ipynb) — P2 / AUD-03; discovered in repository snapshot; public route and full source acceptance unverified; [static discovery](learning-evidence/aud02/ibm-catalog-20261117.md).
+
 ### qbraid_notebook
 
 - [ ] **QB-001** [PyQASM-Examples/deutsch_josza_unroll.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb) — P1 / AUD-01; full audit pending; evidence: not yet recorded.
@@ -541,7 +547,7 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 - [ ] **QB-037** [qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb) — P2 / AUD-04; newly discovered; full notebook/provider audit pending; [static discovery](learning-evidence/aud02/qbraid-catalog-20261117.md).
 - [ ] **QB-038** [qBraid-Runtime/qperfect_mimiq_quickstart.ipynb](https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qperfect_mimiq_quickstart.ipynb) — P2 / AUD-04; newly discovered; full notebook/provider audit pending; [static discovery](learning-evidence/aud02/qbraid-catalog-20261117.md).
 
-## Discovery checklist (outside the 187 tracked rows)
+## Discovery checklist (outside the 190 tracked rows)
 
 - [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs.
 - [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks.
