@@ -57,6 +57,64 @@ class SourceBundleTests(unittest.TestCase):
                 compiler.convert('OPENQASM 3; ' + body, classical=True)
             self.assertEqual(str(caught.exception), message)
 
+    def test_emission_dependency_diagnostics(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            ('qubit[26] q;', 'qubit', False, 'The circuit editor currently supports 1–25 qubits.'),
+            ('qubit[25] q; qubit extra;', 'qubit extra', False,
+             'The circuit editor currently supports 1–25 qubits.'),
+            ('qubit q; for int i in [0:512] { x q; }', 'x q', False,
+             'The compiled circuit exceeds the editor limit of 512 steps.'),
+            ('qubit q; for int i in [0:512] { x q; }', 'x q', True,
+             'Classical circuits support at most 512 total operations.'),
+            ('qubit[3] q; ctrl(3) @ gphase(pi) q[0],q[1],q[2];', 'ctrl(3)', False,
+             'Controlled global phase currently supports one or two controls.'),
+            ('qubit[3] q; ctrl(3) @ gphase(pi) q[0],q[1],q[2];', 'ctrl(3)', True,
+             'Controlled global phase currently supports one or two controls.'),
+            ('qubit q; delay[1ns] q;', 'delay', False,
+             'The editor cannot represent DelayInstruction. Runtime classical feedback, timing and pulse programs require a richer execution model.'),
+            ('qubit q; delay[1ns] q;', 'delay', True,
+             'Classical circuit import cannot yet represent DelayInstruction.'),
+            ('int n; for bool i in [0:n] { }', 'for bool', True,
+             'Runtime for loops currently require an integer binding and a range.'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/body.inc";')
+        for body, token, classical, message in cases:
+            for module in (False, True):
+                with self.subTest(body=body, classical=classical, module=module):
+                    prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                    self.put('nested κ/body.inc', prefix + '  ' + body)
+                    with self.assertRaises(SourceError) as caught:
+                        compile_source(capture_source(main, module_headers=module), compiler.convert, classical=classical)
+                    self.assertEqual(str(caught.exception),
+                                     f'nested κ/body.inc:2:{body.index(token) + 3}: {message}')
+            with self.assertRaises(ValueError) as caught:
+                compiler.convert('OPENQASM 3; include "stdgates.inc"; ' + body, classical=classical)
+            self.assertEqual(str(caught.exception), message)
+
+    def test_expanded_gate_provenance_and_limit_boundary(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        self.put('defs.inc', 'gate inner a {\n    x a;\n}\ngate outer a {\n  inner a;\n}')
+        prefix = 'OPENQASM 3; include "stdgates.inc"; include "defs.inc"; qubit q; '
+        for classical, message in ((False, 'The compiled circuit exceeds the editor limit of 512 steps.'),
+                                   (True, 'Classical circuits support at most 512 total operations.')):
+            with self.subTest(classical=classical):
+                main = self.put('main.qasm', prefix + 'for int i in [0:511] { outer q; }')
+                result = compile_source(capture_source(main), compiler.convert, classical=classical)
+                self.assertEqual(len(result['Steps']), 512)
+                self.put('main.qasm', prefix + 'for int i in [0:512] { outer q; }')
+                with self.assertRaises(SourceError) as caught:
+                    compile_source(capture_source(main), compiler.convert, classical=classical)
+                self.assertEqual(str(caught.exception), 'defs.inc:2:5: ' + message)
+        main = self.put('main.qasm', 'OPENQASM 3;')
+        with self.assertRaises(SourceError) as caught:
+            compile_source(capture_source(main), compiler.convert)
+        self.assertEqual(str(caught.exception), 'main.qasm: The circuit editor currently supports 1–25 qubits.')
+
     def mapped_token(self, bundle, token, name, original, occurrence=0):
         offset = -1
         for _ in range(occurrence + 1):

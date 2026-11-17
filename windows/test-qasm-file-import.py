@@ -77,6 +77,31 @@ class FileImportTests(unittest.TestCase):
                         self.assertIn(detail, plain)
                         self.assertNotIn('helper.inc', plain)
 
+    def test_emission_dependency_diagnostics(self):
+        cases = [
+            ('qubit[25] q; qubit extra;', 'qubit extra', False, 'The circuit editor currently supports'),
+            ('qubit q; for int i in [0:512] { x q; }', 'x q', False, 'The compiled circuit exceeds'),
+            ('qubit q; for int i in [0:512] { x q; }', 'x q', True, 'Classical circuits support at most 512'),
+            ('qubit[3] q; ctrl(3) @ gphase(pi) q[0],q[1],q[2];', 'ctrl(3)', False, 'Controlled global phase'),
+            ('qubit q; delay[1ns] q;', 'delay', False, 'The editor cannot represent DelayInstruction.'),
+            ('qubit q; delay[1ns] q;', 'delay', True, 'Classical circuit import cannot yet represent DelayInstruction.'),
+            ('int n; for bool i in [0:n] { }', 'for bool', True, 'Runtime for loops currently require'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/body.inc";')
+        for body, token, classical, detail in cases:
+            for command in COMMANDS:
+                for module in (False, True):
+                    with self.subTest(body=body, classical=classical, command=command, module=module):
+                        prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                        self.put('nested κ/body.inc', prefix + '  ' + body)
+                        args = ['--source-file', str(main)]
+                        if classical:
+                            args.append('--classical')
+                        if module:
+                            args.append('--module-headers')
+                        message = self.run_import(command, args, success=False)
+                        self.assertIn(f'nested κ/body.inc:2:{body.index(token) + 3}: {detail}', message)
+
     def test_entry_suffix_parser_diagnostic(self):
         text = 'OPENQASM 3; include "helper.inc"; qubit q x q;'
         main = self.put("main.qasm", text)
