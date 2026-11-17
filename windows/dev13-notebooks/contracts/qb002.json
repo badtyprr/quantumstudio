@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "id": "qb002",
+  "route": "notebook",
+  "profile": "autoqasm-win-py312",
+  "source": {
+    "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_processing.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "4a82502bb158e79847b569785edbd470ce9d03b80773558ebb6d4996b1eba546",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "094ba70d8e5886a43755648af82d0e2433e9405c713c75ecf91ce5a7e970a75f"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "bb4b064cc1decc8806d6a0a313ce065ea5b2ddba2c376445b9c05b20c3c73d91"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "7978e60608530a54a5234fd0963e422f4fd3d1e6e151f9204ebdabed8bb6bfa5"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "acfa7fb15369c4cd0337709adef5728464c454e9fe0bbf0a7e7febf45d7219b5"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "24d2f04ac71ae5c5732cffccfb11f93d0dcbb64b95c09dfc418287cbc2213094"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "33156a5364d4828ba02c8abacb33faee34b815e587b31d0c81bf552543a87b11"
+      },
+      {
+        "index": 8,
+        "type": "markdown",
+        "sha256": "1121214f2ef8ae55813fa27b958c4a941f9b2299c2fb4dd4cbd4b04b1910bc77"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "4d3959770362c934509a8f4e37c5d0ec8985f37e2662b4e1bdb2679fd284696e"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "4d3dafc68b7c95ce0a77bad2550bc7bb6eb6f74e7630cf6bd3bab0dd93389104"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "81dd48da2a242276eec1121ceb1725440905f7cd3ed65d74b4ca431221a99524"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "c48708fc7b7ab4bd50395cb27046e5e5a1a4f1f9fa3fde9bf4baf8312e0b3f8d"
+      },
+      {
+        "index": 14,
+        "type": "code",
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "3280d70927458894bed03983b7e3e166752602bf730e480545be1732fca9c8ca"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "cab1cac7fb0773b2478af7de91af2880121a1709647fc43bdd8d3b22f40e5ab8"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "6a6b9721aead99995112e446b4ed384ca3c00747502478ae567e1b684145d6b3"
+      },
+      {
+        "index": 19,
+        "type": "markdown",
+        "sha256": "564b206d0d6f4f7de17f2ad8484f0f32f88e55f469529c23205fe26bee5ca30f"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "7dd1ea666a7c35c54bd67d0adf24c32c18ec0286e41e932d51449c9fd8874f28"
+      },
+      {
+        "index": 21,
+        "type": "code",
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+      },
+      {
+        "index": 22,
+        "type": "code",
+        "sha256": "4a8aff350332b874c1f9b893d41ad00780272b0123ff4f7cfe0e9c9e7e272047"
+      },
+      {
+        "index": 23,
+        "type": "markdown",
+        "sha256": "83febf9d0ef8cf039b0464918aec10794486ffa061fcf8a0906bf93bf627ea88"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "bcf570f876d356717a89ebef142fc0a5880d68a84e90c3595e7fcfe24d245617"
+      },
+      {
+        "index": 25,
+        "type": "code",
+        "sha256": "de301a53e920336b2437efc5ac9a13f2a6f088370fb94e445bd3f1e6b4b00415"
+      },
+      {
+        "index": 26,
+        "type": "code",
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+      },
+      {
+        "index": 27,
+        "type": "markdown",
+        "sha256": "836c78be446cd746caffe966388dbe07ce289a56520b1c71d8308d6f72a1c612"
+      },
+      {
+        "index": 28,
+        "type": "markdown",
+        "sha256": "719971ee0a0fc65f7a774fc219bc50a7f20977ffbb58f19112c4afaca7820c5e"
+      },
+      {
+        "index": 29,
+        "type": "code",
+        "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773"
+      },
+      {
+        "index": 30,
+        "type": "code",
+        "sha256": "4d3dafc68b7c95ce0a77bad2550bc7bb6eb6f74e7630cf6bd3bab0dd93389104"
+      },
+      {
+        "index": 31,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    17,
+    18,
+    20,
+    21,
+    22,
+    25,
+    26,
+    29,
+    30
+  ],
+  "preamble": null,
+  "required_images": [],
+  "required_text": {
+    "2": "'1.3.0'",
+    "9": "(10, 10)",
+    "11": "5",
+    "15": "(7, 10)",
+    "17": "True",
+    "18": "True",
+    "29": "(7, 10)",
+    "30": "4"
+  },
+  "setup": {
+    "cell": 1,
+    "commands": [
+      "install pyqasm --quiet"
+    ],
+    "observer_sha256": "d38ae6bf03b2b18e8f593d2654af3a5d5d442a7372b4bfb1ea220a1b96b74996",
+    "check_sha256": "5e74fd4cec9def11757cf98c8b3490f3f54e1b65fede8cb868c4c43d6421872a"
+  },
+  "post_cell_observers": [
+    {
+      "after_original_index": 10,
+      "role": "postcell-observer",
+      "path": "observers/qb002_checkpoint.py",
+      "sha256": "acad8fbc8812fd06d91582985f384ef06125d012e3aa4dd8276eb7f6416ab908"
+    },
+    {
+      "after_original_index": 13,
+      "role": "postcell-observer",
+      "path": "observers/qb002_checkpoint.py",
+      "sha256": "acad8fbc8812fd06d91582985f384ef06125d012e3aa4dd8276eb7f6416ab908"
+    },
+    {
+      "after_original_index": 20,
+      "role": "postcell-observer",
+      "path": "observers/qb002_checkpoint.py",
+      "sha256": "acad8fbc8812fd06d91582985f384ef06125d012e3aa4dd8276eb7f6416ab908"
+    },
+    {
+      "after_original_index": 25,
+      "role": "postcell-observer",
+      "path": "observers/qb002_checkpoint.py",
+      "sha256": "acad8fbc8812fd06d91582985f384ef06125d012e3aa4dd8276eb7f6416ab908"
+    }
+  ],
+  "witness": {
+    "path": "witnesses/qb002.py",
+    "sha256": "0f8ed7c07f74cf1f42d83737a5849e9334c2065ca093109ab7e604e313e048ba",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "acceptance_field": "accepted",
+  "output_artifacts": [
+    "setup-evidence.json",
+    "transformations.json",
+    "*.qasm"
+  ]
+}
