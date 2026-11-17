@@ -572,7 +572,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         end = qreg_size-1 if range_def.end is None else Qasm3ExprEvaluator.evaluate_expression(range_def.end)[0]
         step = 1 if range_def.step is None else Qasm3ExprEvaluator.evaluate_expression(range_def.step)[0]
         if any(type(value) is not int for value in (start, end, step)) or step == 0:
-            raise ValueError('Register ranges require integer bounds and a nonzero integer step.')
+            raise error_at(op_node,'Register ranges require integer bounds and a nonzero integer step.')
         for index in (start, end):
             Qasm3Validator.validate_register_index(index, qreg_size, qubit=is_qubit_reg, op_node=op_node)
         return list(range(start, end+(1 if step > 0 else -1), step))
@@ -772,8 +772,8 @@ def resolve_integer_scopes(program):
         result=ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=ast.IntegerLiteral(0))
         result._quantum_clear=True
         return result
-    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None):
-        if depth>32:raise ValueError('Classical scopes exceed 32 levels.')
+    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None,origin=None):
+        if depth>32:raise error_at(origin,'Classical scopes exceed 32 levels.')
         env=dict(parent);declared=set() if declared is None else set(declared);local=[];result=[]
         for statement in body:
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
@@ -784,7 +784,7 @@ def resolve_integer_scopes(program):
                 expression(statement.type,env)
                 renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
                 if integer:
-                    if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                    if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
                     statement._quantum_scoped=depth>0
                     env[name]=renamed
                     if depth:scoped.add(renamed);local.append(renamed)
@@ -793,32 +793,32 @@ def resolve_integer_scopes(program):
                 result.append(statement)
             elif isinstance(statement,ast.BranchingStatement):
                 expression(statement.condition,env)
-                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement)
                 result.append(statement)
             elif isinstance(statement,ast.SwitchStatement):
                 expression(statement.target,env)
                 for labels,case in statement.cases:
-                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
-                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=case)
+                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement.default)
                 result.append(statement)
             elif isinstance(statement,ast.WhileLoop):
                 expression(statement.while_condition,env)
-                block(statement.block,env,depth+1,loop_kind="while");result.append(statement)
+                block(statement.block,env,depth+1,loop_kind="while",origin=statement);result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
                 if getattr(statement,'_quantum_runtime_for',False):
                     # A real local declaration gives the binding its own slot.
                     # The engine owns the independent cursor and clears the slot
                     # on loop exit; ordinary scope cleanup handles body locals.
-                    binding=ast.ClassicalDeclaration(type=copy.deepcopy(statement.type),identifier=copy.deepcopy(statement.identifier))
+                    binding=copy_span(ast.ClassicalDeclaration(type=copy.deepcopy(statement.type),identifier=copy.deepcopy(statement.identifier)),statement)
                     binding._quantum_for_binding=True
                     statement.block.insert(0,binding)
-                    block(statement.block,env,depth+1,loop_kind="while")
+                    block(statement.block,env,depth+1,loop_kind="while",origin=statement)
                     statement.identifier=copy.deepcopy(binding.identifier)
                     result.append(statement);continue
                 name=statement.identifier.name;renamed=fresh(name) if name in env else name
                 statement.identifier.name=renamed;inner=dict(env);inner[name]=renamed
-                block(statement.block,inner,depth+1,{name},loop_kind="for");result.append(statement)
+                block(statement.block,inner,depth+1,{name},loop_kind="for",origin=statement);result.append(statement)
             elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
                 if loop_kind!="while":
                     raise ValueError("Break and continue currently require an enclosing while loop; for-loop transfer lowering is not yet supported.")
@@ -827,7 +827,7 @@ def resolve_integer_scopes(program):
                     result.extend(clear(name) for name in reversed(scope))
                 statement._quantum_loop_transfer=True;result.append(statement)
             elif isinstance(statement,ast.CompoundStatement):
-                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);result.extend(statement.statements)
+                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement);result.extend(statement.statements)
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
                 result.append(statement)
             else:
@@ -1419,7 +1419,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             if isinstance(statement.type,(ast.IntType,ast.UintType)):
                 name=statement.identifier.name;size=statement.type.size.value
                 sign='Signed' if isinstance(statement.type,ast.IntType) else 'Unsigned'
-                if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
                 if name in variables:
                     if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
                     continue

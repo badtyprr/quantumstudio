@@ -179,6 +179,36 @@ class SourceBundleTests(unittest.TestCase):
                     self.assertEqual(str(caught.exception),
                                      f'phase.inc:2:{body.index(token) + 3}: Timed gates are not supported.')
 
+    def test_declaration_range_and_scope_locations(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            ('int ' + 'n' * 65 + ';', 0, True, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('float ' + 'n' * 65 + ';', 0, True, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('int ' + '𝑎' * 33 + ';', 0, True, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('int n; for int ' + 'i' * 65 + ' in [0:n] { }', 7, True,
+             'Integer variable names must fit 64 UTF-16 code units.'),
+            ('qubit[3] q; x q[0:0:2];', 12, False, 'Register ranges require integer bounds and a nonzero integer step.'),
+            ('qubit[3] q; x q[0:0:2];', 12, True, 'Register ranges require integer bounds and a nonzero integer step.'),
+            ('{' * 33 + 'int n;' + '}' * 33, 32, True, 'Classical scopes exceed 32 levels.'),
+        ]
+        for statement, offset in [('if(true) { }', 0), ('while(false) { }', 0),
+                                  ('for int i in [0:0] { }', 0), ('switch(0) { case 0 { } }', 19)]:
+            cases.append(('{' * 32 + statement + '}' * 32, 32 + offset, True,
+                          'Classical scopes exceed 32 levels.'))
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "limits.inc";')
+        for body, offset, classical, message in cases:
+            self.put('limits.inc', '// dependency\n  ' + body)
+            with self.subTest(body=body, classical=classical):
+                with self.assertRaises(SourceError) as caught:
+                    compile_source(capture_source(main), compiler.convert, classical=classical)
+                self.assertEqual(str(caught.exception), f'limits.inc:2:{offset + 3}: {message}')
+        for body in ('int ' + 'n' * 64 + ';', 'int ' + '𝑎' * 32 + ';', '{' * 32 + 'int n;' + '}' * 32):
+            with self.subTest(valid=body):
+                result = compiler.convert('OPENQASM 3; ' + body, classical=True)
+                self.assertEqual(len(result['Variables']), 1)
+
     def mapped_token(self, bundle, token, name, original, occurrence=0):
         offset = -1
         for _ in range(occurrence + 1):
