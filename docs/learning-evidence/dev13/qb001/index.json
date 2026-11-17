@@ -1,0 +1,828 @@
+{
+  "source": {
+    "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb",
+    "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+    "cells": 9
+  },
+  "scope": "all9originalcells/6codecells; fixed4-input parity; authored structural/state and nativeoutput checks",
+  "original_code_cells": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7
+  ],
+  "result": {
+    "state": "succeeded",
+    "original_execution": "succeeded",
+    "authored_verification": "succeeded",
+    "independent_results": {
+      "accepted": true,
+      "original_qasm_sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08",
+      "unrolled_qasm_sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782",
+      "structural_and_authored_state_checks": {
+        "operations": [
+          [
+            "x",
+            4
+          ],
+          [
+            "h",
+            0
+          ],
+          [
+            "h",
+            1
+          ],
+          [
+            "h",
+            2
+          ],
+          [
+            "h",
+            3
+          ],
+          [
+            "h",
+            4
+          ],
+          [
+            "cx",
+            0,
+            4
+          ],
+          [
+            "cx",
+            1,
+            4
+          ],
+          [
+            "cx",
+            2,
+            4
+          ],
+          [
+            "cx",
+            3,
+            4
+          ],
+          [
+            "h",
+            0
+          ],
+          [
+            "h",
+            1
+          ],
+          [
+            "h",
+            2
+          ],
+          [
+            "h",
+            3
+          ],
+          [
+            "measure",
+            0,
+            0
+          ],
+          [
+            "measure",
+            1,
+            1
+          ],
+          [
+            "measure",
+            2,
+            2
+          ],
+          [
+            "measure",
+            3,
+            3
+          ]
+        ],
+        "integer_state": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          16,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -16
+        ],
+        "hadamards": 9,
+        "amplitude_denominator": "sqrt(2)^9",
+        "expected_data": "1111",
+        "data_probability": "1",
+        "ancilla": "minus",
+        "basis_convention": "q0 least significant; ancilla bit4"
+      },
+      "native_execution_performed": false,
+      "provider_jobs_submitted": false,
+      "scope": "all original notebook cells plus authored finite structural/state witness",
+      "limitations": [
+        "Integer state is an authored interpretation, not a native worker state observation",
+        "No general unroller, GUI, linked-article or released acceptance claim"
+      ]
+    },
+    "witness_stderr": "",
+    "source_cells_preserved": true,
+    "output_artifacts": {
+      "setup-evidence.json": {
+        "bytes": 43245,
+        "sha256": "657907a484b0303dcc1fa112d3bb07b040031144ecd1ed9d75905accf9ec0cf5"
+      },
+      "original.qasm": {
+        "bytes": 922,
+        "sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08"
+      },
+      "unrolled.qasm": {
+        "bytes": 363,
+        "sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782"
+      }
+    }
+  },
+  "status": {
+    "version": 1,
+    "state": "succeeded",
+    "contract": "qb001",
+    "route": "notebook",
+    "source_sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+    "contract_sha256": "eca004e55a625c828c34fd295ad62aede9821e71fd8015c6031e004e7e91dfe1",
+    "identity": {
+      "python": "3.12.10",
+      "platform": "win32",
+      "architecture": "64bit",
+      "executable": "F:\\src\\libqalculate\\.tools\\qb015-autoqasm-env-20261117\\Scripts\\python.exe",
+      "packages": {
+        "amazon-braket-default-simulator": "1.43.1",
+        "amazon-braket-schemas": "1.33.0",
+        "amazon-braket-sdk": "1.127.8",
+        "annotated-types": "0.8.0",
+        "antlr4-python3-runtime": "4.13.2",
+        "asttokens": "3.0.2",
+        "astunparse": "1.6.3",
+        "attrs": "26.1.0",
+        "autoqasm": "0.7.0",
+        "backoff": "2.2.1",
+        "boltons": "26.2.0",
+        "boto3": "1.44.4",
+        "botocore": "1.44.4",
+        "certifi": "2026.10.23",
+        "charset-normalizer": "3.5.2",
+        "cloudpickle": "2.2.1",
+        "colorama": "0.4.6",
+        "comm": "0.2.3",
+        "contourpy": "1.4.0",
+        "cycler": "0.12.1",
+        "debugpy": "1.8.22",
+        "diastatic-malt": "2.15.3",
+        "executing": "2.3.0",
+        "fastjsonschema": "2.22.3",
+        "fonttools": "4.68.0",
+        "idna": "3.20",
+        "ipykernel": "7.4.0",
+        "ipython": "9.18.1",
+        "ipython-pygments-lexers": "1.1.1",
+        "jedi": "0.20.1",
+        "jmespath": "1.1.0",
+        "jsonschema": "4.26.0",
+        "jsonschema-specifications": "2025.9.1",
+        "jupyter-client": "8.10.0",
+        "jupyter-core": "5.9.1",
+        "kiwisolver": "1.5.1",
+        "llvmlite": "0.50.0",
+        "matplotlib": "3.11.2",
+        "matplotlib-inline": "0.2.2",
+        "mpmath": "1.3.0",
+        "mypy-extensions": "1.2.0",
+        "nbclient": "0.11.0",
+        "nbformat": "5.11.1",
+        "nest-asyncio": "1.6.0",
+        "nest-asyncio2": "1.7.4",
+        "networkx": "3.7",
+        "numba": "0.68.1",
+        "numpy": "2.5.5",
+        "openpulse": "1.0.1",
+        "openqasm3": "1.0.2",
+        "openqasm-pygments": "0.2.0",
+        "opt-einsum": "3.4.0",
+        "oqpy": "0.3.11",
+        "packaging": "26.3",
+        "parso": "0.8.7",
+        "pillow": "13.0.0",
+        "pip": "25.0.1",
+        "platformdirs": "4.14.5",
+        "prompt-toolkit": "3.0.53",
+        "psutil": "7.2.2",
+        "pure-eval": "0.2.4",
+        "pydantic": "2.14.3",
+        "pydantic-core": "2.50.4",
+        "pygments": "2.21.0",
+        "pyparsing": "3.3.3",
+        "pyqasm": "1.3.0",
+        "pyqir": "0.12.8",
+        "python-dateutil": "2.9.0.post0",
+        "pyzmq": "27.3.0",
+        "qbraid": "0.13.0",
+        "qbraid-core": "0.6.54",
+        "qbraid-qir": "0.6.1",
+        "referencing": "0.37.0",
+        "requests": "2.34.2",
+        "rpds-py": "2026.9.1",
+        "rustworkx": "0.18.1",
+        "s3transfer": "0.19.3",
+        "scipy": "1.18.1",
+        "six": "1.17.0",
+        "stack-data": "0.6.3",
+        "sympy": "1.14.0",
+        "termcolor": "3.3.0",
+        "tornado": "6.6.1",
+        "traitlets": "5.16.1",
+        "typing-extensions": "4.16.0",
+        "typing-inspection": "0.4.5",
+        "urllib3": "2.8.0",
+        "wcwidth": "0.9.4",
+        "wheel": "0.48.0"
+      }
+    },
+    "profile": {
+      "version": 2,
+      "id": "autoqasm-win-py312",
+      "python": "3.12.10",
+      "platform": "win32",
+      "architecture": "64bit",
+      "lock": "autoqasm-requirements.lock",
+      "lock_sha256": "d12b3f58bb97c13d87205d989ee70dd57027923456844e671abee55785c3992e",
+      "offline_only": true,
+      "wheel_requirement": "89 retained hash-pinned Windows-compatible wheels",
+      "default_cell_timeout_seconds": 180,
+      "cancel_grace_seconds": 5,
+      "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+      "exact_packages": true
+    },
+    "original_execution": "succeeded",
+    "authored_verification": "succeeded",
+    "external_resources": "outstanding",
+    "interpretation": "outstanding",
+    "launcher_pid": 22984,
+    "engine_pid": null,
+    "launcher_identity": {
+      "launcher_pid": 22984,
+      "creation_filetime": 134393976313078980,
+      "image": "F:\\src\\libqalculate\\.tools\\qb015-autoqasm-env-20261117\\Scripts\\python.exe",
+      "specific_job_member": true,
+      "held_handle": true
+    },
+    "independent_results": {
+      "accepted": true,
+      "original_qasm_sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08",
+      "unrolled_qasm_sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782",
+      "structural_and_authored_state_checks": {
+        "operations": [
+          [
+            "x",
+            4
+          ],
+          [
+            "h",
+            0
+          ],
+          [
+            "h",
+            1
+          ],
+          [
+            "h",
+            2
+          ],
+          [
+            "h",
+            3
+          ],
+          [
+            "h",
+            4
+          ],
+          [
+            "cx",
+            0,
+            4
+          ],
+          [
+            "cx",
+            1,
+            4
+          ],
+          [
+            "cx",
+            2,
+            4
+          ],
+          [
+            "cx",
+            3,
+            4
+          ],
+          [
+            "h",
+            0
+          ],
+          [
+            "h",
+            1
+          ],
+          [
+            "h",
+            2
+          ],
+          [
+            "h",
+            3
+          ],
+          [
+            "measure",
+            0,
+            0
+          ],
+          [
+            "measure",
+            1,
+            1
+          ],
+          [
+            "measure",
+            2,
+            2
+          ],
+          [
+            "measure",
+            3,
+            3
+          ]
+        ],
+        "integer_state": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          16,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -16
+        ],
+        "hadamards": 9,
+        "amplitude_denominator": "sqrt(2)^9",
+        "expected_data": "1111",
+        "data_probability": "1",
+        "ancilla": "minus",
+        "basis_convention": "q0 least significant; ancilla bit4"
+      },
+      "native_execution_performed": false,
+      "provider_jobs_submitted": false,
+      "scope": "all original notebook cells plus authored finite structural/state witness",
+      "limitations": [
+        "Integer state is an authored interpretation, not a native worker state observation",
+        "No general unroller, GUI, linked-article or released acceptance claim"
+      ]
+    },
+    "witness_stderr": "",
+    "source_cells_preserved": true,
+    "output_artifacts": {
+      "setup-evidence.json": {
+        "bytes": 43245,
+        "sha256": "657907a484b0303dcc1fa112d3bb07b040031144ecd1ed9d75905accf9ec0cf5"
+      },
+      "original.qasm": {
+        "bytes": 922,
+        "sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08"
+      },
+      "unrolled.qasm": {
+        "bytes": 363,
+        "sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782"
+      }
+    },
+    "cleanup": {
+      "active_processes": 0,
+      "kernel_job_membership": true,
+      "method": "forced",
+      "engine_exit": null,
+      "launcher_exit": 0
+    }
+  },
+  "environment_comparison": {
+    "accepted": true,
+    "files": 29286,
+    "bytes": 741369386,
+    "added": 0,
+    "removed": 0,
+    "changed": 0,
+    "roots": {
+      "environment": "F:\\src\\libqalculate\\.tools\\qb015-autoqasm-env-20261117",
+      "interpreter": "F:\\src\\libqalculate\\.tools\\python31210\\tools",
+      "runtime": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks"
+    },
+    "distributions": 89,
+    "active_requirements": 145,
+    "requirement_comparison": "same exact records and multiplicities; traversal order not semantically significant"
+  },
+  "native": {
+    "original_cells_preserved": 9,
+    "original_code_cells": 6,
+    "source_string_preserved": true,
+    "printed_unrolled_matches_artifact": true,
+    "pyqasm_version": [
+      "'1.3.0'"
+    ],
+    "setup_metadata_unchanged": true,
+    "native_checks": [
+      {
+        "source": "original",
+        "source_sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08",
+        "engine": "exact",
+        "result": {
+          "qubits": 5,
+          "classical_bits": 4,
+          "bits": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "probabilities": {
+            "1111": "1"
+          }
+        }
+      },
+      {
+        "source": "original",
+        "source_sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08",
+        "engine": "sampled",
+        "result": {
+          "qubits": 5,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 4,
+          "counts": {
+            "1111": 10000
+          }
+        }
+      },
+      {
+        "source": "unrolled",
+        "source_sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782",
+        "engine": "exact",
+        "result": {
+          "qubits": 5,
+          "classical_bits": 4,
+          "bits": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "probabilities": {
+            "1111": "1"
+          }
+        }
+      },
+      {
+        "source": "unrolled",
+        "source_sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782",
+        "engine": "sampled",
+        "result": {
+          "qubits": 5,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 4,
+          "counts": {
+            "1111": 10000
+          }
+        }
+      }
+    ],
+    "native_ancilla_state_observed": false,
+    "provider_jobs_submitted": false
+  },
+  "unit_tests": 6,
+  "artifacts": [
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\autoqasm-requirements.lock",
+      "sha256": "d12b3f58bb97c13d87205d989ee70dd57027923456844e671abee55785c3992e",
+      "size": 8678
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\contracts\\qb001.json",
+      "sha256": "eca004e55a625c828c34fd295ad62aede9821e71fd8015c6031e004e7e91dfe1",
+      "size": 2472
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\execution.py",
+      "sha256": "ba63ffadc604a7e854a164939af6914ffdb2bb15c62983fe999de94c417f7a31",
+      "size": 48032
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\profiles\\autoqasm-win-py312.json",
+      "sha256": "7681ff5b628bcdca7d833a89797e14f0bf5ede6a84deb21b4fe05f40192ec286",
+      "size": 504
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\test_qb001.py",
+      "sha256": "a268a9b6264e77ba833db21bd7f5337ec16895747b3f67ec1aa312a520f68673",
+      "size": 2064
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\dev13-notebooks\\witnesses\\qb001.py",
+      "sha256": "b89913774cc4d843cf4ec90e044e6f8e96b4979219c60d4142de6203c1a202c4",
+      "size": 5049
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm-import.py",
+      "sha256": "707cf21e7d199f99e13805444f7700247add7a9ba12c7eadd88ee7f0ac972321",
+      "size": 120550
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_concat_parser.py",
+      "sha256": "76972aa5a6da22cc31c5a9d061079f347d75dd3f318eff4107132393bc06ebef",
+      "size": 2905
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_import_request.py",
+      "sha256": "7a8f725bd43067f4369ba056d76464f5bf8b85b78784248f667aa42a8ac5dea6",
+      "size": 2236
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_arrays.py",
+      "sha256": "b625ab06ccdf4701a01863fcd55711cd79f7867b9d5e3ff5949741f950a73919",
+      "size": 24413
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_bit_aliases.py",
+      "sha256": "9a254da88e8513c91857b7bac5da80a8f293862cb1a19ea9d274ada1ef8c315a",
+      "size": 9311
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_numeric.py",
+      "sha256": "8e60616240dab5ae261308cd312de17d7bf7252fde7e50d939e18b7ecbe0d81d",
+      "size": 13353
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_subroutines.py",
+      "sha256": "55257ba02e784d33bf189e6d7851a53c796d74128e3eafe97cd1a8c5f8d0a26a",
+      "size": 100594
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_runtime_wires.py",
+      "sha256": "b513445923797cdff677a5f73908db94210113c6435aa2ab12c92d5ab5bcf899",
+      "size": 7397
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_source_bundle.py",
+      "sha256": "63240cbade06e21eb57fa07d129c25884923c7f1e87c0643f9978141a1f7f758",
+      "size": 17572
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_source_diagnostics.py",
+      "sha256": "2548a71ab87a1e30736312a1871d54229a1bcb4e88d99ec6e0bd5cb83eaf1de1",
+      "size": 4742
+    },
+    {
+      "path": "F:\\src\\libqalculate\\.tools\\numbered-goals-20261109\\windows\\qasm_subroutine_scope.py",
+      "sha256": "d8d1120abbe54a6c8aed2582a1725400c13cea60e4eb6b68f559919910145fdb",
+      "size": 3500
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\coordinator-20261104\\dev05-final-release-verified-43741675632\\payload\\QuantumStudio\\quantum-worker.exe",
+      "sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "size": 88247092
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\binding.json",
+      "sha256": "60e6468b60497ec7f6f9782e8efa88b3e6c8345a18ced11513d9dbf6b5851682",
+      "size": 250
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\comparison.json",
+      "sha256": "ff2880113830ba0988ab03261b71fd6249dc9c6c25ee9173dc466142dbbbb8f1",
+      "size": 546
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\dependencies-after.json",
+      "sha256": "b6c5758d78d56b46acc58940af3e15a1556726eddc1ad42b522ebaa950fc2d13",
+      "size": 25774
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\dependencies-before.json",
+      "sha256": "b6c5758d78d56b46acc58940af3e15a1556726eddc1ad42b522ebaa950fc2d13",
+      "size": 25774
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\file_inventory.py",
+      "sha256": "c6523e122fe61c25ddd700f02d2e3071ce3bcdc4545e16c5af54ade440c0cbf4",
+      "size": 1496
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\files-after.json",
+      "sha256": "056fdf8061a30f7ec8a17c20180b38d1990883fe6c559dafcbad68f3844cea3e",
+      "size": 6754960
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\files-before.json",
+      "sha256": "50967a7df8205cbfac2b62be4a99b47c036fddc371f03eef794fd7a8370f5ea1",
+      "size": 6754959
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\original-circuit.json",
+      "sha256": "62f1b5add129c6197ed0fffb45e2445666333a96124e26f81ea6d2e6b1c9d5f1",
+      "size": 1066
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\original-exact.json",
+      "sha256": "e9cae6aefe355ca992b531a319211ea418c5ecdb192094de8bfac003f6d46934",
+      "size": 79
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\original-sampled.json",
+      "sha256": "2a93adee725cb4430733e9cf254a63b4c637acc6f3a3270a391a3fb271f3fc95",
+      "size": 102
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\results.json",
+      "sha256": "49d23a71081f390beee3e6fdfd244047a9c2978353783b4dc8632d313941f9cf",
+      "size": 1902
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\unrolled-circuit.json",
+      "sha256": "62f1b5add129c6197ed0fffb45e2445666333a96124e26f81ea6d2e6b1c9d5f1",
+      "size": 1066
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\unrolled-exact.json",
+      "sha256": "e9cae6aefe355ca992b531a319211ea418c5ecdb192094de8bfac003f6d46934",
+      "size": 79
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native\\unrolled-sampled.json",
+      "sha256": "2a93adee725cb4430733e9cf254a63b4c637acc6f3a3270a391a3fb271f3fc95",
+      "size": 102
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\native.log",
+      "sha256": "73ba14102a97d4af728c9cd55738bb43f8be93c8b63244e90da5f18ef5e761ba",
+      "size": 43
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\cells.json",
+      "sha256": "756d36b20114d4fed9871c7dce70e8ddc8edf190e910b56e0a4a1bd6f2734733",
+      "size": 3065
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\engine-request.json",
+      "sha256": "fc8ccbc6ff2e52c8e02f89cb29be9d09ade0787f14ce70b08de6355bb48d351c",
+      "size": 11636
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\engine-result.json",
+      "sha256": "4b5fcaa5db40d033be04075a86ba8611333473707611fe764fc8c87f261b235b",
+      "size": 3048
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\engine.stderr",
+      "sha256": "8dbde07422f124f69cc18973f2aca76f64d845c6bd6ab618ac2e9be5f3d80d67",
+      "size": 671
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\engine.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\events.jsonl",
+      "sha256": "031f079e0ee718d341b966b4ef99e65bf4224253bb4e9f60926172042bdb649a",
+      "size": 11812
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\executed.ipynb",
+      "sha256": "75ebc153c42f5ba36b98519e7430254e225f5566a0263b87056bebf5fc1051a9",
+      "size": 16841
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\kernel.json",
+      "sha256": "f76f4b62c7a3f7b9a352bae8f0f1ab7b1095ada0498385807f0ec8bfdffea0b0",
+      "size": 119
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\original.qasm",
+      "sha256": "6bcc0b2452e4bfb56f1b8124d8156b5cb173e20728db1be84d87b958ebc02b08",
+      "size": 922
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\setup-evidence.json",
+      "sha256": "657907a484b0303dcc1fa112d3bb07b040031144ecd1ed9d75905accf9ec0cf5",
+      "size": 43245
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\source-original.ipynb",
+      "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+      "size": 3941
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\status.json",
+      "sha256": "c28ccbb879b403f956ccc780d48815b07508dbfd15542a7da21758cb22090d1d",
+      "size": 7347
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01\\unrolled.qasm",
+      "sha256": "e43149def85306bf2a3a6b8bb9e8a7bae8281b6bde6245aef7dd07ff2406e782",
+      "size": 363
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\run01.log",
+      "sha256": "4fe934d3a532d87c312553b4ad3396c105e8efd35c36e2f098eb745898ccbc81",
+      "size": 167
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\source-original.ipynb",
+      "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+      "size": 3941
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qb001-notebook\\verify_native.py",
+      "sha256": "37be3675bf62abe8baca677fd2b8508fe4a96cfa900aa5cf944e2766876cdef4",
+      "size": 3153
+    },
+    {
+      "path": "F:\\src\\libqalculate\\cleanup-audit\\learning-coverage-20261117\\qir-import-native\\qir-adapter.exe",
+      "sha256": "c2cb48333e9872bf18ecc882ad26b7d8721ea9612bfbafedd05cf839ccf6ca5e",
+      "size": 128512
+    }
+  ],
+  "review": "pending",
+  "hosted_ci": false,
+  "released": false,
+  "whole_checklist_row_complete": false
+}
