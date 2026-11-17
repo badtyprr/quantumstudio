@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "pulser-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "pulser-requirements.lock",
+  "lock_sha256": "b04970f6b9552e416caaea4270d7da93089444c527076c2d4f83a61b641f6502",
+  "offline_only": true,
+  "wheel_requirement": "Observed49-distribution Windows binary closure; pip25.3; no source builds; not a minimal closure",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}

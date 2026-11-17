@@ -1,0 +1,226 @@
+{
+  "version": 2,
+  "id": "qb007",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "qir-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "6740a8ca76b64140a5dda1ba32034c64bc511e87e74d7cad9b41b060955df46d"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "ac665faebd2db263584417d1cec509c336c6f84e2e1c59a95475f0a24835f8f2"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "ecd7639ce29eb3815341f43c808654ca2542affc6d01b975c72fe4252d1ec79a"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "bfb203294a71adbcf30125679f19a2a47e7cab98c8821e09a3161c8a735b56ad"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "a8027ce11e2f53d9056410299239f37786d62078b5f2b3d21afb6f1024048088"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "32e871989f498f3a19e6ef8e6bbe38d8f9a72443ddbb51581d5de342f08c7557"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "832e489b4e0c84cd7243c5d0734c1968df7c1bb89cd55675ab76042f7b7ec0fc"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "eb5a297c3c7a2c72ec2c1c4ed33f2f7bd4371fe20e04321e822795ddeec19e68"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "dfe2a1b024e415a86d5099bfee98fcf928a8fa78aa270ebc6478a166ebd73e27"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "f5e29a3f72be4d7c9819bf8a72e1dced1312ce82e11d5c1c4f04c9473ea025c2"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "cf103fbb2e71188c647716a32eab608d4d5cb770fcfc0f8836e7b6b5637b6e83"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "3dc5f3f534200b4a902e8fe70c3c87a1b5b1404bb296f0ecb3e62ea3bedaac12"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "ac634ce94d05d736ea70114d62e3a07f1dd055142014563a1be16d83c410b276"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+      },
+      {
+        "index": 14,
+        "type": "code",
+        "sha256": "3f195b9d5ab09e2898a0c13e4293190ba0db11fed9d93f6a1717a8ee5a6ad107"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "6c45499a61560cf4319accd6a54d4a7cc75eba2aae3719e60e24c652642e1353"
+      },
+      {
+        "index": 16,
+        "type": "code",
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "5412e3ab152205b4b81e0f3212d98582c4b5a1a63bc4e6fe3e7accff48f809cc"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+      },
+      {
+        "index": 19,
+        "type": "markdown",
+        "sha256": "d3cc414105d9d9250e43bf0472dec405aa723322337c0b84f8cdf0bcdce82a70"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "3dc8ec176e2f7d8d9a1c9459bcbfcda84aa270ead8bd80e23f7c6dba03a94fa3"
+      },
+      {
+        "index": 21,
+        "type": "markdown",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 22,
+        "type": "markdown",
+        "sha256": "69ac579df59179ec80daa9dcac4fe70e157eb5ae3c7ba6aae62a97262d5c2b13"
+      },
+      {
+        "index": 23,
+        "type": "code",
+        "sha256": "4378cd2bb596bdf50feabc49f696950b8af99d0477be0a4dd6eb8d15e6f7f1c2"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "62ed199f5df9e011ca8109714a050fdf65f7083cbe1c2d0ab0ef5de15d1ab911"
+      },
+      {
+        "index": 25,
+        "type": "code",
+        "sha256": "11319e0dd0c23b4b7103ae6d831f62ada12047223bc5ebb88c47a78b059cacb7"
+      },
+      {
+        "index": 26,
+        "type": "markdown",
+        "sha256": "99dc7fe70c77ff1f4a588277579e126d47e7e01f0c6d8d2cbd741685d9149366"
+      },
+      {
+        "index": 27,
+        "type": "code",
+        "sha256": "332de6a974ca2ae44431bb4e40b23d79456da24e2d1475836a595ac4131a18a8"
+      },
+      {
+        "index": 28,
+        "type": "markdown",
+        "sha256": "ece86d91e7f5d23050033a4e6fe27838d835178be9bfae33e512b9ba38d96926"
+      },
+      {
+        "index": 29,
+        "type": "code",
+        "sha256": "31760495d45e4463c5df6e561366675819e958c76e2121875a37bdcd0f067a8b"
+      },
+      {
+        "index": 30,
+        "type": "markdown",
+        "sha256": "87b91454d2fbb1e55d39f477015094a2e288a946790f4e5c3de8c91aea0e741a"
+      },
+      {
+        "index": 31,
+        "type": "code",
+        "sha256": "e6fad47ae8a7f6627928d83aadb24b58106ceb134a7609c086053af9126db663"
+      },
+      {
+        "index": 32,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    7,
+    9,
+    11,
+    14,
+    23,
+    25
+  ],
+  "code_cells": [
+    7,
+    9,
+    11,
+    14,
+    23,
+    25
+  ],
+  "excluded_code_cells": {
+    "2": "Original broader imports include qsimcirq; authored subset imports only Cirq/NumPy",
+    "4": "Original random coefficient setup replaced by separately attributed fixed four-qubit witness",
+    "5": "Original random coefficient display excluded",
+    "8": "Original intermediate circuit demonstration/display excluded from selected-function contract",
+    "10": "Original intermediate circuit demonstration/display excluded from selected-function contract",
+    "12": "Original intermediate circuit demonstration/display excluded from selected-function contract",
+    "13": "Original intermediate circuit demonstration/display excluded from selected-function contract",
+    "15": "Original intermediate circuit demonstration/display excluded from selected-function contract",
+    "16": "Original intermediate circuit demonstration/display excluded from selected-function contract",
+    "17": "Original five-by-five benchmark circuit excluded",
+    "18": "Original benchmark drawing excluded",
+    "20": "Original CPU/GPU simulator construction requires qsimcirq/GPU",
+    "27": "Original CPU benchmark and timing excluded",
+    "29": "Original GPU benchmark and timing excluded",
+    "31": "Original speedup calculation excluded"
+  },
+  "preamble": "import cirq\nimport numpy as np\nlength = 2\nh = [[1, -1], [1, 1]]\njr = [[-1, 1]]\njc = [[1], [-1]]",
+  "witness": {
+    "path": "witnesses/qb007.py",
+    "sha256": "26ee163ea1c24d60775bb604c3502755a84e76757172f95ffde26506a7eb0699",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "required_images": [],
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "output_artifacts": [],
+  "limits": [
+    "Six unchanged function cells with authored deterministic four-qubit setup",
+    "All 33 original cells accounted; 15 original code cells excluded",
+    "Original GPU benchmark, random instance and timing remain unexecuted"
+  ]
+}

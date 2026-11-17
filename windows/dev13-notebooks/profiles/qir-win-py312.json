@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "qir-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "qir-requirements.lock",
+  "lock_sha256": "70faf49c835ed96a1d6bf6941690536af4c47515b91659d908a7b57efaabb282",
+  "offline_only": true,
+  "wheel_requirement": "All94 retained Windows binary wheels, including pip25.3; no source builds",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}
