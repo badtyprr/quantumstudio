@@ -1,0 +1,3900 @@
+[
+  {
+    "id": "QB-001",
+    "path": "PyQASM-Examples/deutsch_josza_unroll.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/deutsch_josza_unroll.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec",
+        "imports": [],
+        "setup": [
+          "%pip install pyqasm --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947",
+        "imports": [
+          "import pyqasm"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "8d52cd40df14be513881630564f6b6b05a0b2da602f7fa85e11457964d0ef181",
+        "imports": [
+          "from pyqasm import dumps, loads"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "f24f99054529bcd520ad139193f11830f2281328d77a901e0e31819de9f033ab",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "e60f9730cd7d15afa18eedbbad577a3be134b16f173fe705960eaaa4565646b3",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "9d603e74e29bf2babaee51f5e156230dfd6cc1afc00f9aba4756be33168fd129",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-002",
+    "path": "PyQASM-Examples/qasm_processing.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "4a82502bb158e79847b569785edbd470ce9d03b80773558ebb6d4996b1eba546",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_processing.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec",
+        "imports": [],
+        "setup": [
+          "%pip install pyqasm --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947",
+        "imports": [
+          "import pyqasm"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "bb4b064cc1decc8806d6a0a313ce065ea5b2ddba2c376445b9c05b20c3c73d91",
+        "imports": [
+          "from pyqasm import loads, dumps"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "7978e60608530a54a5234fd0963e422f4fd3d1e6e151f9204ebdabed8bb6bfa5",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "acfa7fb15369c4cd0337709adef5728464c454e9fe0bbf0a7e7febf45d7219b5",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "33156a5364d4828ba02c8abacb33faee34b815e587b31d0c81bf552543a87b11",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "4d3959770362c934509a8f4e37c5d0ec8985f37e2662b4e1bdb2679fd284696e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "4d3dafc68b7c95ce0a77bad2550bc7bb6eb6f74e7630cf6bd3bab0dd93389104",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "c48708fc7b7ab4bd50395cb27046e5e5a1a4f1f9fa3fde9bf4baf8312e0b3f8d",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "cab1cac7fb0773b2478af7de91af2880121a1709647fc43bdd8d3b22f40e5ab8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "6a6b9721aead99995112e446b4ed384ca3c00747502478ae567e1b684145d6b3",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "7dd1ea666a7c35c54bd67d0adf24c32c18ec0286e41e932d51449c9fd8874f28",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 21,
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 22,
+        "sha256": "4a8aff350332b874c1f9b893d41ad00780272b0123ff4f7cfe0e9c9e7e272047",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "de301a53e920336b2437efc5ac9a13f2a6f088370fb94e445bd3f1e6b4b00415",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 26,
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 30,
+        "sha256": "4d3dafc68b7c95ce0a77bad2550bc7bb6eb6f74e7630cf6bd3bab0dd93389104",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-003",
+    "path": "PyQASM-Examples/qasm_unroll.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/PyQASM-Examples/qasm_unroll.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec",
+        "imports": [],
+        "setup": [
+          "%pip install pyqasm --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947",
+        "imports": [
+          "import pyqasm"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "bb4b064cc1decc8806d6a0a313ce065ea5b2ddba2c376445b9c05b20c3c73d91",
+        "imports": [
+          "from pyqasm import loads, dumps"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "0723b533dbb2907ce93a5dd98719ce0c0a5d10db1a16af4299d0d7a3206334c6",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "657f268af2ba85c55bd24f99f8be9a65d45b73efa5d784e77282d0cc5a8f2acc",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-004",
+    "path": "qBraid-Algorithms/bernstein_vazirani.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/bernstein_vazirani.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[visualization]' qbraid-algorithms"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "f0d78e0d902343e8842f6ada30be360032492f49147b810522508c0e851eca24",
+        "imports": [
+          "import pyqasm",
+          "from qbraid_algorithms import bernstein_vazirani as bv"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "a52bff8518a911d1e020438ac138452f29e4d679e11ee6812ca6045c384cabeb",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "709becd5b0ddcaedc3f046923472b811deb1242e12978f4bd8e7ab4ccd39c640",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "d853ee7212a4ce3e29ede1b62a7820087fada80c4bfca4fe0b35f92e875570a4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "0f5d1277718e4b012eaaba2db485ff28e11021b61c6dea79fb8b34472f359631",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "1e509340a8a69e63e29339c3cccf60f705b94a5519b2a5ad2c2619bda2423528",
+        "imports": [],
+        "setup": [
+          "%cat oracle.qasm"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "04853922042191412ba454cf58ab99c4f2d338ec9dfe66b42b4722f76148bea8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "63b000695858c365e1e7bf8208d5ee9e00570a8183453139246a7b1b7cdbf0b1",
+        "imports": [],
+        "setup": [
+          "%cat bernvaz.qasm"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "# provider = QbraidProvider(api_key='API_KEY')",
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 22,
+        "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 24,
+        "sha256": "6888d02e33a9476792365197342c4169c2426d22e79bf39ca393c39baa2ed71e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 27,
+        "sha256": "b4fe4dced6a27cb4ef60bd53c7c5dc4cb7303d6b4c964a672f247864abc5f48f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "6b9b4fcf92043539f499b15bfb9ffecdacc613e6e7410c77292eb4249b15e70b",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 31,
+        "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-005",
+    "path": "qBraid-Algorithms/qft.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "bc648239a475fbfead15b185e201e821498369ff5d133ba928603bb1319fc3d3",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qft.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[visualization]' qbraid-algorithms"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "321338d73ec7b6231e15b1a8a8d77ad5377ea7dedeb12da83b30524e4d4d9268",
+        "imports": [
+          "import pyqasm",
+          "from qbraid_algorithms import qft",
+          "from qbraid_algorithms import iqft"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "5db3ee1d420d4400dd45f30fb2f488a6789ddf5243e2eb48cf31dadd069dd84f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "434c3f376396d25c2320307111b33bd813267bf63a7de81cd085624a299a4ea0",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "aed8b1f34644ff0a4570cbddf26e7b31ff0a6b9627c20aebe1b8c721408a0308",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "cc6799f126655b0abce27c1bdb1d790bfe48b090a788584e16236ada7824f2f2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "7680c0ff6b390992d0bf950e9fa95dbe2927158ab312ecdb95901c18f249a4e5",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "6bd8bb86ed39741a529d08e8ad5e0621a2f786c03727f895274d112054d33c72",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "ba4a5b7e929a8787d38819ddffc66b58dad99d9907afc0ef3bca27b768433535",
+        "imports": [],
+        "setup": [
+          "%cat qft.qasm"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "f7d6a97f26c1edc4478009344e6868586bd61c2b397b18c2e841a2d69c8a1531",
+        "imports": [],
+        "setup": [
+          "%cat iqft.qasm"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "# provider = QbraidProvider(api_key='API_KEY')",
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 22,
+        "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 24,
+        "sha256": "4820af6fb62cc7b7bb0bb32939dc0822d3aa4d18d83393d96ead5e59741e9667",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 27,
+        "sha256": "48e8da0e9b7517ff60306d129e35e2e52cc825322d74cd59adbc0129ce450bba",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-006",
+    "path": "qBraid-Algorithms/qpe.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/qpe.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[visualization]' qbraid-algorithms"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "5b1b82616956ecd4e232989ec2d8b761f1fb9b9f15a7ebc5c2ec5f8d0c83d75e",
+        "imports": [
+          "import pyqasm",
+          "from qbraid_algorithms import qpe"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "7f44ce773deaa2ddc64b08625b6df2b6b166157ba28dcf62e4d95bca93741b22",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "709becd5b0ddcaedc3f046923472b811deb1242e12978f4bd8e7ab4ccd39c640",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "d853ee7212a4ce3e29ede1b62a7820087fada80c4bfca4fe0b35f92e875570a4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "958b87f02f84b17f8e33fdd219e2929d119275d7f075750c1159c04d3491a935",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "7c4687762f1153a6b6c6fab7dd296a7c0b79432db4e1cb7017abed02402ef01e",
+        "imports": [],
+        "setup": [
+          "%cat qpe.qasm"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "# provider = QbraidProvider(api_key='API_KEY')",
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 19,
+        "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 20,
+        "sha256": "320fd628adc11a4b8c07d5c96b34b2027bc49c39702892c5073b27f1788a32c5",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 22,
+        "sha256": "0f17424bc0201122b1acb0ca5fc9ed4af577169c322c0354594b758eb32fe9ce",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 23,
+        "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "8a4a0ccb5e150454a7703e27478a3a338acd2f6d36d5fc061956c43a40d58128",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 27,
+        "sha256": "9d02a11f5fafae47f0412a626583e85cefd1535002f40939a1a39c0ff9f9122f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-007",
+    "path": "qBraid-Algorithms/cirq_vqe.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/cirq_vqe.ipynb",
+    "cells": [
+      {
+        "index": 2,
+        "sha256": "ecd7639ce29eb3815341f43c808654ca2542affc6d01b975c72fe4252d1ec79a",
+        "imports": [
+          "import cirq, qsimcirq, time, random",
+          "import numpy as np"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "a8027ce11e2f53d9056410299239f37786d62078b5f2b3d21afb6f1024048088",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "32e871989f498f3a19e6ef8e6bbe38d8f9a72443ddbb51581d5de342f08c7557",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "eb5a297c3c7a2c72ec2c1c4ed33f2f7bd4371fe20e04321e822795ddeec19e68",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "dfe2a1b024e415a86d5099bfee98fcf928a8fa78aa270ebc6478a166ebd73e27",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "f5e29a3f72be4d7c9819bf8a72e1dced1312ce82e11d5c1c4f04c9473ea025c2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "cf103fbb2e71188c647716a32eab608d4d5cb770fcfc0f8836e7b6b5637b6e83",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "3dc5f3f534200b4a902e8fe70c3c87a1b5b1404bb296f0ecb3e62ea3bedaac12",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "ac634ce94d05d736ea70114d62e3a07f1dd055142014563a1be16d83c410b276",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "3f195b9d5ab09e2898a0c13e4293190ba0db11fed9d93f6a1717a8ee5a6ad107",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "6c45499a61560cf4319accd6a54d4a7cc75eba2aae3719e60e24c652642e1353",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "5412e3ab152205b4b81e0f3212d98582c4b5a1a63bc4e6fe3e7accff48f809cc",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "3dc8ec176e2f7d8d9a1c9459bcbfcda84aa270ead8bd80e23f7c6dba03a94fa3",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "use_gpu=True,"
+        ]
+      },
+      {
+        "index": 23,
+        "sha256": "4378cd2bb596bdf50feabc49f696950b8af99d0477be0a4dd6eb8d15e6f7f1c2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "11319e0dd0c23b4b7103ae6d831f62ada12047223bc5ebb88c47a78b059cacb7",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 27,
+        "sha256": "332de6a974ca2ae44431bb4e40b23d79456da24e2d1475836a595ac4131a18a8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "31760495d45e4463c5df6e561366675819e958c76e2121875a37bdcd0f067a8b",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 31,
+        "sha256": "e6fad47ae8a7f6627928d83aadb24b58106ceb134a7609c086053af9126db663",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-008",
+    "path": "qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "8e728d49ca432accd2765b9411e37cd6102dd9aca1b9546cf3f01e435d0981da",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+    "cells": [
+      {
+        "index": 0,
+        "sha256": "cffa6cbc10a77ca0a1dbe84068c45d0b55e1997faf9bb3f8de14233cf6102dbf",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "281308e2890c4cd7a592ab1ed3caee17b279ff19c88bfa55e976aad415914014",
+        "imports": [],
+        "setup": [
+          "%matplotlib inline"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "5216b9a0aec44112c3c6afb05a001d78a298c55ab578a32e067755da0791945b",
+        "imports": [
+          "from qbraid_algorithms.qtran import QasmBuilder, std_gates, GateLibrary"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "698ecf594932a3d8a647fbd8f47e17ce34e11665fed9c67a7e32d3f4d9c4ae97",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "185ac29d96fcc1ae4111b28c1bcd391ca08823ee5dc3d5e6b309fda4e7cdfadc",
+        "imports": [
+          "from qiskit.qasm3 import loads as qasm3_loads"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "2797e88d8e8612f8326044eeb2368947ae28e82c2558cac5dc08202b4e774a01",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "9563846723625547e4fc4db954144a48841da46f040c893dae0521e8aafa7804",
+        "imports": [
+          "from qiskit_aer import AerSimulator",
+          "import os",
+          "from qbraid.runtime import QiskitRuntimeProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "token = os.getenv(\"QISKIT_IBM_TOKEN\") or \"\"",
+          "provider = QiskitRuntimeProvider(token=token, instance=instance)"
+        ]
+      },
+      {
+        "index": 11,
+        "sha256": "6391db08f3bfd197627478a9d1e2867fb662acc7ff4ac8a74e1c4c45ebfbec33",
+        "imports": [
+          "from qiskit import transpile"
+        ],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"ibm_kingston\")  # replace with your preferred backend"
+        ]
+      },
+      {
+        "index": 13,
+        "sha256": "fe94e78eb5cc93fdb065ee3eefcdbc6d874e3ac9a42604b2a0cfd2098b891807",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-009",
+    "path": "qBraid-SDK/bell_circuit_examples.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "eea3ace95ea4cf2cee1baf72559efe81ee6232ec83f913d8fd7bf07a07c2d140",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/bell_circuit_examples.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "7601ea32f522b8e576ce39f5c1a89d664b6d6d8e41dc94313b85ecdbe9c7403a",
+        "imports": [
+          "import qbraid",
+          "from qbraid import ConversionGraph"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "4171f20f1e1cc77ed3254f306f496e90a220585edde7d335e664170e6f739fad",
+        "imports": [
+          "from braket.circuits import Circuit",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 3,
+        "sha256": "a1fc211ad35d6684c7bf8eee7262911c025c0e54224fbeb38ed78b4000078abb",
+        "imports": [
+          "from qiskit import QuantumCircuit",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "5abb4510fcad24a20a08e4c1f0d9c02335ce7ba4d8bb8dd3342d6ac1ded0a14e",
+        "imports": [
+          "from cirq import Circuit, LineQubit, ops",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 5,
+        "sha256": "9095a85ae30edecf1a78afa15eda91c26fc83de17d2423b93ce2aa7f2c807bb3",
+        "imports": [
+          "import pennylane as qml",
+          "from pennylane.tape import QuantumTape",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 6,
+        "sha256": "9c673d8fc54a9d8a0a88ab55dc980de76cc8ab2bc384e50607676307fc0cc0b7",
+        "imports": [
+          "from pyquil import Program",
+          "from pyquil.gates import CNOT, MEASURE, H",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 7,
+        "sha256": "290f672902ab0db78e72022803948da38bdcc30016c986408fe58ec4434b6712",
+        "imports": [
+          "from pytket.circuit import Circuit",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "0c403a57e9b4d3a1c928ac11fc4ac97641ced3852aa93dedc9043a34d29cbb39",
+        "imports": [
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 9,
+        "sha256": "316e6dfb32b14de5fab055d166004e4902db27f8e13557e3961ea65b985aabec",
+        "imports": [
+          "from stim import Circuit",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 10,
+        "sha256": "a686d13946324f5e60dced1bf3ebf5808df8a4682a0aaceaa05ccdba3b121555",
+        "imports": [
+          "import cudaq",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 11,
+        "sha256": "20dda7b228e23cd5b58d3ffbb1ba3cfeecc49f3b2b9d290ef2c1eec0fdbcdf4c",
+        "imports": [
+          "from pyqir import BasicQisBuilder, SimpleModule",
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-010",
+    "path": "qBraid-SDK/qbraid_sdk_devices.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "668481d0cfdd2820f08bdc65d5f8d7997674b26ffe4ca9bb1ca93e3220bd4f78",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_devices.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "c1e837ec40bb51207bf861afe55e13d6501cbdfbe4d1e1fed0db7dd9321e023a",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[ionq,braket,qir,qiskit]' --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "4ee59b9473f7cb8a3ed16b51bef3e6783361766736202978a6362f4240f8dfcf",
+        "imports": [
+          "import os",
+          "from qbraid import __version__",
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "87cbfaee9a991921b90129cc4e85786d8ed0cf3c5dbdaeaace705e357932aaa3",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "api_key = os.getenv(\"QBRAID_API_KEY\")",
+          "provider = QbraidProvider(api_key=api_key)"
+        ]
+      },
+      {
+        "index": 6,
+        "sha256": "0b1537a462b7cca2472d1ea5561b0ec1737ad30a6841dc30c81ff2ec0341c6f3",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "13bf48bdd519fcfc04dee2f8f08de3a83bbf72dc3e1de3f85defc602b23b1e0f",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "qir_sim = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-011",
+    "path": "qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "d8a7c2b6a2039d6edfdd59612dc17660fee190a63d453567b3f08f892700a193",
+        "imports": [
+          "import numpy as np",
+          "from qbraid.programs import QPROGRAM_REGISTRY",
+          "from qbraid.interface import (",
+          "from qbraid.transpiler import transpile"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "e45a58a9e998f9cefcc56627f0370d94ef7a1d90453a51cbab1614e8bbe499c5",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "89e971b0e33958ce210704c059c7ae7ea80762a49466a227740e39cfbf925822",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "3d947d0fabaade407423746b18896a7084a15941d2d66f28292d12b3a3c1aa81",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "91890a87cd10eca6c7916bcc86c2f133a018fa95c8f99aa2baece91bcfe468cd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "488c5937a32b149d3b792d29234117a13206ea1d71b97c39f6d0aa4bd7439d79",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "b63689b9c654e8e27352e6eedcb983c5428f31d470233999cb82d54b0e3979d2",
+        "imports": [
+          "import cirq"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "b7f051c675878e497d6dce1728d4dabf7c9eec48da5d66791ba83ed53248de36",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "8ef682f63a3790c2fe83da68e9d0c55f58925629c9627c7b11bc8533252eee54",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "0e11286c65d7bb666eead78a7eb9ffde098ef62fcee62eca6d43bf06ede75c46",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "365a02d7760181c5d161568f608538dc0afd246ce103a4aa6bcc7a6adb02f817",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "8111c22b302c861ea3c21d65db286d60699915d2dc5f73548cac49bb90f2e38c",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 22,
+        "sha256": "6024be667f780ae67a75097699c070c0d53d1fa3a4ea26c071bae4dd40b542aa",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 23,
+        "sha256": "f523a60deb12514aafd2d2b4f5d7d9785885e581d90606fac0421027ea33c6d9",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-012",
+    "path": "qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+    "cells": [
+      {
+        "index": 0,
+        "sha256": "a3ffcc3e5ea32c08c79d021194b4d95091af5b62f0b0a256d42f53dc42ec642e",
+        "imports": [
+          "from qbraid.transpiler import Conversion, ConversionGraph, transpile"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "62f5ff3b72c77ceaac7c6609fb026c2f304909d4326a99674b41e3e0b81749cd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "66851bf87d70bca690117aa342fc56fde79b1c440b3356980c1cbe47526c3579",
+        "imports": [
+          "import logging"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "e275067a2d9d843207e49a9f27a4cb7ffc883d4e9362f3b2258f7221df49387e",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "66c506ae281f7b483f41ef540aad1aae370c967d28870fc8bf844a7a19b302ec",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "a5fd5095d173009c2b83965714826170d9d1d9e3d6bcfc646859755175b4723a",
+        "imports": [
+          "from qbraid import transpile as _transpile"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "26855d46367e2980cedaf7faf5995aa4cbe71fda08a044a5786ec88f012a1c34",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "2d6fae148a74013ca475071db5275652cc214c9ef0a8c418a109064a78cb278d",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "66c506ae281f7b483f41ef540aad1aae370c967d28870fc8bf844a7a19b302ec",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-013",
+    "path": "qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "5b5ae29f1a5813111d1474d60a13aac6c06c2ef1904f75de73ec75a7224c8145",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+    "cells": [
+      {
+        "index": 0,
+        "sha256": "143237c1985c0804074198d3c1e2d5e2a40c70b6693d07d5740571c3a1d5c235",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install qbraid qiskit stimcirq ply matplotlib"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 1,
+        "sha256": "f6b70cc29fdc73e2c8d312279d1e005e88a3db183b677fc35ae15003f4e18c21",
+        "imports": [
+          "import warnings",
+          "import logging"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "2707a6da5ead68a599ed2967aa37c6411a155428b16e16a020dfbec8fc73213e",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "70a7ca08205ad581ebd0ef5f38e5caf72f9ce8719aa455b58f41f1b40f364177",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "0e592536ee5014d652d8e1afbdc1268cfcac373142d455e97bb96a4ff81d6ac5",
+        "imports": [
+          "from qbraid.programs import QPROGRAM_REGISTRY",
+          "from qbraid.transpiler import ConversionGraph"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "fbef6ba81ae27a897ee2a95d428d633ba0bfb7b9bb855e2fb80f1ac21bf2f8be",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "dfa059e6093eab87b91a58eebc40ce2711a78f88b658f49b997dcfa003ddedce",
+        "imports": [
+          "from qbraid.transpiler import Conversion",
+          "from stimcirq import cirq_circuit_to_stim_circuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "f203120db15c018fd00347415b85b9048de352007a41fb7f988145e4de04bee9",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "f29992eb7e47ad05c0a71dd3d3f1c61d42119ca673dba03b2e162a907ca04356",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "1510d4d8b92177e02a1107cb62727ba47afd47ead32cd356896627987ae4943e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "5f141d653a8fdba89189dede562a6e35467cd8399a86fbb575c3d32ccfd15d76",
+        "imports": [
+          "from qbraid.transpiler import transpile"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "df1b7ab17d886775e96b7996f3a7fc98f9f03b6774a70030c040f802f66315eb",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 21,
+        "sha256": "acfc9f59a01c875fd9ed2c2aa10ef8d116ebcee0e246305dc8920a0b3942ab0a",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 22,
+        "sha256": "33f0d20c1e76a2422f2e3a5a7812845e8dbf2651f65bb941c0277f5a413ce60f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-014",
+    "path": "qBraid-SDK/qbraid_visualization.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "c2231836e666d1776e0e2700ed32d8d8c0138ebcd5f4c087255068020cac3b97",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_visualization.ipynb",
+    "cells": [
+      {
+        "index": 3,
+        "sha256": "15550eec24eb8a65785af6742f555e4eee1c2b8f553c810039a2731ca27d2c85",
+        "imports": [
+          "from qbraid.interface import random_circuit",
+          "from qbraid.visualization import circuit_drawer"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "6d61d137503dbfee70fbcb1b8e3dad959cdbe0c57669f04a5eec5bc8df69bbf5",
+        "imports": [
+          "from qbraid.transpiler import transpile"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "6053aa9e1647d92c07d0796ee13914b5ded4012bd19897b6328b325f88563b88",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "4253bbb1817b8ea9fb2bd9ec5d0a3589e5a7c2a0768e7e30c37c24d282441240",
+        "imports": [
+          "from qbraid.transpiler import ConversionGraph",
+          "from qbraid.visualization import plot_conversion_graph"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "6be96ee1a061813b809fcce23f41808378e90092b103b1a45d88b853ffb9fae5",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"aws:aws:sim:sv1\")"
+        ]
+      },
+      {
+        "index": 14,
+        "sha256": "60e4aaa2c29685e7d51cab4be728800a8d56f2fb6d53abfad8fcee1812407034",
+        "imports": [
+          "from braket.circuits import Circuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "1d4334995d165ab820f84c56602398f9e615b7e79fafe7d5451ef00c74003f41",
+        "imports": [
+          "from qbraid.visualization import plot_histogram, plot_distribution"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "e110a263dc0637156da7e7f8fb36db8739b6faf35fe5acd10a6a90451c752d0c",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-015",
+    "path": "qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+    "cells": [
+      {
+        "index": 7,
+        "sha256": "56cae43e5aa68bd214b58bfa7475e0f54fbeca3c9f0e7bb277d756eb993b54c7",
+        "imports": [],
+        "setup": [
+          "%pip install qbraid qbraid-qir autoqasm matplotlib --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "82852e420c2234b64e51ae5b2d5d4b2fec347a01df0a6ce3071f284c1f8ff0c5",
+        "imports": [
+          "import autoqasm as aq",
+          "import autoqasm.instructions as ins",
+          "from qbraid.runtime import QbraidProvider",
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "9994adab23d06ae75f3da576b1a88a5b733e6aaab7f8bce3a47bc564e59422a3",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "4fe6f286f0123a6e9809d775ac16b9943310f19437de0dda4d696438815c9173",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "d922e24649b512a10209518265e09a91dacfd48fed7ba24ce1924147a1cdc422",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "# SENTINEL: Requires qBraid API key (QBRAID_API_KEY) for authentication.",
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 14,
+        "sha256": "d0ac48bb811d050a1302824c10a26e9e407a7c23ac126d1bbf241880081a9a25",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "0d19f89005e11dfb7cae46eb334b13c41e3d533d65e646bedfb8a2ecba1327b4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "486b771196731727bf1240d599fd37eb1d49191e49d6151d3c68af5e92a2a680",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "75b58af0f212431595c6fb13d15aa44bb82d47df6961fa9cd62d0ecdeee4e872",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "485052ac6bcb8540e946117efc53d479e87f63f6ce7bd2608727840b3248c73f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-016",
+    "path": "qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "b98d5095d707a0e19ec063a59bc0bff02aa75c134ef814406552d4c8b840a7f5",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "d9c1674417bd9803348c08e73bead64fbe038a441fe0a178cbad5187f3d0594b",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider",
+          "from qbraid.visualization import plot_histogram",
+          "from qbraid.programs import QPROGRAM_REGISTRY"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "4e425d1ca48edd4dc797377aaf3ac3722883cd48e23837bc21562ea19acc7184",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "# SENTINEL: Requires qBraid API key (QBRAID_API_KEY) for authentication.",
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 3,
+        "sha256": "2b39b0314f1ed4c52479021904393c4136a2846607276ab98ff795f19e8748b7",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"qbraid:qbraid:sim:qir-sv\")"
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "0a5e88561c252468e8cbef54fc3432f6aa8bdc54d8cc630c2a6fcafc4a413312",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "19f39e3e43e5dccf4ad943ec4fe78fc0b8cb91f13dfe213ca30b7c4c50ff7878",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "200b9d02160c7c9dff7f1b1db3b57110edc4c9817ebd6dd21519782259e6106d",
+        "imports": [
+          "from qbraid.visualization import circuit_drawer"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "29f65cf98203428e816ec1337dd43d2be05ee081d5afd04fe3ecc684c2fca681",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "ad1ed9b28f3371ded5c7c7e79b356f7e39f3285445ace5a172828adca546240d",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "b13aa4fad830500fbb00715a3a9a2461c83ee90dc406a677d6de4f8c1b0802d2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "91ef63b82a8b452d6797f4b69c92e9cb43541013b5c04e26a21ab6a451dafedd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-017",
+    "path": "qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+    "cells": [
+      {
+        "index": 0,
+        "sha256": "6509f95859fd96d0f3803db9b5b15eea51c6f353f80bea82990a27c5c82b7dd2",
+        "imports": [],
+        "setup": [
+          "%pip install qbraid --quiet",
+          "%pip install qbraid-qir --quiet",
+          "%pip install cirq-core --quiet",
+          "%pip install amazon-braket-sdk --quiet",
+          "%pip install matplotlib --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 1,
+        "sha256": "24c146e838ec318d5baa9e4f295c8087260350c32f8cd7692cb52a7f4b1eeb4f",
+        "imports": [
+          "from qbraid import ConversionGraph, Conversion",
+          "from braket.circuits import Circuit",
+          "from qbraid import QPROGRAM_REGISTRY",
+          "from qbraid_qir import dumps",
+          "from qbraid_qir.cirq import cirq_to_qir"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "62f5ff3b72c77ceaac7c6609fb026c2f304909d4326a99674b41e3e0b81749cd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "69baa18f964d7f8579c8d838a7ec8c2fe8e5d2ae21f32b291b0de61427569775",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "115a205cea8786655544c4129c7545ff7d80609f463c54f0b99b7100cde4baa2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "ab2c2b5fc99deef8e918c0a9596402f493d3ed0d425c3963f7166141ae61ec21",
+        "imports": [
+          "from qbraid import transpile",
+          "from qbraid_qir.qasm3 import qasm3_to_qir"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "e6ae0b8eac09e2a17573ad503e4f930028a6aa76fc2ddb25ce31c4b49fbb23dd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-018",
+    "path": "qBraid-QIR/qir_to_squin_conversion.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-QIR/qir_to_squin_conversion.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "8d3d1f36b5ea115fb1799d276c95c6d20647f6bdc907bf3bd081f393979ac6fe",
+        "imports": [],
+        "setup": [
+          "%pip install pyqir qbraid-qir \"bloqade>=0.33\" \"pyqrack-cpu<2\" cirq-core --quiet"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "ef36945830015077f4d20b839e2a29d4eb11efdd3c46560235dc9fbc94a013c1",
+        "imports": [
+          "from pyqir import BasicQisBuilder, SimpleModule",
+          "from qbraid_qir.squin import load",
+          "import cirq",
+          "import bloqade.cirq_utils.lowering as lowering_module",
+          "from bloqade.pyqrack import StackMemorySimulator"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "76815d80eb0a1216e95ce70762ae1c609417dd86c91eb0917b37039938fbf275",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "cc5669068160ced8a5b66bca38394e6875a9671eab77c216a36d7e8f481cc57b",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "67eb78e7a4b47d967abb4bdbc20147d75dcde739c481cc0336f65f4a47caf023",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "2d5019b4eff3a2b4cefb419243918d13fcc6be7859130434a6efec3f6b134363",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "5557ce387ac2d287560216808c9288681fd5a537fc45f51c9020e63438f4eb4c",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "a69bd07d11d1c37e119ef5da97eb2889ad03f90a54639b420b35ba4aa85a7157",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "1d2b0fc4808a0e64160f1d265c1c7e48c682dd3544e8aff3f17f11467497d4ad",
+        "imports": [
+          "import numpy as np"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "e1516bf338bc281e6b812bfde1fa7f2a3e5ab30586747aa2676b9c60214260dc",
+        "imports": [
+          "from bloqade import squin",
+          "from bloqade.pyqrack import StackMemorySimulator"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "7e39dc3182016011febb86005b3e4f283748643d44163a7ac660cdbe2f7839d6",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-019",
+    "path": "qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+    "cells": [
+      {
+        "index": 0,
+        "sha256": "caabc1ecc0e98727e064191ba1b8f32dbbad62f591ed964fced3c8ef243ef097",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "113b1f8ee8724cc83144207c81c067d113a468e043b3588fe2717e547e23dc5a",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[qiskit,braket,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9",
+        "imports": [
+          "import qbraid"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "2707a6da5ead68a599ed2967aa37c6411a155428b16e16a020dfbec8fc73213e",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "a546978766b904b9ae3ee76f38e275f4c705aad7bcecbf3336e7aead9bff6e96",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "b21fedd40dcb7fa31ad1b1f0a9d9913be4525df8f9eabfbf49d52f9eaa96459f",
+        "imports": [
+          "from qbraid.visualization import circuit_drawer"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "fe707897dd18ba415486651ef805d088f2e6f7a9a5111b7d4f8a04a670765d27",
+        "imports": [
+          "from qbraid import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "250158252381505ec35cf132b3beba85ba4ed8749fd744a6ef03ea00abc5d54e",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 14,
+        "sha256": "0375b56c3819e3f0182b57c28eb1d52eee230e415f26f4ef329e496e6fd1cd06",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(aws_device_id)"
+        ]
+      },
+      {
+        "index": 15,
+        "sha256": "b5c53ae94e894721bc37d44656e378a28c447e1000bc1a337ecb47d54331cdfd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 16,
+        "sha256": "ebfd56d62c2f26b28a9cfffe301f25a64394ef5d07937a2081ff0f3876c70acf",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "14d253f83f6f817d39d59f40182745a2824070a616165b89a8344ad2ec31abff",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "d1e5f8c35ed7b57accca1fb73f1bdfccc3216b5c5111c9d1ed6acfa5ee91f4f6",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-020",
+    "path": "qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "7c447bcf1c0f65427c95d1b0f2a43c7d030a466b5192aa59106f717dcea001a3",
+        "imports": [],
+        "setup": [
+          "%matplotlib inline"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "1d5064eb98a102f01f13d8301893d9684d8408e18d106add6183347e64f39e59",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "c8a61fe7082401e311086ab821cc9fdf8aa1254b7a4c790e0cd9ac36a364bfe2",
+        "imports": [
+          "from qiskit_aer import AerSimulator",
+          "from qiskit_ibm_runtime import QiskitRuntimeService"
+        ],
+        "setup": [],
+        "external_markers": [
+          "token=\"<MY_IBM_QUANTUM_TOKEN>\","
+        ]
+      },
+      {
+        "index": 6,
+        "sha256": "bc072ec0218cbc54673fde51f9860446628b4d888f278c497d84f516471c3258",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "3e714dfff0324f7a3c77039ac3891e06b44bd1fc7a5ae5a2deaee451b171a929",
+        "imports": [
+          "from qiskit.quantum_info import SparsePauliOp",
+          "from qiskit_aer.primitives import EstimatorV2 as Estimator",
+          "from qiskit_ibm_runtime import EstimatorV2 as Estimator",
+          "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "1fdabeea5c86d71dd575dd3e4acef2c40f42b0012c997491a77ed2372a12c383",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9",
+        "imports": [
+          "import qbraid"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "0fb95ef50dec610f9c1230fbab4f487fa3cd294441457599d898b66817081805",
+        "imports": [
+          "from qiskit_aer import AerSimulator",
+          "import os",
+          "from qbraid.runtime import QiskitRuntimeProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "token = os.getenv(\"QISKIT_IBM_TOKEN\") or \"\"",
+          "provider = QiskitRuntimeProvider(token=token, instance=instance)"
+        ]
+      },
+      {
+        "index": 17,
+        "sha256": "21d2af8fc9766bf3bd1e10144b0e9a6581738779a5240d9cc0e6a2a90e90215f",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "ibm_device = provider.get_device(\"ibm_kingston\")  # replace with your preferred backend"
+        ]
+      },
+      {
+        "index": 18,
+        "sha256": "7f45c3e1ae82556b8a813914cab24504330e6ffd23aafa21df104162b7bc0f56",
+        "imports": [
+          "from qbraid.visualization import plot_histogram, plot_distribution"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "7bca2b2a53a295ffe3b7fde37a5d292a10714368833b41410b5402192de6c23d",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 21,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-021",
+    "path": "qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "6e0aff466dd3a4e97c3d0dfd9da945621e7e5daba553af9d40cb319ae18910f4",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "77de6ca47b006237cd46ae39e8a6a93624043c50ac5e875b59ad00048e9716c4",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[azure,pulser]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "2ff1c6bc6cec686db0ccae298d2eaada9bfba04e2b3feec6351bc454211542a3",
+        "imports": [
+          "import numpy as np",
+          "import pulser",
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"azure:pasqal:sim:emu-tn\")"
+        ]
+      },
+      {
+        "index": 3,
+        "sha256": "732c22164adeffd8b3e64c32ce5bf9eac0d439be2e104f0797c02b8f6f93b8a6",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "c58622179f5652a151a3259003a05e39688bac12376a2011d423c817182efe40",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-022",
+    "path": "qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "586ad421664e4fe76b172cdb80165efb55a8ec9a82bd2c648911a773e02e0c15",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "6631b59128e4a4f5d829eeb1bc270a53dce96c16ffaea63ebe9559bd09fa7235",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install --upgrade 'qbraid[qiskit,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9",
+        "imports": [
+          "import qbraid"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "9967671eed6db21d8b129ea2b97d02166a40d0e9580e9afe945b3fbc8a79470c",
+        "imports": [
+          "from qiskit import QuantumCircuit",
+          "from qbraid.runtime import QbraidProvider",
+          "from qbraid.visualization import plot_histogram",
+          "from IPython.display import display"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:equal1:sim:bell-1\")"
+        ]
+      },
+      {
+        "index": 5,
+        "sha256": "1941698b9ffa8bc0e986ae3446b31ba8640382aa42f4f61cefad3466699c4b3d",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "e20782093a348814ba817aaff07a5280532b4f095bb848d7c02aa32086ddc7ed",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-023",
+    "path": "qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "0ff2b015561e0bec4690422eb5a00db06d990d13f5c327a2f9b5054b614494f4",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "9964e69f825d8cbf38053417e98fe3648fd05b8c19d90f6d278c94a148b7b5fe",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[bloqade,braket,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "b634bb11e495492359075ac6ee71b37860b6da96a083234f78f67ff54113311b",
+        "imports": [
+          "import numpy as np",
+          "from bloqade.analog import var",
+          "from bloqade.analog.atom_arrangement import Square",
+          "from qbraid.runtime import QbraidProvider",
+          "from qbraid.visualization import plot_histogram, plot_runtime_conversion_scheme"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "4ef7c8c66aa2fc82c023dfa24c8d284e5d18b21c21b8cfea1c82742cb319cd32",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "31615081529e89b427a6ad6a13bb42d14fecdd45c99bf8c9ad50f11bb0a94f09",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 7,
+        "sha256": "6807e6c26e621144c7d424eefd1dda5688506fd5e12cdf723b2a61a42f74c5b7",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"aws:quera:qpu:aquila\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "add5a605ea4e5bc2d6cb74854bee111f40fc12ed580901a66ead56b06061f8fd",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "04b9117840226acbb8f30ca6b77f8644b841a72898c3d7429be90e6884f6a61f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "ac662fcc728aab5c1182b872e99ad1b273a4f577d01f252799675b34c7386121",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "27dfc27ac5a068fa036d41e849809902d9c6897ba9092e7ef060d3e656adf9c4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "6dd2c6ec4fe521691f94d6fbc626e149bfd85ac32bd453639a1c0a3e1eb4f270",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-024",
+    "path": "qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "421214ae6b2701d8bdd3c721741d17bd70a4709c617766dcf3f9472622565dd9",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "93a4ac5a0f6cd2a3d60dd01a8a787841fe1e600cd91f0d8eeb5fec21784340fe",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[qiskit,cirq,braket,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9",
+        "imports": [
+          "import qbraid"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "b03b93210f790fb0aec055cc8df85d1e9afee45c9e5393987b64648abe1bd3c3",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()"
+        ]
+      },
+      {
+        "index": 5,
+        "sha256": "1d3ca204a8b43dad1344ca825f92e7bda3017321e625efba041c8b2f8bf6c286",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "5c39cd66c03fe329c709c3e6f4ccebddcb644aeca1483f0621a73e42114887f8",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "aws_sim = provider.get_device(\"aws:aws:sim:sv1\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "a22c6cd46af20bfb18660410b58014072057b03b679bfd50296d055e0d997dd0",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "e36b295d5de77a120d741bf1f3396594640b4c2e12a1185d6465aea8c4f943fe",
+        "imports": [
+          "import cirq"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "c54a4d0258b0f95a57c07dcb4fe997f456be79e993f19eca2ca300cb8bd6feb9",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "32c6cc4f75684211752b9e20218cf4c3e900d629a88944846d59513708d17182",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 20,
+        "sha256": "003af81b2fceaf018c141f782b25a3ff88e2aebbe5cf60c08d848fae9b81b20d",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 21,
+        "sha256": "c7cbf4b7de4177eed1e0e2709855e8cfad9fbe6c60eb8dc331362d66961d08ee",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 23,
+        "sha256": "eda174d34f931df3eb2be40d12c6502a6d33b166f5e14cb497ebbd6c109ed10f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "3ccc2ec7f7e80fa29141d674a698ec7dba66454cf3d6e5e3ca4af13a7b20a75d",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "rigetti_device = provider.get_device(\"aws:rigetti:qpu:cepheus-1-108q\")"
+        ]
+      },
+      {
+        "index": 26,
+        "sha256": "0713221ef570fc9a68be178750ceb760e8c7636a35b7478e85c162724cbb8acc",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 28,
+        "sha256": "ccfb589fb5e79cc7da2e3b29873e4fb70887360a7eb8cabc615631d7edec5305",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "732c22164adeffd8b3e64c32ce5bf9eac0d439be2e104f0797c02b8f6f93b8a6",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 30,
+        "sha256": "3c6e2649a51eb1b3d41ddd00b3b46ea41f2f4b95644cde01c1def05c34f357ed",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 31,
+        "sha256": "217256a22e11e1050a658ff0c11fb69726fe8dff9e986ad204255b86cd0d8bd9",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 34,
+        "sha256": "92098dac225073adcdb18256bc59ae2fe2fcbb734f7dd3c858ee7747f7dca362",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "iqm_garnet_device = provider.get_device(\"aws:iqm:qpu:garnet\")"
+        ]
+      },
+      {
+        "index": 35,
+        "sha256": "4985c72ea1165a24b6f21f88580527d7b032c5f62674c3e76c0cfe52e7e20933",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 36,
+        "sha256": "90a3412bbd51374ba75c3fd36b01a3fb4b99df62e8468f363ef7415e185f2472",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 37,
+        "sha256": "67233f52a92934a58e522eacc1920850518a38ec0bfa6a9159fb1404d5029b18",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 38,
+        "sha256": "ae36a384859e215a75c967b173e87376f0393ab394e8c1112cf7290d1a726b36",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 39,
+        "sha256": "65e137b077d72d76cba9d676710a84514e531f41491eb3a4d614aee49b831b46",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-025",
+    "path": "qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "d3e806a15eca86f9c7e92120faa3319b2b9639e2409f497015f2b436817cf66c",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "0499be04f4b3a224a87a4891a155dd23614852e2a34488d47a5714dbdd226da4",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[visualization]' qiskit"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "4f43a9ebe1e65c0f83566dbb82115b02a88c9f86a728ab056c8c8429c6ea1d68",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:quobly:sim:alloy-forge\")"
+        ]
+      },
+      {
+        "index": 5,
+        "sha256": "68a20c8feda0b632455f1731a2122043de63340e186cf0bb42a2132e58728f37",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "032928abdbc2e0fda43145e6e3d04b0e3406fb15077bfe568f3031756edce395",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "32cdff34648d975890eb5f137df076f6e9bcdba2de80e0b21a943adf7290724b",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 12,
+        "sha256": "40a81819fb1c7e58d4647ca83c19518600c2890a8956d02ba8827fcb68e21bb3",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "667e7a748579ba45dcb91408d72eff8510a5dda6c149b2bcc69917d50428f7dc",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-026",
+    "path": "qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "d9e5993bdedac20df2a8d0786e8fcf5ab883956089cea78b450873d3f44abbba",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[visualization]' qiskit matplotlib"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "9869c52bb86262d628ae2c8d66da48f797adec17d9627a1b0a40dc8d72fbe077",
+        "imports": [
+          "from qbraid.runtime import QbraidProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QbraidProvider()",
+          "device = provider.get_device(\"qbraid:quobly:sim:alloy-forge\")"
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "0be68ec9dcf7122cc56ef9cc2b1fad9327c3767b9e724173f999a51e01840083",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "cf330fbffff8457fafbed4084a22f02aba57ab3036d134ca3fd77f26ce89bbaf",
+        "imports": [
+          "import math"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "208d5616c448c336814385be69c66673da7c3e9fc47d7a7f6ac13b57f798918b",
+        "imports": [
+          "import json",
+          "import time",
+          "from pathlib import Path"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "48d7af5423cf0f873dac23d0480c9b4b033a9502b27d01a41b008c9a00e7f054",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "888ef08b9f7106af38af75512ed9e3e192bf239c871cb9fc08e842262925ca38",
+        "imports": [
+          "import matplotlib.pyplot as plt"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "e8a52a8d5f53994544d6907fab6e35bf8c7416e6c989389ac12b8cd33aa73182",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-027",
+    "path": "Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "58a243cdfba9a646d5b321b199dcc998d0bb5cd48fe150f11e15922ab5da0621",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[braket,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "54ab055edb18045a584bf83689164092d4134ecf2f7ccdca0df289480bf067f2",
+        "imports": [
+          "import os",
+          "from qbraid.runtime import BraketProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = BraketProvider("
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "ce9e2293722f2d5ed5ca12d1b11d0cd103d581da2ce9eab8c7fc1801d279ab56",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "8c3c0187eab2a7b828c0d8b00c11bb3f6ee89c5b1c07417bbc17dd7eeec28c1b",
+        "imports": [
+          "from braket.circuits import Circuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "ee7ec330a0cf9f64e84444cafb741a1e8635b30d2c3342c419f349b1dc2c85b5",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"arn:aws:braket:::device/quantum-simulator/amazon/sv1\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-028",
+    "path": "Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "1edeb60861076fc8c7376509f83ab0b57ae7103b27bfe8ad88ee071cf9ce76c4",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[ionq,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 2,
+        "sha256": "d28516b44c7ca1e434d5a37709fc3d83e670e347c919a978f03fae2faf431a20",
+        "imports": [
+          "import os",
+          "from qbraid.runtime import IonQProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "# If your API key is stored as \"IONQ_API_KEY\" in your local environment, this",
+          "api_key = os.getenv(\"IONQ_API_KEY\") or \"\"  # set your API key here if not using environment variable",
+          "provider = IonQProvider(api_key=api_key)"
+        ]
+      },
+      {
+        "index": 3,
+        "sha256": "58c1b36a4a34bfa63bcec1426fae0d9af872c375b9fa9926c24caecd2f709d37",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "85986e72622358221537f79a45ac4d8b5d36f6e6682599d8b1aa588c7b1dbf3d",
+        "imports": [
+          "from qbraid.visualization import circuit_drawer"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "04687e876551b71df482f3bc2d182040c9d84da1ff66f9deb863fee32f73d289",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"simulator\")"
+        ]
+      },
+      {
+        "index": 6,
+        "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-029",
+    "path": "Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "125183f5e008e1191d7c3461c007adbd69074a2df887479ba34b47abd662291e",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[oqc,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "2dd03cc1e879bf007966d620f5cb7f879eab8a543032c0364aa8d5bdd297abb7",
+        "imports": [
+          "import os",
+          "from getpass import getpass",
+          "from qbraid.runtime import OQCProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "# Ensure OQC_AUTH_TOKEN is set in your environment.",
+          "token = os.getenv(\"OQC_AUTH_TOKEN\") or getpass(\"Enter your OQC auth token: \")",
+          "provider = OQCProvider(token=token)"
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "46e3ac1dc654efbdc95de068a5e78c663e7a9c4caf64ec5fcb413da9a0ca6791",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "7623e1ca346a25365f40ef070fba647b2b5ecd0e59d5cdd07774a3b48fc5f79b",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "4a09baa914d70b53f3937847b5c2f7a014337d75e5ca46f54af3ff8d9c8a57e9",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"qpu:uk:2:d865b5a184\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-030",
+    "path": "Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "0c0682ed337fb55f5fecaaa2f1a79cd2dc1d66fba6532fa5af506f7b6b014a28",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[pasqal,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "824c905f477584d55b360f6705f0703016bd3f7df1626912995371515c5be08d",
+        "imports": [
+          "import os",
+          "from qbraid.runtime.pasqal import PasqalProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = PasqalProvider("
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "355c978c818215ecede2528fa715ace49a9ddeeebea2d1c1483986593f3b065a",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "3755c4578536cecdfc642df00432e7f362a4c2f17090f914eeb792b6c23d39ab",
+        "imports": [
+          "import numpy as np",
+          "from pulser import Pulse, Register, Sequence",
+          "from pulser.devices import AnalogDevice",
+          "from pulser.waveforms import BlackmanWaveform"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "c34d9beef1242d055201dda148ed1b68b29012b3038d3944ce0f8ea02fe85e6f",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"EMU_FREE\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "0d50ad8a8b38da002eef4bff59fadf03825e49e58c567a2961cfd77963f0f5c6",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-031",
+    "path": "Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "67bf6c500057d145871e8549aabf60cbad6084904a4ccc51379b204315a654b8",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "c585d4c898bc02689992d0d04cd28bd655b9c28af4b62e371f78c86e1b8a83c8",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[qiskit,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "0a14282efebd33ccbfb043f99a11cfb008115bd502299c4b3557afcb4dffe118",
+        "imports": [
+          "import os",
+          "from qbraid.runtime import QiskitRuntimeProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "# Ensure QISKIT_IBM_TOKEN is set in your environment.",
+          "token = os.getenv(\"QISKIT_IBM_TOKEN\") or \"\"",
+          "provider = QiskitRuntimeProvider(token=token, instance=instance)"
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "eecc3e0474c6dfb78c84efc21495add8f695def323a307577c9889e830fb0414",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "7526608acac8aa6d9a404640c69d6b40c4ac8ccfe92295f7fa172bb47f5a9838",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "cfbe574b6166af12ed13327843fb577b616d28772de5bac7a625241dcfdf2eb5",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"ibm_kingston\")"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-032",
+    "path": "Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "f6ab8127957d977bb43ade4f63227512852ce2c950adf53fe515e3bf796c5535",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "4ff2dc971d74b2573512ed386543bab1d2807b0988cb6888157da90bd38177cb",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[quantinuum,visualization]'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "6905204256d8807a53d8043327f695065d4588429be5ade7004f2a9016408e76",
+        "imports": [
+          "import qnexus as qnx"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "d28f604b11a5a745b077a13117329c8275adbbf51197f6474eb90324598564c1",
+        "imports": [
+          "from qbraid.runtime import QuantinuumProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "provider = QuantinuumProvider()"
+        ]
+      },
+      {
+        "index": 6,
+        "sha256": "02a66a7b54a88a38ee7889ae37655f3a6ebe4a685ffae323cb794deb0f8b574a",
+        "imports": [
+          "from pytket.circuit import Circuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "571ce21842b47fb4e25acc303dc518f1b60b242c29e438c7971e709b0b0d5b16",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"H1-1E\")  # H1-1 Emulator"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-033",
+    "path": "Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "8423a941b6145ace8ba6e2242aeac13fabd8c3aeb815623126ba76d715ee5b1c",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "9d0195f2e60ce82b81682222baf7c0405b68849fd60dc401950a7acc5991484b",
+        "imports": [],
+        "setup": [
+          "%%capture",
+          "%pip install 'qbraid[rigetti,visualization]' 'pyquil>=5.0.0rc3'"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "c2ca8e569078235654aca3b0d81caf680f08fa6f0c1054f230b66c6f69dc9773",
+        "imports": [
+          "import os",
+          "from qbraid.runtime.rigetti import RigettiProvider"
+        ],
+        "setup": [],
+        "external_markers": [
+          "# Ensure RIGETTI_REFRESH_TOKEN is set in your environment.",
+          "os.environ[\"RIGETTI_REFRESH_TOKEN\"] = \"\"  # set refresh token",
+          "provider = RigettiProvider()"
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "329089e4f2f4ac1d0206a8ef1d1a79bcf593882066fe09665216a3d90ec62b61",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "6cc5b229adb178827cf480bedf5169d23f328a4ccae2b4c78d52a867098a7ee9",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 8,
+        "sha256": "ffc1efde631103c0d840f13c431200782a968b45af6b92309ced87655cfcc8df",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "device = provider.get_device(\"Cepheus-1-108Q\")"
+        ]
+      },
+      {
+        "index": 9,
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785",
+        "imports": [
+          "from qbraid.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-034",
+    "path": "qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+    "cells": [
+      {
+        "index": 2,
+        "sha256": "30bc528ef8db241ad0b71cbb280d45a06ca0a9ca77a657f89ce0677a9c98240c",
+        "imports": [
+          "import os",
+          "from dataclasses import dataclass",
+          "from time import perf_counter",
+          "import cudaq"
+        ],
+        "setup": [],
+        "external_markers": [
+          "assert os.environ.get(\"QBRAID_API_KEY\"), \"Export QBRAID_API_KEY first.\""
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "d0a85c59fd122d1a00aff8a5db8088463cbefbade3e7f35ac9b5a1bfdb13b386",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 6,
+        "sha256": "ed0003af2b48a39ffabf4ed22deb4f38cc676de83399ac6da283a0c1c2f47d7b",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "cudaq.set_target(\"qbraid\", machine=device_id)"
+        ]
+      },
+      {
+        "index": 8,
+        "sha256": "806d945f0b0b00d7adf11eea9596376b0fce4791e36585771c3f92d27fbde241",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "65a8dd5f8433aa26ed87d44d38b8cd8d164c6520c51504ca4268d30266a65e12",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "1173192910a69b0ea788e441ae6e060cc1cf24d03dea2e93880500751adf47d5",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "51bd052c00527593b73e3cc089b3b2b63ffcad014cbfd2266c4e0ec9134563a4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "0d1972ce66a8a4cae64ebf5598feb4c1123af9ee50ca83e7c80dc7707ef5dccd",
+        "imports": [
+          "import re"
+        ],
+        "setup": [],
+        "external_markers": [
+          "cudaq.set_target(\"qbraid\", machine=qpu)"
+        ]
+      },
+      {
+        "index": 17,
+        "sha256": "61221dbb6bdb701fb548f3b96b539174b18acf3a355ce59f0a44d2945ff9c21f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 18,
+        "sha256": "6b6fef33dfa92a05fd62f8124d1a7b4bafa12bf8e695b5eab6e8dc905beb3108",
+        "imports": [
+          "import matplotlib.pyplot as plt"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "QB-035",
+    "path": "qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+    "cells": [
+      {
+        "index": 2,
+        "sha256": "a10d309dad316031c8d4b2744726ce2ac4e142f0fedd55f2f51718dc42dd7a0c",
+        "imports": [
+          "import os",
+          "import cudaq"
+        ],
+        "setup": [],
+        "external_markers": [
+          "\"QBRAID_API_KEY\"",
+          "), \"Set QBRAID_API_KEY in your environment, or pass api_key=... to set_target below.\""
+        ]
+      },
+      {
+        "index": 4,
+        "sha256": "1d9a0a0a20d378e767dc30f3953b31e15c3e919f2fc2efec237ea2dc4736538f",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "cudaq.set_target(\"qbraid\")"
+        ]
+      },
+      {
+        "index": 6,
+        "sha256": "19c31ffcd4c180ae2dbd316b6d6be82aefe93340851911ee8fedfe47b5e0c33f",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "cudaq.set_target("
+        ]
+      },
+      {
+        "index": 9,
+        "sha256": "466d04a306288726846b26774a3413bd3ff415beb70bfcd5bf0e6908179866ce",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 10,
+        "sha256": "58a816463db81facc5a2b30c0eec1b5df2eda76ea5776e40e821b2424335cb7e",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "bae2ea45180d576508cd5400d701bb04347df54607e653ce9a56134cccf12517",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "d50490ecea0b630720265ab0a3d1041ac25237ea9da92a3c177c3baa26d6b50b",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "8153f4577cd1ab9f84539c5d97618eb9a387ca9b178f7ab98017f90c9ea608f3",
+        "imports": [
+          "from cudaq import spin"
+        ],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "static discovery only; import/marker extraction is not execution or a complete dependency solver"
+  },
+  {
+    "id": "IBM-039",
+    "revision": "d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d",
+    "url": "https://raw.githubusercontent.com/Qiskit/documentation/d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d/learning/courses/basics-of-quantum-information/single-systems/qiskit-implementation.ipynb",
+    "sha256": "63d142ef8e69beb627cd91ae6f9c68fc122f937635c56afa5e953d97a8609f72",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80",
+        "imports": [
+          "from qiskit import __version__"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "2608456a5ebc855d99d632a00b990260092657267685e9c6c5f964dc5def2458",
+        "imports": [],
+        "setup": [
+          "#!pip install qiskit",
+          "#!pip install jupyter",
+          "#!pip install sympy",
+          "#!pip install matplotlib",
+          "#!pip install pylatexenc"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "a4a408888156e37f19b78e6c9c55a4e74d2af336320e73cce52cf5ff70b06a60",
+        "imports": [
+          "import numpy as np"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "6642b8bc8527df1cb67f8c47d5092b07b0648d98601e7bf035cc32f289c54c66",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "6248c5debe4bc63cad8e1a933930ad2d6a741d61d5b843a801469a20d29a5fc3",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "c4890c3f1460efe36343a3ee471bcbea8d3449f56b969e7f6131dad85008026b",
+        "imports": [
+          "from qiskit.visualization import array_to_latex"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "d40fd200ca2c06eccf16970c9b8887c200fdb5f47e47c87784acc51d359f61a9",
+        "imports": [
+          "from qiskit.quantum_info import Statevector",
+          "from numpy import sqrt"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "65349a0eb5cedd4432cb05cd4893d791a1eb00f5100cb31ac9513ea6c4d07ac1",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "6317cd33bc1a1d1edb6fb328749a886d325bed0d445562bd789598a07cf4bbec",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "caa2f3ba4a39aee742fad8d9d63b9510a1aa79157c6c4b2e665ce9af0f8ab8ac",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 21,
+        "sha256": "f5b86b6e20025afbe9ac9a02f8c7d4a7df8bdd4d845351437356289473e1dc99",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 23,
+        "sha256": "94f9ed2ab3300121cf20226f8d99238da694b003a1744c1bb8bf3b25a18cb89d",
+        "imports": [
+          "from qiskit.visualization import plot_histogram"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 26,
+        "sha256": "d1e45c7dd3db69b86c7f97dab0f2dbd02720c147a316ba7e6d80086a2982cbf4",
+        "imports": [
+          "from qiskit.quantum_info import Operator"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 28,
+        "sha256": "f5ad366cc0c19e6164dfd779cbb328e0d5b54ce06c3b8cbf6d62e07c800a1e52",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 30,
+        "sha256": "633193ac937f86ca59d3d1a11d9f33332af97fdbe999025788e1a6384aa03a9e",
+        "imports": [
+          "from qiskit import QuantumCircuit"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 32,
+        "sha256": "7e3d2aea544c2b13927bc59023ed9ba190001e79362acebc7839a91075bdbe69",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 34,
+        "sha256": "d7e281ee6afa7606e8300d8bbe6a1d2e32198013e27a402b123fb510897ccf5f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 36,
+        "sha256": "2e271d4ba74ace1fceb2b06b8f56df925e89cc09575549ddf7b32d0c174a5b77",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "Static official-source discovery only; not executed; not a whole-catalog reconciliation"
+  },
+  {
+    "id": "IBM-043",
+    "revision": "d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d",
+    "url": "https://raw.githubusercontent.com/Qiskit/documentation/d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d/learning/courses/basics-of-quantum-information/multiple-systems/qiskit-implementation.ipynb",
+    "sha256": "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840",
+    "cells": [
+      {
+        "index": 1,
+        "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80",
+        "imports": [
+          "from qiskit import __version__"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "0b2d2219d5b7bb661224036abeae827912bc25a6ab5e90bb3af9cc170f303e2f",
+        "imports": [
+          "from qiskit.quantum_info import Statevector, Operator",
+          "from numpy import sqrt"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "0e4a8659ac7abe241293d5c9a1206175286a9635c5061d11e1d0c75b39b1acb8",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "c70faddab60e75385d89d947acc11492c1b62d59ac8f15164f83a60c0ba1e3ac",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "8a2d994c8986ebe001f3f1de9b66c9cf63ad594f1fad1e75c3304949901ba341",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "94624aab6c3add9b010763cd5c362c1c5e33c49cc42b74b9ae48f4115877e0a0",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "1f66885080d0f88ec16db865fb4b1149be9de274c86ad82ff0ffd013f9c967f5",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 15,
+        "sha256": "73cb4dd282e9f1d2f84fe52206d988b6114c8fdceac689c129128c90d6a07e82",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "3d5f499b35457a6c1502d56943abc7eb4bfae46843cc8d3651fba11f8f9a3029",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "94817afdebe255077d4c90bcf1e9d968e4e83186400f7c7f49565c0235e4b355",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "Static official-source discovery only; not executed; not a whole-catalog reconciliation"
+  },
+  {
+    "id": "IBM-052",
+    "revision": "d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d",
+    "url": "https://raw.githubusercontent.com/Qiskit/documentation/d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d/learning/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation.ipynb",
+    "sha256": "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30",
+    "cells": [
+      {
+        "index": 2,
+        "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80",
+        "imports": [
+          "from qiskit import __version__"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 3,
+        "sha256": "8b7ed07170b10495a08e0b2d3b344cd367fdc88f6c9ec6dcd7d1f52b3877a739",
+        "imports": [
+          "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister",
+          "from qiskit_aer import AerSimulator",
+          "from qiskit.visualization import plot_histogram, array_to_latex",
+          "from qiskit.result import marginal_distribution",
+          "from qiskit.circuit.library import UGate",
+          "from math import pi",
+          "import random"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 5,
+        "sha256": "faa182d7b9c933d3906ff1563e94ab6823b3aa73f734ec6dac3e1195e1821152",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "28a454b368b28b143ccceaff10c7905a8f16370ee3c961ed4494085bae762d28",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "f3f47c5a9b48459fb0f3bbeae500d178aaecafa98b8d6652434077741642177f",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 11,
+        "sha256": "716f6976259efca726390c7a6dd26222805ae92af413c40295225c4e1cd79a67",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 13,
+        "sha256": "87bcb66e0ae3294a65d7dab2d8fa30ff0f1d95a1c2d35e8e1d5d697dc02cdebf",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 17,
+        "sha256": "8f8cb084225011bf1b9bdf11191fcc051aaeae166456267a3b43b14f8a990059",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 19,
+        "sha256": "3cd79d0ecb87bbe8a179a018e06bc9201b4e6ca7c844e27a31dd3e45657e34f7",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 21,
+        "sha256": "51122405aa6f5979cedbb94b99269af3e41d4720af1cca7e9ed5802103003139",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 23,
+        "sha256": "b76d9233da4607d9aa2b433190288f88a3f9aaf75743e6869b8413449ef41fa4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 25,
+        "sha256": "716f6976259efca726390c7a6dd26222805ae92af413c40295225c4e1cd79a67",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 27,
+        "sha256": "f17d5e115193f1c497365485a7596818fef73a8eacbaae204ec9e0b82ca49ee4",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 29,
+        "sha256": "be5f3c1f8c52466b556b06ea7c137c073b0a3ff56fb412e1179fa1ae3294c315",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 31,
+        "sha256": "12e2882646cc2f8126d0b22518ea70c3278dbf851c6947a128cc65a1325cd12c",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 33,
+        "sha256": "b89e9bb46a5381a034058643f3967413d5315ad1198851c5a72bddb11020ccad",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 35,
+        "sha256": "0282e7198aaa333ed127ecfd6587665de76d99feef64ecd1bd3a911bd148f5b2",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 37,
+        "sha256": "25b3520955dcbc8019e0b1f8a0636b561253ff5dba9c41abf1c50f35e096de65",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 39,
+        "sha256": "1bbbbf284a0b3fdf741e6949d14f0b9b92cca814fb65d7ad880bed018f7224d9",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "Static official-source discovery only; not executed; not a whole-catalog reconciliation"
+  },
+  {
+    "id": "IBM-069",
+    "revision": "d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d",
+    "url": "https://raw.githubusercontent.com/Qiskit/documentation/d4df56c821899ab7bda16f3ffaf3e8c7a44c5d3d/learning/courses/use-a-qc-today/build-and-run-your-first-quantum-program.ipynb",
+    "sha256": "e7d425ac9ed44019b504fc4f67ae24e7651a06e050f37b97441c4adf95ed1c74",
+    "cells": [
+      {
+        "index": 2,
+        "sha256": "86bb428ae10c77ed68baa4559994cd34184b026a0f2a6fd9ffe8ecd95582f3b8",
+        "imports": [
+          "from qiskit import QuantumCircuit",
+          "from qiskit.visualization import plot_histogram",
+          "from qiskit_aer import AerSimulator",
+          "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager",
+          "from qiskit_ibm_runtime import SamplerV2 as Sampler, QiskitRuntimeService"
+        ],
+        "setup": [
+          "!pip install 'qiskit[visualization]' qiskit-ibm-runtime qiskit-aer"
+        ],
+        "external_markers": []
+      },
+      {
+        "index": 4,
+        "sha256": "bd3f5edb53e3606d25140293f4f22276f5bb6551f0d77570555286ecbca22ec8",
+        "imports": [
+          "import sys",
+          "import qiskit",
+          "import qiskit_aer",
+          "import qiskit_ibm_runtime"
+        ],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 7,
+        "sha256": "9fb4ff8edcb8e56a83a52be8fed34ee8d4af6de97a0b22e140e4a22aeaefb782",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 9,
+        "sha256": "c0f6b122dfd69546c5b17f20d5ef3ad86654e5207c04ef6ccdccf33b917bcfc1",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "sampler = Sampler(mode=backend)"
+        ]
+      },
+      {
+        "index": 11,
+        "sha256": "8a8b35a863e7f99f0959bcef96f7b80e91b02a87e2c73f51c7a132da39ce8814",
+        "imports": [],
+        "setup": [],
+        "external_markers": [
+          "QiskitRuntimeService.save_account(",
+          "service = QiskitRuntimeService(channel=\"ibm_quantum_platform\")",
+          "service = QiskitRuntimeService()",
+          "backend = service.least_busy(operational=True, simulator=False, min_num_qubits=127)"
+        ]
+      },
+      {
+        "index": 12,
+        "sha256": "598ceac870cdf61a2bb44a659de9e3e6a0128c14bd045f14cf435a7d6edb4b37",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      },
+      {
+        "index": 14,
+        "sha256": "4de2a93ff3009ac9bb12b812e9f8a9d3b64e01a29cfb99aeb2b76f88cf134461",
+        "imports": [],
+        "setup": [],
+        "external_markers": []
+      }
+    ],
+    "assessment": "Static official-source discovery only; not executed; not a whole-catalog reconciliation"
+  }
+]
