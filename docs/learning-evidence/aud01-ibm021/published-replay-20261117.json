@@ -1,0 +1,108 @@
+{
+  "imported_revision": "985faaeeedf80e8e3c4a7430c08f930b16d9e12c",
+  "provenance": {
+    "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+    "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+    "worker_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+    "inventory_sha256": "4712fcdfb603c11b0043b0e4fbaac9daf899596c42cf7c976d9220979353e372",
+    "fixture_sha256": "db3d6e01baa98a5cc0e661d9b151555853bc031402cc896c03a5839201f567e4",
+    "script_sha256": "23c5b25604d4ba70616ebb55d3aaf91431628a3c8e70c8e141afaf9d8c24aa1f",
+    "definitions_before": {
+      "currencies.xml": "2e3755f4c689cdfb9f3ba58a4479247414cb00d2dbfba649732e0a872a82b1ce",
+      "datasets.xml": "b5d06c6698152e2dd7fb99136e15a0c7e480b09f48bc71af61836a64c16cb2ac",
+      "elements.xml": "00dfd53ebb19e2f44166a73da8b8ad59d8e18336342175be7373aadc82f2af3c",
+      "eurofxref-daily.xml": "2634d30efde68a04cf777f4f45f5d67530e09179f311fe6ccf81f0efba12ee24",
+      "functions.xml": "675f8005bf8a7f8cc4623135f838efd91eed69184dd66a791f81c428987607ef",
+      "planets.xml": "84071a736558cb39d0851f96060404ab4264cd011324ec8d47520d63706158ff",
+      "prefixes.xml": "62b001d17848abb7d1ffe26af5a2f2bc1cd11bb91c67c4830a32a137c05f9b3f",
+      "units.xml": "8df64e5185ecca43fd1697cb3841382c578251332e10e2898e5883fe8699bb41",
+      "variables.xml": "7af8b57a8dea98b77635266b5253762d39fb408ef953e5cc5c7e8aa95d35059c"
+    },
+    "route": "Actual worker exact mode, ordinary canonical copies",
+    "definitions_after": {
+      "currencies.xml": "2e3755f4c689cdfb9f3ba58a4479247414cb00d2dbfba649732e0a872a82b1ce",
+      "datasets.xml": "b5d06c6698152e2dd7fb99136e15a0c7e480b09f48bc71af61836a64c16cb2ac",
+      "elements.xml": "00dfd53ebb19e2f44166a73da8b8ad59d8e18336342175be7373aadc82f2af3c",
+      "eurofxref-daily.xml": "2634d30efde68a04cf777f4f45f5d67530e09179f311fe6ccf81f0efba12ee24",
+      "functions.xml": "675f8005bf8a7f8cc4623135f838efd91eed69184dd66a791f81c428987607ef",
+      "planets.xml": "84071a736558cb39d0851f96060404ab4264cd011324ec8d47520d63706158ff",
+      "prefixes.xml": "62b001d17848abb7d1ffe26af5a2f2bc1cd11bb91c67c4830a32a137c05f9b3f",
+      "units.xml": "8df64e5185ecca43fd1697cb3841382c578251332e10e2898e5883fe8699bb41",
+      "variables.xml": "7af8b57a8dea98b77635266b5253762d39fb408ef953e5cc5c7e8aa95d35059c"
+    },
+    "definitions_unchanged": true,
+    "worker_unchanged": true,
+    "inputs_unchanged": true
+  },
+  "summary": {
+    "requests": 44,
+    "value_passes_by_cohort": {
+      "pilot_adaptation": 20,
+      "joint_adaptation": 3,
+      "authored_gf2_control": 12
+    },
+    "full_value_passes": 35,
+    "ordinary_copy_passes": 35,
+    "literal_rejections": 8,
+    "failures": [
+      "IBM021-c0-M088"
+    ]
+  },
+  "reconciliation": {
+    "summary": {
+      "requests": 44,
+      "value_passes_by_cohort": {
+        "pilot_adaptation": 20,
+        "joint_adaptation": 3,
+        "authored_gf2_control": 12
+      },
+      "full_value_passes": 35,
+      "ordinary_copy_passes": 35,
+      "literal_rejections": 8,
+      "failures": [
+        "IBM021-c0-M088"
+      ]
+    },
+    "classification": "35 exact value/copy pairs pass. All9original literals still reject;8match historical diagnostics. M088 drops historical trailing r-variable explanatory message but retains finite-set,bar and scalar-XOR errors. No mathematical success inferred for original literal.",
+    "changed_literal": {
+      "input": "quantum:\n\\begin{aligned}\n\\left\\vert \\sum_{x\\in f^{-1}(\\{z\\})}  (-1)^{x\\cdot y} \\right\\vert^2\n& = \\Bigl\\vert (-1)^{w\\cdot y} + (-1)^{(w\\oplus s)\\cdot y} \\Bigr\\vert^2 \\\\\n& = \\Bigl\\vert (-1)^{w\\cdot y} \\Bigl(1 + (-1)^{s\\cdot y}\\Bigr) \\Bigr\\vert^2 \\\\\n& = \\Bigl\\vert 1 + (-1)^{y\\cdot s} \\Bigr\\vert^2 \\\\\n& = \\begin{cases}\n4 & y \\cdot s = 0\\\\[1mm]\n0 & y \\cdot s = 1\n\\end{cases}\n\\end{aligned}\n",
+      "returncode": 2,
+      "stdout": "",
+      "stderr": "A set sum requires a finite flat vector of at most 1024 scalar indices.\r\nBars require a scalar or finite flat collection.\r\nScalar XOR requires nonnegative integer operands.\r\n",
+      "id": "IBM021-c0-M088",
+      "cohort": "original",
+      "baseline_matches": false,
+      "mathematical_pass": false,
+      "status": "unexpected_failure"
+    },
+    "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33"
+  },
+  "external_evidence": [
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm021-published-replay/completion.json",
+      "bytes": 16,
+      "sha256": "2618b95f1f6be6bfde8537756f85b83845d039001563135b9d59d817446733eb"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm021-published-replay/probe.log",
+      "bytes": 231,
+      "sha256": "068e6f4dd9776aa9fe80c037456e712b99747a1a414ef56653aa6b56c35921fe"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm021-published-replay/reconciliation.json",
+      "bytes": 1588,
+      "sha256": "a515d683b5c87cac2d48b36a715a6c7fa6da2b2653ad3c8b868a991f7fb84d72"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm021-published-replay/results/probe-snapshot.py",
+      "bytes": 9174,
+      "sha256": "23c5b25604d4ba70616ebb55d3aaf91431628a3c8e70c8e141afaf9d8c24aa1f"
+    },
+    {
+      "path": "cleanup-audit/learning-coverage-20261117/ibm021-published-replay/results/results.json",
+      "bytes": 137186,
+      "sha256": "118c4f20d3a25f600020cfab975632d56cdd19b25407b38771ebcd6805f68622"
+    }
+  ],
+  "scope": "Finite native source adaptations and authored GF2 controls only. All9original literals remain rejected; whole-source acceptance remains open."
+}
