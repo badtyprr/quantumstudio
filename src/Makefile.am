@@ -187,6 +187,12 @@ quantum_wide_basis_test_LDADD = $(test_LDADD)
 
 quantum_worker_SOURCES = quantum-worker.cc quantum-display.h quantum-sampling-request.cc quantum-sampling-request.h quantum-exact-request.cc quantum-exact-request.h quantum-classical-request.h
 quantum_worker_LDADD = $(test_LDADD)
+
+if PLATFORM_WIN32
+# The notation budget permits flat chains translated to nested algebra calls.
+# Reserve stack address space for those calls; the default commit stays small.
+quantum_worker_LDFLAGS = -Wl,--stack,67108864
+endif
 TEST_EXTENSIONS = .py
 PY_LOG_COMPILER = python3
 EXTRA_DIST = quantum-worker-test.py quantum-sampling-request-test.py quantum-exact-request-test.py quantum-exact-fixtures.json quantum-classical-request-test.py
@@ -381,3 +387,6 @@ TESTS += quantum-wide-basis-worker-test.py quantum-tensor-chain-worker-test.py
 EXTRA_DIST += quantum-wide-basis-worker-test.py quantum-tensor-chain-worker-test.py
 TESTS += quantum-arithmetic-basis-worker-test.py
 EXTRA_DIST += quantum-arithmetic-basis-worker-test.py
+
+TESTS += quantum-flat-arithmetic-worker-test.py
+EXTRA_DIST += quantum-flat-arithmetic-worker-test.py
