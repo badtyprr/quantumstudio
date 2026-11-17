@@ -263,6 +263,22 @@ coverage. Errors without a usable span continue to name only the entry file;
 no nearest statement or invented coordinate is substituted. These changes are
 unreleased development behavior, not a new published-artifact claim.
 
+### Final statement emission diagnostics (development)
+
+Both numerical and classical emitters attach the current statement's source
+span to otherwise unlocated adapter `ValueError` failures. Already located
+failures keep their more-specific origin, including failures within nested
+branches. Runtime while-loop reconstruction retains its original statement span
+so invalid conditions can identify the original loop. Compiler failures outside
+these emission stages and synthesized nodes with no source span retain their
+existing behavior; this is not complete DEV-16d coverage.
+
+Authored regressions cover unsupported controlled gates, delay/box statements,
+invalid branch/while casts and signed shift counts, nested dependency paths,
+module-header adaptation, unchanged stdin messages and recovery after failure.
+File-import tests also require failed compilations to emit no partial document
+on stdout. These diagnostics do not add timing, gate or classical semantics.
+
 ## Subroutine locals resolved during compilation
 
 Classical import can now use the pinned compiler's own local scopes when a

@@ -12,6 +12,52 @@ from qasm_source_diagnostics import compile_source, error_at, copy_span, diagnos
 
 
 class SourceBundleTests(unittest.TestCase):
+    def test_final_emission_dependency_locations(self):
+        spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        cases = [
+            ('qubit[2] q;', 'ctrl @ sx q[0],q[1];', (False, True),
+             'Controlled gate is not representable: SX'),
+            ('qubit[3] q;', 'ctrl(2) @ h q[0],q[1],q[2];', (False, True),
+             'Controlled gate is not representable: CH'),
+            ('bit[2] b; int n=1;', 'if (b==bit[3](n)) { }', (True,),
+             'Integer-to-bit casts require equal explicit widths.'),
+            ('bit[2] b; int n=1;', 'while (b==bit[3](n)) { break; }', (True,),
+             'Integer-to-bit casts require equal explicit widths.'),
+            ('bit[2] b; int n=1;', 'if ((b << n)==0) { }', (True,),
+             'Shift distance requires an unsigned integer.'),
+        ]
+        for operation, kind in [('delay[1ns] q;', 'DelayInstruction'), ('box { x q; }', 'Box')]:
+            cases.extend([
+                ('qubit q;', operation, (False,), 'The editor cannot represent ' + kind +
+                 '. Runtime classical feedback, timing and pulse programs require a richer execution model.'),
+                ('qubit q;', operation, (True,), 'Classical circuit import cannot yet represent ' + kind + '.'),
+            ])
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/wrapper.inc";')
+        self.put('nested κ/wrapper.inc', 'include "failure.inc";')
+        for module in (False, True):
+            prefix = 'OPENQASM 3;\ninclude "stdgates.inc";\n' if module else '// original\n// dependency\n'
+            for setup, operation, modes, message in cases:
+                body = setup + '\n  ' + operation
+                self.put('nested κ/failure.inc', prefix + body)
+                for classical in modes:
+                    with self.subTest(operation=operation, module=module, classical=classical):
+                        bundle = capture_source(main, module_headers=module)
+                        with self.assertRaises(SourceError) as caught:
+                            compile_source(bundle, compiler.convert, classical=classical)
+                        self.assertEqual(str(caught.exception), 'nested κ/failure.inc:4:3: ' + message)
+                        with self.assertRaises(ValueError) as stdin:
+                            compiler.convert('OPENQASM 3; include "stdgates.inc";\n' + body, classical=classical)
+                        self.assertEqual(str(stdin.exception), message)
+        # Nested emission must retain the inner failure rather than the outer branch.
+        self.put('nested κ/failure.inc', 'bit c; bit[2] b; int n=1;\nif(c) {\n  if(b==bit[3](n)) {}\n}')
+        with self.assertRaises(SourceError) as nested:
+            compile_source(capture_source(main), compiler.convert, classical=True)
+        self.assertEqual(str(nested.exception), 'nested κ/failure.inc:3:3: Integer-to-bit casts require equal explicit widths.')
+        result = compiler.convert('OPENQASM 3; qubit q; x q;', classical=True)
+        self.assertEqual(len(result['Steps']), 1)
+
     def test_numerical_register_budget_origin(self):
         spec = importlib.util.spec_from_file_location("qasm_import", Path(__file__).with_name("qasm-import.py"))
         compiler = importlib.util.module_from_spec(spec)

@@ -496,7 +496,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             raise ValueError('Global declarations are not allowed in runtime loops.')
         proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
         compiled=branch(visitor,proxy,force=True)
-        return [ast.WhileLoop(while_condition=item.condition,block=item.if_block) for item in compiled]
+        return [copy_span(ast.WhileLoop(while_condition=item.condition,block=item.if_block), statement) for item in compiled]
     def switch(visitor, statement):
         if in_function(visitor):return original_switch(visitor,statement)
         target=normalize(visitor,statement.target)
@@ -1106,41 +1106,42 @@ def convert(source, published_u=False, classical=False):
 
     steps = []
     for statement in statements:
-        if isinstance(statement, (ast.Include, ast.QubitDeclaration, ast.QuantumBarrier)):
-            continue
-        if isinstance(statement, ast.ClassicalDeclaration):
-            if not isinstance(statement.type, ast.BitType) or statement.init_expression is not None:
-                raise ValueError('Unresolved classical state remains after compilation.')
-            continue
-        angle = ''
-        if isinstance(statement, ast.QuantumGate):
-            if statement.duration is not None:
-                raise ValueError('Timed gates are not supported.')
-            steps.extend(gate_steps(statement, wire, published_u))
+        with diagnostic_context(statement):
+            if isinstance(statement, (ast.Include, ast.QubitDeclaration, ast.QuantumBarrier)):
+                continue
+            if isinstance(statement, ast.ClassicalDeclaration):
+                if not isinstance(statement.type, ast.BitType) or statement.init_expression is not None:
+                    raise ValueError('Unresolved classical state remains after compilation.')
+                continue
+            angle = ''
+            if isinstance(statement, ast.QuantumGate):
+                if statement.duration is not None:
+                    raise ValueError('Timed gates are not supported.')
+                steps.extend(gate_steps(statement, wire, published_u))
+                if len(steps) > 512:
+                    raise error_at(statement, 'The compiled circuit exceeds the editor limit of 512 steps.')
+                continue
+            elif isinstance(statement, ast.QuantumPhase):
+                if statement.modifiers:
+                    if (len(statement.modifiers) != 1 or statement.modifiers[0].modifier != ast.GateModifierName.ctrl
+                            or statement.modifiers[0].argument.value != len(statement.qubits)):
+                        raise ValueError('Unresolved controlled global phase.')
+                    wires = [wire(q) for q in statement.qubits]
+                    if len(wires) not in (1,2) or len(set(wires)) != len(wires):
+                        raise ValueError('Controlled global phase currently supports one or two distinct controls.')
+                    gate, angle = ('P' if len(wires)==1 else 'CP'), number(statement.argument)
+                else:
+                    gate, angle, wires = 'GPhase', number(statement.argument), [0]
+            elif isinstance(statement, ast.QuantumReset):
+                gate, wires = 'Reset', [wire(statement.qubits)]
+            elif isinstance(statement, ast.QuantumMeasurementStatement):
+                gate, wires = 'Measure', [wire(statement.measure.qubit)]
+            else:
+                raise ValueError('The editor cannot represent ' + type(statement).__name__ +
+                                 '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
+            steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
             if len(steps) > 512:
                 raise error_at(statement, 'The compiled circuit exceeds the editor limit of 512 steps.')
-            continue
-        elif isinstance(statement, ast.QuantumPhase):
-            if statement.modifiers:
-                if (len(statement.modifiers) != 1 or statement.modifiers[0].modifier != ast.GateModifierName.ctrl
-                        or statement.modifiers[0].argument.value != len(statement.qubits)):
-                    raise ValueError('Unresolved controlled global phase.')
-                wires = [wire(q) for q in statement.qubits]
-                if len(wires) not in (1,2) or len(set(wires)) != len(wires):
-                    raise ValueError('Controlled global phase currently supports one or two distinct controls.')
-                gate, angle = ('P' if len(wires)==1 else 'CP'), number(statement.argument)
-            else:
-                gate, angle, wires = 'GPhase', number(statement.argument), [0]
-        elif isinstance(statement, ast.QuantumReset):
-            gate, wires = 'Reset', [wire(statement.qubits)]
-        elif isinstance(statement, ast.QuantumMeasurementStatement):
-            gate, wires = 'Measure', [wire(statement.measure.qubit)]
-        else:
-            raise ValueError('The editor cannot represent ' + type(statement).__name__ +
-                             '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
-        steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
-        if len(steps) > 512:
-            raise error_at(statement, 'The compiled circuit exceeds the editor limit of 512 steps.')
     return {'Version': 1, 'Qubits': count, 'Steps': steps}
 
 
@@ -1505,31 +1506,31 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 raise error_at(statement, 'Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
-            if isinstance(statement,WireReferenceCheck):
-                version=max(version,18)
-                span=statement.span
-                append(dict(Kind='CheckWireReferences',WireSource='OpenQASM:'+str(getattr(span,'start_line',0))+':'+str((getattr(span,'start_column',0) or 0)+1),
-                    WireTargets=[dict(Candidates=[reference(value,quantum) for value in target['Candidates']],Index=classical_value(target['Index'],classical,integer_only=True)) for target in statement.targets]));continue
-            if isinstance(statement,ArrayCopyStatement):
-                version=max(version,17)
-                append(dict(Kind='CopyArray',ArrayCopy=dict(Destination=view_document(statement.destination,lambda value:classical_value(value,classical,integer_only=True)),Sources=[view_document(view,lambda value:classical_value(value,classical,integer_only=True)) for view in statement.sources])));continue
-            if isinstance(statement,ArrayReferenceCheck):
-                version=max(version,16)
-                append(dict(Kind='CheckArrayReferences',ArrayReferences=[dict(View=view_document(view,lambda value:classical_value(value,classical,integer_only=True)),Shape=shape) for view,shape in zip(statement.views,statement.shapes)]));continue
-            if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
-                continue
-            if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,NUMERIC_TYPES):
-                if getattr(statement,'_quantum_scoped',False):append({'Kind':'ClearNumeric','VariableSlot':numeric_variables[statement.identifier.name][0]})
-                continue
-            if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType)):
-                if getattr(statement,'_quantum_scoped',False) and not getattr(statement,'_quantum_for_binding',False):append({'Kind':'ClearInteger','VariableSlot':variables[statement.identifier.name][0]})
-                continue
-            if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
-                if depth:
-                    raise ValueError('Register declarations inside runtime branches are not supported.')
-                continue
-            if isinstance(statement, ast.ClassicalAssignment):
-                with diagnostic_context(statement):
+            with diagnostic_context(statement):
+                if isinstance(statement,WireReferenceCheck):
+                    version=max(version,18)
+                    span=statement.span
+                    append(dict(Kind='CheckWireReferences',WireSource='OpenQASM:'+str(getattr(span,'start_line',0))+':'+str((getattr(span,'start_column',0) or 0)+1),
+                        WireTargets=[dict(Candidates=[reference(value,quantum) for value in target['Candidates']],Index=classical_value(target['Index'],classical,integer_only=True)) for target in statement.targets]));continue
+                if isinstance(statement,ArrayCopyStatement):
+                    version=max(version,17)
+                    append(dict(Kind='CopyArray',ArrayCopy=dict(Destination=view_document(statement.destination,lambda value:classical_value(value,classical,integer_only=True)),Sources=[view_document(view,lambda value:classical_value(value,classical,integer_only=True)) for view in statement.sources])));continue
+                if isinstance(statement,ArrayReferenceCheck):
+                    version=max(version,16)
+                    append(dict(Kind='CheckArrayReferences',ArrayReferences=[dict(View=view_document(view,lambda value:classical_value(value,classical,integer_only=True)),Shape=shape) for view,shape in zip(statement.views,statement.shapes)]));continue
+                if isinstance(statement, (ast.Include, ast.QuantumBarrier)):
+                    continue
+                if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,NUMERIC_TYPES):
+                    if getattr(statement,'_quantum_scoped',False):append({'Kind':'ClearNumeric','VariableSlot':numeric_variables[statement.identifier.name][0]})
+                    continue
+                if isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,(ast.IntType,ast.UintType)):
+                    if getattr(statement,'_quantum_scoped',False) and not getattr(statement,'_quantum_for_binding',False):append({'Kind':'ClearInteger','VariableSlot':variables[statement.identifier.name][0]})
+                    continue
+                if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
+                    if depth:
+                        raise ValueError('Register declarations inside runtime branches are not supported.')
+                    continue
+                if isinstance(statement, ast.ClassicalAssignment):
                     if hasattr(statement.lvalue,'_quantum_array'):
                         info=statement.lvalue._quantum_array;target=array_selection(statement.lvalue,lambda index:classical_value(index,classical,integer_only=True))
                         if info['kind'] in ('Float','Angle'):append(dict(Kind='StoreNumeric',ArrayTarget=target,NumericValue=numeric(statement.rvalue,info['width'] if info['kind']=='Float' else 64)))
@@ -1555,105 +1556,105 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                     targets=classical_indices(statement.lvalue,classical)
                     if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
                     append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_value(statement.rvalue,classical,len(targets),variables)})
-            elif isinstance(statement,ast.EndStatement):
-                version=max(version,9)
-                append({'Kind':'End'})
-            elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
-                version=max(version,8)
-                append({'Kind':'Break' if isinstance(statement,ast.BreakStatement) else 'Continue'})
-            elif isinstance(statement, ast.WhileLoop):
-                if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
-                version=max(version,7)
-                append({'Kind':'While','ClassicalValue':classical_value(statement.while_condition,classical,1,variables),
-                        'WhenTrue':lower(statement.block,depth+1)})
-            elif isinstance(statement,ast.ForInLoop):
-                if depth>=32:raise ValueError('Classical circuits support at most 32 nested blocks.')
-                version=max(version,10);bounds=statement.set_declaration
-                append({'Kind':'ForRange','VariableSlot':variables[statement.identifier.name][0],
-                        'Range':{key:classical_value(value,classical,variables=variables,integer_only=True)
-                                 for key,value in [('Start',bounds.start),('Stop',bounds.end),('Step',bounds.step)]},
-                        'WhenTrue':lower(statement.block,depth+1)})
-            elif isinstance(statement, ast.BranchingStatement):
-                if depth >= 32:
-                    raise ValueError('Classical circuits support at most 32 nested branches.')
-                condition = statement.condition
-                simple = (isinstance(condition,(ast.Identifier,ast.IndexExpression)) or
-                          isinstance(condition,ast.UnaryExpression) and condition.op.name=='!' or
-                          isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
-                simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition)) and not contains_numeric(condition,numeric_variables)
-                if not simple:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
-                            'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
-                    continue
-                negate = False
-                if isinstance(condition, ast.BinaryExpression) and condition.op.name in ('==', '!=') and isinstance(condition.rhs, ast.IntegerLiteral):
-                    target, expected = condition.lhs, condition.rhs.value
-                    negate = condition.op.name == '!='
-                elif isinstance(condition, ast.UnaryExpression) and condition.op.name == '!':
-                    target, expected = condition.expression, 0
-                else:
-                    target, expected = condition, 1
-                try:
-                    start, size = reference(target, classical, whole=True)
-                except ValueError:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
-                            'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
-                    continue
-                if not isinstance(condition, ast.BinaryExpression) and size != 1:
-                    raise error_at(statement,'Whole-register truth conditions require an explicit comparison.')
-                if type(expected) is not int or not 0 <= expected < (1 << size):
-                    raise ValueError('Condition constant is outside its register range.')
-                yes, no = lower(statement.if_block, depth+1), lower(statement.else_block, depth+1)
-                if negate:
-                    yes, no = no, yes
-                append({'Kind': 'Branch', 'Mask': str(((1 << size)-1) << start), 'Value': str(expected << start), 'WhenTrue': yes, 'WhenFalse': no})
-            elif isinstance(statement, ast.QuantumMeasurementStatement):
-                wire = reference(statement.measure.qubit, quantum)
-                if statement.target is None:
-                    append({'Kind': 'Channel', 'Expression': 'phase_damping(1)', 'Wires': [wire]})
-                else:
-                    append({'Kind': 'Measure', 'Wires': [wire], 'ClassicalBit': reference(statement.target, classical)})
-            elif isinstance(statement, ast.QuantumReset):
-                append({'Kind': 'Reset', 'Wires': [reference(statement.qubits, quantum)]})
-            elif isinstance(statement, ast.QuantumGate):
-                if getattr(statement,'_quantum_wire_preflight',False):
-                    identity='I'
-                    for _ in range(len(statement.qubits)-1):identity='kron(I,'+identity+')'
-                    append({'Kind':'Gate','Expression':identity,'Wires':[reference(value,quantum) for value in statement.qubits]})
-                    continue
-                if statement.duration is not None:
-                    raise ValueError('Timed gates are not supported.')
-                if hasattr(statement,'_quantum_runtime_angle') or hasattr(statement,'_quantum_runtime_gate'):
-                    def lower_angle(value):
-                        nonlocal version
-                        if value['Kind']=='Numeric':version=max(version,13);return numeric(value['Value'])
-                        if value['Kind']=='Integer':return {'Kind':'Integer','IntegerValue':classical_value(value['IntegerValue'],classical,None,variables,True)}
-                        if value['Kind']=='Constant':return {'Kind':'Constant','ValueBits':value['ValueBits']}
-                        return {'Kind':'Binary','Operator':value['Operator'],'Left':lower_angle(value['Left']),'Right':lower_angle(value['Right'])}
+                elif isinstance(statement,ast.EndStatement):
+                    version=max(version,9)
+                    append({'Kind':'End'})
+                elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
+                    version=max(version,8)
+                    append({'Kind':'Break' if isinstance(statement,ast.BreakStatement) else 'Continue'})
+                elif isinstance(statement, ast.WhileLoop):
+                    if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
+                    version=max(version,7)
+                    append({'Kind':'While','ClassicalValue':classical_value(statement.while_condition,classical,1,variables),
+                            'WhenTrue':lower(statement.block,depth+1)})
+                elif isinstance(statement,ast.ForInLoop):
+                    if depth>=32:raise ValueError('Classical circuits support at most 32 nested blocks.')
+                    version=max(version,10);bounds=statement.set_declaration
+                    append({'Kind':'ForRange','VariableSlot':variables[statement.identifier.name][0],
+                            'Range':{key:classical_value(value,classical,variables=variables,integer_only=True)
+                                     for key,value in [('Start',bounds.start),('Stop',bounds.end),('Step',bounds.step)]},
+                            'WhenTrue':lower(statement.block,depth+1)})
+                elif isinstance(statement, ast.BranchingStatement):
+                    if depth >= 32:
+                        raise ValueError('Classical circuits support at most 32 nested branches.')
+                    condition = statement.condition
+                    simple = (isinstance(condition,(ast.Identifier,ast.IndexExpression)) or
+                              isinstance(condition,ast.UnaryExpression) and condition.op.name=='!' or
+                              isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
+                    simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition)) and not contains_numeric(condition,numeric_variables)
+                    if not simple:
+                        append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
+                                'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
+                        continue
+                    negate = False
+                    if isinstance(condition, ast.BinaryExpression) and condition.op.name in ('==', '!=') and isinstance(condition.rhs, ast.IntegerLiteral):
+                        target, expected = condition.lhs, condition.rhs.value
+                        negate = condition.op.name == '!='
+                    elif isinstance(condition, ast.UnaryExpression) and condition.op.name == '!':
+                        target, expected = condition.expression, 0
+                    else:
+                        target, expected = condition, 1
                     try:
-                        if hasattr(statement,'_quantum_runtime_gate'):
-                            value=statement._quantum_runtime_gate
-                            node={'Gate':'PublishedU' if published_u and value['PublishedU'] else value['Gate'],
-                                  'Controls':value['Controls'],'ControlState':value['ControlState'],
-                                  'Parameters':[lower_angle(parameter) for parameter in value['Parameters']],
-                                  'Power':classical_value(value['Power'],classical,None,variables,True)}
-                            version=max(version,12)
-                            append({'Kind':'ParameterGate','ParameterGate':node,'Wires':[reference(q,quantum) for q in statement.qubits]})
-                            continue
-                        angle=lower_angle(statement._quantum_runtime_angle)
-                    except ValueError as error:
-                        raise error_at(statement,str(error)) from error
-                    version=max(version,11)
-                    append({'Kind':'Rotation','Axis':statement.name.name[-1].upper(),'Angle':angle,'Wires':[reference(statement.qubits[0],quantum)]})
-                    continue
-                for step in gate_steps(statement, lambda q: reference(q, quantum), published_u):
-                    name, angle = step['Gate'], step['Angle']
-                    expression = '(exp(i*('+angle+'))*I)' if name == 'GPhase' else name+('('+angle+')' if angle else '')
-                    append({'Kind': 'Gate', 'Expression': expression, 'Wires': step['Wires']})
-            elif isinstance(statement, ast.QuantumPhase) and not statement.modifiers:
-                append({'Kind': 'Gate', 'Expression': '(exp(i*('+number(statement.argument)+'))*I)', 'Wires': [0]})
-            else:
-                raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
+                        start, size = reference(target, classical, whole=True)
+                    except ValueError:
+                        append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
+                                'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
+                        continue
+                    if not isinstance(condition, ast.BinaryExpression) and size != 1:
+                        raise error_at(statement,'Whole-register truth conditions require an explicit comparison.')
+                    if type(expected) is not int or not 0 <= expected < (1 << size):
+                        raise ValueError('Condition constant is outside its register range.')
+                    yes, no = lower(statement.if_block, depth+1), lower(statement.else_block, depth+1)
+                    if negate:
+                        yes, no = no, yes
+                    append({'Kind': 'Branch', 'Mask': str(((1 << size)-1) << start), 'Value': str(expected << start), 'WhenTrue': yes, 'WhenFalse': no})
+                elif isinstance(statement, ast.QuantumMeasurementStatement):
+                    wire = reference(statement.measure.qubit, quantum)
+                    if statement.target is None:
+                        append({'Kind': 'Channel', 'Expression': 'phase_damping(1)', 'Wires': [wire]})
+                    else:
+                        append({'Kind': 'Measure', 'Wires': [wire], 'ClassicalBit': reference(statement.target, classical)})
+                elif isinstance(statement, ast.QuantumReset):
+                    append({'Kind': 'Reset', 'Wires': [reference(statement.qubits, quantum)]})
+                elif isinstance(statement, ast.QuantumGate):
+                    if getattr(statement,'_quantum_wire_preflight',False):
+                        identity='I'
+                        for _ in range(len(statement.qubits)-1):identity='kron(I,'+identity+')'
+                        append({'Kind':'Gate','Expression':identity,'Wires':[reference(value,quantum) for value in statement.qubits]})
+                        continue
+                    if statement.duration is not None:
+                        raise ValueError('Timed gates are not supported.')
+                    if hasattr(statement,'_quantum_runtime_angle') or hasattr(statement,'_quantum_runtime_gate'):
+                        def lower_angle(value):
+                            nonlocal version
+                            if value['Kind']=='Numeric':version=max(version,13);return numeric(value['Value'])
+                            if value['Kind']=='Integer':return {'Kind':'Integer','IntegerValue':classical_value(value['IntegerValue'],classical,None,variables,True)}
+                            if value['Kind']=='Constant':return {'Kind':'Constant','ValueBits':value['ValueBits']}
+                            return {'Kind':'Binary','Operator':value['Operator'],'Left':lower_angle(value['Left']),'Right':lower_angle(value['Right'])}
+                        try:
+                            if hasattr(statement,'_quantum_runtime_gate'):
+                                value=statement._quantum_runtime_gate
+                                node={'Gate':'PublishedU' if published_u and value['PublishedU'] else value['Gate'],
+                                      'Controls':value['Controls'],'ControlState':value['ControlState'],
+                                      'Parameters':[lower_angle(parameter) for parameter in value['Parameters']],
+                                      'Power':classical_value(value['Power'],classical,None,variables,True)}
+                                version=max(version,12)
+                                append({'Kind':'ParameterGate','ParameterGate':node,'Wires':[reference(q,quantum) for q in statement.qubits]})
+                                continue
+                            angle=lower_angle(statement._quantum_runtime_angle)
+                        except ValueError as error:
+                            raise error_at(statement,str(error)) from error
+                        version=max(version,11)
+                        append({'Kind':'Rotation','Axis':statement.name.name[-1].upper(),'Angle':angle,'Wires':[reference(statement.qubits[0],quantum)]})
+                        continue
+                    for step in gate_steps(statement, lambda q: reference(q, quantum), published_u):
+                        name, angle = step['Gate'], step['Angle']
+                        expression = '(exp(i*('+angle+'))*I)' if name == 'GPhase' else name+('('+angle+')' if angle else '')
+                        append({'Kind': 'Gate', 'Expression': expression, 'Wires': step['Wires']})
+                elif isinstance(statement, ast.QuantumPhase) and not statement.modifiers:
+                    append({'Kind': 'Gate', 'Expression': '(exp(i*('+number(statement.argument)+'))*I)', 'Wires': [0]})
+                else:
+                    raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
         return result
     steps=lower(statements)
     visible_bits=[bit for name,(start,size) in classical.items()

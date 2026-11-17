@@ -28,7 +28,33 @@ class FileImportTests(unittest.TestCase):
         result = subprocess.run([*command, *args], input=source.encode("utf-8"),
                                 capture_output=True, timeout=30)
         self.assertEqual(result.returncode == 0, success, result.stderr.decode("utf-8", errors="replace"))
+        if not success:
+            self.assertEqual(result.stdout, b'', 'Failed compilation must not emit a partial document.')
         return json.loads(result.stdout) if success else result.stderr.decode("utf-8")
+
+    def test_final_emission_file_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/wrapper.inc";')
+        self.put('nested κ/wrapper.inc', 'include "failure.inc";')
+        cases = [
+            ('qubit[2] q;\n  ctrl @ sx q[0],q[1];', (False, True),
+             'Controlled gate is not representable: SX'),
+            ('bit[2] b; int n=1;\n  while (b==bit[3](n)) { break; }', (True,),
+             'Integer-to-bit casts require equal explicit widths.'),
+            ('qubit q;\n  delay[1ns] q;', (True,),
+             'Classical circuit import cannot yet represent DelayInstruction.'),
+            ('qubit q;\n  box { x q; }', (False,),
+             'The editor cannot represent Box. Runtime classical feedback, timing and pulse programs require a richer execution model.'),
+        ]
+        for body, modes, expected in cases:
+            self.put('nested κ/failure.inc', 'OPENQASM 3;\ninclude "stdgates.inc";\n' + body)
+            for command in COMMANDS:
+                for classical in modes:
+                    with self.subTest(body=body, classical=classical, command=command):
+                        mode = ['--classical'] if classical else []
+                        message = self.run_import(command, ['--source-file', str(main), '--module-headers', *mode], success=False)
+                        self.assertEqual(message.strip(), 'nested κ/failure.inc:4:3: ' + expected)
+                        self.assertEqual(self.run_import(command, mode, source='OPENQASM 3; include "stdgates.inc";\n' + body,
+                                                         success=False).strip(), expected)
 
     def test_dependency_parser_diagnostic(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/helper.inc"; qubit q;')
