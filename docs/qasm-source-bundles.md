@@ -296,6 +296,20 @@ text and compiler-hook restoration after failed imports. These authored tests
 do not establish whole-source coverage; earlier source transformations and
 upstream numerical runtime-condition failures remain separate audit targets.
 
+### Scope and variable-budget diagnostics (development)
+
+The scope-depth rejection identifies the control structure that opens the
+33rd scope, including an empty body. Unsupported integer declarations within
+other control structures identify the containing statement. Integer-only and
+mixed numeric-variable budget failures identify the declaration that first
+crosses the corresponding 4096-slot limit. The existing validation order and
+unlocated stdin messages are preserved.
+
+Authored file-import regressions cover nested Unicode dependency paths and the
+accepted 32-level and 4096-variable boundaries. These checks extend DEV-16d
+diagnostic coverage; they do not establish complete compiler coverage or release
+acceptance.
+
 ## Subroutine locals resolved during compilation
 
 Classical import can now use the pinned compiler's own local scopes when a
