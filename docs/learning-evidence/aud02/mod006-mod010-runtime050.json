@@ -144,7 +144,109 @@
           "1000": 1
         }
       }
-    ]
+    ],
+    "native_selector_verification": {
+      "source_revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+      "source_sha256": "ab98d7ae3eeae59f82e6f5ad1d0bb40ff2deb66bdf895f28aae3b90c44dbe7ba",
+      "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+      "compiler_sha256": "707cf21e7d199f99e13805444f7700247add7a9ba12c7eadd88ee7f0ac972321",
+      "adapter_sha256": "c2cb48333e9872bf18ecc882ad26b7d8721ea9612bfbafedd05cf839ccf6ca5e",
+      "method": "Exported Qiskit circuit from source cell 19 to OpenQASM 3, compiled it with the classical register enabled, and checked its measured output via exact and 10000-shot native worker calls. Controls change the selector alone or additionally compose blackbox.definition.",
+      "cases": [
+        {
+          "selector": 1,
+          "use_selected_blackbox": false,
+          "qasm_sha256": "e0c0d733835ec74563a38f7975e65dbf72fb512e5bf34426e43932efebac9ea8",
+          "exact": {
+            "1": "1"
+          },
+          "counts": {
+            "1": 10000
+          }
+        },
+        {
+          "selector": 2,
+          "use_selected_blackbox": false,
+          "qasm_sha256": "e0c0d733835ec74563a38f7975e65dbf72fb512e5bf34426e43932efebac9ea8",
+          "exact": {
+            "1": "1"
+          },
+          "counts": {
+            "1": 10000
+          }
+        },
+        {
+          "selector": 3,
+          "use_selected_blackbox": false,
+          "qasm_sha256": "e0c0d733835ec74563a38f7975e65dbf72fb512e5bf34426e43932efebac9ea8",
+          "exact": {
+            "1": "1"
+          },
+          "counts": {
+            "1": 10000
+          }
+        },
+        {
+          "selector": 4,
+          "use_selected_blackbox": false,
+          "qasm_sha256": "e0c0d733835ec74563a38f7975e65dbf72fb512e5bf34426e43932efebac9ea8",
+          "exact": {
+            "1": "1"
+          },
+          "counts": {
+            "1": 10000
+          }
+        },
+        {
+          "selector": 1,
+          "use_selected_blackbox": true,
+          "qasm_sha256": "c227d3c59cfe18259835971d2e4bf5f06ebcef8eb8c93350933ab8300bf4c171",
+          "exact": {
+            "0": "1"
+          },
+          "counts": {
+            "0": 10000
+          }
+        },
+        {
+          "selector": 2,
+          "use_selected_blackbox": true,
+          "qasm_sha256": "e0c0d733835ec74563a38f7975e65dbf72fb512e5bf34426e43932efebac9ea8",
+          "exact": {
+            "1": "1"
+          },
+          "counts": {
+            "1": 10000
+          }
+        },
+        {
+          "selector": 3,
+          "use_selected_blackbox": true,
+          "qasm_sha256": "0de4361ef2ad769fd04626a4941d1e53e2f374d544b240b7011e1640c00aaa6b",
+          "exact": {
+            "1": "1"
+          },
+          "counts": {
+            "1": 10000
+          }
+        },
+        {
+          "selector": 4,
+          "use_selected_blackbox": true,
+          "qasm_sha256": "cc11df9a745523b6a4a976254973845f2376e946d01db3a5de35404c875ddfa8",
+          "exact": {
+            "0": "1"
+          },
+          "counts": {
+            "0": 10000
+          }
+        }
+      ],
+      "local_cell_19_replacement": {
+        "before": "qc_deutsch.compose(twobit_function(2), inplace=True)",
+        "after": "qc_deutsch.compose(blackbox.definition, inplace=True)"
+      }
+    }
   },
   "qft": {
     "sha256": "18a5a4255e07de1d0d58d9abced3c6af512845404f975d2db3bad9a2582b82d3",
