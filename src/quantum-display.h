@@ -177,6 +177,8 @@ class Printer {
     return changed ? Fragment(text+"]") : fallback(literal);
    }
   }
+  if(name=="qfloorlog2" && value.size()==1)return Fragment("floor(log2("+render(value[0],depth+1).text+"))");
+  if(name=="qbitlength" && value.size()==1)return Fragment("bitlength("+render(value[0],depth+1).text+")");
   if(name=="qresidue" && value.size()==2)
    return Fragment(grouped(render(value[0],depth+1),40)+" pmod ("+render(value[1],depth+1).text+")",40);
   if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());

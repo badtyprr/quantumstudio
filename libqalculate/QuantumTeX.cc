@@ -702,6 +702,26 @@ class TeXReader {
    if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced spacing dimension"));
    spacingDimension('}');return " ";
   }
+  if(name=="log") {
+   size_t afterName=pos;space();
+   if(pos<input.size() && input[pos]=='_') {
+    ++pos;std::string base=trim(argument());space();
+    if(input.compare(pos,5,"\\left")==0) {pos+=5;space();}
+    std::string operand;
+    if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
+    else if(pos<input.size() && (std::isdigit((unsigned char)input[pos]) ||
+            (input[pos]=='.' && pos+1<input.size() && std::isdigit((unsigned char)input[pos+1])))) {
+     size_t start=pos;while(pos<input.size() && std::isdigit((unsigned char)input[pos]))++pos;
+     if(pos+1<input.size() && input[pos]=='.' && std::isdigit((unsigned char)input[pos+1])) {
+      ++pos;while(pos<input.size() && std::isdigit((unsigned char)input[pos]))++pos;
+     }
+     operand=input.substr(start,pos-start);
+    } else operand=argument();
+    if(base.empty() || trim(operand).empty())throw std::runtime_error(error("A logarithm needs a base and an operand"));
+    return base=="2" ? "log2("+operand+")" : "log("+operand+","+base+")";
+   }
+   pos=afterName;
+  }
   if(name=="sin" || name=="cos" || name=="tan") {
    size_t afterName=pos;
    space();
@@ -862,6 +882,7 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="operatorname" && a=="lg")a="qbitlength";
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";

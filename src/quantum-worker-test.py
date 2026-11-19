@@ -45,7 +45,7 @@ for formula, expected in [
     ("17 n^3 - 257 n^2 + 65537 = O(n^3)", "1"), ("n^3=O(n^2)", "0"),
     ("n^3!=O(n^2)", "1"), ("123456 n=O(n^2)", "1"), ("(n+1)^2=O(n)", "0"),
     ("(n^3+n)-n^3=O(n)", "1"), ("0=O(0)", "1"), ("n=O(0)", "0"),
-    ("1=O(n)", "1"), ("n^2=replace(O(n^c),c,3)", "1"), ("cost(lg(8))", "3"),
+    ("1=O(n)", "1"), ("n^2=replace(O(n^c),c,3)", "1"), ("cost(lg(8))", "4"),
 ]:
     assert data("quantum:" + formula)["copy_text"] == expected
 for args in ("n", "n,m"):
@@ -107,6 +107,15 @@ for equation in ("z=f(x)", "f(x)=z"):
     result = data("quantum:" + equation)
     for body in (equation, result["copy_text"], result["display_text"]):
         assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
+
+for n in (0, 1, 2, 7, 8, 15, 16, 2**128 - 1, 2**128):
+    assert data(rf"quantum:$\operatorname{{lg}}({n})$")["copy_text"] == str(max(1, n.bit_length()))
+for value in ("-1", "3/2"):
+    run(f"quantum:bitlength({value})", "--json", success=False)
+assert data(r"quantum:$\log_{2}(8)$")["copy_text"] == "3"
+for argument, expected in (("2^512-1",511),("2^512",512),("1/8",-3),("1/9",-4),("3/2",0)):
+    assert data(f"quantum:floor(log2({argument}))")["copy_text"] == str(expected)
+assert data("quantum:lg(100)")["copy_text"] == "2"
 
 # An isolated cost witness binds the same ordered size arguments on both sides.
 for witness in ("g(n,m)<=c*h(n,m)", "c*h(n,m)>=g(n,m)", "a(k)<=c*b(k)"):

@@ -544,12 +544,35 @@ class QuantumAlgebraFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
-  return op=="qtrace" || MathFunction::representsScalar(args);
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsScalar(args);
  }
  bool representsNonMatrix(const MathStructure &args) const {
-  return op=="qtrace" || MathFunction::representsNonMatrix(args);
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qfloorlog2") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(!value.isNumber() && value.representsScalar() && value.containsUnknowns())return 0;
+   if(value.isNumber() && value.number().isRational() && !value.number().isApproximate() && value.number().isPositive()) {
+    // Align the leading binary digits. One exact comparison distinguishes
+    // the two possible exponents, including just below a power of two.
+    Number numerator=value.number().numerator(),denominator=value.number().denominator();
+    int shift=numerator.integerLength()-denominator.integerLength();
+    if(shift>=0) {if(!denominator.shiftLeft(shift))return 0;}
+    else if(!numerator.shiftLeft(-shift))return 0;
+    out=shift-(numerator<denominator ? 1 : 0);return 1;
+   }
+   MathStructure two(2),logarithm(CALCULATOR->getFunctionById(FUNCTION_ID_LOGN),&value,&two,NULL);
+   out.set(CALCULATOR->getFunctionById(FUNCTION_ID_FLOOR),&logarithm,NULL);return 1;
+  }
+  if(op=="qbitlength") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(!value.isNumber() && value.representsScalar() && value.containsUnknowns())return 0;
+   if(!value.isInteger() || value.number().isNegative()) {
+    CALCULATOR->error(true,"Binary length requires a nonnegative integer.",NULL);return 0;
+   }
+   out=value.number().integerLength();return 1;
+  }
   if(op=="qresidue") {
    MathStructure modulus=raw[1];modulus.eval(eo);
    if(modulus.isZero()) {CALCULATOR->error(true,"A modulus must be nonzero.",NULL);return 0;}
@@ -1082,6 +1105,8 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumMatrixAssumption(true));
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
+ calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));

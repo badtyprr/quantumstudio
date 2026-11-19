@@ -57,13 +57,22 @@ for number, args in [("M066", "n"), ("M077", "n,m")]:
             probe = f"replace(replace(replace(({body}),g({args}),{a}),h({args}),3),c,2)"
             assert evaluate(probe)["copy_text"] == str(int(a <= 6)), probe
 
+# Check the lesson's defining equation as entered and after Copy.
+definition = spans["M007"].strip("$").strip()
+copied_definition = evaluate(spans["M007"])["copy_text"]
+for n in (0, 1, 2, 3, 4, 7, 8, 15, 16, 17, 2**64 - 1, 2**64):
+    digits = str(max(1, n.bit_length()))
+    assert evaluate(spans["M006"].replace("(N)", f"({n})"))["copy_text"] == digits
+    for body in (definition, copied_definition):
+        assert evaluate(f"replace(({body}),N,{n})")["copy_text"] == "1", (n, body)
+
 # Compare exact values of the growth expressions (not just their spelling).
-for number, expected in [("M099", 128), ("M116", 512)]:
+for number, expected in [("M099", 240), ("M116", 1200)]:
     term = spans[number].strip("$").strip()
     assert term.startswith("O(") and term.endswith(")")
     body = term[2:-1]
     probe = f"cost(replace(({body}),n,16))"
-    # At n=16, lg(n)=4 and lg(lg(n))=2.
+    # At n=16, the binary length is 5 and the binary length of 5 is 3.
     assert evaluate(probe)["copy_text"] == str(expected), probe
 
-print("Verified 49 polynomial degree pairs, the source cubic, formal functions, cost witnesses and binary logarithms.")
+print("Verified 49 polynomial degree pairs, the source cubic, formal functions, cost witnesses and binary lengths.")
