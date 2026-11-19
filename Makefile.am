@@ -450,3 +450,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/mod011-order-finding.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod012-vqe.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod013-nmr.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod005-bell-inequality.json
+EXTRA_DIST += docs/learning-evidence/aud02/mod004-uncertainty.json
