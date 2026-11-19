@@ -338,7 +338,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -960,11 +960,19 @@ class Parser {
    state=name();return !state.empty() && token("_") && index()==slot && token(">") &&
     token("<") && name()==state && token("_") && index()==slot && token("|");
   };
-  std::string start,end,weight,state,slot;
+  std::string start,end,weight,state,slot,probe;
   if(token("qtexsum(")) {
    start=index();if(!token(","))return "";end=index();if(!token(","))return "";
    std::string binder=name();
    if(binder.empty() || !token(")") || !projector(weight,state,slot) || slot!=binder)return "";
+   // The final bar may also start the fixed ket in an inner product.
+   std::string probeFamily=name();
+   if(!probeFamily.empty()) {
+    if(!token("_"))return "";
+    std::string probeIndex=index();
+    if(probeIndex.empty() || probeIndex==binder || !token(">"))return "";
+    probe="qnamedket("+indexableLabel(probeFamily+"_"+probeIndex)+")";
+   }
   } else {
    at=p;size_t before=s.find_last_not_of(" \t\r\n",p ? p-1 : 0);
    if(p && before!=std::string::npos && s[before]!='=' && s[before]!='(' && s[before]!=',')return "";
@@ -977,6 +985,7 @@ class Parser {
   space();if(at<s.size() && s[at]!=')' && s[at]!=',' && s[at]!='=' && s[at]!=']')return "";
   p=at;
   auto family=[&](const std::string &prefix){return "qindexedentries("+indexableLabel(prefix+"_")+","+start+","+end+",vector())";};
+  if(!probe.empty())return "qspectralaction("+family(weight)+","+family(state)+","+probe+")";
   return "qspectralsum("+family(weight)+","+family(state)+")";
  }
  std::string atom() {

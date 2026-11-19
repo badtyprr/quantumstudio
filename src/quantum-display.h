@@ -325,16 +325,25 @@ class Printer {
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbits" && value.size()==2)
    return Fragment("bits("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
-  if(name=="qspectralsum" && value.size()==2) {
+  if((name=="qspectralsum" && value.size()==2) || (name=="qspectralaction" && value.size()==3)) {
    const auto &a=value[0],&b=value[1];
    auto family=[](const MathStructure &v) {
     return v.isFunction() && v.function()->referenceName()=="qindexedentries" && v.size()==4 &&
      v[0].isSymbolic() && v[0].symbol().size()>1 && v[0].symbol().back()=='_' && v[3].size()==0;
    };
    if(family(a) && family(b) && a[1].equals(b[1]) && a[2].equals(b[2])) {
-    std::string state=b[0].symbol()+"k";
-    return Fragment("\\sum_{k="+render(a[1],depth+1).text+"}^{"+render(a[2],depth+1).text+"} "+
-                    a[0].symbol()+"k \\vert "+state+"\\rangle\\langle "+state+"\\vert",20);
+    std::string index="k",probe;
+    if(value.size()==3) {
+     const auto &ket=value[2];
+     if(!ket.isFunction() || ket.size()!=1 || !ket[0].isSymbolic() || !safeLabel(ket[0].symbol()) ||
+        (ket.function()->referenceName()!="qnamedket" && ket.function()->referenceName()!="qketstate"))return fallback(value);
+     probe=ket[0].symbol();
+     if(probe.size()>=2 && probe.substr(probe.size()-2)=="_k")index="l";
+     probe+="\\rangle";
+    }
+    std::string state=b[0].symbol()+index;
+    return Fragment("\\sum_{"+index+"="+render(a[1],depth+1).text+"}^{"+render(a[2],depth+1).text+"} "+
+                    a[0].symbol()+index+" \\vert "+state+"\\rangle\\langle "+state+"\\vert"+(probe.empty() ? "" : " "+probe),20);
    }
   }
   if(name=="qindexedlist" && value.size()==4 && value[0].isSymbolic() && value[1].isInteger() &&

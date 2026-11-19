@@ -1576,7 +1576,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qspectralsum") {
+  if(op=="qspectralsum" || op=="qspectralaction") {
    auto entries=[&](const MathStructure &input,MathStructure &out) {
     if(input.isFunction() && input.function()->referenceName()=="qindexedentries")return indexedEntries(out,input,eo);
     out=input;out.eval(eo);return out.isVector();
@@ -1586,7 +1586,17 @@ class QuantumIndexedFunction: public MathFunction {
    if(weights.size()!=states.size()) {
     CALCULATOR->error(true,"A spectral sum requires one weight per state.",NULL);return 0;
    }
-   MathStructure sum;
+   MathStructure sum,probe;
+   const bool action=op=="qspectralaction";
+   if(action) {
+    probe=raw[2];probe.eval(eo);
+    if(!stateColumn(probe)) {
+     if(!probe.containsUnknowns() && !namedKet(probe))CALCULATOR->error(true,"A spectral expansion acts on a column state.",NULL);
+     return 0;
+    }
+    // The empty sum is a zero vector in the probe's space.
+    if(!states.size()) {out=probe;out.multiply(m_zero);out.eval(eo);return 1;}
+   }
    size_t dimension=0;
    for(size_t i=0;i<states.size();++i) {
     if(CALCULATOR->aborted())return 0;
@@ -1597,9 +1607,21 @@ class QuantumIndexedFunction: public MathFunction {
     }
     dimension=ket.rows();
     MathStructure bra(CALCULATOR->getFunction("qdag"),&ket,NULL);
-    MathStructure projector(CALCULATOR->getFunction("qmul"),&ket,&bra,NULL);
-    projector.eval(eo);projector.multiply(weight);
-    if(i==0)sum=projector;else sum.add(projector);
+    MathStructure term;
+    if(action) {
+     if(probe.rows()!=dimension) {CALCULATOR->error(true,"The probe and spectral states must have the same dimension.",NULL);return 0;}
+     MathStructure overlap(CALCULATOR->getFunction("qmul"),&bra,&probe,NULL);
+     overlap.eval(eo);
+     if(overlap.isMatrix() && overlap.rows()==1 && overlap.columns()==1) {
+      MathStructure amplitude=*overlap.getElement(1,1);overlap=amplitude;
+     }
+     if(!overlap.representsScalar())return 0;
+     term=ket;term.multiply(overlap);
+    } else {
+     term.set(CALCULATOR->getFunction("qmul"),&ket,&bra,NULL);term.eval(eo);
+    }
+    term.multiply(weight);
+    if(i==0)sum=term;else sum.add(term);
    }
    sum.eval(eo);out=sum;return 1;
   }
@@ -2127,6 +2149,7 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
 }
 void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralsum",2));
+ calculator.addFunction(new QuantumIndexedFunction("qspectralaction",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));

@@ -1,0 +1,72 @@
+{
+  "worker_sha256": "ed36c49aeca468d63897f71ea589f14223a6d56bc662ce449908fe11722fc16d",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M023",
+      "label": "EXACT RESULT",
+      "display": "M |ψ_j⟩ = (\\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert) |ψ_j⟩ = \\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert ψ_j\\rangle = \"λ_j\" |ψ_j⟩",
+      "copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),qnamedket(\"ψ_j\")),qspectralaction(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector()),qnamedket(\"ψ_j\")),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),qnamedket(\"ψ_j\")),qspectralaction(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector()),qnamedket(\"ψ_j\")),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))"
+    }
+  ],
+  "controls": [
+    {
+      "id": "first-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "second-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "wrong-eigenvalue-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "wrong-operator-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "superposition-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1122,
+    "calls": 102,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}
