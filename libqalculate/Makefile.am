@@ -111,6 +111,7 @@ else
 libqalculate_la_LIBADD = \
 	@LIBCURL_LIBS@ @LIBXML_LIBS@ @ICU_LIBS@ @LTLIBINTL@ @LTLIBICONV@
 endif
+libqalculate_la_LIBADD += @FLINT_LIBS@
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \

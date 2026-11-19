@@ -1,0 +1,366 @@
+{
+  "notebook_sha256": "cf02361b6238447bf11a13732a81dc0009c3522e4c5de3721235d0a55bcf2fe3",
+  "worker_sha256": "b1794b840fec710c0defe0a97d1dd9fd4e294c466e334a64a68c90be5d3a8f8f",
+  "python": "3.12.10",
+  "sympy": "1.14.0",
+  "records": [
+    {
+      "cell": "7674f06b-M01",
+      "mode": "literal",
+      "input": "$N\\geq 2$",
+      "expected": "('N')>=(2)",
+      "actual": "('N')>=(2)",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M02",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M03",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M04",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M05",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M06",
+      "mode": "literal",
+      "input": "$12$",
+      "expected": "12",
+      "actual": "12",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M07",
+      "mode": "literal",
+      "input": "$2$",
+      "expected": "2",
+      "actual": "2",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M08",
+      "mode": "literal",
+      "input": "$3$",
+      "expected": "3",
+      "actual": "3",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M09",
+      "mode": "literal",
+      "input": "$12$",
+      "expected": "12",
+      "actual": "12",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M10",
+      "mode": "literal",
+      "input": "$2$",
+      "expected": "2",
+      "actual": "2",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M11",
+      "mode": "literal",
+      "input": "$2$",
+      "expected": "2",
+      "actual": "2",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M12",
+      "mode": "literal",
+      "input": "$3$",
+      "expected": "3",
+      "actual": "3",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M13",
+      "mode": "literal",
+      "input": "$1$",
+      "expected": "1",
+      "actual": "1",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M14",
+      "mode": "literal",
+      "input": "$$\n12 = 2^2 \\cdot 3\n$$",
+      "expected": "1",
+      "actual": "1",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "7674f06b-M15",
+      "mode": "literal",
+      "input": "$N\\geq 2$",
+      "expected": "('N')>=(2)",
+      "actual": "('N')>=(2)",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "1aa15359",
+      "mode": "Python",
+      "input": "import math\nfrom sympy.ntheory import factorint",
+      "expected": "",
+      "actual": "",
+      "passed": true
+    },
+    {
+      "cell": "d73d9753-M01",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "9caf4516",
+      "mode": "Python",
+      "input": "N = 12\nprint(factorint(N))",
+      "expected": "{2: 2, 3: 1}\n",
+      "actual": "{2: 2, 3: 1}\n",
+      "passed": true
+    },
+    {
+      "cell": "9caf4516",
+      "mode": "adapted",
+      "input": "factor(12,2)",
+      "expected": "matrix(2,2,[2,2,3,1])",
+      "actual": "matrix(2,2,[2,2,3,1])",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "08a0abfd-M01",
+      "mode": "literal",
+      "input": "$12$",
+      "expected": "12",
+      "actual": "12",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "08a0abfd-M02",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "53f998fc",
+      "mode": "Python",
+      "input": "N = 3402823669209384634633740743176823109843098343\nprint(factorint(N))",
+      "expected": "{3: 2, 74519450661011221: 1, 5073729280707932631243580787: 1}\n",
+      "actual": "{3: 2, 74519450661011221: 1, 5073729280707932631243580787: 1}\n",
+      "passed": true
+    },
+    {
+      "cell": "53f998fc",
+      "mode": "adapted",
+      "input": "factor(3402823669209384634633740743176823109843098343,2)",
+      "expected": "matrix(3,2,[3,2,74519450661011221,1,5073729280707932631243580787,1])",
+      "actual": "timeout after 60 seconds",
+      "passed": false,
+      "gui_result": "TIME ALLOWANCE REACHED",
+      "development_item": "DEV-18"
+    },
+    {
+      "cell": "25f30f8a-M01",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "ae7a86db",
+      "mode": "Python",
+      "input": "RSA1024 = 135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563\nprint(RSA1024)",
+      "expected": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563\n",
+      "actual": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563\n",
+      "passed": true
+    },
+    {
+      "cell": "ae7a86db",
+      "mode": "adapted",
+      "input": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563",
+      "expected": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563",
+      "actual": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "c3c41fb4",
+      "mode": "Python",
+      "input": "RSA250 = 2140324650240744961264423072839333563008614715144755017797754920881418023447140136643345519095804679610992851872470914587687396261921557363047454770520805119056493106687691590019759405693457452230589325976697471681738069364894699871578494975937497937\n\np = 64135289477071580278790190170577389084825014742943447208116859632024532344630238623598752668347708737661925585694639798853367\nq = 33372027594978156556226010605355114227940760344767554666784520987023841729210037080257448673296881877565718986258036932062711\n\nprint(RSA250 == p * q)",
+      "expected": "True\n",
+      "actual": "True\n",
+      "passed": true
+    },
+    {
+      "cell": "c3c41fb4",
+      "mode": "adapted",
+      "input": "2140324650240744961264423072839333563008614715144755017797754920881418023447140136643345519095804679610992851872470914587687396261921557363047454770520805119056493106687691590019759405693457452230589325976697471681738069364894699871578494975937497937=64135289477071580278790190170577389084825014742943447208116859632024532344630238623598752668347708737661925585694639798853367*33372027594978156556226010605355114227940760344767554666784520987023841729210037080257448673296881877565718986258036932062711",
+      "expected": "1",
+      "actual": "1",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "2e98fa14-M01",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "2e98fa14-M02",
+      "mode": "literal",
+      "input": "$M$",
+      "expected": "'M'",
+      "actual": "'M'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "2e98fa14-M03",
+      "mode": "literal",
+      "input": "$N$",
+      "expected": "'N'",
+      "actual": "'N'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "2e98fa14-M04",
+      "mode": "literal",
+      "input": "$M$",
+      "expected": "'M'",
+      "actual": "'M'",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    },
+    {
+      "cell": "9272ac2b",
+      "mode": "Python",
+      "input": "N = 4636759690183918349682239573236686632636353319755818421393667064929987310592347460711767784882455889983961546491666129915628431549982893638464243493812487979530329460863532041588297885958272943021122033997933550246447236884738870576045537199814804920281890355275625050796526864093092006894744790739778376848205654332434378295899591539239698896074\nM = 5056714874804877864225164843977749374751021379176083540426461360945653967249306494545888621353613218518084414930846655066495767441010526886803458300440345782982127522212209489410315422285463057656809702949608368597012967321172325810519806487247195259818074918082416290513738155834341957254558278151385588990304622183174568167973121179585331770773\n\nprint(math.gcd(N, M))",
+      "expected": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563\n",
+      "actual": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563\n",
+      "passed": true
+    },
+    {
+      "cell": "9272ac2b",
+      "mode": "adapted",
+      "input": "gcd(4636759690183918349682239573236686632636353319755818421393667064929987310592347460711767784882455889983961546491666129915628431549982893638464243493812487979530329460863532041588297885958272943021122033997933550246447236884738870576045537199814804920281890355275625050796526864093092006894744790739778376848205654332434378295899591539239698896074,5056714874804877864225164843977749374751021379176083540426461360945653967249306494545888621353613218518084414930846655066495767441010526886803458300440345782982127522212209489410315422285463057656809702949608368597012967321172325810519806487247195259818074918082416290513738155834341957254558278151385588990304622183174568167973121179585331770773)",
+      "expected": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563",
+      "actual": "135066410865995223349603216278805969938881475605667027524485143851526510604859533833940287150571909441798207282164471551373680419703964191743046496589274256239341020864383202110372958725762358509643110564073501508187510676594629205563685529475213500852879416377328533906109750544334999811150056977236890927563",
+      "approximate": false,
+      "passed": true,
+      "gui_result": "EXACT RESULT",
+      "gui_save_reopen_and_copy_reentry_exact": true
+    }
+  ],
+  "source_url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/factoring-and-gcd.ipynb",
+  "worker_revision": "2965fa7abda397b1fe33c652e50d8c01bddcdcea",
+  "gui_checks": 299
+}

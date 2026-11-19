@@ -13,6 +13,7 @@ EXTRA_DIST = config.rpath  \
 	docs/runtime-gate-protocol.md \
 	docs/classical-circuit-files.md \
 	docs/classical-expression-text.md \
+	docs/learning-coverage-checklist.md \
 	docs/learning-source-inventory.json \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
@@ -488,3 +489,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/check-ibm021-postprocessing.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-descending-column.json docs/learning-evidence/aud01/check-ibm021-domain.py docs/learning-evidence/aud01/ibm021-range.json docs/learning-evidence/aud01/ibm021-preimage.json docs/learning-evidence/aud01/ibm021-norm-sums.json docs/learning-evidence/aud01/ibm021-symbolic-xor.json docs/learning-evidence/aud01/ibm021-equivalence.json docs/learning-evidence/aud01/ibm021-word-domain.json docs/learning-evidence/aud01/ibm021-copy-graph.json docs/learning-evidence/aud01/ibm021-equation-tag.json docs/learning-evidence/aud01/ibm021-symbolic-norm.json docs/learning-evidence/aud01/ibm021-function-type.json docs/learning-evidence/aud01/ibm021-shared-membership.json docs/learning-evidence/aud01/ibm021-register-word.json docs/learning-evidence/aud01/ibm021-sample-list.json docs/learning-evidence/aud01/ibm021-sample-matrix.json docs/learning-evidence/aud01/ibm021-sample-dot.json docs/learning-evidence/aud01/ibm021-sample-words.json
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-copy-context.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm022-foundations.md docs/learning-evidence/aud01/ibm023-factoring-baseline.json docs/learning-evidence/aud01/ibm023-factoring-replay.json docs/learning-evidence/aud01/replay-ibm023.py

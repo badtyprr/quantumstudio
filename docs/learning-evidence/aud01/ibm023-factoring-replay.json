@@ -1,0 +1,18 @@
+{
+  "build_revision": "0977264ab9248bbe0486a11d20d429822ed5bde2",
+  "worker_sha256": "be2636ea64d9d9833eb28c5715e100da0a5068ecd7747174b3205593da731241",
+  "source_sha256": "cf02361b6238447bf11a13732a81dc0009c3522e4c5de3721235d0a55bcf2fe3",
+  "python_cells": 6,
+  "literal_spans": 23,
+  "calculator_adaptations": 5,
+  "gui_verified_inputs": 28,
+  "gui_checks": 308,
+  "all_gui_copies_exact_after_save_reopen_and_reentry": true,
+  "factorization": {
+    "input": "factor(3402823669209384634633740743176823109843098343,2)",
+    "exact_result": "matrix(3,2,[3,2,74519450661011221,1,5073729280707932631243580787,1])",
+    "worker_elapsed_ms": 3456.6
+  },
+  "baseline": "ibm023-factoring-baseline.json",
+  "mode": "Exact, Windows GUI, default 15-second allowance"
+}
