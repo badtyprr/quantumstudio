@@ -418,6 +418,7 @@ class Parser {
  }
  bool spinContext=false;
  bool costContext=false;
+ bool basisXorContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned matrixEntryNodes=0;
@@ -876,9 +877,11 @@ class Parser {
     bool arithmetic=label.find_first_of("+-*/^()")!=std::string::npos &&
      compact.find_first_not_of("01+-")!=std::string::npos &&
      compact!="+i" && compact!="-i" && bellState(compact).empty();
-    if(!arithmetic)return ket(label);
+    bool wordXor=compact.find('#')!=std::string::npos && compact.find_first_not_of("01#")!=std::string::npos;
+    if(!arithmetic && !wordXor)return ket(label);
     std::string outer=s;size_t outerPosition=p;s=label;p=0;
-    std::string index=expression();ws();
+    const bool previousXor=basisXorContext;basisXorContext=wordXor;
+    std::string index=expression();ws();basisXorContext=previousXor;
     if(p!=s.size())throw std::runtime_error("Invalid arithmetic basis index.");
     s=outer;p=outerPosition;
     return "qcomputationalket("+index+")";
@@ -888,7 +891,8 @@ class Parser {
    if(p!=s.size())throw std::runtime_error("Group a compound repeated-register count, for example |0^(n+1)>.");
    s=outer;p=outerPosition;
    char bit=label[label.find_first_not_of(" \t\r\n")];
-   return "qtensorpow("+ket(std::string(1,bit))+","+count+")";
+   std::string factor=bit=='0' ? "qmatrix(2,1,vector(1,0))" : bit=='1' ? "qmatrix(2,1,vector(0,1))" : ket(std::string(1,bit));
+   return "qtensorpow("+factor+","+count+")";
   }
   // Explicit dimensions disambiguate evaluated decimal indices from binary
   // strings and named states. Reuse the parser's depth and node limits.
@@ -1675,6 +1679,10 @@ class Parser {
     if(name=="floor" && args.size()==1 && args[0].compare(0,5,"log2(")==0) {
      args[0]=args[0].substr(5,args[0].size()-6);name="qfloorlog2";
     }
+    if(name!="O" && name.size()==1 && name[0]>='A' && name[0]<='Z' && args.size()==1 &&
+       (args[0].find("qketstate(")!=std::string::npos || args[0].find("qcomputationalket(")!=std::string::npos)) {
+     args.insert(args.begin(),indexableLabel(name));name="qmul";
+    }
     if(publicName=="O")name="qbigorder";
     if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
@@ -1837,7 +1845,17 @@ class Parser {
      a="qtensorchain("+a+","+factors+"))";
     } else a="qtensor("+a+","+right+")";
    }
-   else if(take('#')) a="qoplus("+a+","+diracFactor()+")";
+   else if(take('#')) {
+    std::string right=diracFactor();
+    if(basisXorContext) {
+     preserveNamedApplication(a,right);preserveNamedApplication(right,a);
+     for(std::string *operand:{&a,&right}) {
+      if(!operand->empty() && operand->find_first_not_of("01")==std::string::npos)
+       *operand="qbitlabel("+binaryNumeral(*operand)+","+std::to_string(operand->size())+")";
+     }
+    }
+    a="qoplus("+a+","+right+")";
+   }
    else if(startsAtom()) a="qadjacent("+a+","+diracFactor()+")";
    else break;
    checkSize(a);

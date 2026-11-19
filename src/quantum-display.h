@@ -415,6 +415,16 @@ class Printer {
    }
    return Fragment(text,10);
   }
+  if(name=="qcomputationalket" && value.size()==1 && value[0].isFunction() &&
+     value[0].function()->referenceName()=="qoplus" && value[0].size()==2) {
+   const MathStructure &op=value[0];
+   auto word=[&](const MathStructure &v) {
+    if(v.isFunction() && v.function()->referenceName()=="qnamedapplication" && v.size()==2 && v[0].isSymbolic())
+     return v[0].symbol()+"("+render(v[1],depth+1).text+")";
+    return render(v,depth+1).text;
+   };
+   return Fragment("|"+word(op[0])+" ⊕ "+word(op[1])+"⟩");
+  }
   if(name=="qcomputationalket" && value.size()==1)
    return Fragment("|"+render(value[0],depth+1).text+"⟩ (dimension unresolved)");
   if(name=="qtensorchain" && value.size()==2 && value[1].isVector() && value[1].size()>=2 && value[1].size()<=2048) {
@@ -423,6 +433,11 @@ class Printer {
     if(k)text+=" ";text+=grouped(render(value[1][k],depth+1),61);
    }
    return Fragment(text,30);
+  }
+  if(name=="qtensorpow" && value.size()==2 && value[1].isSymbolic() && safeLabel(value[1].symbol())) {
+   std::string base=render(value[0],depth+1).text;
+   if(base=="[1; 0]" || base=="[0; 1]")
+    return Fragment(std::string(base=="[1; 0]" ? "|0^" : "|1^")+value[1].symbol()+"⟩");
   }
   if(name=="qtensorpow" && value.size()==2)return Fragment(grouped(render(value[0],depth+1),81)+"^{⊗ "+render(value[1],depth+1).text+"}",80);
   // Keep the basis dimension explicit; treating this as an ordinary named ket

@@ -593,7 +593,11 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qcomputationalket") {
    MathStructure index=raw[0];index.eval(eo);
-   bool pending=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
+   if(isQuantumBitLabel(index)) {
+    out.set(CALCULATOR->getFunction("qketstate"),&index,NULL);return 1;
+   }
+   bool pending=index.containsUnknowns() && (index.representsScalar() ||
+    (index.isFunction() && (index.function()->referenceName()=="qoplus" || index.function()->referenceName()=="qbitxor")));
    if(!pending && (!index.isNumber() || !index.number().isInteger() || index.number()<0)) {
     CALCULATOR->error(true,"A computational basis index must be a nonnegative integer.",NULL);return 0;
    }
@@ -857,7 +861,8 @@ class QuantumAlgebraFunction: public MathFunction {
    // A free operand can later be bound to an integer, a word or a matrix.
    // Keep the operator until the binding determines which operation applies.
    auto pending=[](const MathStructure &v) {
-    return v.isSymbolic() || v.isUnknown() || (v.representsScalar() && v.containsUnknowns());
+    return v.isSymbolic() || v.isUnknown() || (v.containsUnknowns() && (v.representsScalar() ||
+     (v.isFunction() && (v.function()->referenceName()=="qnamedapplication" || v.function()->referenceName()=="qgraphapply" || v.function()->referenceName()=="qoplus"))));
    };
    if(pending(a) || pending(args[1])) {
     for(size_t j=0;j<2;++j) {

@@ -261,6 +261,15 @@ class QuantumOrderFunction: public MathFunction {
     if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
     out=(kind==4)==equal ? 1 : 0;return 1;
    }
+   // A computed XOR ket may acquire its width from a later word binding.
+   // Preserve the two operator/state expressions until that ket is resolved.
+   if(kind>=4)for(unsigned k=0;k<2;++k) {
+    if(args[k].containsFunction(CALCULATOR->getFunction("qcomputationalket")) &&
+       args[k].containsFunction(CALCULATOR->getFunction("qoplus"))) {
+     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+    }
+   }
    if(kind>=4 && compareBitLabels(args[0],args[1],equal,eo)) {out=(kind==4)==equal ? 1 : 0;return 1;}
    if(args[1].isZero() && symbolicGram(args[0],eo) && (kind==0 || kind==3)) {out=kind==3 ? 1 : 0;return 1;}
    if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
