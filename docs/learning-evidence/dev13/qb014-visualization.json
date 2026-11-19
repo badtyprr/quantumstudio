@@ -1,0 +1,55 @@
+{
+  "source_sha256": "c2231836e666d1776e0e2700ed32d8d8c0138ebcd5f4c087255068020cac3b97",
+  "original_run": {
+    "succeeded": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "failure_cell": 13,
+    "failure": "ResourceNotFoundError: Failed to authenticate with the Quantum Runtime service."
+  },
+  "local_run": {
+    "original_code_cells": [
+      3,
+      5,
+      7,
+      10,
+      14,
+      15,
+      16
+    ],
+    "adaptations": [
+      "Cell 13 replaced with Braket LocalSimulator construction",
+      "Authored result wrapper exposes local measurement counts under result.data.measurement_counts before plotting"
+    ],
+    "counts": {
+      "00": 503,
+      "11": 497
+    },
+    "inspected_figures": [
+      10,
+      15,
+      16
+    ],
+    "assessment": "Graph rendered with a legend and a dense group of overlapping edges. Histogram and distribution labels match the counts and frequencies."
+  },
+  "kernels_closed": true,
+  "artifacts": {
+    "probe.py": "e68e80cffa248dfaaa91ea60c2f6fa943dd75cb0a71978d035e8048783346fde",
+    "local_plots.py": "65e54a47937973eeb878c6dfb2ab4086d4fe43c6e1b83c8cb0274be286ec75e4",
+    "run01/executed.ipynb": "3485c130d273b7c9f3f3b7e10859d5cc043db9035397a748e3a4b3af752ab383",
+    "run02/executed.ipynb": "2fc94a8dd29683cb569d2accad3fc2abcfeed2de8d71471d3df6fa4ad1ecfa50",
+    "run02/counts.json": "1242314784db39a1599bffc716154b16e77610674ddc6574dc1140ff392ecb95",
+    "run02/cell10.png": "237a18c8af859a4df261a71fcb1f821bf31329c2b5c3059a8a8dcc355b5aa864",
+    "run02/cell15.png": "6f337cee666b244bfca20bc57e961154ccd9cdc37b8648d6e915f92a88f7e738",
+    "run02/cell16.png": "4d4c06385312276a0b8dc9c3275d0c38770a504248925f5867711396ee825464",
+    "run01/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "run02/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "../qb012-local/environment.lock": "a71e71ef8f8d64687d84a001ac23362b40a1e75e36bfe27ec2315e69f88e052f"
+  },
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "evidence_root": "cleanup-audit/learning-coverage-20261117/qb014-local",
+  "dependency_lock": "../qb012-local/environment.lock"
+}

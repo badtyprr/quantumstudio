@@ -427,3 +427,4 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb008/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb008/index.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb010-device-discovery.json
 EXTRA_DIST += docs/learning-evidence/dev13/transpiler-notebooks.json
+EXTRA_DIST += docs/learning-evidence/dev13/qb014-visualization.json
