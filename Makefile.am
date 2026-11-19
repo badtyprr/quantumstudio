@@ -425,3 +425,4 @@ EXTRA_DIST += windows/dev13-notebooks/witnesses/qb008.py
 EXTRA_DIST += windows/dev13-notebooks/test_qb008.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb008/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb008/index.json
+EXTRA_DIST += docs/learning-evidence/dev13/qb010-device-discovery.json

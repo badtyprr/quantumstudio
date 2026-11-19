@@ -1,0 +1,42 @@
+{
+  "source_sha256": "668481d0cfdd2820f08bdc65d5f8d7997674b26ffe4ca9bb1ca93e3220bd4f78",
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "sdk": "qbraid 0.13.0",
+  "setup": {
+    "original_indices": [
+      1,
+      2,
+      4
+    ],
+    "raw_windows_pip_exit": 1,
+    "adapted_windows_pip_exit": 0,
+    "kernels_closed": true,
+    "source_preserved": true,
+    "distributions": 100,
+    "active_requirements": 208,
+    "adaptation": "Removed single quotes around the extras argument for this exact Windows command. Offline pip used the preinstalled dedicated environment.",
+    "open_cells": [
+      6,
+      8
+    ]
+  },
+  "discovery": {
+    "cell": 6,
+    "exception": "ResourceNotFoundError",
+    "message": "Failed to authenticate with the Quantum Runtime service.",
+    "metadata_cell": 8,
+    "metadata_executed": false,
+    "kernel_closed": true
+  },
+  "local_evidence_directory": "cleanup-audit/learning-coverage-20261117/qb010-setup",
+  "artifacts": {
+    "requirements.lock": "19de4ff27eddd5ba29b1598d075e6e9b0a0e4ec23da32fa19dfe3bc3d50017bf",
+    "dependency-closure.json": "12cfa6e41286d50c056eed6905c175f6af4cc986fbc8625b07f5867b26a9c0f2",
+    "notebook_probe.py": "32787f0d8ca1b2f35286cd2f438738fdac81fdb7851ecd482cb5d22c62e89868",
+    "verification.json": "27a3a93f2dd0c522cc2e1578c6bc0d6cd7bb237ba38c0448c952f9a7b135192b",
+    "run01-raw/executed.ipynb": "3b649b3b7330777c435f415aa04c7752cf45565987c835c660af2613efc11f8b",
+    "run02-windows/executed.ipynb": "050f55555988de50487ce37868d4d7cebce5c1ecf9e36979365a6ff15e68344b",
+    "run03-discovery/executed.ipynb": "9cb53e8a1d2935ee188d84eacb6b31f66d49346be979f05537f3919c0a86b6ed",
+    "run03-discovery/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8"
+  }
+}
