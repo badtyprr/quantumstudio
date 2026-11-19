@@ -62,7 +62,8 @@
       "actual_copy": "qequalchain(vector(qadjacent('U',qdag('U')),qidentitylike(qadjacent('U',qdag('U'))),qadjacent(qdag('U'),'U')))",
       "evidence": [
         "ibm027-unitarity.json"
-      ]
+      ],
+      "open_issue": "Redundant parentheses around either operand restore a two-dimensional identity."
     },
     {
       "id": "IBM027-64df8610-M005",
@@ -304,7 +305,8 @@
       "actual_copy": "(qadjacent('M',qnamedket(\"ψ_j\")))==(qadjacent(\"λ_j\",qnamedket(\"ψ_j\")))",
       "evidence": [
         "ibm027-spectral-index.json"
-      ]
+      ],
+      "open_issue": "Assigning j leaves the subscript literal."
     },
     {
       "id": "IBM027-64df8610-M021",
@@ -360,7 +362,8 @@
       "actual_copy": "\"λ_j\"",
       "evidence": [
         "ibm027-hermitian.json"
-      ]
+      ],
+      "open_issue": "Assigning j leaves the subscript literal."
     },
     {
       "id": "IBM027-64df8610-M025",
@@ -388,7 +391,8 @@
       "actual_copy": "qketstate(\"ψ_j\")",
       "evidence": [
         "ibm027-hermitian.json"
-      ]
+      ],
+      "open_issue": "Assigning j leaves the subscript literal."
     },
     {
       "id": "IBM027-64df8610-M027",
@@ -626,7 +630,8 @@
       "actual_copy": "qcompare(qketstate(\"ψ_θ\"),matrix(2,1,[cos('θ' rad),sin('θ' rad)]),4)",
       "evidence": [
         "ibm027-hadamard.json"
-      ]
+      ],
+      "open_issue": "Binding theta before loading the state family loses the selected angle in the copied left operand."
     },
     {
       "id": "IBM027-64df8610-M044",

@@ -36,4 +36,10 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 088, 089 | The complex exponential is one at both ends of a full turn | Both explicit equalities return true. |
 | 093, 094, 096 | Values near the cut and the example distance | Returns 1, 0 and the exact rational 1/1000. |
 
-All findings from this lesson review have corresponding verified corrections. Upstream review and release verification remain pending.
+Review of PR #530 identified three remaining calculation issues on c51b3d19.
+
+- M004 accepts a three-dimensional identity with the original grouping. Parenthesizing the adjoint product or the unsized identity changes the result to false.
+- M020, M024 and M026 retain the literal labels λ_j and ψ_j when the learner assigns j = 2. M023 handles this substitution in the full spectral identity.
+- M043 evaluates correctly if the real angle state family is loaded first. Substituting θ = π/8, copying the result and then loading the same family leaves θ unbound on the left.
+
+Integration and release verification remain pending.
