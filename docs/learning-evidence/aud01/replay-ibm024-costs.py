@@ -60,12 +60,13 @@ for number, args in [("M063", "n"), ("M074", "n,m")]:
             probe = f"replace(replace(({body}),g({args}),{cost}),h({args}),n^2)"
             assert evaluate(probe)["copy_text"] == answer, probe
 
-# The lesson declares c to be an arbitrary positive real constant. Supply
-# that cost context explicitly for isolated witnesses outside Big-O notation.
-for number in ("M064", "M075"):
+# Each standalone positivity condition refers to the lesson's free coefficient.
+for number in ("M064", "M075", "M160"):
     witness = spans[number].strip("$").strip()
-    for c in (-2, 0, 2):
-        assert evaluate(f"cost(replace(({witness}),c,{c}))")["copy_text"] == str(int(c > 0))
+    record = evaluate(spans[number])
+    for body in (witness, record["display_text"], record["copy_text"]):
+        for c in (-2, 0, 2):
+            assert evaluate(f"replace(({body}),c,{c})")["copy_text"] == str(int(c > 0))
 for number, args in [("M066", "n"), ("M077", "n,m")]:
     witness = spans[number].strip("$").strip()
     original = evaluate(spans[number])

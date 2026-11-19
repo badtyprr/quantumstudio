@@ -2025,6 +2025,11 @@ class Parser {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
    } else right=comparisonOperand();
+   // A sign condition on the free coefficient must survive substitution.
+   if(kind<4) {
+    if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";
+    else if(left=="0" && right=="c")right="qcostparam("+indexableLabel(right)+")";
+   }
    if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {
     preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
