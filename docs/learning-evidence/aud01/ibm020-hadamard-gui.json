@@ -1,0 +1,64 @@
+{
+  "revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "binaries": {
+    "QuantumStudio.exe": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2",
+    "quantum-worker.exe": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33"
+  },
+  "source_id": "M02",
+  "result": {
+    "passed": true,
+    "checks": 18,
+    "calls": 4,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "calculations": [
+    {
+      "expression": "$$\n\\begin{aligned}\nH \\vert 0\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\\\\[3mm]\nH \\vert 1\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle.\n\\end{aligned}\n$$",
+      "mode": 0,
+      "state": "passed",
+      "copy": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "display": "1.  1\n\n2.  1",
+      "label": "EXACT RESULT",
+      "status": "Result copied."
+    },
+    {
+      "expression": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "mode": 0,
+      "state": "passed",
+      "copy": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "display": "1.  1\n\n2.  1",
+      "label": "EXACT RESULT",
+      "status": "Result copied."
+    },
+    {
+      "expression": "7",
+      "mode": 1,
+      "state": "passed",
+      "copy": "7",
+      "display": "7",
+      "label": "EXACT RESULT",
+      "status": "Result copied."
+    },
+    {
+      "expression": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "mode": 0,
+      "state": "passed",
+      "copy": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "display": "1.  1\n\n2.  1",
+      "label": "EXACT RESULT",
+      "status": "Result copied."
+    }
+  ],
+  "session_version": 5,
+  "method": "Raised the application's Calculate and Copy button events, read the Windows Clipboard, saved via SessionStore.Save, evaluated 7 in ordinary mode, reopened via OpenSession, checked the restored mode, input and serialized session snapshot, then recalculated and copied again.",
+  "external_directory": "cleanup-audit/learning-coverage-20261117/ibm020-gui-m02",
+  "artifacts": {
+    "fragment.txt": "69eea81b04a4e8fa59eb17e68531ba7bb0debe8e56132878e2320c657db0c401",
+    "gui.cs": "07d06fe363fef35615527f8b3ebbd35e0661ffa17208b2baf80d851e00537665",
+    "gui.exe": "015c57739e84f93c014824f5717091c44b88e73fdc3b8eb7ff2f6a3c914b6895",
+    "hadamard.qsession": "e9c966d707105a351ffa2783a62564b2a51c94c41c3ba01ce703203ab7d42b3b",
+    "records.json": "7159b6e075717ecc314fb9264741185691f64afec529a1acfa4dff39b5717f49",
+    "result.json": "6a08b27692c21a1b90f121ebe5133e8e3a066a1a9b1cd571eed755fe672c7a6f"
+  }
+}
