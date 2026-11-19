@@ -414,3 +414,14 @@ EXTRA_DIST += windows/dev13-notebooks/witnesses/qb007_cpu.py
 EXTRA_DIST += windows/dev13-notebooks/test_qb007_cpu.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb007-cpu/README.md
 EXTRA_DIST += docs/learning-evidence/dev13/qb007-cpu/index.json
+
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb008.json
+EXTRA_DIST += windows/dev13-notebooks/profiles/grover-win-py312.json
+EXTRA_DIST += windows/dev13-notebooks/grover-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/observers/qb008_capture.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb008_install.py
+EXTRA_DIST += windows/dev13-notebooks/observers/qb008_restore.py
+EXTRA_DIST += windows/dev13-notebooks/witnesses/qb008.py
+EXTRA_DIST += windows/dev13-notebooks/test_qb008.py
+EXTRA_DIST += docs/learning-evidence/dev13/qb008/README.md
+EXTRA_DIST += docs/learning-evidence/dev13/qb008/index.json

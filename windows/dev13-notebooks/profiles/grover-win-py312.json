@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "grover-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "grover-requirements.lock",
+  "lock_sha256": "84f259186212da8cb293a0a1842af146f62ccea366c9a02c10aa99b9cc42436f",
+  "offline_only": true,
+  "wheel_requirement": "76 retained hash-pinned Windows-compatible wheels",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}
