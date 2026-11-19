@@ -210,5 +210,186 @@
     "estimated": -0.20718389259584646,
     "nuclear_repulsion": 0.71997
   },
-  "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed"
+  "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "oscillator_exercise": {
+    "cell": 4,
+    "trial": "A exp(-alpha x^2), real positive alpha, m, omega and hbar; choose positive A.",
+    "normalization": "A=(2*alpha/pi)^(1/4)",
+    "mean_x_squared": "1/(4*alpha)",
+    "kinetic": "hbar^2*alpha/(2*m)",
+    "potential": "m*omega^2/(8*alpha)",
+    "ground_state_gap": "E(alpha)-hbar*omega/2=(2*hbar*alpha-m*omega)^2/(8*m*alpha)",
+    "optimum": "alpha=m*omega/(2*hbar)",
+    "source_discrepancy": "The worked answer doubles the potential term in parts (b) and (c). Its final width and minimum energy agree with the corrected expression.",
+    "checks": [
+      {
+        "m": 1,
+        "omega": 1,
+        "hbar": 1,
+        "alpha": "1/4",
+        "normalization": 1.0,
+        "x_squared": 1.0,
+        "kinetic": 0.125,
+        "potential": 0.5,
+        "quadrature_energy": 0.6250000000000002,
+        "numerical_minimizer": 0.4999999946724115
+      },
+      {
+        "m": 1,
+        "omega": 1,
+        "hbar": 1,
+        "alpha": "1/2",
+        "normalization": 1.0,
+        "x_squared": 0.5,
+        "kinetic": 0.25,
+        "potential": 0.25,
+        "quadrature_energy": 0.4999999999999999,
+        "numerical_minimizer": 0.4999999946724115
+      },
+      {
+        "m": 1,
+        "omega": 1,
+        "hbar": 1,
+        "alpha": "1",
+        "normalization": 1.0,
+        "x_squared": 0.25,
+        "kinetic": 0.5,
+        "potential": 0.125,
+        "quadrature_energy": 0.625,
+        "numerical_minimizer": 0.4999999946724115
+      },
+      {
+        "m": 2,
+        "omega": 3,
+        "hbar": 1,
+        "alpha": "3/2",
+        "normalization": 1.0,
+        "x_squared": 0.16666666666666666,
+        "kinetic": 0.375,
+        "potential": 1.5,
+        "quadrature_energy": 1.8749999999999996,
+        "numerical_minimizer": 3.0000000125382393
+      },
+      {
+        "m": 2,
+        "omega": 3,
+        "hbar": 1,
+        "alpha": "3",
+        "normalization": 1.0,
+        "x_squared": 0.08333333333333333,
+        "kinetic": 0.75,
+        "potential": 0.75,
+        "quadrature_energy": 1.5,
+        "numerical_minimizer": 3.0000000125382393
+      },
+      {
+        "m": 2,
+        "omega": 3,
+        "hbar": 1,
+        "alpha": "6",
+        "normalization": 1.0,
+        "x_squared": 0.041666666666666664,
+        "kinetic": 1.5,
+        "potential": 0.375,
+        "quadrature_energy": 1.8749999999999998,
+        "numerical_minimizer": 3.0000000125382393
+      },
+      {
+        "m": 1,
+        "omega": 2,
+        "hbar": 3,
+        "alpha": "1/6",
+        "normalization": 1.0,
+        "x_squared": 1.5,
+        "kinetic": 0.75,
+        "potential": 3.0,
+        "quadrature_energy": 3.75,
+        "numerical_minimizer": 0.3333333297853123
+      },
+      {
+        "m": 1,
+        "omega": 2,
+        "hbar": 3,
+        "alpha": "1/3",
+        "normalization": 1.0,
+        "x_squared": 0.75,
+        "kinetic": 1.5,
+        "potential": 1.5,
+        "quadrature_energy": 3.0000000000000013,
+        "numerical_minimizer": 0.3333333297853123
+      },
+      {
+        "m": 1,
+        "omega": 2,
+        "hbar": 3,
+        "alpha": "2/3",
+        "normalization": 1.0,
+        "x_squared": 0.375,
+        "kinetic": 3.0,
+        "potential": 0.75,
+        "quadrature_energy": 3.75,
+        "numerical_minimizer": 0.3333333297853123
+      }
+    ],
+    "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed"
+  },
+  "optimizer_exercise": {
+    "cells": [
+      40,
+      70
+    ],
+    "method": "Authored noiseless statevector objective at the original all-ones start for both cell 60 circuits. COBYLA evaluation caps of 20 and 100 isolate optimization error for the fixed one-qubit Hamiltonian.",
+    "cases": [
+      {
+        "parameters": 3,
+        "budget": 20,
+        "evaluations": 20,
+        "energy": -1.8650180433907255,
+        "ground_state_gap": 0.0009288113720054003
+      },
+      {
+        "parameters": 3,
+        "budget": 100,
+        "evaluations": 59,
+        "energy": -1.8659468546186115,
+        "ground_state_gap": 1.4411938309422112e-10
+      },
+      {
+        "parameters": 12,
+        "budget": 20,
+        "evaluations": 20,
+        "energy": -1.8343286144420459,
+        "ground_state_gap": 0.031618240320685054
+      },
+      {
+        "parameters": 12,
+        "budget": 100,
+        "evaluations": 94,
+        "energy": -1.8659468544885616,
+        "ground_state_gap": 2.741693538865775e-10
+      }
+    ],
+    "scope": "These checks hold the model and ansatz fixed within each pair. Basis-set error, device noise, and QPU wall times require separate evidence."
+  },
+  "concept_review": {
+    "cell": 58,
+    "true_false": [
+      true,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "multiple_choice": [
+      "B",
+      "A",
+      "C",
+      "B",
+      "B",
+      "B"
+    ],
+    "sample_count": "The notebook generated 5000 states for each of three ansatz circuits, 15000 in total.",
+    "variational_bound": "The exact expectation is bounded below by the lowest eigenvalue. Finite-shot estimates at optimizer-selected points can fall below it, as observed in cells 48 and 65."
+  }
 }
