@@ -1,0 +1,41 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "row": "IBM028-2ff07f29-M039",
+  "worker_sha256": "78c29e1307d2737a996e3c991dac151c97f31669a7171e31afd2dee0ae9aeb98",
+  "forms": [
+    "source",
+    "display",
+    "copy"
+  ],
+  "invalid_digits": [
+    "-1",
+    "1/2",
+    "2"
+  ],
+  "checks": [
+    {
+      "case": "original",
+      "literal": "$$\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n$$",
+      "display": "0.5 · bitvalue(bitstring(a, 1)) = if(qcompare('a', 0, 4), 0, if(qcompare('a', 1, 4), 0.5, undefined))",
+      "copy": "qcompare(qbitvalue(qbitlabel('a', 1)) ∕ 2,if(qcompare('a',0,4),0,if(qcompare('a',1,4),1 ∕ 2,undefined,0),0),4)",
+      "at_zero": "1",
+      "at_one": "1"
+    },
+    {
+      "case": "changed-zero-row",
+      "literal": "$$\n0.a = \\begin{cases}\n1 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n$$",
+      "display": "0.5 · bitvalue(bitstring(a, 1)) = if(qcompare('a', 0, 4), 1, if(qcompare('a', 1, 4), 0.5, undefined))",
+      "copy": "qcompare(qbitvalue(qbitlabel('a', 1)) ∕ 2,if(qcompare('a',0,4),1,if(qcompare('a',1,4),1 ∕ 2,undefined,0),0),4)",
+      "at_zero": "0",
+      "at_one": "1"
+    },
+    {
+      "case": "changed-one-row",
+      "literal": "$$\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{4} & a = 1.\n\\end{cases}\n$$",
+      "display": "0.5 · bitvalue(bitstring(a, 1)) = if(qcompare('a', 0, 4), 0, if(qcompare('a', 1, 4), 0.25, undefined))",
+      "copy": "qcompare(qbitvalue(qbitlabel('a', 1)) ∕ 2,if(qcompare('a',0,4),0,if(qcompare('a',1,4),1 ∕ 4,undefined,0),0),4)",
+      "at_zero": "1",
+      "at_one": "0"
+    }
+  ]
+}
