@@ -710,6 +710,7 @@ class TeXReader {
     return ";";
    }
    if(c==',' || c==';' || c==':' || c=='!' || c==' ') return " ";
+   if(c=='%')return " qtexpercent ";
    if(c=='|') { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
    throw std::runtime_error(error("Unsupported TeX control symbol"));
   }

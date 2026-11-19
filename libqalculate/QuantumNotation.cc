@@ -1283,6 +1283,7 @@ class Parser {
     a=binaryNumeral(a);ws();
     if(p<s.size() && (s[p]=='_' || s.compare(p,std::string("₂").size(),"₂")==0))throw std::runtime_error("A binary numeral cannot have a second radix subscript.");
    }
+   if(a=="qtexpercent")throw std::runtime_error("A percentage requires a preceding value.");
    if(a=="iff" || a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
    // A scalar prefix is its own token so powers/daggers bind to the gate:
    // iY^2 means i*(Y^2), while (iY)^2 squares the entire product.
@@ -1849,9 +1850,15 @@ class Parser {
   }
   return false;
  }
- std::string power() {
+ void percentSuffix(std::string &value) {
+  while(takeWord("qtexpercent")) {
+   value="("+value+"/100)";checkSize(value);
+  }
+ }
+ std::string power(bool allowPercent) {
   ws();size_t baseStart=p;
   auto a=atom();int kind=diracKind;
+  if(allowPercent)percentSuffix(a);
   bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
   if(take('^')) {
    kind=0;
@@ -1864,16 +1871,16 @@ class Parser {
     a="qcontrol("+gate+","+controls+",(2^("+controls+")-1))";
     while(take('~')) a="qdag("+a+")";
    }
-   else if(take('@')) a="qtensorpow("+a+","+unary()+")";
+   else if(take('@')) a="qtensorpow("+a+","+unary(false)+")";
    else if(take('%')) {
     need('('); std::string indices=expression(); while(take(',')) indices+=","+expression(); need(')');
     a="qptranspose("+a+",vector("+indices+"))";
    }
    else if(take('`') || takeWord("T")) a="qtranspose("+a+")";
    else if(take('*')) a="qconj("+a+")";
-   else if(a=="e") a="qexp("+unary()+")";
+   else if(a=="e") a="qexp("+unary(false)+")";
    else {
-    std::string exponent=unary();
+    std::string exponent=unary(false);
     ws();size_t start=p;
     bool inverse=a.size()==1 && a[0]>='a' && a[0]<='z' &&
                  (exponent=="(-1)" || exponent=="((-1))");
@@ -1900,15 +1907,16 @@ class Parser {
     }
    }
   }
+  if(allowPercent)percentSuffix(a);
   diracKind=kind;checkSize(a);return a;
  }
- std::string unary() {
+ std::string unary(bool allowPercent=true) {
   if(++depth>256)throw std::runtime_error("Quantum expression nesting exceeds 256.");
   std::string a;ws();unsigned root=radical();
-  if(root) {p+=3;a="qpower("+unary()+",1/"+std::to_string(root)+")";diracKind=0;}
-  else if(take('+'))a=unary();
-  else if(take('-'))a="(-"+unary()+")";
-  else a=power();
+  if(root) {p+=3;a="qpower("+unary(allowPercent)+",1/"+std::to_string(root)+")";diracKind=0;}
+  else if(take('+'))a=unary(allowPercent);
+  else if(take('-'))a="(-"+unary(allowPercent)+")";
+  else a=power(allowPercent);
   --depth;checkSize(a);return a;
  }
  std::string diracFactor() {
