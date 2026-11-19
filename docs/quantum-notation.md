@@ -86,6 +86,7 @@ The [IBM phase-estimation procedure](https://quantum.cloud.ibm.com/learning/en/c
 - A trial-divisor list such as `2,\ldots,\sqrt{N}` enumerates integers from 2 through the floor of the square root. For 15 it gives {2, 3}, for 16 it includes 4, and for 3 it is empty. A symbolic bound can be copied and assigned later. Finite ranges support up to 1,024 entries.
 - Modular powers such as `N^K\hspace{1mm} (\text{mod }M)` preserve all three operands. With integer base, nonnegative integer exponent and positive integer modulus, evaluation uses modular exponentiation. For example, `23^5 pmod (17)` gives 7.
 - TeX matrix row spacing such as `\\[1mm]`: the spacing is ignored, and the lesson's four-dimensional Fourier matrix is checked against `qfourier(4)`.
+- A TeX percentage scales its operand by one hundredth. For example, `40\%` gives 2/5 and `1/(25\%)` gives 4.
 - The probability `|⟨101|(H⊗H⊗H)|000⟩|^2` equals 1/8. The packaged keyboard check verifies that Enter displays 0.125 once without inserting a newline.
 
 These are selected finite examples, not certification of the entire phase-estimation lesson. In particular, source formulas can rely on implicit dimensions, named states, or mathematical definitions supplied earlier in the text.

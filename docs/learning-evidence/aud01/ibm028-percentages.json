@@ -1,0 +1,231 @@
+{
+  "revision": "c30f7c061204333c751af59666d95b0697b9942a",
+  "worker_sha256": "600f7bd947b8378ca3001464defbc9d9371ab93869b58c76edc9907682df9875",
+  "source_sha256": "2ff07f29f923364ca6d47b07a36266bebe64e335cce6d50cdeed2d1cbf39af4e",
+  "replay": "replay-ibm028-percentages.py",
+  "mode": "Quantum notation",
+  "source_expression_count": 396,
+  "source_results": {
+    "exact": 378,
+    "diagnostic": 18
+  },
+  "changed": [
+    {
+      "id": "IBM028-2ff07f29-M157",
+      "cell": 0,
+      "start": 17076,
+      "end": 17082,
+      "literal": "$40\\%$",
+      "status": "exact",
+      "display": "0.4",
+      "copy": "2 ∕ 5"
+    },
+    {
+      "id": "IBM028-2ff07f29-M359",
+      "cell": 0,
+      "start": 40438,
+      "end": 40444,
+      "literal": "$40\\%$",
+      "status": "exact",
+      "display": "0.4",
+      "copy": "2 ∕ 5"
+    },
+    {
+      "id": "IBM028-2ff07f29-M378",
+      "cell": 0,
+      "start": 41914,
+      "end": 41920,
+      "literal": "$40\\%$",
+      "status": "exact",
+      "display": "0.4",
+      "copy": "2 ∕ 5"
+    },
+    {
+      "id": "IBM028-2ff07f29-M380",
+      "cell": 0,
+      "start": 42032,
+      "end": 42038,
+      "literal": "$25\\%$",
+      "status": "exact",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    },
+    {
+      "id": "IBM028-2ff07f29-M385",
+      "cell": 0,
+      "start": 42539,
+      "end": 42545,
+      "literal": "$40\\%$",
+      "status": "exact",
+      "display": "0.4",
+      "copy": "2 ∕ 5"
+    },
+    {
+      "id": "IBM028-2ff07f29-M387",
+      "cell": 0,
+      "start": 42618,
+      "end": 42624,
+      "literal": "$25\\%$",
+      "status": "exact",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    },
+    {
+      "id": "IBM028-2ff07f29-M388",
+      "cell": 0,
+      "start": 42834,
+      "end": 42840,
+      "literal": "$25\\%$",
+      "status": "exact",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    }
+  ],
+  "controls": [
+    {
+      "id": "probability",
+      "label": "EXACT RESULT",
+      "display": "0.4",
+      "copy": "2 ∕ 5",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2 ∕ 5"
+    },
+    {
+      "id": "quarter",
+      "label": "EXACT RESULT",
+      "display": "0.25",
+      "copy": "1 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 4"
+    },
+    {
+      "id": "sum",
+      "label": "EXACT RESULT",
+      "display": "0.65",
+      "copy": "13 ∕ 20",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "13 ∕ 20"
+    },
+    {
+      "id": "negative",
+      "label": "EXACT RESULT",
+      "display": "−0.25",
+      "copy": "−1 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "−1 ∕ 4"
+    },
+    {
+      "id": "denominator",
+      "label": "EXACT RESULT",
+      "display": "4",
+      "copy": "4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "4"
+    },
+    {
+      "id": "whole-power",
+      "label": "EXACT RESULT",
+      "display": "0.08",
+      "copy": "2 ∕ 25",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2 ∕ 25"
+    },
+    {
+      "id": "percent-power",
+      "label": "EXACT RESULT",
+      "display": "0.25",
+      "copy": "1 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 4"
+    },
+    {
+      "id": "in-exponent",
+      "label": "EXACT RESULT",
+      "display": "4",
+      "copy": "4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "4"
+    },
+    {
+      "id": "symbolic",
+      "label": "EXACT RESULT",
+      "display": "0.25",
+      "copy": "1 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 4"
+    },
+    {
+      "id": "modulo",
+      "label": "EXACT RESULT",
+      "display": "5",
+      "copy": "5",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "5"
+    }
+  ],
+  "unstable_first_copy": [
+    "IBM028-2ff07f29-M014",
+    "IBM028-2ff07f29-M015",
+    "IBM028-2ff07f29-M017",
+    "IBM028-2ff07f29-M021",
+    "IBM028-2ff07f29-M022",
+    "IBM028-2ff07f29-M090",
+    "IBM028-2ff07f29-M096",
+    "IBM028-2ff07f29-M102",
+    "IBM028-2ff07f29-M106",
+    "IBM028-2ff07f29-M183",
+    "IBM028-2ff07f29-M198",
+    "IBM028-2ff07f29-M199",
+    "IBM028-2ff07f29-M206",
+    "IBM028-2ff07f29-M247",
+    "IBM028-2ff07f29-M251",
+    "IBM028-2ff07f29-M252",
+    "IBM028-2ff07f29-M253",
+    "IBM028-2ff07f29-M258",
+    "IBM028-2ff07f29-M265",
+    "IBM028-2ff07f29-M269",
+    "IBM028-2ff07f29-M275",
+    "IBM028-2ff07f29-M290",
+    "IBM028-2ff07f29-M313",
+    "IBM028-2ff07f29-M317",
+    "IBM028-2ff07f29-M325",
+    "IBM028-2ff07f29-M331",
+    "IBM028-2ff07f29-M332",
+    "IBM028-2ff07f29-M336",
+    "IBM028-2ff07f29-M338",
+    "IBM028-2ff07f29-M341",
+    "IBM028-2ff07f29-M342",
+    "IBM028-2ff07f29-M356",
+    "IBM028-2ff07f29-M373"
+  ],
+  "diagnostics": [
+    "IBM028-2ff07f29-M074",
+    "IBM028-2ff07f29-M076",
+    "IBM028-2ff07f29-M119",
+    "IBM028-2ff07f29-M127",
+    "IBM028-2ff07f29-M132",
+    "IBM028-2ff07f29-M134",
+    "IBM028-2ff07f29-M135",
+    "IBM028-2ff07f29-M176",
+    "IBM028-2ff07f29-M179",
+    "IBM028-2ff07f29-M191",
+    "IBM028-2ff07f29-M201",
+    "IBM028-2ff07f29-M214",
+    "IBM028-2ff07f29-M215",
+    "IBM028-2ff07f29-M224",
+    "IBM028-2ff07f29-M328",
+    "IBM028-2ff07f29-M329",
+    "IBM028-2ff07f29-M339",
+    "IBM028-2ff07f29-M358"
+  ]
+}
