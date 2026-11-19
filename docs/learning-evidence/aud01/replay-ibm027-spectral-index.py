@@ -72,6 +72,13 @@ for body in (short["M020"].strip("$").strip().rstrip("."), copied(short["M020"])
         for order in (data + [("j", 2)], [("j", 2)] + data):
             saved = copied(bind(body, order[:2]))
             assert copied(bind(saved, order[2:])) == expected, (order, saved)
+same_ket = "replace(replace((|ψ_j> = j |ψ_j>),j,1),ψ_1,basis(0,2))"
+assert copied(same_ket) == "1"
+name, state = "ψ_j".encode(), b"|0>"
+body = "quantum:replace((|ψ_j> = |0>),j,2)".encode()
+packet = f"QSTATES1\n1\n{len(name)}\n{len(state)}\n".encode() + name + state + body
+literal = subprocess.run([worker, "--json", "--states"], input=packet, capture_output=True, timeout=30)
+assert literal.returncode == 0 and json.loads(literal.stdout)["copy_text"] == "1", literal.stderr
 if args.gui_inputs:
     args.gui_inputs.write_text(json.dumps(inputs, ensure_ascii=False), encoding="utf-8")
 print("Verified selection of all three eigenpairs, assignment order, partial copies and range errors.")

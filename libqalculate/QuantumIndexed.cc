@@ -1096,7 +1096,7 @@ void bindStateEquationParameter(MathStructure &equation,const MathStructure &par
   MathStructure &ket=equation[side];
   if(!ket.isFunction() || ket.size()!=1 || !ket[0].isSymbolic() ||
      (ket.function()->referenceName()!="qketstate" && ket.function()->referenceName()!="qnamedket") ||
-     !equation[1-side].contains(parameter))continue;
+     !equation[1-side].contains(parameter) || equation[1-side].contains(ket[0]))continue;
   const std::string label=ket[0].symbol();
   size_t split=label.rfind('_');
   if(split==std::string::npos || !split || label.substr(split+1)!=name)continue;
@@ -1121,6 +1121,10 @@ void prepareFreeEntry(MathStructure &term,const MathStructure &target) {
   term.childrenUpdated();return;
  }
  const std::string label=ket ? term[0].symbol() : term.symbol();
+ if(ket) {
+  Variable *state=CALCULATOR->getActiveVariable(label);
+  if(state && !state->isBuiltin() && state->isKnown())return;
+ }
  if(label.size()<3 || label[label.size()-2]!='_')return;
  const unsigned char letter=label.back();
  if(letter>=128 || !std::isalpha(letter) || letter=='i' || letter=='e')return;
