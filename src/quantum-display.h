@@ -209,6 +209,7 @@ class Printer {
     const MathStructure &term=value[index];
     if(term.isFunction() && term.size()==2) {
      const auto &op=term.function()->referenceName();
+     if(op=="qcomparisonzero" && term[0].equals(value[1-index]))return "0^"+grouped(render(term[1],depth+1),81);
      if(op=="qcomparisonliteral" && term[0].equals(value[1-index]) && term[1].isSymbolic())return term[1].symbol();
      if(op=="qnamedapplication" && term[0].isSymbolic() && safeLabel(term[0].symbol()))
       return term[0].symbol()+"("+render(term[1],depth+1).text+")";

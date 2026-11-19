@@ -56,6 +56,15 @@ class QuantumBinaryFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qcomparisonzero") {
+   if(isQuantumBitLabel(a)) {
+    MathStructure index(0),width=args[1];
+    if(validateQuantumBitLabel(index,width,eo)==QuantumBitLabelState::Invalid)return 0;
+    out.set(CALCULATOR->getFunction("qbitlabel"),&index,&width,NULL);return 1;
+   }
+   if(!a.isVector() && a.containsUnknowns())return 0;
+   out=m_zero;out.raise(args[1]);return 1;
+  }
   if(op=="qcomparisonliteral") {
    if(!raw[1].isSymbolic())return 0;
    const std::string &digits=raw[1].symbol();
@@ -273,5 +282,5 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qnamedapplication",2},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }

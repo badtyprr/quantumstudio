@@ -227,7 +227,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qnamedapplication",2},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -1897,6 +1897,13 @@ class Parser {
      !std::isalpha((unsigned char)term[2]) || term[3]!=')')return;
   term="qnamedapplication("+term.substr(0,1)+","+term.substr(2,1)+")";
  }
+ // Keep both meanings of 0^m until the other side supplies the domain.
+ static void preserveZeroWord(const std::string &subject,std::string &power) {
+  if(power.compare(0,9,"qpower(0,")!=0 || power.back()!=')')return;
+  if((subject.size()==1 && std::isalpha((unsigned char)subject[0])) ||
+     subject.compare(0,10,"qbitlabel(")==0 || subject.compare(0,6,"qbits(")==0)
+   power="qcomparisonzero("+subject+","+power.substr(9);
+ }
  // A padded binary numeral carries a width when compared to a word. A
  // scalar comparison still uses its decimal value. Keep both through Copy.
  static void preservePaddedLiteral(const std::string &subject,std::string &literal) {
@@ -2047,6 +2054,10 @@ class Parser {
    if(kind<4) {
     if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";
     else if(left=="0" && right=="c")right="qcostparam("+indexableLabel(right)+")";
+   }
+   if(relation=="=" || relation=="==" || relation=="!=") {
+    preserveZeroWord(left,right);preserveZeroWord(right,left);
+    operands.back()=left;
    }
    if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {

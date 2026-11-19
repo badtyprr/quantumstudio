@@ -17,6 +17,25 @@ def evaluate(expression):
 for row in source["rows"]:
     records[row["id"][-4:]] = evaluate(row["literal"])
 
+# A zero word has both a value and a width. Bind each operand first,
+# then copy the intermediate result before supplying the other operand.
+zero_word = records["M055"]
+source_word = next(row["literal"].strip("$") for row in source["rows"] if row["id"].endswith("M055"))
+for body in (source_word, zero_word["display_text"], zero_word["copy_text"]):
+    assert evaluate(body)["copy_text"] == zero_word["copy_text"]
+    for count, value, width in [(0, 0, 0), (1, 0, 1), (2, 0, 2), (2, 0, 1),
+                                (2, 1, 2), (1000, 0, 1000), (1000, 0, 999)]:
+        bits = f"bitstring({value},{width})"
+        expected = str(int(value == 0 and width == count))
+        for first, second in [(("m", count), ("y", bits)), (("y", bits), ("m", count))]:
+            partial = evaluate(f"replace(({body}),{first[0]},{first[1]})")["copy_text"]
+            assert evaluate(f"replace(({partial}),{second[0]},{second[1]})")["copy_text"] == expected
+for operand, expected in [("0", "1"), ("1", "0"), ("i", "0"), ("vector(0,0)", "1"),
+                          ("matrix(2,1,[0,1])", "0")]:
+    assert evaluate(f"replace(replace(({source_word}),y,{operand}),m,2)")["copy_text"] == expected
+for expr in ("bitstring(0,3)!=0^2", "0^2=bitstring(0,2)", "0^(1+1)=bitstring(0,2)"):
+    assert evaluate(expr)["copy_text"] == "1"
+
 # R is the reversible circuit in the lesson. Bind after entry, display, and
 # Copy to distinguish an inverse permutation, transpose, and conjugation.
 adjoint = records["M038"]
