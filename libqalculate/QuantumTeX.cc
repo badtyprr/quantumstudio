@@ -1264,11 +1264,21 @@ std::string quantumTeX(const std::string &input) {
  return quantumTeX(input,nullptr);
 }
 std::string quantumTeX(const std::string &input, std::vector<std::string> *lines) {
+ return quantumTeX(input,lines,nullptr);
+}
+std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation) {
  if(lines)lines->clear();
+ if(setNotation)*setNotation=false;
  // Strip only a complete paired math wrapper. A dollar inside an expression
  // remains an error in the quantum grammar.
  size_t first=input.find_first_not_of(" \t\r\n"), last=input.find_last_not_of(" \t\r\n");
  if(first==std::string::npos) return "";
+ // The mode precedes the pasted formula, including any TeX delimiters.
+ if(input.compare(first,5,"sets:")==0) {
+  if(setNotation)*setNotation=true;
+  first=input.find_first_not_of(" \t\r\n",first+5);
+  if(first==std::string::npos)return "";
+ }
  std::string s=input.substr(first,last-first+1);
  bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);

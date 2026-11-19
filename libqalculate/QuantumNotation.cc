@@ -417,6 +417,7 @@ class Parser {
   if(value.size()>131072)throw std::runtime_error("Expanded quantum expression exceeds 131072 bytes.");
  }
  bool spinContext=false;
+ bool setNotation=false;
  bool costContext=false;
  bool basisXorContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
@@ -1817,8 +1818,21 @@ class Parser {
   }
   --depth;diracKind=kind;checkSize(a);return a;
  }
+ // Inspect the original base so a matrix equal to S keeps its matrix meaning.
+ static bool groupedToken(const std::string &text,size_t start,size_t end,char token) {
+  while(start<end) {
+   while(start<end && std::isspace((unsigned char)text[start]))++start;
+   while(start<end && std::isspace((unsigned char)text[end-1]))--end;
+   if(end-start==1)return text[start]==token;
+   if(end-start<3 || text[start]!='(' || text[end-1]!=')')break;
+   ++start;--end;
+  }
+  return false;
+ }
  std::string power() {
+  ws();size_t baseStart=p;
   auto a=atom();int kind=diracKind;
+  bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
   if(take('^')) {
    kind=0;
    if(a=="C") {
@@ -1859,7 +1873,11 @@ class Parser {
       std::string argument=expression();need(')');
       a="qnamedapplication("+a+","+argument+")";
      }
-    } else {p=start;a="qpower("+a+","+exponent+")";}
+    } else {
+     p=start;
+     if(sphere && groupedToken(exponent,0,exponent.size(),'1'))a="qunitcircle()";
+     else a="qpower("+a+","+exponent+")";
+    }
    }
   }
   diracKind=kind;checkSize(a);return a;
@@ -2253,7 +2271,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false):spinContext(spin),setNotation(sets),s(text) {}
  std::string run() { auto out=expression(true); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
 };
 
@@ -2303,9 +2321,10 @@ std::string translateQuantum(const std::string &expression) {
  std::string s=unicodeArithmetic(quantumWhitespace(expression));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
- s=quantumTeX(s);
+ bool sets=false;
+ s=quantumTeX(s,nullptr,&sets);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin).run();
+ return Parser(s,spin,sets).run();
 }

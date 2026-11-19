@@ -1137,14 +1137,15 @@ class QuantumStudio {
   var calculationMatrices=MatrixDeclarations.Copy(matrices);
   var calculationBases=BasisDeclarations.Copy(bases);
   string request;
-  try {request=calculationMode==0 ? "quantum:"+MatrixDeclarations.Apply(BasisDeclarations.Apply(expression,calculationBases),calculationMatrices) : expression;}
+  bool quantum=calculationMode!=1;
+  try {request=quantum ? (calculationMode==2 ? "quantum:sets:" : "quantum:")+MatrixDeclarations.Apply(BasisDeclarations.Apply(expression,calculationBases),calculationMatrices) : expression;}
   catch(Exception ex) {copyText=null;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;output.Text=ex.Message;resultLabel.Text="CHECK YOUR EXPRESSION";status.Text="Edit the expression or matrix dimensions and try again.";return;}
   var calculationStates=SessionStore.CopyStates(states);
   byte[] requestBytes;
   try {requestBytes=calculationStates.Length==0 ? Encoding.UTF8.GetBytes(request) : SessionStore.StateRequest(calculationStates,request);}
   catch(Exception ex) {status.Text=ex.Message;return;}
-  bool chart=calculationMode==0 && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^probs\s*\(");
-  bool sphere=calculationMode==0 && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^bloch\s*\(");
+  bool chart=quantum && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^probs\s*\(");
+  bool sphere=quantum && System.Text.RegularExpressions.Regex.IsMatch(expression,@"^bloch\s*\(");
   int seconds=new[]{15,60,180,600}[timeAllowance.SelectedIndex];
   int deadline=testTimeoutMilliseconds ?? seconds*1000;
   var cancellation=new CancellationTokenSource();calculationCancellation=cancellation;

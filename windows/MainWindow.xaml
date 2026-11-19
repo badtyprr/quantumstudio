@@ -59,6 +59,7 @@
          <ComboBox x:Name="Mode" Width="185" SelectedIndex="0" AutomationProperties.Name="Calculation mode">
           <ComboBoxItem Content="Quantum notation"/>
           <ComboBoxItem Content="Standard calculator"/>
+          <ComboBoxItem Content="Set notation" ToolTip="Interpret S¹ as the complex unit circle."/>
          </ComboBox>
         </StackPanel>
         <StackPanel>
