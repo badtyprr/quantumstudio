@@ -57,6 +57,44 @@
     "expected": true,
     "witness": "For integer n >= 16, (17*n - 257)*n^2 >= 0 and 257*n^2 >= 65537. Thus 0 <= 17*n^3 - 257*n^2 + 65537 <= 17*n^3."
   },
+  "source_diagrams": [
+    {
+      "label": "Illustration of a standard computation.",
+      "file": "standard-computation.svg",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/standard-computation.svg",
+      "sha256": "9e5ebec265e9dff30cb00a80a56b66daff3cf7b08221863fc4da60894fcd9cc0"
+    },
+    {
+      "label": "Deferring measurements",
+      "file": "deferred-measurement.svg",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/deferred-measurement.svg",
+      "sha256": "83df1b30d9aeb6926942716db1ce1c1e37bcf0f07814178f98b8496cb5255fa3"
+    },
+    {
+      "label": "Boolean circuit for XOR",
+      "file": "Boolean-circuit-XOR.svg",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Boolean-circuit-XOR.svg",
+      "sha256": "514e2a7827b87c79b0cd2585fd452c7ab6660c46b48e03cbf702f9189792c3f8"
+    },
+    {
+      "label": "A half-adder",
+      "file": "half-adder.svg",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/half-adder.svg",
+      "sha256": "bd2a73833fd8238d633634bcb56cac1e26f83e9408c1e55f8d13e5d38d1d9478"
+    },
+    {
+      "label": "A full-adder",
+      "file": "full-adder.svg",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/full-adder.svg",
+      "sha256": "16b9d6b3d7a8780f7e0de0e76ca2ee0982abb61d2d73e27705efa2d75f37fedf"
+    },
+    {
+      "label": "A circuit for addition of two 4-bit integers",
+      "file": "addition-circuit.svg",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/addition-circuit.svg",
+      "sha256": "69d87124345de80b93bd4cb18050a9ee764341ed8447b81f36b3d71f1926364b"
+    }
+  ],
   "rows": [
     {
       "id": "IBM024-5c5b90e6-M001",
