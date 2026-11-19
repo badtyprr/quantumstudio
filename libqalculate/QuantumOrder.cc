@@ -6,6 +6,40 @@
 #include "QuantumBinary.h"
 #include "QuantumIndexed.h"
 namespace {
+// These descriptors retain symbolic costs (including their argument lists)
+// for Copy and substitution when an asymptotic comparison is undecidable.
+class QuantumCostDescriptor: public MathFunction {
+ public:
+ QuantumCostDescriptor(const char *name,int arity):MathFunction(name,arity) {}
+ ExpressionItem *copy() const {return new QuantumCostDescriptor(*this);}
+ int calculate(MathStructure &,const MathStructure &,const EvaluationOptions &) {return 0;}
+};
+bool polynomialSymbols(const MathStructure &term,const MathStructure *&variable) {
+ if(term.isNumber())return term.number().isRational() && !term.number().isApproximate();
+ if(term.isUnknown()) {
+  if(!variable)variable=&term;
+  return term.equals(*variable);
+ }
+ if(!term.isAddition() && !term.isMultiplication() && !term.isPower())return false;
+ for(size_t i=0;i<term.size();++i)if(!polynomialSymbols(term[i],variable))return false;
+ return true;
+}
+bool polynomialCostBound(MathStructure &out,MathStructure cost,MathStructure bound,const EvaluationOptions &eo) {
+ EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+ cost.eval(exact);bound.eval(exact);
+ const MathStructure *variable=NULL;
+ if(!polynomialSymbols(cost,variable) || !polynomialSymbols(bound,variable))return false;
+ if((!cost.isZero() && !cost.isRationalPolynomial()) || (!bound.isZero() && !bound.isRationalPolynomial()))return false;
+ MathStructure a=cost,b=bound;
+ if(variable) {
+  cost.coefficient(*variable,cost.degree(*variable),a);
+  bound.coefficient(*variable,bound.degree(*variable),b);
+ }
+ // The cost model is for eventually nonnegative functions of input size.
+ if(!a.isNumber() || !b.isNumber() || a.number().isNegative() || b.number().isNegative())return false;
+ out=cost.isZero() || (!bound.isZero() && (!variable || cost.degree(*variable)<=bound.degree(*variable))) ? 1 : 0;
+ return true;
+}
 // A binary word is identified by both its bits and its register width.
 bool compareBitLabels(const MathStructure &left,const MathStructure &right,bool &equal,const EvaluationOptions &eo) {
  if(!isQuantumBitLabel(left) || !isQuantumBitLabel(right) || left.size()!=2 || right.size()!=2)return false;
@@ -95,6 +129,17 @@ class QuantumOrderFunction: public MathFunction {
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
   args[1].eval(eo);
+  for(unsigned k=0;k<2;++k)if(args[k].isFunction() && args[k].function()->referenceName()=="qbigorder") {
+   if(k==1 && args[2].isNumber() && (args[2].number()==4 || args[2].number()==5) && args[k].size()==1 &&
+      polynomialCostBound(out,args[0],args[k][0],eo)) {
+    if(args[2].number()==5)out=out.isZero() ? 1 : 0;
+    return 1;
+   }
+   return 0;
+  }
+  // A cost function's argument vector does not make its value a matrix.
+  MathFunction *costCall=CALCULATOR->getFunction("qcostcall");
+  if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall))return 0;
   if(equality && quantumMatrixShape(args[1],rows,columns,eo) && columns.isOne() &&
      quantumResolveBasisDimension(args[0],rows))args[0].eval(eo);
   {
@@ -198,6 +243,8 @@ class QuantumEqualityChain: public MathFunction {
 };
 }
 void registerQuantumOrder(Calculator &calculator) {
+ calculator.addFunction(new QuantumCostDescriptor("qbigorder",1));
+ calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
  calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());

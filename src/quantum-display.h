@@ -177,6 +177,13 @@ class Printer {
     return changed ? Fragment(text+"]") : fallback(literal);
    }
   }
+  if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
+  if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
+   std::string text=value[0].symbol()+"(";
+   if(!value[1].isVector())return Fragment(text+render(value[1],depth+1).text+")");
+   for(size_t k=0;k<value[1].size();++k) {if(k)text+=", ";text+=render(value[1][k],depth+1).text;}
+   return Fragment(text+")");
+  }
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.

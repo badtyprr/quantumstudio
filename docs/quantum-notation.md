@@ -198,6 +198,12 @@ In quantum mode, `sin`, `cos` and `tan` take radians, regardless of the ordinary
 
 Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and `\sin^{-2}(pi/6)` gives `4`. The inverse interpretation applies to the literal exponent `-1`; write `(\sin(x))^{-1}` for a reciprocal. Powered functions require a parenthesized or braced argument, optionally with TeX delimiter-sizing commands such as `\left` or `\biggl`. Unbraced powered-function arguments remain unfinished.
 
+## Computational cost
+
+In Quantum mode, `O(expression)` denotes an asymptotic upper bound as the input size grows. For univariate polynomials with exact rational coefficients and eventually nonnegative values, comparison uses the leading degrees. For example, `17 n^3 - 257 n^2 + 65537 = O(n^3)` returns one, and `n^4 = O(n^3)` returns zero. A bound that cannot be decided stays symbolic. A copied `g(n,m) = O(h(n,m))` retains the two arguments of each cost function.
+
+The bound supplies a cost context on both sides of the equation. In that context, `n`, `m` and `k` denote input sizes, `c` is a free coefficient, and `lg` uses base two. For a separate assertion that relies on those conventions, use `cost(expression)`. For example, `cost(replace((c > 0),c,-1))` returns zero. An isolated `cost(g(n,m) <= c*h(n,m))` can be copied and checked after substituting values for the two applications and the coefficient.
+
 ## Quantum addition and subtraction
 
 In quantum mode, addition and subtraction require matching matrix dimensions. A ket cannot be added to an operator, and a row vector cannot be added to a column vector by broadcasting. Nonzero scalar additions to matrices also reject: write an explicit identity or constant matrix for the intended operation. Scalar zero remains an additive identity, and ordinary symbolic scalar arithmetic is preserved. These checks apply to the quantum notation parser; ordinary libqalculate expressions retain their existing behavior. Unresolved non-scalar expressions remain deferred until their dimensions can be evaluated.

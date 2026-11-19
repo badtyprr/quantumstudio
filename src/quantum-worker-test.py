@@ -24,6 +24,30 @@ def data(expression, *flags):
     return value
 
 
+# Asymptotic upper bounds compare polynomial growth for large input sizes.
+for formula, expected in [
+    ("17 n^3 - 257 n^2 + 65537 = O(n^3)", "1"), ("n^3=O(n^2)", "0"),
+    ("n^3!=O(n^2)", "1"), ("123456 n=O(n^2)", "1"), ("(n+1)^2=O(n)", "0"),
+    ("(n^3+n)-n^3=O(n)", "1"), ("0=O(0)", "1"), ("n=O(0)", "0"),
+    ("1=O(n)", "1"), ("n^2=replace(O(n^c),c,3)", "1"), ("cost(lg(8))", "3"),
+]:
+    assert data("quantum:" + formula)["copy_text"] == expected
+for args in ("n", "n,m"):
+    formula = f"g({args})=O(h({args}))"
+    record = data("quantum:" + formula)
+    for body in (formula, record["copy_text"], record["display_text"]):
+        for cost, expected in (("n", "1"), ("n^3", "0")):
+            probe = f"replace(replace(({body}),g({args}),{cost}),h({args}),n^2)"
+            assert data("quantum:" + probe)["copy_text"] == expected
+for formula in ("O(nm)", "O(n^c)", r"O(n(\operatorname{lg}(n))^2)", "g(n)+2=O(n^2)"):
+    copied = data("quantum:" + formula)["copy_text"]
+    assert "qbigorder(" in copied and data("quantum:" + copied)["copy_text"] == copied
+for cost, expected in ((6, "1"), (7, "0")):
+    probe = f"replace(replace(replace(cost(g(n,m)<=c*h(n,m)),g(n,m),{cost}),h(n,m),3),cost(c),2)"
+    assert data("quantum:" + probe)["copy_text"] == expected
+assert data("quantum:cost(replace((c>0),c,-1))")["copy_text"] == "0"
+run("quantum:O(" + "n" * 700 + ")", "--json", success=False)
+
 # The comma in a shared bound is local to a grouped expression. Function
 # arguments and vector elements continue to be independent comparisons.
 shared_bound = r"0\leq N,M\leq 2^n - 1"
