@@ -1,0 +1,1668 @@
+{
+  "release": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "binaries": {
+    "QuantumStudio.exe": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2",
+    "quantum-worker.exe": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33"
+  },
+  "result": {
+    "passed": true,
+    "checks": 1485,
+    "calls": 168,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "external_directory": "cleanup-audit/learning-coverage-20261117/ibm020-gui-corpus",
+  "driver_sha256": "81b460e5555a72c6355f540352db34395a1c0aa1fa69999eeb772fec19e763cc",
+  "input_manifest_sha256": "e1bc1628bec0da38df6f50d4965bea37d6d9326c7503ec2d678d11749db3d750",
+  "method": "Private Windows desktop. Used original delimiters in Quantum mode. For every returned result, read Copy through Windows Clipboard, saved the original session, changed mode and input, reopened and recalculated, then re-entered the copied result.",
+  "records": [
+    {
+      "id": "R00-0-M001",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\rightarrow at byte 23",
+      "input": "$f:\\Sigma^n \\rightarrow \\Sigma$"
+    },
+    {
+      "id": "R00-0-M002",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "3dfecde635a8c3ff7b18a470eae680d5bb6e1c2c6d1e4c132054a19d89928fa5",
+      "input": "$n$"
+    },
+    {
+      "id": "R00-0-M003",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "2d1d72c019a55131318ebb553b9ec78037468704a67bbf87a15f7206b7764ecc",
+      "input": "$0$"
+    },
+    {
+      "id": "R00-0-M004",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "14aaa01698e779badd4d9ec6041e54fa6f863d80885368921e54c74da65e0841",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M005",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "71c55969239f38a7c70fa95522078d04ed7b99c13a5eef233a84503a58dab7b1",
+      "input": "$1$"
+    },
+    {
+      "id": "R00-0-M006",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "cb1af2b15ab37e88aed03674cf01edc6a0edf5588c8ac6514031c18414aaf10e",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M007",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "f142f46b12779349c6b6828883ea83b37a911da1bde3a123d3f2acf47bdd67a3",
+      "input": "$0$"
+    },
+    {
+      "id": "R00-0-M008",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "ce255e89eff82bd4188f8e570e39eacdd1a175153350a2aa9ed92a9a296fbff3",
+      "input": "$1$"
+    },
+    {
+      "id": "R00-0-M009",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "36621a39162cfd28c32d07ae83ac790c1ae1c466f35f2d0ec2360cac24f64269",
+      "input": "$n$"
+    },
+    {
+      "id": "R00-0-M010",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "f15d05d584ba98afb65aa0d40d590ee82f60db089417ca85a7555fe5ef22b419",
+      "input": "$1$"
+    },
+    {
+      "id": "R00-0-M011",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\rightarrow at byte 23",
+      "input": "$f:\\Sigma^n \\rightarrow \\Sigma$"
+    },
+    {
+      "id": "R00-0-M012",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\rightarrow at byte 22",
+      "input": "$f:\\Sigma^2\\rightarrow\\Sigma$"
+    },
+    {
+      "id": "R00-0-M013",
+      "label": "EXACT RESULT",
+      "display": "1.  1\n\n2.  f = 0\n\n3.  f = 0\n\n4.  f = 0.0909090909090909090909090909091",
+      "copy": "\\begin{gathered}1\\\\('f')==(0)\\\\('f')==(0)\\\\('f')==(1 ∕ 11)\\end{gathered}",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "\\begin{gathered}1\\\\('f')==(0)\\\\('f')==(0)\\\\('f')==(1 ∕ 11)\\end{gathered}",
+      "session_sha256": "7aba6d7c7861cc0d0959350b7c60a52985d9da48007f2062de36a3164d1726fb",
+      "input": "$$\n\\begin{aligned}\nf(00) & = 0 \\\\\nf(01) & = 0 \\\\\nf(10) & = 0 \\\\\nf(11) & = 1\n\\end{aligned}\n$$"
+    },
+    {
+      "id": "R00-0-M014",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "7b4465fc95efc9afeabbaaec65a218166fd33a657d28d4ae7a9561eba5ec8e60",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M015",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\rightarrow at byte 23",
+      "input": "$f:\\{0,1\\}^n\\rightarrow\\{0,1\\}$"
+    },
+    {
+      "id": "R00-0-M016",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "093d9fc5ffaead9a86339d9f36fd08b51c5639a0b26ece9cab02bf036ac86b86",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M017",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "2de52e52b336bd2b8bd8c15afacc94562ad2928b337ee93872471b94786025b9",
+      "input": "$0$"
+    },
+    {
+      "id": "R00-0-M018",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "8de45220e672cbcb547286ae58f75a461cda0ebcc68a14d563f3f2d6b6537e0b",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M019",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "6706265c73249061d28f3a8db596492f98894969c1b77c85fb2cf200dec83bc6",
+      "input": "$1$"
+    },
+    {
+      "id": "R00-0-M020",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "8e994889897df9ce263f561ab232b9031a69029ac785f0d051f6f1b1613605a9",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M021",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "f2a7d099479d8b8f0bccb403fd3b67e24c6590ed0dd1825fe9ea66c6221638d7",
+      "input": "$n$"
+    },
+    {
+      "id": "R00-0-M022",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "2f9fcd6720f9d86f86149a7a900b021e10bc1b20b4d30ee3581907799b40bf50",
+      "input": "$0$"
+    },
+    {
+      "id": "R00-0-M023",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "f0454b4a32d94c79d5fb04dec8b7308b69bdc485c0a63284aa427abef1400022",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-0-M024",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "9bad0b551fa18f0f2b19adf476f45e088c4c03f209ebbe35e448800c502e0a70",
+      "input": "$1$"
+    },
+    {
+      "id": "R00-0-M025",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "14e686116ee9abc1f716c92d43c904933f8d24f82279a947931f7b40449d0d11",
+      "input": "$f$"
+    },
+    {
+      "id": "M01",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unexpected notation at byte 80",
+      "input": "$$\nH = \\begin{pmatrix}\n\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix},\n$$"
+    },
+    {
+      "id": "M02",
+      "label": "EXACT RESULT",
+      "display": "1.  1\n\n2.  1",
+      "copy": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "\\begin{gathered}1\\\\1\\end{gathered}",
+      "session_sha256": "e98eb6969d92180d65d098328312f03d93b43774a8ce0c15d13722e920bcb692",
+      "input": "$$\n\\begin{aligned}\nH \\vert 0\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\\\\[3mm]\nH \\vert 1\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle.\n\\end{aligned}\n$$"
+    },
+    {
+      "id": "M03",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unexpected notation at byte 129",
+      "input": "$$\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n$$"
+    },
+    {
+      "id": "M04",
+      "label": "EXACT RESULT",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember('a','Σ')",
+      "session_sha256": "4aae5ed302ce81bae9d6e14c37c9f0275b4a4769e66a054c9bdbf1bb5d73386b",
+      "input": "$a\\in\\Sigma$"
+    },
+    {
+      "id": "M05",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "628c92eb503a5589001ac4022ca560ce158d95ea6db229aa10071871d511d670",
+      "input": "$n$"
+    },
+    {
+      "id": "M06",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "ab9881e9bea7b6734e9afa7889b79344ae7af8b42ece91acfc12b83d2017967a",
+      "input": "$n$"
+    },
+    {
+      "id": "M07",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 16",
+      "input": "$H\\otimes \\cdots \\otimes H$"
+    },
+    {
+      "id": "M08",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "9c28a570dd99c841087cfce4b5d52b971437f3fdc621a22b52a23c9bb941eef6",
+      "input": "$n$"
+    },
+    {
+      "id": "M09",
+      "label": "EXACT RESULT",
+      "display": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))]^{⊗ n}",
+      "copy": "qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)",
+      "session_sha256": "77833f11d3a9e7434d9b23cd0fbac7cc0c2db8883243a73852d2cf926b27a65e",
+      "input": "$H^{\\otimes n}$"
+    },
+    {
+      "id": "M10",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "80c49c3238345f39cde6a6aa5e0c8d2db628e7953d6b641bb03b67758f1f465c",
+      "input": "$n$"
+    },
+    {
+      "id": "M11",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 533",
+      "input": "$$\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n$$"
+    },
+    {
+      "id": "M12",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "1147eca40875af54bcd30ef3e48bbf0ee2f404f5913ab73e10ef9bd2bc983d52",
+      "input": "$n$"
+    },
+    {
+      "id": "M13",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 14",
+      "input": "$x_{n-1}\\cdots x_0$"
+    },
+    {
+      "id": "M14",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 14",
+      "input": "$y_{n-1}\\cdots y_0$"
+    },
+    {
+      "id": "M15",
+      "label": "EXACT RESULT",
+      "display": "n + 1",
+      "copy": "n + 1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n + 1",
+      "session_sha256": "a7505cb3eb0728acbfc76cc71bfd6bf6ee9e4c3c439ca7cfeeb6f6903d9b5108",
+      "input": "$n+1$"
+    },
+    {
+      "id": "M16",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 69",
+      "input": "$$\n\\bigl( H \\vert 1 \\rangle \\bigr) \\bigl( H^{\\otimes n} \\vert 0 \\cdots 0 \\rangle \\bigr)\n= \\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} \\vert x_{n-1} \\cdots x_0 \\rangle.\n$$"
+    },
+    {
+      "id": "M17",
+      "label": "EXACT RESULT",
+      "display": "\"U_f\"",
+      "copy": "\"U_f\"",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "\"U_f\"",
+      "session_sha256": "982969fab09c7f2d36597150c1785cc1ae2f4679d1598d86785d344c13fd3cae",
+      "input": "$U_f$"
+    },
+    {
+      "id": "M18",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 106",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} (-1)^{f(x_{n-1}\\cdots x_0)} \\vert x_{n-1} \\cdots x_0 \\rangle\n$$"
+    },
+    {
+      "id": "M19",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 137",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n\\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0) + x_{n-1}y_{n-1} + \\cdots + x_0 y_0}\n\\vert y_{n-1} \\cdots y_0 \\rangle.\n$$"
+    },
+    {
+      "id": "M20",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "b7611bcc320c61b1d17112a32192ec5e283146a363a20c3e3784e74c8829e110",
+      "input": "$f$"
+    },
+    {
+      "id": "M21",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "9ae967aae3bba0e1a128681984d1334cbe5766b9d7c592379971177967c31f9b",
+      "input": "$0$"
+    },
+    {
+      "id": "M22",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "b39be0331caace70f6f96993a32a15c6f815d63d706098ebd651127af2748cfe",
+      "input": "$f$"
+    },
+    {
+      "id": "M23",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 87",
+      "input": "$$\n\\Biggl\\vert\n\\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0)}\n\\Biggr\\vert^2\n= \\begin{cases}\n1 & \\text{if $f$ is constant}\\\\[1mm]\n0 & \\text{if $f$ is balanced}\n\\end{cases}\n$$"
+    },
+    {
+      "id": "M24",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Expected a quantum expression at byte 1",
+      "input": "$\\vert 0^{\\otimes n} \\rangle$"
+    },
+    {
+      "id": "M25",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "28af63dbc8cd6246c5d3768790af04926a4f8160de77e540a7ddf2121887438b",
+      "input": "$0$"
+    },
+    {
+      "id": "M26",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "43125fb2099cf11400b360aa5af5c6e2f1843e715756a9c20dc5131a19bce53b",
+      "input": "$0$"
+    },
+    {
+      "id": "M27",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "9886f6e890c03c97f6e43c7cf5e735402ae2116d8329700083501562e14eec6d",
+      "input": "$f$"
+    },
+    {
+      "id": "M28",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "aa80e747eac29ed2c45f9a282cf55d843c0f7b315629ece5506f3e7057b581b4",
+      "input": "$1$"
+    },
+    {
+      "id": "M29",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "ba27067591f50c1c42d2f8792b2eca1c0494fdaeb1dfcde87fcb07814f0f0746",
+      "input": "$f$"
+    },
+    {
+      "id": "M30",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "28b5ef3fdedadb363846c760808c44f93c7201c4631751a54bb56820da0b1788",
+      "input": "$f$"
+    },
+    {
+      "id": "M31",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 16",
+      "input": "$f(x_{n-1}\\cdots x_0) = 0$"
+    },
+    {
+      "id": "M32",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 14",
+      "input": "$x_{n-1}\\cdots x_0$"
+    },
+    {
+      "id": "M33",
+      "label": "EXACT RESULT",
+      "display": "2^n",
+      "copy": "2^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n",
+      "session_sha256": "e6152a6a01ec10fc4f478dd20c23f29799a01e6b3a8e3be3273f3c8879380305",
+      "input": "$2^n$"
+    },
+    {
+      "id": "M34",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 16",
+      "input": "$f(x_{n-1}\\cdots x_0) = 1$"
+    },
+    {
+      "id": "M35",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 14",
+      "input": "$x_{n-1}\\cdots x_0$"
+    },
+    {
+      "id": "M36",
+      "label": "EXACT RESULT",
+      "display": "−2^n",
+      "copy": "−2^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "−2^n",
+      "session_sha256": "801fa82ae64ca212723fcffbda1d002db5e3c3e49898f9284350174b4e601f91",
+      "input": "$-2^n$"
+    },
+    {
+      "id": "M37",
+      "label": "EXACT RESULT",
+      "display": "2^n",
+      "copy": "2^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n",
+      "session_sha256": "d40b8f4e7c5e69f3ea605b50ab8df99e991c16cfb1537a22bcf88b3296574a82",
+      "input": "$2^n$"
+    },
+    {
+      "id": "M38",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "eb3d874c3cc7a7d62d78d283b51dbd53f3f52777b89ab73f0f40e3820f7cd738",
+      "input": "$1$"
+    },
+    {
+      "id": "M39",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "7e928178edd2bbd308da2578df99ea6798a60f1449fe895443e9c0e51f488c83",
+      "input": "$f$"
+    },
+    {
+      "id": "M40",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "446ed342c3bf4c43d84aa03fb216fcf76f2157fe9356e28f13376c86fbd6cff3",
+      "input": "$f$"
+    },
+    {
+      "id": "M41",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "9652c95006fc20bd1143e5bc3d059acbf3f7c8836e58986387d4a411ec17f263",
+      "input": "$0$"
+    },
+    {
+      "id": "M42",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 14",
+      "input": "$x_{n-1}\\cdots x_0$"
+    },
+    {
+      "id": "M43",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "442bc781b8680941fdd664e56706ca677b62fa76c8cf230c1d1e22a441b5ae27",
+      "input": "$1$"
+    },
+    {
+      "id": "M44",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "c68a5f7376237a222c5d9382b85e3bf91ea9e0c71c47c1b859b5d48ccd7c0819",
+      "input": "$+1$"
+    },
+    {
+      "id": "M45",
+      "label": "EXACT RESULT",
+      "display": "−1",
+      "copy": "−1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "−1",
+      "session_sha256": "df568b40f4bb471619ecdb026ac70cf7aae92825a8968c8b5849028c497a3cec",
+      "input": "$-1$"
+    },
+    {
+      "id": "M46",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "a5e51315f7f324cf36ae3aa339cb09ceb68632a52fc52231575e2ba0ddc85ea3",
+      "input": "$0$"
+    },
+    {
+      "id": "R00-7763-M001",
+      "label": "EXACT RESULT",
+      "display": "0.5 ⋅ 2^n + 1",
+      "copy": "2^n ∕ 2 + 1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n ∕ 2 + 1",
+      "session_sha256": "9326e3db641f61b63f4b484cf22ecd3ba0d49801eb2a2b83228ab51b99276f2a",
+      "input": "$2^{n-1} + 1$"
+    },
+    {
+      "id": "R00-7763-M002",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "5a4030ba2870d8a0ee73849d6201e2a97dac11942fd98e27a67488910059b3a4",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-7763-M003",
+      "label": "EXACT RESULT",
+      "display": "0.5 ⋅ 2^n",
+      "copy": "2^n ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n ∕ 2",
+      "session_sha256": "0c4d7616301621722ea620d4dce522689e729cdf65dbd4015fa8ab41959b3396",
+      "input": "$2^{n-1}$"
+    },
+    {
+      "id": "R00-7763-M004",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "9d5d669d0ddd25d07c293d3a1874c13bdfb38917412554b92589daf14d5e67c3",
+      "input": "$n$"
+    },
+    {
+      "id": "R00-7763-M005",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "40b4ed42766632612815a95386accd3db4dcc46fda2d040eb6a678b196c5fd51",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-7763-M006",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "f0712d34230d4f2632171a23bd24ca9d2ace538912811e5c99c2e2e81f5863cc",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-7763-M007",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'",
+      "session_sha256": "24f79d9ce0407bf45d2efb885bd8fb7221ee9265229c65741d4d6c2049fdfa0d",
+      "input": "$k$"
+    },
+    {
+      "id": "R00-7763-M008",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\ldots at byte 11",
+      "input": "$x^1,\\ldots,x^k \\in \\Sigma^n$"
+    },
+    {
+      "id": "R00-7763-M009",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\ldots at byte 14",
+      "input": "$f(x^1),\\ldots,f(x^k)$"
+    },
+    {
+      "id": "R00-7763-M010",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "61fc1257f2e7237211b85e3ab4960504ceb246a43bdc87cd2cc14cc6791a549a",
+      "input": "$0$"
+    },
+    {
+      "id": "R00-7763-M011",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "2a62b59bee15b0b2207d9332d482ec0c2a4c5a5d383ea4e363f8357a6673d6c8",
+      "input": "$1$"
+    },
+    {
+      "id": "R00-7763-M012",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "372765fc08ae90d9cf68d7c273d42a463f7186407672a9e96429afda21b1fed3",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-7763-M013",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'",
+      "session_sha256": "ce4c38036d61cc3d01d4e293b46de0edd9ad7208cf54693e819e8e21b313c793",
+      "input": "$f$"
+    },
+    {
+      "id": "R00-7763-M014",
+      "label": "EXACT RESULT",
+      "display": "2 · 0.5^k",
+      "copy": "2(1 ∕ 2)^'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2(1 ∕ 2)^'k'",
+      "session_sha256": "45da13ba87eca304b3271accb7f1f93a1d91f6131b70f3c90761428beaebf9f8",
+      "input": "$2^{-k + 1}$"
+    },
+    {
+      "id": "R00-7763-M015",
+      "label": "EXACT RESULT",
+      "display": "k = 11",
+      "copy": "('k')==(11)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('k')==(11)",
+      "session_sha256": "55159593676a6aaa86435a069c1adf46b5328e2ee22273faf2708e43e8a8dee0",
+      "input": "$k = 11$"
+    },
+    {
+      "id": "R00-7763-M016",
+      "label": "EXACT RESULT",
+      "display": "99.9",
+      "copy": "999 ∕ 10",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "999 ∕ 10",
+      "session_sha256": "88458ce92557b8d7cbc6b3b14ffdcc327fd16522ed8014c4526587aa54ab682e",
+      "input": "$99.9$"
+    },
+    {
+      "id": "R13-0-M001",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 19",
+      "input": "$x = x_{n-1} \\cdots x_0$"
+    },
+    {
+      "id": "R13-0-M002",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 18",
+      "input": "$y = y_{n-1}\\cdots y_0$"
+    },
+    {
+      "id": "R13-0-M003",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "a5acc7b96c7361e6677e9ab8f523f63d57faff0fb14128b6897d64645f705ba4",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M004",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 43",
+      "input": "$$\nx \\cdot y = x_{n-1} y_{n-1} \\oplus \\cdots \\oplus x_0 y_0.\n$$"
+    },
+    {
+      "id": "R13-0-M005",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Cases text must introduce if or otherwise at byte 83",
+      "input": "$$\nx \\cdot y =\n\\begin{cases}\n1 & x_{{n-1}} y_{n-1} + \\cdots + x_0 y_0 \\text{ is odd}\\\\[0.5mm]\n0 & x_{{n-1}} y_{n-1} + \\cdots + x_0 y_0 \\text{ is even}\n\\end{cases}\n$$"
+    },
+    {
+      "id": "R13-0-M006",
+      "label": "EXACT RESULT",
+      "display": "x",
+      "copy": "x",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "x",
+      "session_sha256": "13c17717758c1b048f58c816839066e574db85112dfd1ccbde46a52ec21e9745",
+      "input": "$x$"
+    },
+    {
+      "id": "R13-0-M007",
+      "label": "EXACT RESULT",
+      "display": "y",
+      "copy": "y",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "y",
+      "session_sha256": "adb5dbd1205d2e40373d3e051110320742d96c6c0166040dec83502f1ad1294d",
+      "input": "$y$"
+    },
+    {
+      "id": "R13-0-M008",
+      "label": "EXACT RESULT",
+      "display": "xy",
+      "copy": "xy",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "xy",
+      "session_sha256": "9aaa1565e53ec0c3ff06516aa8d2e0d1618761c25019f9bf44a5c93547ca23be",
+      "input": "$x \\cdot y$"
+    },
+    {
+      "id": "R13-0-M009",
+      "label": "EXACT RESULT",
+      "display": "x",
+      "copy": "x",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "x",
+      "session_sha256": "55060552fe2c63a84fb7a51c48bdefb06062329e4e69b5893e2082ee375396dc",
+      "input": "$x$"
+    },
+    {
+      "id": "R13-0-M010",
+      "label": "EXACT RESULT",
+      "display": "y",
+      "copy": "y",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "y",
+      "session_sha256": "d807183be341ea5c3690035e33ddde43549fb06c24cda8509081c2e42579f2ac",
+      "input": "$y$"
+    },
+    {
+      "id": "R13-0-M011",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "77d8ac8887e9a1a55ab7e119825445ca53a5546b2eb660da492bd44f8af1e74e",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M012",
+      "label": "EXACT RESULT",
+      "display": "y",
+      "copy": "y",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "y",
+      "session_sha256": "309e9d593a92326436fc71a12b8f525e4bd0e9d12788561f3ab6f3eee71c3860",
+      "input": "$y$"
+    },
+    {
+      "id": "R13-0-M013",
+      "label": "EXACT RESULT",
+      "display": "x",
+      "copy": "x",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "x",
+      "session_sha256": "b9babef517f5588724a1ab1079d2958dac636db94099e93d2b16979911284d79",
+      "input": "$x$"
+    },
+    {
+      "id": "R13-0-M014",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "7f2e2205fe64722a2d64bdc897c447be0bea74c3c5ed919d2f28b8f13bdec3b1",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M015",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\rightarrow at byte 23",
+      "input": "$f:\\{0,1\\}^n\\rightarrow\\{0,1\\}$"
+    },
+    {
+      "id": "R13-0-M016",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 19",
+      "input": "$s = s_{n-1} \\cdots s_0$"
+    },
+    {
+      "id": "R13-0-M017",
+      "label": "EXACT RESULT",
+      "display": "'f' = 's' || x = 0",
+      "copy": "'f' = 's' || x = 0",
+      "restored_same": true,
+      "reentry_label": "CHECK YOUR EXPRESSION",
+      "reentry_diagnostic": "Unclosed ASCII norm; use ||expression||.",
+      "session_sha256": "59b624ebb9e3ed7bc7a5c4ec3443ac3a23651dc36645309595767234df2f77c2",
+      "input": "$f(x) = s\\cdot x$"
+    },
+    {
+      "id": "R13-0-M018",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "A set sum requires a finite flat vector of at most 1024 scalar indices.",
+      "input": "$x\\in\\Sigma^n$"
+    },
+    {
+      "id": "R13-0-M019",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'",
+      "session_sha256": "d5af65ee425756e3c45e17f74947603fc754ba1247a2b75b79fb545a8bc4e899",
+      "input": "$s$"
+    },
+    {
+      "id": "R13-0-M020",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "fbc287f226114ac71cc742c45400651ad79419d07a00a50a7b6b42d243c01033",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M021",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "f91cd962b559a3591518357ca2fbb54babf0d81dad78abd7e8782733d26a9d85",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M022",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "A set sum requires a finite flat vector of at most 1024 scalar indices.",
+      "input": "$$\nH^{\\otimes n} \\vert x \\rangle = \\frac{1}{\\sqrt{2^n}} \\sum_{y\\in\\Sigma^n} (-1)^{x\\cdot y} \\vert y\\rangle\n$$"
+    },
+    {
+      "id": "R13-0-M023",
+      "label": "EXACT RESULT",
+      "display": "(−1)^k",
+      "copy": "(−1)^'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(−1)^'k'",
+      "session_sha256": "da82bd23d62b64db83e528284a8f528ba178297d2f2625a8c97bca02db8987cf",
+      "input": "$(-1)^k$"
+    },
+    {
+      "id": "R13-0-M024",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'",
+      "session_sha256": "40c1633ef7d793bed9d2a1b52199f89e7f535aa24a0826fc39e8b2a220eb3110",
+      "input": "$k$"
+    },
+    {
+      "id": "R13-0-M025",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'",
+      "session_sha256": "112818a6fc922d1dc24588e070d5a2f1e1b61289ead2d7732aef134dfb17026d",
+      "input": "$k$"
+    },
+    {
+      "id": "R13-0-M026",
+      "label": "EXACT RESULT",
+      "display": "n + 1",
+      "copy": "n + 1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n + 1",
+      "session_sha256": "5e58f44016abb1823189cd7cf03b707381fa36d0942d7eb97c79d0c044e4a836",
+      "input": "$n+1$"
+    },
+    {
+      "id": "R13-0-M027",
+      "label": "EXACT RESULT",
+      "display": "[1; −1] / √(2) ⊗ (1 / √(2^n)) (∑_{k ∈ 'Σ'^n} (|k⟩))",
+      "copy": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qsqrt(qpower(2, n)),qsumset(qketstate(\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_0\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorchain(qmul(1 ∕ qpower(2, 1 ∕ 2),qmatrix(2,1,vector(1,−1))),vector(1 ∕ qsqrt(qpower(2, n)),qsumset(qketstate(\"qboundindex_1\"),qpower('Σ',n),\"qboundindex_1\")))",
+      "session_sha256": "970e79dd1ada7509b135778500d36aaca01ed75627aa6b5a20f7064d5c9fc109",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} \\vert x \\rangle.\n$$"
+    },
+    {
+      "id": "R13-0-M028",
+      "label": "EXACT RESULT",
+      "display": "[1; −1] / √(2) ⊗ (1 / √(2^n)) (∑_{k ∈ 'Σ'^n} ((−1)^(f · k) |k⟩))",
+      "copy": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qsqrt(qpower(2, n)),qsumset(qadjacent(qpower(−1,'f' ⋅ \"qboundindex_0\"),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorchain(qmul(1 ∕ qpower(2, 1 ∕ 2),qmatrix(2,1,vector(1,−1))),vector(1 ∕ qsqrt(qpower(2, n)),qsumset(qadjacent(qpower(−1,qmul('f',\"qboundindex_1\")),qketstate(\"qboundindex_1\")),qpower('Σ',n),\"qboundindex_1\")))",
+      "session_sha256": "eba2517848e461d7e46b51f0092fdb5630f110fe7902b82fccb8a29ab6f513b0",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} (-1)^{f(x)} \\vert x \\rangle.\n$$"
+    },
+    {
+      "id": "R13-0-M029",
+      "label": "EXACT RESULT",
+      "display": "[1; −1] / √(2) ⊗ (1 / 2^n) (∑_{k ∈ 'Σ'^n} (∑_{j ∈ 'Σ'^n} ((−1)^(f · k + k · j) |j⟩)))",
+      "copy": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qadd('f' ⋅ \"qboundindex_1\",qmul(\"qboundindex_1\",\"qboundindex_0\"))),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorchain(qmul(1 ∕ qpower(2, 1 ∕ 2),qmatrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qadd(qmul('f',\"qboundindex_3\"),qmul(\"qboundindex_3\",\"qboundindex_2\"))),qketstate(\"qboundindex_2\")),qpower('Σ',n),\"qboundindex_2\"),qpower('Σ',n),\"qboundindex_3\")))",
+      "session_sha256": "868d763fd1ba03ebfbe200d837af02ff5d3cbfaa68d2cf627168116bed78b368",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{f(x) + x \\cdot y} \\vert y \\rangle.\n$$"
+    },
+    {
+      "id": "R13-0-M030",
+      "label": "EXACT RESULT",
+      "display": "−1",
+      "copy": "−1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "−1",
+      "session_sha256": "92beb0d339ab2ad1b615509b2c47781afd63a04ab85255bd42d130dc835a5db7",
+      "input": "$-1$"
+    },
+    {
+      "id": "R13-0-M031",
+      "label": "EXACT RESULT",
+      "display": "'f' = 's' || x = 0",
+      "copy": "'f' = 's' || x = 0",
+      "restored_same": true,
+      "reentry_label": "CHECK YOUR EXPRESSION",
+      "reentry_diagnostic": "Unclosed ASCII norm; use ||expression||.",
+      "session_sha256": "3e5e8fe241487915e0bd53998e11073566c16c77ecf41f6307394589c87b617a",
+      "input": "$f(x) = s\\cdot x$"
+    },
+    {
+      "id": "R13-0-M032",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 19",
+      "input": "$s = s_{n-1} \\cdots s_0$"
+    },
+    {
+      "id": "R13-0-M033",
+      "label": "EXACT RESULT",
+      "display": "[1; −1] / √(2) ⊗ (1 / 2^n) (∑_{k ∈ 'Σ'^n} (∑_{j ∈ 'Σ'^n} ((−1)^(s · k + k · j) |j⟩)))",
+      "copy": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qadd(qmul('s',\"qboundindex_1\"),qmul(\"qboundindex_1\",\"qboundindex_0\"))),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorchain(qmul(1 ∕ qpower(2, 1 ∕ 2),qmatrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qadd(qmul('s',\"qboundindex_3\"),qmul(\"qboundindex_3\",\"qboundindex_2\"))),qketstate(\"qboundindex_2\")),qpower('Σ',n),\"qboundindex_2\"),qpower('Σ',n),\"qboundindex_3\")))",
+      "session_sha256": "d0141ab3418d5478c368c9ee8c89197481b5f0f069f3464dfc7f179905231c12",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{s\\cdot x + x \\cdot y} \\vert y \\rangle.\n$$"
+    },
+    {
+      "id": "R13-0-M034",
+      "label": "EXACT RESULT",
+      "display": "s · x",
+      "copy": "'s'x",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'x",
+      "session_sha256": "4179610b9d4f1d67e57243de9173c3d8265fefcd41146fc789133202c341f7b4",
+      "input": "$s\\cdot x$"
+    },
+    {
+      "id": "R13-0-M035",
+      "label": "EXACT RESULT",
+      "display": "xy",
+      "copy": "xy",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "xy",
+      "session_sha256": "b0ddb18fcd7ab83d687b7a14439635888797e320f5f3024c725f20fe972c07f5",
+      "input": "$x\\cdot y$"
+    },
+    {
+      "id": "R13-0-M036",
+      "label": "EXACT RESULT",
+      "display": "−1",
+      "copy": "−1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "−1",
+      "session_sha256": "21f753b4db5e57fbe39f03a15a5af800bc0a35389c0d5e1179566ceb8e7e7fc5",
+      "input": "$-1$"
+    },
+    {
+      "id": "R13-0-M037",
+      "label": "EXACT RESULT",
+      "display": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qoplus(qmul('s', \"qboundindex_1\"), qmul(\"qboundindex_0\", \"qboundindex_1\"))), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+      "copy": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qoplus(qmul('s',\"qboundindex_1\"),qmul(\"qboundindex_0\",\"qboundindex_1\"))),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorchain(qmul(1 ∕ qpower(2, 1 ∕ 2),qmatrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qoplus(qmul('s',\"qboundindex_3\"),qmul(\"qboundindex_2\",\"qboundindex_3\"))),qketstate(\"qboundindex_2\")),qpower('Σ',n),\"qboundindex_2\"),qpower('Σ',n),\"qboundindex_3\")))",
+      "session_sha256": "748d295ec16f5e91b2691c597ff8fda262118b4f00da7250652a607881ab5b71",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\cdot x) \\oplus (y \\cdot x)} \\vert y \\rangle.\n$$"
+    },
+    {
+      "id": "R13-0-M038",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Scalar XOR requires nonnegative integer operands.",
+      "input": "$$\n(s\\cdot x) \\oplus (y \\cdot x) = (s \\oplus y) \\cdot x\n$$"
+    },
+    {
+      "id": "R13-0-M039",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unexpected notation at byte 27",
+      "input": "$$\n(a c) \\oplus (b c) = (a \\oplus b) c,\n$$"
+    },
+    {
+      "id": "R13-0-M040",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Scalar XOR requires nonnegative integer operands.",
+      "input": "$$\n\\begin{aligned}\n(s\\cdot x) \\oplus (y \\cdot x)\n& = (s_{n-1} x_{n-1}) \\oplus \\cdots \\oplus (s_{0} x_{0}) \\oplus\n(y_{n-1} x_{n-1})  \\oplus \\cdots \\oplus (y_{0} x_{0}) \\\\\n& = (s_{n-1} \\oplus y_{n-1}) x_{n-1}  \\oplus \\cdots \\oplus (s_{0} \\oplus y_{0}) x_{0} \\\\\n& = (s \\oplus y) \\cdot x\n\\end{aligned}\n$$"
+    },
+    {
+      "id": "R13-0-M041",
+      "label": "EXACT RESULT",
+      "display": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+      "copy": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qmul(qoplus('s',\"qboundindex_0\"),\"qboundindex_1\")),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtensorchain(qmul(1 ∕ qpower(2, 1 ∕ 2),qmatrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qmul(qoplus('s',\"qboundindex_2\"),\"qboundindex_3\")),qketstate(\"qboundindex_2\")),qpower('Σ',n),\"qboundindex_2\"),qpower('Σ',n),\"qboundindex_3\")))",
+      "session_sha256": "1196a0cc3633fd5f761ef57a2cace0dcbbea1bf0c16870ba7199bc6b3aa47089",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle.\n$$"
+    },
+    {
+      "id": "R13-0-M042",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unsupported TeX command: \\cdots at byte 18",
+      "input": "$z = z_{n-1}\\cdots z_0$"
+    },
+    {
+      "id": "R13-0-M043",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "A set sum requires a finite flat vector of at most 1024 scalar indices.",
+      "input": "$$\n\\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} (-1)^{z \\cdot x}\n= \\begin{cases}\n1 & \\text{if $z = 0^n$}\\\\\n0 & \\text{if $z\\neq 0^n$}\n\\end{cases}\n$$"
+    },
+    {
+      "id": "R13-0-M044",
+      "label": "EXACT RESULT",
+      "display": "0^n",
+      "copy": "0^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0^n",
+      "session_sha256": "2f6c1ccf9ca30496a6c80e1c2135cac764e71f47047e9b0831bc15cc9278ca61",
+      "input": "$0^n$"
+    },
+    {
+      "id": "R13-0-M045",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "020d2c294e4b17abc41d03eb69f049f56a2c0a62c82864a951aff7eaa050b7de",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M046",
+      "label": "EXACT RESULT",
+      "display": "z = 0^n",
+      "copy": "(z)==(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(z)==(0^n)",
+      "session_sha256": "62a2390965b55a7dd7805e178897bf3e1c53ad6bd7e7aaa09f15f8d33f8b8e68",
+      "input": "$z = 0^n$"
+    },
+    {
+      "id": "R13-0-M047",
+      "label": "EXACT RESULT",
+      "display": "x = 0 || z = 0",
+      "copy": "x = 0 || z = 0",
+      "restored_same": true,
+      "reentry_label": "CHECK YOUR EXPRESSION",
+      "reentry_diagnostic": "Unclosed ASCII norm; use ||expression||.",
+      "session_sha256": "4344eaa5944a41b25d96ee5ffe437e847ee29add34686245a4608b73b3d7399a",
+      "input": "$z\\cdot x = 0$"
+    },
+    {
+      "id": "R13-0-M048",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "A set sum requires a finite flat vector of at most 1024 scalar indices.",
+      "input": "$x\\in\\Sigma^n$"
+    },
+    {
+      "id": "R13-0-M049",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "4df2deaf345b938b78911808e3bf2a9c5e53952fa1609405583e695ee17e102c",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M050",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "85726879799396d247165894cc4b7863ab96177e2a27abe368f33ae3df37f5dd",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M051",
+      "label": "EXACT RESULT",
+      "display": "2^n",
+      "copy": "2^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n",
+      "session_sha256": "c2f05180467fee191213c9cd6faa4f448e54e2cc5eca3da4c4ea87139092579c",
+      "input": "$2^n$"
+    },
+    {
+      "id": "R13-0-M052",
+      "label": "EXACT RESULT",
+      "display": "z",
+      "copy": "z",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "z",
+      "session_sha256": "0e71507d32b1bf233cb2ff3f35ac569c2f4fa135094ef66d87b41aa661713f21",
+      "input": "$z$"
+    },
+    {
+      "id": "R13-0-M053",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "3ed63a113ae3fe91dd7935acbd7189e259af7a42ee168ad5dc46131ed3b582aa",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M054",
+      "label": "EXACT RESULT",
+      "display": "xz",
+      "copy": "xz",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "xz",
+      "session_sha256": "558a8e02c3dfbffba1b3eb1cff7a2cced613f465aec310065617cad3592209ff",
+      "input": "$z\\cdot x$"
+    },
+    {
+      "id": "R13-0-M055",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "f2e2862a2f097d3084a5382800ee8f025209b07b30b75cfc318dc140aa47c8c9",
+      "input": "$0$"
+    },
+    {
+      "id": "R13-0-M056",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "A set sum requires a finite flat vector of at most 1024 scalar indices.",
+      "input": "$x\\in\\Sigma^n$"
+    },
+    {
+      "id": "R13-0-M057",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "c0c0e1cdf6d3d976210ba59adfb82d64515aaf2d268bc4cb8751d85ae72f0bfa",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M058",
+      "label": "EXACT RESULT",
+      "display": "xz",
+      "copy": "xz",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "xz",
+      "session_sha256": "76c3f38049b55923523c498aee969cfdfc97a9532b7dd073a7bfd812edc439a6",
+      "input": "$z\\cdot x$"
+    },
+    {
+      "id": "R13-0-M059",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "c5524b390de85e392ee9fbfc74658674a00e4ce83bb49a223fbad6d758297e3e",
+      "input": "$0$"
+    },
+    {
+      "id": "R13-0-M060",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "ba9fa5587008fa6b4e3c203c2f0bae3d7d82d8a6c5786711df903365d5307ceb",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M061",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "e25207036c04d0b97bd2cc559987a9d2c131a5c7fa019af668412792cbdbef66",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M062",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "a3a8d78f0720dee2ea33e985249a1ea101a156d19de1e02ce732d4b457cf7018",
+      "input": "$0$"
+    },
+    {
+      "id": "R13-0-M063",
+      "label": "EXACT RESULT",
+      "display": "x",
+      "copy": "x",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "x",
+      "session_sha256": "b5c2aae7fd4339d273d5169e4133f72faa223514da81b407fd32bc57ecf2ceb4",
+      "input": "$x$"
+    },
+    {
+      "id": "R13-0-M064",
+      "label": "EXACT RESULT",
+      "display": "z",
+      "copy": "z",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "z",
+      "session_sha256": "0303e789f883f385b81dd073ef9db25f85a17fbe66acd018f8be1d12f3091460",
+      "input": "$z$"
+    },
+    {
+      "id": "R13-0-M065",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "891f271bb9a449f22d3b197fee663a80bd27eb08b6bb867ba77b3599f27d1dfe",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M066",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unexpected notation at byte 100",
+      "input": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle\n= \\vert - \\rangle \\otimes \\vert s \\rangle,\n$$"
+    },
+    {
+      "id": "R13-0-M067",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Scalar XOR requires nonnegative integer operands.",
+      "input": "$s\\oplus y = 0^n$"
+    },
+    {
+      "id": "R13-0-M068",
+      "label": "EXACT RESULT",
+      "display": "y = s",
+      "copy": "(y)==('s')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(y)==('s')",
+      "session_sha256": "88693ef7215eb5b27cb180e7f739ae7c191eb1bb3937046db200a51f9b72d89b",
+      "input": "$y = s$"
+    },
+    {
+      "id": "R13-0-M069",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'",
+      "session_sha256": "647f36528eb53b061fb91cb5ffbbc23ec6b194a3e1177300ed451ab5adcc042c",
+      "input": "$s$"
+    },
+    {
+      "id": "R13-0-M070",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "2214ab72c6d10b32f5a77aa17bf91d7bbe2480a67278f301fd311b1f5fd9b6ec",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M071",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "34411cff6bce10d52c591228d84189508b40f7b7d87605a7d31a5cde6fe39ac3",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M072",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "3887bef45bb1269a983ea6ba00fa873506c76fe48562508b96d780387a2ffe0c",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M073",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "27920bda42fd3649a7cd78d92a0e5e4c6b5c65e3a38c43df67aa511107cd8d0c",
+      "input": "$n$"
+    },
+    {
+      "id": "R13-0-M074",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "e26a38708f77ca59a2acb8cf54a65b19180dfe64f4992e91917f5282084d9f14",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M075",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0",
+      "session_sha256": "4ccd2cf7a3e614cde535711cb47e1078329164c1b175a74ee320478a8d0705ce",
+      "input": "$0$"
+    },
+    {
+      "id": "R13-0-M076",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'",
+      "session_sha256": "dfaf985d1e42d52b3d351698910bbaf35e3122e6db0b1981338fb739391cc73c",
+      "input": "$s$"
+    },
+    {
+      "id": "R13-0-M077",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "555196503505f59752d9e352747fb6275fb992f36489fc812cc8928c3d2f1b70",
+      "input": "$1$"
+    },
+    {
+      "id": "R13-0-M078",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "6e290300bb01bf8e696430258a4e328110a82020f822f99080dff83e93d424ae",
+      "input": "$n$"
+    },
+    {
+      "id": "R14-0-M001",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'",
+      "session_sha256": "02f5dd04e1406936a3dfbe3ac37705c483adaadba6ecac610ca96903a0d458cc",
+      "input": "$s$"
+    },
+    {
+      "id": "R18-0-M001",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1",
+      "session_sha256": "b12516e8302d8a2df2b2c4eb62a522a9e7ffeaf0e5900b9213454a5603917a58",
+      "input": "$1$"
+    },
+    {
+      "id": "R18-0-M002",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n",
+      "session_sha256": "6f66d406846bf127cdea7aea9985af78115af6be9858809339ede3d42dc63bfa",
+      "input": "$n$"
+    }
+  ]
+}
