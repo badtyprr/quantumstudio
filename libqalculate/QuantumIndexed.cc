@@ -137,7 +137,7 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -182,8 +182,16 @@ bool unresolvedSetEquality(const MathStructure &members) {
  for(size_t k=0;k<members.size();++k)for(size_t j=0;j<k;++j)if(setEquality(members[k],members[j])==SetEquality::Unknown)return true;
  return false;
 }
+// A power in a set-domain position can denote words over an alphabet.
+void evaluateDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
+ if(raw.size()==2 && (raw.isPower() || (raw.isFunction() && raw.function()->referenceName()=="qpower")) &&
+    (pendingDomain(raw[0]) || collectionExpression(raw[0]))) {
+  members.set(CALCULATOR->getFunction("qwordpower"),&raw[0],&raw[1],NULL);
+ } else members=raw;
+ members.eval(eo);
+}
 DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
- members=raw;members.eval(eo);
+ evaluateDomain(raw,members,eo);
  if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
  if(!members.isVector() && collectionExpression(raw) && !domainExpression(members))members.transform(STRUCT_VECTOR);
  if(pendingDomain(members))return DomainState::Pending;
@@ -1049,6 +1057,28 @@ class QuantumIndexedFunction: public MathFunction {
    if(!value[0].equals(raw[0])) {out=value;return 1;}
    return 0;
   }
+  if(op=="qwordpower") {
+   MathStructure alphabet;DomainState state=finiteDomain(raw[0],alphabet,eo);
+   if(state==DomainState::Invalid) {CALCULATOR->error(true,"A word power requires a finite alphabet.",NULL);return 0;}
+   if(state==DomainState::Finite && alphabet.size()==2) {
+    const MathStructure *first=&alphabet[0],*second=&alphabet[1];
+    auto bit=[](const MathStructure &entry) {
+     return entry.isFunction() && entry.function()->referenceName()=="qbitlabel" &&
+            entry.size()==2 && entry[1].isOne();
+    };
+    if(bit(*first) && bit(*second)) {first=&(*first)[0];second=&(*second)[0];}
+    if((first->isZero() && second->isOne()) || (first->isOne() && second->isZero())) {
+     out.set(CALCULATOR->getFunction("qbitstrings"),&raw[1],NULL);out.eval(eo);return 1;
+    }
+   }
+   if(state==DomainState::Pending) {
+    MathStructure count=raw[1];count.eval(eo);
+    if(count.isNumber() && (!count.number().isInteger() || count.number()<0))
+     CALCULATOR->error(true,"A word length must be a nonnegative integer.",NULL);
+    return 0;
+   }
+   out.set(CALCULATOR->getFunction("qcartesianpower"),&raw[0],&raw[1],NULL);out.eval(eo);return 1;
+  }
   if(op=="qcartesian" || op=="qcartesianpower") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure count=raw[1];bool pendingCount=false;
@@ -1436,9 +1466,9 @@ class QuantumIndexedFunction: public MathFunction {
     if(value.equals(collection))break;
     collection=value;
    }
-   MathStructure members=raw[1];
+   MathStructure members;
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
-   members.eval(exact);
+   evaluateDomain(raw[1],members,exact);
    if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
@@ -1747,6 +1777,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  calculator.addFunction(new QuantumIndexedFunction("qpreimage",2));
  calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
+ calculator.addFunction(new QuantumIndexedFunction("qwordpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
  calculator.addFunction(new QuantumIndexedFunction("qset",1));
  calculator.addFunction(new QuantumIndexedFunction("qdomainvector",1));

@@ -9,12 +9,14 @@ with (directory / "ibm021-literal-results.json").open(encoding="utf-8") as sourc
     formulas = {row["id"]: row["literal"] for row in json.load(source)["results"]}
 
 
-def bound_body(number):
+def source_body(number):
     literal = formulas[f"IBM021-c0-M{number:03}"]
-    return literal.strip("$").strip().rstrip(".").replace(r"\Sigma^n", " bitstrings(3)")
+    return literal.strip("$").strip().rstrip(".")
 
 
 def evaluate(expression):
+    if r"\Sigma" in expression:
+        expression = rf"replace(({expression}),\Sigma,\{{0,1\}})"
     process = subprocess.run([sys.argv[1], "--json"], input=("quantum:" + expression).encode(),
                              capture_output=True, check=True, timeout=30)
     result = json.loads(process.stdout)
@@ -22,14 +24,19 @@ def evaluate(expression):
     return result
 
 
+def width_three(expression):
+    return f"replace(({expression}),n,3)"
+
+
 for number, variable in [(6, "s"), (51, "y"), (71, "x"), (96, "y"), (101, "y")]:
+    domain_test = width_three(source_body(number))
     for value in range(8):
-        expr = f"replace(({bound_body(number)}),{variable},bitstring({value},3))"
+        expr = f"replace(({domain_test}),{variable},bitstring({value},3))"
         assert evaluate(expr)["copy_text"] == "1", (number, value)
-    expr = f"replace(({bound_body(number)}),{variable},bitstring(0,4))"
+    expr = f"replace(({domain_test}),{variable},bitstring(0,4))"
     assert evaluate(expr)["copy_text"] == "0", number
 
-initial = f"sqrt(8)*replace(replace(({bound_body(45)}),m,5),n,3)"
+initial = f"sqrt(8)*replace(replace(({source_body(45)}),m,5),n,3)"
 state = evaluate(initial)
 assert (state["rows"], state["columns"]) == (256, 1)
 amplitudes = ",".join(["1"] * 8 + ["0"] * 248)
@@ -40,7 +47,7 @@ with (directory / "ibm021-oracle-table.json").open(encoding="utf-8") as source:
     table = json.load(source)
 outputs = [int(bits, 2) for bits in table["outputs"]]
 for number, scale in [(49, "sqrt(8)"), (50, "8")]:
-    expr = f"{scale}*replace(replace(({bound_body(number)}),f,{table['graph']}),n,3)"
+    expr = f"{scale}*replace(replace(({source_body(number)}),f,{table['graph']}),n,3)"
     state = evaluate(expr)
     expected = [0] * 256
     for x, z in enumerate(outputs):
@@ -56,11 +63,11 @@ print("Both bound oracle states passed all 256 amplitude checks")
 
 # Compare the source definitions in M056 and M060 with the native operators.
 def definition(number):
-    return bound_body(number).split(" = ", 1)[1].strip()
+    return source_body(number).split(" = ", 1)[1].strip()
 
 
-image = definition(56)
-fiber = definition(60)
+image = width_three(definition(56))
+fiber = width_three(definition(60))
 values = list(dict.fromkeys(outputs))
 
 
@@ -70,18 +77,18 @@ def bit_set(values, width):
 
 
 assert evaluate(f"replace(({image}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
-native_range = bound_body(100)
+native_range = source_body(100)
 assert evaluate(f"replace(({native_range}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
-membership = bound_body(57)
+membership = source_body(57)
 for z in range(32):
     probe = f"replace(replace(({membership}),f,{table['graph']}),z,bitstring({z},5))"
     assert evaluate(probe)["copy_text"] == str(int(z in values))
     expr = f"replace(replace(({fiber}),f,{table['graph']}),z,bitstring({z},5))"
     expected_fiber = bit_set([x for x in range(8) if outputs[x] == z], 3)
     assert evaluate(expr)["copy_text"] == expected_fiber
-    direct = f"replace(replace(({bound_body(59)}),f,{table['graph']}),z,bitstring({z},5))"
+    direct = f"replace(replace(({source_body(59)}),f,{table['graph']}),z,bitstring({z},5))"
     assert evaluate(direct)["copy_text"] == expected_fiber
-    identity = f"replace(replace(({bound_body(60)}),f,{table['graph']}),z,bitstring({z},5))"
+    identity = f"replace(replace(({width_three(source_body(60))}),f,{table['graph']}),z,bitstring({z},5))"
     assert evaluate(identity)["copy_text"] == "1"
 
 probability = definition(74)
@@ -90,7 +97,7 @@ for y in range(8):
     quarter_units = evaluate(f"4*({expr})")["copy_text"]
     assert quarter_units == str(int((y & 3).bit_count() % 2 == 0)), (y, quarter_units)
     for number in (54, 70):
-        norm = bound_body(number).split("=", 1)[1]
+        norm = source_body(number).split("=", 1)[1]
         measured = f"replace(replace(replace(({norm}),f,{table['graph']}),n,3),y,bitstring({y},3))"
         assert evaluate(f"4*({measured})")["copy_text"] == quarter_units, (number, y)
     identity = f"replace(replace(({definition(102)}),f,{table['graph']}),n,3)"
@@ -100,7 +107,7 @@ print("Exact range, 32 inverse images and all 8 measurement probabilities passed
 
 # The source groups each side of the Simon promise in square brackets.
 left, right = [side.strip().removeprefix("[").removesuffix("]")
-               for side in bound_body(7).split(r"\Leftrightarrow")]
+               for side in source_body(7).split(r"\Leftrightarrow")]
 def at_pair(body, x, y):
     return f"replace(replace(({body}),x,bitstring({x},3)),y,bitstring({y},3))"
 
@@ -114,7 +121,7 @@ for x, output in enumerate(outputs):
         assert lhs == rhs == str(int(output == outputs[y])), (x, y)
 
         # Either member of the output's inverse image may be used as w.
-        chain = f"replace(replace(({bound_body(88)}),f,{table['graph']}),s,bitstring(3,3))"
+        chain = f"replace(replace(({source_body(88)}),f,{table['graph']}),s,bitstring(3,3))"
         chain = f"replace(replace(replace({chain},z,bitstring({output},5)),w,bitstring({x},3)),y,bitstring({y},3))"
         assert evaluate(chain)["copy_text"] == "1", (x, y)
 print("Both promise predicates and the M088 equality chain passed for all 64 pairs")
@@ -124,7 +131,7 @@ injective = "qset(vector(" + ",".join(
     f"tuple(bitstring({x},3),bitstring({x},5))" for x in range(8)) + "))"
 for number, graph, secret in [(7, table["graph"], 3), (7, table["graph"], 4),
                               (16, table["graph"], 0), (16, injective, 0)]:
-    source = bound_body(number)
+    source = source_body(number)
     copied = evaluate(source)["copy_text"]
     for body in (source, copied):
         predicate = f"replace(({body}),f,{graph})"

@@ -34,6 +34,15 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# A power used as a domain retains its alphabet until the caller binds it.
+word_member = data(r"quantum:x \in \Sigma^n")["copy_text"]
+for alphabet in [r"\{1,0\}", "bitstrings(1)"]:
+    expr = rf"replace(replace(replace({word_member},\Sigma,{alphabet}),n,2),x,bitstring(1,2))"
+    assert data("quantum:" + expr)["copy_text"] == "1"
+assert data(r"quantum:replace(tuple(3,4) \in A^2,A,\{3,4\})")["copy_text"] == "1"
+assert data(r"quantum:replace(\Sigma^2,\Sigma,3)")["copy_text"] == "9"
+assert b"nonnegative integer" in run(r"quantum:x \in A^(-1)", "--json", success=False).stderr
+
 # Biconditional has lower precedence than disjunction and accepts grouped predicates.
 for lhs in (0, 1):
     for rhs in (0, 1):
