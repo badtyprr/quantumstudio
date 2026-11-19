@@ -1,0 +1,251 @@
+{
+  "revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+  "aer": "0.18.4",
+  "qiskit": "2.6.2",
+  "backend": "CPU Aer (no provider submissions)",
+  "notebooks": {
+    "36": {
+      "source_sha256": "cf5d5103296e683fa1e5b89b3187282fa01400d1172c112d36ff3ba82a4f1787",
+      "construction_cell": 7,
+      "seed7_repeated": {
+        "width": 3,
+        "shots": 1000,
+        "all_zero": 514,
+        "all_one": 486
+      },
+      "wide_mps": {
+        "width": 30,
+        "shots": 1000,
+        "all_zero": 493,
+        "all_one": 507
+      },
+      "single": {
+        "width": 3,
+        "shots": 1000,
+        "all_zero": 514,
+        "all_one": 486
+      },
+      "double": {
+        "width": 3,
+        "shots": 1000,
+        "all_zero": 514,
+        "all_one": 486
+      },
+      "rotation_batch": [
+        {
+          "theta": 0.0,
+          "expected_p1": 0.0,
+          "counts": {
+            "0": 1000
+          }
+        },
+        {
+          "theta": 1.0471975511965976,
+          "expected_p1": 0.24999999999999994,
+          "counts": {
+            "0": 769,
+            "1": 231
+          }
+        },
+        {
+          "theta": 2.0943951023931953,
+          "expected_p1": 0.7499999999999999,
+          "counts": {
+            "1": 742,
+            "0": 258
+          }
+        },
+        {
+          "theta": 3.141592653589793,
+          "expected_p1": 1.0,
+          "counts": {
+            "1": 1000
+          }
+        }
+      ],
+      "original_plot_cells_verified_with_local_counts": [
+        20
+      ]
+    },
+    "37": {
+      "source_sha256": "5467f64569a4f8957ebd8c70986a023bd34f3de805d7787a3afc0209b43a6d35",
+      "construction_cell": 5,
+      "seed7_repeated": {
+        "width": 20,
+        "shots": 1000,
+        "all_zero": 491,
+        "all_one": 509
+      },
+      "ordered_stabilizer_batch": [
+        {
+          "width": 50,
+          "shots": 1000,
+          "all_zero": 502,
+          "all_one": 498
+        },
+        {
+          "width": 100,
+          "shots": 1000,
+          "all_zero": 529,
+          "all_one": 471
+        },
+        {
+          "width": 200,
+          "shots": 1000,
+          "all_zero": 526,
+          "all_one": 474
+        },
+        {
+          "width": 400,
+          "shots": 1000,
+          "all_zero": 483,
+          "all_one": 517
+        }
+      ],
+      "mps100": {
+        "width": 100,
+        "shots": 1000,
+        "all_zero": 496,
+        "all_one": 504
+      },
+      "mirror_mps": [
+        {
+          "bond_dimension": null,
+          "zero_shots": 1000
+        },
+        {
+          "bond_dimension": 4,
+          "zero_shots": 221
+        },
+        {
+          "bond_dimension": 2,
+          "zero_shots": 40
+        }
+      ],
+      "mirror_statevector_all_zero_shots": 1000
+    },
+    "38": {
+      "source_sha256": "0c953abc62d97d819435b4ed3bcf3d820b3b24b2af514c3ea3a3bceb79999412",
+      "construction_cell": 8,
+      "seed7_repeated": {
+        "width": 3,
+        "shots": 200,
+        "all_zero": 99,
+        "all_one": 101
+      },
+      "wide_mps": {
+        "width": 100,
+        "shots": 200,
+        "all_zero": 93,
+        "all_one": 107
+      },
+      "mps_bond32": {
+        "width": 100,
+        "shots": 200,
+        "all_zero": 93,
+        "all_one": 107
+      },
+      "rotation_batch": [
+        {
+          "theta": 0.0,
+          "expected_p1": 0.0,
+          "counts": {
+            "0": 500
+          }
+        },
+        {
+          "theta": 0.5711986642890533,
+          "expected_p1": 0.0793732335844094,
+          "counts": {
+            "0": 468,
+            "1": 32
+          }
+        },
+        {
+          "theta": 1.1423973285781066,
+          "expected_p1": 0.2922924934990568,
+          "counts": {
+            "1": 119,
+            "0": 381
+          }
+        },
+        {
+          "theta": 1.7135959928671598,
+          "expected_p1": 0.5711574191366425,
+          "counts": {
+            "0": 234,
+            "1": 266
+          }
+        },
+        {
+          "theta": 2.284794657156213,
+          "expected_p1": 0.8274303669726425,
+          "counts": {
+            "1": 419,
+            "0": 81
+          }
+        },
+        {
+          "theta": 2.8559933214452666,
+          "expected_p1": 0.9797464868072486,
+          "counts": {
+            "1": 495,
+            "0": 5
+          }
+        },
+        {
+          "theta": 3.4271919857343196,
+          "expected_p1": 0.9797464868072489,
+          "counts": {
+            "1": 486,
+            "0": 14
+          }
+        },
+        {
+          "theta": 3.998390650023373,
+          "expected_p1": 0.8274303669726426,
+          "counts": {
+            "1": 411,
+            "0": 89
+          }
+        },
+        {
+          "theta": 4.569589314312426,
+          "expected_p1": 0.5711574191366425,
+          "counts": {
+            "0": 206,
+            "1": 294
+          }
+        },
+        {
+          "theta": 5.140787978601479,
+          "expected_p1": 0.292292493499057,
+          "counts": {
+            "0": 357,
+            "1": 143
+          }
+        },
+        {
+          "theta": 5.711986642890533,
+          "expected_p1": 0.0793732335844094,
+          "counts": {
+            "0": 467,
+            "1": 33
+          }
+        },
+        {
+          "theta": 6.283185307179586,
+          "expected_p1": 1.4997597826618576e-32,
+          "counts": {
+            "0": 500
+          }
+        }
+      ],
+      "original_plot_cells_verified_with_local_counts": [
+        23,
+        25
+      ]
+    }
+  },
+  "method": "Ran source circuit constructors and rotation-sweep construction with authored CPU Aer submissions. For the wide cases, GHZ computational-basis samples must contain both full-width endpoints, total the requested shots, and agree with equal endpoint mass within six binomial standard errors. Ran plotting cells with local batch counts. Provider options, metadata, execution time and GPU behavior remain unverified."
+}
