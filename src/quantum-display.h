@@ -300,6 +300,12 @@ class Printer {
    return Fragment("("+render(value[0],depth+1).text+")^("+render(value[1],depth+1).text+") (Cartesian power; nonnegative integer count)");
   if(name=="qbitstrings" && value.size()==1)
    return Fragment("{0,1}^("+render(value[0],depth+1).text+") (nonnegative integer width)");
+  if(name=="qindexedfamily" && value.size()==2 && value[0].isSymbolic() && value[1].isInteger()) {
+   Number next=value[1].number();next+=1;
+   PrintOptions decimal;decimal.use_unicode_signs=false;decimal.min_exp=EXP_NONE;
+   const std::string &prefix=value[0].symbol();
+   return Fragment("{"+prefix+value[1].number().print(decimal)+", "+prefix+next.print(decimal)+", …}");
+  }
   if(name=="qindexrange" && value.size()==2)
    return Fragment("{"+render(value[0],depth+1).text+", …, "+render(value[1],depth+1).text+"} (integer endpoints)");
   if((name=="qsetimage" || name=="qsetfilter") && value.size()==3) {

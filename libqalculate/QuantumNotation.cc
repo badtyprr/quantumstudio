@@ -338,7 +338,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -1330,6 +1330,7 @@ class Parser {
     if(name=="feedforward") name="qfeedforward";
     if(name=="tensorpow") name="qtensorpow";
     if(name=="tensorproduct") name="qtensorproduct";
+    if(name=="familyat") name="qfamilyat";
     if(name=="indexrange") name="qindexrange";
     if(name=="sumset") name="qsumset";
     if(name=="member") name="qmember";

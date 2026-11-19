@@ -504,6 +504,25 @@ bool registerSumDeclaration(const std::string &variable,const std::string &domai
  alphabet=trim(text.substr(0,power));width=trim(text.substr(power+1));
  return atom(alphabet) && atom(width);
 }
+// Open-ended families need a common label and consecutive integer subscripts.
+// Keep only the first index; a trailing comma after the ellipsis is typography.
+std::string openIndexedFamily(const std::vector<std::string> &entries) {
+ size_t end=entries.size();
+ if(end && entries[end-1].empty())--end;
+ if(end<3 || (entries[end-1]!="..." && entries[end-1]!="…"))return "";
+ const std::string &first=entries.front();
+ size_t split=first.rfind('_');
+ if(split==std::string::npos || split==0 || !std::all_of(first.begin(),first.begin()+split,asciiLetter))return "";
+ std::string prefix=first.substr(0,split+1),start=first.substr(split+1),index=start;
+ if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || (start.size()>1 && start[0]=='0'))return "";
+ for(size_t k=0;k+1<end;++k) {
+  if(entries[k]!=prefix+index)return "";
+  size_t pos=index.find_last_not_of('9');
+  if(pos==std::string::npos)index="1"+std::string(index.size(),'0');
+  else {++index[pos];std::fill(index.begin()+pos+1,index.end(),'0');}
+ }
+ return "qindexedfamily(\""+prefix+"\","+start+")";
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -634,8 +653,11 @@ class TeXReader {
      bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
      std::string alphabet="vector("+contents+")";
      if(ellipsis) {
-      if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
-      alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+      alphabet=openIndexedFamily(entries);
+      if(alphabet.empty()) {
+       if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
+       alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+      }
      }
      size_t afterSet=pos;space();
      if(pos<input.size() && input[pos]=='^') {
@@ -1105,6 +1127,11 @@ class TeXReader {
     size_t first=value.find_first_not_of(" \t\r\n"), last=value.find_last_not_of(" \t\r\n");
     if(first!=std::string::npos)value=value.substr(first,last-first+1);
     while(!result.empty() && std::isspace((unsigned char)result.back()))result.pop_back();
+    // The displayed open-ended family uses ordinary braces and an ellipsis.
+    if(value.find("…")!=std::string::npos || value.find("...")!=std::string::npos) {
+     std::string family=openIndexedFamily(indexedParts(value,","));
+     if(!family.empty()) {result+=family;continue;}
+    }
     // Braces around an entire Dirac label are typesetting, not arithmetic.
     size_t after=pos;while(after<input.size() && std::isspace((unsigned char)input[after]))++after;
     bool ketLabel=!result.empty() && result.back()=='|' &&

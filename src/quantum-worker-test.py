@@ -108,6 +108,27 @@ for equation in ("z=f(x)", "f(x)=z"):
     for body in (equation, result["copy_text"], result["display_text"]):
         assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
 
+# Both open-ended circuit families describe one circuit per input size.
+circuits = []
+for literal in (r"\{C_1, C_2, C_3,\ldots\}", r"\{C_1, C_2,\ldots,\}"):
+    original = data("quantum:" + literal)
+    family = original["copy_text"]
+    assert data("quantum:" + original["display_text"])["copy_text"] == family
+    assert data("quantum:" + family)["copy_text"] == family
+    for index in (1, 2, 3, 19):
+        expected = data(f"quantum:C_{index}")["copy_text"]
+        assert data(f"quantum:familyat({family},{index})")["copy_text"] == expected
+    circuits.append(family)
+assert circuits[0] == circuits[1]
+assert data(f"quantum:member(C_19,{circuits[0]})")["copy_text"] == "1"
+assert "qmember(" in data(f"quantum:member(D_19,{circuits[0]})")["copy_text"]
+pending_index = data(f"quantum:familyat({circuits[0]},n)")["copy_text"]
+assert data(f"quantum:replace({pending_index},n,12)")["copy_text"] == data("quantum:C_12")["copy_text"]
+for index in ("0", "-1", "3/2"):
+    run(f"quantum:familyat({circuits[0]},{index})", "--json", success=False)
+for invalid in (r"\{C_1,D_2,\ldots\}", r"\{C_1,C_3,\ldots\}"):
+    run("quantum:" + invalid, "--json", success=False)
+
 # Trial division enumerates integer candidates, including the square root
 # exactly when the input is a perfect square.
 trial_range = data(r"quantum:$2,\ldots,\sqrt{N}$")["copy_text"]

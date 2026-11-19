@@ -17,6 +17,10 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($\{C_1,C_2,C_3,\ldots\}$)",R"(qindexedfamily("C_",1))");
+  equal(R"($\{C_1,C_2,\ldots,\}$)",R"(qindexedfamily("C_",1))");
+  equal(R"($\{A_{99},A_{100},\dots\}$)",R"(qindexedfamily("A_",99))");
+  rejects(R"($\{C_1,D_2,\ldots\}$)");rejects(R"($\{C_1,C_3,\ldots\}$)");
   equal(R"($2\hspace{1mm}+3$)",quantumTeX("$2 +3$"));
   equal(R"($a\hspace{ -.25 em }b$)",quantumTeX("$a b$"));
   rejects(R"($2\hspace{1mm+9}+3$)");rejects(R"($2\hspace{3cats}+3$)");
