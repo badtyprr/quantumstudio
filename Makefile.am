@@ -455,3 +455,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/mod003-stern-gerlach.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod001-mod002-introductory.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod009-key-distribution.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb036-qb038-local.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-query-algorithms.json

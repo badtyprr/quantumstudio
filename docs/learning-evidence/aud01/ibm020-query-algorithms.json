@@ -1,0 +1,471 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "path": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "git_blob": "11f5adf4147d705293f4d86b4b50f4c68bce03b1",
+  "sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "executed": [
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    17
+  ],
+  "method": "All source code cells ran without edits. Supplied a display collector and seeded NumPy. Additional tests called the source functions directly.",
+  "examples": [
+    "constant",
+    "1011"
+  ],
+  "dj": [
+    {
+      "seed": 0,
+      "truth": "00000000",
+      "classification": "constant"
+    },
+    {
+      "seed": 1,
+      "truth": "11111111",
+      "classification": "constant"
+    },
+    {
+      "seed": 3,
+      "truth": "11010100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 4,
+      "truth": "01011100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 5,
+      "truth": "10100011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 7,
+      "truth": "01101010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 8,
+      "truth": "10100110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 9,
+      "truth": "10010110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 14,
+      "truth": "01010110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 16,
+      "truth": "10101010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 19,
+      "truth": "00101101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 22,
+      "truth": "10011001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 23,
+      "truth": "10010011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 25,
+      "truth": "01001011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 27,
+      "truth": "11100001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 34,
+      "truth": "00110110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 36,
+      "truth": "01000111",
+      "classification": "balanced"
+    },
+    {
+      "seed": 43,
+      "truth": "01011001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 47,
+      "truth": "11001001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 50,
+      "truth": "11000101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 52,
+      "truth": "00111001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 55,
+      "truth": "10101001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 56,
+      "truth": "10001101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 57,
+      "truth": "01100101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 62,
+      "truth": "01010101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 63,
+      "truth": "11110000",
+      "classification": "balanced"
+    },
+    {
+      "seed": 66,
+      "truth": "01010011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 70,
+      "truth": "11100010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 73,
+      "truth": "10011010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 78,
+      "truth": "11000011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 80,
+      "truth": "01101100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 82,
+      "truth": "10101100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 85,
+      "truth": "10000111",
+      "classification": "balanced"
+    },
+    {
+      "seed": 86,
+      "truth": "01100110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 88,
+      "truth": "01101001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 89,
+      "truth": "00111100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 92,
+      "truth": "01100011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 106,
+      "truth": "01001101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 107,
+      "truth": "10110001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 115,
+      "truth": "01110010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 117,
+      "truth": "10110100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 124,
+      "truth": "01111000",
+      "classification": "balanced"
+    },
+    {
+      "seed": 133,
+      "truth": "00110011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 140,
+      "truth": "00011110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 147,
+      "truth": "00110101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 149,
+      "truth": "00101110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 160,
+      "truth": "01110100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 163,
+      "truth": "10011100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 165,
+      "truth": "11101000",
+      "classification": "balanced"
+    },
+    {
+      "seed": 175,
+      "truth": "10010101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 186,
+      "truth": "00001111",
+      "classification": "balanced"
+    },
+    {
+      "seed": 188,
+      "truth": "10111000",
+      "classification": "balanced"
+    },
+    {
+      "seed": 197,
+      "truth": "00111010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 199,
+      "truth": "11010010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 204,
+      "truth": "11100100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 205,
+      "truth": "10001110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 226,
+      "truth": "11000110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 228,
+      "truth": "00011011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 244,
+      "truth": "01011010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 269,
+      "truth": "01001110",
+      "classification": "balanced"
+    },
+    {
+      "seed": 270,
+      "truth": "00010111",
+      "classification": "balanced"
+    },
+    {
+      "seed": 282,
+      "truth": "00100111",
+      "classification": "balanced"
+    },
+    {
+      "seed": 292,
+      "truth": "11011000",
+      "classification": "balanced"
+    },
+    {
+      "seed": 298,
+      "truth": "11001010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 310,
+      "truth": "11001100",
+      "classification": "balanced"
+    },
+    {
+      "seed": 312,
+      "truth": "01110001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 316,
+      "truth": "11010001",
+      "classification": "balanced"
+    },
+    {
+      "seed": 338,
+      "truth": "10110010",
+      "classification": "balanced"
+    },
+    {
+      "seed": 372,
+      "truth": "10100101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 411,
+      "truth": "00101011",
+      "classification": "balanced"
+    },
+    {
+      "seed": 467,
+      "truth": "00011101",
+      "classification": "balanced"
+    },
+    {
+      "seed": 698,
+      "truth": "10001011",
+      "classification": "balanced"
+    }
+  ],
+  "bv": [
+    "0000",
+    "0001",
+    "0010",
+    "0011",
+    "0100",
+    "0101",
+    "0110",
+    "0111",
+    "1000",
+    "1001",
+    "1010",
+    "1011",
+    "1100",
+    "1101",
+    "1110",
+    "1111"
+  ],
+  "native": [
+    {
+      "case": "constant",
+      "max_probability_error": 0.0,
+      "qasm_sha256": "2d31c619d93eb257487354476400411bae8a239f9804657126d992c84f180697",
+      "probabilities": {
+        "000": "1"
+      }
+    },
+    {
+      "case": "balanced",
+      "max_probability_error": 3.5083494693385136e-33,
+      "qasm_sha256": "5a66958a0122ca79c7bc37c88944a938b05a9f6bbd013b6c98c2cf9040726b9d",
+      "probabilities": {
+        "000": "(1/4)*exp(i*(-19634954084936207/6250000000000000))+(1/2)+(1/4)*exp(i*(19634954084936207/6250000000000000))",
+        "001": "(-1/16)*exp(i*(-19634954084936207/6250000000000000))+(1/8)+(-1/16)*exp(i*(19634954084936207/6250000000000000))",
+        "010": "(-1/16)*exp(i*(-19634954084936207/6250000000000000))+(1/8)+(-1/16)*exp(i*(19634954084936207/6250000000000000))",
+        "100": "(-1/16)*exp(i*(-19634954084936207/6250000000000000))+(1/8)+(-1/16)*exp(i*(19634954084936207/6250000000000000))",
+        "111": "(-1/16)*exp(i*(-19634954084936207/6250000000000000))+(1/8)+(-1/16)*exp(i*(19634954084936207/6250000000000000))"
+      }
+    },
+    {
+      "case": "BV 0000",
+      "max_probability_error": 0.0,
+      "qasm_sha256": "e61a75966655acb9349fe41b4a0f79413e08dca37d6f82bf7a81de90913fe563",
+      "probabilities": {
+        "0000": "1"
+      }
+    },
+    {
+      "case": "BV 0001",
+      "max_probability_error": 0.0,
+      "qasm_sha256": "149171663e577b284bb43b3f38a212c1d8ce4e5c0dedba9d007d4a5f36013a4d",
+      "probabilities": {
+        "0001": "1"
+      }
+    },
+    {
+      "case": "BV 1000",
+      "max_probability_error": 0.0,
+      "qasm_sha256": "c11e7a6490e778fb317b768cfe9efc250b46c85fa783aaccad07b279f63008d9",
+      "probabilities": {
+        "1000": "1"
+      }
+    },
+    {
+      "case": "BV 1011",
+      "max_probability_error": 0.0,
+      "qasm_sha256": "fc6e3fb8aa2258f535a8cadf65a66739d659ddb2c47706d5e896ef0669617cc6",
+      "probabilities": {
+        "1011": "1"
+      }
+    },
+    {
+      "case": "BV 1111",
+      "max_probability_error": 0.0,
+      "qasm_sha256": "11da03fa6dd12ed1c600caf2cc1764080b44a20df9ce828062416c8d7dd6f146",
+      "probabilities": {
+        "1111": "1"
+      }
+    }
+  ],
+  "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "checks": {
+    "deutsch_jozsa": "For each distinct source-generated truth table, checked the full 16 by 16 oracle permutation, original one-shot decision and statevector probabilities against squared Walsh coefficients.",
+    "bernstein_vazirani": "Checked the source one-shot decoder against every four-bit secret.",
+    "native": "Exported seven source circuits using Qiskit OpenQASM 3, imported them with qasm-import.py, then evaluated the adapter payload with quantum-worker --exact-circuit. Parsed the returned probability expressions at 50 digits and compared all outcomes (missing outcomes count as zero) with tolerance 1e-12. The importer lowers pi/8 angles to decimal values. These numerical comparisons cover the listed circuits only."
+  }
+}
