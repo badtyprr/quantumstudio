@@ -9,6 +9,31 @@
 bool isQuantumBitLabel(const MathStructure &value) {
  return value.isFunction() && (value.function()->referenceName()=="qbitlabel" || value.function()->referenceName()=="qbits");
 }
+// Apply the finite relation at one input. Both the width and the bits
+// identify the input, so an entry for 01 cannot answer a query for 1.
+int applyQuantumBinaryGraph(MathStructure &out,const MathStructure &graph,const MathStructure &input,const EvaluationOptions &eo) {
+ if(input.size()!=2 || graph.size()!=1 || !graph[0].isVector())return 0;
+ MathStructure index=input[0],width=input[1];
+ if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return 0;
+ const MathStructure *answer=nullptr;
+ for(size_t i=0;i<graph[0].size();++i) {
+  const MathStructure &pair=graph[0][i];
+  if(!pair.isFunction() || pair.function()->referenceName()!="qtuple" || pair.size()!=1 ||
+     !pair[0].isVector() || pair[0].size()!=2 || !isQuantumBitLabel(pair[0][0]) || pair[0][0].size()!=2) {
+   CALCULATOR->error(true,"A binary function graph requires pairs with bit-string inputs.",NULL);return 0;
+  }
+  const MathStructure &key=pair[0][0];
+  MathStructure keyIndex=key[0],keyWidth=key[1];
+  if(validateQuantumBitLabel(keyIndex,keyWidth,eo)!=QuantumBitLabelState::Concrete)return 0;
+  if(!index.equals(keyIndex) || !width.equals(keyWidth))continue;
+  if(answer && !answer->equals(pair[0][1])) {
+   CALCULATOR->error(true,"The function graph has conflicting outputs for this input.",NULL);return 0;
+  }
+  answer=&pair[0][1];
+ }
+ if(!answer) {CALCULATOR->error(true,"The function graph has no output for this bit string.",NULL);return 0;}
+ out=*answer;return 1;
+}
 namespace {
 const MathStructure &element(const MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
@@ -31,6 +56,14 @@ class QuantumBinaryFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qgraphapply") {
+   if(!a.isFunction() || a.function()->referenceName()!="qset")return 0;
+   if(!isQuantumBitLabel(args[1])) {
+    if(!args[1].containsUnknowns())CALCULATOR->error(true,"A binary function graph requires a bit-string input.",NULL);
+    return 0;
+   }
+   return applyQuantumBinaryGraph(out,a,args[1],eo);
+  }
   if(op=="qcenterdot") {
    bool binary=isQuantumBitLabel(args[0]) && isQuantumBitLabel(args[1]);
    out.set(CALCULATOR->getFunction(binary ? "qbitdot" : "qmul"),&args[0],&args[1],NULL);
@@ -206,5 +239,5 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }

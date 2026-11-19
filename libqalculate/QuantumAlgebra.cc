@@ -723,6 +723,8 @@ class QuantumAlgebraFunction: public MathFunction {
    MathStructure entries=args[0][0];args[0]=entries;
   }
   const MathStructure &a=args[0];
+  if(op=="qadjacent" && a.isFunction() && a.function()->referenceName()=="qset" && isQuantumBitLabel(args[1]))
+   return applyQuantumBinaryGraph(out,a,args[1],eo);
   if((op=="qadd" || op=="qmul" || op=="qadjacent" || op=="qdensity") &&
      args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0) {
    MathStructure expression(this,static_cast<MathStructure*>(NULL)),dimension;

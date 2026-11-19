@@ -1,0 +1,12 @@
+{
+  "worker_sha256": "852abfeb345cd28fadcb7b5945873eedf35596f3050c308f4264fbb3ac1c9389",
+  "source_formulas": {
+    "R13-0-M028": "$$\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} (-1)^{f(x)} \\vert x \\rangle.\n$$",
+    "R13-0-M029": "$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{f(x) + x \\cdot y} \\vert y \\rangle.\n$$"
+  },
+  "truth_tables": 16,
+  "state_columns": 32,
+  "exact_amplitudes": 256,
+  "adaptation": "Retained both source calls f(x). Bound f to the evaluated truth table, n to 2 and the query domain to bitstrings(2). Removed enclosing display delimiters and terminal punctuation for embedding.",
+  "reference": "The first column has signs from the truth table. The second has their Walsh coefficients. Both have the negative column in the output-qubit-one half."
+}

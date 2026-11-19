@@ -4,5 +4,7 @@
 class Calculator;
 class MathStructure;
 bool isQuantumBitLabel(const MathStructure &);
+struct EvaluationOptions;
+int applyQuantumBinaryGraph(MathStructure &,const MathStructure &,const MathStructure &,const EvaluationOptions &);
 void registerQuantumBinary(Calculator &);
 #endif

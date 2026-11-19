@@ -45,6 +45,16 @@ for mask in range(16):
     queries = [f"member(tuple(bitstring({i},2),{bit}),{copied})" for i in range(4) for bit in range(2)]
     expected = [str(int(bit == ((mask >> i) & 1))) for i in range(4) for bit in range(2)]
     assert data("quantum:vector(" + ",".join(queries) + ")")["copy_text"] == "vector(" + ",".join(expected) + ")"
+    applied = f"replace(vector(f(00),f(01),f(10),f(11)),f,{copied})"
+    assert data("quantum:" + applied)["copy_text"] == "vector(" + ",".join(str((mask >> i) & 1) for i in range(4)) + ")"
+    summed = rf"replace(\sum_{{x\in bitstrings(2)}}{{f(x)}},f,{copied})"
+    assert data("quantum:" + summed)["copy_text"] == str(bin(mask).count("1"))
+pending = data(f"quantum:replace(f(x),f,{copied})")["copy_text"]
+assert pending.startswith("qgraphapply(")
+assert data(f"quantum:replace({pending},x,bitstring(2,2))")["copy_text"] == "1"
+assert b"no output for this bit string" in run(f"quantum:replace(f(1),f,{copied})", "--json", success=False).stderr
+conflict = "qset(vector(tuple(bitstring(0,2),0),tuple(bitstring(0,2),1)))"
+assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--json", success=False).stderr
 for changed in (table.replace("f(11)", "g(11)"), table.replace("f(11)", "f(01)"),
                 table.replace("f(11)", "f(1)"), table.replace("f(", "i("), table.replace("= 1", "= 2", 1)):
     assert not data("quantum:" + changed)["copy_text"].startswith("qset(")

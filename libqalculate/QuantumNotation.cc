@@ -225,7 +225,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -536,6 +536,29 @@ class Parser {
    for(size_t k=0;k<4;++k) {if(k)replacement+=",";replacement+=fields[k];}replacement+=")";
    body.replace(at,end-at+1,replacement);checkSize(body);at+=replacement.size();
   }
+ }
+ // Only an explicitly bound graph gives calls to its name function semantics.
+ // Delay application until substitutions and set-sum indices have been bound.
+ static void bindGraphCalls(std::vector<std::string> &args) {
+  const std::string &name=args[1];
+  if(name.size()!=1 || name=="e" || name=="i" || name[0]<'a' || name[0]>'z' || args[2].compare(0,5,"qset(")!=0)return;
+  const std::string &body=args[0];
+  std::string result;char quote=0;
+  for(size_t i=0;i<body.size();) {
+   char c=body[i];
+   if(c=='"' || c=='\'') {if(c==quote)quote=0;else if(!quote)quote=c;}
+   unsigned char previous=i ? body[i-1] : 0;
+   if(quote || c!=name[0] || std::isalnum(previous) || previous=='_' || previous>=128 ||
+      i+1==body.size() || body[i+1]!='(') {result+=c;++i;continue;}
+   result+="qgraphapply("+name+",";i+=2;
+   size_t end=body.find_first_not_of("01",i);
+   if(end!=std::string::npos && end>i && body[end]==')') {
+    std::string bits=body.substr(i,end-i);
+    result+="qbitlabel("+binaryNumeral(bits)+","+std::to_string(bits.size())+")";i=end;
+   }
+   checkSize(result);
+  }
+  checkSize(result);args[0]=std::move(result);
  }
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
@@ -1615,6 +1638,7 @@ class Parser {
     }
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";
+    if(name=="qreplace" && args.size()==3)bindGraphCalls(args);
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
