@@ -232,6 +232,9 @@ int main() {
   std::string expansion="0";
   for(unsigned i=0;i<20;++i)expansion="\\ketbra{"+expansion+"}";
   rejects(expansion);
+  equal(R"(\begin{pmatrix}s_{n-1}\\\vdots\\s_0\end{pmatrix})", "qdescendingcolumn(\"s_\",(n-1),0)");
+  equal("[s_5; ⋮; s_2; s_1; s_0]", "qdescendingcolumn(\"s_\",(5),2)");
+  for(const auto &bad:{"[s_5; ⋮; s_2; s_0]","[s_5; ⋮; s_1; t_0]","[s_5; ⋮; ⋮; s_0]"})rejects(bad);
   equal("[alpha_0; alpha_1; ⋮; alpha_(n-1)]", "qindexedcolumn(\"alpha_\",(n-1),1)");
   equal("[α_0; ⋮; α_{n-1}]", "qindexedcolumn(\"α_\",(n-1),0)");
   equal(R"(\begin{pmatrix}\alpha_0\\\alpha_1\\\vdots\\\alpha_{n-1}\end{pmatrix})", "qindexedcolumn(\"α_\",(n-1),1)");

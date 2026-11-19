@@ -484,3 +484,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm021-literal-results.json
 EXTRA_DIST += docs/learning-evidence/aud01/check-ibm021-oracle-table.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-postprocessing.json
 EXTRA_DIST += docs/learning-evidence/aud01/check-ibm021-postprocessing.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm021-descending-column.json

@@ -916,7 +916,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -1226,7 +1226,7 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
-  if(op=="qindexedcolumn" || op=="qindexedmatrix") {
+  if(op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix") {
    const bool matrix=op=="qindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
@@ -1252,7 +1252,8 @@ class QuantumIndexedFunction: public MathFunction {
    out.clearMatrix();out.resizeMatrix(dimensions[0],dimensions[1],m_zero);
    for(int row=0;row<dimensions[0];++row)for(int col=0;col<dimensions[1];++col) {
     if(CALCULATOR->aborted())return 0;
-    element(out,row,col).set(prefix+std::to_string(row)+(matrix ? ","+std::to_string(col) : ""),true);
+    int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row;
+    element(out,row,col).set(prefix+std::to_string(index)+(matrix ? ","+std::to_string(col) : ""),true);
    }
    return 1;
   }
@@ -1678,6 +1679,7 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
 void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));

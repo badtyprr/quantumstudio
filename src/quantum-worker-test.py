@@ -842,6 +842,14 @@ for flags in [(), ("--approx",)]:
 
 # Indexed column constraints must survive symbolic dimensions and substitution.
 for flags in [(), ("--approx",)]:
+    descending=data(r"quantum:\begin{pmatrix}s_{n-1}\\\vdots\\s_0\end{pmatrix}", *flags)
+    assert "⋮" in descending["display_text"]
+    for text in (descending["copy_text"], descending["display_text"]):
+        for n in (1, 3, 5):
+            actual=data(f"quantum:replace({text},n,{n})", *flags)
+            reference=data("quantum:matrix("+str(n)+",1,[" + ",".join(f'"s_{i}"' for i in reversed(range(n))) + "])", *flags)
+            assert actual["copy_text"] == reference["copy_text"]
+    assert run("quantum:replace([s_(n-1); ⋮; s_1; s_0],n,1)", "--json", *flags, success=False).stdout==b""
     symbolic=data('quantum:qindexedcolumn("alpha_",n-1,1)',*flags)
     assert symbolic['rows']==symbolic['columns']==0
     concrete=data('quantum:replace('+symbolic['copy_text']+',n,3)',*flags)

@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumTeX.h"
+#include <algorithm>
 #include <cctype>
 #include <map>
 #include <stdexcept>
@@ -283,10 +284,11 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   if(close!=std::string::npos)rows[row]=trim(rows[row].substr(close+1));
  }
  auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
- if(rows.size()<3 || rows[rows.size()-2]!=marker || rows.size()>1027)invalid();
- std::string family, last;
+ if(rows.size()<3 || rows.size()>1027 || (rows[1]!=marker && rows[rows.size()-2]!=marker))invalid();
+ std::string family;
+ std::vector<std::string> indices;
  for(size_t row=0;row<rows.size();++row) {
-  if(row==rows.size()-2)continue;
+  if(rows[row]==marker)continue;
   const std::string &entry=rows[row];size_t sub=entry.find('_');
   if(sub==std::string::npos || sub==0)invalid();
   std::string name=trim(entry.substr(0,sub)), index=trim(entry.substr(sub+1));
@@ -301,10 +303,15 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   // Endpoint arithmetic deliberately excludes separators, calls, and nested
   // subscripts: those require a more explicit indexed construction.
   for(unsigned char c:index)if(c<128 && !std::isalnum(c) && !std::isspace(c) && ( !grouped || (c!='+' && c!='-' && c!='*' && c!='/')))invalid();
-  if(row+1<rows.size()) {if(index!=std::to_string(row))invalid();}
-  else last=index;
+  indices.push_back(index);
  }
- return "qindexedcolumn(\""+quantumTeX(family)+"_\",("+last+"),"+std::to_string(rows.size()-3)+")";
+ if(indices.size()+1!=rows.size())invalid();
+ bool descending=rows[1]==marker && indices.back()=="0" && !(rows[rows.size()-2]==marker && indices.front()=="0");
+ if(descending)std::reverse(indices.begin(),indices.end());
+ else if(rows[rows.size()-2]!=marker)invalid();
+ for(size_t i=0;i+1<indices.size();++i)if(indices[i]!=std::to_string(i))invalid();
+ const char *operation=descending ? "qdescendingcolumn" : "qindexedcolumn";
+ return std::string(operation)+"(\""+quantumTeX(family)+"_\",("+indices.back()+"),"+std::to_string(rows.size()-3)+")";
 }
 // Split only at the current matrix level; commas in grouped paired indices
 // and delimiters in quoted labels must not create extra cells.

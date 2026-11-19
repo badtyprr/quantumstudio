@@ -189,7 +189,7 @@ class Printer {
    const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
    return Fragment(grouped(render(value[0],depth+1),6)+operators[value[2].number().intValue()]+grouped(render(value[1],depth+1),6),5);
   }
-  if((name=="qindexedcolumn" && value.size()==3) || (name=="qindexedmatrix" && value.size()==5)) {
+  if(((name=="qindexedcolumn" || name=="qdescendingcolumn") && value.size()==3) || (name=="qindexedmatrix" && value.size()==5)) {
    const bool matrix=name=="qindexedmatrix";
    std::string prefix=value[0].isSymbolic() ? value[0].symbol() : "";
    bool safe=prefix.size()>1 && prefix.back()=='_';
@@ -207,6 +207,11 @@ class Printer {
    }
    if(safe && !matrix) {
     std::string text="[";
+    if(name=="qdescendingcolumn") {
+     text+=prefix+"("+endpoints[0]+"); ⋮";
+     for(int row=minima[0];row>=0;--row)text+="; "+prefix+std::to_string(row);
+     return Fragment(text+"]");
+    }
     for(int row=0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
     return Fragment(text+"⋮; "+prefix+"("+endpoints[0]+")]");
    }
