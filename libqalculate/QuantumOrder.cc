@@ -309,14 +309,25 @@ bool introducesUnknown(const MathStructure &result,const MathStructure &operands
  for(size_t k=0;k<result.size();++k)if(introducesUnknown(result[k],operands))return true;
  return false;
 }
+// Infer the dimension before evaluation turns an unsized identity into a
+// two-dimensional matrix. Grouping parentheses are absent at this stage.
+bool inferProductIdentity(MathStructure &identity,const MathStructure &product) {
+ if(!identity.isFunction() || identity.function()->referenceName()!="qimplicitidentity" || !product.isFunction())return false;
+ const std::string &op=product.function()->referenceName();
+ if((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag")))return false;
+ identity.set(CALCULATOR->getFunction("qidentitylike"),&product,NULL);return true;
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
  ExpressionItem *copy() const {return new QuantumOrderFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;args[2].eval(eo);
-  args[0].eval(eo);
   bool equality=args[2].isNumber() && args[2].number()==4;
+  if(equality && (inferProductIdentity(args[0],args[1]) || inferProductIdentity(args[1],args[0]))) {
+   out.set(this,&args[0],&args[1],&args[2],NULL);out.eval(eo);return 1;
+  }
+  args[0].eval(eo);
   MathStructure rows,columns;
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
@@ -372,11 +383,9 @@ class QuantumOrderFunction: public MathFunction {
    bool equal=false;
    // A state family can be defined later. Keep each matrix on its own
    // side of the comparison and retain evaluated arguments for re-entry.
-   if(kind>=4 && !args[0].equals(args[1]) &&
-      (args[0].containsFunction(CALCULATOR->getFunction("qstatecall")) ||
-       args[1].containsFunction(CALCULATOR->getFunction("qstatecall")) ||
-       args[0].containsFunction(CALCULATOR->getFunction("qstatecalls")) ||
-       args[1].containsFunction(CALCULATOR->getFunction("qstatecalls")))) {
+   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate"}) {
+    const auto function=CALCULATOR->getFunction(state);
+    if(!args[0].containsFunction(function) && !args[1].containsFunction(function))continue;
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }
@@ -452,6 +461,10 @@ class QuantumEqualityChain: public MathFunction {
    CALCULATOR->error(true,"An equality chain requires 3 to 128 operands.",NULL);return 0;
   }
   MathStructure operands=raw[0],dimension;bool known=false,consistent=true;
+  for(size_t k=1;k<operands.size();++k) {
+   inferProductIdentity(operands[k],operands[k-1]);
+   inferProductIdentity(operands[k-1],operands[k]);
+  }
   for(size_t k=0;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
    operands[k].eval(eo);MathStructure rows,columns;

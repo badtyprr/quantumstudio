@@ -2119,13 +2119,6 @@ class Parser {
   list="qindexedlist("+indexableLabel(a.substr(1,split))+","+start+","+end+",vector())";return true;
  }
  void prepareEquality(std::string &left,std::string &right) {
-  // An unsized identity in an adjoint-product equation shares its space.
-  // Explicit gate I and explicit identity matrices retain their given size.
-  auto inferIdentity=[](std::string &identity,const std::string &product) {
-   if(identity=="qimplicitidentity()" && (product.compare(0,10,"qadjacent(")==0 || product.compare(0,5,"qmul(")==0) &&
-      product.find("qdag(")!=std::string::npos)identity="qidentitylike("+product+")";
-  };
-  inferIdentity(left,right);inferIdentity(right,left);
   preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);

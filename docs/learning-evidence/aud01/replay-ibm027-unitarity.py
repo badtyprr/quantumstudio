@@ -45,6 +45,15 @@ for fixed in ("I", "identity(2)", "matrix(2,2,[1,0,0,1])"):
     assert evaluate(f"replace((U U^{{\\dagger}}={fixed}),U,identity(3))") == "0"
 assert evaluate(r"\mathbb{I}") == evaluate("identity(2)")
 assert evaluate(r"replace((\mathbb{I}=U U^{\dagger}),U,identity(3))") == "1"
+for product in (r"U U^{\dagger}", r"U^{\dagger} U"):
+    for depth in range(3):
+        term = "(" * depth + product + ")" * depth
+        for identity in (r"\mathbb{I}", r"((\mathbb{I}))"):
+            for equation in (f"{term}={identity}", f"{identity}={term}", f"{term}={identity}={term}"):
+                saved = evaluate(equation)
+                for form in (equation, saved):
+                    assert evaluate(f"replace(({form}),U,identity(3))") == "1", form
+                    assert evaluate(f"replace(({form}),U,matrix(2,2,[1,1,0,1]))") == "0", form
 if args.gui_inputs:
     args.gui_inputs.write_text(json.dumps(inputs, ensure_ascii=False), encoding="utf-8")
 print("Verified dimension-dependent unitarity and fixed-size identities.")

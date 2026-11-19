@@ -55,6 +55,23 @@ for index in (0, 4, "1/2"):
     assert rejected.returncode != 0 and b"index" in rejected.stderr.lower()
 late = copied(bind(canonical, [("j", 4)]))
 assert request(bind(late, [("N", 3)])).returncode != 0
+# Individual eigenvector and eigenvalue expressions share the same free
+# selector as the full derivation, even without a spectral sum in scope.
+short = {r["id"][-4:]: r["literal"] for r in rows}
+for name, key, value in [("M024", "λ_2", "3"), ("M026", "ψ_2", "basis(1,3)")]:
+    for body in (short[name].strip("$"), copied(short[name])):
+        assignments = [(key, value), ("j", 2)]
+        for order in (assignments, assignments[::-1]):
+            saved = copied(bind(body, order[:1]))
+            assert copied(bind(saved, order[1:])) == copied(value), (name, order, saved)
+        assert copied(bind(body, [("j", 2)])) == copied(short[name].replace("_j", "_2"))
+for body in (short["M020"].strip("$").strip().rstrip("."), copied(short["M020"])):
+    for weight, expected in [(2, "1"), (3, "0")]:
+        data = [("M", "matrix(3,3,[1,0,0,0,2,0,0,0,-1])"),
+                ("ψ_2", "basis(1,3)"), ("λ_2", weight)]
+        for order in (data + [("j", 2)], [("j", 2)] + data):
+            saved = copied(bind(body, order[:2]))
+            assert copied(bind(saved, order[2:])) == expected, (order, saved)
 if args.gui_inputs:
     args.gui_inputs.write_text(json.dumps(inputs, ensure_ascii=False), encoding="utf-8")
 print("Verified selection of all three eigenpairs, assignment order, partial copies and range errors.")

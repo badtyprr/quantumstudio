@@ -27,6 +27,14 @@ def evaluate(body, state=None):
 
 inputs = [[r["id"], r["literal"]] for r in rows]
 family = "cos(α)|0> + sin(α)|1>"
+# The parameter on both sides of M043 survives saving the specialized
+# equation before the user supplies the state-family definition.
+definition = next(r["literal"] for r in rows if r["id"].endswith("M043"))
+for body in (definition.strip("$").strip().rstrip("."), evaluate(definition)["copy_text"]):
+    for angle in ("pi/8", "5*pi/8", "0"):
+        selected = evaluate(f"replace(({body}),θ,({angle}))")["copy_text"]
+        assert evaluate(selected, family)["copy_text"] == "1", selected
+        assert evaluate(selected, "sin(α)|0> - cos(α)|1>")["copy_text"] == "0", selected
 for key, expected, rejected in [("M042", "1", "0"),
                                 ("M044", r"\begin{gathered}1\\1\end{gathered}", r"\begin{gathered}0\\0\end{gathered}")]:
     original = source[key]

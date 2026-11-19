@@ -1085,6 +1085,55 @@ void prepareSpectralLookups(MathStructure &expression) {
   } else spectralReferences(expression,ket,weight,ketLookup,weightLookup);
  }
 }
+// In a state-family equation, the suffix on the ket names the parameter
+// occurring on the other side. Preserve its value if the family is loaded
+// after the substitution and the partially evaluated equation is copied.
+void bindStateEquationParameter(MathStructure &equation,const MathStructure &parameter) {
+ if(!equation.isFunction() || equation.function()->referenceName()!="qcompare" ||
+    equation.size()!=3 || !equation[2].isNumber() || equation[2].number()!=4)return;
+ const std::string name=parameter.isVariable() ? parameter.variable()->referenceName() : parameter.symbol();
+ for(unsigned side=0;side<2;++side) {
+  MathStructure &ket=equation[side];
+  if(!ket.isFunction() || ket.size()!=1 || !ket[0].isSymbolic() ||
+     (ket.function()->referenceName()!="qketstate" && ket.function()->referenceName()!="qnamedket") ||
+     !equation[1-side].contains(parameter))continue;
+  const std::string label=ket[0].symbol();
+  size_t split=label.rfind('_');
+  if(split==std::string::npos || !split || label.substr(split+1)!=name)continue;
+  Variable *state=CALCULATOR->getActiveVariable(label);
+  if(state && !state->isBuiltin() && state->isKnown())continue;
+  MathStructure family(label.substr(0,split),true);
+  ket.set(CALCULATOR->getFunction("qstatecall"),&family,&parameter,NULL);
+  equation.childrenUpdated();
+ }
+}
+// A free subscript in a single entry has a singleton index range. Prepare
+// the lookup only for an assignment to the selector or a concrete member.
+// This also retains assignments made before the selector is known.
+void prepareFreeEntry(MathStructure &term,const MathStructure &target) {
+ bool ket=term.isFunction() && term.size()==1 && term[0].isSymbolic() &&
+  (term.function()->referenceName()=="qnamedket" || term.function()->referenceName()=="qketstate");
+ if(!ket && !term.isSymbolic()) {
+  if(!term.isFunction())return;
+  const std::string &op=term.function()->referenceName();
+  if(op!="qcompare" && op!="qadjacent" && op!="qmul")return;
+  for(size_t k=0;k<(op=="qcompare" ? 2 : term.size());++k)prepareFreeEntry(term[k],target);
+  term.childrenUpdated();return;
+ }
+ const std::string label=ket ? term[0].symbol() : term.symbol();
+ if(label.size()<3 || label[label.size()-2]!='_')return;
+ const unsigned char letter=label.back();
+ if(letter>=128 || !std::isalpha(letter) || letter=='i' || letter=='e')return;
+ const std::string prefix=label.substr(0,label.size()-1),selector(1,letter);
+ const std::string name=target.isVariable() ? target.variable()->referenceName() : target.symbol();
+ Number member;
+ if(name!=selector && !registerBitIndex(target,prefix,member))return;
+ Variable *variable=CALCULATOR->getVariable(selector);
+ MathStructure index=variable && !variable->isKnown() ? MathStructure(variable) : MathStructure(selector,true);
+ MathStructure familyName(prefix,true),history;history.clearVector();
+ MathStructure family(CALCULATOR->getFunction("qindexedentries"),&familyName,&index,&index,&history,NULL);
+ term.set(CALCULATOR->getFunction(ket ? "qspectralket" : "qspectralentry"),&family,&index,NULL);
+}
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
@@ -1579,6 +1628,8 @@ class QuantumIndexedFunction: public MathFunction {
    prepareSpectralLookups(out);
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;
+    bindStateEquationParameter(out,at->first);
+    prepareFreeEntry(out,at->first);
     resolveIndexedLabels(out,eo,&at->first);
     // Replace existing occurrences before storing a new assignment: otherwise
     // x_0 -> x_0+1 would be applied twice inside the newly stored value.
