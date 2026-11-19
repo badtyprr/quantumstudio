@@ -118,3 +118,21 @@ for x, output in enumerate(outputs):
         chain = f"replace(replace(replace({chain},z,bitstring({output},5)),w,bitstring({x},3)),y,bitstring({y},3))"
         assert evaluate(chain)["copy_text"] == "1", (x, y)
 print("Both promise predicates and the M088 equality chain passed for all 64 pairs")
+
+# Exercise complete source expressions and their copied symbolic forms.
+injective = "qset(vector(" + ",".join(
+    f"tuple(bitstring({x},3),bitstring({x},5))" for x in range(8)) + "))"
+for number, graph, secret in [(7, table["graph"], 3), (7, table["graph"], 4),
+                              (16, table["graph"], 0), (16, injective, 0)]:
+    source = bound_body(number)
+    copied = evaluate(source)["copy_text"]
+    for body in (source, copied):
+        predicate = f"replace(({body}),f,{graph})"
+        if number == 7:
+            predicate = f"replace({predicate},s,bitstring({secret},3))"
+        for x in range(8):
+            for y in range(8):
+                same_output = x == y if graph == injective else outputs[x] == outputs[y]
+                expected = same_output == (x == y or (x ^ secret) == y)
+                assert evaluate(at_pair(predicate, x, y))["copy_text"] == str(int(expected)), (number, secret, x, y)
+print("Complete M007 and M016 predicates passed for source and copied input")

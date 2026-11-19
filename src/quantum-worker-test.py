@@ -34,6 +34,13 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# Biconditional has lower precedence than disjunction and accepts grouped predicates.
+for lhs in (0, 1):
+    for rhs in (0, 1):
+        assert data(rf"quantum:[{lhs}=1] \Leftrightarrow [{rhs}=1]")["copy_text"] == str(int(lhs == rhs))
+assert data(r"quantum:1 \vee 0 \iff 0")["copy_text"] == "0"
+assert b"Boolean predicates" in run(r"quantum:2 \iff 0", "--json", success=False).stderr
+
 # Symbolic direct sum keeps its operand domains through Copy and substitution.
 symbolic_sum = data(r"quantum:w \oplus s")["copy_text"]
 assert data(f"quantum:replace(replace({symbolic_sum},w,6),s,3)")["copy_text"] == "5"

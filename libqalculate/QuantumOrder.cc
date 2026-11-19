@@ -110,6 +110,22 @@ class QuantumOrderFunction: public MathFunction {
   }
  }
 };
+class QuantumEquivalence: public MathFunction {
+ public:
+ QuantumEquivalence():MathFunction("qiff",2) {}
+ ExpressionItem *copy() const {return new QuantumEquivalence(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  bool truth[2]={false,false},pending=false;
+  for(unsigned k=0;k<2;++k) {
+   MathStructure predicate=raw[k];predicate.eval(eo);
+   if(predicate.isZero() || predicate.isOne())truth[k]=predicate.isOne();
+   else if(predicate.containsUnknowns() && !predicate.isVector())pending=true;
+   else {CALCULATOR->error(true,"Logical equivalence requires two Boolean predicates.",NULL);return 0;}
+  }
+  if(pending)return 0;
+  out=truth[0]==truth[1] ? 1 : 0;return 1;
+ }
+};
 class QuantumEqualityChain: public MathFunction {
  public:
  QuantumEqualityChain():MathFunction("qequalchain",1) {}
@@ -156,6 +172,7 @@ class QuantumEqualityChain: public MathFunction {
 };
 }
 void registerQuantumOrder(Calculator &calculator) {
+ calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());
 }

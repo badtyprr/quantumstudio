@@ -224,7 +224,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qbasis",2},
  {"qindexxor",2},
  {"qoplus",2},
- {"qcompare",3},{"qequalchain",1},
+ {"qiff",2},{"qcompare",3},{"qequalchain",1},
  {"qbitdot",2},{"qcenterdot",2},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
@@ -537,12 +537,14 @@ class Parser {
    body.replace(at,end-at+1,replacement);checkSize(body);at+=replacement.size();
   }
  }
- // Only an explicitly bound graph gives calls to its name function semantics.
- // Delay application until substitutions and set-sum indices have been bound.
+ // Explicit graph bindings turn calls to the bound name into applications.
+ // Delay lookup until substitutions and set-sum indices have been bound.
  static void bindGraphCalls(std::vector<std::string> &args) {
   const std::string &name=args[1];
   if(name.size()!=1 || name=="e" || name=="i" || name[0]<'a' || name[0]>'z' || args[2].compare(0,5,"qset(")!=0)return;
-  const std::string &body=args[0];
+  args[0]=graphCalls(args[0],name);
+ }
+ static std::string graphCalls(const std::string &body,const std::string &name) {
   const std::string stateCall="qstatecall(\""+name+"\",";
   std::vector<size_t> ketDepths;
   size_t depth=0;
@@ -573,7 +575,7 @@ class Parser {
    }
    checkSize(result);
   }
-  checkSize(result);args[0]=std::move(result);
+  checkSize(result);return result;
  }
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
@@ -700,7 +702,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -1206,7 +1208,7 @@ class Parser {
     a=binaryNumeral(a);ws();
     if(p<s.size() && (s[p]=='_' || s.compare(p,std::string("₂").size(),"₂")==0))throw std::runtime_error("A binary numeral cannot have a second radix subscript.");
    }
-   if(a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
+   if(a=="iff" || a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
    // A scalar prefix is its own token so powers/daggers bind to the gate:
    // iY^2 means i*(Y^2), while (iY)^2 squares the entire product.
    // Match complete gate names first, notably iSWAP.
@@ -1862,9 +1864,46 @@ class Parser {
   while(takeWord("xor")) {result="lxor("+result+","+logicalAnd()+")";checkSize(result);}
   return result;
  }
- std::string expression() {
+ std::string logicalOr() {
   std::string result=logicalXor();
   while(takeWord("or")) {result="("+result+"||"+logicalXor()+")";checkSize(result);}
+  return result;
+ }
+ // In a biconditional, brackets around one predicate are logical grouping.
+ // Explicit vectors and multi-entry bracket literals retain their own shape.
+ std::string equivalenceOperand(std::string value,size_t start) {
+  if(s[start]=='[' && value.size()>8 && value.compare(0,7,"vector(")==0)
+   value=value.substr(7,value.size()-8);
+  // The two unary applications in a collision predicate refer to the same
+  // function. Keep them as applications until a graph is supplied.
+  if(value.size()<19 || value.compare(0,9,"qcompare(")!=0)return value;
+  const char name=value[9];
+  if(name<'a' || name>'z' || name=='i' || name=='e')return value;
+  size_t pos=9;
+  for(unsigned call=0;call<2;++call) {
+   if(pos+2>=value.size() || value[pos++]!=name || value[pos++]!='(')return value;
+   unsigned depth=1;char quote=0;
+   while(pos<value.size() && depth) {
+    char c=value[pos++];
+    if(quote) {if(c==quote)quote=0;continue;}
+    if(c=='"' || c=='\'')quote=c;
+    else if(c=='(' || c=='[')++depth;
+    else if(c==')' || c==']')--depth;
+    else if(c==',' && depth==1)return value;
+   }
+   if(pos>=value.size() || value[pos++]!=',')return value;
+  }
+  if(value.substr(pos)!="4)")return value;
+  return graphCalls(value,std::string(1,name));
+ }
+ std::string expression() {
+  ws();size_t start=p;std::string result=logicalOr();
+  if(!takeWord("iff"))return result;
+  result=equivalenceOperand(result,start);
+  do {
+   ws();start=p;std::string right=logicalOr();
+   result="qiff("+result+","+equivalenceOperand(right,start)+")";checkSize(result);
+  } while(takeWord("iff"));
   return result;
  }
  public:

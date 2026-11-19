@@ -1,0 +1,30 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "f8e137cdbc3f538fb2742917b5cbf53940659b2bc6eca4b5a83241ecc95dc9dd",
+  "total": 177,
+  "exit_codes": {
+    "2": 26,
+    "0": 151
+  },
+  "changes": {
+    "IBM021-c0-M007": {
+      "from": 2,
+      "to": 0,
+      "result": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),(qcompare(qoplus(x,'s'),y,4) or qcompare(x,y,4)))"
+    },
+    "IBM021-c0-M016": {
+      "from": 2,
+      "to": 0,
+      "result": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),qcompare(x,y,4))"
+    }
+  },
+  "gui": {
+    "M007": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),(qcompare(qoplus(x,'s'),y,4) or qcompare(x,y,4)))",
+    "M007-y0": "1",
+    "M007-y3": "0",
+    "M016": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),qcompare(x,y,4))",
+    "M016-y0": "1",
+    "M016-y3": "0"
+  },
+  "gui_checks": 66
+}
