@@ -1,0 +1,37 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "193b009027ad5734a8fc43e1bf3f34f1a52fb55befc1841693e9e170938b123d",
+  "total": 177,
+  "exit_codes": {
+    "2": 13,
+    "0": 164
+  },
+  "changes": {
+    "IBM021-c0-M075": {
+      "from": 2,
+      "to": 0,
+      "result": "(qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(z))),\"qboundindex_0\")))^(2)"
+    },
+    "IBM021-c0-M088": {
+      "from": 2,
+      "to": 0,
+      "result": "qequalchain(vector((qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(z))),\"qboundindex_0\")))^(2),|(\u22121)^qcenterdot('w', y) + (\u22121)^qcenterdot(qoplus('w', 's'), y)|^2,|(\u22121)^qcenterdot('w', y)|^2 \u22c5 |1 + (\u22121)^qcenterdot('s', y)|^2,|1 + (\u22121)^qcenterdot(y, 's')|^2,if((qcenterdot(y,'s'))==(0),4,if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))"
+    },
+    "IBM021-c0-M102": {
+      "from": 0,
+      "to": 0,
+      "result": "qequalchain(vector('p'y,qadjacent(1 \u2215 qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")),if((qcenterdot(y,'s'))==(0),1 \u2215 qpower(2, qsub(n, 1)),if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))"
+    }
+  },
+  "gui_bound_results": {
+    "IBM021-c0-M075": {
+      "0": "4",
+      "1": "0"
+    },
+    "IBM021-c0-M088": {
+      "0": "1",
+      "1": "1"
+    }
+  },
+  "gui_checks": 22
+}

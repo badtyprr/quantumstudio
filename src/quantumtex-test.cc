@@ -21,6 +21,12 @@ int main() {
   equal("$$1.5$$","1.5");equal("$$1.$$","1.");
   equal(R"($$\left\|x\right\|^2.$$)",quantumTeX(R"($$\left\|x\right\|^2$$)"));
   equal("$$x^{2.}$$","x^(2.)");equal("$$x^2.5$$","x^2.5");
+  equal(R"($$x=2\tag{1}$$)","x=2");
+  equal(R"($$x=2\tag*{A.1}$$)","x=2");
+  equal(R"(\begin{aligned}x &= 2\tag{1}\\y &= 3\tag{2}\end{aligned})",
+        quantumTeX(R"(\begin{aligned}x &= 2\\y &= 3\end{aligned})"));
+  rejects(R"($$x\tag{1}+2$$)");rejects(R"($$x\tag{}$$)");
+  rejects(R"($$x\tag{1}\tag{2}$$)");rejects(R"($$\tag{1}$$)");
   equal("$$x..$$","x..");equal("$$x+.$$","x+.");
   equal("$$\"x.\"$$","\"x.\"");equal("x.","x.");
   equal(R"(\begin{aligned}x &= y.\end{aligned})",quantumTeX(R"(\begin{aligned}x &= y\end{aligned})"));

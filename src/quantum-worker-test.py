@@ -24,6 +24,10 @@ def data(expression, *flags):
     return value
 
 
+copied_dot = data(r"quantum:w \cdot y")["copy_text"]
+assert data(f"quantum:replace(replace({copied_dot},w,bitstring(3,2)),y,bitstring(3,2))")["copy_text"] == "0"
+assert data(f"quantum:replace(replace({copied_dot},w,3),y,3)")["copy_text"] == "9"
+
 # A centered dot is parity on bit strings, including labels supplied by a binding.
 for z in range(16):
     entries = [rf"bitstring({z},4) \cdot bitstring({x},4)" for x in range(16)]

@@ -162,3 +162,23 @@ for number in (49, 50, 56, 60):
         if number in (56, 60):
             assert answers[0] == "1", (number, z)
 print("Four unbound copies accepted the oracle in reverse row order")
+
+# Equation (1) is zero on an empty fiber. On a two-element fiber its
+# squared magnitude is four exactly when the measurement is orthogonal to s.
+numbered = formulas["IBM021-c0-M075"]
+contribution = evaluate(numbered)["copy_text"]
+assert r"\tag{1}" in numbered
+assert evaluate(numbered.replace(r"\tag{1}", ""))["copy_text"] == contribution
+derivation = evaluate(formulas["IBM021-c0-M088"])["copy_text"]
+def bind_output(body, z, y):
+    return f"replace(replace(replace(({body}),f,{table['graph']}),z,bitstring({z},5)),y,bitstring({y},3))"
+
+
+for z in range(32):
+    for y in range(8):
+        expected = 4 if z in values and (3 & y).bit_count() % 2 == 0 else 0
+        assert evaluate(bind_output(contribution, z, y))["copy_text"] == str(expected), (z, y)
+        for w in (x for x in range(8) if outputs[x] == z):
+            chain = f"replace(replace(({bind_output(derivation, z, y)}),w,bitstring({w},3)),s,bitstring(3,3))"
+            assert evaluate(chain)["copy_text"] == "1", (w, y)
+print("Numbered equation passed 256 contributions and its copied derivation passed 64 checks")

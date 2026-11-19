@@ -869,6 +869,21 @@ class TeXReader {
     if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
    }
    else if(input[pos]=='\\') {
+    // A trailing equation tag labels the display or alignment row.
+    if((depth==1 || alignment) && input.compare(pos,4,"\\tag")==0 &&
+       (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
+     pos+=4;space();if(pos<input.size() && input[pos]=='*') {++pos;space();}
+     if(pos==input.size() || input[pos++]!='{')throw std::runtime_error(error("Expected an equation tag"));
+     size_t start=pos;
+     while(pos<input.size() && input[pos]!='}' && input[pos]!='{' && input[pos]!='\\')++pos;
+     if(pos==input.size() || input[pos]!='}' || trim(input.substr(start,pos-start)).empty())
+      throw std::runtime_error(error("Expected a nonempty plain equation tag"));
+     ++pos;space();
+     bool rowEnd=alignment && (input.compare(pos,2,"\\\\")==0 || input.compare(pos,4,"\\end")==0);
+     if(trim(result).empty() || (pos!=input.size() && !rowEnd))
+      throw std::runtime_error(error("An equation tag must follow the complete expression"));
+     result=withoutDisplayPunctuation(result);continue;
+    }
     // Delimiter-form kets (\\vert ... \\rangle) do not enter stateGroup.
     // Keep ellipses contextual; the notation parser validates their bounds.
     size_t delimiter=result.find_last_of("|<>");

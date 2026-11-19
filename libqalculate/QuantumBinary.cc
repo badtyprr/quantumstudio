@@ -66,6 +66,13 @@ class QuantumBinaryFunction: public MathFunction {
   }
   if(op=="qcenterdot") {
    bool binary=isQuantumBitLabel(args[0]) && isQuantumBitLabel(args[1]);
+   auto possibleWord=[](const MathStructure &v) {
+    if(isQuantumBitLabel(v) || v.isUnknown() || v.isSymbolic())return true;
+    if(!v.isFunction())return false;
+    const auto &name=v.function()->referenceName();
+    return name=="qoplus" || name=="qbitxor" || name=="qgraphapply";
+   };
+   if(!binary && possibleWord(args[0]) && possibleWord(args[1]))return 0;
    out.set(CALCULATOR->getFunction(binary ? "qbitdot" : "qmul"),&args[0],&args[1],NULL);
    return 1;
   }

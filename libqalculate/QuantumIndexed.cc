@@ -1453,6 +1453,9 @@ class QuantumIndexedFunction: public MathFunction {
     auto sum=CALCULATOR->getFunction("qsumset");if(!sum)return 0;
     return sum->calculate(out,parameters,eo);
    }
+   // A sum over an unresolved domain can later produce a scalar or a
+   // collection. Retain the bars so substitution can determine the result.
+   if(value.isFunction() && value.function()->referenceName()=="qsumset" && value.containsUnknowns())return 0;
    if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;
