@@ -290,6 +290,29 @@ std::string indexedColumn(const std::string &raw, bool tex) {
  }
  auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
  if(rows.size()<3 || rows.size()>1027 || (rows[1]!=marker && rows[rows.size()-2]!=marker))invalid();
+ if(rows[rows.size()-2]==marker && std::count(rows.begin(),rows.end(),"0")==int(rows.size()-1))
+  return "qtexzerocolumn("+std::to_string(rows.size()-2)+")";
+ const std::string dot=tex ? "\\cdot" : "·";
+ if(rows.front().find(dot)!=std::string::npos) {
+  auto malformed=[](){throw std::runtime_error("A sample dot-product column requires consecutive one-based samples and a common right operand");};
+  if(rows[rows.size()-2]!=marker)malformed();
+  std::string family,probe,last;
+  for(size_t r=0;r<rows.size();++r) {
+   if(r==rows.size()-2)continue;
+   const std::string &entry=rows[r];size_t at=entry.find(dot);
+   if(at==std::string::npos)malformed();
+   std::string label=trim(entry.substr(0,at)),right=trim(entry.substr(at+dot.size()));
+   if(label.size()<3 || label[0]<'a' || label[0]>'z' || label[1]!='^' || right.size()!=1 || !asciiLetter(right[0]))malformed();
+   if(family.empty()) {family=label.substr(0,1);probe=right;}
+   if(label[0]!=family[0] || probe!=right)malformed();
+   std::string index=trim(label.substr(2));
+   if(index.size()>=2 && ((index.front()=='{' && index.back()=='}') || (index.front()=='(' && index.back()==')')))index=trim(index.substr(1,index.size()-2));
+   if(index.empty() || index.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/ ")!=std::string::npos)malformed();
+   if(r+1<rows.size() && index!=std::to_string(r+1))malformed();
+   last=index;
+  }
+  return "qsampledotcolumn(\""+family+"^\",("+last+"),"+probe+",vector(),"+std::to_string(rows.size()-2)+")";
+ }
  std::string family;
  std::vector<std::string> indices;
  for(size_t row=0;row<rows.size();++row) {

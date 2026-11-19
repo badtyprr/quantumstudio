@@ -329,3 +329,40 @@ for body in (definition, evaluate(definition)["copy_text"]):
             expr = f"replace(({expr}),M,{target})"
         assert evaluate(expr)["copy_text"] == expected
 print("The original and copied matrix definition agree with the matching matrix only")
+
+# Recover the three operands directly from M135 and check the printed zero rows.
+product_source, dots, zeros = [part.strip() for part in source_body(135).split("=")]
+assert product_source == "M v"
+zero_rows = re.split(r"\\\\(?:\[1mm\])?", zeros.removeprefix(r"\begin{pmatrix}").removesuffix(r"\end{pmatrix}"))
+assert [row.strip() for row in zero_rows] == ["0", "0", r"\vdots", "0"]
+# Keep the zero column's source ellipsis. Its height comes from the middle
+# column. Only the product needs the field supplied by the surrounding prose.
+binary_equation = source_body(135).replace(product_source, "gf2_mul(M,v)", 1)
+copied_equation = evaluate(binary_equation)["copy_text"]
+copied_dots = evaluate(dots)["copy_text"]
+for samples in ((3, 4), (6, 1, 3)):
+    count = len(samples)
+    entries = ",".join(bit for word in samples for bit in format(word, "03b"))
+    for secret in range(8):
+        parities = [(word & secret).bit_count() % 2 for word in samples]
+        for body in (dots, copied_dots):
+            assignments = [(f'"y^{i}"', f"bitstring({word},3)") for i, word in enumerate(samples, 1)]
+            if body == dots:
+                assignments.insert(0, ("k", count))
+            else:
+                assignments.append(("k", count))
+            for name, value in assignments + [("s", f"bitstring({secret},3)")]:
+                body = f"replace(({body}),{name},{value})"
+            measured = evaluate(body)
+            assert measured["cells"] == [[str(parity)] for parity in parities]
+        for candidate in range(8):
+            vector = ",".join(format(candidate, "03b"))
+            chain = binary_equation if candidate % 2 else copied_equation
+            bindings = [("M", f"matrix({count},3,[{entries}])"), ("v", f"matrix(3,1,[{vector}])"),
+                        ("k", count), ("s", f"bitstring({secret},3)")]
+            bindings += [(f'"y^{i}"', f"bitstring({word},3)") for i, word in enumerate(samples, 1)]
+            for name, value in (bindings if candidate % 2 else reversed(bindings)):
+                chain = f"replace(({chain}),{name},{value})"
+            target = not any(parities) and all((word & candidate).bit_count() % 2 == 0 for word in samples)
+            assert evaluate(chain)["copy_text"] == str(int(target))
+print("The source dot-product column and its copy matched 16 parity vectors and all 128 full equality checks")

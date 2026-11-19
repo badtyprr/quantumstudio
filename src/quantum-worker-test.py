@@ -937,6 +937,15 @@ for flags in [(), ("--approx",)]:
     for bad in ['qindexedmatrix("a_",n,-1,0,0)','qindexedmatrix("a_",-1,n,0,0)','qindexedmatrix("a_",n,1024,0,0)','qindexedmatrix("a_",2,1/2,0,0)','qindexedmatrix("a_",n,2,0,3)','qindexedmatrix("a_",n,m,-1,0)']:
         assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
 
+dots = r"\begin{pmatrix}z^1 \cdot t\\z^2 \cdot t\\\vdots\\z^{k} \cdot t\end{pmatrix}"
+partial_dots = data(f'quantum:replace(({dots}),"z^2",bitstring(3,2))')["copy_text"]
+expr = f'replace(replace(replace(({partial_dots}),k,2),"z^1",bitstring(1,2)),t,bitstring(3,2))'
+assert data("quantum:" + expr)["cells"] == [["1"], ["0"]]
+for bad in [dots.replace("z^2", "z^3"), dots.replace("z^2", "y^2"),
+            dots.replace("t", "x", 1), "qzerocolumnlike(matrix(1,2,[0,0]),1)",
+            "qzerocolumnlike(matrix(2,1,[0,0]),3)", "gf2_mul(M,matrix(1,1,[2]))"]:
+    run("quantum:" + bad, "--json", success=False)
+
 # Sample numbers start at one, while the bit columns run down to zero.
 sample_matrix = 'qsamplebitmatrix("z^",k,n-1,2,0)'
 sample_display = data("quantum:" + sample_matrix)["display_text"]

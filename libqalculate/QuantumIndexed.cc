@@ -225,8 +225,9 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
  bool changed=false;
- const bool samples=value.isFunction() && value.function()->referenceName()=="qfamilymembers";
- if(value.isFunction() && (samples || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==4 && value[0].isSymbolic()) {
+ const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
+ const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
+ if(value.isFunction() && (samples || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
   Number index;
   if(registerBitIndex(label,value[0].symbol(),index) && value[3].isVector() && value[3].size()%2==0) {
    // Do not claim an unrelated label when concrete bounds already exclude it.
@@ -926,7 +927,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qsampledotcolumn" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -1160,7 +1161,22 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending)return 0;
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
-  if(op=="qfamilymembers") {
+  if(op=="qzerocolumnlike") {
+   if(!raw[1].isNumber() || !raw[1].number().isInteger() || raw[1].number()<1 || raw[1].number()>1024) {
+    CALCULATOR->error(true,"Invalid displayed zero-column height.",NULL);return 0;
+   }
+   MathStructure column=raw[0];column.eval(eo);
+   if(!column.isMatrix()) {
+    if(!column.containsUnknowns())CALCULATOR->error(true,"An ellipsis in a zero column requires a matching column vector.",NULL);
+    return 0;
+   }
+   if(column.columns()!=1 || column.rows()>1024 || Number(column.rows())<raw[1].number()) {
+    CALCULATOR->error(true,"The adjacent column must include the displayed zero rows.",NULL);return 0;
+   }
+   out.clearMatrix();out.resizeMatrix(column.rows(),1,m_zero);return 1;
+  }
+  if(op=="qfamilymembers" || op=="qsampledotcolumn") {
+   const bool column=op=="qsampledotcolumn";
    if(!raw[0].isSymbolic() || raw[0].symbol().size()!=2 || raw[0].symbol()[0]<'a' ||
       raw[0].symbol()[0]>'z' || raw[0].symbol()[1]!='^' || !raw[3].isVector() || raw[3].size()%2) {
     CALCULATOR->error(true,"Invalid measurement family or assignments.",NULL);return 0;
@@ -1169,6 +1185,14 @@ class QuantumIndexedFunction: public MathFunction {
    if(!count.isNumber() && count.containsUnknowns())return 0;
    if(!count.isNumber() || !count.number().isInteger() || count.number()<1) {
     CALCULATOR->error(true,"A measurement count must be a positive integer.",NULL);return 0;
+   }
+   int rows=0;
+   if(column) {
+    if(!raw[4].isNumber() || !raw[4].number().isInteger() || raw[4].number()<1 ||
+       count.number()<raw[4].number() || count.number()>1024) {
+     CALCULATOR->error(true,"Sample column height must include its displayed rows and be at most 1024.",NULL);return 0;
+    }
+    rows=count.number().intValue();out.clearMatrix();out.resizeMatrix(rows,1,m_zero);
    }
    std::set<Number> supplied;
    size_t matched=0;
@@ -1179,9 +1203,20 @@ class QuantumIndexedFunction: public MathFunction {
      CALCULATOR->error(true,"Measurement assignments require distinct positive indices.",NULL);return 0;
     }
     if(index.number()>count.number())continue;
+    if(column) {
+     element(out,index.number().intValue()-1,0).set(CALCULATOR->getFunction("qcenterdot"),&raw[3][k+1],&raw[2],NULL);
+     continue;
+    }
     MathStructure member(CALCULATOR->getFunction("qmember"),&raw[3][k+1],&raw[2],NULL);member.eval(eo);
     if(member.isZero()) {out=m_zero;return 1;}
     if(member.isOne())++matched;
+   }
+   if(column) {
+    for(int row=0;row<rows;++row)if(!supplied.count(Number(row+1))) {
+     MathStructure sample(raw[0].symbol()+std::to_string(row+1),true);
+     element(out,row,0).set(CALCULATOR->getFunction("qcenterdot"),&sample,&raw[2],NULL);
+    }
+    return 1;
    }
    if(Number(matched)==count.number()) {out=m_one;return 1;}
    return 0;
@@ -1841,6 +1876,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
+ calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
  calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));

@@ -78,7 +78,12 @@ class QuantumBinaryFunction: public MathFunction {
   }
   if(op=="qgf2mul") {
    std::vector<std::vector<unsigned char>> left,right;
-   if(!binaryMatrix(a,left) || !binaryMatrix(args[1],right))return 0;
+   // A named matrix or vector can be supplied after a formula is copied.
+   // Validate each concrete operand even while the other is still unknown.
+   bool pendingLeft=a.isUnknown() || a.isSymbolic();
+   bool pendingRight=args[1].isUnknown() || args[1].isSymbolic();
+   if((!pendingLeft && !binaryMatrix(a,left)) || (!pendingRight && !binaryMatrix(args[1],right)))return 0;
+   if(pendingLeft || pendingRight)return 0;
    if(left[0].size()!=right.size()) {CALCULATOR->error(true,"GF(2) matrix multiplication requires matching inner dimensions.",NULL);return 0;}
    out.clearMatrix();out.resizeMatrix(left.size(),right[0].size(),m_zero);
    for(size_t r=0;r<left.size();++r) {
