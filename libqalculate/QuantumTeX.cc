@@ -655,62 +655,63 @@ class TeXReader {
   if(required && order.empty())throw std::runtime_error(error("Matrix norms require an explicit norm convention"));
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
+ std::string setLiteral(bool escaped) {
+  ++setExpressions;std::string contents=read(escaped ? 0 : '}',false,"",escaped);--setExpressions;
+  size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
+  std::vector<std::string> entries;
+  for(size_t j=0;j<contents.size();++j) {
+   char token=contents[j];if(quote){if(token==quote)quote=0;continue;}
+   if(token=='"' || token=='\''){quote=token;continue;}
+   if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
+   else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
+   else if(!nesting && (separator==std::string::npos || membership==std::string::npos) && contents.compare(j,3,"∈")==0) {
+    if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
+   } else if(!nesting && token==':') {
+    if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
+   }
+  }
+  if(membership==std::string::npos && separator==std::string::npos) {
+   entries.push_back(trim(contents.substr(startEntry)));
+   bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
+   std::string alphabet="vector("+contents+")";
+   if(ellipsis) {
+    alphabet=openIndexedFamily(entries);
+    if(alphabet.empty())alphabet=indexedKetSet(entries);
+    if(alphabet.empty()) {
+     if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
+     alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+    }
+   }
+   size_t afterSet=pos;space();
+   if(pos<input.size() && input[pos]=='^') {
+    bool zero=false,one=false,binary=true;
+    for(const auto &entry:entries) {if(entry=="0")zero=true;else if(entry=="1")one=true;else binary=false;}
+    ++pos;std::string count=argument();
+    if(binary && zero && one)return "qbitstrings("+count+")";
+    return "qcartesianpower("+alphabet+","+count+")";
+   }
+   pos=afterSet;
+   if(ellipsis)return alphabet;
+   return "qset(vector("+contents+"))";
+  }
+  if(membership!=std::string::npos && separator!=std::string::npos && separator<membership) {
+   std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
+   if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
+   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
+   return "qsetimage("+body+","+collection+","+index+")";
+  }
+  if(membership==std::string::npos || separator==std::string::npos)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
+  std::string index=trim(contents.substr(0,membership)),collection=trim(contents.substr(membership+3,separator-membership-3)),predicate=trim(contents.substr(separator+1));
+  if(index.empty() || std::isdigit((unsigned char)index[0]) || collection.empty() || predicate.empty())throw std::runtime_error(error("A set builder requires an index, collection and predicate"));
+  for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
+  return "qsetfilter("+predicate+","+collection+","+index+")";
+ }
  std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false,std::string *preceding=nullptr) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
-   if(c=='{') {
-    ++setExpressions;std::string contents=read(0,false,"",true);--setExpressions;
-    size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
-    std::vector<std::string> entries;
-    for(size_t j=0;j<contents.size();++j) {
-     char token=contents[j];if(quote){if(token==quote)quote=0;continue;}
-     if(token=='"' || token=='\''){quote=token;continue;}
-     if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
-     else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
-     else if(!nesting && (separator==std::string::npos || membership==std::string::npos) && contents.compare(j,3,"∈")==0) {
-      if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
-     } else if(!nesting && token==':') {
-      if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
-     }
-    }
-    if(membership==std::string::npos && separator==std::string::npos) {
-     entries.push_back(trim(contents.substr(startEntry)));
-     bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
-     std::string alphabet="vector("+contents+")";
-     if(ellipsis) {
-      alphabet=openIndexedFamily(entries);
-      if(alphabet.empty())alphabet=indexedKetSet(entries);
-      if(alphabet.empty()) {
-       if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
-       alphabet="qindexrange("+entries[0]+","+entries[2]+")";
-      }
-     }
-     size_t afterSet=pos;space();
-     if(pos<input.size() && input[pos]=='^') {
-      bool zero=false,one=false,binary=true;
-      for(const auto &entry:entries) {if(entry=="0")zero=true;else if(entry=="1")one=true;else binary=false;}
-      ++pos;std::string count=argument();
-      if(binary && zero && one)return "qbitstrings("+count+")";
-      return "qcartesianpower("+alphabet+","+count+")";
-     }
-     pos=afterSet;
-     if(ellipsis)return alphabet;
-     return "qset(vector("+contents+"))";
-    }
-    if(membership!=std::string::npos && separator!=std::string::npos && separator<membership) {
-     std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
-     if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
-     for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
-     return "qsetimage("+body+","+collection+","+index+")";
-    }
-    if(membership==std::string::npos || separator==std::string::npos)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
-    std::string index=trim(contents.substr(0,membership)),collection=trim(contents.substr(membership+3,separator-membership-3)),predicate=trim(contents.substr(separator+1));
-    if(index.empty() || std::isdigit((unsigned char)index[0]) || collection.empty() || predicate.empty())throw std::runtime_error(error("A set builder requires an index, collection and predicate"));
-    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
-    return "qsetfilter("+predicate+","+collection+","+index+")";
-   }
+   if(c=='{')return setLiteral(true);
    if(c=='}')throw std::runtime_error(error("Unmatched set delimiter"));
    if(c=='\\' && matrix) {
     space();
@@ -1068,6 +1069,14 @@ class TeXReader {
      }
      if(product.empty())product=scalarProductSum(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
+    }
+   }
+   // The display uses ordinary braces for the finite domain after a
+   // Unicode membership sign. TeX grouping elsewhere keeps its meaning.
+   if(input.compare(pos,3,"∈")==0 || input.compare(pos,3,"∉")==0) {
+    size_t next=input.find_first_not_of(" \t\r\n",pos+3);
+    if(next!=std::string::npos && input[next]=='{') {
+     result+=input.substr(pos,next-pos);pos=next+1;result+=setLiteral(false);continue;
     }
    }
    // Quoted labels are literal data; do not reinterpret operator subscripts.
