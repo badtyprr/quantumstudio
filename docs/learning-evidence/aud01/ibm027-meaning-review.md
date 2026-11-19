@@ -7,7 +7,7 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 001, 011, 018, 025, 049 | Arbitrary normal matrix M | Preserved as the symbol M. |
 | 002 | M commutes with its adjoint | Preserved both products. [Six matrix controls](ibm027-normality.json) distinguish normal from nonnormal matrices. |
 | 003, 054, 068, 077, 081 | Unitary operator U | Preserved as U. Unitarity is a premise in the prose. |
-| 004 | Both products of a unitary with its adjoint equal the identity of the same dimension | **Open.** Copy contains an explicit two-dimensional identity. Binding U to the 2D identity returns true. Binding the 3D identity or a cyclic three-by-three permutation returns false. |
+| 004 | Both products of a unitary with its adjoint equal the identity of the same dimension | The unsized identity now follows the adjoint product. [Unitarity controls](ibm027-unitarity.json) accept two-, three- and four-dimensional unitary matrices and reject a shear and both rectangular isometries tested. |
 | 005, 006, 007 | Arbitrary Hermitian H and the equality of both products with its square | **Open.** H becomes the Hadamard matrix. M006 returns true for that one gate. Declaring H Hermitian currently rejects the gate name. |
 | 008, 009, 010 | Nonnormal example and its two different products | The input gives the upper triangular matrix with a single 1. Both explicit product identities return true. Their right-hand projectors select different basis vectors. |
 | 012 | Matrix dimensions, N rows by N columns | **Open.** Displays the scalar product N squared. |
@@ -36,4 +36,4 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 088, 089 | The complex exponential is one at both ends of a full turn | Both explicit equalities return true. |
 | 093, 094, 096 | Values near the cut and the example distance | Returns 1, 0 and the exact rational 1/1000. |
 
-The three open findings cover five source expressions. The lesson remains open for corrections, review, and release verification.
+The two open findings cover four source expressions. The lesson remains open for corrections, review, and release verification.

@@ -591,6 +591,18 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out.set(CALCULATOR->getFunctionById(FUNCTION_ID_MOD),&value,&modulus,NULL);return 1;
   }
+  if(op=="qimplicitidentity" || op=="qidentitylike") {
+   MathStructure rows(2),columns;
+   if(op=="qidentitylike" && !matrixShape(raw[0],rows,columns,eo)) {
+    MathStructure product=raw[0];product.eval(eo);
+    if(!matrixShape(product,rows,columns,eo)) {
+     if(product.containsUnknowns() || !product.isNumber())return 0;
+     // A row-column contraction is represented by a scalar.
+     out=m_one;return 1;
+    }
+   }
+   out.set(CALCULATOR->getFunction("qidentity"),&rows,NULL);out.eval(eo);return 1;
+  }
   if(op=="qcomputationalket") {
    MathStructure index=raw[0];index.eval(eo);
    if(isQuantumBitLabel(index)) {
@@ -1113,6 +1125,8 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumMatrixAssumption(true));
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
+ calculator.addFunction(new QuantumAlgebraFunction("qimplicitidentity",0));
+ calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));

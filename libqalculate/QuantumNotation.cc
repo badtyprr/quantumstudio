@@ -332,7 +332,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
@@ -2099,6 +2099,13 @@ class Parser {
   list="qindexedlist("+indexableLabel(a.substr(1,split))+","+start+","+end+",vector())";return true;
  }
  void prepareEquality(std::string &left,std::string &right) {
+  // An unsized identity in an adjoint-product equation shares its space.
+  // Explicit gate I and explicit identity matrices retain their given size.
+  auto inferIdentity=[](std::string &identity,const std::string &product) {
+   if(identity=="qimplicitidentity()" && (product.compare(0,10,"qadjacent(")==0 || product.compare(0,5,"qmul(")==0) &&
+      product.find("qdag(")!=std::string::npos)identity="qidentitylike("+product+")";
+  };
+  inferIdentity(left,right);inferIdentity(right,left);
   preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);

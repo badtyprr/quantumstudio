@@ -909,6 +909,7 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
    if(name=="mathbb" && a=="T")return " qunitcircle() ";
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
    if(name=="operatorname" && a=="lg")a="qbitlength";
