@@ -253,3 +253,14 @@ for renamed in [*itertools.permutations(labels), (0, 2, 4, 6)]:
     periods = [s for s in range(1, 8) if all(words[x] == words[x ^ s] for x in range(8))]
     assert periods == [3]
 print("All 24 output permutations and a disjoint set of four labels preserved secret 011")
+
+word_definition = source_body(130)
+for body in (word_definition, evaluate(word_definition)["copy_text"]):
+    for word in range(8):
+        for probe in range(8):
+            expression = body
+            for bit in (2, 0, 1):
+                expression = f"replace(({expression}),s_{bit},{(word >> bit) & 1})"
+            expression = f"replace(replace(({expression}),n,3),s,bitstring({probe},3))"
+            assert evaluate(expression)["copy_text"] == str(int(word == probe)), (word, probe)
+print("The source and copied word definition passed all 64 pairs of three-bit words")

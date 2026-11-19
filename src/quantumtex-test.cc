@@ -27,6 +27,9 @@ int main() {
         quantumTeX(R"(\begin{aligned}x &= 2\\y &= 3\end{aligned})"));
   rejects(R"($$x\tag{1}+2$$)");rejects(R"($$x\tag{}$$)");
   rejects(R"($$x\tag{1}\tag{2}$$)");rejects(R"($$\tag{1}$$)");
+  equal(R"($s = s_{n-1} \cdots s_0$)",R"(s=qregisterword("s_",(n-1),(0),vector()))");
+  rejects(R"($s = s_{n-1} \cdotss_0$)");
+  rejects(R"($s = s_{n-1} \cdots t_0$)");
   equal("$$x..$$","x..");equal("$$x+.$$","x+.");
   equal("$$\"x.\"$$","\"x.\"");equal("x.","x.");
   equal(R"(\begin{aligned}x &= y.\end{aligned})",quantumTeX(R"(\begin{aligned}x &= y\end{aligned})"));

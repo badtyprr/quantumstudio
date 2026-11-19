@@ -225,7 +225,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
  bool changed=false;
- if(value.isFunction() && value.function()->referenceName()=="qregisterfamily" && value.size()==4 && value[0].isSymbolic()) {
+ if(value.isFunction() && (value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==4 && value[0].isSymbolic()) {
   Number index;
   if(registerBitIndex(label,value[0].symbol(),index) && value[3].isVector() && value[3].size()%2==0) {
    // Do not claim an unrelated label when concrete bounds already exclude it.
@@ -924,7 +924,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -1158,7 +1158,7 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending)return 0;
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
-  if(op=="qregisterfamily") {
+  if(op=="qregisterfamily" || op=="qregisterword") {
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"A register family requires an indexed name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>1 && prefix.size()<=128 && prefix.back()=='_' && !std::isdigit((unsigned char)prefix.front());
@@ -1198,6 +1198,21 @@ class QuantumIndexedFunction: public MathFunction {
    if(span<-1) {CALCULATOR->error(true,"A descending register family cannot have negative width.",NULL);return 0;}
    // Adjacent reversed endpoints denote an empty register. Every supplied or
    // explicitly displayed bit was checked above and cannot be discarded here.
+   if(op=="qregisterword") {
+    Number width=span;width.add(1);
+    if(width!=Number(bindings.size()/2))return 0;
+    Number word(0);
+    for(size_t k=0;k<bindings.size();k+=2) {
+     const MathStructure &bit=bindings[k+1];
+     if(!bit.isNumber())return 0;
+     if(bit.isOne()) {
+      Number place=bindings[k].number();place-=last.number();
+      Number weight(1);weight.shiftLeft(place);word+=weight;
+     }
+    }
+    MathStructure index(word),length(width);
+    out.set(CALCULATOR->getFunction("qbitlabel"),&index,&length,NULL);return 1;
+   }
    if(span==-1) {out.setToIdentityMatrix(1);return 1;}
    if(span>9) {
     if(!first.equals(raw[1]) || !last.equals(raw[2]) || !bindings.equals(raw[3])) {
@@ -1798,6 +1813,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qregisterfamily",4));
+ calculator.addFunction(new QuantumIndexedFunction("qregisterword",4));
  calculator.addFunction(new QuantumIndexedFunction("qregistersum",7));
  calculator.addFunction(new QuantumIndexedFunction("qregisterelement",2));
  calculator.addFunction(new QuantumIndexedFunction("qtensorseries",5));

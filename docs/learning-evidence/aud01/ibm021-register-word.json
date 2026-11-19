@@ -1,0 +1,22 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "25c5a02c4fb9ed72a0ffdcd4f31ecfeb924d142762c80d74227243bf0b0d47e4",
+  "total": 177,
+  "exit_codes": {
+    "0": 171,
+    "2": 6
+  },
+  "changes": {
+    "IBM021-c0-M130": {
+      "from": 2,
+      "to": 0,
+      "result": "qcompare('s',qregisterword(\"s_\",qsub(n,1),0,vector()),4)"
+    }
+  },
+  "gui": {
+    "IBM021-c0-M130": "qcompare('s',qregisterword(\"s_\",qsub(n,1),0,vector()),4)",
+    "word3": "1",
+    "word6": "0"
+  },
+  "gui_checks": 33
+}

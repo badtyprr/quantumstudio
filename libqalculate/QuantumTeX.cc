@@ -869,6 +869,29 @@ class TeXReader {
     if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
    }
    else if(input[pos]=='\\') {
+    // In a word definition the matching base name disambiguates
+    // concatenation of indexed bits from an ellipsis in a scalar product.
+    if((input.compare(pos,6,"\\cdots")==0 || input.compare(pos,6,"\\ldots")==0) &&
+       (pos+6==input.size() || !asciiLetter((unsigned char)input[pos+6]))) {
+     size_t equals=result.find('=');
+     if(equals!=std::string::npos) {
+      std::string word=trim(result.substr(0,equals)),first=trim(result.substr(equals+1));
+      if(!word.empty() && std::all_of(word.begin(),word.end(),asciiLetter) &&
+         first.compare(0,word.size()+1,word+"_")==0) {
+       first=trim(first.substr(word.size()+1));
+       bool grouped=first.size()>2 && first.front()=='{' && first.back()=='}';
+       if(grouped)first=first.substr(1,first.size()-2);
+       bool valid=!first.empty();
+       for(unsigned char c:first)if(!std::isalnum(c) && !(grouped && (std::isspace(c) || c=='+' || c=='-' || c=='*' || c=='/')))valid=false;
+       size_t endpoint=input.find_first_not_of(" \t\r\n",pos+6);
+       if(valid && endpoint!=std::string::npos && input.compare(endpoint,word.size()+1,word+"_")==0) {
+        pos=endpoint+word.size()+1;
+        std::string last=argument();
+        result=word+"=qregisterword(\""+word+"_\",("+first+"),("+last+"),vector())";continue;
+       }
+      }
+     }
+    }
     // A trailing equation tag labels the display or alignment row.
     if((depth==1 || alignment) && input.compare(pos,4,"\\tag")==0 &&
        (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {

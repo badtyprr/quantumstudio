@@ -65,6 +65,19 @@ for expression, expected in [
 ]:
     assert data("quantum:" + expression)["copy_text"] == expected
 
+# A descending bit definition denotes a word of exactly the given width.
+word = r"s=s_{n-1} \cdots s_0"
+copied_word = data("quantum:" + word)["copy_text"]
+for width, bindings, value, label_width, expected in [
+    (0, [], 0, 0, "1"), (1, [0], 0, 2, "0"), (1, [1], 1, 1, "1"),
+    (4, [0, 1, 0, 0], 2, 4, "1"), (4, [0, 1, 0, 0], 4, 4, "0"),
+]:
+    expr = f"replace(({copied_word}),n,{width})"
+    for index, bit in enumerate(bindings):
+        expr = f"replace(({expr}),s_{index},{bit})"
+    assert data(f"quantum:replace(({expr}),s,bitstring({value},{label_width}))")["copy_text"] == expected
+assert b"zero or one" in run(f"quantum:replace(({word}),s_1,2)", "--json", success=False).stderr
+
 # Shared membership distributes across probes only where commas are not arguments.
 for expression, expected in [
     (r"1,2,3\in\{3,1,2\}", "1"), (r"1,2,3\in\{1,3\}", "0"),

@@ -335,7 +335,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qbitstrings",1},{"qbitlabel",2},
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
- {"qregisterfamily",4},{"qscalarproductsum",4},
+ {"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},
  {"qpostselect",2},
  {"qpower",2},
@@ -1633,7 +1633,7 @@ class Parser {
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
      else if(name=="qregistersum")protect(4);
-     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily")protect(0);
+     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily" || name=="qregisterword")protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
