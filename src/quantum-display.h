@@ -306,10 +306,25 @@ class Printer {
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbits" && value.size()==2)
    return Fragment("bits("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qindexedlist" && value.size()==4 && value[0].isSymbolic() && value[1].isInteger() &&
+     safeLabel(value[0].symbol()) && value[3].size()%2==0 &&
+     (value[3].isVector() || (value[3].isFunction() && value[3].function()->referenceName()=="vector"))) {
+   std::string last=render(value[2],depth+1).text;
+   if(last.size()==1 && std::isalpha((unsigned char)last[0])) {
+    const std::string &prefix=value[0].symbol();
+    std::string text="("+prefix+render(value[1],depth+1).text+", …, "+prefix+last+")";
+    for(size_t k=0;k<value[3].size();k+=2)
+     text="replace("+text+","+prefix+render(value[3][k],depth+1).text+","+render(value[3][k+1],depth+1).text+")";
+    return Fragment(text);
+   }
+  }
   if(name=="qhalfopen" && value.size()==3 && (value[2].isOne() || value[2].isZero())) {
    bool left=value[2].isOne();
    return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(left ? ")" : "]"));
   }
+  if(name=="qmember" && value.size()==2 && value[1].isFunction() &&
+     value[1].function()->referenceName()=="qindexrange" && value[1].size()==2)
+   return Fragment(render(value[0],depth+1).text+" ∈ indexrange("+render(value[1][0],depth+1).text+", "+render(value[1][1],depth+1).text+")",10);
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {

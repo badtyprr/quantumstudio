@@ -338,7 +338,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -2016,6 +2016,19 @@ class Parser {
            word("and") || word("or") || word("xor") || word("iff");
   p=start;return end;
  }
+ // A finite list of indexed labels has a common prefix and an integer
+ // starting subscript. Bare labels have already been protected from units.
+ static bool indexedList(const std::string &first,const std::string &last,std::string &list) {
+  std::string a=withoutLabelMarkers(first),b=withoutLabelMarkers(last);
+  if(a.size()<4 || b.size()<4 || a.front()!='"' || b.front()!='"' || a.back()!='"' || b.back()!='"')return false;
+  size_t split=a.rfind('_');
+  if(split==std::string::npos || split<=1 || b.compare(0,split+1,a,0,split+1)!=0)return false;
+  std::string start=a.substr(split+1,a.size()-split-2),end=b.substr(split+1,b.size()-split-2);
+  if(start.empty() || end.empty() || (start.size()>1 && start[0]=='0') || (end.size()>1 && end[0]=='0') ||
+     start.find_first_not_of("0123456789")!=std::string::npos ||
+     (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
+  list="qindexedlist("+indexableLabel(a.substr(1,split))+","+start+","+end+",vector())";return true;
+ }
  std::string comparison(bool allowSharedOperands) {
   if(!costContext && costWitnessAhead()) {
    costContext=true;std::string witness=comparison(allowSharedOperands);costContext=false;
@@ -2033,7 +2046,7 @@ class Parser {
      if(takeSetOperator("∈") || takeSetOperator("∉"))
       throw std::runtime_error("Group the integer range before testing it as one set member.");
      left="qindexrange("+left+",floor("+last+"))";
-    } else {
+    } else if(!indexedList(left,last,left)) {
      // Only a named, one-based list in a membership statement assigns
      // superscripts to samples. Ordinary powers keep their usual meaning.
      if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
@@ -2070,6 +2083,15 @@ class Parser {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
    } else right=comparisonOperand();
+   // In a quantified index declaration, j = 1,...,N lists the allowed
+   // integers. Commas separating ordinary function arguments stay local.
+   if(allowSharedOperands && relation=="=" && left.size()==1 && std::isalpha((unsigned char)left[0]) &&
+      !right.empty() && right.find_first_not_of("0123456789")==std::string::npos) {
+    size_t end=p;
+    if(take(',') && (takeSetOperator("...") || takeSetOperator("…"))) {
+     need(',');right="qindexrange("+right+","+setUnion()+")";relation="∈";equalities=false;
+    } else p=end;
+   }
    // A sign condition on the free coefficient must survive substitution.
    if(kind<4) {
     if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";

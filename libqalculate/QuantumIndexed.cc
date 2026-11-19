@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumIndexed.h"
+#include <map>
 #include "QuantumBasisDomain.h"
 #include "Calculator.h"
 #include "Function.h"
@@ -242,21 +243,24 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
+ const bool list=value.isFunction() && value.function()->referenceName()=="qindexedlist";
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
- if(value.isFunction() && (samples || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
+ if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
   Number index;
   if(registerBitIndex(label,value[0].symbol(),index) && value[3].isVector() && value[3].size()%2==0) {
    // Do not claim an unrelated label when concrete bounds already exclude it.
    if(samples && (index<1 || (value[1].isNumber() && index>value[1].number())))return false;
-   if(!samples && value[1].isNumber() && value[2].isNumber() &&
+   if(list && ((value[1].isNumber() && index<value[1].number()) || (value[2].isNumber() && index>value[2].number())))return false;
+   if(!list && !samples && value[1].isNumber() && value[2].isNumber() &&
       (Number(index)>value[1].number() || Number(index)<value[2].number()))return false;
    for(size_t k=0;k<value[3].size();k+=2)if(value[3][k].isNumber() && value[3][k].number()==Number(index)) {
     // This label was already substituted. Later replacements act only on
     // free occurrences in its stored value, not on this metadata key.
     return false;
    }
-   if(!samples && value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
+   if(list && value[3].size()>=2048) {CALCULATOR->error(true,"An indexed list supports at most 1024 supplied values.",NULL);return false;}
+   if(!list && !samples && value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
    value[3].addChild(MathStructure(Number(index)));value[3].addChild(bit);value.childrenUpdated();return true;
   }
  }
@@ -1494,6 +1498,34 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qindexedlist") {
+   if(!raw[0].isSymbolic())return 0;
+   MathStructure first=raw[1],last=raw[2],history=raw[3];
+   first.eval(eo);last.eval(eo);history.eval(eo);
+   if(!history.isVector() || history.size()%2 || history.size()>2048)return 0;
+   if(pendingRegisterIndex(first) || pendingRegisterIndex(last))return 0;
+   if(!first.isInteger() || !last.isInteger() || first.number()<0 || last.number()<0) {
+    CALCULATOR->error(true,"Indexed lists require nonnegative integer endpoints.",NULL);return 0;
+   }
+   Number count=last.number()-first.number()+1;
+   if(count>1024) {CALCULATOR->error(true,"An indexed list supports at most 1024 entries.",NULL);return 0;}
+   std::map<Number,MathStructure> bindings;
+   for(size_t k=0;k<history.size();k+=2) {
+    if(!history[k].isInteger())return 0;
+    bindings.emplace(history[k].number(),history[k+1]);
+   }
+   MathStructure entries,suffix("",true);entries.clearVector();
+   for(Number i=first.number();i<=last.number();i+=1) {
+    if(CALCULATOR->aborted())return 0;
+    auto found=bindings.find(i);
+    if(found!=bindings.end())entries.addChild(found->second);
+    else {
+     MathStructure label,index(i);label.set(CALCULATOR->getFunction("qindexedlabel"),&raw[0],&index,&suffix,NULL);
+     label.eval(eo);entries.addChild(label);
+    }
+   }
+   out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);return 1;
+  }
   if(op=="qindexedfamily") {
    if(!raw[0].isSymbolic() || !raw[1].isInteger() || raw[1].number().isNegative())
     CALCULATOR->error(true,"An indexed family requires a label prefix and a nonnegative initial index.",NULL);
@@ -1979,6 +2011,7 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
  return true;
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
