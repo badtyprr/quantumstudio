@@ -1,0 +1,31 @@
+{
+  "worker_sha256": "3e82e02436583437cf6dbee05165316e84a9b4764a38b2e2c23de24cc769cd51",
+  "gui_sha256": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2",
+  "source_id": "R00-0-M013",
+  "original": "$$\n\\begin{aligned}\nf(00) & = 0 \\\\\nf(01) & = 0 \\\\\nf(10) & = 0 \\\\\nf(11) & = 1\n\\end{aligned}\n$$",
+  "gui": {
+    "id": "R00-0-M013",
+    "label": "EXACT RESULT",
+    "display": "{(bitstring(0, 2), 0), (bitstring(1, 2), 0), (bitstring(2, 2), 0), (bitstring(3, 2), 1)}",
+    "copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))",
+    "restored_same": true,
+    "reentry_label": "EXACT RESULT",
+    "second_copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))"
+  },
+  "oracle_table": "vector(member(tuple(bitstring(0,2),1),qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))),member(tuple(bitstring(1,2),1),qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))),member(tuple(bitstring(2,2),1),qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))),member(tuple(bitstring(3,2),1),qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))))",
+  "oracle_matrix": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0])",
+  "method": "Checked all 64 matrix entries against the input-preserving permutation that flips the target only for input 11. The worker suite checks all 16 Boolean functions on two bits, querying both proposed outputs for every input.",
+  "compared": 168,
+  "identical": 167,
+  "changed": [
+    "R00-0-M013"
+  ],
+  "limits": "A complete aligned table returns a local function graph. A later expression referring to f still requires an explicit binding.",
+  "gui_run": {
+    "passed": true,
+    "checks": 11,
+    "calls": 1,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

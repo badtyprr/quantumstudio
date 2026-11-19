@@ -476,3 +476,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm020-gui-corpus.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-logical-copy.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-copy-semantics.json
 EXTRA_DIST += docs/learning-evidence/aud01/check-ibm020-copy-semantics.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-oracle-table.json

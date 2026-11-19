@@ -28,6 +28,36 @@ std::string withoutDisplayPunctuation(std::string value) {
  if(!quote)value.erase(mark,1);
  return value;
 }
+// A complete list of Boolean outputs on fixed-width binary words is the
+// graph of a function. Keep its input labels distinct from decimal scalars.
+std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
+ const size_t count=rows.size();
+ if(count<4 || (count & (count-1)))return "";
+ size_t width=0;
+ for(size_t n=count;n>1;n/=2)++width;
+ std::vector<char> outputs(count);
+ std::string function;
+ for(const auto &row:rows) {
+  size_t open=row.find('('),close=row.find(')'),equal=row.find('=');
+  if(open==std::string::npos || close==std::string::npos || equal==std::string::npos ||
+     open>=close || close>=equal || !trim(row.substr(close+1,equal-close-1)).empty())return "";
+  std::string name=trim(row.substr(0,open)),bits=trim(row.substr(open+1,close-open-1)),value=trim(row.substr(equal+1));
+  if(name=="e" || name=="i")return ""; // These are built-in scalar constants.
+  if(name.size()!=1 || name[0]<'a' || name[0]>'z' || (!function.empty() && function!=name) ||
+     bits.size()!=width || bits.find_first_not_of("01")!=std::string::npos || (value!="0" && value!="1"))return "";
+  function=name;
+  size_t index=0;
+  for(char bit:bits)index=2*index+(bit-'0');
+  if(outputs[index])return "";
+  outputs[index]=value[0];
+ }
+ std::string graph="qset(vector(";
+ for(size_t i=0;i<count;++i) {
+  if(i)graph+=",";
+  graph+="tuple(bitstring("+std::to_string(i)+","+std::to_string(width)+"),"+outputs[i]+")";
+ }
+ return graph+"))";
+}
 // A shared Hadamard acting on each indexed bit is a tensor power acting on
 // the whole register. Recognize the complete contextual pattern before an
 // isolated indexed ket becomes a named state. General tensor ellipses remain
@@ -940,6 +970,8 @@ class TeXReader {
   if(alignment) {
    if(!alignmentCells.empty() || !trim(result).empty())finishAlignment();
    if(expressions.empty())throw std::runtime_error(error("An alignment requires an expression"));
+   std::string graph=binaryFunctionGraph(expressions);
+   if(!graph.empty()) {--depth;return graph;}
    result=expressions.size()==1 ? "" : "vector(";
    for(size_t i=0;i<expressions.size();++i) {if(i)result+=",";result+="("+expressions[i]+")";}
    if(expressions.size()>1)result+=")";

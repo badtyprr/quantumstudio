@@ -34,6 +34,22 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# Each complete two-bit table denotes a function graph. Leading zeros are data.
+for mask in range(16):
+    order = (3, 1, 0, 2)
+    rows = [f"f({i:02b}) & = {(mask >> i) & 1}" for i in order]
+    table = r"\begin{aligned}" + r"\\".join(rows) + r"\end{aligned}"
+    copied = data("quantum:" + table)["copy_text"]
+    assert copied.startswith("qset(vector(")
+    assert data("quantum:" + copied)["copy_text"] == copied
+    queries = [f"member(tuple(bitstring({i},2),{bit}),{copied})" for i in range(4) for bit in range(2)]
+    expected = [str(int(bit == ((mask >> i) & 1))) for i in range(4) for bit in range(2)]
+    assert data("quantum:vector(" + ",".join(queries) + ")")["copy_text"] == "vector(" + ",".join(expected) + ")"
+for changed in (table.replace("f(11)", "g(11)"), table.replace("f(11)", "f(01)"),
+                table.replace("f(11)", "f(1)"), table.replace("f(", "i("), table.replace("= 1", "= 2", 1)):
+    assert not data("quantum:" + changed)["copy_text"].startswith("qset(")
+assert data("quantum:replace(f(11),f,3)")["copy_text"] == "33"
+
 # XOR preserves the width of binary labels before the next dot or ket operation.
 for x in range(8):
     query = ",".join(rf"bitvalue(bitstring({x},3) \oplus bitstring({y},3))" for y in range(8))
