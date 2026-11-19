@@ -1,0 +1,64 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "f67582e1709ad558776ca7443464ee7802f6e65aa55c3abbdac67ec0ae109ca3",
+  "total": 177,
+  "exit_codes": {
+    "2": 30,
+    "0": 147
+  },
+  "changes": {
+    "IBM021-c0-M059": {
+      "from": 0,
+      "to": 0,
+      "result": "qpreimage('f',qset(vector(z)))"
+    },
+    "IBM021-c0-M061": {
+      "from": 0,
+      "to": 0,
+      "result": "qpreimage('f',qset(vector(z)))"
+    },
+    "IBM021-c0-M074": {
+      "from": 0,
+      "to": 0,
+      "result": "(('p'y)+ ((\u22121)*(qadjacent(1 \u2215 qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")))))==(0)"
+    },
+    "IBM021-c0-M079": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(x,qpreimage('f',qset(vector(z))))"
+    },
+    "IBM021-c0-M084": {
+      "from": 0,
+      "to": 0,
+      "result": "qpreimage('f',qset(vector(z)))"
+    },
+    "IBM021-c0-M085": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember('w',qpreimage('f',qset(vector(z))))"
+    },
+    "IBM021-c0-M088": {
+      "from": 2,
+      "to": 2,
+      "result": "Bars require a scalar or finite flat collection.\r\nScalar XOR requires nonnegative integer operands."
+    },
+    "IBM021-c0-M102": {
+      "from": 0,
+      "to": 0,
+      "result": "qequalchain(vector('p'y,qadjacent(1 \u2215 qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")),if((('s')==(0) or (y)==(0)),1 \u2215 qpower(2, qsub(n, 1)),if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))"
+    }
+  },
+  "gui": {
+    "M059": "qpreimage('f',qset(vector(z)))",
+    "fiber19": "qset(vector(qbitlabel(0,3),qbitlabel(3,3)))",
+    "y0": "1 \u2215 4",
+    "y1": "0",
+    "y2": "0",
+    "y3": "1 \u2215 4",
+    "y4": "1 \u2215 4",
+    "y5": "0",
+    "y6": "0",
+    "y7": "1 \u2215 4"
+  },
+  "gui_checks": 110
+}

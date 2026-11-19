@@ -74,6 +74,12 @@ assert data(r"quantum:\operatorname{range}(vector(2,9,3))")["copy_text"] == "7"
 assert data("quantum:qfunctionrange(qset(vector()))")["copy_text"] == "qset(vector())"
 assert b"ordered pairs" in run("quantum:qfunctionrange(qset(vector(1)))", "--json", success=False).stderr
 assert b"conflicting outputs" in run(f"quantum:qfunctionrange({conflict})", "--json", success=False).stderr
+# A set argument to an inverse function denotes its complete inverse image.
+preimage = data(r"quantum:g^{-1}(\{bitstring(1,3),bitstring(4,3)\})")["copy_text"]
+assert data(f"quantum:replace({preimage},g,{word_graph})")["copy_text"] == "qset(vector(qbitlabel(0,2),qbitlabel(1,2),qbitlabel(3,2)))"
+assert data(f"quantum:qpreimage({word_graph},qset(vector()))")["copy_text"] == "qset(vector())"
+assert b"conflicting outputs" in run(f"quantum:qpreimage({conflict},qset(vector()))", "--json", success=False).stderr
+assert data("quantum:replace(f^(-1)(6),f,2)")["copy_text"] == "3"
 for bits, value in (("00",1),("01",4),("10",0),("11",1)):
     assert data(f"quantum:replace(g({bits}),g,{word_graph})")["copy_text"] == f"qbitlabel({value},3)"
     ket = data(rf"quantum:replace(\vert g({bits}) \rangle,g,{word_graph})")

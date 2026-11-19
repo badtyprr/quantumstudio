@@ -137,7 +137,7 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qfunctionrange" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -933,10 +933,12 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out=digits[index.number().intValue()];return 1;
   }
-  if(op=="qfunctionrange") {
+  if(op=="qfunctionrange" || op=="qpreimage") {
+   bool inverse=op=="qpreimage";
    MathStructure graph=raw[0];graph.eval(eo);
    if(!graph.isFunction() || graph.function()->referenceName()!="qset") {
     if(pendingDomain(graph))return 0;
+    if(inverse) {CALCULATOR->error(true,"An inverse image requires a finite function graph.",NULL);return 0;}
     // Preserve the ordinary statistical range for data vectors.
     auto range=CALCULATOR->getFunction("range");
     if(!range)return 0;
@@ -945,6 +947,12 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure pairs;DomainState state=finiteDomain(graph,pairs,eo);
    if(state==DomainState::Pending)return 0;
    if(state!=DomainState::Finite) {CALCULATOR->error(true,"A function range requires a finite graph.",NULL);return 0;}
+   MathStructure target;
+   if(inverse) {
+    DomainState targetState=finiteDomain(raw[1],target,eo);
+    if(targetState==DomainState::Pending)return 0;
+    if(targetState!=DomainState::Finite) {CALCULATOR->error(true,"An inverse image requires a finite target set.",NULL);return 0;}
+   }
    MathStructure outputs;outputs.clearVector();
    for(size_t k=0;k<pairs.size();++k) {
     if(CALCULATOR->aborted())return 0;
@@ -960,7 +968,16 @@ class QuantumIndexedFunction: public MathFunction {
      if(keys==SetEquality::Unknown || values==SetEquality::Unknown)return 0;
      CALCULATOR->error(true,"The function graph has conflicting outputs for this input.",NULL);return 0;
     }
-    outputs.addChild(pair[0][1]);
+    if(inverse) {
+     bool found=false,uncertain=false;
+     for(size_t j=0;j<target.size();++j) {
+      SetEquality match=setEquality(pair[0][1],target[j]);
+      if(match==SetEquality::Equal) {found=true;break;}
+      if(match==SetEquality::Unknown)uncertain=true;
+     }
+     if(!found && uncertain)return 0;
+     if(found)outputs.addChild(pair[0][0]);
+    } else outputs.addChild(pair[0][1]);
    }
    out.set(CALCULATOR->getFunction("qset"),&outputs,NULL);out.eval(eo);return 1;
   }
@@ -1728,6 +1745,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
+ calculator.addFunction(new QuantumIndexedFunction("qpreimage",2));
  calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
  calculator.addFunction(new QuantumIndexedFunction("qset",1));

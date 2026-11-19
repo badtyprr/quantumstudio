@@ -54,8 +54,7 @@ for number, scale in [(49, "sqrt(8)"), (50, "8")]:
     assert state["copy_text"].replace("\u2212", "-") == f"matrix(256,1,[{amplitudes}])", number
 print("Both bound oracle states passed all 256 amplitude checks")
 
-# Use the lesson's definitions on the right of M056 and M060 to expand
-# range(f) and the inverse image in the probability formula.
+# Compare the source definitions in M056 and M060 with the native operators.
 def definition(number):
     return bound_body(number).split(" = ", 1)[1].strip()
 
@@ -78,11 +77,19 @@ for z in range(32):
     probe = f"replace(replace(({membership}),f,{table['graph']}),z,bitstring({z},5))"
     assert evaluate(probe)["copy_text"] == str(int(z in values))
     expr = f"replace(replace(({fiber}),f,{table['graph']}),z,bitstring({z},5))"
-    assert evaluate(expr)["copy_text"] == bit_set([x for x in range(8) if outputs[x] == z], 3)
+    expected_fiber = bit_set([x for x in range(8) if outputs[x] == z], 3)
+    assert evaluate(expr)["copy_text"] == expected_fiber
+    direct = f"replace(replace(({bound_body(59)}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(direct)["copy_text"] == expected_fiber
+    identity = f"replace(replace(({bound_body(60)}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(identity)["copy_text"] == "1"
 
-probability = definition(74).replace(r"f^{-1}(\{z\})", fiber)
+probability = definition(74)
 for y in range(8):
     expr = f"replace(replace(replace(({probability}),f,{table['graph']}),n,3),y,bitstring({y},3))"
     quarter_units = evaluate(f"4*({expr})")["copy_text"]
     assert quarter_units == str(int((y & 3).bit_count() % 2 == 0)), (y, quarter_units)
+    identity = f"replace(replace(({definition(102)}),f,{table['graph']}),n,3)"
+    identity = f"replace(replace({identity},s,bitstring(3,3)),y,bitstring({y},3))"
+    assert evaluate(identity)["copy_text"] == "1"
 print("Exact range, 32 inverse images and all 8 measurement probabilities passed")
