@@ -2,6 +2,7 @@
 #ifndef QUANTUM_DISPLAY_H
 #define QUANTUM_DISPLAY_H
 #include "MathStructure.h"
+#include "QuantumNotation.h"
 #include "Function.h"
 #include "Variable.h"
 #include <set>
@@ -184,10 +185,15 @@ class Printer {
   if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());
   if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
   if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
-   std::string text=value[0].symbol()+"(";
-   if(!value[1].isVector())return Fragment(text+render(value[1],depth+1).text+")");
-   for(size_t k=0;k<value[1].size();++k) {if(k)text+=", ";text+=render(value[1][k],depth+1).text;}
-   return Fragment(text+")");
+   const std::string &function=value[0].symbol();
+   std::vector<std::string> arguments;
+   if(value[1].isVector()) {
+    for(size_t i=0;i<value[1].size();++i)arguments.push_back(render(value[1][i],depth+1).text);
+   } else arguments.push_back(render(value[1],depth+1).text);
+   std::string text=function+"(";
+   for(size_t i=0;i<arguments.size();++i) {if(i)text+=", ";text+=arguments[i];}
+   text+=")";
+   return Fragment(function=="size" || quantumSizeApplication(function,arguments) ? text : "cost("+text+")");
   }
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps

@@ -12,7 +12,15 @@ class QuantumCostDescriptor: public MathFunction {
  public:
  QuantumCostDescriptor(const char *name,int arity):MathFunction(name,arity) {}
  ExpressionItem *copy() const {return new QuantumCostDescriptor(*this);}
- int calculate(MathStructure &,const MathStructure &,const EvaluationOptions &) {return 0;}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(referenceName()!="qcostcall" || raw[0].isSymbolic() || raw[0].isUnknown())return 0;
+  // A later binding can identify the head as a scalar factor or a graph.
+  // Delegate to the same operation used for other named applications.
+  MathStructure argument=raw[1];
+  if(argument.size()==1 && (argument.isVector() || (argument.isFunction() && argument.function()->referenceName()=="vector")))
+   argument=raw[1][0];
+  out.set(CALCULATOR->getFunction("qnamedapplication"),&raw[0],&argument,NULL);return 1;
+ }
 };
 bool polynomialSymbols(const MathStructure &term,const MathStructure *&variable) {
  if(term.isNumber())return term.number().isRational() && !term.number().isApproximate();
@@ -145,7 +153,10 @@ class QuantumOrderFunction: public MathFunction {
   }
   // A cost function's argument vector does not make its value a matrix.
   MathFunction *costCall=CALCULATOR->getFunction("qcostcall");
-  if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall))return 0;
+  if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall)) {
+   if(args[0].equals(args[1]) && (equality || (args[2].isNumber() && args[2].number()==5))) {out=equality ? 1 : 0;return 1;}
+   return 0;
+  }
   if(equality && quantumMatrixShape(args[1],rows,columns,eo) && columns.isOne() &&
      quantumResolveBasisDimension(args[0],rows))args[0].eval(eo);
   {

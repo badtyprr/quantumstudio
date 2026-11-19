@@ -31,6 +31,25 @@ for a in range(7):
         assert evaluate(probe)["copy_text"] == str(int(a <= b)), probe
 assert evaluate(spans["M069"])["copy_text"] == "1"
 
+# The scalar applications in the prose and in the gate-count definition
+# keep the same argument lists as the applications inside the Big-O bounds.
+for number in ("M032", "M035", "M061", "M062", "M068", "M070", "M071"):
+    literal = spans[number]
+    original = evaluate(literal)
+    application = literal.strip("$").strip()
+    assert "qcostcall(" in original["copy_text"]
+    for body in (application, original["display_text"], original["copy_text"]):
+        assert evaluate(body)["copy_text"] == original["copy_text"]
+        assert evaluate(f"replace(({body}),{application},17)")["copy_text"] == "17"
+definition = spans["M042"].strip("$").strip().rstrip(".")
+record = evaluate(spans["M042"])
+for body in (definition, record["display_text"], record["copy_text"]):
+    for cost in ("21*n-11", "9*n-5"):
+        for supplied in (31, 73):
+            probe = f"replace(replace(replace(({body}),t(n),{cost}),size(C_n),{supplied}),n,4)"
+            expected = (73 if cost.startswith("21") else 31) == supplied
+            assert evaluate(probe)["copy_text"] == str(int(expected)), probe
+
 # Before assigning costs, an application of unknown g or h must retain every
 # argument. Supply two possible costs that give opposite answers.
 for number, args in [("M063", "n"), ("M074", "n,m")]:

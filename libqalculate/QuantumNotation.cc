@@ -1696,8 +1696,9 @@ class Parser {
      if(args.size()!=1)throw std::runtime_error("cost() requires one expression.");
      a=args[0];
     }
-    if(costContext && (publicName=="size" || (publicName.size()==1 && publicName[0]>='a' && publicName[0]<='z' &&
-       publicName!="e" && publicName!="i"))) {
+    if(publicName=="size" && args.size()!=1)throw std::runtime_error("Circuit size requires one circuit.");
+    if(publicName=="size" || quantumSizeApplication(publicName,args) || (costContext && publicName.size()==1 && publicName[0]>='a' && publicName[0]<='z' &&
+       publicName!="e" && publicName!="i")) {
      // The argument vector distinguishes a two-input cost from two products.
      a="qcostcall("+indexableLabel(publicName)+",vector"+a.substr(name.size())+")";
     }

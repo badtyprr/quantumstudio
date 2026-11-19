@@ -117,6 +117,36 @@ for argument, expected in (("2^512-1",511),("2^512",512),("1/8",-3),("1/9",-4),(
     assert data(f"quantum:floor(log2({argument}))")["copy_text"] == str(expected).replace("-", "−")
 assert data("quantum:lg(100)")["copy_text"] == "2"
 
+# A circuit size is a formal gate count. Bind the count independently
+# of its circuit label or the cost function used to describe it.
+for formula in (r"\operatorname{size}(C)", "size(C_n)"):
+    record = data("quantum:" + formula)
+    assert "qcostcall(" in record["copy_text"]
+    assert data("quantum:" + record["display_text"])["copy_text"] == record["copy_text"]
+for body in (r"t(n) = \operatorname{size}(C_n)", "t(n) = size(C_n)"):
+    original = data("quantum:" + body)
+    for form in (body, original["copy_text"], original["display_text"]):
+        for count in (72, 73):
+            probe = f"replace(replace(({form}),t(n),73),size(C_n),{count})"
+            assert data("quantum:" + probe)["copy_text"] == str(int(count == 73))
+run("quantum:size(C_1,C_2)", "--json", success=False)
+
+for fn, parameters in (("t","n"),("g","n"),("h","n,m"),("a","m,k")):
+    application = f"{fn}({parameters})"
+    held = data("quantum:" + application)
+    assert "qcostcall(" in held["copy_text"]
+    for form in (application, held["display_text"], held["copy_text"]):
+        assert data(f"quantum:replace({form},{application},17)")["copy_text"] == "17"
+    numerical = data(f"quantum:replace({held['copy_text']},n,3)")
+    assert data("quantum:" + numerical["display_text"])["copy_text"] == numerical["copy_text"]
+assert data("quantum:replace(replace(g(n),g,4),n,3)")["copy_text"] == "12"
+assert data("quantum:replace(replace(replace(g(n,m),g,2),n,3),m,4)")["copy_text"] == "vector(6,8)"
+graph = "qset(vector(qtuple(vector(bitstring(0,1),bitstring(1,1)))))"
+assert data(f"quantum:replace(replace(g(n),g,{graph}),n,bitstring(0,1))")["copy_text"] == "qbitlabel(1,1)"
+assert data("quantum:g(n,m)=g(n,m)")["copy_text"] == "1"
+assert data("quantum:g(n,m)!=g(n,m)")["copy_text"] == "0"
+assert data("quantum:replace(n(n-1),n,3)")["copy_text"] == "6"
+
 # An isolated cost witness binds the same ordered size arguments on both sides.
 for witness in ("g(n,m)<=c*h(n,m)", "c*h(n,m)>=g(n,m)", "a(k)<=c*b(k)"):
     result = data("quantum:" + witness)
