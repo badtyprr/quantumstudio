@@ -333,7 +333,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qpreimage",2},{"qfunctionrange",1},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},
@@ -702,7 +702,7 @@ class Parser {
    need(',');
   } while(true);
  }
- bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
+ bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
@@ -1917,6 +1917,11 @@ class Parser {
  }
  std::string expression() {
   ws();size_t start=p;std::string result=logicalOr();
+  if(take(':')) {
+   std::string domain=setUnion();
+   if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
+   result="qfunctiontype("+result+","+domain+","+setUnion()+")";checkSize(result);
+  }
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);
   do {

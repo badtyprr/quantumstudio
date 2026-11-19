@@ -205,3 +205,20 @@ for number in (54, 70):
             expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
         assert evaluate(f"4*({expr})", bind_alphabet=False)["copy_text"] == ("1" if probability == "1/4" else "0")
 print("Both copied squared norms reproduced all eight measurement probabilities")
+
+# The graph may leave elements of the codomain unused.
+pairs = [f"tuple(bitstring({i},3),bitstring({z},5))" for i, z in enumerate(outputs)]
+for number in (1, 5, 27):
+    source = source_body(number)
+    copy = evaluate(source, bind_alphabet=False)["copy_text"]
+    for entries, truth in [(pairs, "1"), (pairs[:-1], "0"),
+                           (pairs + ["tuple(bitstring(0,3),bitstring(0,5))"], "0"),
+                           (pairs[:-1] + ["tuple(bitstring(7,3),bitstring(26,6))"], "0")]:
+        graph = "qset(vector(" + ",".join(entries) + "))"
+        for body in (source, copy):
+            expr = f"replace(({body}),f,{graph})"
+            if number != 27:
+                expr = f"replace(replace(({expr}),n,3),m,5)"
+            expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+            assert evaluate(expr, bind_alphabet=False)["copy_text"] == truth, (number, truth)
+print("The source and copied function signatures accepted the oracle and rejected three invalid graphs")

@@ -1,0 +1,34 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "504928eb39ff4feb804688d187f01cd2d1bd872c369584192ec38597355a18ec",
+  "total": 177,
+  "exit_codes": {
+    "0": 169,
+    "2": 8
+  },
+  "changes": {
+    "IBM021-c0-M001": {
+      "from": 2,
+      "to": 0,
+      "result": "qfunctiontype('f',qpower('\u03a3',n),qpower('\u03a3','m'))"
+    },
+    "IBM021-c0-M005": {
+      "from": 2,
+      "to": 0,
+      "result": "qfunctiontype('f',qpower('\u03a3',n),qpower('\u03a3','m'))"
+    },
+    "IBM021-c0-M027": {
+      "from": 2,
+      "to": 0,
+      "result": "qfunctiontype('f',qpower('\u03a3',3),qpower('\u03a3',5))"
+    }
+  },
+  "gui": {
+    "IBM021-c0-M001": "qfunctiontype('f',qpower('\u03a3',n),qpower('\u03a3','m'))",
+    "IBM021-c0-M005": "qfunctiontype('f',qpower('\u03a3',n),qpower('\u03a3','m'))",
+    "IBM021-c0-M027": "qfunctiontype('f',qpower('\u03a3',3),qpower('\u03a3',5))",
+    "complete": "1",
+    "missing": "0"
+  },
+  "gui_checks": 55
+}

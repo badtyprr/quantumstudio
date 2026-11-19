@@ -65,6 +65,19 @@ for expression, expected in [
 ]:
     assert data("quantum:" + expression)["copy_text"] == expected
 
+# A total function must have one output per source and stay inside the codomain.
+for graph, domain, target, expected in [
+    ("tuple(1,2),tuple(2,2)", "2,1", "2,3", "1"),
+    ("tuple(1,2)", "1,2", "2,3", "0"),
+    ("tuple(1,2),tuple(2,3)", "1", "2,3", "0"),
+    ("tuple(1,2),tuple(1,3)", "1", "2,3", "0"),
+    ("tuple(1,2)", "1", "3", "0"),
+    ("", "", "", "1"),
+]:
+    signature = rf"f:\{{{domain}\}} \to \{{{target}\}}"
+    expr = f"replace(({signature}),f,qset(vector({graph})))"
+    assert data("quantum:" + expr)["copy_text"] == expected, expr
+
 # Biconditional has lower precedence than disjunction and accepts grouped predicates.
 for lhs in (0, 1):
     for rhs in (0, 1):
