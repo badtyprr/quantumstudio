@@ -1,0 +1,68 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "d145c9dc615009bc96a5f511cf60d10f29b85deaafd158649a1423fc8aff0a17",
+  "name": {
+    "id": "IBM028-2ff07f29-M132",
+    "literal": "$\\mathrm{QFT}$",
+    "display": "\"QFT\"",
+    "copy": "\"QFT\"",
+    "substitution_dimensions": [
+      2,
+      3,
+      4
+    ]
+  },
+  "M128": {
+    "accepted": "QFT(2)",
+    "rejected": "identity(4)"
+  },
+  "M130": {
+    "literal": "$\\mathrm{QFT}_4$",
+    "dimension": 4,
+    "qubits": 2
+  },
+  "matrices": [
+    {
+      "id": "IBM028-2ff07f29-M133",
+      "dimension": 4,
+      "exact_result": "1",
+      "individually_zeroed_coefficients": 16,
+      "changed_result": "0"
+    },
+    {
+      "id": "IBM028-2ff07f29-M187",
+      "dimension": 1,
+      "exact_result": "1",
+      "individually_zeroed_coefficients": 1,
+      "changed_result": "0"
+    },
+    {
+      "id": "IBM028-2ff07f29-M188",
+      "dimension": 2,
+      "exact_result": "1",
+      "individually_zeroed_coefficients": 4,
+      "changed_result": "0"
+    },
+    {
+      "id": "IBM028-2ff07f29-M189",
+      "dimension": 3,
+      "exact_result": "1",
+      "individually_zeroed_coefficients": 9,
+      "changed_result": "0"
+    },
+    {
+      "id": "IBM028-2ff07f29-M190",
+      "dimension": 4,
+      "exact_result": "1",
+      "individually_zeroed_coefficients": 16,
+      "changed_result": "0"
+    },
+    {
+      "id": "IBM028-2ff07f29-M191",
+      "dimension": 8,
+      "exact_result": "1",
+      "individually_zeroed_coefficients": 64,
+      "changed_result": "0"
+    }
+  ]
+}
