@@ -296,3 +296,36 @@ for body, count_first in ((sample_list, True), (copied_list, False)):
                 expr = f"replace(({expr}),{name},{value})"
             assert evaluate(expr, bind_alphabet=False)["copy_text"] == str(int(all(w == 3 for w in widths))), widths
 print("The original and copied measurement lists matched all 39 finite expansions in both binding orders")
+
+# M126 indexes rows from one and puts the high bit at the left. Compare
+# both the cells and M135's binary matrix product to integer bit operations.
+sample_rhs = source_body(126).split(" = ", 1)[1]
+for width, samples in [(1, [0, 1]), (3, [3, 4]), (4, [8, 3, 3, 0])]:
+    expr = f"replace(replace(({sample_rhs}),k,{len(samples)}),n,{width})"
+    expanded = evaluate(expr)
+    for row, word in enumerate(samples, 1):
+        for bit in range(width):
+            expr = f'replace(({expr}),"y^{row}_{bit}",{(word >> bit) & 1})'
+    result = evaluate(expr)
+    assert result["cells"] == [list(format(word, f"0{width}b")) for word in samples]
+    assert evaluate(expanded["copy_text"])["cells"] == expanded["cells"]
+    for candidate in range(2**width):
+        bits = ",".join(format(candidate, f"0{width}b"))
+        product = evaluate(f'qgf2mul({result["copy_text"]},matrix({width},1,[{bits}]))')
+        assert product["cells"] == [[str((word & candidate).bit_count() % 2)] for word in samples]
+print("The source sample matrix reproduced every cell and all 26 binary matrix-vector products")
+
+# Bind M last as well as first. It must denote the whole matrix throughout.
+definition = source_body(126)
+for body in (definition, evaluate(definition)["copy_text"]):
+    for flat, expected in [("0,1,1,1,0,0", "1"), ("0,1,1,0,0,1", "0")]:
+        target = f"matrix(2,3,[{flat}])"
+        expr = f"replace(({body}),M,{target})" if body == definition else body
+        expr = f"replace(replace(({expr}),n,3),k,2)"
+        for row, word in enumerate((3, 4), 1):
+            for bit in range(3):
+                expr = f'replace(({expr}),"y^{row}_{bit}",{(word >> bit) & 1})'
+        if body != definition:
+            expr = f"replace(({expr}),M,{target})"
+        assert evaluate(expr)["copy_text"] == expected
+print("The original and copied matrix definition agree with the matching matrix only")

@@ -330,7 +330,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
@@ -1633,7 +1633,7 @@ class Parser {
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
      else if(name=="qregistersum")protect(4);
-     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers")protect(0);
+     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qsamplebitmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers")protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {

@@ -937,6 +937,17 @@ for flags in [(), ("--approx",)]:
     for bad in ['qindexedmatrix("a_",n,-1,0,0)','qindexedmatrix("a_",-1,n,0,0)','qindexedmatrix("a_",n,1024,0,0)','qindexedmatrix("a_",2,1/2,0,0)','qindexedmatrix("a_",n,2,0,3)','qindexedmatrix("a_",n,m,-1,0)']:
         assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
 
+# Sample numbers start at one, while the bit columns run down to zero.
+sample_matrix = 'qsamplebitmatrix("z^",k,n-1,2,0)'
+sample_display = data("quantum:" + sample_matrix)["display_text"]
+assert "⋱" in sample_display
+assert data("quantum:" + sample_display)["copy_text"] == data("quantum:" + sample_matrix)["copy_text"]
+for bad in [sample_display.replace("z^(2)_0", "z^(1)_0"),
+            sample_display.replace("z^(k)_0", "z^(k)_1"),
+            sample_display.replace("⋱", "⋮"),
+            'qsamplebitmatrix("z^",1,n,2,0)', 'qsamplebitmatrix("z^",k,-1,2,0)']:
+    run("quantum:" + bad, "--json", success=False)
+
 # Natural and source-derived matrix patterns evaluate to the same indexed cells.
 for flags in [(), ("--approx",)]:
     for expression in ['[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), ⋯, a_(m-1,n-1)]',r'\begin{pmatrix}a_{0,0}&\cdots&a_{0,n-1}\\[1mm]\vdots&\ddots&\vdots\\a_{m-1,0}&\cdots&a_{m-1,n-1}\end{pmatrix}']:

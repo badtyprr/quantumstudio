@@ -348,6 +348,45 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ // A superscript names the one-based sample row. Subscripts label the
+ // bits of that sample in descending order, with zero at the right.
+ if(cells[0][0].find('^')!=std::string::npos) {
+  auto invalidSample=[](){throw std::runtime_error("A sample matrix requires consecutive one-based rows and matching bit columns ending at zero");};
+  auto index=[](std::string text) {
+   text=trim(text);
+   if(text.size()>=2 && ((text.front()=='{' && text.back()=='}') || (text.front()=='(' && text.back()==')')))text=trim(text.substr(1,text.size()-2));
+   return text;
+  };
+  std::string name,lastSample,highBit;
+  if(width!=3)invalidSample();
+  for(size_t r=0;r<height;++r) {
+   if(cells[r].size()!=width)invalidSample();
+   if(r==height-2) {
+    if(cells[r][0]!=vertical || cells[r][1]!=diagonal || cells[r][2]!=vertical)invalidSample();
+    continue;
+   }
+   if(cells[r][1]!=horizontal)invalidSample();
+   std::string row;
+   for(size_t c:{size_t(0),size_t(2)}) {
+    const std::string &cell=cells[r][c];
+    size_t sub=cell.find('_');
+    if(cell.size()<5 || cell[0]<'a' || cell[0]>'z' || cell[1]!='^' || sub==std::string::npos || sub<3)invalidSample();
+    if(name.empty())name=cell.substr(0,1);
+    if(name[0]!=cell[0])invalidSample();
+    std::string sample=index(cell.substr(2,sub-2)),bit=index(cell.substr(sub+1));
+    auto scalarIndex=[](const std::string &s) {
+     return !s.empty() && s.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/ ")==std::string::npos;
+    };
+    if(!scalarIndex(sample) || !scalarIndex(bit) || (!row.empty() && row!=sample))invalidSample();
+    row=sample;
+    if(c==0) {if(highBit.empty())highBit=bit;else if(highBit!=bit)invalidSample();}
+    else if(bit!="0")invalidSample();
+   }
+   if(r<height-2 && row!=std::to_string(r+1))invalidSample();
+   if(r==height-1)lastSample=row;
+  }
+  return "qsamplebitmatrix(\""+name+"^\",("+lastSample+"),("+highBit+"),"+std::to_string(height-2)+",0)";
+ }
  std::string family,lastRow,lastColumn;
  for(size_t r=0;r<height;++r) {
   if(cells[r].size()!=width)invalid();

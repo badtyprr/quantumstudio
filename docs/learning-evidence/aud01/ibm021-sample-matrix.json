@@ -1,0 +1,25 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "95b22537c6aad5810d72eec32701c51213211f4e7e00a7c5ae1aba70d79e3335",
+  "total": 177,
+  "exit_codes": {
+    "0": 173,
+    "2": 4
+  },
+  "changes": {
+    "IBM021-c0-M126": {
+      "from": 2,
+      "to": 0,
+      "result": "qcompare('M',qsamplebitmatrix(\"y^\",'k',qsub(n,1),2,0),4)"
+    }
+  },
+  "gui": {
+    "IBM021-c0-M126": "qcompare('M',qsamplebitmatrix(\"y^\",'k',qsub(n,1),2,0),4)",
+    "matrix": "matrix(2,3,[0,1,1,1,0,0])",
+    "secret011": "matrix(2,1,[0,0])",
+    "probe101": "matrix(2,1,[1,1])",
+    "matching": "1",
+    "different": "0"
+  },
+  "gui_checks": 66
+}

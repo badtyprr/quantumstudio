@@ -926,7 +926,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -1360,34 +1360,38 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
-  if(op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix") {
-   const bool matrix=op=="qindexedmatrix";
+  if(op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
+   const bool samples=op=="qsamplebitmatrix";
+   const bool matrix=samples || op=="qindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>=2 && prefix.size()<=128 && prefix.back()=='_';
    for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
-   if(!valid) {CALCULATOR->error(true,"An indexed array prefix must be a name ending in an underscore.",NULL);return 0;}
+   if(samples)valid=prefix.size()==2 && prefix[0]>='a' && prefix[0]<='z' && prefix[1]=='^';
+   if(!valid) {CALCULATOR->error(true,"Invalid indexed array name prefix.",NULL);return 0;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    int dimensions[2]={1,1};bool deferred=false;
    // Validate every axis even when another dimension is still symbolic.
    // Endpoint bounds also cap the product at 1024 * 1024 matrix cells.
    for(int axis=0;axis<(matrix ? 2 : 1);++axis) {
     MathStructure last=raw[1+axis],minimum=raw[(matrix ? 3 : 2)+axis];last.eval(exact);minimum.eval(exact);
-    if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<0 || minimum.number()>1023) {
+    const int offset=samples && axis==0 ? 1 : 0;
+    if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<offset || minimum.number()>1023+offset) {
      CALCULATOR->error(true,"An indexed array minimum must be an integer from 0 to 1023.",NULL);return 0;
     }
     if(!last.isNumber() && !last.isVector() && last.containsUnknowns()) {deferred=true;continue;}
-    if(!last.isNumber() || !last.number().isInteger() || last.number()<minimum.number() || last.number()>1023) {
+    if(!last.isNumber() || !last.number().isInteger() || last.number()<minimum.number() || last.number()>1023+offset) {
      CALCULATOR->error(true,"An indexed array endpoint must be an integer respecting its displayed entries and the 1024-axis limit.",NULL);return 0;
     }
-    dimensions[axis]=last.number().intValue()+1;
+    dimensions[axis]=last.number().intValue()+1-offset;
    }
    if(deferred)return 0;
    out.clearMatrix();out.resizeMatrix(dimensions[0],dimensions[1],m_zero);
    for(int row=0;row<dimensions[0];++row)for(int col=0;col<dimensions[1];++col) {
     if(CALCULATOR->aborted())return 0;
     int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row;
-    element(out,row,col).set(prefix+std::to_string(index)+(matrix ? ","+std::to_string(col) : ""),true);
+    if(samples)element(out,row,col).set(prefix+std::to_string(row+1)+"_"+std::to_string(dimensions[1]-1-col),true);
+    else element(out,row,col).set(prefix+std::to_string(index)+(matrix ? ","+std::to_string(col) : ""),true);
    }
    return 1;
   }
@@ -1837,6 +1841,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
