@@ -447,3 +447,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/mod007-grover-runtime050.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod006-mod010-runtime050.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod008-teleportation.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod011-order-finding.json
+EXTRA_DIST += docs/learning-evidence/aud02/mod012-vqe.json
