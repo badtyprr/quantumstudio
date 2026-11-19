@@ -1,0 +1,73 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "row": "IBM028-2ff07f29-M214",
+  "literal": "$\\{\\vert\\phi_0\\rangle,\\ldots,\\vert\\phi_{N-1}\\rangle\\}$",
+  "worker_sha256": "f1ac28a139c80a71f9a41e48addceba913f7cf741ad4d5e4fc3ba4735e036de4",
+  "display": "\\{|φ_0⟩,\\ldots,|φ_{N − 1}⟩\\}",
+  "copy": "qindexedketset(\"φ_\",0,qsub('N',1),vector())",
+  "checks": [
+    {
+      "origin": "source",
+      "dimension": 1,
+      "expected_set": "\\{|φ_0>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "source",
+      "dimension": 2,
+      "expected_set": "\\{|φ_0>,|φ_1>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "source",
+      "dimension": 4,
+      "expected_set": "\\{|φ_0>,|φ_1>,|φ_2>,|φ_3>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "display",
+      "dimension": 1,
+      "expected_set": "\\{|φ_0>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "display",
+      "dimension": 2,
+      "expected_set": "\\{|φ_0>,|φ_1>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "display",
+      "dimension": 4,
+      "expected_set": "\\{|φ_0>,|φ_1>,|φ_2>,|φ_3>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "copy",
+      "dimension": 1,
+      "expected_set": "\\{|φ_0>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "copy",
+      "dimension": 2,
+      "expected_set": "\\{|φ_0>,|φ_1>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    },
+    {
+      "origin": "copy",
+      "dimension": 4,
+      "expected_set": "\\{|φ_0>,|φ_1>,|φ_2>,|φ_3>\\}",
+      "set_equality": true,
+      "first_outside_state_excluded": true
+    }
+  ]
+}
