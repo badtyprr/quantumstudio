@@ -1,0 +1,57 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "qb021": {
+    "source_sha256": "6e0aff466dd3a4e97c3d0dfd9da945621e7e5daba553af9d40cb319ae18910f4",
+    "pulser": "1.10.0",
+    "simulation": "1.10.0",
+    "atoms": 6,
+    "duration_ns": 1000,
+    "amplitude_integral": 3.1415926535897936,
+    "detuning_endpoints": [
+      -5.0,
+      5.0
+    ],
+    "rates": [
+      0.5,
+      1.0
+    ],
+    "fidelity": 0.9999938612539936,
+    "scope": "Extracted original sequence construction. Two authored local QuTiP simulations of the same sequence. Provider setup and Azure Pasqal job remain unverified."
+  },
+  "qb022": {
+    "source_sha256": "586ad421664e4fe76b172cdb80165efb55a8ec9a82bd2c648911a773e02e0c15",
+    "source_cells": [
+      2,
+      5
+    ],
+    "adaptations": [
+      "Preinstalled environment; setup cell skipped.",
+      "Used AerSimulator and adapted the batch submission and result access to Aer."
+    ],
+    "counts": [
+      {
+        "00": 43,
+        "11": 57
+      },
+      {
+        "111": 46,
+        "000": 54
+      }
+    ],
+    "provider_failure": "Failed to authenticate with the Quantum Runtime service.",
+    "visual_review": "Both histogram labels match their corresponding counts. The Bell and GHZ circuits each contributed 100 shots."
+  },
+  "artifacts": {
+    "cleanup-audit/learning-coverage-20261117/qb021-local/pulse.py": "d7ba955c0daafa800b3b8734dd96c7ce7e1c39a8ccb45ee425a4392503a13897",
+    "cleanup-audit/learning-coverage-20261117/qb021-local/sequence.json": "57bf93f419404545a7f7cc3a1be55c9350b9dff62472d34feabe319b9d0c255f",
+    "cleanup-audit/learning-coverage-20261117/qb021-local/verification.json": "1ac8571c6fa0e591b6d7627765b3ac290d5f4b5678ece7ae01686f04ff0d42b9",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/probe.py": "8db2c19f507f3d163e80d53c4cef2f81451d873d7ced1708004845a6a5504606",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run02-aer/counts.json": "9e69d5706990529253c1cf1b2771555eeeb37ccab9c6e54db34968578deafa8d",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run02-aer/histogram0.png": "62070db5cb0623494105e83a8a1d76516aeb843b789ff3f78c0684c959de6344",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run02-aer/histogram1.png": "1983a4f805906bf8cdb3593b9aff57a523336f62fafc0c1167b0fc26290b83a3",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run02-aer/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run02-aer/executed.ipynb": "8e5f6057f57ab724c1d33249049384067a72ff953587c675c0d7ac0d86e94f12",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run01-discovery/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "cleanup-audit/learning-coverage-20261117/qb022-local/run01-discovery/executed.ipynb": "1b2b3025b70d75587d9245f5aafc5305196c068fb97b564925a1a6daa5cf109a"
+  }
+}
