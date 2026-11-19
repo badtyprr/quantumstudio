@@ -5,6 +5,8 @@
 #include "QuantumAlgebra.h"
 #include "QuantumBinary.h"
 #include "QuantumIndexed.h"
+#include "Variable.h"
+#include <array>
 namespace {
 // These descriptors retain symbolic costs (including their argument lists)
 // for Copy and substitution when an asymptotic comparison is undecidable.
@@ -32,11 +34,86 @@ bool polynomialSymbols(const MathStructure &term,const MathStructure *&variable)
  for(size_t i=0;i<term.size();++i)if(!polynomialSymbols(term[i],variable))return false;
  return true;
 }
+// Positive-coefficient polynomials on the positive integer input sizes n,m,k.
+// A constant factor in a monomial has no effect on its growth class.
+using CostPowers = std::array<Number,3>;
+bool costPowers(const MathStructure &factor,CostPowers &powers) {
+ if(factor.isMultiplication()) {
+  for(size_t i=0;i<factor.size();++i)if(!costPowers(factor[i],powers))return false;
+  return true;
+ }
+ if(factor.isNumber())
+  return factor.number().isRational() && !factor.number().isApproximate() && factor.number().isPositive();
+ const MathStructure &base=factor.isPower() ? factor[0] : factor;
+ if(!base.isUnknown())return false;
+ const std::string &name=base.isSymbolic() ? base.symbol() : base.variable()->referenceName();
+ size_t axis=std::string("nmk").find(name);
+ if(name.size()!=1 || axis==std::string::npos)return false;
+ if(factor.isPower()) {
+  if(!factor[1].isNumber())return false;
+  const Number &power=factor[1].number();
+  if(!power.isInteger() || power.isNegative() || power.isApproximate())return false;
+  powers[axis]+=power;
+ } else powers[axis]+=1;
+ return true;
+}
+bool costSupport(const MathStructure &polynomial,std::vector<CostPowers> &terms) {
+ if(polynomial.isZero())return true;
+ for(size_t i=0;i<(polynomial.isAddition() ? polynomial.size() : 1);++i) {
+  CostPowers powers{};
+  if(!costPowers(polynomial.isAddition() ? polynomial[i] : polynomial,powers))return false;
+  terms.push_back(powers);
+ }
+ return true;
+}
+// Set the weight of m to one. A remaining inequality has the form
+// x * weight(n) + y > 0. Intersect it with the open interval (low,high).
+bool restrictCostWeights(const Number &x,const Number &y,Number &low,Number &high,bool &bounded) {
+ if(x.isZero())return y.isPositive();
+ Number cutoff=(Number(0)-y)/x;
+ if(x.isPositive()) {
+  if(cutoff>low)low=cutoff;
+ } else if(!bounded || cutoff<high) {
+  high=cutoff;bounded=true;
+ }
+ return !bounded || low<high;
+}
+bool multivariateCostBound(MathStructure &out,const MathStructure &cost,const MathStructure &bound) {
+ std::vector<CostPowers> numerator,denominator;
+ if(!costSupport(cost,numerator) || !costSupport(bound,denominator))return false;
+ for(const auto &a:numerator) {
+  // A separating weight makes this monomial grow faster than every
+  // denominator monomial along (floor(t^x),floor(t),floor(t^z)).
+  // Conversely, any unbounded ratio needs a separating weight: take
+  // logarithms of the inputs where this term exceeds every bound term.
+  // A strict gap persists under perturbation to strictly positive weights.
+  Number low(0),high;bool bounded=false,feasible=true;
+  std::vector<CostPowers> lower{{Number(0),Number(0),Number(1)}},upper;
+  for(const auto &b:denominator) {
+   if(CALCULATOR->aborted())return false;
+   CostPowers d{a[0]-b[0],a[1]-b[1],a[2]-b[2]};
+   if(d[2].isPositive())lower.push_back(d);
+   else if(d[2].isNegative())upper.push_back(d);
+   else if(!restrictCostWeights(d[0],d[1],low,high,bounded)) {feasible=false;break;}
+  }
+  // Eliminate z by requiring every strict lower bound on z (including
+  // zero) to be smaller than every strict upper bound.
+  for(const auto &u:upper) {
+   if(!feasible)break;
+   for(const auto &l:lower) {
+    if(CALCULATOR->aborted())return false;
+    if(!restrictCostWeights(u[0]*l[2]-l[0]*u[2],u[1]*l[2]-l[1]*u[2],low,high,bounded)) {feasible=false;break;}
+   }
+  }
+  if(feasible) {out=0;return true;}
+ }
+ out=1;return true;
+}
 bool polynomialCostBound(MathStructure &out,MathStructure cost,MathStructure bound,const EvaluationOptions &eo) {
  EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
  cost.eval(exact);bound.eval(exact);
  const MathStructure *variable=NULL;
- if(!polynomialSymbols(cost,variable) || !polynomialSymbols(bound,variable))return false;
+ if(!polynomialSymbols(cost,variable) || !polynomialSymbols(bound,variable))return multivariateCostBound(out,cost,bound);
  if((!cost.isZero() && !cost.isRationalPolynomial()) || (!bound.isZero() && !bound.isRationalPolynomial()))return false;
  MathStructure a=cost,b=bound;
  if(variable) {

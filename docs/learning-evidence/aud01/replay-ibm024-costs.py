@@ -1,4 +1,6 @@
 """Verify computational-cost notation against the pinned IBM-024 inputs."""
+from fractions import Fraction
+import itertools
 import json
 from pathlib import Path
 import subprocess
@@ -30,6 +32,36 @@ for a in range(7):
         probe = f"{polynomial(a, 2)}=O({polynomial(b, 5)})"
         assert evaluate(probe)["copy_text"] == str(int(a <= b)), probe
 assert evaluate(spans["M069"])["copy_text"] == "1"
+
+# For a sum of pure powers, weighted AM-GM proves exactly the cases
+# sum(a_i / b_i) <= 1. Above that boundary, set each x_i=t^(L/b_i)
+# with L a common multiple of the b_i to obtain an integer counterexample.
+for names, degrees in [(("n", "m"), (3, 6)), (("m", "k"), (6, 3)), (("n", "m", "k"), (2, 3, 6))]:
+    bound = "+".join(f"{v}^{b}" for v, b in zip(names, degrees))
+    for powers in itertools.product(range(4), repeat=len(names)):
+        monomial = "*".join(f"{v}^{a}" for v, a in zip(names, powers))
+        expected = sum(Fraction(a, b) for a, b in zip(powers, degrees)) <= 1
+        probe = f"{monomial}=O({bound})"
+        assert evaluate(probe)["copy_text"] == str(int(expected)), probe
+
+for probe, answer in [
+    ("n^2=O(n*m)", "0"), ("n*m+n^2=O(n*m)", "0"),
+    ("(n+m)^2=O(n^2+m^2)", "1"), ("3*n*m/7=O(n^2+m^2)", "1"),
+    ("n^2*m^2!=O(n^3+m^3)", "1"), ("n*m*k=O(n^2*m+m*k^2)", "1"),
+    ("n*m*k=O(n^2*m+m*k)", "0"), ("n*m=O(0)", "0"), ("0=O(n*m)", "1"),
+    ("n^1000001*m^999999=O(n^2000000+m^2000000)", "1"),
+    ("n^1000001*m^1000000=O(n^2000000+m^2000000)", "0"),
+]:
+    assert evaluate(probe)["copy_text"] == answer, probe
+for probe in ("n*m=O(n^2-m^2)", "n*m=O(n^c+m)", "n*m=O(n^2+bitlength(m))"):
+    assert "qbigorder(" in evaluate(probe)["copy_text"], probe
+
+# Substitute two-variable costs into the lesson's actual growth definition.
+definition = evaluate(spans["M074"])
+for body in (spans["M074"].strip("$"), definition["display_text"], definition["copy_text"]):
+    for cost, answer in (("n*m", "1"), ("n^2*m", "0")):
+        probe = f"replace(replace(({body}),g(n,m),{cost}),h(n,m),n^2+m^2)"
+        assert evaluate(probe)["copy_text"] == answer, probe
 
 # The scalar applications in the prose and in the gate-count definition
 # keep the same argument lists as the applications inside the Big-O bounds.
