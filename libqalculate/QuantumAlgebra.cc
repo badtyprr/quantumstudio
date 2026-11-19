@@ -3,6 +3,7 @@
 #include "QuantumOperatorDomain.h"
 #include "QuantumBasisDomain.h"
 #include "QuantumIndexed.h"
+#include "QuantumBinary.h"
 #include "Calculator.h"
 #include "Function.h"
 #include "BuiltinFunctions.h"
@@ -801,6 +802,10 @@ class QuantumAlgebraFunction: public MathFunction {
    out=a;return 1;
   }
   if(op=="qindexxor" || op=="qoplus") {
+   if(isQuantumBitLabel(a) && isQuantumBitLabel(args[1])) {
+    out.set(CALCULATOR->getFunction("qbitxor"),&a,&args[1],NULL);
+    return 1;
+   }
    // A computed index may contain matrix expressions such as trace(A oplus B).
    if(a.isMatrix() && args[1].isMatrix()) {
     out.set(CALCULATOR->getFunction("qdirectsum"), &a, &args[1], NULL);out.eval(eo);

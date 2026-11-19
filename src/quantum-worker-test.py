@@ -34,6 +34,13 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# XOR preserves the width of binary labels before the next dot or ket operation.
+for x in range(8):
+    query = ",".join(rf"bitvalue(bitstring({x},3) \oplus bitstring({y},3))" for y in range(8))
+    expected = "vector(" + ",".join(str(x ^ y) for y in range(8)) + ")"
+    assert data("quantum:vector(" + query + ")")["copy_text"] == expected
+assert data(r"quantum:bitstring(0,0) \oplus bitstring(0,0)")["copy_text"] == "qbitlabel(0,0)"
+
 # IBM-020 parity relations can simplify to a disjunction in scalar context.
 for expr in ("z*x=0", "x=0 and (y=0 or z=0)", "vector(x=0 or y=0, x=0 and y=0)"):
     copied = data("quantum:" + expr)["copy_text"]

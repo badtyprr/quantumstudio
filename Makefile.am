@@ -474,3 +474,5 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm020.md
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-hadamard-gui.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-gui-corpus.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-logical-copy.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-copy-semantics.json
+EXTRA_DIST += docs/learning-evidence/aud01/check-ibm020-copy-semantics.py

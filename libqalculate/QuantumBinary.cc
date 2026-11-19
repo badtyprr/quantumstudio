@@ -6,10 +6,10 @@
 #include <string>
 #include <vector>
 #include <utility>
-namespace {
-bool encodedBits(const MathStructure &value) {
+bool isQuantumBitLabel(const MathStructure &value) {
  return value.isFunction() && (value.function()->referenceName()=="qbitlabel" || value.function()->referenceName()=="qbits");
 }
+namespace {
 const MathStructure &element(const MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 bool binaryMatrix(const MathStructure &a,std::vector<std::vector<unsigned char>> &matrix) {
@@ -32,7 +32,7 @@ class QuantumBinaryFunction: public MathFunction {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
   if(op=="qcenterdot") {
-   bool binary=encodedBits(args[0]) && encodedBits(args[1]);
+   bool binary=isQuantumBitLabel(args[0]) && isQuantumBitLabel(args[1]);
    out.set(CALCULATOR->getFunction(binary ? "qbitdot" : "qmul"),&args[0],&args[1],NULL);
    return 1;
   }
@@ -129,7 +129,7 @@ class QuantumBinaryFunction: public MathFunction {
    unsigned operands=op=="qbitvalue" ? 1U : 2U;
    bool allLabels=true;
    for(unsigned j=0;j<operands;++j)
-    allLabels=allLabels && encodedBits(args[j]);
+    allLabels=allLabels && isQuantumBitLabel(args[j]);
    if(allLabels) {
     MathStructure indices[2],widths[2];bool pending=false;
     for(unsigned j=0;j<operands;++j) {
@@ -163,7 +163,7 @@ class QuantumBinaryFunction: public MathFunction {
    bool labels[2]={false,false};
    for(size_t j=0;j<(op=="qbitvalue" ? 1U : 2U);++j) {
     const MathStructure &value=args[j];
-    labels[j]=encodedBits(value);
+    labels[j]=isQuantumBitLabel(value);
     if(labels[j]) {
      if(value.size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
      MathStructure index=value[0],width=value[1];

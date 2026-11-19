@@ -1,0 +1,25 @@
+{
+  "gui_records_sha256": "d8d22e8f3b0be76184fa7c2d7e70015b3ab733387ffb3b4d7f65dda199483dff",
+  "worker_sha256": "f3d0ec3c2d72523b53d1f9e579670fb0b8c69646f3522a726e9c2144148859e7",
+  "exact_checks_by_source_id": {
+    "M03": 4,
+    "R13-0-M027": 6,
+    "R13-0-M028": 28,
+    "R13-0-M029": 28,
+    "R13-0-M033": 28,
+    "R13-0-M037": 28,
+    "R13-0-M041": 28,
+    "R13-0-M066": 28
+  },
+  "widths": [
+    1,
+    2,
+    3
+  ],
+  "method": "Compared first and second copies separately to independently generated signed columns or true equalities. Bound the binary domains, widths and secrets; bound the one-qubit ket explicitly in M03.",
+  "oracle_adaptations": [
+    "R13-0-M028",
+    "R13-0-M029"
+  ],
+  "limitation": "These two formulas required replacing scalar multiplication by the promised BV oracle. The finite checks do not establish unbound oracle interpretation or identical copy text."
+}
