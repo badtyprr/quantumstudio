@@ -3,7 +3,17 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "QuantumAlgebra.h"
+#include "QuantumBinary.h"
+#include "QuantumIndexed.h"
 namespace {
+// A binary word is identified by both its bits and its register width.
+bool compareBitLabels(const MathStructure &left,const MathStructure &right,bool &equal,const EvaluationOptions &eo) {
+ if(!isQuantumBitLabel(left) || !isQuantumBitLabel(right) || left.size()!=2 || right.size()!=2)return false;
+ MathStructure a=left[0],aw=left[1],b=right[0],bw=right[1];
+ if(validateQuantumBitLabel(a,aw,eo)!=QuantumBitLabelState::Concrete ||
+    validateQuantumBitLabel(b,bw,eo)!=QuantumBitLabelState::Concrete)return false;
+ equal=a.equals(b) && aw.equals(bw);return true;
+}
 // For every complex matrix M, M†M and MM† are positive semidefinite,
 // including rectangular and rank-deficient M. This does not prove strictness.
 bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
@@ -90,6 +100,8 @@ class QuantumOrderFunction: public MathFunction {
    }
    static const ComparisonType kinds[]={COMPARISON_LESS,COMPARISON_GREATER,COMPARISON_EQUALS_LESS,COMPARISON_EQUALS_GREATER,COMPARISON_EQUALS,COMPARISON_NOT_EQUALS};
    int kind=args[2].number().intValue();
+   bool equal=false;
+   if(kind>=4 && compareBitLabels(args[0],args[1],equal,eo)) {out=(kind==4)==equal ? 1 : 0;return 1;}
    if(args[1].isZero() && symbolicGram(args[0],eo) && (kind==0 || kind==3)) {out=kind==3 ? 1 : 0;return 1;}
    if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
    if(args[2].number()<4 && (args[0].containsType(STRUCT_VECTOR,true)>0 || args[1].containsType(STRUCT_VECTOR,true)>0))
@@ -127,6 +139,8 @@ class QuantumEqualityChain: public MathFunction {
   bool equal=true;
   if(!deferred)for(size_t k=1;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
+   bool same=false;
+   if(compareBitLabels(operands[k-1],operands[k],same,eo)) {if(!same)equal=false;continue;}
    MathStructure comparison=operands[k-1];comparison.transform(COMPARISON_EQUALS,operands[k]);comparison.eval(eo);
    if(comparison.isNumber() && comparison.number().isZero())equal=false;
    else if(!comparison.isNumber() || !comparison.number().isOne())deferred=true;

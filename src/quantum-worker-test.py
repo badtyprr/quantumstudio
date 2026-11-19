@@ -34,6 +34,15 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# Equality of bit strings includes their declared width and evaluated bits.
+for expression, expected in [
+    ("bitstring(1+1,3)=bitstring(2,3)", "1"),
+    ("bitstring(2,3)!=bitstring(2,2)", "1"),
+    ("bitstring(2,3)=bitstring(1,3)", "0"),
+    ("bitstring(2,3)=bitstring(2,3)=bitstring(2,2)", "0"),
+    ("replace(bitstring(x,3)=bitstring(2,3),x,2)", "1"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected
 # Each complete two-bit table denotes a function graph. Leading zeros are data.
 for mask in range(16):
     order = (3, 1, 0, 2)

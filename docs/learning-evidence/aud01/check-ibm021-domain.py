@@ -53,3 +53,31 @@ for number, scale in [(49, "sqrt(8)"), (50, "8")]:
     assert (state["rows"], state["columns"]) == (256, 1)
     assert state["copy_text"].replace("\u2212", "-") == f"matrix(256,1,[{amplitudes}])", number
 print("Both bound oracle states passed all 256 amplitude checks")
+
+# Use the lesson's definitions on the right of M056 and M060 to expand
+# range(f) and the inverse image in the probability formula.
+def definition(number):
+    return bound_body(number).split(" = ", 1)[1].strip()
+
+
+image = definition(56)
+fiber = definition(60)
+values = list(dict.fromkeys(outputs))
+
+
+def bit_set(values, width):
+    entries = ",".join(f"qbitlabel({value},{width})" for value in values)
+    return f"qset(vector({entries}))"
+
+
+assert evaluate(f"replace(({image}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
+for z in range(32):
+    expr = f"replace(replace(({fiber}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(expr)["copy_text"] == bit_set([x for x in range(8) if outputs[x] == z], 3)
+
+probability = definition(74).replace(r"\operatorname{range}(f)", image).replace(r"f^{-1}(\{z\})", fiber)
+for y in range(8):
+    expr = f"replace(replace(replace(({probability}),f,{table['graph']}),n,3),y,bitstring({y},3))"
+    quarter_units = evaluate(f"4*({expr})")["copy_text"]
+    assert quarter_units == str(int((y & 3).bit_count() % 2 == 0)), (y, quarter_units)
+print("Exact range, 32 inverse images and all 8 measurement probabilities passed")
