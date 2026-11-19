@@ -1,0 +1,157 @@
+{
+  "revision": "6d06c0b22ead97a55ed110ab4eac6ad786fbf80f",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_sha256": "b9dc7f11c98fc922b807281fcf9125eb187a90e2d1d5879d72ee8a8206247631",
+  "original_spans": 170,
+  "exact_labels": 167,
+  "diagnostics": [
+    "IBM024-5c5b90e6-M037",
+    "IBM024-5c5b90e6-M077",
+    "IBM024-5c5b90e6-M079"
+  ],
+  "gui_inputs": 179,
+  "gui_checks": 1942,
+  "changed_original": {
+    "id": "IBM024-5c5b90e6-M147",
+    "input": "$2,\\ldots,\\sqrt{N}$",
+    "display": "{2, …, floor(qsqrt('N'))} (integer endpoints)",
+    "copy": "qindexrange(2,floor(qsqrt('N')))"
+  },
+  "gui_controls": [
+    {
+      "input": "$2,\\ldots,\\sqrt{2}$",
+      "result": "{}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{3}$",
+      "result": "{}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{4}$",
+      "result": "{2}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{15}$",
+      "result": "{2, 3}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{16}$",
+      "result": "{2, 3, 4}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{17}$",
+      "result": "{2, 3, 4}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{24}$",
+      "result": "{2, 3, 4}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{25}$",
+      "result": "{2, 3, 4, 5}"
+    },
+    {
+      "input": "$2,\\ldots,\\sqrt{26}$",
+      "result": "{2, 3, 4, 5}"
+    }
+  ],
+  "direct_and_substituted_integer_bounds": [
+    {
+      "N": 2,
+      "first": null,
+      "last": null,
+      "count": 0
+    },
+    {
+      "N": 3,
+      "first": null,
+      "last": null,
+      "count": 0
+    },
+    {
+      "N": 4,
+      "first": 2,
+      "last": 2,
+      "count": 1
+    },
+    {
+      "N": 8,
+      "first": 2,
+      "last": 2,
+      "count": 1
+    },
+    {
+      "N": 9,
+      "first": 2,
+      "last": 3,
+      "count": 2
+    },
+    {
+      "N": 10,
+      "first": 2,
+      "last": 3,
+      "count": 2
+    },
+    {
+      "N": 15,
+      "first": 2,
+      "last": 3,
+      "count": 2
+    },
+    {
+      "N": 16,
+      "first": 2,
+      "last": 4,
+      "count": 3
+    },
+    {
+      "N": 17,
+      "first": 2,
+      "last": 4,
+      "count": 3
+    },
+    {
+      "N": 24,
+      "first": 2,
+      "last": 4,
+      "count": 3
+    },
+    {
+      "N": 25,
+      "first": 2,
+      "last": 5,
+      "count": 4
+    },
+    {
+      "N": 26,
+      "first": 2,
+      "last": 5,
+      "count": 4
+    },
+    {
+      "N": 99,
+      "first": 2,
+      "last": 9,
+      "count": 8
+    },
+    {
+      "N": 100,
+      "first": 2,
+      "last": 10,
+      "count": 9
+    },
+    {
+      "N": 101,
+      "first": 2,
+      "last": 10,
+      "count": 9
+    },
+    {
+      "N": 1050625,
+      "first": 2,
+      "last": 1025,
+      "count": 1024
+    }
+  ],
+  "oversized_range_rejected": 1052676
+}
