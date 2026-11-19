@@ -1,0 +1,135 @@
+{
+  "worker_sha256": "e47f386a1c50b94d2dee7021a6387b1ad601751796217baffef7c6314dae9e75",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M072",
+      "label": "EXACT RESULT",
+      "display": "'λ' = e^(2iπ'θ')",
+      "copy": "qcompare('λ',e^(2iπ'θ'),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare('λ',e^(2iπ'θ'),4)"
+    }
+  ],
+  "controls": [
+    {
+      "id": "origin-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "quarter-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "full-turn-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "negative-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "half-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "wrong-phase-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "wrong-radius-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "zero-value-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "M052-eigenstate-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "M052-mismatch-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "M083-eigenstate-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "M083-mismatch-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1199,
+    "calls": 109,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

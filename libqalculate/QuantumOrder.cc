@@ -278,6 +278,37 @@ bool quantumMatrixOrder(MathStructure &out,MathStructure left,MathStructure righ
 bool setPair(const MathStructure &left,const MathStructure &right) {
  return left.isFunction() && right.isFunction() && left.function()->referenceName()=="qset" && right.function()->referenceName()=="qset";
 }
+bool unassignedScalarMultiple(const MathStructure &term) {
+ if(term.isMultiplication()) {
+  // A nonzero, known scale leaves the domain of an unassigned amplitude open.
+  bool unassigned=false;
+  for(size_t k=0;k<term.size();++k) {
+   if(unassignedScalarMultiple(term[k]))unassigned=true;
+   else if(term[k].containsUnknowns() || !term[k].representsNumber() || !term[k].representsNonZero())return false;
+  }
+  return unassigned;
+ }
+ if(term.isSymbolic())return true;
+ if(!term.isUnknown())return false;
+ auto variable=static_cast<UnknownVariable *>(term.variable());
+ return !variable->assumptions() && variable->interval().isUndefined();
+}
+bool unboundComplexComparison(const MathStructure &left,const MathStructure &right) {
+ if(left.isMatrix() && right.isMatrix() && left.rows()==right.rows() && left.columns()==right.columns()) {
+  for(size_t row=1;row<=left.rows();++row)for(size_t col=1;col<=left.columns();++col)
+   if(unboundComplexComparison(*left.getElement(row,col),*right.getElement(row,col)))return true;
+  return false;
+ }
+ return (left.representsComplex() && !left.containsUnknowns() && unassignedScalarMultiple(right)) ||
+        (right.representsComplex() && !right.containsUnknowns() && unassignedScalarMultiple(left));
+}
+// Isolating a periodic function can introduce an arbitrary integer. It is
+// bound in the general solution, while Copy would turn it into a free input.
+bool introducesUnknown(const MathStructure &result,const MathStructure &operands) {
+ if(result.isVariable() && !result.variable()->isKnown())return !operands.contains(result);
+ for(size_t k=0;k<result.size();++k)if(introducesUnknown(result[k],operands))return true;
+ return false;
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
@@ -349,6 +380,12 @@ class QuantumOrderFunction: public MathFunction {
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }
+   // An unassigned eigenvalue can later be complex. The generic real
+   // default for unknown scalars cannot decide this quantum comparison.
+   if(kind>=4 && unboundComplexComparison(args[0],args[1])) {
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
    // Preserve products with adjoints until the factors have concrete values.
    // Scalar comparison would rewrite the equality as a difference from zero.
    if(kind>=4 && gramFactor(args[0]) && gramFactor(args[1]) && !args[0].equals(args[1]))return 0;
@@ -378,6 +415,10 @@ class QuantumOrderFunction: public MathFunction {
    if(args[2].number()<4 && (args[0].containsType(STRUCT_VECTOR,true)>0 || args[1].containsType(STRUCT_VECTOR,true)>0))
     return quantumMatrixOrder(out,raw[0],raw[1],args[2].number().intValue(),eo) ? 1 : 0;
    out=args[0];out.transform(kinds[kind],args[1]);out.eval(eo);
+   if(kind>=4 && !out.isNumber() && introducesUnknown(out,args)) {
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
 #if defined(HAVE_FLINT) && __FLINT_RELEASE >= 30000
    if(kind>=4 && eo.approximation==APPROXIMATION_EXACT && !out.isNumber() &&
       algebraicMatricesEqual(args[0],args[1],equal))out=(kind==4)==equal ? 1 : 0;
