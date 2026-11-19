@@ -1,0 +1,104 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "sha256": "6840783226317f1aefef7ab88a9e8df06ccbfe122f97b6012f95412627435e8c",
+  "runtime": "0.50.0",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "source_adaptations": {
+    "43": "Both placeholder QPY paths point to the same local artifact.",
+    "45": "Both placeholder QPY paths point to the same local artifact.",
+    "51": "Used seeded local Aer backend in place of service discovery.",
+    "68": "Used seeded local Aer backend in place of service discovery."
+  },
+  "remote_jobs": 0,
+  "results": [
+    {
+      "cell": 35,
+      "counts": {
+        "1110": 9596,
+        "0010": 27,
+        "1101": 24,
+        "1111": 32,
+        "0100": 39,
+        "1000": 27,
+        "1001": 22,
+        "1100": 29,
+        "0101": 28,
+        "0011": 30,
+        "1011": 18,
+        "0111": 26,
+        "0001": 31,
+        "0110": 21,
+        "1010": 27,
+        "0000": 23
+      },
+      "marked": "1110",
+      "analytic_probability": 0.9613189697265625
+    },
+    {
+      "cell": 53,
+      "counts": {
+        "1110": 9626,
+        "0101": 28,
+        "0110": 37,
+        "0011": 22,
+        "1001": 23,
+        "0001": 28,
+        "0111": 22,
+        "0100": 25,
+        "0010": 23,
+        "1010": 22,
+        "1111": 30,
+        "1100": 22,
+        "0000": 25,
+        "1011": 19,
+        "1000": 21,
+        "1101": 27
+      },
+      "marked": "1110",
+      "analytic_probability": 0.9613189697265625
+    },
+    {
+      "cell": 72,
+      "counts": {
+        "101": 9428,
+        "001": 81,
+        "100": 93,
+        "010": 61,
+        "111": 78,
+        "011": 85,
+        "000": 108,
+        "110": 66
+      },
+      "marked": "101",
+      "analytic_probability": 0.9453125000000001
+    }
+  ],
+  "executed_cells": [
+    12,
+    16,
+    18,
+    20,
+    23,
+    25,
+    27,
+    31,
+    33,
+    35,
+    43,
+    45,
+    47,
+    49,
+    51,
+    53,
+    60,
+    62,
+    64,
+    66,
+    68,
+    70,
+    72
+  ],
+  "backend": "AerSimulator(seed_simulator=1911), including for cell 31. Hardware discovery at cell 29 was skipped.",
+  "acceptance": "For each of three sampler cells, require 10000 shots and a marked-state frequency within five binomial standard errors of the ideal Grover probability."
+}
