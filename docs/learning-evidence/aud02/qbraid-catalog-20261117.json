@@ -1,0 +1,2081 @@
+{
+  "head": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+  "sources": [
+    {
+      "path": "Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_braket_provider.ipynb",
+      "sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "58a243cdfba9a646d5b321b199dcc998d0bb5cd48fe150f11e15922ab5da0621"
+        },
+        {
+          "index": 3,
+          "sha256": "54ab055edb18045a584bf83689164092d4134ecf2f7ccdca0df289480bf067f2"
+        },
+        {
+          "index": 4,
+          "sha256": "ce9e2293722f2d5ed5ca12d1b11d0cd103d581da2ce9eab8c7fc1801d279ab56"
+        },
+        {
+          "index": 6,
+          "sha256": "8c3c0187eab2a7b828c0d8b00c11bb3f6ee89c5b1c07417bbc17dd7eeec28c1b"
+        },
+        {
+          "index": 7,
+          "sha256": "ee7ec330a0cf9f64e84444cafb741a1e8635b30d2c3342c419f349b1dc2c85b5"
+        },
+        {
+          "index": 8,
+          "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+        }
+      ],
+      "id": "QB-027",
+      "pinned_sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+      "cell_count": 10,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_ionq_provider.ipynb",
+      "sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "1edeb60861076fc8c7376509f83ab0b57ae7103b27bfe8ad88ee071cf9ce76c4"
+        },
+        {
+          "index": 2,
+          "sha256": "d28516b44c7ca1e434d5a37709fc3d83e670e347c919a978f03fae2faf431a20"
+        },
+        {
+          "index": 3,
+          "sha256": "58c1b36a4a34bfa63bcec1426fae0d9af872c375b9fa9926c24caecd2f709d37"
+        },
+        {
+          "index": 4,
+          "sha256": "85986e72622358221537f79a45ac4d8b5d36f6e6682599d8b1aa588c7b1dbf3d"
+        },
+        {
+          "index": 5,
+          "sha256": "04687e876551b71df482f3bc2d182040c9d84da1ff66f9deb863fee32f73d289"
+        },
+        {
+          "index": 6,
+          "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18"
+        }
+      ],
+      "id": "QB-028",
+      "pinned_sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+      "cell_count": 8,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+      "sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "125183f5e008e1191d7c3461c007adbd69074a2df887479ba34b47abd662291e"
+        },
+        {
+          "index": 3,
+          "sha256": "2dd03cc1e879bf007966d620f5cb7f879eab8a543032c0364aa8d5bdd297abb7"
+        },
+        {
+          "index": 4,
+          "sha256": "46e3ac1dc654efbdc95de068a5e78c663e7a9c4caf64ec5fcb413da9a0ca6791"
+        },
+        {
+          "index": 6,
+          "sha256": "7623e1ca346a25365f40ef070fba647b2b5ecd0e59d5cdd07774a3b48fc5f79b"
+        },
+        {
+          "index": 7,
+          "sha256": "4a09baa914d70b53f3937847b5c2f7a014337d75e5ca46f54af3ff8d9c8a57e9"
+        },
+        {
+          "index": 8,
+          "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+        }
+      ],
+      "id": "QB-029",
+      "pinned_sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+      "cell_count": 10,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_pasqal_provider.ipynb",
+      "sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "0c0682ed337fb55f5fecaaa2f1a79cd2dc1d66fba6532fa5af506f7b6b014a28"
+        },
+        {
+          "index": 3,
+          "sha256": "824c905f477584d55b360f6705f0703016bd3f7df1626912995371515c5be08d"
+        },
+        {
+          "index": 4,
+          "sha256": "355c978c818215ecede2528fa715ace49a9ddeeebea2d1c1483986593f3b065a"
+        },
+        {
+          "index": 6,
+          "sha256": "3755c4578536cecdfc642df00432e7f362a4c2f17090f914eeb792b6c23d39ab"
+        },
+        {
+          "index": 7,
+          "sha256": "c34d9beef1242d055201dda148ed1b68b29012b3038d3944ce0f8ea02fe85e6f"
+        },
+        {
+          "index": 8,
+          "sha256": "0d50ad8a8b38da002eef4bff59fadf03825e49e58c567a2961cfd77963f0f5c6"
+        }
+      ],
+      "id": "QB-030",
+      "pinned_sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+      "cell_count": 10,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_qiskit_provider.ipynb",
+      "sha256": "67bf6c500057d145871e8549aabf60cbad6084904a4ccc51379b204315a654b8",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "c585d4c898bc02689992d0d04cd28bd655b9c28af4b62e371f78c86e1b8a83c8"
+        },
+        {
+          "index": 3,
+          "sha256": "0a14282efebd33ccbfb043f99a11cfb008115bd502299c4b3557afcb4dffe118"
+        },
+        {
+          "index": 4,
+          "sha256": "eecc3e0474c6dfb78c84efc21495add8f695def323a307577c9889e830fb0414"
+        },
+        {
+          "index": 6,
+          "sha256": "7526608acac8aa6d9a404640c69d6b40c4ac8ccfe92295f7fa172bb47f5a9838"
+        },
+        {
+          "index": 7,
+          "sha256": "cfbe574b6166af12ed13327843fb577b616d28772de5bac7a625241dcfdf2eb5"
+        },
+        {
+          "index": 8,
+          "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+        }
+      ],
+      "id": "QB-031",
+      "pinned_sha256": "67bf6c500057d145871e8549aabf60cbad6084904a4ccc51379b204315a654b8",
+      "cell_count": 10,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_quantinuum_provider.ipynb",
+      "sha256": "f6ab8127957d977bb43ade4f63227512852ce2c950adf53fe515e3bf796c5535",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "4ff2dc971d74b2573512ed386543bab1d2807b0988cb6888157da90bd38177cb"
+        },
+        {
+          "index": 3,
+          "sha256": "6905204256d8807a53d8043327f695065d4588429be5ade7004f2a9016408e76"
+        },
+        {
+          "index": 4,
+          "sha256": "d28f604b11a5a745b077a13117329c8275adbbf51197f6474eb90324598564c1"
+        },
+        {
+          "index": 6,
+          "sha256": "02a66a7b54a88a38ee7889ae37655f3a6ebe4a685ffae323cb794deb0f8b574a"
+        },
+        {
+          "index": 7,
+          "sha256": "571ce21842b47fb4e25acc303dc518f1b60b242c29e438c7971e709b0b0d5b16"
+        },
+        {
+          "index": 8,
+          "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+        }
+      ],
+      "id": "QB-032",
+      "pinned_sha256": "f6ab8127957d977bb43ade4f63227512852ce2c950adf53fe515e3bf796c5535",
+      "cell_count": 10,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/Provider-Jobs/qbraid_runtime_rigetti_provider.ipynb",
+      "sha256": "8423a941b6145ace8ba6e2242aeac13fabd8c3aeb815623126ba76d715ee5b1c",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "9d0195f2e60ce82b81682222baf7c0405b68849fd60dc401950a7acc5991484b"
+        },
+        {
+          "index": 3,
+          "sha256": "c2ca8e569078235654aca3b0d81caf680f08fa6f0c1054f230b66c6f69dc9773"
+        },
+        {
+          "index": 4,
+          "sha256": "329089e4f2f4ac1d0206a8ef1d1a79bcf593882066fe09665216a3d90ec62b61"
+        },
+        {
+          "index": 6,
+          "sha256": "6cc5b229adb178827cf480bedf5169d23f328a4ccae2b4c78d52a867098a7ee9"
+        },
+        {
+          "index": 8,
+          "sha256": "ffc1efde631103c0d840f13c431200782a968b45af6b92309ced87655cfcc8df"
+        },
+        {
+          "index": 9,
+          "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+        }
+      ],
+      "id": "QB-033",
+      "pinned_sha256": "8423a941b6145ace8ba6e2242aeac13fabd8c3aeb815623126ba76d715ee5b1c",
+      "cell_count": 11,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "PyQASM-Examples/deutsch_josza_unroll.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/PyQASM-Examples/deutsch_josza_unroll.ipynb",
+      "sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec"
+        },
+        {
+          "index": 2,
+          "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947"
+        },
+        {
+          "index": 3,
+          "sha256": "8d52cd40df14be513881630564f6b6b05a0b2da602f7fa85e11457964d0ef181"
+        },
+        {
+          "index": 5,
+          "sha256": "f24f99054529bcd520ad139193f11830f2281328d77a901e0e31819de9f033ab"
+        },
+        {
+          "index": 6,
+          "sha256": "e60f9730cd7d15afa18eedbbad577a3be134b16f173fe705960eaaa4565646b3"
+        },
+        {
+          "index": 7,
+          "sha256": "9d603e74e29bf2babaee51f5e156230dfd6cc1afc00f9aba4756be33168fd129"
+        }
+      ],
+      "id": "QB-001",
+      "pinned_sha256": "a91a11fbe445b73631fecf42ea4d2aebba35f2eeeb6691898373dec514528f14",
+      "cell_count": 9,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "PyQASM-Examples/qasm_processing.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/PyQASM-Examples/qasm_processing.ipynb",
+      "sha256": "4a82502bb158e79847b569785edbd470ce9d03b80773558ebb6d4996b1eba546",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec"
+        },
+        {
+          "index": 2,
+          "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947"
+        },
+        {
+          "index": 3,
+          "sha256": "bb4b064cc1decc8806d6a0a313ce065ea5b2ddba2c376445b9c05b20c3c73d91"
+        },
+        {
+          "index": 4,
+          "sha256": "7978e60608530a54a5234fd0963e422f4fd3d1e6e151f9204ebdabed8bb6bfa5"
+        },
+        {
+          "index": 5,
+          "sha256": "acfa7fb15369c4cd0337709adef5728464c454e9fe0bbf0a7e7febf45d7219b5"
+        },
+        {
+          "index": 7,
+          "sha256": "33156a5364d4828ba02c8abacb33faee34b815e587b31d0c81bf552543a87b11"
+        },
+        {
+          "index": 9,
+          "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773"
+        },
+        {
+          "index": 10,
+          "sha256": "4d3959770362c934509a8f4e37c5d0ec8985f37e2662b4e1bdb2679fd284696e"
+        },
+        {
+          "index": 11,
+          "sha256": "4d3dafc68b7c95ce0a77bad2550bc7bb6eb6f74e7630cf6bd3bab0dd93389104"
+        },
+        {
+          "index": 13,
+          "sha256": "c48708fc7b7ab4bd50395cb27046e5e5a1a4f1f9fa3fde9bf4baf8312e0b3f8d"
+        },
+        {
+          "index": 14,
+          "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+        },
+        {
+          "index": 15,
+          "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773"
+        },
+        {
+          "index": 17,
+          "sha256": "cab1cac7fb0773b2478af7de91af2880121a1709647fc43bdd8d3b22f40e5ab8"
+        },
+        {
+          "index": 18,
+          "sha256": "6a6b9721aead99995112e446b4ed384ca3c00747502478ae567e1b684145d6b3"
+        },
+        {
+          "index": 20,
+          "sha256": "7dd1ea666a7c35c54bd67d0adf24c32c18ec0286e41e932d51449c9fd8874f28"
+        },
+        {
+          "index": 21,
+          "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+        },
+        {
+          "index": 22,
+          "sha256": "4a8aff350332b874c1f9b893d41ad00780272b0123ff4f7cfe0e9c9e7e272047"
+        },
+        {
+          "index": 25,
+          "sha256": "de301a53e920336b2437efc5ac9a13f2a6f088370fb94e445bd3f1e6b4b00415"
+        },
+        {
+          "index": 26,
+          "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+        },
+        {
+          "index": 29,
+          "sha256": "41c1ed5152158fc85d31611083314c68a60536238c2834c9f3c56acb435b4773"
+        },
+        {
+          "index": 30,
+          "sha256": "4d3dafc68b7c95ce0a77bad2550bc7bb6eb6f74e7630cf6bd3bab0dd93389104"
+        }
+      ],
+      "id": "QB-002",
+      "pinned_sha256": "4a82502bb158e79847b569785edbd470ce9d03b80773558ebb6d4996b1eba546",
+      "cell_count": 32,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "PyQASM-Examples/qasm_unroll.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/PyQASM-Examples/qasm_unroll.ipynb",
+      "sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "ff80f10a3a70f79f55381a59301d3f6f6fb9e90532b37aa4ef38b68151640cec"
+        },
+        {
+          "index": 2,
+          "sha256": "e46f6b45c459efe59e791f83469f8229aaca1237e93b5ca9f0a641431780b947"
+        },
+        {
+          "index": 3,
+          "sha256": "bb4b064cc1decc8806d6a0a313ce065ea5b2ddba2c376445b9c05b20c3c73d91"
+        },
+        {
+          "index": 5,
+          "sha256": "0723b533dbb2907ce93a5dd98719ce0c0a5d10db1a16af4299d0d7a3206334c6"
+        },
+        {
+          "index": 6,
+          "sha256": "657f268af2ba85c55bd24f99f8be9a65d45b73efa5d784e77282d0cc5a8f2acc"
+        },
+        {
+          "index": 7,
+          "sha256": "0fae711f3e52dbf85d7f59f43736eed590983bc8d02398335004496e10b4e6f8"
+        }
+      ],
+      "id": "QB-003",
+      "pinned_sha256": "ead11c7785b8996b8386fac69c63a710ef8bb2742533db14ca3bacd21f8536d4",
+      "cell_count": 9,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Algorithms/bernstein_vazirani.ipynb",
+      "sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b"
+        },
+        {
+          "index": 2,
+          "sha256": "f0d78e0d902343e8842f6ada30be360032492f49147b810522508c0e851eca24"
+        },
+        {
+          "index": 4,
+          "sha256": "a52bff8518a911d1e020438ac138452f29e4d679e11ee6812ca6045c384cabeb"
+        },
+        {
+          "index": 6,
+          "sha256": "709becd5b0ddcaedc3f046923472b811deb1242e12978f4bd8e7ab4ccd39c640"
+        },
+        {
+          "index": 8,
+          "sha256": "d853ee7212a4ce3e29ede1b62a7820087fada80c4bfca4fe0b35f92e875570a4"
+        },
+        {
+          "index": 10,
+          "sha256": "0f5d1277718e4b012eaaba2db485ff28e11021b61c6dea79fb8b34472f359631"
+        },
+        {
+          "index": 12,
+          "sha256": "1e509340a8a69e63e29339c3cccf60f705b94a5519b2a5ad2c2619bda2423528"
+        },
+        {
+          "index": 14,
+          "sha256": "04853922042191412ba454cf58ab99c4f2d338ec9dfe66b42b4722f76148bea8"
+        },
+        {
+          "index": 16,
+          "sha256": "63b000695858c365e1e7bf8208d5ee9e00570a8183453139246a7b1b7cdbf0b1"
+        },
+        {
+          "index": 18,
+          "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2"
+        },
+        {
+          "index": 20,
+          "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14"
+        },
+        {
+          "index": 22,
+          "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254"
+        },
+        {
+          "index": 24,
+          "sha256": "6888d02e33a9476792365197342c4169c2426d22e79bf39ca393c39baa2ed71e"
+        },
+        {
+          "index": 25,
+          "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13"
+        },
+        {
+          "index": 27,
+          "sha256": "b4fe4dced6a27cb4ef60bd53c7c5dc4cb7303d6b4c964a672f247864abc5f48f"
+        },
+        {
+          "index": 29,
+          "sha256": "6b9b4fcf92043539f499b15bfb9ffecdacc613e6e7410c77292eb4249b15e70b"
+        },
+        {
+          "index": 31,
+          "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18"
+        }
+      ],
+      "id": "QB-004",
+      "pinned_sha256": "9a9ed236328a272a4858f5ac6af1019c8857eeee4fbf41544bf01bb140d34cce",
+      "cell_count": 33,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Algorithms/cirq_vqe.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Algorithms/cirq_vqe.ipynb",
+      "sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 2,
+          "sha256": "ecd7639ce29eb3815341f43c808654ca2542affc6d01b975c72fe4252d1ec79a"
+        },
+        {
+          "index": 4,
+          "sha256": "a8027ce11e2f53d9056410299239f37786d62078b5f2b3d21afb6f1024048088"
+        },
+        {
+          "index": 5,
+          "sha256": "32e871989f498f3a19e6ef8e6bbe38d8f9a72443ddbb51581d5de342f08c7557"
+        },
+        {
+          "index": 7,
+          "sha256": "eb5a297c3c7a2c72ec2c1c4ed33f2f7bd4371fe20e04321e822795ddeec19e68"
+        },
+        {
+          "index": 8,
+          "sha256": "dfe2a1b024e415a86d5099bfee98fcf928a8fa78aa270ebc6478a166ebd73e27"
+        },
+        {
+          "index": 9,
+          "sha256": "f5e29a3f72be4d7c9819bf8a72e1dced1312ce82e11d5c1c4f04c9473ea025c2"
+        },
+        {
+          "index": 10,
+          "sha256": "cf103fbb2e71188c647716a32eab608d4d5cb770fcfc0f8836e7b6b5637b6e83"
+        },
+        {
+          "index": 11,
+          "sha256": "3dc5f3f534200b4a902e8fe70c3c87a1b5b1404bb296f0ecb3e62ea3bedaac12"
+        },
+        {
+          "index": 12,
+          "sha256": "ac634ce94d05d736ea70114d62e3a07f1dd055142014563a1be16d83c410b276"
+        },
+        {
+          "index": 13,
+          "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+        },
+        {
+          "index": 14,
+          "sha256": "3f195b9d5ab09e2898a0c13e4293190ba0db11fed9d93f6a1717a8ee5a6ad107"
+        },
+        {
+          "index": 15,
+          "sha256": "6c45499a61560cf4319accd6a54d4a7cc75eba2aae3719e60e24c652642e1353"
+        },
+        {
+          "index": 16,
+          "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+        },
+        {
+          "index": 17,
+          "sha256": "5412e3ab152205b4b81e0f3212d98582c4b5a1a63bc4e6fe3e7accff48f809cc"
+        },
+        {
+          "index": 18,
+          "sha256": "126128392694c81fdb0928a5d85f7ef3d8e2b0456bc1c8eda0ae974552b5da8e"
+        },
+        {
+          "index": 20,
+          "sha256": "3dc8ec176e2f7d8d9a1c9459bcbfcda84aa270ead8bd80e23f7c6dba03a94fa3"
+        },
+        {
+          "index": 23,
+          "sha256": "4378cd2bb596bdf50feabc49f696950b8af99d0477be0a4dd6eb8d15e6f7f1c2"
+        },
+        {
+          "index": 25,
+          "sha256": "11319e0dd0c23b4b7103ae6d831f62ada12047223bc5ebb88c47a78b059cacb7"
+        },
+        {
+          "index": 27,
+          "sha256": "332de6a974ca2ae44431bb4e40b23d79456da24e2d1475836a595ac4131a18a8"
+        },
+        {
+          "index": 29,
+          "sha256": "31760495d45e4463c5df6e561366675819e958c76e2121875a37bdcd0f067a8b"
+        },
+        {
+          "index": 31,
+          "sha256": "e6fad47ae8a7f6627928d83aadb24b58106ceb134a7609c086053af9126db663"
+        }
+      ],
+      "id": "QB-007",
+      "pinned_sha256": "221d531613cbf4f74db1f9df4faf2c28d462c13480f28b5b559ec2ffc0f1697d",
+      "cell_count": 33,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Algorithms/ibm_batch_jobs_grovers.ipynb",
+      "sha256": "8e728d49ca432accd2765b9411e37cd6102dd9aca1b9546cf3f01e435d0981da",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 0,
+          "sha256": "cffa6cbc10a77ca0a1dbe84068c45d0b55e1997faf9bb3f8de14233cf6102dbf"
+        },
+        {
+          "index": 2,
+          "sha256": "281308e2890c4cd7a592ab1ed3caee17b279ff19c88bfa55e976aad415914014"
+        },
+        {
+          "index": 4,
+          "sha256": "5216b9a0aec44112c3c6afb05a001d78a298c55ab578a32e067755da0791945b"
+        },
+        {
+          "index": 5,
+          "sha256": "698ecf594932a3d8a647fbd8f47e17ce34e11665fed9c67a7e32d3f4d9c4ae97"
+        },
+        {
+          "index": 7,
+          "sha256": "185ac29d96fcc1ae4111b28c1bcd391ca08823ee5dc3d5e6b309fda4e7cdfadc"
+        },
+        {
+          "index": 8,
+          "sha256": "2797e88d8e8612f8326044eeb2368947ae28e82c2558cac5dc08202b4e774a01"
+        },
+        {
+          "index": 10,
+          "sha256": "9563846723625547e4fc4db954144a48841da46f040c893dae0521e8aafa7804"
+        },
+        {
+          "index": 11,
+          "sha256": "6391db08f3bfd197627478a9d1e2867fb662acc7ff4ac8a74e1c4c45ebfbec33"
+        },
+        {
+          "index": 13,
+          "sha256": "fe94e78eb5cc93fdb065ee3eefcdbc6d874e3ac9a42604b2a0cfd2098b891807"
+        }
+      ],
+      "id": "QB-008",
+      "pinned_sha256": "8e728d49ca432accd2765b9411e37cd6102dd9aca1b9546cf3f01e435d0981da",
+      "cell_count": 16,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Algorithms/qft.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Algorithms/qft.ipynb",
+      "sha256": "bc648239a475fbfead15b185e201e821498369ff5d133ba928603bb1319fc3d3",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b"
+        },
+        {
+          "index": 2,
+          "sha256": "321338d73ec7b6231e15b1a8a8d77ad5377ea7dedeb12da83b30524e4d4d9268"
+        },
+        {
+          "index": 4,
+          "sha256": "5db3ee1d420d4400dd45f30fb2f488a6789ddf5243e2eb48cf31dadd069dd84f"
+        },
+        {
+          "index": 6,
+          "sha256": "434c3f376396d25c2320307111b33bd813267bf63a7de81cd085624a299a4ea0"
+        },
+        {
+          "index": 7,
+          "sha256": "aed8b1f34644ff0a4570cbddf26e7b31ff0a6b9627c20aebe1b8c721408a0308"
+        },
+        {
+          "index": 9,
+          "sha256": "cc6799f126655b0abce27c1bdb1d790bfe48b090a788584e16236ada7824f2f2"
+        },
+        {
+          "index": 10,
+          "sha256": "7680c0ff6b390992d0bf950e9fa95dbe2927158ab312ecdb95901c18f249a4e5"
+        },
+        {
+          "index": 12,
+          "sha256": "6bd8bb86ed39741a529d08e8ad5e0621a2f786c03727f895274d112054d33c72"
+        },
+        {
+          "index": 14,
+          "sha256": "ba4a5b7e929a8787d38819ddffc66b58dad99d9907afc0ef3bca27b768433535"
+        },
+        {
+          "index": 16,
+          "sha256": "f7d6a97f26c1edc4478009344e6868586bd61c2b397b18c2e841a2d69c8a1531"
+        },
+        {
+          "index": 18,
+          "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2"
+        },
+        {
+          "index": 20,
+          "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14"
+        },
+        {
+          "index": 22,
+          "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254"
+        },
+        {
+          "index": 24,
+          "sha256": "4820af6fb62cc7b7bb0bb32939dc0822d3aa4d18d83393d96ead5e59741e9667"
+        },
+        {
+          "index": 25,
+          "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13"
+        },
+        {
+          "index": 27,
+          "sha256": "48e8da0e9b7517ff60306d129e35e2e52cc825322d74cd59adbc0129ce450bba"
+        },
+        {
+          "index": 29,
+          "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18"
+        }
+      ],
+      "id": "QB-005",
+      "pinned_sha256": "bc648239a475fbfead15b185e201e821498369ff5d133ba928603bb1319fc3d3",
+      "cell_count": 31,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Algorithms/qpe.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Algorithms/qpe.ipynb",
+      "sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "d4f806869ca5f33018edcd479c85ecf5d0530a179754e3aced372bcd38e7dc5b"
+        },
+        {
+          "index": 2,
+          "sha256": "5b1b82616956ecd4e232989ec2d8b761f1fb9b9f15a7ebc5c2ec5f8d0c83d75e"
+        },
+        {
+          "index": 4,
+          "sha256": "7f44ce773deaa2ddc64b08625b6df2b6b166157ba28dcf62e4d95bca93741b22"
+        },
+        {
+          "index": 6,
+          "sha256": "709becd5b0ddcaedc3f046923472b811deb1242e12978f4bd8e7ab4ccd39c640"
+        },
+        {
+          "index": 8,
+          "sha256": "d853ee7212a4ce3e29ede1b62a7820087fada80c4bfca4fe0b35f92e875570a4"
+        },
+        {
+          "index": 10,
+          "sha256": "958b87f02f84b17f8e33fdd219e2929d119275d7f075750c1159c04d3491a935"
+        },
+        {
+          "index": 12,
+          "sha256": "7c4687762f1153a6b6c6fab7dd296a7c0b79432db4e1cb7017abed02402ef01e"
+        },
+        {
+          "index": 15,
+          "sha256": "524e03eef504080bc2e958f7e93fad05c80266602c64ddf4745c6853216cb6f2"
+        },
+        {
+          "index": 17,
+          "sha256": "f361d117fc394c51f14fb4ee519e139ad97f7d3e11f9eee429bbc3fd3fb93d14"
+        },
+        {
+          "index": 19,
+          "sha256": "77905a1ce5a0428104d1d8c4af484f6abd94a5f5b74993c022d12f31534bb254"
+        },
+        {
+          "index": 20,
+          "sha256": "320fd628adc11a4b8c07d5c96b34b2027bc49c39702892c5073b27f1788a32c5"
+        },
+        {
+          "index": 22,
+          "sha256": "0f17424bc0201122b1acb0ca5fc9ed4af577169c322c0354594b758eb32fe9ce"
+        },
+        {
+          "index": 23,
+          "sha256": "52670e286de00d1aba0bd366c8f66a331c567f5c9bafdd077ef7453e1184fd13"
+        },
+        {
+          "index": 25,
+          "sha256": "8a4a0ccb5e150454a7703e27478a3a338acd2f6d36d5fc061956c43a40d58128"
+        },
+        {
+          "index": 27,
+          "sha256": "9d02a11f5fafae47f0412a626583e85cefd1535002f40939a1a39c0ff9f9122f"
+        },
+        {
+          "index": 29,
+          "sha256": "2bb75d6e9e172b0e1dc845fcdbd22bfe14d86f0c1c0d52ac1d6615705b4dab18"
+        }
+      ],
+      "id": "QB-006",
+      "pinned_sha256": "cf52622e2ca5abcdf2e93ef055543c093fca44810b3d2c09e0e9d56c8b882b06",
+      "cell_count": 31,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-CUDAQ/cuda_quantum_qpu_benchmarking.ipynb",
+      "sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 2,
+          "sha256": "30bc528ef8db241ad0b71cbb280d45a06ca0a9ca77a657f89ce0677a9c98240c"
+        },
+        {
+          "index": 4,
+          "sha256": "d0a85c59fd122d1a00aff8a5db8088463cbefbade3e7f35ac9b5a1bfdb13b386"
+        },
+        {
+          "index": 6,
+          "sha256": "ed0003af2b48a39ffabf4ed22deb4f38cc676de83399ac6da283a0c1c2f47d7b"
+        },
+        {
+          "index": 8,
+          "sha256": "806d945f0b0b00d7adf11eea9596376b0fce4791e36585771c3f92d27fbde241"
+        },
+        {
+          "index": 9,
+          "sha256": "65a8dd5f8433aa26ed87d44d38b8cd8d164c6520c51504ca4268d30266a65e12"
+        },
+        {
+          "index": 11,
+          "sha256": "1173192910a69b0ea788e441ae6e060cc1cf24d03dea2e93880500751adf47d5"
+        },
+        {
+          "index": 13,
+          "sha256": "51bd052c00527593b73e3cc089b3b2b63ffcad014cbfd2266c4e0ec9134563a4"
+        },
+        {
+          "index": 15,
+          "sha256": "0d1972ce66a8a4cae64ebf5598feb4c1123af9ee50ca83e7c80dc7707ef5dccd"
+        },
+        {
+          "index": 17,
+          "sha256": "61221dbb6bdb701fb548f3b96b539174b18acf3a355ce59f0a44d2945ff9c21f"
+        },
+        {
+          "index": 18,
+          "sha256": "6b6fef33dfa92a05fd62f8124d1a7b4bafa12bf8e695b5eab6e8dc905beb3108"
+        }
+      ],
+      "id": "QB-034",
+      "pinned_sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+      "cell_count": 21,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+      "sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 2,
+          "sha256": "a10d309dad316031c8d4b2744726ce2ac4e142f0fedd55f2f51718dc42dd7a0c"
+        },
+        {
+          "index": 4,
+          "sha256": "1d9a0a0a20d378e767dc30f3953b31e15c3e919f2fc2efec237ea2dc4736538f"
+        },
+        {
+          "index": 6,
+          "sha256": "19c31ffcd4c180ae2dbd316b6d6be82aefe93340851911ee8fedfe47b5e0c33f"
+        },
+        {
+          "index": 9,
+          "sha256": "466d04a306288726846b26774a3413bd3ff415beb70bfcd5bf0e6908179866ce"
+        },
+        {
+          "index": 10,
+          "sha256": "58a816463db81facc5a2b30c0eec1b5df2eda76ea5776e40e821b2424335cb7e"
+        },
+        {
+          "index": 13,
+          "sha256": "bae2ea45180d576508cd5400d701bb04347df54607e653ce9a56134cccf12517"
+        },
+        {
+          "index": 15,
+          "sha256": "d50490ecea0b630720265ab0a3d1041ac25237ea9da92a3c177c3baa26d6b50b"
+        },
+        {
+          "index": 17,
+          "sha256": "8153f4577cd1ab9f84539c5d97618eb9a387ca9b178f7ab98017f90c9ea608f3"
+        }
+      ],
+      "id": "QB-035",
+      "pinned_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "cell_count": 23,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-QIR/autoqasm_deutsch_jozsa.ipynb",
+      "sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 7,
+          "sha256": "56cae43e5aa68bd214b58bfa7475e0f54fbeca3c9f0e7bb277d756eb993b54c7"
+        },
+        {
+          "index": 8,
+          "sha256": "82852e420c2234b64e51ae5b2d5d4b2fec347a01df0a6ce3071f284c1f8ff0c5"
+        },
+        {
+          "index": 10,
+          "sha256": "9994adab23d06ae75f3da576b1a88a5b733e6aaab7f8bce3a47bc564e59422a3"
+        },
+        {
+          "index": 11,
+          "sha256": "4fe6f286f0123a6e9809d775ac16b9943310f19437de0dda4d696438815c9173"
+        },
+        {
+          "index": 13,
+          "sha256": "d922e24649b512a10209518265e09a91dacfd48fed7ba24ce1924147a1cdc422"
+        },
+        {
+          "index": 14,
+          "sha256": "d0ac48bb811d050a1302824c10a26e9e407a7c23ac126d1bbf241880081a9a25"
+        },
+        {
+          "index": 15,
+          "sha256": "0d19f89005e11dfb7cae46eb334b13c41e3d533d65e646bedfb8a2ecba1327b4"
+        },
+        {
+          "index": 18,
+          "sha256": "486b771196731727bf1240d599fd37eb1d49191e49d6151d3c68af5e92a2a680"
+        },
+        {
+          "index": 19,
+          "sha256": "75b58af0f212431595c6fb13d15aa44bb82d47df6961fa9cd62d0ecdeee4e872"
+        },
+        {
+          "index": 20,
+          "sha256": "485052ac6bcb8540e946117efc53d479e87f63f6ce7bd2608727840b3248c73f"
+        }
+      ],
+      "id": "QB-015",
+      "pinned_sha256": "b7b1ed883412dc54375ae4fbbae533dde6a14782077d12d0a8d50865c34dddfd",
+      "cell_count": 23,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-QIR/qbraid_qir_sim_batch_jobs.ipynb",
+      "sha256": "b98d5095d707a0e19ec063a59bc0bff02aa75c134ef814406552d4c8b840a7f5",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "d9c1674417bd9803348c08e73bead64fbe038a441fe0a178cbad5187f3d0594b"
+        },
+        {
+          "index": 2,
+          "sha256": "4e425d1ca48edd4dc797377aaf3ac3722883cd48e23837bc21562ea19acc7184"
+        },
+        {
+          "index": 3,
+          "sha256": "2b39b0314f1ed4c52479021904393c4136a2846607276ab98ff795f19e8748b7"
+        },
+        {
+          "index": 4,
+          "sha256": "0a5e88561c252468e8cbef54fc3432f6aa8bdc54d8cc630c2a6fcafc4a413312"
+        },
+        {
+          "index": 5,
+          "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2"
+        },
+        {
+          "index": 6,
+          "sha256": "19f39e3e43e5dccf4ad943ec4fe78fc0b8cb91f13dfe213ca30b7c4c50ff7878"
+        },
+        {
+          "index": 8,
+          "sha256": "200b9d02160c7c9dff7f1b1db3b57110edc4c9817ebd6dd21519782259e6106d"
+        },
+        {
+          "index": 10,
+          "sha256": "29f65cf98203428e816ec1337dd43d2be05ee081d5afd04fe3ecc684c2fca681"
+        },
+        {
+          "index": 11,
+          "sha256": "ad1ed9b28f3371ded5c7c7e79b356f7e39f3285445ace5a172828adca546240d"
+        },
+        {
+          "index": 12,
+          "sha256": "b13aa4fad830500fbb00715a3a9a2461c83ee90dc406a677d6de4f8c1b0802d2"
+        },
+        {
+          "index": 13,
+          "sha256": "91ef63b82a8b452d6797f4b69c92e9cb43541013b5c04e26a21ab6a451dafedd"
+        }
+      ],
+      "id": "QB-016",
+      "pinned_sha256": "b98d5095d707a0e19ec063a59bc0bff02aa75c134ef814406552d4c8b840a7f5",
+      "cell_count": 15,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-QIR/qbraid_transpiler_braket_to_qir.ipynb",
+      "sha256": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 0,
+          "sha256": "6509f95859fd96d0f3803db9b5b15eea51c6f353f80bea82990a27c5c82b7dd2"
+        },
+        {
+          "index": 1,
+          "sha256": "24c146e838ec318d5baa9e4f295c8087260350c32f8cd7692cb52a7f4b1eeb4f"
+        },
+        {
+          "index": 2,
+          "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2"
+        },
+        {
+          "index": 4,
+          "sha256": "62f5ff3b72c77ceaac7c6609fb026c2f304909d4326a99674b41e3e0b81749cd"
+        },
+        {
+          "index": 6,
+          "sha256": "69baa18f964d7f8579c8d838a7ec8c2fe8e5d2ae21f32b291b0de61427569775"
+        },
+        {
+          "index": 8,
+          "sha256": "115a205cea8786655544c4129c7545ff7d80609f463c54f0b99b7100cde4baa2"
+        },
+        {
+          "index": 10,
+          "sha256": "ab2c2b5fc99deef8e918c0a9596402f493d3ed0d425c3963f7166141ae61ec21"
+        },
+        {
+          "index": 12,
+          "sha256": "e6ae0b8eac09e2a17573ad503e4f930028a6aa76fc2ddb25ce31c4b49fbb23dd"
+        }
+      ],
+      "id": "QB-017",
+      "pinned_sha256": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+      "cell_count": 14,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-QIR/qir_to_squin_conversion.ipynb",
+      "sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "8d3d1f36b5ea115fb1799d276c95c6d20647f6bdc907bf3bd081f393979ac6fe"
+        },
+        {
+          "index": 2,
+          "sha256": "ef36945830015077f4d20b839e2a29d4eb11efdd3c46560235dc9fbc94a013c1"
+        },
+        {
+          "index": 4,
+          "sha256": "76815d80eb0a1216e95ce70762ae1c609417dd86c91eb0917b37039938fbf275"
+        },
+        {
+          "index": 5,
+          "sha256": "cc5669068160ced8a5b66bca38394e6875a9671eab77c216a36d7e8f481cc57b"
+        },
+        {
+          "index": 7,
+          "sha256": "67eb78e7a4b47d967abb4bdbc20147d75dcde739c481cc0336f65f4a47caf023"
+        },
+        {
+          "index": 8,
+          "sha256": "2d5019b4eff3a2b4cefb419243918d13fcc6be7859130434a6efec3f6b134363"
+        },
+        {
+          "index": 9,
+          "sha256": "5557ce387ac2d287560216808c9288681fd5a537fc45f51c9020e63438f4eb4c"
+        },
+        {
+          "index": 11,
+          "sha256": "a69bd07d11d1c37e119ef5da97eb2889ad03f90a54639b420b35ba4aa85a7157"
+        },
+        {
+          "index": 13,
+          "sha256": "1d2b0fc4808a0e64160f1d265c1c7e48c682dd3544e8aff3f17f11467497d4ad"
+        },
+        {
+          "index": 15,
+          "sha256": "e1516bf338bc281e6b812bfde1fa7f2a3e5ab30586747aa2676b9c60214260dc"
+        },
+        {
+          "index": 16,
+          "sha256": "7e39dc3182016011febb86005b3e4f283748643d44163a7ac660cdbe2f7839d6"
+        },
+        {
+          "index": 17,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "id": "QB-018",
+      "pinned_sha256": "cc18a95943ff2196e1cc1103fab25862c9e5a15999172c3b764a12519f1014a6",
+      "cell_count": 19,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+      "sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 0,
+          "sha256": "caabc1ecc0e98727e064191ba1b8f32dbbad62f591ed964fced3c8ef243ef097"
+        },
+        {
+          "index": 2,
+          "sha256": "113b1f8ee8724cc83144207c81c067d113a468e043b3588fe2717e547e23dc5a"
+        },
+        {
+          "index": 3,
+          "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9"
+        },
+        {
+          "index": 6,
+          "sha256": "2707a6da5ead68a599ed2967aa37c6411a155428b16e16a020dfbec8fc73213e"
+        },
+        {
+          "index": 7,
+          "sha256": "a546978766b904b9ae3ee76f38e275f4c705aad7bcecbf3336e7aead9bff6e96"
+        },
+        {
+          "index": 8,
+          "sha256": "b21fedd40dcb7fa31ad1b1f0a9d9913be4525df8f9eabfbf49d52f9eaa96459f"
+        },
+        {
+          "index": 11,
+          "sha256": "fe707897dd18ba415486651ef805d088f2e6f7a9a5111b7d4f8a04a670765d27"
+        },
+        {
+          "index": 12,
+          "sha256": "250158252381505ec35cf132b3beba85ba4ed8749fd744a6ef03ea00abc5d54e"
+        },
+        {
+          "index": 14,
+          "sha256": "0375b56c3819e3f0182b57c28eb1d52eee230e415f26f4ef329e496e6fd1cd06"
+        },
+        {
+          "index": 15,
+          "sha256": "b5c53ae94e894721bc37d44656e378a28c447e1000bc1a337ecb47d54331cdfd"
+        },
+        {
+          "index": 16,
+          "sha256": "ebfd56d62c2f26b28a9cfffe301f25a64394ef5d07937a2081ff0f3876c70acf"
+        },
+        {
+          "index": 18,
+          "sha256": "14d253f83f6f817d39d59f40182745a2824070a616165b89a8344ad2ec31abff"
+        },
+        {
+          "index": 19,
+          "sha256": "d1e5f8c35ed7b57accca1fb73f1bdfccc3216b5c5111c9d1ed6acfa5ee91f4f6"
+        }
+      ],
+      "id": "QB-019",
+      "pinned_sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+      "cell_count": 22,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+      "sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "7c447bcf1c0f65427c95d1b0f2a43c7d030a466b5192aa59106f717dcea001a3"
+        },
+        {
+          "index": 2,
+          "sha256": "1d5064eb98a102f01f13d8301893d9684d8408e18d106add6183347e64f39e59"
+        },
+        {
+          "index": 4,
+          "sha256": "c8a61fe7082401e311086ab821cc9fdf8aa1254b7a4c790e0cd9ac36a364bfe2"
+        },
+        {
+          "index": 6,
+          "sha256": "bc072ec0218cbc54673fde51f9860446628b4d888f278c497d84f516471c3258"
+        },
+        {
+          "index": 8,
+          "sha256": "3e714dfff0324f7a3c77039ac3891e06b44bd1fc7a5ae5a2deaee451b171a929"
+        },
+        {
+          "index": 10,
+          "sha256": "1fdabeea5c86d71dd575dd3e4acef2c40f42b0012c997491a77ed2372a12c383"
+        },
+        {
+          "index": 13,
+          "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9"
+        },
+        {
+          "index": 15,
+          "sha256": "0fb95ef50dec610f9c1230fbab4f487fa3cd294441457599d898b66817081805"
+        },
+        {
+          "index": 17,
+          "sha256": "21d2af8fc9766bf3bd1e10144b0e9a6581738779a5240d9cc0e6a2a90e90215f"
+        },
+        {
+          "index": 18,
+          "sha256": "7f45c3e1ae82556b8a813914cab24504330e6ffd23aafa21df104162b7bc0f56"
+        },
+        {
+          "index": 20,
+          "sha256": "7bca2b2a53a295ffe3b7fde37a5d292a10714368833b41410b5402192de6c23d"
+        },
+        {
+          "index": 21,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "id": "QB-020",
+      "pinned_sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+      "cell_count": 23,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb",
+      "sha256": "cf5d5103296e683fa1e5b89b3187282fa01400d1172c112d36ff3ba82a4f1787",
+      "change": "added",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "7d8683e21e1379e8a16a90da8dc9788aaa37a3f6c21f18a879e4c34984a3af96"
+        },
+        {
+          "index": 3,
+          "sha256": "4d79ee9c11cb9afa0eba1958ccd93f8e3f9cd807fd3b7db7f1af554767ed1e25"
+        },
+        {
+          "index": 5,
+          "sha256": "98467f1b57e6bf1c2cee334a674337285f6a6a43b36d5930d480b0848de453a8"
+        },
+        {
+          "index": 7,
+          "sha256": "325a5f5e21f2c91d123b851281dd0c433c23710c65e4a5db25e1e37297dcb92e"
+        },
+        {
+          "index": 8,
+          "sha256": "320a6ec73705ab40f086a4d2556c630547b67a41f09424d63b2488319ae31d94"
+        },
+        {
+          "index": 10,
+          "sha256": "e043f1956e61c9719cf43c42725fbe91abfb280ef9319c6102b17e61e4516358"
+        },
+        {
+          "index": 12,
+          "sha256": "8b3376d6512edc3a2a434bacc1b814a08b9f231f4f888123b8845b82e07507d2"
+        },
+        {
+          "index": 14,
+          "sha256": "0fbd576a529a27c35477c20d8c7f3a700e65f0385f0d1dd4ddff3d813eda8ddd"
+        },
+        {
+          "index": 16,
+          "sha256": "7152f110acdc3dfbc0597c6624de8c32528a17eb48e43a5c04d78cd2d2361e23"
+        },
+        {
+          "index": 19,
+          "sha256": "54a244ae4ee3b424c3143d36a17cf0439f7d922455a7526980a433fa32f5bf30"
+        },
+        {
+          "index": 20,
+          "sha256": "f14627b5d815dd5f1d9216f0a6ec1ba9df42f67a8803d0a2389d8b06cbbf748a"
+        }
+      ],
+      "id": "QB-036",
+      "pinned_sha256": null,
+      "cell_count": 24,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb",
+      "sha256": "5467f64569a4f8957ebd8c70986a023bd34f3de805d7787a3afc0209b43a6d35",
+      "change": "added",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "7d8683e21e1379e8a16a90da8dc9788aaa37a3f6c21f18a879e4c34984a3af96"
+        },
+        {
+          "index": 3,
+          "sha256": "a61dd0b051355a7162caa79534eee53b69f9db755ff0d7335e61da94f827aa66"
+        },
+        {
+          "index": 5,
+          "sha256": "1d12d0d7caaa570d8ea02603f0232660bc02fa6073e9312f777518cf8a6c84d0"
+        },
+        {
+          "index": 7,
+          "sha256": "fc7d689b74726f91f07ecff38f239f45304e45ede09f2d0812a6382e91ea4ef8"
+        },
+        {
+          "index": 9,
+          "sha256": "9497ba23c3ece5f1b3f5e5408237661220be4381a6f9f326f542cb1506b8ceb0"
+        },
+        {
+          "index": 11,
+          "sha256": "2c005d7c66963301f67c9e0effd70a55d3f249d25400fb0157612229a94954d5"
+        },
+        {
+          "index": 13,
+          "sha256": "93229bc2b015e4e341e24ee9a21cf4c25fa50a0103d918b78e6999b32700edd9"
+        },
+        {
+          "index": 15,
+          "sha256": "33947f47ee889baf3b00e34e79951167edcff72937a83c174e9a43ddd490f445"
+        }
+      ],
+      "id": "QB-037",
+      "pinned_sha256": null,
+      "cell_count": 19,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_pulser_pasqal.ipynb",
+      "sha256": "6e0aff466dd3a4e97c3d0dfd9da945621e7e5daba553af9d40cb319ae18910f4",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "77de6ca47b006237cd46ae39e8a6a93624043c50ac5e875b59ad00048e9716c4"
+        },
+        {
+          "index": 2,
+          "sha256": "2ff1c6bc6cec686db0ccae298d2eaada9bfba04e2b3feec6351bc454211542a3"
+        },
+        {
+          "index": 3,
+          "sha256": "732c22164adeffd8b3e64c32ce5bf9eac0d439be2e104f0797c02b8f6f93b8a6"
+        },
+        {
+          "index": 4,
+          "sha256": "c58622179f5652a151a3259003a05e39688bac12376a2011d423c817182efe40"
+        }
+      ],
+      "id": "QB-021",
+      "pinned_sha256": "6e0aff466dd3a4e97c3d0dfd9da945621e7e5daba553af9d40cb319ae18910f4",
+      "cell_count": 6,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_runtime_batch_jobs.ipynb",
+      "sha256": "586ad421664e4fe76b172cdb80165efb55a8ec9a82bd2c648911a773e02e0c15",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "6631b59128e4a4f5d829eeb1bc270a53dce96c16ffaea63ebe9559bd09fa7235"
+        },
+        {
+          "index": 2,
+          "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9"
+        },
+        {
+          "index": 3,
+          "sha256": "9967671eed6db21d8b129ea2b97d02166a40d0e9580e9afe945b3fbc8a79470c"
+        },
+        {
+          "index": 5,
+          "sha256": "1941698b9ffa8bc0e986ae3446b31ba8640382aa42f4f61cefad3466699c4b3d"
+        },
+        {
+          "index": 7,
+          "sha256": "e20782093a348814ba817aaff07a5280532b4f095bb848d7c02aa32086ddc7ed"
+        }
+      ],
+      "id": "QB-022",
+      "pinned_sha256": "586ad421664e4fe76b172cdb80165efb55a8ec9a82bd2c648911a773e02e0c15",
+      "cell_count": 9,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_runtime_bloqade_aquila.ipynb",
+      "sha256": "0ff2b015561e0bec4690422eb5a00db06d990d13f5c327a2f9b5054b614494f4",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "9964e69f825d8cbf38053417e98fe3648fd05b8c19d90f6d278c94a148b7b5fe"
+        },
+        {
+          "index": 2,
+          "sha256": "b634bb11e495492359075ac6ee71b37860b6da96a083234f78f67ff54113311b"
+        },
+        {
+          "index": 4,
+          "sha256": "4ef7c8c66aa2fc82c023dfa24c8d284e5d18b21c21b8cfea1c82742cb319cd32"
+        },
+        {
+          "index": 6,
+          "sha256": "31615081529e89b427a6ad6a13bb42d14fecdd45c99bf8c9ad50f11bb0a94f09"
+        },
+        {
+          "index": 7,
+          "sha256": "6807e6c26e621144c7d424eefd1dda5688506fd5e12cdf723b2a61a42f74c5b7"
+        },
+        {
+          "index": 8,
+          "sha256": "add5a605ea4e5bc2d6cb74854bee111f40fc12ed580901a66ead56b06061f8fd"
+        },
+        {
+          "index": 10,
+          "sha256": "04b9117840226acbb8f30ca6b77f8644b841a72898c3d7429be90e6884f6a61f"
+        },
+        {
+          "index": 11,
+          "sha256": "ac662fcc728aab5c1182b872e99ad1b273a4f577d01f252799675b34c7386121"
+        },
+        {
+          "index": 12,
+          "sha256": "27dfc27ac5a068fa036d41e849809902d9c6897ba9092e7ef060d3e656adf9c4"
+        },
+        {
+          "index": 13,
+          "sha256": "6dd2c6ec4fe521691f94d6fbc626e149bfd85ac32bd453639a1c0a3e1eb4f270"
+        }
+      ],
+      "id": "QB-023",
+      "pinned_sha256": "0ff2b015561e0bec4690422eb5a00db06d990d13f5c327a2f9b5054b614494f4",
+      "cell_count": 15,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qbraid_runtime_qbraid_provider_aws_devices.ipynb",
+      "sha256": "421214ae6b2701d8bdd3c721741d17bd70a4709c617766dcf3f9472622565dd9",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "93a4ac5a0f6cd2a3d60dd01a8a787841fe1e600cd91f0d8eeb5fec21784340fe"
+        },
+        {
+          "index": 2,
+          "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9"
+        },
+        {
+          "index": 4,
+          "sha256": "b03b93210f790fb0aec055cc8df85d1e9afee45c9e5393987b64648abe1bd3c3"
+        },
+        {
+          "index": 5,
+          "sha256": "1d3ca204a8b43dad1344ca825f92e7bda3017321e625efba041c8b2f8bf6c286"
+        },
+        {
+          "index": 7,
+          "sha256": "5c39cd66c03fe329c709c3e6f4ccebddcb644aeca1483f0621a73e42114887f8"
+        },
+        {
+          "index": 8,
+          "sha256": "a22c6cd46af20bfb18660410b58014072057b03b679bfd50296d055e0d997dd0"
+        },
+        {
+          "index": 14,
+          "sha256": "e36b295d5de77a120d741bf1f3396594640b4c2e12a1185d6465aea8c4f943fe"
+        },
+        {
+          "index": 15,
+          "sha256": "c54a4d0258b0f95a57c07dcb4fe997f456be79e993f19eca2ca300cb8bd6feb9"
+        },
+        {
+          "index": 17,
+          "sha256": "32c6cc4f75684211752b9e20218cf4c3e900d629a88944846d59513708d17182"
+        },
+        {
+          "index": 20,
+          "sha256": "003af81b2fceaf018c141f782b25a3ff88e2aebbe5cf60c08d848fae9b81b20d"
+        },
+        {
+          "index": 21,
+          "sha256": "c7cbf4b7de4177eed1e0e2709855e8cfad9fbe6c60eb8dc331362d66961d08ee"
+        },
+        {
+          "index": 23,
+          "sha256": "eda174d34f931df3eb2be40d12c6502a6d33b166f5e14cb497ebbd6c109ed10f"
+        },
+        {
+          "index": 25,
+          "sha256": "3ccc2ec7f7e80fa29141d674a698ec7dba66454cf3d6e5e3ca4af13a7b20a75d"
+        },
+        {
+          "index": 26,
+          "sha256": "0713221ef570fc9a68be178750ceb760e8c7636a35b7478e85c162724cbb8acc"
+        },
+        {
+          "index": 28,
+          "sha256": "ccfb589fb5e79cc7da2e3b29873e4fb70887360a7eb8cabc615631d7edec5305"
+        },
+        {
+          "index": 29,
+          "sha256": "732c22164adeffd8b3e64c32ce5bf9eac0d439be2e104f0797c02b8f6f93b8a6"
+        },
+        {
+          "index": 30,
+          "sha256": "3c6e2649a51eb1b3d41ddd00b3b46ea41f2f4b95644cde01c1def05c34f357ed"
+        },
+        {
+          "index": 31,
+          "sha256": "217256a22e11e1050a658ff0c11fb69726fe8dff9e986ad204255b86cd0d8bd9"
+        },
+        {
+          "index": 34,
+          "sha256": "92098dac225073adcdb18256bc59ae2fe2fcbb734f7dd3c858ee7747f7dca362"
+        },
+        {
+          "index": 35,
+          "sha256": "4985c72ea1165a24b6f21f88580527d7b032c5f62674c3e76c0cfe52e7e20933"
+        },
+        {
+          "index": 36,
+          "sha256": "90a3412bbd51374ba75c3fd36b01a3fb4b99df62e8468f363ef7415e185f2472"
+        },
+        {
+          "index": 37,
+          "sha256": "67233f52a92934a58e522eacc1920850518a38ec0bfa6a9159fb1404d5029b18"
+        },
+        {
+          "index": 38,
+          "sha256": "ae36a384859e215a75c967b173e87376f0393ab394e8c1112cf7290d1a726b36"
+        },
+        {
+          "index": 39,
+          "sha256": "65e137b077d72d76cba9d676710a84514e531f41491eb3a4d614aee49b831b46"
+        }
+      ],
+      "id": "QB-024",
+      "pinned_sha256": "421214ae6b2701d8bdd3c721741d17bd70a4709c617766dcf3f9472622565dd9",
+      "cell_count": 42,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/qperfect_mimiq_quickstart.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qperfect_mimiq_quickstart.ipynb",
+      "sha256": "0c953abc62d97d819435b4ed3bcf3d820b3b24b2af514c3ea3a3bceb79999412",
+      "change": "added",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "7d8683e21e1379e8a16a90da8dc9788aaa37a3f6c21f18a879e4c34984a3af96"
+        },
+        {
+          "index": 3,
+          "sha256": "80d70df796f161ad6aca55954f3220feff2544d0635171c1d87847763d57e9ef"
+        },
+        {
+          "index": 4,
+          "sha256": "3067ed999c83c9bf50d29a975bd48c77b3e8e65bd56832d4d9cd7f7e7f74989a"
+        },
+        {
+          "index": 6,
+          "sha256": "10fb274079ba7993b6e2599324e78e19aff5644fc9ab1cc8b91659805d4a8009"
+        },
+        {
+          "index": 8,
+          "sha256": "325a5f5e21f2c91d123b851281dd0c433c23710c65e4a5db25e1e37297dcb92e"
+        },
+        {
+          "index": 9,
+          "sha256": "169848855ac35bc2984be207b962d3c6dd9aad562ba52d14a8f03a64541a9089"
+        },
+        {
+          "index": 13,
+          "sha256": "1fde44290d6cb336825e17ad5cc75437f5d22490e62a7813ea66892ac5714c2c"
+        },
+        {
+          "index": 15,
+          "sha256": "dc9c314a4b7fe954696db27c1fe5bc9cc673d35567acd301f21eca3d8401a963"
+        },
+        {
+          "index": 17,
+          "sha256": "87fcff5e2113f41c978b695777dee67ceef4ddb59ec9eff9c881ae63a1e471d0"
+        },
+        {
+          "index": 19,
+          "sha256": "cf10a57cf1ec556140353bc6b34209b596d7e2a86dce4456807b0f29ec937f3e"
+        },
+        {
+          "index": 21,
+          "sha256": "6fd4bb7ef1bd9e6d3fa930d2dc45d8bf0774b20b2ae55043c00a4f8d3f423e65"
+        },
+        {
+          "index": 22,
+          "sha256": "7b4452cbf71015fdb29df662d2492a2e75ca9c05d2f8445dd611195ade4465da"
+        },
+        {
+          "index": 23,
+          "sha256": "6fdedba875add01c8066515b961bb870428b7c5890512603830336778f7cd832"
+        },
+        {
+          "index": 25,
+          "sha256": "81cba3bacc35ef3276a2695febdb4c22e89d84a2f048d67107d94ded83fbe95f"
+        }
+      ],
+      "id": "QB-038",
+      "pinned_sha256": null,
+      "cell_count": 29,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "sha256": "912f632ec426ae7c83eb04b88ec9fd0d4e69f5fa7ef8a0909fc9762cf91caf3d",
+      "change": "modified",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "0499be04f4b3a224a87a4891a155dd23614852e2a34488d47a5714dbdd226da4"
+        },
+        {
+          "index": 3,
+          "sha256": "4f43a9ebe1e65c0f83566dbb82115b02a88c9f86a728ab056c8c8429c6ea1d68"
+        },
+        {
+          "index": 5,
+          "sha256": "af07033c9fc02e57a518b0bc0c3c4dd59b1ea8d7ebc41bf967fe0fe95b11ac78"
+        },
+        {
+          "index": 7,
+          "sha256": "032928abdbc2e0fda43145e6e3d04b0e3406fb15077bfe568f3031756edce395"
+        },
+        {
+          "index": 10,
+          "sha256": "32cdff34648d975890eb5f137df076f6e9bcdba2de80e0b21a943adf7290724b"
+        },
+        {
+          "index": 12,
+          "sha256": "40a81819fb1c7e58d4647ca83c19518600c2890a8956d02ba8827fcb68e21bb3"
+        },
+        {
+          "index": 14,
+          "sha256": "667e7a748579ba45dcb91408d72eff8510a5dda6c149b2bcc69917d50428f7dc"
+        }
+      ],
+      "id": "QB-025",
+      "pinned_sha256": "d3e806a15eca86f9c7e92120faa3319b2b9639e2409f497015f2b436817cf66c",
+      "cell_count": 17,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "sha256": "254a1133e82db85455593c1804d066180706f214326ce9d244fa2835f8d2004f",
+      "change": "modified",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "d9e5993bdedac20df2a8d0786e8fcf5ab883956089cea78b450873d3f44abbba"
+        },
+        {
+          "index": 2,
+          "sha256": "65227258a88c7aa1e13856a824b09f11ffec940199551af64181cc3be5797163"
+        },
+        {
+          "index": 4,
+          "sha256": "5118a6de20d6e9fbac663cf8591f809264a0ee216c4b2729ae8a561552279b09"
+        },
+        {
+          "index": 6,
+          "sha256": "3685a8578f9779827ae0752f1abc3d86b73d2abecc53f536ad8e8384ffc5a6bb"
+        },
+        {
+          "index": 8,
+          "sha256": "7f99f41334a96c3c848c70bd3ff35ffac88a882605f13929bff265905f530302"
+        },
+        {
+          "index": 9,
+          "sha256": "91507b33e43f0be47a333a6b21a5cfeb4474d6005426bf6a9897570e2c21ad9b"
+        },
+        {
+          "index": 11,
+          "sha256": "4125ba2037a6ac22115651184de8f1a7ba2ade11943f78047f53412a384ddc28"
+        },
+        {
+          "index": 13,
+          "sha256": "37bece10c9177b89f44aef5aae4bbbfac54a85c3a0f58ebd231201a7ce4a620e"
+        }
+      ],
+      "id": "QB-026",
+      "pinned_sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+      "cell_count": 17,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-SDK/bell_circuit_examples.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-SDK/bell_circuit_examples.ipynb",
+      "sha256": "eea3ace95ea4cf2cee1baf72559efe81ee6232ec83f913d8fd7bf07a07c2d140",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "7601ea32f522b8e576ce39f5c1a89d664b6d6d8e41dc94313b85ecdbe9c7403a"
+        },
+        {
+          "index": 2,
+          "sha256": "4171f20f1e1cc77ed3254f306f496e90a220585edde7d335e664170e6f739fad"
+        },
+        {
+          "index": 3,
+          "sha256": "a1fc211ad35d6684c7bf8eee7262911c025c0e54224fbeb38ed78b4000078abb"
+        },
+        {
+          "index": 4,
+          "sha256": "5abb4510fcad24a20a08e4c1f0d9c02335ce7ba4d8bb8dd3342d6ac1ded0a14e"
+        },
+        {
+          "index": 5,
+          "sha256": "9095a85ae30edecf1a78afa15eda91c26fc83de17d2423b93ce2aa7f2c807bb3"
+        },
+        {
+          "index": 6,
+          "sha256": "9c673d8fc54a9d8a0a88ab55dc980de76cc8ab2bc384e50607676307fc0cc0b7"
+        },
+        {
+          "index": 7,
+          "sha256": "290f672902ab0db78e72022803948da38bdcc30016c986408fe58ec4434b6712"
+        },
+        {
+          "index": 8,
+          "sha256": "0c403a57e9b4d3a1c928ac11fc4ac97641ced3852aa93dedc9043a34d29cbb39"
+        },
+        {
+          "index": 9,
+          "sha256": "316e6dfb32b14de5fab055d166004e4902db27f8e13557e3961ea65b985aabec"
+        },
+        {
+          "index": 10,
+          "sha256": "a686d13946324f5e60dced1bf3ebf5808df8a4682a0aaceaa05ccdba3b121555"
+        },
+        {
+          "index": 11,
+          "sha256": "20dda7b228e23cd5b58d3ffbb1ba3cfeecc49f3b2b9d290ef2c1eec0fdbcdf4c"
+        }
+      ],
+      "id": "QB-009",
+      "pinned_sha256": "eea3ace95ea4cf2cee1baf72559efe81ee6232ec83f913d8fd7bf07a07c2d140",
+      "cell_count": 13,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_devices.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-SDK/qbraid_sdk_devices.ipynb",
+      "sha256": "668481d0cfdd2820f08bdc65d5f8d7997674b26ffe4ca9bb1ca93e3220bd4f78",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "c1e837ec40bb51207bf861afe55e13d6501cbdfbe4d1e1fed0db7dd9321e023a"
+        },
+        {
+          "index": 2,
+          "sha256": "4ee59b9473f7cb8a3ed16b51bef3e6783361766736202978a6362f4240f8dfcf"
+        },
+        {
+          "index": 4,
+          "sha256": "87cbfaee9a991921b90129cc4e85786d8ed0cf3c5dbdaeaace705e357932aaa3"
+        },
+        {
+          "index": 6,
+          "sha256": "0b1537a462b7cca2472d1ea5561b0ec1737ad30a6841dc30c81ff2ec0341c6f3"
+        },
+        {
+          "index": 8,
+          "sha256": "13bf48bdd519fcfc04dee2f8f08de3a83bbf72dc3e1de3f85defc602b23b1e0f"
+        }
+      ],
+      "id": "QB-010",
+      "pinned_sha256": "668481d0cfdd2820f08bdc65d5f8d7997674b26ffe4ca9bb1ca93e3220bd4f78",
+      "cell_count": 12,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+      "sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 1,
+          "sha256": "d8a7c2b6a2039d6edfdd59612dc17660fee190a63d453567b3f08f892700a193"
+        },
+        {
+          "index": 3,
+          "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2"
+        },
+        {
+          "index": 5,
+          "sha256": "e45a58a9e998f9cefcc56627f0370d94ef7a1d90453a51cbab1614e8bbe499c5"
+        },
+        {
+          "index": 7,
+          "sha256": "89e971b0e33958ce210704c059c7ae7ea80762a49466a227740e39cfbf925822"
+        },
+        {
+          "index": 8,
+          "sha256": "3d947d0fabaade407423746b18896a7084a15941d2d66f28292d12b3a3c1aa81"
+        },
+        {
+          "index": 9,
+          "sha256": "91890a87cd10eca6c7916bcc86c2f133a018fa95c8f99aa2baece91bcfe468cd"
+        },
+        {
+          "index": 11,
+          "sha256": "488c5937a32b149d3b792d29234117a13206ea1d71b97c39f6d0aa4bd7439d79"
+        },
+        {
+          "index": 14,
+          "sha256": "b63689b9c654e8e27352e6eedcb983c5428f31d470233999cb82d54b0e3979d2"
+        },
+        {
+          "index": 16,
+          "sha256": "b7f051c675878e497d6dce1728d4dabf7c9eec48da5d66791ba83ed53248de36"
+        },
+        {
+          "index": 17,
+          "sha256": "8ef682f63a3790c2fe83da68e9d0c55f58925629c9627c7b11bc8533252eee54"
+        },
+        {
+          "index": 18,
+          "sha256": "0e11286c65d7bb666eead78a7eb9ffde098ef62fcee62eca6d43bf06ede75c46"
+        },
+        {
+          "index": 19,
+          "sha256": "365a02d7760181c5d161568f608538dc0afd246ce103a4aa6bcc7a6adb02f817"
+        },
+        {
+          "index": 20,
+          "sha256": "8111c22b302c861ea3c21d65db286d60699915d2dc5f73548cac49bb90f2e38c"
+        },
+        {
+          "index": 22,
+          "sha256": "6024be667f780ae67a75097699c070c0d53d1fa3a4ea26c071bae4dd40b542aa"
+        },
+        {
+          "index": 23,
+          "sha256": "f523a60deb12514aafd2d2b4f5d7d9785885e581d90606fac0421027ea33c6d9"
+        }
+      ],
+      "id": "QB-011",
+      "pinned_sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+      "cell_count": 25,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+      "sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 0,
+          "sha256": "a3ffcc3e5ea32c08c79d021194b4d95091af5b62f0b0a256d42f53dc42ec642e"
+        },
+        {
+          "index": 2,
+          "sha256": "62f5ff3b72c77ceaac7c6609fb026c2f304909d4326a99674b41e3e0b81749cd"
+        },
+        {
+          "index": 4,
+          "sha256": "66851bf87d70bca690117aa342fc56fde79b1c440b3356980c1cbe47526c3579"
+        },
+        {
+          "index": 5,
+          "sha256": "e275067a2d9d843207e49a9f27a4cb7ffc883d4e9362f3b2258f7221df49387e"
+        },
+        {
+          "index": 6,
+          "sha256": "66c506ae281f7b483f41ef540aad1aae370c967d28870fc8bf844a7a19b302ec"
+        },
+        {
+          "index": 8,
+          "sha256": "a5fd5095d173009c2b83965714826170d9d1d9e3d6bcfc646859755175b4723a"
+        },
+        {
+          "index": 9,
+          "sha256": "26855d46367e2980cedaf7faf5995aa4cbe71fda08a044a5786ec88f012a1c34"
+        },
+        {
+          "index": 10,
+          "sha256": "2d6fae148a74013ca475071db5275652cc214c9ef0a8c418a109064a78cb278d"
+        },
+        {
+          "index": 11,
+          "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea"
+        },
+        {
+          "index": 12,
+          "sha256": "66c506ae281f7b483f41ef540aad1aae370c967d28870fc8bf844a7a19b302ec"
+        }
+      ],
+      "id": "QB-012",
+      "pinned_sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+      "cell_count": 14,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-SDK/qbraid_sdk_transpiler_cirq_stim.ipynb",
+      "sha256": "5b5ae29f1a5813111d1474d60a13aac6c06c2ef1904f75de73ec75a7224c8145",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 0,
+          "sha256": "143237c1985c0804074198d3c1e2d5e2a40c70b6693d07d5740571c3a1d5c235"
+        },
+        {
+          "index": 1,
+          "sha256": "f6b70cc29fdc73e2c8d312279d1e005e88a3db183b677fc35ae15003f4e18c21"
+        },
+        {
+          "index": 3,
+          "sha256": "2707a6da5ead68a599ed2967aa37c6411a155428b16e16a020dfbec8fc73213e"
+        },
+        {
+          "index": 4,
+          "sha256": "70a7ca08205ad581ebd0ef5f38e5caf72f9ce8719aa455b58f41f1b40f364177"
+        },
+        {
+          "index": 6,
+          "sha256": "0e592536ee5014d652d8e1afbdc1268cfcac373142d455e97bb96a4ff81d6ac5"
+        },
+        {
+          "index": 7,
+          "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2"
+        },
+        {
+          "index": 8,
+          "sha256": "fbef6ba81ae27a897ee2a95d428d633ba0bfb7b9bb855e2fb80f1ac21bf2f8be"
+        },
+        {
+          "index": 9,
+          "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea"
+        },
+        {
+          "index": 11,
+          "sha256": "dfa059e6093eab87b91a58eebc40ce2711a78f88b658f49b997dcfa003ddedce"
+        },
+        {
+          "index": 12,
+          "sha256": "f203120db15c018fd00347415b85b9048de352007a41fb7f988145e4de04bee9"
+        },
+        {
+          "index": 13,
+          "sha256": "f29992eb7e47ad05c0a71dd3d3f1c61d42119ca673dba03b2e162a907ca04356"
+        },
+        {
+          "index": 14,
+          "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea"
+        },
+        {
+          "index": 15,
+          "sha256": "1510d4d8b92177e02a1107cb62727ba47afd47ead32cd356896627987ae4943e"
+        },
+        {
+          "index": 17,
+          "sha256": "5f141d653a8fdba89189dede562a6e35467cd8399a86fbb575c3d32ccfd15d76"
+        },
+        {
+          "index": 19,
+          "sha256": "df1b7ab17d886775e96b7996f3a7fc98f9f03b6774a70030c040f802f66315eb"
+        },
+        {
+          "index": 21,
+          "sha256": "acfc9f59a01c875fd9ed2c2aa10ef8d116ebcee0e246305dc8920a0b3942ab0a"
+        },
+        {
+          "index": 22,
+          "sha256": "33f0d20c1e76a2422f2e3a5a7812845e8dbf2651f65bb941c0277f5a413ce60f"
+        }
+      ],
+      "id": "QB-013",
+      "pinned_sha256": "5b5ae29f1a5813111d1474d60a13aac6c06c2ef1904f75de73ec75a7224c8145",
+      "cell_count": 24,
+      "execution_status": "not executed in this reconciliation"
+    },
+    {
+      "path": "qBraid-SDK/qbraid_visualization.ipynb",
+      "url": "https://raw.githubusercontent.com/qBraid/qbraid-lab-demo/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-SDK/qbraid_visualization.ipynb",
+      "sha256": "c2231836e666d1776e0e2700ed32d8d8c0138ebcd5f4c087255068020cac3b97",
+      "change": "unchanged",
+      "code_cells": [
+        {
+          "index": 3,
+          "sha256": "15550eec24eb8a65785af6742f555e4eee1c2b8f553c810039a2731ca27d2c85"
+        },
+        {
+          "index": 5,
+          "sha256": "6d61d137503dbfee70fbcb1b8e3dad959cdbe0c57669f04a5eec5bc8df69bbf5"
+        },
+        {
+          "index": 7,
+          "sha256": "6053aa9e1647d92c07d0796ee13914b5ded4012bd19897b6328b325f88563b88"
+        },
+        {
+          "index": 10,
+          "sha256": "4253bbb1817b8ea9fb2bd9ec5d0a3589e5a7c2a0768e7e30c37c24d282441240"
+        },
+        {
+          "index": 13,
+          "sha256": "6be96ee1a061813b809fcce23f41808378e90092b103b1a45d88b853ffb9fae5"
+        },
+        {
+          "index": 14,
+          "sha256": "60e4aaa2c29685e7d51cab4be728800a8d56f2fb6d53abfad8fcee1812407034"
+        },
+        {
+          "index": 15,
+          "sha256": "1d4334995d165ab820f84c56602398f9e615b7e79fafe7d5451ef00c74003f41"
+        },
+        {
+          "index": 16,
+          "sha256": "e110a263dc0637156da7e7f8fb36db8739b6faf35fe5acd10a6a90451c752d0c"
+        }
+      ],
+      "id": "QB-014",
+      "pinned_sha256": "c2231836e666d1776e0e2700ed32d8d8c0138ebcd5f4c087255068020cac3b97",
+      "cell_count": 18,
+      "execution_status": "not executed in this reconciliation"
+    }
+  ],
+  "scope": "Complete .ipynb path and byte-hash reconciliation for this repository snapshot only. No notebook execution, SDK-reference, qBook or IBM catalog completion.",
+  "checked_utc": "2026-11-17T10:29:00.406741+00:00",
+  "pinned_head": "86787e1ba372facc224f925189755e69c479828b",
+  "added": [
+    "qBraid-Runtime/qbraid_gpu_sv_quickstart.ipynb",
+    "qBraid-Runtime/qbraid_gpu_tn_quickstart.ipynb",
+    "qBraid-Runtime/qperfect_mimiq_quickstart.ipynb"
+  ],
+  "removed": [],
+  "comparison_counts": {
+    "unchanged": 33,
+    "modified": 2,
+    "added": 3
+  },
+  "modified_code_analysis": [
+    {
+      "path": "qBraid-Runtime/quobly_alloy_forge_quickstart.ipynb",
+      "changed_cells": [
+        5
+      ],
+      "python_ast_equal": true
+    },
+    {
+      "path": "qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "changed_cells": [
+        2,
+        4,
+        6,
+        8,
+        9,
+        11,
+        13
+      ],
+      "python_ast_equal": true
+    }
+  ]
+}

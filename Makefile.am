@@ -439,3 +439,7 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb027-qb029-providers.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb030-qb033-providers.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb034-benchmark.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb035-quickstart.json
+
+EXTRA_DIST += docs/learning-evidence/aud02/qbraid-catalog-20261117.md docs/learning-evidence/aud02/qbraid-catalog-20261117.json
+
+EXTRA_DIST += docs/learning-evidence/aud02/ibm-catalog-20261117.md docs/learning-evidence/aud02/ibm-catalog-20261117.json
