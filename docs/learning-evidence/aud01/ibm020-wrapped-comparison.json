@@ -1,0 +1,100 @@
+{
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "baseline_worker": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "candidate_worker": "a196e5c82001ea2a0528f5c0288bdba5ceaa89508f0d49e560dc0e827cf4cdbe",
+  "mode": "Quantum, original source delimiters, no authored bindings",
+  "baseline_exit_counts": {
+    "2": 40,
+    "0": 128
+  },
+  "candidate_exit_counts": {
+    "2": 37,
+    "0": 131
+  },
+  "compared": 168,
+  "identical": 164,
+  "differences": [
+    {
+      "id": "M01",
+      "baseline": {
+        "input": "quantum:$$\nH = \\begin{pmatrix}\n\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix},\n$$",
+        "exit": 2,
+        "stderr": "Unexpected notation at byte 80"
+      },
+      "candidate": {
+        "input": "quantum:$$\nH = \\begin{pmatrix}\n\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix},\n$$",
+        "exit": 0,
+        "output": {
+          "text": "1",
+          "display_text": "1",
+          "copy_text": "1",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        }
+      }
+    },
+    {
+      "id": "M03",
+      "baseline": {
+        "input": "quantum:$$\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n$$",
+        "exit": 2,
+        "stderr": "Unexpected notation at byte 129"
+      },
+      "candidate": {
+        "input": "quantum:$$\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n$$",
+        "exit": 0,
+        "output": {
+          "text": "qequalchain((qadjacent([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], qketstate('a')), [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))], [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))]))",
+          "display_text": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))] · qketstate('a') = [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))] = [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))]",
+          "copy_text": "qequalchain(vector(qadjacent(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),qketstate('a')),matrix(2,1,[1 ∕ √(2),(−1)^'a' ∕ √(2)]),matrix(2,1,[1 ∕ √(2),(−1)^'a' ∕ √(2)])))",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        }
+      }
+    },
+    {
+      "id": "R13-0-M039",
+      "baseline": {
+        "input": "quantum:$$\n(a c) \\oplus (b c) = (a \\oplus b) c,\n$$",
+        "exit": 2,
+        "stderr": "Unexpected notation at byte 27"
+      },
+      "candidate": {
+        "input": "quantum:$$\n(a c) \\oplus (b c) = (a \\oplus b) c,\n$$",
+        "exit": 2,
+        "stderr": "Scalar XOR requires nonnegative integer operands."
+      }
+    },
+    {
+      "id": "R13-0-M066",
+      "baseline": {
+        "input": "quantum:$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle\n= \\vert - \\rangle \\otimes \\vert s \\rangle,\n$$",
+        "exit": 2,
+        "stderr": "Unexpected notation at byte 100"
+      },
+      "candidate": {
+        "input": "quantum:$$\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle\n= \\vert - \\rangle \\otimes \\vert s \\rangle,\n$$",
+        "exit": 0,
+        "output": {
+          "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")]) = qtensor(matrix(2, 1, [1  −1]) ∕ √(2), qketstate('s'))",
+          "display_text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")]) = qtensor(matrix(2, 1, [1  −1]) ∕ √(2), qketstate('s'))",
+          "copy_text": "(qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qmul(qoplus('s',\"qboundindex_0\"),\"qboundindex_1\")),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\"))))==(qtensor((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),qketstate('s')))",
+          "approximate": false,
+          "rows": 0,
+          "columns": 0,
+          "cells": [],
+          "probabilities": [],
+          "bloch": []
+        }
+      }
+    }
+  ]
+}

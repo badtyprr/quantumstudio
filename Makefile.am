@@ -462,3 +462,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm020-native.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-literal-results.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm020-literals.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-display-punctuation.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-wrapped-comparison.json
