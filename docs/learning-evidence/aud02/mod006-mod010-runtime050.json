@@ -1,0 +1,272 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "runtime": "0.50.0",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "method": "Selected original cells in source order, using AerSimulator(seed_simulator=1911) and Runtime Sampler instead of service discovery. Figures rendered with Agg and closed after each cell. Random oracles exercised with three NumPy seeds. Noise-model and hardware setup excluded.",
+  "deutsch_jozsa": {
+    "sha256": "ab98d7ae3eeae59f82e6f5ad1d0bb40ff2deb66bdf895f28aae3b90c44dbe7ba",
+    "executed": [
+      10,
+      12,
+      14,
+      15,
+      19,
+      20,
+      21,
+      22,
+      20,
+      21,
+      20,
+      21,
+      20,
+      21,
+      20,
+      21,
+      24,
+      26,
+      27,
+      28,
+      29,
+      30,
+      24,
+      26,
+      27,
+      28,
+      29,
+      30,
+      24,
+      26,
+      27,
+      28,
+      29,
+      30,
+      33,
+      34,
+      35,
+      36,
+      37
+    ],
+    "checks": [
+      {
+        "cell": 14,
+        "counts": {
+          "11": 1
+        }
+      },
+      {
+        "cell": 21,
+        "counts": {
+          "1": 1
+        }
+      },
+      {
+        "cell": 19,
+        "selector_control": 1,
+        "expected_class": "constant",
+        "observed": "balanced"
+      },
+      {
+        "cell": 19,
+        "selector_control": 2,
+        "expected_class": "balanced",
+        "observed": "balanced"
+      },
+      {
+        "cell": 19,
+        "selector_control": 3,
+        "expected_class": "balanced",
+        "observed": "balanced"
+      },
+      {
+        "cell": 19,
+        "selector_control": 4,
+        "expected_class": "constant",
+        "observed": "balanced"
+      },
+      {
+        "cell": 29,
+        "seed": 0,
+        "truth": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "constant": true,
+        "counts": {
+          "000": 1
+        }
+      },
+      {
+        "cell": 29,
+        "seed": 1,
+        "truth": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "constant": true,
+        "counts": {
+          "000": 1
+        }
+      },
+      {
+        "cell": 29,
+        "seed": 3,
+        "truth": [
+          1,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "constant": false,
+        "counts": {
+          "010": 1
+        }
+      },
+      {
+        "cell": 36,
+        "counts": {
+          "1000": 1
+        }
+      }
+    ]
+  },
+  "qft": {
+    "sha256": "18a5a4255e07de1d0d58d9abced3c6af512845404f975d2db3bad9a2582b82d3",
+    "executed": [
+      7,
+      13,
+      14,
+      16,
+      17,
+      19,
+      20,
+      22,
+      23,
+      26,
+      27,
+      28,
+      29
+    ],
+    "checks": [
+      {
+        "cell": 14,
+        "counts": {
+          "1010": 1000
+        },
+        "expected_support": [
+          10
+        ]
+      },
+      {
+        "cell": 17,
+        "counts": {
+          "1100": 53,
+          "1001": 44,
+          "0010": 58,
+          "0110": 74,
+          "0111": 74,
+          "0000": 56,
+          "1000": 72,
+          "0001": 66,
+          "0100": 65,
+          "0011": 69,
+          "1101": 69,
+          "1111": 67,
+          "0101": 68,
+          "1010": 53,
+          "1110": 50,
+          "1011": 62
+        },
+        "expected_support": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      {
+        "cell": 20,
+        "counts": {
+          "0000": 508,
+          "1000": 492
+        },
+        "expected_support": [
+          0,
+          8
+        ]
+      },
+      {
+        "cell": 23,
+        "counts": {
+          "1010": 135,
+          "1110": 119,
+          "0110": 121,
+          "0000": 133,
+          "1000": 128,
+          "1100": 129,
+          "0010": 119,
+          "0100": 116
+        },
+        "expected_support": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ]
+      },
+      {
+        "cell": 26,
+        "dimension": 2,
+        "max_fourier_matrix_error": 8.659560562354932e-17
+      },
+      {
+        "cell": 27,
+        "dimension": 4,
+        "max_fourier_matrix_error": 2.6891698152134724e-16
+      },
+      {
+        "cell": 28,
+        "dimension": 8,
+        "max_fourier_matrix_error": 1.4528658640935888e-15
+      },
+      {
+        "cell": 29,
+        "dimension": 16,
+        "max_fourier_matrix_error": 2.2971826326221925e-15
+      }
+    ]
+  },
+  "selector_control": "In four additional runs only the advertised blackbox selector in cell 19 was varied. Its later compose call always uses twobit_function(2). Cells 20 and 21 are unchanged in each control."
+}

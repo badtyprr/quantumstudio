@@ -444,3 +444,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/qbraid-catalog-20261117.md docs/learn
 
 EXTRA_DIST += docs/learning-evidence/aud02/ibm-catalog-20261117.md docs/learning-evidence/aud02/ibm-catalog-20261117.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod007-grover-runtime050.json
+EXTRA_DIST += docs/learning-evidence/aud02/mod006-mod010-runtime050.json
