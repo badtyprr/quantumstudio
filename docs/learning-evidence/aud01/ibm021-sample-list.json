@@ -1,0 +1,22 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "77cb4fec413955b678e122f3c28f2226cad5f51d4d45981de30789a0baef3ace",
+  "total": 177,
+  "exit_codes": {
+    "0": 172,
+    "2": 5
+  },
+  "changes": {
+    "IBM021-c0-M121": {
+      "from": 2,
+      "to": 0,
+      "result": "qfamilymembers(\"y^\",'k',qpower('\u03a3',n),vector())"
+    }
+  },
+  "gui": {
+    "IBM021-c0-M121": "qfamilymembers(\"y^\",'k',qpower('\u03a3',n),vector())",
+    "width2": "0",
+    "width3": "1"
+  },
+  "gui_checks": 33
+}

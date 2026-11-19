@@ -275,3 +275,24 @@ for count in (1, 2, 3):
         expression = width_three(",".join(words) + relation + domain)
         assert evaluate(expression)["copy_text"] == str(int(all(w == 3 for w in widths))), widths
 print("All 39 finite measurement-list expansions checked every word's width")
+
+# Bind the source list directly, including when individual measurements are
+# supplied before k is known. The independent finite expansion above is the oracle.
+sample_list = source_body(121)
+copied_list = evaluate(sample_list, bind_alphabet=False)["copy_text"]
+for body, count_first in ((sample_list, True), (copied_list, False)):
+    for count in (1, 2, 3):
+        for widths in itertools.product((2, 3, 4), repeat=count):
+            expr = width_three(body)
+            expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+            assignments = [(f'"y^{i}"', f"bitstring({i-1},{width})")
+                           for i, width in enumerate(widths, 1)]
+            if count_first:
+                assignments.insert(0, ("k", count))
+            else:
+                assignments.reverse()
+                assignments.append(("k", count))
+            for name, value in assignments:
+                expr = f"replace(({expr}),{name},{value})"
+            assert evaluate(expr, bind_alphabet=False)["copy_text"] == str(int(all(w == 3 for w in widths))), widths
+print("The original and copied measurement lists matched all 39 finite expansions in both binding orders")

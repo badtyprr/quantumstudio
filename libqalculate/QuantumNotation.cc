@@ -335,7 +335,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qbitstrings",1},{"qbitlabel",2},
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
- {"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
+ {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},
  {"qpostselect",2},
  {"qpower",2},
@@ -1633,7 +1633,7 @@ class Parser {
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
      else if(name=="qregistersum")protect(4);
-     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily" || name=="qregisterword")protect(0);
+     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers")protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
@@ -1840,18 +1840,31 @@ class Parser {
   // Top-level commas and commas inside an explicit group may share a
   // membership relation. Function argument and vector separators stay local.
   if(sharedMembership && take(',')) {
-   std::vector<std::string> probes{left};
-   do {probes.push_back(setUnion());} while(take(','));
-   bool excluded=takeSetOperator("∉");
-   if(!excluded && !takeSetOperator("∈"))throw std::runtime_error("Expected a shared set membership relation after the comma-separated operands.");
-   left=setUnion();
-   for(const auto &probe:probes) {
-    std::string member="qmember("+probe+","+left+")";
-    if(excluded)member="!("+member+")";
-    if(!result.empty())result+="&&";
-    result+=member;checkSize(result);
+   if(takeSetOperator("...") || takeSetOperator("…")) {
+    need(',');std::string last=setUnion();
+    // Only a named, one-based list in a membership statement assigns
+    // superscripts to samples. Ordinary powers keep their usual meaning.
+    if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
+       (left.substr(8)!=",1)" && left.substr(8)!=",(1))") ||
+       last.compare(0,9,left,0,9)!=0 || last.back()!=')' || !takeSetOperator("∈"))
+     throw std::runtime_error("Expected a measurement list from the first sample to the final sample in a shared domain.");
+    std::string prefix=left.substr(7,1)+"^",count=last.substr(9,last.size()-10);
+    left=setUnion();
+    result="qfamilymembers("+indexableLabel(prefix)+","+count+","+left+",vector())";
+   } else {
+    std::vector<std::string> probes{left};
+    do {probes.push_back(setUnion());} while(take(','));
+    bool excluded=takeSetOperator("∉");
+    if(!excluded && !takeSetOperator("∈"))throw std::runtime_error("Expected a shared set membership relation after the comma-separated operands.");
+    left=setUnion();
+    for(const auto &probe:probes) {
+     std::string member="qmember("+probe+","+left+")";
+     if(excluded)member="!("+member+")";
+     if(!result.empty())result+="&&";
+     result+=member;checkSize(result);
+    }
+    result="("+result+")";
    }
-   result="("+result+")";
   }
   std::vector<std::string> operands{left};bool equalities=result.empty();
   while(true) {

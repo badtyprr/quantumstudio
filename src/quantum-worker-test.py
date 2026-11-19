@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+for dots in ("...", r"\dots", r"\ldots", r"\cdots"):
+    samples = rf"z^1, {dots}, z^{{2}} \in \{{0,1\}}^3"
+    partial = data(f'quantum:replace(({samples}),"z^2",bitstring(0,3))')["copy_text"]
+    for width, expected in ((3, "1"), (2, "0")):
+        assert data(f'quantum:replace(({partial}),"z^1",bitstring(0,{width}))')["copy_text"] == expected
+for invalid in (r"z^2,...,z^3 \in \{1\}", r"z^1,...,y^3 \in \{1\}", r"z^1,...,z^0 \in \{1\}"):
+    run("quantum:" + invalid, "--json", success=False)
+assert data("quantum:replace(z^2,z,3)")["copy_text"] == "9"
+
 copied_dot = data(r"quantum:w \cdot y")["copy_text"]
 assert data(f"quantum:replace(replace({copied_dot},w,bitstring(3,2)),y,bitstring(3,2))")["copy_text"] == "0"
 assert data(f"quantum:replace(replace({copied_dot},w,3),y,3)")["copy_text"] == "9"

@@ -225,18 +225,20 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
  bool changed=false;
- if(value.isFunction() && (value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==4 && value[0].isSymbolic()) {
+ const bool samples=value.isFunction() && value.function()->referenceName()=="qfamilymembers";
+ if(value.isFunction() && (samples || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==4 && value[0].isSymbolic()) {
   Number index;
   if(registerBitIndex(label,value[0].symbol(),index) && value[3].isVector() && value[3].size()%2==0) {
    // Do not claim an unrelated label when concrete bounds already exclude it.
-   if(value[1].isNumber() && value[2].isNumber() &&
+   if(samples && (index<1 || (value[1].isNumber() && index>value[1].number())))return false;
+   if(!samples && value[1].isNumber() && value[2].isNumber() &&
       (Number(index)>value[1].number() || Number(index)<value[2].number()))return false;
    for(size_t k=0;k<value[3].size();k+=2)if(value[3][k].isNumber() && value[3][k].number()==Number(index)) {
     // This label was already substituted. Later replacements act only on
     // free occurrences in its stored value, not on this metadata key.
     return false;
    }
-   if(value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
+   if(!samples && value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
    value[3].addChild(MathStructure(Number(index)));value[3].addChild(bit);value.childrenUpdated();return true;
   }
  }
@@ -924,7 +926,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -1157,6 +1159,32 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(pending)return 0;
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+  }
+  if(op=="qfamilymembers") {
+   if(!raw[0].isSymbolic() || raw[0].symbol().size()!=2 || raw[0].symbol()[0]<'a' ||
+      raw[0].symbol()[0]>'z' || raw[0].symbol()[1]!='^' || !raw[3].isVector() || raw[3].size()%2) {
+    CALCULATOR->error(true,"Invalid measurement family or assignments.",NULL);return 0;
+   }
+   MathStructure count=raw[1];count.eval(eo);
+   if(!count.isNumber() && count.containsUnknowns())return 0;
+   if(!count.isNumber() || !count.number().isInteger() || count.number()<1) {
+    CALCULATOR->error(true,"A measurement count must be a positive integer.",NULL);return 0;
+   }
+   std::set<Number> supplied;
+   size_t matched=0;
+   for(size_t k=0;k<raw[3].size();k+=2) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &index=raw[3][k];
+    if(!index.isNumber() || !index.number().isInteger() || index.number()<1 || !supplied.insert(index.number()).second) {
+     CALCULATOR->error(true,"Measurement assignments require distinct positive indices.",NULL);return 0;
+    }
+    if(index.number()>count.number())continue;
+    MathStructure member(CALCULATOR->getFunction("qmember"),&raw[3][k+1],&raw[2],NULL);member.eval(eo);
+    if(member.isZero()) {out=m_zero;return 1;}
+    if(member.isOne())++matched;
+   }
+   if(Number(matched)==count.number()) {out=m_one;return 1;}
+   return 0;
   }
   if(op=="qregisterfamily" || op=="qregisterword") {
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"A register family requires an indexed name prefix.",NULL);return 0;}
@@ -1812,6 +1840,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
+ calculator.addFunction(new QuantumIndexedFunction("qfamilymembers",4));
  calculator.addFunction(new QuantumIndexedFunction("qregisterfamily",4));
  calculator.addFunction(new QuantumIndexedFunction("qregisterword",4));
  calculator.addFunction(new QuantumIndexedFunction("qregistersum",7));

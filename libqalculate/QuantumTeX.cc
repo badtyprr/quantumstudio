@@ -609,6 +609,11 @@ class TeXReader {
   }
   if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
   if(name=="mid" && setExpressions)return ":";
+  if((name=="ldots" || name=="dots" || name=="cdots") && pos>name.size()+1) {
+   size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2);
+   size_t after=input.find_first_not_of(" \t\r\n",pos);
+   if(before!=std::string::npos && after!=std::string::npos && input[before]==',' && input[after]==',')return "...";
+  }
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
