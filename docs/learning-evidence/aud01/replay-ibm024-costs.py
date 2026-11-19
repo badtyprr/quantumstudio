@@ -49,10 +49,12 @@ for number in ("M064", "M075"):
         assert evaluate(f"cost(replace(({witness}),c,{c}))")["copy_text"] == str(int(c > 0))
 for number, args in [("M066", "n"), ("M077", "n,m")]:
     witness = spans[number].strip("$").strip()
+    original = evaluate(spans[number])
     bound = evaluate(f"cost({witness})")["copy_text"]
-    for body in (f"cost({witness})", bound):
+    assert original["copy_text"] == evaluate(original["display_text"])["copy_text"] == bound
+    for body in (witness, original["display_text"], bound):
         for a in (5, 6, 7):
-            probe = f"replace(replace(replace(({body}),g({args}),{a}),h({args}),3),cost(c),2)"
+            probe = f"replace(replace(replace(({body}),g({args}),{a}),h({args}),3),c,2)"
             assert evaluate(probe)["copy_text"] == str(int(a <= 6)), probe
 
 # Compare exact values of the growth expressions (not just their spelling).

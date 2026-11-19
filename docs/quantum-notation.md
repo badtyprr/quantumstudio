@@ -205,7 +205,7 @@ Other superscripts apply to the function result: `\sin^2(pi/6)` gives `1/4`, and
 
 In Quantum mode, `O(expression)` denotes an asymptotic upper bound as the input size grows. For univariate polynomials with exact rational coefficients and eventually nonnegative values, comparison uses the leading degrees. For example, `17 n^3 - 257 n^2 + 65537 = O(n^3)` returns one, and `n^4 = O(n^3)` returns zero. A bound that cannot be decided stays symbolic. A copied `g(n,m) = O(h(n,m))` retains the two arguments of each cost function.
 
-The bound supplies a cost context on both sides of the equation. In that context, `n`, `m` and `k` denote input sizes, `c` is a free coefficient, and `lg` uses base two. For a separate assertion that relies on those conventions, use `cost(expression)`. For example, `cost(replace((c > 0),c,-1))` returns zero. An isolated `cost(g(n,m) <= c*h(n,m))` can be copied and checked after substituting values for the two applications and the coefficient.
+The bound supplies a cost context on both sides of the equation. In that context, `n`, `m` and `k` denote input sizes, `c` is a free coefficient, and `lg` uses base two. For a separate assertion that relies on those conventions, use `cost(expression)`. For example, `cost(replace((c > 0),c,-1))` returns zero. The standalone witness `g(n,m) <= c*h(n,m)` supplies the same context when the two formal calls have matching size arguments. The reversed inequality `c*h(n,m) >= g(n,m)` also works. Substituting 7, 3 and 2 for the two costs and the coefficient gives false. Substituting 6, 3 and 2 gives true.
 
 ## Quantum addition and subtraction
 

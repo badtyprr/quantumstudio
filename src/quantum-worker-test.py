@@ -108,6 +108,18 @@ for equation in ("z=f(x)", "f(x)=z"):
     for body in (equation, result["copy_text"], result["display_text"]):
         assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
 
+# An isolated cost witness binds the same ordered size arguments on both sides.
+for witness in ("g(n,m)<=c*h(n,m)", "c*h(n,m)>=g(n,m)", "a(k)<=c*b(k)"):
+    result = data("quantum:" + witness)
+    assert "qcostcall(" in result["copy_text"] and "qcostparam(" in result["copy_text"]
+    for form in (witness, result["display_text"], result["copy_text"]):
+        left, right = ("a(k)", "b(k)") if witness.startswith("a") else ("g(n,m)", "h(n,m)")
+        for cost_value in (6, 7):
+            probe = f"replace(replace(replace(({form}),{left},{cost_value}),{right},3),c,2)"
+            assert data("quantum:" + probe)["copy_text"] == str(int(cost_value <= 6))
+# Arithmetic following the right operand is outside the standalone witness grammar.
+assert "qcostparam" not in data("quantum:g(n)<=c*h(n)+1")["copy_text"]
+
 # Both open-ended circuit families describe one circuit per input size.
 circuits = []
 for literal in (r"\{C_1, C_2, C_3,\ldots\}", r"\{C_1, C_2,\ldots,\}"):

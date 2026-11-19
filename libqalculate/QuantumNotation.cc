@@ -1816,7 +1816,10 @@ class Parser {
     need('(');auto modulus=expression();need(')');
     a="qresidue("+a+","+modulus+")";
    } else if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
-   else if(s.compare(p,3,"⋅")==0) {p+=3;a="qcenterdot("+a+","+diracFactor()+")";}
+   else if(s.compare(p,3,"⋅")==0) {
+    p+=3;const char *op=costContext && a.compare(0,11,"qcostparam(")==0 ? "qmul(" : "qcenterdot(";
+    a=op+a+","+diracFactor()+")";
+   }
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
    else if(take('@')) {
@@ -1935,7 +1938,40 @@ class Parser {
   }
   return clause+")";
  }
+ // A cost witness compares two formal functions of the same size parameters,
+ // with one multiplied by a free coefficient. Inspect the whole clause before
+ // assigning those meanings to otherwise ambiguous scalar and unit names.
+ bool costWitnessCall(std::string &parameters) {
+  ws();if(p==s.size() || s[p]<'a' || s[p]>'z' || s[p]=='i' || s[p]=='e' || s[p]=='n' || s[p]=='m' || s[p]=='k')return false;
+  ++p;if(!take('('))return false;
+  do {
+   ws();if(p==s.size() || (s[p]!='n' && s[p]!='m' && s[p]!='k') ||
+      parameters.find(s[p])!=std::string::npos)return false;
+   parameters+=s[p++];
+  } while(take(','));
+  return take(')');
+ }
+ bool costCoefficient() {
+  return take('c') && (take('*') || takeSetOperator("⋅"));
+ }
+ bool costWitnessAhead() {
+  ws();if(p==s.size() || s[p]<'a' || s[p]>'z')return false;
+  size_t start=p;std::string first,second;
+  bool scaled=costCoefficient();
+  if(!scaled)p=start;
+  bool match=costWitnessCall(first) && (scaled ? takeSetOperator(">=") : takeSetOperator("<=")) &&
+             (scaled || costCoefficient()) && costWitnessCall(second) && first==second;
+  if(!match) {p=start;return false;}
+  ws();
+  bool end=p==s.size() || s[p]==')' || s[p]==']' || s[p]==',' || s[p]==';' ||
+           word("and") || word("or") || word("xor") || word("iff");
+  p=start;return end;
+ }
  std::string comparison(bool allowSharedOperands) {
+  if(!costContext && costWitnessAhead()) {
+   costContext=true;std::string witness=comparison(allowSharedOperands);costContext=false;
+   return witness;
+  }
   std::string left=comparisonOperand(),result;
   // Top-level and explicitly grouped operands can share a membership
   // relation or bounds. Function argument and vector separators stay local.
