@@ -1,0 +1,81 @@
+{
+  "gui_sha256": "89430cb47797df0a62db2e2d5ed3fa12bc56d726d1378b7f3dc4549c102b91f6",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [],
+  "worker_sha256": "d563e180bfc1ae5a688bbffd61da1d54d7b2a797a8abc4255678c44bfd118917",
+  "original": {
+    "id": "IBM027-64df8610-M023",
+    "label": "EXACT RESULT",
+    "display": "M |ψ_j⟩ = (\\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert) |ψ_j⟩ = \\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert ψ_j\\rangle = \"λ_j\" |ψ_j⟩",
+    "copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),qnamedket(\"ψ_j\")),qspectralaction(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector()),qnamedket(\"ψ_j\")),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))",
+    "restored_same": true,
+    "reentry_label": "EXACT RESULT",
+    "second_copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),qnamedket(\"ψ_j\")),qspectralaction(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector()),qnamedket(\"ψ_j\")),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))"
+  },
+  "controls": [
+    {
+      "id": "index-1-operator--1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "index-2-operator--1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "index-3-operator--1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "index-1-operator-1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "index-2-operator-1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "index-3-operator-1-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1133,
+    "calls": 103,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "replay": "replay-ibm027-spectral-index.py"
+}

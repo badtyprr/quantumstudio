@@ -1,0 +1,922 @@
+{
+  "worker_sha256": "fc91863e196520972d5d6dfcedb8c86e83b85335979067ef6216efcdce0a00e2",
+  "lessons": [
+    {
+      "lesson": "IBM026",
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/introduction.ipynb",
+      "sha256": "ce4e2e6a9fa01f1d6a65551f0dff19740e524620bb41c434f9bd9e3f1f310787",
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "rows": []
+    },
+    {
+      "lesson": "IBM027",
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-problem.ipynb",
+      "sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "rows": [
+        {
+          "id": "IBM027-64df8610-M001",
+          "cell": 0,
+          "start": 756,
+          "end": 759,
+          "literal": "$M$",
+          "label": "exact",
+          "copy": "'M'"
+        },
+        {
+          "id": "IBM027-64df8610-M002",
+          "cell": 0,
+          "start": 865,
+          "end": 896,
+          "literal": "$M M^{\\dagger} = M^{\\dagger} M$",
+          "label": "exact",
+          "copy": "(qadjacent('M', qdag('M')) − qadjacent(qdag('M'), 'M'))==(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M003",
+          "cell": 0,
+          "start": 920,
+          "end": 923,
+          "literal": "$U$",
+          "label": "exact",
+          "copy": "'U'"
+        },
+        {
+          "id": "IBM027-64df8610-M004",
+          "cell": 0,
+          "start": 943,
+          "end": 992,
+          "literal": "$$\nU U^{\\dagger} = \\mathbb{I} = U^{\\dagger} U.\n$$",
+          "label": "exact",
+          "copy": "qequalchain(vector(qadjacent('U',qdag('U')),matrix(2,2,[1,0,0,1]),qadjacent(qdag('U'),'U')))"
+        },
+        {
+          "id": "IBM027-64df8610-M005",
+          "cell": 0,
+          "start": 1126,
+          "end": 1129,
+          "literal": "$H$",
+          "label": "exact",
+          "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+        },
+        {
+          "id": "IBM027-64df8610-M006",
+          "cell": 0,
+          "start": 1159,
+          "end": 1201,
+          "literal": "$$\nH H^{\\dagger} = H^2 = H^{\\dagger} H,\n$$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M007",
+          "cell": 0,
+          "start": 1206,
+          "end": 1209,
+          "literal": "$H$",
+          "label": "exact",
+          "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+        },
+        {
+          "id": "IBM027-64df8610-M008",
+          "cell": 0,
+          "start": 1298,
+          "end": 1347,
+          "literal": "$$\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n$$",
+          "label": "exact",
+          "copy": "matrix(2,2,[0,1,0,0])"
+        },
+        {
+          "id": "IBM027-64df8610-M009",
+          "cell": 0,
+          "start": 1462,
+          "end": 1701,
+          "literal": "$$\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}^{\\dagger}\n=\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 0\\\\\n1 & 0\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n1 & 0\\\\\n0 & 0\n\\end{pmatrix}\n$$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M010",
+          "cell": 0,
+          "start": 1710,
+          "end": 1950,
+          "literal": "$$\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}^{\\dagger}\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n0 & 0\\\\\n1 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n0 & 0\\\\\n0 & 1\n\\end{pmatrix}.\n$$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M011",
+          "cell": 0,
+          "start": 2071,
+          "end": 2074,
+          "literal": "$M$",
+          "label": "exact",
+          "copy": "'M'"
+        },
+        {
+          "id": "IBM027-64df8610-M012",
+          "cell": 0,
+          "start": 2087,
+          "end": 2098,
+          "literal": "$N\\times N$",
+          "label": "exact",
+          "copy": "'N'²"
+        },
+        {
+          "id": "IBM027-64df8610-M013",
+          "cell": 0,
+          "start": 2152,
+          "end": 2155,
+          "literal": "$N$",
+          "label": "exact",
+          "copy": "'N'"
+        },
+        {
+          "id": "IBM027-64df8610-M014",
+          "cell": 0,
+          "start": 2184,
+          "end": 2246,
+          "literal": "$\\bigl\\{ \\vert\\psi_1\\rangle,\\ldots,\\vert\\psi_N\\rangle \\bigr\\}$",
+          "label": "diagnostic",
+          "diagnostic": "Finite index ranges require integer endpoints."
+        },
+        {
+          "id": "IBM027-64df8610-M015",
+          "cell": 0,
+          "start": 2274,
+          "end": 2302,
+          "literal": "$\\lambda_1,\\ldots,\\lambda_N$",
+          "label": "diagnostic",
+          "diagnostic": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "id": "IBM027-64df8610-M016",
+          "cell": 0,
+          "start": 2313,
+          "end": 2432,
+          "literal": "$$\nM = \\lambda_1 \\vert \\psi_1\\rangle\\langle \\psi_1\\vert + \\cdots + \\lambda_N \\vert \\psi_N\\rangle\\langle \\psi_N\\vert.\n$$",
+          "label": "diagnostic",
+          "diagnostic": "Unsupported TeX command: \\cdots at byte 63"
+        },
+        {
+          "id": "IBM027-64df8610-M017",
+          "cell": 0,
+          "start": 2484,
+          "end": 2565,
+          "literal": "$$\nM = \\sum_{k = 1}^N \\lambda_k \\vert \\psi_k\\rangle\\langle \\psi_k\\vert \\tag{1}\n$$",
+          "label": "exact",
+          "copy": "(qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\"))),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")))),1,'N',\"qboundindex_0\"))==('M')"
+        },
+        {
+          "id": "IBM027-64df8610-M018",
+          "cell": 0,
+          "start": 2629,
+          "end": 2632,
+          "literal": "$M$",
+          "label": "exact",
+          "copy": "'M'"
+        },
+        {
+          "id": "IBM027-64df8610-M019",
+          "cell": 0,
+          "start": 2674,
+          "end": 2679,
+          "literal": "$(1)$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M020",
+          "cell": 0,
+          "start": 2700,
+          "end": 2761,
+          "literal": "$$\nM \\vert \\psi_j \\rangle = \\lambda_j \\vert \\psi_j \\rangle\n$$",
+          "label": "exact",
+          "copy": "(qadjacent('M',qnamedket(\"ψ_j\")))==(qadjacent(\"λ_j\",qnamedket(\"ψ_j\")))"
+        },
+        {
+          "id": "IBM027-64df8610-M021",
+          "cell": 0,
+          "start": 2786,
+          "end": 2802,
+          "literal": "$j = 1,\\ldots,N$",
+          "label": "diagnostic",
+          "diagnostic": "Unexpected notation at byte 6"
+        },
+        {
+          "id": "IBM027-64df8610-M022",
+          "cell": 0,
+          "start": 2843,
+          "end": 2905,
+          "literal": "$\\bigl\\{ \\vert\\psi_1\\rangle,\\ldots,\\vert\\psi_N\\rangle \\bigr\\}$",
+          "label": "diagnostic",
+          "diagnostic": "Finite index ranges require integer endpoints."
+        },
+        {
+          "id": "IBM027-64df8610-M023",
+          "cell": 0,
+          "start": 2923,
+          "end": 3161,
+          "literal": "$$\nM \\vert \\psi_j \\rangle\n= \\left(\\sum_{k = 1}^N \\lambda_k \\vert \\psi_k\\rangle\\langle \\psi_k\\vert\\right)\\vert \\psi_j\\rangle\n= \\sum_{k = 1}^N \\lambda_k \\vert \\psi_k\\rangle\\langle \\psi_k\\vert\\psi_j \\rangle\n= \\lambda_j \\vert\\psi_j \\rangle\n$$",
+          "label": "exact",
+          "copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\"))),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")))),1,'N',\"qboundindex_0\"),qnamedket(\"ψ_j\")),qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_1\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\"))),qmul(qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\"))),qnamedket(\"ψ_j\"))),1,'N',\"qboundindex_1\"),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))"
+        },
+        {
+          "id": "IBM027-64df8610-M024",
+          "cell": 0,
+          "start": 3184,
+          "end": 3195,
+          "literal": "$\\lambda_j$",
+          "label": "exact",
+          "copy": "\"λ_j\""
+        },
+        {
+          "id": "IBM027-64df8610-M025",
+          "cell": 0,
+          "start": 3218,
+          "end": 3221,
+          "literal": "$M$",
+          "label": "exact",
+          "copy": "'M'"
+        },
+        {
+          "id": "IBM027-64df8610-M026",
+          "cell": 0,
+          "start": 3226,
+          "end": 3246,
+          "literal": "$\\vert\\psi_j\\rangle$",
+          "label": "exact",
+          "copy": "qketstate(\"ψ_j\")"
+        },
+        {
+          "id": "IBM027-64df8610-M027",
+          "cell": 0,
+          "start": 3327,
+          "end": 3391,
+          "literal": "$$\n  \\mathbb{I} = \\begin{pmatrix}1 & 0\\\\0 & 1\\end{pmatrix},\n  $$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M028",
+          "cell": 0,
+          "start": 3439,
+          "end": 3451,
+          "literal": "$\\mathbb{I}$",
+          "label": "exact",
+          "copy": "matrix(2,2,[1,0,0,1])"
+        },
+        {
+          "id": "IBM027-64df8610-M029",
+          "cell": 0,
+          "start": 3479,
+          "end": 3484,
+          "literal": "$(1)$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M030",
+          "cell": 0,
+          "start": 3504,
+          "end": 3515,
+          "literal": "$\\lambda_1$",
+          "label": "exact",
+          "copy": "\"λ_1\""
+        },
+        {
+          "id": "IBM027-64df8610-M031",
+          "cell": 0,
+          "start": 3517,
+          "end": 3528,
+          "literal": "$\\lambda_2$",
+          "label": "exact",
+          "copy": "\"λ_2\""
+        },
+        {
+          "id": "IBM027-64df8610-M032",
+          "cell": 0,
+          "start": 3530,
+          "end": 3550,
+          "literal": "$\\vert\\psi_1\\rangle$",
+          "label": "exact",
+          "copy": "qketstate(\"ψ_1\")"
+        },
+        {
+          "id": "IBM027-64df8610-M033",
+          "cell": 0,
+          "start": 3556,
+          "end": 3576,
+          "literal": "$\\vert\\psi_2\\rangle$",
+          "label": "exact",
+          "copy": "qketstate(\"ψ_2\")"
+        },
+        {
+          "id": "IBM027-64df8610-M034",
+          "cell": 0,
+          "start": 3631,
+          "end": 3789,
+          "literal": "$$\n  \\lambda_1 = 1, \\hspace{5pt}\n  \\lambda_2 = 1, \\hspace{5pt}\n  \\vert\\psi_1\\rangle = \\vert 0\\rangle, \\hspace{5pt}\n  \\vert\\psi_2\\rangle = \\vert 1\\rangle.\n  $$",
+          "label": "diagnostic",
+          "diagnostic": "Unexpected notation at byte 12"
+        },
+        {
+          "id": "IBM027-64df8610-M035",
+          "cell": 0,
+          "start": 3855,
+          "end": 3883,
+          "literal": "$\\lambda_1,\\ldots,\\lambda_N$",
+          "label": "diagnostic",
+          "diagnostic": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "id": "IBM027-64df8610-M036",
+          "cell": 0,
+          "start": 4015,
+          "end": 4098,
+          "literal": "$$\n  \\mathbb{I} = \\vert 0\\rangle\\langle 0\\vert + \\vert 1\\rangle\\langle 1\\vert.\n  $$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M037",
+          "cell": 0,
+          "start": 4126,
+          "end": 4169,
+          "literal": "$\\{\\vert\\psi_1\\rangle,\\vert\\psi_2\\rangle\\}$",
+          "label": "diagnostic",
+          "diagnostic": "Invalid set entry."
+        },
+        {
+          "id": "IBM027-64df8610-M038",
+          "cell": 0,
+          "start": 4250,
+          "end": 4333,
+          "literal": "$$\n  \\mathbb{I} = \\vert +\\rangle\\langle +\\vert + \\vert -\\rangle\\langle -\\vert.\n  $$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M039",
+          "cell": 0,
+          "start": 4388,
+          "end": 4478,
+          "literal": "$$\n  H = \\frac{1}{\\sqrt{2}}\n  \\begin{pmatrix}\n  1 & 1\\\\[1mm]\n  1 & -1\n  \\end{pmatrix}\n  $$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M040",
+          "cell": 0,
+          "start": 4559,
+          "end": 4562,
+          "literal": "$H$",
+          "label": "exact",
+          "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+        },
+        {
+          "id": "IBM027-64df8610-M041",
+          "cell": 0,
+          "start": 4592,
+          "end": 4597,
+          "literal": "$(1)$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M042",
+          "cell": 0,
+          "start": 4628,
+          "end": 4751,
+          "literal": "$$\n  H =\n  \\vert\\psi_{\\pi/8}\\rangle \\langle \\psi_{\\pi/8}\\vert\n  - \\vert\\psi_{5\\pi/8}\\rangle \\langle \\psi_{5\\pi/8}\\vert\n  $$",
+          "label": "exact",
+          "copy": "((matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]))+ (−qsub(qadjacent(qstatecall('ψ', π ∕ 8), qdag(qstatecall('ψ', π ∕ 8))), qadjacent(qstatecall('ψ', qadjacent(5, π) ∕ 8), qdag(qstatecall('ψ', qadjacent(5, π) ∕ 8))))))==(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M043",
+          "cell": 0,
+          "start": 4764,
+          "end": 4861,
+          "literal": "$$\n  \\vert\\psi_{\\theta}\\rangle\n  = \\cos(\\theta)\\vert 0\\rangle + \\sin(\\theta) \\vert 1\\rangle.\n  $$",
+          "label": "exact",
+          "copy": "((matrix(2,1,[−cos('θ' rad),−sin('θ' rad)]))+ (qketstate(\"ψ_θ\")))==(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M044",
+          "cell": 0,
+          "start": 4885,
+          "end": 5184,
+          "literal": "$$\n  \\begin{aligned}\n  \\vert\\psi_{\\pi/8}\\rangle & = \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 0\\rangle\n  + \\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 1\\rangle, \\\\[3mm]\n  \\vert\\psi_{5\\pi/8}\\rangle & = -\\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 0\\rangle\n  + \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 1\\rangle.\n  \\end{aligned}\n  $$",
+          "label": "exact",
+          "copy": "\\begin{gathered}((matrix(2,1,[−√(2 + √(2)) ∕ 2,−√(2 − √(2)) ∕ 2]))+ (qstatecall('ψ',π ∕ 8)))==(0)\\\\((matrix(2,1,[√(2 − √(2)) ∕ 2,−√(2 + √(2)) ∕ 2]))+ (qstatecall('ψ',(5 ∕ 8) ⋅ π)))==(0)\\end{gathered}"
+        },
+        {
+          "id": "IBM027-64df8610-M045",
+          "cell": 0,
+          "start": 5280,
+          "end": 5678,
+          "literal": "$$\n  \\vert\\psi_{\\pi/8}\\rangle \\langle \\psi_{\\pi/8}\\vert\n  - \\vert\\psi_{5\\pi/8}\\rangle \\langle \\psi_{5\\pi/8}\\vert\n  = \\begin{pmatrix}\n  \\frac{2 + \\sqrt{2}}{4} & \\frac{\\sqrt{2}}{4}\\\\[2mm]\n  \\frac{\\sqrt{2}}{4} & \\frac{2 - \\sqrt{2}}{4}\n  \\end{pmatrix}\n  -\n  \\begin{pmatrix}\n  \\frac{2 - \\sqrt{2}}{4} & -\\frac{\\sqrt{2}}{4}\\\\[2mm]\n  -\\frac{\\sqrt{2}}{4} & \\frac{2 + \\sqrt{2}}{4}\n  \\end{pmatrix}\n  = H.\n  $$",
+          "label": "exact",
+          "copy": "qequalchain(vector(qsub(qadjacent(qstatecall('ψ',π ∕ 8),qdag(qstatecall('ψ',π ∕ 8))),qadjacent(qstatecall('ψ',qadjacent(5, π) ∕ 8),qdag(qstatecall('ψ',qadjacent(5, π) ∕ 8)))),matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])))"
+        },
+        {
+          "id": "IBM027-64df8610-M046",
+          "cell": 0,
+          "start": 5884,
+          "end": 5887,
+          "literal": "$N$",
+          "label": "exact",
+          "copy": "'N'"
+        },
+        {
+          "id": "IBM027-64df8610-M047",
+          "cell": 0,
+          "start": 5904,
+          "end": 5932,
+          "literal": "$\\lambda_1,\\ldots,\\lambda_N$",
+          "label": "diagnostic",
+          "diagnostic": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "id": "IBM027-64df8610-M048",
+          "cell": 0,
+          "start": 6026,
+          "end": 6031,
+          "literal": "$(1)$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M049",
+          "cell": 0,
+          "start": 6063,
+          "end": 6066,
+          "literal": "$M$",
+          "label": "exact",
+          "copy": "'M'"
+        },
+        {
+          "id": "IBM027-64df8610-M050",
+          "cell": 0,
+          "start": 6142,
+          "end": 6151,
+          "literal": "$\\lambda$",
+          "label": "exact",
+          "copy": "'λ'"
+        },
+        {
+          "id": "IBM027-64df8610-M051",
+          "cell": 0,
+          "start": 6174,
+          "end": 6192,
+          "literal": "$\\vert\\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M052",
+          "cell": 0,
+          "start": 6220,
+          "end": 6278,
+          "literal": "$$\nU\\vert\\psi\\rangle = \\lambda\\vert\\psi\\rangle.\n\\tag{2}\n$$",
+          "label": "exact",
+          "copy": "(qadjacent('U',qnamedket('ψ')))==(qadjacent('λ',qnamedket('ψ')))"
+        },
+        {
+          "id": "IBM027-64df8610-M053",
+          "cell": 0,
+          "start": 6289,
+          "end": 6298,
+          "literal": "$\\lambda$",
+          "label": "exact",
+          "copy": "'λ'"
+        },
+        {
+          "id": "IBM027-64df8610-M054",
+          "cell": 0,
+          "start": 6319,
+          "end": 6322,
+          "literal": "$U$",
+          "label": "exact",
+          "copy": "'U'"
+        },
+        {
+          "id": "IBM027-64df8610-M055",
+          "cell": 0,
+          "start": 6327,
+          "end": 6345,
+          "literal": "$\\vert\\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M056",
+          "cell": 0,
+          "start": 6479,
+          "end": 6484,
+          "literal": "$(2)$",
+          "label": "exact",
+          "copy": "2"
+        },
+        {
+          "id": "IBM027-64df8610-M057",
+          "cell": 0,
+          "start": 6487,
+          "end": 6660,
+          "literal": "$$\n\\bigl\\| \\vert\\psi\\rangle \\bigr\\|\n= \\bigl\\| U \\vert\\psi\\rangle \\bigr\\|\n= \\bigl\\| \\lambda \\vert\\psi\\rangle \\bigr\\|\n= \\vert \\lambda \\vert \\bigl\\| \\vert\\psi\\rangle \\bigr\\|\n$$",
+          "label": "exact",
+          "copy": "qequalchain(vector(qnorm(qnamedket('ψ')),qnorm(qadjacent('U',qnamedket('ψ'))),qnorm(qadjacent('λ',qnamedket('ψ'))),qadjacent(qbars('λ'),qnorm(qnamedket('ψ')))))"
+        },
+        {
+          "id": "IBM027-64df8610-M058",
+          "cell": 0,
+          "start": 6681,
+          "end": 6699,
+          "literal": "$\\vert\\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M059",
+          "cell": 0,
+          "start": 6725,
+          "end": 6765,
+          "literal": "$\\bigl\\| \\vert\\psi\\rangle \\bigr\\|\\neq 0$",
+          "label": "exact",
+          "copy": "(qnorm(qnamedket('ψ')))!=(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M060",
+          "cell": 0,
+          "start": 6814,
+          "end": 6844,
+          "literal": "$$\n\\vert \\lambda \\vert = 1.\n$$",
+          "label": "exact",
+          "copy": "(qbars('λ'))==(1)"
+        },
+        {
+          "id": "IBM027-64df8610-M061",
+          "cell": 0,
+          "start": 6977,
+          "end": 7042,
+          "literal": "$$\n\\mathbb{T} = \\{\\alpha\\in\\mathbb{C} : \\vert\\alpha\\vert = 1\\}\n$$",
+          "label": "exact",
+          "copy": "((matrix(2,2,[−1,0,0,(−1 ∕ 2 − i ∕ 2) ⋅ √(2)]))+ (qsetfilter(qcompare(qbars(\"qboundindex_0\"),1,4),'C',\"qboundindex_0\")))==(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M062",
+          "cell": 0,
+          "start": 7056,
+          "end": 7068,
+          "literal": "$\\mathbb{T}$",
+          "label": "exact",
+          "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+        },
+        {
+          "id": "IBM027-64df8610-M063",
+          "cell": 0,
+          "start": 7124,
+          "end": 7129,
+          "literal": "$S^1$",
+          "label": "exact",
+          "copy": "matrix(2,2,[1,0,0,i])"
+        },
+        {
+          "id": "IBM027-64df8610-M064",
+          "cell": 0,
+          "start": 7250,
+          "end": 7269,
+          "literal": "$\\vert \\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M065",
+          "cell": 0,
+          "start": 7273,
+          "end": 7276,
+          "literal": "$n$",
+          "label": "exact",
+          "copy": "n"
+        },
+        {
+          "id": "IBM027-64df8610-M066",
+          "cell": 0,
+          "start": 7335,
+          "end": 7338,
+          "literal": "$n$",
+          "label": "exact",
+          "copy": "n"
+        },
+        {
+          "id": "IBM027-64df8610-M067",
+          "cell": 0,
+          "start": 7369,
+          "end": 7388,
+          "literal": "$\\vert \\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M068",
+          "cell": 0,
+          "start": 7429,
+          "end": 7432,
+          "literal": "$U$",
+          "label": "exact",
+          "copy": "'U'"
+        },
+        {
+          "id": "IBM027-64df8610-M069",
+          "cell": 0,
+          "start": 7532,
+          "end": 7541,
+          "literal": "$\\lambda$",
+          "label": "exact",
+          "copy": "'λ'"
+        },
+        {
+          "id": "IBM027-64df8610-M070",
+          "cell": 0,
+          "start": 7551,
+          "end": 7570,
+          "literal": "$\\vert \\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M071",
+          "cell": 0,
+          "start": 7608,
+          "end": 7617,
+          "literal": "$\\lambda$",
+          "label": "exact",
+          "copy": "'λ'"
+        },
+        {
+          "id": "IBM027-64df8610-M072",
+          "cell": 0,
+          "start": 7665,
+          "end": 7698,
+          "literal": "$$\n\\lambda = e^{2\\pi i \\theta}\n$$",
+          "label": "exact",
+          "copy": "(('θ')==(n − (i ⋅ ln('λ')) ∕ (2π)) and ('λ')!=(0))"
+        },
+        {
+          "id": "IBM027-64df8610-M073",
+          "cell": 0,
+          "start": 7725,
+          "end": 7733,
+          "literal": "$\\theta$",
+          "label": "exact",
+          "copy": "'θ'"
+        },
+        {
+          "id": "IBM027-64df8610-M074",
+          "cell": 0,
+          "start": 7745,
+          "end": 7760,
+          "literal": "$0\\leq\\theta<1$",
+          "label": "exact",
+          "copy": "(('θ')<(1) and ('θ')>=(0))"
+        },
+        {
+          "id": "IBM027-64df8610-M075",
+          "cell": 0,
+          "start": 7832,
+          "end": 7840,
+          "literal": "$\\theta$",
+          "label": "exact",
+          "copy": "'θ'"
+        },
+        {
+          "id": "IBM027-64df8610-M076",
+          "cell": 0,
+          "start": 7925,
+          "end": 7928,
+          "literal": "$n$",
+          "label": "exact",
+          "copy": "n"
+        },
+        {
+          "id": "IBM027-64df8610-M077",
+          "cell": 0,
+          "start": 7945,
+          "end": 7948,
+          "literal": "$U$",
+          "label": "exact",
+          "copy": "'U'"
+        },
+        {
+          "id": "IBM027-64df8610-M078",
+          "cell": 0,
+          "start": 7963,
+          "end": 7966,
+          "literal": "$n$",
+          "label": "exact",
+          "copy": "n"
+        },
+        {
+          "id": "IBM027-64df8610-M079",
+          "cell": 0,
+          "start": 7987,
+          "end": 8005,
+          "literal": "$\\vert\\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M080",
+          "cell": 0,
+          "start": 8017,
+          "end": 8035,
+          "literal": "$\\vert\\psi\\rangle$",
+          "label": "exact",
+          "copy": "qketstate('ψ')"
+        },
+        {
+          "id": "IBM027-64df8610-M081",
+          "cell": 0,
+          "start": 8057,
+          "end": 8060,
+          "literal": "$U$",
+          "label": "exact",
+          "copy": "'U'"
+        },
+        {
+          "id": "IBM027-64df8610-M082",
+          "cell": 0,
+          "start": 8102,
+          "end": 8118,
+          "literal": "$\\theta\\in[0,1)$",
+          "label": "diagnostic",
+          "diagnostic": "Unmatched closing delimiter at byte 14"
+        },
+        {
+          "id": "IBM027-64df8610-M083",
+          "cell": 0,
+          "start": 8130,
+          "end": 8185,
+          "literal": "$U\\vert\\psi\\rangle = e^{2\\pi i \\theta}\\vert\\psi\\rangle$",
+          "label": "exact",
+          "copy": "(qadjacent('U',qnamedket('ψ')))==(qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),'θ')),qnamedket('ψ')))"
+        },
+        {
+          "id": "IBM027-64df8610-M084",
+          "cell": 0,
+          "start": 8864,
+          "end": 8872,
+          "literal": "$\\theta$",
+          "label": "exact",
+          "copy": "'θ'"
+        },
+        {
+          "id": "IBM027-64df8610-M085",
+          "cell": 0,
+          "start": 9051,
+          "end": 9059,
+          "literal": "$\\theta$",
+          "label": "exact",
+          "copy": "'θ'"
+        },
+        {
+          "id": "IBM027-64df8610-M086",
+          "cell": 0,
+          "start": 9262,
+          "end": 9274,
+          "literal": "$\\theta = 0$",
+          "label": "exact",
+          "copy": "('θ')==(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M087",
+          "cell": 0,
+          "start": 9282,
+          "end": 9294,
+          "literal": "$\\theta = 1$",
+          "label": "exact",
+          "copy": "('θ')==(1)"
+        },
+        {
+          "id": "IBM027-64df8610-M088",
+          "cell": 0,
+          "start": 9390,
+          "end": 9414,
+          "literal": "$e^{2\\pi i \\cdot 0} = 1$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M089",
+          "cell": 0,
+          "start": 9451,
+          "end": 9475,
+          "literal": "$e^{2\\pi i \\cdot 1} = 1$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M090",
+          "cell": 0,
+          "start": 9500,
+          "end": 9512,
+          "literal": "$\\theta = 1$",
+          "label": "exact",
+          "copy": "('θ')==(1)"
+        },
+        {
+          "id": "IBM027-64df8610-M091",
+          "cell": 0,
+          "start": 9544,
+          "end": 9556,
+          "literal": "$\\theta = 0$",
+          "label": "exact",
+          "copy": "('θ')==(0)"
+        },
+        {
+          "id": "IBM027-64df8610-M092",
+          "cell": 0,
+          "start": 9620,
+          "end": 9628,
+          "literal": "$\\theta$",
+          "label": "exact",
+          "copy": "'θ'"
+        },
+        {
+          "id": "IBM027-64df8610-M093",
+          "cell": 0,
+          "start": 9634,
+          "end": 9637,
+          "literal": "$1$",
+          "label": "exact",
+          "copy": "1"
+        },
+        {
+          "id": "IBM027-64df8610-M094",
+          "cell": 0,
+          "start": 9673,
+          "end": 9676,
+          "literal": "$0$",
+          "label": "exact",
+          "copy": "0"
+        },
+        {
+          "id": "IBM027-64df8610-M095",
+          "cell": 0,
+          "start": 9708,
+          "end": 9724,
+          "literal": "$\\theta = 0.999$",
+          "label": "exact",
+          "copy": "('θ')==(999 ∕ 1000)"
+        },
+        {
+          "id": "IBM027-64df8610-M096",
+          "cell": 0,
+          "start": 9762,
+          "end": 9770,
+          "literal": "$1/1000$",
+          "label": "exact",
+          "copy": "1 ∕ 1000"
+        },
+        {
+          "id": "IBM027-64df8610-M097",
+          "cell": 0,
+          "start": 9774,
+          "end": 9786,
+          "literal": "$\\theta = 0$",
+          "label": "exact",
+          "copy": "('θ')==(0)"
+        }
+      ]
+    }
+  ],
+  "matrix_controls": [
+    [
+      "basis-0",
+      "(matrix(2,2,[0,1,0,0]))*|0>=matrix(2,1,[0,0])",
+      "1"
+    ],
+    [
+      "basis-1",
+      "(matrix(2,2,[0,1,0,0]))*|1>=|0>",
+      "1"
+    ],
+    [
+      "left-projector",
+      "(matrix(2,2,[0,1,0,0]))*dagger(matrix(2,2,[0,1,0,0]))=matrix(2,2,[1,0,0,0])",
+      "1"
+    ],
+    [
+      "right-projector",
+      "dagger(matrix(2,2,[0,1,0,0]))*(matrix(2,2,[0,1,0,0]))=matrix(2,2,[0,0,0,1])",
+      "1"
+    ],
+    [
+      "normal",
+      "(matrix(2,2,[0,1,0,0]))*dagger(matrix(2,2,[0,1,0,0]))=dagger(matrix(2,2,[0,1,0,0]))*(matrix(2,2,[0,1,0,0]))",
+      "0"
+    ]
+  ]
+}

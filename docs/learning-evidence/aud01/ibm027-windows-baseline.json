@@ -1,0 +1,40 @@
+{
+  "worker_sha256": "fc91863e196520972d5d6dfcedb8c86e83b85335979067ef6216efcdce0a00e2",
+  "suite": {
+    "passed": true,
+    "checks": 977,
+    "calls": 97,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "copy_changes": [
+    {
+      "id": "IBM027-64df8610-M002",
+      "second_copy": "(qsub(qadjacent('M',qdag('M')),qadjacent(qdag('M'),'M')))==(0)"
+    },
+    {
+      "id": "IBM027-64df8610-M017",
+      "second_copy": "(qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_1\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\"))),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")))),1,'N',\"qboundindex_1\"))==('M')"
+    },
+    {
+      "id": "IBM027-64df8610-M023",
+      "second_copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_2\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_2\",\"\"))),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_2\",\"\")))),1,'N',\"qboundindex_2\"),qnamedket(\"ψ_j\")),qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_3\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_3\",\"\"))),qmul(qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_3\",\"\"))),qnamedket(\"ψ_j\"))),1,'N',\"qboundindex_3\"),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))"
+    },
+    {
+      "id": "IBM027-64df8610-M042",
+      "second_copy": "(qadd(qmatrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),−qsub(qadjacent(qstatecall('ψ', π ∕ 8), qdag(qstatecall('ψ', π ∕ 8))), qadjacent(qstatecall('ψ', qadjacent(5, π) ∕ 8), qdag(qstatecall('ψ', qadjacent(5, π) ∕ 8))))))==(0)"
+    },
+    {
+      "id": "IBM027-64df8610-M043",
+      "second_copy": "(qadd(qmatrix(2,1,horzcat(−qcos(qadjacent('θ', 1)),−qsin(qadjacent('θ', 1)))),qketstate(\"ψ_θ\")))==(0)"
+    },
+    {
+      "id": "IBM027-64df8610-M044",
+      "second_copy": "\\begin{gathered}(qadd(qmatrix(2,1,horzcat(−qpower(qadd(2, qpower(2, 1 ∕ 2)), 1 ∕ 2) ∕ 2,−qpower(qsub(2, qpower(2, 1 ∕ 2)), 1 ∕ 2) ∕ 2)),qstatecall('ψ',π ∕ 8)))==(0)\\\\(qadd(qmatrix(2,1,horzcat(qpower(qsub(2, qpower(2, 1 ∕ 2)), 1 ∕ 2) ∕ 2,−qpower(qadd(2, qpower(2, 1 ∕ 2)), 1 ∕ 2) ∕ 2)),qstatecall('ψ',qmul(5 ∕ 8,π))))==(0)\\end{gathered}"
+    },
+    {
+      "id": "IBM027-64df8610-M061",
+      "second_copy": "(qadd(qmatrix(2,2,horzcat(−1,0,0,qmul(qsub(−1 ∕ 2,i ∕ 2),qpower(2,1 ∕ 2)))),qsetfilter(qcompare(qbars(\"qboundindex_1\"),1,4),'C',\"qboundindex_1\")))==(0)"
+    }
+  ]
+}

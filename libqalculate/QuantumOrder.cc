@@ -6,8 +6,81 @@
 #include "QuantumBinary.h"
 #include "QuantumIndexed.h"
 #include "Variable.h"
+#include "support.h"
+#ifdef HAVE_FLINT
+#include <flint/flint.h>
+#if __FLINT_RELEASE >= 30000
+#include <flint/fmpq.h>
+#include <flint/qqbar.h>
+#endif
+#endif
 #include <array>
 namespace {
+#if defined(HAVE_FLINT) && __FLINT_RELEASE >= 30000
+// Exact algebraic comparison is a fallback for concrete matrices whose
+// radical entries did not simplify. Bound the degree, height and total work.
+struct AlgebraicValue {
+ qqbar_t value;
+ AlgebraicValue() {qqbar_init(value);}
+ ~AlgebraicValue() {qqbar_clear(value);}
+ AlgebraicValue(const AlgebraicValue &)=delete;
+ AlgebraicValue &operator=(const AlgebraicValue &)=delete;
+};
+bool rationalValue(qqbar_t out,const Number &n) {
+ if(!n.isRational() || n.isApproximate())return false;
+ const mpq_t &q=n.internalRational();
+ if(mpz_sizeinbase(mpq_numref(q),2)>256 || mpz_sizeinbase(mpq_denref(q),2)>256)return false;
+ fmpq_t f;fmpq_init(f);fmpq_set_mpq(f,q);qqbar_set_fmpq(out,f);fmpq_clear(f);return true;
+}
+bool algebraicValue(qqbar_t out,const MathStructure &term,unsigned &remaining) {
+ if(!remaining || CALCULATOR->aborted() || term.isApproximate())return false;
+ --remaining;
+ if(term.isNumber()) {
+  const Number &n=term.number();
+  if(!n.hasImaginaryPart())return rationalValue(out,n);
+  AlgebraicValue imaginary,unit;
+  if(!rationalValue(out,n.realPart()) || !rationalValue(imaginary.value,n.imaginaryPart()))return false;
+  qqbar_i(unit.value);qqbar_mul(imaginary.value,imaginary.value,unit.value);qqbar_add(out,out,imaginary.value);
+  return true;
+ }
+ if(!term.size() || !algebraicValue(out,term[0],remaining))return false;
+ if(term.isPower() && term.size()==2 && term[1].isNumber()) {
+  const Number &power=term[1].number();
+  if(power.isApproximate() || !power.isRational() || power.denominator()>8 ||
+     power.numerator()>16 || power.numerator() < -16 || (qqbar_is_zero(out) && !power.isPositive()))return false;
+  if(qqbar_degree(out)*power.denominator().intValue()>64 || qqbar_height_bits(out)>256)return false;
+  fmpq_t exponent;fmpq_init(exponent);fmpq_set_mpq(exponent,power.internalRational());
+  qqbar_pow_fmpq(out,out,exponent);fmpq_clear(exponent);return true;
+ }
+ if(term.isFunction() && term.size()==1) {
+  const std::string &name=term.function()->referenceName();
+  if(name=="re")qqbar_re(out,out);
+  else if(name=="im")qqbar_im(out,out);
+  else if(name=="conj")qqbar_conj(out,out);
+  else return false;
+  return true;
+ }
+ if(!term.isAddition() && !term.isMultiplication())return false;
+ for(size_t k=1;k<term.size();++k) {
+  AlgebraicValue child;
+  if(!algebraicValue(child.value,term[k],remaining) || !qqbar_binop_within_limits(out,child.value,128,512))return false;
+  if(term.isAddition())qqbar_add(out,out,child.value);else qqbar_mul(out,out,child.value);
+ }
+ return true;
+}
+bool algebraicMatricesEqual(const MathStructure &a,const MathStructure &b,bool &equal) {
+ if(!a.isMatrix() || !b.isMatrix() || a.rows()!=b.rows() || a.columns()!=b.columns())return false;
+ unsigned remaining=2048;
+ for(size_t r=1;r<=a.rows();++r)for(size_t c=1;c<=a.columns();++c) {
+  const MathStructure &left=*a.getElement(r,c),&right=*b.getElement(r,c);
+  if(left.equals(right))continue;
+  AlgebraicValue x,y;
+  if(!algebraicValue(x.value,left,remaining) || !algebraicValue(y.value,right,remaining))return false;
+  if(!qqbar_equal(x.value,y.value)) {equal=false;return true;}
+ }
+ equal=true;return true;
+}
+#endif
 // These descriptors retain symbolic costs (including their argument lists)
 // for Copy and substitution when an asymptotic comparison is undecidable.
 class QuantumCostDescriptor: public MathFunction {
@@ -135,17 +208,20 @@ bool compareBitLabels(const MathStructure &left,const MathStructure &right,bool 
 }
 // For every complex matrix M, M†M and MM† are positive semidefinite,
 // including rectangular and rank-deficient M. This does not prove strictness.
-bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
- if(!value.isFunction() || value.size()!=2)return false;
+const MathStructure *gramFactor(const MathStructure &value) {
+ if(!value.isFunction() || value.size()!=2)return NULL;
  const std::string &name=value.function()->referenceName();
- if(name!="qmul" && name!="qadjacent")return false;
+ if(name!="qmul" && name!="qadjacent")return NULL;
  for(unsigned i=0;i<2;++i) {
   const MathStructure &adjoint=value[i],&factor=value[1-i];
-  if(!adjoint.isFunction() || adjoint.function()->referenceName()!="qdag" || adjoint.size()!=1 || !adjoint[0].equals(factor))continue;
-  MathStructure rows,columns;
-  if(quantumMatrixShape(factor,rows,columns,eo))return true;
+  if(adjoint.isFunction() && adjoint.function()->referenceName()=="qdag" && adjoint.size()==1 && adjoint[0].equals(factor))return &factor;
  }
- return false;
+ return NULL;
+}
+bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
+ const MathStructure *factor=gramFactor(value);
+ MathStructure rows,columns;
+ return factor && quantumMatrixShape(*factor,rows,columns,eo);
 }
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // Hermitian Loewner order via exact Schur complements. A zero diagonal in a
@@ -202,14 +278,56 @@ bool quantumMatrixOrder(MathStructure &out,MathStructure left,MathStructure righ
 bool setPair(const MathStructure &left,const MathStructure &right) {
  return left.isFunction() && right.isFunction() && left.function()->referenceName()=="qset" && right.function()->referenceName()=="qset";
 }
+bool unassignedScalarMultiple(const MathStructure &term) {
+ if(term.isMultiplication()) {
+  // A nonzero, known scale leaves the domain of an unassigned amplitude open.
+  bool unassigned=false;
+  for(size_t k=0;k<term.size();++k) {
+   if(unassignedScalarMultiple(term[k]))unassigned=true;
+   else if(term[k].containsUnknowns() || !term[k].representsNumber() || !term[k].representsNonZero())return false;
+  }
+  return unassigned;
+ }
+ if(term.isSymbolic())return true;
+ if(!term.isUnknown())return false;
+ auto variable=static_cast<UnknownVariable *>(term.variable());
+ return !variable->assumptions() && variable->interval().isUndefined();
+}
+bool unboundComplexComparison(const MathStructure &left,const MathStructure &right) {
+ if(left.isMatrix() && right.isMatrix() && left.rows()==right.rows() && left.columns()==right.columns()) {
+  for(size_t row=1;row<=left.rows();++row)for(size_t col=1;col<=left.columns();++col)
+   if(unboundComplexComparison(*left.getElement(row,col),*right.getElement(row,col)))return true;
+  return false;
+ }
+ return (left.representsComplex() && !left.containsUnknowns() && unassignedScalarMultiple(right)) ||
+        (right.representsComplex() && !right.containsUnknowns() && unassignedScalarMultiple(left));
+}
+// Isolating a periodic function can introduce an arbitrary integer. It is
+// bound in the general solution, while Copy would turn it into a free input.
+bool introducesUnknown(const MathStructure &result,const MathStructure &operands) {
+ if(result.isVariable() && !result.variable()->isKnown())return !operands.contains(result);
+ for(size_t k=0;k<result.size();++k)if(introducesUnknown(result[k],operands))return true;
+ return false;
+}
+// Infer the dimension before evaluation turns an unsized identity into a
+// two-dimensional matrix. Grouping parentheses are absent at this stage.
+bool inferProductIdentity(MathStructure &identity,const MathStructure &product) {
+ if(!identity.isFunction() || identity.function()->referenceName()!="qimplicitidentity" || !product.isFunction())return false;
+ const std::string &op=product.function()->referenceName();
+ if((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag")))return false;
+ identity.set(CALCULATOR->getFunction("qidentitylike"),&product,NULL);return true;
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
  ExpressionItem *copy() const {return new QuantumOrderFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;args[2].eval(eo);
-  args[0].eval(eo);
   bool equality=args[2].isNumber() && args[2].number()==4;
+  if(equality && (inferProductIdentity(args[0],args[1]) || inferProductIdentity(args[1],args[0]))) {
+   out.set(this,&args[0],&args[1],&args[2],NULL);out.eval(eo);return 1;
+  }
+  args[0].eval(eo);
   MathStructure rows,columns;
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
@@ -230,6 +348,8 @@ class QuantumOrderFunction: public MathFunction {
   }
   if(equality && (args[0].containsFunction(CALCULATOR->getFunction("qinversefunction")) ||
                   args[1].containsFunction(CALCULATOR->getFunction("qinversefunction"))))return 0;
+  if(equality && (args[0].containsFunction(CALCULATOR->getFunction("qspectralsum")) ||
+                  args[1].containsFunction(CALCULATOR->getFunction("qspectralsum"))))return 0;
   // A cost function's argument vector does not make its value a matrix.
   MathFunction *costCall=CALCULATOR->getFunction("qcostcall");
   if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall)) {
@@ -254,11 +374,37 @@ class QuantumOrderFunction: public MathFunction {
    // A free name can denote the entire matrix. Keep it available for
    // substitution instead of broadcasting it across the matrix entries.
    if(kind>=4)for(unsigned k=0;k<2;++k) {
-    if(!args[k].isMatrix() || !args[1-k].isSymbolic())continue;
+    const MathStructure &other=args[1-k];
+    bool namedKet=other.isFunction() && other.function()->referenceName()=="qketstate";
+    if(!args[k].isMatrix() || !(other.isSymbolic() || namedKet))continue;
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }
    bool equal=false;
+   // A state family can be defined later. Keep each matrix on its own
+   // side of the comparison and retain evaluated arguments for re-entry.
+   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate"}) {
+    const auto function=CALCULATOR->getFunction(state);
+    if(!args[0].containsFunction(function) && !args[1].containsFunction(function))continue;
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
+   // An unassigned eigenvalue can later be complex. The generic real
+   // default for unknown scalars cannot decide this quantum comparison.
+   if(kind>=4 && unboundComplexComparison(args[0],args[1])) {
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
+   // Preserve products with adjoints until the factors have concrete values.
+   // Scalar comparison would rewrite the equality as a difference from zero.
+   if(kind>=4 && gramFactor(args[0]) && gramFactor(args[1]) && !args[0].equals(args[1]))return 0;
+   if(kind>=4 && (quantumComplexDomain(args[0]) || quantumComplexDomain(args[1]))) {
+    if(quantumComplexDomain(args[0]) && quantumComplexDomain(args[1])) {
+     out=(args[0].function()==args[1].function())==(kind==4) ? 1 : 0;return 1;
+    }
+    // Preserve an equation with a free set name or a symbolic predicate.
+    return 0;
+   }
    if(kind>=4 && setPair(args[0],args[1])) {
     if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
     out=(kind==4)==equal ? 1 : 0;return 1;
@@ -277,7 +423,16 @@ class QuantumOrderFunction: public MathFunction {
    if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
    if(args[2].number()<4 && (args[0].containsType(STRUCT_VECTOR,true)>0 || args[1].containsType(STRUCT_VECTOR,true)>0))
     return quantumMatrixOrder(out,raw[0],raw[1],args[2].number().intValue(),eo) ? 1 : 0;
-   out=args[0];out.transform(kinds[args[2].number().intValue()],args[1]);out.eval(eo);return 1;
+   out=args[0];out.transform(kinds[kind],args[1]);out.eval(eo);
+   if(kind>=4 && !out.isNumber() && introducesUnknown(out,args)) {
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
+#if defined(HAVE_FLINT) && __FLINT_RELEASE >= 30000
+   if(kind>=4 && eo.approximation==APPROXIMATION_EXACT && !out.isNumber() &&
+      algebraicMatricesEqual(args[0],args[1],equal))out=(kind==4)==equal ? 1 : 0;
+#endif
+   return 1;
   }
  }
 };
@@ -306,6 +461,10 @@ class QuantumEqualityChain: public MathFunction {
    CALCULATOR->error(true,"An equality chain requires 3 to 128 operands.",NULL);return 0;
   }
   MathStructure operands=raw[0],dimension;bool known=false,consistent=true;
+  for(size_t k=1;k<operands.size();++k) {
+   inferProductIdentity(operands[k],operands[k-1]);
+   inferProductIdentity(operands[k-1],operands[k]);
+  }
   for(size_t k=0;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
    operands[k].eval(eo);MathStructure rows,columns;

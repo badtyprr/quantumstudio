@@ -1,0 +1,105 @@
+{
+  "worker_sha256": "c960dd675180083dbb8425a5828438b9ddb2d707afdaffb0d46e634b7391c378",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 94,
+  "unstable_copies": [
+    "IBM027-64df8610-M002",
+    "IBM027-64df8610-M023",
+    "IBM027-64df8610-M042",
+    "IBM027-64df8610-M044",
+    "IBM027-64df8610-M061"
+  ],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M034",
+      "label": "EXACT RESULT",
+      "display": "|ψ_1⟩ = [1; 0] and |ψ_2⟩ = [0; 1] and \"λ_1\" = 1 and \"λ_2\" = 1",
+      "copy": "((\"λ_1\")==(1) and (\"λ_2\")==(1) and qcompare(qketstate(\"ψ_1\"),matrix(2,1,[1,0]),4) and qcompare(qketstate(\"ψ_2\"),matrix(2,1,[0,1]),4))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "((\"λ_1\")==(1) and (\"λ_2\")==(1) and qcompare(qketstate(\"ψ_1\"),matrix(2,1,[1,0]),4) and qcompare(qketstate(\"ψ_2\"),matrix(2,1,[0,1]),4))"
+    },
+    {
+      "id": "IBM027-64df8610-M043",
+      "label": "EXACT RESULT",
+      "display": "|ψ_θ⟩ = [cos('θ' rad); sin('θ' rad)]",
+      "copy": "qcompare(qketstate(\"ψ_θ\"),matrix(2,1,[cos('θ' rad),sin('θ' rad)]),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(qketstate(\"ψ_θ\"),matrix(2,1,[cos('θ' rad),sin('θ' rad)]),4)"
+    },
+    {
+      "id": "IBM027-64df8610-M072",
+      "label": "EXACT RESULT",
+      "display": "'θ' = n − (0.5i ⋅ ln('λ')) ∕ π and 'λ' ≠ 0",
+      "copy": "(('θ')==(n − (i ⋅ ln('λ')) ∕ (2π)) and ('λ')!=(0))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(('θ')==(n − (i ⋅ ln('λ')) ∕ (2π)) and ('λ')!=(0))"
+    },
+    {
+      "id": "IBM027-64df8610-M074",
+      "label": "EXACT RESULT",
+      "display": "'θ' ≥ 0 and 'θ' < 1",
+      "copy": "(('θ')<(1) and ('θ')>=(0))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(('θ')<(1) and ('θ')>=(0))"
+    }
+  ],
+  "controls": [
+    {
+      "id": "declarations-0111-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "declarations-1011-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "declarations-1101-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "declarations-1110-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "declarations-1111-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1095,
+    "calls": 102,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

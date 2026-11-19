@@ -1,0 +1,79 @@
+{
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [],
+  "worker_sha256": "db99d592c5087a34abb7771b7c9722011bfac52dad916bb13d08a76d5a1af519",
+  "gui_sha256": "c6daa7f1fc82f03cdcc423bd11c2632667a13861d6e1966b8d00124806bfabfc",
+  "modes": {
+    "M012": "Matrix dimensions",
+    "M063": "Set notation",
+    "default": "Quantum notation"
+  },
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M012",
+      "label": "EXACT RESULT",
+      "display": "N × N",
+      "copy": "qmatrixdimensions('N','N')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmatrixdimensions('N','N')"
+    }
+  ],
+  "controls": [
+    {
+      "id": "shape-97",
+      "label": "EXACT RESULT",
+      "display": "3 × 4",
+      "copy": "qmatrixdimensions(3,4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmatrixdimensions(3,4)"
+    },
+    {
+      "id": "shape-98",
+      "label": "EXACT RESULT",
+      "display": "4 × 3",
+      "copy": "qmatrixdimensions(4,3)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmatrixdimensions(4,3)"
+    },
+    {
+      "id": "shape-99",
+      "label": "EXACT RESULT",
+      "display": "6 × 4",
+      "copy": "qmatrixdimensions(6,4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmatrixdimensions(6,4)"
+    },
+    {
+      "id": "shape-100",
+      "label": "EXACT RESULT",
+      "display": "5 × 5",
+      "copy": "qmatrixdimensions(5,5)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmatrixdimensions(5,5)"
+    },
+    {
+      "id": "arithmetic",
+      "label": "EXACT RESULT",
+      "display": "12",
+      "copy": "12",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "12"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1122,
+    "calls": 102,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "replay": "replay-ibm027-dimensions.py"
+}

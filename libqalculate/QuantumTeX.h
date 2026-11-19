@@ -10,4 +10,5 @@ std::string quantumTeX(const std::string &input);
 // Reports independent expressions only when the whole fragment is an alignment.
 // Embedded alignments remain ordinary mathematical operands.
 std::string quantumTeX(const std::string &input, std::vector<std::string> *lines);
+std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation);
 #endif

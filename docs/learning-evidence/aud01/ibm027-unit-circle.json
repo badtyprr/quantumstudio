@@ -1,0 +1,110 @@
+{
+  "worker_sha256": "6abf234ba1254db573df76b9e9ebbf8c20a44c0fe8bf99e076eecb125eb00f50",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [
+    "IBM027-64df8610-M002",
+    "IBM027-64df8610-M023",
+    "IBM027-64df8610-M042",
+    "IBM027-64df8610-M044"
+  ],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M061",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM027-64df8610-M062",
+      "label": "EXACT RESULT",
+      "display": "\\mathbb{T}",
+      "copy": "qunitcircle()",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qunitcircle()"
+    }
+  ],
+  "controls": [
+    {
+      "id": "one-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "imaginary-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "rational-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "origin-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "outside-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "inside-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "gate-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1144,
+    "calls": 104,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "open_meaning": {
+    "id": "IBM027-64df8610-M063",
+    "source": "S^1",
+    "expected": "Alternate name for the unit circle in the sentence following its definition.",
+    "observed_copy": "matrix(2,2,[1,0,0,i])"
+  }
+}

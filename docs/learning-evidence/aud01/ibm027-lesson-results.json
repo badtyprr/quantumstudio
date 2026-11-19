@@ -1,0 +1,1393 @@
+{
+  "revision": "6b635226d97d9ae616913002f3d8ad036ea43329",
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-problem.ipynb",
+  "source_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "windows_fixture": "ibm027-review-fixes.json",
+  "meaning_review": "ibm027-meaning-review.md",
+  "pull_request": "https://github.com/badtyprr/quantumstudio/pull/530",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "rows": [
+    {
+      "id": "IBM027-64df8610-M001",
+      "cell": 0,
+      "start": 756,
+      "end": 759,
+      "input": "$M$",
+      "expected": "Arbitrary normal matrix M",
+      "mode": "Quantum notation",
+      "actual_display": "M",
+      "actual_copy": "'M'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M002",
+      "cell": 0,
+      "start": 865,
+      "end": 896,
+      "input": "$M M^{\\dagger} = M^{\\dagger} M$",
+      "expected": "M commutes with its adjoint",
+      "mode": "Quantum notation",
+      "actual_display": "M · M† = M† · M",
+      "actual_copy": "qcompare(qadjacent('M',qdag('M')),qadjacent(qdag('M'),'M'),4)",
+      "evidence": [
+        "ibm027-normality.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M003",
+      "cell": 0,
+      "start": 920,
+      "end": 923,
+      "input": "$U$",
+      "expected": "Unitary operator U",
+      "mode": "Quantum notation",
+      "actual_display": "U",
+      "actual_copy": "'U'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M004",
+      "cell": 0,
+      "start": 943,
+      "end": 992,
+      "input": "$$\nU U^{\\dagger} = \\mathbb{I} = U^{\\dagger} U.\n$$",
+      "expected": "Both products of a unitary with its adjoint equal the identity of the same dimension",
+      "mode": "Quantum notation",
+      "actual_display": "U · U† = qidentitylike(qadjacent('U', qdag('U'))) = U† · U",
+      "actual_copy": "qequalchain(vector(qadjacent('U',qdag('U')),qidentitylike(qadjacent('U',qdag('U'))),qadjacent(qdag('U'),'U')))",
+      "evidence": [
+        "ibm027-unitarity.json",
+        "ibm027-review-fixes.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M005",
+      "cell": 0,
+      "start": 1126,
+      "end": 1129,
+      "input": "$H$",
+      "expected": "Arbitrary Hermitian H and the equality of both products with its square",
+      "mode": "Quantum notation",
+      "declaration": {
+        "name": "H",
+        "property": "Hermitian",
+        "rows": "N",
+        "columns": "N"
+      },
+      "actual_display": "operatorparam('H', 'N', \"hermitian\")",
+      "actual_copy": "operatorparam('H','N',\"hermitian\")",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M006",
+      "cell": 0,
+      "start": 1159,
+      "end": 1201,
+      "input": "$$\nH H^{\\dagger} = H^2 = H^{\\dagger} H,\n$$",
+      "expected": "Arbitrary Hermitian H and the equality of both products with its square",
+      "mode": "Quantum notation",
+      "declaration": {
+        "name": "H",
+        "property": "Hermitian",
+        "rows": "N",
+        "columns": "N"
+      },
+      "actual_display": "operatorparam('H', 'N', \"hermitian\") · operatorparam('H', 'N', \"hermitian\")† = operatorparam('H', 'N', \"hermitian\")² = operatorparam('H', 'N', \"hermitian\")† · operatorparam('H', 'N', \"hermitian\")",
+      "actual_copy": "qequalchain(vector(qadjacent(operatorparam('H','N',\"hermitian\"),qdag(operatorparam('H','N',\"hermitian\"))),operatorparam('H', 'N', \"hermitian\")²,qadjacent(qdag(operatorparam('H','N',\"hermitian\")),operatorparam('H','N',\"hermitian\"))))",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M007",
+      "cell": 0,
+      "start": 1206,
+      "end": 1209,
+      "input": "$H$",
+      "expected": "Arbitrary Hermitian H and the equality of both products with its square",
+      "mode": "Quantum notation",
+      "declaration": {
+        "name": "H",
+        "property": "Hermitian",
+        "rows": "N",
+        "columns": "N"
+      },
+      "actual_display": "operatorparam('H', 'N', \"hermitian\")",
+      "actual_copy": "operatorparam('H','N',\"hermitian\")",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M008",
+      "cell": 0,
+      "start": 1298,
+      "end": 1347,
+      "input": "$$\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n$$",
+      "expected": "Nonnormal example and its two different products",
+      "mode": "Quantum notation",
+      "actual_display": "[0  1; 0  0]",
+      "actual_copy": "matrix(2,2,[0,1,0,0])",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M009",
+      "cell": 0,
+      "start": 1462,
+      "end": 1701,
+      "input": "$$\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}^{\\dagger}\n=\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 0\\\\\n1 & 0\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n1 & 0\\\\\n0 & 0\n\\end{pmatrix}\n$$",
+      "expected": "Nonnormal example and its two different products",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M010",
+      "cell": 0,
+      "start": 1710,
+      "end": 1950,
+      "input": "$$\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}^{\\dagger}\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n0 & 0\\\\\n1 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1\\\\\n0 & 0\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n0 & 0\\\\\n0 & 1\n\\end{pmatrix}.\n$$",
+      "expected": "Nonnormal example and its two different products",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M011",
+      "cell": 0,
+      "start": 2071,
+      "end": 2074,
+      "input": "$M$",
+      "expected": "Arbitrary normal matrix M",
+      "mode": "Quantum notation",
+      "actual_display": "M",
+      "actual_copy": "'M'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M012",
+      "cell": 0,
+      "start": 2087,
+      "end": 2098,
+      "input": "$N\\times N$",
+      "expected": "Matrix dimensions, N rows by N columns",
+      "mode": "Matrix dimensions",
+      "actual_display": "N × N",
+      "actual_copy": "qmatrixdimensions('N','N')",
+      "evidence": [
+        "ibm027-dimensions.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M013",
+      "cell": 0,
+      "start": 2152,
+      "end": 2155,
+      "input": "$N$",
+      "expected": "Dimension N",
+      "mode": "Quantum notation",
+      "actual_display": "N",
+      "actual_copy": "'N'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M014",
+      "cell": 0,
+      "start": 2184,
+      "end": 2246,
+      "input": "$\\bigl\\{ \\vert\\psi_1\\rangle,\\ldots,\\vert\\psi_N\\rangle \\bigr\\}$",
+      "expected": "Set of eigenvectors, including the explicit two-vector case",
+      "mode": "Quantum notation",
+      "actual_display": "\\{|ψ_1⟩,\\ldots,|ψ_N⟩\\}",
+      "actual_copy": "qindexedketset(\"ψ_\",1,'N',vector())",
+      "evidence": [
+        "ibm027-ketsets.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M015",
+      "cell": 0,
+      "start": 2274,
+      "end": 2302,
+      "input": "$\\lambda_1,\\ldots,\\lambda_N$",
+      "expected": "Ordered list of eigenvalues",
+      "mode": "Quantum notation",
+      "actual_display": "(λ_1, …, λ_N)",
+      "actual_copy": "qindexedlist(\"λ_\",1,'N',vector())",
+      "evidence": [
+        "ibm027-indexed-lists.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M016",
+      "cell": 0,
+      "start": 2313,
+      "end": 2432,
+      "input": "$$\nM = \\lambda_1 \\vert \\psi_1\\rangle\\langle \\psi_1\\vert + \\cdots + \\lambda_N \\vert \\psi_N\\rangle\\langle \\psi_N\\vert.\n$$",
+      "expected": "Spectral expansion with coefficient-weighted eigenprojectors",
+      "mode": "Quantum notation",
+      "actual_display": "M = \\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert",
+      "actual_copy": "qcompare('M',qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),4)",
+      "evidence": [
+        "ibm027-spectral.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M017",
+      "cell": 0,
+      "start": 2484,
+      "end": 2565,
+      "input": "$$\nM = \\sum_{k = 1}^N \\lambda_k \\vert \\psi_k\\rangle\\langle \\psi_k\\vert \\tag{1}\n$$",
+      "expected": "Spectral expansion with coefficient-weighted eigenprojectors",
+      "mode": "Quantum notation",
+      "actual_display": "M = \\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert",
+      "actual_copy": "qcompare('M',qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),4)",
+      "evidence": [
+        "ibm027-spectral.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M018",
+      "cell": 0,
+      "start": 2629,
+      "end": 2632,
+      "input": "$M$",
+      "expected": "Arbitrary normal matrix M",
+      "mode": "Quantum notation",
+      "actual_display": "M",
+      "actual_copy": "'M'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M019",
+      "cell": 0,
+      "start": 2674,
+      "end": 2679,
+      "input": "$(1)$",
+      "expected": "References to numbered equations",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M020",
+      "cell": 0,
+      "start": 2700,
+      "end": 2761,
+      "input": "$$\nM \\vert \\psi_j \\rangle = \\lambda_j \\vert \\psi_j \\rangle\n$$",
+      "expected": "Eigenvector equation, range of j and derivation of the selected eigenpair",
+      "mode": "Quantum notation",
+      "actual_display": "M |ψ_j⟩ = \"λ_j\" |ψ_j⟩",
+      "actual_copy": "(qadjacent('M',qnamedket(\"ψ_j\")))==(qadjacent(\"λ_j\",qnamedket(\"ψ_j\")))",
+      "evidence": [
+        "ibm027-spectral-index.json",
+        "ibm027-review-fixes.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M021",
+      "cell": 0,
+      "start": 2786,
+      "end": 2802,
+      "input": "$j = 1,\\ldots,N$",
+      "expected": "Eigenvector equation, range of j and derivation of the selected eigenpair",
+      "mode": "Quantum notation",
+      "actual_display": "j ∈ indexrange(1, N)",
+      "actual_copy": "qmember('j',qindexrange(1,'N'))",
+      "evidence": [
+        "ibm027-spectral-index.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M022",
+      "cell": 0,
+      "start": 2843,
+      "end": 2905,
+      "input": "$\\bigl\\{ \\vert\\psi_1\\rangle,\\ldots,\\vert\\psi_N\\rangle \\bigr\\}$",
+      "expected": "Set of eigenvectors, including the explicit two-vector case",
+      "mode": "Quantum notation",
+      "actual_display": "\\{|ψ_1⟩,\\ldots,|ψ_N⟩\\}",
+      "actual_copy": "qindexedketset(\"ψ_\",1,'N',vector())",
+      "evidence": [
+        "ibm027-ketsets.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M023",
+      "cell": 0,
+      "start": 2923,
+      "end": 3161,
+      "input": "$$\nM \\vert \\psi_j \\rangle\n= \\left(\\sum_{k = 1}^N \\lambda_k \\vert \\psi_k\\rangle\\langle \\psi_k\\vert\\right)\\vert \\psi_j\\rangle\n= \\sum_{k = 1}^N \\lambda_k \\vert \\psi_k\\rangle\\langle \\psi_k\\vert\\psi_j \\rangle\n= \\lambda_j \\vert\\psi_j \\rangle\n$$",
+      "expected": "Eigenvector equation, range of j and derivation of the selected eigenpair",
+      "mode": "Quantum notation",
+      "actual_display": "M |ψ_j⟩ = (\\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert) |ψ_j⟩ = \\sum_{k=1}^{N} λ_k \\vert ψ_k\\rangle\\langle ψ_k\\vert ψ_j\\rangle = \"λ_j\" |ψ_j⟩",
+      "actual_copy": "qequalchain(vector(qadjacent('M',qnamedket(\"ψ_j\")),qadjacent(qspectralsum(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector())),qnamedket(\"ψ_j\")),qspectralaction(qindexedentries(\"λ_\",1,'N',vector()),qindexedentries(\"ψ_\",1,'N',vector()),qnamedket(\"ψ_j\")),qadjacent(\"λ_j\",qnamedket(\"ψ_j\"))))",
+      "evidence": [
+        "ibm027-spectral-index.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M024",
+      "cell": 0,
+      "start": 3184,
+      "end": 3195,
+      "input": "$\\lambda_j$",
+      "expected": "Individually named eigenvalues",
+      "mode": "Quantum notation",
+      "actual_display": "\"λ_j\"",
+      "actual_copy": "\"λ_j\"",
+      "evidence": [
+        "ibm027-hermitian.json",
+        "ibm027-review-fixes.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M025",
+      "cell": 0,
+      "start": 3218,
+      "end": 3221,
+      "input": "$M$",
+      "expected": "Arbitrary normal matrix M",
+      "mode": "Quantum notation",
+      "actual_display": "M",
+      "actual_copy": "'M'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M026",
+      "cell": 0,
+      "start": 3226,
+      "end": 3246,
+      "input": "$\\vert\\psi_j\\rangle$",
+      "expected": "Individually named eigenvectors",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ_j⟩",
+      "actual_copy": "qketstate(\"ψ_j\")",
+      "evidence": [
+        "ibm027-hermitian.json",
+        "ibm027-review-fixes.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M027",
+      "cell": 0,
+      "start": 3327,
+      "end": 3391,
+      "input": "$$\n  \\mathbb{I} = \\begin{pmatrix}1 & 0\\\\0 & 1\\end{pmatrix},\n  $$",
+      "expected": "Two-dimensional identity, including expansions in computational and sign bases",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M028",
+      "cell": 0,
+      "start": 3439,
+      "end": 3451,
+      "input": "$\\mathbb{I}$",
+      "expected": "Two-dimensional identity, including expansions in computational and sign bases",
+      "mode": "Quantum notation",
+      "actual_display": "[1  0; 0  1]",
+      "actual_copy": "matrix(2,2,[1,0,0,1])",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M029",
+      "cell": 0,
+      "start": 3479,
+      "end": 3484,
+      "input": "$(1)$",
+      "expected": "References to numbered equations",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M030",
+      "cell": 0,
+      "start": 3504,
+      "end": 3515,
+      "input": "$\\lambda_1$",
+      "expected": "Individually named eigenvalues",
+      "mode": "Quantum notation",
+      "actual_display": "\"λ_1\"",
+      "actual_copy": "\"λ_1\"",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M031",
+      "cell": 0,
+      "start": 3517,
+      "end": 3528,
+      "input": "$\\lambda_2$",
+      "expected": "Individually named eigenvalues",
+      "mode": "Quantum notation",
+      "actual_display": "\"λ_2\"",
+      "actual_copy": "\"λ_2\"",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M032",
+      "cell": 0,
+      "start": 3530,
+      "end": 3550,
+      "input": "$\\vert\\psi_1\\rangle$",
+      "expected": "Individually named eigenvectors",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ_1⟩",
+      "actual_copy": "qketstate(\"ψ_1\")",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M033",
+      "cell": 0,
+      "start": 3556,
+      "end": 3576,
+      "input": "$\\vert\\psi_2\\rangle$",
+      "expected": "Individually named eigenvectors",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ_2⟩",
+      "actual_copy": "qketstate(\"ψ_2\")",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M034",
+      "cell": 0,
+      "start": 3631,
+      "end": 3789,
+      "input": "$$\n  \\lambda_1 = 1, \\hspace{5pt}\n  \\lambda_2 = 1, \\hspace{5pt}\n  \\vert\\psi_1\\rangle = \\vert 0\\rangle, \\hspace{5pt}\n  \\vert\\psi_2\\rangle = \\vert 1\\rangle.\n  $$",
+      "expected": "Four simultaneous eigenvalue and eigenvector assignments",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ_1⟩ = [1; 0] and |ψ_2⟩ = [0; 1] and \"λ_1\" = 1 and \"λ_2\" = 1",
+      "actual_copy": "((\"λ_1\")==(1) and (\"λ_2\")==(1) and qcompare(qketstate(\"ψ_1\"),matrix(2,1,[1,0]),4) and qcompare(qketstate(\"ψ_2\"),matrix(2,1,[0,1]),4))",
+      "evidence": [
+        "ibm027-declarations.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M035",
+      "cell": 0,
+      "start": 3855,
+      "end": 3883,
+      "input": "$\\lambda_1,\\ldots,\\lambda_N$",
+      "expected": "Ordered list of eigenvalues",
+      "mode": "Quantum notation",
+      "actual_display": "(λ_1, …, λ_N)",
+      "actual_copy": "qindexedlist(\"λ_\",1,'N',vector())",
+      "evidence": [
+        "ibm027-indexed-lists.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M036",
+      "cell": 0,
+      "start": 4015,
+      "end": 4098,
+      "input": "$$\n  \\mathbb{I} = \\vert 0\\rangle\\langle 0\\vert + \\vert 1\\rangle\\langle 1\\vert.\n  $$",
+      "expected": "Two-dimensional identity, including expansions in computational and sign bases",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M037",
+      "cell": 0,
+      "start": 4126,
+      "end": 4169,
+      "input": "$\\{\\vert\\psi_1\\rangle,\\vert\\psi_2\\rangle\\}$",
+      "expected": "Set of eigenvectors, including the explicit two-vector case",
+      "mode": "Quantum notation",
+      "actual_display": "\\{|ψ_1⟩, |ψ_2⟩\\}",
+      "actual_copy": "qset(vector(qketstate(\"ψ_1\"),qketstate(\"ψ_2\")))",
+      "evidence": [
+        "ibm027-ketsets.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M038",
+      "cell": 0,
+      "start": 4250,
+      "end": 4333,
+      "input": "$$\n  \\mathbb{I} = \\vert +\\rangle\\langle +\\vert + \\vert -\\rangle\\langle -\\vert.\n  $$",
+      "expected": "Two-dimensional identity, including expansions in computational and sign bases",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M039",
+      "cell": 0,
+      "start": 4388,
+      "end": 4478,
+      "input": "$$\n  H = \\frac{1}{\\sqrt{2}}\n  \\begin{pmatrix}\n  1 & 1\\\\[1mm]\n  1 & -1\n  \\end{pmatrix}\n  $$",
+      "expected": "The Hadamard gate and its explicit matrix",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M040",
+      "cell": 0,
+      "start": 4559,
+      "end": 4562,
+      "input": "$H$",
+      "expected": "The Hadamard gate and its explicit matrix",
+      "mode": "Quantum notation",
+      "actual_display": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))]",
+      "actual_copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M041",
+      "cell": 0,
+      "start": 4592,
+      "end": 4597,
+      "input": "$(1)$",
+      "expected": "References to numbered equations",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M042",
+      "cell": 0,
+      "start": 4628,
+      "end": 4751,
+      "input": "$$\n  H =\n  \\vert\\psi_{\\pi/8}\\rangle \\langle \\psi_{\\pi/8}\\vert\n  - \\vert\\psi_{5\\pi/8}\\rangle \\langle \\psi_{5\\pi/8}\\vert\n  $$",
+      "expected": "Hadamard eigendecomposition, real angle state, its two specializations and projector difference",
+      "mode": "Quantum notation",
+      "actual_display": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))] = qstatecall('ψ', 0.125π) · qstatecall('ψ', 0.125π)† − qstatecall('ψ', 0.125 ⋅ qadjacent(5, π)) · qstatecall('ψ', 0.125 ⋅ qadjacent(5, π))†",
+      "actual_copy": "qcompare(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),qsub(qadjacent(qstatecall('ψ',π ∕ 8),qdag(qstatecall('ψ',π ∕ 8))),qadjacent(qstatecall('ψ',qadjacent(5, π) ∕ 8),qdag(qstatecall('ψ',qadjacent(5, π) ∕ 8)))),4)",
+      "evidence": [
+        "ibm027-hadamard.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M043",
+      "cell": 0,
+      "start": 4764,
+      "end": 4861,
+      "input": "$$\n  \\vert\\psi_{\\theta}\\rangle\n  = \\cos(\\theta)\\vert 0\\rangle + \\sin(\\theta) \\vert 1\\rangle.\n  $$",
+      "expected": "Hadamard eigendecomposition, real angle state, its two specializations and projector difference",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ_θ⟩ = [cos('θ' rad); sin('θ' rad)]",
+      "actual_copy": "qcompare(qketstate(\"ψ_θ\"),matrix(2,1,[cos('θ' rad),sin('θ' rad)]),4)",
+      "evidence": [
+        "ibm027-hadamard.json",
+        "ibm027-review-fixes.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M044",
+      "cell": 0,
+      "start": 4885,
+      "end": 5184,
+      "input": "$$\n  \\begin{aligned}\n  \\vert\\psi_{\\pi/8}\\rangle & = \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 0\\rangle\n  + \\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 1\\rangle, \\\\[3mm]\n  \\vert\\psi_{5\\pi/8}\\rangle & = -\\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 0\\rangle\n  + \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 1\\rangle.\n  \\end{aligned}\n  $$",
+      "expected": "Hadamard eigendecomposition, real angle state, its two specializations and projector difference",
+      "mode": "Quantum notation",
+      "actual_display": "1.  qstatecall('ψ', 0.125π) = [(0.5 ⋅ √(2 + √(2))); (0.5 ⋅ √(2 − √(2)))]\n\n2.  qstatecall('ψ', 0.625π) = [(−0.5 ⋅ √(2 − √(2))); (0.5 ⋅ √(2 + √(2)))]",
+      "actual_copy": "\\begin{gathered}qcompare(qstatecall('ψ',π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,√(2 − √(2)) ∕ 2]),4)\\\\qcompare(qstatecall('ψ',(5 ∕ 8) ⋅ π),matrix(2,1,[−√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),4)\\end{gathered}",
+      "evidence": [
+        "ibm027-hadamard.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M045",
+      "cell": 0,
+      "start": 5280,
+      "end": 5678,
+      "input": "$$\n  \\vert\\psi_{\\pi/8}\\rangle \\langle \\psi_{\\pi/8}\\vert\n  - \\vert\\psi_{5\\pi/8}\\rangle \\langle \\psi_{5\\pi/8}\\vert\n  = \\begin{pmatrix}\n  \\frac{2 + \\sqrt{2}}{4} & \\frac{\\sqrt{2}}{4}\\\\[2mm]\n  \\frac{\\sqrt{2}}{4} & \\frac{2 - \\sqrt{2}}{4}\n  \\end{pmatrix}\n  -\n  \\begin{pmatrix}\n  \\frac{2 - \\sqrt{2}}{4} & -\\frac{\\sqrt{2}}{4}\\\\[2mm]\n  -\\frac{\\sqrt{2}}{4} & \\frac{2 + \\sqrt{2}}{4}\n  \\end{pmatrix}\n  = H.\n  $$",
+      "expected": "Hadamard eigendecomposition, real angle state, its two specializations and projector difference",
+      "mode": "Quantum notation",
+      "actual_display": "qstatecall('ψ', 0.125π) · qstatecall('ψ', 0.125π)† − qstatecall('ψ', 0.125 ⋅ qadjacent(5, π)) · qstatecall('ψ', 0.125 ⋅ qadjacent(5, π))† = [(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))] = [(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))]",
+      "actual_copy": "qequalchain(vector(qsub(qadjacent(qstatecall('ψ',π ∕ 8),qdag(qstatecall('ψ',π ∕ 8))),qadjacent(qstatecall('ψ',qadjacent(5, π) ∕ 8),qdag(qstatecall('ψ',qadjacent(5, π) ∕ 8)))),matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])))",
+      "evidence": [
+        "ibm027-hadamard.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M046",
+      "cell": 0,
+      "start": 5884,
+      "end": 5887,
+      "input": "$N$",
+      "expected": "Dimension N",
+      "mode": "Quantum notation",
+      "actual_display": "N",
+      "actual_copy": "'N'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M047",
+      "cell": 0,
+      "start": 5904,
+      "end": 5932,
+      "input": "$\\lambda_1,\\ldots,\\lambda_N$",
+      "expected": "Ordered list of eigenvalues",
+      "mode": "Quantum notation",
+      "actual_display": "(λ_1, …, λ_N)",
+      "actual_copy": "qindexedlist(\"λ_\",1,'N',vector())",
+      "evidence": [
+        "ibm027-indexed-lists.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M048",
+      "cell": 0,
+      "start": 6026,
+      "end": 6031,
+      "input": "$(1)$",
+      "expected": "References to numbered equations",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M049",
+      "cell": 0,
+      "start": 6063,
+      "end": 6066,
+      "input": "$M$",
+      "expected": "Arbitrary normal matrix M",
+      "mode": "Quantum notation",
+      "actual_display": "M",
+      "actual_copy": "'M'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M050",
+      "cell": 0,
+      "start": 6142,
+      "end": 6151,
+      "input": "$\\lambda$",
+      "expected": "Eigenvalue lambda",
+      "mode": "Quantum notation",
+      "actual_display": "'λ'",
+      "actual_copy": "'λ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M051",
+      "cell": 0,
+      "start": 6174,
+      "end": 6192,
+      "input": "$\\vert\\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M052",
+      "cell": 0,
+      "start": 6220,
+      "end": 6278,
+      "input": "$$\nU\\vert\\psi\\rangle = \\lambda\\vert\\psi\\rangle.\n\\tag{2}\n$$",
+      "expected": "Eigenpair relation with an eigenvalue or its exponential phase",
+      "mode": "Quantum notation",
+      "actual_display": "U |ψ⟩ = 'λ' |ψ⟩",
+      "actual_copy": "(qadjacent('U',qnamedket('ψ')))==(qadjacent('λ',qnamedket('ψ')))",
+      "evidence": [
+        "ibm027-phase-relation.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M053",
+      "cell": 0,
+      "start": 6289,
+      "end": 6298,
+      "input": "$\\lambda$",
+      "expected": "Eigenvalue lambda",
+      "mode": "Quantum notation",
+      "actual_display": "'λ'",
+      "actual_copy": "'λ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M054",
+      "cell": 0,
+      "start": 6319,
+      "end": 6322,
+      "input": "$U$",
+      "expected": "Unitary operator U",
+      "mode": "Quantum notation",
+      "actual_display": "U",
+      "actual_copy": "'U'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M055",
+      "cell": 0,
+      "start": 6327,
+      "end": 6345,
+      "input": "$\\vert\\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M056",
+      "cell": 0,
+      "start": 6479,
+      "end": 6484,
+      "input": "$(2)$",
+      "expected": "References to numbered equations",
+      "mode": "Quantum notation",
+      "actual_display": "2",
+      "actual_copy": "2",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M057",
+      "cell": 0,
+      "start": 6487,
+      "end": 6660,
+      "input": "$$\n\\bigl\\| \\vert\\psi\\rangle \\bigr\\|\n= \\bigl\\| U \\vert\\psi\\rangle \\bigr\\|\n= \\bigl\\| \\lambda \\vert\\psi\\rangle \\bigr\\|\n= \\vert \\lambda \\vert \\bigl\\| \\vert\\psi\\rangle \\bigr\\|\n$$",
+      "expected": "Norm preservation, nonzero norm and unit modulus",
+      "mode": "Quantum notation",
+      "actual_display": "qnorm(qnamedket('ψ')) = qnorm(qadjacent('U', qnamedket('ψ'))) = qnorm(qadjacent('λ', qnamedket('ψ'))) = |'λ'| · qnorm(qnamedket('ψ'))",
+      "actual_copy": "qequalchain(vector(qnorm(qnamedket('ψ')),qnorm(qadjacent('U',qnamedket('ψ'))),qnorm(qadjacent('λ',qnamedket('ψ'))),qadjacent(qbars('λ'),qnorm(qnamedket('ψ')))))",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M058",
+      "cell": 0,
+      "start": 6681,
+      "end": 6699,
+      "input": "$\\vert\\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M059",
+      "cell": 0,
+      "start": 6725,
+      "end": 6765,
+      "input": "$\\bigl\\| \\vert\\psi\\rangle \\bigr\\|\\neq 0$",
+      "expected": "Norm preservation, nonzero norm and unit modulus",
+      "mode": "Quantum notation",
+      "actual_display": "qnorm(qnamedket('ψ')) ≠ 0",
+      "actual_copy": "(qnorm(qnamedket('ψ')))!=(0)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M060",
+      "cell": 0,
+      "start": 6814,
+      "end": 6844,
+      "input": "$$\n\\vert \\lambda \\vert = 1.\n$$",
+      "expected": "Norm preservation, nonzero norm and unit modulus",
+      "mode": "Quantum notation",
+      "actual_display": "|'λ'| = 1",
+      "actual_copy": "(qbars('λ'))==(1)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M061",
+      "cell": 0,
+      "start": 6977,
+      "end": 7042,
+      "input": "$$\n\\mathbb{T} = \\{\\alpha\\in\\mathbb{C} : \\vert\\alpha\\vert = 1\\}\n$$",
+      "expected": "Complex unit circle defined by a membership predicate, and its two names",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-circle-mode.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M062",
+      "cell": 0,
+      "start": 7056,
+      "end": 7068,
+      "input": "$\\mathbb{T}$",
+      "expected": "Complex unit circle defined by a membership predicate, and its two names",
+      "mode": "Quantum notation",
+      "actual_display": "\\mathbb{T}",
+      "actual_copy": "qunitcircle()",
+      "evidence": [
+        "ibm027-circle-mode.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M063",
+      "cell": 0,
+      "start": 7124,
+      "end": 7129,
+      "input": "$S^1$",
+      "expected": "Complex unit circle defined by a membership predicate, and its two names",
+      "mode": "Set notation",
+      "actual_display": "\\mathbb{T}",
+      "actual_copy": "qunitcircle()",
+      "evidence": [
+        "ibm027-circle-mode.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M064",
+      "cell": 0,
+      "start": 7250,
+      "end": 7269,
+      "input": "$\\vert \\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M065",
+      "cell": 0,
+      "start": 7273,
+      "end": 7276,
+      "input": "$n$",
+      "expected": "Number of qubits n",
+      "mode": "Quantum notation",
+      "actual_display": "n",
+      "actual_copy": "n",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M066",
+      "cell": 0,
+      "start": 7335,
+      "end": 7338,
+      "input": "$n$",
+      "expected": "Number of qubits n",
+      "mode": "Quantum notation",
+      "actual_display": "n",
+      "actual_copy": "n",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M067",
+      "cell": 0,
+      "start": 7369,
+      "end": 7388,
+      "input": "$\\vert \\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M068",
+      "cell": 0,
+      "start": 7429,
+      "end": 7432,
+      "input": "$U$",
+      "expected": "Unitary operator U",
+      "mode": "Quantum notation",
+      "actual_display": "U",
+      "actual_copy": "'U'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M069",
+      "cell": 0,
+      "start": 7532,
+      "end": 7541,
+      "input": "$\\lambda$",
+      "expected": "Eigenvalue lambda",
+      "mode": "Quantum notation",
+      "actual_display": "'λ'",
+      "actual_copy": "'λ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M070",
+      "cell": 0,
+      "start": 7551,
+      "end": 7570,
+      "input": "$\\vert \\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M071",
+      "cell": 0,
+      "start": 7608,
+      "end": 7617,
+      "input": "$\\lambda$",
+      "expected": "Eigenvalue lambda",
+      "mode": "Quantum notation",
+      "actual_display": "'λ'",
+      "actual_copy": "'λ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M072",
+      "cell": 0,
+      "start": 7665,
+      "end": 7698,
+      "input": "$$\n\\lambda = e^{2\\pi i \\theta}\n$$",
+      "expected": "Eigenvalue in terms of a full turn scaled by theta",
+      "mode": "Quantum notation",
+      "actual_display": "'λ' = e^(2iπ'θ')",
+      "actual_copy": "qcompare('λ',e^(2iπ'θ'),4)",
+      "evidence": [
+        "ibm027-phase-relation.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M073",
+      "cell": 0,
+      "start": 7725,
+      "end": 7733,
+      "input": "$\\theta$",
+      "expected": "Phase parameter theta",
+      "mode": "Quantum notation",
+      "actual_display": "'θ'",
+      "actual_copy": "'θ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M074",
+      "cell": 0,
+      "start": 7745,
+      "end": 7760,
+      "input": "$0\\leq\\theta<1$",
+      "expected": "Theta lies in the half-open unit interval",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' ≥ 0 and 'θ' < 1",
+      "actual_copy": "(('θ')<(1) and ('θ')>=(0))",
+      "evidence": [
+        "ibm027-phase-domain.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M075",
+      "cell": 0,
+      "start": 7832,
+      "end": 7840,
+      "input": "$\\theta$",
+      "expected": "Phase parameter theta",
+      "mode": "Quantum notation",
+      "actual_display": "'θ'",
+      "actual_copy": "'θ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M076",
+      "cell": 0,
+      "start": 7925,
+      "end": 7928,
+      "input": "$n$",
+      "expected": "Number of qubits n",
+      "mode": "Quantum notation",
+      "actual_display": "n",
+      "actual_copy": "n",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M077",
+      "cell": 0,
+      "start": 7945,
+      "end": 7948,
+      "input": "$U$",
+      "expected": "Unitary operator U",
+      "mode": "Quantum notation",
+      "actual_display": "U",
+      "actual_copy": "'U'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M078",
+      "cell": 0,
+      "start": 7963,
+      "end": 7966,
+      "input": "$n$",
+      "expected": "Number of qubits n",
+      "mode": "Quantum notation",
+      "actual_display": "n",
+      "actual_copy": "n",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M079",
+      "cell": 0,
+      "start": 7987,
+      "end": 8005,
+      "input": "$\\vert\\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M080",
+      "cell": 0,
+      "start": 8017,
+      "end": 8035,
+      "input": "$\\vert\\psi\\rangle$",
+      "expected": "State or eigenvector psi",
+      "mode": "Quantum notation",
+      "actual_display": "|ψ⟩",
+      "actual_copy": "qketstate('ψ')",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M081",
+      "cell": 0,
+      "start": 8057,
+      "end": 8060,
+      "input": "$U$",
+      "expected": "Unitary operator U",
+      "mode": "Quantum notation",
+      "actual_display": "U",
+      "actual_copy": "'U'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M082",
+      "cell": 0,
+      "start": 8102,
+      "end": 8118,
+      "input": "$\\theta\\in[0,1)$",
+      "expected": "Theta lies in the half-open unit interval",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' ∈ [0, 1)",
+      "actual_copy": "qmember('θ',qhalfopen(0,1,1))",
+      "evidence": [
+        "ibm027-phase-domain.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M083",
+      "cell": 0,
+      "start": 8130,
+      "end": 8185,
+      "input": "$U\\vert\\psi\\rangle = e^{2\\pi i \\theta}\\vert\\psi\\rangle$",
+      "expected": "Eigenpair relation with an eigenvalue or its exponential phase",
+      "mode": "Quantum notation",
+      "actual_display": "U |ψ⟩ = e^(2 · π · i · 'θ') |ψ⟩",
+      "actual_copy": "(qadjacent('U',qnamedket('ψ')))==(qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),'θ')),qnamedket('ψ')))",
+      "evidence": [
+        "ibm027-phase-relation.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M084",
+      "cell": 0,
+      "start": 8864,
+      "end": 8872,
+      "input": "$\\theta$",
+      "expected": "Phase parameter theta",
+      "mode": "Quantum notation",
+      "actual_display": "'θ'",
+      "actual_copy": "'θ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M085",
+      "cell": 0,
+      "start": 9051,
+      "end": 9059,
+      "input": "$\\theta$",
+      "expected": "Phase parameter theta",
+      "mode": "Quantum notation",
+      "actual_display": "'θ'",
+      "actual_copy": "'θ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M086",
+      "cell": 0,
+      "start": 9262,
+      "end": 9274,
+      "input": "$\\theta = 0$",
+      "expected": "Specified phase values in the discussion of wraparound",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' = 0",
+      "actual_copy": "('θ')==(0)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M087",
+      "cell": 0,
+      "start": 9282,
+      "end": 9294,
+      "input": "$\\theta = 1$",
+      "expected": "Specified phase values in the discussion of wraparound",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' = 1",
+      "actual_copy": "('θ')==(1)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M088",
+      "cell": 0,
+      "start": 9390,
+      "end": 9414,
+      "input": "$e^{2\\pi i \\cdot 0} = 1$",
+      "expected": "The complex exponential is one at both ends of a full turn",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M089",
+      "cell": 0,
+      "start": 9451,
+      "end": 9475,
+      "input": "$e^{2\\pi i \\cdot 1} = 1$",
+      "expected": "The complex exponential is one at both ends of a full turn",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M090",
+      "cell": 0,
+      "start": 9500,
+      "end": 9512,
+      "input": "$\\theta = 1$",
+      "expected": "Specified phase values in the discussion of wraparound",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' = 1",
+      "actual_copy": "('θ')==(1)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M091",
+      "cell": 0,
+      "start": 9544,
+      "end": 9556,
+      "input": "$\\theta = 0$",
+      "expected": "Specified phase values in the discussion of wraparound",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' = 0",
+      "actual_copy": "('θ')==(0)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M092",
+      "cell": 0,
+      "start": 9620,
+      "end": 9628,
+      "input": "$\\theta$",
+      "expected": "Phase parameter theta",
+      "mode": "Quantum notation",
+      "actual_display": "'θ'",
+      "actual_copy": "'θ'",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M093",
+      "cell": 0,
+      "start": 9634,
+      "end": 9637,
+      "input": "$1$",
+      "expected": "Values near the cut and the example distance",
+      "mode": "Quantum notation",
+      "actual_display": "1",
+      "actual_copy": "1",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M094",
+      "cell": 0,
+      "start": 9673,
+      "end": 9676,
+      "input": "$0$",
+      "expected": "Values near the cut and the example distance",
+      "mode": "Quantum notation",
+      "actual_display": "0",
+      "actual_copy": "0",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M095",
+      "cell": 0,
+      "start": 9708,
+      "end": 9724,
+      "input": "$\\theta = 0.999$",
+      "expected": "Specified phase values in the discussion of wraparound",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' = 0.999",
+      "actual_copy": "('θ')==(999 ∕ 1000)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M096",
+      "cell": 0,
+      "start": 9762,
+      "end": 9770,
+      "input": "$1/1000$",
+      "expected": "Values near the cut and the example distance",
+      "mode": "Quantum notation",
+      "actual_display": "0.001",
+      "actual_copy": "1 ∕ 1000",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    },
+    {
+      "id": "IBM027-64df8610-M097",
+      "cell": 0,
+      "start": 9774,
+      "end": 9786,
+      "input": "$\\theta = 0$",
+      "expected": "Specified phase values in the discussion of wraparound",
+      "mode": "Quantum notation",
+      "actual_display": "'θ' = 0",
+      "actual_copy": "('θ')==(0)",
+      "evidence": [
+        "ibm027-hermitian.json"
+      ]
+    }
+  ]
+}

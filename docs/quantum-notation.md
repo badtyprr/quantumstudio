@@ -229,6 +229,16 @@ The explicit binary Cartesian domain `\{0,1\}^n` enumerates bit strings of width
 
 For a finite binary function graph, `f(x)` applies the function and `f^(-1)(x)` looks up the unique preimage. The inverse graph reverses every input-output pair and checks that the mapping is one-to-one, including bit-string widths. When `f` is assigned a scalar, the same notation supports multiplication and its reciprocal.
 
+Select **Matrix dimensions** to read `N × N` or `$N\times N$` as row and column counts. For example, `3 × 4` describes three rows and four columns. Counts can be positive integers or symbolic expressions. Copied dimensions retain their order and accept later substitutions. The worker accepts the same inputs with the `quantum:dimensions:` prefix.
+
+Use `\mathbb{T}` for the complex unit circle and `\mathbb{C}` for the complex plane. For example, `(3+4i)/5 ∈ \mathbb{T}` returns 1. Plain `T` denotes the quantum gate. For a lesson that calls the circle `S^1`, select **Set notation** before calculating. The worker accepts the same convention with `quantum:sets:` before the expression. Quantum notation reads `S^1` as the phase gate to the first power. Saved sessions and history keep the selected mode.
+
+An indexed list such as `λ_1, …, λ_N` expands to an ordered tuple when `N` is supplied. Repeated values keep their positions. For example, setting both `λ_1` and `λ_2` to 5 before setting `N` to 2 gives `(5, 5)`. The index declaration `j = 1, …, N` tests membership in that inclusive integer range.
+
+The expanded spectral decomposition `λ_1 |ψ_1⟩⟨ψ_1| + … + λ_N |ψ_N⟩⟨ψ_N|` and its TeX summation form both represent a weighted sum of projectors. Supplying the upper bound, weights and state columns evaluates the sum as a matrix. The bra uses the complex conjugate of the state column. A finite set of eigenstates such as `\{ |ψ_1⟩, \ldots, |ψ_N⟩ \}` accepts the same indexed state assignments. Set equality ignores order and repeated entries. State columns are compared by their amplitudes. Commas between complete equations express simultaneous conditions. For example, `λ_1 = 1, |ψ_1⟩ = |0⟩` holds when both the eigenvalue and the state match.
+
+A mixed pair of interval delimiters after membership expresses a half-open real interval. For example, `0 ∈ [0,1)` and `1 ∈ (0,1]` both return one. The endpoints can be expressions.
+
 In `y = 0^m`, binding `y` to a bit string compares it with the all-zero word of width `m`. The empty word matches at width zero. Binding `y` to a number uses ordinary exponentiation.
 
 Use `bitstring("011")` to enter the three-bit word printed in Simon's lesson. It copies as `qbitlabel(3,3)`. In a definition such as `s=011`, binding `s` to a bit string compares both value and width. Binding `s` to a number selects decimal comparison. Similarly, `z=f(x)` keeps the application through Copy so a later binding of `f` to a finite graph performs a lookup.
@@ -1190,7 +1200,7 @@ In quantum notation, `matrix(1,1,[5])` retains its 1×1 matrix shape, including 
 
 `matrixparam(A,rows,columns)` declares a single unknown symbol as a matrix with the stated dimensions. The declaration remains in canonical copy output until both the matrix and its dimensions are supplied. Dimensions must be positive integers; each known axis is validated even while the other remains symbolic. Substituting a scalar or a matrix with a different shape is rejected. For example, `replace(matrixparam(A,2,2),A,X)` evaluates to the Pauli-X matrix. Symbolic dimensions can be supplied before or after the matrix value.
 
-This expression-level domain is the foundation for dimension-aware symbolic identities. A GUI declaration editor remains unfinished; the supported trace rules are described below.
+In the Windows matrix declarations editor, give the matrix a name, row count, column count and property. For example, declare H with both dimensions N and property Hermitian before entering a formula about an arbitrary Hermitian H. The calculation history and saved session retain the declaration. Clear it when returning to formulas about the Hadamard gate.
 
 Declared dimensions also reject provably incompatible additions, subtractions, explicit `*` products, and traces before matrix values are supplied. Shapes propagate through compatible sums, products, scalar scaling, transpose, and adjoint. For example, `Tr(matrixparam(A,2,3))` rejects immediately; a `2×3` parameter multiplied by a `3×2` parameter remains symbolic. Different unknown dimensions are not presumed unequal, so unresolved shape constraints defer until more values are supplied. Trace rewriting additionally requires established matching square shapes, as described below.
 

@@ -107,6 +107,15 @@ class Printer {
   if(value.isSymbolic() && familyName(value.symbol())!=value.symbol())return Fragment(familyName(value.symbol()));
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
+  if(value.isLogicalAnd() || value.isLogicalOr()) {
+   const int level=value.isLogicalAnd() ? 3 : 2;
+   std::string text;
+   for(size_t k=0;k<value.size();++k) {
+    if(k)text+=value.isLogicalAnd() ? " and " : " or ";
+    text+=grouped(render(value[k],depth+1),level);
+   }
+   return Fragment(text,level);
+  }
   // Evaluation can turn scalar quantum operations into ordinary arithmetic.
   // Recurse through that arithmetic without changing its order or clipboard AST.
   if(value.isAddition() || value.isMultiplication() || value.isPower() || value.isComparison() || value.isNegate() || value.isInverse() || value.isDivision()) {
@@ -206,6 +215,16 @@ class Printer {
    text+=")";
    return Fragment(function=="size" || quantumSizeApplication(function,arguments) ? text : "cost("+text+")");
   }
+  if(name=="qindexedketset" && value.size()==4 && value[0].isSymbolic() && safeLabel(value[0].symbol()) &&
+     value[3].isVector() && value[3].size()%2==0) {
+   const std::string &prefix=value[0].symbol();
+   std::string text="\\{|"+prefix+render(value[1],depth+1).text+"⟩,\\ldots,|"+prefix+render(value[2],depth+1).text+"⟩\\}";
+   for(size_t k=0;k<value[3].size();k+=2)
+    text="replace("+text+","+prefix+render(value[3][k],depth+1).text+","+render(value[3][k+1],depth+1).text+")";
+   return Fragment(text);
+  }
+  if(name=="qunitcircle" && !value.size())return Fragment("\\mathbb{T}");
+  if(name=="qcomplexplane" && !value.size())return Fragment("\\mathbb{C}");
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.
@@ -306,8 +325,50 @@ class Printer {
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbits" && value.size()==2)
    return Fragment("bits("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if((name=="qspectralsum" && value.size()==2) || (name=="qspectralaction" && value.size()==3)) {
+   const auto &a=value[0],&b=value[1];
+   auto family=[](const MathStructure &v) {
+    return v.isFunction() && v.function()->referenceName()=="qindexedentries" && v.size()==4 &&
+     v[0].isSymbolic() && v[0].symbol().size()>1 && v[0].symbol().back()=='_' && v[3].size()==0;
+   };
+   if(family(a) && family(b) && a[1].equals(b[1]) && a[2].equals(b[2])) {
+    std::string index="k",probe;
+    if(value.size()==3) {
+     const auto &ket=value[2];
+     if(!ket.isFunction() || ket.size()!=1 || !ket[0].isSymbolic() || !safeLabel(ket[0].symbol()) ||
+        (ket.function()->referenceName()!="qnamedket" && ket.function()->referenceName()!="qketstate"))return fallback(value);
+     probe=ket[0].symbol();
+     if(probe.size()>=2 && probe.substr(probe.size()-2)=="_k")index="l";
+     probe+="\\rangle";
+    }
+    std::string state=b[0].symbol()+index;
+    return Fragment("\\sum_{"+index+"="+render(a[1],depth+1).text+"}^{"+render(a[2],depth+1).text+"} "+
+                    a[0].symbol()+index+" \\vert "+state+"\\rangle\\langle "+state+"\\vert"+(probe.empty() ? "" : " "+probe),20);
+   }
+  }
+  if(name=="qindexedlist" && value.size()==4 && value[0].isSymbolic() && value[1].isInteger() &&
+     safeLabel(value[0].symbol()) && value[3].size()%2==0 &&
+     (value[3].isVector() || (value[3].isFunction() && value[3].function()->referenceName()=="vector"))) {
+   std::string last=render(value[2],depth+1).text;
+   if(last.size()==1 && std::isalpha((unsigned char)last[0])) {
+    const std::string &prefix=value[0].symbol();
+    std::string text="("+prefix+render(value[1],depth+1).text+", …, "+prefix+last+")";
+    for(size_t k=0;k<value[3].size();k+=2)
+     text="replace("+text+","+prefix+render(value[3][k],depth+1).text+","+render(value[3][k+1],depth+1).text+")";
+    return Fragment(text);
+   }
+  }
+  if(name=="qhalfopen" && value.size()==3 && (value[2].isOne() || value[2].isZero())) {
+   bool left=value[2].isOne();
+   return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(left ? ")" : "]"));
+  }
+  if(name=="qmember" && value.size()==2 && value[1].isFunction() &&
+     value[1].function()->referenceName()=="qindexrange" && value[1].size()==2)
+   return Fragment(render(value[0],depth+1).text+" ∈ indexrange("+render(value[1][0],depth+1).text+", "+render(value[1][1],depth+1).text+")",10);
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
+  if(name=="qmatrixdimensions" && value.size()==2)
+   return Fragment(render(value[0],depth+1).text+" × "+render(value[1],depth+1).text);
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
    std::string text="(";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}

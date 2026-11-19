@@ -1,0 +1,75 @@
+{
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "gui_sha256": "83915634e46f831eb6dc3a2d60a8344f21f78e114558da8aa5371455e1dc4a46",
+  "worker_sha256": "09cbd10fcb21aeab2ca7b13529abf551f6bc82821c2e609ffbbe974fdb240cb8",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [],
+  "declaration": {
+    "rows": [
+      "M005",
+      "M006",
+      "M007"
+    ],
+    "name": "H",
+    "property": "Hermitian",
+    "size": "N × N"
+  },
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M005",
+      "label": "EXACT RESULT",
+      "display": "operatorparam('H', 'N', \"hermitian\")",
+      "copy": "operatorparam('H','N',\"hermitian\")",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "operatorparam('H','N',\"hermitian\")"
+    },
+    {
+      "id": "IBM027-64df8610-M006",
+      "label": "EXACT RESULT",
+      "display": "operatorparam('H', 'N', \"hermitian\") · operatorparam('H', 'N', \"hermitian\")† = operatorparam('H', 'N', \"hermitian\")² = operatorparam('H', 'N', \"hermitian\")† · operatorparam('H', 'N', \"hermitian\")",
+      "copy": "qequalchain(vector(qadjacent(operatorparam('H','N',\"hermitian\"),qdag(operatorparam('H','N',\"hermitian\"))),operatorparam('H', 'N', \"hermitian\")²,qadjacent(qdag(operatorparam('H','N',\"hermitian\")),operatorparam('H','N',\"hermitian\"))))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qequalchain(vector(qadjacent(operatorparam('H','N',\"hermitian\"),qdag(operatorparam('H','N',\"hermitian\"))),operatorparam('H', 'N', \"hermitian\")²,qadjacent(qdag(operatorparam('H','N',\"hermitian\")),operatorparam('H','N',\"hermitian\"))))"
+    },
+    {
+      "id": "IBM027-64df8610-M007",
+      "label": "EXACT RESULT",
+      "display": "operatorparam('H', 'N', \"hermitian\")",
+      "copy": "operatorparam('H','N',\"hermitian\")",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "operatorparam('H','N',\"hermitian\")"
+    }
+  ],
+  "controls": [
+    {
+      "id": "complex-three",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "nonunitary-two",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1089,
+    "calls": 99,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "replay": "replay-ibm027-hermitian.py"
+}

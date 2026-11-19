@@ -78,12 +78,15 @@ std::string binaryNumeral(const std::string &text) {
 std::string unicodeArithmetic(const std::string &input) {
  static const std::map<std::string,char> symbols={{"×",'*'},{"⋅",'*'},{"·",'*'},{"∙",'*'},{"∗",'*'},{"÷",'/'},{"∕",'/'},{"⁄",'/'}};
  std::string out;char quoted=0;
+ const size_t start=input.find_first_not_of(" \t\r\n");
+ const bool dimensions=start!=std::string::npos && input.compare(start,11,"dimensions:")==0;
  for(size_t p=0;p<input.size();) {
   if(input[p]=='"' || input[p]=='\'') {if(quoted==input[p])quoted=0;else if(!quoted)quoted=input[p];out+=input[p++];continue;}
   if(!quoted && input.compare(p,3,"∑")==0) {out+="\\sum";p+=3;continue;}
   bool matched=false;
   if(!quoted)for(const auto &symbol:symbols)if(input.compare(p,symbol.first.size(),symbol.first)==0) {
-   out+=symbol.second;p+=symbol.first.size();matched=true;break;
+   if(dimensions && symbol.first=="×")out+="\\times ";else out+=symbol.second;
+   p+=symbol.first.size();matched=true;break;
   }
   if(!matched)out+=input[p++];
  }
@@ -332,13 +335,13 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -417,6 +420,8 @@ class Parser {
   if(value.size()>131072)throw std::runtime_error("Expanded quantum expression exceeds 131072 bytes.");
  }
  bool spinContext=false;
+ bool setNotation=false;
+ std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
@@ -938,9 +943,60 @@ class Parser {
   for(size_t j=0;j<bits.size();++j) {if(j)value+=',';value+=bits[j];}
   return value+")";
  }
+ // Recognize a weighted rank-one projector series only when every
+ // indexed ket matches its bra and both families share the summation index.
+ std::string spectralSeries() {
+  size_t at=p;
+  auto space=[&]() {while(at<s.size() && std::isspace((unsigned char)s[at]))++at;};
+  auto token=[&](const std::string &text) {space();if(s.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
+  auto name=[&]() {
+   space();size_t start=at;
+   while(at<s.size() && (std::isalpha((unsigned char)s[at]) || (unsigned char)s[at]>=128))++at;
+   return s.substr(start,at-start);
+  };
+  auto index=[&]() {
+   space();size_t start=at;
+   while(at<s.size() && std::isdigit((unsigned char)s[at]))++at;
+   return at==start ? name() : s.substr(start,at-start);
+  };
+  auto projector=[&](std::string &weight,std::string &state,std::string &slot) {
+   weight=name();if(weight.empty() || !token("_"))return false;
+   slot=index();if(slot.empty() || !token("|"))return false;
+   state=name();return !state.empty() && token("_") && index()==slot && token(">") &&
+    token("<") && name()==state && token("_") && index()==slot && token("|");
+  };
+  std::string start,end,weight,state,slot,probe;
+  if(token("qtexsum(")) {
+   start=index();if(!token(","))return "";end=index();if(!token(","))return "";
+   std::string binder=name();
+   if(binder.empty() || !token(")") || !projector(weight,state,slot) || slot!=binder)return "";
+   // The final bar may also start the fixed ket in an inner product.
+   std::string probeFamily=name();
+   if(!probeFamily.empty()) {
+    if(!token("_"))return "";
+    std::string probeIndex=index();
+    if(probeIndex.empty() || probeIndex==binder || !token(">"))return "";
+    probe="qnamedket("+indexableLabel(probeFamily+"_"+probeIndex)+")";
+   }
+  } else {
+   at=p;size_t before=s.find_last_not_of(" \t\r\n",p ? p-1 : 0);
+   if(p && before!=std::string::npos && s[before]!='=' && s[before]!='(' && s[before]!=',')return "";
+   if(!projector(weight,state,start) || !token("+") || !(token("...") || token("…")) || !token("+"))return "";
+   std::string finalWeight,finalState;
+   if(!projector(finalWeight,finalState,end) || weight!=finalWeight || state!=finalState)return "";
+  }
+  if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || end.empty() ||
+     (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return "";
+  space();if(at<s.size() && s[at]!=')' && s[at]!=',' && s[at]!='=' && s[at]!=']')return "";
+  p=at;
+  auto family=[&](const std::string &prefix){return "qindexedentries("+indexableLabel(prefix+"_")+","+start+","+end+",vector())";};
+  if(!probe.empty())return "qspectralaction("+family(weight)+","+family(state)+","+probe+")";
+  return "qspectralsum("+family(weight)+","+family(state)+")";
+ }
  std::string atom() {
   if(++depth > 256 || ++nodes > nodeLimit) throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
-  ws(); std::string a;int kind=0;
+  ws(); std::string a=spectralSeries();int kind=0;
+  if(!a.empty()) {--depth;diracKind=0;return a;}
   if(p<s.size() && (s[p]=='"' || s[p]=='\'')) {
    size_t start=p;char quote=s[p++];
    while(p<s.size() && s[p]!=quote)++p;
@@ -1237,7 +1293,9 @@ class Parser {
     if(dimension.empty() || dimension.find_first_not_of("0123456789")!=std::string::npos) throw std::runtime_error("SUM subscripts require an integer dimension; use SUM(d) for an expression.");
     a="qsumgate("+dimension+","+dimension+")";
    }
-   else if(gates.find(a)!=gates.end()) { a=gates.at(a); }
+   else if(gates.find(a)!=gates.end()) {
+    a=std::find(declaredGates.begin(),declaredGates.end(),a)!=declaredGates.end() ? "'"+a+"'" : gates.at(a);
+   }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.
    else if(!numericToken && !indexedScalar && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
@@ -1423,6 +1481,20 @@ class Parser {
      if(p==s.size()) throw std::runtime_error("Unclosed Pauli label.");
      std::string label=labelText(s.substr(begin,p-begin)); if(quote) ++p; need(')');
      a=pauliLabelExpression(label,name=="compact_pauli");
+    } else if(name=="matrixcontext") {
+     std::string label=expression();need(',');
+     if(label.size()<3 || label.front()!='"' || label.back()!='"')throw std::runtime_error("Expected a quoted matrix name.");
+     const std::string symbol=label.substr(1,label.size()-2);
+     std::string rows=expression();need(',');std::string columns=expression();need(',');
+     std::string property=expression();need(',');
+     bool general=property=="\"general\"",gate=gates.count(symbol)!=0;
+     if(!general && rows!=columns)throw std::runtime_error("An operator property requires a square matrix.");
+     if(gate)declaredGates.push_back(symbol);
+     std::string body=expression();need(')');
+     if(gate)declaredGates.pop_back();
+     std::string function=general ? "matrixassume" : "operatorassume";
+     if(gate)function="qgate"+function;
+     a=function+"("+body+","+label+","+rows+","+(general ? columns : property)+")";
     } else if(name=="qsubsystems") {
      std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
      std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
@@ -1766,8 +1838,21 @@ class Parser {
   }
   --depth;diracKind=kind;checkSize(a);return a;
  }
+ // Inspect the original base so a matrix equal to S keeps its matrix meaning.
+ static bool groupedToken(const std::string &text,size_t start,size_t end,char token) {
+  while(start<end) {
+   while(start<end && std::isspace((unsigned char)text[start]))++start;
+   while(start<end && std::isspace((unsigned char)text[end-1]))--end;
+   if(end-start==1)return text[start]==token;
+   if(end-start<3 || text[start]!='(' || text[end-1]!=')')break;
+   ++start;--end;
+  }
+  return false;
+ }
  std::string power() {
+  ws();size_t baseStart=p;
   auto a=atom();int kind=diracKind;
+  bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
   if(take('^')) {
    kind=0;
    if(a=="C") {
@@ -1808,7 +1893,11 @@ class Parser {
       std::string argument=expression();need(')');
       a="qnamedapplication("+a+","+argument+")";
      }
-    } else {p=start;a="qpower("+a+","+exponent+")";}
+    } else {
+     p=start;
+     if(sphere && groupedToken(exponent,0,exponent.size(),'1'))a="qunitcircle()";
+     else a="qpower("+a+","+exponent+")";
+    }
    }
   }
   diracKind=kind;checkSize(a);return a;
@@ -2016,6 +2105,24 @@ class Parser {
            word("and") || word("or") || word("xor") || word("iff");
   p=start;return end;
  }
+ // A finite list of indexed labels has a common prefix and an integer
+ // starting subscript. Bare labels have already been protected from units.
+ static bool indexedList(const std::string &first,const std::string &last,std::string &list) {
+  std::string a=withoutLabelMarkers(first),b=withoutLabelMarkers(last);
+  if(a.size()<4 || b.size()<4 || a.front()!='"' || b.front()!='"' || a.back()!='"' || b.back()!='"')return false;
+  size_t split=a.rfind('_');
+  if(split==std::string::npos || split<=1 || b.compare(0,split+1,a,0,split+1)!=0)return false;
+  std::string start=a.substr(split+1,a.size()-split-2),end=b.substr(split+1,b.size()-split-2);
+  if(start.empty() || end.empty() || (start.size()>1 && start[0]=='0') || (end.size()>1 && end[0]=='0') ||
+     start.find_first_not_of("0123456789")!=std::string::npos ||
+     (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
+  list="qindexedlist("+indexableLabel(a.substr(1,split))+","+start+","+end+",vector())";return true;
+ }
+ void prepareEquality(std::string &left,std::string &right) {
+  preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
+  preserveNamedApplication(left,right);preserveNamedApplication(right,left);
+  preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
+ }
  std::string comparison(bool allowSharedOperands) {
   if(!costContext && costWitnessAhead()) {
    costContext=true;std::string witness=comparison(allowSharedOperands);costContext=false;
@@ -2033,7 +2140,7 @@ class Parser {
      if(takeSetOperator("∈") || takeSetOperator("∉"))
       throw std::runtime_error("Group the integer range before testing it as one set member.");
      left="qindexrange("+left+",floor("+last+"))";
-    } else {
+    } else if(!indexedList(left,last,left)) {
      // Only a named, one-based list in a membership statement assigns
      // superscripts to samples. Ordinary powers keep their usual meaning.
      if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
@@ -2070,6 +2177,15 @@ class Parser {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
    } else right=comparisonOperand();
+   // In a quantified index declaration, j = 1,...,N lists the allowed
+   // integers. Commas separating ordinary function arguments stay local.
+   if(allowSharedOperands && relation=="=" && left.size()==1 && std::isalpha((unsigned char)left[0]) &&
+      !right.empty() && right.find_first_not_of("0123456789")==std::string::npos) {
+    size_t end=p;
+    if(take(',') && (takeSetOperator("...") || takeSetOperator("…"))) {
+     need(',');right="qindexrange("+right+","+setUnion()+")";relation="∈";equalities=false;
+    } else p=end;
+   }
    // A sign condition on the free coefficient must survive substitution.
    if(kind<4) {
     if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";
@@ -2081,9 +2197,7 @@ class Parser {
    }
    if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {
-    preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
-    preserveNamedApplication(left,right);preserveNamedApplication(right,left);
-    preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
+    prepareEquality(left,right);
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
@@ -2091,6 +2205,19 @@ class Parser {
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
+  }
+  // A comma between complete equations joins simultaneous conditions.
+  // Function argument lists use comparison(false) and keep their commas.
+  if(allowSharedOperands && equalities && operands.size()==2 && take(',')) {
+   do {
+    std::string lhs=comparisonOperand(),relation=takeComparisonRelation();
+    if(relation!="=" && relation!="==")throw std::runtime_error("Expected an equation after the comma.");
+    std::string rhs=comparisonOperand();
+    preserveZeroWord(lhs,rhs);preserveZeroWord(rhs,lhs);
+    prepareEquality(lhs,rhs);
+    result="("+result+"&&qcompare("+lhs+","+rhs+",4))";checkSize(result);
+   } while(take(','));
+   return result;
   }
   if(equalities && operands.size()>2) {
    result="qequalchain(vector(";
@@ -2164,7 +2291,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false):spinContext(spin),setNotation(sets),s(text) {}
  std::string run() { auto out=expression(true); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
 };
 
@@ -2214,9 +2341,10 @@ std::string translateQuantum(const std::string &expression) {
  std::string s=unicodeArithmetic(quantumWhitespace(expression));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
- s=quantumTeX(s);
+ bool sets=false;
+ s=quantumTeX(s,nullptr,&sets);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin).run();
+ return Parser(s,spin,sets).run();
 }

@@ -23,7 +23,13 @@ class SessionStoreTests {
    expected=Valid();expected.History=new SessionEntry[51];Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Expression=new string('x',32001);Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Expression=new string('界',10667);Reject(delegate {SessionStore.Validate(expected);});
-   expected=Valid();expected.Mode=2;Reject(delegate {SessionStore.Validate(expected);});
+   expected=Valid();expected.Mode=2;expected.Expression="$S^1$";expected.History[0].Mode=2;
+   SessionStore.Save(path,expected);var sets=SessionStore.Load(path);
+   Require(sets.Mode==2 && sets.Expression=="$S^1$" && sets.History[0].Mode==2,"Set notation mode was lost");
+   expected=Valid();expected.Mode=3;expected.Expression="N × N";expected.History[0].Mode=3;
+   SessionStore.Save(path,expected);var shape=SessionStore.Load(path);
+   Require(shape.Mode==3 && shape.Expression=="N × N" && shape.History[0].Mode==3,"Matrix dimensions mode was lost");
+   expected.Mode=4;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Evaluation=-1;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Expression=" ";Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Result=new string('x',32769);Reject(delegate {SessionStore.Validate(expected);});

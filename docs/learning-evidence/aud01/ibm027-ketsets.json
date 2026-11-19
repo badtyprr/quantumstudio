@@ -1,0 +1,96 @@
+{
+  "worker_sha256": "a9ae0fe5769f3357577d6e75215a6bffedd078fc6e62afa5c71c57fc73100637",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [
+    "IBM027-64df8610-M002",
+    "IBM027-64df8610-M023",
+    "IBM027-64df8610-M042",
+    "IBM027-64df8610-M044",
+    "IBM027-64df8610-M061"
+  ],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M014",
+      "label": "EXACT RESULT",
+      "display": "\\{|ψ_1⟩,\\ldots,|ψ_N⟩\\}",
+      "copy": "qindexedketset(\"ψ_\",1,'N',vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedketset(\"ψ_\",1,'N',vector())"
+    },
+    {
+      "id": "IBM027-64df8610-M022",
+      "label": "EXACT RESULT",
+      "display": "\\{|ψ_1⟩,\\ldots,|ψ_N⟩\\}",
+      "copy": "qindexedketset(\"ψ_\",1,'N',vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedketset(\"ψ_\",1,'N',vector())"
+    },
+    {
+      "id": "IBM027-64df8610-M037",
+      "label": "EXACT RESULT",
+      "display": "\\{|ψ_1⟩, |ψ_2⟩\\}",
+      "copy": "qset(vector(qketstate(\"ψ_1\"),qketstate(\"ψ_2\")))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qset(vector(qketstate(\"ψ_1\"),qketstate(\"ψ_2\")))"
+    }
+  ],
+  "controls": [
+    {
+      "id": "duplicate-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "empty-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "dimensions-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "amplitudes-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "phase-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1122,
+    "calls": 102,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

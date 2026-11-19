@@ -1,0 +1,107 @@
+{
+  "worker_sha256": "bfce0918ae451ab82b10932addbd3c435f99abec574c4dd81cf1b6836075759f",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 92,
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M015",
+      "label": "EXACT RESULT",
+      "display": "(λ_1, …, λ_N)",
+      "copy": "qindexedlist(\"λ_\",1,'N',vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedlist(\"λ_\",1,'N',vector())"
+    },
+    {
+      "id": "IBM027-64df8610-M021",
+      "label": "EXACT RESULT",
+      "display": "j ∈ indexrange(1, N)",
+      "copy": "qmember('j',qindexrange(1,'N'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember('j',qindexrange(1,'N'))"
+    },
+    {
+      "id": "IBM027-64df8610-M035",
+      "label": "EXACT RESULT",
+      "display": "(λ_1, …, λ_N)",
+      "copy": "qindexedlist(\"λ_\",1,'N',vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedlist(\"λ_\",1,'N',vector())"
+    },
+    {
+      "id": "IBM027-64df8610-M047",
+      "label": "EXACT RESULT",
+      "display": "(λ_1, …, λ_N)",
+      "copy": "qindexedlist(\"λ_\",1,'N',vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedlist(\"λ_\",1,'N',vector())"
+    }
+  ],
+  "controls": [
+    {
+      "id": "slice",
+      "label": "EXACT RESULT",
+      "display": "(\"a_2\", \"a_3\", \"a_4\")",
+      "copy": "qtuple(vector(\"a_2\",\"a_3\",\"a_4\"))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtuple(vector(\"a_2\",\"a_3\",\"a_4\"))"
+    },
+    {
+      "id": "duplicates",
+      "label": "EXACT RESULT",
+      "display": "(7, 7)",
+      "copy": "qtuple(vector(7,7))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtuple(vector(7,7))"
+    },
+    {
+      "id": "empty",
+      "label": "EXACT RESULT",
+      "display": "()",
+      "copy": "qtuple(vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qtuple(vector())"
+    },
+    {
+      "id": "inside",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "outside",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "fractional-index",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "windows_gui": {
+    "passed": true,
+    "checks": 1088,
+    "calls": 103,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

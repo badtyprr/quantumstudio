@@ -523,6 +523,23 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  }
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
+// A finite family of kets uses the same prefix at both endpoints.
+std::string indexedKetSet(const std::vector<std::string> &entries) {
+ if(entries.size()!=3 || entries[1]!="...")return "";
+ auto label=[](const std::string &entry) {
+  return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
+ };
+ std::string first=label(entries.front()),last=label(entries.back());
+ size_t split=first.rfind('_');
+ if(split==std::string::npos || split==0)return "";
+ std::string prefix=first.substr(0,split+1);
+ if(last.compare(0,prefix.size(),prefix)!=0)return "";
+ for(size_t k=0;k<split;++k)if((unsigned char)prefix[k]<128 && !asciiLetter(prefix[k]))return "";
+ std::string from=first.substr(split+1),to=last.substr(split+1);
+ auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
+ if(!integer(from) || !(integer(to) || (to.size()==1 && asciiLetter(to[0]))))return "";
+ return "qindexedketset(\""+prefix+"\","+from+","+to+",vector())";
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -654,6 +671,7 @@ class TeXReader {
      std::string alphabet="vector("+contents+")";
      if(ellipsis) {
       alphabet=openIndexedFamily(entries);
+      if(alphabet.empty())alphabet=indexedKetSet(entries);
       if(alphabet.empty()) {
        if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
        alphabet="qindexrange("+entries[0]+","+entries[2]+")";
@@ -761,6 +779,15 @@ class TeXReader {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2);
    size_t after=input.find_first_not_of(" \t\r\n",pos);
    if(before!=std::string::npos && after!=std::string::npos && input[before]==',' && input[after]==',')return "...";
+  }
+  if(name=="cdots") {
+   size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2),after=input.find_first_not_of(" \t\r\n",pos);
+   if(before!=std::string::npos && before>0 && after!=std::string::npos && input[before]=='+' && input[after]=='+') {
+    size_t end=input.find_last_not_of(" \t\r\n",before-1);
+    if(end!=std::string::npos && (input[end]=='|' ||
+       (end>=4 && input.compare(end-4,5,"\\vert")==0) ||
+       (end>=5 && input.compare(end-5,6,"\\rvert")==0)))return "...";
+   }
   }
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
@@ -882,6 +909,9 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
+   if(name=="mathbb" && a=="T")return " qunitcircle() ";
+   if(name=="mathbb" && a=="C")return " qcomplexplane() ";
    if(name=="operatorname" && a=="lg")a="qbitlength";
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
@@ -948,7 +978,7 @@ class TeXReader {
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
- std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="") {
+ std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="", bool membershipGroup=false) {
   struct MatrixScope {
    unsigned &depth;bool active;
    MatrixScope(unsigned &depth_,bool active_):depth(depth_),active(active_) {if(active)++depth;}
@@ -997,7 +1027,7 @@ class TeXReader {
     pos+=roundClose.size()+1;closed=true;break;
    }
    if(setClose && input.compare(pos,2,"\\}")==0) {pos+=2;closed=true;break;}
-   if(close && input[pos]==close) { ++pos; closed=true; break; }
+   if(close && (input[pos]==close || (membershipGroup && (input[pos]==')' || input[pos]==']')))) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
    }
@@ -1077,7 +1107,15 @@ class TeXReader {
      if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
      result=trim(result)+" pmod ("+modulus+")";continue;
     }
-    size_t bodyStart=pos;auto body=read(end);
+    // Mixed delimiters denote a half-open interval only after membership.
+    // The recursive reader still checks grouping inside either endpoint.
+    size_t tail=result.find_last_not_of(" \t\r\n");
+    bool membership=tail!=std::string::npos && tail>=2 &&
+     (result.compare(tail-2,3,"∈")==0 || result.compare(tail-2,3,"∉")==0);
+    size_t bodyStart=pos;auto body=read(end,false,"",false,"",membership);
+    if(membership && input[pos-1]!=end) {
+     result+="qhalfopen("+body+","+(open=='[' ? "1)" : "0)");continue;
+    }
     std::string raw=input.substr(bodyStart,pos-bodyStart-1);
     std::string column=open=='[' ? indexedMatrix(raw,false) : "";
     if(column.empty() && open=='[')column=indexedColumn(raw,false);
@@ -1227,11 +1265,35 @@ std::string quantumTeX(const std::string &input) {
  return quantumTeX(input,nullptr);
 }
 std::string quantumTeX(const std::string &input, std::vector<std::string> *lines) {
+ return quantumTeX(input,lines,nullptr);
+}
+std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation) {
  if(lines)lines->clear();
+ if(setNotation)*setNotation=false;
  // Strip only a complete paired math wrapper. A dollar inside an expression
  // remains an error in the quantum grammar.
  size_t first=input.find_first_not_of(" \t\r\n"), last=input.find_last_not_of(" \t\r\n");
  if(first==std::string::npos) return "";
+ // The mode precedes the pasted formula, including any TeX delimiters.
+ const bool dimensions=input.compare(first,11,"dimensions:")==0;
+ if(dimensions) {
+  first=input.find_first_not_of(" \t\r\n",first+11);
+  if(first==std::string::npos)return "";
+ } else if(input.compare(first,5,"sets:")==0) {
+  if(setNotation)*setNotation=true;
+  first=input.find_first_not_of(" \t\r\n",first+5);
+  if(first==std::string::npos)return "";
+ }
+ // Session declarations surround the translated expression. Keep the lesson's
+ // math delimiters and punctuation available to the ordinary TeX reader.
+ std::vector<std::string> contexts;
+ while(input.compare(first,14,"matrixcontext(")==0) {
+  size_t end=input.find("):",first+14);
+  if(end==std::string::npos || contexts.size()>=32)throw std::runtime_error("Invalid matrix declaration context.");
+  contexts.push_back(input.substr(first,end-first));
+  first=input.find_first_not_of(" \t\r\n",end+2);
+  if(first==std::string::npos)throw std::runtime_error("Expected an expression after the matrix declaration.");
+ }
  std::string s=input.substr(first,last-first+1);
  bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
@@ -1244,8 +1306,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
   {"∪","\\cup "},{"∩","\\cap "},{"∖","\\setminus "},{"∅","\\emptyset "},{"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
+ int depth=0;bool splitDimensions=false;
  for(size_t k=0;k<s.size();) {
   if(s[k]=='"' || s[k]=='\'') {if(quote==s[k])quote=0;else if(!quote)quote=s[k];normalized+=s[k++];continue;}
+  if(dimensions && !quote) {
+   if(s[k]=='(' || s[k]=='[' || s[k]=='{')++depth;
+   else if(s[k]==')' || s[k]==']' || s[k]=='}')--depth;
+   size_t cross=s.compare(k,2,"×")==0 ? 2 : 0;
+   if(s.compare(k,6,"\\times")==0 && (k+6==s.size() || !std::isalpha((unsigned char)s[k+6])))cross=6;
+   if(depth==0 && cross) {
+    if(splitDimensions)throw std::runtime_error("Matrix dimensions require one row count and one column count.");
+    normalized="qmatrixdimensions(("+normalized+"),(";splitDimensions=true;k+=cross;continue;
+   }
+  }
   if(!quote && s.compare(k,3,"QFT")==0 &&
      (k==0 || (!std::isalnum((unsigned char)s[k-1]) && s[k-1]!='_' && (unsigned char)s[k-1]<128))) {
    size_t end=k+3;std::string digits;
@@ -1259,11 +1332,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    }
    if(!digits.empty()) {normalized+="QFT_{"+digits+"}";k=end;continue;}
   }
+  if(!quote && (s.compare(k,3,"∈")==0 || s.compare(k,3,"∉")==0)) {
+   size_t next=s.find_first_not_of(" \t\r\n",k+3);
+   if(next!=std::string::npos && (s[next]=='[' || s[next]=='(')) {
+    normalized+=s.compare(k,3,"∈")==0 ? "\\in " : "\\notin ";k+=3;continue;
+   }
+  }
   bool matched=false;
   if(!quote)for(const auto &alias:unicodeOperators) {
    if(s.compare(k,alias.first.size(),alias.first)==0) {normalized+=alias.second;k+=alias.first.size();matched=true;break;}
   }
   if(!matched)normalized+=s[k++];
  }
- return TeXReader(normalized).run(lines);
+ if(splitDimensions)normalized+="))";
+ std::string result=TeXReader(normalized).run(lines);
+ for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
+ return result;
 }

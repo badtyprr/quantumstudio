@@ -1,0 +1,96 @@
+{
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "gui_sha256": "83915634e46f831eb6dc3a2d60a8344f21f78e114558da8aa5371455e1dc4a46",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [],
+  "declaration": {
+    "rows": [
+      "M005",
+      "M006",
+      "M007"
+    ],
+    "name": "H",
+    "property": "Hermitian",
+    "size": "N × N"
+  },
+  "revision": "6b635226d97d9ae616913002f3d8ad036ea43329",
+  "worker_sha256": "78676467c3100afb391e91237fb721ba51ecdbfba96bd5c096519d5c8be33970",
+  "controls": [
+    {
+      "id": "grouped-unitary-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "grouped-shear-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "standalone-eigenpair-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "standalone-eigenpair-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "standalone-weight",
+      "label": "EXACT RESULT",
+      "display": "\"λ_2\"",
+      "copy": "\"λ_2\"",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "\"λ_2\""
+    },
+    {
+      "id": "standalone-ket",
+      "label": "EXACT RESULT",
+      "display": "|ψ_2⟩",
+      "copy": "qketstate(\"ψ_2\")",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qketstate(\"ψ_2\")"
+    },
+    {
+      "id": "saved-angle",
+      "label": "EXACT RESULT",
+      "display": "qstatecall('ψ', 0.125π) = [(0.5 ⋅ √(2 + √(2))); (0.5 ⋅ √(2 − √(2)))]",
+      "copy": "qcompare(qstatecall('ψ',π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,√(2 − √(2)) ∕ 2]),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(qstatecall('ψ',π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,√(2 − √(2)) ∕ 2]),4)"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1166,
+    "calls": 106,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "replays": [
+    "replay-ibm027-unitarity.py",
+    "replay-ibm027-spectral-index.py",
+    "replay-ibm027-hadamard.py"
+  ]
+}
