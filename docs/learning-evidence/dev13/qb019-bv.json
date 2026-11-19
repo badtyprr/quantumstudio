@@ -1,0 +1,109 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "source_sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+  "original_cells": [
+    0,
+    3,
+    6,
+    7,
+    8,
+    11,
+    18,
+    19
+  ],
+  "local_aer": {
+    "secret": "110000",
+    "mapping": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        6,
+        6
+      ]
+    ],
+    "expected": "1000011",
+    "probability": 0.9999999999999978,
+    "counts": {
+      "1000011": 100
+    }
+  },
+  "native": {
+    "results": {
+      "exact": {
+        "qubits": 7,
+        "classical_bits": 7,
+        "bits": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0
+        ],
+        "probabilities": {
+          "1000011": "1"
+        }
+      },
+      "sampled": {
+        "qubits": 7,
+        "shots": 10000,
+        "seed": "731",
+        "wires": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0
+        ],
+        "classical_bits": 7,
+        "counts": {
+          "1000011": 10000
+        }
+      }
+    },
+    "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+    "qasm_sha256": "2685c02eac9c26a4e037e32093479f94eb925a66cf38acd06d0451d539e34507",
+    "scope": "Qiskit OpenQASM 3 export of original cell 7 construction, exercised on native worker"
+  },
+  "provider_discovery_error": "Failed to authenticate with the Quantum Runtime service.",
+  "scope": "Preinstalled dependencies. Added Aer verification and supplied local counts to the original histogram. A separate Qiskit QASM3 export of the original construction was executed by the native worker. Notebook setup, AWS job, provider results and delivery remain open.",
+  "artifacts": {
+    "cleanup-audit/learning-coverage-20261117/qb019-local/run01/executed.ipynb": "1c10b8f5c97ac34a073edde0f23664a5ad1e4cdbae8816c87e300c0ae99f77ff",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/run01/verification.json": "5e86f9d92cdaa23d8d9f8e97f0e83fca6a393dca8de38c5940972f3307cf4c6b",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/run01/cell19.png": "01d82d379528d30704692aeb24b0ceede9f90d6808450746a0f711156cea346a",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/run02-discovery/executed.ipynb": "c692d474d10049ee1b24a1e9dd14641fd24226441d0173a3fc575da3d9ab2974",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/authored-export.qasm": "2685c02eac9c26a4e037e32093479f94eb925a66cf38acd06d0451d539e34507",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/circuit7.json": "cacda9a22f6984fedcf5be4ddd555387212ecdd54760a6ec5e896d3ced221b95",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/native-results.json": "d075bebced8260ca404614cc91b3b828e1c703fa7de87dc6a93470123660ce28",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/native.py": "2e2e905f575fd82fb5b76e7d40943a1dcebc8bf73fae3994ac0e87ddad0067f8",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/notebook_probe.py": "649993740a57ee0ad8e3912bee341f2193229de3cf267e779b76ed841b1256cc",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/provider_probe.py": "856e14a38bc1d4fc1b8525d669d097f765a82a50ac8adabe949a85f27598a5a6",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/run01/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "cleanup-audit/learning-coverage-20261117/qb019-local/run02-discovery/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8"
+  }
+}
