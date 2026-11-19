@@ -1,0 +1,75 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "source_sha256": "66ef0b3adbe9d59d22306dc0b73e4ddbb67ab66cfdb0d6a4f35cd3e66a396613",
+  "runtime": "0.50.0",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "method": "Used ideal local Aer stabilizer for the IBM backend, with no remote calls. Seeded the notebook's NumPy generator at 1909. Measurement sampling uses the samplers' own randomness.",
+  "executed": [
+    2,
+    14,
+    16,
+    20,
+    21,
+    23,
+    26,
+    28,
+    31,
+    32,
+    33,
+    35,
+    37,
+    39,
+    41,
+    43
+  ],
+  "cases": [
+    {
+      "cell": 28,
+      "qubits": 20,
+      "sifted": 14,
+      "errors": 0,
+      "observed_error_rate": 0.0
+    },
+    {
+      "cell": 39,
+      "qubits": 20,
+      "sifted": 12,
+      "errors": 6,
+      "observed_error_rate": 0.5,
+      "sifted_with_different_intermediate_basis": 9
+    },
+    {
+      "cell": 41,
+      "qubits": 127,
+      "sifted": 62,
+      "errors": 0,
+      "observed_error_rate": 0.0
+    },
+    {
+      "cell": 43,
+      "qubits": 127,
+      "sifted": 63,
+      "errors": 22,
+      "observed_error_rate": 0.3492063492063492,
+      "sifted_with_different_intermediate_basis": 33
+    }
+  ],
+  "remote_jobs": 0,
+  "analytic_sifted_error_rate": 0.2499999999999999,
+  "native_control": {
+    "method": "Ran cell 31 with width one and deterministic input arrays for every bit, preparation basis and measurement basis; composed the resulting native transition probabilities for the two-stage process.",
+    "cases": 8,
+    "exact_sifted_error_rate": "1/4",
+    "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed"
+  },
+  "empty_sift_control": {
+    "cells": [
+      28,
+      39
+    ],
+    "bits": 20,
+    "matching_bases": 0,
+    "observed": "ZeroDivisionError in the reported fidelity; no rate is defined for an empty sifted sample."
+  }
+}
