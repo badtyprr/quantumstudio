@@ -114,6 +114,31 @@ AC_CHECK_LIB(mpfr, mpfr_get_version, [LIBS="-lmpfr $LIBS"], [AC_MSG_ERROR([libmp
 
 AC_LANG([C++])
 
+AC_ARG_WITH([flint], AS_HELP_STRING([--without-flint], [disable accelerated integer factorization]), [], [with_flint=auto])
+AS_IF([test "x$with_flint" != xno], [
+  saved_LIBS="$LIBS"
+  LIBS="-lflint $LIBS"
+  AC_MSG_CHECKING([for FLINT integer factorization])
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <flint/fmpz.h>
+#include <flint/fmpz_factor.h>]], [[
+    fmpz_t n; fmpz_init(n);
+    flint_rand_t state = {};
+    int result = fmpz_factor_ecm(n, 1, 100, 1000, state, n);
+    fmpz_clear(n); return result;
+  ]])], [
+    AC_MSG_RESULT([yes])
+    FLINT_LIBS="-lflint"
+    AC_DEFINE([HAVE_FLINT], [1], [Use FLINT for integer factorization])
+  ], [
+    AC_MSG_RESULT([no])
+    LIBS="$saved_LIBS"
+    AS_IF([test "x$with_flint" = xyes], [AC_MSG_ERROR([FLINT with ECM support is required by --with-flint])])
+  ])
+])
+
+AC_SUBST([FLINT_LIBS])
+AM_CONDITIONAL([HAVE_FLINT], [test -n "$FLINT_LIBS"])
+
 AC_CHECK_HEADERS([unordered_map])
 AC_CHECK_FUNCS([pipe2])
 

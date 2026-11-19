@@ -115,6 +115,13 @@ quantum_evolution_test_LDADD = $(test_LDADD)
 quantum_binary_test_SOURCES = quantum-binary-test.cc
 quantum_binary_test_LDADD = $(test_LDADD)
 
+if HAVE_FLINT
+check_PROGRAMS += integer-factorization-test
+TESTS += integer-factorization-test
+integer_factorization_test_SOURCES = integer-factorization-test.cc
+integer_factorization_test_LDADD = $(test_LDADD)
+endif
+
 quantum_order_test_SOURCES = quantum-order-test.cc
 quantum_order_test_LDADD = $(test_LDADD)
 

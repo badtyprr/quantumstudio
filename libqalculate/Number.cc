@@ -18,6 +18,11 @@
 #include "Function.h"
 #include "Variable.h"
 
+#ifdef HAVE_FLINT
+#include <flint/fmpz.h>
+#include <flint/fmpz_factor.h>
+#include <algorithm>
+#endif
 #include <limits.h>
 #include <sstream>
 #include <string.h>
@@ -10161,6 +10166,38 @@ bool Number::binomial(const Number &m, const Number &k) {
 	return true;
 }
 
+#ifdef HAVE_FLINT
+// Split a composite a curve at a time so the calculator can honour aborts.
+// ECM returns divisors, which may themselves be composite.
+static bool collectPrimeFactors(const fmpz_t n, flint_rand_t state, vector<Number> &primes) {
+	if(CALCULATOR->aborted()) return false;
+	if(fmpz_is_prime(n)) {
+		mpz_t p;
+		mpz_init(p);
+		fmpz_get_mpz(p, n);
+		Number prime;
+		prime.setInternal(p);
+		mpz_clear(p);
+		primes.push_back(prime);
+		return true;
+	}
+	fmpz_t divisor, quotient;
+	fmpz_init(divisor);
+	fmpz_init(quotient);
+	bool complete = false;
+	for(unsigned curve = 0; curve < 96 && !CALCULATOR->aborted(); curve++) {
+		if(!fmpz_factor_ecm(divisor, 1, 10000, 1000000, state, n)) continue;
+		if(fmpz_cmp_ui(divisor, 1) <= 0 || fmpz_cmp(divisor, n) >= 0) continue;
+		fmpz_divexact(quotient, n, divisor);
+		complete = collectPrimeFactors(divisor, state, primes) && collectPrimeFactors(quotient, state, primes);
+		break;
+	}
+	fmpz_clear(quotient);
+	fmpz_clear(divisor);
+	return complete;
+}
+#endif
+
 bool Number::factorize(vector<Number> &factors) {
 	if(isZero() || !isInteger()) return false;
 	if(mpz_cmp_si(mpq_numref(r_value), 1) == 0) {
@@ -10192,6 +10229,36 @@ bool Number::factorize(vector<Number> &factors) {
 	}
 	if(mpz_cmp_si(inr, 1) > 0) {
 		mpz_set_si(last_prime, PRIMES[NR_OF_PRIMES - 1] + 2);
+#ifdef HAVE_FLINT
+		// Keep uninterruptible primality proofs bounded. Small residuals are
+		// already prime when the trial divisor exceeds their square root.
+		if(mpz_cmp(facmax, last_prime) >= 0 && mpz_sizeinbase(inr, 2) <= 256) {
+			fmpz_t residual;
+			fmpz_init(residual);
+			fmpz_set_mpz(residual, inr);
+			flint_rand_t state;
+#if __FLINT_RELEASE >= 30300
+			flint_rand_init(state);
+#else
+			flint_randinit(state);
+#endif
+			vector<Number> primes;
+			bool complete = collectPrimeFactors(residual, state, primes);
+#if __FLINT_RELEASE >= 30300
+			flint_rand_clear(state);
+#else
+			flint_randclear(state);
+#endif
+			fmpz_clear(residual);
+			if(CALCULATOR->aborted()) {mpz_clears(inr, last_prime, facmax, NULL); return false;}
+			if(complete) {
+				std::sort(primes.begin(), primes.end(), [](const Number &a, const Number &b) {return a.isLessThan(b);});
+				factors.insert(factors.end(), primes.begin(), primes.end());
+				mpz_clears(inr, last_prime, facmax, NULL);
+				return true;
+			}
+		}
+#endif
 		while(mpz_cmp(facmax, last_prime) >= 0) {
 			if(CALCULATOR->aborted()) {mpz_clears(inr, last_prime, facmax, NULL); return false;}
 			bool b = false;

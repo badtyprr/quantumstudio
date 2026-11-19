@@ -82,7 +82,7 @@ In an **MSYS2 UCRT64** shell, install the native toolchain and dependencies:
 pacman -S --needed autoconf automake libtool gettext-devel make \
   mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gmp \
   mingw-w64-ucrt-x86_64-mpfr mingw-w64-ucrt-x86_64-libxml2 \
-  mingw-w64-ucrt-x86_64-pkgconf
+  mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-flint
 ```
 
 From the repository directory in that shell:
