@@ -19,6 +19,8 @@ int main() {
  try {
   equal("$$x.$$","x");equal(R"(\[\ket{0}.\])","|0>");
   equal("$$1.5$$","1.5");equal("$$1.$$","1.");
+  equal(R"($$\left\|x\right\|^2.$$)",quantumTeX(R"($$\left\|x\right\|^2$$)"));
+  equal("$$x^{2.}$$","x^(2.)");equal("$$x^2.5$$","x^2.5");
   equal("$$x..$$","x..");equal("$$x+.$$","x+.");
   equal("$$\"x.\"$$","\"x.\"");equal("x.","x.");
   equal(R"(\begin{aligned}x &= y.\end{aligned})",quantumTeX(R"(\begin{aligned}x &= y\end{aligned})"));

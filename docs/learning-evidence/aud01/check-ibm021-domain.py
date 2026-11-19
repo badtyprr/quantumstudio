@@ -89,6 +89,10 @@ for y in range(8):
     expr = f"replace(replace(replace(({probability}),f,{table['graph']}),n,3),y,bitstring({y},3))"
     quarter_units = evaluate(f"4*({expr})")["copy_text"]
     assert quarter_units == str(int((y & 3).bit_count() % 2 == 0)), (y, quarter_units)
+    for number in (54, 70):
+        norm = bound_body(number).split("=", 1)[1]
+        measured = f"replace(replace(replace(({norm}),f,{table['graph']}),n,3),y,bitstring({y},3))"
+        assert evaluate(f"4*({measured})")["copy_text"] == quarter_units, (number, y)
     identity = f"replace(replace(({definition(102)}),f,{table['graph']}),n,3)"
     identity = f"replace(replace({identity},s,bitstring(3,3)),y,bitstring({y},3))"
     assert evaluate(identity)["copy_text"] == "1"
