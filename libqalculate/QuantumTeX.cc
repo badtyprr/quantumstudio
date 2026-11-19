@@ -28,14 +28,15 @@ std::string withoutDisplayPunctuation(std::string value) {
  if(!quote)value.erase(mark,1);
  return value;
 }
-// A complete list of Boolean outputs on fixed-width binary words is the
-// graph of a function. Keep its input labels distinct from decimal scalars.
+// Fixed-width binary words in a complete function table retain leading zeros.
+// Single-bit results are Boolean scalars; longer results are register labels.
 std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
  const size_t count=rows.size();
  if(count<4 || (count & (count-1)))return "";
  size_t width=0;
  for(size_t n=count;n>1;n/=2)++width;
- std::vector<char> outputs(count);
+ std::vector<std::string> outputs(count);
+ size_t outputWidth=0;
  std::string function;
  for(const auto &row:rows) {
   size_t open=row.find('('),close=row.find(')'),equal=row.find('=');
@@ -44,12 +45,14 @@ std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
   std::string name=trim(row.substr(0,open)),bits=trim(row.substr(open+1,close-open-1)),value=trim(row.substr(equal+1));
   if(name=="e" || name=="i")return ""; // These are built-in scalar constants.
   if(name.size()!=1 || name[0]<'a' || name[0]>'z' || (!function.empty() && function!=name) ||
-     bits.size()!=width || bits.find_first_not_of("01")!=std::string::npos || (value!="0" && value!="1"))return "";
+     bits.size()!=width || bits.find_first_not_of("01")!=std::string::npos || value.empty() || value.find_first_not_of("01")!=std::string::npos ||
+     (outputWidth && value.size()!=outputWidth))return "";
   function=name;
   size_t index=0;
   for(char bit:bits)index=2*index+(bit-'0');
-  if(outputs[index])return "";
-  outputs[index]=value[0];
+  if(!outputs[index].empty())return "";
+  outputWidth=value.size();
+  outputs[index]=outputWidth==1 ? value : "bitstring("+value+"_2,"+std::to_string(outputWidth)+")";
  }
  std::string graph="qset(vector(";
  for(size_t i=0;i<count;++i) {

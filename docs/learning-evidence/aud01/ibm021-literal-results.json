@@ -1,0 +1,2311 @@
+{
+  "counts": [
+    {
+      "2": 40,
+      "0": 137
+    },
+    {
+      "2": 40,
+      "0": 137
+    }
+  ],
+  "changed": [
+    "IBM021-c0-M029"
+  ],
+  "results": [
+    {
+      "id": "IBM021-c0-M001",
+      "literal": "$$\nf:\\Sigma^n \\rightarrow \\Sigma^m\n$$",
+      "candidate": "Unsupported TeX command: \\rightarrow at byte 24"
+    },
+    {
+      "id": "IBM021-c0-M002",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M003",
+      "literal": "$m$",
+      "candidate": {
+        "text": "'m'",
+        "display_text": "m",
+        "copy_text": "'m'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M004",
+      "literal": "$m = n$",
+      "candidate": {
+        "text": "'m' = n",
+        "display_text": "m = n",
+        "copy_text": "('m')==(n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M005",
+      "literal": "$f:\\Sigma^n \\rightarrow \\Sigma^m$",
+      "candidate": "Unsupported TeX command: \\rightarrow at byte 23"
+    },
+    {
+      "id": "IBM021-c0-M006",
+      "literal": "$s\\in\\Sigma^n$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M007",
+      "literal": "$[f(x) = f(y)] \\Leftrightarrow\n[(x = y) \\vee (x \\oplus s = y)]$",
+      "candidate": "Unsupported TeX command: \\Leftrightarrow at byte 30"
+    },
+    {
+      "id": "IBM021-c0-M008",
+      "literal": "$x,y\\in\\Sigma^n$",
+      "candidate": "Unexpected notation at byte 2"
+    },
+    {
+      "id": "IBM021-c0-M009",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M010",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M011",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M012",
+      "literal": "$0^n$",
+      "candidate": {
+        "text": "0^n",
+        "display_text": "0^n",
+        "copy_text": "0^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M013",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M014",
+      "literal": "$s=0^n$",
+      "candidate": {
+        "text": "'s' = 0^n",
+        "display_text": "s = 0^n",
+        "copy_text": "('s')==(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M015",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M016",
+      "literal": "$[f(x) = f(y)] \\Leftrightarrow [x = y]$",
+      "candidate": "Unsupported TeX command: \\Leftrightarrow at byte 30"
+    },
+    {
+      "id": "IBM021-c0-M017",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M018",
+      "literal": "$s\\neq 0^n$",
+      "candidate": {
+        "text": "'s' ≠ 0^n",
+        "display_text": "s ≠ 0^n",
+        "copy_text": "('s')!=(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M019",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M020",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M021",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M022",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M023",
+      "literal": "$w$",
+      "candidate": {
+        "text": "'w'",
+        "display_text": "w",
+        "copy_text": "'w'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M024",
+      "literal": "$w \\oplus s$",
+      "candidate": "Scalar XOR requires nonnegative integer operands."
+    },
+    {
+      "id": "IBM021-c0-M025",
+      "literal": "$w$",
+      "candidate": {
+        "text": "'w'",
+        "display_text": "w",
+        "copy_text": "'w'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M026",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M027",
+      "literal": "$f:\\Sigma^3 \\rightarrow \\Sigma^5$",
+      "candidate": "Unsupported TeX command: \\rightarrow at byte 23"
+    },
+    {
+      "id": "IBM021-c0-M028",
+      "literal": "$s = 011$",
+      "candidate": {
+        "text": "'s' = 11",
+        "display_text": "s = 11",
+        "copy_text": "('s')==(11)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M029",
+      "literal": "$$\n\\begin{aligned}\nf(000) & = 10011 \\\\\nf(001) & = 00101 \\\\\nf(010) & = 00101 \\\\\nf(011) & = 10011 \\\\\nf(100) & = 11010 \\\\\nf(101) & = 00001 \\\\\nf(110) & = 00001 \\\\\nf(111) & = 11010\n\\end{aligned}\n$$",
+      "candidate": {
+        "text": "qset([qtuple([qbitlabel(0, 3)  qbitlabel(19, 5)])  qtuple([qbitlabel(1, 3)  qbitlabel(5, 5)])  qtuple([qbitlabel(2, 3)  qbitlabel(5, 5)])  qtuple([qbitlabel(3, 3)  qbitlabel(19, 5)])  qtuple([qbitlabel(4, 3)  qbitlabel(26, 5)])  qtuple([qbitlabel(5, 3)  qbitlabel(1, 5)])  qtuple([qbitlabel(6, 3)  qbitlabel(1, 5)])  qtuple([qbitlabel(7, 3)  qbitlabel(26, 5)])])",
+        "display_text": "{(bitstring(0, 3), bitstring(19, 5)), (bitstring(1, 3), bitstring(5, 5)), (bitstring(2, 3), bitstring(5, 5)), (bitstring(3, 3), bitstring(19, 5)), (bitstring(4, 3), bitstring(26, 5)), (bitstring(5, 3), bitstring(1, 5)), (bitstring(6, 3), bitstring(1, 5)), (bitstring(7, 3), bitstring(26, 5))}",
+        "copy_text": "qset(vector(qtuple(vector(qbitlabel(0,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(1,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(2,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(3,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(4,3),qbitlabel(26,5))),qtuple(vector(qbitlabel(5,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(6,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(7,3),qbitlabel(26,5)))))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M030",
+      "literal": "$8$",
+      "candidate": {
+        "text": "8",
+        "display_text": "8",
+        "copy_text": "8",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M031",
+      "literal": "$4$",
+      "candidate": {
+        "text": "4",
+        "display_text": "4",
+        "copy_text": "4",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M032",
+      "literal": "$011$",
+      "candidate": {
+        "text": "11",
+        "display_text": "11",
+        "copy_text": "11",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M033",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M034",
+      "literal": "$(10011$",
+      "candidate": "Unclosed TeX group or environment at byte 7"
+    },
+    {
+      "id": "IBM021-c0-M035",
+      "literal": "$00101$",
+      "candidate": {
+        "text": "101",
+        "display_text": "101",
+        "copy_text": "101",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M036",
+      "literal": "$00001$",
+      "candidate": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M037",
+      "literal": "$11010)$",
+      "candidate": "Unmatched closing delimiter at byte 6"
+    },
+    {
+      "id": "IBM021-c0-M038",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M039",
+      "literal": "$s = 011$",
+      "candidate": {
+        "text": "'s' = 11",
+        "display_text": "s = 11",
+        "copy_text": "('s')==(11)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M040",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M041",
+      "literal": "$m$",
+      "candidate": {
+        "text": "'m'",
+        "display_text": "m",
+        "copy_text": "'m'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M042",
+      "literal": "$m$",
+      "candidate": {
+        "text": "'m'",
+        "display_text": "m",
+        "copy_text": "'m'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M043",
+      "literal": "$\\vert 0\\rangle$",
+      "candidate": {
+        "text": "[1; 0]",
+        "display_text": "[1; 0]",
+        "copy_text": "matrix(2,1,[1,0])",
+        "approximate": false,
+        "rows": 2,
+        "columns": 1,
+        "cells": [
+          [
+            "1"
+          ],
+          [
+            "0"
+          ]
+        ],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M044",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M045",
+      "literal": "$$\n\\frac{1}{\\sqrt{2^n}} \\sum_{x\\in\\Sigma^n} \\vert 0^m \\rangle \\vert x\\rangle.\n$$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M046",
+      "literal": "$U_f$",
+      "candidate": {
+        "text": "\"U_f\"",
+        "display_text": "\"U_f\"",
+        "copy_text": "\"U_f\"",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M047",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M048",
+      "literal": "$m$",
+      "candidate": {
+        "text": "'m'",
+        "display_text": "m",
+        "copy_text": "'m'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M049",
+      "literal": "$$\n\\frac{1}{\\sqrt{2^n}} \\sum_{x\\in\\Sigma^n} \\vert f(x) \\rangle \\vert x\\rangle.\n$$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M050",
+      "literal": "$$\n\\frac{1}{2^n} \\sum_{x\\in\\Sigma^n} \\sum_{y\\in\\Sigma^n} (-1)^{x\\cdot y} \\vert f(x) \\rangle \\vert y\\rangle\n$$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M051",
+      "literal": "$y\\in\\Sigma^n$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M052",
+      "literal": "$p(y)$",
+      "candidate": {
+        "text": "'p'y",
+        "display_text": "p · y",
+        "copy_text": "'p'y",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M053",
+      "literal": "$y$",
+      "candidate": {
+        "text": "y",
+        "display_text": "y",
+        "copy_text": "y",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M054",
+      "literal": "$$\np(y) = \\left\\|\\frac{1}{2^n} \\sum_{x\\in\\Sigma^n} (-1)^{x\\cdot y} \\vert f(x) \\rangle \\right\\|^2.\n$$",
+      "candidate": "Unexpected notation at byte 75"
+    },
+    {
+      "id": "IBM021-c0-M055",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M056",
+      "literal": "$$\n\\operatorname{range}(f) = \\{ f(x) : x\\in \\Sigma^n \\}\n$$",
+      "candidate": "An indexed image requires a finite domain of at most 1024 entries."
+    },
+    {
+      "id": "IBM021-c0-M057",
+      "literal": "$z\\in\\operatorname{range}(f)$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M058",
+      "literal": "$z$",
+      "candidate": {
+        "text": "z",
+        "display_text": "z",
+        "copy_text": "z",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M059",
+      "literal": "$f^{-1}(\\{z\\})$",
+      "candidate": {
+        "text": "qadjacent(qpower('f', −1), qset(z))",
+        "display_text": "f^(−1) · {z}",
+        "copy_text": "qadjacent(qpower('f',−1),qset(vector(z)))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M060",
+      "literal": "$$\nf^{-1}(\\{z\\}) = \\{ x\\in\\Sigma^n : f(x) = z \\}\n$$",
+      "candidate": "An indexed image requires a finite domain of at most 1024 entries."
+    },
+    {
+      "id": "IBM021-c0-M061",
+      "literal": "$f^{-1}(\\{z\\})$",
+      "candidate": {
+        "text": "qadjacent(qpower('f', −1), qset(z))",
+        "display_text": "f^(−1) · {z}",
+        "copy_text": "qadjacent(qpower('f',−1),qset(vector(z)))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M062",
+      "literal": "$\\{z\\}$",
+      "candidate": {
+        "text": "qset(z)",
+        "display_text": "{z}",
+        "copy_text": "qset(vector(z))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M063",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M064",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M065",
+      "literal": "$\\{z\\}$",
+      "candidate": {
+        "text": "qset(z)",
+        "display_text": "{z}",
+        "copy_text": "qset(vector(z))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M066",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M067",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M068",
+      "literal": "$\\{z\\}$",
+      "candidate": {
+        "text": "qset(z)",
+        "display_text": "{z}",
+        "copy_text": "qset(vector(z))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M069",
+      "literal": "$z$",
+      "candidate": {
+        "text": "z",
+        "display_text": "z",
+        "copy_text": "z",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M070",
+      "literal": "$$\np(y) =\n\\left\\|\n\\frac{1}{2^n}\n\\sum_{z\\in\\operatorname{range}(f)}\n\\Biggl(\\sum_{x\\in f^{-1}(\\{z\\})}  (-1)^{x\\cdot y}\\Biggr)\n\\vert z \\rangle\n\\right\\|^2.\n$$",
+      "candidate": "Unexpected notation at byte 120"
+    },
+    {
+      "id": "IBM021-c0-M071",
+      "literal": "$x\\in\\Sigma^n$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M072",
+      "literal": "$z = f(x)$",
+      "candidate": {
+        "text": "('f' = 0 && z = 0) || (x = z ∕ 'f' && 'f' ≠ 0)",
+        "display_text": "('f' = 0 && z = 0) || (x = z ∕ 'f' && 'f' ≠ 0)",
+        "copy_text": "((('f')!=(0) and (x)==(z ∕ 'f')) or (('f')==(0) and (z)==(0)))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M073",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M074",
+      "literal": "$$\np(y) = \\frac{1}{2^{2n}}\n\\sum_{z\\in\\operatorname{range}(f)}\n\\left\\vert \\sum_{x\\in f^{-1}(\\{z\\})}  (-1)^{x\\cdot y} \\right\\vert^2.\n$$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M075",
+      "literal": "$$\n\\left\\vert \\sum_{x\\in f^{-1}(\\{z\\})}  (-1)^{x\\cdot y} \\right\\vert^2\n\\tag{1}\n$$",
+      "candidate": "Unsupported TeX command: \\tag at byte 74"
+    },
+    {
+      "id": "IBM021-c0-M076",
+      "literal": "$z\\in\\operatorname{range}(f)$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M077",
+      "literal": "$s = 0^n$",
+      "candidate": {
+        "text": "'s' = 0^n",
+        "display_text": "s = 0^n",
+        "copy_text": "('s')==(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M078",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M079",
+      "literal": "$x\\in f^{-1}(\\{z\\})$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M080",
+      "literal": "$z\\in\\operatorname{range}(f)$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M081",
+      "literal": "$(1)$",
+      "candidate": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M082",
+      "literal": "$1$",
+      "candidate": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M083",
+      "literal": "$s\\neq 0^n$",
+      "candidate": {
+        "text": "'s' ≠ 0^n",
+        "display_text": "s ≠ 0^n",
+        "copy_text": "('s')!=(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M084",
+      "literal": "$f^{-1}(\\{z\\})$",
+      "candidate": {
+        "text": "qadjacent(qpower('f', −1), qset(z))",
+        "display_text": "f^(−1) · {z}",
+        "copy_text": "qadjacent(qpower('f',−1),qset(vector(z)))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M085",
+      "literal": "$w\\in f^{-1}(\\{z\\})$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M086",
+      "literal": "$w \\oplus s$",
+      "candidate": "Scalar XOR requires nonnegative integer operands."
+    },
+    {
+      "id": "IBM021-c0-M087",
+      "literal": "$(1)$",
+      "candidate": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M088",
+      "literal": "$$\n\\begin{aligned}\n\\left\\vert \\sum_{x\\in f^{-1}(\\{z\\})}  (-1)^{x\\cdot y} \\right\\vert^2\n& = \\Bigl\\vert (-1)^{w\\cdot y} + (-1)^{(w\\oplus s)\\cdot y} \\Bigr\\vert^2 \\\\\n& = \\Bigl\\vert (-1)^{w\\cdot y} \\Bigl(1 + (-1)^{s\\cdot y}\\Bigr) \\Bigr\\vert^2 \\\\\n& = \\Bigl\\vert 1 + (-1)^{y\\cdot s} \\Bigr\\vert^2 \\\\\n& = \\begin{cases}\n4 & y \\cdot s = 0\\\\[1mm]\n0 & y \\cdot s = 1\n\\end{cases}\n\\end{aligned}\n$$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices.\r\nBars require a scalar or finite flat collection.\r\nScalar XOR requires nonnegative integer operands."
+    },
+    {
+      "id": "IBM021-c0-M089",
+      "literal": "$(1)$",
+      "candidate": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M090",
+      "literal": "$z\\in\\operatorname{range}(f)$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M091",
+      "literal": "$s = 0^n$",
+      "candidate": {
+        "text": "'s' = 0^n",
+        "display_text": "s = 0^n",
+        "copy_text": "('s')==(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M092",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M093",
+      "literal": "$2^n$",
+      "candidate": {
+        "text": "2^n",
+        "display_text": "2^n",
+        "copy_text": "2^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M094",
+      "literal": "$z\\in\\operatorname{range}(f)$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M095",
+      "literal": "$$\n  p(y) = \\frac{1}{2^{2n}} \\cdot 2^n = \\frac{1}{2^n}.\n  $$",
+      "candidate": {
+        "text": "qequalchain(['p'y  0.5^n  0.5^n])",
+        "display_text": "p · y = 0.5^n = 0.5^n",
+        "copy_text": "qequalchain(vector('p'y,(1 ∕ 2)^n,(1 ∕ 2)^n))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M096",
+      "literal": "$y\\in\\Sigma^n$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M097",
+      "literal": "$s \\neq 0^n$",
+      "candidate": {
+        "text": "'s' ≠ 0^n",
+        "display_text": "s ≠ 0^n",
+        "copy_text": "('s')!=(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M098",
+      "literal": "$f$",
+      "candidate": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M099",
+      "literal": "$2^{n-1}$",
+      "candidate": {
+        "text": "0.5 ⋅ 2^n",
+        "display_text": "0.5 ⋅ 2^n",
+        "copy_text": "2^n ∕ 2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M100",
+      "literal": "$\\operatorname{range}(f)$",
+      "candidate": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M101",
+      "literal": "$y\\in\\Sigma^n$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M102",
+      "literal": "$$\n  p(y)\n  = \\frac{1}{2^{2n}} \\sum_{z\\in\\operatorname{range}(f)}\n  \\Biggl\\vert \\sum_{x\\in f^{-1}(\\{z\\})} (-1)^{x\\cdot y} \\Biggr\\vert^2\n  =\n  \\begin{cases}\n  \\frac{1}{2^{n-1}} & y \\cdot s = 0\\\\[1mm]\n  0 & y \\cdot s = 1\n  \\end{cases}\n  $$",
+      "candidate": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM021-c0-M103",
+      "literal": "$\\{y\\in\\Sigma^n : y \\cdot s = 0\\}$",
+      "candidate": "An indexed image requires a finite domain of at most 1024 entries."
+    },
+    {
+      "id": "IBM021-c0-M104",
+      "literal": "$2^{n-1}$",
+      "candidate": {
+        "text": "0.5 ⋅ 2^n",
+        "display_text": "0.5 ⋅ 2^n",
+        "copy_text": "2^n ∕ 2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M105",
+      "literal": "$s\\neq 0^n$",
+      "candidate": {
+        "text": "'s' ≠ 0^n",
+        "display_text": "s ≠ 0^n",
+        "copy_text": "('s')!=(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M106",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M107",
+      "literal": "$1$",
+      "candidate": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M108",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M109",
+      "literal": "$0$",
+      "candidate": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M110",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M111",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M112",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M113",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M114",
+      "literal": "$k$",
+      "candidate": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M115",
+      "literal": "$k = n + 10$",
+      "candidate": {
+        "text": "'k' = n + 10",
+        "display_text": "k = n + 10",
+        "copy_text": "('k')==(n + 10)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M116",
+      "literal": "$k$",
+      "candidate": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M117",
+      "literal": "$k = n + 10$",
+      "candidate": {
+        "text": "'k' = n + 10",
+        "display_text": "k = n + 10",
+        "copy_text": "('k')==(n + 10)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M118",
+      "literal": "$99.9$",
+      "candidate": {
+        "text": "99.9",
+        "display_text": "99.9",
+        "copy_text": "999 ∕ 10",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M119",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M120",
+      "literal": "$k$",
+      "candidate": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M121",
+      "literal": "$y^1,...,y^{k} \\in \\Sigma^n$",
+      "candidate": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM021-c0-M122",
+      "literal": "$$\n\\begin{aligned}\ny^1 & = y^1_{n-1} \\cdots y^1_{0}\\\\[1mm]\ny^2 & = y^2_{n-1} \\cdots y^2_{0}\\\\[1mm]\n& \\;\\; \\vdots\\\\[1mm]\ny^{k} & = y^{k}_{n-1} \\cdots y^{k}_{0}\n\\end{aligned}\n$$",
+      "candidate": "Numeric radix subscripts currently require base 2."
+    },
+    {
+      "id": "IBM021-c0-M123",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M124",
+      "literal": "$k$",
+      "candidate": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M125",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M126",
+      "literal": "$$\nM = \\begin{pmatrix}\n y^1_{n-1} & \\cdots & y^1_{0}\\\\[1mm]\n y^2_{n-1} & \\cdots & y^2_{0}\\\\[1mm]\n \\vdots & \\ddots & \\vdots \\\\[1mm]\n y^{k}_{n-1} & \\cdots & y^{k}_{0}\n \\end{pmatrix}\n$$",
+      "candidate": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
+    },
+    {
+      "id": "IBM021-c0-M127",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M128",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M129",
+      "literal": "$v$",
+      "candidate": {
+        "text": "'v'",
+        "display_text": "v",
+        "copy_text": "'v'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M130",
+      "literal": "$s = s_{n-1} \\cdots s_0$",
+      "candidate": "Unsupported TeX command: \\cdots at byte 19"
+    },
+    {
+      "id": "IBM021-c0-M131",
+      "literal": "$$\nv = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}\n$$",
+      "candidate": "An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts"
+    },
+    {
+      "id": "IBM021-c0-M132",
+      "literal": "$M v$",
+      "candidate": {
+        "text": "'M''v'",
+        "display_text": "M · v",
+        "copy_text": "'M''v'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M133",
+      "literal": "$2$",
+      "candidate": {
+        "text": "2",
+        "display_text": "2",
+        "copy_text": "2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M134",
+      "literal": "$2$",
+      "candidate": {
+        "text": "2",
+        "display_text": "2",
+        "copy_text": "2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M135",
+      "literal": "$$\nM v = \\begin{pmatrix}\ny^1 \\cdot s\\\\\ny^2 \\cdot s\\\\\n\\vdots\\\\[1mm]\ny^{k} \\cdot s\n\\end{pmatrix}\n= \\begin{pmatrix}\n0\\\\\n0\\\\\n\\vdots\\\\[1mm]\n0\n\\end{pmatrix}\n$$",
+      "candidate": "An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts"
+    },
+    {
+      "id": "IBM021-c0-M136",
+      "literal": "$v$",
+      "candidate": {
+        "text": "'v'",
+        "display_text": "v",
+        "copy_text": "'v'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M137",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M138",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M139",
+      "literal": "$2$",
+      "candidate": {
+        "text": "2",
+        "display_text": "2",
+        "copy_text": "2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M140",
+      "literal": "$s = 0^n$",
+      "candidate": {
+        "text": "'s' = 0^n",
+        "display_text": "s = 0^n",
+        "copy_text": "('s')==(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M141",
+      "literal": "$s\\neq 0^n$",
+      "candidate": {
+        "text": "'s' ≠ 0^n",
+        "display_text": "s ≠ 0^n",
+        "copy_text": "('s')!=(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M142",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M143",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M144",
+      "literal": "$s\\neq 0^n$",
+      "candidate": {
+        "text": "'s' ≠ 0^n",
+        "display_text": "s ≠ 0^n",
+        "copy_text": "('s')!=(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M145",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M146",
+      "literal": "$0^n$",
+      "candidate": {
+        "text": "0^n",
+        "display_text": "0^n",
+        "copy_text": "0^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M147",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M148",
+      "literal": "$k$",
+      "candidate": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M149",
+      "literal": "$k = n + 10$",
+      "candidate": {
+        "text": "'k' = n + 10",
+        "display_text": "k = n + 10",
+        "copy_text": "('k')==(n + 10)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M150",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M151",
+      "literal": "$0^n$",
+      "candidate": {
+        "text": "0^n",
+        "display_text": "0^n",
+        "copy_text": "0^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M152",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M153",
+      "literal": "$99.9$",
+      "candidate": {
+        "text": "99.9",
+        "display_text": "99.9",
+        "copy_text": "999 ∕ 10",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M154",
+      "literal": "$k = n + 10$",
+      "candidate": {
+        "text": "'k' = n + 10",
+        "display_text": "k = n + 10",
+        "copy_text": "('k')==(n + 10)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M155",
+      "literal": "$k = n + r$",
+      "candidate": {
+        "text": "'k' = n + 'r'",
+        "display_text": "k = n + r",
+        "copy_text": "('k')==(n + 'r')",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M156",
+      "literal": "$r$",
+      "candidate": {
+        "text": "'r'",
+        "display_text": "r",
+        "copy_text": "'r'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M157",
+      "literal": "$0^n$",
+      "candidate": {
+        "text": "0^n",
+        "display_text": "0^n",
+        "copy_text": "0^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M158",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M159",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M160",
+      "literal": "$1 - 2^{-r}$",
+      "candidate": {
+        "text": "1 − 0.5^'r'",
+        "display_text": "1 − 0.5^r",
+        "copy_text": "1 − (1 ∕ 2)^'r'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M161",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M162",
+      "literal": "$2$",
+      "candidate": {
+        "text": "2",
+        "display_text": "2",
+        "copy_text": "2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M163",
+      "literal": "$2$",
+      "candidate": {
+        "text": "2",
+        "display_text": "2",
+        "copy_text": "2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M164",
+      "literal": "$0^n$",
+      "candidate": {
+        "text": "0^n",
+        "display_text": "0^n",
+        "copy_text": "0^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M165",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M166",
+      "literal": "$M$",
+      "candidate": {
+        "text": "'M'",
+        "display_text": "M",
+        "copy_text": "'M'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M167",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M168",
+      "literal": "$2^{n/2 - 1} - 1$",
+      "candidate": {
+        "text": "0.5 ⋅ 2^(0.5n) − 1",
+        "display_text": "0.5 ⋅ 2^(0.5n) − 1",
+        "copy_text": "2^(n ∕ 2) ∕ 2 − 1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M169",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M170",
+      "literal": "$1/2$",
+      "candidate": {
+        "text": "0.5",
+        "display_text": "0.5",
+        "copy_text": "1 ∕ 2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M171",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M172",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M173",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M174",
+      "literal": "$2^{n/2 - 1} - 1$",
+      "candidate": {
+        "text": "0.5 ⋅ 2^(0.5n) − 1",
+        "display_text": "0.5 ⋅ 2^(0.5n) − 1",
+        "copy_text": "2^(n ∕ 2) ∕ 2 − 1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M175",
+      "literal": "$s$",
+      "candidate": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M176",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "IBM021-c0-M177",
+      "literal": "$n$",
+      "candidate": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    }
+  ],
+  "pinned_notebook_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "baseline_worker_sha256": "852abfeb345cd28fadcb7b5945873eedf35596f3050c308f4264fbb3ac1c9389",
+  "candidate_worker_sha256": "0e7dd16d9bfa1ced45c023c4cef2f76c25808b842477d096f259a91e2aef7223",
+  "mode": "Quantum, all original inline and display delimiters preserved, without lesson bindings.",
+  "gui": {
+    "passed": true,
+    "checks": 22,
+    "calls": 2,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "gui_rows": [
+    {
+      "id": "M029",
+      "label": "EXACT RESULT",
+      "display": "{(bitstring(0, 3), bitstring(19, 5)), (bitstring(1, 3), bitstring(5, 5)), (bitstring(2, 3), bitstring(5, 5)), (bitstring(3, 3), bitstring(19, 5)), (bitstring(4, 3), bitstring(26, 5)), (bitstring(5, 3), bitstring(1, 5)), (bitstring(6, 3), bitstring(1, 5)), (bitstring(7, 3), bitstring(26, 5))}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(1,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(2,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(3,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(4,3),qbitlabel(26,5))),qtuple(vector(qbitlabel(5,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(6,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(7,3),qbitlabel(26,5)))))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qset(vector(qtuple(vector(qbitlabel(0,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(1,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(2,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(3,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(4,3),qbitlabel(26,5))),qtuple(vector(qbitlabel(5,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(6,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(7,3),qbitlabel(26,5)))))"
+    },
+    {
+      "id": "lookup-001",
+      "label": "EXACT RESULT",
+      "display": "bitstring(5, 5)",
+      "copy": "qbitlabel(5,5)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qbitlabel(5,5)"
+    }
+  ],
+  "gui_application_sha256": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2"
+}

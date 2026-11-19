@@ -55,6 +55,13 @@ assert data(f"quantum:replace({pending},x,bitstring(2,2))")["copy_text"] == "1"
 assert b"no output for this bit string" in run(f"quantum:replace(f(1),f,{copied})", "--json", success=False).stderr
 conflict = "qset(vector(tuple(bitstring(0,2),0),tuple(bitstring(0,2),1)))"
 assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--json", success=False).stderr
+# Multi-bit outputs are strings too: their leading zeros and widths survive lookup.
+word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
+word_graph = data("quantum:" + word_table)["copy_text"]
+assert data("quantum:" + word_graph)["copy_text"] == word_graph
+for bits, value in (("00",1),("01",4),("10",0),("11",1)):
+    assert data(f"quantum:replace(g({bits}),g,{word_graph})")["copy_text"] == f"qbitlabel({value},3)"
+assert not data("quantum:" + word_table.replace("=100","=10"))["copy_text"].startswith("qset(")
 for changed in (table.replace("f(11)", "g(11)"), table.replace("f(11)", "f(01)"),
                 table.replace("f(11)", "f(1)"), table.replace("f(", "i("), table.replace("= 1", "= 2", 1)):
     assert not data("quantum:" + changed)["copy_text"].startswith("qset(")
