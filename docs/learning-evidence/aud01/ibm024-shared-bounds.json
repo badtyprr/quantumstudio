@@ -1,0 +1,97 @@
+{
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "revision": "3328c7fc",
+  "worker_sha256": "55dfcc500eb1c786d901ebf8b15a715f92f4098ce143fc3cab717b98a07d7a2f",
+  "corpus": {
+    "original_spans": 170,
+    "exact_labels": 164,
+    "diagnostics": 6,
+    "changed_gui_records": [
+      "IBM024-5c5b90e6-M049"
+    ]
+  },
+  "gui_checks": 1893,
+  "worker_process_checks": 2684,
+  "verified_records": [
+    {
+      "input": "$$\n0\\leq N,M\\leq 2^n - 1.\n$$",
+      "id": "IBM024-5c5b90e6-M049",
+      "label": "EXACT RESULT",
+      "display": "'M' ≥ 0 && 'N' ≥ 0 && 'M' ≤ 2^n − 1 && 'N' ≤ 2^n − 1",
+      "copy": "(('M')<=(2^n − 1) and ('M')>=(0) and ('N')<=(2^n − 1) and ('N')>=(0))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(('M')<=(2^n − 1) and ('M')>=(0) and ('N')<=(2^n − 1) and ('N')>=(0))"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,0),M,7),n,3)",
+      "id": "bound-0-7",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,7),M,0),n,3)",
+      "id": "bound-7-0",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,-1),M,0),n,3)",
+      "id": "bound--1-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,0),M,-1),n,3)",
+      "id": "bound-0--1",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,8),M,0),n,3)",
+      "id": "bound-8-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,0),M,8),n,3)",
+      "id": "bound-0-8",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "input": "replace(replace(replace((0\\leq N,M\\leq 2^n - 1),N,-1),M,8),n,3)",
+      "id": "bound--1-8",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ]
+}

@@ -490,4 +490,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm021-descending-column.json docs/le
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-copy-context.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm022-foundations.md docs/learning-evidence/aud01/ibm023-factoring-baseline.json docs/learning-evidence/aud01/ibm023-factoring-replay.json docs/learning-evidence/aud01/replay-ibm023.py
-EXTRA_DIST += docs/learning-evidence/aud01/ibm024-cost-baseline.json docs/learning-evidence/aud01/replay-ibm024-adders.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm024-cost-baseline.json docs/learning-evidence/aud01/replay-ibm024-adders.py docs/learning-evidence/aud01/ibm024-shared-bounds.json
