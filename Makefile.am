@@ -434,3 +434,4 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb019-bv.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb020-local.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb021-qb022-local.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb023-qb024-local.json
+EXTRA_DIST += docs/learning-evidence/dev13/qb025-qb026-quobly.json

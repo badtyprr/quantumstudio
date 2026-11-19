@@ -1,0 +1,89 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "qb025": {
+    "source_sha256": "912f632ec426ae7c83eb04b88ec9fd0d4e69f5fa7ef8a0909fc9762cf91caf3d",
+    "rows": [
+      {
+        "qubits": 2,
+        "cnot_edges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "probabilities": {
+          "00": 0.4999999999999999,
+          "11": 0.4999999999999999
+        },
+        "counts": {
+          "11": 93,
+          "00": 107
+        }
+      },
+      {
+        "qubits": 6,
+        "cnot_edges": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            5
+          ]
+        ],
+        "probabilities": {
+          "000000": 0.4999999999999999,
+          "111111": 0.4999999999999999
+        },
+        "counts": {
+          "111111": 88,
+          "000000": 112
+        }
+      }
+    ],
+    "scope": "Original cell 5 and extracted cell 12 GHZ function. Authored ideal local statevector and Aer checks with source shot count and seed. Provider execution and Pioneer noise remain open."
+  },
+  "qb026": {
+    "source_sha256": "254a1133e82db85455593c1804d066180706f214326ce9d244fa2835f8d2004f",
+    "cache_sha256": "6d8dd3ea032411e396207ddeb3e59a70301fd59e2f062903747c757c46cc290e",
+    "original_indices": [
+      4,
+      6,
+      8,
+      9,
+      11,
+      13
+    ],
+    "checked_rows": 16,
+    "shots_per_row": 200,
+    "lowest_noisy": 0.29500000000000004,
+    "summary": "deepest chain measured : GHZ-9\nlowest GHZ population  : 29.5% at GHZ-9\ntotal emulator time    : 16.6 min over 16 jobs\n",
+    "scope": "Replayed the published cache; no new provider jobs. Setup and device metadata were skipped.",
+    "cache_source": "qBraid-Runtime/data/quobly_ghz_bench.json",
+    "figure_review": "The original chart displays eight chain widths. The cached ideal population stays at 100 percent and the cached Pioneer population reaches 29.5 percent at width nine."
+  },
+  "artifacts": {
+    "cleanup-audit/learning-coverage-20261117/qb025-local/probe.py": "945143ca97a7580e7974452f0b28a3a4d4186af31f51caafee2b430d72a2aa7c",
+    "cleanup-audit/learning-coverage-20261117/qb025-local/ideal-reference.json": "3920fe926d610877f83794658f8044a11a90d3d71750e8b5846f96f15751c48d",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/probe.py": "d1e67cce8f5ecd5369211ddcfd4cd469f5096d0766b030912f0a8b605609e4d4",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/verify.py": "7e265da8724d711d86f3b6d2a03e7a65668a268c53a5aa0fa2bea8d5b4623f3b",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/verification.json": "4e9b13a2bd55d2c732c3f42e98517cff0a6b481bb1b1d5461e71c0d65af535bf",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/run01/executed.ipynb": "a45cca0fa1d98a6f8a4bf197f7d2ced81bbcb98baef6f475a9fe18f46c6e457d",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/run01/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/run01/cell11.png": "dafabe9e33af80faac3aab0d62fd673a870d6e142ec97ff32dbb2751d44574f5",
+    "cleanup-audit/learning-coverage-20261117/qb026-local/run01/data/quobly_ghz_bench.json": "6d8dd3ea032411e396207ddeb3e59a70301fd59e2f062903747c757c46cc290e"
+  }
+}
