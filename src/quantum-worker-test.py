@@ -24,6 +24,44 @@ def data(expression, *flags):
     return value
 
 
+# An isolated binary word needs a width, while an equation can learn the
+# type of its right-hand literal or named application from later bindings.
+for digits, value in (("011", 3), ("00101", 5), ("00001", 1), ("", 0)):
+    assert data(f'quantum:bitstring("{digits}")')["copy_text"] == f"qbitlabel({value},{len(digits)})"
+run('quantum:bitstring("102")', "--json", success=False)
+assert data("quantum:011 + 1")["copy_text"] == "12"
+for equation in ("s=011", "011=s"):
+    result = data("quantum:" + equation)
+    for body in (equation, result["copy_text"], result["display_text"]):
+        for probe, truth in [('bitstring("011")', "1"), ('bitstring("0011")', "0"),
+                             ('bitstring("111")', "0"), ("11", "1"), ("3", "0")]:
+            assert data(f"quantum:replace(({body}),s,{probe})")["copy_text"] == truth
+for equation in ("z=f(x)", "f(x)=z"):
+    result = data("quantum:" + equation)
+    for body in (equation, result["copy_text"], result["display_text"]):
+        assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
+
+for dots in ("...", r"\dots", r"\ldots", r"\cdots"):
+    samples = rf"z^1, {dots}, z^{{2}} \in \{{0,1\}}^3"
+    partial = data(f'quantum:replace(({samples}),"z^2",bitstring(0,3))')["copy_text"]
+    for width, expected in ((3, "1"), (2, "0")):
+        assert data(f'quantum:replace(({partial}),"z^1",bitstring(0,{width}))')["copy_text"] == expected
+for invalid in (r"z^2,...,z^3 \in \{1\}", r"z^1,...,y^3 \in \{1\}", r"z^1,...,z^0 \in \{1\}"):
+    run("quantum:" + invalid, "--json", success=False)
+assert data("quantum:replace(z^2,z,3)")["copy_text"] == "9"
+
+copied_dot = data(r"quantum:w \cdot y")["copy_text"]
+assert data(f"quantum:replace(replace({copied_dot},w,bitstring(3,2)),y,bitstring(3,2))")["copy_text"] == "0"
+assert data(f"quantum:replace(replace({copied_dot},w,3),y,3)")["copy_text"] == "9"
+
+# Bind a deferred ket sum after copying its norm or normalization.
+for operation in ("norm", "normalize"):
+    pending = data(rf"quantum:{operation}(\sum_{{x\in d}}{{|x>}})")["copy_text"]
+    bound = data(f"quantum:replace({pending},d,bitstrings(1))")["copy_text"]
+    assert bound == data(rf"quantum:{operation}(\sum_{{x\in bitstrings(1)}}{{|x>}})")["copy_text"]
+    invalid = rf"quantum:replace({operation}(\sum_{{x\in d}}{{x}}),d,\{{1,2\}})"
+    assert run(invalid, "--json", success=False).stdout == b""
+
 # A centered dot is parity on bit strings, including labels supplied by a binding.
 for z in range(16):
     entries = [rf"bitstring({z},4) \cdot bitstring({x},4)" for x in range(16)]
@@ -34,6 +72,84 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# A power used as a domain retains its alphabet until the caller binds it.
+word_member = data(r"quantum:x \in \Sigma^n")["copy_text"]
+for alphabet in [r"\{1,0\}", "bitstrings(1)"]:
+    expr = rf"replace(replace(replace({word_member},\Sigma,{alphabet}),n,2),x,bitstring(1,2))"
+    assert data("quantum:" + expr)["copy_text"] == "1"
+assert data(r"quantum:replace(tuple(3,4) \in A^2,A,\{3,4\})")["copy_text"] == "1"
+assert data(r"quantum:replace(\Sigma^2,\Sigma,3)")["copy_text"] == "9"
+assert b"nonnegative integer" in run(r"quantum:x \in A^(-1)", "--json", success=False).stderr
+
+# Set equality is independent of member order, also for copied graph domains.
+for expression, expected in [
+    (r"\{2,1\}=\{1,2\}", "1"),
+    (r"\{2,1\}!=\{2,3\}", "1"),
+    (r"\{2,1\}=\{1,2\}=\{2,1\}", "1"),
+    (r"replace(\{x,1\}=\{1\},x,1)", "1"),
+    (r"replace(\{x,1\}=\{1\},x,2)", "0"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected
+
+# A descending bit definition denotes a word of exactly the given width.
+word = r"s=s_{n-1} \cdots s_0"
+copied_word = data("quantum:" + word)["copy_text"]
+for width, bindings, value, label_width, expected in [
+    (0, [], 0, 0, "1"), (1, [0], 0, 2, "0"), (1, [1], 1, 1, "1"),
+    (4, [0, 1, 0, 0], 2, 4, "1"), (4, [0, 1, 0, 0], 4, 4, "0"),
+]:
+    expr = f"replace(({copied_word}),n,{width})"
+    for index, bit in enumerate(bindings):
+        expr = f"replace(({expr}),s_{index},{bit})"
+    assert data(f"quantum:replace(({expr}),s,bitstring({value},{label_width}))")["copy_text"] == expected
+assert b"zero or one" in run(f"quantum:replace(({word}),s_1,2)", "--json", success=False).stderr
+
+# Shared membership distributes across probes only where commas are not arguments.
+for expression, expected in [
+    (r"1,2,3\in\{3,1,2\}", "1"), (r"1,2,3\in\{1,3\}", "0"),
+    (r"1,2\notin\{3\}", "1"), (r"1,2\notin\{1\}", "0"),
+    (r"vector(3,1\in\{1\})", "vector(3,1)"),
+    (r"vector((3,1\in\{1\}),4)", "vector(0,4)"),
+    (r"(1,2\in\{1,2\}) and (2,3\in\{1,2\})", "0"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected, expression
+
+# A total function must have one output per source and stay inside the codomain.
+for graph, domain, target, expected in [
+    ("tuple(1,2),tuple(2,2)", "2,1", "2,3", "1"),
+    ("tuple(1,2)", "1,2", "2,3", "0"),
+    ("tuple(1,2),tuple(2,3)", "1", "2,3", "0"),
+    ("tuple(1,2),tuple(1,3)", "1", "2,3", "0"),
+    ("tuple(1,2)", "1", "3", "0"),
+    ("", "", "", "1"),
+]:
+    signature = rf"f:\{{{domain}\}} \to \{{{target}\}}"
+    expr = f"replace(({signature}),f,qset(vector({graph})))"
+    assert data("quantum:" + expr)["copy_text"] == expected, expr
+
+# Biconditional has lower precedence than disjunction and accepts grouped predicates.
+for lhs in (0, 1):
+    for rhs in (0, 1):
+        assert data(rf"quantum:[{lhs}=1] \Leftrightarrow [{rhs}=1]")["copy_text"] == str(int(lhs == rhs))
+assert data(r"quantum:1 \vee 0 \iff 0")["copy_text"] == "0"
+assert b"Boolean predicates" in run(r"quantum:2 \iff 0", "--json", success=False).stderr
+
+# Symbolic direct sum keeps its operand domains through Copy and substitution.
+symbolic_sum = data(r"quantum:w \oplus s")["copy_text"]
+assert data(f"quantum:replace(replace({symbolic_sum},w,6),s,3)")["copy_text"] == "5"
+assert data(f"quantum:replace(replace({symbolic_sum},w,bitstring(6,3)),s,bitstring(3,3))")["copy_text"] == "qbitlabel(5,3)"
+assert data(f"quantum:replace(replace({symbolic_sum},w,X),s,Z)")["rows"] == 4
+assert b"nonnegative integer" in run(r"quantum:w \oplus (-1)", "--json", success=False).stderr
+
+# Equality of bit strings includes their declared width and evaluated bits.
+for expression, expected in [
+    ("bitstring(1+1,3)=bitstring(2,3)", "1"),
+    ("bitstring(2,3)!=bitstring(2,2)", "1"),
+    ("bitstring(2,3)=bitstring(1,3)", "0"),
+    ("bitstring(2,3)=bitstring(2,3)=bitstring(2,2)", "0"),
+    ("replace(bitstring(x,3)=bitstring(2,3),x,2)", "1"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected
 # Each complete two-bit table denotes a function graph. Leading zeros are data.
 for mask in range(16):
     order = (3, 1, 0, 2)
@@ -55,6 +171,27 @@ assert data(f"quantum:replace({pending},x,bitstring(2,2))")["copy_text"] == "1"
 assert b"no output for this bit string" in run(f"quantum:replace(f(1),f,{copied})", "--json", success=False).stderr
 conflict = "qset(vector(tuple(bitstring(0,2),0),tuple(bitstring(0,2),1)))"
 assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--json", success=False).stderr
+# Multi-bit outputs are strings too: their leading zeros and widths survive lookup.
+word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
+word_graph = data("quantum:" + word_table)["copy_text"]
+assert data("quantum:" + word_graph)["copy_text"] == word_graph
+image = data(r"quantum:\operatorname{range}(f)")["copy_text"]
+assert data(f"quantum:replace({image},f,{word_graph})")["copy_text"] == "qset(vector(qbitlabel(1,3),qbitlabel(4,3),qbitlabel(0,3)))"
+assert data(r"quantum:\operatorname{range}(vector(2,9,3))")["copy_text"] == "7"
+assert data("quantum:qfunctionrange(qset(vector()))")["copy_text"] == "qset(vector())"
+assert b"ordered pairs" in run("quantum:qfunctionrange(qset(vector(1)))", "--json", success=False).stderr
+assert b"conflicting outputs" in run(f"quantum:qfunctionrange({conflict})", "--json", success=False).stderr
+# A set argument to an inverse function denotes its complete inverse image.
+preimage = data(r"quantum:g^{-1}(\{bitstring(1,3),bitstring(4,3)\})")["copy_text"]
+assert data(f"quantum:replace({preimage},g,{word_graph})")["copy_text"] == "qset(vector(qbitlabel(0,2),qbitlabel(1,2),qbitlabel(3,2)))"
+assert data(f"quantum:qpreimage({word_graph},qset(vector()))")["copy_text"] == "qset(vector())"
+assert b"conflicting outputs" in run(f"quantum:qpreimage({conflict},qset(vector()))", "--json", success=False).stderr
+assert data("quantum:replace(f^(-1)(6),f,2)")["copy_text"] == "3"
+for bits, value in (("00",1),("01",4),("10",0),("11",1)):
+    assert data(f"quantum:replace(g({bits}),g,{word_graph})")["copy_text"] == f"qbitlabel({value},3)"
+    ket = data(rf"quantum:replace(\vert g({bits}) \rangle,g,{word_graph})")
+    assert ket["copy_text"] == data(f"quantum:qketstate(bitstring({value},3))")["copy_text"]
+assert not data("quantum:" + word_table.replace("=100","=10"))["copy_text"].startswith("qset(")
 for changed in (table.replace("f(11)", "g(11)"), table.replace("f(11)", "f(01)"),
                 table.replace("f(11)", "f(1)"), table.replace("f(", "i("), table.replace("= 1", "= 2", 1)):
     assert not data("quantum:" + changed)["copy_text"].startswith("qset(")
@@ -817,6 +954,37 @@ for flags in [(), ("--approx",)]:
     for bad in ['qindexedmatrix("a_",n,-1,0,0)','qindexedmatrix("a_",-1,n,0,0)','qindexedmatrix("a_",n,1024,0,0)','qindexedmatrix("a_",2,1/2,0,0)','qindexedmatrix("a_",n,2,0,3)','qindexedmatrix("a_",n,m,-1,0)']:
         assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
 
+dots = r"\begin{pmatrix}z^1 \cdot t\\z^2 \cdot t\\\vdots\\z^{k} \cdot t\end{pmatrix}"
+partial_dots = data(f'quantum:replace(({dots}),"z^2",bitstring(3,2))')["copy_text"]
+expr = f'replace(replace(replace(({partial_dots}),k,2),"z^1",bitstring(1,2)),t,bitstring(3,2))'
+assert data("quantum:" + expr)["cells"] == [["1"], ["0"]]
+for bad in [dots.replace("z^2", "z^3"), dots.replace("z^2", "y^2"),
+            dots.replace("t", "x", 1), "qzerocolumnlike(matrix(1,2,[0,0]),1)",
+            "qzerocolumnlike(matrix(2,1,[0,0]),3)", "gf2_mul(M,matrix(1,1,[2]))"]:
+    run("quantum:" + bad, "--json", success=False)
+
+sample_rows = 'qsamplewordrows("z^",k,n-1,vector(),2)'
+pending_rows = data(f'quantum:replace(replace({sample_rows},"z^2_0",1),"z^1",bitstring(0,1))')["copy_text"]
+expanded_rows = data(f"quantum:replace(replace({pending_rows},k,2),n,1)")["copy_text"]
+for label, value in [('"z^2"', "bitstring(1,2)"), ('"z^1_0"', "0")]:
+    expanded_rows = data(f"quantum:replace({expanded_rows},{label},{value})")["copy_text"]
+assert expanded_rows == "vector(1,0)"
+for bad in ['qsamplewordrows("z^",1,0,vector(),2)', 'qsamplewordrows("z^",k,-1,vector(),2)',
+            'qsamplewordrows("z^",2,1,vector(1,0,0,1,0,1),2)',
+            'qsamplewordrows("z^",2,0,vector(1,1,3),2)']:
+    run("quantum:" + bad, "--json", success=False)
+
+# Sample numbers start at one, while the bit columns run down to zero.
+sample_matrix = 'qsamplebitmatrix("z^",k,n-1,2,0)'
+sample_display = data("quantum:" + sample_matrix)["display_text"]
+assert "⋱" in sample_display
+assert data("quantum:" + sample_display)["copy_text"] == data("quantum:" + sample_matrix)["copy_text"]
+for bad in [sample_display.replace("z^(2)_0", "z^(1)_0"),
+            sample_display.replace("z^(k)_0", "z^(k)_1"),
+            sample_display.replace("⋱", "⋮"),
+            'qsamplebitmatrix("z^",1,n,2,0)', 'qsamplebitmatrix("z^",k,-1,2,0)']:
+    run("quantum:" + bad, "--json", success=False)
+
 # Natural and source-derived matrix patterns evaluate to the same indexed cells.
 for flags in [(), ("--approx",)]:
     for expression in ['[a_(0,0), ⋯, a_(0,n-1); ⋮, ⋱, ⋮; a_(m-1,0), ⋯, a_(m-1,n-1)]',r'\begin{pmatrix}a_{0,0}&\cdots&a_{0,n-1}\\[1mm]\vdots&\ddots&\vdots\\a_{m-1,0}&\cdots&a_{m-1,n-1}\end{pmatrix}']:
@@ -835,6 +1003,14 @@ for flags in [(), ("--approx",)]:
 
 # Indexed column constraints must survive symbolic dimensions and substitution.
 for flags in [(), ("--approx",)]:
+    descending=data(r"quantum:\begin{pmatrix}s_{n-1}\\\vdots\\s_0\end{pmatrix}", *flags)
+    assert "⋮" in descending["display_text"]
+    for text in (descending["copy_text"], descending["display_text"]):
+        for n in (1, 3, 5):
+            actual=data(f"quantum:replace({text},n,{n})", *flags)
+            reference=data("quantum:matrix("+str(n)+",1,[" + ",".join(f'"s_{i}"' for i in reversed(range(n))) + "])", *flags)
+            assert actual["copy_text"] == reference["copy_text"]
+    assert run("quantum:replace([s_(n-1); ⋮; s_1; s_0],n,1)", "--json", *flags, success=False).stdout==b""
     symbolic=data('quantum:qindexedcolumn("alpha_",n-1,1)',*flags)
     assert symbolic['rows']==symbolic['columns']==0
     concrete=data('quantum:replace('+symbolic['copy_text']+',n,3)',*flags)

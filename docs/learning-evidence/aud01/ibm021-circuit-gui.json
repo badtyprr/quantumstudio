@@ -1,0 +1,32 @@
+{
+  "tag": "checkpoint-c5a456cd",
+  "revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "archive_sha256": "fc37b7d107a883afe2e06dc9ee438a7ac68533f5711db8e41d5439c4b39507f4",
+  "app_sha256": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "compiler_sha256": "81d0574b24cdcd21a49f4bfc5dacb63c99172c6faadb188be21a6ed359a8523c",
+  "qasm_sha256": "2c6a1df0c4ff74f5181f126731f349be0ae4ac60b29026b9b7a820ef346e48c8",
+  "gui_checks": [
+    "Source import, undo/redo and save/reopen",
+    "Exact-result display, copy/save data and minimum layout"
+  ],
+  "output_order": [
+    2,
+    1,
+    0
+  ],
+  "probabilities": {
+    "000": "0.25",
+    "011": "0.25",
+    "100": "0.25",
+    "111": "0.25"
+  },
+  "evidence_sha256": {
+    "import.source.qcircuit": "1659014bda2f1b8c6cdf599c957fd173886d8abc513a14cf7fe2faec13f11188",
+    "import.png": "e1ac2f446067ab8e893f637e230358cd740c91fc89e28b7d3235daa58e65405e",
+    "exact.json": "2ba8a62f871c1ee64c30b2544543be871dd5234661680bc51540d1e2bd48dc47",
+    "exact.tsv": "59d0250ca280f1527e0a4ad8877de97037b47163a1ae889a0b17e7735cf7699d",
+    "exact.png": "5c9ab88ea6149750eb2778d9d46837076a8934431aa8582d4b89d7f78b72f42f",
+    "exact.minimum.png": "ba568c17f1d8367fa23facbe12840b7a0ed41cbcbcbe6cf32fa85a1908e6fe71"
+  }
+}

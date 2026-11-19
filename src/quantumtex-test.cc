@@ -19,6 +19,17 @@ int main() {
  try {
   equal("$$x.$$","x");equal(R"(\[\ket{0}.\])","|0>");
   equal("$$1.5$$","1.5");equal("$$1.$$","1.");
+  equal(R"($$\left\|x\right\|^2.$$)",quantumTeX(R"($$\left\|x\right\|^2$$)"));
+  equal("$$x^{2.}$$","x^(2.)");equal("$$x^2.5$$","x^2.5");
+  equal(R"($$x=2\tag{1}$$)","x=2");
+  equal(R"($$x=2\tag*{A.1}$$)","x=2");
+  equal(R"(\begin{aligned}x &= 2\tag{1}\\y &= 3\tag{2}\end{aligned})",
+        quantumTeX(R"(\begin{aligned}x &= 2\\y &= 3\end{aligned})"));
+  rejects(R"($$x\tag{1}+2$$)");rejects(R"($$x\tag{}$$)");
+  rejects(R"($$x\tag{1}\tag{2}$$)");rejects(R"($$\tag{1}$$)");
+  equal(R"($s = s_{n-1} \cdots s_0$)",R"(s=qregisterword("s_",(n-1),(0),vector()))");
+  rejects(R"($s = s_{n-1} \cdotss_0$)");
+  rejects(R"($s = s_{n-1} \cdots t_0$)");
   equal("$$x..$$","x..");equal("$$x+.$$","x+.");
   equal("$$\"x.\"$$","\"x.\"");equal("x.","x.");
   equal(R"(\begin{aligned}x &= y.\end{aligned})",quantumTeX(R"(\begin{aligned}x &= y\end{aligned})"));
@@ -232,6 +243,9 @@ int main() {
   std::string expansion="0";
   for(unsigned i=0;i<20;++i)expansion="\\ketbra{"+expansion+"}";
   rejects(expansion);
+  equal(R"(\begin{pmatrix}s_{n-1}\\\vdots\\s_0\end{pmatrix})", "qdescendingcolumn(\"s_\",(n-1),0)");
+  equal("[s_5; ⋮; s_2; s_1; s_0]", "qdescendingcolumn(\"s_\",(5),2)");
+  for(const auto &bad:{"[s_5; ⋮; s_2; s_0]","[s_5; ⋮; s_1; t_0]","[s_5; ⋮; ⋮; s_0]"})rejects(bad);
   equal("[alpha_0; alpha_1; ⋮; alpha_(n-1)]", "qindexedcolumn(\"alpha_\",(n-1),1)");
   equal("[α_0; ⋮; α_{n-1}]", "qindexedcolumn(\"α_\",(n-1),0)");
   equal(R"(\begin{pmatrix}\alpha_0\\\alpha_1\\\vdots\\\alpha_{n-1}\end{pmatrix})", "qindexedcolumn(\"α_\",(n-1),1)");

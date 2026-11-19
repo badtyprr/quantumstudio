@@ -1,0 +1,1631 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "50c5db5a76b47106852bab5dcfa8c2734d99c437c5b22df5ac9e96d1b01381ee",
+  "total": 177,
+  "exit_codes": {
+    "0": 175,
+    "2": 2
+  },
+  "changes": {
+    "IBM021-c0-M122": {
+      "from": 2,
+      "to": 0,
+      "result": "qsamplewordrows(\"y^\",'k',qsub(n,1),vector(),2)"
+    }
+  },
+  "gui_checks": 1962,
+  "gui_records": [
+    {
+      "id": "IBM021-c0-M001",
+      "label": "EXACT RESULT",
+      "display": "qfunctiontype('f', qpower('Σ', n), qpower('Σ', 'm'))",
+      "copy": "qfunctiontype('f',qpower('Σ',n),qpower('Σ','m'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qfunctiontype('f',qpower('Σ',n),qpower('Σ','m'))"
+    },
+    {
+      "id": "IBM021-c0-M002",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M003",
+      "label": "EXACT RESULT",
+      "display": "m",
+      "copy": "'m'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'m'"
+    },
+    {
+      "id": "IBM021-c0-M004",
+      "label": "EXACT RESULT",
+      "display": "m = n",
+      "copy": "('m')==(n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('m')==(n)"
+    },
+    {
+      "id": "IBM021-c0-M005",
+      "label": "EXACT RESULT",
+      "display": "qfunctiontype('f', qpower('Σ', n), qpower('Σ', 'm'))",
+      "copy": "qfunctiontype('f',qpower('Σ',n),qpower('Σ','m'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qfunctiontype('f',qpower('Σ',n),qpower('Σ','m'))"
+    },
+    {
+      "id": "IBM021-c0-M006",
+      "label": "EXACT RESULT",
+      "display": "s ∈ 'Σ'^n",
+      "copy": "qmember('s',qpower('Σ',n))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember('s',qpower('Σ',n))"
+    },
+    {
+      "id": "IBM021-c0-M007",
+      "label": "EXACT RESULT",
+      "display": "qiff(qcompare(qgraphapply('f', x), qgraphapply('f', y), 4), qcompare(x, y, 4) || qcompare(qoplus(x, 's'), y, 4))",
+      "copy": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),(qcompare(qoplus(x,'s'),y,4) or qcompare(x,y,4)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),(qcompare(qoplus(x,'s'),y,4) or qcompare(x,y,4)))"
+    },
+    {
+      "id": "IBM021-c0-M008",
+      "label": "EXACT RESULT",
+      "display": "qmember(x, qpower('Σ', n)) && qmember(y, qpower('Σ', n))",
+      "copy": "(qmember(x,qpower('Σ',n)) and qmember(y,qpower('Σ',n)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(qmember(x,qpower('Σ',n)) and qmember(y,qpower('Σ',n)))"
+    },
+    {
+      "id": "IBM021-c0-M009",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M010",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M011",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M012",
+      "label": "EXACT RESULT",
+      "display": "0^n",
+      "copy": "0^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0^n"
+    },
+    {
+      "id": "IBM021-c0-M013",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M014",
+      "label": "EXACT RESULT",
+      "display": "s = 0^n",
+      "copy": "('s')==(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')==(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M015",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M016",
+      "label": "EXACT RESULT",
+      "display": "qiff(qcompare(qgraphapply('f', x), qgraphapply('f', y), 4), qcompare(x, y, 4))",
+      "copy": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),qcompare(x,y,4))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qiff(qcompare(qgraphapply('f',x),qgraphapply('f',y),4),qcompare(x,y,4))"
+    },
+    {
+      "id": "IBM021-c0-M017",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M018",
+      "label": "EXACT RESULT",
+      "display": "s ≠ 0^n",
+      "copy": "('s')!=(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')!=(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M019",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M020",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M021",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M022",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M023",
+      "label": "EXACT RESULT",
+      "display": "w",
+      "copy": "'w'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'w'"
+    },
+    {
+      "id": "IBM021-c0-M024",
+      "label": "EXACT RESULT",
+      "display": "qoplus('w', 's')",
+      "copy": "qoplus('w','s')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qoplus('w','s')"
+    },
+    {
+      "id": "IBM021-c0-M025",
+      "label": "EXACT RESULT",
+      "display": "w",
+      "copy": "'w'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'w'"
+    },
+    {
+      "id": "IBM021-c0-M026",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M027",
+      "label": "EXACT RESULT",
+      "display": "qfunctiontype('f', qpower('Σ', 3), qpower('Σ', 5))",
+      "copy": "qfunctiontype('f',qpower('Σ',3),qpower('Σ',5))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qfunctiontype('f',qpower('Σ',3),qpower('Σ',5))"
+    },
+    {
+      "id": "IBM021-c0-M028",
+      "label": "EXACT RESULT",
+      "display": "s = 11",
+      "copy": "('s')==(11)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')==(11)"
+    },
+    {
+      "id": "IBM021-c0-M029",
+      "label": "EXACT RESULT",
+      "display": "{(bitstring(0, 3), bitstring(19, 5)), (bitstring(1, 3), bitstring(5, 5)), (bitstring(2, 3), bitstring(5, 5)), (bitstring(3, 3), bitstring(19, 5)), (bitstring(4, 3), bitstring(26, 5)), (bitstring(5, 3), bitstring(1, 5)), (bitstring(6, 3), bitstring(1, 5)), (bitstring(7, 3), bitstring(26, 5))}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(1,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(2,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(3,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(4,3),qbitlabel(26,5))),qtuple(vector(qbitlabel(5,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(6,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(7,3),qbitlabel(26,5)))))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qset(vector(qtuple(vector(qbitlabel(0,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(1,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(2,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(3,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(4,3),qbitlabel(26,5))),qtuple(vector(qbitlabel(5,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(6,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(7,3),qbitlabel(26,5)))))"
+    },
+    {
+      "id": "IBM021-c0-M030",
+      "label": "EXACT RESULT",
+      "display": "8",
+      "copy": "8",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "8"
+    },
+    {
+      "id": "IBM021-c0-M031",
+      "label": "EXACT RESULT",
+      "display": "4",
+      "copy": "4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "4"
+    },
+    {
+      "id": "IBM021-c0-M032",
+      "label": "EXACT RESULT",
+      "display": "11",
+      "copy": "11",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "11"
+    },
+    {
+      "id": "IBM021-c0-M033",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M034",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unclosed TeX group or environment at byte 7"
+    },
+    {
+      "id": "IBM021-c0-M035",
+      "label": "EXACT RESULT",
+      "display": "101",
+      "copy": "101",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "101"
+    },
+    {
+      "id": "IBM021-c0-M036",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM021-c0-M037",
+      "label": "CHECK YOUR EXPRESSION",
+      "display": "Unmatched closing delimiter at byte 6"
+    },
+    {
+      "id": "IBM021-c0-M038",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M039",
+      "label": "EXACT RESULT",
+      "display": "s = 11",
+      "copy": "('s')==(11)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')==(11)"
+    },
+    {
+      "id": "IBM021-c0-M040",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M041",
+      "label": "EXACT RESULT",
+      "display": "m",
+      "copy": "'m'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'m'"
+    },
+    {
+      "id": "IBM021-c0-M042",
+      "label": "EXACT RESULT",
+      "display": "m",
+      "copy": "'m'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'m'"
+    },
+    {
+      "id": "IBM021-c0-M043",
+      "label": "EXACT RESULT",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM021-c0-M044",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M045",
+      "label": "EXACT RESULT",
+      "display": "1 / √(2^n) · (∑_{k ∈ 'Σ'^n} ([1; 0]^{⊗ m} ⊗ |k⟩))",
+      "copy": "qadjacent(1 ∕ qsqrt(qpower(2, n)),qsumset(qtensor(qtensorpow(matrix(2,1,vector(1,0)),'m'),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qadjacent(1 ∕ qsqrt(qpower(2, n)),qsumset(qtensor(qtensorpow(qmatrix(2,1,vector(1,0)),'m'),qketstate(\"qboundindex_1\")),qpower('Σ',n),\"qboundindex_1\"))"
+    },
+    {
+      "id": "IBM021-c0-M046",
+      "label": "EXACT RESULT",
+      "display": "\"U_f\"",
+      "copy": "\"U_f\"",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "\"U_f\""
+    },
+    {
+      "id": "IBM021-c0-M047",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M048",
+      "label": "EXACT RESULT",
+      "display": "m",
+      "copy": "'m'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'m'"
+    },
+    {
+      "id": "IBM021-c0-M049",
+      "label": "EXACT RESULT",
+      "display": "qadjacent(1 ∕ qsqrt(qpower(2, n)), qsumset(qtensor(qstatecall('f', \"qboundindex_0\"), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"))",
+      "copy": "qadjacent(1 ∕ qsqrt(qpower(2, n)),qsumset(qtensor(qstatecall('f',\"qboundindex_0\"),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qadjacent(1 ∕ qsqrt(qpower(2, n)),qsumset(qtensor(qstatecall('f',\"qboundindex_1\"),qketstate(\"qboundindex_1\")),qpower('Σ',n),\"qboundindex_1\"))"
+    },
+    {
+      "id": "IBM021-c0-M050",
+      "label": "EXACT RESULT",
+      "display": "qadjacent(1 ∕ qpower(2, n), qsumset(qsumset(qadjacent(qpower(−1, qcenterdot(\"qboundindex_1\", \"qboundindex_0\")), qtensor(qstatecall('f', \"qboundindex_1\"), qketstate(\"qboundindex_0\"))), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\"))",
+      "copy": "qadjacent(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qcenterdot(\"qboundindex_1\",\"qboundindex_0\")),qtensor(qstatecall('f',\"qboundindex_1\"),qketstate(\"qboundindex_0\"))),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\"))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qadjacent(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qcenterdot(\"qboundindex_3\",\"qboundindex_2\")),qtensor(qstatecall('f',\"qboundindex_3\"),qketstate(\"qboundindex_2\"))),qpower('Σ',n),\"qboundindex_2\"),qpower('Σ',n),\"qboundindex_3\"))"
+    },
+    {
+      "id": "IBM021-c0-M051",
+      "label": "EXACT RESULT",
+      "display": "y ∈ 'Σ'^n",
+      "copy": "qmember(y,qpower('Σ',n))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(y,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM021-c0-M052",
+      "label": "EXACT RESULT",
+      "display": "p · y",
+      "copy": "'p'y",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'p'y"
+    },
+    {
+      "id": "IBM021-c0-M053",
+      "label": "EXACT RESULT",
+      "display": "y",
+      "copy": "y",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "y"
+    },
+    {
+      "id": "IBM021-c0-M054",
+      "label": "EXACT RESULT",
+      "display": "p · y − qnorm(qadjacent(1 ∕ qpower(2, n), qsumset(qadjacent(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qstatecall('f', \"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\")))² = 0",
+      "copy": "('p'y − qnorm(qadjacent(1 ∕ qpower(2, n), qsumset(qadjacent(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qstatecall('f', \"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\")))²)==(0)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(qsub(qadjacent('p',y),qpower(qnorm(qadjacent(1 ∕ qpower(2, n),qsumset(qadjacent(qpower(−1,qcenterdot(\"qboundindex_1\",y)),qstatecall('f',\"qboundindex_1\")),qpower('Σ',n),\"qboundindex_1\"))),2)))==(0)"
+    },
+    {
+      "id": "IBM021-c0-M055",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M056",
+      "label": "EXACT RESULT",
+      "display": "qcompare(qfunctionrange('f'), qsetimage(qgraphapply('f', \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_0\"), 4)",
+      "copy": "qcompare(qfunctionrange('f'),qsetimage(qgraphapply('f',\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_0\"),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(qfunctionrange('f'),qsetimage(qgraphapply('f',\"qboundindex_1\"),qpower('Σ',n),\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM021-c0-M057",
+      "label": "EXACT RESULT",
+      "display": "z ∈ qfunctionrange('f')",
+      "copy": "qmember(z,qfunctionrange('f'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(z,qfunctionrange('f'))"
+    },
+    {
+      "id": "IBM021-c0-M058",
+      "label": "EXACT RESULT",
+      "display": "z",
+      "copy": "z",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "z"
+    },
+    {
+      "id": "IBM021-c0-M059",
+      "label": "EXACT RESULT",
+      "display": "qpreimage('f', qset(z))",
+      "copy": "qpreimage('f',qset(vector(z)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qpreimage('f',qset(vector(z)))"
+    },
+    {
+      "id": "IBM021-c0-M060",
+      "label": "EXACT RESULT",
+      "display": "qcompare(qpreimage('f', qset(z)), qsetfilter(qcompare(qgraphapply('f', \"qboundindex_0\"), z, 4), qpower('Σ', n), \"qboundindex_0\"), 4)",
+      "copy": "qcompare(qpreimage('f',qset(vector(z))),qsetfilter(qcompare(qgraphapply('f',\"qboundindex_0\"),z,4),qpower('Σ',n),\"qboundindex_0\"),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(qpreimage('f',qset(vector(z))),qsetfilter(qcompare(qgraphapply('f',\"qboundindex_1\"),z,4),qpower('Σ',n),\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM021-c0-M061",
+      "label": "EXACT RESULT",
+      "display": "qpreimage('f', qset(z))",
+      "copy": "qpreimage('f',qset(vector(z)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qpreimage('f',qset(vector(z)))"
+    },
+    {
+      "id": "IBM021-c0-M062",
+      "label": "EXACT RESULT",
+      "display": "{z}",
+      "copy": "qset(vector(z))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qset(vector(z))"
+    },
+    {
+      "id": "IBM021-c0-M063",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M064",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M065",
+      "label": "EXACT RESULT",
+      "display": "{z}",
+      "copy": "qset(vector(z))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qset(vector(z))"
+    },
+    {
+      "id": "IBM021-c0-M066",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M067",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M068",
+      "label": "EXACT RESULT",
+      "display": "{z}",
+      "copy": "qset(vector(z))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qset(vector(z))"
+    },
+    {
+      "id": "IBM021-c0-M069",
+      "label": "EXACT RESULT",
+      "display": "z",
+      "copy": "z",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "z"
+    },
+    {
+      "id": "IBM021-c0-M070",
+      "label": "EXACT RESULT",
+      "display": "p · y − qnorm(qadjacent(1 ∕ qpower(2, n), qsumset(qadjacent(qsumset(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qpreimage('f', qset(\"qboundindex_1\")), \"qboundindex_0\"), qketstate(\"qboundindex_1\")), qfunctionrange('f'), \"qboundindex_1\")))² = 0",
+      "copy": "(('p'y)+ ((−1)*((qnorm(qadjacent(1 ∕ qpower(2, n),qsumset(qadjacent(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\"),qketstate(\"qboundindex_1\")),qfunctionrange('f'),\"qboundindex_1\"))))^(2))))==(0)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(qadd(qadjacent('p',y),qmul(−1,qpower(qnorm(qadjacent(1 ∕ qpower(2, n),qsumset(qadjacent(qsumset(qpower(−1,qcenterdot(\"qboundindex_2\",y)),qpreimage('f',qset(vector(\"qboundindex_3\"))),\"qboundindex_2\"),qketstate(\"qboundindex_3\")),qfunctionrange('f'),\"qboundindex_3\"))),2))))==(0)"
+    },
+    {
+      "id": "IBM021-c0-M071",
+      "label": "EXACT RESULT",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM021-c0-M072",
+      "label": "EXACT RESULT",
+      "display": "('f' = 0 && z = 0) || (x = z ∕ 'f' && 'f' ≠ 0)",
+      "copy": "((('f')!=(0) and (x)==(z ∕ 'f')) or (('f')==(0) and (z)==(0)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "((('f')!=(0) and (x)==(z ∕ 'f')) or (('f')==(0) and (z)==(0)))"
+    },
+    {
+      "id": "IBM021-c0-M073",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M074",
+      "label": "EXACT RESULT",
+      "display": "'p'y − qadjacent(1 ∕ qpower(2, qadjacent(2, n)), qsumset(qpower(qbars(qsumset(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qpreimage('f', qset(\"qboundindex_1\")), \"qboundindex_0\")), 2), qfunctionrange('f'), \"qboundindex_1\")) = 0",
+      "copy": "(('p'y)+ ((−1)*(qadjacent(1 ∕ qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")))))==(0)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(qadd(qadjacent('p',y),qmul(−1,qadjacent(1 ∕ qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_2\",y)),qpreimage('f',qset(vector(\"qboundindex_3\"))),\"qboundindex_2\")),2),qfunctionrange('f'),\"qboundindex_3\")))))==(0)"
+    },
+    {
+      "id": "IBM021-c0-M075",
+      "label": "EXACT RESULT",
+      "display": "qbars(qsumset(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qpreimage('f', qset(z)), \"qboundindex_0\"))²",
+      "copy": "(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(z))),\"qboundindex_0\")))^(2)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_1\",y)),qpreimage('f',qset(vector(z))),\"qboundindex_1\")))^(2)"
+    },
+    {
+      "id": "IBM021-c0-M076",
+      "label": "EXACT RESULT",
+      "display": "z ∈ qfunctionrange('f')",
+      "copy": "qmember(z,qfunctionrange('f'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(z,qfunctionrange('f'))"
+    },
+    {
+      "id": "IBM021-c0-M077",
+      "label": "EXACT RESULT",
+      "display": "s = 0^n",
+      "copy": "('s')==(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')==(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M078",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M079",
+      "label": "EXACT RESULT",
+      "display": "x ∈ qpreimage('f', qset(z))",
+      "copy": "qmember(x,qpreimage('f',qset(vector(z))))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(x,qpreimage('f',qset(vector(z))))"
+    },
+    {
+      "id": "IBM021-c0-M080",
+      "label": "EXACT RESULT",
+      "display": "z ∈ qfunctionrange('f')",
+      "copy": "qmember(z,qfunctionrange('f'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(z,qfunctionrange('f'))"
+    },
+    {
+      "id": "IBM021-c0-M081",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM021-c0-M082",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM021-c0-M083",
+      "label": "EXACT RESULT",
+      "display": "s ≠ 0^n",
+      "copy": "('s')!=(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')!=(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M084",
+      "label": "EXACT RESULT",
+      "display": "qpreimage('f', qset(z))",
+      "copy": "qpreimage('f',qset(vector(z)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qpreimage('f',qset(vector(z)))"
+    },
+    {
+      "id": "IBM021-c0-M085",
+      "label": "EXACT RESULT",
+      "display": "w ∈ qpreimage('f', qset(z))",
+      "copy": "qmember('w',qpreimage('f',qset(vector(z))))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember('w',qpreimage('f',qset(vector(z))))"
+    },
+    {
+      "id": "IBM021-c0-M086",
+      "label": "EXACT RESULT",
+      "display": "qoplus('w', 's')",
+      "copy": "qoplus('w','s')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qoplus('w','s')"
+    },
+    {
+      "id": "IBM021-c0-M087",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM021-c0-M088",
+      "label": "EXACT RESULT",
+      "display": "qequalchain([qbars(qsumset(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qpreimage('f', qset(z)), \"qboundindex_0\"))^2  (|(−1)^qcenterdot('w', y) + (−1)^qcenterdot(qoplus('w', 's'), y)|^2)  (|(−1)^qcenterdot('w', y)|^2 ⋅ |1 + (−1)^qcenterdot('s', y)|^2)  (|1 + (−1)^qcenterdot(y, 's')|^2)  if(qcenterdot(y, 's') = 0, 4, if(qcompare(qcenterdot(y, 's'), 1, 4), 0, undefined))])",
+      "copy": "qequalchain(vector((qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(z))),\"qboundindex_0\")))^(2),|(−1)^qcenterdot('w', y) + (−1)^qcenterdot(qoplus('w', 's'), y)|^2,|(−1)^qcenterdot('w', y)|^2 ⋅ |1 + (−1)^qcenterdot('s', y)|^2,|1 + (−1)^qcenterdot(y, 's')|^2,if((qcenterdot(y,'s'))==(0),4,if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qequalchain(vector((qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_1\",y)),qpreimage('f',qset(vector(z))),\"qboundindex_1\")))^(2),|(−1)^qcenterdot('w', y) + (−1)^qcenterdot(qoplus('w', 's'), y)|^2,|(−1)^qcenterdot('w', y)|^2 ⋅ |1 + (−1)^qcenterdot('s', y)|^2,|1 + (−1)^qcenterdot(y, 's')|^2,if((qcenterdot(y,'s'))==(0),4,if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))"
+    },
+    {
+      "id": "IBM021-c0-M089",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM021-c0-M090",
+      "label": "EXACT RESULT",
+      "display": "z ∈ qfunctionrange('f')",
+      "copy": "qmember(z,qfunctionrange('f'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(z,qfunctionrange('f'))"
+    },
+    {
+      "id": "IBM021-c0-M091",
+      "label": "EXACT RESULT",
+      "display": "s = 0^n",
+      "copy": "('s')==(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')==(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M092",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M093",
+      "label": "EXACT RESULT",
+      "display": "2^n",
+      "copy": "2^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n"
+    },
+    {
+      "id": "IBM021-c0-M094",
+      "label": "EXACT RESULT",
+      "display": "z ∈ qfunctionrange('f')",
+      "copy": "qmember(z,qfunctionrange('f'))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(z,qfunctionrange('f'))"
+    },
+    {
+      "id": "IBM021-c0-M095",
+      "label": "EXACT RESULT",
+      "display": "p · y = 0.5^n = 0.5^n",
+      "copy": "qequalchain(vector('p'y,(1 ∕ 2)^n,(1 ∕ 2)^n))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qequalchain(vector('p'y,(1 ∕ 2)^n,(1 ∕ 2)^n))"
+    },
+    {
+      "id": "IBM021-c0-M096",
+      "label": "EXACT RESULT",
+      "display": "y ∈ 'Σ'^n",
+      "copy": "qmember(y,qpower('Σ',n))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(y,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM021-c0-M097",
+      "label": "EXACT RESULT",
+      "display": "s ≠ 0^n",
+      "copy": "('s')!=(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')!=(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M098",
+      "label": "EXACT RESULT",
+      "display": "f",
+      "copy": "'f'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'f'"
+    },
+    {
+      "id": "IBM021-c0-M099",
+      "label": "EXACT RESULT",
+      "display": "0.5 ⋅ 2^n",
+      "copy": "2^n ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n ∕ 2"
+    },
+    {
+      "id": "IBM021-c0-M100",
+      "label": "EXACT RESULT",
+      "display": "qfunctionrange('f')",
+      "copy": "qfunctionrange('f')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qfunctionrange('f')"
+    },
+    {
+      "id": "IBM021-c0-M101",
+      "label": "EXACT RESULT",
+      "display": "y ∈ 'Σ'^n",
+      "copy": "qmember(y,qpower('Σ',n))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qmember(y,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM021-c0-M102",
+      "label": "EXACT RESULT",
+      "display": "qequalchain(['p'y  qadjacent(1 ∕ qpower(2, qadjacent(2, n)), qsumset(qpower(qbars(qsumset(qpower(−1, qcenterdot(\"qboundindex_0\", y)), qpreimage('f', qset(\"qboundindex_1\")), \"qboundindex_0\")), 2), qfunctionrange('f'), \"qboundindex_1\"))  if(qcenterdot(y, 's') = 0, 1 ∕ qpower(2, qsub(n, 1)), if(qcompare(qcenterdot(y, 's'), 1, 4), 0, undefined))])",
+      "copy": "qequalchain(vector('p'y,qadjacent(1 ∕ qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")),if((qcenterdot(y,'s'))==(0),1 ∕ qpower(2, qsub(n, 1)),if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qequalchain(vector('p'y,qadjacent(1 ∕ qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_2\",y)),qpreimage('f',qset(vector(\"qboundindex_3\"))),\"qboundindex_2\")),2),qfunctionrange('f'),\"qboundindex_3\")),if((qcenterdot(y,'s'))==(0),1 ∕ qpower(2, qsub(n, 1)),if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))"
+    },
+    {
+      "id": "IBM021-c0-M103",
+      "label": "EXACT RESULT",
+      "display": "qsetfilter(qcompare(qcenterdot(\"qboundindex_0\", 's'), 0, 4), qpower('Σ', n), \"qboundindex_0\")",
+      "copy": "qsetfilter(qcompare(qcenterdot(\"qboundindex_0\",'s'),0,4),qpower('Σ',n),\"qboundindex_0\")",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qsetfilter(qcompare(qcenterdot(\"qboundindex_1\",'s'),0,4),qpower('Σ',n),\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM021-c0-M104",
+      "label": "EXACT RESULT",
+      "display": "0.5 ⋅ 2^n",
+      "copy": "2^n ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^n ∕ 2"
+    },
+    {
+      "id": "IBM021-c0-M105",
+      "label": "EXACT RESULT",
+      "display": "s ≠ 0^n",
+      "copy": "('s')!=(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')!=(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M106",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M107",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "IBM021-c0-M108",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M109",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "IBM021-c0-M110",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M111",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M112",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M113",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M114",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'"
+    },
+    {
+      "id": "IBM021-c0-M115",
+      "label": "EXACT RESULT",
+      "display": "k = n + 10",
+      "copy": "('k')==(n + 10)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('k')==(n + 10)"
+    },
+    {
+      "id": "IBM021-c0-M116",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'"
+    },
+    {
+      "id": "IBM021-c0-M117",
+      "label": "EXACT RESULT",
+      "display": "k = n + 10",
+      "copy": "('k')==(n + 10)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('k')==(n + 10)"
+    },
+    {
+      "id": "IBM021-c0-M118",
+      "label": "EXACT RESULT",
+      "display": "99.9",
+      "copy": "999 ∕ 10",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "999 ∕ 10"
+    },
+    {
+      "id": "IBM021-c0-M119",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M120",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'"
+    },
+    {
+      "id": "IBM021-c0-M121",
+      "label": "EXACT RESULT",
+      "display": "qfamilymembers(\"y^\", 'k', qpower('Σ', n), [])",
+      "copy": "qfamilymembers(\"y^\",'k',qpower('Σ',n),vector())",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qfamilymembers(\"y^\",'k',qpower('Σ',n),vector())"
+    },
+    {
+      "id": "IBM021-c0-M122",
+      "label": "EXACT RESULT",
+      "display": "qsamplewordrows(\"y^\", 'k', qsub(n, 1), [], 2)",
+      "copy": "qsamplewordrows(\"y^\",'k',qsub(n,1),vector(),2)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qsamplewordrows(\"y^\",'k',qsub(n,1),vector(),2)"
+    },
+    {
+      "id": "IBM021-c0-M123",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M124",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'"
+    },
+    {
+      "id": "IBM021-c0-M125",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M126",
+      "label": "EXACT RESULT",
+      "display": "M = [y^(1)_(n − 1), ⋯, y^(1)_0; y^(2)_(n − 1), ⋯, y^(2)_0; ⋮, ⋱, ⋮; y^(k)_(n − 1), ⋯, y^(k)_0]",
+      "copy": "qcompare('M',qsamplebitmatrix(\"y^\",'k',qsub(n,1),2,0),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare('M',qsamplebitmatrix(\"y^\",'k',qsub(n,1),2,0),4)"
+    },
+    {
+      "id": "IBM021-c0-M127",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M128",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M129",
+      "label": "EXACT RESULT",
+      "display": "v",
+      "copy": "'v'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'v'"
+    },
+    {
+      "id": "IBM021-c0-M130",
+      "label": "EXACT RESULT",
+      "display": "s = qregisterword(\"s_\", qsub(n, 1), 0, [])",
+      "copy": "qcompare('s',qregisterword(\"s_\",qsub(n,1),0,vector()),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare('s',qregisterword(\"s_\",qsub(n,1),0,vector()),4)"
+    },
+    {
+      "id": "IBM021-c0-M131",
+      "label": "EXACT RESULT",
+      "display": "v = [s_(n − 1); ⋮; s_0]",
+      "copy": "('v')==(qdescendingcolumn(\"s_\",qsub(n,1),0))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('v')==(qdescendingcolumn(\"s_\",qsub(n,1),0))"
+    },
+    {
+      "id": "IBM021-c0-M132",
+      "label": "EXACT RESULT",
+      "display": "M · v",
+      "copy": "'M''v'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M''v'"
+    },
+    {
+      "id": "IBM021-c0-M133",
+      "label": "EXACT RESULT",
+      "display": "2",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "IBM021-c0-M134",
+      "label": "EXACT RESULT",
+      "display": "2",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "IBM021-c0-M135",
+      "label": "EXACT RESULT",
+      "display": "M · v = qsampledotcolumn(\"y^\", 'k', 's', [], 2) = qzerocolumnlike(qsampledotcolumn(\"y^\", 'k', 's', [], 2), 2)",
+      "copy": "qequalchain(vector('M''v',qsampledotcolumn(\"y^\",'k','s',vector(),2),qzerocolumnlike(qsampledotcolumn(\"y^\",'k','s',vector(),2),2)))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qequalchain(vector('M''v',qsampledotcolumn(\"y^\",'k','s',vector(),2),qzerocolumnlike(qsampledotcolumn(\"y^\",'k','s',vector(),2),2)))"
+    },
+    {
+      "id": "IBM021-c0-M136",
+      "label": "EXACT RESULT",
+      "display": "v",
+      "copy": "'v'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'v'"
+    },
+    {
+      "id": "IBM021-c0-M137",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M138",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M139",
+      "label": "EXACT RESULT",
+      "display": "2",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "IBM021-c0-M140",
+      "label": "EXACT RESULT",
+      "display": "s = 0^n",
+      "copy": "('s')==(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')==(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M141",
+      "label": "EXACT RESULT",
+      "display": "s ≠ 0^n",
+      "copy": "('s')!=(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')!=(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M142",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M143",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M144",
+      "label": "EXACT RESULT",
+      "display": "s ≠ 0^n",
+      "copy": "('s')!=(0^n)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('s')!=(0^n)"
+    },
+    {
+      "id": "IBM021-c0-M145",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M146",
+      "label": "EXACT RESULT",
+      "display": "0^n",
+      "copy": "0^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0^n"
+    },
+    {
+      "id": "IBM021-c0-M147",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M148",
+      "label": "EXACT RESULT",
+      "display": "k",
+      "copy": "'k'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'k'"
+    },
+    {
+      "id": "IBM021-c0-M149",
+      "label": "EXACT RESULT",
+      "display": "k = n + 10",
+      "copy": "('k')==(n + 10)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('k')==(n + 10)"
+    },
+    {
+      "id": "IBM021-c0-M150",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M151",
+      "label": "EXACT RESULT",
+      "display": "0^n",
+      "copy": "0^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0^n"
+    },
+    {
+      "id": "IBM021-c0-M152",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M153",
+      "label": "EXACT RESULT",
+      "display": "99.9",
+      "copy": "999 ∕ 10",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "999 ∕ 10"
+    },
+    {
+      "id": "IBM021-c0-M154",
+      "label": "EXACT RESULT",
+      "display": "k = n + 10",
+      "copy": "('k')==(n + 10)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('k')==(n + 10)"
+    },
+    {
+      "id": "IBM021-c0-M155",
+      "label": "EXACT RESULT",
+      "display": "k = n + r",
+      "copy": "('k')==(n + 'r')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('k')==(n + 'r')"
+    },
+    {
+      "id": "IBM021-c0-M156",
+      "label": "EXACT RESULT",
+      "display": "r",
+      "copy": "'r'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'r'"
+    },
+    {
+      "id": "IBM021-c0-M157",
+      "label": "EXACT RESULT",
+      "display": "0^n",
+      "copy": "0^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0^n"
+    },
+    {
+      "id": "IBM021-c0-M158",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M159",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M160",
+      "label": "EXACT RESULT",
+      "display": "1 − 0.5^r",
+      "copy": "1 − (1 ∕ 2)^'r'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 − (1 ∕ 2)^'r'"
+    },
+    {
+      "id": "IBM021-c0-M161",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M162",
+      "label": "EXACT RESULT",
+      "display": "2",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "IBM021-c0-M163",
+      "label": "EXACT RESULT",
+      "display": "2",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "IBM021-c0-M164",
+      "label": "EXACT RESULT",
+      "display": "0^n",
+      "copy": "0^n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0^n"
+    },
+    {
+      "id": "IBM021-c0-M165",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M166",
+      "label": "EXACT RESULT",
+      "display": "M",
+      "copy": "'M'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'M'"
+    },
+    {
+      "id": "IBM021-c0-M167",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M168",
+      "label": "EXACT RESULT",
+      "display": "0.5 ⋅ 2^(0.5n) − 1",
+      "copy": "2^(n ∕ 2) ∕ 2 − 1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^(n ∕ 2) ∕ 2 − 1"
+    },
+    {
+      "id": "IBM021-c0-M169",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M170",
+      "label": "EXACT RESULT",
+      "display": "0.5",
+      "copy": "1 ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM021-c0-M171",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M172",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M173",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M174",
+      "label": "EXACT RESULT",
+      "display": "0.5 ⋅ 2^(0.5n) − 1",
+      "copy": "2^(n ∕ 2) ∕ 2 − 1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2^(n ∕ 2) ∕ 2 − 1"
+    },
+    {
+      "id": "IBM021-c0-M175",
+      "label": "EXACT RESULT",
+      "display": "s",
+      "copy": "'s'",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "'s'"
+    },
+    {
+      "id": "IBM021-c0-M176",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "IBM021-c0-M177",
+      "label": "EXACT RESULT",
+      "display": "n",
+      "copy": "n",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "n"
+    },
+    {
+      "id": "all-match",
+      "label": "EXACT RESULT",
+      "display": "[1  1  1  1]",
+      "copy": "vector(1,1,1,1)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "vector(1,1,1,1)"
+    },
+    {
+      "id": "hidden-row-differs",
+      "label": "EXACT RESULT",
+      "display": "[1  1  0  1]",
+      "copy": "vector(1,1,0,1)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "vector(1,1,0,1)"
+    },
+    {
+      "id": "partial",
+      "label": "EXACT RESULT",
+      "display": "qsamplewordrows(\"y^\", 'k', qsub(n, 1), [2  1  1  1  0  qbitlabel(0, 1)], 2)",
+      "copy": "qsamplewordrows(\"y^\",'k',qsub(n,1),vector(2,1,1,1,0,qbitlabel(0,1)),2)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qsamplewordrows(\"y^\",'k',qsub(n,1),vector(2,1,1,1,0,qbitlabel(0,1)),2)"
+    }
+  ]
+}

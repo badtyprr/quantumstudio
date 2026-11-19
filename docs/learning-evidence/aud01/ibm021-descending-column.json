@@ -1,0 +1,78 @@
+{
+  "candidate_worker_sha256": "578a560f3bdef35fef80e3870e1dc80096b31ae3b46a1c421fea0df57fda5af0",
+  "baseline_worker_sha256": "0e7dd16d9bfa1ced45c023c4cef2f76c25808b842477d096f259a91e2aef7223",
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "compared": 177,
+  "diagnostics": 39,
+  "changed": [
+    {
+      "id": "IBM021-c0-M131",
+      "literal": "$$\nv = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}\n$$",
+      "previous": "An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts",
+      "candidate": {
+        "text": "'v' = qdescendingcolumn(\"s_\", qsub(n, 1), 0)",
+        "display_text": "v = [s_(n − 1); ⋮; s_0]",
+        "copy_text": "('v')==(qdescendingcolumn(\"s_\",qsub(n,1),0))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    }
+  ],
+  "order_controls": [
+    {
+      "input": "replace(replace((v = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}),n,2),v,matrix(2,1,[\"s_1\",\"s_0\"]))",
+      "endpoint_control": null,
+      "actual": "1"
+    },
+    {
+      "input": "replace(replace((v = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}),n,2),v,matrix(2,1,[\"s_0\",\"s_1\"]))",
+      "endpoint_control": "replace(((matrix(2,1,[\"s_0\" − \"s_1\",\"s_1\" − \"s_0\"]))==(matrix(2,1,[0,0]))),vector(\"s_0\",\"s_1\"),vector(0,1))",
+      "actual": "0"
+    },
+    {
+      "input": "replace(replace((v = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}),n,3),v,matrix(3,1,[\"s_2\",\"s_1\",\"s_0\"]))",
+      "endpoint_control": null,
+      "actual": "1"
+    },
+    {
+      "input": "replace(replace((v = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}),n,3),v,matrix(3,1,[\"s_0\",\"s_1\",\"s_2\"]))",
+      "endpoint_control": "replace(((matrix(3,1,[\"s_0\" − \"s_2\",0,\"s_2\" − \"s_0\"]))==(matrix(3,1,[0,0,0]))),vector(\"s_0\",\"s_2\"),vector(0,1))",
+      "actual": "0"
+    },
+    {
+      "input": "replace(replace((v = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}),n,5),v,matrix(5,1,[\"s_4\",\"s_3\",\"s_2\",\"s_1\",\"s_0\"]))",
+      "endpoint_control": null,
+      "actual": "1"
+    },
+    {
+      "input": "replace(replace((v = \\begin{pmatrix}\ns_{n-1}\\\\\n\\vdots\\\\\ns_0\n\\end{pmatrix}),n,5),v,matrix(5,1,[\"s_0\",\"s_1\",\"s_2\",\"s_3\",\"s_4\"]))",
+      "endpoint_control": "replace(((matrix(5,1,[\"s_0\" − \"s_4\",\"s_1\" − \"s_3\",0,\"s_3\" − \"s_1\",\"s_4\" − \"s_0\"]))==(matrix(5,1,[0,0,0,0,0]))),vector(\"s_0\",\"s_4\"),vector(0,1))",
+      "actual": "0"
+    }
+  ],
+  "gui": [
+    {
+      "id": "IBM021-c0-M131",
+      "label": "EXACT RESULT",
+      "display": "v = [s_(n − 1); ⋮; s_0]",
+      "copy": "('v')==(qdescendingcolumn(\"s_\",qsub(n,1),0))",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "('v')==(qdescendingcolumn(\"s_\",qsub(n,1),0))"
+    },
+    {
+      "id": "width-three",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "gui_application_sha256": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2"
+}

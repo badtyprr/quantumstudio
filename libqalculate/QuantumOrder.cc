@@ -3,7 +3,17 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "QuantumAlgebra.h"
+#include "QuantumBinary.h"
+#include "QuantumIndexed.h"
 namespace {
+// A binary word is identified by both its bits and its register width.
+bool compareBitLabels(const MathStructure &left,const MathStructure &right,bool &equal,const EvaluationOptions &eo) {
+ if(!isQuantumBitLabel(left) || !isQuantumBitLabel(right) || left.size()!=2 || right.size()!=2)return false;
+ MathStructure a=left[0],aw=left[1],b=right[0],bw=right[1];
+ if(validateQuantumBitLabel(a,aw,eo)!=QuantumBitLabelState::Concrete ||
+    validateQuantumBitLabel(b,bw,eo)!=QuantumBitLabelState::Concrete)return false;
+ equal=a.equals(b) && aw.equals(bw);return true;
+}
 // For every complex matrix M, M†M and MM† are positive semidefinite,
 // including rectangular and rank-deficient M. This does not prove strictness.
 bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
@@ -70,6 +80,9 @@ bool quantumMatrixOrder(MathStructure &out,MathStructure left,MathStructure righ
  }
  out=1;return true;
 }
+bool setPair(const MathStructure &left,const MathStructure &right) {
+ return left.isFunction() && right.isFunction() && left.function()->referenceName()=="qset" && right.function()->referenceName()=="qset";
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
@@ -90,12 +103,48 @@ class QuantumOrderFunction: public MathFunction {
    }
    static const ComparisonType kinds[]={COMPARISON_LESS,COMPARISON_GREATER,COMPARISON_EQUALS_LESS,COMPARISON_EQUALS_GREATER,COMPARISON_EQUALS,COMPARISON_NOT_EQUALS};
    int kind=args[2].number().intValue();
+   // A deferred graph domain is a set: keep equality intact for later
+   // substitution instead of reducing it to a scalar difference.
+   if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
+    if(!args[k].isFunction())continue;
+    const auto &name=args[k].function()->referenceName();
+    if(name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qnamedapplication" || name=="qcomparisonliteral")return 0;
+   }
+   // A free name can denote the entire matrix. Keep it available for
+   // substitution instead of broadcasting it across the matrix entries.
+   if(kind>=4)for(unsigned k=0;k<2;++k) {
+    if(!args[k].isMatrix() || !args[1-k].isSymbolic())continue;
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
+   bool equal=false;
+   if(kind>=4 && setPair(args[0],args[1])) {
+    if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
+    out=(kind==4)==equal ? 1 : 0;return 1;
+   }
+   if(kind>=4 && compareBitLabels(args[0],args[1],equal,eo)) {out=(kind==4)==equal ? 1 : 0;return 1;}
    if(args[1].isZero() && symbolicGram(args[0],eo) && (kind==0 || kind==3)) {out=kind==3 ? 1 : 0;return 1;}
    if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
    if(args[2].number()<4 && (args[0].containsType(STRUCT_VECTOR,true)>0 || args[1].containsType(STRUCT_VECTOR,true)>0))
     return quantumMatrixOrder(out,raw[0],raw[1],args[2].number().intValue(),eo) ? 1 : 0;
    out=args[0];out.transform(kinds[args[2].number().intValue()],args[1]);out.eval(eo);return 1;
   }
+ }
+};
+class QuantumEquivalence: public MathFunction {
+ public:
+ QuantumEquivalence():MathFunction("qiff",2) {}
+ ExpressionItem *copy() const {return new QuantumEquivalence(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  bool truth[2]={false,false},pending=false;
+  for(unsigned k=0;k<2;++k) {
+   MathStructure predicate=raw[k];predicate.eval(eo);
+   if(predicate.isZero() || predicate.isOne())truth[k]=predicate.isOne();
+   else if(predicate.containsUnknowns() && !predicate.isVector())pending=true;
+   else {CALCULATOR->error(true,"Logical equivalence requires two Boolean predicates.",NULL);return 0;}
+  }
+  if(pending)return 0;
+  out=truth[0]==truth[1] ? 1 : 0;return 1;
  }
 };
 class QuantumEqualityChain: public MathFunction {
@@ -127,6 +176,13 @@ class QuantumEqualityChain: public MathFunction {
   bool equal=true;
   if(!deferred)for(size_t k=1;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
+   bool same=false;
+   if(setPair(operands[k-1],operands[k])) {
+    if(!compareQuantumSets(operands[k-1],operands[k],same,eo))deferred=true;
+    else if(!same)equal=false;
+    continue;
+   }
+   if(compareBitLabels(operands[k-1],operands[k],same,eo)) {if(!same)equal=false;continue;}
    MathStructure comparison=operands[k-1];comparison.transform(COMPARISON_EQUALS,operands[k]);comparison.eval(eo);
    if(comparison.isNumber() && comparison.number().isZero())equal=false;
    else if(!comparison.isNumber() || !comparison.number().isOne())deferred=true;
@@ -142,6 +198,7 @@ class QuantumEqualityChain: public MathFunction {
 };
 }
 void registerQuantumOrder(Calculator &calculator) {
+ calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());
 }

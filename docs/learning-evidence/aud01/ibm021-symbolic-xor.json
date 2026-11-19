@@ -1,0 +1,33 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "ca186fc065f196cba4ceb75512969166e160443e8c15aeee01bf647a8571a3f6",
+  "total": 177,
+  "exit_codes": {
+    "2": 28,
+    "0": 149
+  },
+  "changes": {
+    "IBM021-c0-M024": {
+      "from": 2,
+      "to": 0,
+      "result": "qoplus('w','s')"
+    },
+    "IBM021-c0-M086": {
+      "from": 2,
+      "to": 0,
+      "result": "qoplus('w','s')"
+    },
+    "IBM021-c0-M088": {
+      "from": 2,
+      "to": 2,
+      "result": "Bars require a scalar or finite flat collection."
+    }
+  },
+  "gui": {
+    "M024": "qoplus('w','s')",
+    "M086": "qoplus('w','s')",
+    "M088-y0": "1",
+    "M088-y1": "1"
+  },
+  "gui_checks": 44
+}

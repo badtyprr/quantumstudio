@@ -1,0 +1,84 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "2d9eed272f68f5d581bf868df28176cc68b3f5d5376247da313864eeee197d67",
+  "total": 177,
+  "exit_codes": {
+    "2": 15,
+    "0": 162
+  },
+  "changes": {
+    "IBM021-c0-M006": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember('s',qpower('\u03a3',n))"
+    },
+    "IBM021-c0-M045": {
+      "from": 2,
+      "to": 0,
+      "result": "qadjacent(1 \u2215 qsqrt(qpower(2, n)),qsumset(qtensor(qtensorpow(matrix(2,1,vector(1,0)),'m'),qketstate(\"qboundindex_0\")),qpower('\u03a3',n),\"qboundindex_0\"))",
+      "bindings_on_copy_match_original": true
+    },
+    "IBM021-c0-M049": {
+      "from": 2,
+      "to": 0,
+      "result": "qadjacent(1 \u2215 qsqrt(qpower(2, n)),qsumset(qtensor(qstatecall('f',\"qboundindex_0\"),qketstate(\"qboundindex_0\")),qpower('\u03a3',n),\"qboundindex_0\"))",
+      "bindings_on_copy_match_original": false
+    },
+    "IBM021-c0-M050": {
+      "from": 2,
+      "to": 0,
+      "result": "qadjacent(1 \u2215 qpower(2, n),qsumset(qsumset(qadjacent(qpower(\u22121,qcenterdot(\"qboundindex_1\",\"qboundindex_0\")),qtensor(qstatecall('f',\"qboundindex_1\"),qketstate(\"qboundindex_0\"))),qpower('\u03a3',n),\"qboundindex_0\"),qpower('\u03a3',n),\"qboundindex_1\"))",
+      "bindings_on_copy_match_original": false
+    },
+    "IBM021-c0-M051": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(y,qpower('\u03a3',n))"
+    },
+    "IBM021-c0-M054": {
+      "from": 2,
+      "to": 2,
+      "result": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    "IBM021-c0-M056": {
+      "from": 2,
+      "to": 0,
+      "result": "(qfunctionrange('f') \u2212 qsetimage('f' \u22c5 \"qboundindex_0\", qpower('\u03a3', n), \"qboundindex_0\"))==(0)",
+      "bindings_on_copy_match_original": false
+    },
+    "IBM021-c0-M060": {
+      "from": 2,
+      "to": 0,
+      "result": "((\u2212qsetfilter(qcompare('f' \u22c5 \"qboundindex_0\", z, 4), qpower('\u03a3', n), \"qboundindex_0\"))+ (qpreimage('f',qset(vector(z)))))==(0)",
+      "bindings_on_copy_match_original": false
+    },
+    "IBM021-c0-M071": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(x,qpower('\u03a3',n))"
+    },
+    "IBM021-c0-M096": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(y,qpower('\u03a3',n))"
+    },
+    "IBM021-c0-M101": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(y,qpower('\u03a3',n))"
+    },
+    "IBM021-c0-M103": {
+      "from": 2,
+      "to": 0,
+      "result": "qsetfilter(qcompare(qcenterdot(\"qboundindex_0\",'s'),0,4),qpower('\u03a3',n),\"qboundindex_0\")"
+    }
+  },
+  "gui": {
+    "M006": "qmember('s',qpower('\u03a3',n))",
+    "M006-bound": "1",
+    "M103": "qsetfilter(qcompare(qcenterdot(\"qboundindex_0\",'s'),0,4),qpower('\u03a3',n),\"qboundindex_0\")",
+    "M103-bound": "qset(vector(qbitlabel(0,3),qbitlabel(3,3),qbitlabel(4,3),qbitlabel(7,3)))"
+  },
+  "M103_reentry_copy": "qsetfilter(qcompare(qcenterdot(\"qboundindex_1\",'s'),0,4),qpower('\u03a3',n),\"qboundindex_1\")",
+  "gui_checks": 44
+}

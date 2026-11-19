@@ -1,0 +1,64 @@
+{
+  "worker_sha256": "40563b5a14110933207380ed2e86286cb968306f335d89cfc6baf15c059b1897",
+  "total": 177,
+  "exit_codes": {
+    "2": 32,
+    "0": 145
+  },
+  "changes": {
+    "IBM021-c0-M057": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(z,qfunctionrange('f'))"
+    },
+    "IBM021-c0-M070": {
+      "from": 2,
+      "to": 2,
+      "result": "Unexpected notation at byte 129"
+    },
+    "IBM021-c0-M074": {
+      "from": 2,
+      "to": 0,
+      "result": "(('p'y)+ ((\u22121)*(qadjacent(1 \u2215 qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qadjacent(qpower('f',\u22121),qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")))))==(0)"
+    },
+    "IBM021-c0-M076": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(z,qfunctionrange('f'))"
+    },
+    "IBM021-c0-M080": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(z,qfunctionrange('f'))"
+    },
+    "IBM021-c0-M090": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(z,qfunctionrange('f'))"
+    },
+    "IBM021-c0-M094": {
+      "from": 2,
+      "to": 0,
+      "result": "qmember(z,qfunctionrange('f'))"
+    },
+    "IBM021-c0-M100": {
+      "from": 0,
+      "to": 0,
+      "result": "qfunctionrange('f')"
+    },
+    "IBM021-c0-M102": {
+      "from": 2,
+      "to": 0,
+      "result": "qequalchain(vector('p'y,qadjacent(1 \u2215 qpower(2, qadjacent(2, n)),qsumset(qpower(qbars(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qadjacent(qpower('f',\u22121),qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")),if((('s')==(0) or (y)==(0)),1 \u2215 qpower(2, qsub(n, 1)),if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))"
+    }
+  },
+  "gui": {
+    "M100": "qfunctionrange('f')",
+    "M057": "qmember(z,qfunctionrange('f'))",
+    "range": "qset(vector(qbitlabel(19,5),qbitlabel(5,5),qbitlabel(26,5),qbitlabel(1,5)))",
+    "z19": "1",
+    "z0": "0"
+  },
+  "gui_checks": 55,
+  "source_snapshot_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a"
+}

@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumTeX.h"
+#include <algorithm>
 #include <cctype>
 #include <map>
 #include <stdexcept>
@@ -16,7 +17,12 @@ std::string trim(const std::string &s) {
 std::string withoutDisplayPunctuation(std::string value) {
  size_t mark=value.find_last_not_of(" \t\r\n");
  if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=','))return value;
- if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1]))return value;
+ if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1])) {
+  // An unbraced TeX superscript consumes one token. The following period
+  // belongs to the sentence, while a number such as 1. keeps its decimal.
+  size_t previous=mark>=2 ? value.find_last_not_of(" \t\r\n",mark-2) : std::string::npos;
+  if(previous==std::string::npos || value[previous]!='^')return value;
+ }
  size_t before=value.find_last_not_of(" \t\r\n",mark-1);
  if(before==std::string::npos)return value;
  unsigned char end=value[before];
@@ -28,14 +34,15 @@ std::string withoutDisplayPunctuation(std::string value) {
  if(!quote)value.erase(mark,1);
  return value;
 }
-// A complete list of Boolean outputs on fixed-width binary words is the
-// graph of a function. Keep its input labels distinct from decimal scalars.
+// Fixed-width binary words in a complete function table retain leading zeros.
+// Single-bit results are Boolean scalars; longer results are register labels.
 std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
  const size_t count=rows.size();
  if(count<4 || (count & (count-1)))return "";
  size_t width=0;
  for(size_t n=count;n>1;n/=2)++width;
- std::vector<char> outputs(count);
+ std::vector<std::string> outputs(count);
+ size_t outputWidth=0;
  std::string function;
  for(const auto &row:rows) {
   size_t open=row.find('('),close=row.find(')'),equal=row.find('=');
@@ -44,12 +51,14 @@ std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
   std::string name=trim(row.substr(0,open)),bits=trim(row.substr(open+1,close-open-1)),value=trim(row.substr(equal+1));
   if(name=="e" || name=="i")return ""; // These are built-in scalar constants.
   if(name.size()!=1 || name[0]<'a' || name[0]>'z' || (!function.empty() && function!=name) ||
-     bits.size()!=width || bits.find_first_not_of("01")!=std::string::npos || (value!="0" && value!="1"))return "";
+     bits.size()!=width || bits.find_first_not_of("01")!=std::string::npos || value.empty() || value.find_first_not_of("01")!=std::string::npos ||
+     (outputWidth && value.size()!=outputWidth))return "";
   function=name;
   size_t index=0;
   for(char bit:bits)index=2*index+(bit-'0');
-  if(outputs[index])return "";
-  outputs[index]=value[0];
+  if(!outputs[index].empty())return "";
+  outputWidth=value.size();
+  outputs[index]=outputWidth==1 ? value : "bitstring("+value+"_2,"+std::to_string(outputWidth)+")";
  }
  std::string graph="qset(vector(";
  for(size_t i=0;i<count;++i) {
@@ -280,10 +289,34 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   if(close!=std::string::npos)rows[row]=trim(rows[row].substr(close+1));
  }
  auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
- if(rows.size()<3 || rows[rows.size()-2]!=marker || rows.size()>1027)invalid();
- std::string family, last;
+ if(rows.size()<3 || rows.size()>1027 || (rows[1]!=marker && rows[rows.size()-2]!=marker))invalid();
+ if(rows[rows.size()-2]==marker && std::count(rows.begin(),rows.end(),"0")==int(rows.size()-1))
+  return "qtexzerocolumn("+std::to_string(rows.size()-2)+")";
+ const std::string dot=tex ? "\\cdot" : "·";
+ if(rows.front().find(dot)!=std::string::npos) {
+  auto malformed=[](){throw std::runtime_error("A sample dot-product column requires consecutive one-based samples and a common right operand");};
+  if(rows[rows.size()-2]!=marker)malformed();
+  std::string family,probe,last;
+  for(size_t r=0;r<rows.size();++r) {
+   if(r==rows.size()-2)continue;
+   const std::string &entry=rows[r];size_t at=entry.find(dot);
+   if(at==std::string::npos)malformed();
+   std::string label=trim(entry.substr(0,at)),right=trim(entry.substr(at+dot.size()));
+   if(label.size()<3 || label[0]<'a' || label[0]>'z' || label[1]!='^' || right.size()!=1 || !asciiLetter(right[0]))malformed();
+   if(family.empty()) {family=label.substr(0,1);probe=right;}
+   if(label[0]!=family[0] || probe!=right)malformed();
+   std::string index=trim(label.substr(2));
+   if(index.size()>=2 && ((index.front()=='{' && index.back()=='}') || (index.front()=='(' && index.back()==')')))index=trim(index.substr(1,index.size()-2));
+   if(index.empty() || index.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/ ")!=std::string::npos)malformed();
+   if(r+1<rows.size() && index!=std::to_string(r+1))malformed();
+   last=index;
+  }
+  return "qsampledotcolumn(\""+family+"^\",("+last+"),"+probe+",vector(),"+std::to_string(rows.size()-2)+")";
+ }
+ std::string family;
+ std::vector<std::string> indices;
  for(size_t row=0;row<rows.size();++row) {
-  if(row==rows.size()-2)continue;
+  if(rows[row]==marker)continue;
   const std::string &entry=rows[row];size_t sub=entry.find('_');
   if(sub==std::string::npos || sub==0)invalid();
   std::string name=trim(entry.substr(0,sub)), index=trim(entry.substr(sub+1));
@@ -298,10 +331,15 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   // Endpoint arithmetic deliberately excludes separators, calls, and nested
   // subscripts: those require a more explicit indexed construction.
   for(unsigned char c:index)if(c<128 && !std::isalnum(c) && !std::isspace(c) && ( !grouped || (c!='+' && c!='-' && c!='*' && c!='/')))invalid();
-  if(row+1<rows.size()) {if(index!=std::to_string(row))invalid();}
-  else last=index;
+  indices.push_back(index);
  }
- return "qindexedcolumn(\""+quantumTeX(family)+"_\",("+last+"),"+std::to_string(rows.size()-3)+")";
+ if(indices.size()+1!=rows.size())invalid();
+ bool descending=rows[1]==marker && indices.back()=="0" && !(rows[rows.size()-2]==marker && indices.front()=="0");
+ if(descending)std::reverse(indices.begin(),indices.end());
+ else if(rows[rows.size()-2]!=marker)invalid();
+ for(size_t i=0;i+1<indices.size();++i)if(indices[i]!=std::to_string(i))invalid();
+ const char *operation=descending ? "qdescendingcolumn" : "qindexedcolumn";
+ return std::string(operation)+"(\""+quantumTeX(family)+"_\",("+indices.back()+"),"+std::to_string(rows.size()-3)+")";
 }
 // Split only at the current matrix level; commas in grouped paired indices
 // and delimiters in quoted labels must not create extra cells.
@@ -318,6 +356,61 @@ std::vector<std::string> indexedParts(const std::string &raw,const std::string &
  }
  parts.push_back(trim(raw.substr(start)));return parts;
 }
+std::string sampleArray(const std::vector<std::vector<std::string>> &cells,const std::string &horizontal,
+                        const std::string &vertical,const std::string &diagonal,bool definitions) {
+  const size_t height=cells.size(),width=cells[0].size();
+  auto invalidSample=[](){throw std::runtime_error("A sample matrix requires consecutive one-based rows and matching bit columns ending at zero");};
+  auto index=[](std::string text) {
+   text=trim(text);
+   if(text.size()>=2 && ((text.front()=='{' && text.back()=='}') || (text.front()=='(' && text.back()==')')))text=trim(text.substr(1,text.size()-2));
+   return text;
+  };
+  std::string name,lastSample,highBit;
+  if(width!=3)invalidSample();
+  for(size_t r=0;r<height;++r) {
+   if(cells[r].size()!=width)invalidSample();
+   if(r==height-2) {
+    if(cells[r][0]!=vertical || cells[r][1]!=diagonal || cells[r][2]!=vertical)invalidSample();
+    continue;
+   }
+   if(cells[r][1]!=horizontal)invalidSample();
+   std::string row;
+   for(size_t c:{size_t(0),size_t(2)}) {
+    const std::string &cell=cells[r][c];
+    size_t sub=cell.find('_');
+    if(cell.size()<5 || cell[0]<'a' || cell[0]>'z' || cell[1]!='^' || sub==std::string::npos || sub<3)invalidSample();
+    if(name.empty())name=cell.substr(0,1);
+    if(name[0]!=cell[0])invalidSample();
+    std::string sample=index(cell.substr(2,sub-2)),bit=index(cell.substr(sub+1));
+    auto scalarIndex=[](const std::string &s) {
+     return !s.empty() && s.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/ ")==std::string::npos;
+    };
+    if(!scalarIndex(sample) || !scalarIndex(bit) || (!row.empty() && row!=sample))invalidSample();
+    row=sample;
+    if(c==0) {if(highBit.empty())highBit=bit;else if(highBit!=bit)invalidSample();}
+    else if(bit!="0")invalidSample();
+   }
+   if(r<height-2 && row!=std::to_string(r+1))invalidSample();
+   if(r==height-1)lastSample=row;
+  }
+  std::string args="(\""+name+"^\",("+lastSample+"),("+highBit+"),";
+  return definitions ? "qsamplewordrows"+args+"vector(),"+std::to_string(height-2)+")" :
+                       "qsamplebitmatrix"+args+std::to_string(height-2)+",0)";
+}
+std::string sampleWordDefinitions(const std::vector<std::string> &lines) {
+ if(lines.size()<3 || lines[lines.size()-2]!="⋮" || lines[0].find("⋯")==std::string::npos)return "";
+ std::vector<std::vector<std::string>> cells;
+ for(const auto &line:lines) {
+  if(line=="⋮") {cells.push_back({"⋮","⋱","⋮"});continue;}
+  auto sides=indexedParts(line,"=");
+  if(sides.size()!=2 || sides[0].size()<3 || sides[0][1]!='^')return "";
+  auto bits=indexedParts(sides[1],"⋯");
+  if(bits.size()!=2 || bits[0].compare(0,sides[0].size()+1,sides[0]+"_")!=0 ||
+     bits[1].compare(0,sides[0].size()+1,sides[0]+"_")!=0)return "";
+  cells.push_back({bits[0],"⋯",bits[1]});
+ }
+ return sampleArray(cells,"⋯","⋮","⋱",true);
+}
 std::string indexedMatrix(const std::string &raw,bool tex) {
  const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
  auto rows=indexedParts(raw,tex ? "\\\\" : ";");
@@ -333,6 +426,11 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ // A superscript names the one-based sample row. Subscripts label the
+ // bits of that sample in descending order, with zero at the right.
+ if(cells[0][0].find('^')!=std::string::npos) {
+  return sampleArray(cells,horizontal,vertical,diagonal,false);
+ }
  std::string family,lastRow,lastColumn;
  for(size_t r=0;r<height;++r) {
   if(cells[r].size()!=width)invalid();
@@ -594,6 +692,11 @@ class TeXReader {
   }
   if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
   if(name=="mid" && setExpressions)return ":";
+  if((name=="ldots" || name=="dots" || name=="cdots") && pos>name.size()+1) {
+   size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2);
+   size_t after=input.find_first_not_of(" \t\r\n",pos);
+   if(before!=std::string::npos && after!=std::string::npos && input[before]==',' && input[after]==',')return "...";
+  }
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
@@ -714,6 +817,7 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
   }
@@ -761,7 +865,7 @@ class TeXReader {
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
-   {"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
+   {"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
@@ -853,6 +957,44 @@ class TeXReader {
     if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
    }
    else if(input[pos]=='\\') {
+    // In a word definition the matching base name disambiguates
+    // concatenation of indexed bits from an ellipsis in a scalar product.
+    if((input.compare(pos,6,"\\cdots")==0 || input.compare(pos,6,"\\ldots")==0) &&
+       (pos+6==input.size() || !asciiLetter((unsigned char)input[pos+6]))) {
+     size_t equals=result.find('=');
+     if(equals!=std::string::npos) {
+      std::string word=trim(result.substr(0,equals)),first=trim(result.substr(equals+1));
+      if(!word.empty() && std::all_of(word.begin(),word.end(),asciiLetter) &&
+         first.compare(0,word.size()+1,word+"_")==0) {
+       first=trim(first.substr(word.size()+1));
+       bool grouped=first.size()>2 && first.front()=='{' && first.back()=='}';
+       if(grouped)first=first.substr(1,first.size()-2);
+       bool valid=!first.empty();
+       for(unsigned char c:first)if(!std::isalnum(c) && !(grouped && (std::isspace(c) || c=='+' || c=='-' || c=='*' || c=='/')))valid=false;
+       size_t endpoint=input.find_first_not_of(" \t\r\n",pos+6);
+       if(valid && endpoint!=std::string::npos && input.compare(endpoint,word.size()+1,word+"_")==0) {
+        pos=endpoint+word.size()+1;
+        std::string last=argument();
+        result=word+"=qregisterword(\""+word+"_\",("+first+"),("+last+"),vector())";continue;
+       }
+      }
+     }
+    }
+    // A trailing equation tag labels the display or alignment row.
+    if((depth==1 || alignment) && input.compare(pos,4,"\\tag")==0 &&
+       (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
+     pos+=4;space();if(pos<input.size() && input[pos]=='*') {++pos;space();}
+     if(pos==input.size() || input[pos++]!='{')throw std::runtime_error(error("Expected an equation tag"));
+     size_t start=pos;
+     while(pos<input.size() && input[pos]!='}' && input[pos]!='{' && input[pos]!='\\')++pos;
+     if(pos==input.size() || input[pos]!='}' || trim(input.substr(start,pos-start)).empty())
+      throw std::runtime_error(error("Expected a nonempty plain equation tag"));
+     ++pos;space();
+     bool rowEnd=alignment && (input.compare(pos,2,"\\\\")==0 || input.compare(pos,4,"\\end")==0);
+     if(trim(result).empty() || (pos!=input.size() && !rowEnd))
+      throw std::runtime_error(error("An equation tag must follow the complete expression"));
+     result=withoutDisplayPunctuation(result);continue;
+    }
     // Delimiter-form kets (\\vert ... \\rangle) do not enter stateGroup.
     // Keep ellipses contextual; the notation parser validates their bounds.
     size_t delimiter=result.find_last_of("|<>");
@@ -970,6 +1112,8 @@ class TeXReader {
   if(alignment) {
    if(!alignmentCells.empty() || !trim(result).empty())finishAlignment();
    if(expressions.empty())throw std::runtime_error(error("An alignment requires an expression"));
+   std::string words=sampleWordDefinitions(expressions);
+   if(!words.empty()) {--depth;return words;}
    std::string graph=binaryFunctionGraph(expressions);
    if(!graph.empty()) {--depth;return graph;}
    result=expressions.size()==1 ? "" : "vector(";

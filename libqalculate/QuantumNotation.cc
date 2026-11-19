@@ -1,4 +1,5 @@
 // Quantum notation extension. GPL-2.0-or-later; see COPYING.
+#include "QuantumIndexed.h"
 #include "QuantumNotation.h"
 #include "QuantumTeX.h"
 #include <stdexcept>
@@ -224,8 +225,8 @@ const std::map<std::string,int> quantumSignatures = {
  {"qbasis",2},
  {"qindexxor",2},
  {"qoplus",2},
- {"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qgraphapply",2},
+ {"qiff",2},{"qcompare",3},{"qequalchain",1},
+ {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qnamedapplication",2},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -330,12 +331,12 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
- {"qregisterfamily",4},{"qscalarproductsum",4},
+ {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},
  {"qpostselect",2},
  {"qpower",2},
@@ -537,20 +538,38 @@ class Parser {
    body.replace(at,end-at+1,replacement);checkSize(body);at+=replacement.size();
   }
  }
- // Only an explicitly bound graph gives calls to its name function semantics.
- // Delay application until substitutions and set-sum indices have been bound.
+ // Explicit graph bindings turn calls to the bound name into applications.
+ // Delay lookup until substitutions and set-sum indices have been bound.
  static void bindGraphCalls(std::vector<std::string> &args) {
   const std::string &name=args[1];
   if(name.size()!=1 || name=="e" || name=="i" || name[0]<'a' || name[0]>'z' || args[2].compare(0,5,"qset(")!=0)return;
-  const std::string &body=args[0];
+  args[0]=graphCalls(args[0],name);
+ }
+ static std::string graphCalls(const std::string &body,const std::string &name) {
+  const std::string stateCall="qstatecall(\""+name+"\",";
+  const std::string copiedStateCall="qstatecall('"+name+"',";
+  std::vector<size_t> ketDepths;
+  size_t depth=0;
   std::string result;char quote=0;
   for(size_t i=0;i<body.size();) {
    char c=body[i];
    if(c=='"' || c=='\'') {if(c==quote)quote=0;else if(!quote)quote=c;}
    unsigned char previous=i ? body[i-1] : 0;
-   if(quote || c!=name[0] || std::isalnum(previous) || previous=='_' || previous>=128 ||
-      i+1==body.size() || body[i+1]!='(') {result+=c;++i;continue;}
-   result+="qgraphapply("+name+",";i+=2;
+   const bool boundary=!quote && !std::isalnum(previous) && previous!='_' && previous<128;
+   if(boundary && (body.compare(i,stateCall.size(),stateCall)==0 || body.compare(i,copiedStateCall.size(),copiedStateCall)==0)) {
+    // A bound graph supplies the basis label of this single-argument ket.
+    result+="qketstate(";ketDepths.push_back(depth+1);i+=stateCall.size();
+   } else if(boundary && c==name[0] && i+1<body.size() && body[i+1]=='(') {
+    i+=2;
+   } else {
+    if(!quote && c=='(')++depth;
+    if(!quote && c==')' && depth) {
+     if(!ketDepths.empty() && ketDepths.back()==depth) {result+=')';ketDepths.pop_back();}
+     --depth;
+    }
+    result+=c;++i;continue;
+   }
+   result+="qgraphapply("+name+",";++depth;
    size_t end=body.find_first_not_of("01",i);
    if(end!=std::string::npos && end>i && body[end]==')') {
     std::string bits=body.substr(i,end-i);
@@ -558,7 +577,7 @@ class Parser {
    }
    checkSize(result);
   }
-  checkSize(result);args[0]=std::move(result);
+  checkSize(result);return result;
  }
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
   size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
@@ -684,8 +703,8 @@ class Parser {
    need(',');
   } while(true);
  }
- bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -916,7 +935,7 @@ class Parser {
    if(p==s.size())throw std::runtime_error("Unclosed quoted quantum symbol.");
    ++p;a=s.substr(start,p-start);
   }
-  else if(take('(')) { a="("+expression()+")"; need(')'); }
+  else if(take('(')) { a="("+expression(true)+")"; need(')'); }
   else if(take('[')) {
    const bool matrixEntries=nextMatrixEntries;
    nextMatrixEntries=false;
@@ -991,7 +1010,7 @@ class Parser {
     else if(c=='|' && plainDepth==0) {plainClosing=k;break;}
    }
    bool explicitCollection=false;
-   for(const char *prefix:{"unique(","select(","qbitstrings(","vector(","qset(","qindexrange(","qcartesian(","qcartesianpower(","qsetimage(","qsetfilter("})
+   for(const char *prefix:{"unique(","select(","qbitstrings(","vector(","qset(","qindexrange(","qfunctionrange(","qpreimage(","qcartesian(","qcartesianpower(","qsetimage(","qsetfilter("})
     explicitCollection=explicitCollection || s.compare(p,std::string(prefix).size(),prefix)==0;
    if(plainClosing!=std::string::npos && !explicitCollection) {
     s[plainClosing]=')';std::string value=expression();ws();
@@ -1191,7 +1210,7 @@ class Parser {
     a=binaryNumeral(a);ws();
     if(p<s.size() && (s[p]=='_' || s.compare(p,std::string("₂").size(),"₂")==0))throw std::runtime_error("A binary numeral cannot have a second radix subscript.");
    }
-   if(a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
+   if(a=="iff" || a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
    // A scalar prefix is its own token so powers/daggers bind to the gate:
    // iY^2 means i*(Y^2), while (iY)^2 squares the entire product.
    // Match complete gate names first, notably iSWAP.
@@ -1615,7 +1634,7 @@ class Parser {
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
      else if(name=="qregistersum")protect(4);
-     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qindexedmatrix" || name=="qindexedcoefficient" || name=="qregisterfamily")protect(0);
+     else if(quantumHasIndexedNameArgument(name))protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
@@ -1638,6 +1657,15 @@ class Parser {
     }
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";
+    if(publicName=="bitstring" && args.size()==1) {
+     std::string text=withoutLabelMarkers(args[0]);
+     if(text.size()<2 || text.front()!='"' || text.back()!='"')
+      throw std::runtime_error("A one-argument bitstring requires quoted binary digits.");
+     std::string digits=text.substr(1,text.size()-2);
+     if(digits.find_first_not_of("01")!=std::string::npos || digits.size()>1024)
+      throw std::runtime_error("A binary word may contain up to 1024 binary digits.");
+     args[0]=digits.empty() ? "0" : binaryNumeral(digits);args.push_back(std::to_string(digits.size()));
+    }
     if(name=="qreplace" && args.size()==3)bindGraphCalls(args);
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
@@ -1709,7 +1737,21 @@ class Parser {
    else if(take('`') || takeWord("T")) a="qtranspose("+a+")";
    else if(take('*')) a="qconj("+a+")";
    else if(a=="e") a="qexp("+unary()+")";
-   else a="qpower("+a+","+unary()+")";
+   else {
+    std::string exponent=unary();
+    ws();size_t start=p;
+    bool inverse=a.size()==1 && a[0]>='a' && a[0]<='z' &&
+                 (exponent=="(-1)" || exponent=="((-1))");
+    if(inverse && take('(')) {
+     ws();
+     if(s.compare(p,5,"qset(")==0 || s.compare(p,4,"set(")==0) {
+      std::string target=expression();need(')');
+      a="qpreimage("+a+","+target+")";
+      diracKind=0;checkSize(a);return a;
+     }
+    }
+    p=start;a="qpower("+a+","+exponent+")";
+   }
   }
   diracKind=kind;checkSize(a);return a;
  }
@@ -1790,9 +1832,66 @@ class Parser {
   while(takeSetOperator("∪")) {result="qsetunion("+result+","+setIntersection()+")";checkSize(result);}
   return result;
  }
- std::string comparison() {
+ // A definition such as z=f(x) leaves the type of f open. Preserve
+ // that choice when copying the equation before binding the graph or scalar.
+ static void preserveNamedApplication(const std::string &label,std::string &term) {
+  if(label.size()!=1 || !std::isalpha((unsigned char)label[0]) || term.size()!=4 ||
+     term[0]<'a' || term[0]>'z' || term[0]=='i' || term[0]=='e' || term[1]!='(' ||
+     !std::isalpha((unsigned char)term[2]) || term[3]!=')')return;
+  term="qnamedapplication("+term.substr(0,1)+","+term.substr(2,1)+")";
+ }
+ // A padded binary numeral carries a width when compared to a word. A
+ // scalar comparison still uses its decimal value. Keep both through Copy.
+ static void preservePaddedLiteral(const std::string &subject,std::string &literal) {
+  if(subject.size()!=1 || !std::isalpha((unsigned char)subject[0]) || literal.size()<2 ||
+     literal.size()>1024 || literal.front()!='0' || literal.find_first_not_of("01")!=std::string::npos)return;
+  literal="qcomparisonliteral("+subject+","+indexableLabel(literal)+")";
+ }
+ // A range or inverse image explicitly names a function. Its defining
+ // set builder uses the same function even before a graph has been bound.
+ static void preserveGraphDefinition(const std::string &domain,std::string &builder) {
+  if(builder.compare(0,10,"qsetimage(")!=0 && builder.compare(0,11,"qsetfilter(")!=0)return;
+  size_t at;
+  if(domain.compare(0,15,"qfunctionrange(")==0)at=15;
+  else if(domain.compare(0,10,"qpreimage(")==0)at=10;
+  else return;
+  if(at+1>=domain.size())return;
+  char name=domain[at];
+  if(name<'a' || name>'z' || name=='e' || name=='i' || (domain[at+1]!=',' && domain[at+1]!=')'))return;
+  builder=graphCalls(builder,std::string(1,name));
+ }
+ std::string comparison(bool sharedMembership) {
   std::string left=setUnion(),result;
-  std::vector<std::string> operands{left};bool equalities=true;
+  // Top-level commas and commas inside an explicit group may share a
+  // membership relation. Function argument and vector separators stay local.
+  if(sharedMembership && take(',')) {
+   if(takeSetOperator("...") || takeSetOperator("…")) {
+    need(',');std::string last=setUnion();
+    // Only a named, one-based list in a membership statement assigns
+    // superscripts to samples. Ordinary powers keep their usual meaning.
+    if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
+       (left.substr(8)!=",1)" && left.substr(8)!=",(1))") ||
+       last.compare(0,9,left,0,9)!=0 || last.back()!=')' || !takeSetOperator("∈"))
+     throw std::runtime_error("Expected a measurement list from the first sample to the final sample in a shared domain.");
+    std::string prefix=left.substr(7,1)+"^",count=last.substr(9,last.size()-10);
+    left=setUnion();
+    result="qfamilymembers("+indexableLabel(prefix)+","+count+","+left+",vector())";
+   } else {
+    std::vector<std::string> probes{left};
+    do {probes.push_back(setUnion());} while(take(','));
+    bool excluded=takeSetOperator("∉");
+    if(!excluded && !takeSetOperator("∈"))throw std::runtime_error("Expected a shared set membership relation after the comma-separated operands.");
+    left=setUnion();
+    for(const auto &probe:probes) {
+     std::string member="qmember("+probe+","+left+")";
+     if(excluded)member="!("+member+")";
+     if(!result.empty())result+="&&";
+     result+=member;checkSize(result);
+    }
+    result="("+result+")";
+   }
+  }
+  std::vector<std::string> operands{left};bool equalities=result.empty();
   while(true) {
    ws();std::string relation;
    if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
@@ -1804,7 +1903,18 @@ class Parser {
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
-   std::string right=setUnion(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   std::string right;
+   if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
+    need('(');std::string minimum=setUnion();need(')');
+    right="qzerocolumnlike("+left+","+minimum+")";
+   } else right=setUnion();
+   if(relation=="=" || relation=="==") {
+    preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
+    preserveNamedApplication(left,right);preserveNamedApplication(right,left);
+    preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
+    operands.back()=left;
+   }
+   std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
@@ -1816,31 +1926,73 @@ class Parser {
   }
   return result.empty() ? left : result;
  }
- std::string logicalNot() {
+ std::string logicalNot(bool sharedMembership) {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
-  std::string result=comparison();
+  std::string result=comparison(sharedMembership);
   for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
  }
- std::string logicalAnd() {
-  std::string result=logicalNot();
-  while(takeWord("and")) {result="("+result+"&&"+logicalNot()+")";checkSize(result);}
+ std::string logicalAnd(bool sharedMembership) {
+  std::string result=logicalNot(sharedMembership);
+  while(takeWord("and")) {result="("+result+"&&"+logicalNot(sharedMembership)+")";checkSize(result);}
   return result;
  }
- std::string logicalXor() {
-  std::string result=logicalAnd();
-  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd()+")";checkSize(result);}
+ std::string logicalXor(bool sharedMembership) {
+  std::string result=logicalAnd(sharedMembership);
+  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd(sharedMembership)+")";checkSize(result);}
   return result;
  }
- std::string expression() {
-  std::string result=logicalXor();
-  while(takeWord("or")) {result="("+result+"||"+logicalXor()+")";checkSize(result);}
+ std::string logicalOr(bool sharedMembership) {
+  std::string result=logicalXor(sharedMembership);
+  while(takeWord("or")) {result="("+result+"||"+logicalXor(sharedMembership)+")";checkSize(result);}
+  return result;
+ }
+ // In a biconditional, brackets around one predicate are logical grouping.
+ // Explicit vectors and multi-entry bracket literals retain their own shape.
+ std::string equivalenceOperand(std::string value,size_t start) {
+  if(s[start]=='[' && value.size()>8 && value.compare(0,7,"vector(")==0)
+   value=value.substr(7,value.size()-8);
+  // The two unary applications in a collision predicate refer to the same
+  // function. Keep them as applications until a graph is supplied.
+  if(value.size()<19 || value.compare(0,9,"qcompare(")!=0)return value;
+  const char name=value[9];
+  if(name<'a' || name>'z' || name=='i' || name=='e')return value;
+  size_t pos=9;
+  for(unsigned call=0;call<2;++call) {
+   if(pos+2>=value.size() || value[pos++]!=name || value[pos++]!='(')return value;
+   unsigned depth=1;char quote=0;
+   while(pos<value.size() && depth) {
+    char c=value[pos++];
+    if(quote) {if(c==quote)quote=0;continue;}
+    if(c=='"' || c=='\'')quote=c;
+    else if(c=='(' || c=='[')++depth;
+    else if(c==')' || c==']')--depth;
+    else if(c==',' && depth==1)return value;
+   }
+   if(pos>=value.size() || value[pos++]!=',')return value;
+  }
+  if(value.substr(pos)!="4)")return value;
+  return graphCalls(value,std::string(1,name));
+ }
+ std::string expression(bool sharedMembership=false) {
+  ws();size_t start=p;std::string result=logicalOr(sharedMembership);
+  if(take(':')) {
+   std::string domain=setUnion();
+   if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
+   result="qfunctiontype("+result+","+domain+","+setUnion()+")";checkSize(result);
+  }
+  if(!takeWord("iff"))return result;
+  result=equivalenceOperand(result,start);
+  do {
+   ws();start=p;std::string right=logicalOr(sharedMembership);
+   result="qiff("+result+","+equivalenceOperand(right,start)+")";checkSize(result);
+  } while(takeWord("iff"));
   return result;
  }
  public:
  explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
- std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
+ std::string run() { auto out=expression(true); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
 };
 
 }

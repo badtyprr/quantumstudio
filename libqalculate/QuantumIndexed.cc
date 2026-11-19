@@ -137,7 +137,7 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -182,8 +182,16 @@ bool unresolvedSetEquality(const MathStructure &members) {
  for(size_t k=0;k<members.size();++k)for(size_t j=0;j<k;++j)if(setEquality(members[k],members[j])==SetEquality::Unknown)return true;
  return false;
 }
+// A power in a set-domain position can denote words over an alphabet.
+void evaluateDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
+ if(raw.size()==2 && (raw.isPower() || (raw.isFunction() && raw.function()->referenceName()=="qpower")) &&
+    (pendingDomain(raw[0]) || collectionExpression(raw[0]))) {
+  members.set(CALCULATOR->getFunction("qwordpower"),&raw[0],&raw[1],NULL);
+ } else members=raw;
+ members.eval(eo);
+}
 DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
- members=raw;members.eval(eo);
+ evaluateDomain(raw,members,eo);
  if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
  if(!members.isVector() && collectionExpression(raw) && !domainExpression(members))members.transform(STRUCT_VECTOR);
  if(pendingDomain(members))return DomainState::Pending;
@@ -217,18 +225,38 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
  bool changed=false;
- if(value.isFunction() && value.function()->referenceName()=="qregisterfamily" && value.size()==4 && value[0].isSymbolic()) {
+ // A word definition can receive both a whole sample and individual bits
+ // before its row count is known. Slot zero denotes the word, and bit b
+ // occupies slot b+1. Both keys stay numeric through Copy and re-entry.
+ if(value.isFunction() && value.function()->referenceName()=="qsamplewordrows" && value.size()==5 &&
+    value[0].isSymbolic() && label.isSymbolic() && value[3].isVector() && value[3].size()%3==0) {
+  const std::string &name=label.symbol();size_t sub=name.find('_');
+  MathStructure sample(name.substr(0,sub),true);Number row,column(-1);
+  if(registerBitIndex(sample,value[0].symbol(),row) && row>=1 &&
+     (sub==std::string::npos || registerBitIndex(label,name.substr(0,sub+1),column))) {
+   column.add(1);
+   if(value[1].isNumber() && row>value[1].number())return false;
+   for(size_t k=0;k<value[3].size();k+=3)if(value[3][k].isNumber() && value[3][k+1].isNumber() &&
+      value[3][k].number()==row && value[3][k+1].number()==column)return false;
+   value[3].addChild(MathStructure(row));value[3].addChild(MathStructure(column));value[3].addChild(bit);
+   value.childrenUpdated();return true;
+  }
+ }
+ const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
+ const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
+ if(value.isFunction() && (samples || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
   Number index;
   if(registerBitIndex(label,value[0].symbol(),index) && value[3].isVector() && value[3].size()%2==0) {
    // Do not claim an unrelated label when concrete bounds already exclude it.
-   if(value[1].isNumber() && value[2].isNumber() &&
+   if(samples && (index<1 || (value[1].isNumber() && index>value[1].number())))return false;
+   if(!samples && value[1].isNumber() && value[2].isNumber() &&
       (Number(index)>value[1].number() || Number(index)<value[2].number()))return false;
    for(size_t k=0;k<value[3].size();k+=2)if(value[3][k].isNumber() && value[3][k].number()==Number(index)) {
     // This label was already substituted. Later replacements act only on
     // free occurrences in its stored value, not on this metadata key.
     return false;
    }
-   if(value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
+   if(!samples && value[3].size()>=256) {CALCULATOR->error(true,"A register family supports at most 128 supplied bit values.",NULL);return false;}
    value[3].addChild(MathStructure(Number(index)));value[3].addChild(bit);value.childrenUpdated();return true;
   }
  }
@@ -916,7 +944,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qindexedmatrix" || op=="qindexedcoefficient" || op=="qregisterfamily")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(quantumHasIndexedNameArgument(op))setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -932,6 +960,67 @@ class QuantumIndexedFunction: public MathFunction {
     CALCULATOR->error(true,"Register component index is outside its bounds.",NULL);return 0;
    }
    out=digits[index.number().intValue()];return 1;
+  }
+  if(op=="qfunctionrange" || op=="qpreimage" || op=="qfunctiontype") {
+   bool signature=op=="qfunctiontype";
+   bool inverse=op=="qpreimage";
+   MathStructure graph=raw[0];graph.eval(eo);
+   if(!graph.isFunction() || graph.function()->referenceName()!="qset") {
+    if(pendingDomain(graph))return 0;
+    if(signature) {CALCULATOR->error(true,"A function signature requires a finite graph.",NULL);return 0;}
+    if(inverse) {CALCULATOR->error(true,"An inverse image requires a finite function graph.",NULL);return 0;}
+    // Preserve the ordinary statistical range for data vectors.
+    auto range=CALCULATOR->getFunction("range");
+    if(!range)return 0;
+    out.set(range,&graph,NULL);out.eval(eo);return 1;
+   }
+   MathStructure pairs;DomainState state=finiteDomain(graph,pairs,eo);
+   if(state==DomainState::Pending)return 0;
+   if(state!=DomainState::Finite) {CALCULATOR->error(true,"A function range requires a finite graph.",NULL);return 0;}
+   MathStructure target;
+   if(inverse || signature) {
+    DomainState targetState=finiteDomain(raw[signature ? 2 : 1],target,eo);
+    if(targetState==DomainState::Pending)return 0;
+    if(targetState!=DomainState::Finite) {CALCULATOR->error(true,"A finite target set is required.",NULL);return 0;}
+   }
+   MathStructure outputs;outputs.clearVector();
+   for(size_t k=0;k<pairs.size();++k) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &pair=pairs[k];
+    if(!pair.isFunction() || pair.function()->referenceName()!="qtuple" || pair[0].size()!=2) {
+     CALCULATOR->error(true,"A function graph requires ordered pairs.",NULL);return 0;
+    }
+    for(size_t j=0;j<k;++j) {
+     SetEquality keys=setEquality(pair[0][0],pairs[j][0][0]);
+     if(keys==SetEquality::Different)continue;
+     SetEquality values=setEquality(pair[0][1],pairs[j][0][1]);
+     if(values==SetEquality::Equal)continue;
+     if(keys==SetEquality::Unknown || values==SetEquality::Unknown)return 0;
+     if(signature) {out=0;return 1;}
+     CALCULATOR->error(true,"The function graph has conflicting outputs for this input.",NULL);return 0;
+    }
+    if(inverse || signature) {
+     bool found=false,uncertain=false;
+     for(size_t j=0;j<target.size();++j) {
+      SetEquality match=setEquality(pair[0][1],target[j]);
+      if(match==SetEquality::Equal) {found=true;break;}
+      if(match==SetEquality::Unknown)uncertain=true;
+     }
+     if(!found && uncertain)return 0;
+     if(signature && !found) {out=0;return 1;}
+     if(found)outputs.addChild(pair[0][0]);
+    } else outputs.addChild(pair[0][1]);
+   }
+   out.set(CALCULATOR->getFunction("qset"),&outputs,NULL);
+   if(signature) {
+    MathStructure domain;DomainState state=finiteDomain(raw[1],domain,eo);
+    if(state==DomainState::Invalid) {CALCULATOR->error(true,"A function signature requires a finite domain.",NULL);return 0;}
+    if(state==DomainState::Pending)return 0;
+    bool total=false;
+    if(!compareQuantumSets(out,domain,total,eo))return 0;
+    out=total ? 1 : 0;return 1;
+   }
+   out.eval(eo);return 1;
   }
   if(op=="qsetunion" || op=="qsetintersect" || op=="qsetdiff") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
@@ -1001,6 +1090,28 @@ class QuantumIndexedFunction: public MathFunction {
    if(!value[0].equals(raw[0])) {out=value;return 1;}
    return 0;
   }
+  if(op=="qwordpower") {
+   MathStructure alphabet;DomainState state=finiteDomain(raw[0],alphabet,eo);
+   if(state==DomainState::Invalid) {CALCULATOR->error(true,"A word power requires a finite alphabet.",NULL);return 0;}
+   if(state==DomainState::Finite && alphabet.size()==2) {
+    const MathStructure *first=&alphabet[0],*second=&alphabet[1];
+    auto bit=[](const MathStructure &entry) {
+     return entry.isFunction() && entry.function()->referenceName()=="qbitlabel" &&
+            entry.size()==2 && entry[1].isOne();
+    };
+    if(bit(*first) && bit(*second)) {first=&(*first)[0];second=&(*second)[0];}
+    if((first->isZero() && second->isOne()) || (first->isOne() && second->isZero())) {
+     out.set(CALCULATOR->getFunction("qbitstrings"),&raw[1],NULL);out.eval(eo);return 1;
+    }
+   }
+   if(state==DomainState::Pending) {
+    MathStructure count=raw[1];count.eval(eo);
+    if(count.isNumber() && (!count.number().isInteger() || count.number()<0))
+     CALCULATOR->error(true,"A word length must be a nonnegative integer.",NULL);
+    return 0;
+   }
+   out.set(CALCULATOR->getFunction("qcartesianpower"),&raw[0],&raw[1],NULL);out.eval(eo);return 1;
+  }
   if(op=="qcartesian" || op=="qcartesianpower") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure count=raw[1];bool pendingCount=false;
@@ -1067,11 +1178,118 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending)return 0;
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
-  if(op=="qregisterfamily") {
+  if(op=="qsamplewordrows") {
+   if(!raw[0].isSymbolic() || raw[0].symbol().size()!=2 || raw[0].symbol()[0]<'a' ||
+      raw[0].symbol()[0]>'z' || raw[0].symbol()[1]!='^' || !raw[3].isVector() || raw[3].size()%3 ||
+      !raw[4].isNumber() || !raw[4].number().isInteger() || raw[4].number()<1 || raw[4].number()>1024) {
+    CALCULATOR->error(true,"Invalid sample word family or row assignments.",NULL);return 0;
+   }
+   MathStructure high=raw[2];high.eval(eo);
+   if(!(high.isNumber() && high.number().isInteger() && high.number()>=0) &&
+      !(!high.isNumber() && high.representsScalar() && high.containsUnknowns())) {
+    CALCULATOR->error(true,"The leading sample bit index must include the displayed bit zero.",NULL);return 0;
+   }
+   MathStructure count=raw[1];count.eval(eo);
+   if(!count.isNumber() && count.representsScalar() && count.containsUnknowns())return 0;
+   if(!count.isNumber() || !count.number().isInteger() || count.number()<raw[4].number() || count.number()>1024) {
+    CALCULATOR->error(true,"Sample word definitions require the displayed rows and at most 1024 samples.",NULL);return 0;
+   }
+   int rows=count.number().intValue();
+   std::vector<MathStructure> words(rows),bits(rows);
+   for(int r=0;r<rows;++r) {
+    words[r].set(raw[0].symbol()+std::to_string(r+1),true);bits[r].clearVector();
+   }
+   std::set<std::pair<Number,Number>> keys;
+   for(size_t k=0;k<raw[3].size();k+=3) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &row=raw[3][k],&bit=raw[3][k+1];
+    if(!row.isNumber() || !row.number().isInteger() || row.number()<1 || !bit.isNumber() ||
+       !bit.number().isInteger() || bit.number()<0 || !keys.insert({row.number(),bit.number()}).second) {
+     CALCULATOR->error(true,"Sample assignments require distinct sample and bit indices.",NULL);return 0;
+    }
+    if(row.number()>count.number())continue;
+    int r=row.number().intValue()-1;
+    if(bit.isZero())words[r]=raw[3][k+2];
+    else {Number index=bit.number();index.subtract(1);bits[r].addChild(MathStructure(index));bits[r].addChild(raw[3][k+2]);}
+   }
+   out.clearVector();MathStructure equality(4);
+   for(int r=0;r<rows;++r) {
+    MathStructure prefix(raw[0].symbol()+std::to_string(r+1)+"_",true);
+    MathStructure word(CALCULATOR->getFunction("qregisterword"),&prefix,&high,&m_zero,NULL);
+    word.addChild(bits[r]);
+    out.addChild(MathStructure(CALCULATOR->getFunction("qcompare"),&words[r],&word,&equality,NULL));
+   }
+   return 1;
+  }
+  if(op=="qzerocolumnlike") {
+   if(!raw[1].isNumber() || !raw[1].number().isInteger() || raw[1].number()<1 || raw[1].number()>1024) {
+    CALCULATOR->error(true,"Invalid displayed zero-column height.",NULL);return 0;
+   }
+   MathStructure column=raw[0];column.eval(eo);
+   if(!column.isMatrix()) {
+    if(!column.containsUnknowns())CALCULATOR->error(true,"An ellipsis in a zero column requires a matching column vector.",NULL);
+    return 0;
+   }
+   if(column.columns()!=1 || column.rows()>1024 || Number(column.rows())<raw[1].number()) {
+    CALCULATOR->error(true,"The adjacent column must include the displayed zero rows.",NULL);return 0;
+   }
+   out.clearMatrix();out.resizeMatrix(column.rows(),1,m_zero);return 1;
+  }
+  if(op=="qfamilymembers" || op=="qsampledotcolumn") {
+   const bool column=op=="qsampledotcolumn";
+   if(!raw[0].isSymbolic() || raw[0].symbol().size()!=2 || raw[0].symbol()[0]<'a' ||
+      raw[0].symbol()[0]>'z' || raw[0].symbol()[1]!='^' || !raw[3].isVector() || raw[3].size()%2) {
+    CALCULATOR->error(true,"Invalid measurement family or assignments.",NULL);return 0;
+   }
+   MathStructure count=raw[1];count.eval(eo);
+   if(!count.isNumber() && count.containsUnknowns())return 0;
+   if(!count.isNumber() || !count.number().isInteger() || count.number()<1) {
+    CALCULATOR->error(true,"A measurement count must be a positive integer.",NULL);return 0;
+   }
+   int rows=0;
+   if(column) {
+    if(!raw[4].isNumber() || !raw[4].number().isInteger() || raw[4].number()<1 ||
+       count.number()<raw[4].number() || count.number()>1024) {
+     CALCULATOR->error(true,"Sample column height must include its displayed rows and be at most 1024.",NULL);return 0;
+    }
+    rows=count.number().intValue();out.clearMatrix();out.resizeMatrix(rows,1,m_zero);
+   }
+   std::set<Number> supplied;
+   size_t matched=0;
+   for(size_t k=0;k<raw[3].size();k+=2) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &index=raw[3][k];
+    if(!index.isNumber() || !index.number().isInteger() || index.number()<1 || !supplied.insert(index.number()).second) {
+     CALCULATOR->error(true,"Measurement assignments require distinct positive indices.",NULL);return 0;
+    }
+    if(index.number()>count.number())continue;
+    if(column) {
+     element(out,index.number().intValue()-1,0).set(CALCULATOR->getFunction("qcenterdot"),&raw[3][k+1],&raw[2],NULL);
+     continue;
+    }
+    MathStructure member(CALCULATOR->getFunction("qmember"),&raw[3][k+1],&raw[2],NULL);member.eval(eo);
+    if(member.isZero()) {out=m_zero;return 1;}
+    if(member.isOne())++matched;
+   }
+   if(column) {
+    for(int row=0;row<rows;++row)if(!supplied.count(Number(row+1))) {
+     MathStructure sample(raw[0].symbol()+std::to_string(row+1),true);
+     element(out,row,0).set(CALCULATOR->getFunction("qcenterdot"),&sample,&raw[2],NULL);
+    }
+    return 1;
+   }
+   if(Number(matched)==count.number()) {out=m_one;return 1;}
+   return 0;
+  }
+  if(op=="qregisterfamily" || op=="qregisterword") {
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"A register family requires an indexed name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>1 && prefix.size()<=128 && prefix.back()=='_' && !std::isdigit((unsigned char)prefix.front());
    for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
+   if(op=="qregisterword" && prefix.size()>=4 && prefix.size()<=128 && prefix[0]>='a' && prefix[0]<='z' &&
+      prefix[1]=='^' && prefix[2]>='1' && prefix[2]<='9' && prefix.back()=='_') {
+    valid=prefix.find_first_not_of("0123456789",2)==prefix.size()-1;
+   }
    if(!valid || !raw[3].isVector() || raw[3].size()%2 || raw[3].size()>256) {
     CALCULATOR->error(true,"Invalid register family prefix or bit assignments.",NULL);return 0;
    }
@@ -1107,6 +1325,21 @@ class QuantumIndexedFunction: public MathFunction {
    if(span<-1) {CALCULATOR->error(true,"A descending register family cannot have negative width.",NULL);return 0;}
    // Adjacent reversed endpoints denote an empty register. Every supplied or
    // explicitly displayed bit was checked above and cannot be discarded here.
+   if(op=="qregisterword") {
+    Number width=span;width.add(1);
+    if(width!=Number(bindings.size()/2))return 0;
+    Number word(0);
+    for(size_t k=0;k<bindings.size();k+=2) {
+     const MathStructure &bit=bindings[k+1];
+     if(!bit.isNumber())return 0;
+     if(bit.isOne()) {
+      Number place=bindings[k].number();place-=last.number();
+      Number weight(1);weight.shiftLeft(place);word+=weight;
+     }
+    }
+    MathStructure index(word),length(width);
+    out.set(CALCULATOR->getFunction("qbitlabel"),&index,&length,NULL);return 1;
+   }
    if(span==-1) {out.setToIdentityMatrix(1);return 1;}
    if(span>9) {
     if(!first.equals(raw[1]) || !last.equals(raw[2]) || !bindings.equals(raw[3])) {
@@ -1226,33 +1459,38 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
-  if(op=="qindexedcolumn" || op=="qindexedmatrix") {
-   const bool matrix=op=="qindexedmatrix";
+  if(op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
+   const bool samples=op=="qsamplebitmatrix";
+   const bool matrix=samples || op=="qindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>=2 && prefix.size()<=128 && prefix.back()=='_';
    for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
-   if(!valid) {CALCULATOR->error(true,"An indexed array prefix must be a name ending in an underscore.",NULL);return 0;}
+   if(samples)valid=prefix.size()==2 && prefix[0]>='a' && prefix[0]<='z' && prefix[1]=='^';
+   if(!valid) {CALCULATOR->error(true,"Invalid indexed array name prefix.",NULL);return 0;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    int dimensions[2]={1,1};bool deferred=false;
    // Validate every axis even when another dimension is still symbolic.
    // Endpoint bounds also cap the product at 1024 * 1024 matrix cells.
    for(int axis=0;axis<(matrix ? 2 : 1);++axis) {
     MathStructure last=raw[1+axis],minimum=raw[(matrix ? 3 : 2)+axis];last.eval(exact);minimum.eval(exact);
-    if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<0 || minimum.number()>1023) {
+    const int offset=samples && axis==0 ? 1 : 0;
+    if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<offset || minimum.number()>1023+offset) {
      CALCULATOR->error(true,"An indexed array minimum must be an integer from 0 to 1023.",NULL);return 0;
     }
     if(!last.isNumber() && !last.isVector() && last.containsUnknowns()) {deferred=true;continue;}
-    if(!last.isNumber() || !last.number().isInteger() || last.number()<minimum.number() || last.number()>1023) {
+    if(!last.isNumber() || !last.number().isInteger() || last.number()<minimum.number() || last.number()>1023+offset) {
      CALCULATOR->error(true,"An indexed array endpoint must be an integer respecting its displayed entries and the 1024-axis limit.",NULL);return 0;
     }
-    dimensions[axis]=last.number().intValue()+1;
+    dimensions[axis]=last.number().intValue()+1-offset;
    }
    if(deferred)return 0;
    out.clearMatrix();out.resizeMatrix(dimensions[0],dimensions[1],m_zero);
    for(int row=0;row<dimensions[0];++row)for(int col=0;col<dimensions[1];++col) {
     if(CALCULATOR->aborted())return 0;
-    element(out,row,col).set(prefix+std::to_string(row)+(matrix ? ","+std::to_string(col) : ""),true);
+    int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row;
+    if(samples)element(out,row,col).set(prefix+std::to_string(row+1)+"_"+std::to_string(dimensions[1]-1-col),true);
+    else element(out,row,col).set(prefix+std::to_string(index)+(matrix ? ","+std::to_string(col) : ""),true);
    }
    return 1;
   }
@@ -1374,6 +1612,9 @@ class QuantumIndexedFunction: public MathFunction {
     auto sum=CALCULATOR->getFunction("qsumset");if(!sum)return 0;
     return sum->calculate(out,parameters,eo);
    }
+   // A sum over an unresolved domain can later produce a scalar or a
+   // collection. Retain the bars so substitution can determine the result.
+   if(value.isFunction() && value.function()->referenceName()=="qsumset" && value.containsUnknowns())return 0;
    if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;
@@ -1387,9 +1628,9 @@ class QuantumIndexedFunction: public MathFunction {
     if(value.equals(collection))break;
     collection=value;
    }
-   MathStructure members=raw[1];
+   MathStructure members;
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
-   members.eval(exact);
+   evaluateDomain(raw[1],members,exact);
    if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
@@ -1655,6 +1896,26 @@ bool quantumRegisterSumShapeInput(const MathStructure &value,MathStructure &term
  RegisterShapeProjection projection{args[4],args[2],args[3],args[5],markerPrefix,markers,dimension};
  return projectRegisterShape(term,projection,exact);
 }
+bool compareQuantumSets(const MathStructure &left,const MathStructure &right,bool &equal,const EvaluationOptions &eo) {
+ MathStructure sets[2];
+ if(finiteDomain(left,sets[0],eo)!=DomainState::Finite || finiteDomain(right,sets[1],eo)!=DomainState::Finite)return false;
+ bool pending=false;
+ for(unsigned side=0;side<2;++side) {
+  const MathStructure &source=sets[side],&target=sets[1-side];
+  for(size_t k=0;k<source.size();++k) {
+   if(CALCULATOR->aborted())return false;
+   bool found=false,unknown=false;
+   for(size_t j=0;j<target.size();++j) {
+    SetEquality match=setEquality(source[k],target[j]);
+    if(match==SetEquality::Equal) {found=true;break;}
+    if(match==SetEquality::Unknown)unknown=true;
+   }
+   if(!found && !unknown) {equal=false;return true;}
+   if(!found)pending=true;
+  }
+ }
+ equal=true;return !pending;
+}
 bool quantumScalarExpression(const MathStructure &value) {return scalarExpression(value);}
 bool quantumReplacementShapeInput(const MathStructure &value,MathStructure &term,const EvaluationOptions &eo) {
  if(!value.isFunction() || value.function()->referenceName()!="qreplace" || value.size()!=3 ||
@@ -1678,10 +1939,17 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
 void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
+ calculator.addFunction(new QuantumIndexedFunction("qsamplewordrows",5));
+ calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
+ calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
+ calculator.addFunction(new QuantumIndexedFunction("qfamilymembers",4));
  calculator.addFunction(new QuantumIndexedFunction("qregisterfamily",4));
+ calculator.addFunction(new QuantumIndexedFunction("qregisterword",4));
  calculator.addFunction(new QuantumIndexedFunction("qregistersum",7));
  calculator.addFunction(new QuantumIndexedFunction("qregisterelement",2));
  calculator.addFunction(new QuantumIndexedFunction("qtensorseries",5));
@@ -1695,6 +1963,10 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
+ calculator.addFunction(new QuantumIndexedFunction("qpreimage",2));
+ calculator.addFunction(new QuantumIndexedFunction("qfunctiontype",3));
+ calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
+ calculator.addFunction(new QuantumIndexedFunction("qwordpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
  calculator.addFunction(new QuantumIndexedFunction("qset",1));
  calculator.addFunction(new QuantumIndexedFunction("qdomainvector",1));

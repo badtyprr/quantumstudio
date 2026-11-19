@@ -813,6 +813,20 @@ class QuantumAlgebraFunction: public MathFunction {
     out.set(CALCULATOR->getFunction("qdirectsum"), &a, &args[1], NULL);out.eval(eo);
     return out.isMatrix() ? 1 : 0;
    }
+   // A free operand can later be bound to an integer, a word or a matrix.
+   // Keep the operator until the binding determines which operation applies.
+   auto pending=[](const MathStructure &v) {
+    return v.isSymbolic() || v.isUnknown() || (v.representsScalar() && v.containsUnknowns());
+   };
+   if(pending(a) || pending(args[1])) {
+    for(size_t j=0;j<2;++j) {
+     const MathStructure &v=args[j];
+     if(pending(v) || v.isMatrix() || isQuantumBitLabel(v) ||
+        (v.isNumber() && v.number().isInteger() && !v.number().isNegative()))continue;
+     CALCULATOR->error(true,"Scalar XOR requires nonnegative integer operands.",NULL);return 0;
+    }
+    return 0;
+   }
    for(size_t j=0;j<2;++j)if(!args[j].isNumber() || !args[j].number().isInteger() || args[j].number()<0) {
     CALCULATOR->error(true,"Scalar XOR requires nonnegative integer operands.",NULL);return 0;
    }
@@ -941,6 +955,20 @@ class QuantumAlgebraFunction: public MathFunction {
      return 1;
     }
     return 0;
+   }
+  }
+  if((op=="qnorm" || op=="qnormalize") && !a.isVector() && a.containsUnknowns()) {
+   MathStructure rows,columns;
+   if(matrixShape(a,rows,columns,eo)) {
+    if(unequalKnownDimensions(columns,m_one))CALCULATOR->error(true,"norm and normalize require a column ket.",NULL);
+    return 0;
+   }
+   // A weighted sum of kets may have no known dimension until its domain
+   // is bound. Keep the operation so the resulting column is checked then.
+   if(a.isFunction() && unresolvedMatrixOperand(a)) {
+    const std::string &name=a.function()->referenceName();
+    if(name=="qsumset" || name=="qsum" || name=="qadjacent" || name=="qmul" ||
+       name=="qadd" || name=="qsub" || name=="qketstate" || name=="qstatecall")return 0;
    }
   }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }

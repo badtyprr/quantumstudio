@@ -1,0 +1,471 @@
+"""Replay Simon lesson formulas with an explicit three-bit domain."""
+import itertools
+import json
+import re
+from pathlib import Path
+import subprocess
+import sys
+
+directory = Path(__file__).resolve().parent
+with (directory / "ibm021-literal-results.json").open(encoding="utf-8") as source:
+    formulas = {row["id"]: row["literal"] for row in json.load(source)["results"]}
+
+
+def source_body(number):
+    literal = formulas[f"IBM021-c0-M{number:03}"]
+    return literal.strip("$").strip().rstrip(".")
+
+
+def evaluate(expression, bind_alphabet=True):
+    if bind_alphabet and r"\Sigma" in expression:
+        expression = rf"replace(({expression}),\Sigma,\{{0,1\}})"
+    process = subprocess.run([sys.argv[1], "--json"], input=("quantum:" + expression).encode(),
+                             capture_output=True, check=True, timeout=30)
+    result = json.loads(process.stdout)
+    assert not result["approximate"]
+    return result
+
+
+def width_three(expression):
+    return f"replace(({expression}),n,3)"
+
+
+for number, variable in [(6, "s"), (51, "y"), (71, "x"), (96, "y"), (101, "y")]:
+    domain_test = width_three(source_body(number))
+    for value in range(8):
+        expr = f"replace(({domain_test}),{variable},bitstring({value},3))"
+        assert evaluate(expr)["copy_text"] == "1", (number, value)
+    expr = f"replace(({domain_test}),{variable},bitstring(0,4))"
+    assert evaluate(expr)["copy_text"] == "0", number
+
+initial = f"sqrt(8)*replace(replace(({source_body(45)}),m,5),n,3)"
+state = evaluate(initial)
+assert (state["rows"], state["columns"]) == (256, 1)
+amplitudes = ",".join(["1"] * 8 + ["0"] * 248)
+assert state["copy_text"] == f"matrix(256,1,[{amplitudes}])"
+print("45 membership checks and all 256 scaled initial-state amplitudes passed")
+
+with (directory / "ibm021-oracle-table.json").open(encoding="utf-8") as source:
+    table = json.load(source)
+outputs = [int(bits, 2) for bits in table["outputs"]]
+for number, scale in [(49, "sqrt(8)"), (50, "8")]:
+    expr = f"{scale}*replace(replace(({source_body(number)}),f,{table['graph']}),n,3)"
+    state = evaluate(expr)
+    expected = [0] * 256
+    for x, z in enumerate(outputs):
+        if number == 49:
+            expected[8*z + x] = 1
+        else:
+            for y in range(8):
+                expected[8*z + y] += (-1) ** ((x & y).bit_count() % 2)
+    amplitudes = ",".join(map(str, expected))
+    assert (state["rows"], state["columns"]) == (256, 1)
+    assert state["copy_text"].replace("\u2212", "-") == f"matrix(256,1,[{amplitudes}])", number
+print("Both bound oracle states passed all 256 amplitude checks")
+
+# Compare the source definitions in M056 and M060 with the native operators.
+def definition(number):
+    return source_body(number).split(" = ", 1)[1].strip()
+
+
+image = width_three(definition(56))
+fiber = width_three(definition(60))
+values = list(dict.fromkeys(outputs))
+
+
+def bit_set(values, width):
+    entries = ",".join(f"qbitlabel({value},{width})" for value in values)
+    return f"qset(vector({entries}))"
+
+
+assert evaluate(f"replace(({image}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
+native_range = source_body(100)
+assert evaluate(f"replace(({native_range}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
+membership = source_body(57)
+for z in range(32):
+    probe = f"replace(replace(({membership}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(probe)["copy_text"] == str(int(z in values))
+    expr = f"replace(replace(({fiber}),f,{table['graph']}),z,bitstring({z},5))"
+    expected_fiber = bit_set([x for x in range(8) if outputs[x] == z], 3)
+    assert evaluate(expr)["copy_text"] == expected_fiber
+    direct = f"replace(replace(({source_body(59)}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(direct)["copy_text"] == expected_fiber
+    identity = f"replace(replace(({width_three(source_body(60))}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(identity)["copy_text"] == "1"
+
+probability = definition(74)
+for y in range(8):
+    expr = f"replace(replace(replace(({probability}),f,{table['graph']}),n,3),y,bitstring({y},3))"
+    quarter_units = evaluate(f"4*({expr})")["copy_text"]
+    assert quarter_units == str(int((y & 3).bit_count() % 2 == 0)), (y, quarter_units)
+    for number in (54, 70):
+        norm = source_body(number).split("=", 1)[1]
+        measured = f"replace(replace(replace(({norm}),f,{table['graph']}),n,3),y,bitstring({y},3))"
+        assert evaluate(f"4*({measured})")["copy_text"] == quarter_units, (number, y)
+    identity = f"replace(replace(({definition(102)}),f,{table['graph']}),n,3)"
+    identity = f"replace(replace({identity},s,bitstring(3,3)),y,bitstring({y},3))"
+    assert evaluate(identity)["copy_text"] == "1"
+print("Exact range, 32 inverse images and all 8 measurement probabilities passed")
+
+# The source groups each side of the Simon promise in square brackets.
+left, right = [side.strip().removeprefix("[").removesuffix("]")
+               for side in source_body(7).split(r"\Leftrightarrow")]
+def at_pair(body, x, y):
+    return f"replace(replace(({body}),x,bitstring({x},3)),y,bitstring({y},3))"
+
+
+left = f"replace(({left}),f,{table['graph']})"
+right = f"replace(({right}),s,bitstring(3,3))"
+for x, output in enumerate(outputs):
+    for y in range(8):
+        lhs = evaluate(at_pair(left, x, y))["copy_text"]
+        rhs = evaluate(at_pair(right, x, y))["copy_text"]
+        assert lhs == rhs == str(int(output == outputs[y])), (x, y)
+
+        # Either member of the output's inverse image may be used as w.
+        chain = f"replace(replace(({source_body(88)}),f,{table['graph']}),s,bitstring(3,3))"
+        chain = f"replace(replace(replace({chain},z,bitstring({output},5)),w,bitstring({x},3)),y,bitstring({y},3))"
+        assert evaluate(chain)["copy_text"] == "1", (x, y)
+print("Both promise predicates and the M088 equality chain passed for all 64 pairs")
+
+# Exercise complete source expressions and their copied symbolic forms.
+injective = "qset(vector(" + ",".join(
+    f"tuple(bitstring({x},3),bitstring({x},5))" for x in range(8)) + "))"
+for number, graph, secret in [(7, table["graph"], 3), (7, table["graph"], 4),
+                              (16, table["graph"], 0), (16, injective, 0)]:
+    source = source_body(number)
+    copied = evaluate(source)["copy_text"]
+    for body in (source, copied):
+        predicate = f"replace(({body}),f,{graph})"
+        if number == 7:
+            predicate = f"replace({predicate},s,bitstring({secret},3))"
+        for x in range(8):
+            for y in range(8):
+                same_output = x == y if graph == injective else outputs[x] == outputs[y]
+                expected = same_output == (x == y or (x ^ secret) == y)
+                assert evaluate(at_pair(predicate, x, y))["copy_text"] == str(int(expected)), (number, secret, x, y)
+print("Complete M007 and M016 predicates passed for source and copied input")
+
+# Copy an unbound formula first. Supply all lesson parameters only on re-entry.
+reversed_pairs = [f"tuple(bitstring({x},3),bitstring({outputs[x]},5))" for x in reversed(range(8))]
+reversed_graph = "qset(vector(" + ",".join(reversed_pairs) + "))"
+for number in (49, 50, 56, 60):
+    source = source_body(number)
+    copy = evaluate(source, bind_alphabet=False)["copy_text"]
+    for z in (range(32) if number == 60 else [None]):
+        answers = []
+        for body, graph in [(source, table["graph"]), (source, reversed_graph), (copy, reversed_graph)]:
+            expression = f"replace(({body}),f,{graph})"
+            if z is not None:
+                expression = f"replace(({expression}),z,bitstring({z},5))"
+            expression = rf"replace(({width_three(expression)}),\Sigma,\{{0,1\}})"
+            answers.append(evaluate(expression, bind_alphabet=False)["copy_text"])
+        assert answers[0] == answers[1] == answers[2], (number, z)
+        if number in (56, 60):
+            assert answers[0] == "1", (number, z)
+print("Four unbound copies accepted the oracle in reverse row order")
+
+# Equation (1) is zero on an empty fiber. On a two-element fiber its
+# squared magnitude is four exactly when the measurement is orthogonal to s.
+numbered = formulas["IBM021-c0-M075"]
+contribution = evaluate(numbered)["copy_text"]
+assert r"\tag{1}" in numbered
+assert evaluate(numbered.replace(r"\tag{1}", ""))["copy_text"] == contribution
+derivation = evaluate(formulas["IBM021-c0-M088"])["copy_text"]
+def bind_output(body, z, y):
+    return f"replace(replace(replace(({body}),f,{table['graph']}),z,bitstring({z},5)),y,bitstring({y},3))"
+
+
+for z in range(32):
+    for y in range(8):
+        expected = 4 if z in values and (3 & y).bit_count() % 2 == 0 else 0
+        assert evaluate(bind_output(contribution, z, y))["copy_text"] == str(expected), (z, y)
+        for w in (x for x in range(8) if outputs[x] == z):
+            chain = f"replace(replace(({bind_output(derivation, z, y)}),w,bitstring({w},3)),s,bitstring(3,3))"
+            assert evaluate(chain)["copy_text"] == "1", (w, y)
+print("Numbered equation passed 256 contributions and its copied derivation passed 64 checks")
+
+# Bind p to both the predicted distribution and one assigning probability 1/8
+# everywhere. The full source equality must distinguish them at every outcome.
+probabilities = ["1/4" if (y & 3).bit_count() % 2 == 0 else "0" for y in range(8)]
+for values, truth in [(probabilities, "1"), (["1/8"] * 8, "0")]:
+    entries = [f"tuple(bitstring({y},3),{value})" for y, value in enumerate(values)]
+    distribution = "qset(vector(" + ",".join(entries) + "))"
+    for number in (54, 70):
+        formula = f"replace(replace(({source_body(number)}),p,{distribution}),f,{table['graph']})"
+        for y in range(8):
+            expr = f"replace(({width_three(formula)}),y,bitstring({y},3))"
+            assert evaluate(expr)["copy_text"] == truth, (number, y, truth)
+print("Both full norm equations distinguished the predicted and uniform distributions")
+
+for number in (54, 70):
+    rhs = source_body(number).split("=", 1)[1]
+    copy = evaluate(rhs, bind_alphabet=False)["copy_text"]
+    for y, probability in enumerate(probabilities):
+        expr = f"replace(replace(replace(({copy}),f,{table['graph']}),n,3),y,bitstring({y},3))"
+        if number == 54:
+            expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+        assert evaluate(f"4*({expr})", bind_alphabet=False)["copy_text"] == ("1" if probability == "1/4" else "0")
+print("Both copied squared norms reproduced all eight measurement probabilities")
+
+# The graph may leave elements of the codomain unused.
+pairs = [f"tuple(bitstring({i},3),bitstring({z},5))" for i, z in enumerate(outputs)]
+for number in (1, 5, 27):
+    source = source_body(number)
+    copy = evaluate(source, bind_alphabet=False)["copy_text"]
+    for entries, truth in [(pairs, "1"), (pairs[:-1], "0"),
+                           (pairs + ["tuple(bitstring(0,3),bitstring(0,5))"], "0"),
+                           (pairs[:-1] + ["tuple(bitstring(7,3),bitstring(26,6))"], "0")]:
+        graph = "qset(vector(" + ",".join(entries) + "))"
+        for body in (source, copy):
+            expr = f"replace(({body}),f,{graph})"
+            if number != 27:
+                expr = f"replace(replace(({expr}),n,3),m,5)"
+            expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+            assert evaluate(expr, bind_alphabet=False)["copy_text"] == truth, (number, truth)
+print("The source and copied function signatures accepted the oracle and rejected three invalid graphs")
+
+shared = source_body(8)
+for body in (shared, evaluate(shared, bind_alphabet=False)["copy_text"]):
+    for x, xwidth in ((0, 3), (7, 3), (0, 2), (7, 4)):
+        for y, ywidth in ((0, 3), (7, 3), (0, 2), (7, 4)):
+            expr = f"replace(replace(({body}),x,bitstring({x},{xwidth})),y,bitstring({y},{ywidth}))"
+            expr = rf"replace(({width_three(expr)}),\Sigma,\{{0,1\}})"
+            assert evaluate(expr, bind_alphabet=False)["copy_text"] == str(int(xwidth == ywidth == 3))
+print("Shared membership checked both register widths for source and copied input")
+
+# The prose spans its opening and closing parentheses across four math spans.
+# Keep the five-bit strings, including their leading zeros, when relabeling.
+spans = [source_body(i) for i in range(34, 38)]
+assert spans[0].startswith("(") and spans[-1].endswith(")")
+labels = [spans[0][1:], *spans[1:-1], spans[-1][:-1]]
+assert len(set(labels)) == 4 and all(len(label) == 5 and set(label) <= {"0", "1"} for label in labels)
+labels = [int(label, 2) for label in labels]
+assert set(labels) == set(outputs)
+for renamed in [*itertools.permutations(labels), (0, 2, 4, 6)]:
+    rename = dict(zip(labels, renamed))
+    graph = "qset(vector(" + ",".join(
+        f"tuple(bitstring({x},3),bitstring({rename[z]},5))" for x, z in enumerate(outputs)) + "))"
+    calls = ",".join(f"f({x:03b})" for x in range(8))
+    result = evaluate(f"replace(vector({calls}),f,{graph})")["copy_text"]
+    words = [int(value) for value in re.findall(r"qbitlabel\((\d+),5\)", result)]
+    assert words == [rename[z] for z in outputs]
+    periods = [s for s in range(1, 8) if all(words[x] == words[x ^ s] for x in range(8))]
+    assert periods == [3]
+print("All 24 output permutations and a disjoint set of four labels preserved secret 011")
+
+word_definition = source_body(130)
+for body in (word_definition, evaluate(word_definition)["copy_text"]):
+    for word in range(8):
+        for probe in range(8):
+            expression = body
+            for bit in (2, 0, 1):
+                expression = f"replace(({expression}),s_{bit},{(word >> bit) & 1})"
+            expression = f"replace(replace(({expression}),n,3),s,bitstring({probe},3))"
+            assert evaluate(expression)["copy_text"] == str(int(word == probe)), (word, probe)
+print("The source and copied word definition passed all 64 pairs of three-bit words")
+
+# Superscripts in M121 name successive measurements. Expand its list at
+# k=1,2,3 and supply measured words directly, retaining the source domain.
+family, relation, domain = source_body(121).partition(r" \in ")
+assert family == "y^1,...,y^{k}" and relation and domain == r"\Sigma^n"
+for count in (1, 2, 3):
+    for widths in itertools.product((2, 3, 4), repeat=count):
+        words = [f"bitstring({index},{width})" for index, width in enumerate(widths)]
+        expression = width_three(",".join(words) + relation + domain)
+        assert evaluate(expression)["copy_text"] == str(int(all(w == 3 for w in widths))), widths
+print("All 39 finite measurement-list expansions checked every word's width")
+
+# Bind the source list directly, including when individual measurements are
+# supplied before k is known. The independent finite expansion above is the oracle.
+sample_list = source_body(121)
+copied_list = evaluate(sample_list, bind_alphabet=False)["copy_text"]
+for body, count_first in ((sample_list, True), (copied_list, False)):
+    for count in (1, 2, 3):
+        for widths in itertools.product((2, 3, 4), repeat=count):
+            expr = width_three(body)
+            expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+            assignments = [(f'"y^{i}"', f"bitstring({i-1},{width})")
+                           for i, width in enumerate(widths, 1)]
+            if count_first:
+                assignments.insert(0, ("k", count))
+            else:
+                assignments.reverse()
+                assignments.append(("k", count))
+            for name, value in assignments:
+                expr = f"replace(({expr}),{name},{value})"
+            assert evaluate(expr, bind_alphabet=False)["copy_text"] == str(int(all(w == 3 for w in widths))), widths
+print("The original and copied measurement lists matched all 39 finite expansions in both binding orders")
+
+# M126 indexes rows from one and puts the high bit at the left. Compare
+# both the cells and M135's binary matrix product to integer bit operations.
+sample_rhs = source_body(126).split(" = ", 1)[1]
+for width, samples in [(1, [0, 1]), (3, [3, 4]), (4, [8, 3, 3, 0])]:
+    expr = f"replace(replace(({sample_rhs}),k,{len(samples)}),n,{width})"
+    expanded = evaluate(expr)
+    for row, word in enumerate(samples, 1):
+        for bit in range(width):
+            expr = f'replace(({expr}),"y^{row}_{bit}",{(word >> bit) & 1})'
+    result = evaluate(expr)
+    assert result["cells"] == [list(format(word, f"0{width}b")) for word in samples]
+    assert evaluate(expanded["copy_text"])["cells"] == expanded["cells"]
+    for candidate in range(2**width):
+        bits = ",".join(format(candidate, f"0{width}b"))
+        product = evaluate(f'qgf2mul({result["copy_text"]},matrix({width},1,[{bits}]))')
+        assert product["cells"] == [[str((word & candidate).bit_count() % 2)] for word in samples]
+print("The source sample matrix reproduced every cell and all 26 binary matrix-vector products")
+
+# Bind M last as well as first. It must denote the whole matrix throughout.
+definition = source_body(126)
+for body in (definition, evaluate(definition)["copy_text"]):
+    for flat, expected in [("0,1,1,1,0,0", "1"), ("0,1,1,0,0,1", "0")]:
+        target = f"matrix(2,3,[{flat}])"
+        expr = f"replace(({body}),M,{target})" if body == definition else body
+        expr = f"replace(replace(({expr}),n,3),k,2)"
+        for row, word in enumerate((3, 4), 1):
+            for bit in range(3):
+                expr = f'replace(({expr}),"y^{row}_{bit}",{(word >> bit) & 1})'
+        if body != definition:
+            expr = f"replace(({expr}),M,{target})"
+        assert evaluate(expr)["copy_text"] == expected
+print("The original and copied matrix definition agree with the matching matrix only")
+
+# Recover the three operands directly from M135 and check the printed zero rows.
+product_source, dots, zeros = [part.strip() for part in source_body(135).split("=")]
+assert product_source == "M v"
+zero_rows = re.split(r"\\\\(?:\[1mm\])?", zeros.removeprefix(r"\begin{pmatrix}").removesuffix(r"\end{pmatrix}"))
+assert [row.strip() for row in zero_rows] == ["0", "0", r"\vdots", "0"]
+# Keep the zero column's source ellipsis. Its height comes from the middle
+# column. Only the product needs the field supplied by the surrounding prose.
+binary_equation = source_body(135).replace(product_source, "gf2_mul(M,v)", 1)
+copied_equation = evaluate(binary_equation)["copy_text"]
+copied_dots = evaluate(dots)["copy_text"]
+for samples in ((3, 4), (6, 1, 3)):
+    count = len(samples)
+    entries = ",".join(bit for word in samples for bit in format(word, "03b"))
+    for secret in range(8):
+        parities = [(word & secret).bit_count() % 2 for word in samples]
+        for body in (dots, copied_dots):
+            assignments = [(f'"y^{i}"', f"bitstring({word},3)") for i, word in enumerate(samples, 1)]
+            if body == dots:
+                assignments.insert(0, ("k", count))
+            else:
+                assignments.append(("k", count))
+            for name, value in assignments + [("s", f"bitstring({secret},3)")]:
+                body = f"replace(({body}),{name},{value})"
+            measured = evaluate(body)
+            assert measured["cells"] == [[str(parity)] for parity in parities]
+        for candidate in range(8):
+            vector = ",".join(format(candidate, "03b"))
+            chain = binary_equation if candidate % 2 else copied_equation
+            bindings = [("M", f"matrix({count},3,[{entries}])"), ("v", f"matrix(3,1,[{vector}])"),
+                        ("k", count), ("s", f"bitstring({secret},3)")]
+            bindings += [(f'"y^{i}"', f"bitstring({word},3)") for i, word in enumerate(samples, 1)]
+            for name, value in (bindings if candidate % 2 else reversed(bindings)):
+                chain = f"replace(({chain}),{name},{value})"
+            target = not any(parities) and all((word & candidate).bit_count() % 2 == 0 for word in samples)
+            assert evaluate(chain)["copy_text"] == str(int(target))
+print("The source dot-product column and its copy matched 16 parity vectors and all 128 full equality checks")
+
+# M122 describes every measured word, including samples hidden by the ellipsis.
+# Perturb a single bit in each position and check the individual row predicates.
+word_rows = source_body(122)
+copied_rows = evaluate(word_rows)["copy_text"]
+for width, samples in [(1, (0, 1)), (3, (1, 2, 5, 7))]:
+    for body, dimensions_first in [(word_rows, True), (copied_rows, False)]:
+        assignments = [(f'"y^{row}_{bit}"', (word >> bit) & 1)
+                       for row, word in enumerate(samples, 1) for bit in range(width)]
+        dimensions = [("k", len(samples)), ("n", width)]
+        for mismatch in [None, *itertools.product(range(len(samples)), range(width))]:
+            words = []
+            expected = [1] * len(samples)
+            for row, word in enumerate(samples):
+                if mismatch and mismatch[0] == row:
+                    word ^= 1 << mismatch[1]
+                    expected[row] = 0
+                words.append((f'"y^{row+1}"', f"bitstring({word},{width})"))
+            expr = body
+            bindings = dimensions + words + assignments if dimensions_first else assignments + words + dimensions
+            for name, value in bindings:
+                expr = f"replace(({expr}),{name},{value})"
+            assert evaluate(expr)["copy_text"] == "vector(" + ",".join(map(str, expected)) + ")"
+print("The source and copied measurement definitions located each mismatched bit, including the hidden third row")
+
+# Several symbolic outputs change spelling when the GUI copy is re-entered.
+# Check both spellings on the lesson oracle against exact independent answers.
+gui_replay = json.loads((directory / "ibm021-sample-words.json").read_bytes())
+different = {int(row["id"][-3:]): (row["copy"], row["second_copy"])
+             for row in gui_replay["gui_records"] if row.get("copy") != row.get("second_copy")}
+assert set(different) == {45, 49, 50, 54, 56, 60, 70, 74, 75, 88, 102, 103}
+for number, spellings in different.items():
+    for y in (0, 1):
+        ys = [v for v in range(8) if (v & 3).bit_count() % 2 == 0]
+        probabilities = ["1/4" if v in ys else "0" for v in range(8)]
+        distributions = [probabilities, ["1/8"] * 8] if number in (54, 70, 74, 102) else [probabilities]
+        for distribution in distributions:
+            p = "qset(vector(" + ",".join(f"tuple(bitstring({v},3),{q})" for v, q in enumerate(distribution)) + "))"
+            for body in spellings:
+                expr = body
+                for name, value in [("p", p), ("f", table["graph"]), ("m", 5), ("n", 3),
+                                    ("s", "bitstring(3,3)"), ("z", f"bitstring({outputs[y]},5)"),
+                                    ("w", f"bitstring({y},3)"), ("y", f"bitstring({y},3)"),
+                                    (r"\Sigma", r"\{0,1\}")]:
+                    expr = f"replace(({expr}),{name},{value})"
+                if number in (45, 49, 50):
+                    scale = "8" if number == 50 else "sqrt(8)"
+                    state = evaluate(f"{scale}*({expr})", bind_alphabet=False)
+                    amplitudes = [0] * 256
+                    for x, z in enumerate(outputs):
+                        if number == 45:
+                            amplitudes[x] = 1
+                        elif number == 49:
+                            amplitudes[8*z+x] = 1
+                        else:
+                            for v in range(8):
+                                amplitudes[8*z+v] += (-1) ** ((x & v).bit_count() % 2)
+                    assert state["rows"] == 256 and state["columns"] == 1
+                    encoded = ",".join(map(str, amplitudes))
+                    assert state["copy_text"].replace("−", "-") == f"matrix(256,1,[{encoded}])"
+                else:
+                    expected = "1"
+                    if number in (54, 70, 74, 102):
+                        expected = str(int(distribution == probabilities))
+                    elif number == 75:
+                        expected = "4" if y in ys else "0"
+                    elif number == 103:
+                        expected = bit_set(ys, 3)
+                    assert evaluate(expr, bind_alphabet=False)["copy_text"] == expected, (number, y)
+print("Both GUI copy spellings for all 12 changed symbolic expressions passed the bound checks")
+
+# Apply the context supplied by the prose to the printed secret and oracle
+# equation, before and after copying. Identical output text alone cannot
+# establish that a saved equation still performs a function lookup.
+for number, digits in [(32, "011"), (35, "00101"), (36, "00001")]:
+    assert source_body(number) == digits
+    label = evaluate(f'bitstring("{digits}")')["copy_text"]
+    assert label == f"qbitlabel({int(digits, 2)},{len(digits)})"
+    assert evaluate(label)["copy_text"] == label
+for number in (28, 39):
+    formula = source_body(number)
+    for body in (formula, evaluate(formula)["copy_text"]):
+        for width in (3, 4):
+            for value in range(8):
+                probe = f"replace(({body}),s,bitstring({value},{width}))"
+                assert evaluate(probe)["copy_text"] == str(int(width == 3 and value == 3))
+definition = source_body(72)
+for body in (definition, evaluate(definition)["copy_text"]):
+    for x, output in enumerate(outputs):
+        for probe, width in ((output, 5), (output ^ 1, 5), (output, 6)):
+            expr = f"replace(replace(replace(({body}),z,bitstring({probe},{width})),x,bitstring({x},3)),f,{table['graph']})"
+            assert evaluate(expr)["copy_text"] == str(int(probe == output and width == 5))
+print("Copied secret and oracle equations preserve the word widths and all eight oracle lookups")
+
+context = json.loads((directory / "ibm021-copy-context.json").read_bytes())
+identity = context["changed_gui_fields_before_and_after"]["IBM021-c0-M060"]
+for field in ("copy", "second_copy"):
+    body = identity[field][1]
+    for z in range(32):
+        expr = f"replace(replace(({width_three(body)}),f,{table['graph']}),z,bitstring({z},5))"
+        expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+        assert evaluate(expr, bind_alphabet=False)["copy_text"] == "1", (field, z)
+print("Both GUI copies of the inverse-image identity hold for all 32 output words")

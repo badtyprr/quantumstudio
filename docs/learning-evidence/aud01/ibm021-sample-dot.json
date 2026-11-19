@@ -1,0 +1,25 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "99392a0e7a6a70c7cad83ed29a92d0a15d71facb2bb3de9aa1b358dcdd222c47",
+  "total": 177,
+  "exit_codes": {
+    "0": 174,
+    "2": 3
+  },
+  "changes": {
+    "IBM021-c0-M135": {
+      "from": 2,
+      "to": 0,
+      "result": "qequalchain(vector('M''v',qsampledotcolumn(\"y^\",'k','s',vector(),2),qzerocolumnlike(qsampledotcolumn(\"y^\",'k','s',vector(),2),2)))"
+    }
+  },
+  "field_context": "The sentence preceding M135 specifies multiplication modulo two. Use gf2_mul(M,v) for the left product when evaluating the lesson; plain M v uses ordinary multiplication.",
+  "gui": {
+    "IBM021-c0-M135": "qequalchain(vector('M''v',qsampledotcolumn(\"y^\",'k','s',vector(),2),qzerocolumnlike(qsampledotcolumn(\"y^\",'k','s',vector(),2),2)))",
+    "binary": "qequalchain(vector(qgf2mul('M','v'),qsampledotcolumn(\"y^\",'k','s',vector(),2),qzerocolumnlike(qsampledotcolumn(\"y^\",'k','s',vector(),2),2)))",
+    "secret011": "1",
+    "false_left": "0",
+    "false_middle": "0"
+  },
+  "gui_checks": 55
+}

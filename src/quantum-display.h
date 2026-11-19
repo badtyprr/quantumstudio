@@ -187,12 +187,23 @@ class Printer {
   }
   if(name=="qcompare" && value.size()==3 && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=5) {
    const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
-   return Fragment(grouped(render(value[0],depth+1),6)+operators[value[2].number().intValue()]+grouped(render(value[1],depth+1),6),5);
+   auto side=[&](unsigned index) {
+    const MathStructure &term=value[index];
+    if(term.isFunction() && term.size()==2) {
+     const auto &op=term.function()->referenceName();
+     if(op=="qcomparisonliteral" && term[0].equals(value[1-index]) && term[1].isSymbolic())return term[1].symbol();
+     if(op=="qnamedapplication" && term[0].isSymbolic() && safeLabel(term[0].symbol()))
+      return term[0].symbol()+"("+render(term[1],depth+1).text+")";
+    }
+    return grouped(render(term,depth+1),6);
+   };
+   return Fragment(side(0)+operators[value[2].number().intValue()]+side(1),5);
   }
-  if((name=="qindexedcolumn" && value.size()==3) || (name=="qindexedmatrix" && value.size()==5)) {
-   const bool matrix=name=="qindexedmatrix";
+  if(((name=="qindexedcolumn" || name=="qdescendingcolumn") && value.size()==3) || ((name=="qindexedmatrix" || name=="qsamplebitmatrix") && value.size()==5)) {
+   const bool samples=name=="qsamplebitmatrix";
+   const bool matrix=samples || name=="qindexedmatrix";
    std::string prefix=value[0].isSymbolic() ? value[0].symbol() : "";
-   bool safe=prefix.size()>1 && prefix.back()=='_';
+   bool safe=prefix.size()>1 && prefix.back()==(samples ? '^' : '_');
    for(size_t i=0;i+1<prefix.size();++i)if((unsigned char)prefix[i]<128 && !std::isalpha((unsigned char)prefix[i]))safe=false;
    std::string endpoints[2];int minima[2]={0,0};
    // Keep a bounded, re-enterable surface form. Complex endpoints or large
@@ -205,12 +216,26 @@ class Printer {
     if(endpoints[axis].empty())safe=false;
     for(unsigned char c:endpoints[axis])if(c<128 && !std::isalnum(c) && !std::isspace(c) && c!='+' && c!='-' && c!='*' && c!='/')safe=false;
    }
+   if(safe && samples && minima[0]>=1 && minima[1]==0) {
+    auto row=[&](const std::string &sample) {
+     std::string label=prefix+"("+sample+")_";
+     return label+"("+endpoints[1]+"), ⋯, "+label+"0";
+    };
+    std::string text="[";
+    for(int index=1;index<=minima[0];++index)text+=row(std::to_string(index))+"; ";
+    return Fragment(text+"⋮, ⋱, ⋮; "+row(endpoints[0])+"]");
+   }
    if(safe && !matrix) {
     std::string text="[";
+    if(name=="qdescendingcolumn") {
+     text+=prefix+"("+endpoints[0]+"); ⋮";
+     for(int row=minima[0];row>=0;--row)text+="; "+prefix+std::to_string(row);
+     return Fragment(text+"]");
+    }
     for(int row=0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
     return Fragment(text+"⋮; "+prefix+"("+endpoints[0]+")]");
    }
-   if(safe) {
+   if(safe && !samples) {
     std::string text="[";int height=minima[0]+3,width=minima[1]+3;
     for(int row=0;row<height;++row) {
      if(row)text+=";\n ";

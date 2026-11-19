@@ -1,0 +1,28 @@
+{
+  "notebook_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "figure_sha256": "d310a30cf1768134b0105f0dfa757cc2346a1a41b6ab3e03fc42724a1e3d8e8f",
+  "qasm_sha256": "2c6a1df0c4ff74f5181f126731f349be0ae4ac60b29026b9b7a820ef346e48c8",
+  "worker_sha256": "50c5db5a76b47106852bab5dcfa8c2734d99c437c5b22df5ac9e96d1b01381ee",
+  "adapter_sha256": "062c49799a5a26b6d14b63787a97501652378c4b477a26fa5578041617aea92e",
+  "figure": "Input Hadamards, one reversible oracle call, input Hadamards, then input-only measurement. Both registers start at zero.",
+  "realization": "The figure leaves the oracle abstract. The OpenQASM gate realizes the lesson table by XORing its Boolean output functions into five target bits.",
+  "input_bits": 3,
+  "target_bits": 5,
+  "oracle_calls": 1,
+  "primitive_oracle_gates": 17,
+  "oracle_basis_inputs": 256,
+  "joint_cells_checked": 256,
+  "nonzero_joint_cells": 16,
+  "input_probabilities": {
+    "000": "1/4",
+    "001": "0",
+    "010": "0",
+    "011": "1/4",
+    "100": "1/4",
+    "101": "0",
+    "110": "0",
+    "111": "1/4"
+  },
+  "exported_qasm_sha256": "fe0bb5ac4c6d390e1f9b2300b4f2fc7f146ce31cc99daa740c4c6c317f5d0db0",
+  "export_reimport_verified": true
+}

@@ -1,0 +1,40 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "b431ec344d8144f388c2082da46919544d9c3d6676675e01796bc2ff44224375",
+  "total": 177,
+  "exit_codes": {
+    "2": 30,
+    "0": 147
+  },
+  "changes": {
+    "IBM021-c0-M054": {
+      "from": 2,
+      "to": 2,
+      "result": "A set sum requires a finite flat vector of at most 1024 scalar indices.\r\nQuantum operation requires a matrix (kets are column matrices)."
+    },
+    "IBM021-c0-M070": {
+      "from": 2,
+      "to": 2,
+      "result": "Quantum operation requires a matrix (kets are column matrices)."
+    }
+  },
+  "gui_checks": 176,
+  "gui": {
+    "M054-y0": "1 \u2215 4",
+    "M054-y1": "0",
+    "M054-y2": "0",
+    "M054-y3": "1 \u2215 4",
+    "M054-y4": "1 \u2215 4",
+    "M054-y5": "0",
+    "M054-y6": "0",
+    "M054-y7": "1 \u2215 4",
+    "M070-y0": "1 \u2215 4",
+    "M070-y1": "0",
+    "M070-y2": "0",
+    "M070-y3": "1 \u2215 4",
+    "M070-y4": "1 \u2215 4",
+    "M070-y5": "0",
+    "M070-y6": "0",
+    "M070-y7": "1 \u2215 4"
+  }
+}
