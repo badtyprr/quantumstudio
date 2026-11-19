@@ -243,7 +243,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && value.function()->referenceName()=="qindexedlist";
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -945,6 +945,36 @@ class QuantumStateFamilyFunction: public MathFunction {
   return 1;
  }
 };
+// Materialize the sequence without simplifying a singleton into its element.
+bool indexedEntries(MathStructure &entries,const MathStructure &raw,const EvaluationOptions &eo) {
+ if(raw.size()!=4)return false;
+ if(!raw[0].isSymbolic())return false;
+ MathStructure first=raw[1],last=raw[2],history=raw[3];
+ first.eval(eo);last.eval(eo);history.eval(eo);
+ if(!history.isVector() || history.size()%2 || history.size()>2048)return false;
+ if(pendingRegisterIndex(first) || pendingRegisterIndex(last))return false;
+ if(!first.isInteger() || !last.isInteger() || first.number()<0 || last.number()<0) {
+  CALCULATOR->error(true,"Indexed lists require nonnegative integer endpoints.",NULL);return false;
+ }
+ Number count=last.number()-first.number()+1;
+ if(count>1024) {CALCULATOR->error(true,"An indexed list supports at most 1024 entries.",NULL);return false;}
+ std::map<Number,MathStructure> bindings;
+ for(size_t k=0;k<history.size();k+=2) {
+  if(!history[k].isInteger())return false;
+  bindings.emplace(history[k].number(),history[k+1]);
+ }
+ MathStructure suffix("",true);entries.clearVector();
+ for(Number i=first.number();i<=last.number();i+=1) {
+  if(CALCULATOR->aborted())return false;
+  auto found=bindings.find(i);
+  if(found!=bindings.end())entries.addChild(found->second);
+  else {
+   MathStructure label,index(i);label.set(CALCULATOR->getFunction("qindexedlabel"),&raw[0],&index,&suffix,NULL);
+   label.eval(eo);entries.addChild(label);
+  }
+ }
+ return true;
+}
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
@@ -1498,33 +1528,38 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedlist") {
-   if(!raw[0].isSymbolic())return 0;
-   MathStructure first=raw[1],last=raw[2],history=raw[3];
-   first.eval(eo);last.eval(eo);history.eval(eo);
-   if(!history.isVector() || history.size()%2 || history.size()>2048)return 0;
-   if(pendingRegisterIndex(first) || pendingRegisterIndex(last))return 0;
-   if(!first.isInteger() || !last.isInteger() || first.number()<0 || last.number()<0) {
-    CALCULATOR->error(true,"Indexed lists require nonnegative integer endpoints.",NULL);return 0;
+  if(op=="qspectralsum") {
+   auto entries=[&](const MathStructure &input,MathStructure &out) {
+    if(input.isFunction() && input.function()->referenceName()=="qindexedentries")return indexedEntries(out,input,eo);
+    out=input;out.eval(eo);return out.isVector();
+   };
+   MathStructure weights,states;
+   if(!entries(raw[0],weights) || !entries(raw[1],states))return 0;
+   if(weights.size()!=states.size()) {
+    CALCULATOR->error(true,"A spectral sum requires one weight per state.",NULL);return 0;
    }
-   Number count=last.number()-first.number()+1;
-   if(count>1024) {CALCULATOR->error(true,"An indexed list supports at most 1024 entries.",NULL);return 0;}
-   std::map<Number,MathStructure> bindings;
-   for(size_t k=0;k<history.size();k+=2) {
-    if(!history[k].isInteger())return 0;
-    bindings.emplace(history[k].number(),history[k+1]);
-   }
-   MathStructure entries,suffix("",true);entries.clearVector();
-   for(Number i=first.number();i<=last.number();i+=1) {
+   MathStructure sum;
+   size_t dimension=0;
+   for(size_t i=0;i<states.size();++i) {
     if(CALCULATOR->aborted())return 0;
-    auto found=bindings.find(i);
-    if(found!=bindings.end())entries.addChild(found->second);
-    else {
-     MathStructure label,index(i);label.set(CALCULATOR->getFunction("qindexedlabel"),&raw[0],&index,&suffix,NULL);
-     label.eval(eo);entries.addChild(label);
+    MathStructure ket=states[i],weight=weights[i];ket.eval(eo);weight.eval(eo);
+    if(ket.isUnknown() || (!ket.isMatrix() && ket.containsUnknowns()))return 0;
+    if(!ket.isMatrix() || ket.columns()!=1 || (dimension && ket.rows()!=dimension) || !weight.representsScalar()) {
+     CALCULATOR->error(true,"Spectral terms require scalar weights and column states of the same dimension.",NULL);return 0;
     }
+    dimension=ket.rows();
+    MathStructure bra(CALCULATOR->getFunction("qdag"),&ket,NULL);
+    MathStructure projector(CALCULATOR->getFunction("qmul"),&ket,&bra,NULL);
+    projector.eval(eo);projector.multiply(weight);
+    if(i==0)sum=projector;else sum.add(projector);
    }
-   out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);return 1;
+   sum.eval(eo);out=sum;return 1;
+  }
+  if(op=="qindexedlist" || op=="qindexedentries") {
+   MathStructure entries;
+   if(!indexedEntries(entries,raw,eo))return 0;
+   if(op=="qindexedentries")out=entries;else out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);
+   return 1;
   }
   if(op=="qindexedfamily") {
    if(!raw[0].isSymbolic() || !raw[1].isInteger() || raw[1].number().isNegative())
@@ -2011,6 +2046,8 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
  return true;
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qspectralsum",2));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));

@@ -338,7 +338,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qindexedentries",4},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -938,9 +938,51 @@ class Parser {
   for(size_t j=0;j<bits.size();++j) {if(j)value+=',';value+=bits[j];}
   return value+")";
  }
+ // Recognize a weighted rank-one projector series only when every
+ // indexed ket matches its bra and both families share the summation index.
+ std::string spectralSeries() {
+  size_t at=p;
+  auto space=[&]() {while(at<s.size() && std::isspace((unsigned char)s[at]))++at;};
+  auto token=[&](const std::string &text) {space();if(s.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
+  auto name=[&]() {
+   space();size_t start=at;
+   while(at<s.size() && (std::isalpha((unsigned char)s[at]) || (unsigned char)s[at]>=128))++at;
+   return s.substr(start,at-start);
+  };
+  auto index=[&]() {
+   space();size_t start=at;
+   while(at<s.size() && std::isdigit((unsigned char)s[at]))++at;
+   return at==start ? name() : s.substr(start,at-start);
+  };
+  auto projector=[&](std::string &weight,std::string &state,std::string &slot) {
+   weight=name();if(weight.empty() || !token("_"))return false;
+   slot=index();if(slot.empty() || !token("|"))return false;
+   state=name();return !state.empty() && token("_") && index()==slot && token(">") &&
+    token("<") && name()==state && token("_") && index()==slot && token("|");
+  };
+  std::string start,end,weight,state,slot;
+  if(token("qtexsum(")) {
+   start=index();if(!token(","))return "";end=index();if(!token(","))return "";
+   std::string binder=name();
+   if(binder.empty() || !token(")") || !projector(weight,state,slot) || slot!=binder)return "";
+  } else {
+   at=p;size_t before=s.find_last_not_of(" \t\r\n",p ? p-1 : 0);
+   if(p && before!=std::string::npos && s[before]!='=' && s[before]!='(' && s[before]!=',')return "";
+   if(!projector(weight,state,start) || !token("+") || !(token("...") || token("…")) || !token("+"))return "";
+   std::string finalWeight,finalState;
+   if(!projector(finalWeight,finalState,end) || weight!=finalWeight || state!=finalState)return "";
+  }
+  if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || end.empty() ||
+     (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return "";
+  space();if(at<s.size() && s[at]!=')' && s[at]!=',' && s[at]!='=' && s[at]!=']')return "";
+  p=at;
+  auto family=[&](const std::string &prefix){return "qindexedentries("+indexableLabel(prefix+"_")+","+start+","+end+",vector())";};
+  return "qspectralsum("+family(weight)+","+family(state)+")";
+ }
  std::string atom() {
   if(++depth > 256 || ++nodes > nodeLimit) throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
-  ws(); std::string a;int kind=0;
+  ws(); std::string a=spectralSeries();int kind=0;
+  if(!a.empty()) {--depth;diracKind=0;return a;}
   if(p<s.size() && (s[p]=='"' || s[p]=='\'')) {
    size_t start=p;char quote=s[p++];
    while(p<s.size() && s[p]!=quote)++p;

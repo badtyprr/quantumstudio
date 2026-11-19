@@ -230,6 +230,8 @@ class QuantumOrderFunction: public MathFunction {
   }
   if(equality && (args[0].containsFunction(CALCULATOR->getFunction("qinversefunction")) ||
                   args[1].containsFunction(CALCULATOR->getFunction("qinversefunction"))))return 0;
+  if(equality && (args[0].containsFunction(CALCULATOR->getFunction("qspectralsum")) ||
+                  args[1].containsFunction(CALCULATOR->getFunction("qspectralsum"))))return 0;
   // A cost function's argument vector does not make its value a matrix.
   MathFunction *costCall=CALCULATOR->getFunction("qcostcall");
   if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall)) {

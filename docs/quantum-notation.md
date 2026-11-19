@@ -231,6 +231,8 @@ For a finite binary function graph, `f(x)` applies the function and `f^(-1)(x)` 
 
 An indexed list such as `λ_1, …, λ_N` expands to an ordered tuple when `N` is supplied. Repeated values keep their positions. For example, setting both `λ_1` and `λ_2` to 5 before setting `N` to 2 gives `(5, 5)`. The index declaration `j = 1, …, N` tests membership in that inclusive integer range.
 
+The expanded spectral decomposition `λ_1 |ψ_1⟩⟨ψ_1| + … + λ_N |ψ_N⟩⟨ψ_N|` and its TeX summation form both represent a weighted sum of projectors. Supplying the upper bound, weights and state columns evaluates the sum as a matrix. The bra uses the complex conjugate of the state column.
+
 A mixed pair of interval delimiters after membership expresses a half-open real interval. For example, `0 ∈ [0,1)` and `1 ∈ (0,1]` both return one. The endpoints can be expressions.
 
 In `y = 0^m`, binding `y` to a bit string compares it with the all-zero word of width `m`. The empty word matches at width zero. Binding `y` to a number uses ordinary exponentiation.

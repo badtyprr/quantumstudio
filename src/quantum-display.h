@@ -306,6 +306,18 @@ class Printer {
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbits" && value.size()==2)
    return Fragment("bits("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qspectralsum" && value.size()==2) {
+   const auto &a=value[0],&b=value[1];
+   auto family=[](const MathStructure &v) {
+    return v.isFunction() && v.function()->referenceName()=="qindexedentries" && v.size()==4 &&
+     v[0].isSymbolic() && v[0].symbol().size()>1 && v[0].symbol().back()=='_' && v[3].size()==0;
+   };
+   if(family(a) && family(b) && a[1].equals(b[1]) && a[2].equals(b[2])) {
+    std::string state=b[0].symbol()+"k";
+    return Fragment("\\sum_{k="+render(a[1],depth+1).text+"}^{"+render(a[2],depth+1).text+"} "+
+                    a[0].symbol()+"k \\vert "+state+"\\rangle\\langle "+state+"\\vert",20);
+   }
+  }
   if(name=="qindexedlist" && value.size()==4 && value[0].isSymbolic() && value[1].isInteger() &&
      safeLabel(value[0].symbol()) && value[3].size()%2==0 &&
      (value[3].isVector() || (value[3].isFunction() && value[3].function()->referenceName()=="vector"))) {
