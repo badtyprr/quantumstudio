@@ -436,3 +436,36 @@ for number, spellings in different.items():
                         expected = bit_set(ys, 3)
                     assert evaluate(expr, bind_alphabet=False)["copy_text"] == expected, (number, y)
 print("Both GUI copy spellings for all 12 changed symbolic expressions passed the bound checks")
+
+# Apply the context supplied by the prose to the printed secret and oracle
+# equation, before and after copying. Identical output text alone cannot
+# establish that a saved equation still performs a function lookup.
+for number, digits in [(32, "011"), (35, "00101"), (36, "00001")]:
+    assert source_body(number) == digits
+    label = evaluate(f'bitstring("{digits}")')["copy_text"]
+    assert label == f"qbitlabel({int(digits, 2)},{len(digits)})"
+    assert evaluate(label)["copy_text"] == label
+for number in (28, 39):
+    formula = source_body(number)
+    for body in (formula, evaluate(formula)["copy_text"]):
+        for width in (3, 4):
+            for value in range(8):
+                probe = f"replace(({body}),s,bitstring({value},{width}))"
+                assert evaluate(probe)["copy_text"] == str(int(width == 3 and value == 3))
+definition = source_body(72)
+for body in (definition, evaluate(definition)["copy_text"]):
+    for x, output in enumerate(outputs):
+        for probe, width in ((output, 5), (output ^ 1, 5), (output, 6)):
+            expr = f"replace(replace(replace(({body}),z,bitstring({probe},{width})),x,bitstring({x},3)),f,{table['graph']})"
+            assert evaluate(expr)["copy_text"] == str(int(probe == output and width == 5))
+print("Copied secret and oracle equations preserve the word widths and all eight oracle lookups")
+
+context = json.loads((directory / "ibm021-copy-context.json").read_bytes())
+identity = context["changed_gui_fields_before_and_after"]["IBM021-c0-M060"]
+for field in ("copy", "second_copy"):
+    body = identity[field][1]
+    for z in range(32):
+        expr = f"replace(replace(({width_three(body)}),f,{table['graph']}),z,bitstring({z},5))"
+        expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+        assert evaluate(expr, bind_alphabet=False)["copy_text"] == "1", (field, z)
+print("Both GUI copies of the inverse-image identity hold for all 32 output words")

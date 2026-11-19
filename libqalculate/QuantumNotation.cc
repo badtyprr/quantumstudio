@@ -1,4 +1,5 @@
 // Quantum notation extension. GPL-2.0-or-later; see COPYING.
+#include "QuantumIndexed.h"
 #include "QuantumNotation.h"
 #include "QuantumTeX.h"
 #include <stdexcept>
@@ -225,7 +226,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qnamedapplication",2},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -1633,7 +1634,7 @@ class Parser {
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
      else if(name=="qregistersum")protect(4);
-     else if(name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qsamplebitmatrix" || name=="qsampledotcolumn" || name=="qsamplewordrows" || name=="qindexedcoefficient" || name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers")protect(0);
+     else if(quantumHasIndexedNameArgument(name))protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
@@ -1656,6 +1657,15 @@ class Parser {
     }
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";
+    if(publicName=="bitstring" && args.size()==1) {
+     std::string text=withoutLabelMarkers(args[0]);
+     if(text.size()<2 || text.front()!='"' || text.back()!='"')
+      throw std::runtime_error("A one-argument bitstring requires quoted binary digits.");
+     std::string digits=text.substr(1,text.size()-2);
+     if(digits.find_first_not_of("01")!=std::string::npos || digits.size()>1024)
+      throw std::runtime_error("A binary word may contain up to 1024 binary digits.");
+     args[0]=digits.empty() ? "0" : binaryNumeral(digits);args.push_back(std::to_string(digits.size()));
+    }
     if(name=="qreplace" && args.size()==3)bindGraphCalls(args);
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
@@ -1822,6 +1832,21 @@ class Parser {
   while(takeSetOperator("∪")) {result="qsetunion("+result+","+setIntersection()+")";checkSize(result);}
   return result;
  }
+ // A definition such as z=f(x) leaves the type of f open. Preserve
+ // that choice when copying the equation before binding the graph or scalar.
+ static void preserveNamedApplication(const std::string &label,std::string &term) {
+  if(label.size()!=1 || !std::isalpha((unsigned char)label[0]) || term.size()!=4 ||
+     term[0]<'a' || term[0]>'z' || term[0]=='i' || term[0]=='e' || term[1]!='(' ||
+     !std::isalpha((unsigned char)term[2]) || term[3]!=')')return;
+  term="qnamedapplication("+term.substr(0,1)+","+term.substr(2,1)+")";
+ }
+ // A padded binary numeral carries a width when compared to a word. A
+ // scalar comparison still uses its decimal value. Keep both through Copy.
+ static void preservePaddedLiteral(const std::string &subject,std::string &literal) {
+  if(subject.size()!=1 || !std::isalpha((unsigned char)subject[0]) || literal.size()<2 ||
+     literal.size()>1024 || literal.front()!='0' || literal.find_first_not_of("01")!=std::string::npos)return;
+  literal="qcomparisonliteral("+subject+","+indexableLabel(literal)+")";
+ }
  // A range or inverse image explicitly names a function. Its defining
  // set builder uses the same function even before a graph has been bound.
  static void preserveGraphDefinition(const std::string &domain,std::string &builder) {
@@ -1884,6 +1909,8 @@ class Parser {
     right="qzerocolumnlike("+left+","+minimum+")";
    } else right=setUnion();
    if(relation=="=" || relation=="==") {
+    preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
+    preserveNamedApplication(left,right);preserveNamedApplication(right,left);
     preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
     operands.back()=left;
    }

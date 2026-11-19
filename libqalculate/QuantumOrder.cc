@@ -108,7 +108,7 @@ class QuantumOrderFunction: public MathFunction {
    if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
     if(!args[k].isFunction())continue;
     const auto &name=args[k].function()->referenceName();
-    if(name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix")return 0;
+    if(name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qnamedapplication" || name=="qcomparisonliteral")return 0;
    }
    // A free name can denote the entire matrix. Keep it available for
    // substitution instead of broadcasting it across the matrix entries.

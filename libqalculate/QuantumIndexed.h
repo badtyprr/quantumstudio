@@ -6,6 +6,13 @@ class MathStructure;
 struct EvaluationOptions;
 #include <string>
 #include <vector>
+// The first argument of these operations names a coefficient or register family.
+inline bool quantumHasIndexedNameArgument(const std::string &name) {
+ return name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" ||
+        name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qsamplebitmatrix" ||
+        name=="qsampledotcolumn" || name=="qsamplewordrows" || name=="qindexedcoefficient" ||
+        name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers";
+}
 void registerQuantumIndexed(Calculator &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const MathStructure &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const std::vector<MathStructure> &);

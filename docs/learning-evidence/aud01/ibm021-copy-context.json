@@ -1,0 +1,114 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "b1794b840fec710c0defe0a97d1dd9fd4e294c466e334a64a68c90be5d3a8f8f",
+  "baseline_commit": "0671dd01b",
+  "original_spans": 177,
+  "exact_results": 175,
+  "split_prose_diagnostics": [
+    "M034",
+    "M037"
+  ],
+  "gui_corpus": {
+    "checks": 1962,
+    "calls": 180
+  },
+  "changed_gui_fields_before_and_after": {
+    "IBM021-c0-M028": {
+      "display": [
+        "s = 11",
+        "s = 011"
+      ],
+      "copy": [
+        "('s')==(11)",
+        "qcompare('s',qcomparisonliteral('s',\"011\"),4)"
+      ],
+      "second_copy": [
+        "('s')==(11)",
+        "qcompare('s',qcomparisonliteral('s',\"011\"),4)"
+      ]
+    },
+    "IBM021-c0-M039": {
+      "display": [
+        "s = 11",
+        "s = 011"
+      ],
+      "copy": [
+        "('s')==(11)",
+        "qcompare('s',qcomparisonliteral('s',\"011\"),4)"
+      ],
+      "second_copy": [
+        "('s')==(11)",
+        "qcompare('s',qcomparisonliteral('s',\"011\"),4)"
+      ]
+    },
+    "IBM021-c0-M060": {
+      "display": [
+        "qcompare(qpreimage('f', qset(z)), qsetfilter(qcompare(qgraphapply('f', \"qboundindex_0\"), z, 4), qpower('Σ', n), \"qboundindex_0\"), 4)",
+        "qpreimage('f', qset(z)) = {k ∈ 'Σ'^n : f(k) = z}"
+      ],
+      "copy": [
+        "qcompare(qpreimage('f',qset(vector(z))),qsetfilter(qcompare(qgraphapply('f',\"qboundindex_0\"),z,4),qpower('Σ',n),\"qboundindex_0\"),4)",
+        "qcompare(qpreimage('f',qset(vector(z))),qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_0\"),z,4),qpower('Σ',n),\"qboundindex_0\"),4)"
+      ],
+      "second_copy": [
+        "qcompare(qpreimage('f',qset(vector(z))),qsetfilter(qcompare(qgraphapply('f',\"qboundindex_1\"),z,4),qpower('Σ',n),\"qboundindex_1\"),4)",
+        "qcompare(qpreimage('f',qset(vector(z))),qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_1\"),z,4),qpower('Σ',n),\"qboundindex_1\"),4)"
+      ]
+    },
+    "IBM021-c0-M072": {
+      "display": [
+        "('f' = 0 && z = 0) || (x = z ∕ 'f' && 'f' ≠ 0)",
+        "z = f(x)"
+      ],
+      "copy": [
+        "((('f')!=(0) and (x)==(z ∕ 'f')) or (('f')==(0) and (z)==(0)))",
+        "qcompare(z,qnamedapplication('f',x),4)"
+      ],
+      "second_copy": [
+        "((('f')!=(0) and (x)==(z ∕ 'f')) or (('f')==(0) and (z)==(0)))",
+        "qcompare(z,qnamedapplication('f',x),4)"
+      ]
+    }
+  },
+  "gui_context_probes": {
+    "checks": 77,
+    "calls": 7
+  },
+  "probes": [
+    {
+      "id": "word",
+      "input": "bitstring(\"011\")",
+      "exact_copy": "qbitlabel(3,3)"
+    },
+    {
+      "id": "decimal",
+      "input": "011+1",
+      "exact_copy": "12"
+    },
+    {
+      "id": "correct",
+      "input": "replace((s=011),s,bitstring(3,3))",
+      "exact_copy": "1"
+    },
+    {
+      "id": "width",
+      "input": "replace((s=011),s,bitstring(3,4))",
+      "exact_copy": "0"
+    },
+    {
+      "id": "scalar",
+      "input": "replace((s=011),s,11)",
+      "exact_copy": "1"
+    },
+    {
+      "id": "lookup",
+      "input": "replace(replace(replace((z=f(x)),z,bitstring(19,5)),x,bitstring(0,3)),f,qset(vector(qtuple(vector(qbitlabel(0,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(1,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(2,3),qbitlabel(5,5))),qtuple(vector(qbitlabel(3,3),qbitlabel(19,5))),qtuple(vector(qbitlabel(4,3),qbitlabel(26,5))),qtuple(vector(qbitlabel(5,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(6,3),qbitlabel(1,5))),qtuple(vector(qbitlabel(7,3),qbitlabel(26,5))))))",
+      "exact_copy": "1"
+    },
+    {
+      "id": "coefficient",
+      "input": "replace(replace(replace((z=f(x)),z,6),x,3),f,2)",
+      "exact_copy": "1"
+    }
+  ]
+}

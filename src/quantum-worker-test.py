@@ -24,6 +24,23 @@ def data(expression, *flags):
     return value
 
 
+# An isolated binary word needs a width, while an equation can learn the
+# type of its right-hand literal or named application from later bindings.
+for digits, value in (("011", 3), ("00101", 5), ("00001", 1), ("", 0)):
+    assert data(f'quantum:bitstring("{digits}")')["copy_text"] == f"qbitlabel({value},{len(digits)})"
+run('quantum:bitstring("102")', "--json", success=False)
+assert data("quantum:011 + 1")["copy_text"] == "12"
+for equation in ("s=011", "011=s"):
+    result = data("quantum:" + equation)
+    for body in (equation, result["copy_text"], result["display_text"]):
+        for probe, truth in [('bitstring("011")', "1"), ('bitstring("0011")', "0"),
+                             ('bitstring("111")', "0"), ("11", "1"), ("3", "0")]:
+            assert data(f"quantum:replace(({body}),s,{probe})")["copy_text"] == truth
+for equation in ("z=f(x)", "f(x)=z"):
+    result = data("quantum:" + equation)
+    for body in (equation, result["copy_text"], result["display_text"]):
+        assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
+
 for dots in ("...", r"\dots", r"\ldots", r"\cdots"):
     samples = rf"z^1, {dots}, z^{{2}} \in \{{0,1\}}^3"
     partial = data(f'quantum:replace(({samples}),"z^2",bitstring(0,3))')["copy_text"]

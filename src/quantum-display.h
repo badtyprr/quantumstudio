@@ -187,7 +187,17 @@ class Printer {
   }
   if(name=="qcompare" && value.size()==3 && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=5) {
    const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
-   return Fragment(grouped(render(value[0],depth+1),6)+operators[value[2].number().intValue()]+grouped(render(value[1],depth+1),6),5);
+   auto side=[&](unsigned index) {
+    const MathStructure &term=value[index];
+    if(term.isFunction() && term.size()==2) {
+     const auto &op=term.function()->referenceName();
+     if(op=="qcomparisonliteral" && term[0].equals(value[1-index]) && term[1].isSymbolic())return term[1].symbol();
+     if(op=="qnamedapplication" && term[0].isSymbolic() && safeLabel(term[0].symbol()))
+      return term[0].symbol()+"("+render(term[1],depth+1).text+")";
+    }
+    return grouped(render(term,depth+1),6);
+   };
+   return Fragment(side(0)+operators[value[2].number().intValue()]+side(1),5);
   }
   if(((name=="qindexedcolumn" || name=="qdescendingcolumn") && value.size()==3) || ((name=="qindexedmatrix" || name=="qsamplebitmatrix") && value.size()==5)) {
    const bool samples=name=="qsamplebitmatrix";
