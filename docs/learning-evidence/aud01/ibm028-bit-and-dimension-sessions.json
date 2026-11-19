@@ -1,0 +1,111 @@
+{
+  "runtime_revision": "318f1a9f",
+  "worker_sha256": "78c29e1307d2737a996e3c991dac151c97f31669a7171e31afd2dee0ae9aeb98",
+  "sessions": [
+    {
+      "workflow": "evaluate, copy, save, reopen, evaluate and re-enter Copy",
+      "checks": 88,
+      "clipboard_restored": true,
+      "rows": [
+        {
+          "id": "IBM028-2ff07f29-M039",
+          "mode": "Quantum notation",
+          "input": "$$\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n$$",
+          "display": "0.5 · bitvalue(bitstring(a, 1)) = if(qcompare('a', 0, 4), 0, if(qcompare('a', 1, 4), 0.5, undefined))",
+          "copy": "qcompare(qbitvalue(qbitlabel('a', 1)) ∕ 2,if(qcompare('a',0,4),0,if(qcompare('a',1,4),1 ∕ 2,undefined,0),0),4)"
+        },
+        {
+          "id": "M039-original-0",
+          "mode": "Quantum notation",
+          "input": "replace((\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n),a,0)",
+          "display": "1",
+          "copy": "1"
+        },
+        {
+          "id": "M039-original-1",
+          "mode": "Quantum notation",
+          "input": "replace((\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n),a,1)",
+          "display": "1",
+          "copy": "1"
+        },
+        {
+          "id": "M039-changed-zero-row-0",
+          "mode": "Quantum notation",
+          "input": "replace((\n0.a = \\begin{cases}\n1 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n),a,0)",
+          "display": "0",
+          "copy": "0"
+        },
+        {
+          "id": "M039-changed-zero-row-1",
+          "mode": "Quantum notation",
+          "input": "replace((\n0.a = \\begin{cases}\n1 & a = 0\\\\\n\\frac{1}{2} & a = 1.\n\\end{cases}\n),a,1)",
+          "display": "1",
+          "copy": "1"
+        },
+        {
+          "id": "M039-changed-one-row-0",
+          "mode": "Quantum notation",
+          "input": "replace((\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{4} & a = 1.\n\\end{cases}\n),a,0)",
+          "display": "1",
+          "copy": "1"
+        },
+        {
+          "id": "M039-changed-one-row-1",
+          "mode": "Quantum notation",
+          "input": "replace((\n0.a = \\begin{cases}\n0 & a = 0\\\\\n\\frac{1}{4} & a = 1.\n\\end{cases}\n),a,1)",
+          "display": "0",
+          "copy": "0"
+        },
+        {
+          "id": "IBM028-2ff07f29-M214",
+          "mode": "Quantum notation",
+          "input": "$\\{\\vert\\phi_0\\rangle,\\ldots,\\vert\\phi_{N-1}\\rangle\\}$",
+          "display": "\\{|φ_0⟩,\\ldots,|φ_{N − 1}⟩\\}",
+          "copy": "qindexedketset(\"φ_\",0,qsub('N',1),vector())"
+        }
+      ]
+    },
+    {
+      "workflow": "evaluate, copy, save, reopen, evaluate and re-enter Copy",
+      "checks": 55,
+      "clipboard_restored": true,
+      "rows": [
+        {
+          "id": "IBM028-2ff07f29-M125",
+          "mode": "Matrix dimensions",
+          "input": "$4\\times 4$",
+          "display": "4 × 4",
+          "copy": "qmatrixdimensions(4,4)"
+        },
+        {
+          "id": "IBM028-2ff07f29-M178",
+          "mode": "Matrix dimensions",
+          "input": "$N\\times N$",
+          "display": "N × N",
+          "copy": "qmatrixdimensions('N','N')"
+        },
+        {
+          "id": "rectangular",
+          "mode": "Matrix dimensions",
+          "input": "$4\\times 3$",
+          "display": "4 × 3",
+          "copy": "qmatrixdimensions(4,3)"
+        },
+        {
+          "id": "arithmetic",
+          "mode": "Quantum notation",
+          "input": "$4\\times 3$",
+          "display": "12",
+          "copy": "12"
+        },
+        {
+          "id": "bound-dimension",
+          "mode": "Matrix dimensions",
+          "input": "replace(qmatrixdimensions('N','N'),N,5)",
+          "display": "5 × 5",
+          "copy": "qmatrixdimensions(5,5)"
+        }
+      ]
+    }
+  ]
+}
