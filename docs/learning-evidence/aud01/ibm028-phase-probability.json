@@ -1,0 +1,557 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "id": "IBM028-2ff07f29-M328",
+  "literal": "$$\np_y =\n\\left\\vert \\frac{1}{2^m} \\sum_{x=0}^{2^m - 1} e^{2\\pi i x (\\theta - y/2^m)} \\right\\vert^2.\n$$",
+  "worker_sha256": "8b5ae0bc9d1199db643119d244efee494d413e0ba12b7d4b4efb11096c113643",
+  "display": "\"p_y\" = |1 / 2^m · (∑_{k=0}^{2^m − 1} (e^(2 · π · i · ('θ' − y / 2^m) · k)))|^2",
+  "copy": "qcompare(\"p_y\",qpower(qbars(qadjacent(1 ∕ qpower(2, 'm'),qsum(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),qsub('θ', y ∕ qpower(2, 'm')) ⋅ \"qboundindex_0\")),0,qsub(qpower(2,'m'),1),\"qboundindex_0\"))),2),4)",
+  "second_copy": "qcompare(\"p_y\",qpower(qbars(qadjacent(1 ∕ qpower(2, 'm'),qsum(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),qmul(qsub('θ',y ∕ qpower(2, 'm')),\"qboundindex_1\"))),0,qsub(qpower(2,'m'),1),\"qboundindex_1\"))),2),4)",
+  "forms": [
+    "display",
+    "copy",
+    "copy after re-entry"
+  ],
+  "rejected_probability_offset": "1/8",
+  "cases": [
+    {
+      "qubits": 1,
+      "phase": "0/2",
+      "outcome": 0,
+      "probability": "1"
+    },
+    {
+      "qubits": 1,
+      "phase": "0/2",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 1,
+      "phase": "1/2",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 1,
+      "phase": "1/2",
+      "outcome": 1,
+      "probability": "1"
+    },
+    {
+      "qubits": 2,
+      "phase": "0/4",
+      "outcome": 0,
+      "probability": "1"
+    },
+    {
+      "qubits": 2,
+      "phase": "0/4",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "0/4",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "0/4",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/4",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/4",
+      "outcome": 1,
+      "probability": "1"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/4",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/4",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "2/4",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "2/4",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "2/4",
+      "outcome": 2,
+      "probability": "1"
+    },
+    {
+      "qubits": 2,
+      "phase": "2/4",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "3/4",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "3/4",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "3/4",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 2,
+      "phase": "3/4",
+      "outcome": 3,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 0,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "0/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 1,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "1/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 2,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "2/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 3,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "3/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 4,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "4/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 5,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "5/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 6,
+      "probability": "1"
+    },
+    {
+      "qubits": 3,
+      "phase": "6/8",
+      "outcome": 7,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 0,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 1,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 2,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 3,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 4,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 5,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 6,
+      "probability": "0"
+    },
+    {
+      "qubits": 3,
+      "phase": "7/8",
+      "outcome": 7,
+      "probability": "1"
+    },
+    {
+      "qubits": 1,
+      "phase": "1/4",
+      "outcome": 0,
+      "probability": "1/2"
+    },
+    {
+      "qubits": 1,
+      "phase": "1/4",
+      "outcome": 1,
+      "probability": "1/2"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/8",
+      "outcome": 0,
+      "probability": "(2+sqrt(2))/8"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/8",
+      "outcome": 1,
+      "probability": "(2+sqrt(2))/8"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/8",
+      "outcome": 2,
+      "probability": "(2-sqrt(2))/8"
+    },
+    {
+      "qubits": 2,
+      "phase": "1/8",
+      "outcome": 3,
+      "probability": "(2-sqrt(2))/8"
+    }
+  ]
+}
