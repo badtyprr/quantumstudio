@@ -332,10 +332,13 @@ class QuantumOrderFunction: public MathFunction {
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
   args[1].eval(eo);
-  // Preserve piecewise bit definitions and their domain guards on Copy.
-  // After substitution the bit quantity is numerical and comparison applies.
+  // Keep piecewise definitions intact while their bit value or named
+  // state is unresolved. Concrete substitutions use ordinary comparison.
   if(equality)for(unsigned k=0;k<2;++k) {
-   if(!raw[1-k].isFunction() || raw[1-k].function()->referenceName()!="if" || !args[k].containsUnknowns())continue;
+   if(!raw[1-k].isFunction() || raw[1-k].function()->referenceName()!="if")continue;
+   if(args[k].containsFunction(CALCULATOR->getFunction("qnamedket")) ||
+      args[k].containsFunction(CALCULATOR->getFunction("qketstate")))return 0;
+   if(!args[k].containsUnknowns())continue;
    if(args[k].isFunction() && args[k].function()->referenceName()=="qbitlength")return 0;
    if(args[k].containsFunction(CALCULATOR->getFunction("qbitvalue")))return 0;
   }
