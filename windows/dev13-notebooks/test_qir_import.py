@@ -33,6 +33,31 @@ def fixture(*calls):
 
 
 class ImportTests(unittest.TestCase):
+    def test_pyqir_static_20_bell_without_output_records(self):
+        bell = pyqir.SimpleModule("bell_pair", num_qubits=2, num_results=2)
+        qis = pyqir.BasicQisBuilder(bell.builder)
+        qis.h(bell.qubits[0])
+        qis.cx(*bell.qubits)
+        for qubit, result in zip(bell.qubits, bell.results):
+            qis.mz(qubit, result)
+        bell.builder.ret(None)
+        module = bell._module
+        self.assertEqual(pyqir.qir_major_version(module), 2)
+        for raw, binary in [(str(module).encode(), False), (module.bitcode, True)]:
+            report = import_qir(raw, bitcode=binary)
+            self.assertEqual(report["output_slots"], 0)
+            self.assertEqual(report["openqasm"].splitlines()[-4:], [
+                "h q[0];", "cx q[0], q[1];", "measure q[0];", "measure q[1];"])
+
+    def test_unreviewed_versions_and_dynamic_20_reject(self):
+        static = fixture(H).replace(b'"qir_major_version", i32 1', b'"qir_major_version", i32 2')
+        for old, new in [(b'"qir_minor_version", i32 0', b'"qir_minor_version", i32 1'),
+                         (b'"qir_major_version", i32 2', b'"qir_major_version", i32 3'),
+                         (b'"dynamic_result_management", i1 false', b'"dynamic_result_management", i1 true'),
+                         (b'"dynamic_qubit_management", i1 false', b'"dynamic_qubit_management", i1 true')]:
+            with self.subTest(flag=new), self.assertRaisesRegex(ValueError, "QIR_UNSUPPORTED_PROFILE"):
+                import_qir(static.replace(old, new))
+
     def test_terminal_output_permutation_uses_direct_measurement_targets(self):
         report = import_qir(fixture(H, CX, M0, M1, O1, O0))
         self.assertEqual(report['output_lowering'], 'terminal-measurement-aliases')
