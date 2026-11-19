@@ -264,3 +264,14 @@ for body in (word_definition, evaluate(word_definition)["copy_text"]):
             expression = f"replace(replace(({expression}),n,3),s,bitstring({probe},3))"
             assert evaluate(expression)["copy_text"] == str(int(word == probe)), (word, probe)
 print("The source and copied word definition passed all 64 pairs of three-bit words")
+
+# Superscripts in M121 name successive measurements. Expand its list at
+# k=1,2,3 and supply measured words directly, retaining the source domain.
+family, relation, domain = source_body(121).partition(r" \in ")
+assert family == "y^1,...,y^{k}" and relation and domain == r"\Sigma^n"
+for count in (1, 2, 3):
+    for widths in itertools.product((2, 3, 4), repeat=count):
+        words = [f"bitstring({index},{width})" for index, width in enumerate(widths)]
+        expression = width_three(",".join(words) + relation + domain)
+        assert evaluate(expression)["copy_text"] == str(int(all(w == 3 for w in widths))), widths
+print("All 39 finite measurement-list expansions checked every word's width")
