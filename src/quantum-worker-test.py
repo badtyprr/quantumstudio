@@ -24,6 +24,16 @@ def data(expression, *flags):
     return value
 
 
+# A centered dot is parity on bit strings, including labels supplied by a binding.
+for z in range(16):
+    entries = [rf"bitstring({z},4) \cdot bitstring({x},4)" for x in range(16)]
+    expected = [str((x & z).bit_count() % 2) for x in range(16)]
+    assert data("quantum:vector(" + ",".join(entries) + ")")["copy_text"] == "vector(" + ",".join(expected) + ")"
+assert data(r"quantum:replace(replace(x \cdot y,x,bitstring(2,2)),y,bitstring(1,2))")["copy_text"] == "0"
+assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot y}}")["copy_text"] == "6"
+assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
+assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
+
 # Large exact matrices copied by the GUI must re-enter through quantum notation.
 # Start in ordinary calculator syntax so the first evaluation is independent of
 # the quantum parser's explicit-entry budget, then compare every copied entry.

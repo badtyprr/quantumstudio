@@ -727,7 +727,7 @@ class TeXReader {
   static const std::map<std::string,std::string> aliases={
    {"langle","<"},{"rangle",">"},{"vert","|"},{"lvert","|"},{"rvert","|"},
    {"cup","∪"},{"cap","∩"},{"setminus","∖"},{"emptyset","vector()"},{"varnothing","vector()"},
-   {"otimes","@"},{"oplus","#"},{"dagger","~"},{"cdot","*"},{"times","*"},
+   {"otimes","@"},{"oplus","#"},{"dagger","~"},{"cdot"," ⋅ "},{"times","*"},
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},

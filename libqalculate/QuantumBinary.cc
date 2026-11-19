@@ -31,6 +31,11 @@ class QuantumBinaryFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qcenterdot") {
+   bool binary=encodedBits(args[0]) && encodedBits(args[1]);
+   out.set(CALCULATOR->getFunction(binary ? "qbitdot" : "qmul"),&args[0],&args[1],NULL);
+   return 1;
+  }
   if(op=="qgf2mul") {
    std::vector<std::vector<unsigned char>> left,right;
    if(!binaryMatrix(a,left) || !binaryMatrix(args[1],right))return 0;
@@ -201,5 +206,5 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }

@@ -225,7 +225,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},
+ {"qbitdot",2},{"qcenterdot",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -662,7 +662,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -1718,6 +1718,7 @@ class Parser {
   auto a=diracFactor();
   while(true) {
    if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
+   else if(s.compare(p,3,"⋅")==0) {p+=3;a="qcenterdot("+a+","+diracFactor()+")";}
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
    else if(take('@')) {

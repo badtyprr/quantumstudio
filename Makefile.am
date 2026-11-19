@@ -465,3 +465,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm020-display-punctuation.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-wrapped-comparison.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-oracle-semantics.json
 EXTRA_DIST += docs/learning-evidence/aud01/check-ibm020-oracle-semantics.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-typed-dot.json

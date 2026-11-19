@@ -1,0 +1,33 @@
+{
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "baseline_worker": "a196e5c82001ea2a0528f5c0288bdba5ceaa89508f0d49e560dc0e827cf4cdbe",
+  "candidate_worker": "ada77b17cb6d85f44a7ba1342bfe622e59ffffe24d858962468a88cbc9fe438f",
+  "compared": 168,
+  "identical": 163,
+  "candidate_exit_counts": {
+    "2": 37,
+    "0": 131
+  },
+  "changed_source_ids": [
+    "R13-0-M029",
+    "R13-0-M033",
+    "R13-0-M037",
+    "R13-0-M041",
+    "R13-0-M066"
+  ],
+  "changed_source_behavior": "Five symbolic sums preserve a centered dot in their deferred bodies. All five canonical copies re-enter, but the copy strings change on re-entry on both builds.",
+  "checks": {
+    "finite_parity": "All 256 pairs of four-bit labels, expected popcount(x & z) mod 2.",
+    "typed_substitution": "R13-0-M047 is true for z=10 and x=01 after binding both variables to two-bit labels.",
+    "nested_domain": "The sum of x dot y over both two-bit domains is 6.",
+    "controls": [
+      "scalar 2 times 3",
+      "Hadamard squared",
+      "zero-width labels",
+      "mismatched widths",
+      "asterisk retains multiplication"
+    ],
+    "test": "src/quantum-worker-test.py"
+  },
+  "open": "The bare source relation with unbound variables retains its scalar interpretation. The worker receives no lesson prose in this mode."
+}
