@@ -71,11 +71,16 @@ def bit_set(values, width):
 
 
 assert evaluate(f"replace(({image}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
+native_range = bound_body(100)
+assert evaluate(f"replace(({native_range}),f,{table['graph']})")["copy_text"] == bit_set(values, 5)
+membership = bound_body(57)
 for z in range(32):
+    probe = f"replace(replace(({membership}),f,{table['graph']}),z,bitstring({z},5))"
+    assert evaluate(probe)["copy_text"] == str(int(z in values))
     expr = f"replace(replace(({fiber}),f,{table['graph']}),z,bitstring({z},5))"
     assert evaluate(expr)["copy_text"] == bit_set([x for x in range(8) if outputs[x] == z], 3)
 
-probability = definition(74).replace(r"\operatorname{range}(f)", image).replace(r"f^{-1}(\{z\})", fiber)
+probability = definition(74).replace(r"f^{-1}(\{z\})", fiber)
 for y in range(8):
     expr = f"replace(replace(replace(({probability}),f,{table['graph']}),n,3),y,bitstring({y},3))"
     quarter_units = evaluate(f"4*({expr})")["copy_text"]

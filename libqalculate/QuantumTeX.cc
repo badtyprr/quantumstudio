@@ -724,6 +724,7 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
   }

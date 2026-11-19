@@ -68,6 +68,12 @@ assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--
 word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
 word_graph = data("quantum:" + word_table)["copy_text"]
 assert data("quantum:" + word_graph)["copy_text"] == word_graph
+image = data(r"quantum:\operatorname{range}(f)")["copy_text"]
+assert data(f"quantum:replace({image},f,{word_graph})")["copy_text"] == "qset(vector(qbitlabel(1,3),qbitlabel(4,3),qbitlabel(0,3)))"
+assert data(r"quantum:\operatorname{range}(vector(2,9,3))")["copy_text"] == "7"
+assert data("quantum:qfunctionrange(qset(vector()))")["copy_text"] == "qset(vector())"
+assert b"ordered pairs" in run("quantum:qfunctionrange(qset(vector(1)))", "--json", success=False).stderr
+assert b"conflicting outputs" in run(f"quantum:qfunctionrange({conflict})", "--json", success=False).stderr
 for bits, value in (("00",1),("01",4),("10",0),("11",1)):
     assert data(f"quantum:replace(g({bits}),g,{word_graph})")["copy_text"] == f"qbitlabel({value},3)"
     ket = data(rf"quantum:replace(\vert g({bits}) \rangle,g,{word_graph})")

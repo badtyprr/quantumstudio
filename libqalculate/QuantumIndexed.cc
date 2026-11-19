@@ -137,7 +137,7 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return name=="qset" || name=="qfunctionrange" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -933,6 +933,37 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out=digits[index.number().intValue()];return 1;
   }
+  if(op=="qfunctionrange") {
+   MathStructure graph=raw[0];graph.eval(eo);
+   if(!graph.isFunction() || graph.function()->referenceName()!="qset") {
+    if(pendingDomain(graph))return 0;
+    // Preserve the ordinary statistical range for data vectors.
+    auto range=CALCULATOR->getFunction("range");
+    if(!range)return 0;
+    out.set(range,&graph,NULL);out.eval(eo);return 1;
+   }
+   MathStructure pairs;DomainState state=finiteDomain(graph,pairs,eo);
+   if(state==DomainState::Pending)return 0;
+   if(state!=DomainState::Finite) {CALCULATOR->error(true,"A function range requires a finite graph.",NULL);return 0;}
+   MathStructure outputs;outputs.clearVector();
+   for(size_t k=0;k<pairs.size();++k) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &pair=pairs[k];
+    if(!pair.isFunction() || pair.function()->referenceName()!="qtuple" || pair[0].size()!=2) {
+     CALCULATOR->error(true,"A function graph requires ordered pairs.",NULL);return 0;
+    }
+    for(size_t j=0;j<k;++j) {
+     SetEquality keys=setEquality(pair[0][0],pairs[j][0][0]);
+     if(keys==SetEquality::Different)continue;
+     SetEquality values=setEquality(pair[0][1],pairs[j][0][1]);
+     if(values==SetEquality::Equal)continue;
+     if(keys==SetEquality::Unknown || values==SetEquality::Unknown)return 0;
+     CALCULATOR->error(true,"The function graph has conflicting outputs for this input.",NULL);return 0;
+    }
+    outputs.addChild(pair[0][1]);
+   }
+   out.set(CALCULATOR->getFunction("qset"),&outputs,NULL);out.eval(eo);return 1;
+  }
   if(op=="qsetunion" || op=="qsetintersect" || op=="qsetdiff") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure left,right;DomainState first=finiteDomain(raw[0],left,exact),second=finiteDomain(raw[1],right,exact);
@@ -1697,6 +1728,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
+ calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
  calculator.addFunction(new QuantumIndexedFunction("qset",1));
  calculator.addFunction(new QuantumIndexedFunction("qdomainvector",1));

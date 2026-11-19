@@ -333,7 +333,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qfunctionrange",1},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},
@@ -1006,7 +1006,7 @@ class Parser {
     else if(c=='|' && plainDepth==0) {plainClosing=k;break;}
    }
    bool explicitCollection=false;
-   for(const char *prefix:{"unique(","select(","qbitstrings(","vector(","qset(","qindexrange(","qcartesian(","qcartesianpower(","qsetimage(","qsetfilter("})
+   for(const char *prefix:{"unique(","select(","qbitstrings(","vector(","qset(","qindexrange(","qfunctionrange(","qcartesian(","qcartesianpower(","qsetimage(","qsetfilter("})
     explicitCollection=explicitCollection || s.compare(p,std::string(prefix).size(),prefix)==0;
    if(plainClosing!=std::string::npos && !explicitCollection) {
     s[plainClosing]=')';std::string value=expression();ws();
