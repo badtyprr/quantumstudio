@@ -1,0 +1,103 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "source_sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+  "original_cells": [
+    4,
+    6,
+    8,
+    9,
+    11,
+    17,
+    18
+  ],
+  "method": "Python execution of the original GHZ and benchmark functions with a local Qiskit gate adapter. Device labels select local ideal counts or a deterministic post-measurement one-bit flip on 25 of 100 shots. Times measure only local execution.",
+  "remote_jobs": 0,
+  "cudaq_compilation": false,
+  "empty_count_score": "NaN",
+  "rows": [
+    {
+      "device": "local ideal",
+      "n_qubits": 2,
+      "fidelity": 1.0,
+      "wall_seconds": 0.060178799998539034,
+      "raw_counts": {
+        "00": 51,
+        "11": 49
+      }
+    },
+    {
+      "device": "local ideal",
+      "n_qubits": 3,
+      "fidelity": 1.0,
+      "wall_seconds": 0.0017002999957185239,
+      "raw_counts": {
+        "000": 47,
+        "111": 53
+      }
+    },
+    {
+      "device": "local ideal",
+      "n_qubits": 4,
+      "fidelity": 1.0,
+      "wall_seconds": 0.0012524999983725138,
+      "raw_counts": {
+        "1111": 53,
+        "0000": 47
+      }
+    },
+    {
+      "device": "local ideal",
+      "n_qubits": 5,
+      "fidelity": 1.0,
+      "wall_seconds": 0.0020160999993095174,
+      "raw_counts": {
+        "11111": 51,
+        "00000": 49
+      }
+    },
+    {
+      "device": "local flipped-bit control",
+      "n_qubits": 2,
+      "fidelity": 0.75,
+      "wall_seconds": 0.001028400001814589,
+      "raw_counts": {
+        "00": 26,
+        "11": 49,
+        "01": 25
+      }
+    },
+    {
+      "device": "local flipped-bit control",
+      "n_qubits": 3,
+      "fidelity": 0.75,
+      "wall_seconds": 0.0010851999977603555,
+      "raw_counts": {
+        "000": 22,
+        "111": 53,
+        "001": 25
+      }
+    },
+    {
+      "device": "local flipped-bit control",
+      "n_qubits": 4,
+      "fidelity": 0.75,
+      "wall_seconds": 0.0019643000050564297,
+      "raw_counts": {
+        "1111": 53,
+        "0000": 22,
+        "0001": 25
+      }
+    },
+    {
+      "device": "local flipped-bit control",
+      "n_qubits": 5,
+      "fidelity": 0.75,
+      "wall_seconds": 0.0014535000009345822,
+      "raw_counts": {
+        "11111": 51,
+        "00000": 24,
+        "00001": 25
+      }
+    }
+  ]
+}
