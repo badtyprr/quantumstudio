@@ -1,0 +1,128 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "source_sha256": "b98d5095d707a0e19ec063a59bc0bff02aa75c134ef814406552d4c8b840a7f5",
+  "evidence_root": "cleanup-audit/learning-coverage-20261117/qb016-local",
+  "attempts": {
+    "run01-discovery": [
+      {
+        "type": "ResourceNotFoundError",
+        "message": "Failed to authenticate with the Quantum Runtime service."
+      }
+    ],
+    "run02-local": [
+      {
+        "type": "ValueError",
+        "message": "Gate cx is not defined."
+      }
+    ],
+    "run03-local": [
+      {
+        "type": "FileNotFoundError",
+        "message": "[Errno 2] No such file or directory: 'stdgates.inc'"
+      }
+    ],
+    "run04-local": []
+  },
+  "native": {
+    "3": {
+      "results": {
+        "exact": {
+          "qubits": 3,
+          "classical_bits": 3,
+          "bits": [
+            2,
+            1,
+            0
+          ],
+          "probabilities": {
+            "000": "0.5",
+            "111": "0.5"
+          }
+        },
+        "sampled": {
+          "qubits": 3,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 3,
+          "counts": {
+            "000": 5048,
+            "111": 4952
+          }
+        }
+      },
+      "sha256": "da4c46b3a01b8703113c5d0a959d55a3efc586d1258ac7bd64baf1882da5aed7"
+    },
+    "4": {
+      "results": {
+        "exact": {
+          "qubits": 4,
+          "classical_bits": 4,
+          "bits": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "probabilities": {
+            "0000": "0.5",
+            "1111": "0.5"
+          }
+        },
+        "sampled": {
+          "qubits": 4,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 4,
+          "counts": {
+            "0000": 4999,
+            "1111": 5001
+          }
+        }
+      },
+      "sha256": "bc72edff601fc980fead80d07930618f6a094369ac99e20ed15f8ab296366425"
+    }
+  },
+  "local_counts": [
+    {
+      "111": 54,
+      "000": 46
+    },
+    {
+      "1111": 51,
+      "0000": 49
+    }
+  ],
+  "scope": "Original provider discovery failed authentication. Local Braket batch execution used cnot in place of cx, with 100 shots for each program. Original cells 1, 5, 8 and 13 ran in the adapted notebook. The circuit drawing shows both controlled gates and three measurements. Histogram labels match both batches. Separate native execution used both original QASM strings unchanged. Live device profile, job submission, status and results remain open.",
+  "artifacts": {
+    "capture.py": "6b3808d6dd5b53541103ceca2d9c59a4c3b8935046a0d5a6762fcce4d51c18c8",
+    "circuit3.json": "2b9eb34eb40b0514156b92f763c14cc7a8929c26a582970aafd9d89763adccec",
+    "circuit4.json": "eade7dc023fee49aebae746c190166380d1931cdf9776b6267e475ce26852848",
+    "native-results.json": "2b22dbb32c0020635880837ec544118ca0f8f50b0772a52c0ca82ac9df20fde7",
+    "native.py": "1ac4abc3b078fa34ff3acaf7c3dc1834de297ace167164e9b14fd86649dfee25",
+    "notebook_probe.py": "af38e06f5c09abe6ffdb531ca721790dd78b982c96815317586654efb2136fad",
+    "original-ghz3.qasm": "da4c46b3a01b8703113c5d0a959d55a3efc586d1258ac7bd64baf1882da5aed7",
+    "original-ghz4.qasm": "bc72edff601fc980fead80d07930618f6a094369ac99e20ed15f8ab296366425",
+    "run01-discovery/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "run01-discovery/executed.ipynb": "049a4b95a56881a97535bf994ea9fe173c2a0314c80a7ee4c4b662b441a9e5cc",
+    "run02-local/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "run02-local/executed.ipynb": "abcf89118d2eb31881e585ebf06a9ddbb4a8cbb3a4418440b995bf9dce7a8155",
+    "run03-local/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "run03-local/executed.ipynb": "91ca359b915674923bbfaa235d17c48934a4e6b5a8fd1abf3ff67edb98878b55",
+    "run04-local/cell13.png": "f5f6219f72cc9e0fba1b7c0d298c7ef35e9c4568e9055a61f9ef203bcc4ea971",
+    "run04-local/cell8.png": "5af8ba8b6b70f101efb68e28a21a03d9398dcedbecc504a4677414fd69fb6a21",
+    "run04-local/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "run04-local/executed.ipynb": "12db239b07b47f725b08ccda444b53133b7c9dcb3f89fe2efe946ce6e6e44555",
+    "run04-local/local-counts.json": "f9c343540594d85cad1942c01eef09c3b40f08f2ac3ad579eaa61654df2706ff"
+  }
+}
