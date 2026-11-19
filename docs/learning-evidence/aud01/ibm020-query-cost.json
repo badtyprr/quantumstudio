@@ -1,0 +1,52 @@
+{
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "worker_sha256": "ada77b17cb6d85f44a7ba1342bfe622e59ffffe24d858962468a88cbc9fe438f",
+  "sections": [
+    "Cell 13: Classical difficulty",
+    "Cell 18: base-case comparison"
+  ],
+  "method": "For each possible classical query, compare native typed dot products to independent bit parity. Minimize worst-case remaining calls over every informative query at every reachable candidate set. Reconstruct each secret with unit-vector queries. Count the wrapped source oracle in the compiled circuit and check its full output distribution.",
+  "scope": "Exact classical identification for all secrets. Finite base cases only; recursive Fourier sampling is outside this replay.",
+  "widths": [
+    {
+      "width": 1,
+      "secrets": 2,
+      "oracle_answers": 4,
+      "quantum_calls": 1,
+      "optimal_classical_calls": 1,
+      "candidate_sets_examined": 3
+    },
+    {
+      "width": 2,
+      "secrets": 4,
+      "oracle_answers": 16,
+      "quantum_calls": 1,
+      "optimal_classical_calls": 2,
+      "candidate_sets_examined": 11
+    },
+    {
+      "width": 3,
+      "secrets": 8,
+      "oracle_answers": 64,
+      "quantum_calls": 1,
+      "optimal_classical_calls": 3,
+      "candidate_sets_examined": 51
+    },
+    {
+      "width": 4,
+      "secrets": 16,
+      "oracle_answers": 256,
+      "quantum_calls": 1,
+      "optimal_classical_calls": 4,
+      "candidate_sets_examined": 307
+    },
+    {
+      "width": 5,
+      "secrets": 32,
+      "oracle_answers": 1024,
+      "quantum_calls": 1,
+      "optimal_classical_calls": 5,
+      "candidate_sets_examined": 2451
+    }
+  ]
+}

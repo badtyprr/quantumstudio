@@ -468,3 +468,5 @@ EXTRA_DIST += docs/learning-evidence/aud01/check-ibm020-oracle-semantics.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-typed-dot.json
 EXTRA_DIST += docs/learning-evidence/aud01/check-ibm020-classical-queries.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-classical-queries.json
+EXTRA_DIST += docs/learning-evidence/aud01/check-ibm020-query-cost.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-query-cost.json
