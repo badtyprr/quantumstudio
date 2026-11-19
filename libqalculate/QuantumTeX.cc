@@ -11,20 +11,21 @@ std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
 }
-// Display mathematics may end with a sentence period. Preserve decimals,
+// Display mathematics may end with a sentence period or comma. Preserve decimals,
 // quoted labels, ellipses and dots following incomplete operators.
-std::string withoutSentencePeriod(std::string value) {
- size_t dot=value.find_last_not_of(" \t\r\n");
- if(dot==std::string::npos || value[dot]!='.' || dot==0 || std::isdigit((unsigned char)value[dot-1]))return value;
- size_t before=value.find_last_not_of(" \t\r\n",dot-1);
+std::string withoutDisplayPunctuation(std::string value) {
+ size_t mark=value.find_last_not_of(" \t\r\n");
+ if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=','))return value;
+ if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1]))return value;
+ size_t before=value.find_last_not_of(" \t\r\n",mark-1);
  if(before==std::string::npos)return value;
  unsigned char end=value[before];
  if(end<128 && !std::isalnum(end) && end!=')' && end!=']' && end!='}' && end!='>' && end!='\'' && end!='"')return value;
  char quote=0;
- for(size_t k=0;k<dot;++k)if(value[k]=='\'' || value[k]=='"') {
+ for(size_t k=0;k<mark;++k)if(value[k]=='\'' || value[k]=='"') {
   if(quote==value[k])quote=0;else if(!quote)quote=value[k];
  }
- if(!quote)value.erase(dot,1);
+ if(!quote)value.erase(mark,1);
  return value;
 }
 // A shared Hadamard acting on each indexed bit is a tensor power acting on
@@ -766,7 +767,7 @@ class TeXReader {
    for(size_t cell=0;cell<alignmentCells.size();cell+=2) {
     std::string value=alignmentCells[cell];bool indented=value.empty() && cell+1<alignmentCells.size();
     if(cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
-    value=trim(withoutSentencePeriod(value));
+    value=trim(withoutDisplayPunctuation(value));
     if(value.empty())throw std::runtime_error(error("Empty aligned expression"));
     size_t column=cell/2;
     if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
@@ -985,7 +986,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
- if(mathWrapper)s=withoutSentencePeriod(s);
+ if(mathWrapper)s=withoutDisplayPunctuation(s);
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},

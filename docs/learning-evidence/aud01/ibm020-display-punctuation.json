@@ -1,0 +1,67 @@
+{
+  "route": "Original display including both dollar delimiters, Quantum mode. Each candidate response matched the full response of the baseline control with only final punctuation removed.",
+  "baseline_worker": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "candidate_worker": "a196e5c82001ea2a0528f5c0288bdba5ceaa89508f0d49e560dc0e827cf4cdbe",
+  "cases": [
+    {
+      "id": "M01",
+      "punctuation": ",",
+      "baseline": 2,
+      "candidate": 0
+    },
+    {
+      "id": "M03",
+      "punctuation": ",",
+      "baseline": 2,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M027",
+      "punctuation": ".",
+      "baseline": 0,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M028",
+      "punctuation": ".",
+      "baseline": 0,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M029",
+      "punctuation": ".",
+      "baseline": 0,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M033",
+      "punctuation": ".",
+      "baseline": 0,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M037",
+      "punctuation": ".",
+      "baseline": 0,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M039",
+      "punctuation": ",",
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "id": "R13-0-M041",
+      "punctuation": ".",
+      "baseline": 0,
+      "candidate": 0
+    },
+    {
+      "id": "R13-0-M066",
+      "punctuation": ",",
+      "baseline": 2,
+      "candidate": 0
+    }
+  ]
+}

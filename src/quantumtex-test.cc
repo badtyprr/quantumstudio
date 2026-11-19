@@ -22,6 +22,10 @@ int main() {
   equal("$$x..$$","x..");equal("$$x+.$$","x+.");
   equal("$$\"x.\"$$","\"x.\"");equal("x.","x.");
   equal(R"(\begin{aligned}x &= y.\end{aligned})",quantumTeX(R"(\begin{aligned}x &= y\end{aligned})"));
+  equal("$$x,$$","x");equal("$$1.25,$$","1.25");
+  equal(R"(\[\frac{1}{2},\])",quantumTeX(R"(\frac{1}{2})"));
+  equal(R"($$\begin{pmatrix}1&2\\3&4\end{pmatrix},$$)",quantumTeX(R"(\begin{pmatrix}1&2\\3&4\end{pmatrix})"));
+  equal("$$x+,$$","x+,");equal("$$x,,$$","x,,");equal("x,","x,");
   const std::string hadamardFamily=R"(\bigl(H \vert x_{n-1} \rangle \bigr) \otimes \cdots \otimes \bigl(H \vert x_{0} \rangle \bigr))";
   equal(hadamardFamily,"(tensorpow(H,n)*|x_(n-1) ... x_0>)");
   equal("replace("+hadamardFamily+",n,2)","replace((tensorpow(H,n)*|x_(n-1) ... x_0>),n,2)");
