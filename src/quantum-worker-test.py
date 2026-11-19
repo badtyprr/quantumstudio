@@ -108,6 +108,16 @@ for equation in ("z=f(x)", "f(x)=z"):
     for body in (equation, result["copy_text"], result["display_text"]):
         assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
 
+# Trial division enumerates integer candidates, including the square root
+# exactly when the input is a perfect square.
+trial_range = data(r"quantum:$2,\ldots,\sqrt{N}$")["copy_text"]
+assert data("quantum:" + trial_range)["copy_text"] == trial_range
+for n, expected in ((2, []), (3, []), (4, [2]), (15, [2, 3]), (16, [2, 3, 4]), (17, [2, 3, 4])):
+    canonical = "qset(vector(" + ",".join(map(str, expected)) + "))"
+    assert data(f"quantum:replace({trial_range},N,{n})")["copy_text"] == canonical
+run(f"quantum:replace({trial_range},N,1026^2)", "--json", success=False)
+run(r"quantum:1,...,3 \in \{1,2,3\}", "--json", success=False)
+
 for dots in ("...", r"\dots", r"\ldots", r"\cdots"):
     samples = rf"z^1, {dots}, z^{{2}} \in \{{0,1\}}^3"
     partial = data(f'quantum:replace(({samples}),"z^2",bitstring(0,3))')["copy_text"]

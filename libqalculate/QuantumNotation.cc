@@ -1941,15 +1941,23 @@ class Parser {
   if(allowSharedOperands && take(',')) {
    if(takeSetOperator("...") || takeSetOperator("…")) {
     need(',');std::string last=setUnion();
-    // Only a named, one-based list in a membership statement assigns
-    // superscripts to samples. Ordinary powers keep their usual meaning.
-    if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
-       (left.substr(8)!=",1)" && left.substr(8)!=",(1))") ||
-       last.compare(0,9,left,0,9)!=0 || last.back()!=')' || !takeSetOperator("∈"))
-     throw std::runtime_error("Expected a measurement list from the first sample to the final sample in a shared domain.");
-    std::string prefix=left.substr(7,1)+"^",count=last.substr(9,last.size()-10);
-    left=setUnion();
-    result="qfamilymembers("+indexableLabel(prefix)+","+count+","+left+",vector())";
+    if(!left.empty() && left.find_first_not_of("0123456789")==std::string::npos) {
+     // Enumerate consecutive integer candidates up to the given bound.
+     // For trial division a nonsquare root is an upper bound, not an element.
+     if(takeSetOperator("∈") || takeSetOperator("∉"))
+      throw std::runtime_error("Group the integer range before testing it as one set member.");
+     left="qindexrange("+left+",floor("+last+"))";
+    } else {
+     // Only a named, one-based list in a membership statement assigns
+     // superscripts to samples. Ordinary powers keep their usual meaning.
+     if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
+        (left.substr(8)!=",1)" && left.substr(8)!=",(1))") ||
+        last.compare(0,9,left,0,9)!=0 || last.back()!=')' || !takeSetOperator("∈"))
+      throw std::runtime_error("Expected a measurement list from the first sample to the final sample in a shared domain.");
+     std::string prefix=left.substr(7,1)+"^",count=last.substr(9,last.size()-10);
+     left=setUnion();
+     result="qfamilymembers("+indexableLabel(prefix)+","+count+","+left+",vector())";
+    }
    } else {
     std::vector<std::string> probes{left};
     do {probes.push_back(setUnion());} while(take(','));
