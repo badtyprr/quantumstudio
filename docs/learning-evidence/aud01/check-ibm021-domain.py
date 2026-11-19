@@ -182,3 +182,26 @@ for z in range(32):
             chain = f"replace(replace(({bind_output(derivation, z, y)}),w,bitstring({w},3)),s,bitstring(3,3))"
             assert evaluate(chain)["copy_text"] == "1", (w, y)
 print("Numbered equation passed 256 contributions and its copied derivation passed 64 checks")
+
+# Bind p to both the predicted distribution and one assigning probability 1/8
+# everywhere. The full source equality must distinguish them at every outcome.
+probabilities = ["1/4" if (y & 3).bit_count() % 2 == 0 else "0" for y in range(8)]
+for values, truth in [(probabilities, "1"), (["1/8"] * 8, "0")]:
+    entries = [f"tuple(bitstring({y},3),{value})" for y, value in enumerate(values)]
+    distribution = "qset(vector(" + ",".join(entries) + "))"
+    for number in (54, 70):
+        formula = f"replace(replace(({source_body(number)}),p,{distribution}),f,{table['graph']})"
+        for y in range(8):
+            expr = f"replace(({width_three(formula)}),y,bitstring({y},3))"
+            assert evaluate(expr)["copy_text"] == truth, (number, y, truth)
+print("Both full norm equations distinguished the predicted and uniform distributions")
+
+for number in (54, 70):
+    rhs = source_body(number).split("=", 1)[1]
+    copy = evaluate(rhs, bind_alphabet=False)["copy_text"]
+    for y, probability in enumerate(probabilities):
+        expr = f"replace(replace(replace(({copy}),f,{table['graph']}),n,3),y,bitstring({y},3))"
+        if number == 54:
+            expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
+        assert evaluate(f"4*({expr})", bind_alphabet=False)["copy_text"] == ("1" if probability == "1/4" else "0")
+print("Both copied squared norms reproduced all eight measurement probabilities")

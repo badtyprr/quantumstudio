@@ -1,0 +1,48 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "7ed2b23852aa869913d7fa6b5e9bb7cd1f5e3fe097c851de456c1a24b1bfff73",
+  "total": 177,
+  "exit_codes": {
+    "2": 11,
+    "0": 166
+  },
+  "changes": {
+    "IBM021-c0-M054": {
+      "from": 2,
+      "to": 0,
+      "result": "('p'y \u2212 qnorm(qadjacent(1 \u2215 qpower(2, n), qsumset(qadjacent(qpower(\u22121, qcenterdot(\"qboundindex_0\", y)), qstatecall('f', \"qboundindex_0\")), qpower('\u03a3', n), \"qboundindex_0\")))\u00b2)==(0)",
+      "bound_whole_copy_is_true": true,
+      "gui_copy_and_reentry_full_equation_checks": 32
+    },
+    "IBM021-c0-M070": {
+      "from": 2,
+      "to": 0,
+      "result": "(('p'y)+ ((\u22121)*((qnorm(qadjacent(1 \u2215 qpower(2, n),qsumset(qadjacent(qsumset(qpower(\u22121,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\"),qketstate(\"qboundindex_1\")),qfunctionrange('f'),\"qboundindex_1\"))))^(2))))==(0)",
+      "bound_whole_copy_is_true": true,
+      "gui_copy_and_reentry_full_equation_checks": 32
+    }
+  },
+  "gui_probabilities_in_quarters": {
+    "IBM021-c0-M054-norm": [
+      "1",
+      "0",
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "1"
+    ],
+    "IBM021-c0-M070-norm": [
+      "1",
+      "0",
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "1"
+    ]
+  },
+  "gui_checks": 44
+}

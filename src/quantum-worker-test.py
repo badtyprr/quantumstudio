@@ -28,6 +28,14 @@ copied_dot = data(r"quantum:w \cdot y")["copy_text"]
 assert data(f"quantum:replace(replace({copied_dot},w,bitstring(3,2)),y,bitstring(3,2))")["copy_text"] == "0"
 assert data(f"quantum:replace(replace({copied_dot},w,3),y,3)")["copy_text"] == "9"
 
+# Bind a deferred ket sum after copying its norm or normalization.
+for operation in ("norm", "normalize"):
+    pending = data(rf"quantum:{operation}(\sum_{{x\in d}}{{|x>}})")["copy_text"]
+    bound = data(f"quantum:replace({pending},d,bitstrings(1))")["copy_text"]
+    assert bound == data(rf"quantum:{operation}(\sum_{{x\in bitstrings(1)}}{{|x>}})")["copy_text"]
+    invalid = rf"quantum:replace({operation}(\sum_{{x\in d}}{{x}}),d,\{{1,2\}})"
+    assert run(invalid, "--json", success=False).stdout == b""
+
 # A centered dot is parity on bit strings, including labels supplied by a binding.
 for z in range(16):
     entries = [rf"bitstring({z},4) \cdot bitstring({x},4)" for x in range(16)]

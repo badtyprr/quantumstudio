@@ -957,6 +957,20 @@ class QuantumAlgebraFunction: public MathFunction {
     return 0;
    }
   }
+  if((op=="qnorm" || op=="qnormalize") && !a.isVector() && a.containsUnknowns()) {
+   MathStructure rows,columns;
+   if(matrixShape(a,rows,columns,eo)) {
+    if(unequalKnownDimensions(columns,m_one))CALCULATOR->error(true,"norm and normalize require a column ket.",NULL);
+    return 0;
+   }
+   // A weighted sum of kets may have no known dimension until its domain
+   // is bound. Keep the operation so the resulting column is checked then.
+   if(a.isFunction() && unresolvedMatrixOperand(a)) {
+    const std::string &name=a.function()->referenceName();
+    if(name=="qsumset" || name=="qsum" || name=="qadjacent" || name=="qmul" ||
+       name=="qadd" || name=="qsub" || name=="qketstate" || name=="qstatecall")return 0;
+   }
+  }
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
    int count=args[1].number().intValue(); out.setToIdentityMatrix(1);
