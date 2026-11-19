@@ -1,0 +1,95 @@
+{
+  "method": "Original histogram cells received local samples through an adapter exposing the notebook's result-data attribute or method. QB-032 was converted from pytket through OpenQASM 2. QB-033 required the documented source edit for Qiskit import.",
+  "results": {
+    "QB-030": {
+      "source_sha256": "0a4c3302bf7d89f6e40b184fb0b0fb51807443f74d945ab23724d4be09e41414",
+      "construction_cell": 6,
+      "duration_ns": 1000,
+      "area_rad": 3.1415926535897936,
+      "excited_probability": 1.000000000000067,
+      "backend": "QutipEmulator",
+      "local_counts": {
+        "1": 200
+      },
+      "histogram_cell": 8,
+      "plotted_counts": {
+        "1": 200.0
+      },
+      "remote_jobs": 0
+    },
+    "QB-031": {
+      "provider": "qiskit",
+      "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+      "source_sha256": "67bf6c500057d145871e8549aabf60cbad6084904a4ccc51379b204315a654b8",
+      "source_cells": [
+        6,
+        8
+      ],
+      "probabilities": {
+        "00": 0.4999999999999999,
+        "11": 0.4999999999999999
+      },
+      "backend": "BasicSimulator",
+      "seed": 37,
+      "local_counts": {
+        "11": 48,
+        "00": 52
+      },
+      "plotted_counts": {
+        "00": 52.0,
+        "11": 48.0
+      },
+      "remote_jobs": 0
+    },
+    "QB-032": {
+      "provider": "quantinuum",
+      "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+      "source_sha256": "f6ab8127957d977bb43ade4f63227512852ce2c950adf53fe515e3bf796c5535",
+      "source_cells": [
+        6,
+        8
+      ],
+      "probabilities": {
+        "00": 0.4999999999999999,
+        "11": 0.4999999999999999
+      },
+      "backend": "BasicSimulator",
+      "seed": 37,
+      "local_counts": {
+        "11": 48,
+        "00": 52
+      },
+      "plotted_counts": {
+        "00": 52.0,
+        "11": 48.0
+      },
+      "remote_jobs": 0
+    },
+    "QB-033": {
+      "provider": "rigetti",
+      "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+      "source_sha256": "8423a941b6145ace8ba6e2242aeac13fabd8c3aeb815623126ba76d715ee5b1c",
+      "source_cells": [
+        6,
+        9
+      ],
+      "probabilities": {
+        "00": 0.4999999999999999,
+        "11": 0.4999999999999999
+      },
+      "backend": "BasicSimulator",
+      "seed": 37,
+      "local_counts": {
+        "11": 48,
+        "00": 52
+      },
+      "plotted_counts": {
+        "00": 52.0,
+        "11": 48.0
+      },
+      "remote_jobs": 0,
+      "original_import_error": "\"5,0: gate 'h' is not defined.\"",
+      "local_control_edit": "Added include \"stdgates.inc\"; after the version declaration."
+    }
+  }
+}
