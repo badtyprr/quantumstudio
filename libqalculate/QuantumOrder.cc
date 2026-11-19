@@ -80,6 +80,9 @@ bool quantumMatrixOrder(MathStructure &out,MathStructure left,MathStructure righ
  }
  out=1;return true;
 }
+bool setPair(const MathStructure &left,const MathStructure &right) {
+ return left.isFunction() && right.isFunction() && left.function()->referenceName()=="qset" && right.function()->referenceName()=="qset";
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
@@ -100,7 +103,18 @@ class QuantumOrderFunction: public MathFunction {
    }
    static const ComparisonType kinds[]={COMPARISON_LESS,COMPARISON_GREATER,COMPARISON_EQUALS_LESS,COMPARISON_EQUALS_GREATER,COMPARISON_EQUALS,COMPARISON_NOT_EQUALS};
    int kind=args[2].number().intValue();
+   // A deferred graph domain is a set: keep equality intact for later
+   // substitution instead of reducing it to a scalar difference.
+   if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
+    if(!args[k].isFunction())continue;
+    const auto &name=args[k].function()->referenceName();
+    if(name=="qfunctionrange" || name=="qpreimage")return 0;
+   }
    bool equal=false;
+   if(kind>=4 && setPair(args[0],args[1])) {
+    if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
+    out=(kind==4)==equal ? 1 : 0;return 1;
+   }
    if(kind>=4 && compareBitLabels(args[0],args[1],equal,eo)) {out=(kind==4)==equal ? 1 : 0;return 1;}
    if(args[1].isZero() && symbolicGram(args[0],eo) && (kind==0 || kind==3)) {out=kind==3 ? 1 : 0;return 1;}
    if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
@@ -156,6 +170,11 @@ class QuantumEqualityChain: public MathFunction {
   if(!deferred)for(size_t k=1;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
    bool same=false;
+   if(setPair(operands[k-1],operands[k])) {
+    if(!compareQuantumSets(operands[k-1],operands[k],same,eo))deferred=true;
+    else if(!same)equal=false;
+    continue;
+   }
    if(compareBitLabels(operands[k-1],operands[k],same,eo)) {if(!same)equal=false;continue;}
    MathStructure comparison=operands[k-1];comparison.transform(COMPARISON_EQUALS,operands[k]);comparison.eval(eo);
    if(comparison.isNumber() && comparison.number().isZero())equal=false;

@@ -1734,6 +1734,26 @@ bool quantumRegisterSumShapeInput(const MathStructure &value,MathStructure &term
  RegisterShapeProjection projection{args[4],args[2],args[3],args[5],markerPrefix,markers,dimension};
  return projectRegisterShape(term,projection,exact);
 }
+bool compareQuantumSets(const MathStructure &left,const MathStructure &right,bool &equal,const EvaluationOptions &eo) {
+ MathStructure sets[2];
+ if(finiteDomain(left,sets[0],eo)!=DomainState::Finite || finiteDomain(right,sets[1],eo)!=DomainState::Finite)return false;
+ bool pending=false;
+ for(unsigned side=0;side<2;++side) {
+  const MathStructure &source=sets[side],&target=sets[1-side];
+  for(size_t k=0;k<source.size();++k) {
+   if(CALCULATOR->aborted())return false;
+   bool found=false,unknown=false;
+   for(size_t j=0;j<target.size();++j) {
+    SetEquality match=setEquality(source[k],target[j]);
+    if(match==SetEquality::Equal) {found=true;break;}
+    if(match==SetEquality::Unknown)unknown=true;
+   }
+   if(!found && !unknown) {equal=false;return true;}
+   if(!found)pending=true;
+  }
+ }
+ equal=true;return !pending;
+}
 bool quantumScalarExpression(const MathStructure &value) {return scalarExpression(value);}
 bool quantumReplacementShapeInput(const MathStructure &value,MathStructure &term,const EvaluationOptions &eo) {
  if(!value.isFunction() || value.function()->referenceName()!="qreplace" || value.size()!=3 ||

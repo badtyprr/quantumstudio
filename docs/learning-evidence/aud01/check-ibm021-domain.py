@@ -14,8 +14,8 @@ def source_body(number):
     return literal.strip("$").strip().rstrip(".")
 
 
-def evaluate(expression):
-    if r"\Sigma" in expression:
+def evaluate(expression, bind_alphabet=True):
+    if bind_alphabet and r"\Sigma" in expression:
         expression = rf"replace(({expression}),\Sigma,\{{0,1\}})"
     process = subprocess.run([sys.argv[1], "--json"], input=("quantum:" + expression).encode(),
                              capture_output=True, check=True, timeout=30)
@@ -143,3 +143,22 @@ for number, graph, secret in [(7, table["graph"], 3), (7, table["graph"], 4),
                 expected = same_output == (x == y or (x ^ secret) == y)
                 assert evaluate(at_pair(predicate, x, y))["copy_text"] == str(int(expected)), (number, secret, x, y)
 print("Complete M007 and M016 predicates passed for source and copied input")
+
+# Copy an unbound formula first. Supply all lesson parameters only on re-entry.
+reversed_pairs = [f"tuple(bitstring({x},3),bitstring({outputs[x]},5))" for x in reversed(range(8))]
+reversed_graph = "qset(vector(" + ",".join(reversed_pairs) + "))"
+for number in (49, 50, 56, 60):
+    source = source_body(number)
+    copy = evaluate(source, bind_alphabet=False)["copy_text"]
+    for z in (range(32) if number == 60 else [None]):
+        answers = []
+        for body, graph in [(source, table["graph"]), (source, reversed_graph), (copy, reversed_graph)]:
+            expression = f"replace(({body}),f,{graph})"
+            if z is not None:
+                expression = f"replace(({expression}),z,bitstring({z},5))"
+            expression = rf"replace(({width_three(expression)}),\Sigma,\{{0,1\}})"
+            answers.append(evaluate(expression, bind_alphabet=False)["copy_text"])
+        assert answers[0] == answers[1] == answers[2], (number, z)
+        if number in (56, 60):
+            assert answers[0] == "1", (number, z)
+print("Four unbound copies accepted the oracle in reverse row order")

@@ -546,6 +546,7 @@ class Parser {
  }
  static std::string graphCalls(const std::string &body,const std::string &name) {
   const std::string stateCall="qstatecall(\""+name+"\",";
+  const std::string copiedStateCall="qstatecall('"+name+"',";
   std::vector<size_t> ketDepths;
   size_t depth=0;
   std::string result;char quote=0;
@@ -554,7 +555,7 @@ class Parser {
    if(c=='"' || c=='\'') {if(c==quote)quote=0;else if(!quote)quote=c;}
    unsigned char previous=i ? body[i-1] : 0;
    const bool boundary=!quote && !std::isalnum(previous) && previous!='_' && previous<128;
-   if(boundary && body.compare(i,stateCall.size(),stateCall)==0) {
+   if(boundary && (body.compare(i,stateCall.size(),stateCall)==0 || body.compare(i,copiedStateCall.size(),copiedStateCall)==0)) {
     // A bound graph supplies the basis label of this single-argument ket.
     result+="qketstate(";ketDepths.push_back(depth+1);i+=stateCall.size();
    } else if(boundary && c==name[0] && i+1<body.size() && body[i+1]=='(') {
@@ -1821,6 +1822,19 @@ class Parser {
   while(takeSetOperator("∪")) {result="qsetunion("+result+","+setIntersection()+")";checkSize(result);}
   return result;
  }
+ // A range or inverse image explicitly names a function. Its defining
+ // set builder uses the same function even before a graph has been bound.
+ static void preserveGraphDefinition(const std::string &domain,std::string &builder) {
+  if(builder.compare(0,10,"qsetimage(")!=0 && builder.compare(0,11,"qsetfilter(")!=0)return;
+  size_t at;
+  if(domain.compare(0,15,"qfunctionrange(")==0)at=15;
+  else if(domain.compare(0,10,"qpreimage(")==0)at=10;
+  else return;
+  if(at+1>=domain.size())return;
+  char name=domain[at];
+  if(name<'a' || name>'z' || name=='e' || name=='i' || (domain[at+1]!=',' && domain[at+1]!=')'))return;
+  builder=graphCalls(builder,std::string(1,name));
+ }
  std::string comparison() {
   std::string left=setUnion(),result;
   std::vector<std::string> operands{left};bool equalities=true;
@@ -1835,7 +1849,12 @@ class Parser {
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
-   std::string right=setUnion(),clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   std::string right=setUnion();
+   if(relation=="=" || relation=="==") {
+    preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
+    operands.back()=left;
+   }
+   std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;

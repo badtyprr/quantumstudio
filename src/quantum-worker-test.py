@@ -43,6 +43,16 @@ assert data(r"quantum:replace(tuple(3,4) \in A^2,A,\{3,4\})")["copy_text"] == "1
 assert data(r"quantum:replace(\Sigma^2,\Sigma,3)")["copy_text"] == "9"
 assert b"nonnegative integer" in run(r"quantum:x \in A^(-1)", "--json", success=False).stderr
 
+# Set equality is independent of member order, also for copied graph domains.
+for expression, expected in [
+    (r"\{2,1\}=\{1,2\}", "1"),
+    (r"\{2,1\}!=\{2,3\}", "1"),
+    (r"\{2,1\}=\{1,2\}=\{2,1\}", "1"),
+    (r"replace(\{x,1\}=\{1\},x,1)", "1"),
+    (r"replace(\{x,1\}=\{1\},x,2)", "0"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected
+
 # Biconditional has lower precedence than disjunction and accepts grouped predicates.
 for lhs in (0, 1):
     for rhs in (0, 1):
