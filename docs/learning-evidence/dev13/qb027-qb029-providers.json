@@ -1,0 +1,67 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "method": "Each histogram cell received counts from 100 Braket LocalSimulator shots. Braket and OQC received a local result-shaped object. The IonQ and OQC simulations used a corrected header and qBraid transpilation to Braket.",
+  "providers": {
+    "braket": {
+      "provider": "braket",
+      "source_sha256": "475fd081135e5611fceb1f362a4845657251f948fda73ad51bfb55e5814fc090",
+      "inventory_revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+      "source_cells": [
+        6,
+        8
+      ],
+      "local_backend": "Braket LocalSimulator",
+      "local_counts": {
+        "00": 49,
+        "11": 51
+      },
+      "plotted_counts": {
+        "00": 49.0,
+        "11": 51.0
+      },
+      "remote_jobs": 0
+    },
+    "ionq": {
+      "provider": "ionq",
+      "source_sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+      "inventory_revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+      "source_cells": [
+        3,
+        6
+      ],
+      "original_local_failure": "Failed to parse OpenQASM string: program reports being unsupported version '2'",
+      "local_control_edit": "OPENQASM 2; -> OPENQASM 3.0;",
+      "local_backend": "Braket LocalSimulator",
+      "local_counts": {
+        "00": 47,
+        "11": 53
+      },
+      "plotted_counts": {
+        "00": 47.0,
+        "11": 53.0
+      },
+      "remote_jobs": 0
+    },
+    "oqc": {
+      "provider": "oqc",
+      "source_sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+      "inventory_revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+      "source_cells": [
+        6,
+        8
+      ],
+      "original_local_failure": "Failed to parse OpenQASM string: program reports being unsupported version '2'",
+      "local_control_edit": "OPENQASM 2; -> OPENQASM 3.0;",
+      "local_backend": "Braket LocalSimulator",
+      "local_counts": {
+        "11": 52,
+        "00": 48
+      },
+      "plotted_counts": {
+        "00": 48.0,
+        "11": 52.0
+      },
+      "remote_jobs": 0
+    }
+  }
+}
