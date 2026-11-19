@@ -2,6 +2,7 @@
 #ifndef QUANTUM_DISPLAY_H
 #define QUANTUM_DISPLAY_H
 #include "MathStructure.h"
+#include "QuantumNotation.h"
 #include "Function.h"
 #include "Variable.h"
 #include <set>
@@ -177,6 +178,23 @@ class Printer {
     return changed ? Fragment(text+"]") : fallback(literal);
    }
   }
+  if(name=="qfloorlog2" && value.size()==1)return Fragment("floor(log2("+render(value[0],depth+1).text+"))");
+  if(name=="qbitlength" && value.size()==1)return Fragment("bitlength("+render(value[0],depth+1).text+")");
+  if(name=="qresidue" && value.size()==2)
+   return Fragment(grouped(render(value[0],depth+1),40)+" pmod ("+render(value[1],depth+1).text+")",40);
+  if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());
+  if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
+  if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
+   const std::string &function=value[0].symbol();
+   std::vector<std::string> arguments;
+   if(value[1].isVector()) {
+    for(size_t i=0;i<value[1].size();++i)arguments.push_back(render(value[1][i],depth+1).text);
+   } else arguments.push_back(render(value[1],depth+1).text);
+   std::string text=function+"(";
+   for(size_t i=0;i<arguments.size();++i) {if(i)text+=", ";text+=arguments[i];}
+   text+=")";
+   return Fragment(function=="size" || quantumSizeApplication(function,arguments) ? text : "cost("+text+")");
+  }
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.
@@ -290,6 +308,12 @@ class Printer {
    return Fragment("("+render(value[0],depth+1).text+")^("+render(value[1],depth+1).text+") (Cartesian power; nonnegative integer count)");
   if(name=="qbitstrings" && value.size()==1)
    return Fragment("{0,1}^("+render(value[0],depth+1).text+") (nonnegative integer width)");
+  if(name=="qindexedfamily" && value.size()==2 && value[0].isSymbolic() && value[1].isInteger()) {
+   Number next=value[1].number();next+=1;
+   PrintOptions decimal;decimal.use_unicode_signs=false;decimal.min_exp=EXP_NONE;
+   const std::string &prefix=value[0].symbol();
+   return Fragment("{"+prefix+value[1].number().print(decimal)+", "+prefix+next.print(decimal)+", …}");
+  }
   if(name=="qindexrange" && value.size()==2)
    return Fragment("{"+render(value[0],depth+1).text+", …, "+render(value[1],depth+1).text+"} (integer endpoints)");
   if((name=="qsetimage" || name=="qsetfilter") && value.size()==3) {

@@ -1,0 +1,93 @@
+{
+  "revision": "f5197bb5096091c07421e30960bd6630ec6ff808",
+  "worker_sha256": "b8eebd1e671983ca03f5cb031b23f8d6e0a62ae543731c9eaa71b99d6ab5a8a7",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "original_spans": 170,
+  "exact_labels": 166,
+  "diagnostics": [
+    "IBM024-5c5b90e6-M037",
+    "IBM024-5c5b90e6-M077",
+    "IBM024-5c5b90e6-M079",
+    "IBM024-5c5b90e6-M147"
+  ],
+  "gui_checks": 1900,
+  "changed_originals": [
+    {
+      "id": "IBM024-5c5b90e6-M123",
+      "source": "$N^K \\hspace{1mm} (\\text{mod }M)$",
+      "display": "N^K pmod (M)",
+      "copy": "qresidue(qpower('N','K'),'M')"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M124",
+      "source": "$N^K\\hspace{1mm} (\\text{mod }M)$",
+      "display": "N^K pmod (M)",
+      "copy": "qresidue(qpower('N','K'),'M')"
+    }
+  ],
+  "gui_controls": [
+    {
+      "input": "$7^0\\hspace{1mm} (\\text{mod }5)$",
+      "result": "1"
+    },
+    {
+      "input": "$7^3\\hspace{1mm}(\\text{mod }1)$",
+      "result": "0"
+    },
+    {
+      "input": "$11^{340282366920938463463374607431768211459}\\hspace{1mm}(\\text{mod }97)$",
+      "result": "25"
+    },
+    {
+      "input": "$7^3\\hspace{1mm}(\\text{mod }2+3)$",
+      "result": "3"
+    },
+    {
+      "input": "$0^0\\hspace{1mm}(\\text{mod }1)$",
+      "result": "0"
+    },
+    {
+      "input": "replace(replace(replace(qresidue(qpower('N','K'),'M'),N,0),K,0),M,1)",
+      "result": "0"
+    }
+  ],
+  "integer_controls": [
+    {
+      "base": "0",
+      "exponent": "0",
+      "modulus": "1",
+      "residue": "0"
+    },
+    {
+      "base": "0",
+      "exponent": "1",
+      "modulus": "13",
+      "residue": "0"
+    },
+    {
+      "base": "23",
+      "exponent": "0",
+      "modulus": "17",
+      "residue": "1"
+    },
+    {
+      "base": "23",
+      "exponent": "5",
+      "modulus": "17",
+      "residue": "7"
+    },
+    {
+      "base": "2",
+      "exponent": "1024",
+      "modulus": "101",
+      "residue": "5"
+    },
+    {
+      "base": "3",
+      "exponent": "340282366920938463463374607431768211457",
+      "modulus": "65537",
+      "residue": "3"
+    }
+  ],
+  "substitution_orders_checked_per_integer_control": 6
+}

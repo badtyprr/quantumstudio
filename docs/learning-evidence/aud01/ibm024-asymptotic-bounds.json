@@ -1,0 +1,197 @@
+{
+  "revision": "e3317308d555c54f714c3c0bb3f0c459348fb0c4",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_sha256": "915221f10d83121eefad820ab6269127ccac9eff41e489b46c004913b37da078",
+  "original_spans": 170,
+  "exact_labels": 164,
+  "gui_checks": 1964,
+  "changed_originals": [
+    {
+      "id": "IBM024-5c5b90e6-M063",
+      "input": "$g(n) = O(h(n))$",
+      "display": "g(n) = O(h(n))",
+      "copy": "qcompare(qcostcall('g',vector(n)),qbigorder(qcostcall('h',vector(n))),4)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M069",
+      "input": "$17 n^3 - 257 n^2 + 65537 = O(n^3)$",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M074",
+      "input": "$g(n,m) = O(h(n,m))$",
+      "display": "g(n, m) = O(h(n, m))",
+      "copy": "qcompare(qcostcall('g',vector(n,'m')),qbigorder(qcostcall('h',vector(n,'m'))),4)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M082",
+      "input": "$\\operatorname{size}(C_n) = O(n)$",
+      "display": "size(\"C_n\") = O(n)",
+      "copy": "qcompare(qcostcall(\"size\",vector(\"C_n\")),qbigorder(n),4)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M087",
+      "input": "$O(n^2)$",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M095",
+      "input": "$O(nm)$",
+      "display": "O(n · m)",
+      "copy": "qbigorder(qadjacent(n,'m'))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M099",
+      "input": "$O(n \\operatorname{lg}(n) \\operatorname{lg}(\\operatorname{lg}(n)))$",
+      "display": "O(n · log2(n) · log2(log2(n)))",
+      "copy": "qbigorder(qadjacent(qadjacent(n,log2(n)),log2(log2(n))))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M110",
+      "input": "$O(nm)$",
+      "display": "O(n · m)",
+      "copy": "qbigorder(qadjacent(n,'m'))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M115",
+      "input": "$O(nm)$",
+      "display": "O(n · m)",
+      "copy": "qbigorder(qadjacent(n,'m'))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M116",
+      "input": "$O(n(\\operatorname{lg}(n))^2 \\operatorname{lg}(\\operatorname{lg}(n)))$",
+      "display": "O(n · log2(n)^2 · log2(log2(n)))",
+      "copy": "qbigorder(qadjacent(qadjacent(n,qpower(log2(n),2)),log2(log2(n))))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M137",
+      "input": "$O(k m^2 + nm)$",
+      "display": "O(k · m^2 + n · m)",
+      "copy": "qbigorder(qadd(qadjacent('k',qpower('m',2)),qadjacent(n,'m')))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M146",
+      "input": "$O(n^3)$",
+      "display": "O(n^3)",
+      "copy": "qbigorder(qpower(n,3))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M149",
+      "input": "$O(2^{n/2})$",
+      "display": "O(2^(0.5n))",
+      "copy": "qbigorder(qpower(2,n ∕ 2))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M152",
+      "input": "$O(n^2)$",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M153",
+      "input": "$O(n^2 2^{n/2})$",
+      "display": "O(n^2 · 2^(0.5n))",
+      "copy": "qbigorder(qadjacent(qpower(n,2),qpower(2,n ∕ 2)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M155",
+      "input": "$$\n2^{O(n^{1/3} (\\operatorname{lg}(n))^{2/3})}\n$$",
+      "display": "2^O(n^0.333333333333333333333333333333 · log2(n)^0.666666666666666666666666666667)",
+      "copy": "2^qbigorder(qadjacent(qpower(n, 1 ∕ 3), qpower(log2(n), 2 ∕ 3)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M159",
+      "input": "$O(n^c)$",
+      "display": "O(n^c)",
+      "copy": "qbigorder(qpower(n,qcostparam('c')))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M163",
+      "input": "$$\nO\\bigl(2^{n^{\\varepsilon}}\\bigr)\n$$",
+      "display": "O(2^(n^'ε'))",
+      "copy": "qbigorder(qpower(2,qpower(n,'ε')))"
+    }
+  ],
+  "gui_controls": [
+    {
+      "id": "higher-degree",
+      "input": "n^4=O(n^3)",
+      "copy": "0"
+    },
+    {
+      "id": "lower-degree",
+      "input": "n^2=O(n^3)",
+      "copy": "1"
+    },
+    {
+      "id": "cancel-leading",
+      "input": "(n^3+n)-n^3=O(n)",
+      "copy": "1"
+    },
+    {
+      "id": "zero-upper",
+      "input": "n=O(0)",
+      "copy": "0"
+    },
+    {
+      "id": "binary-log",
+      "input": "cost(lg(8))",
+      "copy": "3"
+    },
+    {
+      "id": "negative-constant",
+      "input": "cost(replace((c>0),c,-1))",
+      "copy": "0"
+    },
+    {
+      "id": "scoped-witness",
+      "input": "cost(g(n,m)\\leq c\\cdot h(n,m))",
+      "copy": "qcompare(qcostcall('g',vector(n,'m')),qcenterdot(qcostparam('c'),qcostcall('h',vector(n,'m'))),2)"
+    },
+    {
+      "id": "false-witness",
+      "input": "replace(replace(replace(cost(g(n,m)<=c*h(n,m)),g(n,m),7),h(n,m),3),cost(c),2)",
+      "copy": "0"
+    },
+    {
+      "id": "true-witness",
+      "input": "replace(replace(replace(cost(g(n,m)<=c*h(n,m)),g(n,m),6),h(n,m),3),cost(c),2)",
+      "copy": "1"
+    },
+    {
+      "id": "adjacent-size-power",
+      "input": "nn^2=O(n^3)",
+      "copy": "1"
+    },
+    {
+      "id": "coefficient-after-copy",
+      "input": "replace(cost(c>0),c,-1)",
+      "copy": "0"
+    },
+    {
+      "id": "composed-bound",
+      "input": "replace((g(n)=replace(O(n^c),c,3)),g(n),n^4)",
+      "copy": "0"
+    },
+    {
+      "id": "shared-cost-endpoint",
+      "input": "replace((0<1,2<g(n)=O(n^2)),g(n),3)",
+      "copy": "1"
+    }
+  ],
+  "gui_inputs": 183,
+  "worker_process_checks": 2735,
+  "earlier_lesson_comparison": {
+    "ibm020": {
+      "inputs": 168,
+      "changes": []
+    },
+    "ibm021": {
+      "inputs": 180,
+      "changes": []
+    }
+  }
+}

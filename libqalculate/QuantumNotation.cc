@@ -212,6 +212,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
+ {"qbitlength",1},{"qfloorlog2",1},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -337,9 +338,9 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qfamilyat",2},
  {"qpostselect",2},
- {"qpower",2},
+ {"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
@@ -416,6 +417,7 @@ class Parser {
   if(value.size()>131072)throw std::runtime_error("Expanded quantum expression exceeds 131072 bytes.");
  }
  bool spinContext=false;
+ bool costContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned matrixEntryNodes=0;
@@ -704,7 +706,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -1188,6 +1190,11 @@ class Parser {
    }
    if(b==p) throw std::runtime_error("Expected a quantum expression at byte "+std::to_string(p+1));
    a=s.substr(b,p-b); ws();
+   // Read juxtaposed size variables one atom at a time, so in nm^2 the
+   // exponent belongs only to m. Normal atom accounting bounds expansion.
+   if(costContext && a.size()>1 && a.find_first_not_of("nmk")==std::string::npos) {
+    p=b+1;a.resize(1);
+   }
    bool indexedScalar=false;
    if(!numericToken && a.back()=='_' && take('{')) {
     std::string index=expression();need('}');
@@ -1223,7 +1230,7 @@ class Parser {
    else if(gates.find(a)!=gates.end()) { a=gates.at(a); }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.
-   else if(!numericToken && !indexedScalar && take('(')) {
+   else if(!numericToken && !indexedScalar && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     if(name=="J_x" || name=="Jₓ") name="Jx";
     if(name=="J_y") name="Jy";
@@ -1323,6 +1330,7 @@ class Parser {
     if(name=="feedforward") name="qfeedforward";
     if(name=="tensorpow") name="qtensorpow";
     if(name=="tensorproduct") name="qtensorproduct";
+    if(name=="familyat") name="qfamilyat";
     if(name=="indexrange") name="qindexrange";
     if(name=="sumset") name="qsumset";
     if(name=="member") name="qmember";
@@ -1615,6 +1623,9 @@ class Parser {
     } else {
     std::vector<std::string> args;
     const bool compact=name=="qscalarproductsum";
+    bool previousCostContext=costContext;
+    const bool costScope=costContext || publicName=="O" || publicName=="cost";
+    costContext=costScope;
     const bool protectPrefixes=compact || scalarProductDepth;
     if(compact)++scalarProductDepth;
     if(!take(')')) {
@@ -1622,10 +1633,16 @@ class Parser {
      while(take(',')) {
       ws();
       if(name=="qmatrix" && args.size()==2 && p<s.size() && s[p]=='[' && !parsingMatrixEntries)nextMatrixEntries=true;
+      // Match a formal cost or parameter using the same spelling as the
+      // original bound. The replacement value has its own ordinary scope.
+      costContext=costScope || (name=="replace" && args.size()==1 &&
+       (args[0].find("qbigorder(")!=std::string::npos || args[0].find("qcostcall(")!=std::string::npos ||
+        args[0].find("qcostparam(")!=std::string::npos));
       args.push_back(expression());
      }
      need(')');
     }
+    costContext=previousCostContext;
     if(compact)--scalarProductDepth;
     if(protectPrefixes) {
      auto protect=[&](size_t index) {
@@ -1655,6 +1672,11 @@ class Parser {
      }
      args[0]="vector("+body+")";
     }
+    if(name=="floor" && args.size()==1 && args[0].compare(0,5,"log2(")==0) {
+     args[0]=args[0].substr(5,args[0].size()-6);name="qfloorlog2";
+    }
+    if(publicName=="O")name="qbigorder";
+    if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";
     if(publicName=="bitstring" && args.size()==1) {
@@ -1670,11 +1692,22 @@ class Parser {
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
+    if(publicName=="cost") {
+     if(args.size()!=1)throw std::runtime_error("cost() requires one expression.");
+     a=args[0];
+    }
+    if(publicName=="size" && args.size()!=1)throw std::runtime_error("Circuit size requires one circuit.");
+    if(publicName=="size" || quantumSizeApplication(publicName,args) || (costContext && publicName.size()==1 && publicName[0]>='a' && publicName[0]<='z' &&
+       publicName!="e" && publicName!="i")) {
+     // The argument vector distinguishes a two-input cost from two products.
+     a="qcostcall("+indexableLabel(publicName)+",vector"+a.substr(name.size())+")";
+    }
     if(!legacyDomain.empty()) {a="qdomainresult("+a+","+legacyDomain+")";checkSize(a);}
     auto signature=quantumSignatures.find(name);
     if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }
    } else if(!indexedScalar) {
+    if(costContext && a=="c")a="qcostparam("+indexableLabel(a)+")";
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
@@ -1783,8 +1816,14 @@ class Parser {
  std::string product() {
   auto a=diracFactor();
   while(true) {
-   if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
-   else if(s.compare(p,3,"⋅")==0) {p+=3;a="qcenterdot("+a+","+diracFactor()+")";}
+   if(takeWord("pmod")) {
+    need('(');auto modulus=expression();need(')');
+    a="qresidue("+a+","+modulus+")";
+   } else if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
+   else if(s.compare(p,3,"⋅")==0) {
+    p+=3;const char *op=costContext && a.compare(0,11,"qcostparam(")==0 ? "qmul(" : "qcenterdot(";
+    a=op+a+","+diracFactor()+")";
+   }
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
    else if(take('@')) {
@@ -1860,22 +1899,106 @@ class Parser {
   if(name<'a' || name>'z' || name=='e' || name=='i' || (domain[at+1]!=',' && domain[at+1]!=')'))return;
   builder=graphCalls(builder,std::string(1,name));
  }
- std::string comparison(bool sharedMembership) {
-  std::string left=setUnion(),result;
-  // Top-level commas and commas inside an explicit group may share a
-  // membership relation. Function argument and vector separators stay local.
-  if(sharedMembership && take(',')) {
+ std::string takeComparisonRelation() {
+  for(const char *token:{"∈","∉","<=",">=","!=","==","=","<",">"})
+   if(takeSetOperator(token))return token;
+  return "";
+ }
+ static int comparisonKind(const std::string &relation) {
+  return relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
+ }
+ // Resolve the operand before saving it in a comparison chain: the same
+ // endpoint may serve as an upper bound and then as the cost in f = O(h).
+ std::string comparisonOperand() {
+  size_t start=p;
+  std::string value=setUnion();
+  if(costContext)return value;
+  size_t end=p;
+  std::string relation=takeComparisonRelation();
+  if(relation=="=" || relation=="==" || relation=="!=") {
+   // Substitution and cost(...) preserve the context of their first
+   // operand, even when several such calls surround the growth class.
+   do {while(take('(')) {}} while((takeWord("replace") || takeWord("qreplace") || takeWord("cost")) && take('('));
+   if((takeWord("O") || takeWord("qbigorder")) && take('(')) {
+    int savedKind=diracKind;p=start;costContext=true;
+    value=setUnion();costContext=false;diracKind=savedKind;
+   }
+  }
+  p=end;return value;
+ }
+ // Each middle operand shares both bounds. Leave the final endpoint in
+ // right so that another relation may continue the chain.
+ std::string sharedBounds(const std::string &left,int firstKind,std::string &right) {
+  std::vector<std::string> probes{right};
+  do {probes.push_back(setUnion());} while(take(','));
+  int lastKind=comparisonKind(takeComparisonRelation());
+  if(lastKind>=4)throw std::runtime_error("Expected a second ordering relation after the comma-separated operands.");
+  right=comparisonOperand();
+  std::string clause="(";
+  for(const auto &probe:probes) {
+   if(clause.size()>1)clause+="&&";
+   clause+="qcompare("+left+","+probe+","+std::to_string(firstKind)+")&&qcompare("+probe+","+right+","+std::to_string(lastKind)+")";
+   checkSize(clause);
+  }
+  return clause+")";
+ }
+ // A cost witness compares two formal functions of the same size parameters,
+ // with one multiplied by a free coefficient. Inspect the whole clause before
+ // assigning those meanings to otherwise ambiguous scalar and unit names.
+ bool costWitnessCall(std::string &parameters) {
+  ws();if(p==s.size() || s[p]<'a' || s[p]>'z' || s[p]=='i' || s[p]=='e' || s[p]=='n' || s[p]=='m' || s[p]=='k')return false;
+  ++p;if(!take('('))return false;
+  do {
+   ws();if(p==s.size() || (s[p]!='n' && s[p]!='m' && s[p]!='k') ||
+      parameters.find(s[p])!=std::string::npos)return false;
+   parameters+=s[p++];
+  } while(take(','));
+  return take(')');
+ }
+ bool costCoefficient() {
+  return take('c') && (take('*') || takeSetOperator("⋅"));
+ }
+ bool costWitnessAhead() {
+  ws();if(p==s.size() || s[p]<'a' || s[p]>'z')return false;
+  size_t start=p;std::string first,second;
+  bool scaled=costCoefficient();
+  if(!scaled)p=start;
+  bool match=costWitnessCall(first) && (scaled ? takeSetOperator(">=") : takeSetOperator("<=")) &&
+             (scaled || costCoefficient()) && costWitnessCall(second) && first==second;
+  if(!match) {p=start;return false;}
+  ws();
+  bool end=p==s.size() || s[p]==')' || s[p]==']' || s[p]==',' || s[p]==';' ||
+           word("and") || word("or") || word("xor") || word("iff");
+  p=start;return end;
+ }
+ std::string comparison(bool allowSharedOperands) {
+  if(!costContext && costWitnessAhead()) {
+   costContext=true;std::string witness=comparison(allowSharedOperands);costContext=false;
+   return witness;
+  }
+  std::string left=comparisonOperand(),result;
+  // Top-level and explicitly grouped operands can share a membership
+  // relation or bounds. Function argument and vector separators stay local.
+  if(allowSharedOperands && take(',')) {
    if(takeSetOperator("...") || takeSetOperator("…")) {
     need(',');std::string last=setUnion();
-    // Only a named, one-based list in a membership statement assigns
-    // superscripts to samples. Ordinary powers keep their usual meaning.
-    if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
-       (left.substr(8)!=",1)" && left.substr(8)!=",(1))") ||
-       last.compare(0,9,left,0,9)!=0 || last.back()!=')' || !takeSetOperator("∈"))
-     throw std::runtime_error("Expected a measurement list from the first sample to the final sample in a shared domain.");
-    std::string prefix=left.substr(7,1)+"^",count=last.substr(9,last.size()-10);
-    left=setUnion();
-    result="qfamilymembers("+indexableLabel(prefix)+","+count+","+left+",vector())";
+    if(!left.empty() && left.find_first_not_of("0123456789")==std::string::npos) {
+     // Enumerate consecutive integer candidates up to the given bound.
+     // For trial division a nonsquare root is an upper bound, not an element.
+     if(takeSetOperator("∈") || takeSetOperator("∉"))
+      throw std::runtime_error("Group the integer range before testing it as one set member.");
+     left="qindexrange("+left+",floor("+last+"))";
+    } else {
+     // Only a named, one-based list in a membership statement assigns
+     // superscripts to samples. Ordinary powers keep their usual meaning.
+     if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
+        (left.substr(8)!=",1)" && left.substr(8)!=",(1))") ||
+        last.compare(0,9,left,0,9)!=0 || last.back()!=')' || !takeSetOperator("∈"))
+      throw std::runtime_error("Expected a measurement list from the first sample to the final sample in a shared domain.");
+     std::string prefix=left.substr(7,1)+"^",count=last.substr(9,last.size()-10);
+     left=setUnion();
+     result="qfamilymembers("+indexableLabel(prefix)+","+count+","+left+",vector())";
+    }
    } else {
     std::vector<std::string> probes{left};
     do {probes.push_back(setUnion());} while(take(','));
@@ -1893,21 +2016,21 @@ class Parser {
   }
   std::vector<std::string> operands{left};bool equalities=result.empty();
   while(true) {
-   ws();std::string relation;
-   if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
-   for(const char *token:{"<=",">=","!=","==","=","<",">"}) {
-    if(!relation.empty())break;
-    std::string candidate(token);
-    if(s.compare(p,candidate.size(),candidate)==0) {relation=candidate;p+=candidate.size();break;}
-   }
+   std::string relation=takeComparisonRelation();
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
-   int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
+   int kind=comparisonKind(relation);
    std::string right;
    if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
-   } else right=setUnion();
+   } else right=comparisonOperand();
+   // A sign condition on the free coefficient must survive substitution.
+   if(kind<4) {
+    if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";
+    else if(left=="0" && right=="c")right="qcostparam("+indexableLabel(right)+")";
+   }
+   if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {
     preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
     preserveNamedApplication(left,right);preserveNamedApplication(right,left);
@@ -1915,6 +2038,7 @@ class Parser {
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   if(allowSharedOperands && kind<4 && take(','))clause=sharedBounds(left,kind,right);
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
@@ -1926,26 +2050,26 @@ class Parser {
   }
   return result.empty() ? left : result;
  }
- std::string logicalNot(bool sharedMembership) {
+ std::string logicalNot(bool allowSharedOperands) {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
-  std::string result=comparison(sharedMembership);
+  std::string result=comparison(allowSharedOperands);
   for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
  }
- std::string logicalAnd(bool sharedMembership) {
-  std::string result=logicalNot(sharedMembership);
-  while(takeWord("and")) {result="("+result+"&&"+logicalNot(sharedMembership)+")";checkSize(result);}
+ std::string logicalAnd(bool allowSharedOperands) {
+  std::string result=logicalNot(allowSharedOperands);
+  while(takeWord("and")) {result="("+result+"&&"+logicalNot(allowSharedOperands)+")";checkSize(result);}
   return result;
  }
- std::string logicalXor(bool sharedMembership) {
-  std::string result=logicalAnd(sharedMembership);
-  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd(sharedMembership)+")";checkSize(result);}
+ std::string logicalXor(bool allowSharedOperands) {
+  std::string result=logicalAnd(allowSharedOperands);
+  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd(allowSharedOperands)+")";checkSize(result);}
   return result;
  }
- std::string logicalOr(bool sharedMembership) {
-  std::string result=logicalXor(sharedMembership);
-  while(takeWord("or")) {result="("+result+"||"+logicalXor(sharedMembership)+")";checkSize(result);}
+ std::string logicalOr(bool allowSharedOperands) {
+  std::string result=logicalXor(allowSharedOperands);
+  while(takeWord("or")) {result="("+result+"||"+logicalXor(allowSharedOperands)+")";checkSize(result);}
   return result;
  }
  // In a biconditional, brackets around one predicate are logical grouping.
@@ -1975,8 +2099,8 @@ class Parser {
   if(value.substr(pos)!="4)")return value;
   return graphCalls(value,std::string(1,name));
  }
- std::string expression(bool sharedMembership=false) {
-  ws();size_t start=p;std::string result=logicalOr(sharedMembership);
+ std::string expression(bool allowSharedOperands=false) {
+  ws();size_t start=p;std::string result=logicalOr(allowSharedOperands);
   if(take(':')) {
    std::string domain=setUnion();
    if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
@@ -1985,7 +2109,7 @@ class Parser {
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);
   do {
-   ws();start=p;std::string right=logicalOr(sharedMembership);
+   ws();start=p;std::string right=logicalOr(allowSharedOperands);
    result="qiff("+result+","+equivalenceOperand(right,start)+")";checkSize(result);
   } while(takeWord("iff"));
   return result;

@@ -137,7 +137,7 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -1494,6 +1494,24 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qindexedfamily") {
+   if(!raw[0].isSymbolic() || !raw[1].isInteger() || raw[1].number().isNegative())
+    CALCULATOR->error(true,"An indexed family requires a label prefix and a nonnegative initial index.",NULL);
+   return 0;
+  }
+  if(op=="qfamilyat") {
+   MathStructure family=raw[0],index=raw[1];family.eval(eo);index.eval(eo);
+   if(!family.isFunction() || family.function()->referenceName()!="qindexedfamily" || family.size()!=2 ||
+      !family[0].isSymbolic() || !family[1].isInteger()) {
+    CALCULATOR->error(true,"Expected an open-ended indexed family.",NULL);return 0;
+   }
+   if(pendingRegisterIndex(index))return 0;
+   if(!index.isInteger() || index.number()<family[1].number()) {
+    CALCULATOR->error(true,"Expected an integer index at or above the first family index.",NULL);return 0;
+   }
+   MathStructure suffix("",true);
+   out.set(CALCULATOR->getFunction("qindexedlabel"),&family[0],&index,&suffix,NULL);return 1;
+  }
   if(op=="qindexedlabel") {
    MathStructure prefix=raw[0],index=raw[1],suffix=raw[2];
    prefix.eval(eo);index.eval(eo);suffix.eval(eo);
@@ -1631,6 +1649,15 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure members;
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    evaluateDomain(raw[1],members,exact);
+   if(members.isFunction() && members.function()->referenceName()=="qindexedfamily" && members.size()==2) {
+    // A named member belongs by construction. Other circuit names could
+    // denote the same circuit, so leave those membership questions open.
+    if(op=="qmember" && members[0].isSymbolic() && members[1].isInteger()) {
+     Number n;
+     if(registerBitIndex(raw[0],members[0].symbol(),n) && n>=members[1].number()) {out=m_one;return 1;}
+    }
+    return 0;
+   }
    if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
@@ -1937,6 +1964,8 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
  return true;
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
+ calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));

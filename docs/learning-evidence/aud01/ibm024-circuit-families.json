@@ -1,0 +1,73 @@
+{
+  "revision": "9ace463047bfd7f32ad073a65f69e919447ea502",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_sha256": "e12f88060b107a8268c197df751527e9eaf5b4dd9ba224fcdad6cd54d5fae79a",
+  "original_spans": 170,
+  "exact_labels": 169,
+  "diagnostics": [
+    "IBM024-5c5b90e6-M077"
+  ],
+  "gui_inputs": 179,
+  "gui_checks": 1960,
+  "changed_originals": [
+    {
+      "id": "IBM024-5c5b90e6-M037",
+      "input": "$\\{C_1, C_2, C_3,\\ldots\\}$",
+      "display": "{C_1, C_2, …}",
+      "copy": "qindexedfamily(\"C_\",1)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M079",
+      "input": "$\\{C_1, C_2,\\ldots,\\}$",
+      "display": "{C_1, C_2, …}",
+      "copy": "qindexedfamily(\"C_\",1)"
+    }
+  ],
+  "gui_controls": [
+    {
+      "input": "familyat(qindexedfamily(\"C_\",1),1)",
+      "result": "\"C_1\"",
+      "copy": "\"C_1\""
+    },
+    {
+      "input": "familyat(qindexedfamily(\"C_\",1),2)",
+      "result": "\"C_2\"",
+      "copy": "\"C_2\""
+    },
+    {
+      "input": "familyat(qindexedfamily(\"C_\",1),3)",
+      "result": "\"C_3\"",
+      "copy": "\"C_3\""
+    },
+    {
+      "input": "familyat(qindexedfamily(\"C_\",1),12)",
+      "result": "\"C_12\"",
+      "copy": "\"C_12\""
+    },
+    {
+      "input": "familyat(qindexedfamily(\"C_\",1),1000)",
+      "result": "\"C_1000\"",
+      "copy": "\"C_1000\""
+    },
+    {
+      "input": "familyat(qindexedfamily(\"C_\",1),n)",
+      "result": "qfamilyat(qindexedfamily(\"C_\", 1), n)",
+      "copy": "qfamilyat(qindexedfamily(\"C_\",1),n)"
+    },
+    {
+      "input": "replace(familyat(qindexedfamily(\"C_\",1),n),n,17)",
+      "result": "\"C_17\"",
+      "copy": "\"C_17\""
+    },
+    {
+      "input": "member(C_19,qindexedfamily(\"C_\",1))",
+      "result": "1",
+      "copy": "1"
+    },
+    {
+      "input": "familyat(\\{A_{99},A_{100},\\ldots\\},101)",
+      "result": "\"A_101\"",
+      "copy": "\"A_101\""
+    }
+  ]
+}

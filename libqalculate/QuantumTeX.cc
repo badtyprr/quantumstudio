@@ -504,6 +504,25 @@ bool registerSumDeclaration(const std::string &variable,const std::string &domai
  alphabet=trim(text.substr(0,power));width=trim(text.substr(power+1));
  return atom(alphabet) && atom(width);
 }
+// Open-ended families need a common label and consecutive integer subscripts.
+// Keep only the first index; a trailing comma after the ellipsis is typography.
+std::string openIndexedFamily(const std::vector<std::string> &entries) {
+ size_t end=entries.size();
+ if(end && entries[end-1].empty())--end;
+ if(end<3 || (entries[end-1]!="..." && entries[end-1]!="…"))return "";
+ const std::string &first=entries.front();
+ size_t split=first.rfind('_');
+ if(split==std::string::npos || split==0 || !std::all_of(first.begin(),first.begin()+split,asciiLetter))return "";
+ std::string prefix=first.substr(0,split+1),start=first.substr(split+1),index=start;
+ if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || (start.size()>1 && start[0]=='0'))return "";
+ for(size_t k=0;k+1<end;++k) {
+  if(entries[k]!=prefix+index)return "";
+  size_t pos=index.find_last_not_of('9');
+  if(pos==std::string::npos)index="1"+std::string(index.size(),'0');
+  else {++index[pos];std::fill(index.begin()+pos+1,index.end(),'0');}
+ }
+ return "qindexedfamily(\""+prefix+"\","+start+")";
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -518,6 +537,44 @@ class TeXReader {
  unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
+ // Spacing takes a literal dimension. Its contents never become expression tokens.
+ void spacingDimension(char close) {
+  ++pos;space();
+  if(pos<input.size() && (input[pos]=='+' || input[pos]=='-'))++pos;
+  bool digit=false,dot=false;
+  while(pos<input.size()) {
+   char d=input[pos];
+   if(d>='0' && d<='9')digit=true;
+   else if(d=='.' && !dot)dot=true;
+   else break;
+   ++pos;
+  }
+  if(!digit)throw std::runtime_error(error("TeX spacing requires a literal numeric dimension"));
+  space();size_t unitStart=pos;
+  while(pos<input.size() && asciiLetter((unsigned char)input[pos]))++pos;
+  std::string unit=input.substr(unitStart,pos-unitStart);
+  if(unit!="pt" && unit!="pc" && unit!="in" && unit!="bp" && unit!="cm" && unit!="mm" &&
+     unit!="dd" && unit!="cc" && unit!="sp" && unit!="em" && unit!="ex" && unit!="mu")
+   throw std::runtime_error(error("Unsupported TeX spacing unit"));
+  space();if(pos==input.size() || input[pos]!=close)throw std::runtime_error(error("Invalid TeX spacing"));
+  ++pos;
+ }
+ // Match only the text label that introduces a parenthesized modulus.
+ bool takeModulusLabel() {
+  size_t start=pos;
+  space();
+  if(input.compare(pos,5,"\\text")==0) {
+   pos+=5;space();
+   if(pos<input.size() && input[pos]=='{') {
+    ++pos;space();
+    if(input.compare(pos,3,"mod")==0) {
+     pos+=3;space();
+     if(pos<input.size() && input[pos]=='}') {++pos;return true;}
+    }
+   }
+  }
+  pos=start;return false;
+ }
  std::string group() {
   space();
   if(pos==input.size() || input[pos]!='{') throw std::runtime_error(error("Expected a braced TeX argument"));
@@ -596,8 +653,11 @@ class TeXReader {
      bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
      std::string alphabet="vector("+contents+")";
      if(ellipsis) {
-      if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
-      alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+      alphabet=openIndexedFamily(entries);
+      if(alphabet.empty()) {
+       if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
+       alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+      }
      }
      size_t afterSet=pos;space();
      if(pos<input.size() && input[pos]=='^') {
@@ -627,27 +687,7 @@ class TeXReader {
    if(c=='\\' && matrix) {
     space();
     if(pos<input.size() && input[pos]=='[') {
-     // Row spacing is presentation-only. Accept a literal TeX dimension, never
-     // translate its contents into the matrix's mathematical expression.
-     ++pos;space();
-     if(pos<input.size() && (input[pos]=='+' || input[pos]=='-'))++pos;
-     bool digit=false,dot=false;
-     while(pos<input.size()) {
-      char d=input[pos];
-      if(d>='0' && d<='9')digit=true;
-      else if(d=='.' && !dot)dot=true;
-      else break;
-      ++pos;
-     }
-     if(!digit)throw std::runtime_error(error("Matrix row spacing requires a literal numeric dimension"));
-     space();size_t unitStart=pos;
-     while(pos<input.size() && asciiLetter((unsigned char)input[pos]))++pos;
-     std::string unit=input.substr(unitStart,pos-unitStart);
-     if(unit!="pt" && unit!="pc" && unit!="in" && unit!="bp" && unit!="cm" && unit!="mm" &&
-        unit!="dd" && unit!="cc" && unit!="sp" && unit!="em" && unit!="ex" && unit!="mu")
-      throw std::runtime_error(error("Unsupported matrix row spacing unit"));
-     space();if(pos==input.size() || input[pos]!=']')throw std::runtime_error(error("Invalid matrix row spacing"));
-     ++pos;
+     spacingDimension(']');
     }
     return ";";
    }
@@ -657,6 +697,31 @@ class TeXReader {
   }
   size_t start=pos; while(pos<input.size() && asciiLetter((unsigned char)input[pos])) ++pos;
   std::string name=input.substr(start,pos-start);
+  if(name=="hspace") {
+   space();
+   if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced spacing dimension"));
+   spacingDimension('}');return " ";
+  }
+  if(name=="log") {
+   size_t afterName=pos;space();
+   if(pos<input.size() && input[pos]=='_') {
+    ++pos;std::string base=trim(argument());space();
+    if(input.compare(pos,5,"\\left")==0) {pos+=5;space();}
+    std::string operand;
+    if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
+    else if(pos<input.size() && (std::isdigit((unsigned char)input[pos]) ||
+            (input[pos]=='.' && pos+1<input.size() && std::isdigit((unsigned char)input[pos+1])))) {
+     size_t start=pos;while(pos<input.size() && std::isdigit((unsigned char)input[pos]))++pos;
+     if(pos+1<input.size() && input[pos]=='.' && std::isdigit((unsigned char)input[pos+1])) {
+      ++pos;while(pos<input.size() && std::isdigit((unsigned char)input[pos]))++pos;
+     }
+     operand=input.substr(start,pos-start);
+    } else operand=argument();
+    if(base.empty() || trim(operand).empty())throw std::runtime_error(error("A logarithm needs a base and an operand"));
+    return base=="2" ? "log2("+operand+")" : "log("+operand+","+base+")";
+   }
+   pos=afterName;
+  }
   if(name=="sin" || name=="cos" || name=="tan") {
    size_t afterName=pos;
    space();
@@ -817,6 +882,7 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="operatorname" && a=="lg")a="qbitlength";
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
@@ -1006,6 +1072,11 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
+    if(open=='(' && takeModulusLabel()) {
+     auto modulus=trim(read(end));
+     if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
+     result=trim(result)+" pmod ("+modulus+")";continue;
+    }
     size_t bodyStart=pos;auto body=read(end);
     std::string raw=input.substr(bodyStart,pos-bodyStart-1);
     std::string column=open=='[' ? indexedMatrix(raw,false) : "";
@@ -1077,6 +1148,11 @@ class TeXReader {
     size_t first=value.find_first_not_of(" \t\r\n"), last=value.find_last_not_of(" \t\r\n");
     if(first!=std::string::npos)value=value.substr(first,last-first+1);
     while(!result.empty() && std::isspace((unsigned char)result.back()))result.pop_back();
+    // The displayed open-ended family uses ordinary braces and an ellipsis.
+    if(value.find("…")!=std::string::npos || value.find("...")!=std::string::npos) {
+     std::string family=openIndexedFamily(indexedParts(value,","));
+     if(!family.empty()) {result+=family;continue;}
+    }
     // Braces around an entire Dirac label are typesetting, not arithmetic.
     size_t after=pos;while(after<input.size() && std::isspace((unsigned char)input[after]))++after;
     bool ketLabel=!result.empty() && result.back()=='|' &&

@@ -24,6 +24,73 @@ def data(expression, *flags):
     return value
 
 
+# The computational-cost lesson expresses modular powers using a spaced text label.
+for gap in (r"\hspace{1mm} ", r"\hspace{1mm}"):
+    source = "$N^K" + gap + r"(\text{mod }M)$"
+    result = data("quantum:" + source)
+    copied = result["copy_text"]
+    assert data("quantum:" + copied)["copy_text"] == copied
+    assert data("quantum:" + result["display_text"])["copy_text"] == copied
+    for base, exponent, modulus in ((0, 0, 1), (0, 1, 13), (23, 0, 17), (23, 5, 17), (2, 1024, 101), (3, 2**128 + 1, 65537)):
+        expected = str(pow(base, exponent, modulus))
+        numeric = f"${base}^{{{exponent}}}" + gap + rf"(\text{{mod }}{modulus})$"
+        assert data("quantum:" + numeric)["copy_text"] == expected
+        bound = f"replace(replace(replace({copied},N,{base}),K,{exponent}),M,{modulus})"
+        assert data("quantum:" + bound)["copy_text"] == expected
+
+assert b"modulus must be nonzero" in run("quantum:2^5 pmod (0)", success=False).stderr
+
+# Asymptotic upper bounds compare polynomial growth for large input sizes.
+for formula, expected in [
+    ("17 n^3 - 257 n^2 + 65537 = O(n^3)", "1"), ("n^3=O(n^2)", "0"),
+    ("n^3!=O(n^2)", "1"), ("123456 n=O(n^2)", "1"), ("(n+1)^2=O(n)", "0"),
+    ("(n^3+n)-n^3=O(n)", "1"), ("0=O(0)", "1"), ("n=O(0)", "0"),
+    ("1=O(n)", "1"), ("n^2=replace(O(n^c),c,3)", "1"), ("cost(lg(8))", "4"),
+]:
+    assert data("quantum:" + formula)["copy_text"] == expected
+for args in ("n", "n,m"):
+    formula = f"g({args})=O(h({args}))"
+    record = data("quantum:" + formula)
+    for body in (formula, record["copy_text"], record["display_text"]):
+        for cost, expected in (("n", "1"), ("n^3", "0")):
+            probe = f"replace(replace(({body}),g({args}),{cost}),h({args}),n^2)"
+            assert data("quantum:" + probe)["copy_text"] == expected
+for formula in ("O(nm)", "O(n^c)", r"O(n(\operatorname{lg}(n))^2)", "g(n)+2=O(n^2)"):
+    copied = data("quantum:" + formula)["copy_text"]
+    assert "qbigorder(" in copied and data("quantum:" + copied)["copy_text"] == copied
+for cost, expected in ((6, "1"), (7, "0")):
+    probe = f"replace(replace(replace(cost(g(n,m)<=c*h(n,m)),g(n,m),{cost}),h(n,m),3),cost(c),2)"
+    assert data("quantum:" + probe)["copy_text"] == expected
+assert data("quantum:cost(replace((c>0),c,-1))")["copy_text"] == "0"
+assert data("quantum:nn^2=O(n^3)")["copy_text"] == "1"
+assert data("quantum:cost(replace(replace(nm^2,n,3),m,2))")["copy_text"] == "12"
+for source, binding, expected in [
+    ("cost(c>0)", "c,-1", "0"),
+    ("g(n)=replace(O(n^c),c,3)", "g(n),n^4", "0"),
+    ("0<1,2<g(n)=O(n^2)", "g(n),3", "1"),
+    ("0<1,2<g(n)=O(n^2)", "g(n),1", "0"),
+]:
+    for body in (source, data("quantum:" + source)["copy_text"]):
+        assert data(f"quantum:replace(({body}),{binding})")["copy_text"] == expected
+run("quantum:O(" + "n" * 700 + ")", "--json", success=False)
+
+# The comma in a shared bound is local to a grouped expression. Function
+# arguments and vector elements continue to be independent comparisons.
+shared_bound = r"0\leq N,M\leq 2^n - 1"
+saved_bound = data("quantum:$$" + shared_bound + ".$$")["copy_text"]
+for body in (shared_bound, saved_bound):
+    for width in (0, 1, 3):
+        maximum = 2**width - 1
+        for a, b in ((0, maximum), (maximum, 0), (-1, 0), (0, -1),
+                     (maximum + 1, 0), (0, maximum + 1), (-1, maximum + 1)):
+            expr = f"replace(replace(replace(({body}),N,{a}),M,{b}),n,{width})"
+            assert data("quantum:" + expr)["copy_text"] == str(int(0 <= a <= maximum and 0 <= b <= maximum))
+for expr, truth in [("5 > 1,2,4 >= 1", "1"), ("5 > 1,5 >= 1", "0"),
+                    ("0 <= 2,3 < 3", "0"), ("0 < 1,2 < 3 <= 2", "0"),
+                    ("vector(0 <= 3,4 <= 2)", "vector(1,0)")]:
+    assert data("quantum:" + expr)["copy_text"] == truth
+run("quantum:0 <= x,y", "--json", success=False)
+
 # An isolated binary word needs a width, while an equation can learn the
 # type of its right-hand literal or named application from later bindings.
 for digits, value in (("011", 3), ("00101", 5), ("00001", 1), ("", 0)):
@@ -40,6 +107,88 @@ for equation in ("z=f(x)", "f(x)=z"):
     result = data("quantum:" + equation)
     for body in (equation, result["copy_text"], result["display_text"]):
         assert data(f"quantum:replace(replace(replace(({body}),z,6),x,3),f,2)")["copy_text"] == "1"
+
+for n in (0, 1, 2, 7, 8, 15, 16, 2**128 - 1, 2**128):
+    assert data(rf"quantum:$\operatorname{{lg}}({n})$")["copy_text"] == str(max(1, n.bit_length()))
+for value in ("-1", "3/2"):
+    run(f"quantum:bitlength({value})", "--json", success=False)
+assert data(r"quantum:$\log_{2}(8)$")["copy_text"] == "3"
+for argument, expected in (("2^512-1",511),("2^512",512),("1/8",-3),("1/9",-4),("3/2",0)):
+    assert data(f"quantum:floor(log2({argument}))")["copy_text"] == str(expected).replace("-", "−")
+assert data("quantum:lg(100)")["copy_text"] == "2"
+
+# A circuit size is a formal gate count. Bind the count independently
+# of its circuit label or the cost function used to describe it.
+for formula in (r"\operatorname{size}(C)", "size(C_n)"):
+    record = data("quantum:" + formula)
+    assert "qcostcall(" in record["copy_text"]
+    assert data("quantum:" + record["display_text"])["copy_text"] == record["copy_text"]
+for body in (r"t(n) = \operatorname{size}(C_n)", "t(n) = size(C_n)"):
+    original = data("quantum:" + body)
+    for form in (body, original["copy_text"], original["display_text"]):
+        for count in (72, 73):
+            probe = f"replace(replace(({form}),t(n),73),size(C_n),{count})"
+            assert data("quantum:" + probe)["copy_text"] == str(int(count == 73))
+run("quantum:size(C_1,C_2)", "--json", success=False)
+
+for fn, parameters in (("t","n"),("g","n"),("h","n,m"),("a","m,k")):
+    application = f"{fn}({parameters})"
+    held = data("quantum:" + application)
+    assert "qcostcall(" in held["copy_text"]
+    for form in (application, held["display_text"], held["copy_text"]):
+        assert data(f"quantum:replace({form},{application},17)")["copy_text"] == "17"
+    numerical = data(f"quantum:replace({held['copy_text']},n,3)")
+    assert data("quantum:" + numerical["display_text"])["copy_text"] == numerical["copy_text"]
+assert data("quantum:replace(replace(g(n),g,4),n,3)")["copy_text"] == "12"
+assert data("quantum:replace(replace(replace(g(n,m),g,2),n,3),m,4)")["copy_text"] == "vector(6,8)"
+graph = "qset(vector(qtuple(vector(bitstring(0,1),bitstring(1,1)))))"
+assert data(f"quantum:replace(replace(g(n),g,{graph}),n,bitstring(0,1))")["copy_text"] == "qbitlabel(1,1)"
+assert data("quantum:g(n,m)=g(n,m)")["copy_text"] == "1"
+assert data("quantum:g(n,m)!=g(n,m)")["copy_text"] == "0"
+assert data("quantum:replace(n(n-1),n,3)")["copy_text"] == "6"
+
+# An isolated cost witness binds the same ordered size arguments on both sides.
+for witness in ("g(n,m)<=c*h(n,m)", "c*h(n,m)>=g(n,m)", "a(k)<=c*b(k)"):
+    result = data("quantum:" + witness)
+    assert "qcostcall(" in result["copy_text"] and "qcostparam(" in result["copy_text"]
+    for form in (witness, result["display_text"], result["copy_text"]):
+        left, right = ("a(k)", "b(k)") if witness.startswith("a") else ("g(n,m)", "h(n,m)")
+        for cost_value in (6, 7):
+            probe = f"replace(replace(replace(({form}),{left},{cost_value}),{right},3),c,2)"
+            assert data("quantum:" + probe)["copy_text"] == str(int(cost_value <= 6))
+# Arithmetic following the right operand is outside the standalone witness grammar.
+assert "qcostparam" not in data("quantum:g(n)<=c*h(n)+1")["copy_text"]
+
+# Both open-ended circuit families describe one circuit per input size.
+circuits = []
+for literal in (r"\{C_1, C_2, C_3,\ldots\}", r"\{C_1, C_2,\ldots,\}"):
+    original = data("quantum:" + literal)
+    family = original["copy_text"]
+    assert data("quantum:" + original["display_text"])["copy_text"] == family
+    assert data("quantum:" + family)["copy_text"] == family
+    for index in (1, 2, 3, 19):
+        expected = data(f"quantum:C_{index}")["copy_text"]
+        assert data(f"quantum:familyat({family},{index})")["copy_text"] == expected
+    circuits.append(family)
+assert circuits[0] == circuits[1]
+assert data(f"quantum:member(C_19,{circuits[0]})")["copy_text"] == "1"
+assert "qmember(" in data(f"quantum:member(D_19,{circuits[0]})")["copy_text"]
+pending_index = data(f"quantum:familyat({circuits[0]},n)")["copy_text"]
+assert data(f"quantum:replace({pending_index},n,12)")["copy_text"] == data("quantum:C_12")["copy_text"]
+for index in ("0", "-1", "3/2"):
+    run(f"quantum:familyat({circuits[0]},{index})", "--json", success=False)
+for invalid in (r"\{C_1,D_2,\ldots\}", r"\{C_1,C_3,\ldots\}"):
+    run("quantum:" + invalid, "--json", success=False)
+
+# Trial division enumerates integer candidates, including the square root
+# exactly when the input is a perfect square.
+trial_range = data(r"quantum:$2,\ldots,\sqrt{N}$")["copy_text"]
+assert data("quantum:" + trial_range)["copy_text"] == trial_range
+for n, expected in ((2, []), (3, []), (4, [2]), (15, [2, 3]), (16, [2, 3, 4]), (17, [2, 3, 4])):
+    canonical = "qset(vector(" + ",".join(map(str, expected)) + "))"
+    assert data(f"quantum:replace({trial_range},N,{n})")["copy_text"] == canonical
+run(f"quantum:replace({trial_range},N,1026^2)", "--json", success=False)
+run(r"quantum:1,...,3 \in \{1,2,3\}", "--json", success=False)
 
 for dots in ("...", r"\dots", r"\ldots", r"\cdots"):
     samples = rf"z^1, {dots}, z^{{2}} \in \{{0,1\}}^3"

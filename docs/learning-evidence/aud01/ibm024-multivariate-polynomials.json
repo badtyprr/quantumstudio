@@ -1,0 +1,47 @@
+{
+  "revision": "ec361ab490e7aec71ec05b239e2cc1c0aaaefb1a",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_sha256": "bc223128a7c365a5972a2e11bafea1e274a6a8764da2b8d824b61494b25c1e83",
+  "original_spans": 170,
+  "exact_labels": 170,
+  "gui_inputs": 177,
+  "gui_checks": 1947,
+  "changed_originals": [],
+  "gui_controls": [
+    {
+      "id": "balanced",
+      "input": "n*m=O(n^2+m^2)",
+      "expected": "1"
+    },
+    {
+      "id": "one-fixed",
+      "input": "n^2=O(n*m)",
+      "expected": "0"
+    },
+    {
+      "id": "diagonal",
+      "input": "n^2*m^2=O(n^3+m^3)",
+      "expected": "0"
+    },
+    {
+      "id": "three-inputs",
+      "input": "n*m*k=O(n^3+m^3+k^3)",
+      "expected": "1"
+    },
+    {
+      "id": "mixed-powers",
+      "input": "n*m*k=O(n^2*m+m*k^2)",
+      "expected": "1"
+    },
+    {
+      "id": "unbounded-ratio",
+      "input": "n*m*k=O(n^2*m+m*k)",
+      "expected": "0"
+    },
+    {
+      "id": "rational",
+      "input": "3*n*m/7=O(n^2+m^2)",
+      "expected": "1"
+    }
+  ]
+}

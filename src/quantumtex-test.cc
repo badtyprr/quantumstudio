@@ -17,6 +17,22 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($\{C_1,C_2,C_3,\ldots\}$)",R"(qindexedfamily("C_",1))");
+  equal(R"($\{C_1,C_2,\ldots,\}$)",R"(qindexedfamily("C_",1))");
+  equal(R"($\{A_{99},A_{100},\dots\}$)",R"(qindexedfamily("A_",99))");
+  rejects(R"($\{C_1,D_2,\ldots\}$)");rejects(R"($\{C_1,C_3,\ldots\}$)");
+  equal(R"($2\hspace{1mm}+3$)",quantumTeX("$2 +3$"));
+  equal(R"($a\hspace{ -.25 em }b$)",quantumTeX("$a b$"));
+  rejects(R"($2\hspace{1mm+9}+3$)");rejects(R"($2\hspace{3cats}+3$)");
+  rejects(R"($2\hspace{mm}+3$)");rejects(R"($2\hspace 1mm+3$)");
+  equal(R"($N^K\hspace{1mm} (\text{mod }M)$)",quantumTeX("$N^K pmod (M)$"));
+  equal(R"($N^K(\text{mod }M+1)$)",quantumTeX("$N^K pmod (M+1)$"));
+  rejects(R"($N^K(\text{mod })$)");rejects(R"($N^K(\text{model}M)$)");
+  equal(R"($\log_{2}\left(16\right)$)","log2(16)");
+  equal(R"($\log_{10}{100}$)","log(100,10)");
+  equal(R"($\log_2 16$)","log2(16)");
+  equal(R"($\log_2 .5$)","log2(.5)");
+  rejects(R"($\log_{}(8)$)");rejects(R"($\log_2()$)");
   equal("$$x.$$","x");equal(R"(\[\ket{0}.\])","|0>");
   equal("$$1.5$$","1.5");equal("$$1.$$","1.");
   equal(R"($$\left\|x\right\|^2.$$)",quantumTeX(R"($$\left\|x\right\|^2$$)"));

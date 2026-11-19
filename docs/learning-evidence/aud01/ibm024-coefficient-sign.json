@@ -1,0 +1,61 @@
+{
+  "revision": "0d35ac33ad79fbdf319e2597390bb17a4963c484",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_sha256": "5323fc860d9dac10b9c06458ff6d92f0ab6b83703862cd971ff9c0875b719f8c",
+  "original_spans": 170,
+  "exact_labels": 170,
+  "gui_inputs": 176,
+  "gui_checks": 1936,
+  "changed_originals": [
+    {
+      "id": "IBM024-5c5b90e6-M064",
+      "input": "$c > 0$",
+      "display": "c > 0",
+      "copy": "(qcostparam('c'))>(0)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M075",
+      "input": "$c > 0$",
+      "display": "c > 0",
+      "copy": "(qcostparam('c'))>(0)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M160",
+      "input": "$c > 0$",
+      "display": "c > 0",
+      "copy": "(qcostparam('c'))>(0)"
+    }
+  ],
+  "gui_controls": [
+    {
+      "id": "sign-0",
+      "input": "replace((c>0),c,-2)",
+      "expected": "0"
+    },
+    {
+      "id": "sign-1",
+      "input": "replace((c>0),c,0)",
+      "expected": "0"
+    },
+    {
+      "id": "sign-2",
+      "input": "replace((c>0),c,2)",
+      "expected": "1"
+    },
+    {
+      "id": "sign-3",
+      "input": "replace((0<c),c,-2)",
+      "expected": "0"
+    },
+    {
+      "id": "sign-4",
+      "input": "replace((0<=c),c,0)",
+      "expected": "1"
+    },
+    {
+      "id": "sign-5",
+      "input": "replace((c<0),c,-2)",
+      "expected": "1"
+    }
+  ]
+}

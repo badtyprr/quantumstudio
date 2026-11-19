@@ -1,0 +1,106 @@
+{
+  "revision": "1b69b4a1988da260c9a74c0be8923ff49a4446fe",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_sha256": "0e5c444aacb06278f633c1bbbb5b8b61003b5d91a0498dc860e2926d26a987c2",
+  "original_spans": 170,
+  "exact_labels": 170,
+  "gui_inputs": 179,
+  "gui_checks": 1969,
+  "changed_originals": [
+    {
+      "id": "IBM024-5c5b90e6-M032",
+      "input": "$\\operatorname{size}(C)$",
+      "display": "size(C)",
+      "copy": "qcostcall(\"size\",vector('C'))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M035",
+      "input": "$t(n)$",
+      "display": "t(n)",
+      "copy": "qcostcall('t',vector(n))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M042",
+      "input": "$$\nt(n) = \\operatorname{size}(C_n).\n$$",
+      "display": "t(n) = size(\"C_n\")",
+      "copy": "qcompare(qcostcall('t',vector(n)),qcostcall(\"size\",vector(\"C_n\")),4)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M061",
+      "input": "$g(n)$",
+      "display": "g(n)",
+      "copy": "qcostcall('g',vector(n))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M062",
+      "input": "$h(n)$",
+      "display": "h(n)",
+      "copy": "qcostcall('h',vector(n))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M068",
+      "input": "$h(n)$",
+      "display": "h(n)",
+      "copy": "qcostcall('h',vector(n))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M070",
+      "input": "$g(n,m)$",
+      "display": "g(n, m)",
+      "copy": "qcostcall('g',vector(n,'m'))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M071",
+      "input": "$h(n,m)$",
+      "display": "h(n, m)",
+      "copy": "qcostcall('h',vector(n,'m'))"
+    }
+  ],
+  "gui_controls": [
+    {
+      "id": "formal-g",
+      "input": "replace(g(n,m),g(n,m),23)",
+      "expected": "23"
+    },
+    {
+      "id": "formal-t",
+      "input": "replace(t(n),t(n),23)",
+      "expected": "23"
+    },
+    {
+      "id": "definition-73-31",
+      "input": "replace(replace(replace((t(n)=size(C_n)),t(n),21*n-11),size(C_n),31),n,4)",
+      "expected": "0"
+    },
+    {
+      "id": "definition-73-73",
+      "input": "replace(replace(replace((t(n)=size(C_n)),t(n),21*n-11),size(C_n),73),n,4)",
+      "expected": "1"
+    },
+    {
+      "id": "definition-31-31",
+      "input": "replace(replace(replace((t(n)=size(C_n)),t(n),9*n-5),size(C_n),31),n,4)",
+      "expected": "1"
+    },
+    {
+      "id": "definition-31-73",
+      "input": "replace(replace(replace((t(n)=size(C_n)),t(n),9*n-5),size(C_n),73),n,4)",
+      "expected": "0"
+    },
+    {
+      "id": "explicit-scalar",
+      "input": "replace(replace(g(n),g,4),n,3)",
+      "expected": "12"
+    },
+    {
+      "id": "asymmetric-inputs",
+      "input": "replace(replace(g(n,m),n,3),m,7)",
+      "expected": "qcostcall('g',vector(3,7))"
+    },
+    {
+      "id": "bound-graph",
+      "input": "replace(replace(g(n),g,qset(vector(qtuple(vector(bitstring(0,1),bitstring(1,1)))))),n,bitstring(0,1))",
+      "expected": "qbitlabel(1,1)"
+    }
+  ]
+}
