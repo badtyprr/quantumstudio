@@ -332,6 +332,12 @@ class QuantumOrderFunction: public MathFunction {
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
   args[1].eval(eo);
+  // A named probability can be defined by the squared magnitude of a
+  // pending sum. Keep one copy of its binder until the limits are known.
+  if(equality)for(unsigned k=0;k<2;++k) {
+   if(args[k].isSymbolic() && args[1-k].containsFunction(CALCULATOR->getFunction("qbars")) &&
+      args[1-k].containsFunction(CALCULATOR->getFunction("qsum")))return 0;
+  }
   // Keep piecewise definitions intact while their bit value or named
   // state is unresolved. Concrete substitutions use ordinary comparison.
   if(equality)for(unsigned k=0;k<2;++k) {
