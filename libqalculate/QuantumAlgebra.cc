@@ -813,6 +813,20 @@ class QuantumAlgebraFunction: public MathFunction {
     out.set(CALCULATOR->getFunction("qdirectsum"), &a, &args[1], NULL);out.eval(eo);
     return out.isMatrix() ? 1 : 0;
    }
+   // A free operand can later be bound to an integer, a word or a matrix.
+   // Keep the operator until the binding determines which operation applies.
+   auto pending=[](const MathStructure &v) {
+    return v.isSymbolic() || v.isUnknown() || (v.representsScalar() && v.containsUnknowns());
+   };
+   if(pending(a) || pending(args[1])) {
+    for(size_t j=0;j<2;++j) {
+     const MathStructure &v=args[j];
+     if(pending(v) || v.isMatrix() || isQuantumBitLabel(v) ||
+        (v.isNumber() && v.number().isInteger() && !v.number().isNegative()))continue;
+     CALCULATOR->error(true,"Scalar XOR requires nonnegative integer operands.",NULL);return 0;
+    }
+    return 0;
+   }
    for(size_t j=0;j<2;++j)if(!args[j].isNumber() || !args[j].number().isInteger() || args[j].number()<0) {
     CALCULATOR->error(true,"Scalar XOR requires nonnegative integer operands.",NULL);return 0;
    }

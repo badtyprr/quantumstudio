@@ -34,6 +34,13 @@ assert data(r"quantum:\sum_{x\in bitstrings(2)}{\sum_{y\in bitstrings(2)}{x\cdot
 assert data(r"quantum:replace(replace(z\cdot x=0,z,bitstring(2,2)),x,bitstring(1,2))")["copy_text"] == "1"
 assert data(r"quantum:2 \cdot 3")["copy_text"] == "6"
 
+# Symbolic direct sum keeps its operand domains through Copy and substitution.
+symbolic_sum = data(r"quantum:w \oplus s")["copy_text"]
+assert data(f"quantum:replace(replace({symbolic_sum},w,6),s,3)")["copy_text"] == "5"
+assert data(f"quantum:replace(replace({symbolic_sum},w,bitstring(6,3)),s,bitstring(3,3))")["copy_text"] == "qbitlabel(5,3)"
+assert data(f"quantum:replace(replace({symbolic_sum},w,X),s,Z)")["rows"] == 4
+assert b"nonnegative integer" in run(r"quantum:w \oplus (-1)", "--json", success=False).stderr
+
 # Equality of bit strings includes their declared width and evaluated bits.
 for expression, expected in [
     ("bitstring(1+1,3)=bitstring(2,3)", "1"),

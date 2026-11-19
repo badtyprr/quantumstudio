@@ -97,3 +97,24 @@ for y in range(8):
     identity = f"replace(replace({identity},s,bitstring(3,3)),y,bitstring({y},3))"
     assert evaluate(identity)["copy_text"] == "1"
 print("Exact range, 32 inverse images and all 8 measurement probabilities passed")
+
+# The source groups each side of the Simon promise in square brackets.
+left, right = [side.strip().removeprefix("[").removesuffix("]")
+               for side in bound_body(7).split(r"\Leftrightarrow")]
+def at_pair(body, x, y):
+    return f"replace(replace(({body}),x,bitstring({x},3)),y,bitstring({y},3))"
+
+
+left = f"replace(({left}),f,{table['graph']})"
+right = f"replace(({right}),s,bitstring(3,3))"
+for x, output in enumerate(outputs):
+    for y in range(8):
+        lhs = evaluate(at_pair(left, x, y))["copy_text"]
+        rhs = evaluate(at_pair(right, x, y))["copy_text"]
+        assert lhs == rhs == str(int(output == outputs[y])), (x, y)
+
+        # Either member of the output's inverse image may be used as w.
+        chain = f"replace(replace(({bound_body(88)}),f,{table['graph']}),s,bitstring(3,3))"
+        chain = f"replace(replace(replace({chain},z,bitstring({output},5)),w,bitstring({x},3)),y,bitstring({y},3))"
+        assert evaluate(chain)["copy_text"] == "1", (x, y)
+print("Both promise predicates and the M088 equality chain passed for all 64 pairs")
