@@ -230,10 +230,10 @@ class Printer {
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.
-   if(!value[0].isVector())return Fragment("{"+render(value[0],depth+1).text+"}");
-   std::string text="{";
+   if(!value[0].isVector())return Fragment("\\{"+render(value[0],depth+1).text+"\\}");
+   std::string text="\\{";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
-   return Fragment(text+"}");
+   return Fragment(text+"\\}");
   }
   if(name=="qcompare" && value.size()==3 && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=5) {
    const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
