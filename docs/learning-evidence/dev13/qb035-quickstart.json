@@ -1,0 +1,57 @@
+{
+  "theta": 0.59,
+  "analytic_energy": -1.748794861147215,
+  "statevector_energy": -1.7487948611472146,
+  "sampled_energy": -1.638499485,
+  "shots_per_nonidentity_term": 4000,
+  "standard_error": 0.06702769622025655,
+  "terms": [
+    {
+      "label": "XX",
+      "coefficient": -2.1433,
+      "even_odd": [
+        3108,
+        892
+      ]
+    },
+    {
+      "label": "II",
+      "coefficient": 5.907,
+      "even_odd": null
+    },
+    {
+      "label": "YY",
+      "coefficient": -2.1433,
+      "even_odd": [
+        3100,
+        900
+      ]
+    },
+    {
+      "label": "IZ",
+      "coefficient": 0.21829,
+      "even_odd": [
+        367,
+        3633
+      ]
+    },
+    {
+      "label": "ZI",
+      "coefficient": -6.125,
+      "even_odd": [
+        3633,
+        367
+      ]
+    }
+  ],
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+  "bell_counts": {
+    "00": 996,
+    "11": 1004
+  },
+  "method": "Original Bell and ansatz kernel bodies interpreted with Qiskit gates. Local spin operators and term-by-term BasicSimulator measurements supplied to the cell 17 expression. Cell 17 CUDA-Q spin import replaced.",
+  "cudaq_compilation": false,
+  "remote_jobs": 0,
+  "async_tested": false
+}
