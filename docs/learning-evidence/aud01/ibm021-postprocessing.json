@@ -1,0 +1,68 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "section": "Classical post-processing",
+  "worker_sha256": "0e7dd16d9bfa1ced45c023c4cef2f76c25808b842477d096f259a91e2aef7223",
+  "event": "The kernel equals {0,s}, including the singleton {0} for the injective case.",
+  "method": "Count ordered independent measurement transcripts exactly by intersecting kernels. For each distinct kernel verify the span and independence of the native basis on a representative transcript. Compare every sample count from 1 to n+10 to the full-rank product for the sampled subspace.",
+  "general_bound": "For any non-target candidate v, exactly half the allowed outcomes y have v dot y = 0. Its probability of surviving k independent rows is 2^-k. Summing over fewer than 2^n false candidates bounds failure by 2^(n-k).",
+  "audits": [
+    {
+      "width": 1,
+      "samples": 11,
+      "native_kernels": 2,
+      "recovery_by_secret": {
+        "0": "2047/2048",
+        "1": "1"
+      }
+    },
+    {
+      "width": 2,
+      "samples": 12,
+      "native_kernels": 5,
+      "recovery_by_secret": {
+        "00": "8382465/8388608",
+        "01": "4095/4096",
+        "10": "4095/4096",
+        "11": "4095/4096"
+      }
+    },
+    {
+      "width": 3,
+      "samples": 13,
+      "native_kernels": 16,
+      "recovery_by_secret": {
+        "000": "68660770815/68719476736",
+        "001": "33542145/33554432",
+        "010": "33542145/33554432",
+        "011": "33542145/33554432",
+        "100": "33542145/33554432",
+        "101": "33542145/33554432",
+        "110": "33542145/33554432",
+        "111": "33542145/33554432"
+      }
+    },
+    {
+      "width": 4,
+      "samples": 14,
+      "native_kernels": 67,
+      "recovery_by_secret": {
+        "0000": "1124869408262145/1125899906842624",
+        "0001": "549520961535/549755813888",
+        "0010": "549520961535/549755813888",
+        "0011": "549520961535/549755813888",
+        "0100": "549520961535/549755813888",
+        "0101": "549520961535/549755813888",
+        "0110": "549520961535/549755813888",
+        "0111": "549520961535/549755813888",
+        "1000": "549520961535/549755813888",
+        "1001": "549520961535/549755813888",
+        "1010": "549520961535/549755813888",
+        "1011": "549520961535/549755813888",
+        "1100": "549520961535/549755813888",
+        "1101": "549520961535/549755813888",
+        "1110": "549520961535/549755813888",
+        "1111": "549520961535/549755813888"
+      }
+    }
+  ]
+}
