@@ -56,7 +56,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
     return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1)+")";
    if(name=="qensemble" && result.size()==3)
     return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,1)+","+copyCollection(result[2],po,1)+")";
-   std::string text=name+"(";
+   // Quantum input resolves the public matrix constructor to qmatrix on re-entry.
+   std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
    return text+")";
   }

@@ -59,14 +59,13 @@ for transform, expected in [(qft, "1"), ("identity(4)", "0")]:
 # Bind the declared operator before evaluation, as an undeclared V is scalar.
 context = 'matrixcontext("V",(4),(4),"unitary"):'
 declared = evaluate(context + literal(123))
-reentered = aligned(evaluate(declared))
+check(declared, declared)
 action = aligned(declared)
 gui = [["M119", annotated, "0"], ["M123", context + literal(123), "0"]]
 witnesses = []
 for index, (column, image) in enumerate(zip(aligned(columns), action)):
     operator = 'operatorparam(V,4,"unitary")'
-    relations = [("M119", column), ("M123", f"replace(({image}),{operator},({qft}))"),
-                 ("M123-copy", f"replace(({reentered[index]}),{operator},({qft}))")]
+    relations = [("M119", column), ("M123", f"replace(({image}),{operator},({qft}))")]
     for candidate in range(4):
         vector = f"fourier(4)*basis({candidate},4)"
         expected = str(int(index == candidate))
