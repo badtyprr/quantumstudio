@@ -1,0 +1,48 @@
+{
+  "application_sha256": "1a881443b83e2098f77e4f6e68ac504cc39d37619629e6179b519fc25b7deea2",
+  "candidate_worker_sha256": "51e2fb92291e329c43cef36634497010be34db7cb040f4a215e57f8eaf6fee13",
+  "baseline_release": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "driver_sha256": "e2900a56f621b3854b5059b83c10e1d6a0bdf81b8353ba4bd0bcc9cbec28b47f",
+  "inputs_sha256": "e1bc1628bec0da38df6f50d4965bea37d6d9326c7503ec2d678d11749db3d750",
+  "result": {
+    "passed": true,
+    "checks": 1515,
+    "calls": 168,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "formula_outcomes": {
+    "CHECK YOUR EXPRESSION": 37,
+    "EXACT RESULT": 131
+  },
+  "fixed": [
+    {
+      "id": "R13-0-M017",
+      "old_copy": "'f' = 's' || x = 0",
+      "candidate_copy": "(('f')==('s') or (x)==(0))"
+    },
+    {
+      "id": "R13-0-M031",
+      "old_copy": "'f' = 's' || x = 0",
+      "candidate_copy": "(('f')==('s') or (x)==(0))"
+    },
+    {
+      "id": "R13-0-M047",
+      "old_copy": "x = 0 || z = 0",
+      "candidate_copy": "((x)==(0) or (z)==(0))"
+    }
+  ],
+  "changed_copy_after_reentry": [
+    "M03",
+    "R13-0-M027",
+    "R13-0-M028",
+    "R13-0-M029",
+    "R13-0-M033",
+    "R13-0-M037",
+    "R13-0-M041",
+    "R13-0-M066"
+  ],
+  "raw_records_sha256": "d8d22e8f3b0be76184fa7c2d7e70015b3ab733387ffb3b4d7f65dda199483dff",
+  "external_directory": "F:/src/libqalculate/cleanup-audit/learning-coverage-20261117/ibm020-logical-copy/sorted-gui",
+  "scope": "Published GUI paired locally with candidate worker. All returned results reproduced after reopening and all copied results re-entered. Equality of copy text is checked separately from mathematical correctness."
+}

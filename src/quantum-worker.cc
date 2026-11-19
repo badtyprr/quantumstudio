@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #endif
 #include <iostream>
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <vector>
@@ -62,6 +63,20 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
   if(result.isVector()) {
    std::string text="vector(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
+   return text+")";
+  }
+  if(result.isLogicalAnd() || result.isLogicalOr()) {
+   // Word operators also re-enter in Quantum mode, where || delimits a norm.
+   const char *separator=result.isLogicalAnd() ? " and " : " or ";
+   std::vector<std::string> terms;
+   for(size_t k=0;k<result.size();++k)terms.push_back(copyText(result[k],po));
+   // Simplification may reorder these commutative terms between worker processes.
+   std::sort(terms.begin(),terms.end());
+   std::string text="(";
+   for(size_t k=0;k<terms.size();++k) {
+    if(k)text+=separator;
+    text+=terms[k];
+   }
    return text+")";
   }
   if(result.isComparison() && result.size()==2) {
