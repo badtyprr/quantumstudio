@@ -35,3 +35,21 @@ assert (state["rows"], state["columns"]) == (256, 1)
 amplitudes = ",".join(["1"] * 8 + ["0"] * 248)
 assert state["copy_text"] == f"matrix(256,1,[{amplitudes}])"
 print("45 membership checks and all 256 scaled initial-state amplitudes passed")
+
+with (directory / "ibm021-oracle-table.json").open(encoding="utf-8") as source:
+    table = json.load(source)
+outputs = [int(bits, 2) for bits in table["outputs"]]
+for number, scale in [(49, "sqrt(8)"), (50, "8")]:
+    expr = f"{scale}*replace(replace(({bound_body(number)}),f,{table['graph']}),n,3)"
+    state = evaluate(expr)
+    expected = [0] * 256
+    for x, z in enumerate(outputs):
+        if number == 49:
+            expected[8*z + x] = 1
+        else:
+            for y in range(8):
+                expected[8*z + y] += (-1) ** ((x & y).bit_count() % 2)
+    amplitudes = ",".join(map(str, expected))
+    assert (state["rows"], state["columns"]) == (256, 1)
+    assert state["copy_text"].replace("\u2212", "-") == f"matrix(256,1,[{amplitudes}])", number
+print("Both bound oracle states passed all 256 amplitude checks")

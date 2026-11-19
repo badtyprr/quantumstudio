@@ -543,14 +543,29 @@ class Parser {
   const std::string &name=args[1];
   if(name.size()!=1 || name=="e" || name=="i" || name[0]<'a' || name[0]>'z' || args[2].compare(0,5,"qset(")!=0)return;
   const std::string &body=args[0];
+  const std::string stateCall="qstatecall(\""+name+"\",";
+  std::vector<size_t> ketDepths;
+  size_t depth=0;
   std::string result;char quote=0;
   for(size_t i=0;i<body.size();) {
    char c=body[i];
    if(c=='"' || c=='\'') {if(c==quote)quote=0;else if(!quote)quote=c;}
    unsigned char previous=i ? body[i-1] : 0;
-   if(quote || c!=name[0] || std::isalnum(previous) || previous=='_' || previous>=128 ||
-      i+1==body.size() || body[i+1]!='(') {result+=c;++i;continue;}
-   result+="qgraphapply("+name+",";i+=2;
+   const bool boundary=!quote && !std::isalnum(previous) && previous!='_' && previous<128;
+   if(boundary && body.compare(i,stateCall.size(),stateCall)==0) {
+    // A bound graph supplies the basis label of this single-argument ket.
+    result+="qketstate(";ketDepths.push_back(depth+1);i+=stateCall.size();
+   } else if(boundary && c==name[0] && i+1<body.size() && body[i+1]=='(') {
+    i+=2;
+   } else {
+    if(!quote && c=='(')++depth;
+    if(!quote && c==')' && depth) {
+     if(!ketDepths.empty() && ketDepths.back()==depth) {result+=')';ketDepths.pop_back();}
+     --depth;
+    }
+    result+=c;++i;continue;
+   }
+   result+="qgraphapply("+name+",";++depth;
    size_t end=body.find_first_not_of("01",i);
    if(end!=std::string::npos && end>i && body[end]==')') {
     std::string bits=body.substr(i,end-i);

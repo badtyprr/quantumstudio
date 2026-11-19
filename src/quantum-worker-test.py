@@ -61,6 +61,8 @@ word_graph = data("quantum:" + word_table)["copy_text"]
 assert data("quantum:" + word_graph)["copy_text"] == word_graph
 for bits, value in (("00",1),("01",4),("10",0),("11",1)):
     assert data(f"quantum:replace(g({bits}),g,{word_graph})")["copy_text"] == f"qbitlabel({value},3)"
+    ket = data(rf"quantum:replace(\vert g({bits}) \rangle,g,{word_graph})")
+    assert ket["copy_text"] == data(f"quantum:qketstate(bitstring({value},3))")["copy_text"]
 assert not data("quantum:" + word_table.replace("=100","=10"))["copy_text"].startswith("qset(")
 for changed in (table.replace("f(11)", "g(11)"), table.replace("f(11)", "f(01)"),
                 table.replace("f(11)", "f(1)"), table.replace("f(", "i("), table.replace("= 1", "= 2", 1)):
