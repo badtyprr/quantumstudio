@@ -1,0 +1,38 @@
+{
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "source_sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+  "original_nonempty_code_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    13,
+    15,
+    17,
+    18,
+    20
+  ],
+  "result": {
+    "zz": 1.0,
+    "counts": {
+      "00": 105,
+      "11": 95
+    }
+  },
+  "scope": "An authored cell after original cell 2 switched USE_SIMULATOR from False to True. Original cell sources were preserved. The 11 nonempty code cells ran on the local branch. IBM hardware and provider jobs remain open.",
+  "inspected_figures": {
+    "18": "Histogram matches 105 counts for 00 and 95 for 11.",
+    "20": "Distribution matches frequencies 0.525 and 0.475."
+  },
+  "artifacts": {
+    "cleanup-audit/learning-coverage-20261117/aud02-current-qbraid-sources/qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+    "cleanup-audit/learning-coverage-20261117/qb020-local/probe.py": "8fe57395aa81133b67da41404f4330edb8c6f27209738109f9f14edbfa63bc97",
+    "cleanup-audit/learning-coverage-20261117/qb020-local/run01/executed.ipynb": "69944fa757261d4995cc5b6c028c72b0834a616f77523ca7d8e88a213f94b8ba",
+    "cleanup-audit/learning-coverage-20261117/qb020-local/run01/verification.json": "4b95ad6673564fd585ae0da423cac5c074f2f4bc4a4bcac749e4128bc349e023",
+    "cleanup-audit/learning-coverage-20261117/qb020-local/run01/cleanup.json": "4f07b2f4de4c4ef3a6775f4f11f7cd1a0692cf72efa3fa034b1a28d34a6368f8",
+    "cleanup-audit/learning-coverage-20261117/qb020-local/run01/cell18.png": "8a4ebe587cfcce2fb3c2c96210bc0c094659bed4ee75f7c14a7d2810206e0aad",
+    "cleanup-audit/learning-coverage-20261117/qb020-local/run01/cell20.png": "b16a9060f434e4d974ab3a5bc04093409a173bbcd0b6c4bf68706b5d481ff78d"
+  }
+}
