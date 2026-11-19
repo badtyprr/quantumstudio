@@ -183,6 +183,17 @@ class Printer {
   if(name=="qresidue" && value.size()==2)
    return Fragment(grouped(render(value[0],depth+1),40)+" pmod ("+render(value[1],depth+1).text+")",40);
   if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());
+  if(name=="qinversefunction" && value.size()==1 && value[0].isSymbolic())
+   return Fragment(value[0].symbol()+"^(-1)",80);
+  if(name=="qnamedapplication" && value.size()==2 && value[0].isFunction() &&
+     value[0].function()->referenceName()=="qinversefunction" && value[0].size()==1 && value[0][0].isSymbolic())
+   return Fragment(render(value[0],depth+1).text+"("+render(value[1],depth+1).text+")");
+  if(name=="qnamedapplication" && value.size()==2 && value[0].isSymbolic()) {
+   const std::string &head=value[0].symbol();
+   const std::string arg=render(value[1],depth+1).text;
+   if((head=="f" || head=="g" || head=="h") && arg.size()==1 && std::isalpha((unsigned char)arg[0]))
+    return Fragment(head+"("+arg+")");
+  }
   if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
   if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
    const std::string &function=value[0].symbol();

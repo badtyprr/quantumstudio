@@ -1,5 +1,6 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumBinary.h"
+#include <map>
 #include "QuantumIndexed.h"
 #include "Calculator.h"
 #include "Function.h"
@@ -82,8 +83,48 @@ class QuantumBinaryFunction: public MathFunction {
    } else out=number;
    return 1;
   }
+  if(op=="qinversefunction") {
+   if(a.isUnknown())return 0;
+   if(!a.isFunction() || a.function()->referenceName()!="qset") {
+    if(a.containsUnknowns() && !a.isVector())return 0;
+    out=a;out.raise(-1);return 1;
+   }
+   if(a.size()!=1 || !a[0].isVector())return 0;
+   // Reversing a finite function is valid only if both directions are
+   // single-valued. The width is part of each binary word's identity.
+   using Word=std::pair<Number,Number>;
+   std::map<Word,Word> maps[2];
+   MathStructure reversed=a;
+   for(size_t i=0;i<a[0].size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &pair=a[0][i];
+    if(!pair.isFunction() || pair.function()->referenceName()!="qtuple" ||
+       pair.size()!=1 || !pair[0].isVector() || pair[0].size()!=2) {
+     CALCULATOR->error(true,"An inverse function requires a graph of ordered pairs.",NULL);return 0;
+    }
+    Word keys[2];
+    for(unsigned j=0;j<2;++j) {
+     const MathStructure &entry=pair[0][j];
+     if(!isQuantumBitLabel(entry) || entry.size()!=2) {
+      if(!entry.containsUnknowns())CALCULATOR->error(true,"An inverse binary function requires bit-string inputs and outputs.",NULL);
+      return 0;
+     }
+     MathStructure index=entry[0],width=entry[1];
+     if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return 0;
+     keys[j]=Word(width.number(),index.number());
+    }
+    for(unsigned j=0;j<2;++j) {
+     auto inserted=maps[j].emplace(keys[j],keys[1-j]);
+     if(!inserted.second && inserted.first->second!=keys[1-j]) {
+      CALCULATOR->error(true,"An inverse function requires a one-to-one function graph.",NULL);return 0;
+     }
+    }
+    reversed[0][i][0][0]=pair[0][1];reversed[0][i][0][1]=pair[0][0];
+   }
+   out=reversed;return 1;
+  }
   if(op=="qnamedapplication") {
-   if(a.isUnknown() || a.isSymbolic())return 0;
+   if(a.isUnknown() || (a.isFunction() && a.function()->referenceName()=="qinversefunction"))return 0;
    bool graph=a.isFunction() && a.function()->referenceName()=="qset";
    out.set(CALCULATOR->getFunction(graph ? "qgraphapply" : "qmul"),&a,&args[1],NULL);return 1;
   }
@@ -282,5 +323,5 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }
