@@ -1,0 +1,137 @@
+{
+  "source_revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "source_sha256": "f51ba7aa9c4668d826615e9e9b77760b033d0d3cbac7c4a5194ed21bd61d7678",
+  "qiskit": "2.6.2",
+  "runtime": "0.50.0",
+  "aer": "0.18.4",
+  "method": "Replaced cell 38 cloud discovery with a seeded ideal Aer backend. The original StatevectorSampler uses its own unseeded sampling. Both routes use the original shot counts.",
+  "remote_jobs": 0,
+  "executed": [
+    2,
+    12,
+    14,
+    16,
+    18,
+    22,
+    24,
+    26,
+    27,
+    29,
+    31,
+    33,
+    35,
+    39,
+    40,
+    42,
+    43,
+    44,
+    45
+  ],
+  "same_sign_pairs_per_nine_for_eight_local_tables": [
+    0,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    0
+  ],
+  "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "native": [
+    {
+      "qasm_sha256": "8bebe7c55f90d8902672b24f94795ffac62e528080ee6d9e2a2ec0eaac166b73",
+      "statevector_probabilities": [
+        0.37499999999999994,
+        0.12500000000000003,
+        0.12500000000000003,
+        0.37499999999999994
+      ],
+      "counts": {
+        "00": 3844,
+        "01": 1267,
+        "10": 1219,
+        "11": 3670
+      },
+      "seed": "731"
+    },
+    {
+      "qasm_sha256": "3b274f53f32d60367491efccdd9ccc75be7a5006aab9fcaa8372cade22849841",
+      "statevector_probabilities": [
+        0.37499999999999994,
+        0.12499999999999986,
+        0.12499999999999986,
+        0.37499999999999994
+      ],
+      "counts": {
+        "00": 3844,
+        "01": 1267,
+        "10": 1219,
+        "11": 3670
+      },
+      "seed": "731"
+    },
+    {
+      "qasm_sha256": "af3d7c5350649c5ae3626c9cf81d753e55470c39e36ea41eec74637df7c76bd9",
+      "statevector_probabilities": [
+        3.260658454269016e-32,
+        0.4999999999999999,
+        0.4999999999999999,
+        3.666656143824267e-32
+      ],
+      "counts": {
+        "01": 4937,
+        "10": 5063
+      },
+      "seed": "731"
+    }
+  ],
+  "statevector_sampler": {
+    "counts": [
+      {
+        "11": 3707,
+        "10": 1203,
+        "00": 3840,
+        "01": 1250
+      },
+      {
+        "01": 1231,
+        "11": 3803,
+        "10": 1245,
+        "00": 3721
+      },
+      {
+        "01": 5088,
+        "10": 4912,
+        "00": 0,
+        "11": 0
+      }
+    ],
+    "same_sign": 0.5023666666666666
+  },
+  "runtime_local_batch": {
+    "counts": [
+      {
+        "00": 3792,
+        "11": 3755,
+        "10": 1203,
+        "01": 1250
+      },
+      {
+        "11": 3767,
+        "01": 1202,
+        "00": 3793,
+        "10": 1238
+      },
+      {
+        "10": 4998,
+        "01": 5002,
+        "00": 0,
+        "11": 0
+      }
+    ],
+    "same_sign": 0.5035666666666666
+  },
+  "native_same_sign": 0.5009333333333333,
+  "analytic_check": "The singlet has same-sign probability sin(angle/2)^2. The three equally weighted cases give 3/4, 3/4 and 0. For any deterministic three-axis assignment with opposite outputs on equal axes, at most four of the nine ordered axis pairs yield equal signs."
+}
