@@ -135,17 +135,20 @@ bool compareBitLabels(const MathStructure &left,const MathStructure &right,bool 
 }
 // For every complex matrix M, M†M and MM† are positive semidefinite,
 // including rectangular and rank-deficient M. This does not prove strictness.
-bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
- if(!value.isFunction() || value.size()!=2)return false;
+const MathStructure *gramFactor(const MathStructure &value) {
+ if(!value.isFunction() || value.size()!=2)return NULL;
  const std::string &name=value.function()->referenceName();
- if(name!="qmul" && name!="qadjacent")return false;
+ if(name!="qmul" && name!="qadjacent")return NULL;
  for(unsigned i=0;i<2;++i) {
   const MathStructure &adjoint=value[i],&factor=value[1-i];
-  if(!adjoint.isFunction() || adjoint.function()->referenceName()!="qdag" || adjoint.size()!=1 || !adjoint[0].equals(factor))continue;
-  MathStructure rows,columns;
-  if(quantumMatrixShape(factor,rows,columns,eo))return true;
+  if(adjoint.isFunction() && adjoint.function()->referenceName()=="qdag" && adjoint.size()==1 && adjoint[0].equals(factor))return &factor;
  }
- return false;
+ return NULL;
+}
+bool symbolicGram(const MathStructure &value,const EvaluationOptions &eo) {
+ const MathStructure *factor=gramFactor(value);
+ MathStructure rows,columns;
+ return factor && quantumMatrixShape(*factor,rows,columns,eo);
 }
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // Hermitian Loewner order via exact Schur complements. A zero diagonal in a
@@ -263,6 +266,9 @@ class QuantumOrderFunction: public MathFunction {
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }
    bool equal=false;
+   // Preserve products with adjoints until the factors have concrete values.
+   // Scalar comparison would rewrite the equality as a difference from zero.
+   if(kind>=4 && gramFactor(args[0]) && gramFactor(args[1]) && !args[0].equals(args[1]))return 0;
    if(kind>=4 && (quantumComplexDomain(args[0]) || quantumComplexDomain(args[1]))) {
     if(quantumComplexDomain(args[0]) && quantumComplexDomain(args[1])) {
      out=(args[0].function()==args[1].function())==(kind==4) ? 1 : 0;return 1;

@@ -1,0 +1,85 @@
+{
+  "worker_sha256": "84bab20579d526d3848badbdde17c8bc10ef3445ebef94eeb44d7e6317c238f0",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [
+    "IBM027-64df8610-M023",
+    "IBM027-64df8610-M042",
+    "IBM027-64df8610-M044"
+  ],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M002",
+      "label": "EXACT RESULT",
+      "display": "M · M† = M† · M",
+      "copy": "qcompare(qadjacent('M',qdag('M')),qadjacent(qdag('M'),'M'),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(qadjacent('M',qdag('M')),qadjacent(qdag('M'),'M'),4)"
+    }
+  ],
+  "controls": [
+    {
+      "id": "hermitian-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "symmetric-nonnormal-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "jordan-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "cyclic-unitary-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "diagonal-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "rectangular-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1133,
+    "calls": 103,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}
