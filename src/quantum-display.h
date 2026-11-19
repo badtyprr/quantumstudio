@@ -187,14 +187,14 @@ class Printer {
    }
    if(flat && rows<=2048/columns && value[2].size()==rows*columns) {
     MathStructure literal;literal.clearMatrix();literal.resizeMatrix(rows,columns,MathStructure(0));
-    std::string text="[";bool changed=false;
+    std::string text="[";bool changed=columns>1;
     for(size_t row=0;row<rows;++row) {
      if(row)text+="; ";
      for(size_t column=0;column<columns;++column) {
       const MathStructure &entry=value[2][row*columns+column];
       literal.setElement(entry,row+1,column+1);
       Fragment rendered=render(entry,depth+1);changed=changed || rendered.text!=entry.print(options);
-      if(column)text+="  ";text+=rendered.text;
+      if(column)text+=", ";text+=rendered.text;
      }
     }
     return changed ? Fragment(text+"]") : fallback(literal);

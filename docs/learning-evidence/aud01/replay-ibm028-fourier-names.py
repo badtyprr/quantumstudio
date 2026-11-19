@@ -75,11 +75,23 @@ for number, dimension in [(133, 4), (187, 1), (188, 2), (189, 3), (190, 4), (191
     checks.append(dict(id=row["id"], dimension=dimension, exact_result="1",
                        individually_zeroed_coefficients=len(cells), changed_result="0"))
 
+phase_checks = []
+for number, gate in [(217, "P"), (219, "CP")]:
+    row = rows[f"M{number}"]
+    operator = evaluate(row["literal"])
+    for form in (operator["display_text"], operator["copy_text"]):
+        for angle in ("0", "pi/2", "pi", "-pi/2"):
+            for offset, expected in [("", "1"), ("+pi", "0")]:
+                expr = f"replace(replace(({form}),{gate}_α,{gate}({angle}{offset})),α,{angle})"
+                assert copied(expr) == expected, (row["id"], expr)
+    phase_checks.append(dict(id=row["id"], gate=gate, angles=["0", "pi/2", "pi", "-pi/2"],
+                             forms=["display", "copy"], rejected_offset="pi"))
 report = dict(source=inventory["source"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               name=dict(id=name["id"], literal=name["literal"], display=record["display_text"],
                         copy=record["copy_text"], substitution_dimensions=[2, 3, 4]),
               M128=dict(accepted="QFT(2)", rejected="identity(4)"),
-              M130=dict(literal=matrix["literal"], dimension=4, qubits=2), matrices=checks)
+              M130=dict(literal=matrix["literal"], dimension=4, qubits=2), matrices=checks,
+              phase_gates=phase_checks)
 args.output.write_bytes((json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode())
 if args.gui_inputs:
     args.gui_inputs.write_bytes(json.dumps(gui, ensure_ascii=False).encode())
