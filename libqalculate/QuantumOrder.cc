@@ -245,6 +245,7 @@ class QuantumEqualityChain: public MathFunction {
 void registerQuantumOrder(Calculator &calculator) {
  calculator.addFunction(new QuantumCostDescriptor("qbigorder",1));
  calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
+ calculator.addFunction(new QuantumCostDescriptor("qcostparam",1));
  calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());

@@ -212,7 +212,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbigorder",1},{"qcostcall",2},
+ {"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -1190,6 +1190,11 @@ class Parser {
    }
    if(b==p) throw std::runtime_error("Expected a quantum expression at byte "+std::to_string(p+1));
    a=s.substr(b,p-b); ws();
+   // Read juxtaposed size variables one atom at a time, so in nm^2 the
+   // exponent belongs only to m. Normal atom accounting bounds expansion.
+   if(costContext && a.size()>1 && a.find_first_not_of("nmk")==std::string::npos) {
+    p=b+1;a.resize(1);
+   }
    bool indexedScalar=false;
    if(!numericToken && a.back()=='_' && take('{')) {
     std::string index=expression();need('}');
@@ -1630,7 +1635,8 @@ class Parser {
       // Match a formal cost or parameter using the same spelling as the
       // original bound. The replacement value has its own ordinary scope.
       costContext=costScope || (name=="replace" && args.size()==1 &&
-       (args[0].find("qbigorder(")!=std::string::npos || args[0].find("qcostcall(")!=std::string::npos));
+       (args[0].find("qbigorder(")!=std::string::npos || args[0].find("qcostcall(")!=std::string::npos ||
+        args[0].find("qcostparam(")!=std::string::npos));
       args.push_back(expression());
      }
      need(')');
@@ -1696,14 +1702,7 @@ class Parser {
     if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
     }
    } else if(!indexedScalar) {
-    if(costContext && a=="c")a=indexableLabel(a);
-    if(costContext && a.size()>1 && a.find_first_not_of("nmk")==std::string::npos) {
-     if(a.size()-1>nodeLimit-nodes)throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");
-     nodes+=a.size()-1;
-     std::string factors(1,a[0]);
-     for(size_t i=1;i<a.size();++i)factors="qmul("+factors+","+a[i]+")";
-     a=factors;
-    }
+    if(costContext && a=="c")a="qcostparam("+indexableLabel(a)+")";
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
@@ -1897,6 +1896,25 @@ class Parser {
  static int comparisonKind(const std::string &relation) {
   return relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
  }
+ // Resolve the operand before saving it in a comparison chain: the same
+ // endpoint may serve as an upper bound and then as the cost in f = O(h).
+ std::string comparisonOperand() {
+  size_t start=p;
+  std::string value=setUnion();
+  if(costContext)return value;
+  size_t end=p;
+  std::string relation=takeComparisonRelation();
+  if(relation=="=" || relation=="==" || relation=="!=") {
+   // Substitution and cost(...) preserve the context of their first
+   // operand, even when several such calls surround the growth class.
+   do {while(take('(')) {}} while((takeWord("replace") || takeWord("qreplace") || takeWord("cost")) && take('('));
+   if((takeWord("O") || takeWord("qbigorder")) && take('(')) {
+    int savedKind=diracKind;p=start;costContext=true;
+    value=setUnion();costContext=false;diracKind=savedKind;
+   }
+  }
+  p=end;return value;
+ }
  // Each middle operand shares both bounds. Leave the final endpoint in
  // right so that another relation may continue the chain.
  std::string sharedBounds(const std::string &left,int firstKind,std::string &right) {
@@ -1904,7 +1922,7 @@ class Parser {
   do {probes.push_back(setUnion());} while(take(','));
   int lastKind=comparisonKind(takeComparisonRelation());
   if(lastKind>=4)throw std::runtime_error("Expected a second ordering relation after the comma-separated operands.");
-  right=setUnion();
+  right=comparisonOperand();
   std::string clause="(";
   for(const auto &probe:probes) {
    if(clause.size()>1)clause+="&&";
@@ -1914,8 +1932,7 @@ class Parser {
   return clause+")";
  }
  std::string comparison(bool allowSharedOperands) {
-  size_t leftStart=p;
-  std::string left=setUnion(),result;
+  std::string left=comparisonOperand(),result;
   // Top-level and explicitly grouped operands can share a membership
   // relation or bounds. Function argument and vector separators stay local.
   if(allowSharedOperands && take(',')) {
@@ -1947,24 +1964,16 @@ class Parser {
   }
   std::vector<std::string> operands{left};bool equalities=result.empty();
   while(true) {
-   ws();size_t relationStart=p;
    std::string relation=takeComparisonRelation();
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
-   size_t rightStart=p;std::string right;
+   std::string right;
    if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
-   } else right=setUnion();
-   if((relation=="=" || relation=="==" || relation=="!=") && right.compare(0,10,"qbigorder(")==0 && !costContext) {
-     // The right endpoint supplies the cost context for the preceding term.
-     // Reuse the parser and its complexity budget for nested applications.
-    size_t end=p;int savedKind=diracKind;p=leftStart;costContext=true;
-    std::string term=setUnion();ws();
-    if(p==relationStart)left=term;
-    costContext=false;p=end;diracKind=savedKind;equalities=false;
-   }
+   } else right=comparisonOperand();
+   if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {
     preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
     preserveNamedApplication(left,right);preserveNamedApplication(right,left);
@@ -1975,7 +1984,7 @@ class Parser {
    if(allowSharedOperands && kind<4 && take(','))clause=sharedBounds(left,kind,right);
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
-   result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;leftStart=rightStart;
+   result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
   }
   if(equalities && operands.size()>2) {
    result="qequalchain(vector(";

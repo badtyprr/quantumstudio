@@ -177,6 +177,7 @@ class Printer {
     return changed ? Fragment(text+"]") : fallback(literal);
    }
   }
+  if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());
   if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
   if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
    std::string text=value[0].symbol()+"(";
