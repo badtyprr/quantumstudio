@@ -23,6 +23,13 @@ int main(){try {
  eo.approximation=APPROXIMATION_EXACT;
  equal("quantum:1=1=1","1");equal("quantum:1=1=2","0");
  equal("quantum:x=x=x","1");
+ equal(R"(quantum:replace((δ=\pm 1/2),δ,-1/2))","1");
+ equal("quantum:replace((δ=±1/2),δ,0)","0");
+ equal("quantum:3=1±2*3-4","1");
+ equal(R"(quantum:0\in\bigl[-1/2,1/2\bigr])","1");
+ equal("quantum:1∈(0,1)","0");equal("quantum:1∈[1,1]","1");
+ equal("quantum:0∈(0,1]","0");equal("quantum:1∈[0,1)","0");
+ equal("quantum:-1=1±(2*3-4)","1");
  equal("quantum:replace(([0;0;0;1]=|2x+1>=|x+2>),x,1)","1");
  equal("quantum:replace((|2x+1>=|x+2>=[0;0;0;1]),x,1)","1");
  equal("quantum:replace((|2x+1>=|x+2>=[0;0;0;1]),x,0)","0");

@@ -1040,7 +1040,7 @@ class TeXReader {
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
-   {"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
+   {"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
@@ -1215,6 +1215,9 @@ class TeXReader {
     size_t bodyStart=pos;auto body=read(end,false,"",false,"",membership);
     if(membership && input[pos-1]!=end) {
      result+="qhalfopen("+body+","+(open=='[' ? "1)" : "0)");continue;
+    }
+    if(membership && indexedParts(body,",").size()==2 && indexedParts(body,";").size()==1) {
+     result+="qrealinterval("+body+","+(open=='[' ? "1,1)" : "0,0)");continue;
     }
     std::string raw=input.substr(bodyStart,pos-bodyStart-1);
     std::string column=open=='[' ? indexedMatrix(raw,false) : "";
@@ -1414,7 +1417,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
- static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
+ static const auto unicodeOperators=std::map<std::string,std::string>{{"±","\\pm "},{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
   {"∪","\\cup "},{"∩","\\cap "},{"∖","\\setminus "},{"∅","\\emptyset "},{"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
  int depth=0;bool splitDimensions=false;

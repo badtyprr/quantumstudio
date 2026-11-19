@@ -373,9 +373,11 @@ class Printer {
     return Fragment(text);
    }
   }
-  if(name=="qhalfopen" && value.size()==3 && (value[2].isOne() || value[2].isZero())) {
-   bool left=value[2].isOne();
-   return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(left ? ")" : "]"));
+  if(((name=="qhalfopen" && value.size()==3) ||
+      (name=="qrealinterval" && value.size()==4 && (value[3].isOne() || value[3].isZero()))) &&
+     (value[2].isOne() || value[2].isZero())) {
+   bool left=value[2].isOne(),right=value.size()==4 ? value[3].isOne() : !left;
+   return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(right ? "]" : ")"));
   }
   if(name=="qmember" && value.size()==2 && value[1].isFunction() &&
      value[1].function()->referenceName()=="qindexrange" && value[1].size()==2)

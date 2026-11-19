@@ -1947,7 +1947,7 @@ class QuantumIndexedFunction: public MathFunction {
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;
   }
-  if(op=="qhalfopen" || op=="qunitcircle" || op=="qcomplexplane")return 0;
+  if(op=="qhalfopen" || op=="qrealinterval" || op=="qunitcircle" || op=="qcomplexplane")return 0;
   if(op=="qmember" && (quantumComplexDomain(raw[1]) ||
      (raw[1].isFunction() && raw[1].function()->referenceName()=="qsetfilter" &&
       raw[1].size()==3 && quantumComplexDomain(raw[1][1])))) {
@@ -1968,15 +1968,23 @@ class QuantumIndexedFunction: public MathFunction {
    if(!magnitude.isOne() && !magnitude.isZero())return 0;
    out=magnitude;return 1;
   }
-  if(op=="qmember" && raw[1].isFunction() && raw[1].function()->referenceName()=="qhalfopen" && raw[1].size()==3) {
+  if(op=="qmember" && raw[1].isFunction() &&
+     ((raw[1].function()->referenceName()=="qhalfopen" && raw[1].size()==3) ||
+      (raw[1].function()->referenceName()=="qrealinterval" && raw[1].size()==4))) {
    MathStructure value=raw[0],lower=raw[1][0],upper=raw[1][1],closedLeft=raw[1][2];
    value.eval(eo);lower.eval(eo);upper.eval(eo);closedLeft.eval(eo);
    if(!closedLeft.isZero() && !closedLeft.isOne())return 0;
+   bool closedRight=closedLeft.isZero();
+   if(raw[1].size()==4) {
+    MathStructure flag=raw[1][3];flag.eval(eo);
+    if(!flag.isZero() && !flag.isOne())return 0;
+    closedRight=flag.isOne();
+   }
    if(value.isNumber() && !value.number().isReal()) {out=m_zero;return 1;}
    if(!value.representsReal() || !lower.representsReal() || !upper.representsReal())return 0;
    // Let ordinary real comparisons retain their precision and uncertainty.
    lower.transform(closedLeft.isOne() ? COMPARISON_EQUALS_LESS : COMPARISON_LESS,value);
-   value.transform(closedLeft.isOne() ? COMPARISON_LESS : COMPARISON_EQUALS_LESS,upper);
+   value.transform(closedRight ? COMPARISON_EQUALS_LESS : COMPARISON_LESS,upper);
    lower.eval(eo);value.eval(eo);
    if(lower.isZero() || value.isZero()) {out=m_zero;return 1;}
    if(lower.isOne() && value.isOne()) {out=m_one;return 1;}
@@ -2347,6 +2355,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  calculator.addFunction(new QuantumIndexedFunction("qpreimage",2));
  calculator.addFunction(new QuantumIndexedFunction("qhalfopen",3));
+ calculator.addFunction(new QuantumIndexedFunction("qrealinterval",4));
  calculator.addFunction(new QuantumIndexedFunction("qunitcircle",0));
  calculator.addFunction(new QuantumIndexedFunction("qcomplexplane",0));
  calculator.addFunction(new QuantumIndexedFunction("qfunctiontype",3));

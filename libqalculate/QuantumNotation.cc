@@ -340,7 +340,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
@@ -720,7 +720,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -1921,6 +1921,7 @@ class Parser {
   if(++depth>256)throw std::runtime_error("Quantum expression nesting exceeds 256.");
   std::string a;ws();unsigned root=radical();
   if(root) {p+=3;a="qpower("+unary(allowPercent)+",1/"+std::to_string(root)+")";diracKind=0;}
+  else if(takeSetOperator("±"))throw std::runtime_error("A plus-minus sign requires an equality with two alternatives.");
   else if(take('+'))a=unary(allowPercent);
   else if(take('-'))a="(-"+unary(allowPercent)+")";
   else a=power(allowPercent);
@@ -1982,8 +1983,7 @@ class Parser {
    checkSize(a);
   } return a;
  }
- std::string additive() {
-  auto a=product();
+ std::string additiveTail(std::string a) {
   while(true) {
    if(take('+')) {auto b=product();a=spinContext ? "qspinadd("+a+","+b+")" : "qadd("+a+","+b+")";}
    else if(take('-')) {auto b=product();a=spinContext ? "qspinadd("+a+",(-"+b+"))" : "qsub("+a+","+b+")";}
@@ -1992,6 +1992,7 @@ class Parser {
   }
   return a;
  }
+ std::string additive() {return additiveTail(product());}
  bool takeSetOperator(const std::string &token) {
   ws();if(s.compare(p,token.size(),token)!=0)return false;p+=token.size();return true;
  }
@@ -2188,10 +2189,23 @@ class Parser {
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
    std::string right;
-   if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
+   const bool equality=relation=="=" || relation=="==";
+   const bool leadingSign=equality && takeSetOperator("±");
+   if(leadingSign)right="0";
+   else if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
    } else right=comparisonOperand();
+   if(leadingSign || (equality && takeSetOperator("±"))) {
+    if(!result.empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
+    std::string magnitude=product();
+    // In a ± b + c the trailing c belongs to both alternatives.
+    std::string center=additiveTail(right);
+    std::string pair=center=="0" ? magnitude+",(-"+magnitude+")" : "qadd("+center+","+magnitude+"),qsub("+center+","+magnitude+")";
+    result="qmember("+left+",qset(vector("+pair+")))";checkSize(result);
+    if(!takeComparisonRelation().empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
+    return result;
+   }
    // In a quantified index declaration, j = 1,...,N lists the allowed
    // integers. Commas separating ordinary function arguments stay local.
    if(allowSharedOperands && relation=="=" && left.size()==1 && std::isalpha((unsigned char)left[0]) &&
