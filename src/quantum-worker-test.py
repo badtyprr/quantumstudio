@@ -65,6 +65,16 @@ for expression, expected in [
 ]:
     assert data("quantum:" + expression)["copy_text"] == expected
 
+# Shared membership distributes across probes only where commas are not arguments.
+for expression, expected in [
+    (r"1,2,3\in\{3,1,2\}", "1"), (r"1,2,3\in\{1,3\}", "0"),
+    (r"1,2\notin\{3\}", "1"), (r"1,2\notin\{1\}", "0"),
+    (r"vector(3,1\in\{1\})", "vector(3,1)"),
+    (r"vector((3,1\in\{1\}),4)", "vector(0,4)"),
+    (r"(1,2\in\{1,2\}) and (2,3\in\{1,2\})", "0"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected, expression
+
 # A total function must have one output per source and stay inside the codomain.
 for graph, domain, target, expected in [
     ("tuple(1,2),tuple(2,2)", "2,1", "2,3", "1"),

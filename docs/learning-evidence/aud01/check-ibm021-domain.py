@@ -1,5 +1,7 @@
 """Replay Simon lesson formulas with an explicit three-bit domain."""
+import itertools
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -222,3 +224,32 @@ for number in (1, 5, 27):
             expr = rf"replace(({expr}),\Sigma,\{{0,1\}})"
             assert evaluate(expr, bind_alphabet=False)["copy_text"] == truth, (number, truth)
 print("The source and copied function signatures accepted the oracle and rejected three invalid graphs")
+
+shared = source_body(8)
+for body in (shared, evaluate(shared, bind_alphabet=False)["copy_text"]):
+    for x, xwidth in ((0, 3), (7, 3), (0, 2), (7, 4)):
+        for y, ywidth in ((0, 3), (7, 3), (0, 2), (7, 4)):
+            expr = f"replace(replace(({body}),x,bitstring({x},{xwidth})),y,bitstring({y},{ywidth}))"
+            expr = rf"replace(({width_three(expr)}),\Sigma,\{{0,1\}})"
+            assert evaluate(expr, bind_alphabet=False)["copy_text"] == str(int(xwidth == ywidth == 3))
+print("Shared membership checked both register widths for source and copied input")
+
+# The prose spans its opening and closing parentheses across four math spans.
+# Keep the five-bit strings, including their leading zeros, when relabeling.
+spans = [source_body(i) for i in range(34, 38)]
+assert spans[0].startswith("(") and spans[-1].endswith(")")
+labels = [spans[0][1:], *spans[1:-1], spans[-1][:-1]]
+assert len(set(labels)) == 4 and all(len(label) == 5 and set(label) <= {"0", "1"} for label in labels)
+labels = [int(label, 2) for label in labels]
+assert set(labels) == set(outputs)
+for renamed in [*itertools.permutations(labels), (0, 2, 4, 6)]:
+    rename = dict(zip(labels, renamed))
+    graph = "qset(vector(" + ",".join(
+        f"tuple(bitstring({x},3),bitstring({rename[z]},5))" for x, z in enumerate(outputs)) + "))"
+    calls = ",".join(f"f({x:03b})" for x in range(8))
+    result = evaluate(f"replace(vector({calls}),f,{graph})")["copy_text"]
+    words = [int(value) for value in re.findall(r"qbitlabel\((\d+),5\)", result)]
+    assert words == [rename[z] for z in outputs]
+    periods = [s for s in range(1, 8) if all(words[x] == words[x ^ s] for x in range(8))]
+    assert periods == [3]
+print("All 24 output permutations and a disjoint set of four labels preserved secret 011")

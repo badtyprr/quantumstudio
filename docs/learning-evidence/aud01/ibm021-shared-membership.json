@@ -1,0 +1,30 @@
+{
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "worker_sha256": "ebf68ac919bcdac664d1e6724204c73d1f12b5b85ca93958ec466e3a0c8162ff",
+  "total": 177,
+  "exit_codes": {
+    "0": 170,
+    "2": 7
+  },
+  "changes": {
+    "IBM021-c0-M008": {
+      "from": 2,
+      "to": 0,
+      "result": "(qmember(x,qpower('\u03a3',n)) and qmember(y,qpower('\u03a3',n)))"
+    },
+    "IBM021-c0-M121": {
+      "from": 2,
+      "to": 2,
+      "result": "Invalid decimal number at byte 5"
+    }
+  },
+  "gui": {
+    "IBM021-c0-M008": "(qmember(x,qpower('\u03a3',n)) and qmember(y,qpower('\u03a3',n)))",
+    "w33": "1",
+    "w32": "0",
+    "w23": "0",
+    "w22": "0"
+  },
+  "gui_checks": 55,
+  "M034_to_M037_source_excerpt": "there are four strings $(10011$, $00101$, $00001$, and $11010)$"
+}

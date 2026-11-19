@@ -934,7 +934,7 @@ class Parser {
    if(p==s.size())throw std::runtime_error("Unclosed quoted quantum symbol.");
    ++p;a=s.substr(start,p-start);
   }
-  else if(take('(')) { a="("+expression()+")"; need(')'); }
+  else if(take('(')) { a="("+expression(true)+")"; need(')'); }
   else if(take('[')) {
    const bool matrixEntries=nextMatrixEntries;
    nextMatrixEntries=false;
@@ -1835,9 +1835,25 @@ class Parser {
   if(name<'a' || name>'z' || name=='e' || name=='i' || (domain[at+1]!=',' && domain[at+1]!=')'))return;
   builder=graphCalls(builder,std::string(1,name));
  }
- std::string comparison() {
+ std::string comparison(bool sharedMembership) {
   std::string left=setUnion(),result;
-  std::vector<std::string> operands{left};bool equalities=true;
+  // Top-level commas and commas inside an explicit group may share a
+  // membership relation. Function argument and vector separators stay local.
+  if(sharedMembership && take(',')) {
+   std::vector<std::string> probes{left};
+   do {probes.push_back(setUnion());} while(take(','));
+   bool excluded=takeSetOperator("∉");
+   if(!excluded && !takeSetOperator("∈"))throw std::runtime_error("Expected a shared set membership relation after the comma-separated operands.");
+   left=setUnion();
+   for(const auto &probe:probes) {
+    std::string member="qmember("+probe+","+left+")";
+    if(excluded)member="!("+member+")";
+    if(!result.empty())result+="&&";
+    result+=member;checkSize(result);
+   }
+   result="("+result+")";
+  }
+  std::vector<std::string> operands{left};bool equalities=result.empty();
   while(true) {
    ws();std::string relation;
    if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
@@ -1866,26 +1882,26 @@ class Parser {
   }
   return result.empty() ? left : result;
  }
- std::string logicalNot() {
+ std::string logicalNot(bool sharedMembership) {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
-  std::string result=comparison();
+  std::string result=comparison(sharedMembership);
   for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
  }
- std::string logicalAnd() {
-  std::string result=logicalNot();
-  while(takeWord("and")) {result="("+result+"&&"+logicalNot()+")";checkSize(result);}
+ std::string logicalAnd(bool sharedMembership) {
+  std::string result=logicalNot(sharedMembership);
+  while(takeWord("and")) {result="("+result+"&&"+logicalNot(sharedMembership)+")";checkSize(result);}
   return result;
  }
- std::string logicalXor() {
-  std::string result=logicalAnd();
-  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd()+")";checkSize(result);}
+ std::string logicalXor(bool sharedMembership) {
+  std::string result=logicalAnd(sharedMembership);
+  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd(sharedMembership)+")";checkSize(result);}
   return result;
  }
- std::string logicalOr() {
-  std::string result=logicalXor();
-  while(takeWord("or")) {result="("+result+"||"+logicalXor()+")";checkSize(result);}
+ std::string logicalOr(bool sharedMembership) {
+  std::string result=logicalXor(sharedMembership);
+  while(takeWord("or")) {result="("+result+"||"+logicalXor(sharedMembership)+")";checkSize(result);}
   return result;
  }
  // In a biconditional, brackets around one predicate are logical grouping.
@@ -1915,8 +1931,8 @@ class Parser {
   if(value.substr(pos)!="4)")return value;
   return graphCalls(value,std::string(1,name));
  }
- std::string expression() {
-  ws();size_t start=p;std::string result=logicalOr();
+ std::string expression(bool sharedMembership=false) {
+  ws();size_t start=p;std::string result=logicalOr(sharedMembership);
   if(take(':')) {
    std::string domain=setUnion();
    if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
@@ -1925,14 +1941,14 @@ class Parser {
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);
   do {
-   ws();start=p;std::string right=logicalOr();
+   ws();start=p;std::string right=logicalOr(sharedMembership);
    result="qiff("+result+","+equivalenceOperand(right,start)+")";checkSize(result);
   } while(takeWord("iff"));
   return result;
  }
  public:
  explicit Parser(std::string text,bool spin=false):spinContext(spin),s(text) {}
- std::string run() { auto out=expression(); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
+ std::string run() { auto out=expression(true); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
 };
 
 }
