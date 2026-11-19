@@ -764,7 +764,12 @@ class TeXReader {
   }
   if(name=="cdots") {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2),after=input.find_first_not_of(" \t\r\n",pos);
-   if(before!=std::string::npos && after!=std::string::npos && input[before]=='+' && input[after]=='+')return "...";
+   if(before!=std::string::npos && before>0 && after!=std::string::npos && input[before]=='+' && input[after]=='+') {
+    size_t end=input.find_last_not_of(" \t\r\n",before-1);
+    if(end!=std::string::npos && (input[end]=='|' ||
+       (end>=4 && input.compare(end-4,5,"\\vert")==0) ||
+       (end>=5 && input.compare(end-5,6,"\\rvert")==0)))return "...";
+   }
   }
   if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
