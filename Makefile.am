@@ -13,6 +13,7 @@ EXTRA_DIST = config.rpath  \
 	docs/runtime-gate-protocol.md \
 	docs/classical-circuit-files.md \
 	docs/classical-expression-text.md \
+	docs/learning-coverage-checklist.md \
 	docs/learning-source-inventory.json \
 	libqalculate.pc.in \
 	windows/test-source-dist.py \
