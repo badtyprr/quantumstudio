@@ -1,0 +1,124 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "sha256": "5ecd9a76b4733fec5d8cbb07eb412c7523f2b82c149359b9b0e96bff2e84c82d",
+  "runtime": "0.50.0",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "executed": [
+    2,
+    7,
+    9,
+    11,
+    12,
+    14,
+    16,
+    18,
+    20,
+    24,
+    26,
+    29,
+    31,
+    32,
+    33,
+    36,
+    37,
+    38,
+    43,
+    45,
+    47,
+    48,
+    50,
+    51
+  ],
+  "adaptations": {
+    "11,12": "Omitted IBM credential and discovery calls. Supplied a seeded local one-qubit Aer target. Python random seed 1903 for preparation."
+  },
+  "shots": {
+    "16": {
+      "0": 1
+    },
+    "24": {
+      "0": 100
+    },
+    "37": {
+      "00": 479,
+      "11": 521
+    },
+    "45": {
+      "0": 4913,
+      "1": 5087
+    },
+    "48": {
+      "1": 5047,
+      "0": 4953
+    },
+    "51": {
+      "00": 514,
+      "11": 510
+    }
+  },
+  "native": {
+    "36": {
+      "qasm_sha256": "c8683476e70d5f223a5dc5628503318621c4b0b44523e1de28991ba48f060f0d",
+      "probabilities": {
+        "00": "0.5",
+        "11": "0.5"
+      }
+    },
+    "43": {
+      "qasm_sha256": "dd3c9a0f5ca76638791446e5eaea7dd2ebe950aa662d7cc57e7402acb0a5f8aa",
+      "probabilities": {
+        "0": "0.5",
+        "1": "0.5"
+      }
+    },
+    "47": {
+      "qasm_sha256": "7f440fa185c1389bfd1ee9320fd1410cadae140bb21ca6f10ecd3122a88080aa",
+      "probabilities": {
+        "0": "0.5",
+        "1": "0.5"
+      }
+    },
+    "50": {
+      "qasm_sha256": "c8683476e70d5f223a5dc5628503318621c4b0b44523e1de28991ba48f060f0d",
+      "probabilities": {
+        "00": "0.5",
+        "11": "0.5"
+      }
+    }
+  },
+  "remote_jobs": 0,
+  "prepared_probabilities": [
+    0.9346326988937586,
+    0.06536730110624142
+  ],
+  "random_preparations": {
+    "trials": 100,
+    "proportions": {
+      "0": 0.56,
+      "1": 0.44
+    }
+  },
+  "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "random_orientation_check": {
+    "cell": 32,
+    "description": "Uniform Rx and Rz angles give mean Z = 0 and equal ensemble measurement probabilities. The state directions are anisotropic: Z=cos(theta) has second moment 1/2, versus 1/3 for a uniform sphere.",
+    "moments": {
+      "mean_z": {
+        "expression": "integrate(cos(x)/(2*pi),0,2*pi,x)",
+        "exact": "0",
+        "observed": 0.0
+      },
+      "source_mean_z_squared": {
+        "expression": "integrate(cos(x)^2/(2*pi),0,2*pi,x)",
+        "exact": "1/2",
+        "observed": 0.5
+      },
+      "isotropic_mean_z_squared": {
+        "expression": "integrate(x^2/2,-1,1,x)",
+        "exact": "1/3",
+        "observed": 0.3333333333333333
+      }
+    }
+  }
+}
