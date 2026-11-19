@@ -324,6 +324,16 @@ SinFunction::SinFunction() : MathFunction("sin", 1) {
 bool SinFunction::representsNumber(const MathStructure &vargs, bool allow_units) const {return vargs.size() == 1 && ((allow_units && (vargs[0].representsNumber(true) || vargs[0].representsNonComplex(true))) || (!allow_units && is_number_angle_value(vargs[0], true)));}
 bool SinFunction::representsReal(const MathStructure &vargs, bool) const {return vargs.size() == 1 && (is_real_angle_value(vargs[0]) || is_infinite_angle_value(vargs[0]));}
 bool SinFunction::representsNonComplex(const MathStructure &vargs, bool) const {return vargs.size() == 1 && vargs[0].representsNonComplex(true);}
+// Half-angle values at odd multiples of pi/8 have magnitude sqrt(2 +/- sqrt(2))/2.
+static void set_pi_eighth_component(MathStructure &value, bool larger, bool negative) {
+	value = 2;
+	value ^= nr_half;
+	if(!larger) value.negate();
+	value += nr_two;
+	value ^= nr_half;
+	value.multiply_nocopy(new MathStructure(negative ? -1 : 1, 2, 0));
+}
+
 int SinFunction::calculate(MathStructure &mstruct, const MathStructure &vargs, const EvaluationOptions &eo) {
 
 	if(vargs[0].isVector()) return 0;
@@ -408,6 +418,9 @@ int SinFunction::calculate(MathStructure &mstruct, const MathStructure &vargs, c
 			} else if(nr.equals(Number(1, 6, 0)) || nr.equals(Number(5, 6, 0))) {
 				if(b_even) mstruct.set(1, 2, 0);
 				else mstruct.set(-1, 2, 0);
+				b = true;
+			} else if(eo.approximation == APPROXIMATION_EXACT && nr.isRational() && nr.denominator() == 8) {
+				set_pi_eighth_component(mstruct, nr > Number(1, 4) && nr < Number(3, 4), !b_even);
 				b = true;
 			} else if(eo.approximation == APPROXIMATION_EXACT && (nr.equals(Number(1, 12, 0)) || nr.equals(Number(11, 12, 0)))) {
 				mstruct.set(6, 1, 0);
@@ -636,6 +649,9 @@ int CosFunction::calculate(MathStructure &mstruct, const MathStructure &vargs, c
 				mstruct.raise_nocopy(new MathStructure(1, 2, 0));
 				mstruct.divide_nocopy(new MathStructure(2, 1, 0));
 				if(b_even) mstruct.negate();
+				b = true;
+			} else if(eo.approximation == APPROXIMATION_EXACT && nr.isRational() && nr.denominator() == 8) {
+				set_pi_eighth_component(mstruct, nr < Number(1, 4) || nr > Number(3, 4), b_even == (nr > nr_half));
 				b = true;
 			} else if(eo.approximation == APPROXIMATION_EXACT && nr.equals(Number(1, 12, 0))) {
 				mstruct.set(6, 1, 0);

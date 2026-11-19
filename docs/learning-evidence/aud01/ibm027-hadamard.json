@@ -1,0 +1,74 @@
+{
+  "worker_sha256": "4e08273a75159b2d28771eadf1cdaf3755713218bf31dcffedd504570421b169",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 97,
+  "unstable_copies": [
+    "IBM027-64df8610-M023"
+  ],
+  "changed": [
+    {
+      "id": "IBM027-64df8610-M042",
+      "label": "EXACT RESULT",
+      "display": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))] = qstatecall('ψ', 0.125π) · qstatecall('ψ', 0.125π)† − qstatecall('ψ', 0.125 ⋅ qadjacent(5, π)) · qstatecall('ψ', 0.125 ⋅ qadjacent(5, π))†",
+      "copy": "qcompare(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),qsub(qadjacent(qstatecall('ψ',π ∕ 8),qdag(qstatecall('ψ',π ∕ 8))),qadjacent(qstatecall('ψ',qadjacent(5, π) ∕ 8),qdag(qstatecall('ψ',qadjacent(5, π) ∕ 8)))),4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),qsub(qadjacent(qstatecall('ψ',π ∕ 8),qdag(qstatecall('ψ',π ∕ 8))),qadjacent(qstatecall('ψ',qadjacent(5, π) ∕ 8),qdag(qstatecall('ψ',qadjacent(5, π) ∕ 8)))),4)"
+    },
+    {
+      "id": "IBM027-64df8610-M044",
+      "label": "EXACT RESULT",
+      "display": "1.  qstatecall('ψ', 0.125π) = [(0.5 ⋅ √(2 + √(2))); (0.5 ⋅ √(2 − √(2)))]\n\n2.  qstatecall('ψ', 0.625π) = [(−0.5 ⋅ √(2 − √(2))); (0.5 ⋅ √(2 + √(2)))]",
+      "copy": "\\begin{gathered}qcompare(qstatecall('ψ',π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,√(2 − √(2)) ∕ 2]),4)\\\\qcompare(qstatecall('ψ',(5 ∕ 8) ⋅ π),matrix(2,1,[−√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),4)\\end{gathered}",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "\\begin{gathered}qcompare(qstatecall('ψ',π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,√(2 − √(2)) ∕ 2]),4)\\\\qcompare(qstatecall('ψ',(5 ∕ 8) ⋅ π),matrix(2,1,[−√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),4)\\end{gathered}"
+    }
+  ],
+  "controls": [
+    {
+      "id": "cos-1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "sin-1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "cos-5-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "sin-5-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "gui": {
+    "passed": true,
+    "checks": 1111,
+    "calls": 101,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

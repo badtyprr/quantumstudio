@@ -6,8 +6,81 @@
 #include "QuantumBinary.h"
 #include "QuantumIndexed.h"
 #include "Variable.h"
+#include "support.h"
+#ifdef HAVE_FLINT
+#include <flint/flint.h>
+#if __FLINT_RELEASE >= 30000
+#include <flint/fmpq.h>
+#include <flint/qqbar.h>
+#endif
+#endif
 #include <array>
 namespace {
+#if defined(HAVE_FLINT) && __FLINT_RELEASE >= 30000
+// Exact algebraic comparison is a fallback for concrete matrices whose
+// radical entries did not simplify. Bound the degree, height and total work.
+struct AlgebraicValue {
+ qqbar_t value;
+ AlgebraicValue() {qqbar_init(value);}
+ ~AlgebraicValue() {qqbar_clear(value);}
+ AlgebraicValue(const AlgebraicValue &)=delete;
+ AlgebraicValue &operator=(const AlgebraicValue &)=delete;
+};
+bool rationalValue(qqbar_t out,const Number &n) {
+ if(!n.isRational() || n.isApproximate())return false;
+ const mpq_t &q=n.internalRational();
+ if(mpz_sizeinbase(mpq_numref(q),2)>256 || mpz_sizeinbase(mpq_denref(q),2)>256)return false;
+ fmpq_t f;fmpq_init(f);fmpq_set_mpq(f,q);qqbar_set_fmpq(out,f);fmpq_clear(f);return true;
+}
+bool algebraicValue(qqbar_t out,const MathStructure &term,unsigned &remaining) {
+ if(!remaining || CALCULATOR->aborted() || term.isApproximate())return false;
+ --remaining;
+ if(term.isNumber()) {
+  const Number &n=term.number();
+  if(!n.hasImaginaryPart())return rationalValue(out,n);
+  AlgebraicValue imaginary,unit;
+  if(!rationalValue(out,n.realPart()) || !rationalValue(imaginary.value,n.imaginaryPart()))return false;
+  qqbar_i(unit.value);qqbar_mul(imaginary.value,imaginary.value,unit.value);qqbar_add(out,out,imaginary.value);
+  return true;
+ }
+ if(!term.size() || !algebraicValue(out,term[0],remaining))return false;
+ if(term.isPower() && term.size()==2 && term[1].isNumber()) {
+  const Number &power=term[1].number();
+  if(power.isApproximate() || !power.isRational() || power.denominator()>8 ||
+     power.numerator()>16 || power.numerator() < -16 || (qqbar_is_zero(out) && !power.isPositive()))return false;
+  if(qqbar_degree(out)*power.denominator().intValue()>64 || qqbar_height_bits(out)>256)return false;
+  fmpq_t exponent;fmpq_init(exponent);fmpq_set_mpq(exponent,power.internalRational());
+  qqbar_pow_fmpq(out,out,exponent);fmpq_clear(exponent);return true;
+ }
+ if(term.isFunction() && term.size()==1) {
+  const std::string &name=term.function()->referenceName();
+  if(name=="re")qqbar_re(out,out);
+  else if(name=="im")qqbar_im(out,out);
+  else if(name=="conj")qqbar_conj(out,out);
+  else return false;
+  return true;
+ }
+ if(!term.isAddition() && !term.isMultiplication())return false;
+ for(size_t k=1;k<term.size();++k) {
+  AlgebraicValue child;
+  if(!algebraicValue(child.value,term[k],remaining) || !qqbar_binop_within_limits(out,child.value,128,512))return false;
+  if(term.isAddition())qqbar_add(out,out,child.value);else qqbar_mul(out,out,child.value);
+ }
+ return true;
+}
+bool algebraicMatricesEqual(const MathStructure &a,const MathStructure &b,bool &equal) {
+ if(!a.isMatrix() || !b.isMatrix() || a.rows()!=b.rows() || a.columns()!=b.columns())return false;
+ unsigned remaining=2048;
+ for(size_t r=1;r<=a.rows();++r)for(size_t c=1;c<=a.columns();++c) {
+  const MathStructure &left=*a.getElement(r,c),&right=*b.getElement(r,c);
+  if(left.equals(right))continue;
+  AlgebraicValue x,y;
+  if(!algebraicValue(x.value,left,remaining) || !algebraicValue(y.value,right,remaining))return false;
+  if(!qqbar_equal(x.value,y.value)) {equal=false;return true;}
+ }
+ equal=true;return true;
+}
+#endif
 // These descriptors retain symbolic costs (including their argument lists)
 // for Copy and substitution when an asymptotic comparison is undecidable.
 class QuantumCostDescriptor: public MathFunction {
@@ -266,6 +339,16 @@ class QuantumOrderFunction: public MathFunction {
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }
    bool equal=false;
+   // A state family can be defined later. Keep each matrix on its own
+   // side of the comparison and retain evaluated arguments for re-entry.
+   if(kind>=4 && !args[0].equals(args[1]) &&
+      (args[0].containsFunction(CALCULATOR->getFunction("qstatecall")) ||
+       args[1].containsFunction(CALCULATOR->getFunction("qstatecall")) ||
+       args[0].containsFunction(CALCULATOR->getFunction("qstatecalls")) ||
+       args[1].containsFunction(CALCULATOR->getFunction("qstatecalls")))) {
+    if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
    // Preserve products with adjoints until the factors have concrete values.
    // Scalar comparison would rewrite the equality as a difference from zero.
    if(kind>=4 && gramFactor(args[0]) && gramFactor(args[1]) && !args[0].equals(args[1]))return 0;
@@ -294,7 +377,12 @@ class QuantumOrderFunction: public MathFunction {
    if(args[0].isZero() && symbolicGram(args[1],eo) && (kind==1 || kind==2)) {out=kind==2 ? 1 : 0;return 1;}
    if(args[2].number()<4 && (args[0].containsType(STRUCT_VECTOR,true)>0 || args[1].containsType(STRUCT_VECTOR,true)>0))
     return quantumMatrixOrder(out,raw[0],raw[1],args[2].number().intValue(),eo) ? 1 : 0;
-   out=args[0];out.transform(kinds[args[2].number().intValue()],args[1]);out.eval(eo);return 1;
+   out=args[0];out.transform(kinds[kind],args[1]);out.eval(eo);
+#if defined(HAVE_FLINT) && __FLINT_RELEASE >= 30000
+   if(kind>=4 && eo.approximation==APPROXIMATION_EXACT && !out.isNumber() &&
+      algebraicMatricesEqual(args[0],args[1],equal))out=(kind==4)==equal ? 1 : 0;
+#endif
+   return 1;
   }
  }
 };
