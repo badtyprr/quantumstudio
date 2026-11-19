@@ -1,6 +1,6 @@
 # IBM-027 lesson meaning review
 
-Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-hermitian.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
+Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The [per-expression ledger](ibm027-lesson-results.json) records the input, expected reading, actual display, Copy text, session context and evaluation revision. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-hermitian.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
 
 | Rows | Meaning in the lesson | Observed result and evidence |
 | --- | --- | --- |
