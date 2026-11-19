@@ -1,0 +1,48 @@
+{
+  "source_sha256": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+  "original_code_succeeded": [
+    0,
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12
+  ],
+  "prior_contract_accepted": false,
+  "prior_result_errors": [
+    {
+      "kind": "unmeasured_result",
+      "result": 0
+    },
+    {
+      "kind": "unmeasured_result",
+      "result": 1
+    }
+  ],
+  "current_import_errors": {
+    "my-circuit.ll": "QIR_UNMEASURED_OUTPUT:0",
+    "my-circuit.bc": "QIR_UNMEASURED_OUTPUT:0"
+  },
+  "graphs": {
+    "4": "32fb5fbac15f6c0a2a9561c2a930c81c643ee00a77e21a2d44ca58aaeec4fcd9",
+    "6": "f187bf8a957918535076e02de9a77a2c0a58d282ca7ee91dc224e72667a2ce33"
+  },
+  "visual_inspection": "Cell 4 graph displays the initial registry. Cell 6 graph displays the added qir node and incoming edge. The original Bell conversion used Braket to QASM3 to QIR.",
+  "original_qir_executed": false,
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "importer_revision": "60cc19d683f4e86e570e760a46e8d6f1fed9a9aa",
+  "artifacts": {
+    "cleanup-audit/learning-coverage-20261117/qb017-recheck/verify.py": "14ad628d6b67afcec11fc5e576e06b6cfa5fa3effc96ac24a6f75d5118474012",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/source-original.ipynb": "3218c387e39d34097dac521411e18206b4b906adba01a403575b7f3e9f82c9e7",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/executed.ipynb": "35f1503bcfdb3505153aad381c50be4fbbf3070a8417a8b4004aa6a4a18048c3",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/cells.json": "2e833d93abe8e7a17741be32f2c6380e1931f5e0283d7608052e6ec1a07d810b",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/status.json": "5726e158ea79dd0c6023c0907486260dc4891ad1eaae0d5c76d812dcec0a1e75",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/qir-evidence.json": "a3a6a1eaefe7ee0fafcc6277e8ad11b7185350aeac751302902e86e9642b92d5",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/original-cell-4.png": "32fb5fbac15f6c0a2a9561c2a930c81c643ee00a77e21a2d44ca58aaeec4fcd9",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/original-cell-6.png": "f187bf8a957918535076e02de9a77a2c0a58d282ca7ee91dc224e72667a2ce33",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/my-circuit.bc": "a9ed0250aabb97e5634b62f955269a336697902813ed7ecc6c529d886ff23c31",
+    "cleanup-audit/notebook-lane-20261104/qb017-runtime/final-02/my-circuit.ll": "df756980332ff4b989802a1d63f4350e3c6102aa7b09716e3da6ce07be8d4963"
+  }
+}
