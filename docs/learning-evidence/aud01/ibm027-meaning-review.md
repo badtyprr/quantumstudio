@@ -1,6 +1,6 @@
 # IBM-027 lesson meaning review
 
-Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The [per-expression ledger](ibm027-lesson-results.json) records the input, expected reading, actual display, Copy text, session context and evaluation revision. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-hermitian.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
+Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The [per-expression ledger](ibm027-lesson-results.json) records the input, expected reading, actual display, Copy text, session context and evaluation revision. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-review-fixes.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
 
 | Rows | Meaning in the lesson | Observed result and evidence |
 | --- | --- | --- |
@@ -36,10 +36,6 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 088, 089 | The complex exponential is one at both ends of a full turn | Both explicit equalities return true. |
 | 093, 094, 096 | Values near the cut and the example distance | Returns 1, 0 and the exact rational 1/1000. |
 
-Review of PR #530 identified three remaining calculation issues on c51b3d19.
-
-- M004 accepts a three-dimensional identity with the original grouping. Parenthesizing the adjoint product or the unsized identity changes the result to false.
-- M020, M024 and M026 retain the literal labels λ_j and ψ_j when the learner assigns j = 2. M023 handles this substitution in the full spectral identity.
-- M043 evaluates correctly if the real angle state family is loaded first. Substituting θ = π/8, copying the result and then loading the same family leaves θ unbound on the left.
+The [review regressions](ibm027-review-fixes.json) cover the grouped unitarity identity, individual indexed eigenpairs and the parameterized angle state. M004 accepts a three-dimensional unitary with either operand parenthesized and rejects a shear. M020, M024 and M026 resolve the selected subscript after copying, including when the eigenpair values are supplied first. In M043 a saved substitution of θ = π/8 retains the selected angle when the state family is loaded later.
 
 Integration and release verification remain pending.

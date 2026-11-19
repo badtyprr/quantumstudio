@@ -1,8 +1,8 @@
 {
-  "revision": "c51b3d1920c9c05bcfb3be5c7d18439b0ce4b893",
+  "revision": "6b635226d97d9ae616913002f3d8ad036ea43329",
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-problem.ipynb",
   "source_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
-  "windows_fixture": "ibm027-hermitian.json",
+  "windows_fixture": "ibm027-review-fixes.json",
   "meaning_review": "ibm027-meaning-review.md",
   "pull_request": "https://github.com/badtyprr/quantumstudio/pull/530",
   "markdown_cells": 1,
@@ -61,9 +61,9 @@
       "actual_display": "U · U† = qidentitylike(qadjacent('U', qdag('U'))) = U† · U",
       "actual_copy": "qequalchain(vector(qadjacent('U',qdag('U')),qidentitylike(qadjacent('U',qdag('U'))),qadjacent(qdag('U'),'U')))",
       "evidence": [
-        "ibm027-unitarity.json"
-      ],
-      "open_issue": "Redundant parentheses around either operand restore a two-dimensional identity."
+        "ibm027-unitarity.json",
+        "ibm027-review-fixes.json"
+      ]
     },
     {
       "id": "IBM027-64df8610-M005",
@@ -304,9 +304,9 @@
       "actual_display": "M |ψ_j⟩ = \"λ_j\" |ψ_j⟩",
       "actual_copy": "(qadjacent('M',qnamedket(\"ψ_j\")))==(qadjacent(\"λ_j\",qnamedket(\"ψ_j\")))",
       "evidence": [
-        "ibm027-spectral-index.json"
-      ],
-      "open_issue": "Assigning j leaves the subscript literal."
+        "ibm027-spectral-index.json",
+        "ibm027-review-fixes.json"
+      ]
     },
     {
       "id": "IBM027-64df8610-M021",
@@ -361,9 +361,9 @@
       "actual_display": "\"λ_j\"",
       "actual_copy": "\"λ_j\"",
       "evidence": [
-        "ibm027-hermitian.json"
-      ],
-      "open_issue": "Assigning j leaves the subscript literal."
+        "ibm027-hermitian.json",
+        "ibm027-review-fixes.json"
+      ]
     },
     {
       "id": "IBM027-64df8610-M025",
@@ -390,9 +390,9 @@
       "actual_display": "|ψ_j⟩",
       "actual_copy": "qketstate(\"ψ_j\")",
       "evidence": [
-        "ibm027-hermitian.json"
-      ],
-      "open_issue": "Assigning j leaves the subscript literal."
+        "ibm027-hermitian.json",
+        "ibm027-review-fixes.json"
+      ]
     },
     {
       "id": "IBM027-64df8610-M027",
@@ -629,9 +629,9 @@
       "actual_display": "|ψ_θ⟩ = [cos('θ' rad); sin('θ' rad)]",
       "actual_copy": "qcompare(qketstate(\"ψ_θ\"),matrix(2,1,[cos('θ' rad),sin('θ' rad)]),4)",
       "evidence": [
-        "ibm027-hadamard.json"
-      ],
-      "open_issue": "Binding theta before loading the state family loses the selected angle in the copied left operand."
+        "ibm027-hadamard.json",
+        "ibm027-review-fixes.json"
+      ]
     },
     {
       "id": "IBM027-64df8610-M044",
