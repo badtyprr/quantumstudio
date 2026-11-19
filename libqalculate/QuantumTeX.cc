@@ -1284,6 +1284,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   first=input.find_first_not_of(" \t\r\n",first+5);
   if(first==std::string::npos)return "";
  }
+ // Session declarations surround the translated expression. Keep the lesson's
+ // math delimiters and punctuation available to the ordinary TeX reader.
+ std::vector<std::string> contexts;
+ while(input.compare(first,14,"matrixcontext(")==0) {
+  size_t end=input.find("):",first+14);
+  if(end==std::string::npos || contexts.size()>=32)throw std::runtime_error("Invalid matrix declaration context.");
+  contexts.push_back(input.substr(first,end-first));
+  first=input.find_first_not_of(" \t\r\n",end+2);
+  if(first==std::string::npos)throw std::runtime_error("Expected an expression after the matrix declaration.");
+ }
  std::string s=input.substr(first,last-first+1);
  bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
@@ -1335,5 +1345,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(!matched)normalized+=s[k++];
  }
  if(splitDimensions)normalized+="))";
- return TeXReader(normalized).run(lines);
+ std::string result=TeXReader(normalized).run(lines);
+ for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
+ return result;
 }

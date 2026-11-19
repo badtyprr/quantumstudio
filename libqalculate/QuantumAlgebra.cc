@@ -222,10 +222,12 @@ bool annotateMatrixSymbol(MathStructure &value,const MathStructure &symbol,const
    Argument *argument=value.function()->getArgumentDefinition(i+1);
    if(argument && argument->type()==ARGUMENT_TYPE_TEXT)continue;
    const std::string &name=value.function()->referenceName();
+   // Keep the replacement target a name so the domain validates its new value.
+   if(name=="qreplace" && i==1)continue;
    // Explicit domains and single-letter ket labels retain their meaning.
    if((name=="matrixparam" || name=="operatorparam" || name=="qunitaryidentity" || name=="qketstate") && i==0)continue;
    // An inner declaration owns its body, but not its dimension expressions.
-   if((name=="matrixassume" || name=="operatorassume") && value.size()==4 && i==0 && value[1].isSymbolic() && value[1].symbol()==declaredName)continue;
+   if((name=="matrixassume" || name=="operatorassume" || name=="qgatematrixassume" || name=="qgateoperatorassume") && value.size()==4 && i==0 && value[1].isSymbolic() && value[1].symbol()==declaredName)continue;
   }
   if(!annotateMatrixSymbol(value[i],symbol,declaration,declaredName,depth+1))return false;
  }
@@ -233,9 +235,9 @@ bool annotateMatrixSymbol(MathStructure &value,const MathStructure &symbol,const
  return true;
 }
 class QuantumMatrixAssumption: public MathFunction {
- bool operatorProperty;
+ bool operatorProperty,gateName;
  public:
- explicit QuantumMatrixAssumption(bool property=false):MathFunction(property ? "operatorassume" : "matrixassume",4),operatorProperty(property) {
+ explicit QuantumMatrixAssumption(bool property=false,bool gate=false):MathFunction(std::string(gate ? "qgate" : "")+(property ? "operatorassume" : "matrixassume"),4),operatorProperty(property),gateName(gate) {
   setArgumentDefinition(2,new TextArgument());
   if(property)setArgumentDefinition(4,new TextArgument());
  }
@@ -246,7 +248,7 @@ class QuantumMatrixAssumption: public MathFunction {
   bool valid=!name.empty() && name.size()<=128 && !(name[0]>='0' && name[0]<='9');
   for(unsigned char c:name)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
   if(!valid) {CALCULATOR->error(true,"A matrix declaration requires a single symbol name.",NULL);return 0;}
-  MathStructure symbol=CALCULATOR->calculate("quantum: "+name,eo);
+  MathStructure symbol=gateName ? MathStructure(name,true) : CALCULATOR->calculate("quantum: "+name,eo);
   if(!symbol.isUnknown()) {CALCULATOR->error(true,"Matrix names cannot override gates, constants, or existing values.",NULL);return 0;}
   // Parsing must preserve the declared name: for example M1 simplifies to M.
   if((symbol.isSymbolic() && symbol.symbol()!=name) || (symbol.isVariable() && symbol.variable()->referenceName()!=name)) {
@@ -1136,6 +1138,8 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumMatrixParameter());
  calculator.addFunction(new QuantumMatrixAssumption());
  calculator.addFunction(new QuantumMatrixAssumption(true));
+ calculator.addFunction(new QuantumMatrixAssumption(false,true));
+ calculator.addFunction(new QuantumMatrixAssumption(true,true));
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
  calculator.addFunction(new QuantumAlgebraFunction("qmatrixdimensions",2));

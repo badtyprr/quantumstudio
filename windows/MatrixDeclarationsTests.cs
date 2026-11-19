@@ -14,11 +14,11 @@ class MatrixDeclarationsTests {
    var copy=MatrixDeclarations.Copy(declarations);declarations[0].Rows="3";declarations[1]=null;
    Require(copy[0].Rows=="n" && copy[1].Name=="B","History shares mutable declarations");
    Require(MatrixDeclarations.Copy(null).Length==0,"Legacy declarations not empty");
-   Require(MatrixDeclarations.Apply("Tr(A)",new[]{M("A","n","n")})=="matrixassume((Tr(A)),\"A\",(n),(n))","Unexpected request framing");
+   Require(MatrixDeclarations.Apply("Tr(A)",new[]{M("A","n","n")})=="matrixcontext(\"A\",(n),(n),\"general\"):Tr(A)","Unexpected request framing");
    Require(MatrixDeclarations.Apply("1",new MatrixDeclaration[0])=="1","Empty declarations change expression");
    foreach(string property in new[]{"Unitary","Hermitian","Projector"}) {
     var declared=M("A","n","n");declared.Property=property;
-    Require(MatrixDeclarations.Apply("A",new[]{declared})=="operatorassume((A),\"A\",(n),\""+property.ToLowerInvariant()+"\")","Operator request lost its property");
+    Require(MatrixDeclarations.Apply("A",new[]{declared})=="matrixcontext(\"A\",(n),(n),\""+property.ToLowerInvariant()+"\"):A","Operator request lost its property");
     var preserved=MatrixDeclarations.Copy(new[]{declared});declared.Property="General";
     Require(preserved[0].Property==property,"History shares mutable operator properties");
     declared.Property=property;declared.Columns="2";Reject(delegate {MatrixDeclarations.Validate(new[]{declared});});

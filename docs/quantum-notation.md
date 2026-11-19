@@ -1200,7 +1200,7 @@ In quantum notation, `matrix(1,1,[5])` retains its 1×1 matrix shape, including 
 
 `matrixparam(A,rows,columns)` declares a single unknown symbol as a matrix with the stated dimensions. The declaration remains in canonical copy output until both the matrix and its dimensions are supplied. Dimensions must be positive integers; each known axis is validated even while the other remains symbolic. Substituting a scalar or a matrix with a different shape is rejected. For example, `replace(matrixparam(A,2,2),A,X)` evaluates to the Pauli-X matrix. Symbolic dimensions can be supplied before or after the matrix value.
 
-This expression-level domain is the foundation for dimension-aware symbolic identities. A GUI declaration editor remains unfinished; the supported trace rules are described below.
+In the Windows matrix declarations editor, give the matrix a name, row count, column count and property. For example, declare H with both dimensions N and property Hermitian before entering a formula about an arbitrary Hermitian H. The calculation history and saved session retain the declaration. Clear it when returning to formulas about the Hadamard gate.
 
 Declared dimensions also reject provably incompatible additions, subtractions, explicit `*` products, and traces before matrix values are supplied. Shapes propagate through compatible sums, products, scalar scaling, transpose, and adjoint. For example, `Tr(matrixparam(A,2,3))` rejects immediately; a `2×3` parameter multiplied by a `3×2` parameter remains symbolic. Different unknown dimensions are not presumed unequal, so unresolved shape constraints defer until more values are supplied. Trace rewriting additionally requires established matching square shapes, as described below.
 

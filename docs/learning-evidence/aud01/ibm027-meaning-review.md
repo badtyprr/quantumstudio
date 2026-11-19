@@ -1,6 +1,6 @@
 # IBM-027 lesson meaning review
 
-Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-dimensions.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
+Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-hermitian.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
 
 | Rows | Meaning in the lesson | Observed result and evidence |
 | --- | --- | --- |
@@ -8,7 +8,7 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 002 | M commutes with its adjoint | Preserved both products. [Six matrix controls](ibm027-normality.json) distinguish normal from nonnormal matrices. |
 | 003, 054, 068, 077, 081 | Unitary operator U | Preserved as U. Unitarity is a premise in the prose. |
 | 004 | Both products of a unitary with its adjoint equal the identity of the same dimension | The unsized identity now follows the adjoint product. [Unitarity controls](ibm027-unitarity.json) accept two-, three- and four-dimensional unitary matrices and reject a shear and both rectangular isometries tested. |
-| 005, 006, 007 | Arbitrary Hermitian H and the equality of both products with its square | **Open.** H becomes the Hadamard matrix. M006 returns true for that one gate. Declaring H Hermitian currently rejects the gate name. |
+| 005, 006, 007 | Arbitrary Hermitian H and the equality of both products with its square | A session declaration binds H as an N-by-N Hermitian matrix in these three expressions. The equality holds for distinct two- and three-dimensional examples. Substituting a complex symmetric matrix with the wrong adjoint raises a property error. [Hermitian controls](ibm027-hermitian.json). |
 | 008, 009, 010 | Nonnormal example and its two different products | The input gives the upper triangular matrix with a single 1. Both explicit product identities return true. Their right-hand projectors select different basis vectors. |
 | 012 | Matrix dimensions, N rows by N columns | Select Matrix dimensions. Both counts remain N, and assigning N updates both. [Ordered dimension checks](ibm027-dimensions.json). |
 | 013, 046 | Dimension N | Preserved as N. |
@@ -36,4 +36,4 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 088, 089 | The complex exponential is one at both ends of a full turn | Both explicit equalities return true. |
 | 093, 094, 096 | Values near the cut and the example distance | Returns 1, 0 and the exact rational 1/1000. |
 
-The remaining open finding covers M005–M007. The lesson remains open for corrections, review, and release verification.
+All findings from this lesson review have corresponding verified corrections. Upstream review and release verification remain pending.

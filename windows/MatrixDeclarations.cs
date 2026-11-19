@@ -58,8 +58,7 @@ static class MatrixDeclarations {
   string result=expression;
   foreach(var declaration in declarations) {
    string property=PropertyOf(declaration);
-   result=property=="General" ? "matrixassume(("+result+"),\""+declaration.Name+"\",("+declaration.Rows+"),("+declaration.Columns+"))" :
-    "operatorassume(("+result+"),\""+declaration.Name+"\",("+declaration.Rows+"),\""+property.ToLowerInvariant()+"\")";
+   result="matrixcontext(\""+declaration.Name+"\",("+declaration.Rows+"),("+declaration.Columns+"),\""+property.ToLowerInvariant()+"\"):"+result;
   }
   if(Utf8.GetByteCount(result)>32000)throw new InvalidDataException("Expression and matrix declarations exceed 32 KB.");
   return result;
