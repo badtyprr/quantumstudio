@@ -1,0 +1,90 @@
+{
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "worker_sha256": "ada77b17cb6d85f44a7ba1342bfe622e59ffffe24d858962468a88cbc9fe438f",
+  "section": "Cell 0, Classical difficulty",
+  "source_inputs": {
+    "R00-7763-M001": "2^{n-1} + 1",
+    "R00-7763-M003": "2^{n-1}",
+    "R00-7763-M014": "2^{-k + 1}",
+    "R00-7763-M016": "99.9"
+  },
+  "mode": "Quantum replace bindings for source exponents; ordinary calculator binomial for distinct queries.",
+  "rows": [
+    {
+      "n": 1,
+      "deterministic_worst": 2,
+      "distinct_error_by_k": [
+        "1",
+        "0"
+      ]
+    },
+    {
+      "n": 2,
+      "deterministic_worst": 3,
+      "distinct_error_by_k": [
+        "1",
+        "1/3",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "n": 3,
+      "deterministic_worst": 5,
+      "distinct_error_by_k": [
+        "1",
+        "3/7",
+        "1/7",
+        "1/35",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "n": 4,
+      "deterministic_worst": 9,
+      "distinct_error_by_k": [
+        "1",
+        "7/15",
+        "1/5",
+        "1/13",
+        "1/39",
+        "1/143",
+        "1/715",
+        "1/6435",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "independent_error_by_k": {
+    "1": "1",
+    "2": "1/2",
+    "3": "1/4",
+    "4": "1/8",
+    "5": "1/16",
+    "6": "1/32",
+    "7": "1/64",
+    "8": "1/128",
+    "9": "1/256",
+    "10": "1/512",
+    "11": "1/1024",
+    "12": "1/2048",
+    "13": "1/4096",
+    "14": "1/8192",
+    "15": "1/16384",
+    "16": "1/32768"
+  },
+  "first_k": 1,
+  "independent_success_at_11": "1023/1024",
+  "source_success_threshold": "999/1000",
+  "interpretation": "The prose mentions different inputs. The displayed error expression is exact for independent draws with replacement. Distinct uniform inputs have a hypergeometric error probability, at most the displayed value. The deterministic threshold uses distinct inputs."
+}
