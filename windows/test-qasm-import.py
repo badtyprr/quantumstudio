@@ -190,7 +190,22 @@ for secret in range(8):
     h q;'''
     verify(source,'|'+format(secret,'03b')+'>@|->')
 
+# Hardware addresses retain their indices even when the input uses only a
+# sparse subset. Virtual declarations follow the reserved physical slots.
+for classical in (False, True):
+    physical = adapter.convert(header + 'qubit __quantum_physical_0; cx $3, __quantum_physical_0; x $0;', classical=classical)
+    assert physical['Qubits'] == 5
+    assert [step['Wires'] for step in physical['Steps']] == [[3, 4], [0]]
+    assert adapter.convert(header + 'x $24;', classical=classical)['Qubits'] == 25
+
+measured = adapter.convert(header + 'bit b; x $2; b = measure $2; if (b) reset $1;', classical=True)
+assert measured['Qubits'] == 3
+assert measured['Steps'][1]['Wires'] == [2]
+assert measured['Steps'][2]['WhenTrue'] == [{'Kind': 'Reset', 'Wires': [1]}]
+phase_sources.append((header + 'cx $3, $0;', False))
+
 invalid = [
+    header+'x $25;', header+'qubit q; x $24;',
     *[header+'qubit[3] q; x q['+selection+'];' for selection in ('0:0:2','0:3','-1:1','0:1.5')],
     header+'qubit[26] q; h q[0];', header+'qubit q; for int i in [0:512] {x q;}',
     header+'qubit[2] q; bit b; b=measure q[0]; if(b) x q[1];',
