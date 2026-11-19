@@ -1,0 +1,2570 @@
+{
+  "trailing_punctuation_controls": [
+    {
+      "parent": "M01",
+      "removed": ",",
+      "input": "quantum:\nH = \\begin{pmatrix}\n\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix}",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "M03",
+      "removed": ",",
+      "input": "quantum:\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qequalchain((qadjacent([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], qketstate('a')), [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))], [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))]))",
+        "display_text": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))] · qketstate('a') = [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))] = [(1 ∕ √(2)); ((−1)^'a' ∕ √(2))]",
+        "copy_text": "qequalchain(vector(qadjacent(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),qketstate('a')),matrix(2,1,[1 ∕ √(2),(−1)^'a' ∕ √(2)]),matrix(2,1,[1 ∕ √(2),(−1)^'a' ∕ √(2)])))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M027",
+      "removed": ".",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} \\vert x \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qsqrt(qpower(2, n)))  qsumset(qketstate(\"qboundindex_0\"), qpower('Σ', n), \"qboundindex_0\")])",
+        "display_text": "[1; −1] / √(2) ⊗ (1 / √(2^n)) (∑_{k ∈ 'Σ'^n} (|k⟩))",
+        "copy_text": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qsqrt(qpower(2, n)),qsumset(qketstate(\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_0\")))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M028",
+      "removed": ".",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} (-1)^{f(x)} \\vert x \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qsqrt(qpower(2, n)))  qsumset(qadjacent(qpower(−1, 'f' ⋅ \"qboundindex_0\"), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\")])",
+        "display_text": "[1; −1] / √(2) ⊗ (1 / √(2^n)) (∑_{k ∈ 'Σ'^n} ((−1)^(f · k) |k⟩))",
+        "copy_text": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qsqrt(qpower(2, n)),qsumset(qadjacent(qpower(−1,'f' ⋅ \"qboundindex_0\"),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\")))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M029",
+      "removed": ".",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{f(x) + x \\cdot y} \\vert y \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qadd('f' ⋅ \"qboundindex_1\", qmul(\"qboundindex_1\", \"qboundindex_0\"))), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+        "display_text": "[1; −1] / √(2) ⊗ (1 / 2^n) (∑_{k ∈ 'Σ'^n} (∑_{j ∈ 'Σ'^n} ((−1)^(f · k + k · j) |j⟩)))",
+        "copy_text": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qadd('f' ⋅ \"qboundindex_1\",qmul(\"qboundindex_1\",\"qboundindex_0\"))),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M033",
+      "removed": ".",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{s\\cdot x + x \\cdot y} \\vert y \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qadd(qmul('s', \"qboundindex_1\"), qmul(\"qboundindex_1\", \"qboundindex_0\"))), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+        "display_text": "[1; −1] / √(2) ⊗ (1 / 2^n) (∑_{k ∈ 'Σ'^n} (∑_{j ∈ 'Σ'^n} ((−1)^(s · k + k · j) |j⟩)))",
+        "copy_text": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qadd(qmul('s',\"qboundindex_1\"),qmul(\"qboundindex_1\",\"qboundindex_0\"))),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M037",
+      "removed": ".",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\cdot x) \\oplus (y \\cdot x)} \\vert y \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qoplus(qmul('s', \"qboundindex_1\"), qmul(\"qboundindex_0\", \"qboundindex_1\"))), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+        "display_text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qoplus(qmul('s', \"qboundindex_1\"), qmul(\"qboundindex_0\", \"qboundindex_1\"))), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+        "copy_text": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qoplus(qmul('s',\"qboundindex_1\"),qmul(\"qboundindex_0\",\"qboundindex_1\"))),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M039",
+      "removed": ",",
+      "input": "quantum:\n(a c) \\oplus (b c) = (a \\oplus b) c",
+      "exit": 2,
+      "stderr": "Scalar XOR requires nonnegative integer operands."
+    },
+    {
+      "parent": "R13-0-M041",
+      "removed": ".",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+        "display_text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")])",
+        "copy_text": "qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qmul(qoplus('s',\"qboundindex_0\"),\"qboundindex_1\")),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\")))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "parent": "R13-0-M066",
+      "removed": ",",
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle\n= \\vert - \\rangle \\otimes \\vert s \\rangle",
+      "exit": 0,
+      "output": {
+        "text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")]) = qtensor(matrix(2, 1, [1  −1]) ∕ √(2), qketstate('s'))",
+        "display_text": "qtensorchain(matrix(2, 1, [1  −1]) ∕ √(2), [(1 ∕ qpower(2, n))  qsumset(qsumset(qadjacent(qpower(−1, qmul(qoplus('s', \"qboundindex_0\"), \"qboundindex_1\")), qketstate(\"qboundindex_0\")), qpower('Σ', n), \"qboundindex_0\"), qpower('Σ', n), \"qboundindex_1\")]) = qtensor(matrix(2, 1, [1  −1]) ∕ √(2), qketstate('s'))",
+        "copy_text": "(qtensorchain((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),vector(1 ∕ qpower(2, n),qsumset(qsumset(qadjacent(qpower(−1,qmul(qoplus('s',\"qboundindex_0\"),\"qboundindex_1\")),qketstate(\"qboundindex_0\")),qpower('Σ',n),\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_1\"))))==(qtensor((1 ∕ √(2))*(matrix(2,1,vector(1,−1))),qketstate('s')))",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    }
+  ],
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+  "mode": "Quantum, no authored bindings; only outer math delimiters removed",
+  "scope": "Exit zero records returned output. Correctness requires checking each expression in its lesson context.",
+  "exit_counts": {
+    "2": 46,
+    "0": 122
+  },
+  "records": [
+    {
+      "id": "R00-0-M001",
+      "cell": 0,
+      "input": "quantum:f:\\Sigma^n \\rightarrow \\Sigma",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\rightarrow at byte 23"
+    },
+    {
+      "id": "R00-0-M002",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M003",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M004",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M005",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M006",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M007",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M008",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M009",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M010",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M011",
+      "cell": 0,
+      "input": "quantum:f:\\Sigma^n \\rightarrow \\Sigma",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\rightarrow at byte 23"
+    },
+    {
+      "id": "R00-0-M012",
+      "cell": 0,
+      "input": "quantum:f:\\Sigma^2\\rightarrow\\Sigma",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\rightarrow at byte 22"
+    },
+    {
+      "id": "R00-0-M013",
+      "cell": 0,
+      "input": "quantum:\n\\begin{aligned}\nf(00) & = 0 \\\\\nf(01) & = 0 \\\\\nf(10) & = 0 \\\\\nf(11) & = 1\n\\end{aligned}\n",
+      "exit": 0,
+      "output": {
+        "text": "[1  ('f' = 0)  ('f' = 0)  ('f' = 0.0909090909090909090909090909091)]",
+        "display_text": "1.  1\n\n2.  f = 0\n\n3.  f = 0\n\n4.  f = 0.0909090909090909090909090909091",
+        "copy_text": "\\begin{gathered}1\\\\('f')==(0)\\\\('f')==(0)\\\\('f')==(1 ∕ 11)\\end{gathered}",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M014",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M015",
+      "cell": 0,
+      "input": "quantum:f:\\{0,1\\}^n\\rightarrow\\{0,1\\}",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\rightarrow at byte 23"
+    },
+    {
+      "id": "R00-0-M016",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M017",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M018",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M019",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M020",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M021",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M022",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M023",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M024",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-0-M025",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M01",
+      "cell": 0,
+      "input": "quantum:\nH = \\begin{pmatrix}\n\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n\\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix},\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 79"
+    },
+    {
+      "id": "M02",
+      "cell": 0,
+      "input": "quantum:\n\\begin{aligned}\nH \\vert 0\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\\\\[3mm]\nH \\vert 1\\rangle & = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle.\n\\end{aligned}\n",
+      "exit": 0,
+      "output": {
+        "text": "[1  1]",
+        "display_text": "1.  1\n\n2.  1",
+        "copy_text": "\\begin{gathered}1\\\\1\\end{gathered}",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M03",
+      "cell": 0,
+      "input": "quantum:\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 128"
+    },
+    {
+      "id": "M04",
+      "cell": 0,
+      "input": "quantum:a\\in\\Sigma",
+      "exit": 0,
+      "output": {
+        "text": "qmember('a', 'Σ')",
+        "display_text": "a ∈ 'Σ'",
+        "copy_text": "qmember('a','Σ')",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M05",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M06",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M07",
+      "cell": 0,
+      "input": "quantum:H\\otimes \\cdots \\otimes H",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 16"
+    },
+    {
+      "id": "M08",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M09",
+      "cell": 0,
+      "input": "quantum:H^{\\otimes n}",
+      "exit": 0,
+      "output": {
+        "text": "qtensorpow([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], n)",
+        "display_text": "[(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))]^{⊗ n}",
+        "copy_text": "qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M10",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M11",
+      "cell": 0,
+      "input": "quantum:\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 532"
+    },
+    {
+      "id": "M12",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M13",
+      "cell": 0,
+      "input": "quantum:x_{n-1}\\cdots x_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 14"
+    },
+    {
+      "id": "M14",
+      "cell": 0,
+      "input": "quantum:y_{n-1}\\cdots y_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 14"
+    },
+    {
+      "id": "M15",
+      "cell": 0,
+      "input": "quantum:n+1",
+      "exit": 0,
+      "output": {
+        "text": "n + 1",
+        "display_text": "n + 1",
+        "copy_text": "n + 1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M16",
+      "cell": 0,
+      "input": "quantum:\n\\bigl( H \\vert 1 \\rangle \\bigr) \\bigl( H^{\\otimes n} \\vert 0 \\cdots 0 \\rangle \\bigr)\n= \\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} \\vert x_{n-1} \\cdots x_0 \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 68"
+    },
+    {
+      "id": "M17",
+      "cell": 0,
+      "input": "quantum:U_f",
+      "exit": 0,
+      "output": {
+        "text": "\"U_f\"",
+        "display_text": "\"U_f\"",
+        "copy_text": "\"U_f\"",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M18",
+      "cell": 0,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n} (-1)^{f(x_{n-1}\\cdots x_0)} \\vert x_{n-1} \\cdots x_0 \\rangle\n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 105"
+    },
+    {
+      "id": "M19",
+      "cell": 0,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n\\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0) + x_{n-1}y_{n-1} + \\cdots + x_0 y_0}\n\\vert y_{n-1} \\cdots y_0 \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 136"
+    },
+    {
+      "id": "M20",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M21",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M22",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M23",
+      "cell": 0,
+      "input": "quantum:\n\\Biggl\\vert\n\\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0)}\n\\Biggr\\vert^2\n= \\begin{cases}\n1 & \\text{if $f$ is constant}\\\\[1mm]\n0 & \\text{if $f$ is balanced}\n\\end{cases}\n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 86"
+    },
+    {
+      "id": "M24",
+      "cell": 0,
+      "input": "quantum:\\vert 0^{\\otimes n} \\rangle",
+      "exit": 2,
+      "stderr": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "M25",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M26",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M27",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M28",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M29",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M30",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M31",
+      "cell": 0,
+      "input": "quantum:f(x_{n-1}\\cdots x_0) = 0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 16"
+    },
+    {
+      "id": "M32",
+      "cell": 0,
+      "input": "quantum:x_{n-1}\\cdots x_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 14"
+    },
+    {
+      "id": "M33",
+      "cell": 0,
+      "input": "quantum:2^n",
+      "exit": 0,
+      "output": {
+        "text": "2^n",
+        "display_text": "2^n",
+        "copy_text": "2^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M34",
+      "cell": 0,
+      "input": "quantum:f(x_{n-1}\\cdots x_0) = 1",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 16"
+    },
+    {
+      "id": "M35",
+      "cell": 0,
+      "input": "quantum:x_{n-1}\\cdots x_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 14"
+    },
+    {
+      "id": "M36",
+      "cell": 0,
+      "input": "quantum:-2^n",
+      "exit": 0,
+      "output": {
+        "text": "−2^n",
+        "display_text": "−2^n",
+        "copy_text": "−2^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M37",
+      "cell": 0,
+      "input": "quantum:2^n",
+      "exit": 0,
+      "output": {
+        "text": "2^n",
+        "display_text": "2^n",
+        "copy_text": "2^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M38",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M39",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M40",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M41",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M42",
+      "cell": 0,
+      "input": "quantum:x_{n-1}\\cdots x_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 14"
+    },
+    {
+      "id": "M43",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M44",
+      "cell": 0,
+      "input": "quantum:+1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M45",
+      "cell": 0,
+      "input": "quantum:-1",
+      "exit": 0,
+      "output": {
+        "text": "−1",
+        "display_text": "−1",
+        "copy_text": "−1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "M46",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M001",
+      "cell": 0,
+      "input": "quantum:2^{n-1} + 1",
+      "exit": 0,
+      "output": {
+        "text": "0.5 ⋅ 2^n + 1",
+        "display_text": "0.5 ⋅ 2^n + 1",
+        "copy_text": "2^n ∕ 2 + 1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M002",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M003",
+      "cell": 0,
+      "input": "quantum:2^{n-1}",
+      "exit": 0,
+      "output": {
+        "text": "0.5 ⋅ 2^n",
+        "display_text": "0.5 ⋅ 2^n",
+        "copy_text": "2^n ∕ 2",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M004",
+      "cell": 0,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M005",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M006",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M007",
+      "cell": 0,
+      "input": "quantum:k",
+      "exit": 0,
+      "output": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M008",
+      "cell": 0,
+      "input": "quantum:x^1,\\ldots,x^k \\in \\Sigma^n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\ldots at byte 11"
+    },
+    {
+      "id": "R00-7763-M009",
+      "cell": 0,
+      "input": "quantum:f(x^1),\\ldots,f(x^k)",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\ldots at byte 14"
+    },
+    {
+      "id": "R00-7763-M010",
+      "cell": 0,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M011",
+      "cell": 0,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M012",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M013",
+      "cell": 0,
+      "input": "quantum:f",
+      "exit": 0,
+      "output": {
+        "text": "'f'",
+        "display_text": "f",
+        "copy_text": "'f'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M014",
+      "cell": 0,
+      "input": "quantum:2^{-k + 1}",
+      "exit": 0,
+      "output": {
+        "text": "2 ⋅ 0.5^'k'",
+        "display_text": "2 · 0.5^k",
+        "copy_text": "2(1 ∕ 2)^'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M015",
+      "cell": 0,
+      "input": "quantum:k = 11",
+      "exit": 0,
+      "output": {
+        "text": "'k' = 11",
+        "display_text": "k = 11",
+        "copy_text": "('k')==(11)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R00-7763-M016",
+      "cell": 0,
+      "input": "quantum:99.9",
+      "exit": 0,
+      "output": {
+        "text": "99.9",
+        "display_text": "99.9",
+        "copy_text": "999 ∕ 10",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M001",
+      "cell": 13,
+      "input": "quantum:x = x_{n-1} \\cdots x_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 19"
+    },
+    {
+      "id": "R13-0-M002",
+      "cell": 13,
+      "input": "quantum:y = y_{n-1}\\cdots y_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 18"
+    },
+    {
+      "id": "R13-0-M003",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M004",
+      "cell": 13,
+      "input": "quantum:\nx \\cdot y = x_{n-1} y_{n-1} \\oplus \\cdots \\oplus x_0 y_0.\n",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 42"
+    },
+    {
+      "id": "R13-0-M005",
+      "cell": 13,
+      "input": "quantum:\nx \\cdot y =\n\\begin{cases}\n1 & x_{{n-1}} y_{n-1} + \\cdots + x_0 y_0 \\text{ is odd}\\\\[0.5mm]\n0 & x_{{n-1}} y_{n-1} + \\cdots + x_0 y_0 \\text{ is even}\n\\end{cases}\n",
+      "exit": 2,
+      "stderr": "Cases text must introduce if or otherwise at byte 82"
+    },
+    {
+      "id": "R13-0-M006",
+      "cell": 13,
+      "input": "quantum:x",
+      "exit": 0,
+      "output": {
+        "text": "x",
+        "display_text": "x",
+        "copy_text": "x",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M007",
+      "cell": 13,
+      "input": "quantum:y",
+      "exit": 0,
+      "output": {
+        "text": "y",
+        "display_text": "y",
+        "copy_text": "y",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M008",
+      "cell": 13,
+      "input": "quantum:x \\cdot y",
+      "exit": 0,
+      "output": {
+        "text": "xy",
+        "display_text": "xy",
+        "copy_text": "xy",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M009",
+      "cell": 13,
+      "input": "quantum:x",
+      "exit": 0,
+      "output": {
+        "text": "x",
+        "display_text": "x",
+        "copy_text": "x",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M010",
+      "cell": 13,
+      "input": "quantum:y",
+      "exit": 0,
+      "output": {
+        "text": "y",
+        "display_text": "y",
+        "copy_text": "y",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M011",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M012",
+      "cell": 13,
+      "input": "quantum:y",
+      "exit": 0,
+      "output": {
+        "text": "y",
+        "display_text": "y",
+        "copy_text": "y",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M013",
+      "cell": 13,
+      "input": "quantum:x",
+      "exit": 0,
+      "output": {
+        "text": "x",
+        "display_text": "x",
+        "copy_text": "x",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M014",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M015",
+      "cell": 13,
+      "input": "quantum:f:\\{0,1\\}^n\\rightarrow\\{0,1\\}",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\rightarrow at byte 23"
+    },
+    {
+      "id": "R13-0-M016",
+      "cell": 13,
+      "input": "quantum:s = s_{n-1} \\cdots s_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 19"
+    },
+    {
+      "id": "R13-0-M017",
+      "cell": 13,
+      "input": "quantum:f(x) = s\\cdot x",
+      "exit": 0,
+      "output": {
+        "text": "'f' = 's' || x = 0",
+        "display_text": "'f' = 's' || x = 0",
+        "copy_text": "'f' = 's' || x = 0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M018",
+      "cell": 13,
+      "input": "quantum:x\\in\\Sigma^n",
+      "exit": 2,
+      "stderr": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "R13-0-M019",
+      "cell": 13,
+      "input": "quantum:s",
+      "exit": 0,
+      "output": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M020",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M021",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M022",
+      "cell": 13,
+      "input": "quantum:\nH^{\\otimes n} \\vert x \\rangle = \\frac{1}{\\sqrt{2^n}} \\sum_{y\\in\\Sigma^n} (-1)^{x\\cdot y} \\vert y\\rangle\n",
+      "exit": 2,
+      "stderr": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "R13-0-M023",
+      "cell": 13,
+      "input": "quantum:(-1)^k",
+      "exit": 0,
+      "output": {
+        "text": "(−1)^'k'",
+        "display_text": "(−1)^k",
+        "copy_text": "(−1)^'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M024",
+      "cell": 13,
+      "input": "quantum:k",
+      "exit": 0,
+      "output": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M025",
+      "cell": 13,
+      "input": "quantum:k",
+      "exit": 0,
+      "output": {
+        "text": "'k'",
+        "display_text": "k",
+        "copy_text": "'k'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M026",
+      "cell": 13,
+      "input": "quantum:n+1",
+      "exit": 0,
+      "output": {
+        "text": "n + 1",
+        "display_text": "n + 1",
+        "copy_text": "n + 1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M027",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} \\vert x \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 52"
+    },
+    {
+      "id": "R13-0-M028",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{\\sqrt{2^n}} \\sum_{x \\in \\Sigma^n} (-1)^{f(x)} \\vert x \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 64"
+    },
+    {
+      "id": "R13-0-M029",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{f(x) + x \\cdot y} \\vert y \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 86"
+    },
+    {
+      "id": "R13-0-M030",
+      "cell": 13,
+      "input": "quantum:-1",
+      "exit": 0,
+      "output": {
+        "text": "−1",
+        "display_text": "−1",
+        "copy_text": "−1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M031",
+      "cell": 13,
+      "input": "quantum:f(x) = s\\cdot x",
+      "exit": 0,
+      "output": {
+        "text": "'f' = 's' || x = 0",
+        "display_text": "'f' = 's' || x = 0",
+        "copy_text": "'f' = 's' || x = 0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M032",
+      "cell": 13,
+      "input": "quantum:s = s_{n-1} \\cdots s_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 19"
+    },
+    {
+      "id": "R13-0-M033",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{s\\cdot x + x \\cdot y} \\vert y \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 86"
+    },
+    {
+      "id": "R13-0-M034",
+      "cell": 13,
+      "input": "quantum:s\\cdot x",
+      "exit": 0,
+      "output": {
+        "text": "'s'x",
+        "display_text": "s · x",
+        "copy_text": "'s'x",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M035",
+      "cell": 13,
+      "input": "quantum:x\\cdot y",
+      "exit": 0,
+      "output": {
+        "text": "xy",
+        "display_text": "xy",
+        "copy_text": "xy",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M036",
+      "cell": 13,
+      "input": "quantum:-1",
+      "exit": 0,
+      "output": {
+        "text": "−1",
+        "display_text": "−1",
+        "copy_text": "−1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M037",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\cdot x) \\oplus (y \\cdot x)} \\vert y \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 90"
+    },
+    {
+      "id": "R13-0-M038",
+      "cell": 13,
+      "input": "quantum:\n(s\\cdot x) \\oplus (y \\cdot x) = (s \\oplus y) \\cdot x\n",
+      "exit": 2,
+      "stderr": "Scalar XOR requires nonnegative integer operands."
+    },
+    {
+      "id": "R13-0-M039",
+      "cell": 13,
+      "input": "quantum:\n(a c) \\oplus (b c) = (a \\oplus b) c,\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 26"
+    },
+    {
+      "id": "R13-0-M040",
+      "cell": 13,
+      "input": "quantum:\n\\begin{aligned}\n(s\\cdot x) \\oplus (y \\cdot x)\n& = (s_{n-1} x_{n-1}) \\oplus \\cdots \\oplus (s_{0} x_{0}) \\oplus\n(y_{n-1} x_{n-1})  \\oplus \\cdots \\oplus (y_{0} x_{0}) \\\\\n& = (s_{n-1} \\oplus y_{n-1}) x_{n-1}  \\oplus \\cdots \\oplus (s_{0} \\oplus y_{0}) x_{0} \\\\\n& = (s \\oplus y) \\cdot x\n\\end{aligned}\n",
+      "exit": 2,
+      "stderr": "Scalar XOR requires nonnegative integer operands."
+    },
+    {
+      "id": "R13-0-M041",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle.\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 83"
+    },
+    {
+      "id": "R13-0-M042",
+      "cell": 13,
+      "input": "quantum:z = z_{n-1}\\cdots z_0",
+      "exit": 2,
+      "stderr": "Unsupported TeX command: \\cdots at byte 18"
+    },
+    {
+      "id": "R13-0-M043",
+      "cell": 13,
+      "input": "quantum:\n\\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} (-1)^{z \\cdot x}\n= \\begin{cases}\n1 & \\text{if $z = 0^n$}\\\\\n0 & \\text{if $z\\neq 0^n$}\n\\end{cases}\n",
+      "exit": 2,
+      "stderr": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "R13-0-M044",
+      "cell": 13,
+      "input": "quantum:0^n",
+      "exit": 0,
+      "output": {
+        "text": "0^n",
+        "display_text": "0^n",
+        "copy_text": "0^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M045",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M046",
+      "cell": 13,
+      "input": "quantum:z = 0^n",
+      "exit": 0,
+      "output": {
+        "text": "z = 0^n",
+        "display_text": "z = 0^n",
+        "copy_text": "(z)==(0^n)",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M047",
+      "cell": 13,
+      "input": "quantum:z\\cdot x = 0",
+      "exit": 0,
+      "output": {
+        "text": "x = 0 || z = 0",
+        "display_text": "x = 0 || z = 0",
+        "copy_text": "x = 0 || z = 0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M048",
+      "cell": 13,
+      "input": "quantum:x\\in\\Sigma^n",
+      "exit": 2,
+      "stderr": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "R13-0-M049",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M050",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M051",
+      "cell": 13,
+      "input": "quantum:2^n",
+      "exit": 0,
+      "output": {
+        "text": "2^n",
+        "display_text": "2^n",
+        "copy_text": "2^n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M052",
+      "cell": 13,
+      "input": "quantum:z",
+      "exit": 0,
+      "output": {
+        "text": "z",
+        "display_text": "z",
+        "copy_text": "z",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M053",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M054",
+      "cell": 13,
+      "input": "quantum:z\\cdot x",
+      "exit": 0,
+      "output": {
+        "text": "xz",
+        "display_text": "xz",
+        "copy_text": "xz",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M055",
+      "cell": 13,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M056",
+      "cell": 13,
+      "input": "quantum:x\\in\\Sigma^n",
+      "exit": 2,
+      "stderr": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "R13-0-M057",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M058",
+      "cell": 13,
+      "input": "quantum:z\\cdot x",
+      "exit": 0,
+      "output": {
+        "text": "xz",
+        "display_text": "xz",
+        "copy_text": "xz",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M059",
+      "cell": 13,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M060",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M061",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M062",
+      "cell": 13,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M063",
+      "cell": 13,
+      "input": "quantum:x",
+      "exit": 0,
+      "output": {
+        "text": "x",
+        "display_text": "x",
+        "copy_text": "x",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M064",
+      "cell": 13,
+      "input": "quantum:z",
+      "exit": 0,
+      "output": {
+        "text": "z",
+        "display_text": "z",
+        "copy_text": "z",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M065",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M066",
+      "cell": 13,
+      "input": "quantum:\n\\vert - \\rangle \\otimes \\frac{1}{2^n}\n\\sum_{x \\in \\Sigma^n} \\sum_{y \\in \\Sigma^n} (-1)^{(s\\oplus y)\\cdot x} \\vert y \\rangle\n= \\vert - \\rangle \\otimes \\vert s \\rangle,\n",
+      "exit": 2,
+      "stderr": "Unexpected notation at byte 99"
+    },
+    {
+      "id": "R13-0-M067",
+      "cell": 13,
+      "input": "quantum:s\\oplus y = 0^n",
+      "exit": 2,
+      "stderr": "Scalar XOR requires nonnegative integer operands."
+    },
+    {
+      "id": "R13-0-M068",
+      "cell": 13,
+      "input": "quantum:y = s",
+      "exit": 0,
+      "output": {
+        "text": "y = 's'",
+        "display_text": "y = s",
+        "copy_text": "(y)==('s')",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M069",
+      "cell": 13,
+      "input": "quantum:s",
+      "exit": 0,
+      "output": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M070",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M071",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M072",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M073",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M074",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M075",
+      "cell": 13,
+      "input": "quantum:0",
+      "exit": 0,
+      "output": {
+        "text": "0",
+        "display_text": "0",
+        "copy_text": "0",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M076",
+      "cell": 13,
+      "input": "quantum:s",
+      "exit": 0,
+      "output": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M077",
+      "cell": 13,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R13-0-M078",
+      "cell": 13,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R14-0-M001",
+      "cell": 14,
+      "input": "quantum:s",
+      "exit": 0,
+      "output": {
+        "text": "'s'",
+        "display_text": "s",
+        "copy_text": "'s'",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R18-0-M001",
+      "cell": 18,
+      "input": "quantum:1",
+      "exit": 0,
+      "output": {
+        "text": "1",
+        "display_text": "1",
+        "copy_text": "1",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    },
+    {
+      "id": "R18-0-M002",
+      "cell": 18,
+      "input": "quantum:n",
+      "exit": 0,
+      "output": {
+        "text": "n",
+        "display_text": "n",
+        "copy_text": "n",
+        "approximate": false,
+        "rows": 0,
+        "columns": 0,
+        "cells": [],
+        "probabilities": [],
+        "bloch": []
+      }
+    }
+  ]
+}
