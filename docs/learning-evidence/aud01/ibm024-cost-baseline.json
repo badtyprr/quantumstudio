@@ -95,6 +95,60 @@
       "sha256": "69d87124345de80b93bd4cb18050a9ee764341ed8447b81f36b3d71f1926364b"
     }
   ],
+  "adder_replay": {
+    "worker_sha256": "be2636ea64d9d9833eb28c5715e100da0a5068ecd7747174b3205593da731241",
+    "mode": "Bit-parallel classical gate evaluation in the exact calculator worker; M054–M060 entered in Quantum mode at each width.",
+    "results": [
+      {
+        "width": 1,
+        "native_xor": false,
+        "verified_input_pairs": 4,
+        "gate_count": 10
+      },
+      {
+        "width": 1,
+        "native_xor": true,
+        "verified_input_pairs": 4,
+        "gate_count": 4
+      },
+      {
+        "width": 2,
+        "native_xor": false,
+        "verified_input_pairs": 16,
+        "gate_count": 31
+      },
+      {
+        "width": 2,
+        "native_xor": true,
+        "verified_input_pairs": 16,
+        "gate_count": 13
+      },
+      {
+        "width": 3,
+        "native_xor": false,
+        "verified_input_pairs": 64,
+        "gate_count": 52
+      },
+      {
+        "width": 3,
+        "native_xor": true,
+        "verified_input_pairs": 64,
+        "gate_count": 22
+      },
+      {
+        "width": 4,
+        "native_xor": false,
+        "verified_input_pairs": 256,
+        "gate_count": 73
+      },
+      {
+        "width": 4,
+        "native_xor": true,
+        "verified_input_pairs": 256,
+        "gate_count": 31
+      }
+    ]
+  },
   "rows": [
     {
       "id": "IBM024-5c5b90e6-M001",
