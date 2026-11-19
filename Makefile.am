@@ -458,3 +458,4 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb036-qb038-local.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-query-algorithms.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-inventory-map.json
 EXTRA_DIST += docs/learning-evidence/aud01/map-ibm020-inventory.py
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm020-native.py
