@@ -11,7 +11,7 @@ there is no general QIR, CUDA-Q, GUI, packaged-release, or hosted-CI acceptance.
 `qir-requirements.lock` (Python 3.12.10, Windows x64). The CLI assumes that
 environment; it does not install or validate the complete dependency profile.
 
-Input is at most 1 MiB, verified LLVM, QIR 1.0 or 1.1, with both dynamic resource
+Input is at most 1 MiB, verified LLVM, QIR 1.0, 1.1, or 2.0, with both dynamic resource
 flags false. Exactly one entry point must be void, argument-free, and have one
 basic block ending in return. It declares 1–10 qubits and 0–64 result slots.
 The block has at most 4,096 instructions, including return. Calls must be direct
