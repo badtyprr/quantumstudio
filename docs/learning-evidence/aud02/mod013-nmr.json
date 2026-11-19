@@ -1,0 +1,87 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "source_sha256": "6a4b981e2fc80e42246a243b9007168c77d24274b49361444ea0f99903bb72b2",
+  "qiskit": "2.6.2",
+  "runtime": "0.50.0",
+  "aer": "0.18.4",
+  "executed": [
+    6,
+    10,
+    12,
+    14,
+    16,
+    21,
+    23,
+    25,
+    31,
+    34,
+    36,
+    41,
+    43,
+    45,
+    50,
+    51
+  ],
+  "method": "Replaced cell 4 service discovery with a three-qubit GenericBackendV2 line (seed 1913); selected the notebook's local Aer mode in cell 6. Seeded Aer sampling, limited threads. All calibrations and noise are synthetic.",
+  "remote_jobs": 0,
+  "rabi": {
+    "points": 41,
+    "shots_each": 1000,
+    "max_probability_error": 0.027491502812526547
+  },
+  "relaxation_us": {
+    "reported_T1": 121.94920922010796,
+    "reported_T2": 151.50388864285117,
+    "fitted_T1": 125.34673309918433,
+    "fitted_ramsey": 155.92571729231372,
+    "fitted_echo": 140.28447266970934,
+    "points": [
+      20,
+      97,
+      24
+    ]
+  },
+  "AX": {
+    "points": 128,
+    "peak_frequencies_hz": [
+      -7.0,
+      -5.0,
+      5.0,
+      7.0
+    ],
+    "analytic_statevector_max_error": 1.1102230246251565e-15,
+    "noisy_rms_signal_error": 0.05795738223383733
+  },
+  "AX2": {
+    "points": 128,
+    "peak_frequencies_hz": [
+      -7.0,
+      -5.0,
+      4.0,
+      6.0,
+      8.0
+    ],
+    "analytic_statevector_max_error": 2.237726045655905e-15,
+    "noisy_rms_signal_error": 0.08561048969520609
+  },
+  "appendix": {
+    "points_per_system": 48,
+    "finite_signals": true,
+    "apodized": false,
+    "AX": {
+      "noiseless_signal_magnitude_range": [
+        1.1102230246251565e-16,
+        2.000000000000016
+      ],
+      "max_analytic_error": 1.9317960385714273e-14
+    },
+    "AX2": {
+      "noiseless_signal_magnitude_range": [
+        6.287336204833764e-16,
+        3.0000000000000364
+      ],
+      "max_analytic_error": 3.755771433604981e-14
+    },
+    "source_discrepancy": "Cell 50 says the noiseless |FID| stays flat. Both noiseless total transverse signals oscillate because spin contributions interfere. Removing decoherence removes irreversible damping, while coherent modulation remains."
+  }
+}
