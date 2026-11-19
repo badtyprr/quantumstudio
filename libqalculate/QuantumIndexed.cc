@@ -225,6 +225,23 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
  bool changed=false;
+ // A word definition can receive both a whole sample and individual bits
+ // before its row count is known. Slot zero denotes the word, and bit b
+ // occupies slot b+1. Both keys stay numeric through Copy and re-entry.
+ if(value.isFunction() && value.function()->referenceName()=="qsamplewordrows" && value.size()==5 &&
+    value[0].isSymbolic() && label.isSymbolic() && value[3].isVector() && value[3].size()%3==0) {
+  const std::string &name=label.symbol();size_t sub=name.find('_');
+  MathStructure sample(name.substr(0,sub),true);Number row,column(-1);
+  if(registerBitIndex(sample,value[0].symbol(),row) && row>=1 &&
+     (sub==std::string::npos || registerBitIndex(label,name.substr(0,sub+1),column))) {
+   column.add(1);
+   if(value[1].isNumber() && row>value[1].number())return false;
+   for(size_t k=0;k<value[3].size();k+=3)if(value[3][k].isNumber() && value[3][k+1].isNumber() &&
+      value[3][k].number()==row && value[3][k+1].number()==column)return false;
+   value[3].addChild(MathStructure(row));value[3].addChild(MathStructure(column));value[3].addChild(bit);
+   value.childrenUpdated();return true;
+  }
+ }
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -927,7 +944,7 @@ class QuantumStateFamilyFunction: public MathFunction {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qsampledotcolumn" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qstatecall" || op=="qstatecalls" || op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qsampledotcolumn" || op=="qsamplewordrows" || op=="qindexedcoefficient" || op=="qregisterfamily" || op=="qregisterword" || op=="qfamilymembers")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -1161,6 +1178,49 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending)return 0;
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
+  if(op=="qsamplewordrows") {
+   if(!raw[0].isSymbolic() || raw[0].symbol().size()!=2 || raw[0].symbol()[0]<'a' ||
+      raw[0].symbol()[0]>'z' || raw[0].symbol()[1]!='^' || !raw[3].isVector() || raw[3].size()%3 ||
+      !raw[4].isNumber() || !raw[4].number().isInteger() || raw[4].number()<1 || raw[4].number()>1024) {
+    CALCULATOR->error(true,"Invalid sample word family or row assignments.",NULL);return 0;
+   }
+   MathStructure high=raw[2];high.eval(eo);
+   if(!(high.isNumber() && high.number().isInteger() && high.number()>=0) &&
+      !(!high.isNumber() && high.representsScalar() && high.containsUnknowns())) {
+    CALCULATOR->error(true,"The leading sample bit index must include the displayed bit zero.",NULL);return 0;
+   }
+   MathStructure count=raw[1];count.eval(eo);
+   if(!count.isNumber() && count.representsScalar() && count.containsUnknowns())return 0;
+   if(!count.isNumber() || !count.number().isInteger() || count.number()<raw[4].number() || count.number()>1024) {
+    CALCULATOR->error(true,"Sample word definitions require the displayed rows and at most 1024 samples.",NULL);return 0;
+   }
+   int rows=count.number().intValue();
+   std::vector<MathStructure> words(rows),bits(rows);
+   for(int r=0;r<rows;++r) {
+    words[r].set(raw[0].symbol()+std::to_string(r+1),true);bits[r].clearVector();
+   }
+   std::set<std::pair<Number,Number>> keys;
+   for(size_t k=0;k<raw[3].size();k+=3) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &row=raw[3][k],&bit=raw[3][k+1];
+    if(!row.isNumber() || !row.number().isInteger() || row.number()<1 || !bit.isNumber() ||
+       !bit.number().isInteger() || bit.number()<0 || !keys.insert({row.number(),bit.number()}).second) {
+     CALCULATOR->error(true,"Sample assignments require distinct sample and bit indices.",NULL);return 0;
+    }
+    if(row.number()>count.number())continue;
+    int r=row.number().intValue()-1;
+    if(bit.isZero())words[r]=raw[3][k+2];
+    else {Number index=bit.number();index.subtract(1);bits[r].addChild(MathStructure(index));bits[r].addChild(raw[3][k+2]);}
+   }
+   out.clearVector();MathStructure equality(4);
+   for(int r=0;r<rows;++r) {
+    MathStructure prefix(raw[0].symbol()+std::to_string(r+1)+"_",true);
+    MathStructure word(CALCULATOR->getFunction("qregisterword"),&prefix,&high,&m_zero,NULL);
+    word.addChild(bits[r]);
+    out.addChild(MathStructure(CALCULATOR->getFunction("qcompare"),&words[r],&word,&equality,NULL));
+   }
+   return 1;
+  }
   if(op=="qzerocolumnlike") {
    if(!raw[1].isNumber() || !raw[1].number().isInteger() || raw[1].number()<1 || raw[1].number()>1024) {
     CALCULATOR->error(true,"Invalid displayed zero-column height.",NULL);return 0;
@@ -1226,6 +1286,10 @@ class QuantumIndexedFunction: public MathFunction {
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>1 && prefix.size()<=128 && prefix.back()=='_' && !std::isdigit((unsigned char)prefix.front());
    for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')valid=false;
+   if(op=="qregisterword" && prefix.size()>=4 && prefix.size()<=128 && prefix[0]>='a' && prefix[0]<='z' &&
+      prefix[1]=='^' && prefix[2]>='1' && prefix[2]<='9' && prefix.back()=='_') {
+    valid=prefix.find_first_not_of("0123456789",2)==prefix.size()-1;
+   }
    if(!valid || !raw[3].isVector() || raw[3].size()%2 || raw[3].size()>256) {
     CALCULATOR->error(true,"Invalid register family prefix or bit assignments.",NULL);return 0;
    }
@@ -1877,6 +1941,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
+ calculator.addFunction(new QuantumIndexedFunction("qsamplewordrows",5));
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
  calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));

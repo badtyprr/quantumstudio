@@ -946,6 +946,17 @@ for bad in [dots.replace("z^2", "z^3"), dots.replace("z^2", "y^2"),
             "qzerocolumnlike(matrix(2,1,[0,0]),3)", "gf2_mul(M,matrix(1,1,[2]))"]:
     run("quantum:" + bad, "--json", success=False)
 
+sample_rows = 'qsamplewordrows("z^",k,n-1,vector(),2)'
+pending_rows = data(f'quantum:replace(replace({sample_rows},"z^2_0",1),"z^1",bitstring(0,1))')["copy_text"]
+expanded_rows = data(f"quantum:replace(replace({pending_rows},k,2),n,1)")["copy_text"]
+for label, value in [('"z^2"', "bitstring(1,2)"), ('"z^1_0"', "0")]:
+    expanded_rows = data(f"quantum:replace({expanded_rows},{label},{value})")["copy_text"]
+assert expanded_rows == "vector(1,0)"
+for bad in ['qsamplewordrows("z^",1,0,vector(),2)', 'qsamplewordrows("z^",k,-1,vector(),2)',
+            'qsamplewordrows("z^",2,1,vector(1,0,0,1,0,1),2)',
+            'qsamplewordrows("z^",2,0,vector(1,1,3),2)']:
+    run("quantum:" + bad, "--json", success=False)
+
 # Sample numbers start at one, while the bit columns run down to zero.
 sample_matrix = 'qsamplebitmatrix("z^",k,n-1,2,0)'
 sample_display = data("quantum:" + sample_matrix)["display_text"]

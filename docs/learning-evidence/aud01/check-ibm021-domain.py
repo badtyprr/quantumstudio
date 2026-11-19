@@ -366,3 +366,73 @@ for samples in ((3, 4), (6, 1, 3)):
             target = not any(parities) and all((word & candidate).bit_count() % 2 == 0 for word in samples)
             assert evaluate(chain)["copy_text"] == str(int(target))
 print("The source dot-product column and its copy matched 16 parity vectors and all 128 full equality checks")
+
+# M122 describes every measured word, including samples hidden by the ellipsis.
+# Perturb a single bit in each position and check the individual row predicates.
+word_rows = source_body(122)
+copied_rows = evaluate(word_rows)["copy_text"]
+for width, samples in [(1, (0, 1)), (3, (1, 2, 5, 7))]:
+    for body, dimensions_first in [(word_rows, True), (copied_rows, False)]:
+        assignments = [(f'"y^{row}_{bit}"', (word >> bit) & 1)
+                       for row, word in enumerate(samples, 1) for bit in range(width)]
+        dimensions = [("k", len(samples)), ("n", width)]
+        for mismatch in [None, *itertools.product(range(len(samples)), range(width))]:
+            words = []
+            expected = [1] * len(samples)
+            for row, word in enumerate(samples):
+                if mismatch and mismatch[0] == row:
+                    word ^= 1 << mismatch[1]
+                    expected[row] = 0
+                words.append((f'"y^{row+1}"', f"bitstring({word},{width})"))
+            expr = body
+            bindings = dimensions + words + assignments if dimensions_first else assignments + words + dimensions
+            for name, value in bindings:
+                expr = f"replace(({expr}),{name},{value})"
+            assert evaluate(expr)["copy_text"] == "vector(" + ",".join(map(str, expected)) + ")"
+print("The source and copied measurement definitions located each mismatched bit, including the hidden third row")
+
+# Several symbolic outputs change spelling when the GUI copy is re-entered.
+# Check both spellings on the lesson oracle against exact independent answers.
+gui_replay = json.loads((directory / "ibm021-sample-words.json").read_bytes())
+different = {int(row["id"][-3:]): (row["copy"], row["second_copy"])
+             for row in gui_replay["gui_records"] if row.get("copy") != row.get("second_copy")}
+assert set(different) == {45, 49, 50, 54, 56, 60, 70, 74, 75, 88, 102, 103}
+for number, spellings in different.items():
+    for y in (0, 1):
+        ys = [v for v in range(8) if (v & 3).bit_count() % 2 == 0]
+        probabilities = ["1/4" if v in ys else "0" for v in range(8)]
+        distributions = [probabilities, ["1/8"] * 8] if number in (54, 70, 74, 102) else [probabilities]
+        for distribution in distributions:
+            p = "qset(vector(" + ",".join(f"tuple(bitstring({v},3),{q})" for v, q in enumerate(distribution)) + "))"
+            for body in spellings:
+                expr = body
+                for name, value in [("p", p), ("f", table["graph"]), ("m", 5), ("n", 3),
+                                    ("s", "bitstring(3,3)"), ("z", f"bitstring({outputs[y]},5)"),
+                                    ("w", f"bitstring({y},3)"), ("y", f"bitstring({y},3)"),
+                                    (r"\Sigma", r"\{0,1\}")]:
+                    expr = f"replace(({expr}),{name},{value})"
+                if number in (45, 49, 50):
+                    scale = "8" if number == 50 else "sqrt(8)"
+                    state = evaluate(f"{scale}*({expr})", bind_alphabet=False)
+                    amplitudes = [0] * 256
+                    for x, z in enumerate(outputs):
+                        if number == 45:
+                            amplitudes[x] = 1
+                        elif number == 49:
+                            amplitudes[8*z+x] = 1
+                        else:
+                            for v in range(8):
+                                amplitudes[8*z+v] += (-1) ** ((x & v).bit_count() % 2)
+                    assert state["rows"] == 256 and state["columns"] == 1
+                    encoded = ",".join(map(str, amplitudes))
+                    assert state["copy_text"].replace("−", "-") == f"matrix(256,1,[{encoded}])"
+                else:
+                    expected = "1"
+                    if number in (54, 70, 74, 102):
+                        expected = str(int(distribution == probabilities))
+                    elif number == 75:
+                        expected = "4" if y in ys else "0"
+                    elif number == 103:
+                        expected = bit_set(ys, 3)
+                    assert evaluate(expr, bind_alphabet=False)["copy_text"] == expected, (number, y)
+print("Both GUI copy spellings for all 12 changed symbolic expressions passed the bound checks")

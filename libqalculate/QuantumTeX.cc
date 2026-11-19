@@ -356,24 +356,9 @@ std::vector<std::string> indexedParts(const std::string &raw,const std::string &
  }
  parts.push_back(trim(raw.substr(start)));return parts;
 }
-std::string indexedMatrix(const std::string &raw,bool tex) {
- const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
- auto rows=indexedParts(raw,tex ? "\\\\" : ";");
- std::vector<std::vector<std::string>> cells;bool found=false;
- for(size_t r=0;r<rows.size();++r) {
-  if(tex && r && !rows[r].empty() && rows[r][0]=='[') {
-   size_t end=rows[r].find(']');if(end!=std::string::npos)rows[r]=trim(rows[r].substr(end+1));
-  }
-  cells.push_back(indexedParts(rows[r],tex ? "&" : ","));
-  for(const auto &cell:cells.back())if(cell==diagonal)found=true;
- }
- if(!found)return "";
- auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
- const size_t height=cells.size(),width=cells[0].size();
- if(height<3 || width<3 || height>1026 || width>1026)invalid();
- // A superscript names the one-based sample row. Subscripts label the
- // bits of that sample in descending order, with zero at the right.
- if(cells[0][0].find('^')!=std::string::npos) {
+std::string sampleArray(const std::vector<std::vector<std::string>> &cells,const std::string &horizontal,
+                        const std::string &vertical,const std::string &diagonal,bool definitions) {
+  const size_t height=cells.size(),width=cells[0].size();
   auto invalidSample=[](){throw std::runtime_error("A sample matrix requires consecutive one-based rows and matching bit columns ending at zero");};
   auto index=[](std::string text) {
    text=trim(text);
@@ -408,7 +393,43 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    if(r<height-2 && row!=std::to_string(r+1))invalidSample();
    if(r==height-1)lastSample=row;
   }
-  return "qsamplebitmatrix(\""+name+"^\",("+lastSample+"),("+highBit+"),"+std::to_string(height-2)+",0)";
+  std::string args="(\""+name+"^\",("+lastSample+"),("+highBit+"),";
+  return definitions ? "qsamplewordrows"+args+"vector(),"+std::to_string(height-2)+")" :
+                       "qsamplebitmatrix"+args+std::to_string(height-2)+",0)";
+}
+std::string sampleWordDefinitions(const std::vector<std::string> &lines) {
+ if(lines.size()<3 || lines[lines.size()-2]!="⋮" || lines[0].find("⋯")==std::string::npos)return "";
+ std::vector<std::vector<std::string>> cells;
+ for(const auto &line:lines) {
+  if(line=="⋮") {cells.push_back({"⋮","⋱","⋮"});continue;}
+  auto sides=indexedParts(line,"=");
+  if(sides.size()!=2 || sides[0].size()<3 || sides[0][1]!='^')return "";
+  auto bits=indexedParts(sides[1],"⋯");
+  if(bits.size()!=2 || bits[0].compare(0,sides[0].size()+1,sides[0]+"_")!=0 ||
+     bits[1].compare(0,sides[0].size()+1,sides[0]+"_")!=0)return "";
+  cells.push_back({bits[0],"⋯",bits[1]});
+ }
+ return sampleArray(cells,"⋯","⋮","⋱",true);
+}
+std::string indexedMatrix(const std::string &raw,bool tex) {
+ const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
+ auto rows=indexedParts(raw,tex ? "\\\\" : ";");
+ std::vector<std::vector<std::string>> cells;bool found=false;
+ for(size_t r=0;r<rows.size();++r) {
+  if(tex && r && !rows[r].empty() && rows[r][0]=='[') {
+   size_t end=rows[r].find(']');if(end!=std::string::npos)rows[r]=trim(rows[r].substr(end+1));
+  }
+  cells.push_back(indexedParts(rows[r],tex ? "&" : ","));
+  for(const auto &cell:cells.back())if(cell==diagonal)found=true;
+ }
+ if(!found)return "";
+ auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
+ const size_t height=cells.size(),width=cells[0].size();
+ if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ // A superscript names the one-based sample row. Subscripts label the
+ // bits of that sample in descending order, with zero at the right.
+ if(cells[0][0].find('^')!=std::string::npos) {
+  return sampleArray(cells,horizontal,vertical,diagonal,false);
  }
  std::string family,lastRow,lastColumn;
  for(size_t r=0;r<height;++r) {
@@ -1091,6 +1112,8 @@ class TeXReader {
   if(alignment) {
    if(!alignmentCells.empty() || !trim(result).empty())finishAlignment();
    if(expressions.empty())throw std::runtime_error(error("An alignment requires an expression"));
+   std::string words=sampleWordDefinitions(expressions);
+   if(!words.empty()) {--depth;return words;}
    std::string graph=binaryFunctionGraph(expressions);
    if(!graph.empty()) {--depth;return graph;}
    result=expressions.size()==1 ? "" : "vector(";
