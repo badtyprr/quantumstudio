@@ -1,0 +1,64 @@
+{
+  "qb023": {
+    "source_sha256": "0ff2b015561e0bec4690422eb5a00db06d990d13f5c327a2f9b5054b614494f4",
+    "original_cell": 4,
+    "backend": "bloqade.python",
+    "bloqade_analog": "0.16.9",
+    "counts": [
+      {
+        "011111110": 6,
+        "101111110": 1,
+        "110111101": 1,
+        "110111110": 1,
+        "111110011": 1
+      },
+      {
+        "010111010": 7,
+        "011110011": 1,
+        "011111010": 1,
+        "110111111": 1
+      },
+      {
+        "010111010": 9,
+        "010111110": 1
+      }
+    ],
+    "scope": "Preloaded NumPy and Bloqade imports, executed original construction cell, then ran an authored local emulator batch. Aquila hardware and provider results remain open.",
+    "histogram": "Original cell 13 was evaluated with the three saved local count dictionaries. All 30 bar heights across ten distinct nine-bit labels matched. The rendered image was visually inspected."
+  },
+  "qb024": {
+    "source_sha256": "421214ae6b2701d8bdd3c721741d17bd70a4709c617766dcf3f9472622565dd9",
+    "original_cells": [
+      2,
+      4,
+      14,
+      15,
+      20,
+      21
+    ],
+    "fidelities": [
+      0.9999999657714581,
+      0.9999999999999996
+    ],
+    "counts": [
+      {
+        "11": 509,
+        "00": 491
+      },
+      {
+        "11": 498,
+        "00": 502
+      }
+    ],
+    "scope": "Original cells evaluated as Python in a preinstalled environment. Authored statevector checks, conversion to Braket and local simulation at 1000 shots per circuit. AWS discovery, SV1 and hardware jobs remain open."
+  },
+  "source_revision": "86787e1ba372facc224f925189755e69c479828b",
+  "artifacts": {
+    "cleanup-audit/learning-coverage-20261117/qb023-local/probe.py": "87f8e15722a80145aafcee546ec4831ac3beed1f70438676f13ccc8ed61da6cd",
+    "cleanup-audit/learning-coverage-20261117/qb023-local/verification.json": "0a51fa91b9bbcc69598fd3dc2a1d6c16213f7e20051424755c14b5c9a6754832",
+    "cleanup-audit/learning-coverage-20261117/qb023-local/original-cell13.png": "27bb8331dcdec8e4bcdba0b487f72798852af5daad196e80331a6a318eb00289",
+    "cleanup-audit/learning-coverage-20261117/qb024-local/probe.py": "29519249d538b41f0075968f8d6cbf6ee2e0b207a4bad0c81e795d9c2ffb6031",
+    "cleanup-audit/learning-coverage-20261117/qb024-local/verification.json": "952824f1e3ed49a84511ec613218f809b7f7e4c5572af44bcc884b1a0fa14fbf",
+    "cleanup-audit/learning-coverage-20261117/qb024-local/circuit-drawings.txt": "00cf4b4d4fe6ad3d359d50d04ccf85514467be28f1b525142c88e5328cafb290"
+  }
+}
