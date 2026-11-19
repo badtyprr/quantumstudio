@@ -114,7 +114,7 @@ for value in ("-1", "3/2"):
     run(f"quantum:bitlength({value})", "--json", success=False)
 assert data(r"quantum:$\log_{2}(8)$")["copy_text"] == "3"
 for argument, expected in (("2^512-1",511),("2^512",512),("1/8",-3),("1/9",-4),("3/2",0)):
-    assert data(f"quantum:floor(log2({argument}))")["copy_text"] == str(expected)
+    assert data(f"quantum:floor(log2({argument}))")["copy_text"] == str(expected).replace("-", "−")
 assert data("quantum:lg(100)")["copy_text"] == "2"
 
 # An isolated cost witness binds the same ordered size arguments on both sides.

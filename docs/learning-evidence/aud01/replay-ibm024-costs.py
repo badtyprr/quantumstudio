@@ -60,6 +60,7 @@ for number, args in [("M066", "n"), ("M077", "n,m")]:
 # Check the lesson's defining equation as entered and after Copy.
 definition = spans["M007"].strip("$").strip()
 copied_definition = evaluate(spans["M007"])["copy_text"]
+assert evaluate(copied_definition)["copy_text"] == copied_definition
 for n in (0, 1, 2, 3, 4, 7, 8, 15, 16, 17, 2**64 - 1, 2**64):
     digits = str(max(1, n.bit_length()))
     assert evaluate(spans["M006"].replace("(N)", f"({n})"))["copy_text"] == digits
