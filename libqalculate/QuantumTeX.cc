@@ -1275,7 +1275,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  size_t first=input.find_first_not_of(" \t\r\n"), last=input.find_last_not_of(" \t\r\n");
  if(first==std::string::npos) return "";
  // The mode precedes the pasted formula, including any TeX delimiters.
- if(input.compare(first,5,"sets:")==0) {
+ const bool dimensions=input.compare(first,11,"dimensions:")==0;
+ if(dimensions) {
+  first=input.find_first_not_of(" \t\r\n",first+11);
+  if(first==std::string::npos)return "";
+ } else if(input.compare(first,5,"sets:")==0) {
   if(setNotation)*setNotation=true;
   first=input.find_first_not_of(" \t\r\n",first+5);
   if(first==std::string::npos)return "";
@@ -1292,8 +1296,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
   {"∪","\\cup "},{"∩","\\cap "},{"∖","\\setminus "},{"∅","\\emptyset "},{"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
+ int depth=0;bool splitDimensions=false;
  for(size_t k=0;k<s.size();) {
   if(s[k]=='"' || s[k]=='\'') {if(quote==s[k])quote=0;else if(!quote)quote=s[k];normalized+=s[k++];continue;}
+  if(dimensions && !quote) {
+   if(s[k]=='(' || s[k]=='[' || s[k]=='{')++depth;
+   else if(s[k]==')' || s[k]==']' || s[k]=='}')--depth;
+   size_t cross=s.compare(k,2,"×")==0 ? 2 : 0;
+   if(s.compare(k,6,"\\times")==0 && (k+6==s.size() || !std::isalpha((unsigned char)s[k+6])))cross=6;
+   if(depth==0 && cross) {
+    if(splitDimensions)throw std::runtime_error("Matrix dimensions require one row count and one column count.");
+    normalized="qmatrixdimensions(("+normalized+"),(";splitDimensions=true;k+=cross;continue;
+   }
+  }
   if(!quote && s.compare(k,3,"QFT")==0 &&
      (k==0 || (!std::isalnum((unsigned char)s[k-1]) && s[k-1]!='_' && (unsigned char)s[k-1]<128))) {
    size_t end=k+3;std::string digits;
@@ -1319,5 +1334,6 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(!matched)normalized+=s[k++];
  }
+ if(splitDimensions)normalized+="))";
  return TeXReader(normalized).run(lines);
 }

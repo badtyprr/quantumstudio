@@ -229,6 +229,8 @@ The explicit binary Cartesian domain `\{0,1\}^n` enumerates bit strings of width
 
 For a finite binary function graph, `f(x)` applies the function and `f^(-1)(x)` looks up the unique preimage. The inverse graph reverses every input-output pair and checks that the mapping is one-to-one, including bit-string widths. When `f` is assigned a scalar, the same notation supports multiplication and its reciprocal.
 
+Select **Matrix dimensions** to read `N × N` or `$N\times N$` as row and column counts. For example, `3 × 4` describes three rows and four columns. Counts can be positive integers or symbolic expressions. Copied dimensions retain their order and accept later substitutions. The worker accepts the same inputs with the `quantum:dimensions:` prefix.
+
 Use `\mathbb{T}` for the complex unit circle and `\mathbb{C}` for the complex plane. For example, `(3+4i)/5 ∈ \mathbb{T}` returns 1. Plain `T` denotes the quantum gate. For a lesson that calls the circle `S^1`, select **Set notation** before calculating. The worker accepts the same convention with `quantum:sets:` before the expression. Quantum notation reads `S^1` as the phase gate to the first power. Saved sessions and history keep the selected mode.
 
 An indexed list such as `λ_1, …, λ_N` expands to an ordered tuple when `N` is supplied. Repeated values keep their positions. For example, setting both `λ_1` and `λ_2` to 5 before setting `N` to 2 gives `(5, 5)`. The index declaration `j = 1, …, N` tests membership in that inclusive integer range.

@@ -1138,7 +1138,7 @@ class QuantumStudio {
   var calculationBases=BasisDeclarations.Copy(bases);
   string request;
   bool quantum=calculationMode!=1;
-  try {request=quantum ? (calculationMode==2 ? "quantum:sets:" : "quantum:")+MatrixDeclarations.Apply(BasisDeclarations.Apply(expression,calculationBases),calculationMatrices) : expression;}
+  try {request=quantum ? (calculationMode==2 ? "quantum:sets:" : calculationMode==3 ? "quantum:dimensions:" : "quantum:")+MatrixDeclarations.Apply(BasisDeclarations.Apply(expression,calculationBases),calculationMatrices) : expression;}
   catch(Exception ex) {copyText=null;matrixView.Visibility=Visibility.Collapsed;matrixCaption.Visibility=Visibility.Collapsed;probabilityView.Visibility=Visibility.Collapsed;blochView.Visibility=Visibility.Collapsed;output.Visibility=Visibility.Visible;output.Text=ex.Message;resultLabel.Text="CHECK YOUR EXPRESSION";status.Text="Edit the expression or matrix dimensions and try again.";return;}
   var calculationStates=SessionStore.CopyStates(states);
   byte[] requestBytes;

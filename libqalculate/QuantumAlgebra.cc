@@ -591,6 +591,19 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out.set(CALCULATOR->getFunctionById(FUNCTION_ID_MOD),&value,&modulus,NULL);return 1;
   }
+  if(op=="qmatrixdimensions") {
+   MathStructure dimensions=raw;
+   for(size_t axis=0;axis<2;++axis) {
+    dimensions[axis].eval(eo);
+    const MathStructure &count=dimensions[axis];
+    if(count.containsUnknowns() && count.representsScalar())continue;
+    if(!count.isNumber() || !count.number().isInteger() || count.number()<1) {
+     CALCULATOR->error(true,"Matrix dimensions must be positive integers.",NULL);return 0;
+    }
+   }
+   if(dimensions.equals(raw))return 0;
+   out.set(this,&dimensions[0],&dimensions[1],NULL);return 1;
+  }
   if(op=="qimplicitidentity" || op=="qidentitylike") {
    MathStructure rows(2),columns;
    if(op=="qidentitylike" && !matrixShape(raw[0],rows,columns,eo)) {
@@ -1125,6 +1138,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumMatrixAssumption(true));
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
+ calculator.addFunction(new QuantumAlgebraFunction("qmatrixdimensions",2));
  calculator.addFunction(new QuantumAlgebraFunction("qimplicitidentity",0));
  calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));

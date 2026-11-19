@@ -1,6 +1,6 @@
 # IBM-027 lesson meaning review
 
-Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [Windows replay](ibm027-spectral-index.json) used Quantum notation except for M063, which used Set notation. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
+Reviewed the 97 inline and display expressions in the pinned phase-estimation problem notebook at revision `d2f891c9`. The notebook has one Markdown cell and zero code cells. Row numbers below are the M identifiers in the [source inventory](ibm027-inventory.json). The [latest Windows replay](ibm027-dimensions.json) used Matrix dimensions for M012, Set notation for M063, and Quantum notation for the remaining expressions. Its successful save, reopen and Copy checks apply to all 97 rows. The following review compares those results with the surrounding lesson text.
 
 | Rows | Meaning in the lesson | Observed result and evidence |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 004 | Both products of a unitary with its adjoint equal the identity of the same dimension | The unsized identity now follows the adjoint product. [Unitarity controls](ibm027-unitarity.json) accept two-, three- and four-dimensional unitary matrices and reject a shear and both rectangular isometries tested. |
 | 005, 006, 007 | Arbitrary Hermitian H and the equality of both products with its square | **Open.** H becomes the Hadamard matrix. M006 returns true for that one gate. Declaring H Hermitian currently rejects the gate name. |
 | 008, 009, 010 | Nonnormal example and its two different products | The input gives the upper triangular matrix with a single 1. Both explicit product identities return true. Their right-hand projectors select different basis vectors. |
-| 012 | Matrix dimensions, N rows by N columns | **Open.** Displays the scalar product N squared. |
+| 012 | Matrix dimensions, N rows by N columns | Select Matrix dimensions. Both counts remain N, and assigning N updates both. [Ordered dimension checks](ibm027-dimensions.json). |
 | 013, 046 | Dimension N | Preserved as N. |
 | 014, 022, 037 | Set of eigenvectors, including the explicit two-vector case | Indexed or explicit ket set. [Set and substitution checks](ibm027-ketsets.json). |
 | 015, 035, 047 | Ordered list of eigenvalues | The result keeps the indexed sequence and its bound N. [List checks](ibm027-indexed-lists.json). |
@@ -36,4 +36,4 @@ Reviewed the 97 inline and display expressions in the pinned phase-estimation pr
 | 088, 089 | The complex exponential is one at both ends of a full turn | Both explicit equalities return true. |
 | 093, 094, 096 | Values near the cut and the example distance | Returns 1, 0 and the exact rational 1/1000. |
 
-The two open findings cover four source expressions. The lesson remains open for corrections, review, and release verification.
+The remaining open finding covers M005–M007. The lesson remains open for corrections, review, and release verification.
