@@ -218,7 +218,9 @@ class Printer {
   if(name=="qindexedketset" && value.size()==4 && value[0].isSymbolic() && safeLabel(value[0].symbol()) &&
      value[3].isVector() && value[3].size()%2==0) {
    const std::string &prefix=value[0].symbol();
-   std::string text="\\{|"+prefix+render(value[1],depth+1).text+"⟩,\\ldots,|"+prefix+render(value[2],depth+1).text+"⟩\\}";
+   Fragment upper=render(value[2],depth+1);
+   std::string index=upper.precedence<100 ? "{"+upper.text+"}" : upper.text;
+   std::string text="\\{|"+prefix+render(value[1],depth+1).text+"⟩,\\ldots,|"+prefix+index+"⟩\\}";
    for(size_t k=0;k<value[3].size();k+=2)
     text="replace("+text+","+prefix+render(value[3][k],depth+1).text+","+render(value[3][k+1],depth+1).text+")";
    return Fragment(text);

@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($\{\vert\phi_0\rangle,\ldots,\vert\phi_{N-1}\rangle\}$)",R"(qindexedketset("φ_",0,N-1,vector()))");
+  equal(R"($\{|a_2>,\ldots,|a_{n + 10}>\}$)",R"(qindexedketset("a_",2,n+10,vector()))");
   equal(R"($\{C_1,C_2,C_3,\ldots\}$)",R"(qindexedfamily("C_",1))");
   equal(R"($\{C_1,C_2,\ldots,\}$)",R"(qindexedfamily("C_",1))");
   equal(R"($\{A_{99},A_{100},\dots\}$)",R"(qindexedfamily("A_",99))");

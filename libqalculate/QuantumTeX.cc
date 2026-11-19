@@ -537,7 +537,17 @@ std::string indexedKetSet(const std::vector<std::string> &entries) {
  for(size_t k=0;k<split;++k)if((unsigned char)prefix[k]<128 && !asciiLetter(prefix[k]))return "";
  std::string from=first.substr(split+1),to=last.substr(split+1);
  auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
- if(!integer(from) || !(integer(to) || (to.size()==1 && asciiLetter(to[0]))))return "";
+ // Grouped offsets belong to the index. Ungrouped arithmetic does not.
+ if(to.size()>2 && to.front()=='{' && to.back()=='}') {
+  std::string bound=trim(to.substr(1,to.size()-2));
+  if(bound.empty() || !asciiLetter(bound.front()))return "";
+  std::string offset=trim(bound.substr(1));
+  if(offset.empty() || (offset.front()!='+' && offset.front()!='-'))return "";
+  std::string magnitude=trim(offset.substr(1));
+  if(!integer(magnitude))return "";
+  to=bound.substr(0,1)+offset.front()+magnitude;
+ } else if(!integer(to) && !(to.size()==1 && asciiLetter(to[0])))return "";
+ if(!integer(from))return "";
  return "qindexedketset(\""+prefix+"\","+from+","+to+",vector())";
 }
 class TeXReader {
