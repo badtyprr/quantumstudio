@@ -550,6 +550,24 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qresidue") {
+   MathStructure modulus=raw[1];modulus.eval(eo);
+   if(modulus.isZero()) {CALCULATOR->error(true,"A modulus must be nonzero.",NULL);return 0;}
+   const MathStructure &value=raw[0];
+   const bool power=value.isPower() || (value.isFunction() && value.function()->referenceName()=="qpower" && value.size()==2);
+   if(power) {
+    // Bind each operand independently. In particular, substituting the
+    // exponent before the modulus must never materialize the full power.
+    MathStructure base=value[0],exponent=value[1];
+    base.eval(eo);exponent.eval(eo);
+    if(base.isInteger() && exponent.isInteger() && exponent.number().isNonNegative() &&
+       modulus.isInteger() && modulus.number().isPositive()) {
+     out.set(CALCULATOR->getFunctionById(FUNCTION_ID_POWER_MOD),&base,&exponent,&modulus,NULL);return 1;
+    }
+    if(base.containsUnknowns() || exponent.containsUnknowns() || modulus.containsUnknowns())return 0;
+   }
+   out.set(CALCULATOR->getFunctionById(FUNCTION_ID_MOD),&value,&modulus,NULL);return 1;
+  }
   if(op=="qcomputationalket") {
    MathStructure index=raw[0];index.eval(eo);
    bool pending=!index.isNumber() && index.representsScalar() && index.containsUnknowns();
@@ -1064,6 +1082,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumMatrixAssumption(true));
  calculator.addFunction(new QuantumMatrixConstructor<MatrixFunction>("qmatrix"));
  calculator.addFunction(new QuantumMatrixConstructor<IdentityMatrixFunction>("qidentity"));
+ calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));

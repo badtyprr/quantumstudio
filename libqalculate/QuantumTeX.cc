@@ -518,6 +518,44 @@ class TeXReader {
  unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
+ // Spacing takes a literal dimension. Its contents never become expression tokens.
+ void spacingDimension(char close) {
+  ++pos;space();
+  if(pos<input.size() && (input[pos]=='+' || input[pos]=='-'))++pos;
+  bool digit=false,dot=false;
+  while(pos<input.size()) {
+   char d=input[pos];
+   if(d>='0' && d<='9')digit=true;
+   else if(d=='.' && !dot)dot=true;
+   else break;
+   ++pos;
+  }
+  if(!digit)throw std::runtime_error(error("TeX spacing requires a literal numeric dimension"));
+  space();size_t unitStart=pos;
+  while(pos<input.size() && asciiLetter((unsigned char)input[pos]))++pos;
+  std::string unit=input.substr(unitStart,pos-unitStart);
+  if(unit!="pt" && unit!="pc" && unit!="in" && unit!="bp" && unit!="cm" && unit!="mm" &&
+     unit!="dd" && unit!="cc" && unit!="sp" && unit!="em" && unit!="ex" && unit!="mu")
+   throw std::runtime_error(error("Unsupported TeX spacing unit"));
+  space();if(pos==input.size() || input[pos]!=close)throw std::runtime_error(error("Invalid TeX spacing"));
+  ++pos;
+ }
+ // Match only the text label that introduces a parenthesized modulus.
+ bool takeModulusLabel() {
+  size_t start=pos;
+  space();
+  if(input.compare(pos,5,"\\text")==0) {
+   pos+=5;space();
+   if(pos<input.size() && input[pos]=='{') {
+    ++pos;space();
+    if(input.compare(pos,3,"mod")==0) {
+     pos+=3;space();
+     if(pos<input.size() && input[pos]=='}') {++pos;return true;}
+    }
+   }
+  }
+  pos=start;return false;
+ }
  std::string group() {
   space();
   if(pos==input.size() || input[pos]!='{') throw std::runtime_error(error("Expected a braced TeX argument"));
@@ -627,27 +665,7 @@ class TeXReader {
    if(c=='\\' && matrix) {
     space();
     if(pos<input.size() && input[pos]=='[') {
-     // Row spacing is presentation-only. Accept a literal TeX dimension, never
-     // translate its contents into the matrix's mathematical expression.
-     ++pos;space();
-     if(pos<input.size() && (input[pos]=='+' || input[pos]=='-'))++pos;
-     bool digit=false,dot=false;
-     while(pos<input.size()) {
-      char d=input[pos];
-      if(d>='0' && d<='9')digit=true;
-      else if(d=='.' && !dot)dot=true;
-      else break;
-      ++pos;
-     }
-     if(!digit)throw std::runtime_error(error("Matrix row spacing requires a literal numeric dimension"));
-     space();size_t unitStart=pos;
-     while(pos<input.size() && asciiLetter((unsigned char)input[pos]))++pos;
-     std::string unit=input.substr(unitStart,pos-unitStart);
-     if(unit!="pt" && unit!="pc" && unit!="in" && unit!="bp" && unit!="cm" && unit!="mm" &&
-        unit!="dd" && unit!="cc" && unit!="sp" && unit!="em" && unit!="ex" && unit!="mu")
-      throw std::runtime_error(error("Unsupported matrix row spacing unit"));
-     space();if(pos==input.size() || input[pos]!=']')throw std::runtime_error(error("Invalid matrix row spacing"));
-     ++pos;
+     spacingDimension(']');
     }
     return ";";
    }
@@ -657,6 +675,11 @@ class TeXReader {
   }
   size_t start=pos; while(pos<input.size() && asciiLetter((unsigned char)input[pos])) ++pos;
   std::string name=input.substr(start,pos-start);
+  if(name=="hspace") {
+   space();
+   if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced spacing dimension"));
+   spacingDimension('}');return " ";
+  }
   if(name=="sin" || name=="cos" || name=="tan") {
    size_t afterName=pos;
    space();
@@ -1006,6 +1029,11 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
+    if(open=='(' && takeModulusLabel()) {
+     auto modulus=trim(read(end));
+     if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
+     result=trim(result)+" pmod ("+modulus+")";continue;
+    }
     size_t bodyStart=pos;auto body=read(end);
     std::string raw=input.substr(bodyStart,pos-bodyStart-1);
     std::string column=open=='[' ? indexedMatrix(raw,false) : "";

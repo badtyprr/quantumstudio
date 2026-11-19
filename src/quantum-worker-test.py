@@ -24,6 +24,22 @@ def data(expression, *flags):
     return value
 
 
+# The computational-cost lesson expresses modular powers using a spaced text label.
+for gap in (r"\hspace{1mm} ", r"\hspace{1mm}"):
+    source = "$N^K" + gap + r"(\text{mod }M)$"
+    result = data("quantum:" + source)
+    copied = result["copy_text"]
+    assert data("quantum:" + copied)["copy_text"] == copied
+    assert data("quantum:" + result["display_text"])["copy_text"] == copied
+    for base, exponent, modulus in ((0, 0, 1), (0, 1, 13), (23, 0, 17), (23, 5, 17), (2, 1024, 101), (3, 2**128 + 1, 65537)):
+        expected = str(pow(base, exponent, modulus))
+        numeric = f"${base}^{{{exponent}}}" + gap + rf"(\text{{mod }}{modulus})$"
+        assert data("quantum:" + numeric)["copy_text"] == expected
+        bound = f"replace(replace(replace({copied},N,{base}),K,{exponent}),M,{modulus})"
+        assert data("quantum:" + bound)["copy_text"] == expected
+
+assert b"modulus must be nonzero" in run("quantum:2^5 pmod (0)", success=False).stderr
+
 # Asymptotic upper bounds compare polynomial growth for large input sizes.
 for formula, expected in [
     ("17 n^3 - 257 n^2 + 65537 = O(n^3)", "1"), ("n^3=O(n^2)", "0"),

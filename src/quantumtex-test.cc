@@ -17,6 +17,13 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($2\hspace{1mm}+3$)",quantumTeX("$2 +3$"));
+  equal(R"($a\hspace{ -.25 em }b$)",quantumTeX("$a b$"));
+  rejects(R"($2\hspace{1mm+9}+3$)");rejects(R"($2\hspace{3cats}+3$)");
+  rejects(R"($2\hspace{mm}+3$)");rejects(R"($2\hspace 1mm+3$)");
+  equal(R"($N^K\hspace{1mm} (\text{mod }M)$)",quantumTeX("$N^K pmod (M)$"));
+  equal(R"($N^K(\text{mod }M+1)$)",quantumTeX("$N^K pmod (M+1)$"));
+  rejects(R"($N^K(\text{mod })$)");rejects(R"($N^K(\text{model}M)$)");
   equal("$$x.$$","x");equal(R"(\[\ket{0}.\])","|0>");
   equal("$$1.5$$","1.5");equal("$$1.$$","1.");
   equal(R"($$\left\|x\right\|^2.$$)",quantumTeX(R"($$\left\|x\right\|^2$$)"));

@@ -340,7 +340,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},
  {"qpostselect",2},
- {"qpower",2},
+ {"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
@@ -706,7 +706,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -1811,7 +1811,10 @@ class Parser {
  std::string product() {
   auto a=diracFactor();
   while(true) {
-   if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
+   if(takeWord("pmod")) {
+    need('(');auto modulus=expression();need(')');
+    a="qresidue("+a+","+modulus+")";
+   } else if(take('%') || moduloWord()) a="mod("+a+","+diracFactor()+")";
    else if(s.compare(p,3,"⋅")==0) {p+=3;a="qcenterdot("+a+","+diracFactor()+")";}
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
    else if(take('/')) a="("+a+"/("+diracFactor()+"))";
