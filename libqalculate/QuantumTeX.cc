@@ -939,8 +939,9 @@ class TeXReader {
    }
    if(env!="matrix" && env!="pmatrix" && env!="bmatrix" && env!="Bmatrix" && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
    size_t bodyStart=pos;
-   auto body=read(0,true,env);
-   size_t bodyEnd=input.rfind("\\end",pos-1);
+   size_t bodyEnd=std::string::npos;
+   auto body=read(0,true,env,false,"",false,&bodyEnd);
+   if(bodyEnd==std::string::npos)bodyEnd=input.rfind("\\end",pos-1);
    std::string raw=input.substr(bodyStart,bodyEnd-bodyStart);
    std::string m=indexedMatrix(raw,true);
    if(m.empty())m=indexedColumn(raw,true);
@@ -979,7 +980,7 @@ class TeXReader {
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
- std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="", bool membershipGroup=false) {
+ std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="", bool membershipGroup=false, size_t *matrixBodyEnd=nullptr) {
   struct MatrixScope {
    unsigned &depth;bool active;
    MatrixScope(unsigned &depth_,bool active_):depth(depth_),active(active_) {if(active)++depth;}
@@ -1097,7 +1098,16 @@ class TeXReader {
     size_t delimiter=result.find_last_of("|<>");
     bool registerLabel=delimiter!=std::string::npos && result[delimiter]!='>' &&
      result.find('_',delimiter+1)!=std::string::npos;
+    size_t commandStart=pos;
     std::string part=command(matrix,norms,environment=="cases",registerLabel);
+    // A final TeX row break terminates the last row. Exclude it from both
+    // the translated matrix and the raw rows used to infer indexed entries.
+    if(matrixBodyEnd && part==";") {
+     size_t next=input.find_first_not_of(" \t\r\n",pos);
+     if(next!=std::string::npos && input.compare(next,4,"\\end")==0) {
+      *matrixBodyEnd=commandStart;continue;
+     }
+    }
     if(environment=="cases" && part==";")finishCase();
     else if(alignment && part==";")finishAlignment();else result+=part;
    }

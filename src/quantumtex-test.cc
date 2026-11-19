@@ -228,6 +228,8 @@ int main() {
   equal(R"(\bigotimes_{k=0}^{2}{X})","qtexgroupbigotimes(0,2,k,X)");
   equal(R"(\bigoplus_{k=0}^{2}{X})","qtexgroupbigoplus(0,2,k,X)");
   equal("∑_{k=0}^{2}{k}","qtexgroupsum(0,2,k,k)");
+  equal(R"(\begin{pmatrix}1&2\\3&4\\[2mm]\end{pmatrix})","[1,2;3,4]");
+  equal(R"(\begin{bmatrix}a_0\\\vdots\\a_n\\\end{bmatrix})",quantumTeX(R"(\begin{bmatrix}a_0\\\vdots\\a_n\end{bmatrix})"));
   equal(R"(\begin{pmatrix}1&2\\[1mm]3&4\end{pmatrix})","[1,2;3,4]");
   equal(R"(\begin{bmatrix}1\\[-.5 em]2\\[+2pt]3\end{bmatrix})","[1;2;3]");
   equal(R"(\mathrm{QFT}_{16})"," qfourier(16)");
