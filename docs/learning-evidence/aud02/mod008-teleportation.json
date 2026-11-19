@@ -1,0 +1,145 @@
+{
+  "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+  "source_sha256": "3203eeb8cf62775ef8794b40a2b2a8c649dd64d5db7971b75aa77627a6979a57",
+  "runtime": "0.50.0",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "executed": [
+    1,
+    6,
+    8,
+    11,
+    13,
+    22,
+    24,
+    30,
+    32,
+    36,
+    38,
+    41,
+    43,
+    46,
+    47
+  ],
+  "method": "Original circuit, transformation, Runtime sampling and histogram cells used a local matrix-product-state Aer backend. Service discovery, target modification and hardware noise-model setup excluded. Independently projected the pre-measurement state onto each Alice outcome, applied the source's conditional gates, and compared Bob with the prepared state before checking the inverse.",
+  "results": [
+    {
+      "cell": 36,
+      "qubits": 3,
+      "shots": 4096,
+      "counts": {
+        "001": 982,
+        "000": 1041,
+        "010": 1032,
+        "011": 1041
+      },
+      "branches": [
+        {
+          "alice": "00",
+          "probability": 0.2499999999999999,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        },
+        {
+          "alice": "01",
+          "probability": 0.2499999999999999,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        },
+        {
+          "alice": "10",
+          "probability": 0.2499999999999999,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        },
+        {
+          "alice": "11",
+          "probability": 0.2499999999999999,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        }
+      ],
+      "native": {
+        "qasm_sha256": "edd7a30f52a2c5f708d27caabbad70c34c1872b2e14000f977287b8667a51eda",
+        "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
+        "sampled": {
+          "qubits": 3,
+          "shots": 10000,
+          "seed": "731",
+          "wires": [
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 3,
+          "counts": {
+            "000": 2524,
+            "001": 2524,
+            "010": 2470,
+            "011": 2482
+          }
+        }
+      }
+    },
+    {
+      "cell": 46,
+      "qubits": 13,
+      "shots": 4096,
+      "counts": {
+        "011": 1024,
+        "010": 1016,
+        "000": 1059,
+        "001": 997
+      },
+      "branches": [
+        {
+          "alice": "00",
+          "probability": 0.24999999999999986,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        },
+        {
+          "alice": "01",
+          "probability": 0.24999999999999986,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        },
+        {
+          "alice": "10",
+          "probability": 0.24999999999999986,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        },
+        {
+          "alice": "11",
+          "probability": 0.24999999999999986,
+          "receiver_fidelity": 1.0,
+          "zero_after_inverse": 1.0
+        }
+      ],
+      "native": {
+        "qasm_sha256": "a1854cf1808d5f9842f64ae559c1abc96885048f2cfd319b2e38ef4e649e914f",
+        "imported_qubits": 13,
+        "adapter_error": "Exact circuits support at most 10 qubits.",
+        "sampled": {
+          "qubits": 13,
+          "shots": 256,
+          "seed": "731",
+          "wires": [
+            2,
+            1,
+            0
+          ],
+          "classical_bits": 3,
+          "counts": {
+            "000": 65,
+            "001": 70,
+            "010": 56,
+            "011": 65
+          }
+        },
+        "method": "Sample-only request through RequestClassical after the combined test adapter hit the exact-mode limit."
+      }
+    }
+  ]
+}
