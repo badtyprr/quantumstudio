@@ -62,6 +62,7 @@
           <ComboBoxItem Content="Set notation" ToolTip="Interpret S¹ as the complex unit circle."/>
           <ComboBoxItem Content="Matrix dimensions" ToolTip="Enter the row and column counts, for example 3 × 4."/>
           <ComboBoxItem Content="Binary fraction digits" ToolTip="Enter the bits after the binary point. For example, 01 or .01 represents one quarter."/>
+          <ComboBoxItem Content="Binary word" ToolTip="Enter the bits in order, most significant first. For example, a_1 a_0 is a two-bit word."/>
          </ComboBox>
         </StackPanel>
         <StackPanel>

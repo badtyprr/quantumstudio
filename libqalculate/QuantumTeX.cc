@@ -8,6 +8,31 @@
 
 namespace {
 bool asciiLetter(unsigned char c) {return (c>='A' && c<='Z') || (c>='a' && c<='z');}
+// In binary-word mode, adjacent digits and named bits occupy consecutive
+// positions, most significant first. Leave explicit calculator calls intact.
+std::string orderedBitWord(const std::string &text) {
+ std::string digits;
+ for(unsigned char c:text)if(!std::isspace(c))digits+=c;
+ if(!digits.empty() && digits.find_first_not_of("01")==std::string::npos)
+  return "bitstring(\""+digits+"\")";
+ std::string result="qbitword(vector(";size_t count=0;
+ for(size_t i=0;i<text.size();) {
+  unsigned char c=text[i];
+  if(std::isspace(c)) {++i;continue;}
+  size_t first=i++;
+  if(asciiLetter(c)) {
+   if(i<text.size() && text[i]=='_') {
+    size_t index=++i;
+    while(i<text.size() && std::isdigit((unsigned char)text[i]))++i;
+    if(i==index)return text;
+   }
+  } else if(!std::isdigit(c))return text;
+  if(count==1024)throw std::runtime_error("A binary word supports at most 1024 bits.");
+  if(count++)result+=",";
+  result+=text.substr(first,i-first);
+ }
+ return count ? result+"))" : text;
+}
 std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
@@ -1319,8 +1344,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // The mode precedes the pasted formula, including any TeX delimiters.
  const bool dimensions=input.compare(first,11,"dimensions:")==0;
  const bool fractionBits=input.compare(first,13,"fractionbits:")==0;
- if(dimensions || fractionBits) {
-  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : 13));
+ const bool bitWord=input.compare(first,8,"bitword:")==0;
+ if(dimensions || fractionBits || bitWord) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : 8));
   if(first==std::string::npos)return "";
  } else if(input.compare(first,5,"sets:")==0) {
   if(setNotation)*setNotation=true;
@@ -1398,6 +1424,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  if(splitDimensions)normalized+="))";
  std::string result=TeXReader(normalized).run(lines);
+ if(bitWord)result=orderedBitWord(result);
  for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
  return result;
 }

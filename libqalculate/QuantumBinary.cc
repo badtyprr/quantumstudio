@@ -242,8 +242,11 @@ class QuantumBinaryFunction: public MathFunction {
    for(int k=width.number().intValue();k>0;--k)out.addChild(index.number().bitGet(k) ? m_one : m_zero);
    return 1;
   }
-  if(op=="qbitdot" || op=="qbitxor" || op=="qbitvalue") {
-   unsigned operands=op=="qbitvalue" ? 1U : 2U;
+  if(op=="qbitdot" || op=="qbitxor" || op=="qbitvalue" || op=="qbitword") {
+   unsigned operands=(op=="qbitvalue" || op=="qbitword") ? 1U : 2U;
+   if(op=="qbitword" && (!a.isVector() || a.isMatrix())) {
+    CALCULATOR->error(true,"A binary word requires a flat vector of bits.",NULL);return 0;
+   }
    bool allLabels=true;
    for(unsigned j=0;j<operands;++j)
     allLabels=allLabels && isQuantumBitLabel(args[j]);
@@ -278,8 +281,9 @@ class QuantumBinaryFunction: public MathFunction {
    Number knownWidths[2]={Number(-1),Number(-1)};
    std::vector<MathStructure> bits[2];
    bool labels[2]={false,false};
-   for(size_t j=0;j<(op=="qbitvalue" ? 1U : 2U);++j) {
+   for(size_t j=0;j<operands;++j) {
     const MathStructure &value=args[j];
+    if(value.isFunction() && value.function()->referenceName()=="qbitword") {symbolicLabel=true;continue;}
     labels[j]=isQuantumBitLabel(value);
     if(labels[j]) {
      if(value.size()!=2) {CALCULATOR->error(true,"Invalid binary-string label.",NULL);return 0;}
@@ -297,15 +301,22 @@ class QuantumBinaryFunction: public MathFunction {
      if(value.size()>1024) {CALCULATOR->error(true,"Binary bit operations support at most 1024 bits.",NULL);return 0;}
      for(size_t k=0;k<value.size();++k)bits[j].push_back(value[k]);
     } else bits[j].push_back(value);
-    for(const auto &bit:bits[j])if(!bit.isNumber() || (!bit.number().isZero() && !bit.number().isOne())) {CALCULATOR->error(true,"Binary bit operations require each entry to be 0 or 1.",NULL);return 0;}
+    for(const auto &bit:bits[j]) {
+     if(op=="qbitword" && (bit.isUnknown() || bit.isSymbolic())) {symbolicLabel=true;continue;}
+     if(!bit.isNumber() || (!bit.number().isZero() && !bit.number().isOne())) {CALCULATOR->error(true,"Binary bit operations require each entry to be 0 or 1.",NULL);return 0;}
+    }
     knownWidths[j]=static_cast<int>(bits[j].size());
    }
-   if(op!="qbitvalue" && knownWidths[0]>=0 && knownWidths[1]>=0 && knownWidths[0]!=knownWidths[1]) {CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;}
+   if(operands==2 && knownWidths[0]>=0 && knownWidths[1]>=0 && knownWidths[0]!=knownWidths[1]) {CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;}
    // Retain both operands so later substitutions still check their domains.
    if(symbolicLabel)return 0;
-   if(op=="qbitvalue") {
+   if(operands==1) {
     Number value(0);
     for(const auto &bit:bits[0]) {value.multiply(2);if(bit.number().isOne())value.add(1);}
+    if(op=="qbitword") {
+     MathStructure index(value),width(knownWidths[0]);
+     out.set(CALCULATOR->getFunction("qbitlabel"),&index,&width,NULL);return 1;
+    }
     out=MathStructure(value);return 1;
    }
    if(bits[0].size()!=bits[1].size()) {CALCULATOR->error(true,"Binary bit operations require equally long bit vectors.",NULL);return 0;}
@@ -323,5 +334,6 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
+ calculator.addFunction(new QuantumBinaryFunction("qbitword",1));
  for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }

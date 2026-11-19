@@ -249,6 +249,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qcssstate",3},
  {"qcssencoder",2},
  {"qbitvalue",1},
+ {"qbitword",1},
  {"qbloch",1},
  {"qblochsub",2},
  {"qpovm",2},
@@ -1345,6 +1346,7 @@ class Parser {
     if(name=="css_state")name="qcssstate";
     if(name=="css_encoder")name="qcssencoder";
     if(name=="bitvalue")name="qbitvalue";
+    if(name=="bitword")name="qbitword";
     if(name=="density") name="qdensity";
     if(name=="bloch") name="qbloch";
     if(name=="povm" || name=="instrument" || name=="measurementvalid" || name=="outcomelabels" || name=="effects" || name=="ensemble" || name=="ensembleaverage" || name=="ensemblevalid" || name=="probabilities" || name=="branches" || name=="poststate" || name=="naimark")name="q"+name;

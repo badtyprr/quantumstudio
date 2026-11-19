@@ -1,0 +1,35 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "0baea7d567e8549b33082f78e84b07eaa2ebed9ca1b70a667bde33f4e0ae2d6d",
+  "id": "IBM028-2ff07f29-M103",
+  "source_literal": "$a_1 a_0$",
+  "mode": "Binary word",
+  "display": "bitword([\"a_1\", \"a_0\"])",
+  "copy": "qbitword(vector(\"a_1\",\"a_0\"))",
+  "assignments": [
+    {
+      "high": 0,
+      "low": 0,
+      "word": "qbitlabel(0,2)",
+      "integer": 0
+    },
+    {
+      "high": 0,
+      "low": 1,
+      "word": "qbitlabel(1,2)",
+      "integer": 1
+    },
+    {
+      "high": 1,
+      "low": 0,
+      "word": "qbitlabel(2,2)",
+      "integer": 2
+    },
+    {
+      "high": 1,
+      "low": 1,
+      "word": "qbitlabel(3,2)",
+      "integer": 3
+    }
+  ]
+}

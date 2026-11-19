@@ -448,6 +448,18 @@ class Printer {
   }
   if(name=="qbars" && value.size()==1)
    return Fragment("|"+render(value[0],depth+1).text+"|");
+  if(name=="qbitword" && value.size()==1) {
+   const auto &bits=value[0];
+   std::string text="bitword([";
+   if(bits.isVector() || (bits.isFunction() && (bits.function()->referenceName()=="horzcat" ||
+      bits.function()->referenceName()=="vector"))) {
+    for(size_t k=0;k<bits.size();++k) {
+     if(k)text+=", ";
+     text+=render(bits[k],depth+1).text;
+    }
+   } else text+=render(bits,depth+1).text;
+   return Fragment(text+"])");
+  }
   if((name=="qbitvalue" && value.size()==1) || ((name=="qbitxor" || name=="qbitdot") && value.size()==2)) {
    std::string text=name.substr(1)+"(";
    for(size_t i=0;i<value.size();++i) {if(i)text+=", ";text+=render(value[i],depth+1).text;}

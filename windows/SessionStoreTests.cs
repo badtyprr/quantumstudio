@@ -32,7 +32,10 @@ class SessionStoreTests {
    expected=Valid();expected.Mode=4;expected.Expression="$01$";expected.History[0].Mode=4;
    SessionStore.Save(path,expected);var fraction=SessionStore.Load(path);
    Require(fraction.Mode==4 && fraction.Expression=="$01$" && fraction.History[0].Mode==4,"Binary fraction mode was lost");
-   expected.Mode=5;Reject(delegate {SessionStore.Validate(expected);});
+   expected=Valid();expected.Mode=5;expected.Expression="$a_1 a_0$";expected.History[0].Mode=5;
+   SessionStore.Save(path,expected);var word=SessionStore.Load(path);
+   Require(word.Mode==5 && word.Expression=="$a_1 a_0$" && word.History[0].Mode==5,"Binary word mode was lost");
+   expected.Mode=6;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Evaluation=-1;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Expression=" ";Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Result=new string('x',32769);Reject(delegate {SessionStore.Validate(expected);});
