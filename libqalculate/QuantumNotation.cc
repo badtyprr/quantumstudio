@@ -1801,6 +1801,9 @@ class Parser {
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
+    // An unsized Fourier transform names the operator family. A subscript
+    // supplies its dimension and a QFT(...) call supplies its qubit count.
+    else if(a=="QFT")a=indexableLabel(a);
     // Keep lexical constants distinct from constants introduced by gate
     // expansion. An explicit local binder may rename only the former.
     else if(a=="i" || a=="e" || a=="pi")a=std::string(1,constantMarkerBegin)+a+constantMarkerEnd;

@@ -103,6 +103,9 @@ int main(){try {
  for(const std::string literal:{"'N'","\"high\"","'α'","'π⊗σ_x²'","\"a'⊗b\"","'a\"⊗b'","'a b'"})equal(literal,literal);
  equal("['α';'β']","['α';'β']");
  equal("qfourier('N')","qfourier('N')");
+ equal(R"($\mathrm{QFT}$)",R"("QFT")");
+ equal("QFT(2)","qft(2)");
+ rejects("QFT()");
  equal("|'a|b'|","qbars('a|b')");
  rejects("'unfinished");
  rejects("\"unfinished");

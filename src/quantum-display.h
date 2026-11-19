@@ -94,6 +94,19 @@ class Printer {
  }
  Fragment render(const MathStructure &value,unsigned depth) {
   if(depth>128 || ++nodes>2048)return fallback(value);
+  // A space between columns also denotes multiplication in quantum input.
+  // Use explicit separators so a displayed matrix keeps its shape on paste.
+  if(value.isMatrix() && value.columns()>1) {
+   std::string text="[";
+   for(size_t row=1;row<=value.rows();++row) {
+    if(row>1)text+="; ";
+    for(size_t col=1;col<=value.columns();++col) {
+     if(col>1)text+=", ";
+     text+=render(*value.getElement(row,col),depth+1).text;
+    }
+   }
+   return Fragment(text+"]");
+  }
   if(value.isVector() && !value.isMatrix() && value.size()>0) {
    bool labels=true;
    for(size_t i=0;i<value.size();++i)labels=labels && value[i].isFunction() && (value[i].function()->referenceName()=="qbitlabel" || value[i].function()->referenceName()=="qtuple");
@@ -566,7 +579,7 @@ class Printer {
  public:
  explicit Printer(const PrintOptions &print):options(print) {}
  std::string print(const MathStructure &value) {
-  if(value.isMatrix() || value.isNumber())return value.print(options);
+  if(value.isNumber() || (value.isMatrix() && value.columns()<=1))return value.print(options);
   if(!collect(value))return value.print(options);
   std::string text=render(value,0).text;
   return !lostBinding && text.size()<=131072 ? text : value.print(options);
