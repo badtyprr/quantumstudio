@@ -912,6 +912,9 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   if(op=="qdag" && quantumOperatorAdjoint(a,out))return 1;
+  // An unbound capital letter can denote an operator. Retain its adjoint
+  // across Copy until substitution supplies its entries and dimensions.
+  if(op=="qdag" && a.isSymbolic() && a.symbol().size()==1 && a.symbol()[0]>='A' && a.symbol()[0]<='Z')return 0;
   if((op=="qdag" || op=="qconj" || op=="qtranspose") && !a.isVector() && !a.representsScalar())return 0;
   if(op=="qdag") { out=dagger(a,eo); return 1; }
   if(op=="qconj") { out=dagger(a,eo); if(a.isMatrix()) transposeQuantumMatrix(out); return 1; }

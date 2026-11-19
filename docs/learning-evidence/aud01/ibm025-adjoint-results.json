@@ -1,0 +1,62 @@
+{
+  "worker_sha256": "320a7e434c5d09e8cf65e7cfa0dfa9b2e16b68b7fe6f6008cb03e655bc83e046",
+  "notebook_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "originals": 91,
+  "changes": [
+    "M038"
+  ],
+  "adjoint": {
+    "id": "IBM025-dee8cce0-M038",
+    "label": "EXACT RESULT",
+    "display": "R†",
+    "copy": "qdag('R')",
+    "restored_same": true,
+    "reentry_label": "EXACT RESULT",
+    "second_copy": "qdag('R')"
+  },
+  "controls": [
+    {
+      "id": "complex-rectangular",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "incorrect-transpose",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "double-adjoint",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "complex-scalar",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "windows_gui": {
+    "passed": true,
+    "checks": 1045,
+    "calls": 95,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

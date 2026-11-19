@@ -17,6 +17,24 @@ def evaluate(expression):
 for row in source["rows"]:
     records[row["id"][-4:]] = evaluate(row["literal"])
 
+# R is the reversible circuit in the lesson. Bind after entry, display, and
+# Copy to distinguish an inverse permutation, transpose, and conjugation.
+adjoint = records["M038"]
+literal = next(row["literal"].strip("$") for row in source["rows"] if row["id"].endswith("M038"))
+for body in (literal, adjoint["display_text"], adjoint["copy_text"]):
+    assert evaluate(body)["copy_text"] == adjoint["copy_text"]
+    for operand, expected in [
+        ("matrix(2,3,[1,i,2,3,4,i])", "matrix(3,2,[1,3,-i,4,2,-i])"),
+        ("matrix(3,3,[0,0,1,1,0,0,0,1,0])", "matrix(3,3,[0,1,0,0,0,1,1,0,0])"),
+        ("i", "-i"), ("7", "7"),
+    ]:
+        assert evaluate(f"replace(({body}),R,{operand})={expected}")["copy_text"] == "1"
+for number, gate in [("M002", "matrix(2,2,[1,1,1,-1])/sqrt(2)"),
+                     ("M003", "matrix(2,2,[1,0,0,(1+i)/sqrt(2)])"),
+                     ("M004", "matrix(2,2,[1,0,0,(1-i)/sqrt(2)])")]:
+    assert evaluate(f"({records[number]['copy_text']})=({gate})")["copy_text"] == "1"
+assert evaluate("R\u2020\u2020")["copy_text"] == evaluate("R")["copy_text"]
+
 toffoli = records["M001"]["copy_text"]
 # IBM orders the two low bits as controls and the high bit as target.
 for column in range(8):
