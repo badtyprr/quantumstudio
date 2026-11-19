@@ -131,9 +131,9 @@ AS_IF([test "x$with_flint" != xno], [
     AC_DEFINE([HAVE_FLINT], [1], [Use FLINT for integer factorization])
   ], [
     AC_MSG_RESULT([no])
-    LIBS="$saved_LIBS"
     AS_IF([test "x$with_flint" = xyes], [AC_MSG_ERROR([FLINT with ECM support is required by --with-flint])])
   ])
+  LIBS="$saved_LIBS"
 ])
 
 AC_SUBST([FLINT_LIBS])
