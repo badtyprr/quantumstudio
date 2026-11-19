@@ -332,11 +332,12 @@ class QuantumOrderFunction: public MathFunction {
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
   args[1].eval(eo);
-  // Preserve a piecewise length definition and its domain guards on Copy.
-  // After substitution the length is numerical and ordinary comparison applies.
+  // Preserve piecewise bit definitions and their domain guards on Copy.
+  // After substitution the bit quantity is numerical and comparison applies.
   if(equality)for(unsigned k=0;k<2;++k) {
-   if(args[k].isFunction() && args[k].function()->referenceName()=="qbitlength" &&
-      args[k].containsUnknowns() && raw[1-k].isFunction() && raw[1-k].function()->referenceName()=="if")return 0;
+   if(!raw[1-k].isFunction() || raw[1-k].function()->referenceName()!="if" || !args[k].containsUnknowns())continue;
+   if(args[k].isFunction() && args[k].function()->referenceName()=="qbitlength")return 0;
+   if(args[k].containsFunction(CALCULATOR->getFunction("qbitvalue")))return 0;
   }
   for(unsigned k=0;k<2;++k)if(args[k].isFunction() && args[k].function()->referenceName()=="qbigorder") {
    if(k==1 && args[2].isNumber() && (args[2].number()==4 || args[2].number()==5) && args[k].size()==1 &&

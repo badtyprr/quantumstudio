@@ -655,7 +655,7 @@ class TeXReader {
   if(required && order.empty())throw std::runtime_error(error("Matrix norms require an explicit norm convention"));
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
- std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false) {
+ std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false,std::string *preceding=nullptr) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
@@ -938,7 +938,19 @@ class TeXReader {
   }
   if(name=="begin") {
    auto env=nameGroup();
-   if(env=="cases")return read(0,true,env);
+   if(env=="cases") {
+    // On the left of a cases definition, 0.a denotes a single fractional
+    // bit. Validate its width when the bit is assigned a concrete value.
+    if(preceding) {
+     std::string lhs=trim(*preceding);
+     if(!lhs.empty() && lhs.back()=='=') {
+      lhs=trim(lhs.substr(0,lhs.size()-1));
+      if(lhs.size()==3 && lhs.compare(0,2,"0.")==0 && asciiLetter(lhs[2]))
+       *preceding="(qbitvalue(qbitlabel("+lhs.substr(2)+",1))/2)=";
+     }
+    }
+    return read(0,true,env);
+   }
    if(env=="aligned" || env=="align" || env=="align*" || env=="gathered" || env=="gather" || env=="gather*" || env=="split") {
     space();
     if(pos<input.size() && input[pos]=='[') {
@@ -1109,7 +1121,7 @@ class TeXReader {
     bool registerLabel=delimiter!=std::string::npos && result[delimiter]!='>' &&
      result.find('_',delimiter+1)!=std::string::npos;
     size_t commandStart=pos;
-    std::string part=command(matrix,norms,environment=="cases",registerLabel);
+    std::string part=command(matrix,norms,environment=="cases",registerLabel,&result);
     // A final TeX row break terminates the last row. Exclude it from both
     // the translated matrix and the raw rows used to infer indexed entries.
     if(matrixBodyEnd && part==";") {
