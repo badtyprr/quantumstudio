@@ -550,6 +550,15 @@ class Printer {
    if(left.kind==Bra && right.kind==Ket)return Fragment("⟨"+left.label+"|"+right.label+"⟩");
    if(left.kind==BraProduct && right.kind==Ket)return Fragment(left.text+" "+right.text);
    if(left.kind==Bra)return Fragment(left.text+" "+grouped(right,41),40,BraProduct);
+   // Juxtaposition with a row or column can become a tensor product once
+   // the left operand is bound. Keep that decision for the evaluator.
+   if(name=="qadjacent") {
+    const auto &operand=value[1];
+    bool vectorMatrix=operand.isMatrix() && (operand.columns()==1 || operand.rows()==1);
+    if(operand.isFunction() && operand.function()->referenceName()=="matrix" && operand.size()==3)
+     vectorMatrix=operand[0].isOne() || operand[1].isOne();
+    if(vectorMatrix)return Fragment("("+left.text+") ("+right.text+")",40);
+   }
    return Fragment(grouped(left,40)+(right.kind==Ket ? " " : " · ")+grouped(right,40),40);
   }
   return fallback(value);
