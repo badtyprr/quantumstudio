@@ -1,0 +1,915 @@
+{
+  "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/measuring-computational-cost.ipynb",
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "worker_revision": "2965fa7ab",
+  "worker_sha256": "b1794b840fec710c0defe0a97d1dd9fd4e294c466e334a64a68c90be5d3a8f8f",
+  "gui_worker_revision": "0977264a",
+  "gui_worker_sha256": "be2636ea64d9d9833eb28c5715e100da0a5068ecd7747174b3205593da731241",
+  "notebook_cells": {
+    "markdown": 1,
+    "code": 0
+  },
+  "gui": {
+    "passed": true,
+    "checks": 1807,
+    "calls": 170,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "literal_results": 163,
+  "diagnostics": 7,
+  "results_with_exact_gui_copy_after_save_and_reopen": 163,
+  "semantic_checks": [
+    {
+      "input": "powmod(0,0,1)",
+      "expected": "0",
+      "actual": "0"
+    },
+    {
+      "input": "powmod(0,1,13)",
+      "expected": "0",
+      "actual": "0"
+    },
+    {
+      "input": "powmod(23,0,17)",
+      "expected": "1",
+      "actual": "1"
+    },
+    {
+      "input": "powmod(23,5,17)",
+      "expected": "7",
+      "actual": "7"
+    },
+    {
+      "input": "powmod(2,1024,101)",
+      "expected": "5",
+      "actual": "5"
+    },
+    {
+      "input": "powmod(3,340282366920938463463374607431768211457,65537)",
+      "expected": "3",
+      "actual": "3"
+    }
+  ],
+  "asymptotic_example": {
+    "source": "$17 n^3 - 257 n^2 + 65537 = O(n^3)$",
+    "actual": "(('O')==(17 − 257 ∕ n + 65537 ∕ n³) and (n)!=(0))",
+    "expected": true,
+    "witness": "For integer n >= 16, (17*n - 257)*n^2 >= 0 and 257*n^2 >= 65537. Thus 0 <= 17*n^3 - 257*n^2 + 65537 <= 17*n^3."
+  },
+  "rows": [
+    {
+      "id": "IBM024-5c5b90e6-M001",
+      "literal": "$\\varepsilon$",
+      "copy": "'ε'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M002",
+      "literal": "$\\varepsilon$",
+      "copy": "'ε'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M003",
+      "literal": "$\\varepsilon$",
+      "copy": "'ε'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M004",
+      "literal": "$\\varepsilon$",
+      "copy": "'ε'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M005",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M006",
+      "literal": "$\\operatorname{lg}(N)$",
+      "copy": "ln('N') ∕ ln(10)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M007",
+      "literal": "$$\n\\operatorname{lg}(N) =\n\\begin{cases}\n1 & N = 0\\\\\n1 + \\lfloor \\log_2 (N) \\rfloor & N \\geq 1\n\\end{cases}\n$$",
+      "copy": "((('N')!=(0) and ('N')<(1) and (ln('N'))==(ln(10) ⋅ undefined)) or (('N')>=(1) and (ln('N') ∕ ln(10) − qadd(1, floor(ln(2'N''_'))))==(0)))",
+      "second_copy": "((('N')!=(0) and ('N')<(1) and (ln('N'))==(ln(10) ⋅ undefined)) or (('N')>=(1) and (ln('N') − floor(ln(2'N''_')) ⋅ ln(10))==(ln(10))))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M008",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M009",
+      "literal": "$\\operatorname{lg}(N)$",
+      "copy": "ln('N') ∕ ln(10)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M010",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M011",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M012",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M013",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M014",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M015",
+      "literal": "$X$",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M016",
+      "literal": "$Y$",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M017",
+      "literal": "$Z$",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M018",
+      "literal": "$H$",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M019",
+      "literal": "$S$",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M020",
+      "literal": "$T$",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M021",
+      "literal": "$U$",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M022",
+      "literal": "$X$",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M023",
+      "literal": "$Y$",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M024",
+      "literal": "$Z$",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M025",
+      "literal": "$H$",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M026",
+      "literal": "$S$",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M027",
+      "literal": "$S^{\\dagger}$",
+      "copy": "matrix(2,2,[1,0,0,−i])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M028",
+      "literal": "$T$",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M029",
+      "literal": "$T^{\\dagger}$",
+      "copy": "matrix(2,2,[1,0,0,(1 ∕ 2 − i ∕ 2) ⋅ √(2)])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M030",
+      "literal": "$S$",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M031",
+      "literal": "$\\vert 0\\rangle$",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M032",
+      "literal": "$\\operatorname{size}(C)$",
+      "copy": "ie'C''s'z"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M033",
+      "literal": "$C$",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M034",
+      "literal": "$t$",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M035",
+      "literal": "$t(n)$",
+      "copy": "n't'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M036",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M037",
+      "literal": "$\\{C_1, C_2, C_3,\\ldots\\}$",
+      "diagnostic": "Use two endpoints around one ellipsis for an ascending integer index range at byte 25"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M038",
+      "literal": "$C_n$",
+      "copy": "\"C_n\""
+    },
+    {
+      "id": "IBM024-5c5b90e6-M039",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M040",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M041",
+      "literal": "$t$",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M042",
+      "literal": "$$\nt(n) = \\operatorname{size}(C_n).\n$$",
+      "copy": "(((\"C_n\")!=(0) and ('s')!=(0) and (z)==(−(in't') ∕ (e ⋅ \"C_n\" ⋅ 's'))) or ((\"C_n\")!=(0) and ('s')==(0) and ('t')==(0)) or ((\"C_n\")!=(0) and ('s')==(0) and (n)==(0)) or ((\"C_n\")==(0) and ('t')==(0)) or ((\"C_n\")==(0) and (n)==(0)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M043",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M044",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M045",
+      "literal": "$N+M$",
+      "copy": "'M' + 'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M046",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M047",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M048",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M049",
+      "literal": "$$\n0\\leq N,M\\leq 2^n - 1.\n$$",
+      "diagnostic": "Unexpected notation at byte 7"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M050",
+      "literal": "$(n+1)$",
+      "copy": "n + 1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M051",
+      "literal": "$2$",
+      "copy": "2"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M052",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M053",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M054",
+      "literal": "$$\n21 (n-1) + 10 = 21 n - 11\n$$",
+      "copy": "1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M055",
+      "literal": "$2n-1$",
+      "copy": "2n − 1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M056",
+      "literal": "$2n-1$",
+      "copy": "2n − 1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M057",
+      "literal": "$n-1$",
+      "copy": "n − 1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M058",
+      "literal": "$4n-2$",
+      "copy": "4n − 2"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M059",
+      "literal": "$9n-5$",
+      "copy": "9n − 5"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M060",
+      "literal": "$5n-3$",
+      "copy": "5n − 3"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M061",
+      "literal": "$g(n)$",
+      "copy": "'g'n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M062",
+      "literal": "$h(n)$",
+      "copy": "'h'n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M063",
+      "literal": "$g(n) = O(h(n))$",
+      "copy": "((('O')==('g' ∕ 'h') and ('h')!=(0) and (n)!=(0)) or (('g')==(0) and ('h')==(0)) or (('h')!=(0) and (n)==(0)) or (('h')==(0) and (n)==(0)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M064",
+      "literal": "$c > 0$",
+      "copy": "1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M065",
+      "literal": "$n_0$",
+      "copy": "\"n_0\""
+    },
+    {
+      "id": "IBM024-5c5b90e6-M066",
+      "literal": "$$\ng(n) \\leq c\\cdot h(n)\n$$",
+      "copy": "((('g')<=((149896229 ∕ 500000)'h' km ∕ ms) and (n)>(0)) or (('g')>=((149896229 ∕ 500000)'h' km ∕ ms) and (n)<(0)) or (('h')<=(0) and (n)==(0)) or (('h')>=(0) and (n)==(0)))",
+      "second_copy": "((('g')<=((149896229'h''k') ∕ (500000's')) and (n)>=(1)) or (('g')>=((149896229'h''k') ∕ (500000's')) and (n)<=(−1)) or (('h')<=(0) and (n)==(0)) or (('h')>=(0) and (n)==(0)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M067",
+      "literal": "$n \\geq n_0$",
+      "copy": "(\"n_0\")<=(n)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M068",
+      "literal": "$h(n)$",
+      "copy": "'h'n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M069",
+      "literal": "$17 n^3 - 257 n^2 + 65537 = O(n^3)$",
+      "copy": "(('O')==(17 − 257 ∕ n + 65537 ∕ n³) and (n)!=(0))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M070",
+      "literal": "$g(n,m)$",
+      "copy": "vector('g'n,'g''m')"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M071",
+      "literal": "$h(n,m)$",
+      "copy": "vector('h'n,'h''m')"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M072",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M073",
+      "literal": "$m$",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M074",
+      "literal": "$g(n,m) = O(h(n,m))$",
+      "copy": "(vector('g'n − 'h'n'O','g''m' − 'O''h''m'))==(vector(0,0))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M075",
+      "literal": "$c > 0$",
+      "copy": "1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M076",
+      "literal": "$k_0$",
+      "copy": "\"k_0\""
+    },
+    {
+      "id": "IBM024-5c5b90e6-M077",
+      "literal": "$$\ng(n,m) \\leq c\\cdot h(n,m)\n$$",
+      "diagnostic": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM024-5c5b90e6-M078",
+      "literal": "$n+m \\geq k_0$",
+      "copy": "(\"k_0\")<=('m' + n)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M079",
+      "literal": "$\\{C_1, C_2,\\ldots,\\}$",
+      "diagnostic": "Use two endpoints around one ellipsis for an ascending integer index range at byte 21"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M080",
+      "literal": "$C_n$",
+      "copy": "\"C_n\""
+    },
+    {
+      "id": "IBM024-5c5b90e6-M081",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M082",
+      "literal": "$\\operatorname{size}(C_n) = O(n)$",
+      "copy": "(((\"C_n\")!=(0) and ('O')==(0) and ('s')==(0)) or ((\"C_n\")!=(0) and ('s')!=(0) and (z)==(−(in'O') ∕ (e ⋅ \"C_n\" ⋅ 's'))) or ((\"C_n\")!=(0) and ('s')==(0) and (n)==(0)) or ((\"C_n\")==(0) and ('O')==(0)) or ((\"C_n\")==(0) and (n)==(0)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M083",
+      "literal": "$7$",
+      "copy": "7"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M084",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M085",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M086",
+      "literal": "$NM$",
+      "copy": "'M''N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M087",
+      "literal": "$O(n^2)$",
+      "copy": "n²'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M088",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M089",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M090",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M091",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M092",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M093",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M094",
+      "literal": "$m$",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M095",
+      "literal": "$O(nm)$",
+      "copy": "'m'n'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M096",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M097",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M098",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M099",
+      "literal": "$O(n \\operatorname{lg}(n) \\operatorname{lg}(\\operatorname{lg}(n)))$",
+      "copy": "(ln(ln(n) ∕ ln(10)) ⋅ ln(n) ⋅ n'O') ∕ (ln(5)² + ln(2)² + 2 ⋅ ln(2) ⋅ ln(5))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M100",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M101",
+      "literal": "$M\\neq0$",
+      "copy": "('M')!=(0)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M102",
+      "literal": "$q$",
+      "copy": "'q'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M103",
+      "literal": "$r$",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M104",
+      "literal": "$0\\leq r < |M|$",
+      "copy": "(('r')>=(0) and (qbars('M'))>('r'))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M105",
+      "literal": "$N = q M + r$",
+      "copy": "((('M')==(('N' − 'r') ∕ 'q') and ('q')!=(0)) or (('N')==('r') and ('q')==(0)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M106",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M107",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M108",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M109",
+      "literal": "$m$",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M110",
+      "literal": "$O(nm)$",
+      "copy": "'m'n'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M111",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M112",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M113",
+      "literal": "$m$",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M114",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M115",
+      "literal": "$O(nm)$",
+      "copy": "'m'n'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M116",
+      "literal": "$O(n(\\operatorname{lg}(n))^2 \\operatorname{lg}(\\operatorname{lg}(n)))$",
+      "copy": "(ln(ln(n) ∕ ln(10)) ⋅ ln(n)²n²'O') ∕ (ln(5)³ + ln(2)³ + 3 ⋅ ln(2)² ⋅ ln(5) + 3 ⋅ ln(2) ⋅ ln(5)²)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M117",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M118",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M119",
+      "literal": "$K$",
+      "copy": "'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M120",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M121",
+      "literal": "$K\\geq 0$",
+      "copy": "('K')>=(0)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M122",
+      "literal": "$M\\geq 1$",
+      "copy": "('M')>=(1)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M123",
+      "literal": "$N^K \\hspace{1mm} (\\text{mod }M)$",
+      "diagnostic": "Unsupported TeX command: \\hspace at byte 12"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M124",
+      "literal": "$N^K\\hspace{1mm} (\\text{mod }M)$",
+      "diagnostic": "Unsupported TeX command: \\hspace at byte 11"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M125",
+      "literal": "$N^K$",
+      "copy": "'N'^'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M126",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M127",
+      "literal": "$r$",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M128",
+      "literal": "$0\\leq r < M$",
+      "copy": "(('M')>('r') and ('r')>=(0))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M129",
+      "literal": "$N^K = q M + r$",
+      "copy": "('N'^'K')==('M''q' + 'r')"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M130",
+      "literal": "$q$",
+      "copy": "'q'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M131",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M132",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M133",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M134",
+      "literal": "$m$",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M135",
+      "literal": "$K$",
+      "copy": "'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M136",
+      "literal": "$k$",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M137",
+      "literal": "$O(k m^2 + nm)$",
+      "copy": "'O''k''m'² + 'm'n'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M138",
+      "literal": "$N^K$",
+      "copy": "'N'^'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M139",
+      "literal": "$N^K$",
+      "copy": "'N'^'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M140",
+      "literal": "$K$",
+      "copy": "'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M141",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M142",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M143",
+      "literal": "$M$",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M144",
+      "literal": "$K$",
+      "copy": "'K'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M145",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M146",
+      "literal": "$O(n^3)$",
+      "copy": "n³'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M147",
+      "literal": "$2,\\ldots,\\sqrt{N}$",
+      "diagnostic": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM024-5c5b90e6-M148",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M149",
+      "literal": "$O(2^{n/2})$",
+      "copy": "2^(n ∕ 2) ⋅ 'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M150",
+      "literal": "$N$",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M151",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M152",
+      "literal": "$O(n^2)$",
+      "copy": "n²'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M153",
+      "literal": "$O(n^2 2^{n/2})$",
+      "copy": "2^(n ∕ 2) ⋅ n^2 ⋅ 'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M154",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M155",
+      "literal": "$$\n2^{O(n^{1/3} (\\operatorname{lg}(n))^{2/3})}\n$$",
+      "copy": "2^((ln(n)^(2 ∕ 3) ⋅ n^(1 ∕ 3) ⋅ 'O') ∕ cbrt(ln(5)^2 + ln(2)^2 + 2 ⋅ ln(2) ⋅ ln(5)))"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M156",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M157",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M158",
+      "literal": "$1/3$",
+      "copy": "1 ∕ 3"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M159",
+      "literal": "$O(n^c)$",
+      "copy": "n^((149896229 km) ∕ (500000 ms)) ⋅ 'O'",
+      "second_copy": "n^((149896229'k') ∕ (500000's')) ⋅ 'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M160",
+      "literal": "$c > 0$",
+      "copy": "1"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M161",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M162",
+      "literal": "$1/3$",
+      "copy": "1 ∕ 3"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M163",
+      "literal": "$$\nO\\bigl(2^{n^{\\varepsilon}}\\bigr)\n$$",
+      "copy": "2^(n^'ε') ⋅ 'O'"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M164",
+      "literal": "$\\varepsilon > 0$",
+      "copy": "('ε')>(0)"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M165",
+      "literal": "$n^{1000}$",
+      "copy": "n^1000"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M166",
+      "literal": "$n^{1000000}$",
+      "copy": "n^1000000"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M167",
+      "literal": "$n$",
+      "copy": "n"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M168",
+      "literal": "$n^{1000000}$",
+      "copy": "n^1000000"
+    },
+    {
+      "id": "IBM024-5c5b90e6-M169",
+      "literal": "$C_n$",
+      "copy": "\"C_n\""
+    },
+    {
+      "id": "IBM024-5c5b90e6-M170",
+      "literal": "$n$",
+      "copy": "n"
+    }
+  ]
+}
