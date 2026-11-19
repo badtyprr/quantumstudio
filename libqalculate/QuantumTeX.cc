@@ -1318,8 +1318,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(first==std::string::npos) return "";
  // The mode precedes the pasted formula, including any TeX delimiters.
  const bool dimensions=input.compare(first,11,"dimensions:")==0;
- if(dimensions) {
-  first=input.find_first_not_of(" \t\r\n",first+11);
+ const bool fractionBits=input.compare(first,13,"fractionbits:")==0;
+ if(dimensions || fractionBits) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : 13));
   if(first==std::string::npos)return "";
  } else if(input.compare(first,5,"sets:")==0) {
   if(setNotation)*setNotation=true;
@@ -1337,12 +1338,21 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(first==std::string::npos)throw std::runtime_error("Expected an expression after the matrix declaration.");
  }
  std::string s=input.substr(first,last-first+1);
+ // Inline Markdown can leave the radix point immediately outside the
+ // math span, as in .$01$. The selected mode supplies it for $01$ alone.
+ if(fractionBits && s.compare(0,2,".$")==0)s.erase(0,1);
  bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(mathWrapper)s=withoutDisplayPunctuation(s);
+ if(fractionBits) {
+  std::string digits=trim(s);
+  if(!digits.empty() && digits.front()=='.')digits.erase(0,1);
+  if(!digits.empty() && digits.find_first_not_of("0123456789")==std::string::npos)
+   s="."+digits+"₂";
+ }
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
  static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},

@@ -29,7 +29,10 @@ class SessionStoreTests {
    expected=Valid();expected.Mode=3;expected.Expression="N × N";expected.History[0].Mode=3;
    SessionStore.Save(path,expected);var shape=SessionStore.Load(path);
    Require(shape.Mode==3 && shape.Expression=="N × N" && shape.History[0].Mode==3,"Matrix dimensions mode was lost");
-   expected.Mode=4;Reject(delegate {SessionStore.Validate(expected);});
+   expected=Valid();expected.Mode=4;expected.Expression="$01$";expected.History[0].Mode=4;
+   SessionStore.Save(path,expected);var fraction=SessionStore.Load(path);
+   Require(fraction.Mode==4 && fraction.Expression=="$01$" && fraction.History[0].Mode==4,"Binary fraction mode was lost");
+   expected.Mode=5;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Evaluation=-1;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Expression=" ";Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Result=new string('x',32769);Reject(delegate {SessionStore.Validate(expected);});

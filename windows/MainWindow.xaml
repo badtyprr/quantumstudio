@@ -61,6 +61,7 @@
           <ComboBoxItem Content="Standard calculator"/>
           <ComboBoxItem Content="Set notation" ToolTip="Interpret S¹ as the complex unit circle."/>
           <ComboBoxItem Content="Matrix dimensions" ToolTip="Enter the row and column counts, for example 3 × 4."/>
+          <ComboBoxItem Content="Binary fraction digits" ToolTip="Enter the bits after the binary point. For example, 01 or .01 represents one quarter."/>
          </ComboBox>
         </StackPanel>
         <StackPanel>
