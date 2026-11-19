@@ -227,6 +227,10 @@ A named nonempty collection of binary-string labels can be used as a set ket, fo
 
 The explicit binary Cartesian domain `\{0,1\}^n` enumerates bit strings of width `n`, preserving leading zeros. Widths must evaluate to integers from 0 through 10; width zero contains the empty string. `bitstrings(n)` is the function spelling. These domains work in finite sums: `\sum_{x\in\{0,1\}^2}{|x>}` yields `[1;1;1;1]`, and the corresponding sum of `|x><x|` is `identity(4)`. A typed label supplies its own ket dimension. Reversing or repeating the alphabet's entries does not change the domain.
 
+For a finite binary function graph, `f(x)` applies the function and `f^(-1)(x)` looks up the unique preimage. The inverse graph reverses every input-output pair and checks that the mapping is one-to-one, including bit-string widths. When `f` is assigned a scalar, the same notation supports multiplication and its reciprocal.
+
+In `y = 0^m`, binding `y` to a bit string compares it with the all-zero word of width `m`. The empty word matches at width zero. Binding `y` to a number uses ordinary exponentiation.
+
 Use `bitstring("011")` to enter the three-bit word printed in Simon's lesson. It copies as `qbitlabel(3,3)`. In a definition such as `s=011`, binding `s` to a bit string compares both value and width. Binding `s` to a number selects decimal comparison. Similarly, `z=f(x)` keeps the application through Copy so a later binding of `f` to a finite graph performs a lookup.
 
 In a shared bound such as `0 ≤ N,M ≤ 2^n - 1`, both inequalities apply to each middle operand. Parenthesize the full bound when passing it to a function. For example, `vector(0 ≤ 3, 4 ≤ 2)` contains two independent comparisons.

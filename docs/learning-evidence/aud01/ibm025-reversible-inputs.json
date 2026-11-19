@@ -1,0 +1,369 @@
+{
+  "notebook_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "rows": [
+    {
+      "id": "IBM025-dee8cce0-M001",
+      "literal": "$$\n\\begin{pmatrix}\n1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\\\\n0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\\\\n0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\\\\n0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\\\\n0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\\\\n0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\\\\n0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\\\\n0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\n\\end{pmatrix}\n$$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M002",
+      "literal": "$H$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M003",
+      "literal": "$T$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M004",
+      "literal": "$T^{\\dagger}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M005",
+      "literal": "$\\vert a\\rangle$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M006",
+      "literal": "$\\vert b\\rangle$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M007",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M008",
+      "literal": "$n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M009",
+      "literal": "$m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M010",
+      "literal": "$t = \\operatorname{size}(C)$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M011",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M012",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M013",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M014",
+      "literal": "$$\nf:\\Sigma^n\\rightarrow\\Sigma^m\n$$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M015",
+      "literal": "$\\Sigma = \\{0,1\\}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M016",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M017",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M018",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M019",
+      "literal": "$n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M020",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M021",
+      "literal": "$n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M022",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M023",
+      "literal": "$k$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M024",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M025",
+      "literal": "$g$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M026",
+      "literal": "$g:\\Sigma^n \\rightarrow \\Sigma^{n+k-m}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M027",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M028",
+      "literal": "$f(x)$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M029",
+      "literal": "$g(x)$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M030",
+      "literal": "$g$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M031",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M032",
+      "literal": "$g$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M033",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M034",
+      "literal": "$g$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M035",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M036",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M037",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M038",
+      "literal": "$R^{\\dagger}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M039",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M040",
+      "literal": "$m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M041",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M042",
+      "literal": "$m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M043",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M044",
+      "literal": "$R$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M045",
+      "literal": "$Q$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M046",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M047",
+      "literal": "$t$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M048",
+      "literal": "$Q$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M049",
+      "literal": "$O(t)$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M050",
+      "literal": "$k$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M051",
+      "literal": "$Q$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M052",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M053",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M054",
+      "literal": "$x$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M055",
+      "literal": "$y = 0^m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M056",
+      "literal": "$f(x)$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M057",
+      "literal": "$m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M058",
+      "literal": "$m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M059",
+      "literal": "$C$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M060",
+      "literal": "$f:\\Sigma^n \\rightarrow \\Sigma^m$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M061",
+      "literal": "$Q$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M062",
+      "literal": "$$\nQ \\bigl( \\vert y \\rangle \\vert 0^k \\rangle \\vert x\\rangle\\bigr)\n= \\vert y \\oplus f(x) \\rangle \\vert 0^k \\rangle \\vert x\\rangle\n$$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M063",
+      "literal": "$k$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M064",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M065",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M066",
+      "literal": "$f:\\Sigma^n \\rightarrow \\Sigma^n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M067",
+      "literal": "$f^{-1}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M068",
+      "literal": "$f^{-1}(f(x)) = x$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M069",
+      "literal": "$x\\in\\Sigma^n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M070",
+      "literal": "$\\vert x \\rangle$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M071",
+      "literal": "$\\vert f(x) \\rangle$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M072",
+      "literal": "$x\\in\\Sigma^n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M073",
+      "literal": "$$\nU \\vert x \\rangle = \\vert f(x) \\rangle\n$$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M074",
+      "literal": "$x\\in\\Sigma^n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M075",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M076",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M077",
+      "literal": "$U$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M078",
+      "literal": "$Q$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M079",
+      "literal": "$x$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M080",
+      "literal": "$f(x)$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M081",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M082",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M083",
+      "literal": "$f^{-1}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M084",
+      "literal": "$Q_f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M085",
+      "literal": "$Q_{f^{-1}}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M086",
+      "literal": "$f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M087",
+      "literal": "$f^{-1}$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M088",
+      "literal": "$n$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M089",
+      "literal": "$k$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M090",
+      "literal": "$Q_f$"
+    },
+    {
+      "id": "IBM025-dee8cce0-M091",
+      "literal": "$Q_{f^{-1}}$"
+    }
+  ]
+}

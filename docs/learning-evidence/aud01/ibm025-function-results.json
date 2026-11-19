@@ -1,0 +1,167 @@
+{
+  "worker_sha256": "fc91863e196520972d5d6dfcedb8c86e83b85335979067ef6216efcdce0a00e2",
+  "notebook_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "originals": 91,
+  "distinct_literals": 37,
+  "permutation": [
+    1,
+    2,
+    3,
+    0
+  ],
+  "changed_originals": [
+    {
+      "id": "IBM025-dee8cce0-M028",
+      "label": "EXACT RESULT",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM025-dee8cce0-M029",
+      "label": "EXACT RESULT",
+      "display": "g(x)",
+      "copy": "qnamedapplication('g',x)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qnamedapplication('g',x)"
+    },
+    {
+      "id": "IBM025-dee8cce0-M056",
+      "label": "EXACT RESULT",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM025-dee8cce0-M067",
+      "label": "EXACT RESULT",
+      "display": "f^(-1)",
+      "copy": "qinversefunction('f')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qinversefunction('f')"
+    },
+    {
+      "id": "IBM025-dee8cce0-M068",
+      "label": "EXACT RESULT",
+      "display": "f^(-1)(f(x)) = x",
+      "copy": "qcompare(qnamedapplication(qinversefunction('f'),qnamedapplication('f',x)),x,4)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qcompare(qnamedapplication(qinversefunction('f'),qnamedapplication('f',x)),x,4)"
+    },
+    {
+      "id": "IBM025-dee8cce0-M080",
+      "label": "EXACT RESULT",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM025-dee8cce0-M083",
+      "label": "EXACT RESULT",
+      "display": "f^(-1)",
+      "copy": "qinversefunction('f')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qinversefunction('f')"
+    },
+    {
+      "id": "IBM025-dee8cce0-M085",
+      "label": "EXACT RESULT",
+      "display": "Q_(f^(-1))",
+      "copy": "qindexedlabel(\"Q_\",qinversefunction('f'),\"\")",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedlabel(\"Q_\",qinversefunction('f'),\"\")"
+    },
+    {
+      "id": "IBM025-dee8cce0-M087",
+      "label": "EXACT RESULT",
+      "display": "f^(-1)",
+      "copy": "qinversefunction('f')",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qinversefunction('f')"
+    },
+    {
+      "id": "IBM025-dee8cce0-M091",
+      "label": "EXACT RESULT",
+      "display": "Q_(f^(-1))",
+      "copy": "qindexedlabel(\"Q_\",qinversefunction('f'),\"\")",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "qindexedlabel(\"Q_\",qinversefunction('f'),\"\")"
+    }
+  ],
+  "controls": [
+    {
+      "id": "forward-1-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "forward-3-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "reverse-1-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "reverse-3-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "scalar-call-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "scalar-inverse-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "windows_gui": {
+    "passed": true,
+    "checks": 1067,
+    "calls": 97,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

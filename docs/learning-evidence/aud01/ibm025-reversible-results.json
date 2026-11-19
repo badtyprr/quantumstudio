@@ -1,0 +1,18 @@
+{
+  "worker_sha256": "23f365dc36f888b299fe07379225662ff95f3541602addf85c87c1cb4572269f",
+  "notebook_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "gui_checks": 1001,
+  "gui_inputs": 91,
+  "exact_labels": 91,
+  "verified_equation": {
+    "id": "IBM025-dee8cce0-M062",
+    "label": "EXACT RESULT",
+    "display": "Q · ((|y⟩ ⊗ |0^k⟩) ⊗ |x⟩) = (|y ⊕ f(x)⟩ ⊗ |0^k⟩) ⊗ |x⟩",
+    "copy": "qcompare(qmul('Q',qtensor(qtensor(qketstate(y),qtensorpow(qmatrix(2,1,vector(1,0)),'k')),qketstate(x))),qtensor(qtensor(qcomputationalket(qoplus(y,qnamedapplication('f',x))),qtensorpow(qmatrix(2,1,vector(1,0)),'k')),qketstate(x)),4)",
+    "restored_same": true,
+    "reentry_label": "EXACT RESULT",
+    "second_copy": "qcompare(qmul('Q',qtensor(qtensor(qketstate(y),qtensorpow(qmatrix(2,1,vector(1,0)),'k')),qketstate(x))),qtensor(qtensor(qcomputationalket(qoplus(y,qnamedapplication('f',x))),qtensorpow(qmatrix(2,1,vector(1,0)),'k')),qketstate(x)),4)"
+  },
+  "toffoli_columns": 8,
+  "oracle_substitutions": 96
+}

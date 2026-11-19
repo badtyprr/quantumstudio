@@ -1,0 +1,80 @@
+{
+  "worker_sha256": "eeac1f92c4680b7ce1214a3dea45091f401cf99c634101b75f8fedb01b6c211e",
+  "notebook_sha256": "ec06bb65c2b394c9d5053a3dcbcf9407972a8fdca1fed4f0de8c357e91a72df7",
+  "originals": 91,
+  "changed_originals": [
+    "M055"
+  ],
+  "zero_word": {
+    "id": "IBM025-dee8cce0-M055",
+    "label": "EXACT RESULT",
+    "display": "y = 0^m",
+    "copy": "qcompare(y,qcomparisonzero(y,'m'),4)",
+    "restored_same": true,
+    "reentry_label": "EXACT RESULT",
+    "second_copy": "qcompare(y,qcomparisonzero(y,'m'),4)"
+  },
+  "controls": [
+    {
+      "id": "matching-width",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "short-word",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "nonzero-word",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "empty-word",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "numeric",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "unequal",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    }
+  ],
+  "windows_gui": {
+    "passed": true,
+    "checks": 1067,
+    "calls": 97,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

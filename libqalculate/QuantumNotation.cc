@@ -227,7 +227,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qnamedapplication",2},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -418,6 +418,7 @@ class Parser {
  }
  bool spinContext=false;
  bool costContext=false;
+ bool basisXorContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned matrixEntryNodes=0;
@@ -549,6 +550,8 @@ class Parser {
  }
  static std::string graphCalls(const std::string &body,const std::string &name) {
   const std::string stateCall="qstatecall(\""+name+"\",";
+  const std::string application="qnamedapplication("+name+",";
+  const std::string copiedApplication="qnamedapplication('"+name+"',";
   const std::string copiedStateCall="qstatecall('"+name+"',";
   std::vector<size_t> ketDepths;
   size_t depth=0;
@@ -561,6 +564,10 @@ class Parser {
    if(boundary && (body.compare(i,stateCall.size(),stateCall)==0 || body.compare(i,copiedStateCall.size(),copiedStateCall)==0)) {
     // A bound graph supplies the basis label of this single-argument ket.
     result+="qketstate(";ketDepths.push_back(depth+1);i+=stateCall.size();
+   } else if(boundary && body.compare(i,application.size(),application)==0) {
+    i+=application.size();
+   } else if(boundary && body.compare(i,copiedApplication.size(),copiedApplication)==0) {
+    i+=copiedApplication.size();
    } else if(boundary && c==name[0] && i+1<body.size() && body[i+1]=='(') {
     i+=2;
    } else {
@@ -876,9 +883,11 @@ class Parser {
     bool arithmetic=label.find_first_of("+-*/^()")!=std::string::npos &&
      compact.find_first_not_of("01+-")!=std::string::npos &&
      compact!="+i" && compact!="-i" && bellState(compact).empty();
-    if(!arithmetic)return ket(label);
+    bool wordXor=compact.find('#')!=std::string::npos && compact.find_first_not_of("01#")!=std::string::npos;
+    if(!arithmetic && !wordXor)return ket(label);
     std::string outer=s;size_t outerPosition=p;s=label;p=0;
-    std::string index=expression();ws();
+    const bool previousXor=basisXorContext;basisXorContext=wordXor;
+    std::string index=expression();ws();basisXorContext=previousXor;
     if(p!=s.size())throw std::runtime_error("Invalid arithmetic basis index.");
     s=outer;p=outerPosition;
     return "qcomputationalket("+index+")";
@@ -888,7 +897,8 @@ class Parser {
    if(p!=s.size())throw std::runtime_error("Group a compound repeated-register count, for example |0^(n+1)>.");
    s=outer;p=outerPosition;
    char bit=label[label.find_first_not_of(" \t\r\n")];
-   return "qtensorpow("+ket(std::string(1,bit))+","+count+")";
+   std::string factor=bit=='0' ? "qmatrix(2,1,vector(1,0))" : bit=='1' ? "qmatrix(2,1,vector(0,1))" : ket(std::string(1,bit));
+   return "qtensorpow("+factor+","+count+")";
   }
   // Explicit dimensions disambiguate evaluated decimal indices from binary
   // strings and named states. Reuse the parser's depth and node limits.
@@ -1675,6 +1685,10 @@ class Parser {
     if(name=="floor" && args.size()==1 && args[0].compare(0,5,"log2(")==0) {
      args[0]=args[0].substr(5,args[0].size()-6);name="qfloorlog2";
     }
+    if(name!="O" && name.size()==1 && name[0]>='A' && name[0]<='Z' && args.size()==1 &&
+       (args[0].find("qketstate(")!=std::string::npos || args[0].find("qcomputationalket(")!=std::string::npos)) {
+     args.insert(args.begin(),indexableLabel(name));name="qmul";
+    }
     if(publicName=="O")name="qbigorder";
     if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
@@ -1702,6 +1716,9 @@ class Parser {
      // The argument vector distinguishes a two-input cost from two products.
      a="qcostcall("+indexableLabel(publicName)+",vector"+a.substr(name.size())+")";
     }
+    // The conventional function names f, g and h may later be bound to
+    // a graph or a scalar, even when the call appears outside an equation.
+    if(publicName=="f" || publicName=="g" || publicName=="h")preserveNamedApplication(a);
     if(!legacyDomain.empty()) {a="qdomainresult("+a+","+legacyDomain+")";checkSize(a);}
     auto signature=quantumSignatures.find(name);
     if(signature!=quantumSignatures.end() && args.size()!=(unsigned)signature->second) throw std::runtime_error("Quantum function "+publicName+" requires exactly "+std::to_string(signature->second)+" arguments.");
@@ -1775,6 +1792,7 @@ class Parser {
     ws();size_t start=p;
     bool inverse=a.size()==1 && a[0]>='a' && a[0]<='z' &&
                  (exponent=="(-1)" || exponent=="((-1))");
+    bool formalInverse=inverse && (a=="f" || a=="g" || a=="h");
     if(inverse && take('(')) {
      ws();
      if(s.compare(p,5,"qset(")==0 || s.compare(p,4,"set(")==0) {
@@ -1783,7 +1801,14 @@ class Parser {
       diracKind=0;checkSize(a);return a;
      }
     }
-    p=start;a="qpower("+a+","+exponent+")";
+    if(formalInverse) {
+     a="qinversefunction("+a+")";
+     p=start;
+     if(take('(')) {
+      std::string argument=expression();need(')');
+      a="qnamedapplication("+a+","+argument+")";
+     }
+    } else {p=start;a="qpower("+a+","+exponent+")";}
    }
   }
   diracKind=kind;checkSize(a);return a;
@@ -1837,7 +1862,17 @@ class Parser {
      a="qtensorchain("+a+","+factors+"))";
     } else a="qtensor("+a+","+right+")";
    }
-   else if(take('#')) a="qoplus("+a+","+diracFactor()+")";
+   else if(take('#')) {
+    std::string right=diracFactor();
+    if(basisXorContext) {
+     preserveNamedApplication(a,right);preserveNamedApplication(right,a);
+     for(std::string *operand:{&a,&right}) {
+      if(!operand->empty() && operand->find_first_not_of("01")==std::string::npos)
+       *operand="qbitlabel("+binaryNumeral(*operand)+","+std::to_string(operand->size())+")";
+     }
+    }
+    a="qoplus("+a+","+right+")";
+   }
    else if(startsAtom()) a="qadjacent("+a+","+diracFactor()+")";
    else break;
    checkSize(a);
@@ -1873,11 +1908,21 @@ class Parser {
  }
  // A definition such as z=f(x) leaves the type of f open. Preserve
  // that choice when copying the equation before binding the graph or scalar.
- static void preserveNamedApplication(const std::string &label,std::string &term) {
-  if(label.size()!=1 || !std::isalpha((unsigned char)label[0]) || term.size()!=4 ||
+ static void preserveNamedApplication(std::string &term) {
+  if(term.size()!=4 ||
      term[0]<'a' || term[0]>'z' || term[0]=='i' || term[0]=='e' || term[1]!='(' ||
      !std::isalpha((unsigned char)term[2]) || term[3]!=')')return;
   term="qnamedapplication("+term.substr(0,1)+","+term.substr(2,1)+")";
+ }
+ static void preserveNamedApplication(const std::string &label,std::string &term) {
+  if(label.size()==1 && std::isalpha((unsigned char)label[0]))preserveNamedApplication(term);
+ }
+ // Keep both meanings of 0^m until the other side supplies the domain.
+ static void preserveZeroWord(const std::string &subject,std::string &power) {
+  if(power.compare(0,9,"qpower(0,")!=0 || power.back()!=')')return;
+  if((subject.size()==1 && std::isalpha((unsigned char)subject[0])) ||
+     subject.compare(0,10,"qbitlabel(")==0 || subject.compare(0,6,"qbits(")==0)
+   power="qcomparisonzero("+subject+","+power.substr(9);
  }
  // A padded binary numeral carries a width when compared to a word. A
  // scalar comparison still uses its decimal value. Keep both through Copy.
@@ -2029,6 +2074,10 @@ class Parser {
    if(kind<4) {
     if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";
     else if(left=="0" && right=="c")right="qcostparam("+indexableLabel(right)+")";
+   }
+   if(relation=="=" || relation=="==" || relation=="!=") {
+    preserveZeroWord(left,right);preserveZeroWord(right,left);
+    operands.back()=left;
    }
    if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {

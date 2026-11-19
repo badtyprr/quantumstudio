@@ -1,0 +1,28 @@
+{
+  "worker_sha256": "23f365dc36f888b299fe07379225662ff95f3541602addf85c87c1cb4572269f",
+  "inputs_sha256": "0f95fa3797abf0cca374cfadd59192798036a55c4b1027746d378ede546b0a2d",
+  "windows_gui": {
+    "passed": true,
+    "checks": 638,
+    "calls": 58,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "checked_cases": {
+    "Toffoli-gate.svg": 8,
+    "build-Toffoli.svg": 8,
+    "AND-OR-FANOUT-with-Toffoli.svg": 10,
+    "swap.svg": 4,
+    "reversible-circuit-simulation.svg": 4,
+    "garbage-free-computation.svg": 8,
+    "simulation-as-query-gate.svg": 8,
+    "fully-reversible-simulation.svg": 8
+  },
+  "negative_controls": 4,
+  "abstract_block_instances": {
+    "R": "AND with reversible scratch storage",
+    "Q": "compute AND, XOR into y, then uncompute",
+    "Q_f": "two-bit increment modulo four",
+    "Q_f_inverse": "two-bit decrement modulo four"
+  }
+}

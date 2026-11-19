@@ -228,6 +228,8 @@ class QuantumOrderFunction: public MathFunction {
    }
    return 0;
   }
+  if(equality && (args[0].containsFunction(CALCULATOR->getFunction("qinversefunction")) ||
+                  args[1].containsFunction(CALCULATOR->getFunction("qinversefunction"))))return 0;
   // A cost function's argument vector does not make its value a matrix.
   MathFunction *costCall=CALCULATOR->getFunction("qcostcall");
   if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall)) {
@@ -247,7 +249,7 @@ class QuantumOrderFunction: public MathFunction {
    if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
     if(!args[k].isFunction())continue;
     const auto &name=args[k].function()->referenceName();
-    if(name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qnamedapplication" || name=="qcomparisonliteral")return 0;
+    if(name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qnamedapplication" || name=="qcomparisonliteral" || name=="qcomparisonzero")return 0;
    }
    // A free name can denote the entire matrix. Keep it available for
    // substitution instead of broadcasting it across the matrix entries.
@@ -260,6 +262,15 @@ class QuantumOrderFunction: public MathFunction {
    if(kind>=4 && setPair(args[0],args[1])) {
     if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
     out=(kind==4)==equal ? 1 : 0;return 1;
+   }
+   // A computed XOR ket may acquire its width from a later word binding.
+   // Preserve the two operator/state expressions until that ket is resolved.
+   if(kind>=4)for(unsigned k=0;k<2;++k) {
+    if(args[k].containsFunction(CALCULATOR->getFunction("qcomputationalket")) &&
+       args[k].containsFunction(CALCULATOR->getFunction("qoplus"))) {
+     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
+     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+    }
    }
    if(kind>=4 && compareBitLabels(args[0],args[1],equal,eo)) {out=(kind==4)==equal ? 1 : 0;return 1;}
    if(args[1].isZero() && symbolicGram(args[0],eo) && (kind==0 || kind==3)) {out=kind==3 ? 1 : 0;return 1;}
