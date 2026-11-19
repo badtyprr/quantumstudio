@@ -244,5 +244,19 @@
     "qasm_sha256": "f6457ede263092603eff92c4e0282df016d571e3c0cf810fb783bef3086a4be6",
     "worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed",
     "method": "The hardware-addressed transpile export failed import at '$0'. A separate logical transpile of the original circuit to h,x,cx,ccx,cp,swap without layout was exported to OpenQASM 3 and sampled. Cell 39 used the native counts."
+  },
+  "physical_import_after_fix": {
+    "qasm_sha256": "6426d6993acdb335ac0d96b83b780a901753590287fbc268c844b9a4774fc354",
+    "qubits": 12,
+    "counts": {
+      "00000000": 65,
+      "01000000": 65,
+      "10000000": 64,
+      "11000000": 62
+    },
+    "seed": "731",
+    "shots": 256,
+    "frozen_helper_sha256": "fb4abf0f9ec76fb57019ad7eba6be7e5b19cc17ad37a1bf1219d9663853b1afa",
+    "frozen_matches_source": true
   }
 }

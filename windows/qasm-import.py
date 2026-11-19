@@ -993,10 +993,38 @@ def lower_output_declarations(program, classical):
     }
 
 
+def declare_physical_wires(program):
+    """Reserve physical slots 0..max before allocating any virtual registers."""
+    identifiers = [node for node in nodes(program) if isinstance(node, ast.Identifier)]
+    physical = [node for node in identifiers if node.name.startswith('$')]
+    if not physical:
+        return
+    if not str(program.version).startswith('3'):
+        raise error_at(physical[0], 'Physical qubits require OpenQASM 3.')
+    names = {node.name for node in identifiers}
+    prefix = '__quantum_physical_'
+    while any(prefix + str(index) in names for index in range(25)):
+        prefix += '_'
+    width = 0
+    for node in physical:
+        digits = node.name[1:].lstrip('0') or '0'
+        if len(digits) > 2 or int(digits) >= 25:
+            raise error_at(node, 'Physical wire indices must be between 0 and 24.')
+        index = int(digits)
+        width = max(width, index + 1)
+        node.name = prefix + str(index)
+    program.statements[:0] = [
+        ast.QubitDeclaration(ast.Identifier(prefix + str(index)), None)
+        for index in range(width)
+    ]
+
+
 def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(concatenation_program(source) or source)
+    if '$' in source:
+        declare_physical_wires(module.original_program)
     output_registers = lower_output_declarations(module.original_program, classical)
     hidden_registers=set()
     allocations=[]

@@ -30,6 +30,24 @@ class FileImportTests(unittest.TestCase):
         self.assertEqual(result.returncode == 0, success, result.stderr.decode("utf-8", errors="replace"))
         return json.loads(result.stdout) if success else result.stderr.decode("utf-8")
 
+    def test_physical_wire_in_nested_include(self):
+        main = self.put("main.qasm", 'OPENQASM 3.0;\ninclude "stdgates.inc";\ninclude "nested κ/entry.inc";\nbit result;\nresult = measure $3;')
+        self.put("nested κ/gates.inc", "gate flip q { x q; }")
+        entry = 'include "gates.inc";\nflip '
+        for command in COMMANDS:
+            args = ["--classical", "--source-file", str(main)]
+            self.put("nested κ/entry.inc", entry + "$3;")
+            circuit = self.run_import(command, args)["Circuit"]
+            self.assertEqual(circuit["Qubits"], 4)
+            self.assertEqual(circuit["Steps"], [
+                {"Kind": "Gate", "Expression": "X", "Wires": [3]},
+                {"Kind": "Measure", "Wires": [3], "ClassicalBit": 0},
+            ])
+            self.put("nested κ/entry.inc", entry + "$25;")
+            message = self.run_import(command, args, success=False)
+            self.assertIn("nested κ/entry.inc:2:", message)
+            self.assertIn("Physical wire indices must be between 0 and 24", message)
+
     def test_dependency_parser_diagnostic(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/helper.inc"; qubit q;')
         self.put("nested κ/helper.inc", '// comment\r\ngate bad a { x a }\r\n')
