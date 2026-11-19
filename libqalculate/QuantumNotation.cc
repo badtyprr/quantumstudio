@@ -2071,6 +2071,11 @@ class Parser {
      (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
   list="qindexedlist("+indexableLabel(a.substr(1,split))+","+start+","+end+",vector())";return true;
  }
+ void prepareEquality(std::string &left,std::string &right) {
+  preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
+  preserveNamedApplication(left,right);preserveNamedApplication(right,left);
+  preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
+ }
  std::string comparison(bool allowSharedOperands) {
   if(!costContext && costWitnessAhead()) {
    costContext=true;std::string witness=comparison(allowSharedOperands);costContext=false;
@@ -2145,9 +2150,7 @@ class Parser {
    }
    if(right.compare(0,10,"qbigorder(")==0)equalities=false;
    if(relation=="=" || relation=="==") {
-    preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
-    preserveNamedApplication(left,right);preserveNamedApplication(right,left);
-    preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
+    prepareEquality(left,right);
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
@@ -2155,6 +2158,19 @@ class Parser {
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
+  }
+  // A comma between complete equations joins simultaneous conditions.
+  // Function argument lists use comparison(false) and keep their commas.
+  if(allowSharedOperands && equalities && operands.size()==2 && take(',')) {
+   do {
+    std::string lhs=comparisonOperand(),relation=takeComparisonRelation();
+    if(relation!="=" && relation!="==")throw std::runtime_error("Expected an equation after the comma.");
+    std::string rhs=comparisonOperand();
+    preserveZeroWord(lhs,rhs);preserveZeroWord(rhs,lhs);
+    prepareEquality(lhs,rhs);
+    result="("+result+"&&qcompare("+lhs+","+rhs+",4))";checkSize(result);
+   } while(take(','));
+   return result;
   }
   if(equalities && operands.size()>2) {
    result="qequalchain(vector(";

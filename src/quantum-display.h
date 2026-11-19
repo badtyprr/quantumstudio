@@ -107,6 +107,15 @@ class Printer {
   if(value.isSymbolic() && familyName(value.symbol())!=value.symbol())return Fragment(familyName(value.symbol()));
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
+  if(value.isLogicalAnd() || value.isLogicalOr()) {
+   const int level=value.isLogicalAnd() ? 3 : 2;
+   std::string text;
+   for(size_t k=0;k<value.size();++k) {
+    if(k)text+=value.isLogicalAnd() ? " and " : " or ";
+    text+=grouped(render(value[k],depth+1),level);
+   }
+   return Fragment(text,level);
+  }
   // Evaluation can turn scalar quantum operations into ordinary arithmetic.
   // Recurse through that arithmetic without changing its order or clipboard AST.
   if(value.isAddition() || value.isMultiplication() || value.isPower() || value.isComparison() || value.isNegate() || value.isInverse() || value.isDivision()) {

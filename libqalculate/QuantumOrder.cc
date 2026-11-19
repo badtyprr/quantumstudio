@@ -256,7 +256,9 @@ class QuantumOrderFunction: public MathFunction {
    // A free name can denote the entire matrix. Keep it available for
    // substitution instead of broadcasting it across the matrix entries.
    if(kind>=4)for(unsigned k=0;k<2;++k) {
-    if(!args[k].isMatrix() || !args[1-k].isSymbolic())continue;
+    const MathStructure &other=args[1-k];
+    bool namedKet=other.isFunction() && other.function()->referenceName()=="qketstate";
+    if(!args[k].isMatrix() || !(other.isSymbolic() || namedKet))continue;
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }

@@ -367,10 +367,14 @@ bool tensorSeriesBounds(const MathStructure &raw,MathStructure &first,MathStruct
 }
 // Resolve generated scalar names without evaluating their surrounding sum or
 // domain. Unexpanded series own their original body and replacement history.
-void resolveIndexedLabels(MathStructure &value,const EvaluationOptions &eo) {
+void resolveIndexedLabels(MathStructure &value,const EvaluationOptions &eo,const MathStructure *target=NULL) {
  if(tensorSeriesNode(value) || registerSumNode(value))return;
- for(size_t k=0;k<value.size();++k)resolveIndexedLabels(value[k],eo);
+ for(size_t k=0;k<value.size();++k)resolveIndexedLabels(value[k],eo,target);
  value.childrenUpdated();
+ // Named kets take a text label on input. Resolve that wrapper before a
+ // substitution can put a state column in its text argument.
+ if(target && value.isFunction() && value.function()->referenceName()=="qnamedket" &&
+    value.size()==1 && value[0].equals(*target))value.eval(eo);
  if(value.isFunction() && value.function()->referenceName()=="qindexedlabel" && value.size()==3) {
   MathStructure resolved=value;resolved.eval(eo);
   if(resolved.isSymbolic())value=resolved;
@@ -1465,7 +1469,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;
-    resolveIndexedLabels(out,eo);
+    resolveIndexedLabels(out,eo,&at->first);
     // Replace existing occurrences before storing a new assignment: otherwise
     // x_0 -> x_0+1 would be applied twice inside the newly stored value.
     bool replaced=out.replace(at->first,at->second,false,false,at->first.containsUnknowns());
