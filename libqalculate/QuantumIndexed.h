@@ -13,6 +13,7 @@ inline bool quantumHasIndexedNameArgument(const std::string &name) {
         name=="qsampledotcolumn" || name=="qsamplewordrows" || name=="qindexedcoefficient" ||
         name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers";
 }
+bool quantumComplexDomain(const MathStructure &);
 void registerQuantumIndexed(Calculator &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const MathStructure &);
 void defineQuantumStateFamily(Calculator &,const std::string &,const MathStructure &,const std::vector<MathStructure> &);

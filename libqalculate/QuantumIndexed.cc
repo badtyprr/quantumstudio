@@ -24,6 +24,11 @@ QuantumBitLabelState validateQuantumBitLabel(MathStructure &index,MathStructure 
  }
  return symbolicIndex || symbolicWidth ? QuantumBitLabelState::Symbolic : QuantumBitLabelState::Concrete;
 }
+bool quantumComplexDomain(const MathStructure &value) {
+ if(!value.isFunction() || value.size()!=0)return false;
+ const std::string &name=value.function()->referenceName();
+ return name=="qunitcircle" || name=="qcomplexplane";
+}
 namespace {
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 // A scalar family keeps assignments even before its width is known. Slots and
@@ -156,10 +161,20 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(comparison==COMPARISON_RESULT_LESS || comparison==COMPARISON_RESULT_GREATER || comparison==COMPARISON_RESULT_NOT_EQUAL)return SetEquality::Different;
  return SetEquality::Unknown;
 }
+bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
+ if(!predicate.isFunction() || predicate.function()->referenceName()!="qcompare" ||
+    predicate.size()!=3 || !predicate[2].isInteger() || predicate[2].number()!=4)return false;
+ for(unsigned k=0;k<2;++k) {
+  const MathStructure &term=predicate[k];
+  if(predicate[1-k].isOne() && term.isFunction() && term.size()==1 && term[0].equals(index) &&
+     (term.function()->referenceName()=="qbars" || term.function()->referenceName()=="abs"))return true;
+ }
+ return false;
+}
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -1214,6 +1229,9 @@ class QuantumIndexedFunction: public MathFunction {
    if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {
     CALCULATOR->error(true,"An indexed image requires a symbolic index.",NULL);return 0;
    }
+   if(op=="qsetfilter" && quantumComplexDomain(raw[1]) && unitModulus(raw[0],raw[2])) {
+    out=raw[1];out.setFunction(CALCULATOR->getFunction("qunitcircle"));return 1;
+   }
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure members;DomainState state=finiteDomain(raw[1],members,exact);
    if(state==DomainState::Invalid) {CALCULATOR->error(true,"An indexed image requires a finite domain of at most 1024 entries.",NULL);return 0;}
@@ -1746,7 +1764,27 @@ class QuantumIndexedFunction: public MathFunction {
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;
   }
-  if(op=="qhalfopen")return 0;
+  if(op=="qhalfopen" || op=="qunitcircle" || op=="qcomplexplane")return 0;
+  if(op=="qmember" && (quantumComplexDomain(raw[1]) ||
+     (raw[1].isFunction() && raw[1].function()->referenceName()=="qsetfilter" &&
+      raw[1].size()==3 && quantumComplexDomain(raw[1][1])))) {
+   MathStructure value=raw[0];value.eval(eo);
+   if(value.isVector() || value.isUnit() || value.isUndefined() ||
+      (value.isNumber() && value.number().isInfinite(false))) {out=m_zero;return 1;}
+   if(!value.representsNumber() || !value.representsFinite())return 0;
+   MathStructure domain=raw[1];domain.eval(eo);
+   if(domain.function()->referenceName()=="qsetfilter") {
+    MathStructure base; base.set(this,&value,&domain[1],NULL);base.eval(eo);
+    if(base.isZero()) {out=m_zero;return 1;}
+    if(!base.isOne())return 0;
+    out=domain[0];replaceQuantumIndex(out,domain[2],value);out.eval(eo);return 1;
+   }
+   if(domain.function()->referenceName()=="qcomplexplane") {out=m_one;return 1;}
+   MathStructure magnitude; magnitude.set(CALCULATOR->getFunction("abs"),&value,NULL);
+   magnitude.transform(COMPARISON_EQUALS,m_one);magnitude.eval(eo);
+   if(!magnitude.isOne() && !magnitude.isZero())return 0;
+   out=magnitude;return 1;
+  }
   if(op=="qmember" && raw[1].isFunction() && raw[1].function()->referenceName()=="qhalfopen" && raw[1].size()==3) {
    MathStructure value=raw[0],lower=raw[1][0],upper=raw[1][1],closedLeft=raw[1][2];
    value.eval(eo);lower.eval(eo);upper.eval(eo);closedLeft.eval(eo);
@@ -2122,6 +2160,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  calculator.addFunction(new QuantumIndexedFunction("qpreimage",2));
  calculator.addFunction(new QuantumIndexedFunction("qhalfopen",3));
+ calculator.addFunction(new QuantumIndexedFunction("qunitcircle",0));
+ calculator.addFunction(new QuantumIndexedFunction("qcomplexplane",0));
  calculator.addFunction(new QuantumIndexedFunction("qfunctiontype",3));
  calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
  calculator.addFunction(new QuantumIndexedFunction("qwordpower",2));

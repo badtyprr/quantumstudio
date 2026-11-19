@@ -223,6 +223,8 @@ class Printer {
     text="replace("+text+","+prefix+render(value[3][k],depth+1).text+","+render(value[3][k+1],depth+1).text+")";
    return Fragment(text);
   }
+  if(name=="qunitcircle" && !value.size())return Fragment("\\mathbb{T}");
+  if(name=="qcomplexplane" && !value.size())return Fragment("\\mathbb{C}");
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.

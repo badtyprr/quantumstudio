@@ -263,6 +263,13 @@ class QuantumOrderFunction: public MathFunction {
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
    }
    bool equal=false;
+   if(kind>=4 && (quantumComplexDomain(args[0]) || quantumComplexDomain(args[1]))) {
+    if(quantumComplexDomain(args[0]) && quantumComplexDomain(args[1])) {
+     out=(args[0].function()==args[1].function())==(kind==4) ? 1 : 0;return 1;
+    }
+    // Preserve an equation with a free set name or a symbolic predicate.
+    return 0;
+   }
    if(kind>=4 && setPair(args[0],args[1])) {
     if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
     out=(kind==4)==equal ? 1 : 0;return 1;

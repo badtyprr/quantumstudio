@@ -229,6 +229,8 @@ The explicit binary Cartesian domain `\{0,1\}^n` enumerates bit strings of width
 
 For a finite binary function graph, `f(x)` applies the function and `f^(-1)(x)` looks up the unique preimage. The inverse graph reverses every input-output pair and checks that the mapping is one-to-one, including bit-string widths. When `f` is assigned a scalar, the same notation supports multiplication and its reciprocal.
 
+Use `\mathbb{T}` for the complex unit circle and `\mathbb{C}` for the complex plane. For example, `(3+4i)/5 ∈ \mathbb{T}` returns 1. Plain `T` denotes the quantum gate.
+
 An indexed list such as `λ_1, …, λ_N` expands to an ordered tuple when `N` is supplied. Repeated values keep their positions. For example, setting both `λ_1` and `λ_2` to 5 before setting `N` to 2 gives `(5, 5)`. The index declaration `j = 1, …, N` tests membership in that inclusive integer range.
 
 The expanded spectral decomposition `λ_1 |ψ_1⟩⟨ψ_1| + … + λ_N |ψ_N⟩⟨ψ_N|` and its TeX summation form both represent a weighted sum of projectors. Supplying the upper bound, weights and state columns evaluates the sum as a matrix. The bra uses the complex conjugate of the state column. A finite set of eigenstates such as `\{ |ψ_1⟩, \ldots, |ψ_N⟩ \}` accepts the same indexed state assignments. Set equality ignores order and repeated entries. State columns are compared by their amplitudes. Commas between complete equations express simultaneous conditions. For example, `λ_1 = 1, |ψ_1⟩ = |0⟩` holds when both the eigenvalue and the state match.
