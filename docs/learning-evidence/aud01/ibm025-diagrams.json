@@ -1,0 +1,50 @@
+[
+  {
+    "label": "Toffoli gate",
+    "file": "Toffoli-gate.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/Toffoli-gate.svg",
+    "sha256": "e486742533ecdc04d79ca30fd85bc81148f42c8fdf7e6efd28819f59996816e6"
+  },
+  {
+    "label": "Quantum circuit for a Toffoli gate",
+    "file": "build-Toffoli.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/build-Toffoli.svg",
+    "sha256": "0c41256d3b7e2aca625fd47d080c4bdf5726e186b6961586d294f07279c278a4"
+  },
+  {
+    "label": "Simulating AND and OR gates with Toffoli gates",
+    "file": "AND-OR-FANOUT-with-Toffoli.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/AND-OR-FANOUT-with-Toffoli.svg",
+    "sha256": "be24ebfd5b146935a6b3e8498aa907de855b30715292e1d90a1e524ff6c29cdd"
+  },
+  {
+    "label": "Reversible circuit simulation",
+    "file": "reversible-circuit-simulation.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/reversible-circuit-simulation.svg",
+    "sha256": "c207d1a1ff338a3ed31a910c21743d0786d4b857fba541bba45e6c290eea836c"
+  },
+  {
+    "label": "Swapping with cNOT gates",
+    "file": "swap.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/swap.svg",
+    "sha256": "f7e51dee252b722faeb9583e4416b8386602d32b9a05a51526035eb48d9de68c"
+  },
+  {
+    "label": "Garbage-free computation",
+    "file": "garbage-free-computation.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/garbage-free-computation.svg",
+    "sha256": "303dac4d1bdc923ccfa62a3ee4bd4412702b0c36656cb873e07ebd6f3302a05f"
+  },
+  {
+    "label": "Simulation as a query gate",
+    "file": "simulation-as-query-gate.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/simulation-as-query-gate.svg",
+    "sha256": "a0454fc83acd1a972ac085dfdc22a73509489c645945a507a255b1b381afa839"
+  },
+  {
+    "label": "Simulation of an invertible function",
+    "file": "fully-reversible-simulation.svg",
+    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/fully-reversible-simulation.svg",
+    "sha256": "a821d01ff51ed8b74dd67a09e00a6926484cb3d77611bc874ed6f41c0baeca52"
+  }
+]
