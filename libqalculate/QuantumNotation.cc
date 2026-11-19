@@ -338,7 +338,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qindexedentries",4},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},

@@ -523,6 +523,23 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  }
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
+// A finite family of kets uses the same prefix at both endpoints.
+std::string indexedKetSet(const std::vector<std::string> &entries) {
+ if(entries.size()!=3 || entries[1]!="...")return "";
+ auto label=[](const std::string &entry) {
+  return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
+ };
+ std::string first=label(entries.front()),last=label(entries.back());
+ size_t split=first.rfind('_');
+ if(split==std::string::npos || split==0)return "";
+ std::string prefix=first.substr(0,split+1);
+ if(last.compare(0,prefix.size(),prefix)!=0)return "";
+ for(size_t k=0;k<split;++k)if((unsigned char)prefix[k]<128 && !asciiLetter(prefix[k]))return "";
+ std::string from=first.substr(split+1),to=last.substr(split+1);
+ auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
+ if(!integer(from) || !(integer(to) || (to.size()==1 && asciiLetter(to[0]))))return "";
+ return "qindexedketset(\""+prefix+"\","+from+","+to+",vector())";
+}
 class TeXReader {
  const std::string &input;
  size_t pos=0;
@@ -654,6 +671,7 @@ class TeXReader {
      std::string alphabet="vector("+contents+")";
      if(ellipsis) {
       alphabet=openIndexedFamily(entries);
+      if(alphabet.empty())alphabet=indexedKetSet(entries);
       if(alphabet.empty()) {
        if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
        alphabet="qindexrange("+entries[0]+","+entries[2]+")";

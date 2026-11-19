@@ -111,6 +111,22 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
  }
  return text+"])";
 }
+// Format each state separately so a singleton set of columns keeps its shape.
+static bool displayKetSet(const MathStructure &set,const PrintOptions &po,std::string &shown) {
+ if(!set.isFunction() || set.function()->referenceName()!="qset" || set.size()!=1 || !set[0].isVector())return false;
+ bool hasState=false;
+ std::string text="\\{";
+ for(size_t k=0;k<set[0].size();++k) {
+  MathStructure member=set[0][k];
+  bool basis=member.containsFunction(CALCULATOR->getFunction("qbasis"));
+  hasState=hasState || basis || member.isMatrix() || (member.isFunction() && member.function()->referenceName()=="qketstate");
+  if(k)text+=", ";
+  if(basis || (member.isMatrix() && member.rows()==1))text+=copyText(member,po);
+  else {member.format(po);text+=QuantumDisplay::print(member,po);}
+ }
+ if(hasState)shown=text+"\\}";
+ return hasState;
+}
 static bool messages(Calculator &calculator) {
  bool failed=false;
  while(calculator.message()) {
@@ -283,7 +299,7 @@ int main(int argc,char **argv) {
    MathStructure line=result[i];line.format(po);
    if(i)shown+="\n\n";
    shown+=std::to_string(i+1)+".  "+QuantumDisplay::print(line,po);
-  } else shown=QuantumDisplay::print(display,po);
+  } else if(!displayKetSet(result,po,shown))shown=QuantumDisplay::print(display,po);
   std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long

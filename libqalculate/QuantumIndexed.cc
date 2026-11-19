@@ -108,8 +108,29 @@ int calculateScalarProduct(MathStructure &out,const MathStructure &raw,MathFunct
 }
 // Labels passed here have already been validated and canonicalized.
 enum class SetEquality { Equal, Different, Unknown };
+bool namedKet(const MathStructure &value) {
+ return value.isFunction() && value.function()->referenceName()=="qketstate" && value.size()==1;
+}
+bool stateColumn(const MathStructure &value) {
+ return value.isMatrix() && value.columns()==1 && value.rows()>0;
+}
 SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(left.equals(right))return SetEquality::Equal;
+ if(namedKet(left) || namedKet(right))return SetEquality::Unknown;
+ if(stateColumn(left) && stateColumn(right)) {
+  if(left.rows()!=right.rows())return SetEquality::Different;
+  bool unknown=false;
+  for(size_t k=0;k<left.size();++k) {
+   SetEquality entry=setEquality(left[k][0],right[k][0]);
+   if(entry==SetEquality::Different)return entry;
+   unknown=unknown || entry==SetEquality::Unknown;
+  }
+  return unknown ? SetEquality::Unknown : SetEquality::Equal;
+ }
+ if(stateColumn(left) || stateColumn(right)) {
+  const MathStructure &other=stateColumn(left) ? right : left;
+  return other.containsUnknowns() ? SetEquality::Unknown : SetEquality::Different;
+ }
  bool leftTuple=left.isFunction() && left.function()->referenceName()=="qtuple";
  bool rightTuple=right.isFunction() && right.function()->referenceName()=="qtuple";
  if(leftTuple && rightTuple) {
@@ -138,7 +159,7 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return name=="qset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -171,6 +192,11 @@ bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &
   return state!=QuantumBitLabelState::Invalid;
  }
  value.eval(eo);
+ if(!depth && namedKet(value))return true;
+ if(!depth && stateColumn(value)) {
+  for(size_t k=0;k<value.size();++k)if(!value[k][0].representsScalar() || value[k][0].isUndefined())return false;
+  return true;
+ }
  return value.representsScalar() && !value.isUndefined();
 }
 enum class DomainState { Invalid, Pending, Finite };
@@ -243,7 +269,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -1559,6 +1585,18 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
+  if(op=="qindexedketset") {
+   MathStructure entries;
+   if(!indexedEntries(entries,raw,eo))return 0;
+   for(size_t k=0;k<entries.size();++k) {
+    if(entries[k].isSymbolic()) {
+     MathStructure label=entries[k];entries[k].set(CALCULATOR->getFunction("qketstate"),&label,NULL);
+    } else if(!namedKet(entries[k]) && !stateColumn(entries[k])) {
+     CALCULATOR->error(true,"An indexed ket set requires state columns.",NULL);return 0;
+    }
+   }
+   out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+  }
   if(op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
@@ -2052,6 +2090,7 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
 void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralsum",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
