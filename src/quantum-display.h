@@ -448,6 +448,8 @@ class Printer {
   }
   if(name=="qbars" && value.size()==1)
    return Fragment("|"+render(value[0],depth+1).text+"|");
+  if(name=="qgeometricsum" && value.size()==2)
+   return Fragment("geosum("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbitword" && value.size()==1) {
    const auto &bits=value[0];
    std::string text="bitword([";

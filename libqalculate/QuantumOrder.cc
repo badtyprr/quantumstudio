@@ -336,6 +336,7 @@ class QuantumOrderFunction: public MathFunction {
   // state is unresolved. Concrete substitutions use ordinary comparison.
   if(equality)for(unsigned k=0;k<2;++k) {
    if(!raw[1-k].isFunction() || raw[1-k].function()->referenceName()!="if")continue;
+   if(args[k].isFunction() && args[k].function()->referenceName()=="qgeometricsum")return 0;
    if(args[k].containsFunction(CALCULATOR->getFunction("qnamedket")) ||
       args[k].containsFunction(CALCULATOR->getFunction("qketstate")))return 0;
    if(!args[k].containsUnknowns())continue;

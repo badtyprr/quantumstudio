@@ -17,6 +17,9 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(1 + r + r^2 + \cdots + r^{n-1})","qgeometricsum(r,(n-1)+1)");
+  rejects(R"(1 + r + s^2 + \cdots + r^{n-1})");
+  rejects(R"(1 + r + r^2 + \cdots + s^{n-1})");
   equal("x ∈ {0,1}",quantumTeX(R"(x ∈ \{0,1\})"));
   equal("x ∉ {1/4}",quantumTeX(R"(x ∉ \{1/4\})"));
   rejects("x ∈ {0,1");

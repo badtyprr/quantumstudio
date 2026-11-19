@@ -588,6 +588,35 @@ class TeXReader {
  unsigned setExpressions=0;
  unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
+ // Check the displayed initial powers and the final base before consuming
+ // an ellipsis. Keep the endpoint expression available for substitution.
+ std::string geometricSum() {
+  size_t at=pos;
+  auto token=[&](const std::string &s) {
+   while(at<input.size() && std::isspace((unsigned char)input[at]))++at;
+   if(input.compare(at,s.size(),s)!=0)return false;
+   at+=s.size();return true;
+  };
+  if(!token("1") || !token("+"))return "";
+  while(at<input.size() && std::isspace((unsigned char)input[at]))++at;
+  size_t first=at;
+  if(at<input.size() && input[at]=='\\') {
+   ++at;size_t name=at;while(at<input.size() && asciiLetter(input[at]))++at;
+   if(name==at)return "";
+  } else if(at<input.size() && asciiLetter(input[at]))++at;
+  else if(at<input.size() && std::isdigit((unsigned char)input[at]))
+   while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
+  else return "";
+  const std::string base=input.substr(first,at-first);
+  if(!token("+") || !token(base) || !token("^") || !(token("2") || token("{2}")) ||
+     !token("+") || !(token("\\cdots") || token("\\ldots") || token("\\dots") || token("⋯") || token("…")) ||
+     !token("+") || !token(base) || !token("^"))return "";
+  size_t start=pos;pos=at;
+  std::string exponent=argument();
+  space();
+  if(pos<input.size() && std::string("=,;)}]").find(input[pos])==std::string::npos) {pos=start;return "";}
+  return "qgeometricsum("+TeXReader(base).run(nullptr)+",("+exponent+")+1)";
+ }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  // Spacing takes a literal dimension. Its contents never become expression tokens.
  void spacingDimension(char close) {
@@ -1083,6 +1112,10 @@ class TeXReader {
    }
    if(!matrixDepth && !stateLabel && !setExpressions && !setBound) {
     const std::string preceding=trim(result);
+    if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
+     std::string series=geometricSum();
+     if(!series.empty()) {result+=series;continue;}
+    }
     if(preceding.empty() || preceding.back()==',') {
      size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end);
      if(product.empty()) {

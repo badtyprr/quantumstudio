@@ -1827,6 +1827,26 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.set(family,&argument,NULL);out.eval(eo);return 1;
   }
+  if(op=="qgeometricsum") {
+   MathStructure count=raw[1],ratio=raw[0];
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   count.eval(exact);ratio.eval(eo);
+   if(count.containsUnknowns() && !count.isVector() && !ratio.isVector())return 0;
+   if(!count.isInteger() || count.number()<0 || ratio.isVector()) {
+    CALCULATOR->error(true,"A geometric sum requires a scalar ratio and a nonnegative integer term count.",NULL);return 0;
+   }
+   if(count.isZero()) {out=m_zero;return 1;}
+   if(count.isOne() || ratio.isZero()) {out=m_one;return 1;}
+   if(ratio.isOne()) {out=count;return 1;}
+   // The constant term is one even at ratio zero. Sum the positive powers
+   // using the existing finite-sum evaluator and its cancellation checks.
+   MathStructure index("__qgeometric_index",true);
+   while(ratio.contains(index))index.set(index.symbol()+"_",true);
+   MathStructure body=ratio;body.raise(index);
+   MathStructure last=count;last.subtract(m_one);
+   MathStructure sum(CALCULATOR->getFunction("qsum"),&body,&m_one,&last,&index,NULL);
+   sum.eval(eo);out=sum;out.add(m_one);out.eval(eo);return 1;
+  }
   if(op=="qsum") {
    if((!raw[3].isSymbolic() && !raw[3].isVariable()) || (raw[3].isVariable() && raw[3].variable()->isKnown())) {
     CALCULATOR->error(true,"A finite sum index must be a symbolic variable.",NULL);return 0;
@@ -2319,6 +2339,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qgeometricsum",2));
  calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
