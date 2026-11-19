@@ -1,0 +1,114 @@
+{
+  "worker_sha256": "6d32e96b50a4711c31fa13848ea74f4534dc5b21c0231addb8ed5f1f21cd9ab3",
+  "notebook_sha256": "64df86108de2261d346c56c7b6ea16ac70058718e16207075b4f47d89e069e12",
+  "originals": 97,
+  "exact": 88,
+  "changed": {
+    "id": "IBM027-64df8610-M082",
+    "label": "EXACT RESULT",
+    "display": "'θ' ∈ [0, 1)",
+    "copy": "qmember('θ',qhalfopen(0,1,1))",
+    "restored_same": true,
+    "reentry_label": "EXACT RESULT",
+    "second_copy": "qmember('θ',qhalfopen(0,1,1))"
+  },
+  "controls": [
+    {
+      "id": "zero-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "one-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "negative-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "near-one-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "irrational-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "right-closed-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "right-open-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "nested-1",
+      "label": "EXACT RESULT",
+      "display": "1",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "empty-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    },
+    {
+      "id": "complex-0",
+      "label": "EXACT RESULT",
+      "display": "0",
+      "copy": "0",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "0"
+    }
+  ],
+  "windows_gui": {
+    "passed": true,
+    "checks": 1096,
+    "calls": 107,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  }
+}

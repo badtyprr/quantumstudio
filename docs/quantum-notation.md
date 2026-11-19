@@ -229,6 +229,8 @@ The explicit binary Cartesian domain `\{0,1\}^n` enumerates bit strings of width
 
 For a finite binary function graph, `f(x)` applies the function and `f^(-1)(x)` looks up the unique preimage. The inverse graph reverses every input-output pair and checks that the mapping is one-to-one, including bit-string widths. When `f` is assigned a scalar, the same notation supports multiplication and its reciprocal.
 
+A mixed pair of interval delimiters after membership expresses a half-open real interval. For example, `0 ∈ [0,1)` and `1 ∈ (0,1]` both return one. The endpoints can be expressions.
+
 In `y = 0^m`, binding `y` to a bit string compares it with the all-zero word of width `m`. The empty word matches at width zero. Binding `y` to a number uses ordinary exponentiation.
 
 Use `bitstring("011")` to enter the three-bit word printed in Simon's lesson. It copies as `qbitlabel(3,3)`. In a definition such as `s=011`, binding `s` to a bit string compares both value and width. Binding `s` to a number selects decimal comparison. Similarly, `z=f(x)` keeps the application through Copy so a later binding of `f` to a finite graph performs a lookup.

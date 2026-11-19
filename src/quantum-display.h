@@ -306,6 +306,10 @@ class Printer {
    return Fragment("bitstring("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbits" && value.size()==2)
    return Fragment("bits("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qhalfopen" && value.size()==3 && (value[2].isOne() || value[2].isZero())) {
+   bool left=value[2].isOne();
+   return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(left ? ")" : "]"));
+  }
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {

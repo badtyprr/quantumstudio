@@ -948,7 +948,7 @@ class TeXReader {
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
- std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="") {
+ std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="", bool membershipGroup=false) {
   struct MatrixScope {
    unsigned &depth;bool active;
    MatrixScope(unsigned &depth_,bool active_):depth(depth_),active(active_) {if(active)++depth;}
@@ -997,7 +997,7 @@ class TeXReader {
     pos+=roundClose.size()+1;closed=true;break;
    }
    if(setClose && input.compare(pos,2,"\\}")==0) {pos+=2;closed=true;break;}
-   if(close && input[pos]==close) { ++pos; closed=true; break; }
+   if(close && (input[pos]==close || (membershipGroup && (input[pos]==')' || input[pos]==']')))) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
    }
@@ -1077,7 +1077,15 @@ class TeXReader {
      if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
      result=trim(result)+" pmod ("+modulus+")";continue;
     }
-    size_t bodyStart=pos;auto body=read(end);
+    // Mixed delimiters denote a half-open interval only after membership.
+    // The recursive reader still checks grouping inside either endpoint.
+    size_t tail=result.find_last_not_of(" \t\r\n");
+    bool membership=tail!=std::string::npos && tail>=2 &&
+     (result.compare(tail-2,3,"∈")==0 || result.compare(tail-2,3,"∉")==0);
+    size_t bodyStart=pos;auto body=read(end,false,"",false,"",membership);
+    if(membership && input[pos-1]!=end) {
+     result+="qhalfopen("+body+","+(open=='[' ? "1)" : "0)");continue;
+    }
     std::string raw=input.substr(bodyStart,pos-bodyStart-1);
     std::string column=open=='[' ? indexedMatrix(raw,false) : "";
     if(column.empty() && open=='[')column=indexedColumn(raw,false);
@@ -1258,6 +1266,12 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     if(!found)break;
    }
    if(!digits.empty()) {normalized+="QFT_{"+digits+"}";k=end;continue;}
+  }
+  if(!quote && (s.compare(k,3,"∈")==0 || s.compare(k,3,"∉")==0)) {
+   size_t next=s.find_first_not_of(" \t\r\n",k+3);
+   if(next!=std::string::npos && (s[next]=='[' || s[next]=='(')) {
+    normalized+=s.compare(k,3,"∈")==0 ? "\\in " : "\\notin ";k+=3;continue;
+   }
   }
   bool matched=false;
   if(!quote)for(const auto &alias:unicodeOperators) {
