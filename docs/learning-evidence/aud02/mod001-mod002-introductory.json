@@ -1,0 +1,290 @@
+{
+  "MOD-001": {
+    "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+    "sha256": "0666df3e648912731963f1ca48a61e916b9c508e340c59df5e4f01151b6fe813",
+    "runtime": "0.50.0",
+    "aer": "0.18.4",
+    "qiskit": "2.6.2",
+    "executed": [
+      2,
+      9,
+      11,
+      13,
+      15,
+      17,
+      19,
+      21,
+      23,
+      26,
+      29,
+      33,
+      35,
+      37,
+      39,
+      41
+    ],
+    "gate_errors": {
+      "9": 0.0,
+      "11": 0.0,
+      "13": 0.0,
+      "15": 1.5700924586837752e-16,
+      "17": 0.0,
+      "19": 0.0,
+      "21": 0.0,
+      "23": 0.0
+    },
+    "truth_table": [
+      {
+        "a": 0,
+        "b": 0,
+        "carry_sum_b_a": "0000",
+        "counts": {
+          "0000": 100
+        },
+        "native_exact": {
+          "0000": "1"
+        },
+        "qasm_sha256": "5cfa905b753759d634049d16b936f84c3379af8877b9a20d3e958489ea4a8693"
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "carry_sum_b_a": "0110",
+        "counts": {
+          "0110": 100
+        },
+        "native_exact": {
+          "0110": "1"
+        },
+        "qasm_sha256": "8eb42feacc9704221760665384e211e8d6527bb3ab20251d3e912293d2e133be"
+      },
+      {
+        "a": 1,
+        "b": 0,
+        "carry_sum_b_a": "0101",
+        "counts": {
+          "0101": 100
+        },
+        "native_exact": {
+          "0101": "1"
+        },
+        "qasm_sha256": "5ea03e743f858b8caf4409df2e7f2e5610c7d8e9995b994fb4287075af4099d6"
+      },
+      {
+        "a": 1,
+        "b": 1,
+        "carry_sum_b_a": "1011",
+        "counts": {
+          "1011": 100
+        },
+        "native_exact": {
+          "1011": "1"
+        },
+        "qasm_sha256": "ad3801b5821d63ef4e0489cf5bfe51b534ebfc83c6c44edbc29ebd702dfe6531"
+      }
+    ],
+    "remote_jobs": 0,
+    "method": "Cell 31 used seeded local Aer in place of cloud discovery. Ran the default half adder before varying only the two documented input literals.",
+    "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed"
+  },
+  "MOD-002": {
+    "revision": "3909abfe0218767141429e2beb52201fe4ba8ea4",
+    "sha256": "7f41b2b3c2d704ad81272f1639b8f65a428cb3e7e7e52dfc5200390b3e765ac0",
+    "runtime": "0.50.0",
+    "aer": "0.18.4",
+    "qiskit": "2.6.2",
+    "method": "Used ideal Aer in place of IBM service discovery in cells 10 and 11. Seeded Python random and Aer with 1902. Ran the original uncommented cell 36 first, then varied its exercise placeholder.",
+    "executed": [
+      2,
+      6,
+      8,
+      10,
+      11,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      20,
+      24,
+      28,
+      31,
+      33,
+      34,
+      36,
+      38,
+      39,
+      42,
+      44,
+      46,
+      48
+    ],
+    "sampler": {
+      "15": {
+        "0": 470,
+        "1": 530
+      },
+      "31": {
+        "0": 1000
+      },
+      "34": {
+        "1": 1000
+      },
+      "36": {
+        "0": 1000
+      }
+    },
+    "estimator": {
+      "20": [
+        0.0029296875
+      ],
+      "24": [
+        1.0
+      ],
+      "39": [
+        -0.0009765625,
+        -1.0,
+        0.01220703125
+      ]
+    },
+    "bloch": {
+      "42": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "44": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "46": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "48": [
+        0.9999999999999998,
+        0.0,
+        0.0
+      ]
+    },
+    "phase_exercise": [
+      {
+        "angle_radians": 0.0,
+        "expected_p1": 0.0,
+        "runtime_counts": {
+          "0": 1000
+        },
+        "native_counts": {
+          "0": 10000
+        },
+        "qasm_sha256": "a662d4e7df344aa29af674e91488b45b9f21e3a0080f4178358fee392781b9e9"
+      },
+      {
+        "angle_radians": 0.7853981633974483,
+        "expected_p1": 0.14644660940672624,
+        "runtime_counts": {
+          "0": 854,
+          "1": 146
+        },
+        "native_counts": {
+          "0": 8527,
+          "1": 1473
+        },
+        "qasm_sha256": "28dcbb161943a3b1e7c7a9ac7a9c0c1bee0677d41a8b87fb8d28de57d5e0e646"
+      },
+      {
+        "angle_radians": 1.5707963267948966,
+        "expected_p1": 0.5000000000000001,
+        "runtime_counts": {
+          "1": 505,
+          "0": 495
+        },
+        "native_counts": {
+          "0": 5039,
+          "1": 4961
+        },
+        "qasm_sha256": "0bf3dff6414da4f1223e4b8045cbf1a03cfa93adb51d51a1a9f554deb2f26c75"
+      },
+      {
+        "angle_radians": 2.356194490192345,
+        "expected_p1": 0.8535533905932737,
+        "runtime_counts": {
+          "0": 156,
+          "1": 844
+        },
+        "native_counts": {
+          "0": 1513,
+          "1": 8487
+        },
+        "qasm_sha256": "2a2e283e6cd3fadeb8f8a895f51f23bd4aa62e3dd987049a7e64b6a118e1fec1"
+      },
+      {
+        "angle_radians": 3.141592653589793,
+        "expected_p1": 1.0,
+        "runtime_counts": {
+          "1": 1000
+        },
+        "native_counts": {
+          "1": 10000
+        },
+        "qasm_sha256": "bd1751cdbb4e32add7f8fe56b7f2fe3656f18bb14142562f9d1038b5ac5225a2"
+      },
+      {
+        "angle_radians": 3.9269908169872414,
+        "expected_p1": 0.8535533905932737,
+        "runtime_counts": {
+          "1": 854,
+          "0": 146
+        },
+        "native_counts": {
+          "0": 1513,
+          "1": 8487
+        },
+        "qasm_sha256": "24055ab889f38aff06b7df3076f4bcf59eb387dc9832af5bf3b5545314f6ab9d"
+      },
+      {
+        "angle_radians": 4.71238898038469,
+        "expected_p1": 0.5000000000000001,
+        "runtime_counts": {
+          "0": 502,
+          "1": 498
+        },
+        "native_counts": {
+          "0": 5039,
+          "1": 4961
+        },
+        "qasm_sha256": "fdc516fa3c27dcfa93c50c9d82ab57fb5e78fcecbee58479deb29947c8d923d9"
+      },
+      {
+        "angle_radians": 5.497787143782138,
+        "expected_p1": 0.14644660940672632,
+        "runtime_counts": {
+          "0": 860,
+          "1": 140
+        },
+        "native_counts": {
+          "0": 8527,
+          "1": 1473
+        },
+        "qasm_sha256": "77cd50480ccf9a5d196973b0f5491277ea670e89c52d4625ae0d870a55931a07"
+      },
+      {
+        "angle_radians": 6.283185307179586,
+        "expected_p1": 1.4997597826618576e-32,
+        "runtime_counts": {
+          "0": 1000
+        },
+        "native_counts": {
+          "0": 10000
+        },
+        "qasm_sha256": "8fa06a3b28e88712ab43898acb3eab455bd39b33c523a64cdc5e280c5fe3d0e5"
+      }
+    ],
+    "remote_jobs": 0,
+    "classical_heads": 482,
+    "native_worker_sha256": "89694175ee99a6aa3a968c7f694c24c676ec7c8c0b88f5c82941f9dc8dd6c1ed"
+  }
+}
