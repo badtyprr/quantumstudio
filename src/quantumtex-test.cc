@@ -193,6 +193,8 @@ int main() {
   rejects(R"(\tilde{})");
   rejects(R"(\tilde{x+y})");
   equal(R"(\begin{cases}1 & x=0\\2 & \text{otherwise}\end{cases})","(if(x=0,1,2))");
+  equal(R"(\begin{cases}1 & y=z\\0 & y\neq z,\end{cases})",
+        quantumTeX(R"(\begin{cases}1 & y=z\\0 & y\neq z\end{cases})"));
   equal(R"(0.b = \begin{cases}0 & b=0\\1/2 & b=1\end{cases})",
         "(qbitvalue(qbitlabel(b,1))/2)=(if(b=0,0,if(b=1,1/2,undefined)))");
   equal(R"(0.25 = \begin{cases}1 & x=0\end{cases})","0.25 = (if(x=0,1,undefined))");

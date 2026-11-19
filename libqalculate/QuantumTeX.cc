@@ -1069,7 +1069,7 @@ class TeXReader {
   auto finishCase=[&]() {
    if(!caseColumn || trim(caseValue).empty() || trim(result).empty())throw std::runtime_error(error("Each case requires a value and condition separated by &"));
    if(branches.size()>=64)throw std::runtime_error(error("Cases are limited to 64 branches"));
-   branches.emplace_back(trim(caseValue),trim(result));result.clear();caseValue.clear();caseColumn=false;
+   branches.emplace_back(trim(caseValue),trim(withoutDisplayPunctuation(result)));result.clear();caseValue.clear();caseColumn=false;
   };
   while(pos<input.size()) {
    if(!roundClose.empty() && input[pos]=='\\' && input.compare(pos+1,roundClose.size(),roundClose)==0 &&
