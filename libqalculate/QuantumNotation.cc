@@ -1860,11 +1860,35 @@ class Parser {
   if(name<'a' || name>'z' || name=='e' || name=='i' || (domain[at+1]!=',' && domain[at+1]!=')'))return;
   builder=graphCalls(builder,std::string(1,name));
  }
- std::string comparison(bool sharedMembership) {
+ std::string takeComparisonRelation() {
+  for(const char *token:{"∈","∉","<=",">=","!=","==","=","<",">"})
+   if(takeSetOperator(token))return token;
+  return "";
+ }
+ static int comparisonKind(const std::string &relation) {
+  return relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
+ }
+ // Each middle operand shares both bounds. Leave the final endpoint in
+ // right so that another relation may continue the chain.
+ std::string sharedBounds(const std::string &left,int firstKind,std::string &right) {
+  std::vector<std::string> probes{right};
+  do {probes.push_back(setUnion());} while(take(','));
+  int lastKind=comparisonKind(takeComparisonRelation());
+  if(lastKind>=4)throw std::runtime_error("Expected a second ordering relation after the comma-separated operands.");
+  right=setUnion();
+  std::string clause="(";
+  for(const auto &probe:probes) {
+   if(clause.size()>1)clause+="&&";
+   clause+="qcompare("+left+","+probe+","+std::to_string(firstKind)+")&&qcompare("+probe+","+right+","+std::to_string(lastKind)+")";
+   checkSize(clause);
+  }
+  return clause+")";
+ }
+ std::string comparison(bool allowSharedOperands) {
   std::string left=setUnion(),result;
-  // Top-level commas and commas inside an explicit group may share a
-  // membership relation. Function argument and vector separators stay local.
-  if(sharedMembership && take(',')) {
+  // Top-level and explicitly grouped operands can share a membership
+  // relation or bounds. Function argument and vector separators stay local.
+  if(allowSharedOperands && take(',')) {
    if(takeSetOperator("...") || takeSetOperator("…")) {
     need(',');std::string last=setUnion();
     // Only a named, one-based list in a membership statement assigns
@@ -1893,16 +1917,10 @@ class Parser {
   }
   std::vector<std::string> operands{left};bool equalities=result.empty();
   while(true) {
-   ws();std::string relation;
-   if(takeSetOperator("∈"))relation="∈";else if(takeSetOperator("∉"))relation="∉";
-   for(const char *token:{"<=",">=","!=","==","=","<",">"}) {
-    if(!relation.empty())break;
-    std::string candidate(token);
-    if(s.compare(p,candidate.size(),candidate)==0) {relation=candidate;p+=candidate.size();break;}
-   }
+   std::string relation=takeComparisonRelation();
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
-   int kind=relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
+   int kind=comparisonKind(relation);
    std::string right;
    if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
@@ -1915,6 +1933,7 @@ class Parser {
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   if(allowSharedOperands && kind<4 && take(','))clause=sharedBounds(left,kind,right);
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
    result=result.empty() ? clause : "("+result+"&&"+clause+")";checkSize(result);left=right;
@@ -1926,26 +1945,26 @@ class Parser {
   }
   return result.empty() ? left : result;
  }
- std::string logicalNot(bool sharedMembership) {
+ std::string logicalNot(bool allowSharedOperands) {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
-  std::string result=comparison(sharedMembership);
+  std::string result=comparison(allowSharedOperands);
   for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
  }
- std::string logicalAnd(bool sharedMembership) {
-  std::string result=logicalNot(sharedMembership);
-  while(takeWord("and")) {result="("+result+"&&"+logicalNot(sharedMembership)+")";checkSize(result);}
+ std::string logicalAnd(bool allowSharedOperands) {
+  std::string result=logicalNot(allowSharedOperands);
+  while(takeWord("and")) {result="("+result+"&&"+logicalNot(allowSharedOperands)+")";checkSize(result);}
   return result;
  }
- std::string logicalXor(bool sharedMembership) {
-  std::string result=logicalAnd(sharedMembership);
-  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd(sharedMembership)+")";checkSize(result);}
+ std::string logicalXor(bool allowSharedOperands) {
+  std::string result=logicalAnd(allowSharedOperands);
+  while(takeWord("xor")) {result="lxor("+result+","+logicalAnd(allowSharedOperands)+")";checkSize(result);}
   return result;
  }
- std::string logicalOr(bool sharedMembership) {
-  std::string result=logicalXor(sharedMembership);
-  while(takeWord("or")) {result="("+result+"||"+logicalXor(sharedMembership)+")";checkSize(result);}
+ std::string logicalOr(bool allowSharedOperands) {
+  std::string result=logicalXor(allowSharedOperands);
+  while(takeWord("or")) {result="("+result+"||"+logicalXor(allowSharedOperands)+")";checkSize(result);}
   return result;
  }
  // In a biconditional, brackets around one predicate are logical grouping.
@@ -1975,8 +1994,8 @@ class Parser {
   if(value.substr(pos)!="4)")return value;
   return graphCalls(value,std::string(1,name));
  }
- std::string expression(bool sharedMembership=false) {
-  ws();size_t start=p;std::string result=logicalOr(sharedMembership);
+ std::string expression(bool allowSharedOperands=false) {
+  ws();size_t start=p;std::string result=logicalOr(allowSharedOperands);
   if(take(':')) {
    std::string domain=setUnion();
    if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
@@ -1985,7 +2004,7 @@ class Parser {
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);
   do {
-   ws();start=p;std::string right=logicalOr(sharedMembership);
+   ws();start=p;std::string right=logicalOr(allowSharedOperands);
    result="qiff("+result+","+equivalenceOperand(right,start)+")";checkSize(result);
   } while(takeWord("iff"));
   return result;

@@ -24,6 +24,23 @@ def data(expression, *flags):
     return value
 
 
+# The comma in a shared bound is local to a grouped expression. Function
+# arguments and vector elements continue to be independent comparisons.
+shared_bound = r"0\leq N,M\leq 2^n - 1"
+saved_bound = data("quantum:$$" + shared_bound + ".$$")["copy_text"]
+for body in (shared_bound, saved_bound):
+    for width in (0, 1, 3):
+        maximum = 2**width - 1
+        for a, b in ((0, maximum), (maximum, 0), (-1, 0), (0, -1),
+                     (maximum + 1, 0), (0, maximum + 1), (-1, maximum + 1)):
+            expr = f"replace(replace(replace(({body}),N,{a}),M,{b}),n,{width})"
+            assert data("quantum:" + expr)["copy_text"] == str(int(0 <= a <= maximum and 0 <= b <= maximum))
+for expr, truth in [("5 > 1,2,4 >= 1", "1"), ("5 > 1,5 >= 1", "0"),
+                    ("0 <= 2,3 < 3", "0"), ("0 < 1,2 < 3 <= 2", "0"),
+                    ("vector(0 <= 3,4 <= 2)", "vector(1,0)")]:
+    assert data("quantum:" + expr)["copy_text"] == truth
+run("quantum:0 <= x,y", "--json", success=False)
+
 # An isolated binary word needs a width, while an equation can learn the
 # type of its right-hand literal or named application from later bindings.
 for digits, value in (("011", 3), ("00101", 5), ("00001", 1), ("", 0)):
