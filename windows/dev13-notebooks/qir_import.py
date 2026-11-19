@@ -61,8 +61,8 @@ def import_qir(raw, *, bitcode=False):
         raise ValueError("QIR_PARSE_FAILED") from error
     if module.verify() is not None:
         raise ValueError("QIR_INVALID_LLVM")
-    if (pyqir.qir_major_version(module) != 1
-            or pyqir.qir_minor_version(module) not in (0, 1)
+    version = (pyqir.qir_major_version(module), pyqir.qir_minor_version(module))
+    if (version not in {(1, 0), (1, 1), (2, 0)}
             or pyqir.dynamic_qubit_management(module) is not False
             or pyqir.dynamic_result_management(module) is not False):
         raise ValueError("QIR_UNSUPPORTED_PROFILE")
