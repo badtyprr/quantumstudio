@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
   "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
-  "worker_sha256": "8f10c93bc0d98855706f4468c271c5948f56ed90a9e5daaf4d622acf9af1ab16",
-  "windows_records_sha256": "a6b82971b640d9fe8f81673df627ba421889d7c4e527e611c89ad5658720b23d",
+  "worker_sha256": "1db347b3f6d6cd77c4939bf8011ee3b1d6bf7d096ae34ac2db9f9b4be7887752",
+  "windows_records_sha256": "3dda6b1687dfa41aabadb156f06a8d06a843739f4fe240d47d235a57e31b515f",
   "windows": {
     "IBM029-9ea5aee3-M026": {
       "display": "integergcd(a, N) = 1",
@@ -10,9 +10,9 @@
       "second_copy": "(qintegergcd('a','N'))==(1)"
     },
     "IBM029-9ea5aee3-M027": {
-      "display": "{k ∈ \"Z_N\" : integergcd(k, N) = 1} = \"Z_N\"",
-      "copy": "(qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),\"Z_N\",\"qboundindex_0\"))==(\"Z_N\")",
-      "second_copy": "(qsetfilter(qcompare(qintegergcd(\"qboundindex_1\",'N'),1,4),\"Z_N\",\"qboundindex_1\"))==(\"Z_N\")"
+      "display": "invertible_residues(N) = \\{k ∈ residues(N) : integergcd(k, N) = 1\\}",
+      "copy": "qcompare(qunitsmod('N'),qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),qresidues('N'),\"qboundindex_0\"),4)",
+      "second_copy": "qcompare(qunitsmod('N'),qsetfilter(qcompare(qintegergcd(\"qboundindex_1\",'N'),1,4),qresidues('N'),\"qboundindex_1\"),4)"
     },
     "IBM029-9ea5aee3-M034": {
       "display": "1",
@@ -139,6 +139,53 @@
           [
             "N",
             35
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "IBM029-9ea5aee3-M027": [
+      {
+        "bindings": [
+          [
+            "N",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "N",
+            2
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "N",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "N",
+            21
           ]
         ],
         "expected": 1
@@ -1001,8 +1048,5 @@
     "1/2",
     "i",
     "[1;2]"
-  ],
-  "open_rows": {
-    "M027": "The unit group and the full residue ring need distinct meanings."
-  }
+  ]
 }

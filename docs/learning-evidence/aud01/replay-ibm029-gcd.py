@@ -56,10 +56,9 @@ for source, row in zip(rows, records):
 
     number = int(key[-3:])
     if number == 27:
-        # The group of units and the full ring still share one returned label.
-        # Keep the equation out of the verified set until the notation distinguishes them.
-        continue
-    if number == 34:
+        for modulus in (1,2,6,7,21):
+            verify([("N",modulus)], 1)
+    elif number == 34:
         verify([], 1)
     elif number == 406:
         for a, order, modulus in [(2,4,15), (4,2,15), (2,6,21), (14,2,15), (8,4,15)]:
@@ -78,10 +77,9 @@ for source, row in zip(rows, records):
 for value in ("1/2", "i", "[1;2]"):
     result = evaluate(f"integergcd({value},6)")
     assert result.returncode == 2 and b"exact integers" in result.stderr, (value, result.stderr)
-assert len(cases) == 8
+assert len(cases) == 9
 report = dict(source=inventory["source"], notebook_sha256=inventory["source_sha256"],
               worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               windows_records_sha256=hashlib.sha256(records_path.read_bytes()).hexdigest(),
-              windows=windows, cases=cases, invalid_operands=["1/2", "i", "[1;2]"],
-              open_rows={"M027": "The unit group and the full residue ring need distinct meanings."})
+              windows=windows, cases=cases, invalid_operands=["1/2", "i", "[1;2]"])
 args.output.write_bytes((json.dumps(report, ensure_ascii=False, indent=2)+"\n").encode())

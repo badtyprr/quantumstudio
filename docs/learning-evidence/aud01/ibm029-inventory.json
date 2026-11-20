@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
   "source_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
-  "worker_sha256": "8f10c93bc0d98855706f4468c271c5948f56ed90a9e5daaf4d622acf9af1ab16",
-  "revision": "cbdbc9312dcd9c6f8fb0051e0b7e06c46e99903e",
+  "worker_sha256": "1db347b3f6d6cd77c4939bf8011ee3b1d6bf7d096ae34ac2db9f9b4be7887752",
+  "revision": "dfe9df33ec94d0e5cbfd474d082ed8fa31362ec1",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 405,
-    "diagnostic": 33
+    "exact": 409,
+    "diagnostic": 29
   },
   "figures": [],
   "rows": [
@@ -29,8 +29,8 @@
       "end": 1587,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M003",
@@ -38,8 +38,9 @@
       "start": 1600,
       "end": 1639,
       "literal": "$$\n\\mathbb{Z}_N = \\{0,1,\\ldots,N-1\\}\n$$",
-      "status": "diagnostic",
-      "message": "Use two endpoints around one ellipsis for an ascending integer index range at byte 35"
+      "status": "exact",
+      "display": "residues(N) = indexrange(0, N − 1)",
+      "copy": "qcompare(qresidues('N'),qindexrange(0,qsub('N',1)),4)"
     },
     {
       "id": "IBM029-9ea5aee3-M004",
@@ -47,8 +48,9 @@
       "start": 1655,
       "end": 1680,
       "literal": "$\\mathbb{Z}_1 = \\{0\\},\\;$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 25"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM029-9ea5aee3-M005",
@@ -56,8 +58,9 @@
       "start": 1681,
       "end": 1708,
       "literal": "$\\mathbb{Z}_2 = \\{0,1\\},\\;$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 27"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM029-9ea5aee3-M006",
@@ -65,8 +68,9 @@
       "start": 1709,
       "end": 1738,
       "literal": "$\\mathbb{Z}_3 = \\{0,1,2\\},\\;$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 29"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM029-9ea5aee3-M007",
@@ -75,8 +79,8 @@
       "end": 1897,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M008",
@@ -115,8 +119,8 @@
       "end": 2223,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M012",
@@ -145,8 +149,8 @@
       "end": 2357,
       "literal": "$\\mathbb{Z}_7$",
       "status": "exact",
-      "display": "\"Z_7\"",
-      "copy": "\"Z_7\""
+      "display": "\\{0, 1, 2, 3, 4, 5, 6\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6))"
     },
     {
       "id": "IBM029-9ea5aee3-M015",
@@ -204,8 +208,8 @@
       "end": 2672,
       "literal": "$\\mathbb{Z}_7$",
       "status": "exact",
-      "display": "\"Z_7\"",
-      "copy": "\"Z_7\""
+      "display": "\\{0, 1, 2, 3, 4, 5, 6\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6))"
     },
     {
       "id": "IBM029-9ea5aee3-M021",
@@ -214,8 +218,8 @@
       "end": 2805,
       "literal": "$\\mathbb{Z}_6$",
       "status": "exact",
-      "display": "\"Z_6\"",
-      "copy": "\"Z_6\""
+      "display": "\\{0, 1, 2, 3, 4, 5\\}",
+      "copy": "qset(vector(0,1,2,3,4,5))"
     },
     {
       "id": "IBM029-9ea5aee3-M022",
@@ -243,8 +247,8 @@
       "end": 3408,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M025",
@@ -253,8 +257,8 @@
       "end": 3441,
       "literal": "$a\\in\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "a ∈ \"Z_N\"",
-      "copy": "qmember('a',\"Z_N\")"
+      "display": "a ∈ residues(N)",
+      "copy": "qmember('a',qresidues('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M026",
@@ -273,8 +277,8 @@
       "end": 3627,
       "literal": "$$\n\\mathbb{Z}_N^{\\ast} = \\{a\\in \\mathbb{Z}_N : \\gcd(a,N) = 1\\}\n$$",
       "status": "exact",
-      "display": "{k ∈ \"Z_N\" : integergcd(k, N) = 1} = \"Z_N\"",
-      "copy": "(qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),\"Z_N\",\"qboundindex_0\"))==(\"Z_N\")"
+      "display": "invertible_residues(N) = \\{k ∈ residues(N) : integergcd(k, N) = 1\\}",
+      "copy": "qcompare(qunitsmod('N'),qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),qresidues('N'),\"qboundindex_0\"),4)"
     },
     {
       "id": "IBM029-9ea5aee3-M028",
@@ -283,8 +287,8 @@
       "end": 3720,
       "literal": "$\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "invertible_residues(N)",
+      "copy": "qunitsmod('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M029",
@@ -293,8 +297,8 @@
       "end": 3947,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M030",
@@ -333,8 +337,8 @@
       "end": 4109,
       "literal": "$5\\in\\mathbb{Z}_6^{\\ast}$",
       "status": "exact",
-      "display": "5 ∈ qconj(\"Z_6\")",
-      "copy": "qmember(5,qconj(\"Z_6\"))"
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM029-9ea5aee3-M034",
@@ -432,8 +436,8 @@
       "end": 4484,
       "literal": "$$\n\\mathbb{Z}_{21}^{\\ast} = \\{1,2,4,5,8,10,11,13,16,17,19,20\\}\n$$",
       "status": "exact",
-      "display": "\"Z_21\" = {1, 2, 4, 5, 8, 10, 11, 13, 16, 17, 19, 20}",
-      "copy": "(\"Z_21\")==(qset(vector(1,2,4,5,8,10,11,13,16,17,19,20)))"
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM029-9ea5aee3-M044",
@@ -461,8 +465,8 @@
       "end": 4943,
       "literal": "$\\mathbb{Z}_{21}$",
       "status": "exact",
-      "display": "\"Z_21\"",
-      "copy": "\"Z_21\""
+      "display": "\\{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))"
     },
     {
       "id": "IBM029-9ea5aee3-M047",
@@ -529,8 +533,8 @@
       "end": 5530,
       "literal": "$a \\in \\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M054",
@@ -589,8 +593,8 @@
       "end": 5828,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M060",
@@ -599,8 +603,8 @@
       "end": 5892,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M061",
@@ -618,8 +622,8 @@
       "end": 6045,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M063",
@@ -775,8 +779,8 @@
       "end": 7721,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M079",
@@ -785,8 +789,8 @@
       "end": 7779,
       "literal": "$b\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "b ∈ qconj(\"Z_N\")",
-      "copy": "qmember('b',qconj(\"Z_N\"))"
+      "display": "b ∈ invertible_residues(N)",
+      "copy": "qmember('b',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M080",
@@ -865,8 +869,8 @@
       "end": 8304,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M088",
@@ -1252,8 +1256,8 @@
       "end": 11681,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M127",
@@ -1382,8 +1386,8 @@
       "end": 12542,
       "literal": "$\\mathbb{Z}_{21}$",
       "status": "exact",
-      "display": "\"Z_21\"",
-      "copy": "\"Z_21\""
+      "display": "\\{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))"
     },
     {
       "id": "IBM029-9ea5aee3-M140",
@@ -1490,8 +1494,8 @@
       "end": 13578,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M151",
@@ -1587,8 +1591,8 @@
       "end": 14367,
       "literal": "$\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "invertible_residues(N)",
+      "copy": "qunitsmod('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M161",
@@ -1696,8 +1700,8 @@
       "end": 15194,
       "literal": "$\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "invertible_residues(N)",
+      "copy": "qunitsmod('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M172",
@@ -1746,8 +1750,8 @@
       "end": 15378,
       "literal": "$b = a^k \\in \\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a^k ∈ qconj(\"Z_N\") and a^k = b",
-      "copy": "(('a'^'k')==('b') and qmember(qpower('a','k'),qconj(\"Z_N\")))"
+      "display": "a^k ∈ invertible_residues(N) and a^k = b",
+      "copy": "(('a'^'k')==('b') and qmember(qpower('a','k'),qunitsmod('N')))"
     },
     {
       "id": "IBM029-9ea5aee3-M177",
@@ -1766,8 +1770,8 @@
       "end": 15466,
       "literal": "$a^k \\in \\mathbb{Z}_N$",
       "status": "exact",
-      "display": "a^k ∈ \"Z_N\"",
-      "copy": "qmember(qpower('a','k'),\"Z_N\")"
+      "display": "a^k ∈ residues(N)",
+      "copy": "qmember(qpower('a','k'),qresidues('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M179",
@@ -3542,8 +3546,8 @@
       "end": 27400,
       "literal": "$\\mathbb{Z}_N$",
       "status": "exact",
-      "display": "\"Z_N\"",
-      "copy": "\"Z_N\""
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
     },
     {
       "id": "IBM029-9ea5aee3-M357",
@@ -3869,8 +3873,8 @@
       "end": 29641,
       "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
       "status": "exact",
-      "display": "a ∈ qconj(\"Z_N\")",
-      "copy": "qmember('a',qconj(\"Z_N\"))"
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
     },
     {
       "id": "IBM029-9ea5aee3-M390",

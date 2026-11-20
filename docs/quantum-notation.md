@@ -335,6 +335,8 @@ Quantum-mode `[7]` preserves a one-element vector. For a named one-element colle
 
 Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
 
+In quantum notation, `residues(N)` denotes the integer representatives from 0 through N − 1 for a positive exact modulus. `invertible_residues(N)` selects the representatives coprime to N. You can paste `\mathbb{Z}_N` and `\mathbb{Z}_N^{\ast}` directly. Moduli up to 1024 expand into finite sets. Membership at larger moduli is computed directly, for example `5 ∈ invertible_residues(10^30)` returns 0.
+
 Escaped set braces and membership are recognized in summation bounds. Arbitrary set algebra, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`. When directly nesting it inside the library's ordinary `sum` or `product` outside quantum mode, use distinct index names: those existing outer functions perform unscoped replacement. Quantum-mode parsing gives set-sum indices unique names to avoid that capture. Parser byte and node limits can reject an input before the collection-size limit is reached.
 
 ## Finite set literals and filtering comprehensions
