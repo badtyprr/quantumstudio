@@ -35,6 +35,18 @@ classical_speed = data("c")["copy_text"]
 assert data("("+classical_speed+")/c")["copy_text"] == "1"
 assert "qphysicalunit" not in classical_speed
 
+# Compare the two full operands in the specified residue class.
+for formula, expected in (
+    (r"$3 \cdot 5 \equiv 1 \; (\textrm{mod } 7)$", "1"),
+    (r"$3+5\equiv5-4\pmod{7}$", "1"),
+    (r"$-2\equiv5\;(\mathrm{mod}\;7)$", "1"),
+    (r"$-2\equiv4\pmod{7}$", "0"),
+    (r"$(3\equiv1\pmod{2})+(4\equiv1\pmod{2})$", "1"),
+):
+    assert data("quantum:"+formula)["copy_text"] == expected
+for formula in (r"$3\equiv1$", r"$3\equiv1\pmod{}$", r"$3\equiv1\pmod{0}$"):
+    run("quantum:"+formula, "--json", success=False)
+
 # The computational-cost lesson expresses modular powers using a spaced text label.
 for gap in (r"\hspace{1mm} ", r"\hspace{1mm}"):
     source = "$N^K" + gap + r"(\text{mod }M)$"

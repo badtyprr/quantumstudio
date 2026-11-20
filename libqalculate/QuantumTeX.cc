@@ -714,11 +714,15 @@ class TeXReader {
   ++pos;
  }
  // Match only the text label that introduces a parenthesized modulus.
- bool takeModulusLabel() {
+ bool takeModulusLabel(bool congruence) {
   size_t start=pos;
   space();
-  if(input.compare(pos,5,"\\text")==0) {
-   pos+=5;space();
+  size_t length=0;
+  if(congruence && input.compare(pos,7,"\\textrm")==0)length=7;
+  else if(congruence && input.compare(pos,7,"\\mathrm")==0)length=7;
+  else if(input.compare(pos,5,"\\text")==0)length=5;
+  if(length) {
+   pos+=length;space();
    if(pos<input.size() && input[pos]=='{') {
     ++pos;space();
     if(input.compare(pos,3,"mod")==0) {
@@ -868,6 +872,12 @@ class TeXReader {
   }
   size_t start=pos; while(pos<input.size() && asciiLetter((unsigned char)input[pos])) ++pos;
   std::string name=input.substr(start,pos-start);
+  if(name=="equiv")return " qtexcongruent ";
+  if(name=="pmod") {
+   std::string modulus=trim(group());
+   if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
+   return " qtexmodulus ("+modulus+")";
+  }
   if(name=="hspace") {
    space();
    if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced spacing dimension"));
@@ -1184,7 +1194,7 @@ class TeXReader {
    ~MatrixScope() {if(active)--depth;}
   } matrixScope(matrixDepth,matrix || close==']');
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
-  std::string result; int norms=0; bool closed=false;
+  std::string result; int norms=0; bool closed=false,congruence=false;
   const bool alignment=environment=="aligned" || environment=="align" || environment=="align*" || environment=="gathered" || environment=="gather" || environment=="gather*" || environment=="split";
   const bool gathered=environment=="gathered" || environment=="gather" || environment=="gather*";
   std::vector<std::string> alignmentCells,expressions;
@@ -1309,6 +1319,11 @@ class TeXReader {
      result.find('_',delimiter+1)!=std::string::npos;
     size_t commandStart=pos;
     std::string part=command(matrix,norms,environment=="cases",registerLabel,&result);
+    if(part==" qtexcongruent ")congruence=true;
+    else if(part.compare(0,14," qtexmodulus (")==0) {
+     if(!congruence)throw std::runtime_error(error("A congruence modulus must follow a congruence relation"));
+     congruence=false;
+    }
     // A final TeX row break terminates the last row. Exclude it from both
     // the translated matrix and the raw rows used to infer indexed entries.
     if(matrixBodyEnd && part==";") {
@@ -1322,10 +1337,11 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
-    if(open=='(' && takeModulusLabel()) {
+    if(open=='(' && takeModulusLabel(congruence)) {
      auto modulus=trim(read(end));
      if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
-     result=trim(result)+" pmod ("+modulus+")";continue;
+     result=trim(result)+(congruence ? " qtexmodulus (" : " pmod (")+modulus+")";
+     congruence=false;continue;
     }
     // Mixed delimiters denote a half-open interval only after membership.
     // The recursive reader still checks grouping inside either endpoint.

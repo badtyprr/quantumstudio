@@ -720,7 +720,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"↦")==0 || s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("qtexcongruent") || word("qtexmodulus") || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -2058,6 +2058,7 @@ class Parser {
   builder=graphCalls(builder,std::string(1,name));
  }
  std::string takeComparisonRelation() {
+  if(takeWord("qtexcongruent"))return "congruence";
   for(const char *token:{"≈","∈","∉","<=",">=","!=","==","=","<",">"})
    if(takeSetOperator(token))return token;
   return "";
@@ -2225,6 +2226,14 @@ class Parser {
   while(true) {
    std::string relation=takeComparisonRelation();
    if(relation.empty())break;
+   if(relation=="congruence") {
+    if(!result.empty())throw std::runtime_error("Group a congruence separately from other comparisons.");
+    std::string right=comparisonOperand();
+    if(!takeWord("qtexmodulus"))throw std::runtime_error("A congruence requires an explicit modulus.");
+    need('(');std::string modulus=expression();need(')');
+    result="qcompare(qresidue("+left+","+modulus+"),qresidue("+right+","+modulus+"),4)";
+    checkSize(result);return result;
+   }
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
    size_t rightStart=p;std::string right;
