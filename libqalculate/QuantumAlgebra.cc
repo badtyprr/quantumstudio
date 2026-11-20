@@ -613,7 +613,8 @@ class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
  QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {
-  if(op=="qnamedket" || op=="qfrequency")setArgumentDefinition(1,new TextArgument());
+  if(op=="qnamedket" || op=="qfrequency" || op=="qphysicalunit")setArgumentDefinition(1,new TextArgument());
+  if(op=="qphysicalunit")setArgumentDefinition(2,new TextArgument());
  }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
@@ -813,6 +814,15 @@ class QuantumAlgebraFunction: public MathFunction {
     normalization.raise(Number(-1,2));expanded.set(CALCULATOR->getFunction("qmul"),&normalization,&sum,NULL);
     out.set(CALCULATOR->getFunction("qfourierdomain"),&expanded,&index,&dimension,NULL);out.eval(eo);return 1;
    }
+  }
+  if(op=="qphysicalunit") {
+   Unit *unit=CALCULATOR->getActiveUnit(raw[0].symbol());
+   const std::string &name=raw[1].symbol();
+   Prefix *prefix=name.empty() ? NULL : CALCULATOR->getPrefix(name);
+   if(!unit || (!name.empty() && !prefix)) {
+    CALCULATOR->error(true,"Unknown physical unit or prefix.",NULL);return 0;
+   }
+   out.set(unit,prefix);return 1;
   }
   if(op=="qfrequency") {
    const std::string name=raw[0].symbol();
@@ -1259,6 +1269,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));

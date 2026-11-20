@@ -367,7 +367,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qresetall",1},
  {"qshift",1},
  {"qsinhc",1},
- {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},{"qfrequency",1},
+ {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},{"qfrequency",1},{"qphysicalunit",2},
  {"qsumgate",2},
  {"qsuperop",1},
  {"qtensor",2},

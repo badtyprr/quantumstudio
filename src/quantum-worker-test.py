@@ -24,6 +24,17 @@ def data(expression, *flags):
     return value
 
 
+# Physical units must survive Copy without becoming quantum variables.
+for speed in ("c", "element([c;2*c],1,1)"):
+    text = data("quantum:"+speed)["copy_text"]
+    assert data("quantum:("+text+")/c")["copy_text"] == "1"
+    assert data("quantum:"+text)["copy_text"] == text
+frequency = data("quantum:MHz")["copy_text"]
+assert data("quantum:("+frequency+")/kHz")["copy_text"] == "1000"
+classical_speed = data("c")["copy_text"]
+assert data("("+classical_speed+")/c")["copy_text"] == "1"
+assert "qphysicalunit" not in classical_speed
+
 # The computational-cost lesson expresses modular powers using a spaced text label.
 for gap in (r"\hspace{1mm} ", r"\hspace{1mm}"):
     source = "$N^K" + gap + r"(\text{mod }M)$"
