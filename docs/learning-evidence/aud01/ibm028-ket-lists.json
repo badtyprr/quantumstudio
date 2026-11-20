@@ -1,0 +1,46 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "0e5b9699777559ae3dfde82db83fce5e33ed37fb48462eea67cde3418e0e1160",
+  "records": [
+    {
+      "id": "IBM028-2ff07f29-M127",
+      "input": "$\\vert\\phi_0\\rangle,\\ldots,\\vert\\phi_3\\rangle$",
+      "display": "vector(|φ_0⟩, |φ_1⟩, |φ_2⟩, |φ_3⟩)",
+      "copy": "vector(qketstate(\"φ_0\"),qketstate(\"φ_1\"),qketstate(\"φ_2\"),qketstate(\"φ_3\"))",
+      "dimensions": [
+        4
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M134",
+      "input": "$\\vert\\phi_0\\rangle,\\ldots,\\vert\\phi_3\\rangle$",
+      "display": "vector(|φ_0⟩, |φ_1⟩, |φ_2⟩, |φ_3⟩)",
+      "copy": "vector(qketstate(\"φ_0\"),qketstate(\"φ_1\"),qketstate(\"φ_2\"),qketstate(\"φ_3\"))",
+      "dimensions": [
+        4
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M135",
+      "input": "$\\vert 0\\rangle,\\ldots,\\vert 3\\rangle$",
+      "display": "vector([1; 0; 0; 0], [0; 1; 0; 0], [0; 0; 1; 0], [0; 0; 0; 1])",
+      "copy": "vector(matrix(4,1,[1,0,0,0]),matrix(4,1,[0,1,0,0]),matrix(4,1,[0,0,1,0]),matrix(4,1,[0,0,0,1]))",
+      "dimensions": [
+        4
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M179",
+      "input": "$\\vert 0\\rangle,\\ldots,\\vert N-1\\rangle$",
+      "display": "basislist(N)",
+      "copy": "qbasiskets('N')",
+      "dimensions": [
+        1,
+        2,
+        3,
+        4,
+        8
+      ]
+    }
+  ]
+}
