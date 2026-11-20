@@ -333,6 +333,14 @@ bool inferProductIdentity(MathStructure &identity,const MathStructure &product) 
  if((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag")))return false;
  identity.set(CALCULATOR->getFunction("qidentitylike"),&product,NULL);return true;
 }
+// Real inequality isolation is invalid inside the modulus of a complex
+// expression. Wait for its parameters before evaluating the comparison.
+bool pendingComplexMagnitude(const MathStructure &term) {
+ if(term.isFunction() && term.function()->referenceName()=="abs" && term.size()==1 &&
+    !term[0].representsReal() && term[0].containsUnknowns())return true;
+ for(size_t k=0;k<term.size();++k)if(pendingComplexMagnitude(term[k]))return true;
+ return false;
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
@@ -391,6 +399,7 @@ class QuantumOrderFunction: public MathFunction {
    }
    static const ComparisonType kinds[]={COMPARISON_LESS,COMPARISON_GREATER,COMPARISON_EQUALS_LESS,COMPARISON_EQUALS_GREATER,COMPARISON_EQUALS,COMPARISON_NOT_EQUALS};
    int kind=args[2].number().intValue();
+   if(kind<4 && (pendingComplexMagnitude(args[0]) || pendingComplexMagnitude(args[1])))return 0;
    // A deferred graph domain is a set: keep equality intact for later
    // substitution instead of reducing it to a scalar difference.
    if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {

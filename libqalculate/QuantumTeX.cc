@@ -590,6 +590,11 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
   return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
  };
  std::string first=label(entries.front()),last=label(entries.back());
+ if(ordered && first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
+    last.size()==first.size() && last.find_first_not_of("1")==std::string::npos)
+  return "qbasiskets(2^"+std::to_string(first.size())+")";
+ if(ordered && first=="0" && last.size()>1 && last.find_first_not_of("01")==std::string::npos)
+  throw std::runtime_error("Binary ket list endpoints must specify matching register widths.");
  if(ordered && first=="0") {
   if(!last.empty() && last.find_first_not_of("0123456789")==std::string::npos && (last.size()==1 || last[0]!='0'))
    return "qbasiskets(("+last+")+1)";
