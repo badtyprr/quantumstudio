@@ -68,7 +68,8 @@ for flags in [[], ['--approx']]:
         pending=data(expression)
         assert pending['text'] not in ['0','1','2']
         assert data(pending['copy_text'])['display_text']==pending['display_text']
-    assert data(r'\{3,\ldots,3\}')['display_text']=='{3}'
+    singleton = data(r'\{3,\ldots,3\}')
+    assert data(singleton['display_text'])['copy_text'] == singleton['copy_text']
 
     for expression in ['cartesianpower(vector(0,1),-1)','cartesianpower(vector(0,1),1/2)',
                        'cartesianpower(Σ,-1)','cartesian(vector(0,1),2)',

@@ -174,7 +174,7 @@ bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return quantumComplexDomain(value) || name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -1935,6 +1935,34 @@ class QuantumIndexedFunction: public MathFunction {
    }
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
+  bool residueMembership=op=="qmember" && raw[1].isFunction() && raw[1].size()==1 &&
+   (raw[1].function()->referenceName()=="qresidues" || raw[1].function()->referenceName()=="qunitsmod");
+  if(op=="qresidues" || op=="qunitsmod" || residueMembership) {
+   bool units=residueMembership ? raw[1].function()->referenceName()=="qunitsmod" : op=="qunitsmod";
+   MathStructure modulus=residueMembership ? raw[1][0] : raw[0];modulus.eval(eo);
+   if(!modulus.isNumber() && modulus.containsUnknowns() && modulus.representsScalar())return 0;
+   if(!modulus.isInteger() || modulus.isApproximate() || !modulus.number().isPositive()) {
+    CALCULATOR->error(true,"A residue modulus must be a positive exact integer.",NULL);return 0;
+   }
+   auto member=[&](const Number &value) {
+    if(!value.isInteger() || value.isNegative() || value>=modulus.number())return false;
+    if(!units)return true;
+    Number divisor=value;return divisor.gcd(modulus.number()) && divisor.isOne();
+   };
+   if(residueMembership) {
+    MathStructure value=raw[0];value.eval(eo);
+    if(!value.isNumber() || value.isApproximate())return 0;
+    out=member(value.number()) ? 1 : 0;return 1;
+   }
+   // Keep large domains compact. Testing one candidate never enumerates the domain.
+   if(modulus.number()>1024)return 0;
+   MathStructure entries;entries.clearVector();
+   for(int k=0;k<modulus.number().intValue();++k) {
+    if(CALCULATOR->aborted())return 0;
+    if(member(Number(k)))entries.addChild(MathStructure(k));
+   }
+   out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+  }
   if(op=="qindexrange") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure first=raw[0],last=raw[1];first.eval(exact);last.eval(exact);
@@ -2385,6 +2413,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qgeometricsum",2));
+ calculator.addFunction(new QuantumIndexedFunction("qresidues",1));
+ calculator.addFunction(new QuantumIndexedFunction("qunitsmod",1));
  calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));

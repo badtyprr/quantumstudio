@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\mathbb{Z}_N)","qresidues(N)");
+  equal(R"(\mathbb{Z}_{21}^{\ast})","qunitsmod(21)");
   equal(R"(\gcd(a,N))","integergcd(a,N)");
   equal(R"($\vert\phi_0\rangle,\ldots,\vert\phi_3\rangle$)",R"(qindexedketlist("φ_",0,3,vector()))");
   equal(R"(\vert 0\rangle,\ldots,\vert N - 1\rangle)","qbasiskets(N)");
@@ -174,7 +176,9 @@ int main() {
   equal(R"(\{0,\cdots,3\})","qindexrange(0,3)");
   equal(R"(\{0,...,3\})","qindexrange(0,3)");
   rejects(R"(\{0,\ldots\})");
-  rejects(R"(\{0,1,\ldots,3\})");
+  equal(R"(\{0,1,\ldots,3\})","qindexrange(0,3)");
+  rejects(R"(\{0,2,\ldots,3\})");
+  rejects(R"(\{8,9,10,\ldots,7\})");
 
   equal(R"(\{\})","qset(vector())");
   equal(R"(\{"a:b",'c:d'\})",R"(qset(vector("a:b",'c:d')))");

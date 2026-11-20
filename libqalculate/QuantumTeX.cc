@@ -73,6 +73,10 @@ std::string openBinaryFraction(const std::string &source) {
 // quoted labels, ellipses and dots following incomplete operators.
 std::string withoutDisplayPunctuation(std::string value) {
  size_t mark=value.find_last_not_of(" \t\r\n");
+ // Display spacing may follow the sentence comma inside a math span.
+ while(mark!=std::string::npos && mark>1 && value[mark-1]=='\\' &&
+       (value[mark]==';' || value[mark]==',' || value[mark]=='!'))
+  mark=value.find_last_not_of(" \t\r\n",mark-2);
  if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=','))return value;
  if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1])) {
   // An unbraced TeX superscript consumes one token. The following period
@@ -564,6 +568,11 @@ bool registerSumDeclaration(const std::string &variable,const std::string &domai
  alphabet=trim(text.substr(0,power));width=trim(text.substr(power+1));
  return atom(alphabet) && atom(width);
 }
+void nextDecimalIndex(std::string &index) {
+ size_t pos=index.find_last_not_of('9');
+ if(pos==std::string::npos)index="1"+std::string(index.size(),'0');
+ else {++index[pos];std::fill(index.begin()+pos+1,index.end(),'0');}
+}
 // Open-ended families need a common label and consecutive integer subscripts.
 // Keep only the first index; a trailing comma after the ellipsis is typography.
 std::string openIndexedFamily(const std::vector<std::string> &entries) {
@@ -577,9 +586,7 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || (start.size()>1 && start[0]=='0'))return "";
  for(size_t k=0;k+1<end;++k) {
   if(entries[k]!=prefix+index)return "";
-  size_t pos=index.find_last_not_of('9');
-  if(pos==std::string::npos)index="1"+std::string(index.size(),'0');
-  else {++index[pos];std::fill(index.begin()+pos+1,index.end(),'0');}
+  nextDecimalIndex(index);
  }
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
@@ -783,8 +790,22 @@ class TeXReader {
     alphabet=openIndexedFamily(entries);
     if(alphabet.empty())alphabet=indexedKets(entries,false);
     if(alphabet.empty()) {
-     if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
-     alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+     if(entries.size()<3 || entries[entries.size()-2]!="..." || entries.front().empty() || entries.back().empty() ||
+        entries.front()=="..." || entries.back()=="...")throw std::runtime_error(error("Expected endpoints for an ascending integer range"));
+     if(entries.size()>3) {
+      std::string index=entries.front();
+      if(index.find_first_not_of("0123456789")!=std::string::npos || (index.size()>1 && index.front()=='0'))
+       throw std::runtime_error(error("An explicit range prefix must contain consecutive nonnegative integers"));
+      for(size_t i=1;i+2<entries.size();++i) {
+       nextDecimalIndex(index);
+       if(entries[i]!=index)throw std::runtime_error(error("An explicit range prefix must contain consecutive integers"));
+      }
+      const std::string &end=entries.back();
+      if(end.find_first_not_of("0123456789")==std::string::npos &&
+         (end.size()<index.size() || (end.size()==index.size() && end<index)))
+       throw std::runtime_error(error("Range endpoint precedes its explicit prefix"));
+     }
+     alphabet="qindexrange("+entries.front()+","+entries.back()+")";
     }
    }
    size_t afterSet=pos;space();
@@ -1027,6 +1048,21 @@ class TeXReader {
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
    if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
+   if(name=="mathbb" && a=="Z") {
+    space();
+    if(pos<input.size() && input[pos]=='_') {
+     ++pos;std::string modulus=argument();
+     size_t end=pos;space();
+     bool units=false;
+     if(pos<input.size() && input[pos]=='^') {
+      ++pos;space();
+      for(const std::string suffix:{"{\\ast}","{*}","\\ast","*"})
+       if(input.compare(pos,suffix.size(),suffix)==0) {pos+=suffix.size();units=true;break;}
+     }
+     if(!units)pos=end;
+     return std::string(units ? "qunitsmod(" : "qresidues(")+modulus+")";
+    }
+   }
    if(name=="mathbb" && a=="T")return " qunitcircle() ";
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
    if(name=="operatorname" && a=="lg")a="qbitlength";
