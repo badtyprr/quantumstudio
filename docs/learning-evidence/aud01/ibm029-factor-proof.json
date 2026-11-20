@@ -1,0 +1,703 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "e5187297192b13cb991e5755a34226b0d5a144b04eebaededdfdbf3a031fbf1c",
+  "windows_records_sha256": "3c8bb5c7fdd519dadfc17c0ad5d4ee0c09f171daa782bcb238660def65cea985",
+  "inputs": [
+    [
+      "M362",
+      "$b,c\\geq 2$",
+      "0"
+    ],
+    [
+      "M363",
+      "$N = bc$",
+      "0"
+    ],
+    [
+      "M369",
+      "$c$",
+      "0"
+    ],
+    [
+      "M374",
+      "$s,j\\geq 2$",
+      "0"
+    ],
+    [
+      "M408",
+      "$1/2$",
+      "0"
+    ],
+    [
+      "M409",
+      "$2^{-(m-1)}$",
+      "0"
+    ],
+    [
+      "M418",
+      "$1 - 2^{-t}$",
+      "0"
+    ],
+    [
+      "M425",
+      "$Z^2 - 1 = (Z+1)(Z-1)$",
+      "0"
+    ],
+    [
+      "M426",
+      "$$\n\\bigl(a^{r/2} - 1\\bigr) \\bigl(a^{r/2} + 1\\bigr) = a^r - 1.\n$$",
+      "0"
+    ],
+    [
+      "M429",
+      "$a^r - 1$",
+      "0"
+    ],
+    [
+      "M431",
+      "$$\n\\bigl(a^{r/2} - 1\\bigr) \\bigl(a^{r/2} + 1\\bigr).\n$$",
+      "0"
+    ],
+    [
+      "M433",
+      "$a^{r/2} - 1$",
+      "0"
+    ],
+    [
+      "M434",
+      "$a^{r/2} + 1$",
+      "0"
+    ],
+    [
+      "M362-integers",
+      "b>=2 and \"c\">=2",
+      "0"
+    ],
+    [
+      "M363-integers",
+      "N=b*\"c\"",
+      "0"
+    ],
+    [
+      "M369-integer",
+      "\"c\"",
+      "0"
+    ],
+    [
+      "M374-integers",
+      "\"s\">=2 and \"j\">=2",
+      "0"
+    ],
+    [
+      "M425-scalar",
+      "\"Z\"^2-1=(\"Z\"+1)*(\"Z\"-1)",
+      "0"
+    ],
+    [
+      "M425-left",
+      "\"Z\"^2-1",
+      "0"
+    ],
+    [
+      "M425-right",
+      "(\"Z\"+1)*(\"Z\"-1)",
+      "0"
+    ]
+  ],
+  "diagnostics": {
+    "M362": "Expected a shared set membership relation after the comma-separated operands.",
+    "M374": "Expected a shared set membership relation after the comma-separated operands.",
+    "M425": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+  },
+  "original_unit_outputs": {
+    "M363": {
+      "first": "('N')==((149896229 ∕ 500000) ⋅ 'b' km ∕ ms)",
+      "second": "('N')==((149896229 ⋅ 'b' ⋅ 'k') ∕ (500000 ⋅ 's'))"
+    },
+    "M369": {
+      "first": "(149896229 ∕ 500000) km ∕ ms",
+      "second": "(149896229 ⋅ 'k') ∕ (500000 ⋅ 's')"
+    }
+  },
+  "checks": {
+    "M362-integers": 16,
+    "M374-integers": 16,
+    "M369-integer": 16,
+    "M363-integers": 32,
+    "M425-left": 7,
+    "M425-right": 7,
+    "M425-scalar": 1,
+    "M426": 1,
+    "M408": 1,
+    "M429": 6,
+    "M431": 6,
+    "M433": 6,
+    "M434": 6,
+    "M409": 35,
+    "M418": 140
+  },
+  "moduli": [
+    {
+      "N": 15,
+      "prime_divisors": [
+        3,
+        5
+      ],
+      "choices": 13,
+      "routes": {
+        "even_order_split": 6,
+        "initial_gcd": 6,
+        "trivial_gcd": 1
+      },
+      "failure": "1/13",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 21,
+      "prime_divisors": [
+        3,
+        7
+      ],
+      "choices": 19,
+      "routes": {
+        "even_order_split": 6,
+        "initial_gcd": 8,
+        "odd_order": 2,
+        "trivial_gcd": 3
+      },
+      "failure": "5/19",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 33,
+      "prime_divisors": [
+        3,
+        11
+      ],
+      "choices": 31,
+      "routes": {
+        "trivial_gcd": 5,
+        "initial_gcd": 12,
+        "odd_order": 4,
+        "even_order_split": 10
+      },
+      "failure": "9/31",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 35,
+      "prime_divisors": [
+        5,
+        7
+      ],
+      "choices": 33,
+      "routes": {
+        "even_order_split": 18,
+        "initial_gcd": 10,
+        "odd_order": 2,
+        "trivial_gcd": 3
+      },
+      "failure": "5/33",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 39,
+      "prime_divisors": [
+        3,
+        13
+      ],
+      "choices": 37,
+      "routes": {
+        "even_order_split": 18,
+        "initial_gcd": 14,
+        "odd_order": 2,
+        "trivial_gcd": 3
+      },
+      "failure": "5/37",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 45,
+      "prime_divisors": [
+        3,
+        5
+      ],
+      "choices": 43,
+      "routes": {
+        "even_order_split": 18,
+        "initial_gcd": 20,
+        "trivial_gcd": 3,
+        "odd_order": 2
+      },
+      "failure": "5/43",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 51,
+      "prime_divisors": [
+        3,
+        17
+      ],
+      "choices": 49,
+      "routes": {
+        "even_order_split": 30,
+        "initial_gcd": 18,
+        "trivial_gcd": 1
+      },
+      "failure": "1/49",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 55,
+      "prime_divisors": [
+        5,
+        11
+      ],
+      "choices": 53,
+      "routes": {
+        "even_order_split": 30,
+        "initial_gcd": 14,
+        "odd_order": 4,
+        "trivial_gcd": 5
+      },
+      "failure": "9/53",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 57,
+      "prime_divisors": [
+        3,
+        19
+      ],
+      "choices": 55,
+      "routes": {
+        "trivial_gcd": 9,
+        "initial_gcd": 20,
+        "odd_order": 8,
+        "even_order_split": 18
+      },
+      "failure": "17/55",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 63,
+      "prime_divisors": [
+        3,
+        7
+      ],
+      "choices": 61,
+      "routes": {
+        "even_order_split": 18,
+        "initial_gcd": 26,
+        "odd_order": 8,
+        "trivial_gcd": 9
+      },
+      "failure": "17/61",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 65,
+      "prime_divisors": [
+        5,
+        13
+      ],
+      "choices": 63,
+      "routes": {
+        "trivial_gcd": 15,
+        "even_order_split": 30,
+        "initial_gcd": 16,
+        "odd_order": 2
+      },
+      "failure": "17/63",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 69,
+      "prime_divisors": [
+        3,
+        23
+      ],
+      "choices": 67,
+      "routes": {
+        "even_order_split": 22,
+        "initial_gcd": 24,
+        "odd_order": 10,
+        "trivial_gcd": 11
+      },
+      "failure": "21/67",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 75,
+      "prime_divisors": [
+        3,
+        5
+      ],
+      "choices": 73,
+      "routes": {
+        "even_order_split": 30,
+        "initial_gcd": 34,
+        "trivial_gcd": 5,
+        "odd_order": 4
+      },
+      "failure": "9/73",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 77,
+      "prime_divisors": [
+        7,
+        11
+      ],
+      "choices": 75,
+      "routes": {
+        "even_order_split": 30,
+        "odd_order": 14,
+        "trivial_gcd": 15,
+        "initial_gcd": 16
+      },
+      "failure": "29/75",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 85,
+      "prime_divisors": [
+        5,
+        17
+      ],
+      "choices": 83,
+      "routes": {
+        "even_order_split": 58,
+        "initial_gcd": 20,
+        "trivial_gcd": 5
+      },
+      "failure": "5/83",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 87,
+      "prime_divisors": [
+        3,
+        29
+      ],
+      "choices": 85,
+      "routes": {
+        "even_order_split": 42,
+        "initial_gcd": 30,
+        "trivial_gcd": 7,
+        "odd_order": 6
+      },
+      "failure": "13/85",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 91,
+      "prime_divisors": [
+        7,
+        13
+      ],
+      "choices": 89,
+      "routes": {
+        "even_order_split": 54,
+        "initial_gcd": 18,
+        "odd_order": 8,
+        "trivial_gcd": 9
+      },
+      "failure": "17/89",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 93,
+      "prime_divisors": [
+        3,
+        31
+      ],
+      "choices": 91,
+      "routes": {
+        "even_order_split": 30,
+        "initial_gcd": 32,
+        "odd_order": 14,
+        "trivial_gcd": 15
+      },
+      "failure": "29/91",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 95,
+      "prime_divisors": [
+        5,
+        19
+      ],
+      "choices": 93,
+      "routes": {
+        "even_order_split": 54,
+        "initial_gcd": 22,
+        "odd_order": 8,
+        "trivial_gcd": 9
+      },
+      "failure": "17/93",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 99,
+      "prime_divisors": [
+        3,
+        11
+      ],
+      "choices": 97,
+      "routes": {
+        "trivial_gcd": 15,
+        "initial_gcd": 38,
+        "odd_order": 14,
+        "even_order_split": 30
+      },
+      "failure": "29/97",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 105,
+      "prime_divisors": [
+        3,
+        5,
+        7
+      ],
+      "choices": 103,
+      "routes": {
+        "even_order_split": 42,
+        "initial_gcd": 56,
+        "odd_order": 2,
+        "trivial_gcd": 3
+      },
+      "failure": "5/103",
+      "upper_bound": "1/4"
+    },
+    {
+      "N": 111,
+      "prime_divisors": [
+        3,
+        37
+      ],
+      "choices": 109,
+      "routes": {
+        "even_order_split": 54,
+        "initial_gcd": 38,
+        "odd_order": 8,
+        "trivial_gcd": 9
+      },
+      "failure": "17/109",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 115,
+      "prime_divisors": [
+        5,
+        23
+      ],
+      "choices": 113,
+      "routes": {
+        "even_order_split": 66,
+        "initial_gcd": 26,
+        "odd_order": 10,
+        "trivial_gcd": 11
+      },
+      "failure": "21/113",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 117,
+      "prime_divisors": [
+        3,
+        13
+      ],
+      "choices": 115,
+      "routes": {
+        "even_order_split": 54,
+        "initial_gcd": 44,
+        "odd_order": 8,
+        "trivial_gcd": 9
+      },
+      "failure": "17/115",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 119,
+      "prime_divisors": [
+        7,
+        17
+      ],
+      "choices": 117,
+      "routes": {
+        "even_order_split": 90,
+        "initial_gcd": 22,
+        "odd_order": 2,
+        "trivial_gcd": 3
+      },
+      "failure": "5/117",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 123,
+      "prime_divisors": [
+        3,
+        41
+      ],
+      "choices": 121,
+      "routes": {
+        "even_order_split": 70,
+        "initial_gcd": 42,
+        "odd_order": 4,
+        "trivial_gcd": 5
+      },
+      "failure": "9/121",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 129,
+      "prime_divisors": [
+        3,
+        43
+      ],
+      "choices": 127,
+      "routes": {
+        "trivial_gcd": 21,
+        "initial_gcd": 44,
+        "odd_order": 20,
+        "even_order_split": 42
+      },
+      "failure": "41/127",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 133,
+      "prime_divisors": [
+        7,
+        19
+      ],
+      "choices": 131,
+      "routes": {
+        "even_order_split": 54,
+        "trivial_gcd": 27,
+        "odd_order": 26,
+        "initial_gcd": 24
+      },
+      "failure": "53/131",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 135,
+      "prime_divisors": [
+        3,
+        5
+      ],
+      "choices": 133,
+      "routes": {
+        "even_order_split": 54,
+        "initial_gcd": 62,
+        "trivial_gcd": 9,
+        "odd_order": 8
+      },
+      "failure": "17/133",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 141,
+      "prime_divisors": [
+        3,
+        47
+      ],
+      "choices": 139,
+      "routes": {
+        "even_order_split": 46,
+        "initial_gcd": 48,
+        "odd_order": 22,
+        "trivial_gcd": 23
+      },
+      "failure": "45/139",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 143,
+      "prime_divisors": [
+        11,
+        13
+      ],
+      "choices": 141,
+      "routes": {
+        "even_order_split": 90,
+        "odd_order": 14,
+        "trivial_gcd": 15,
+        "initial_gcd": 22
+      },
+      "failure": "29/141",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 145,
+      "prime_divisors": [
+        5,
+        29
+      ],
+      "choices": 143,
+      "routes": {
+        "trivial_gcd": 35,
+        "initial_gcd": 32,
+        "even_order_split": 70,
+        "odd_order": 6
+      },
+      "failure": "41/143",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 147,
+      "prime_divisors": [
+        3,
+        7
+      ],
+      "choices": 145,
+      "routes": {
+        "even_order_split": 42,
+        "initial_gcd": 62,
+        "odd_order": 20,
+        "trivial_gcd": 21
+      },
+      "failure": "41/145",
+      "upper_bound": "1/2"
+    },
+    {
+      "N": 315,
+      "prime_divisors": [
+        3,
+        5,
+        7
+      ],
+      "choices": 313,
+      "routes": {
+        "even_order_split": 126,
+        "initial_gcd": 170,
+        "odd_order": 8,
+        "trivial_gcd": 9
+      },
+      "failure": "17/313",
+      "upper_bound": "1/4"
+    },
+    {
+      "N": 1155,
+      "prime_divisors": [
+        3,
+        5,
+        7,
+        11
+      ],
+      "choices": 1153,
+      "routes": {
+        "even_order_split": 450,
+        "initial_gcd": 674,
+        "odd_order": 14,
+        "trivial_gcd": 15
+      },
+      "failure": "29/1153",
+      "upper_bound": "1/8"
+    }
+  ]
+}
