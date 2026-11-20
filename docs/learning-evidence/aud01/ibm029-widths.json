@@ -1,0 +1,214 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "e5187297192b13cb991e5755a34226b0d5a144b04eebaededdfdbf3a031fbf1c",
+  "records_sha256": "ba02c64a28064bcbd3e9b98ea35f6bd4c720dbda33009803cd1d4af1c918dedc",
+  "windows_inputs": [
+    [
+      "IBM029-9ea5aee3-M083",
+      "$\\operatorname{lg}(N)$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M136",
+      "$$\nn = \\operatorname{lg}(N-1) = \\lfloor \\log(N-1) \\rfloor + 1.\n$$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M138",
+      "$n = \\operatorname{lg}(N-1) = 5$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M147",
+      "$2^n - N$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M257",
+      "$m = 2\\operatorname{lg}(N)+1$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M258",
+      "$m = 2\\operatorname{lg}(N)$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M379",
+      "$\\log(N)$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M136-base-two",
+      "$$\nn = \\operatorname{lg}(N-1) = \\lfloor \\log_{2}(N-1) \\rfloor + 1.\n$$",
+      "0"
+    ],
+    [
+      "IBM029-9ea5aee3-M379-exponent-limit",
+      "$\\lfloor\\log_{2}(N)\\rfloor$",
+      "0"
+    ]
+  ],
+  "moduli": [
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    15,
+    16,
+    17,
+    21,
+    31,
+    32,
+    33,
+    255,
+    256,
+    257,
+    65535,
+    65536,
+    65537,
+    4294967295,
+    4294967296,
+    4294967297,
+    9007199254740991,
+    9007199254740992,
+    9007199254740993
+  ],
+  "checks": {
+    "IBM029-9ea5aee3-M083": 26,
+    "IBM029-9ea5aee3-M147": 26,
+    "IBM029-9ea5aee3-M379-exponent-limit": 26,
+    "IBM029-9ea5aee3-M379": 26,
+    "IBM029-9ea5aee3-M136": 52,
+    "IBM029-9ea5aee3-M136-base-two": 52,
+    "IBM029-9ea5aee3-M138": 52,
+    "IBM029-9ea5aee3-M257": 78,
+    "IBM029-9ea5aee3-M258": 78
+  },
+  "original_M136_disagreements": [
+    {
+      "N": 3,
+      "binary_width": 2,
+      "natural_log_formula": 1
+    },
+    {
+      "N": 5,
+      "binary_width": 3,
+      "natural_log_formula": 2
+    },
+    {
+      "N": 7,
+      "binary_width": 3,
+      "natural_log_formula": 2
+    },
+    {
+      "N": 8,
+      "binary_width": 3,
+      "natural_log_formula": 2
+    },
+    {
+      "N": 9,
+      "binary_width": 4,
+      "natural_log_formula": 3
+    },
+    {
+      "N": 15,
+      "binary_width": 4,
+      "natural_log_formula": 3
+    },
+    {
+      "N": 16,
+      "binary_width": 4,
+      "natural_log_formula": 3
+    },
+    {
+      "N": 17,
+      "binary_width": 5,
+      "natural_log_formula": 3
+    },
+    {
+      "N": 21,
+      "binary_width": 5,
+      "natural_log_formula": 3
+    },
+    {
+      "N": 31,
+      "binary_width": 5,
+      "natural_log_formula": 4
+    },
+    {
+      "N": 32,
+      "binary_width": 5,
+      "natural_log_formula": 4
+    },
+    {
+      "N": 33,
+      "binary_width": 6,
+      "natural_log_formula": 4
+    },
+    {
+      "N": 255,
+      "binary_width": 8,
+      "natural_log_formula": 6
+    },
+    {
+      "N": 256,
+      "binary_width": 8,
+      "natural_log_formula": 6
+    },
+    {
+      "N": 257,
+      "binary_width": 9,
+      "natural_log_formula": 6
+    },
+    {
+      "N": 65535,
+      "binary_width": 16,
+      "natural_log_formula": 12
+    },
+    {
+      "N": 65536,
+      "binary_width": 16,
+      "natural_log_formula": 12
+    },
+    {
+      "N": 65537,
+      "binary_width": 17,
+      "natural_log_formula": 12
+    },
+    {
+      "N": 4294967295,
+      "binary_width": 32,
+      "natural_log_formula": 23
+    },
+    {
+      "N": 4294967296,
+      "binary_width": 32,
+      "natural_log_formula": 23
+    },
+    {
+      "N": 4294967297,
+      "binary_width": 33,
+      "natural_log_formula": 23
+    },
+    {
+      "N": 9007199254740991,
+      "binary_width": 53,
+      "natural_log_formula": 37
+    },
+    {
+      "N": 9007199254740992,
+      "binary_width": 53,
+      "natural_log_formula": 37
+    },
+    {
+      "N": 9007199254740993,
+      "binary_width": 54,
+      "natural_log_formula": 37
+    }
+  ]
+}
