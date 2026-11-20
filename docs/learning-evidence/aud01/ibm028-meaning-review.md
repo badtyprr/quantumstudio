@@ -1,5 +1,9 @@
 # IBM-028 phase-estimation lesson review
 
+The [full Windows replay](ibm028-windows-replay.json) at 99250a02 covers all 396 notebook expressions. With the lesson notation selected, 395 original inputs returned an exact result. M119 requested a dimension, then returned an exact result with the four-dimensional register specified in the lesson. All 396 resolved cases restored their result on reopening and returned an exact result after Copy and re-entry. Copy text matched on both passes for 370 cases. The report lists the other 26 pairs.
+
+The [value checks](ibm028-copy-meaning.json) test 268 sets of inputs across 19 formulas against the displayed result and both clipboard forms. They include positive and negative cases for M331, where earlier clipboard text could incorrectly raise the imaginary unit to a power. These checks cover 15 of the 26 changed pairs. The remaining pairs involve recursive Fourier expansions, controlled operations and measurement probabilities. The full Windows replay verifies their labels and records their text for further review.
+
 The [open binary fraction checks](ibm028-open-bits.json) verify M074 and M076 in Binary fraction mode for all eight printed prefixes with five different tails. The two formulas accept the same phase, including when the doubled phase exceeds one. Substitution of the fifth digit before the fourth preserves both positions. Windows restored the selected mode and the Copy text for both original formulas.
 
 ## Earlier checks
