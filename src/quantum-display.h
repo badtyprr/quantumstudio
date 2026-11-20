@@ -619,7 +619,12 @@ class Printer {
     bool vectorMatrix=operand.isMatrix() && (operand.columns()==1 || operand.rows()==1);
     if(operand.isFunction() && operand.function()->referenceName()=="matrix" && operand.size()==3)
      vectorMatrix=operand[0].isOne() || operand[1].isOne();
-    if(vectorMatrix)return Fragment("("+left.text+") ("+right.text+")",40);
+    // A computed state beside another ket must remain a separate factor.
+    // Without grouping, consecutive Dirac kets can bind before the operator.
+    std::string rightType=operand.isFunction() ? operand.function()->referenceName() : "";
+    bool ketOperand=rightType=="qketstate" || rightType=="qnamedket" || rightType=="qindexedket" || rightType=="qbasis";
+    if(vectorMatrix || (ketOperand && (right.kind!=Ket || left.precedence==40)))
+     return Fragment("("+left.text+") ("+right.text+")",40);
    }
    return Fragment(grouped(left,40)+(right.kind==Ket ? " " : " · ")+grouped(right,40),40);
   }
