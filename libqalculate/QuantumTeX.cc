@@ -549,12 +549,20 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
 // A finite family of kets uses the same prefix at both endpoints.
-std::string indexedKetSet(const std::vector<std::string> &entries) {
+std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  if(entries.size()!=3 || entries[1]!="...")return "";
  auto label=[](const std::string &entry) {
   return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
  };
  std::string first=label(entries.front()),last=label(entries.back());
+ if(ordered && first=="0") {
+  if(!last.empty() && last.find_first_not_of("0123456789")==std::string::npos && (last.size()==1 || last[0]!='0'))
+   return "qbasiskets(("+last+")+1)";
+  if(!last.empty() && asciiLetter(last[0])) {
+   std::string offset=trim(last.substr(1));
+   if(!offset.empty() && offset[0]=='-' && trim(offset.substr(1))=="1")return "qbasiskets("+last.substr(0,1)+")";
+  }
+ }
  size_t split=first.rfind('_');
  if(split==std::string::npos || split==0)return "";
  std::string prefix=first.substr(0,split+1);
@@ -573,7 +581,10 @@ std::string indexedKetSet(const std::vector<std::string> &entries) {
   to=bound.substr(0,1)+offset.front()+magnitude;
  } else if(!integer(to) && !(to.size()==1 && asciiLetter(to[0])))return "";
  if(!integer(from))return "";
- return "qindexedketset(\""+prefix+"\","+from+","+to+",vector())";
+ return std::string(ordered ? "qindexedketlist(" : "qindexedketset(")+"\""+prefix+"\","+from+","+to+",vector())";
+}
+std::string orderedKetList(const std::string &text) {
+ return text.find("...")==std::string::npos ? "" : indexedKets(indexedParts(text,","),true);
 }
 class TeXReader {
  const std::string &input;
@@ -730,7 +741,7 @@ class TeXReader {
    std::string alphabet="vector("+contents+")";
    if(ellipsis) {
     alphabet=openIndexedFamily(entries);
-    if(alphabet.empty())alphabet=indexedKetSet(entries);
+    if(alphabet.empty())alphabet=indexedKets(entries,false);
     if(alphabet.empty()) {
      if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
      alphabet="qindexrange("+entries[0]+","+entries[2]+")";
@@ -1213,6 +1224,10 @@ class TeXReader {
     bool membership=tail!=std::string::npos && tail>=2 &&
      (result.compare(tail-2,3,"∈")==0 || result.compare(tail-2,3,"∉")==0);
     size_t bodyStart=pos;auto body=read(end,false,"",false,"",membership);
+    if(open=='(' && !membership) {
+     std::string list=orderedKetList(body);
+     if(!list.empty()) {result+="("+list+")";continue;}
+    }
     if(membership && input[pos-1]!=end) {
      result+="qhalfopen("+body+","+(open=='[' ? "1)" : "0)");continue;
     }
@@ -1359,6 +1374,8 @@ class TeXReader {
  explicit TeXReader(const std::string &s):input(s) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
+  std::string list=orderedKetList(result);
+  if(!list.empty())return list;
   if(lines && !rootLines.empty() && trim(result)==rootAlignment)*lines=rootLines;
   return result;
  }

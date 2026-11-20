@@ -343,7 +343,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -1318,6 +1318,7 @@ class Parser {
      for(char &axis:axes) axis=std::tolower((unsigned char)axis);
      if(axes=="x" || axes=="y" || axes=="z" || axes=="xx" || axes=="yy" || axes=="zz" || axes=="zx") name="R"+axes;
     }
+    if(name=="basislist")name="qbasiskets";
     if(name=="matrix")name="qmatrix";
     if(name=="identity")name="qidentity";
     if(name=="tr" || name=="Tr" || name=="trace") name="qtrace";

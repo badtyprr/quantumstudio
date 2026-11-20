@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($\vert\phi_0\rangle,\ldots,\vert\phi_3\rangle$)",R"(qindexedketlist("φ_",0,3,vector()))");
+  equal(R"(\vert 0\rangle,\ldots,\vert N - 1\rangle)","qbasiskets(N)");
   equal(R"(1 + r + r^2 + \cdots + r^{n-1})","qgeometricsum(r,(n-1)+1)");
   rejects(R"(1 + r + s^2 + \cdots + r^{n-1})");
   rejects(R"(1 + r + r^2 + \cdots + s^{n-1})");

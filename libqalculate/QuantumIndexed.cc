@@ -296,7 +296,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -1765,7 +1765,22 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
-  if(op=="qindexedketset") {
+  if(op=="qbasiskets") {
+   MathStructure dimension=raw[0];dimension.eval(eo);
+   if(pendingRegisterIndex(dimension))return 0;
+   if(!dimension.isInteger() || !dimension.number().isPositive()) {
+    CALCULATOR->error(true,"An ordered computational basis requires a positive integer dimension.",NULL);return 0;
+   }
+   if(dimension.number()>1024)return 0;
+   MathStructure entries;entries.clearVector();
+   for(int k=0;k<dimension.number().intValue();++k) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure index(k,1),ket(CALCULATOR->getFunction("qbasis"),&index,&dimension,NULL);
+    ket.eval(eo);entries.addChild(ket);
+   }
+   out=entries;return 1;
+  }
+  if(op=="qindexedketset" || op=="qindexedketlist") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
    for(size_t k=0;k<entries.size();++k) {
@@ -1775,7 +1790,9 @@ class QuantumIndexedFunction: public MathFunction {
      CALCULATOR->error(true,"An indexed ket set requires state columns.",NULL);return 0;
     }
    }
-   out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+   if(op=="qindexedketlist")out=entries;
+   else out.set(CALCULATOR->getFunction("qset"),&entries,NULL);
+   return 1;
   }
   if(op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
@@ -2323,6 +2340,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralket",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));

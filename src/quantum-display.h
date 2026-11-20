@@ -386,6 +386,7 @@ class Printer {
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
   if(name=="qmatrixdimensions" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" × "+render(value[1],depth+1).text);
+  if(name=="qbasiskets" && value.size()==1)return Fragment("basislist("+render(value[0],depth+1).text+")");
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
    std::string text="(";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
