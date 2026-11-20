@@ -17,6 +17,7 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\gcd(a,N))","integergcd(a,N)");
   equal(R"($\vert\phi_0\rangle,\ldots,\vert\phi_3\rangle$)",R"(qindexedketlist("φ_",0,3,vector()))");
   equal(R"(\vert 0\rangle,\ldots,\vert N - 1\rangle)","qbasiskets(N)");
   equal(R"(\vert 00\rangle,\ldots,\vert 11\rangle)","qbasiskets(2^2)");

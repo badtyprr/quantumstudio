@@ -1103,7 +1103,7 @@ class TeXReader {
    {"Gamma","Γ"},{"Delta","Δ"},{"Theta","Θ"},{"Lambda","Λ"},{"Xi","Ξ"},
    {"Pi","Π"},{"Sigma","Σ"},{"Upsilon","Υ"},{"Omega","Ω"},
    {"sin","sin"},{"cos","cos"},{"tan","tan"},{"arcsin","asin"},{"arccos","acos"},{"arctan","atan"},{"exp","exp"},{"log","ln"},{"ln","ln"},
-   {"det","det"},{"tr","tr"},{"Tr","Tr"},{"quad"," "},{"qquad"," "}
+   {"gcd","integergcd"},{"det","det"},{"tr","tr"},{"Tr","Tr"},{"quad"," "},{"qquad"," "}
   };
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));

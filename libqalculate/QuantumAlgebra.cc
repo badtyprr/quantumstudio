@@ -612,6 +612,20 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=value.number().integerLength();return 1;
   }
+  if(op=="qintegergcd") {
+   MathStructure args=raw;
+   for(size_t k=0;k<2;++k) {
+    args[k].eval(eo);
+    if(args[k].isInteger() && !args[k].isApproximate())continue;
+    if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar())continue;
+    CALCULATOR->error(true,"Integer GCD requires two exact integers.",NULL);return 0;
+   }
+   // Polynomial GCD would assume two unbound integer labels are coprime.
+   if(!args[0].isInteger() || !args[1].isInteger())return 0;
+   Number result=args[0].number();
+   if(!result.gcd(args[1].number()))return 0;
+   out=result;return 1;
+  }
   if(op=="qresidue") {
    MathStructure modulus=raw[1];modulus.eval(eo);
    if(modulus.isZero()) {CALCULATOR->error(true,"A modulus must be nonzero.",NULL);return 0;}
@@ -1184,6 +1198,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
