@@ -274,6 +274,20 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // A series owns ordered substitutions in its history. Mutating the original
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
+ if(value.isFunction() && value.function()->referenceName()=="qbinarytail" && value.size()==2 &&
+    value[0].isSymbolic() && value[1].isInteger() && value[1].number().isPositive()) {
+  Number index;
+  if(!registerBitIndex(label,value[0].symbol(),index) || index<value[1].number())return false;
+  Number width=index-value[1].number()+1;
+  if(width>1024) {CALCULATOR->error(true,"A single binary-tail expansion supports at most 1024 digits.",NULL);return false;}
+  MathStructure digits;digits.clearVector();
+  PrintOptions decimal;decimal.use_unicode_signs=false;decimal.min_exp=EXP_NONE;
+  for(Number i=value[1].number();i<index;i+=1)digits.addChild(MathStructure(value[0].symbol()+i.print(decimal),true));
+  digits.addChild(bit);
+  MathStructure next(index+1),places(width),tail(value.function(),&value[0],&next,NULL);
+  value.set(CALCULATOR->getFunction("qbinaryfraction"),&digits,&places,&tail,NULL);
+  return true;
+ }
  if(spectralSelection(value) && label.isSymbolic() && value[1].isUnknown()) {
   std::string index=value[1].isSymbolic() ? value[1].symbol() : value[1].variable()->referenceName();
   if(label.symbol()==value[0][0].symbol()+index) {value=bit;return true;}

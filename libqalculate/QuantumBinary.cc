@@ -57,6 +57,29 @@ class QuantumBinaryFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qbinarytail") {
+   if(!a.isSymbolic() || !args[1].isInteger() || !args[1].number().isPositive())
+    CALCULATOR->error(true,"A binary tail requires a digit family and a positive starting index.",NULL);
+   return 0;
+  }
+  if(op=="qbinaryfraction") {
+   if(!a.isVector() || a.isMatrix() || !a.size() || a.size()>1024 ||
+      !args[1].isInteger() || args[1].number()<0 || args[1].number()>Number(a.size())) {
+    CALCULATOR->error(true,"A binary fraction requires a word of up to 1024 bits and a radix position within it.",NULL);return 0;
+   }
+   MathStructure word(CALCULATOR->getFunction("qbitword"),&a,NULL);word.eval(eo);
+   const MathStructure &tail=args[2];
+   if(tail.isUndefined() || tail.isVector() || tail.containsType(STRUCT_UNIT,true,true,true) || (tail.isNumber() && (!tail.number().isReal() || tail.number()<0 || tail.number()>1))) {
+    CALCULATOR->error(true,"The remaining binary fraction must be between zero and one.",NULL);return 0;
+   }
+   if(!isQuantumBitLabel(word) || !tail.representsReal())return 0;
+   MathStructure lower=tail,upper=tail;
+   lower.transform(COMPARISON_EQUALS_GREATER,m_zero);upper.transform(COMPARISON_EQUALS_LESS,m_one);
+   lower.eval(eo);upper.eval(eo);
+   if(lower.isZero() || upper.isZero()) {CALCULATOR->error(true,"The remaining binary fraction must be between zero and one.",NULL);return 0;}
+   if(!lower.isOne() || !upper.isOne())return 0;
+   out=word[0];out+=tail;MathStructure scale(2);scale.raise(args[1]);out/=scale;return 1;
+  }
   if(op=="qcomparisonzero") {
    if(isQuantumBitLabel(a)) {
     MathStructure index(0),width=args[1];
@@ -334,6 +357,8 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
+ calculator.addFunction(new QuantumBinaryFunction("qbinarytail",2));
+ calculator.addFunction(new QuantumBinaryFunction("qbinaryfraction",3));
  calculator.addFunction(new QuantumBinaryFunction("qbitword",1));
  for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }

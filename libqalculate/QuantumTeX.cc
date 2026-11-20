@@ -37,6 +37,38 @@ std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
 }
+// Binary-fraction mode supplies the radix for an open sequence of named bits.
+std::string openBinaryFraction(const std::string &source) {
+ std::string text=trim(source);
+ size_t end=text.size();
+ for(const std::string dots:{"\\cdots","\\ldots","…","..."}) {
+  if(end>=dots.size() && text.compare(end-dots.size(),dots.size(),dots)==0) {end-=dots.size();break;}
+ }
+ if(end==text.size())return "";
+ size_t equals=text.rfind('=',end),at=equals==std::string::npos ? 0 : equals+1;
+ auto space=[&](){while(at<end && std::isspace((unsigned char)text[at]))++at;};
+ space();
+ if(text.compare(at,2,"0.")==0)++at;
+ std::string prefix,entries;int count=0,point=-1;
+ while(at<end) {
+  if(text[at]=='.' && point<0) {point=count;++at;space();continue;}
+  if(!asciiLetter(text[at]) || at+1>=end || text[at+1]!='_')return "";
+  std::string family=text.substr(at,2);at+=2;
+  if(prefix.empty())prefix=family;
+  if(prefix!=family)return "";
+  bool grouped=at<end && text[at]=='{';if(grouped)++at;
+  size_t begin=at;
+  while(at<end && std::isdigit((unsigned char)text[at]))++at;
+  std::string index=text.substr(begin,at-begin);
+  if(index!=std::to_string(count+1) || (grouped && (at==end || text[at++]!='}')))return "";
+  if(++count>1024)throw std::runtime_error("A binary word supports at most 1024 bits.");
+  if(count>1)entries+=",";
+  entries+=family+index;space();
+ }
+ if(count<2 || point<0 || point==count)return "";
+ return text.substr(0,equals==std::string::npos ? 0 : equals+1)+"qbinaryfraction(vector("+entries+"),"+
+        std::to_string(count-point)+",qbinarytail(\""+prefix+"\","+std::to_string(count+1)+"))";
+}
 // Display mathematics may end with a sentence period or comma. Preserve decimals,
 // quoted labels, ellipses and dots following incomplete operators.
 std::string withoutDisplayPunctuation(std::string value) {
@@ -1430,6 +1462,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else mathWrapper=false;
  if(mathWrapper)s=withoutDisplayPunctuation(s);
  if(fractionBits) {
+  std::string expansion=openBinaryFraction(s);
+  if(!expansion.empty())s=expansion;
   std::string digits=trim(s);
   if(!digits.empty() && digits.front()=='.')digits.erase(0,1);
   if(!digits.empty() && digits.find_first_not_of("0123456789")==std::string::npos)

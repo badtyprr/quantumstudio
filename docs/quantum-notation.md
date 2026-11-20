@@ -1257,6 +1257,12 @@ The result displays its integer-index conditions. Copy result retains both the s
 
 Copy/re-entry may normalize equivalent scalar formatting, such as `1/sqrt(N)` to `1/N^0.5`; it preserves evaluation and domain checks. Use Copy result for re-entry of the full conditional expression. A bare named ket such as `QFT_N|x>` does not declare x to be an integer basis index and is not expanded by this rule. General Fourier identities and unspecified basis declarations remain separate work.
 
+## Binary fractions with an open tail
+
+Select **Binary fraction** when the surrounding text identifies a radix-two expansion. For example, paste `0.a_1 a_2 a_3\cdots` or `a_1. a_2 a_3\cdots`. If the three printed bits form the integer B and the remaining fraction is t, these give (B + t)/8 and (B + t)/4 respectively.
+
+Use `binarytail("a_",4)` to refer to the entire fraction starting at the fourth bit. Substitute a value between 0 and 1 inclusive, or assign later digits by name. Assigning `a_5` leaves `a_4` and the tail beginning at `a_6` available for subsequent substitutions. A tail of 1 represents infinitely many ones. A single substitution can expose up to 1024 additional digits.
+
 ## Checking a gate's action on a ket
 
 Use `input ↦ output` or the TeX command `\mapsto` to record a state mapping. Both sides can contain named kets, tensor products, or concrete column vectors. `checkaction(gate, mapping)` checks whether applying the matrix to that input produces the stated output, including its phase. For example, `checkaction(Z, (|1> ↦ -|1>))` returns 1, and `checkaction(Z, (|1> ↦ |1>))` returns 0. Each check applies to the specified input state.

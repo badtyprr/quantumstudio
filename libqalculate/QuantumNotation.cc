@@ -248,7 +248,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qcssgenerators",2},
  {"qcssstate",3},
  {"qcssencoder",2},
- {"qbitvalue",1},
+ {"qbitvalue",1},{"qbinaryfraction",3},{"qbinarytail",2},
  {"qbitword",1},
  {"qbloch",1},
  {"qblochsub",2},
@@ -1319,6 +1319,8 @@ class Parser {
      if(axes=="x" || axes=="y" || axes=="z" || axes=="xx" || axes=="yy" || axes=="zz" || axes=="zx") name="R"+axes;
     }
     if(name=="checkaction")name="qcheckaction";
+    if(name=="binarytail")name="qbinarytail";
+    if(name=="binaryfraction")name="qbinaryfraction";
     if(name=="basislist")name="qbasiskets";
     if(name=="matrix")name="qmatrix";
     if(name=="identity")name="qidentity";

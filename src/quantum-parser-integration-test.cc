@@ -23,6 +23,9 @@ int main(){try {
  eo.approximation=APPROXIMATION_EXACT;
  equal("quantum:1=1=1","1");equal("quantum:1=1=2","0");
  equal("quantum:x=x=x","1");
+ equal("quantum:binaryfraction(vector(1,0,1),3,1/3)","2/3");
+ equal("quantum:binaryfraction(vector(1,0,1),2,1/3)","4/3");
+ equal(R"(quantum:replace(replace(replace(binarytail("a_",4),a_5,1),a_4,0),binarytail("a_",6),0))","1/4");
  equal(R"(quantum:checkaction(X,(|0>\mapsto|1>)))","1");
  equal("quantum:checkaction(Z,(|0>↦|1>))","0");
  equal("quantum:checkaction(Z,(|1>↦-|1>))","1");
