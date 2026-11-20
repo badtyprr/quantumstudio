@@ -1,0 +1,1008 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "8f10c93bc0d98855706f4468c271c5948f56ed90a9e5daaf4d622acf9af1ab16",
+  "windows_records_sha256": "a6b82971b640d9fe8f81673df627ba421889d7c4e527e611c89ad5658720b23d",
+  "windows": {
+    "IBM029-9ea5aee3-M026": {
+      "display": "integergcd(a, N) = 1",
+      "copy": "(qintegergcd('a','N'))==(1)",
+      "second_copy": "(qintegergcd('a','N'))==(1)"
+    },
+    "IBM029-9ea5aee3-M027": {
+      "display": "{k ∈ \"Z_N\" : integergcd(k, N) = 1} = \"Z_N\"",
+      "copy": "(qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),\"Z_N\",\"qboundindex_0\"))==(\"Z_N\")",
+      "second_copy": "(qsetfilter(qcompare(qintegergcd(\"qboundindex_1\",'N'),1,4),\"Z_N\",\"qboundindex_1\"))==(\"Z_N\")"
+    },
+    "IBM029-9ea5aee3-M034": {
+      "display": "1",
+      "copy": "1",
+      "second_copy": "1"
+    },
+    "IBM029-9ea5aee3-M049": {
+      "display": "integergcd(N, a) = 1",
+      "copy": "(qintegergcd('N','a'))==(1)",
+      "second_copy": "(qintegergcd('N','a'))==(1)"
+    },
+    "IBM029-9ea5aee3-M069": {
+      "display": "integergcd(a, N) = 1",
+      "copy": "(qintegergcd('a','N'))==(1)",
+      "second_copy": "(qintegergcd('a','N'))==(1)"
+    },
+    "IBM029-9ea5aee3-M281": {
+      "display": "integergcd(u, v) = 1",
+      "copy": "(qintegergcd('u','v'))==(1)",
+      "second_copy": "(qintegergcd('u','v'))==(1)"
+    },
+    "IBM029-9ea5aee3-M385": {
+      "display": "integergcd(a, N) = d",
+      "copy": "(qintegergcd('a','N'))==('d')",
+      "second_copy": "(qintegergcd('a','N'))==('d')"
+    },
+    "IBM029-9ea5aee3-M396": {
+      "display": "integergcd(x, N) = d",
+      "copy": "(qintegergcd(x,'N'))==('d')",
+      "second_copy": "(qintegergcd(x,'N'))==('d')"
+    },
+    "IBM029-9ea5aee3-M406": {
+      "display": "integergcd(a^(0.5 · r) − 1, N) = 1",
+      "copy": "(qintegergcd(qsub(qpower('a',qmul('r',1 ∕ 2)),1),'N'))==(1)",
+      "second_copy": "(qintegergcd(qsub(qpower('a',qmul('r',1 ∕ 2)),1),'N'))==(1)"
+    }
+  },
+  "cases": {
+    "IBM029-9ea5aee3-M026": [
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            -6
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            5
+          ],
+          [
+            "N",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            3
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            14
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            11
+          ],
+          [
+            "N",
+            35
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "IBM029-9ea5aee3-M034": [
+      {
+        "bindings": [],
+        "expected": 1
+      }
+    ],
+    "IBM029-9ea5aee3-M049": [
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            -6
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            5
+          ],
+          [
+            "N",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            3
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            14
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            11
+          ],
+          [
+            "N",
+            35
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "IBM029-9ea5aee3-M069": [
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            -6
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            5
+          ],
+          [
+            "N",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            3
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            14
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            11
+          ],
+          [
+            "N",
+            35
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "IBM029-9ea5aee3-M281": [
+      {
+        "bindings": [
+          [
+            "u",
+            0
+          ],
+          [
+            "v",
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            0
+          ],
+          [
+            "v",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            -6
+          ],
+          [
+            "v",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            5
+          ],
+          [
+            "v",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            3
+          ],
+          [
+            "v",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            14
+          ],
+          [
+            "v",
+            21
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            11
+          ],
+          [
+            "v",
+            35
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "IBM029-9ea5aee3-M385": [
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            0
+          ],
+          [
+            "d",
+            0
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            0
+          ],
+          [
+            "d",
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            15
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            0
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            16
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            -6
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            3
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            -6
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            4
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            5
+          ],
+          [
+            "N",
+            6
+          ],
+          [
+            "d",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            5
+          ],
+          [
+            "N",
+            6
+          ],
+          [
+            "d",
+            2
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            3
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            3
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            3
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            4
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            14
+          ],
+          [
+            "N",
+            21
+          ],
+          [
+            "d",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            14
+          ],
+          [
+            "N",
+            21
+          ],
+          [
+            "d",
+            8
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            11
+          ],
+          [
+            "N",
+            35
+          ],
+          [
+            "d",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            11
+          ],
+          [
+            "N",
+            35
+          ],
+          [
+            "d",
+            2
+          ]
+        ],
+        "expected": 0
+      }
+    ],
+    "IBM029-9ea5aee3-M396": [
+      {
+        "bindings": [
+          [
+            "x",
+            0
+          ],
+          [
+            "N",
+            0
+          ],
+          [
+            "d",
+            0
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            0
+          ],
+          [
+            "N",
+            0
+          ],
+          [
+            "d",
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            0
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            15
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            0
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            16
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            -6
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            3
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            -6
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            4
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            5
+          ],
+          [
+            "N",
+            6
+          ],
+          [
+            "d",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            5
+          ],
+          [
+            "N",
+            6
+          ],
+          [
+            "d",
+            2
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            3
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            3
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            3
+          ],
+          [
+            "N",
+            15
+          ],
+          [
+            "d",
+            4
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            14
+          ],
+          [
+            "N",
+            21
+          ],
+          [
+            "d",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            14
+          ],
+          [
+            "N",
+            21
+          ],
+          [
+            "d",
+            8
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            11
+          ],
+          [
+            "N",
+            35
+          ],
+          [
+            "d",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "x",
+            11
+          ],
+          [
+            "N",
+            35
+          ],
+          [
+            "d",
+            2
+          ]
+        ],
+        "expected": 0
+      }
+    ],
+    "IBM029-9ea5aee3-M406": [
+      {
+        "bindings": [
+          [
+            "a",
+            2
+          ],
+          [
+            "r",
+            4
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            4
+          ],
+          [
+            "r",
+            2
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            2
+          ],
+          [
+            "r",
+            6
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            14
+          ],
+          [
+            "r",
+            2
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "a",
+            8
+          ],
+          [
+            "r",
+            4
+          ],
+          [
+            "N",
+            15
+          ]
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  "invalid_operands": [
+    "1/2",
+    "i",
+    "[1;2]"
+  ],
+  "open_rows": {
+    "M027": "The unit group and the full residue ring need distinct meanings."
+  }
+}
