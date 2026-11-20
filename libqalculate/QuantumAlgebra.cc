@@ -7,6 +7,7 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "BuiltinFunctions.h"
+#include "MathStructure-support.h"
 #include "Variable.h"
 #include <string>
 #include <utility>
@@ -849,7 +850,8 @@ class QuantumAlgebraFunction: public MathFunction {
    MathStructure argument=raw[0];argument.eval(exact);
    // Direct trigonometric AST calls bypass AngleArgument parsing; attach the
    // radian unit explicitly so exact evaluation sees an angle in every mode.
-   if(op=="qsin" || op=="qcos" || op=="qtan")argument.multiply(CALCULATOR->getRadUnit());
+   if((op=="qsin" || op=="qcos" || op=="qtan") && !contains_angle_unit(argument,radians.parse_options))
+    argument.multiply(CALCULATOR->getRadUnit());
    out.set(function,&argument,NULL);out.eval(exact);
    if(out.containsFunction(function) && eo.approximation!=APPROXIMATION_EXACT)out.eval(radians);
    // Direct functions retain the explicit radian unit in their symbolic argument.
