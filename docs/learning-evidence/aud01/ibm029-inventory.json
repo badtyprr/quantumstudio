@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
   "source_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
-  "worker_sha256": "1db347b3f6d6cd77c4939bf8011ee3b1d6bf7d096ae34ac2db9f9b4be7887752",
-  "revision": "dfe9df33ec94d0e5cbfd474d082ed8fa31362ec1",
+  "worker_sha256": "518bfa1faf8cff17ada7da1a1f9e766846fbd3fd475696a7cfc63595a7021d0f",
+  "revision": "f191e94eeded230dc9667a58c22b242554f66550",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
