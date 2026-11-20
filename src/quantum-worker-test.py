@@ -35,6 +35,17 @@ classical_speed = data("c")["copy_text"]
 assert data("("+classical_speed+")/c")["copy_text"] == "1"
 assert "qphysicalunit" not in classical_speed
 
+# A brace-delimited basis is a set in its stated dimension.
+basis_source = r"$\{\vert 0\rangle,\ldots,\vert N-1\rangle\}$"
+basis_copy = data("quantum:"+basis_source)["copy_text"]
+for dimension in (1, 3, 15, 128):
+    concrete = data(f'quantum:replace(({basis_copy}),"N",{dimension})')["copy_text"]
+    assert len(concrete) < 32768
+    assert data(f"quantum:cardinality({concrete})")["copy_text"] == str(dimension)
+    assert data(f"quantum:basis(0,{dimension}) ∈ {concrete}")["copy_text"] == "1"
+assert data("quantum:basis(0,16) ∈ basisset(15)")["copy_text"] == "0"
+assert data("quantum:qset(vector(basis(1,3),basis(0,3)))")["copy_text"] != "basisset(2)"
+
 # Compare the two full operands in the specified residue class.
 for formula, expected in (
     (r"$3 \cdot 5 \equiv 1 \; (\textrm{mod } 7)$", "1"),

@@ -174,7 +174,7 @@ bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return quantumComplexDomain(value) || name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -1782,11 +1782,11 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
-  if(op=="qbasiskets") {
+  if(op=="qbasiskets" || op=="qbasisketset") {
    MathStructure dimension=raw[0];dimension.eval(eo);
    if(pendingRegisterIndex(dimension))return 0;
    if(!dimension.isInteger() || !dimension.number().isPositive()) {
-    CALCULATOR->error(true,"An ordered computational basis requires a positive integer dimension.",NULL);return 0;
+    CALCULATOR->error(true,"A computational basis requires a positive integer dimension.",NULL);return 0;
    }
    if(dimension.number()>1024)return 0;
    MathStructure entries;entries.clearVector();
@@ -1795,7 +1795,9 @@ class QuantumIndexedFunction: public MathFunction {
     MathStructure index(k,1),ket(CALCULATOR->getFunction("qbasis"),&index,&dimension,NULL);
     ket.eval(eo);entries.addChild(ket);
    }
-   out=entries;return 1;
+   if(op=="qbasisketset")out.set(CALCULATOR->getFunction("qset"),&entries,NULL);
+   else out=entries;
+   return 1;
   }
   if(op=="qindexedketset" || op=="qindexedketlist") {
    MathStructure entries;
@@ -2387,6 +2389,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
+ calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));

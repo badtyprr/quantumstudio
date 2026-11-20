@@ -425,6 +425,7 @@ class Printer {
    return Fragment("binaryfraction("+digits+"), "+render(value[1],depth+1).text+", "+render(value[2],depth+1).text+")");
   }
   if(name=="qbasiskets" && value.size()==1)return Fragment("basislist("+render(value[0],depth+1).text+")");
+  if(name=="qbasisketset" && value.size()==1)return Fragment("basisset("+render(value[0],depth+1).text+")");
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
    std::string text="(";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
