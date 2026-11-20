@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
   "notebook_sha256": "2ff07f29f923364ca6d47b07a36266bebe64e335cce6d50cdeed2d1cbf39af4e",
-  "worker_sha256": "d076d74c608efb970e44ff2215cd07382c9ab57383c53cfb04eba875044309f8",
+  "worker_sha256": "a3034b2b6e198838a4f906580560e8f5da8222e9d9eb75829b862385fb8cc9e2",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "84c64c8017e493ea16bbed888602ebc061fb9b08e1fc207a6a9502c6808e450d",
+  "records_sha256": "64dd21506a32a8893ac21d4a7568b479769b65ece15f85925dc4d3dc108d94a9",
   "suite": {
     "passed": true,
     "checks": 4358,
     "calls": 397,
-    "clipboardRetries": 0,
+    "clipboardRetries": 1,
     "clipboardRestored": true
   },
   "source_expressions": 396,

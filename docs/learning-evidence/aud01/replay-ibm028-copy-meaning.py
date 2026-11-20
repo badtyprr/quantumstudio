@@ -19,21 +19,33 @@ inventory = json.loads(Path(__file__).with_name("ibm028-inventory.json").read_by
 checks = {}
 
 
-def verify(number, bindings, truth):
-    key = inventory["rows"][number-1]["id"]
-    record = records[key]
-    evaluated = {}
+def bound_forms(key, bindings):
     for form in ("display", "copy", "second_copy"):
-        expr = record[form]
+        expr = records[key][form]
         for name, value in bindings:
             expr = f"replace(({expr}),{name},({value}))"
+        yield form, expr
+
+
+def exact(expression):
+    proc = subprocess.run([worker, "--json"], input=("quantum:" + expression).encode(),
+                          env=env, timeout=30, capture_output=True, check=True)
+    return json.loads(proc.stdout)["copy_text"]
+
+
+def verify(number, bindings, truth, reference=None):
+    key = inventory["rows"][number-1]["id"]
+    evaluated = {}
+    for form, expr in bound_forms(key, bindings):
+        if reference is not None:
+            expr = f"(({expr}) = ({reference}))"
         if expr not in evaluated:
-            proc = subprocess.run([worker, "--json"], input=("quantum:" + expr).encode(),
-                              env=env, timeout=30, capture_output=True, check=True)
-            evaluated[expr] = json.loads(proc.stdout)["copy_text"]
-        result = evaluated[expr]
-        assert result == str(int(truth)), (key, form, bindings, truth, result)
-    checks.setdefault(key, []).append(dict(bindings=bindings, expected=int(truth)))
+            evaluated[expr] = exact(expr)
+        assert evaluated[expr] == str(int(truth)), (key, form, bindings, truth, evaluated[expr])
+    case = dict(bindings=bindings, expected=int(truth))
+    if reference is not None:
+        case["reference"] = reference
+    checks.setdefault(key, []).append(case)
 
 
 # Independent one-qubit phase gates provide the expected high and low controls.
@@ -102,6 +114,93 @@ for y, theta in [(0, "0"), (1, "1/4"), (0, "1/8"), (1, "0"), (0, "1/2"), (0, "3/
     verify(356, values, True)
     verify(373, values, Fraction(1, 4) <= delta <= Fraction(1, 2))
 
+
+# Split a two-qubit Fourier circuit into its partial transform, phase, H and swap.
+for x in (0, 1):
+    for a in (0, 1):
+        common = [("m", 2), ("ω_2", "-1"), ("ω_4", "i"), ("x", x), ("a", a)]
+        verify(247, [("|x>", f"basis({x},2)"), ("|a>", f"basis({a},2)")] + common, True)
+        for y in (0, 1):
+            for b in (0, 1):
+                for root in ("-1", "1"):
+                    roots = [("m", 2), ("ω_2", root), ("ω_4", "i")]
+                    labels = [("x", x), ("a", a), ("y", y), ("b", b)]
+                    for number in (258, 265):
+                        verify(number, roots + labels, root == "-1" or not (x and y))
+        phase = f"(P({a}*pi/2)*H*basis({x},2))"
+        last = f"basis({a},2)"
+        column = f"(fourier(4)*basis({2*x+a},4))"
+        for number, state in [(251, f"{phase} @ {last}"), (252, f"{phase} @ (H*{last})"),
+                              (253, column)]:
+            bound = [("|a>", last)] + common if number == 251 else common
+            verify(number, bound, True, state)
+            verify(number, bound, False, f"-({state})")
+        verify(275, common, True)
+        wrong_root = [("m", 2), ("ω_2", "1"), ("ω_4", "i"), ("x", x), ("a", a)]
+        verify(247, [("|x>", f"basis({x},2)"), ("|a>", last)] + wrong_root, x == 0)
+        verify(275, wrong_root, x == 0)
+
+# Inverse Fourier estimation returns the exact basis label for grid phases.
+for width in (1, 2):
+    size = 2**width
+    for y in range(size):
+        theta = f"{y}/{size}"
+        target = "|1>"
+        values = [("ψ", target), ("m", width)]
+        for shift in (0, 1):
+            gate = f"P(2*pi*({y+shift})/{size})"
+            verify(313, values + [("U", gate), ("θ", theta)], shift == 0)
+        verify(317, [("|y>", f"basis({y},{size})")] + values + [("y", y), (f"ω_{size}", f"exp(2*pi*i/{size})")], True)
+        verify(317, [("|y>", f"basis({y},{size})")] + values + [("y", y), (f"ω_{size}", "1")], y == 0)
+        for z in range(size):
+            verify(325, values + [("θ", theta)], z == y, f"{target} @ basis({z},{size})")
+            for probability in (0, 1):
+                verify(328, [("p_y", probability), ("m", width), ("θ", theta), ("y", z)],
+                       probability == int(y == z))
+
+
+# Repeated lesson labels and arithmetic share expectations, but each row uses
+# its own three Windows results. Only identical bound expressions share work.
+simple = {}
+for label in ("m", "N", "x", "y", "a", "k", "p_y", r"\theta", r"\alpha"):
+    symbol = {r"\theta": "θ", r"\alpha": "α"}.get(label, label)
+    simple[label] = [([(symbol, value)], value) for value in ("1/4", "3")]
+for label in ("U", "V"):
+    simple[label] = [([(label, gate)], gate) for gate in ("X", "Z")]
+simple[r"\vert\psi\rangle"] = [([("ψ", ket)], ket) for ket in ("|0>", "|->")]
+for label in ("0", "1", "2", "4", "1/2", "1/4"):
+    simple[label] = [([], label)]
+simple[r"40\%"] = [([], "2/5")]
+simple[r"25\%"] = [([], "1/4")]
+for width in (2, 3):
+    size = 2**width
+    for label, expected in [("m-1", width-1), ("2^m", size),
+                            ("1/2^m", f"1/{size}"), ("2^{-m}", f"1/{size}")]:
+        simple.setdefault(label, []).append(([("m", width)], str(expected)))
+    for y in (0, size-1):
+        simple.setdefault("y/2^m", []).append(([("m", width), ("y", y)], f"{y}/{size}"))
+    for n in (size, size+1):
+        simple.setdefault("N = 2^m", []).append(([("m", width), ("N", n)], str(int(n == size))))
+for label, expected in [(r"\theta = 0", "0"), (r"\theta = 1/2", "1/2"), (r"\theta = 1", "1")]:
+    simple[label] = [([("θ", value)], str(int(value == expected))) for value in (expected, "3/4")]
+
+simple_rows = {}
+evaluated_simple = set()
+for row in inventory["rows"]:
+    literal = row["literal"]
+    if literal[1:-1] not in simple:
+        continue
+    cases = simple[literal[1:-1]]
+    group = simple_rows.setdefault(literal, dict(rows=[], cases=cases))
+    group["rows"].append(row["id"])
+    for bindings, expected in cases:
+        for form, expr in bound_forms(row["id"], bindings):
+            test = f"(({expr}) = ({expected}))"
+            if test in evaluated_simple:
+                continue
+            assert exact(test) == "1", (row["id"], form, test)
+            evaluated_simple.add(test)
+
 report = dict(source=inventory["source"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
-              forms=["Windows display", "Windows Copy", "Windows Copy after re-entry"], checks=checks)
+              forms=["Windows display", "Windows Copy", "Windows Copy after re-entry"], checks=checks, repeated_expressions=simple_rows)
 args.output.write_bytes((json.dumps(report, indent=2, ensure_ascii=False) + "\n").encode())
