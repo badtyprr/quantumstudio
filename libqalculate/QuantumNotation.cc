@@ -230,7 +230,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qdecimalmatch",4},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qstateaction",2},{"qcheckaction",2},{"qdecimalmatch",4},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -719,7 +719,7 @@ class Parser {
    need(',');
   } while(true);
  }
- bool setOperatorAhead() const {return s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
+ bool setOperatorAhead() const {return s.compare(p,3,"↦")==0 || s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
@@ -1318,6 +1318,7 @@ class Parser {
      for(char &axis:axes) axis=std::tolower((unsigned char)axis);
      if(axes=="x" || axes=="y" || axes=="z" || axes=="xx" || axes=="yy" || axes=="zz" || axes=="zx") name="R"+axes;
     }
+    if(name=="checkaction")name="qcheckaction";
     if(name=="basislist")name="qbasiskets";
     if(name=="matrix")name="qmatrix";
     if(name=="identity")name="qidentity";
@@ -2343,6 +2344,10 @@ class Parser {
    std::string domain=setUnion();
    if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
    result="qfunctiontype("+result+","+domain+","+setUnion()+")";checkSize(result);
+  }
+  if(takeSetOperator("↦")) {
+   std::string image=logicalOr(false);
+   result="qstateaction("+result+","+image+")";checkSize(result);
   }
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);

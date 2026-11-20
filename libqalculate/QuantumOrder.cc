@@ -46,7 +46,15 @@ bool algebraicValue(qqbar_t out,const MathStructure &term,unsigned &remaining) {
  if(!term.size() || !algebraicValue(out,term[0],remaining))return false;
  if(term.isPower() && term.size()==2 && term[1].isNumber()) {
   const Number &power=term[1].number();
-  if(power.isApproximate() || !power.isRational() || power.denominator()>8 ||
+  if(power.isApproximate() || !power.isRational())return false;
+  // The principal value of (-1)^(p/q) is the root exp(2*pi*i*p/(2q)).
+  // Reduce the numerator before construction and retain the degree budget.
+  if(term[0].isMinusOne() && power.denominator()<=64) {
+   const mpq_t &fraction=power.internalRational();
+   unsigned long order=2*power.denominator().uintValue();
+   qqbar_root_of_unity(out,mpz_fdiv_ui(mpq_numref(fraction),order),order);return true;
+  }
+  if(power.denominator()>8 ||
      power.numerator()>16 || power.numerator() < -16 || (qqbar_is_zero(out) && !power.isPositive()))return false;
   if(qqbar_degree(out)*power.denominator().intValue()>64 || qqbar_height_bits(out)>256)return false;
   fmpq_t exponent;fmpq_init(exponent);fmpq_set_mpq(exponent,power.internalRational());

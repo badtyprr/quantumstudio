@@ -1257,6 +1257,10 @@ The result displays its integer-index conditions. Copy result retains both the s
 
 Copy/re-entry may normalize equivalent scalar formatting, such as `1/sqrt(N)` to `1/N^0.5`; it preserves evaluation and domain checks. Use Copy result for re-entry of the full conditional expression. A bare named ket such as `QFT_N|x>` does not declare x to be an integer basis index and is not expanded by this rule. General Fourier identities and unspecified basis declarations remain separate work.
 
+## Checking a gate's action on a ket
+
+Use `input ↦ output` or the TeX command `\mapsto` to record a state mapping. Both sides can contain named kets, tensor products, or concrete column vectors. `checkaction(gate, mapping)` checks whether applying the matrix to that input produces the stated output, including its phase. For example, `checkaction(Z, (|1> ↦ -|1>))` returns 1, and `checkaction(Z, (|1> ↦ |1>))` returns 0. Each check applies to the specified input state.
+
 ## Finite named orthonormal bases
 
 Use `orthobasis(expression,B,[|red>,|blue>])` to declare the listed named kets as an ordered orthonormal basis named B within that expression. For example, `orthobasis(<red|red>,B,[|red>,|blue>])` gives 1 and `orthobasis(<red|blue>,B,[|red>,|blue>])` gives 0. This implements the explicitly assumed orthogonality discussed in [IBM's inner products lesson](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections).

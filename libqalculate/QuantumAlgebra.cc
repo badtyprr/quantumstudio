@@ -537,6 +537,22 @@ bool unequalKnownDimensions(const MathStructure &a,const MathStructure &b) {
  }
  return false;
 }
+// A named ket can have an unknown dimension while its orientation is known.
+bool stateActionOperand(const MathStructure &value,const EvaluationOptions &eo,unsigned depth=0) {
+ if(depth>128)return false;
+ MathStructure rows,columns;
+ if(matrixShape(value,rows,columns,eo))return columns.isOne();
+ if(!value.isFunction())return false;
+ const std::string &name=value.function()->referenceName();
+ if(name=="qketstate" || name=="qstatecall" || name=="qstatecalls")return true;
+ if(value.size()!=2)return false;
+ if(name=="qtensor" || name=="qadd" || name=="qsub")
+  return stateActionOperand(value[0],eo,depth+1) && stateActionOperand(value[1],eo,depth+1);
+ if(name=="qmul" || name=="qadjacent")
+  return stateActionOperand(value[1],eo,depth+1) ||
+         (value[1].representsScalar() && stateActionOperand(value[0],eo,depth+1));
+ return false;
+}
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
@@ -552,6 +568,27 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qstateaction") {
+   MathStructure states=raw;
+   for(unsigned k=0;k<2;++k) {
+    states[k].eval(eo);
+    if(!stateActionOperand(states[k],eo)) {
+     CALCULATOR->error(true,"A state mapping requires an input ket and an output ket.",NULL);return 0;
+    }
+   }
+   if(states.equals(raw))return 0;
+   out.set(this,&states[0],&states[1],NULL);return 1;
+  }
+  if(op=="qcheckaction") {
+   MathStructure gate=raw[0],action=raw[1],rows,columns;
+   gate.eval(eo);action.eval(eo);
+   if(!action.isFunction() || action.function()->referenceName()!="qstateaction" ||
+      !quantumMatrixShape(gate,rows,columns,eo)) {
+    CALCULATOR->error(true,"checkaction requires a matrix operator and a ket mapping.",NULL);return 0;
+   }
+   MathStructure applied(CALCULATOR->getFunction("qmul"),&gate,&action[0],NULL),equality(4,1);
+   out.set(CALCULATOR->getFunction("qcompare"),&applied,&action[1],&equality,NULL);return 1;
+  }
   if(op=="qfloorlog2") {
    MathStructure value=raw[0];value.eval(eo);
    if(!value.isNumber() && value.representsScalar() && value.containsUnknowns())return 0;
@@ -1155,6 +1192,6 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  calculator.addFunction(new QuantumAlgebraFunction("qcomputationalket",1));
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }

@@ -1054,7 +1054,7 @@ class TeXReader {
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
-   {"approx"," ≈ "},{"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
+   {"mapsto"," ↦ "},{"approx"," ≈ "},{"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},

@@ -38,6 +38,21 @@ static std::string copyCollection(const MathStructure &value,const PrintOptions 
  for(size_t k=0;k<value.size();++k) {if(k)text+=",";text+=depth>1 ? copyCollection(value[k],po,depth-1) : copyText(value[k],po);}
  return text+")";
 }
+// In i(-1)^(1/8), Quantum input can bind the power to i(-1).
+// Print the multiplication explicitly when a powered factor has a signed base.
+static bool needsProductSign(const MathStructure &value) {
+ for(size_t k=0;k<value.size();++k) {
+  const MathStructure &factor=value[k];
+  if(k && value.isMultiplication() && factor.isPower() && factor[0].isNumber() &&
+     (factor[0].number().isNegative() || factor[0].number().isComplex()))return true;
+  if(needsProductSign(factor))return true;
+ }
+ return false;
+}
+static std::string copyScalar(MathStructure value,PrintOptions po) {
+ if(needsProductSign(value))po.short_multiplication=false;
+ value.format(po);return value.print(po);
+}
 static std::string copyText(const MathStructure &result, const PrintOptions &po) {
  // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
  // for implicit multiplication by the quantum parser.
@@ -52,6 +67,15 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
   // copy/re-entry even when no typed binary label occurs in the expression.
   if(result.isFunction()) {
    const std::string name=result.function()->referenceName();
+   // A deferred exponent can contain an already parsed scalar product.
+   // Explicit multiplication preserves its factors on the first re-entry.
+   if(name=="qpower" && result.size()==2 && result[1].isMultiplication() && result[1].size()>=2) {
+    std::string exponent;
+    for(size_t k=1;k<result[1].size();++k)exponent+="qmul(";
+    exponent+=copyText(result[1][0],po);
+    for(size_t k=1;k<result[1].size();++k)exponent+=","+copyText(result[1][k],po)+")";
+    return "qpower("+copyText(result[0],po)+","+exponent+")";
+   }
    if((name=="qpovm" || name=="qinstrument") && result.size()==2)
     return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1)+")";
    if(name=="qensemble" && result.size()==3)
@@ -100,15 +124,14 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
    for(size_t k=0;k<result.size();++k) {if(k)text+=separator;text+=copyText(result[k],po);}
    return text+")";
   }
-  MathStructure display=result;display.format(po);return display.print(po);
+  return copyScalar(result,po);
  }
  if(result.rows()==1 && result.columns()==1)
   return "qmul(("+copyText(*result.getElement(1,1),po)+"),qbasis(0,1))";
  std::string text="matrix("+std::to_string(result.rows())+","+std::to_string(result.columns())+",[";
  for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c) {
   if(r!=1 || c!=1)text+=",";
-  MathStructure cell=*result.getElement(r,c);cell.format(po);
-  text+=cell.print(po);
+  text+=copyScalar(*result.getElement(r,c),po);
  }
  return text+"])";
 }

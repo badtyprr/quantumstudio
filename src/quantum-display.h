@@ -248,6 +248,8 @@ class Printer {
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
    return Fragment(text+"}");
   }
+  if(name=="qstateaction" && value.size()==2)
+   return Fragment(render(value[0],depth+1).text+" ↦ "+render(value[1],depth+1).text,2);
   if(name=="qdecimalmatch" && value.size()==4 && value[1].isNumber() &&
      value[2].isInteger() && value[3].isInteger()) {
    const Number &target=value[1].number();

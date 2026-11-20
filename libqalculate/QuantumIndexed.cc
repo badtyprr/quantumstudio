@@ -1629,6 +1629,9 @@ class QuantumIndexedFunction: public MathFunction {
    while(out.isFunction() && out.function()==this && out.size()==3 && plain(out)) {
     replacements.push_back({out[1],out[2]});MathStructure body=out[0];out=body;
    }
+   // An earlier replacement with a structured target owns its target and
+   // replacement arguments. Apply it before rewriting any later free labels.
+   if(out.isFunction() && out.function()==this && out.size()==3)out.eval(eo);
    prepareSpectralLookups(out);
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;

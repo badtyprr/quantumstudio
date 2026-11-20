@@ -23,6 +23,10 @@ int main(){try {
  eo.approximation=APPROXIMATION_EXACT;
  equal("quantum:1=1=1","1");equal("quantum:1=1=2","0");
  equal("quantum:x=x=x","1");
+ equal(R"(quantum:checkaction(X,(|0>\mapsto|1>)))","1");
+ equal("quantum:checkaction(Z,(|0>↦|1>))","0");
+ equal("quantum:checkaction(Z,(|1>↦-|1>))","1");
+ equal("quantum:checkaction(identity(8),replace(replace(replace((|y>|a>↦|y>|a>),|y>,basis(0,4)),|a>,basis(0,2)),a,0))","1");
  equal(R"(quantum:4/pi^2\approx 0.405)","1");
  equal("quantum:4/pi^2≈0.4050","0");
  equal("quantum:exp(2*pi*i/100)≈0.998+0.063i","1");
