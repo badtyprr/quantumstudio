@@ -46,7 +46,10 @@ std::string withoutDisplayPunctuation(std::string value) {
   // An unbraced TeX superscript consumes one token. The following period
   // belongs to the sentence, while a number such as 1. keeps its decimal.
   size_t previous=mark>=2 ? value.find_last_not_of(" \t\r\n",mark-2) : std::string::npos;
-  if(previous==std::string::npos || value[previous]!='^')return value;
+  size_t digits=mark;
+  while(digits && std::isdigit((unsigned char)value[digits-1]))--digits;
+  bool hasRadix=digits && value[digits-1]=='.' && (digits==1 || value[digits-2]!='.');
+  if(!hasRadix && (previous==std::string::npos || value[previous]!='^'))return value;
  }
  size_t before=value.find_last_not_of(" \t\r\n",mark-1);
  if(before==std::string::npos)return value;
@@ -1051,7 +1054,7 @@ class TeXReader {
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
-   {"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
+   {"approx"," ≈ "},{"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},

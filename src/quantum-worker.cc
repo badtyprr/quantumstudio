@@ -132,6 +132,11 @@ static bool displayKetCollection(const MathStructure &value,const PrintOptions &
  if(hasState)shown=text+(set ? "\\}" : ")");
  return hasState;
 }
+// Decimal matching needs the numeric components before formatting splits a
+// complex number into a display sum or rewrites a negative precision flag.
+static bool decimalMatch(const MathStructure &value) {
+ return value.isFunction() && value.function()->referenceName()=="qdecimalmatch";
+}
 static bool messages(Calculator &calculator) {
  bool failed=false;
  while(calculator.message()) {
@@ -301,11 +306,11 @@ int main(int argc,char **argv) {
   std::cout << "{\"text\":"; jsonString(display.print(po));
   std::string shown;
   if(multipleLines)for(size_t i=0;i<result.size();++i) {
-   MathStructure line=result[i];line.format(po);
+   MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    if(i)shown+="\n\n";
    shown+=std::to_string(i+1)+".  "+QuantumDisplay::print(line,po);
   } else if(displayKetCollection(result,po,shown))rows=cols=0;
-  else shown=QuantumDisplay::print(display,po);
+  else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
   std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long

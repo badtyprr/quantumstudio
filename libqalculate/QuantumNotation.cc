@@ -230,7 +230,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qdecimalmatch",4},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -719,7 +719,7 @@ class Parser {
    need(',');
   } while(true);
  }
- bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
+ bool setOperatorAhead() const {return s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
  bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
@@ -2051,9 +2051,40 @@ class Parser {
   builder=graphCalls(builder,std::string(1,name));
  }
  std::string takeComparisonRelation() {
-  for(const char *token:{"∈","∉","<=",">=","!=","==","=","<",">"})
+  for(const char *token:{"≈","∈","∉","<=",">=","!=","==","=","<",">"})
    if(takeSetOperator(token))return token;
   return "";
+ }
+ // Read the printed decimal places before evaluation removes trailing zeros.
+ static int decimalPlaces(const std::string &text,size_t &at) {
+  size_t start=at;
+  while(at<text.size() && std::isdigit((unsigned char)text[at]))++at;
+  bool integer=at!=start;
+  if(at==text.size() || text[at]!='.')return integer ? 0 : -1;
+  start=++at;
+  while(at<text.size() && std::isdigit((unsigned char)text[at]))++at;
+  return at>start && at-start<=100 ? int(at-start) : -1;
+ }
+ static std::string decimalMatch(const std::string &left,const std::string &right,const std::string &source) {
+  std::string text;
+  bool gap=false;
+  for(unsigned char c:source) {
+   if(std::isspace(c)) {gap=true;continue;}
+   if(gap && !text.empty() && (std::isdigit(c) || c=='.') &&
+      (std::isdigit((unsigned char)text.back()) || text.back()=='.'))
+    throw std::runtime_error("A reported decimal must be a single numeric literal.");
+   text+=c;gap=false;
+  }
+  size_t at=0;
+  if(at<text.size() && (text[at]=='+' || text[at]=='-'))++at;
+  int real=decimalPlaces(text,at),imag=-1;
+  if(real>=0 && at<text.size() && (text[at]=='+' || text[at]=='-')) {
+   ++at;imag=decimalPlaces(text,at);
+   if(imag<0 || text.substr(at)!="i")real=-1;
+   else ++at;
+  }
+  if(real<0 || at!=text.size())throw std::runtime_error("Approximate equality requires a printed real decimal or a pair of decimal components a + b i.");
+  return "qdecimalmatch("+left+","+right+","+std::to_string(real)+","+std::to_string(imag)+")";
  }
  static int comparisonKind(const std::string &relation) {
   return relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
@@ -2189,7 +2220,7 @@ class Parser {
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
-   std::string right;
+   size_t rightStart=p;std::string right;
    const bool equality=relation=="=" || relation=="==";
    const bool leadingSign=equality && takeSetOperator("±");
    if(leadingSign)right="0";
@@ -2231,6 +2262,7 @@ class Parser {
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   if(relation=="≈")clause=decimalMatch(left,right,s.substr(rightStart,p-rightStart));
    if(allowSharedOperands && kind<4 && take(','))clause=sharedBounds(left,kind,right);
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}

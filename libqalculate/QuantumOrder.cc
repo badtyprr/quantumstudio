@@ -293,14 +293,22 @@ bool unassignedScalarMultiple(const MathStructure &term) {
  auto variable=static_cast<UnknownVariable *>(term.variable());
  return !variable->assumptions() && variable->interval().isUndefined();
 }
+bool explicitImaginary(const MathStructure &term) {
+ if(term.isNumber())return term.number().hasImaginaryPart();
+ for(size_t k=0;k<term.size();++k)if(explicitImaginary(term[k]))return true;
+ return false;
+}
 bool unboundComplexComparison(const MathStructure &left,const MathStructure &right) {
  if(left.isMatrix() && right.isMatrix() && left.rows()==right.rows() && left.columns()==right.columns()) {
   for(size_t row=1;row<=left.rows();++row)for(size_t col=1;col<=left.columns();++col)
    if(unboundComplexComparison(*left.getElement(row,col),*right.getElement(row,col)))return true;
   return false;
  }
- return (left.representsComplex() && !left.containsUnknowns() && unassignedScalarMultiple(right)) ||
-        (right.representsComplex() && !right.containsUnknowns() && unassignedScalarMultiple(left));
+ auto complexConstant=[](const MathStructure &term) {
+  return !term.containsUnknowns() && (term.representsComplex() || (!term.representsReal() && explicitImaginary(term)));
+ };
+ return (unassignedScalarMultiple(right) && complexConstant(left)) ||
+        (unassignedScalarMultiple(left) && complexConstant(right));
 }
 // Isolating a periodic function can introduce an arbitrary integer. It is
 // bound in the general solution, while Copy would turn it into a free input.
@@ -447,6 +455,39 @@ class QuantumOrderFunction: public MathFunction {
   }
  }
 };
+class QuantumDecimalMatch: public MathFunction {
+ public:
+ QuantumDecimalMatch():MathFunction("qdecimalmatch",4) {}
+ ExpressionItem *copy() const {return new QuantumDecimalMatch(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  MathStructure value=raw[0],target=raw[1];value.eval(eo);target.eval(eo);
+  if(value.isVector() || target.isVector()) {
+   CALCULATOR->error(true,"Decimal comparison requires scalar operands.",NULL);return 0;
+  }
+  if(value.containsUnknowns() || target.containsUnknowns()) {
+   if(value.equals(raw[0]) && target.equals(raw[1]))return 0;
+   out.set(this,&value,&target,&raw[2],&raw[3],NULL);return 1;
+  }
+  bool pending=false;
+  for(unsigned k=0;k<2;++k) {
+   MathStructure places=raw[k+2];places.eval(eo);
+   if(!places.isInteger() || places.number()<(k ? -1 : 0) || places.number()>100) {
+    CALCULATOR->error(true,"Decimal places must be between 0 and 100; -1 denotes an exact imaginary component.",NULL);return 0;
+   }
+   auto part=CALCULATOR->getFunction(k ? "im" : "re");
+   MathStructure component(part,&value,NULL),expected(part,&target,NULL);
+   if(!places.number().isNegative()) {
+    MathStructure rounded(CALCULATOR->getFunction("round"),&component,&places,&m_zero,NULL);
+    component=rounded;
+   }
+   component.transform(COMPARISON_EQUALS,expected);component.eval(eo);
+   if(component.isZero()) {out=m_zero;return 1;}
+   if(!component.isOne())pending=true;
+  }
+  if(pending)return 0;
+  out=m_one;return 1;
+ }
+};
 class QuantumEquivalence: public MathFunction {
  public:
  QuantumEquivalence():MathFunction("qiff",2) {}
@@ -521,6 +562,7 @@ void registerQuantumOrder(Calculator &calculator) {
  calculator.addFunction(new QuantumCostDescriptor("qbigorder",1));
  calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
  calculator.addFunction(new QuantumCostDescriptor("qcostparam",1));
+ calculator.addFunction(new QuantumDecimalMatch());
  calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());

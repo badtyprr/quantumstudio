@@ -248,6 +248,26 @@ class Printer {
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
    return Fragment(text+"}");
   }
+  if(name=="qdecimalmatch" && value.size()==4 && value[1].isNumber() &&
+     value[2].isInteger() && value[3].isInteger()) {
+   const Number &target=value[1].number();
+   std::string text;bool valid=!target.isApproximate();
+   for(unsigned k=0;k<2 && valid;++k) {
+    Number part=k ? target.imaginaryPart() : target.realPart();
+    const Number &places=value[k+2].number();
+    if(k && places==-1 && part.isZero())break;
+    if(places<0 || places>100) {valid=false;break;}
+    Number scaled(10);scaled.raise(places);scaled.multiply(part);
+    if(!scaled.isInteger()) {valid=false;break;}
+    if(k) {text+=part.isNegative() ? " - " : " + ";part.abs();}
+    PrintOptions decimal=options;decimal.base=10;decimal.min_exp=EXP_NONE;
+    decimal.number_fraction_format=FRACTION_DECIMAL;
+    decimal.use_min_decimals=decimal.use_max_decimals=true;
+    decimal.min_decimals=decimal.max_decimals=places.intValue();
+    text+=part.print(decimal);if(k)text+=" i";
+   }
+   if(valid)return Fragment(grouped(render(value[0],depth+1),6)+" ≈ "+text,5);
+  }
   if(name=="qcompare" && value.size()==3 && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=5) {
    const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
    auto side=[&](unsigned index) {
