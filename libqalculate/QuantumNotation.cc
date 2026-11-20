@@ -34,12 +34,12 @@ size_t quantumSpaceLength(const std::string &s,size_t p) {
  }
  return 0;
 }
-std::string quantumWhitespace(const std::string &s) {
+std::string quantumWhitespace(const std::string &s,bool keepLines=false) {
  std::string out;char quoted=0;
  for(size_t p=s.compare(0,3,"\xef\xbb\xbf")==0 ? 3 : 0;p<s.size();) {
   if(s[p]=='"' || s[p]=='\'') {if(quoted==s[p])quoted=0;else if(!quoted)quoted=s[p];}
   size_t length=quoted ? 0 : quantumSpaceLength(s,p);
-  if(length){out+=' ';p+=length;}else out+=s[p++];
+  if(length){out+=keepLines && (s[p]=='\n' || s[p]=='\r') ? s[p] : ' ';p+=length;}else out+=s[p++];
  }
  return out;
 }
@@ -2411,11 +2411,12 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
  if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos || expression.find(subsystemLabelBegin)!=std::string::npos || expression.find(subsystemLabelEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
- std::string s=unicodeArithmetic(quantumWhitespace(expression));
+ std::string s=unicodeArithmetic(quantumWhitespace(expression,true));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
  bool sets=false;
  s=quantumTeX(s,nullptr,&sets);
+ if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);

@@ -328,9 +328,10 @@ int main(int argc,char **argv) {
   std::cerr << "The calculation did not preserve the independent expressions.";return 2;
  }
  PrintOptions po; po.use_unicode_signs=true;
- // Exact set elements distinguish nearby rationals even when their decimal
- // displays would round to the same value.
- if(result.isFunction() && result.function()->referenceName()=="qset" && !result.isApproximate()) {
+ // Exact set elements and chained equalities must retain rational operands
+ // when their decimal expansions would require rounding.
+ if(result.isFunction() && !result.isApproximate() && (result.function()->referenceName()=="qset" ||
+    result.function()->referenceName()=="qequalchain")) {
   po.number_fraction_format=FRACTION_FRACTIONAL;po.restrict_fraction_length=false;
  }
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;

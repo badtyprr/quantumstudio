@@ -71,6 +71,21 @@ std::string openBinaryFraction(const std::string &source) {
 }
 // Display mathematics may end with a sentence period or comma. Preserve decimals,
 // quoted labels, ellipses and dots following incomplete operators.
+// Full-line comments occur in pasted display derivations. Keep inline
+// remainder operators and escaped percentage signs in their original form.
+std::string withoutTeXCommentLines(const std::string &s) {
+ std::string result;
+ for(size_t begin=0;begin<s.size();) {
+  size_t end=s.find_first_of("\r\n",begin);
+  if(end==std::string::npos)end=s.size();
+  size_t first=begin;
+  while(first<end && (s[first]==' ' || s[first]=='\t'))++first;
+  if(first==end || s[first]!='%')result.append(s,begin,end-begin);
+  if(end==s.size())break;
+  result+=s[end];begin=end+1;
+ }
+ return result;
+}
 std::string withoutDisplayPunctuation(std::string value) {
  size_t mark=value.find_last_not_of(" \t\r\n");
  // Display spacing may follow the sentence comma inside a math span.
@@ -1115,6 +1130,24 @@ class TeXReader {
    return m;
   }
   if(name=="vdots" && matrix)return "⋮";
+  // A decimal followed immediately by an ellipsis can specify a recurring
+  // digit, as in 5.333... . Do not infer a repetend from mixed digits.
+  if((name=="cdots" || name=="ldots") && preceding) {
+   size_t end=preceding->find_last_not_of(" \t\r\n");
+   if(end!=std::string::npos && std::isdigit((unsigned char)(*preceding)[end])) {
+    size_t point=end;
+    while(point && (*preceding)[point]==(*preceding)[end])--point;
+    if((*preceding)[point]=='.' && end-point>=3) {
+     size_t begin=point;
+     while(begin && std::isdigit((unsigned char)(*preceding)[begin-1]))--begin;
+     if(begin<point && (!begin || (*preceding)[begin-1]!='.')) {
+      std::string whole=preceding->substr(begin,point-begin);
+      char digit=(*preceding)[end];preceding->erase(begin);
+      return "("+whole+"+"+digit+"/9)";
+     }
+    }
+   }
+  }
   if(name=="cdots" && matrix)return "⋯";
   if(name=="ddots" && matrix)return "⋱";
   if(name=="lVert") { ++norms; return "norm("; }
@@ -1501,7 +1534,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
- if(mathWrapper)s=withoutDisplayPunctuation(s);
+ if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
  if(fractionBits) {
   std::string expansion=openBinaryFraction(s);
   if(!expansion.empty())s=expansion;

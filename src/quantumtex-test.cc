@@ -19,6 +19,10 @@ int main() {
  try {
   equal(R"(\mathbb{Z}_N)","qresidues(N)");
   equal(R"(\mathbb{Z}_{21}^{\ast})","qunitsmod(21)");
+  equal(R"($5.333 \cdots$)","(5+3/9)");
+  equal(R"($-0.777\ldots$)","-(0+7/9)");
+  rejects(R"($1.234\cdots$)");
+  equal("$$1 +\n  % skip the unused expression {\n2$$",quantumTeX("$$1 +\n\n2$$"));
   equal(R"(\gcd(a,N))","integergcd(a,N)");
   equal(R"($\vert\phi_0\rangle,\ldots,\vert\phi_3\rangle$)",R"(qindexedketlist("φ_",0,3,vector()))");
   equal(R"(\vert 0\rangle,\ldots,\vert N - 1\rangle)","qbasiskets(N)");
