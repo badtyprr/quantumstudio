@@ -38,13 +38,12 @@ static std::string copyCollection(const MathStructure &value,const PrintOptions 
  for(size_t k=0;k<value.size();++k) {if(k)text+=",";text+=depth>1 ? copyCollection(value[k],po,depth-1) : copyText(value[k],po);}
  return text+")";
 }
-// In i(-1)^(1/8), Quantum input can bind the power to i(-1).
-// Print the multiplication explicitly when a powered factor has a signed base.
+// When formatting changes 2^(-m) into (1/2)^m, juxtaposition such as
+// i(1/2)^m can re-enter as (i/2)^m. Keep powers separate from other factors.
 static bool needsProductSign(const MathStructure &value) {
  for(size_t k=0;k<value.size();++k) {
   const MathStructure &factor=value[k];
-  if(k && value.isMultiplication() && factor.isPower() && factor[0].isNumber() &&
-     (factor[0].number().isNegative() || factor[0].number().isComplex()))return true;
+  if(value.isMultiplication() && factor.isPower())return true;
   if(needsProductSign(factor))return true;
  }
  return false;
@@ -70,10 +69,18 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
    // A deferred exponent can contain an already parsed scalar product.
    // Explicit multiplication preserves its factors on the first re-entry.
    if(name=="qpower" && result.size()==2 && result[1].isMultiplication() && result[1].size()>=2) {
+    std::vector<std::string> factors;bool scalar=true;
+    for(size_t k=0;k<result[1].size();++k) {
+     scalar=scalar && result[1][k].representsScalar();
+     factors.push_back(copyText(result[1][k],po));
+    }
+    // Equal-status scalar variables can have different internal orders
+    // in fresh worker processes. Preserve a reproducible clipboard spelling.
+    if(scalar)std::sort(factors.begin(),factors.end());
     std::string exponent;
-    for(size_t k=1;k<result[1].size();++k)exponent+="qmul(";
-    exponent+=copyText(result[1][0],po);
-    for(size_t k=1;k<result[1].size();++k)exponent+=","+copyText(result[1][k],po)+")";
+    for(size_t k=1;k<factors.size();++k)exponent+="qmul(";
+    exponent+=factors[0];
+    for(size_t k=1;k<factors.size();++k)exponent+=","+factors[k]+")";
     return "qpower("+copyText(result[0],po)+","+exponent+")";
    }
    if((name=="qpovm" || name=="qinstrument") && result.size()==2)
