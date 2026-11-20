@@ -38,6 +38,20 @@ static std::string copyCollection(const MathStructure &value,const PrintOptions 
  for(size_t k=0;k<value.size();++k) {if(k)text+=",";text+=depth>1 ? copyCollection(value[k],po,depth-1) : copyText(value[k],po);}
  return text+")";
 }
+// When formatting changes 2^(-m) into (1/2)^m, juxtaposition such as
+// i(1/2)^m can re-enter as (i/2)^m. Keep powers separate from other factors.
+static bool needsProductSign(const MathStructure &value) {
+ for(size_t k=0;k<value.size();++k) {
+  const MathStructure &factor=value[k];
+  if(value.isMultiplication() && factor.isPower())return true;
+  if(needsProductSign(factor))return true;
+ }
+ return false;
+}
+static std::string copyScalar(MathStructure value,PrintOptions po) {
+ if(needsProductSign(value))po.short_multiplication=false;
+ value.format(po);return value.print(po);
+}
 static std::string copyText(const MathStructure &result, const PrintOptions &po) {
  // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
  // for implicit multiplication by the quantum parser.
@@ -52,11 +66,29 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
   // copy/re-entry even when no typed binary label occurs in the expression.
   if(result.isFunction()) {
    const std::string name=result.function()->referenceName();
+   // A deferred exponent can contain an already parsed scalar product.
+   // Explicit multiplication preserves its factors on the first re-entry.
+   if(name=="qpower" && result.size()==2 && result[1].isMultiplication() && result[1].size()>=2) {
+    std::vector<std::string> factors;bool scalar=true;
+    for(size_t k=0;k<result[1].size();++k) {
+     scalar=scalar && result[1][k].representsScalar();
+     factors.push_back(copyText(result[1][k],po));
+    }
+    // Equal-status scalar variables can have different internal orders
+    // in fresh worker processes. Preserve a reproducible clipboard spelling.
+    if(scalar)std::sort(factors.begin(),factors.end());
+    std::string exponent;
+    for(size_t k=1;k<factors.size();++k)exponent+="qmul(";
+    exponent+=factors[0];
+    for(size_t k=1;k<factors.size();++k)exponent+=","+factors[k]+")";
+    return "qpower("+copyText(result[0],po)+","+exponent+")";
+   }
    if((name=="qpovm" || name=="qinstrument") && result.size()==2)
     return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1)+")";
    if(name=="qensemble" && result.size()==3)
     return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,1)+","+copyCollection(result[2],po,1)+")";
-   std::string text=name+"(";
+   // Quantum input resolves the public matrix constructor to qmatrix on re-entry.
+   std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
    for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
    return text+")";
   }
@@ -99,33 +131,41 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
    for(size_t k=0;k<result.size();++k) {if(k)text+=separator;text+=copyText(result[k],po);}
    return text+")";
   }
-  MathStructure display=result;display.format(po);return display.print(po);
+  return copyScalar(result,po);
  }
  if(result.rows()==1 && result.columns()==1)
   return "qmul(("+copyText(*result.getElement(1,1),po)+"),qbasis(0,1))";
  std::string text="matrix("+std::to_string(result.rows())+","+std::to_string(result.columns())+",[";
  for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c) {
   if(r!=1 || c!=1)text+=",";
-  MathStructure cell=*result.getElement(r,c);cell.format(po);
-  text+=cell.print(po);
+  text+=copyScalar(*result.getElement(r,c),po);
  }
  return text+"])";
 }
-// Format each state separately so a singleton set of columns keeps its shape.
-static bool displayKetSet(const MathStructure &set,const PrintOptions &po,std::string &shown) {
- if(!set.isFunction() || set.function()->referenceName()!="qset" || set.size()!=1 || !set[0].isVector())return false;
+// Keep ordered lists of states distinct from both sets and matrices.
+static bool displayKetCollection(const MathStructure &value,const PrintOptions &po,std::string &shown) {
+ bool set=value.isFunction() && value.function()->referenceName()=="qset" && value.size()==1;
+ const MathStructure &entries=set ? value[0] : value;
+ if(!entries.isVector() || entries.size()==0)return false;
  bool hasState=false;
- std::string text="\\{";
- for(size_t k=0;k<set[0].size();++k) {
-  MathStructure member=set[0][k];
+ std::string text=set ? "\\{" : "vector(";
+ for(size_t k=0;k<entries.size();++k) {
+  const MathStructure &member=entries[k];
   bool basis=member.containsFunction(CALCULATOR->getFunction("qbasis"));
-  hasState=hasState || basis || member.isMatrix() || (member.isFunction() && member.function()->referenceName()=="qketstate");
+  bool state=basis || (member.isMatrix() && (set || member.columns()==1)) || (member.isFunction() && member.function()->referenceName()=="qketstate");
+  if(!set && !state)return false;
+  hasState=hasState || state;
   if(k)text+=", ";
   if(basis || (member.isMatrix() && member.rows()==1))text+=copyText(member,po);
-  else {member.format(po);text+=QuantumDisplay::print(member,po);}
+  else {MathStructure display=member;display.format(po);text+=QuantumDisplay::print(display,po);}
  }
- if(hasState)shown=text+"\\}";
+ if(hasState)shown=text+(set ? "\\}" : ")");
  return hasState;
+}
+// Decimal matching needs the numeric components before formatting splits a
+// complex number into a display sum or rewrites a negative precision flag.
+static bool decimalMatch(const MathStructure &value) {
+ return value.isFunction() && value.function()->referenceName()=="qdecimalmatch";
 }
 static bool messages(Calculator &calculator) {
  bool failed=false;
@@ -296,10 +336,11 @@ int main(int argc,char **argv) {
   std::cout << "{\"text\":"; jsonString(display.print(po));
   std::string shown;
   if(multipleLines)for(size_t i=0;i<result.size();++i) {
-   MathStructure line=result[i];line.format(po);
+   MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    if(i)shown+="\n\n";
    shown+=std::to_string(i+1)+".  "+QuantumDisplay::print(line,po);
-  } else if(!displayKetSet(result,po,shown))shown=QuantumDisplay::print(display,po);
+  } else if(displayKetCollection(result,po,shown))rows=cols=0;
+  else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
   std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long

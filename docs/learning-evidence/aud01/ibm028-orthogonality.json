@@ -1,0 +1,188 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "id": "IBM028-2ff07f29-M215",
+  "literal": "$$\n\\langle \\phi_z \\vert \\phi_y \\rangle =\n\\begin{cases}\n1 & y=z\\\\\n0 & y\\neq z,\n\\end{cases}\n$$",
+  "worker_sha256": "016fdbed0e54704eadcf477e20d8585aa786072864f627a9030039c6b6152214",
+  "forms": [
+    "display",
+    "copy"
+  ],
+  "display": "⟨φ_z|φ_y⟩ = if(qcompare(y, z, 4), 1, if(qcompare(y, z, 5), 0, undefined))",
+  "copy": "qcompare(qmul(qdag(qnamedket(\"φ_z\")),qnamedket(\"φ_y\")),if(qcompare(y,z,4),1,if(qcompare(y,z,5),0,undefined,0),0),4)",
+  "cases": [
+    {
+      "dimension": 2,
+      "z": 0,
+      "y": 0,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 2,
+      "z": 0,
+      "y": 1,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 2,
+      "z": 1,
+      "y": 0,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 2,
+      "z": 1,
+      "y": 1,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 3,
+      "z": 0,
+      "y": 0,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 3,
+      "z": 0,
+      "y": 1,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 3,
+      "z": 0,
+      "y": 2,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 3,
+      "z": 1,
+      "y": 0,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 3,
+      "z": 1,
+      "y": 1,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 3,
+      "z": 1,
+      "y": 2,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 3,
+      "z": 2,
+      "y": 0,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 3,
+      "z": 2,
+      "y": 1,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 3,
+      "z": 2,
+      "y": 2,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 4,
+      "z": 0,
+      "y": 0,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 4,
+      "z": 0,
+      "y": 1,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 4,
+      "z": 0,
+      "y": 2,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 4,
+      "z": 0,
+      "y": 3,
+      "rejected_column": 0
+    },
+    {
+      "dimension": 4,
+      "z": 1,
+      "y": 0,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 4,
+      "z": 1,
+      "y": 1,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 4,
+      "z": 1,
+      "y": 2,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 4,
+      "z": 1,
+      "y": 3,
+      "rejected_column": 1
+    },
+    {
+      "dimension": 4,
+      "z": 2,
+      "y": 0,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 4,
+      "z": 2,
+      "y": 1,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 4,
+      "z": 2,
+      "y": 2,
+      "rejected_column": 3
+    },
+    {
+      "dimension": 4,
+      "z": 2,
+      "y": 3,
+      "rejected_column": 2
+    },
+    {
+      "dimension": 4,
+      "z": 3,
+      "y": 0,
+      "rejected_column": 3
+    },
+    {
+      "dimension": 4,
+      "z": 3,
+      "y": 1,
+      "rejected_column": 3
+    },
+    {
+      "dimension": 4,
+      "z": 3,
+      "y": 2,
+      "rejected_column": 3
+    },
+    {
+      "dimension": 4,
+      "z": 3,
+      "y": 3,
+      "rejected_column": 0
+    }
+  ]
+}

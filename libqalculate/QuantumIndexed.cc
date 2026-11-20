@@ -274,6 +274,20 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
  // A series owns ordered substitutions in its history. Mutating the original
  // factor here as well would apply an indexed assignment twice on expansion.
  if(tensorSeriesNode(value) || registerSumNode(value))return false;
+ if(value.isFunction() && value.function()->referenceName()=="qbinarytail" && value.size()==2 &&
+    value[0].isSymbolic() && value[1].isInteger() && value[1].number().isPositive()) {
+  Number index;
+  if(!registerBitIndex(label,value[0].symbol(),index) || index<value[1].number())return false;
+  Number width=index-value[1].number()+1;
+  if(width>1024) {CALCULATOR->error(true,"A single binary-tail expansion supports at most 1024 digits.",NULL);return false;}
+  MathStructure digits;digits.clearVector();
+  PrintOptions decimal;decimal.use_unicode_signs=false;decimal.min_exp=EXP_NONE;
+  for(Number i=value[1].number();i<index;i+=1)digits.addChild(MathStructure(value[0].symbol()+i.print(decimal),true));
+  digits.addChild(bit);
+  MathStructure next(index+1),places(width),tail(value.function(),&value[0],&next,NULL);
+  value.set(CALCULATOR->getFunction("qbinaryfraction"),&digits,&places,&tail,NULL);
+  return true;
+ }
  if(spectralSelection(value) && label.isSymbolic() && value[1].isUnknown()) {
   std::string index=value[1].isSymbolic() ? value[1].symbol() : value[1].variable()->referenceName();
   if(label.symbol()==value[0][0].symbol()+index) {value=bit;return true;}
@@ -296,7 +310,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -1629,6 +1643,9 @@ class QuantumIndexedFunction: public MathFunction {
    while(out.isFunction() && out.function()==this && out.size()==3 && plain(out)) {
     replacements.push_back({out[1],out[2]});MathStructure body=out[0];out=body;
    }
+   // An earlier replacement with a structured target owns its target and
+   // replacement arguments. Apply it before rewriting any later free labels.
+   if(out.isFunction() && out.function()==this && out.size()==3)out.eval(eo);
    prepareSpectralLookups(out);
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;
@@ -1765,7 +1782,22 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
-  if(op=="qindexedketset") {
+  if(op=="qbasiskets") {
+   MathStructure dimension=raw[0];dimension.eval(eo);
+   if(pendingRegisterIndex(dimension))return 0;
+   if(!dimension.isInteger() || !dimension.number().isPositive()) {
+    CALCULATOR->error(true,"An ordered computational basis requires a positive integer dimension.",NULL);return 0;
+   }
+   if(dimension.number()>1024)return 0;
+   MathStructure entries;entries.clearVector();
+   for(int k=0;k<dimension.number().intValue();++k) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure index(k,1),ket(CALCULATOR->getFunction("qbasis"),&index,&dimension,NULL);
+    ket.eval(eo);entries.addChild(ket);
+   }
+   out=entries;return 1;
+  }
+  if(op=="qindexedketset" || op=="qindexedketlist") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
    for(size_t k=0;k<entries.size();++k) {
@@ -1775,7 +1807,9 @@ class QuantumIndexedFunction: public MathFunction {
      CALCULATOR->error(true,"An indexed ket set requires state columns.",NULL);return 0;
     }
    }
-   out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+   if(op=="qindexedketlist")out=entries;
+   else out.set(CALCULATOR->getFunction("qset"),&entries,NULL);
+   return 1;
   }
   if(op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
@@ -1826,6 +1860,26 @@ class QuantumIndexedFunction: public MathFunction {
     out.set(this,&raw[0],&argument,NULL);return 1;
    }
    out.set(family,&argument,NULL);out.eval(eo);return 1;
+  }
+  if(op=="qgeometricsum") {
+   MathStructure count=raw[1],ratio=raw[0];
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   count.eval(exact);ratio.eval(eo);
+   if(count.containsUnknowns() && !count.isVector() && !ratio.isVector())return 0;
+   if(!count.isInteger() || count.number()<0 || ratio.isVector()) {
+    CALCULATOR->error(true,"A geometric sum requires a scalar ratio and a nonnegative integer term count.",NULL);return 0;
+   }
+   if(count.isZero()) {out=m_zero;return 1;}
+   if(count.isOne() || ratio.isZero()) {out=m_one;return 1;}
+   if(ratio.isOne()) {out=count;return 1;}
+   // The constant term is one even at ratio zero. Sum the positive powers
+   // using the existing finite-sum evaluator and its cancellation checks.
+   MathStructure index("__qgeometric_index",true);
+   while(ratio.contains(index))index.set(index.symbol()+"_",true);
+   MathStructure body=ratio;body.raise(index);
+   MathStructure last=count;last.subtract(m_one);
+   MathStructure sum(CALCULATOR->getFunction("qsum"),&body,&m_one,&last,&index,NULL);
+   sum.eval(eo);out=sum;out.add(m_one);out.eval(eo);return 1;
   }
   if(op=="qsum") {
    if((!raw[3].isSymbolic() && !raw[3].isVariable()) || (raw[3].isVariable() && raw[3].variable()->isKnown())) {
@@ -1921,12 +1975,13 @@ class QuantumIndexedFunction: public MathFunction {
    }
    // A sum over an unresolved domain can later produce a scalar or a
    // collection. Retain the bars so substitution can determine the result.
-   if(value.isFunction() && value.function()->referenceName()=="qsumset" && value.containsUnknowns())return 0;
+   if(value.containsUnknowns() && (value.containsFunction(CALCULATOR->getFunction("qsumset")) ||
+      value.containsFunction(CALCULATOR->getFunction("qsum"))))return 0;
    if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;
   }
-  if(op=="qhalfopen" || op=="qunitcircle" || op=="qcomplexplane")return 0;
+  if(op=="qhalfopen" || op=="qrealinterval" || op=="qunitcircle" || op=="qcomplexplane")return 0;
   if(op=="qmember" && (quantumComplexDomain(raw[1]) ||
      (raw[1].isFunction() && raw[1].function()->referenceName()=="qsetfilter" &&
       raw[1].size()==3 && quantumComplexDomain(raw[1][1])))) {
@@ -1947,15 +2002,23 @@ class QuantumIndexedFunction: public MathFunction {
    if(!magnitude.isOne() && !magnitude.isZero())return 0;
    out=magnitude;return 1;
   }
-  if(op=="qmember" && raw[1].isFunction() && raw[1].function()->referenceName()=="qhalfopen" && raw[1].size()==3) {
+  if(op=="qmember" && raw[1].isFunction() &&
+     ((raw[1].function()->referenceName()=="qhalfopen" && raw[1].size()==3) ||
+      (raw[1].function()->referenceName()=="qrealinterval" && raw[1].size()==4))) {
    MathStructure value=raw[0],lower=raw[1][0],upper=raw[1][1],closedLeft=raw[1][2];
    value.eval(eo);lower.eval(eo);upper.eval(eo);closedLeft.eval(eo);
    if(!closedLeft.isZero() && !closedLeft.isOne())return 0;
+   bool closedRight=closedLeft.isZero();
+   if(raw[1].size()==4) {
+    MathStructure flag=raw[1][3];flag.eval(eo);
+    if(!flag.isZero() && !flag.isOne())return 0;
+    closedRight=flag.isOne();
+   }
    if(value.isNumber() && !value.number().isReal()) {out=m_zero;return 1;}
    if(!value.representsReal() || !lower.representsReal() || !upper.representsReal())return 0;
    // Let ordinary real comparisons retain their precision and uncertainty.
    lower.transform(closedLeft.isOne() ? COMPARISON_EQUALS_LESS : COMPARISON_LESS,value);
-   value.transform(closedLeft.isOne() ? COMPARISON_LESS : COMPARISON_EQUALS_LESS,upper);
+   value.transform(closedRight ? COMPARISON_EQUALS_LESS : COMPARISON_LESS,upper);
    lower.eval(eo);value.eval(eo);
    if(lower.isZero() || value.isZero()) {out=m_zero;return 1;}
    if(lower.isOne() && value.isOne()) {out=m_one;return 1;}
@@ -2294,6 +2357,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralket",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
@@ -2319,12 +2384,14 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qstatecall",2));
  calculator.addFunction(new QuantumIndexedFunction("qstatecalls",2));
  calculator.addFunction(new QuantumIndexedFunction("qsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qgeometricsum",2));
  calculator.addFunction(new QuantumIndexedFunction("qbars",1));
  calculator.addFunction(new QuantumIndexedFunction("qmember",2));
  calculator.addFunction(new QuantumIndexedFunction("qbitstrings",1));
  calculator.addFunction(new QuantumIndexedFunction("qbitlabel",2));
  calculator.addFunction(new QuantumIndexedFunction("qpreimage",2));
  calculator.addFunction(new QuantumIndexedFunction("qhalfopen",3));
+ calculator.addFunction(new QuantumIndexedFunction("qrealinterval",4));
  calculator.addFunction(new QuantumIndexedFunction("qunitcircle",0));
  calculator.addFunction(new QuantumIndexedFunction("qcomplexplane",0));
  calculator.addFunction(new QuantumIndexedFunction("qfunctiontype",3));

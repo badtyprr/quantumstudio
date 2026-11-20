@@ -94,6 +94,19 @@ class Printer {
  }
  Fragment render(const MathStructure &value,unsigned depth) {
   if(depth>128 || ++nodes>2048)return fallback(value);
+  // A space between columns also denotes multiplication in quantum input.
+  // Use explicit separators so a displayed matrix keeps its shape on paste.
+  if(value.isMatrix() && value.columns()>1) {
+   std::string text="[";
+   for(size_t row=1;row<=value.rows();++row) {
+    if(row>1)text+="; ";
+    for(size_t col=1;col<=value.columns();++col) {
+     if(col>1)text+=", ";
+     text+=render(*value.getElement(row,col),depth+1).text;
+    }
+   }
+   return Fragment(text+"]");
+  }
   if(value.isVector() && !value.isMatrix() && value.size()>0) {
    bool labels=true;
    for(size_t i=0;i<value.size();++i)labels=labels && value[i].isFunction() && (value[i].function()->referenceName()=="qbitlabel" || value[i].function()->referenceName()=="qtuple");
@@ -174,14 +187,14 @@ class Printer {
    }
    if(flat && rows<=2048/columns && value[2].size()==rows*columns) {
     MathStructure literal;literal.clearMatrix();literal.resizeMatrix(rows,columns,MathStructure(0));
-    std::string text="[";bool changed=false;
+    std::string text="[";bool changed=columns>1;
     for(size_t row=0;row<rows;++row) {
      if(row)text+="; ";
      for(size_t column=0;column<columns;++column) {
       const MathStructure &entry=value[2][row*columns+column];
       literal.setElement(entry,row+1,column+1);
       Fragment rendered=render(entry,depth+1);changed=changed || rendered.text!=entry.print(options);
-      if(column)text+="  ";text+=rendered.text;
+      if(column)text+=", ";text+=rendered.text;
      }
     }
     return changed ? Fragment(text+"]") : fallback(literal);
@@ -218,7 +231,9 @@ class Printer {
   if(name=="qindexedketset" && value.size()==4 && value[0].isSymbolic() && safeLabel(value[0].symbol()) &&
      value[3].isVector() && value[3].size()%2==0) {
    const std::string &prefix=value[0].symbol();
-   std::string text="\\{|"+prefix+render(value[1],depth+1).text+"⟩,\\ldots,|"+prefix+render(value[2],depth+1).text+"⟩\\}";
+   Fragment upper=render(value[2],depth+1);
+   std::string index=upper.precedence<100 ? "{"+upper.text+"}" : upper.text;
+   std::string text="\\{|"+prefix+render(value[1],depth+1).text+"⟩,\\ldots,|"+prefix+index+"⟩\\}";
    for(size_t k=0;k<value[3].size();k+=2)
     text="replace("+text+","+prefix+render(value[3][k],depth+1).text+","+render(value[3][k+1],depth+1).text+")";
    return Fragment(text);
@@ -232,6 +247,28 @@ class Printer {
    std::string text="{";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
    return Fragment(text+"}");
+  }
+  if(name=="qstateaction" && value.size()==2)
+   return Fragment(render(value[0],depth+1).text+" ↦ "+render(value[1],depth+1).text,2);
+  if(name=="qdecimalmatch" && value.size()==4 && value[1].isNumber() &&
+     value[2].isInteger() && value[3].isInteger()) {
+   const Number &target=value[1].number();
+   std::string text;bool valid=!target.isApproximate();
+   for(unsigned k=0;k<2 && valid;++k) {
+    Number part=k ? target.imaginaryPart() : target.realPart();
+    const Number &places=value[k+2].number();
+    if(k && places==-1 && part.isZero())break;
+    if(places<0 || places>100) {valid=false;break;}
+    Number scaled(10);scaled.raise(places);scaled.multiply(part);
+    if(!scaled.isInteger()) {valid=false;break;}
+    if(k) {text+=part.isNegative() ? " - " : " + ";part.abs();}
+    PrintOptions decimal=options;decimal.base=10;decimal.min_exp=EXP_NONE;
+    decimal.number_fraction_format=FRACTION_DECIMAL;
+    decimal.use_min_decimals=decimal.use_max_decimals=true;
+    decimal.min_decimals=decimal.max_decimals=places.intValue();
+    text+=part.print(decimal);if(k)text+=" i";
+   }
+   if(valid)return Fragment(grouped(render(value[0],depth+1),6)+" ≈ "+text,5);
   }
   if(name=="qcompare" && value.size()==3 && value[2].isNumber() && value[2].number().isInteger() && value[2].number()>=0 && value[2].number()<=5) {
    const char *operators[]={" < "," > "," ≤ "," ≥ "," = "," ≠ "};
@@ -358,9 +395,11 @@ class Printer {
     return Fragment(text);
    }
   }
-  if(name=="qhalfopen" && value.size()==3 && (value[2].isOne() || value[2].isZero())) {
-   bool left=value[2].isOne();
-   return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(left ? ")" : "]"));
+  if(((name=="qhalfopen" && value.size()==3) ||
+      (name=="qrealinterval" && value.size()==4 && (value[3].isOne() || value[3].isZero()))) &&
+     (value[2].isOne() || value[2].isZero())) {
+   bool left=value[2].isOne(),right=value.size()==4 ? value[3].isOne() : !left;
+   return Fragment(std::string(left ? "[" : "(")+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+(right ? "]" : ")"));
   }
   if(name=="qmember" && value.size()==2 && value[1].isFunction() &&
      value[1].function()->referenceName()=="qindexrange" && value[1].size()==2)
@@ -369,6 +408,17 @@ class Printer {
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
   if(name=="qmatrixdimensions" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" × "+render(value[1],depth+1).text);
+  if(name=="qbinarytail" && value.size()==2)
+   return Fragment("binarytail("+value[0].print(options)+","+render(value[1],depth+1).text+")");
+  if(name=="qbinaryfraction" && value.size()==3 && value[0].isVector()) {
+   std::string digits="vector(";
+   for(size_t k=0;k<value[0].size();++k) {
+    if(k)digits+=", ";
+    digits+=render(value[0][k],depth+1).text;
+   }
+   return Fragment("binaryfraction("+digits+"), "+render(value[1],depth+1).text+", "+render(value[2],depth+1).text+")");
+  }
+  if(name=="qbasiskets" && value.size()==1)return Fragment("basislist("+render(value[0],depth+1).text+")");
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
    std::string text="(";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
@@ -433,6 +483,20 @@ class Printer {
   }
   if(name=="qbars" && value.size()==1)
    return Fragment("|"+render(value[0],depth+1).text+"|");
+  if(name=="qgeometricsum" && value.size()==2)
+   return Fragment("geosum("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qbitword" && value.size()==1) {
+   const auto &bits=value[0];
+   std::string text="bitword([";
+   if(bits.isVector() || (bits.isFunction() && (bits.function()->referenceName()=="horzcat" ||
+      bits.function()->referenceName()=="vector"))) {
+    for(size_t k=0;k<bits.size();++k) {
+     if(k)text+=", ";
+     text+=render(bits[k],depth+1).text;
+    }
+   } else text+=render(bits,depth+1).text;
+   return Fragment(text+"])");
+  }
   if((name=="qbitvalue" && value.size()==1) || ((name=="qbitxor" || name=="qbitdot") && value.size()==2)) {
    std::string text=name.substr(1)+"(";
    for(size_t i=0;i<value.size();++i) {if(i)text+=", ";text+=render(value[i],depth+1).text;}
@@ -548,6 +612,20 @@ class Printer {
    if(left.kind==Bra && right.kind==Ket)return Fragment("⟨"+left.label+"|"+right.label+"⟩");
    if(left.kind==BraProduct && right.kind==Ket)return Fragment(left.text+" "+right.text);
    if(left.kind==Bra)return Fragment(left.text+" "+grouped(right,41),40,BraProduct);
+   // Juxtaposition with a row or column can become a tensor product once
+   // the left operand is bound. Keep that decision for the evaluator.
+   if(name=="qadjacent") {
+    const auto &operand=value[1];
+    bool vectorMatrix=operand.isMatrix() && (operand.columns()==1 || operand.rows()==1);
+    if(operand.isFunction() && operand.function()->referenceName()=="matrix" && operand.size()==3)
+     vectorMatrix=operand[0].isOne() || operand[1].isOne();
+    // A computed state beside another ket must remain a separate factor.
+    // Without grouping, consecutive Dirac kets can bind before the operator.
+    std::string rightType=operand.isFunction() ? operand.function()->referenceName() : "";
+    bool ketOperand=rightType=="qketstate" || rightType=="qnamedket" || rightType=="qindexedket" || rightType=="qbasis";
+    if(vectorMatrix || (ketOperand && (right.kind!=Ket || left.precedence==40)))
+     return Fragment("("+left.text+") ("+right.text+")",40);
+   }
    return Fragment(grouped(left,40)+(right.kind==Ket ? " " : " · ")+grouped(right,40),40);
   }
   return fallback(value);
@@ -555,7 +633,7 @@ class Printer {
  public:
  explicit Printer(const PrintOptions &print):options(print) {}
  std::string print(const MathStructure &value) {
-  if(value.isMatrix() || value.isNumber())return value.print(options);
+  if(value.isNumber() || (value.isMatrix() && value.columns()<=1))return value.print(options);
   if(!collect(value))return value.print(options);
   std::string text=render(value,0).text;
   return !lostBinding && text.size()<=131072 ? text : value.print(options);

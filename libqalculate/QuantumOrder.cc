@@ -46,7 +46,15 @@ bool algebraicValue(qqbar_t out,const MathStructure &term,unsigned &remaining) {
  if(!term.size() || !algebraicValue(out,term[0],remaining))return false;
  if(term.isPower() && term.size()==2 && term[1].isNumber()) {
   const Number &power=term[1].number();
-  if(power.isApproximate() || !power.isRational() || power.denominator()>8 ||
+  if(power.isApproximate() || !power.isRational())return false;
+  // The principal value of (-1)^(p/q) is the root exp(2*pi*i*p/(2q)).
+  // Reduce the numerator before construction and retain the degree budget.
+  if(term[0].isMinusOne() && power.denominator()<=64) {
+   const mpq_t &fraction=power.internalRational();
+   unsigned long order=2*power.denominator().uintValue();
+   qqbar_root_of_unity(out,mpz_fdiv_ui(mpq_numref(fraction),order),order);return true;
+  }
+  if(power.denominator()>8 ||
      power.numerator()>16 || power.numerator() < -16 || (qqbar_is_zero(out) && !power.isPositive()))return false;
   if(qqbar_degree(out)*power.denominator().intValue()>64 || qqbar_height_bits(out)>256)return false;
   fmpq_t exponent;fmpq_init(exponent);fmpq_set_mpq(exponent,power.internalRational());
@@ -293,14 +301,22 @@ bool unassignedScalarMultiple(const MathStructure &term) {
  auto variable=static_cast<UnknownVariable *>(term.variable());
  return !variable->assumptions() && variable->interval().isUndefined();
 }
+bool explicitImaginary(const MathStructure &term) {
+ if(term.isNumber())return term.number().hasImaginaryPart();
+ for(size_t k=0;k<term.size();++k)if(explicitImaginary(term[k]))return true;
+ return false;
+}
 bool unboundComplexComparison(const MathStructure &left,const MathStructure &right) {
  if(left.isMatrix() && right.isMatrix() && left.rows()==right.rows() && left.columns()==right.columns()) {
   for(size_t row=1;row<=left.rows();++row)for(size_t col=1;col<=left.columns();++col)
    if(unboundComplexComparison(*left.getElement(row,col),*right.getElement(row,col)))return true;
   return false;
  }
- return (left.representsComplex() && !left.containsUnknowns() && unassignedScalarMultiple(right)) ||
-        (right.representsComplex() && !right.containsUnknowns() && unassignedScalarMultiple(left));
+ auto complexConstant=[](const MathStructure &term) {
+  return !term.containsUnknowns() && (term.representsComplex() || (!term.representsReal() && explicitImaginary(term)));
+ };
+ return (unassignedScalarMultiple(right) && complexConstant(left)) ||
+        (unassignedScalarMultiple(left) && complexConstant(right));
 }
 // Isolating a periodic function can introduce an arbitrary integer. It is
 // bound in the general solution, while Copy would turn it into a free input.
@@ -317,6 +333,14 @@ bool inferProductIdentity(MathStructure &identity,const MathStructure &product) 
  if((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag")))return false;
  identity.set(CALCULATOR->getFunction("qidentitylike"),&product,NULL);return true;
 }
+// Real inequality isolation is invalid inside the modulus of a complex
+// expression. Wait for its parameters before evaluating the comparison.
+bool pendingComplexMagnitude(const MathStructure &term) {
+ if(term.isFunction() && term.function()->referenceName()=="abs" && term.size()==1 &&
+    !term[0].representsReal() && term[0].containsUnknowns())return true;
+ for(size_t k=0;k<term.size();++k)if(pendingComplexMagnitude(term[k]))return true;
+ return false;
+}
 class QuantumOrderFunction: public MathFunction {
  public:
  QuantumOrderFunction():MathFunction("qcompare",3) {}
@@ -332,11 +356,22 @@ class QuantumOrderFunction: public MathFunction {
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
   args[1].eval(eo);
-  // Preserve a piecewise length definition and its domain guards on Copy.
-  // After substitution the length is numerical and ordinary comparison applies.
+  // A named probability can be defined by the squared magnitude of a
+  // pending sum. Keep one copy of its binder until the limits are known.
   if(equality)for(unsigned k=0;k<2;++k) {
-   if(args[k].isFunction() && args[k].function()->referenceName()=="qbitlength" &&
-      args[k].containsUnknowns() && raw[1-k].isFunction() && raw[1-k].function()->referenceName()=="if")return 0;
+   if(args[k].isSymbolic() && args[1-k].containsFunction(CALCULATOR->getFunction("qbars")) &&
+      args[1-k].containsFunction(CALCULATOR->getFunction("qsum")))return 0;
+  }
+  // Keep piecewise definitions intact while their bit value or named
+  // state is unresolved. Concrete substitutions use ordinary comparison.
+  if(equality)for(unsigned k=0;k<2;++k) {
+   if(!raw[1-k].isFunction() || raw[1-k].function()->referenceName()!="if")continue;
+   if(args[k].isFunction() && args[k].function()->referenceName()=="qgeometricsum")return 0;
+   if(args[k].containsFunction(CALCULATOR->getFunction("qnamedket")) ||
+      args[k].containsFunction(CALCULATOR->getFunction("qketstate")))return 0;
+   if(!args[k].containsUnknowns())continue;
+   if(args[k].isFunction() && args[k].function()->referenceName()=="qbitlength")return 0;
+   if(args[k].containsFunction(CALCULATOR->getFunction("qbitvalue")))return 0;
   }
   for(unsigned k=0;k<2;++k)if(args[k].isFunction() && args[k].function()->referenceName()=="qbigorder") {
    if(k==1 && args[2].isNumber() && (args[2].number()==4 || args[2].number()==5) && args[k].size()==1 &&
@@ -364,6 +399,7 @@ class QuantumOrderFunction: public MathFunction {
    }
    static const ComparisonType kinds[]={COMPARISON_LESS,COMPARISON_GREATER,COMPARISON_EQUALS_LESS,COMPARISON_EQUALS_GREATER,COMPARISON_EQUALS,COMPARISON_NOT_EQUALS};
    int kind=args[2].number().intValue();
+   if(kind<4 && (pendingComplexMagnitude(args[0]) || pendingComplexMagnitude(args[1])))return 0;
    // A deferred graph domain is a set: keep equality intact for later
    // substitution instead of reducing it to a scalar difference.
    if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
@@ -434,6 +470,39 @@ class QuantumOrderFunction: public MathFunction {
 #endif
    return 1;
   }
+ }
+};
+class QuantumDecimalMatch: public MathFunction {
+ public:
+ QuantumDecimalMatch():MathFunction("qdecimalmatch",4) {}
+ ExpressionItem *copy() const {return new QuantumDecimalMatch(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  MathStructure value=raw[0],target=raw[1];value.eval(eo);target.eval(eo);
+  if(value.isVector() || target.isVector()) {
+   CALCULATOR->error(true,"Decimal comparison requires scalar operands.",NULL);return 0;
+  }
+  if(value.containsUnknowns() || target.containsUnknowns()) {
+   if(value.equals(raw[0]) && target.equals(raw[1]))return 0;
+   out.set(this,&value,&target,&raw[2],&raw[3],NULL);return 1;
+  }
+  bool pending=false;
+  for(unsigned k=0;k<2;++k) {
+   MathStructure places=raw[k+2];places.eval(eo);
+   if(!places.isInteger() || places.number()<(k ? -1 : 0) || places.number()>100) {
+    CALCULATOR->error(true,"Decimal places must be between 0 and 100; -1 denotes an exact imaginary component.",NULL);return 0;
+   }
+   auto part=CALCULATOR->getFunction(k ? "im" : "re");
+   MathStructure component(part,&value,NULL),expected(part,&target,NULL);
+   if(!places.number().isNegative()) {
+    MathStructure rounded(CALCULATOR->getFunction("round"),&component,&places,&m_zero,NULL);
+    component=rounded;
+   }
+   component.transform(COMPARISON_EQUALS,expected);component.eval(eo);
+   if(component.isZero()) {out=m_zero;return 1;}
+   if(!component.isOne())pending=true;
+  }
+  if(pending)return 0;
+  out=m_one;return 1;
  }
 };
 class QuantumEquivalence: public MathFunction {
@@ -510,6 +579,7 @@ void registerQuantumOrder(Calculator &calculator) {
  calculator.addFunction(new QuantumCostDescriptor("qbigorder",1));
  calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
  calculator.addFunction(new QuantumCostDescriptor("qcostparam",1));
+ calculator.addFunction(new QuantumDecimalMatch());
  calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());

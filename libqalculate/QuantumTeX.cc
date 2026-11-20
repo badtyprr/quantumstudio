@@ -8,9 +8,66 @@
 
 namespace {
 bool asciiLetter(unsigned char c) {return (c>='A' && c<='Z') || (c>='a' && c<='z');}
+// In binary-word mode, adjacent digits and named bits occupy consecutive
+// positions, most significant first. Leave explicit calculator calls intact.
+std::string orderedBitWord(const std::string &text) {
+ std::string digits;
+ for(unsigned char c:text)if(!std::isspace(c))digits+=c;
+ if(!digits.empty() && digits.find_first_not_of("01")==std::string::npos)
+  return "bitstring(\""+digits+"\")";
+ std::string result="qbitword(vector(";size_t count=0;
+ for(size_t i=0;i<text.size();) {
+  unsigned char c=text[i];
+  if(std::isspace(c)) {++i;continue;}
+  size_t first=i++;
+  if(asciiLetter(c)) {
+   if(i<text.size() && text[i]=='_') {
+    size_t index=++i;
+    while(i<text.size() && std::isdigit((unsigned char)text[i]))++i;
+    if(i==index)return text;
+   }
+  } else if(!std::isdigit(c))return text;
+  if(count==1024)throw std::runtime_error("A binary word supports at most 1024 bits.");
+  if(count++)result+=",";
+  result+=text.substr(first,i-first);
+ }
+ return count ? result+"))" : text;
+}
 std::string trim(const std::string &s) {
  size_t first=s.find_first_not_of(" \t\r\n"),last=s.find_last_not_of(" \t\r\n");
  return first==std::string::npos ? "" : s.substr(first,last-first+1);
+}
+// Binary-fraction mode supplies the radix for an open sequence of named bits.
+std::string openBinaryFraction(const std::string &source) {
+ std::string text=trim(source);
+ size_t end=text.size();
+ for(const std::string dots:{"\\cdots","\\ldots","…","..."}) {
+  if(end>=dots.size() && text.compare(end-dots.size(),dots.size(),dots)==0) {end-=dots.size();break;}
+ }
+ if(end==text.size())return "";
+ size_t equals=text.rfind('=',end),at=equals==std::string::npos ? 0 : equals+1;
+ auto space=[&](){while(at<end && std::isspace((unsigned char)text[at]))++at;};
+ space();
+ if(text.compare(at,2,"0.")==0)++at;
+ std::string prefix,entries;int count=0,point=-1;
+ while(at<end) {
+  if(text[at]=='.' && point<0) {point=count;++at;space();continue;}
+  if(!asciiLetter(text[at]) || at+1>=end || text[at+1]!='_')return "";
+  std::string family=text.substr(at,2);at+=2;
+  if(prefix.empty())prefix=family;
+  if(prefix!=family)return "";
+  bool grouped=at<end && text[at]=='{';if(grouped)++at;
+  size_t begin=at;
+  while(at<end && std::isdigit((unsigned char)text[at]))++at;
+  std::string index=text.substr(begin,at-begin);
+  if(index!=std::to_string(count+1) || (grouped && (at==end || text[at++]!='}')))return "";
+  if(++count>1024)throw std::runtime_error("A binary word supports at most 1024 bits.");
+  if(count>1)entries+=",";
+  entries+=family+index;space();
+ }
+ if(count<2 || point<0 || point==count)return "";
+ return text.substr(0,equals==std::string::npos ? 0 : equals+1)+"qbinaryfraction(vector("+entries+"),"+
+        std::to_string(count-point)+",qbinarytail(\""+prefix+"\","+std::to_string(count+1)+"))";
 }
 // Display mathematics may end with a sentence period or comma. Preserve decimals,
 // quoted labels, ellipses and dots following incomplete operators.
@@ -21,7 +78,10 @@ std::string withoutDisplayPunctuation(std::string value) {
   // An unbraced TeX superscript consumes one token. The following period
   // belongs to the sentence, while a number such as 1. keeps its decimal.
   size_t previous=mark>=2 ? value.find_last_not_of(" \t\r\n",mark-2) : std::string::npos;
-  if(previous==std::string::npos || value[previous]!='^')return value;
+  size_t digits=mark;
+  while(digits && std::isdigit((unsigned char)value[digits-1]))--digits;
+  bool hasRadix=digits && value[digits-1]=='.' && (digits==1 || value[digits-2]!='.');
+  if(!hasRadix && (previous==std::string::npos || value[previous]!='^'))return value;
  }
  size_t before=value.find_last_not_of(" \t\r\n",mark-1);
  if(before==std::string::npos)return value;
@@ -524,12 +584,25 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
 // A finite family of kets uses the same prefix at both endpoints.
-std::string indexedKetSet(const std::vector<std::string> &entries) {
+std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  if(entries.size()!=3 || entries[1]!="...")return "";
  auto label=[](const std::string &entry) {
   return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
  };
  std::string first=label(entries.front()),last=label(entries.back());
+ if(ordered && first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
+    last.size()==first.size() && last.find_first_not_of("1")==std::string::npos)
+  return "qbasiskets(2^"+std::to_string(first.size())+")";
+ if(ordered && first=="0" && last.size()>1 && last.find_first_not_of("01")==std::string::npos)
+  throw std::runtime_error("Binary ket list endpoints must specify matching register widths.");
+ if(ordered && first=="0") {
+  if(!last.empty() && last.find_first_not_of("0123456789")==std::string::npos && (last.size()==1 || last[0]!='0'))
+   return "qbasiskets(("+last+")+1)";
+  if(!last.empty() && asciiLetter(last[0])) {
+   std::string offset=trim(last.substr(1));
+   if(!offset.empty() && offset[0]=='-' && trim(offset.substr(1))=="1")return "qbasiskets("+last.substr(0,1)+")";
+  }
+ }
  size_t split=first.rfind('_');
  if(split==std::string::npos || split==0)return "";
  std::string prefix=first.substr(0,split+1);
@@ -537,8 +610,21 @@ std::string indexedKetSet(const std::vector<std::string> &entries) {
  for(size_t k=0;k<split;++k)if((unsigned char)prefix[k]<128 && !asciiLetter(prefix[k]))return "";
  std::string from=first.substr(split+1),to=last.substr(split+1);
  auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
- if(!integer(from) || !(integer(to) || (to.size()==1 && asciiLetter(to[0]))))return "";
- return "qindexedketset(\""+prefix+"\","+from+","+to+",vector())";
+ // Grouped offsets belong to the index. Ungrouped arithmetic does not.
+ if(to.size()>2 && to.front()=='{' && to.back()=='}') {
+  std::string bound=trim(to.substr(1,to.size()-2));
+  if(bound.empty() || !asciiLetter(bound.front()))return "";
+  std::string offset=trim(bound.substr(1));
+  if(offset.empty() || (offset.front()!='+' && offset.front()!='-'))return "";
+  std::string magnitude=trim(offset.substr(1));
+  if(!integer(magnitude))return "";
+  to=bound.substr(0,1)+offset.front()+magnitude;
+ } else if(!integer(to) && !(to.size()==1 && asciiLetter(to[0])))return "";
+ if(!integer(from))return "";
+ return std::string(ordered ? "qindexedketlist(" : "qindexedketset(")+"\""+prefix+"\","+from+","+to+",vector())";
+}
+std::string orderedKetList(const std::string &text) {
+ return text.find("...")==std::string::npos ? "" : indexedKets(indexedParts(text,","),true);
 }
 class TeXReader {
  const std::string &input;
@@ -553,6 +639,35 @@ class TeXReader {
  unsigned setExpressions=0;
  unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
+ // Check the displayed initial powers and the final base before consuming
+ // an ellipsis. Keep the endpoint expression available for substitution.
+ std::string geometricSum() {
+  size_t at=pos;
+  auto token=[&](const std::string &s) {
+   while(at<input.size() && std::isspace((unsigned char)input[at]))++at;
+   if(input.compare(at,s.size(),s)!=0)return false;
+   at+=s.size();return true;
+  };
+  if(!token("1") || !token("+"))return "";
+  while(at<input.size() && std::isspace((unsigned char)input[at]))++at;
+  size_t first=at;
+  if(at<input.size() && input[at]=='\\') {
+   ++at;size_t name=at;while(at<input.size() && asciiLetter(input[at]))++at;
+   if(name==at)return "";
+  } else if(at<input.size() && asciiLetter(input[at]))++at;
+  else if(at<input.size() && std::isdigit((unsigned char)input[at]))
+   while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
+  else return "";
+  const std::string base=input.substr(first,at-first);
+  if(!token("+") || !token(base) || !token("^") || !(token("2") || token("{2}")) ||
+     !token("+") || !(token("\\cdots") || token("\\ldots") || token("\\dots") || token("⋯") || token("…")) ||
+     !token("+") || !token(base) || !token("^"))return "";
+  size_t start=pos;pos=at;
+  std::string exponent=argument();
+  space();
+  if(pos<input.size() && std::string("=,;)}]").find(input[pos])==std::string::npos) {pos=start;return "";}
+  return "qgeometricsum("+TeXReader(base).run(nullptr)+",("+exponent+")+1)";
+ }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  // Spacing takes a literal dimension. Its contents never become expression tokens.
  void spacingDimension(char close) {
@@ -645,62 +760,63 @@ class TeXReader {
   if(required && order.empty())throw std::runtime_error(error("Matrix norms require an explicit norm convention"));
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
- std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false) {
+ std::string setLiteral(bool escaped) {
+  ++setExpressions;std::string contents=read(escaped ? 0 : '}',false,"",escaped);--setExpressions;
+  size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
+  std::vector<std::string> entries;
+  for(size_t j=0;j<contents.size();++j) {
+   char token=contents[j];if(quote){if(token==quote)quote=0;continue;}
+   if(token=='"' || token=='\''){quote=token;continue;}
+   if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
+   else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
+   else if(!nesting && (separator==std::string::npos || membership==std::string::npos) && contents.compare(j,3,"∈")==0) {
+    if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
+   } else if(!nesting && token==':') {
+    if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
+   }
+  }
+  if(membership==std::string::npos && separator==std::string::npos) {
+   entries.push_back(trim(contents.substr(startEntry)));
+   bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
+   std::string alphabet="vector("+contents+")";
+   if(ellipsis) {
+    alphabet=openIndexedFamily(entries);
+    if(alphabet.empty())alphabet=indexedKets(entries,false);
+    if(alphabet.empty()) {
+     if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
+     alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+    }
+   }
+   size_t afterSet=pos;space();
+   if(pos<input.size() && input[pos]=='^') {
+    bool zero=false,one=false,binary=true;
+    for(const auto &entry:entries) {if(entry=="0")zero=true;else if(entry=="1")one=true;else binary=false;}
+    ++pos;std::string count=argument();
+    if(binary && zero && one)return "qbitstrings("+count+")";
+    return "qcartesianpower("+alphabet+","+count+")";
+   }
+   pos=afterSet;
+   if(ellipsis)return alphabet;
+   return "qset(vector("+contents+"))";
+  }
+  if(membership!=std::string::npos && separator!=std::string::npos && separator<membership) {
+   std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
+   if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
+   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
+   return "qsetimage("+body+","+collection+","+index+")";
+  }
+  if(membership==std::string::npos || separator==std::string::npos)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
+  std::string index=trim(contents.substr(0,membership)),collection=trim(contents.substr(membership+3,separator-membership-3)),predicate=trim(contents.substr(separator+1));
+  if(index.empty() || std::isdigit((unsigned char)index[0]) || collection.empty() || predicate.empty())throw std::runtime_error(error("A set builder requires an index, collection and predicate"));
+  for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
+  return "qsetfilter("+predicate+","+collection+","+index+")";
+ }
+ std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false,std::string *preceding=nullptr) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
-   if(c=='{') {
-    ++setExpressions;std::string contents=read(0,false,"",true);--setExpressions;
-    size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
-    std::vector<std::string> entries;
-    for(size_t j=0;j<contents.size();++j) {
-     char token=contents[j];if(quote){if(token==quote)quote=0;continue;}
-     if(token=='"' || token=='\''){quote=token;continue;}
-     if(token=='(' || token=='[')++nesting;else if(token==')' || token==']')--nesting;
-     else if(!nesting && token==',') {entries.push_back(trim(contents.substr(startEntry,j-startEntry)));startEntry=j+1;}
-     else if(!nesting && (separator==std::string::npos || membership==std::string::npos) && contents.compare(j,3,"∈")==0) {
-      if(membership!=std::string::npos)throw std::runtime_error(error("A set builder requires one index membership"));membership=j;
-     } else if(!nesting && token==':') {
-      if(separator!=std::string::npos)throw std::runtime_error(error("A set builder requires one predicate separator"));separator=j;
-     }
-    }
-    if(membership==std::string::npos && separator==std::string::npos) {
-     entries.push_back(trim(contents.substr(startEntry)));
-     bool ellipsis=false;for(const auto &entry:entries)if(entry=="...")ellipsis=true;
-     std::string alphabet="vector("+contents+")";
-     if(ellipsis) {
-      alphabet=openIndexedFamily(entries);
-      if(alphabet.empty())alphabet=indexedKetSet(entries);
-      if(alphabet.empty()) {
-       if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
-       alphabet="qindexrange("+entries[0]+","+entries[2]+")";
-      }
-     }
-     size_t afterSet=pos;space();
-     if(pos<input.size() && input[pos]=='^') {
-      bool zero=false,one=false,binary=true;
-      for(const auto &entry:entries) {if(entry=="0")zero=true;else if(entry=="1")one=true;else binary=false;}
-      ++pos;std::string count=argument();
-      if(binary && zero && one)return "qbitstrings("+count+")";
-      return "qcartesianpower("+alphabet+","+count+")";
-     }
-     pos=afterSet;
-     if(ellipsis)return alphabet;
-     return "qset(vector("+contents+"))";
-    }
-    if(membership!=std::string::npos && separator!=std::string::npos && separator<membership) {
-     std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
-     if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
-     for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
-     return "qsetimage("+body+","+collection+","+index+")";
-    }
-    if(membership==std::string::npos || separator==std::string::npos)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
-    std::string index=trim(contents.substr(0,membership)),collection=trim(contents.substr(membership+3,separator-membership-3)),predicate=trim(contents.substr(separator+1));
-    if(index.empty() || std::isdigit((unsigned char)index[0]) || collection.empty() || predicate.empty())throw std::runtime_error(error("A set builder requires an index, collection and predicate"));
-    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
-    return "qsetfilter("+predicate+","+collection+","+index+")";
-   }
+   if(c=='{')return setLiteral(true);
    if(c=='}')throw std::runtime_error(error("Unmatched set delimiter"));
    if(c=='\\' && matrix) {
     space();
@@ -710,6 +826,7 @@ class TeXReader {
     return ";";
    }
    if(c==',' || c==';' || c==':' || c=='!' || c==' ') return " ";
+   if(c=='%')return " qtexpercent ";
    if(c=='|') { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
    throw std::runtime_error(error("Unsupported TeX control symbol"));
   }
@@ -927,7 +1044,19 @@ class TeXReader {
   }
   if(name=="begin") {
    auto env=nameGroup();
-   if(env=="cases")return read(0,true,env);
+   if(env=="cases") {
+    // On the left of a cases definition, 0.a denotes a single fractional
+    // bit. Validate its width when the bit is assigned a concrete value.
+    if(preceding) {
+     std::string lhs=trim(*preceding);
+     if(!lhs.empty() && lhs.back()=='=') {
+      lhs=trim(lhs.substr(0,lhs.size()-1));
+      if(lhs.size()==3 && lhs.compare(0,2,"0.")==0 && asciiLetter(lhs[2]))
+       *preceding="(qbitvalue(qbitlabel("+lhs.substr(2)+",1))/2)=";
+     }
+    }
+    return read(0,true,env);
+   }
    if(env=="aligned" || env=="align" || env=="align*" || env=="gathered" || env=="gather" || env=="gather*" || env=="split") {
     space();
     if(pos<input.size() && input[pos]=='[') {
@@ -938,8 +1067,9 @@ class TeXReader {
    }
    if(env!="matrix" && env!="pmatrix" && env!="bmatrix" && env!="Bmatrix" && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
    size_t bodyStart=pos;
-   auto body=read(0,true,env);
-   size_t bodyEnd=input.rfind("\\end",pos-1);
+   size_t bodyEnd=std::string::npos;
+   auto body=read(0,true,env,false,"",false,&bodyEnd);
+   if(bodyEnd==std::string::npos)bodyEnd=input.rfind("\\end",pos-1);
    std::string raw=input.substr(bodyStart,bodyEnd-bodyStart);
    std::string m=indexedMatrix(raw,true);
    if(m.empty())m=indexedColumn(raw,true);
@@ -961,7 +1091,7 @@ class TeXReader {
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
-   {"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
+   {"mapsto"," ↦ "},{"approx"," ≈ "},{"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
@@ -978,7 +1108,7 @@ class TeXReader {
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
  }
- std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="", bool membershipGroup=false) {
+ std::string read(char close=0, bool matrix=false, const std::string &environment="", bool setClose=false, const std::string &roundClose="", bool membershipGroup=false, size_t *matrixBodyEnd=nullptr) {
   struct MatrixScope {
    unsigned &depth;bool active;
    MatrixScope(unsigned &depth_,bool active_):depth(depth_),active(active_) {if(active)++depth;}
@@ -1019,7 +1149,7 @@ class TeXReader {
   auto finishCase=[&]() {
    if(!caseColumn || trim(caseValue).empty() || trim(result).empty())throw std::runtime_error(error("Each case requires a value and condition separated by &"));
    if(branches.size()>=64)throw std::runtime_error(error("Cases are limited to 64 branches"));
-   branches.emplace_back(trim(caseValue),trim(result));result.clear();caseValue.clear();caseColumn=false;
+   branches.emplace_back(trim(caseValue),trim(withoutDisplayPunctuation(result)));result.clear();caseValue.clear();caseColumn=false;
   };
   while(pos<input.size()) {
    if(!roundClose.empty() && input[pos]=='\\' && input.compare(pos+1,roundClose.size(),roundClose)==0 &&
@@ -1033,6 +1163,10 @@ class TeXReader {
    }
    if(!matrixDepth && !stateLabel && !setExpressions && !setBound) {
     const std::string preceding=trim(result);
+    if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
+     std::string series=geometricSum();
+     if(!series.empty()) {result+=series;continue;}
+    }
     if(preceding.empty() || preceding.back()==',') {
      size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end);
      if(product.empty()) {
@@ -1044,6 +1178,14 @@ class TeXReader {
      }
      if(product.empty())product=scalarProductSum(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
+    }
+   }
+   // The display uses ordinary braces for the finite domain after a
+   // Unicode membership sign. TeX grouping elsewhere keeps its meaning.
+   if(input.compare(pos,3,"∈")==0 || input.compare(pos,3,"∉")==0) {
+    size_t next=input.find_first_not_of(" \t\r\n",pos+3);
+    if(next!=std::string::npos && input[next]=='{') {
+     result+=input.substr(pos,next-pos);pos=next+1;result+=setLiteral(false);continue;
     }
    }
    // Quoted labels are literal data; do not reinterpret operator subscripts.
@@ -1096,7 +1238,16 @@ class TeXReader {
     size_t delimiter=result.find_last_of("|<>");
     bool registerLabel=delimiter!=std::string::npos && result[delimiter]!='>' &&
      result.find('_',delimiter+1)!=std::string::npos;
-    std::string part=command(matrix,norms,environment=="cases",registerLabel);
+    size_t commandStart=pos;
+    std::string part=command(matrix,norms,environment=="cases",registerLabel,&result);
+    // A final TeX row break terminates the last row. Exclude it from both
+    // the translated matrix and the raw rows used to infer indexed entries.
+    if(matrixBodyEnd && part==";") {
+     size_t next=input.find_first_not_of(" \t\r\n",pos);
+     if(next!=std::string::npos && input.compare(next,4,"\\end")==0) {
+      *matrixBodyEnd=commandStart;continue;
+     }
+    }
     if(environment=="cases" && part==";")finishCase();
     else if(alignment && part==";")finishAlignment();else result+=part;
    }
@@ -1113,8 +1264,15 @@ class TeXReader {
     bool membership=tail!=std::string::npos && tail>=2 &&
      (result.compare(tail-2,3,"∈")==0 || result.compare(tail-2,3,"∉")==0);
     size_t bodyStart=pos;auto body=read(end,false,"",false,"",membership);
+    if(open=='(' && !membership) {
+     std::string list=orderedKetList(body);
+     if(!list.empty()) {result+="("+list+")";continue;}
+    }
     if(membership && input[pos-1]!=end) {
      result+="qhalfopen("+body+","+(open=='[' ? "1)" : "0)");continue;
+    }
+    if(membership && indexedParts(body,",").size()==2 && indexedParts(body,";").size()==1) {
+     result+="qrealinterval("+body+","+(open=='[' ? "1,1)" : "0,0)");continue;
     }
     std::string raw=input.substr(bodyStart,pos-bodyStart-1);
     std::string column=open=='[' ? indexedMatrix(raw,false) : "";
@@ -1256,6 +1414,8 @@ class TeXReader {
  explicit TeXReader(const std::string &s):input(s) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
+  std::string list=orderedKetList(result);
+  if(!list.empty())return list;
   if(lines && !rootLines.empty() && trim(result)==rootAlignment)*lines=rootLines;
   return result;
  }
@@ -1276,8 +1436,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(first==std::string::npos) return "";
  // The mode precedes the pasted formula, including any TeX delimiters.
  const bool dimensions=input.compare(first,11,"dimensions:")==0;
- if(dimensions) {
-  first=input.find_first_not_of(" \t\r\n",first+11);
+ const bool fractionBits=input.compare(first,13,"fractionbits:")==0;
+ const bool bitWord=input.compare(first,8,"bitword:")==0;
+ if(dimensions || fractionBits || bitWord) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : 8));
   if(first==std::string::npos)return "";
  } else if(input.compare(first,5,"sets:")==0) {
   if(setNotation)*setNotation=true;
@@ -1295,15 +1457,26 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(first==std::string::npos)throw std::runtime_error("Expected an expression after the matrix declaration.");
  }
  std::string s=input.substr(first,last-first+1);
+ // Inline Markdown can leave the radix point immediately outside the
+ // math span, as in .$01$. The selected mode supplies it for $01$ alone.
+ if(fractionBits && s.compare(0,2,".$")==0)s.erase(0,1);
  bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(mathWrapper)s=withoutDisplayPunctuation(s);
+ if(fractionBits) {
+  std::string expansion=openBinaryFraction(s);
+  if(!expansion.empty())s=expansion;
+  std::string digits=trim(s);
+  if(!digits.empty() && digits.front()=='.')digits.erase(0,1);
+  if(!digits.empty() && digits.find_first_not_of("0123456789")==std::string::npos)
+   s="."+digits+"₂";
+ }
  // Unicode operators and rounding brackets share their TeX grammar.
  // Preserve quoted labels verbatim.
- static const auto unicodeOperators=std::map<std::string,std::string>{{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
+ static const auto unicodeOperators=std::map<std::string,std::string>{{"±","\\pm "},{"∑","\\sum "},{"∏","\\prod "},{"⨂","\\bigotimes "},{"⨁","\\bigoplus "},
   {"∪","\\cup "},{"∩","\\cap "},{"∖","\\setminus "},{"∅","\\emptyset "},{"⌊","\\lfloor "},{"⌋","\\rfloor "},{"⌈","\\lceil "},{"⌉","\\rceil "}};
  std::string normalized;char quote=0;
  int depth=0;bool splitDimensions=false;
@@ -1346,6 +1519,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  if(splitDimensions)normalized+="))";
  std::string result=TeXReader(normalized).run(lines);
+ if(bitWord)result=orderedBitWord(result);
  for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
  return result;
 }

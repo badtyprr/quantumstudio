@@ -17,6 +17,18 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($\vert\phi_0\rangle,\ldots,\vert\phi_3\rangle$)",R"(qindexedketlist("φ_",0,3,vector()))");
+  equal(R"(\vert 0\rangle,\ldots,\vert N - 1\rangle)","qbasiskets(N)");
+  equal(R"(\vert 00\rangle,\ldots,\vert 11\rangle)","qbasiskets(2^2)");
+  rejects(R"(\vert 0\rangle,\ldots,\vert 11\rangle)");
+  equal(R"(1 + r + r^2 + \cdots + r^{n-1})","qgeometricsum(r,(n-1)+1)");
+  rejects(R"(1 + r + s^2 + \cdots + r^{n-1})");
+  rejects(R"(1 + r + r^2 + \cdots + s^{n-1})");
+  equal("x ∈ {0,1}",quantumTeX(R"(x ∈ \{0,1\})"));
+  equal("x ∉ {1/4}",quantumTeX(R"(x ∉ \{1/4\})"));
+  rejects("x ∈ {0,1");
+  equal(R"($\{\vert\phi_0\rangle,\ldots,\vert\phi_{N-1}\rangle\}$)",R"(qindexedketset("φ_",0,N-1,vector()))");
+  equal(R"($\{|a_2>,\ldots,|a_{n + 10}>\}$)",R"(qindexedketset("a_",2,n+10,vector()))");
   equal(R"($\{C_1,C_2,C_3,\ldots\}$)",R"(qindexedfamily("C_",1))");
   equal(R"($\{C_1,C_2,\ldots,\}$)",R"(qindexedfamily("C_",1))");
   equal(R"($\{A_{99},A_{100},\dots\}$)",R"(qindexedfamily("A_",99))");
@@ -188,6 +200,11 @@ int main() {
   rejects(R"(\tilde{})");
   rejects(R"(\tilde{x+y})");
   equal(R"(\begin{cases}1 & x=0\\2 & \text{otherwise}\end{cases})","(if(x=0,1,2))");
+  equal(R"(\begin{cases}1 & y=z\\0 & y\neq z,\end{cases})",
+        quantumTeX(R"(\begin{cases}1 & y=z\\0 & y\neq z\end{cases})"));
+  equal(R"(0.b = \begin{cases}0 & b=0\\1/2 & b=1\end{cases})",
+        "(qbitvalue(qbitlabel(b,1))/2)=(if(b=0,0,if(b=1,1/2,undefined)))");
+  equal(R"(0.25 = \begin{cases}1 & x=0\end{cases})","0.25 = (if(x=0,1,undefined))");
   equal(R"(\begin{cases}|0> & \text{if $1=1$}\\[1mm]|1> & \text{if }1=0\end{cases})","(if(1=1,|0>,if(1=0,|1>,undefined)))");
   equal(R"(\begin{cases}1 & 1\\\end{cases})","(if(1,1,undefined))");
   rejects(R"(\begin{cases}\end{cases})");
@@ -228,6 +245,8 @@ int main() {
   equal(R"(\bigotimes_{k=0}^{2}{X})","qtexgroupbigotimes(0,2,k,X)");
   equal(R"(\bigoplus_{k=0}^{2}{X})","qtexgroupbigoplus(0,2,k,X)");
   equal("∑_{k=0}^{2}{k}","qtexgroupsum(0,2,k,k)");
+  equal(R"(\begin{pmatrix}1&2\\3&4\\[2mm]\end{pmatrix})","[1,2;3,4]");
+  equal(R"(\begin{bmatrix}a_0\\\vdots\\a_n\\\end{bmatrix})",quantumTeX(R"(\begin{bmatrix}a_0\\\vdots\\a_n\end{bmatrix})"));
   equal(R"(\begin{pmatrix}1&2\\[1mm]3&4\end{pmatrix})","[1,2;3,4]");
   equal(R"(\begin{bmatrix}1\\[-.5 em]2\\[+2pt]3\end{bmatrix})","[1;2;3]");
   equal(R"(\mathrm{QFT}_{16})"," qfourier(16)");

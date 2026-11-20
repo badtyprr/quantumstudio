@@ -86,6 +86,7 @@ The [IBM phase-estimation procedure](https://quantum.cloud.ibm.com/learning/en/c
 - A trial-divisor list such as `2,\ldots,\sqrt{N}` enumerates integers from 2 through the floor of the square root. For 15 it gives {2, 3}, for 16 it includes 4, and for 3 it is empty. A symbolic bound can be copied and assigned later. Finite ranges support up to 1,024 entries.
 - Modular powers such as `N^K\hspace{1mm} (\text{mod }M)` preserve all three operands. With integer base, nonnegative integer exponent and positive integer modulus, evaluation uses modular exponentiation. For example, `23^5 pmod (17)` gives 7.
 - TeX matrix row spacing such as `\\[1mm]`: the spacing is ignored, and the lesson's four-dimensional Fourier matrix is checked against `qfourier(4)`.
+- A TeX percentage scales its operand by one hundredth. For example, `40\%` gives 2/5 and `1/(25\%)` gives 4.
 - The probability `|⟨101|(H⊗H⊗H)|000⟩|^2` equals 1/8. The packaged keyboard check verifies that Enter displays 0.125 once without inserting a newline.
 
 These are selected finite examples, not certification of the entire phase-estimation lesson. In particular, source formulas can rely on implicit dimensions, named states, or mathematical definitions supplied earlier in the text.
@@ -1255,6 +1256,16 @@ Symbolic dimensioned basis states display as `|x⟩_{N}`, retaining their dimens
 The result displays its integer-index conditions. Copy result retains both the sum and its domain in the canonical `qfourierdomain` expression. Substituting numerical parameters validates the index and dimension before evaluating the sum: dimensions must be integers from 1 through 64, and the index must be an integer from 0 through N−1. For example, supplying N=4 and x=1 gives `[1;i;-1;-i]/2`; x=4 is rejected rather than being accepted through periodicity of the exponential. Dimension one remains a 1-by-1 column matrix. Unknown parameters stay symbolic in both arithmetic modes.
 
 Copy/re-entry may normalize equivalent scalar formatting, such as `1/sqrt(N)` to `1/N^0.5`; it preserves evaluation and domain checks. Use Copy result for re-entry of the full conditional expression. A bare named ket such as `QFT_N|x>` does not declare x to be an integer basis index and is not expanded by this rule. General Fourier identities and unspecified basis declarations remain separate work.
+
+## Binary fractions with an open tail
+
+Select **Binary fraction** when the surrounding text identifies a radix-two expansion. For example, paste `0.a_1 a_2 a_3\cdots` or `a_1. a_2 a_3\cdots`. If the three printed bits form the integer B and the remaining fraction is t, these give (B + t)/8 and (B + t)/4 respectively.
+
+Use `binarytail("a_",4)` to refer to the entire fraction starting at the fourth bit. Substitute a value between 0 and 1 inclusive, or assign later digits by name. Assigning `a_5` leaves `a_4` and the tail beginning at `a_6` available for subsequent substitutions. A tail of 1 represents infinitely many ones. A single substitution can expose up to 1024 additional digits.
+
+## Checking a gate's action on a ket
+
+Use `input ↦ output` or the TeX command `\mapsto` to record a state mapping. Both sides can contain named kets, tensor products, or concrete column vectors. `checkaction(gate, mapping)` checks whether applying the matrix to that input produces the stated output, including its phase. For example, `checkaction(Z, (|1> ↦ -|1>))` returns 1, and `checkaction(Z, (|1> ↦ |1>))` returns 0. Each check applies to the specified input state.
 
 ## Finite named orthonormal bases
 

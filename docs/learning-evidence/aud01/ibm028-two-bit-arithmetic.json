@@ -1,0 +1,695 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "8ca4858319cf0ae36ec1c30f2a99542d63e37df14555b72e95d8eb0846f986c1",
+  "forms": [
+    "source",
+    "display",
+    "copy"
+  ],
+  "rows": [
+    {
+      "id": "IBM028-2ff07f29-M104",
+      "literal": "$x \\in \\{0,1,2,3\\}$",
+      "display": "x ∈ {0, 1, 2, 3}",
+      "copy": "qmember(x,qset(vector(0,1,2,3)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "x": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "x": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "x": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "x": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "x": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "x": "4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M109",
+      "literal": "$y\\in\\{0,1,2,3\\}$",
+      "display": "y ∈ {0, 1, 2, 3}",
+      "copy": "qmember(y,qset(vector(0,1,2,3)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "y": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "y": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M117",
+      "literal": "$y \\in \\{0, 1, 2, 3\\}$",
+      "display": "y ∈ {0, 1, 2, 3}",
+      "copy": "qmember(y,qset(vector(0,1,2,3)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "y": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "y": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M136",
+      "literal": "$y\\in\\{0,1,2,3\\}$",
+      "display": "y ∈ {0, 1, 2, 3}",
+      "copy": "qmember(y,qset(vector(0,1,2,3)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "y": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "y": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M140",
+      "literal": "$y\\in\\{0,1,2,3\\}$",
+      "display": "y ∈ {0, 1, 2, 3}",
+      "copy": "qmember(y,qset(vector(0,1,2,3)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "y": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "y": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "y": "4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M110",
+      "literal": "$\\theta\\in \\{0, 1/4, 1/2, 3/4\\}$",
+      "display": "'θ' ∈ {0, 0.25, 0.5, 0.75}",
+      "copy": "qmember('θ',qset(vector(0,1 ∕ 4,1 ∕ 2,3 ∕ 4)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "θ": "-1/4"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "θ": "0/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "1/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "2/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "3/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "4/4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M144",
+      "literal": "$\\theta \\in \\{0,1/4,1/2,3/4\\}$",
+      "display": "'θ' ∈ {0, 0.25, 0.5, 0.75}",
+      "copy": "qmember('θ',qset(vector(0,1 ∕ 4,1 ∕ 2,3 ∕ 4)))",
+      "substitutions": [
+        {
+          "assignments": {
+            "θ": "-1/4"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "θ": "0/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "1/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "2/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "3/4"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "4/4"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M263",
+      "literal": "$a,b\\in\\{0,1\\}$",
+      "display": "a ∈ {0, 1} and b ∈ {0, 1}",
+      "copy": "(qmember('a',qset(vector(0,1))) and qmember('b',qset(vector(0,1))))",
+      "substitutions": [
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "0"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "0"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "2"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M273",
+      "literal": "$a,b\\in\\{0,1\\}$",
+      "display": "a ∈ {0, 1} and b ∈ {0, 1}",
+      "copy": "(qmember('a',qset(vector(0,1))) and qmember('b',qset(vector(0,1))))",
+      "substitutions": [
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "0"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "-1",
+            "b": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "0",
+            "b": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a": "1",
+            "b": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "-1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "0"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a": "2",
+            "b": "2"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M105",
+      "literal": "$x = 2 a_1 + a_0$",
+      "display": "x = \"a_0\" + 2 \"a_1\"",
+      "copy": "(x)==(\"a_0\" + 2 \"a_1\")",
+      "substitutions": [
+        {
+          "assignments": {
+            "a_1": "0",
+            "a_0": "0",
+            "x": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a_1": "0",
+            "a_0": "0",
+            "x": "1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a_1": "0",
+            "a_0": "1",
+            "x": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a_1": "0",
+            "a_0": "1",
+            "x": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a_1": "1",
+            "a_0": "0",
+            "x": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a_1": "1",
+            "a_0": "0",
+            "x": "3"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "a_1": "1",
+            "a_0": "1",
+            "x": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "a_1": "1",
+            "a_0": "1",
+            "x": "0"
+          },
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M108",
+      "literal": "$\\theta = \\frac{y}{4}$",
+      "display": "y = 4'θ'",
+      "copy": "(y)==(4'θ')",
+      "substitutions": [
+        {
+          "assignments": {
+            "θ": "0/4",
+            "y": "0"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "0/4",
+            "y": "1"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "θ": "1/4",
+            "y": "1"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "1/4",
+            "y": "2"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "θ": "2/4",
+            "y": "2"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "2/4",
+            "y": "3"
+          },
+          "expected": false
+        },
+        {
+          "assignments": {
+            "θ": "3/4",
+            "y": "3"
+          },
+          "expected": true
+        },
+        {
+          "assignments": {
+            "θ": "3/4",
+            "y": "0"
+          },
+          "expected": false
+        }
+      ]
+    }
+  ]
+}

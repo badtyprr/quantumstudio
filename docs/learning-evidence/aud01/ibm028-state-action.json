@@ -1,0 +1,374 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "id": "IBM028-2ff07f29-M224",
+  "literal": "$$\n\\vert y \\rangle \\vert a \\rangle \\mapsto \\omega_{2^m}^{ay} \\vert y \\rangle \\vert a \\rangle,\n$$",
+  "worker_sha256": "950b473aecdba9e21e93c9c2e6505444710384faaa087c51d2acb370c43c999f",
+  "display": "|y⟩ ⊗ qketstate('a') ↦ ω_(2^m)^(a · y) · (|y⟩ ⊗ qketstate('a'))",
+  "copy": "qstateaction(qtensor(qketstate(y),qketstate('a')),qadjacent(qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qmul(y,'a')),qtensor(qketstate(y),qketstate('a'))))",
+  "cases": [
+    {
+      "width": 2,
+      "y": 0,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 2,
+      "y": 0,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 2,
+      "y": 1,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 2,
+      "y": 1,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 3,
+      "y": 0,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 3,
+      "y": 0,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 3,
+      "y": 1,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 3,
+      "y": 1,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 3,
+      "y": 2,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 3,
+      "y": 2,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 3,
+      "y": 3,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 3,
+      "y": 3,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 4,
+      "y": 0,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 0,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 1,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 1,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 2,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 2,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 3,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 3,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 4,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 4,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 4,
+      "y": 5,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 5,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 4,
+      "y": 6,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 6,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 4,
+      "y": 7,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 4,
+      "y": 7,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 0,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 0,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 1,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 1,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 2,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 2,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 3,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 3,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 4,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 4,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 5,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 5,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 6,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 6,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 7,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 7,
+      "a": 1,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 8,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 8,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 9,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 9,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 10,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 10,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 11,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 11,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 12,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 12,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 13,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 13,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 14,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 14,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    },
+    {
+      "width": 5,
+      "y": 15,
+      "a": 0,
+      "missing_gate_changes_phase": false
+    },
+    {
+      "width": 5,
+      "y": 15,
+      "a": 1,
+      "missing_gate_changes_phase": true
+    }
+  ],
+  "related_comparisons": {
+    "IBM028-2ff07f29-M199": 8,
+    "IBM028-2ff07f29-M265": 8
+  }
+}

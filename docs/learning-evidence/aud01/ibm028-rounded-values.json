@@ -1,0 +1,33 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "30912ea182b14f63de7d1dada64318ab9caacf7b9109bb88406132f4299b715d",
+  "records": [
+    {
+      "id": "IBM028-2ff07f29-M176",
+      "literal": "$$\n\\begin{gathered}\n\\omega_1 = 1\\\\[1mm]\n\\omega_2 = -1\\\\[1mm]\n\\omega_3 = -\\frac{1}{2} + \\frac{\\sqrt{3}}{2} i\\\\[2mm]\n\\omega_4 = i\\\\[1mm]\n\\omega_8 = \\frac{1+i}{\\sqrt{2}}\\\\[3mm]\n\\omega_{16} = \\frac{\\sqrt{2 + \\sqrt{2}}}{2} + \\frac{\\sqrt{2 - \\sqrt{2}}}{2} i\\\\[2mm]\n\\omega_{100} \\approx 0.998 + 0.063 i\n\\end{gathered}\n$$",
+      "display": "1.  \"ω_1\" = 1\n\n2.  \"ω_2\" = −1\n\n3.  \"ω_3\" = 0.5i ⋅ √(3) − 0.5\n\n4.  \"ω_4\" = i\n\n5.  \"ω_8\" = (0.5 + 0.5i) ⋅ √(2)\n\n6.  \"ω_16\" = 0.5 ⋅ √(2 + √(2)) + 0.5i ⋅ √(2 − √(2))\n\n7.  \"ω_100\" ≈ 0.998 + 0.063 i",
+      "copy": "\\begin{gathered}(\"ω_1\")==(1)\\\\(\"ω_2\")==(−1)\\\\qcompare(\"ω_3\",(i ⋅ √(3)) ∕ 2 − 1 ∕ 2,4)\\\\qcompare(\"ω_4\",i,4)\\\\qcompare(\"ω_8\",((1 + i) ⋅ √(2)) ∕ 2,4)\\\\qcompare(\"ω_16\",(√(2 + √(2)) + i ⋅ √(2 − √(2))) ∕ 2,4)\\\\qdecimalmatch(\"ω_100\",499 ∕ 500 + (63 ∕ 1000) ⋅ i,3,3)\\end{gathered}"
+    },
+    {
+      "id": "IBM028-2ff07f29-M358",
+      "literal": "$$\n   p_y \\geq \\frac{1}{2^{2m}} \\frac{16 \\cdot 2^{2m}}{4 \\pi^2} = \\frac{4}{\\pi^2} \\approx 0.405.\n   $$",
+      "display": "\"p_y\" ≥ 4 ∕ π²",
+      "copy": "(\"p_y\")>=(4 ∕ π²)"
+    }
+  ],
+  "roots": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    16,
+    100
+  ],
+  "probability_witnesses": [
+    "4/pi^2",
+    "0.405",
+    "0.4051",
+    "0.406"
+  ]
+}

@@ -1,0 +1,1264 @@
+{
+  "notebook": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "ef07dc121e87e9af9cec9f722205e5a68682bdd42ca278bdbd0d4e8f71b8b4d0",
+  "tolerance": 1e-12,
+  "figures": [
+    {
+      "id": "IBM028-F01",
+      "file": "uncontrolled-and-controlled-unitary.svg",
+      "alt": "Uncontrolled and controlled versions of a unitary operation",
+      "sha256": "6b1b0e577c2e2a71aaa0d94f9cceaa089d9ea9159ee31d5e47a537c69c1abec6",
+      "checks": [
+        {
+          "case": "Y on 0",
+          "actual": "Y*basis(0,2)",
+          "expected": "i*basis(1,2)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "control 0, target 0",
+          "actual": "sequence([apply(controlled(Y),s_0,[1,0])],basis(0,4),s_0)",
+          "expected": "basis(0,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "control 1, target 0",
+          "actual": "sequence([apply(controlled(Y),s_0,[1,0])],basis(1,4),s_0)",
+          "expected": "i*basis(3,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Y on 1",
+          "actual": "Y*basis(1,2)",
+          "expected": "(-i)*basis(0,2)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "control 0, target 1",
+          "actual": "sequence([apply(controlled(Y),s_0,[1,0])],basis(2,4),s_0)",
+          "expected": "basis(2,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "control 1, target 1",
+          "actual": "sequence([apply(controlled(Y),s_0,[1,0])],basis(3,4),s_0)",
+          "expected": "(-i)*basis(1,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F02",
+      "file": "estimate-phase-with-kickback.svg",
+      "alt": "A single-qubit circuit for phase-estimation",
+      "sha256": "504cdb3eebcc106ec5a8f8c742d5aceb2c53f6b740a55e896fd5d7a14910d5be",
+      "checks": [
+        {
+          "case": "quarter turn",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(S),s_0,[1,0]),apply(H,s_0,[1])],basis(2,4),s_0)",
+          "expected": "matrix(4,1,[0,0,(1+i)/2,(1-i)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F03",
+      "file": "estimate-phase-with-kickback-analysis.svg",
+      "alt": "States of a single-qubit circuit for phase-estimation",
+      "sha256": "5fa7c37960ed2ed1c3754ff20d02faebc4b39131bb3ce0a2840a77c3db8633d6",
+      "checks": [
+        {
+          "case": "pi_0",
+          "actual": "basis(2,4)",
+          "expected": "basis(2,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_1",
+          "actual": "sequence([apply(H,s_0,[1])],basis(2,4),s_0)",
+          "expected": "matrix(4,1,[0,0,1/sqrt(2),1/sqrt(2)])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_2",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(S),s_0,[1,0])],basis(2,4),s_0)",
+          "expected": "matrix(4,1,[0,0,1/sqrt(2),i/sqrt(2)])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_3",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(S),s_0,[1,0]),apply(H,s_0,[1])],basis(2,4),s_0)",
+          "expected": "matrix(4,1,[0,0,(1+i)/2,(1-i)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F05",
+      "file": "double-phase-kickback.svg",
+      "alt": "Single-bit phase estimation doubled",
+      "sha256": "a79aa78b6b1ca06e80e9b1263fcf4b129b0f6f0a87736fe432f9e586d9adaa71",
+      "checks": [
+        {
+          "case": "quarter turn doubled",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(S),s_0,[1,0]),apply(controlled(S),s_0,[1,0]),apply(H,s_0,[1])],basis(2,4),s_0)",
+          "expected": "basis(3,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "single kick differs",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(S),s_0,[1,0]),apply(H,s_0,[1])],basis(2,4),s_0)",
+          "expected": "basis(3,4)",
+          "unequal": true,
+          "norm_difference": 1.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F07",
+      "file": "two-bit-phase-estimation-initial.svg",
+      "alt": "The initial set-up for phase estimation with two qubits",
+      "sha256": "bca642db5f5e1840831657534f406d38e35feb6f281b01ae5715dcba6d63f021",
+      "checks": [
+        {
+          "case": "phase 0/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*0/4)),s_0,[2,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "phase 1/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*1/4)),s_0,[2,0]),apply(controlled(P(2*pi*1/4)),s_0,[1,0]),apply(controlled(P(2*pi*1/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*1/4)/2,exp(2*pi*i*2/4)/2,exp(2*pi*i*3/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "phase 2/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*2/4)),s_0,[2,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*2/4)/2,exp(2*pi*i*4/4)/2,exp(2*pi*i*6/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "phase 3/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*3/4)),s_0,[2,0]),apply(controlled(P(2*pi*3/4)),s_0,[1,0]),apply(controlled(P(2*pi*3/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*3/4)/2,exp(2*pi*i*6/4)/2,exp(2*pi*i*9/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F08",
+      "file": "two-bit-phase-estimation-states.svg",
+      "alt": "States for phase estimation with two qubits",
+      "sha256": "bfbdc88ba76f7bbd83d5fbe0a178d2a1e6ac091b41c9467b5cdae4faec31e696",
+      "checks": [
+        {
+          "case": "pi_1, phase 0/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_2, phase 0/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*0/4)),s_0,[2,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_3, phase 0/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*0/4)),s_0,[2,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_1, phase 1/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_2, phase 1/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*1/4)),s_0,[2,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*1/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*1/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_3, phase 1/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*1/4)),s_0,[2,0]),apply(controlled(P(2*pi*1/4)),s_0,[1,0]),apply(controlled(P(2*pi*1/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*1/4)/2,exp(2*pi*i*2/4)/2,exp(2*pi*i*3/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_1, phase 2/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_2, phase 2/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*2/4)),s_0,[2,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*2/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*2/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_3, phase 2/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*2/4)),s_0,[2,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*2/4)/2,exp(2*pi*i*4/4)/2,exp(2*pi*i*6/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_1, phase 3/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*0/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_2, phase 3/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*3/4)),s_0,[2,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*3/4)/2,exp(2*pi*i*0/4)/2,exp(2*pi*i*3/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "pi_3, phase 3/4",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*3/4)),s_0,[2,0]),apply(controlled(P(2*pi*3/4)),s_0,[1,0]),apply(controlled(P(2*pi*3/4)),s_0,[1,0])],basis(4,8),s_0)",
+          "expected": "matrix(8,1,[0,0,0,0,exp(2*pi*i*0/4)/2,exp(2*pi*i*3/4)/2,exp(2*pi*i*6/4)/2,exp(2*pi*i*9/4)/2])",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F09",
+      "file": "two-bit-phase-estimation.svg",
+      "alt": "Phase estimation with two qubits",
+      "sha256": "0e2a9c1aae8e02e4cc47f3b96ad9a9fde77e351454186e62a65c3e6942a9b4ef",
+      "checks": [
+        {
+          "case": "estimate 0",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*0/4)),s_0,[2,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(4,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "estimate 1",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*1/4)),s_0,[2,0]),apply(controlled(P(2*pi*1/4)),s_0,[1,0]),apply(controlled(P(2*pi*1/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(5,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "estimate 2",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*2/4)),s_0,[2,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(6,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "estimate 3",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(P(2*pi*3/4)),s_0,[2,0]),apply(controlled(P(2*pi*3/4)),s_0,[1,0]),apply(controlled(P(2*pi*3/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(7,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F11",
+      "file": "controlled-phase-gates.svg",
+      "alt": "Quantum circuit diagram representation for controlled-phase gates",
+      "sha256": "5bb78afe9f40baf115cd3a976d42b8dce977450e8c51b8657f5ea196014753a7",
+      "checks": [
+        {
+          "case": "controlled(P(pi/4)) on [0, 1], input 0",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[0,1])],basis(0,4),s_0)",
+          "expected": "basis(0,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [1, 0], input 0",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[1,0])],basis(0,4),s_0)",
+          "expected": "basis(0,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "CP(pi/4) on [0, 1], input 0",
+          "actual": "sequence([apply(CP(pi/4),s_0,[0,1])],basis(0,4),s_0)",
+          "expected": "basis(0,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [0, 1], input 1",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[0,1])],basis(1,4),s_0)",
+          "expected": "basis(1,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [1, 0], input 1",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[1,0])],basis(1,4),s_0)",
+          "expected": "basis(1,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "CP(pi/4) on [0, 1], input 1",
+          "actual": "sequence([apply(CP(pi/4),s_0,[0,1])],basis(1,4),s_0)",
+          "expected": "basis(1,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [0, 1], input 2",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[0,1])],basis(2,4),s_0)",
+          "expected": "basis(2,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [1, 0], input 2",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[1,0])],basis(2,4),s_0)",
+          "expected": "basis(2,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "CP(pi/4) on [0, 1], input 2",
+          "actual": "sequence([apply(CP(pi/4),s_0,[0,1])],basis(2,4),s_0)",
+          "expected": "basis(2,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [0, 1], input 3",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[0,1])],basis(3,4),s_0)",
+          "expected": "exp(i*pi/4)*basis(3,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "controlled(P(pi/4)) on [1, 0], input 3",
+          "actual": "sequence([apply(controlled(P(pi/4)),s_0,[1,0])],basis(3,4),s_0)",
+          "expected": "exp(i*pi/4)*basis(3,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "CP(pi/4) on [0, 1], input 3",
+          "actual": "sequence([apply(CP(pi/4),s_0,[0,1])],basis(3,4),s_0)",
+          "expected": "exp(i*pi/4)*basis(3,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F12",
+      "file": "phase-injection.svg",
+      "alt": "Quantum circuit diagram for phase injection",
+      "sha256": "2bc6ce75baeb27fbc15f9de9de625c2a1b2b7a50c2c35d57b4751a1e6ee0c3a8",
+      "checks": [
+        {
+          "case": "a=0, y=0",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(0,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(0,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=0",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(1,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(1,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=1",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(2,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(2,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=1",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(3,32),s_0)",
+          "expected": "exp(2*pi*i*1/32)*basis(3,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=2",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(4,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(4,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=2",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(5,32),s_0)",
+          "expected": "exp(2*pi*i*2/32)*basis(5,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=3",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(6,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(6,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=3",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(7,32),s_0)",
+          "expected": "exp(2*pi*i*3/32)*basis(7,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=4",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(8,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(8,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=4",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(9,32),s_0)",
+          "expected": "exp(2*pi*i*4/32)*basis(9,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=5",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(10,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(10,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=5",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(11,32),s_0)",
+          "expected": "exp(2*pi*i*5/32)*basis(11,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=6",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(12,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(12,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=6",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(13,32),s_0)",
+          "expected": "exp(2*pi*i*6/32)*basis(13,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=7",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(14,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(14,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=7",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(15,32),s_0)",
+          "expected": "exp(2*pi*i*7/32)*basis(15,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=8",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(16,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(16,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=8",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(17,32),s_0)",
+          "expected": "exp(2*pi*i*8/32)*basis(17,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=9",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(18,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(18,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=9",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(19,32),s_0)",
+          "expected": "exp(2*pi*i*9/32)*basis(19,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=10",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(20,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(20,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=10",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(21,32),s_0)",
+          "expected": "exp(2*pi*i*10/32)*basis(21,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=11",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(22,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(22,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=11",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(23,32),s_0)",
+          "expected": "exp(2*pi*i*11/32)*basis(23,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=12",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(24,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(24,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=12",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(25,32),s_0)",
+          "expected": "exp(2*pi*i*12/32)*basis(25,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=13",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(26,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(26,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=13",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(27,32),s_0)",
+          "expected": "exp(2*pi*i*13/32)*basis(27,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=14",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(28,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(28,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=14",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(29,32),s_0)",
+          "expected": "exp(2*pi*i*14/32)*basis(29,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=0, y=15",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(30,32),s_0)",
+          "expected": "exp(2*pi*i*0/32)*basis(30,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "a=1, y=15",
+          "actual": "sequence([apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0])],basis(31,32),s_0)",
+          "expected": "exp(2*pi*i*15/32)*basis(31,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F13",
+      "file": "QFT_32.svg",
+      "alt": "Quantum circuit diagram for the 32-dimensional quantum Fourier transform",
+      "sha256": "42f01e56839b4bbd1bd70780d6f40d2e784bac201af908ffafd4f38762a7edbf",
+      "checks": [
+        {
+          "case": "Fourier column 0",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(0,32),s_0)",
+          "expected": "qfourier(32)*basis(0,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 1",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(1,32),s_0)",
+          "expected": "qfourier(32)*basis(1,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 2",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(2,32),s_0)",
+          "expected": "qfourier(32)*basis(2,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 3",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(3,32),s_0)",
+          "expected": "qfourier(32)*basis(3,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 4",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(4,32),s_0)",
+          "expected": "qfourier(32)*basis(4,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 5",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(5,32),s_0)",
+          "expected": "qfourier(32)*basis(5,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 6",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(6,32),s_0)",
+          "expected": "qfourier(32)*basis(6,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 7",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(7,32),s_0)",
+          "expected": "qfourier(32)*basis(7,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 8",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(8,32),s_0)",
+          "expected": "qfourier(32)*basis(8,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 9",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(9,32),s_0)",
+          "expected": "qfourier(32)*basis(9,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 10",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(10,32),s_0)",
+          "expected": "qfourier(32)*basis(10,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 11",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(11,32),s_0)",
+          "expected": "qfourier(32)*basis(11,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 12",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(12,32),s_0)",
+          "expected": "qfourier(32)*basis(12,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 13",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(13,32),s_0)",
+          "expected": "qfourier(32)*basis(13,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 14",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(14,32),s_0)",
+          "expected": "qfourier(32)*basis(14,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 15",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(15,32),s_0)",
+          "expected": "qfourier(32)*basis(15,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 16",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(16,32),s_0)",
+          "expected": "qfourier(32)*basis(16,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 17",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(17,32),s_0)",
+          "expected": "qfourier(32)*basis(17,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 18",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(18,32),s_0)",
+          "expected": "qfourier(32)*basis(18,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 19",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(19,32),s_0)",
+          "expected": "qfourier(32)*basis(19,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 20",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(20,32),s_0)",
+          "expected": "qfourier(32)*basis(20,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 21",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(21,32),s_0)",
+          "expected": "qfourier(32)*basis(21,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 22",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(22,32),s_0)",
+          "expected": "qfourier(32)*basis(22,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 23",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(23,32),s_0)",
+          "expected": "qfourier(32)*basis(23,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 24",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(24,32),s_0)",
+          "expected": "qfourier(32)*basis(24,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 25",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(25,32),s_0)",
+          "expected": "qfourier(32)*basis(25,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 26",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(26,32),s_0)",
+          "expected": "qfourier(32)*basis(26,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 27",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(27,32),s_0)",
+          "expected": "qfourier(32)*basis(27,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 28",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(28,32),s_0)",
+          "expected": "qfourier(32)*basis(28,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 29",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(29,32),s_0)",
+          "expected": "qfourier(32)*basis(29,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 30",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(30,32),s_0)",
+          "expected": "qfourier(32)*basis(30,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "Fourier column 31",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2]),apply(SWAP,s_0,[2,1])],basis(31,32),s_0)",
+          "expected": "qfourier(32)*basis(31,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "output permutation matters",
+          "actual": "sequence([apply(qfourier(16),s_0,[0,1,2,3]),apply(CP(pi/16),s_0,[4,3]),apply(CP(pi/8),s_0,[4,2]),apply(CP(pi/4),s_0,[4,1]),apply(CP(pi/2),s_0,[4,0]),apply(H,s_0,[4]),apply(SWAP,s_0,[4,0]),apply(SWAP,s_0,[4,3]),apply(SWAP,s_0,[3,2])],basis(1,32),s_0)",
+          "expected": "qfourier(32)*basis(1,32)",
+          "unequal": true,
+          "norm_difference": 0.541196100146197
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F14",
+      "file": "phase-estimation-procedure.svg",
+      "alt": "Phase estimation procedure",
+      "sha256": "e020bab4e585bbaf1668d2195de555013bb1209a3288b83bcabcdf1446521dc0",
+      "checks": [
+        {
+          "case": "1 bits, phase 0/2",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(P(2*pi*0/2)),s_0,[1,0]),apply(qfourier(2)~,s_0,[1])],basis(2,4),s_0)",
+          "expected": "basis(2,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "1 bits, phase 1/2",
+          "actual": "sequence([apply(H,s_0,[1]),apply(controlled(P(2*pi*1/2)),s_0,[1,0]),apply(qfourier(2)~,s_0,[1])],basis(2,4),s_0)",
+          "expected": "basis(3,4)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "2 bits, phase 0/4",
+          "actual": "sequence([apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*0/4)),s_0,[2,0]),apply(controlled(P(2*pi*0/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(4,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "2 bits, phase 1/4",
+          "actual": "sequence([apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*1/4)),s_0,[2,0]),apply(controlled(P(2*pi*2/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(5,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "2 bits, phase 2/4",
+          "actual": "sequence([apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*2/4)),s_0,[2,0]),apply(controlled(P(2*pi*4/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(6,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "2 bits, phase 3/4",
+          "actual": "sequence([apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*3/4)),s_0,[2,0]),apply(controlled(P(2*pi*6/4)),s_0,[1,0]),apply(qfourier(4)~,s_0,[1,2])],basis(4,8),s_0)",
+          "expected": "basis(7,8)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 0/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*0/8)),s_0,[3,0]),apply(controlled(P(2*pi*0/8)),s_0,[2,0]),apply(controlled(P(2*pi*0/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(8,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 1/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*1/8)),s_0,[3,0]),apply(controlled(P(2*pi*2/8)),s_0,[2,0]),apply(controlled(P(2*pi*4/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(9,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 2/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*2/8)),s_0,[3,0]),apply(controlled(P(2*pi*4/8)),s_0,[2,0]),apply(controlled(P(2*pi*8/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(10,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 3/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*3/8)),s_0,[3,0]),apply(controlled(P(2*pi*6/8)),s_0,[2,0]),apply(controlled(P(2*pi*12/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(11,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 4/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*4/8)),s_0,[3,0]),apply(controlled(P(2*pi*8/8)),s_0,[2,0]),apply(controlled(P(2*pi*16/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(12,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 5/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*5/8)),s_0,[3,0]),apply(controlled(P(2*pi*10/8)),s_0,[2,0]),apply(controlled(P(2*pi*20/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(13,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 6/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*6/8)),s_0,[3,0]),apply(controlled(P(2*pi*12/8)),s_0,[2,0]),apply(controlled(P(2*pi*24/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(14,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "3 bits, phase 7/8",
+          "actual": "sequence([apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*7/8)),s_0,[3,0]),apply(controlled(P(2*pi*14/8)),s_0,[2,0]),apply(controlled(P(2*pi*28/8)),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],basis(8,16),s_0)",
+          "expected": "basis(15,16)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 0/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*0/16)),s_0,[4,0]),apply(controlled(P(2*pi*0/16)),s_0,[3,0]),apply(controlled(P(2*pi*0/16)),s_0,[2,0]),apply(controlled(P(2*pi*0/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(16,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 1/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*1/16)),s_0,[4,0]),apply(controlled(P(2*pi*2/16)),s_0,[3,0]),apply(controlled(P(2*pi*4/16)),s_0,[2,0]),apply(controlled(P(2*pi*8/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(17,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 2/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*2/16)),s_0,[4,0]),apply(controlled(P(2*pi*4/16)),s_0,[3,0]),apply(controlled(P(2*pi*8/16)),s_0,[2,0]),apply(controlled(P(2*pi*16/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(18,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 3/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*3/16)),s_0,[4,0]),apply(controlled(P(2*pi*6/16)),s_0,[3,0]),apply(controlled(P(2*pi*12/16)),s_0,[2,0]),apply(controlled(P(2*pi*24/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(19,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 4/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*4/16)),s_0,[4,0]),apply(controlled(P(2*pi*8/16)),s_0,[3,0]),apply(controlled(P(2*pi*16/16)),s_0,[2,0]),apply(controlled(P(2*pi*32/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(20,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 5/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*5/16)),s_0,[4,0]),apply(controlled(P(2*pi*10/16)),s_0,[3,0]),apply(controlled(P(2*pi*20/16)),s_0,[2,0]),apply(controlled(P(2*pi*40/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(21,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 6/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*6/16)),s_0,[4,0]),apply(controlled(P(2*pi*12/16)),s_0,[3,0]),apply(controlled(P(2*pi*24/16)),s_0,[2,0]),apply(controlled(P(2*pi*48/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(22,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 7/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*7/16)),s_0,[4,0]),apply(controlled(P(2*pi*14/16)),s_0,[3,0]),apply(controlled(P(2*pi*28/16)),s_0,[2,0]),apply(controlled(P(2*pi*56/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(23,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 8/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*8/16)),s_0,[4,0]),apply(controlled(P(2*pi*16/16)),s_0,[3,0]),apply(controlled(P(2*pi*32/16)),s_0,[2,0]),apply(controlled(P(2*pi*64/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(24,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 9/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*9/16)),s_0,[4,0]),apply(controlled(P(2*pi*18/16)),s_0,[3,0]),apply(controlled(P(2*pi*36/16)),s_0,[2,0]),apply(controlled(P(2*pi*72/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(25,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 10/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*10/16)),s_0,[4,0]),apply(controlled(P(2*pi*20/16)),s_0,[3,0]),apply(controlled(P(2*pi*40/16)),s_0,[2,0]),apply(controlled(P(2*pi*80/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(26,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 11/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*11/16)),s_0,[4,0]),apply(controlled(P(2*pi*22/16)),s_0,[3,0]),apply(controlled(P(2*pi*44/16)),s_0,[2,0]),apply(controlled(P(2*pi*88/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(27,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 12/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*12/16)),s_0,[4,0]),apply(controlled(P(2*pi*24/16)),s_0,[3,0]),apply(controlled(P(2*pi*48/16)),s_0,[2,0]),apply(controlled(P(2*pi*96/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(28,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 13/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*13/16)),s_0,[4,0]),apply(controlled(P(2*pi*26/16)),s_0,[3,0]),apply(controlled(P(2*pi*52/16)),s_0,[2,0]),apply(controlled(P(2*pi*104/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(29,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 14/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*14/16)),s_0,[4,0]),apply(controlled(P(2*pi*28/16)),s_0,[3,0]),apply(controlled(P(2*pi*56/16)),s_0,[2,0]),apply(controlled(P(2*pi*112/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(30,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "4 bits, phase 15/16",
+          "actual": "sequence([apply(H,s_0,[4]),apply(H,s_0,[3]),apply(H,s_0,[2]),apply(H,s_0,[1]),apply(controlled(P(2*pi*15/16)),s_0,[4,0]),apply(controlled(P(2*pi*30/16)),s_0,[3,0]),apply(controlled(P(2*pi*60/16)),s_0,[2,0]),apply(controlled(P(2*pi*120/16)),s_0,[1,0]),apply(qfourier(16)~,s_0,[1,2,3,4])],basis(16,32),s_0)",
+          "expected": "basis(31,32)",
+          "unequal": false,
+          "norm_difference": 0.0
+        },
+        {
+          "case": "off-grid phase 3/16, target |->",
+          "actual": "sequence([apply(H,s_0,[1]),apply(H,s_0,[2]),apply(H,s_0,[3]),apply(controlled(H*P(pi*(3/8))*H),s_0,[3,0]),apply(controlled(H*P(pi*(3/4))*H),s_0,[2,0]),apply(controlled(H*P(pi*(3/2))*H),s_0,[1,0]),apply(qfourier(8)~,s_0,[1,2,3])],|-> @ basis(0,8),s_0)",
+          "expected": "|-> @ matrix(8,1,[(0.12499999999999996+(0.18707572033318604)*i),(0.12500000000000003+(0.62841743651573101)*i),(0.12500000000000003+(-0.62841743651573101)*i),(0.12499999999999996+(-0.18707572033318604)*i),(0.12499999999999999+(-0.083522329739912124)*i),(0.12500000000000014+(-0.024864045922456939)*i),(0.12500000000000011+(0.024864045922457029)*i),(0.12499999999999963+(0.083522329739912332)*i)])",
+          "unequal": false,
+          "norm_difference": 6.2815530877776e-16
+        }
+      ]
+    },
+    {
+      "id": "IBM028-F15",
+      "file": "arc-and-chord.svg",
+      "alt": "Illustration of the relationship between arc and chord lengths",
+      "sha256": "5ba09f7537e134d06f1194af83c80b345c0b0100a051e8157996a72583989677",
+      "checks": [
+        {
+          "delta": "-1/2",
+          "chord": 2.0,
+          "arc": 3.141592653589793
+        },
+        {
+          "delta": "-15/32",
+          "chord": 1.9903694533443939,
+          "arc": 2.9452431127404313
+        },
+        {
+          "delta": "-7/16",
+          "chord": 1.9615705608064609,
+          "arc": 2.748893571891069
+        },
+        {
+          "delta": "-13/32",
+          "chord": 1.9138806714644176,
+          "arc": 2.552544031041707
+        },
+        {
+          "delta": "-3/8",
+          "chord": 1.8477590650225735,
+          "arc": 2.356194490192345
+        },
+        {
+          "delta": "-11/32",
+          "chord": 1.76384252869671,
+          "arc": 2.159844949342983
+        },
+        {
+          "delta": "-5/16",
+          "chord": 1.6629392246050905,
+          "arc": 1.9634954084936207
+        },
+        {
+          "delta": "-9/32",
+          "chord": 1.546020906725474,
+          "arc": 1.7671458676442586
+        },
+        {
+          "delta": "-1/4",
+          "chord": 1.4142135623730951,
+          "arc": 1.5707963267948966
+        },
+        {
+          "delta": "-7/32",
+          "chord": 1.268786568327291,
+          "arc": 1.3744467859455345
+        },
+        {
+          "delta": "-3/16",
+          "chord": 1.1111404660392044,
+          "arc": 1.1780972450961724
+        },
+        {
+          "delta": "-5/32",
+          "chord": 0.9427934736519953,
+          "arc": 0.9817477042468103
+        },
+        {
+          "delta": "-1/8",
+          "chord": 0.7653668647301796,
+          "arc": 0.7853981633974483
+        },
+        {
+          "delta": "-3/32",
+          "chord": 0.5805693545089248,
+          "arc": 0.5890486225480862
+        },
+        {
+          "delta": "-1/16",
+          "chord": 0.39018064403225655,
+          "arc": 0.39269908169872414
+        },
+        {
+          "delta": "-1/32",
+          "chord": 0.1960342806591212,
+          "arc": 0.19634954084936207
+        },
+        {
+          "delta": "0",
+          "chord": 0.0,
+          "arc": 0.0
+        },
+        {
+          "delta": "1/32",
+          "chord": 0.1960342806591212,
+          "arc": 0.19634954084936207
+        },
+        {
+          "delta": "1/16",
+          "chord": 0.39018064403225655,
+          "arc": 0.39269908169872414
+        },
+        {
+          "delta": "3/32",
+          "chord": 0.5805693545089248,
+          "arc": 0.5890486225480862
+        },
+        {
+          "delta": "1/8",
+          "chord": 0.7653668647301796,
+          "arc": 0.7853981633974483
+        },
+        {
+          "delta": "5/32",
+          "chord": 0.9427934736519953,
+          "arc": 0.9817477042468103
+        },
+        {
+          "delta": "3/16",
+          "chord": 1.1111404660392044,
+          "arc": 1.1780972450961724
+        },
+        {
+          "delta": "7/32",
+          "chord": 1.268786568327291,
+          "arc": 1.3744467859455345
+        },
+        {
+          "delta": "1/4",
+          "chord": 1.4142135623730951,
+          "arc": 1.5707963267948966
+        },
+        {
+          "delta": "9/32",
+          "chord": 1.546020906725474,
+          "arc": 1.7671458676442586
+        },
+        {
+          "delta": "5/16",
+          "chord": 1.6629392246050905,
+          "arc": 1.9634954084936207
+        },
+        {
+          "delta": "11/32",
+          "chord": 1.76384252869671,
+          "arc": 2.159844949342983
+        },
+        {
+          "delta": "3/8",
+          "chord": 1.8477590650225735,
+          "arc": 2.356194490192345
+        },
+        {
+          "delta": "13/32",
+          "chord": 1.9138806714644176,
+          "arc": 2.552544031041707
+        },
+        {
+          "delta": "7/16",
+          "chord": 1.9615705608064609,
+          "arc": 2.748893571891069
+        },
+        {
+          "delta": "15/32",
+          "chord": 1.9903694533443939,
+          "arc": 2.9452431127404313
+        },
+        {
+          "delta": "1/2",
+          "chord": 2.0,
+          "arc": 3.141592653589793
+        }
+      ],
+      "drawing": {
+        "phase": 0.3472223274756344,
+        "chord": 1.7740231660114998,
+        "arc": 2.181881222412774
+      }
+    }
+  ],
+  "M191": {
+    "source_result": "1",
+    "changed_first_entry_result": "0"
+  }
+}

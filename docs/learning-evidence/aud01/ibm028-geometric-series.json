@@ -1,0 +1,199 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "ids": [
+    "IBM028-2ff07f29-M201",
+    "IBM028-2ff07f29-M329"
+  ],
+  "literal": "$$\n1 + \\alpha + \\alpha^2 + \\cdots + \\alpha^{N-1} =\n\\begin{cases}\n\\frac{\\alpha^N - 1}{\\alpha - 1} & \\text{if } \\alpha\\neq 1\\\\[2mm]\nN & \\text{if } \\alpha=1\n\\end{cases}\n$$",
+  "worker_sha256": "8ef1f57905e1f4d172f4c7c71f5c990f90bfb1a4c4f1b0abb00943c10e425d4f",
+  "display": "geosum('α', N − 1 + 1) = if(qcompare('α', 1, 5), qsub(qpower('α', 'N'), 1) ∕ qsub('α', 1), if(qcompare('α', 1, 4), 'N', undefined))",
+  "copy": "qcompare(qgeometricsum('α',qadd(qsub('N',1),1)),if(qcompare('α',1,5),qsub(qpower('α', 'N'), 1) ∕ qsub('α', 1),if(qcompare('α',1,4),'N',undefined,0),0),4)",
+  "forms": [
+    "display",
+    "copy"
+  ],
+  "cases": [
+    {
+      "ratio": "0",
+      "terms": 1,
+      "expected": "1"
+    },
+    {
+      "ratio": "0",
+      "terms": 2,
+      "expected": "1"
+    },
+    {
+      "ratio": "0",
+      "terms": 5,
+      "expected": "1"
+    },
+    {
+      "ratio": "0",
+      "terms": 8,
+      "expected": "1"
+    },
+    {
+      "ratio": "1",
+      "terms": 1,
+      "expected": "1"
+    },
+    {
+      "ratio": "1",
+      "terms": 2,
+      "expected": "2"
+    },
+    {
+      "ratio": "1",
+      "terms": 5,
+      "expected": "5"
+    },
+    {
+      "ratio": "1",
+      "terms": 8,
+      "expected": "8"
+    },
+    {
+      "ratio": "-1",
+      "terms": 1,
+      "expected": "1"
+    },
+    {
+      "ratio": "-1",
+      "terms": 2,
+      "expected": "0"
+    },
+    {
+      "ratio": "-1",
+      "terms": 5,
+      "expected": "1"
+    },
+    {
+      "ratio": "-1",
+      "terms": 8,
+      "expected": "0"
+    },
+    {
+      "ratio": "2",
+      "terms": 1,
+      "expected": "1"
+    },
+    {
+      "ratio": "2",
+      "terms": 2,
+      "expected": "3"
+    },
+    {
+      "ratio": "2",
+      "terms": 5,
+      "expected": "31"
+    },
+    {
+      "ratio": "2",
+      "terms": 8,
+      "expected": "255"
+    },
+    {
+      "ratio": "-2",
+      "terms": 1,
+      "expected": "1"
+    },
+    {
+      "ratio": "-2",
+      "terms": 2,
+      "expected": "-1"
+    },
+    {
+      "ratio": "-2",
+      "terms": 5,
+      "expected": "11"
+    },
+    {
+      "ratio": "-2",
+      "terms": 8,
+      "expected": "-85"
+    },
+    {
+      "ratio": "1/2",
+      "terms": 1,
+      "expected": "1"
+    },
+    {
+      "ratio": "1/2",
+      "terms": 2,
+      "expected": "3/2"
+    },
+    {
+      "ratio": "1/2",
+      "terms": 5,
+      "expected": "31/16"
+    },
+    {
+      "ratio": "1/2",
+      "terms": 8,
+      "expected": "255/128"
+    },
+    {
+      "ratio": "i",
+      "terms": 1,
+      "expected": "(1)"
+    },
+    {
+      "ratio": "i",
+      "terms": 2,
+      "expected": "(1)+(i)"
+    },
+    {
+      "ratio": "i",
+      "terms": 5,
+      "expected": "(1)+(i)+(-1)+(-i)+(1)"
+    },
+    {
+      "ratio": "i",
+      "terms": 8,
+      "expected": "(1)+(i)+(-1)+(-i)+(1)+(i)+(-1)+(-i)"
+    },
+    {
+      "ratio": "-i",
+      "terms": 1,
+      "expected": "(1)"
+    },
+    {
+      "ratio": "-i",
+      "terms": 2,
+      "expected": "(1)+(-i)"
+    },
+    {
+      "ratio": "-i",
+      "terms": 5,
+      "expected": "(1)+(-i)+(-1)+(i)+(1)"
+    },
+    {
+      "ratio": "-i",
+      "terms": 8,
+      "expected": "(1)+(-i)+(-1)+(i)+(1)+(-i)+(-1)+(i)"
+    }
+  ],
+  "branch_controls": [
+    {
+      "case": "numerator",
+      "ratio": "2",
+      "expected": "0"
+    },
+    {
+      "case": "unit-ratio",
+      "ratio": "1",
+      "expected": "0"
+    },
+    {
+      "case": "numerator-other-branch",
+      "ratio": "1",
+      "expected": "1"
+    },
+    {
+      "case": "unit-ratio-other-branch",
+      "ratio": "2",
+      "expected": "1"
+    }
+  ]
+}

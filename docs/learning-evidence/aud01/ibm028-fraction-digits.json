@@ -1,0 +1,39 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "aface5022403ca1ed796e2edb01cf873019b792d897ffb9d4c3e96b9e9869600",
+  "mode": "Binary fraction digits",
+  "rows": [
+    {
+      "id": "IBM028-2ff07f29-M111",
+      "literal": "$00$",
+      "with_radix_point": ".$00$",
+      "value": "0",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM028-2ff07f29-M112",
+      "literal": "$01$",
+      "with_radix_point": ".$01$",
+      "value": "1/4",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    },
+    {
+      "id": "IBM028-2ff07f29-M113",
+      "literal": "$10$",
+      "with_radix_point": ".$10$",
+      "value": "1/2",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM028-2ff07f29-M114",
+      "literal": "$11$",
+      "with_radix_point": ".$11$",
+      "value": "3/4",
+      "display": "0.75",
+      "copy": "3 ∕ 4"
+    }
+  ]
+}

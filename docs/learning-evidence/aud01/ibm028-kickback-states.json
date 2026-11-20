@@ -1,0 +1,155 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
+  "worker_sha256": "204a92164cc93be03394f97e32c7bf16cbc1b517223ddd2f7eac7e81a757b16c",
+  "forms": [
+    "display",
+    "copy"
+  ],
+  "rows": [
+    {
+      "id": "IBM028-2ff07f29-M014",
+      "literal": "$$\n\\vert\\pi_0\\rangle = \\vert\\psi\\rangle \\vert 0\\rangle\n$$",
+      "display": "|pi_0⟩ = |ψ⟩ ⊗ [1; 0]",
+      "copy": "qcompare(qketstate(\"pi_0\"),qtensor(qnamedket('ψ'),matrix(2,1,vector(1,0))),4)",
+      "samples": [
+        {
+          "gate": "S",
+          "target": "|1>",
+          "phase": "1/4",
+          "expected_state": "|1> @ |0>",
+          "rejected_state": "|00>"
+        },
+        {
+          "gate": "X",
+          "target": "|->",
+          "phase": "1/2",
+          "expected_state": "|-> @ |0>",
+          "rejected_state": "|11>"
+        },
+        {
+          "gate": "Z",
+          "target": "|0>",
+          "phase": "0",
+          "expected_state": "|0> @ |0>",
+          "rejected_state": "|11>"
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M015",
+      "literal": "$$\n\\vert\\pi_1\\rangle = \\vert\\psi\\rangle \\vert +\\rangle\n= \\frac{1}{\\sqrt{2}} \\vert\\psi\\rangle \\vert 0\\rangle + \\frac{1}{\\sqrt{2}} \\vert\\psi\\rangle \\vert 1\\rangle.\n$$",
+      "display": "|pi_1⟩ = |ψ⟩ ⊗ [1; 1] / √(2) = 1 / √(2) · (|ψ⟩ ⊗ [1; 0]) + 1 / √(2) · (|ψ⟩ ⊗ [0; 1])",
+      "copy": "qequalchain(vector(qketstate(\"pi_1\"),qtensor(qnamedket('ψ'),(1 ∕ √(2))*(matrix(2,1,vector(1,1)))),qadd(qadjacent(1 ∕ qsqrt(2),qtensor(qnamedket('ψ'),matrix(2,1,vector(1,0)))),qadjacent(1 ∕ qsqrt(2),qtensor(qnamedket('ψ'),matrix(2,1,vector(0,1)))))))",
+      "samples": [
+        {
+          "gate": "S",
+          "target": "|1>",
+          "phase": "1/4",
+          "expected_state": "|1> @ |+>",
+          "rejected_state": "|00>"
+        },
+        {
+          "gate": "X",
+          "target": "|->",
+          "phase": "1/2",
+          "expected_state": "|-> @ |+>",
+          "rejected_state": "|11>"
+        },
+        {
+          "gate": "Z",
+          "target": "|0>",
+          "phase": "0",
+          "expected_state": "|0> @ |+>",
+          "rejected_state": "|11>"
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M017",
+      "literal": "$$\n\\vert\\pi_2\\rangle\n= \\frac{1}{\\sqrt{2}} \\vert\\psi\\rangle \\vert 0\\rangle + \\frac{1}{\\sqrt{2}} \\bigl(U \\vert\\psi\\rangle\\bigr) \\vert 1\\rangle.\n$$",
+      "display": "|pi_2⟩ = 1 / √(2) · (|ψ⟩ ⊗ [1; 0]) + (1 / √(2) · U |ψ⟩) ([0; 1])",
+      "copy": "qcompare(qketstate(\"pi_2\"),qadd(qadjacent(1 ∕ qsqrt(2),qtensor(qnamedket('ψ'),matrix(2,1,vector(1,0)))),qadjacent(qadjacent(1 ∕ qsqrt(2),qadjacent('U',qnamedket('ψ'))),matrix(2,1,vector(0,1)))),4)",
+      "samples": [
+        {
+          "gate": "S",
+          "target": "|1>",
+          "phase": "1/4",
+          "expected_state": "|1> @ |+i>",
+          "rejected_state": "|00>"
+        },
+        {
+          "gate": "X",
+          "target": "|->",
+          "phase": "1/2",
+          "expected_state": "|-> @ |->",
+          "rejected_state": "|11>"
+        },
+        {
+          "gate": "Z",
+          "target": "|0>",
+          "phase": "0",
+          "expected_state": "|0> @ |+>",
+          "rejected_state": "|11>"
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M021",
+      "literal": "$$\n\\vert\\pi_2\\rangle\n= \\frac{1}{\\sqrt{2}} \\vert\\psi\\rangle \\vert 0\\rangle + \\frac{e^{2\\pi i \\theta}}{\\sqrt{2}} \\vert\\psi\\rangle \\vert 1\\rangle = \\vert\\psi\\rangle \\otimes \\left( \\frac{1}{\\sqrt{2}} \\vert 0\\rangle + \\frac{e^{2\\pi i \\theta}}{\\sqrt{2}} \\vert 1\\rangle\\right)\n$$",
+      "display": "|pi_2⟩ = 1 / √(2) · (|ψ⟩ ⊗ [1; 0]) + e^(2 · π · i · 'θ') / √(2) · (|ψ⟩ ⊗ [0; 1]) = |ψ⟩ ⊗ ((1 / √(2)) ([1; 0]) + (e^(2 · π · i · 'θ') / √(2)) ([0; 1]))",
+      "copy": "qequalchain(vector(qketstate(\"pi_2\"),qadd(qadjacent(1 ∕ qsqrt(2),qtensor(qnamedket('ψ'),matrix(2,1,vector(1,0)))),qadjacent(qpower(e, qadjacent(qadjacent(qadjacent(2, π), i), 'θ')) ∕ qsqrt(2),qtensor(qnamedket('ψ'),matrix(2,1,vector(0,1))))),qtensor(qnamedket('ψ'),qadd(qadjacent(1 ∕ qsqrt(2),matrix(2,1,vector(1,0))),qadjacent(qpower(e, qadjacent(qadjacent(qadjacent(2, π), i), 'θ')) ∕ qsqrt(2),matrix(2,1,vector(0,1)))))))",
+      "samples": [
+        {
+          "gate": "S",
+          "target": "|1>",
+          "phase": "1/4",
+          "expected_state": "|1> @ |+i>",
+          "rejected_state": "|00>"
+        },
+        {
+          "gate": "X",
+          "target": "|->",
+          "phase": "1/2",
+          "expected_state": "|-> @ |->",
+          "rejected_state": "|11>"
+        },
+        {
+          "gate": "Z",
+          "target": "|0>",
+          "phase": "0",
+          "expected_state": "|0> @ |+>",
+          "rejected_state": "|11>"
+        }
+      ]
+    },
+    {
+      "id": "IBM028-2ff07f29-M022",
+      "literal": "$$\n\\vert\\pi_3\\rangle\n= \\vert\\psi\\rangle \\otimes \\left( \\frac{1+ e^{2\\pi i \\theta}}{2} \\vert 0\\rangle + \\frac{1 - e^{2\\pi i \\theta}}{2} \\vert 1\\rangle\\right)\n$$",
+      "display": "|pi_3⟩ = |ψ⟩ ⊗ ((0.5 · (1 + e^(2 · π · i · 'θ'))) ([1; 0]) + (0.5 · (1 − e^(2 · π · i · 'θ'))) ([0; 1]))",
+      "copy": "qcompare(qketstate(\"pi_3\"),qtensor(qnamedket('ψ'),qadd(qadjacent(qadd(1, qpower(e, qadjacent(qadjacent(qadjacent(2, π), i), 'θ'))) ∕ 2,matrix(2,1,vector(1,0))),qadjacent(qsub(1, qpower(e, qadjacent(qadjacent(qadjacent(2, π), i), 'θ'))) ∕ 2,matrix(2,1,vector(0,1))))),4)",
+      "samples": [
+        {
+          "gate": "S",
+          "target": "|1>",
+          "phase": "1/4",
+          "expected_state": "|1> @ (H|+i>)",
+          "rejected_state": "|00>"
+        },
+        {
+          "gate": "X",
+          "target": "|->",
+          "phase": "1/2",
+          "expected_state": "|-> @ (H|->)",
+          "rejected_state": "|11>"
+        },
+        {
+          "gate": "Z",
+          "target": "|0>",
+          "phase": "0",
+          "expected_state": "|0> @ (H|+>)",
+          "rejected_state": "|11>"
+        }
+      ]
+    }
+  ]
+}

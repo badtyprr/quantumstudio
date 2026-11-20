@@ -230,7 +230,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qstateaction",2},{"qcheckaction",2},{"qdecimalmatch",4},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -248,7 +248,8 @@ const std::map<std::string,int> quantumSignatures = {
  {"qcssgenerators",2},
  {"qcssstate",3},
  {"qcssencoder",2},
- {"qbitvalue",1},
+ {"qbitvalue",1},{"qbinaryfraction",3},{"qbinarytail",2},
+ {"qbitword",1},
  {"qbloch",1},
  {"qblochsub",2},
  {"qpovm",2},
@@ -309,6 +310,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qhellingerfidelity",2},
  {"qhellingerdistance",2},
  {"qfourier",1},
+ {"qgeometricsum",2},
  {"qft",1},
  {"qindexedchannel",3},
  {"qjx",1},
@@ -338,10 +340,10 @@ const std::map<std::string,int> quantumSignatures = {
  {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -717,8 +719,8 @@ class Parser {
    need(',');
   } while(true);
  }
- bool setOperatorAhead() const {return s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool setOperatorAhead() const {return s.compare(p,3,"↦")==0 || s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -1283,6 +1285,7 @@ class Parser {
     a=binaryNumeral(a);ws();
     if(p<s.size() && (s[p]=='_' || s.compare(p,std::string("₂").size(),"₂")==0))throw std::runtime_error("A binary numeral cannot have a second radix subscript.");
    }
+   if(a=="qtexpercent")throw std::runtime_error("A percentage requires a preceding value.");
    if(a=="iff" || a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
    // A scalar prefix is its own token so powers/daggers bind to the gate:
    // iY^2 means i*(Y^2), while (iY)^2 squares the entire product.
@@ -1315,6 +1318,10 @@ class Parser {
      for(char &axis:axes) axis=std::tolower((unsigned char)axis);
      if(axes=="x" || axes=="y" || axes=="z" || axes=="xx" || axes=="yy" || axes=="zz" || axes=="zx") name="R"+axes;
     }
+    if(name=="checkaction")name="qcheckaction";
+    if(name=="binarytail")name="qbinarytail";
+    if(name=="binaryfraction")name="qbinaryfraction";
+    if(name=="basislist")name="qbasiskets";
     if(name=="matrix")name="qmatrix";
     if(name=="identity")name="qidentity";
     if(name=="tr" || name=="Tr" || name=="trace") name="qtrace";
@@ -1344,6 +1351,8 @@ class Parser {
     if(name=="css_state")name="qcssstate";
     if(name=="css_encoder")name="qcssencoder";
     if(name=="bitvalue")name="qbitvalue";
+    if(name=="bitword")name="qbitword";
+    if(name=="geosum")name="qgeometricsum";
     if(name=="density") name="qdensity";
     if(name=="bloch") name="qbloch";
     if(name=="povm" || name=="instrument" || name=="measurementvalid" || name=="outcomelabels" || name=="effects" || name=="ensemble" || name=="ensembleaverage" || name=="ensemblevalid" || name=="probabilities" || name=="branches" || name=="poststate" || name=="naimark")name="q"+name;
@@ -1800,6 +1809,9 @@ class Parser {
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
+    // An unsized Fourier transform names the operator family. A subscript
+    // supplies its dimension and a QFT(...) call supplies its qubit count.
+    else if(a=="QFT")a=indexableLabel(a);
     // Keep lexical constants distinct from constants introduced by gate
     // expansion. An explicit local binder may rename only the former.
     else if(a=="i" || a=="e" || a=="pi")a=std::string(1,constantMarkerBegin)+a+constantMarkerEnd;
@@ -1849,9 +1861,15 @@ class Parser {
   }
   return false;
  }
- std::string power() {
+ void percentSuffix(std::string &value) {
+  while(takeWord("qtexpercent")) {
+   value="("+value+"/100)";checkSize(value);
+  }
+ }
+ std::string power(bool allowPercent) {
   ws();size_t baseStart=p;
   auto a=atom();int kind=diracKind;
+  if(allowPercent)percentSuffix(a);
   bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
   if(take('^')) {
    kind=0;
@@ -1864,16 +1882,16 @@ class Parser {
     a="qcontrol("+gate+","+controls+",(2^("+controls+")-1))";
     while(take('~')) a="qdag("+a+")";
    }
-   else if(take('@')) a="qtensorpow("+a+","+unary()+")";
+   else if(take('@')) a="qtensorpow("+a+","+unary(false)+")";
    else if(take('%')) {
     need('('); std::string indices=expression(); while(take(',')) indices+=","+expression(); need(')');
     a="qptranspose("+a+",vector("+indices+"))";
    }
    else if(take('`') || takeWord("T")) a="qtranspose("+a+")";
    else if(take('*')) a="qconj("+a+")";
-   else if(a=="e") a="qexp("+unary()+")";
+   else if(a=="e") a="qexp("+unary(false)+")";
    else {
-    std::string exponent=unary();
+    std::string exponent=unary(false);
     ws();size_t start=p;
     bool inverse=a.size()==1 && a[0]>='a' && a[0]<='z' &&
                  (exponent=="(-1)" || exponent=="((-1))");
@@ -1900,15 +1918,17 @@ class Parser {
     }
    }
   }
+  if(allowPercent)percentSuffix(a);
   diracKind=kind;checkSize(a);return a;
  }
- std::string unary() {
+ std::string unary(bool allowPercent=true) {
   if(++depth>256)throw std::runtime_error("Quantum expression nesting exceeds 256.");
   std::string a;ws();unsigned root=radical();
-  if(root) {p+=3;a="qpower("+unary()+",1/"+std::to_string(root)+")";diracKind=0;}
-  else if(take('+'))a=unary();
-  else if(take('-'))a="(-"+unary()+")";
-  else a=power();
+  if(root) {p+=3;a="qpower("+unary(allowPercent)+",1/"+std::to_string(root)+")";diracKind=0;}
+  else if(takeSetOperator("±"))throw std::runtime_error("A plus-minus sign requires an equality with two alternatives.");
+  else if(take('+'))a=unary(allowPercent);
+  else if(take('-'))a="(-"+unary(allowPercent)+")";
+  else a=power(allowPercent);
   --depth;checkSize(a);return a;
  }
  std::string diracFactor() {
@@ -1967,8 +1987,7 @@ class Parser {
    checkSize(a);
   } return a;
  }
- std::string additive() {
-  auto a=product();
+ std::string additiveTail(std::string a) {
   while(true) {
    if(take('+')) {auto b=product();a=spinContext ? "qspinadd("+a+","+b+")" : "qadd("+a+","+b+")";}
    else if(take('-')) {auto b=product();a=spinContext ? "qspinadd("+a+",(-"+b+"))" : "qsub("+a+","+b+")";}
@@ -1977,6 +1996,7 @@ class Parser {
   }
   return a;
  }
+ std::string additive() {return additiveTail(product());}
  bool takeSetOperator(const std::string &token) {
   ws();if(s.compare(p,token.size(),token)!=0)return false;p+=token.size();return true;
  }
@@ -2034,9 +2054,40 @@ class Parser {
   builder=graphCalls(builder,std::string(1,name));
  }
  std::string takeComparisonRelation() {
-  for(const char *token:{"∈","∉","<=",">=","!=","==","=","<",">"})
+  for(const char *token:{"≈","∈","∉","<=",">=","!=","==","=","<",">"})
    if(takeSetOperator(token))return token;
   return "";
+ }
+ // Read the printed decimal places before evaluation removes trailing zeros.
+ static int decimalPlaces(const std::string &text,size_t &at) {
+  size_t start=at;
+  while(at<text.size() && std::isdigit((unsigned char)text[at]))++at;
+  bool integer=at!=start;
+  if(at==text.size() || text[at]!='.')return integer ? 0 : -1;
+  start=++at;
+  while(at<text.size() && std::isdigit((unsigned char)text[at]))++at;
+  return at>start && at-start<=100 ? int(at-start) : -1;
+ }
+ static std::string decimalMatch(const std::string &left,const std::string &right,const std::string &source) {
+  std::string text;
+  bool gap=false;
+  for(unsigned char c:source) {
+   if(std::isspace(c)) {gap=true;continue;}
+   if(gap && !text.empty() && (std::isdigit(c) || c=='.') &&
+      (std::isdigit((unsigned char)text.back()) || text.back()=='.'))
+    throw std::runtime_error("A reported decimal must be a single numeric literal.");
+   text+=c;gap=false;
+  }
+  size_t at=0;
+  if(at<text.size() && (text[at]=='+' || text[at]=='-'))++at;
+  int real=decimalPlaces(text,at),imag=-1;
+  if(real>=0 && at<text.size() && (text[at]=='+' || text[at]=='-')) {
+   ++at;imag=decimalPlaces(text,at);
+   if(imag<0 || text.substr(at)!="i")real=-1;
+   else ++at;
+  }
+  if(real<0 || at!=text.size())throw std::runtime_error("Approximate equality requires a printed real decimal or a pair of decimal components a + b i.");
+  return "qdecimalmatch("+left+","+right+","+std::to_string(real)+","+std::to_string(imag)+")";
  }
  static int comparisonKind(const std::string &relation) {
   return relation=="<" ? 0 : relation==">" ? 1 : relation=="<=" ? 2 : relation==">=" ? 3 : relation=="!=" ? 5 : 4;
@@ -2172,11 +2223,24 @@ class Parser {
    if(relation.empty())break;
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
-   std::string right;
-   if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
+   size_t rightStart=p;std::string right;
+   const bool equality=relation=="=" || relation=="==";
+   const bool leadingSign=equality && takeSetOperator("±");
+   if(leadingSign)right="0";
+   else if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
    } else right=comparisonOperand();
+   if(leadingSign || (equality && takeSetOperator("±"))) {
+    if(!result.empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
+    std::string magnitude=product();
+    // In a ± b + c the trailing c belongs to both alternatives.
+    std::string center=additiveTail(right);
+    std::string pair=center=="0" ? magnitude+",(-"+magnitude+")" : "qadd("+center+","+magnitude+"),qsub("+center+","+magnitude+")";
+    result="qmember("+left+",qset(vector("+pair+")))";checkSize(result);
+    if(!takeComparisonRelation().empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
+    return result;
+   }
    // In a quantified index declaration, j = 1,...,N lists the allowed
    // integers. Commas separating ordinary function arguments stay local.
    if(allowSharedOperands && relation=="=" && left.size()==1 && std::isalpha((unsigned char)left[0]) &&
@@ -2201,6 +2265,7 @@ class Parser {
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
+   if(relation=="≈")clause=decimalMatch(left,right,s.substr(rightStart,p-rightStart));
    if(allowSharedOperands && kind<4 && take(','))clause=sharedBounds(left,kind,right);
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
@@ -2281,6 +2346,10 @@ class Parser {
    std::string domain=setUnion();
    if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
    result="qfunctiontype("+result+","+domain+","+setUnion()+")";checkSize(result);
+  }
+  if(takeSetOperator("↦")) {
+   std::string image=logicalOr(false);
+   result="qstateaction("+result+","+image+")";checkSize(result);
   }
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);
