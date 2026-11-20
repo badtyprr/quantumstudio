@@ -1,5 +1,7 @@
 """Verify lesson equations against independent values using the three Windows text forms."""
 import argparse
+from functools import lru_cache
+from ibm028_lesson_cases import check_lesson, check_structured
 from fractions import Fraction
 import hashlib
 import json
@@ -27,6 +29,7 @@ def bound_forms(key, bindings):
         yield form, expr
 
 
+@lru_cache(maxsize=4096)
 def exact(expression):
     proc = subprocess.run([worker, "--json"], input=("quantum:" + expression).encode(),
                           env=env, timeout=30, capture_output=True, check=True)
@@ -201,6 +204,9 @@ for row in inventory["rows"]:
             assert exact(test) == "1", (row["id"], form, test)
             evaluated_simple.add(test)
 
+check_lesson(verify)
+
+structured = check_structured(inventory, records, exact)
 report = dict(source=inventory["source"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
-              forms=["Windows display", "Windows Copy", "Windows Copy after re-entry"], checks=checks, repeated_expressions=simple_rows)
+              forms=["Windows display", "Windows Copy", "Windows Copy after re-entry"], checks=checks, structured=structured, repeated_expressions=simple_rows)
 args.output.write_bytes((json.dumps(report, indent=2, ensure_ascii=False) + "\n").encode())
