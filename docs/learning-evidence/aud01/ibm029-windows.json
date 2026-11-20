@@ -1,0 +1,214 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "e5187297192b13cb991e5755a34226b0d5a144b04eebaededdfdbf3a031fbf1c",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "63c95212212345c2b5881f1704c7c947a600b027a56af563f32f7f6adda79368",
+  "suite": {
+    "passed": true,
+    "checks": 4575,
+    "calls": 438,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "counts": {
+    "source_exact": 411,
+    "restored_identically": 411,
+    "exact_after_reentry": 411,
+    "stable_copy_text": 395,
+    "source_diagnostic": 27
+  },
+  "diagnostics": [
+    {
+      "id": "IBM029-9ea5aee3-M018",
+      "message": "Unsupported TeX command: \\equiv at byte 18"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M022",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M037",
+      "message": "Unsupported TeX command: \\text at byte 21"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M045",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M051",
+      "message": "Unsupported TeX command: \\equiv at byte 11"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M052",
+      "message": "Unsupported TeX command: \\textrm at byte 9"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M061",
+      "message": "Unsupported TeX command: \\text at byte 52"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M067",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M068",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M070",
+      "message": "Finite index ranges require integer endpoints."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M092",
+      "message": "Unsupported TeX command: \\cdots at byte 73"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M098",
+      "message": "Unsupported TeX command: \\cdots at byte 59"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M107",
+      "message": "Unsupported TeX command: \\cdots at byte 87"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M141",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M144",
+      "message": "Unsupported TeX command: \\textrm at byte 57"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M152",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M153",
+      "message": "Unsupported TeX command: \\textrm at byte 48"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M157",
+      "message": "Scalar XOR requires nonnegative integer operands.\nA computational basis index must be a nonnegative integer.\nA state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M162",
+      "message": "Unsupported TeX command: \\stackrel at byte 45"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M180",
+      "message": "Unsupported TeX command: \\ldots at byte 17"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M266",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M357",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M362",
+      "message": "Expected a shared set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M374",
+      "message": "Expected a shared set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M424",
+      "message": "Unsupported TeX command: \\textrm at byte 24"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M425",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M427",
+      "message": "Unsupported TeX command: \\textrm at byte 16"
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM029-9ea5aee3-M027",
+      "first": "qcompare(qunitsmod('N'),qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),qresidues('N'),\"qboundindex_0\"),4)",
+      "second": "qcompare(qunitsmod('N'),qsetfilter(qcompare(qintegergcd(\"qboundindex_1\",'N'),1,4),qresidues('N'),\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M108",
+      "first": "qcompare(qketstate(\"ψ_1\"),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_0\",−1)),qcomputationalket(qpower('a',\"qboundindex_0\"))),0,qsub('r',1),\"qboundindex_0\")),4)",
+      "second": "qcompare(qketstate(\"ψ_1\"),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_1\",−1)),qcomputationalket(qpower('a',\"qboundindex_1\"))),0,qsub('r',1),\"qboundindex_1\")),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M113",
+      "first": "qequalchain(vector(qadjacent(\"M_a\",qnamedket(\"ψ_1\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_0\",−1)),\"M_a\"),qcomputationalket(qpower('a',\"qboundindex_0\"))),0,qsub('r',1),\"qboundindex_0\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_1\",−1)),qcomputationalket(qpower('a',qadd(\"qboundindex_1\",1)))),0,qsub('r',1),\"qboundindex_1\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(−1,qsub(\"qboundindex_2\",1))),qcomputationalket(qpower('a',\"qboundindex_2\"))),1,'r',\"qboundindex_2\")),qadjacent(qadjacent(1 ∕ qsqrt('r'),\"ω_r\"),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_3\",−1)),qcomputationalket(qpower('a',\"qboundindex_3\"))),1,'r',\"qboundindex_3\"))))",
+      "second": "qequalchain(vector(qadjacent(\"M_a\",qnamedket(\"ψ_1\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_4\",−1)),\"M_a\"),qcomputationalket(qpower('a',\"qboundindex_4\"))),0,qsub('r',1),\"qboundindex_4\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_5\",−1)),qcomputationalket(qpower('a',qadd(\"qboundindex_5\",1)))),0,qsub('r',1),\"qboundindex_5\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(−1,qsub(\"qboundindex_6\",1))),qcomputationalket(qpower('a',\"qboundindex_6\"))),1,'r',\"qboundindex_6\")),qadjacent(qadjacent(1 ∕ qsqrt('r'),\"ω_r\"),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_7\",−1)),qcomputationalket(qpower('a',\"qboundindex_7\"))),1,'r',\"qboundindex_7\"))))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M116",
+      "first": "qequalchain(vector(qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_0\",−1)),qcomputationalket(qpower('a',\"qboundindex_0\"))),1,'r',\"qboundindex_0\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_1\",−1)),qcomputationalket(qpower('a',\"qboundindex_1\"))),0,qsub('r',1),\"qboundindex_1\")),qketstate(\"ψ_1\")))",
+      "second": "qequalchain(vector(qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_2\",−1)),qcomputationalket(qpower('a',\"qboundindex_2\"))),1,'r',\"qboundindex_2\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_3\",−1)),qcomputationalket(qpower('a',\"qboundindex_3\"))),0,qsub('r',1),\"qboundindex_3\")),qketstate(\"ψ_1\")))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M120",
+      "first": "qcompare(qketstate(\"ψ_j\"),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(−1,qmul('j',\"qboundindex_0\"))),qcomputationalket(qpower('a',\"qboundindex_0\"))),0,qsub('r',1),\"qboundindex_0\")),4)",
+      "second": "qcompare(qketstate(\"ψ_j\"),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(−1,qmul('j',\"qboundindex_1\"))),qcomputationalket(qpower('a',\"qboundindex_1\"))),0,qsub('r',1),\"qboundindex_1\")),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M234",
+      "first": "qcompare(qbars(qsub(y ∕ qpower(2, 'm'),1 ∕ 'r')),1 ∕ qadjacent(2, qadd('r', 1) ⋅ 'r'),0)",
+      "second": "qcompare(qbars(qsub(y ∕ qpower(2, 'm'),1 ∕ 'r')),1 ∕ qadjacent(2, qmul(qadd('r', 1), 'r')),0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M243",
+      "first": "((('r')<(0) and ('r')>(−1) and ('r'² + 'r')<(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))<(0)) or (('r')<(0) and ('r')>(−1) and ('r'² + 'r')>(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))>(0)) or (('r')<(−1) and ('r'² + 'r')<(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))>(0)) or (('r')<(−1) and ('r'² + 'r')>(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))<(0)) or (('r')<(−1) and (qbars('ε'))==(0)) or (('r')>(0) and ('r'² + 'r')<(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))>(0)) or (('r')>(0) and ('r'² + 'r')>(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))<(0)) or (('r')>(0) and (qbars('ε'))==(0)))",
+      "second": "((('r')<(0) and ('r')>(−1) and ('r'² + 'r')<(1 ∕ qmul(2, qbars('ε'))) and (qbars('ε'))<(0)) or (('r')<(0) and ('r')>(−1) and ('r'² + 'r')>(1 ∕ qmul(2, qbars('ε'))) and (qbars('ε'))>(0)) or (('r')<(−1) and ('r'² + 'r')<(1 ∕ qmul(2, qbars('ε'))) and (qbars('ε'))>(0)) or (('r')<(−1) and ('r'² + 'r')>(1 ∕ qmul(2, qbars('ε'))) and (qbars('ε'))<(0)) or (('r')<(−1) and (qbars('ε'))==(0)) or (('r')>(0) and ('r'² + 'r')<(1 ∕ qmul(2, qbars('ε'))) and (qbars('ε'))>(0)) or (('r')>(0) and ('r'² + 'r')>(1 ∕ qmul(2, qbars('ε'))) and (qbars('ε'))<(0)) or (('r')>(0) and (qbars('ε'))==(0)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M246",
+      "first": "((('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)<=(−1) and ('r')<(−1 ∕ 'ε') and ('r')>=(0) and ('ε')>(0)) or (('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)<=(−1) and ('r')>(−1 ∕ 'ε') and ('r')>=(0) and ('ε')<(0)) or (('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)>=(−1) and ('r')<(−1 ∕ 'ε') and ('r')<=(0) and ('r')>(−1 ∕ 2) and ('ε')>(0)) or (('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)>=(−1) and ('r')<=(0) and ('r')>(−1 ∕ 'ε') and ('r')>(−1 ∕ 2) and ('ε')<(0)) or (('r')<(−1 ∕ 'ε') and ('r')<=(0) and ('r')>(−1 ∕ 2) and ('ε')<(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')>=(1)) or (('r')<(−1 ∕ 'ε') and ('r')>=(0) and ('ε')<(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')<=(1)) or (('r')<=(0) and ('r')>(−1 ∕ 'ε') and ('r')>(−1 ∕ 2) and ('ε')>(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')>=(1)) or (('r')>(−1 ∕ 'ε') and ('r')>=(0) and ('ε')>(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')<=(1)) or (('r')>=(0) and ('ε')==(0)))",
+      "second": "((('r')<(−1 ∕ 'ε') and ('r')<=(0) and ('r')>(−1 ∕ 2) and ('ε')<(0) and (qsub(qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε')),qmul('r','ε')))>=(1)) or (('r')<(−1 ∕ 'ε') and ('r')<=(0) and ('r')>(−1 ∕ 2) and ('ε')>(0) and (qadd(qmul('r','ε'),qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε'))))>=(−1)) or (('r')<(−1 ∕ 'ε') and ('r')>=(0) and ('ε')<(0) and (qsub(qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε')),qmul('r','ε')))<=(1)) or (('r')<(−1 ∕ 'ε') and ('r')>=(0) and ('ε')>(0) and (qadd(qmul('r','ε'),qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε'))))<=(−1)) or (('r')<=(0) and ('r')>(−1 ∕ 'ε') and ('r')>(−1 ∕ 2) and ('ε')<(0) and (qadd(qmul('r','ε'),qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε'))))>=(−1)) or (('r')<=(0) and ('r')>(−1 ∕ 'ε') and ('r')>(−1 ∕ 2) and ('ε')>(0) and (qsub(qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε')),qmul('r','ε')))>=(1)) or (('r')>(−1 ∕ 'ε') and ('r')>=(0) and ('ε')<(0) and (qadd(qmul('r','ε'),qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε'))))<=(−1)) or (('r')>(−1 ∕ 'ε') and ('r')>=(0) and ('ε')>(0) and (qsub(qmul(qadd(qmul(2,qpower('r',2)),'r'),qbars('ε')),qmul('r','ε')))<=(1)) or (('r')>=(0) and ('ε')==(0)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M282",
+      "first": "((('N')!=(0) and ('N')<(√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('N')>(−√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('v')!=(0)) or (('N')!=(0) and ('u')==('v''α') and ('v')!=(0)))",
+      "second": "((('N')!=(0) and ('N')<(√(qbars('v')) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('N')>(−√(qbars('v')) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('v')!=(0)) or (('N')!=(0) and ('u')==('v''α') and ('v')!=(0)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M331",
+      "first": "((matrix(2,1,[0,−1]))+ (qadjacent(1 ∕ qsqrt('r'),qsum(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),0,qsub('r',1),\"qboundindex_0\"))))==(0)",
+      "second": "(qadd(matrix(2,1,vector(0,−1)),qadjacent(1 ∕ qsqrt('r'),qsum(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")),0,qsub('r',1),\"qboundindex_1\"))))==(0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M336",
+      "first": "qadjacent(1 ∕ qsqrt('r'),qsum(qtensor(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),qindexedket(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"))),0,qsub('r',1),\"qboundindex_0\"))",
+      "second": "qadjacent(1 ∕ qsqrt('r'),qsum(qtensor(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")),qindexedket(qindexedlabel(\"γ_\",\"qboundindex_1\",\"\"))),0,qsub('r',1),\"qboundindex_1\"))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M337",
+      "first": "qcompare(qketstate(\"γ_k\"),qadjacent(1 ∕ qpower(2, 'm'),qsum(qsum(qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),qsub('k' ∕ 'r', \"qboundindex_1\" ∕ qpower(2, 'm')) ⋅ \"qboundindex_0\")),qketstate(\"qboundindex_1\")),0,qsub(qpower(2,'m'),1),\"qboundindex_0\"),0,qsub(qpower(2,'m'),1),\"qboundindex_1\")),4)",
+      "second": "qcompare(qketstate(\"γ_k\"),qadjacent(1 ∕ qpower(2, 'm'),qsum(qsum(qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),qmul(qsub('k' ∕ 'r',\"qboundindex_3\" ∕ qpower(2, 'm')),\"qboundindex_2\"))),qketstate(\"qboundindex_3\")),0,qsub(qpower(2,'m'),1),\"qboundindex_2\"),0,qsub(qpower(2,'m'),1),\"qboundindex_3\")),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M363",
+      "first": "('N')==((149896229 ∕ 500000) ⋅ 'b' km ∕ ms)",
+      "second": "('N')==((149896229 ⋅ 'b' ⋅ 'k') ∕ (500000 ⋅ 's'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M369",
+      "first": "(149896229 ∕ 500000) km ∕ ms",
+      "second": "(149896229 ⋅ 'k') ∕ (500000 ⋅ 's')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M388",
+      "first": "(('N')==((149896229 ∕ 500000) ⋅ 'd' km ∕ ms) and ('d')!=(0))",
+      "second": "(('N')==((149896229 ⋅ 'd' ⋅ 'k') ∕ (500000 ⋅ 's')) and ('d')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M399",
+      "first": "(('N')==((149896229 ∕ 500000) ⋅ 'd' km ∕ ms) and ('d')!=(0))",
+      "second": "(('N')==((149896229 ⋅ 'd' ⋅ 'k') ∕ (500000 ⋅ 's')) and ('d')!=(0))"
+    }
+  ],
+  "failures": []
+}
