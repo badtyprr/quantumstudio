@@ -1,9 +1,17 @@
 {
+  "checked_rows": [
+    "IBM028-2ff07f29-M118",
+    "IBM028-2ff07f29-M119",
+    "IBM028-2ff07f29-M123",
+    "IBM028-2ff07f29-M128",
+    "IBM028-2ff07f29-M130",
+    "IBM028-2ff07f29-M133"
+  ],
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
-  "worker_sha256": "6912d0d6ef764966f7b642958e26b63d94ecdbe3fc6ac10a9f0f3af29c2bc1e7",
+  "worker_sha256": "16d47e5f65217a52f29f52062fdc8f21a6ab5300325f148c0cbdead071c4f70a",
   "m119_input": "$$\n\\begin{aligned}\n\\vert\\phi_0\\rangle & = \\frac{1}{2} \\vert 0 \\rangle_{4} + \\frac{1}{2} \\vert 1 \\rangle_{4} + \\frac{1}{2} \\vert 2 \\rangle_{4} + \\frac{1}{2} \\vert 3 \\rangle_{4} \\\\[3mm]\n\\vert\\phi_1\\rangle & = \\frac{1}{2} \\vert 0 \\rangle_{4} + \\frac{i}{2} \\vert 1 \\rangle_{4} - \\frac{1}{2} \\vert 2 \\rangle_{4} - \\frac{i}{2} \\vert 3 \\rangle_{4} \\\\[3mm]\n\\vert\\phi_2\\rangle & = \\frac{1}{2} \\vert 0 \\rangle_{4} - \\frac{1}{2} \\vert 1 \\rangle_{4} + \\frac{1}{2} \\vert 2 \\rangle_{4} - \\frac{1}{2} \\vert 3 \\rangle_{4} \\\\[3mm]\n\\vert\\phi_3\\rangle & = \\frac{1}{2} \\vert 0 \\rangle_{4} - \\frac{i}{2} \\vert 1 \\rangle_{4} - \\frac{1}{2} \\vert 2 \\rangle_{4} + \\frac{i}{2} \\vert 3 \\rangle_{4}\n\\end{aligned}\n$$",
   "m119_copy": "\\begin{gathered}qcompare(qketstate(\"φ_0\"),matrix(4,1,[1 ∕ 2,1 ∕ 2,1 ∕ 2,1 ∕ 2]),4)\\\\qcompare(qketstate(\"φ_1\"),matrix(4,1,[1 ∕ 2,i ∕ 2,−1 ∕ 2,−i ∕ 2]),4)\\\\qcompare(qketstate(\"φ_2\"),matrix(4,1,[1 ∕ 2,−1 ∕ 2,1 ∕ 2,−1 ∕ 2]),4)\\\\qcompare(qketstate(\"φ_3\"),matrix(4,1,[1 ∕ 2,−i ∕ 2,−1 ∕ 2,i ∕ 2]),4)\\end{gathered}",
-  "m118_copy": "qequalchain(vector(qketstate(\"φ_y\"),matrix(4,1,[1 ∕ 2,e^((iπy) ∕ 2) ∕ 2,e^(iπy) ∕ 2,e^((3 ∕ 2) ⋅ iπy) ∕ 2]),matrix(4,1,[1 ∕ 2,e^((iπy) ∕ 2) ∕ 2,e^(iπy) ∕ 2,e^((3 ∕ 2) ⋅ iπy) ∕ 2])))",
+  "m118_copy": "qequalchain(vector(qketstate(\"φ_y\"),matrix(4,1,[1 ∕ 2,e^((i ⋅ π ⋅ y) ∕ 2) ∕ 2,e^(i ⋅ π ⋅ y) ∕ 2,e^((3 ∕ 2) ⋅ i ⋅ π ⋅ y) ∕ 2]),matrix(4,1,[1 ∕ 2,e^((i ⋅ π ⋅ y) ∕ 2) ∕ 2,e^(i ⋅ π ⋅ y) ∕ 2,e^((3 ∕ 2) ⋅ i ⋅ π ⋅ y) ∕ 2])))",
   "m123_context": "matrixcontext(\"V\",(4),(4),\"unitary\"):",
   "m123_copy": "\\begin{gathered}qcompare(qadjacent(operatorparam('V',4,\"unitary\"),matrix(4,1,vector(1,0,0,0))),qketstate(\"φ_0\"),4)\\\\qcompare(qadjacent(operatorparam('V',4,\"unitary\"),matrix(4,1,vector(0,1,0,0))),qketstate(\"φ_1\"),4)\\\\qcompare(qadjacent(operatorparam('V',4,\"unitary\"),matrix(4,1,vector(0,0,1,0))),qketstate(\"φ_2\"),4)\\\\qcompare(qadjacent(operatorparam('V',4,\"unitary\"),matrix(4,1,vector(0,0,0,1))),qketstate(\"φ_3\"),4)\\end{gathered}",
   "m123_operator": "QFT_4",

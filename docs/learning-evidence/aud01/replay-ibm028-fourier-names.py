@@ -89,8 +89,8 @@ for number, gate in [(217, "P"), (219, "CP")]:
 report = dict(source=inventory["source"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               name=dict(id=name["id"], literal=name["literal"], display=record["display_text"],
                         copy=record["copy_text"], substitution_dimensions=[2, 3, 4]),
-              M128=dict(accepted="QFT(2)", rejected="identity(4)"),
-              M130=dict(literal=matrix["literal"], dimension=4, qubits=2), matrices=checks,
+              M128=dict(id=rows["M128"]["id"], accepted="QFT(2)", rejected="identity(4)"),
+              M130=dict(id=matrix["id"], literal=matrix["literal"], dimension=4, qubits=2), matrices=checks,
               phase_gates=phase_checks)
 args.output.write_bytes((json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode())
 if args.gui_inputs:

@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
   "notebook_sha256": "2ff07f29f923364ca6d47b07a36266bebe64e335cce6d50cdeed2d1cbf39af4e",
-  "worker_sha256": "a3034b2b6e198838a4f906580560e8f5da8222e9d9eb75829b862385fb8cc9e2",
+  "worker_sha256": "16d47e5f65217a52f29f52062fdc8f21a6ab5300325f148c0cbdead071c4f70a",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "64dd21506a32a8893ac21d4a7568b479769b65ece15f85925dc4d3dc108d94a9",
+  "records_sha256": "e430cd3678e36573ce538b7533cef734952b8336ed3187de6ec07d1d6328abce",
   "suite": {
     "passed": true,
     "checks": 4358,
     "calls": 397,
-    "clipboardRetries": 1,
+    "clipboardRetries": 0,
     "clipboardRestored": true
   },
   "source_expressions": 396,
@@ -16,7 +16,7 @@
   "adjusted_dimension_cases": 1,
   "restored_exact": 396,
   "exact_after_reentry": 396,
-  "stable_copy_text": 370,
+  "stable_copy_text": 369,
   "modes": {
     "74": 4,
     "76": 4,
@@ -151,19 +151,24 @@
       "second_copy": "(((qadd(qsub(qmul(0,qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub(qadjacent(qpower(2,'m'),'θ'),y)))),1)),qmul(qsum(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),qmul(qsub('θ',y ∕ qpower(2, 'm')),\"qboundindex_1\"))),0,qsub(qpower(2,'m'),1),\"qboundindex_1\"),qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1))))==(0) and (y)!=(2^'m' ⋅ 'θ') and qcompare(e^(2 ⋅ i ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y) − 1,0,5)) or ((qsub(qsum(1,0,qsub(qpower(2,'m'),1),\"qboundindex_2\"),qpower(2,'m')))==(0) and (y)==(2^'m' ⋅ 'θ')))"
     },
     {
-      "id": "IBM028-2ff07f29-M338",
-      "first_copy": "(|e^(2iπ'δ') − 1| − qadjacent(qadjacent(2, π), qbars('δ')))<=(0)",
-      "second_copy": "(qsub(qbars(qsub(qpower(e,qadjacent(qadjacent(2,iπ),'δ')),1)),qadjacent(qadjacent(2,π),qbars('δ'))))<=(0)"
+      "id": "IBM028-2ff07f29-M355",
+      "first_copy": "(1 and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub(qadjacent(qpower(2, 'm'), 'θ'), y))),1)),qadjacent(4,qbars(qsub(qadjacent(qpower(2,'m'),'θ'),y))),3))",
+      "second_copy": "(1 and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub(qadjacent(qpower(2,'m'),'θ'),y)))),1)),qadjacent(4,qbars(qsub(qadjacent(qpower(2,'m'),'θ'),y))),3))"
     },
     {
-      "id": "IBM028-2ff07f29-M341",
-      "first_copy": "((abs(e^(2iπ'δ') − 1))>(0) and (qadjacent(qadjacent(2, π), qbars('δ')) − (π |e^(2iπ'δ') − 1|) ∕ 2)<=(0))",
-      "second_copy": "((abs(e^(2iπ'δ') − 1))>(0) and (qsub(qadjacent(qadjacent(2,π),qbars('δ')),qadjacent(π, qbars(qsub(qpower(e, qadjacent(qadjacent(2, iπ), 'δ')), 1))) ∕ 2))<=(0))"
+      "id": "IBM028-2ff07f29-M356",
+      "first_copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub('θ', y ∕ qpower(2, 'm')))),1)),qadjacent(qadjacent(2,π),qbars(qsub('θ',y ∕ qpower(2, 'm')))),2)",
+      "second_copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qadjacent(qadjacent(2,π),qbars(qsub('θ',y ∕ qpower(2, 'm')))),2)"
     },
     {
-      "id": "IBM028-2ff07f29-M342",
-      "first_copy": "(|e^(2iπ'δ') − 1| − qadjacent(4, qbars('δ')))>=(0)",
-      "second_copy": "(qsub(qbars(qsub(qpower(e,qadjacent(qadjacent(2,iπ),'δ')),1)),qadjacent(4,qbars('δ'))))>=(0)"
+      "id": "IBM028-2ff07f29-M370",
+      "first_copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub(qadjacent(qpower(2, 'm'), 'θ'), y))),1)),2,2)",
+      "second_copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub(qadjacent(qpower(2,'m'),'θ'),y)))),1)),2,2)"
+    },
+    {
+      "id": "IBM028-2ff07f29-M373",
+      "first_copy": "(((y)<=(2^'m' ⋅ 'θ' − 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub('θ', y ∕ qpower(2, 'm')))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)) or ((y)>=(2^'m' ⋅ 'θ' + 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub('θ', y ∕ qpower(2, 'm')))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)))",
+      "second_copy": "(((y)<=(2^'m' ⋅ 'θ' − 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)) or ((y)>=(2^'m' ⋅ 'θ' + 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)))"
     }
   ]
 }

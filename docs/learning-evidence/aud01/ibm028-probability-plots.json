@@ -1,290 +1,293 @@
-[
-  {
-    "id": "F04",
-    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/kickback-probabilities.svg",
-    "file": "kickback-probabilities.svg",
-    "sha256": "f0ce96df166127ef49cbd71724ebb50c0593a1869296d0ef8409dc8a4f5474c1",
-    "dimension": 2,
-    "phase_multiplier": 1,
-    "curves": [
-      {
-        "outcome": 0,
-        "vertices": 1000,
-        "max_absolute_error": 0.00015096371091460892,
-        "worker": [
-          {
-            "phase": "0/2",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*0/2-0/2)))/2)^2"
-          },
-          {
-            "phase": "1/4",
-            "result": 0.5,
-            "input": "abs((1+exp(2*pi*i*1*(1*1/4-0/2)))/2)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 1,
-        "vertices": 1000,
-        "max_absolute_error": 0.00012642398176454517,
-        "worker": [
-          {
-            "phase": "1/2",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*1/2-1/2)))/2)^2"
-          },
-          {
-            "phase": "3/4",
-            "result": 0.5,
-            "input": "abs((1+exp(2*pi*i*1*(1*3/4-1/2)))/2)^2"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "F06",
-    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/double-kickback-probabilities.svg",
-    "file": "double-kickback-probabilities.svg",
-    "sha256": "1e4c7773b7a4019171f17c78e05eb5df2ffb20c412d10e5ac98b3bd47792c353",
-    "dimension": 2,
-    "phase_multiplier": 2,
-    "curves": [
-      {
-        "outcome": 0,
-        "vertices": 1000,
-        "max_absolute_error": 0.0001425605444007605,
-        "worker": [
-          {
-            "phase": "0/4",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(2*0/4-0/2)))/2)^2"
-          },
-          {
-            "phase": "1/8",
-            "result": 0.5,
-            "input": "abs((1+exp(2*pi*i*1*(2*1/8-0/2)))/2)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 1,
-        "vertices": 1000,
-        "max_absolute_error": 0.0001468089419914831,
-        "worker": [
-          {
-            "phase": "1/4",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(2*1/4-1/2)))/2)^2"
-          },
-          {
-            "phase": "3/8",
-            "result": 0.5,
-            "input": "abs((1+exp(2*pi*i*1*(2*3/8-1/2)))/2)^2"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "F10",
-    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/two-bit-probabilities.svg",
-    "file": "two-bit-probabilities.svg",
-    "sha256": "318318c09994cf5a64891ff3dbdce7367a7b5c86e41f4eda3f763404509cd76e",
-    "dimension": 4,
-    "phase_multiplier": 1,
-    "curves": [
-      {
-        "outcome": 0,
-        "vertices": 1000,
-        "max_absolute_error": 5.933296804083721e-05,
-        "worker": [
-          {
-            "phase": "0/4",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*0/4-0/4))+exp(2*pi*i*2*(1*0/4-0/4))+exp(2*pi*i*3*(1*0/4-0/4)))/4)^2"
-          },
-          {
-            "phase": "1/8",
-            "result": 0.42677669529663687,
-            "input": "abs((1+exp(2*pi*i*1*(1*1/8-0/4))+exp(2*pi*i*2*(1*1/8-0/4))+exp(2*pi*i*3*(1*1/8-0/4)))/4)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 1,
-        "vertices": 1000,
-        "max_absolute_error": 5.912329212520717e-05,
-        "worker": [
-          {
-            "phase": "1/4",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*1/4-1/4))+exp(2*pi*i*2*(1*1/4-1/4))+exp(2*pi*i*3*(1*1/4-1/4)))/4)^2"
-          },
-          {
-            "phase": "3/8",
-            "result": 0.42677669529663687,
-            "input": "abs((1+exp(2*pi*i*1*(1*3/8-1/4))+exp(2*pi*i*2*(1*3/8-1/4))+exp(2*pi*i*3*(1*3/8-1/4)))/4)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 2,
-        "vertices": 1000,
-        "max_absolute_error": 5.984421043114807e-05,
-        "worker": [
-          {
-            "phase": "2/4",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*2/4-2/4))+exp(2*pi*i*2*(1*2/4-2/4))+exp(2*pi*i*3*(1*2/4-2/4)))/4)^2"
-          },
-          {
-            "phase": "5/8",
-            "result": 0.42677669529663687,
-            "input": "abs((1+exp(2*pi*i*1*(1*5/8-2/4))+exp(2*pi*i*2*(1*5/8-2/4))+exp(2*pi*i*3*(1*5/8-2/4)))/4)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 3,
-        "vertices": 1000,
-        "max_absolute_error": 5.5316550249040475e-05,
-        "worker": [
-          {
-            "phase": "3/4",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*3/4-3/4))+exp(2*pi*i*2*(1*3/4-3/4))+exp(2*pi*i*3*(1*3/4-3/4)))/4)^2"
-          },
-          {
-            "phase": "7/8",
-            "result": 0.42677669529663687,
-            "input": "abs((1+exp(2*pi*i*1*(1*7/8-3/4))+exp(2*pi*i*2*(1*7/8-3/4))+exp(2*pi*i*3*(1*7/8-3/4)))/4)^2"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "F16",
-    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/three-qubit-probabilities.svg",
-    "file": "three-qubit-probabilities.svg",
-    "sha256": "8ee76b89866471ab32f1794b6986393344e2e509ab7b9086403a159e2e9f8627",
-    "dimension": 8,
-    "phase_multiplier": 1,
-    "curves": [
-      {
-        "outcome": 3,
-        "vertices": 1000,
-        "max_absolute_error": 0.00015152642947469097,
-        "worker": [
-          {
-            "phase": "3/8",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*3/8-3/8))+exp(2*pi*i*2*(1*3/8-3/8))+exp(2*pi*i*3*(1*3/8-3/8))+exp(2*pi*i*4*(1*3/8-3/8))+exp(2*pi*i*5*(1*3/8-3/8))+exp(2*pi*i*6*(1*3/8-3/8))+exp(2*pi*i*7*(1*3/8-3/8)))/8)^2"
-          },
-          {
-            "phase": "7/16",
-            "result": 0.41053347451700284,
-            "input": "abs((1+exp(2*pi*i*1*(1*7/16-3/8))+exp(2*pi*i*2*(1*7/16-3/8))+exp(2*pi*i*3*(1*7/16-3/8))+exp(2*pi*i*4*(1*7/16-3/8))+exp(2*pi*i*5*(1*7/16-3/8))+exp(2*pi*i*6*(1*7/16-3/8))+exp(2*pi*i*7*(1*7/16-3/8)))/8)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 4,
-        "vertices": 1000,
-        "max_absolute_error": 0.0001241480490117297,
-        "worker": [
-          {
-            "phase": "4/8",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*4/8-4/8))+exp(2*pi*i*2*(1*4/8-4/8))+exp(2*pi*i*3*(1*4/8-4/8))+exp(2*pi*i*4*(1*4/8-4/8))+exp(2*pi*i*5*(1*4/8-4/8))+exp(2*pi*i*6*(1*4/8-4/8))+exp(2*pi*i*7*(1*4/8-4/8)))/8)^2"
-          },
-          {
-            "phase": "9/16",
-            "result": 0.41053347451700284,
-            "input": "abs((1+exp(2*pi*i*1*(1*9/16-4/8))+exp(2*pi*i*2*(1*9/16-4/8))+exp(2*pi*i*3*(1*9/16-4/8))+exp(2*pi*i*4*(1*9/16-4/8))+exp(2*pi*i*5*(1*9/16-4/8))+exp(2*pi*i*6*(1*9/16-4/8))+exp(2*pi*i*7*(1*9/16-4/8)))/8)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 5,
-        "vertices": 1000,
-        "max_absolute_error": 0.000117322860712199,
-        "worker": [
-          {
-            "phase": "5/8",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*5/8-5/8))+exp(2*pi*i*2*(1*5/8-5/8))+exp(2*pi*i*3*(1*5/8-5/8))+exp(2*pi*i*4*(1*5/8-5/8))+exp(2*pi*i*5*(1*5/8-5/8))+exp(2*pi*i*6*(1*5/8-5/8))+exp(2*pi*i*7*(1*5/8-5/8)))/8)^2"
-          },
-          {
-            "phase": "11/16",
-            "result": 0.41053347451700284,
-            "input": "abs((1+exp(2*pi*i*1*(1*11/16-5/8))+exp(2*pi*i*2*(1*11/16-5/8))+exp(2*pi*i*3*(1*11/16-5/8))+exp(2*pi*i*4*(1*11/16-5/8))+exp(2*pi*i*5*(1*11/16-5/8))+exp(2*pi*i*6*(1*11/16-5/8))+exp(2*pi*i*7*(1*11/16-5/8)))/8)^2"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "F17",
-    "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/four-qubit-probabilities.svg",
-    "file": "four-qubit-probabilities.svg",
-    "sha256": "99a3da09d933ff4511523029dc7f6953b5f6a0e766073cbe8b429437a0a32880",
-    "dimension": 16,
-    "phase_multiplier": 1,
-    "curves": [
-      {
-        "outcome": 7,
-        "vertices": 1000,
-        "max_absolute_error": 0.00023757796865919723,
-        "worker": [
-          {
-            "phase": "7/16",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*7/16-7/16))+exp(2*pi*i*2*(1*7/16-7/16))+exp(2*pi*i*3*(1*7/16-7/16))+exp(2*pi*i*4*(1*7/16-7/16))+exp(2*pi*i*5*(1*7/16-7/16))+exp(2*pi*i*6*(1*7/16-7/16))+exp(2*pi*i*7*(1*7/16-7/16))+exp(2*pi*i*8*(1*7/16-7/16))+exp(2*pi*i*9*(1*7/16-7/16))+exp(2*pi*i*10*(1*7/16-7/16))+exp(2*pi*i*11*(1*7/16-7/16))+exp(2*pi*i*12*(1*7/16-7/16))+exp(2*pi*i*13*(1*7/16-7/16))+exp(2*pi*i*14*(1*7/16-7/16))+exp(2*pi*i*15*(1*7/16-7/16)))/16)^2"
-          },
-          {
-            "phase": "15/32",
-            "result": 0.40658933171803696,
-            "input": "abs((1+exp(2*pi*i*1*(1*15/32-7/16))+exp(2*pi*i*2*(1*15/32-7/16))+exp(2*pi*i*3*(1*15/32-7/16))+exp(2*pi*i*4*(1*15/32-7/16))+exp(2*pi*i*5*(1*15/32-7/16))+exp(2*pi*i*6*(1*15/32-7/16))+exp(2*pi*i*7*(1*15/32-7/16))+exp(2*pi*i*8*(1*15/32-7/16))+exp(2*pi*i*9*(1*15/32-7/16))+exp(2*pi*i*10*(1*15/32-7/16))+exp(2*pi*i*11*(1*15/32-7/16))+exp(2*pi*i*12*(1*15/32-7/16))+exp(2*pi*i*13*(1*15/32-7/16))+exp(2*pi*i*14*(1*15/32-7/16))+exp(2*pi*i*15*(1*15/32-7/16)))/16)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 8,
-        "vertices": 1000,
-        "max_absolute_error": 0.000242086129798591,
-        "worker": [
-          {
-            "phase": "8/16",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*8/16-8/16))+exp(2*pi*i*2*(1*8/16-8/16))+exp(2*pi*i*3*(1*8/16-8/16))+exp(2*pi*i*4*(1*8/16-8/16))+exp(2*pi*i*5*(1*8/16-8/16))+exp(2*pi*i*6*(1*8/16-8/16))+exp(2*pi*i*7*(1*8/16-8/16))+exp(2*pi*i*8*(1*8/16-8/16))+exp(2*pi*i*9*(1*8/16-8/16))+exp(2*pi*i*10*(1*8/16-8/16))+exp(2*pi*i*11*(1*8/16-8/16))+exp(2*pi*i*12*(1*8/16-8/16))+exp(2*pi*i*13*(1*8/16-8/16))+exp(2*pi*i*14*(1*8/16-8/16))+exp(2*pi*i*15*(1*8/16-8/16)))/16)^2"
-          },
-          {
-            "phase": "17/32",
-            "result": 0.40658933171803696,
-            "input": "abs((1+exp(2*pi*i*1*(1*17/32-8/16))+exp(2*pi*i*2*(1*17/32-8/16))+exp(2*pi*i*3*(1*17/32-8/16))+exp(2*pi*i*4*(1*17/32-8/16))+exp(2*pi*i*5*(1*17/32-8/16))+exp(2*pi*i*6*(1*17/32-8/16))+exp(2*pi*i*7*(1*17/32-8/16))+exp(2*pi*i*8*(1*17/32-8/16))+exp(2*pi*i*9*(1*17/32-8/16))+exp(2*pi*i*10*(1*17/32-8/16))+exp(2*pi*i*11*(1*17/32-8/16))+exp(2*pi*i*12*(1*17/32-8/16))+exp(2*pi*i*13*(1*17/32-8/16))+exp(2*pi*i*14*(1*17/32-8/16))+exp(2*pi*i*15*(1*17/32-8/16)))/16)^2"
-          }
-        ]
-      },
-      {
-        "outcome": 9,
-        "vertices": 1000,
-        "max_absolute_error": 0.00022862336999529553,
-        "worker": [
-          {
-            "phase": "9/16",
-            "result": 1.0,
-            "input": "abs((1+exp(2*pi*i*1*(1*9/16-9/16))+exp(2*pi*i*2*(1*9/16-9/16))+exp(2*pi*i*3*(1*9/16-9/16))+exp(2*pi*i*4*(1*9/16-9/16))+exp(2*pi*i*5*(1*9/16-9/16))+exp(2*pi*i*6*(1*9/16-9/16))+exp(2*pi*i*7*(1*9/16-9/16))+exp(2*pi*i*8*(1*9/16-9/16))+exp(2*pi*i*9*(1*9/16-9/16))+exp(2*pi*i*10*(1*9/16-9/16))+exp(2*pi*i*11*(1*9/16-9/16))+exp(2*pi*i*12*(1*9/16-9/16))+exp(2*pi*i*13*(1*9/16-9/16))+exp(2*pi*i*14*(1*9/16-9/16))+exp(2*pi*i*15*(1*9/16-9/16)))/16)^2"
-          },
-          {
-            "phase": "19/32",
-            "result": 0.40658933171803696,
-            "input": "abs((1+exp(2*pi*i*1*(1*19/32-9/16))+exp(2*pi*i*2*(1*19/32-9/16))+exp(2*pi*i*3*(1*19/32-9/16))+exp(2*pi*i*4*(1*19/32-9/16))+exp(2*pi*i*5*(1*19/32-9/16))+exp(2*pi*i*6*(1*19/32-9/16))+exp(2*pi*i*7*(1*19/32-9/16))+exp(2*pi*i*8*(1*19/32-9/16))+exp(2*pi*i*9*(1*19/32-9/16))+exp(2*pi*i*10*(1*19/32-9/16))+exp(2*pi*i*11*(1*19/32-9/16))+exp(2*pi*i*12*(1*19/32-9/16))+exp(2*pi*i*13*(1*19/32-9/16))+exp(2*pi*i*14*(1*19/32-9/16))+exp(2*pi*i*15*(1*19/32-9/16)))/16)^2"
-          }
-        ]
-      }
-    ]
-  }
-]
+{
+  "worker_sha256": "16d47e5f65217a52f29f52062fdc8f21a6ab5300325f148c0cbdead071c4f70a",
+  "figures": [
+    {
+      "id": "F04",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/kickback-probabilities.svg",
+      "file": "kickback-probabilities.svg",
+      "sha256": "f0ce96df166127ef49cbd71724ebb50c0593a1869296d0ef8409dc8a4f5474c1",
+      "dimension": 2,
+      "phase_multiplier": 1,
+      "curves": [
+        {
+          "outcome": 0,
+          "vertices": 1000,
+          "max_absolute_error": 0.00015096371091460892,
+          "worker": [
+            {
+              "phase": "0/2",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*0/2-0/2)))/2)^2"
+            },
+            {
+              "phase": "1/4",
+              "result": 0.5,
+              "input": "abs((1+exp(2*pi*i*1*(1*1/4-0/2)))/2)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 1,
+          "vertices": 1000,
+          "max_absolute_error": 0.00012642398176454517,
+          "worker": [
+            {
+              "phase": "1/2",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*1/2-1/2)))/2)^2"
+            },
+            {
+              "phase": "3/4",
+              "result": 0.5,
+              "input": "abs((1+exp(2*pi*i*1*(1*3/4-1/2)))/2)^2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/double-kickback-probabilities.svg",
+      "file": "double-kickback-probabilities.svg",
+      "sha256": "1e4c7773b7a4019171f17c78e05eb5df2ffb20c412d10e5ac98b3bd47792c353",
+      "dimension": 2,
+      "phase_multiplier": 2,
+      "curves": [
+        {
+          "outcome": 0,
+          "vertices": 1000,
+          "max_absolute_error": 0.0001425605444007605,
+          "worker": [
+            {
+              "phase": "0/4",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(2*0/4-0/2)))/2)^2"
+            },
+            {
+              "phase": "1/8",
+              "result": 0.5,
+              "input": "abs((1+exp(2*pi*i*1*(2*1/8-0/2)))/2)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 1,
+          "vertices": 1000,
+          "max_absolute_error": 0.0001468089419914831,
+          "worker": [
+            {
+              "phase": "1/4",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(2*1/4-1/2)))/2)^2"
+            },
+            {
+              "phase": "3/8",
+              "result": 0.5,
+              "input": "abs((1+exp(2*pi*i*1*(2*3/8-1/2)))/2)^2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F10",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/two-bit-probabilities.svg",
+      "file": "two-bit-probabilities.svg",
+      "sha256": "318318c09994cf5a64891ff3dbdce7367a7b5c86e41f4eda3f763404509cd76e",
+      "dimension": 4,
+      "phase_multiplier": 1,
+      "curves": [
+        {
+          "outcome": 0,
+          "vertices": 1000,
+          "max_absolute_error": 5.933296804083721e-05,
+          "worker": [
+            {
+              "phase": "0/4",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*0/4-0/4))+exp(2*pi*i*2*(1*0/4-0/4))+exp(2*pi*i*3*(1*0/4-0/4)))/4)^2"
+            },
+            {
+              "phase": "1/8",
+              "result": 0.42677669529663687,
+              "input": "abs((1+exp(2*pi*i*1*(1*1/8-0/4))+exp(2*pi*i*2*(1*1/8-0/4))+exp(2*pi*i*3*(1*1/8-0/4)))/4)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 1,
+          "vertices": 1000,
+          "max_absolute_error": 5.912329212520717e-05,
+          "worker": [
+            {
+              "phase": "1/4",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*1/4-1/4))+exp(2*pi*i*2*(1*1/4-1/4))+exp(2*pi*i*3*(1*1/4-1/4)))/4)^2"
+            },
+            {
+              "phase": "3/8",
+              "result": 0.42677669529663687,
+              "input": "abs((1+exp(2*pi*i*1*(1*3/8-1/4))+exp(2*pi*i*2*(1*3/8-1/4))+exp(2*pi*i*3*(1*3/8-1/4)))/4)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 2,
+          "vertices": 1000,
+          "max_absolute_error": 5.984421043114807e-05,
+          "worker": [
+            {
+              "phase": "2/4",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*2/4-2/4))+exp(2*pi*i*2*(1*2/4-2/4))+exp(2*pi*i*3*(1*2/4-2/4)))/4)^2"
+            },
+            {
+              "phase": "5/8",
+              "result": 0.42677669529663687,
+              "input": "abs((1+exp(2*pi*i*1*(1*5/8-2/4))+exp(2*pi*i*2*(1*5/8-2/4))+exp(2*pi*i*3*(1*5/8-2/4)))/4)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 3,
+          "vertices": 1000,
+          "max_absolute_error": 5.5316550249040475e-05,
+          "worker": [
+            {
+              "phase": "3/4",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*3/4-3/4))+exp(2*pi*i*2*(1*3/4-3/4))+exp(2*pi*i*3*(1*3/4-3/4)))/4)^2"
+            },
+            {
+              "phase": "7/8",
+              "result": 0.42677669529663687,
+              "input": "abs((1+exp(2*pi*i*1*(1*7/8-3/4))+exp(2*pi*i*2*(1*7/8-3/4))+exp(2*pi*i*3*(1*7/8-3/4)))/4)^2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F16",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/three-qubit-probabilities.svg",
+      "file": "three-qubit-probabilities.svg",
+      "sha256": "8ee76b89866471ab32f1794b6986393344e2e509ab7b9086403a159e2e9f8627",
+      "dimension": 8,
+      "phase_multiplier": 1,
+      "curves": [
+        {
+          "outcome": 3,
+          "vertices": 1000,
+          "max_absolute_error": 0.00015152642947469097,
+          "worker": [
+            {
+              "phase": "3/8",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*3/8-3/8))+exp(2*pi*i*2*(1*3/8-3/8))+exp(2*pi*i*3*(1*3/8-3/8))+exp(2*pi*i*4*(1*3/8-3/8))+exp(2*pi*i*5*(1*3/8-3/8))+exp(2*pi*i*6*(1*3/8-3/8))+exp(2*pi*i*7*(1*3/8-3/8)))/8)^2"
+            },
+            {
+              "phase": "7/16",
+              "result": 0.41053347451700284,
+              "input": "abs((1+exp(2*pi*i*1*(1*7/16-3/8))+exp(2*pi*i*2*(1*7/16-3/8))+exp(2*pi*i*3*(1*7/16-3/8))+exp(2*pi*i*4*(1*7/16-3/8))+exp(2*pi*i*5*(1*7/16-3/8))+exp(2*pi*i*6*(1*7/16-3/8))+exp(2*pi*i*7*(1*7/16-3/8)))/8)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 4,
+          "vertices": 1000,
+          "max_absolute_error": 0.0001241480490117297,
+          "worker": [
+            {
+              "phase": "4/8",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*4/8-4/8))+exp(2*pi*i*2*(1*4/8-4/8))+exp(2*pi*i*3*(1*4/8-4/8))+exp(2*pi*i*4*(1*4/8-4/8))+exp(2*pi*i*5*(1*4/8-4/8))+exp(2*pi*i*6*(1*4/8-4/8))+exp(2*pi*i*7*(1*4/8-4/8)))/8)^2"
+            },
+            {
+              "phase": "9/16",
+              "result": 0.41053347451700284,
+              "input": "abs((1+exp(2*pi*i*1*(1*9/16-4/8))+exp(2*pi*i*2*(1*9/16-4/8))+exp(2*pi*i*3*(1*9/16-4/8))+exp(2*pi*i*4*(1*9/16-4/8))+exp(2*pi*i*5*(1*9/16-4/8))+exp(2*pi*i*6*(1*9/16-4/8))+exp(2*pi*i*7*(1*9/16-4/8)))/8)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 5,
+          "vertices": 1000,
+          "max_absolute_error": 0.000117322860712199,
+          "worker": [
+            {
+              "phase": "5/8",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*5/8-5/8))+exp(2*pi*i*2*(1*5/8-5/8))+exp(2*pi*i*3*(1*5/8-5/8))+exp(2*pi*i*4*(1*5/8-5/8))+exp(2*pi*i*5*(1*5/8-5/8))+exp(2*pi*i*6*(1*5/8-5/8))+exp(2*pi*i*7*(1*5/8-5/8)))/8)^2"
+            },
+            {
+              "phase": "11/16",
+              "result": 0.41053347451700284,
+              "input": "abs((1+exp(2*pi*i*1*(1*11/16-5/8))+exp(2*pi*i*2*(1*11/16-5/8))+exp(2*pi*i*3*(1*11/16-5/8))+exp(2*pi*i*4*(1*11/16-5/8))+exp(2*pi*i*5*(1*11/16-5/8))+exp(2*pi*i*6*(1*11/16-5/8))+exp(2*pi*i*7*(1*11/16-5/8)))/8)^2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F17",
+      "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/four-qubit-probabilities.svg",
+      "file": "four-qubit-probabilities.svg",
+      "sha256": "99a3da09d933ff4511523029dc7f6953b5f6a0e766073cbe8b429437a0a32880",
+      "dimension": 16,
+      "phase_multiplier": 1,
+      "curves": [
+        {
+          "outcome": 7,
+          "vertices": 1000,
+          "max_absolute_error": 0.00023757796865919723,
+          "worker": [
+            {
+              "phase": "7/16",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*7/16-7/16))+exp(2*pi*i*2*(1*7/16-7/16))+exp(2*pi*i*3*(1*7/16-7/16))+exp(2*pi*i*4*(1*7/16-7/16))+exp(2*pi*i*5*(1*7/16-7/16))+exp(2*pi*i*6*(1*7/16-7/16))+exp(2*pi*i*7*(1*7/16-7/16))+exp(2*pi*i*8*(1*7/16-7/16))+exp(2*pi*i*9*(1*7/16-7/16))+exp(2*pi*i*10*(1*7/16-7/16))+exp(2*pi*i*11*(1*7/16-7/16))+exp(2*pi*i*12*(1*7/16-7/16))+exp(2*pi*i*13*(1*7/16-7/16))+exp(2*pi*i*14*(1*7/16-7/16))+exp(2*pi*i*15*(1*7/16-7/16)))/16)^2"
+            },
+            {
+              "phase": "15/32",
+              "result": 0.40658933171803696,
+              "input": "abs((1+exp(2*pi*i*1*(1*15/32-7/16))+exp(2*pi*i*2*(1*15/32-7/16))+exp(2*pi*i*3*(1*15/32-7/16))+exp(2*pi*i*4*(1*15/32-7/16))+exp(2*pi*i*5*(1*15/32-7/16))+exp(2*pi*i*6*(1*15/32-7/16))+exp(2*pi*i*7*(1*15/32-7/16))+exp(2*pi*i*8*(1*15/32-7/16))+exp(2*pi*i*9*(1*15/32-7/16))+exp(2*pi*i*10*(1*15/32-7/16))+exp(2*pi*i*11*(1*15/32-7/16))+exp(2*pi*i*12*(1*15/32-7/16))+exp(2*pi*i*13*(1*15/32-7/16))+exp(2*pi*i*14*(1*15/32-7/16))+exp(2*pi*i*15*(1*15/32-7/16)))/16)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 8,
+          "vertices": 1000,
+          "max_absolute_error": 0.000242086129798591,
+          "worker": [
+            {
+              "phase": "8/16",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*8/16-8/16))+exp(2*pi*i*2*(1*8/16-8/16))+exp(2*pi*i*3*(1*8/16-8/16))+exp(2*pi*i*4*(1*8/16-8/16))+exp(2*pi*i*5*(1*8/16-8/16))+exp(2*pi*i*6*(1*8/16-8/16))+exp(2*pi*i*7*(1*8/16-8/16))+exp(2*pi*i*8*(1*8/16-8/16))+exp(2*pi*i*9*(1*8/16-8/16))+exp(2*pi*i*10*(1*8/16-8/16))+exp(2*pi*i*11*(1*8/16-8/16))+exp(2*pi*i*12*(1*8/16-8/16))+exp(2*pi*i*13*(1*8/16-8/16))+exp(2*pi*i*14*(1*8/16-8/16))+exp(2*pi*i*15*(1*8/16-8/16)))/16)^2"
+            },
+            {
+              "phase": "17/32",
+              "result": 0.40658933171803696,
+              "input": "abs((1+exp(2*pi*i*1*(1*17/32-8/16))+exp(2*pi*i*2*(1*17/32-8/16))+exp(2*pi*i*3*(1*17/32-8/16))+exp(2*pi*i*4*(1*17/32-8/16))+exp(2*pi*i*5*(1*17/32-8/16))+exp(2*pi*i*6*(1*17/32-8/16))+exp(2*pi*i*7*(1*17/32-8/16))+exp(2*pi*i*8*(1*17/32-8/16))+exp(2*pi*i*9*(1*17/32-8/16))+exp(2*pi*i*10*(1*17/32-8/16))+exp(2*pi*i*11*(1*17/32-8/16))+exp(2*pi*i*12*(1*17/32-8/16))+exp(2*pi*i*13*(1*17/32-8/16))+exp(2*pi*i*14*(1*17/32-8/16))+exp(2*pi*i*15*(1*17/32-8/16)))/16)^2"
+            }
+          ]
+        },
+        {
+          "outcome": 9,
+          "vertices": 1000,
+          "max_absolute_error": 0.00022862336999529553,
+          "worker": [
+            {
+              "phase": "9/16",
+              "result": 1.0,
+              "input": "abs((1+exp(2*pi*i*1*(1*9/16-9/16))+exp(2*pi*i*2*(1*9/16-9/16))+exp(2*pi*i*3*(1*9/16-9/16))+exp(2*pi*i*4*(1*9/16-9/16))+exp(2*pi*i*5*(1*9/16-9/16))+exp(2*pi*i*6*(1*9/16-9/16))+exp(2*pi*i*7*(1*9/16-9/16))+exp(2*pi*i*8*(1*9/16-9/16))+exp(2*pi*i*9*(1*9/16-9/16))+exp(2*pi*i*10*(1*9/16-9/16))+exp(2*pi*i*11*(1*9/16-9/16))+exp(2*pi*i*12*(1*9/16-9/16))+exp(2*pi*i*13*(1*9/16-9/16))+exp(2*pi*i*14*(1*9/16-9/16))+exp(2*pi*i*15*(1*9/16-9/16)))/16)^2"
+            },
+            {
+              "phase": "19/32",
+              "result": 0.40658933171803696,
+              "input": "abs((1+exp(2*pi*i*1*(1*19/32-9/16))+exp(2*pi*i*2*(1*19/32-9/16))+exp(2*pi*i*3*(1*19/32-9/16))+exp(2*pi*i*4*(1*19/32-9/16))+exp(2*pi*i*5*(1*19/32-9/16))+exp(2*pi*i*6*(1*19/32-9/16))+exp(2*pi*i*7*(1*19/32-9/16))+exp(2*pi*i*8*(1*19/32-9/16))+exp(2*pi*i*9*(1*19/32-9/16))+exp(2*pi*i*10*(1*19/32-9/16))+exp(2*pi*i*11*(1*19/32-9/16))+exp(2*pi*i*12*(1*19/32-9/16))+exp(2*pi*i*13*(1*19/32-9/16))+exp(2*pi*i*14*(1*19/32-9/16))+exp(2*pi*i*15*(1*19/32-9/16)))/16)^2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

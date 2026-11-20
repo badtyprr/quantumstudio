@@ -1,6 +1,6 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
-  "worker_sha256": "ef5d8243d3091f7f6cad1d618910101bcd8a16d2b2770c62a26c26e536897389",
+  "worker_sha256": "16d47e5f65217a52f29f52062fdc8f21a6ab5300325f148c0cbdead071c4f70a",
   "name": {
     "id": "IBM028-2ff07f29-M132",
     "literal": "$\\mathrm{QFT}$",
@@ -13,10 +13,12 @@
     ]
   },
   "M128": {
+    "id": "IBM028-2ff07f29-M128",
     "accepted": "QFT(2)",
     "rejected": "identity(4)"
   },
   "M130": {
+    "id": "IBM028-2ff07f29-M130",
     "literal": "$\\mathrm{QFT}_4$",
     "dimension": 4,
     "qubits": 2

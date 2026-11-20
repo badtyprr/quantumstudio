@@ -46,11 +46,33 @@ for name in [*suites, "copy-meaning", "figures", "probability-plots"]:
     path = args.suite_directory / (name + ".json")
     batch = load(path)
     suite_hashes[name] = digest(path)
-    if isinstance(batch, dict):
-        assert batch["worker_sha256"] == windows["worker_sha256"], name
+    assert batch["worker_sha256"] == windows["worker_sha256"], name
+    if name == "bit-word":
+        assert {(case["high"], case["low"], case["integer"]) for case in batch["assignments"]} == {
+            (high, low, 2*high+low) for high in (0,1) for low in (0,1)}
+    if name == "fourier-basis":
+        assert {(case["index"], case["candidate"], case["expected"]) for case in batch["cases"]} == {
+            (index, candidate, int(index == candidate)) for index in range(4) for candidate in range(4)}
     if name in suites:
-        for number in suites[name]:
-            links[inventory["rows"][number-1]["id"]].append(name)
+        # Inspect the completed suite's own row identifiers, including keys
+        # in per-row case tables. Several suites check additional rows.
+        def recorded_ids(item):
+            if isinstance(item, dict):
+                for field, value in item.items():
+                    if value:
+                        yield from recorded_ids(field)
+                        yield from recorded_ids(value)
+            elif isinstance(item, list):
+                for value in item:
+                    yield from recorded_ids(value)
+            elif isinstance(item, str) and item in links:
+                yield item
+
+        covered = set(recorded_ids(batch))
+        required = {inventory["rows"][n-1]["id"] for n in suites[name]}
+        assert required <= covered, (name, required - covered)
+        for key in sorted(covered):
+            links[key].append(name)
 
 meaning = load(args.suite_directory / "copy-meaning.json")
 for key in (*meaning["checks"], *meaning["structured"]):
@@ -89,7 +111,7 @@ for n, item in enumerate(inventory["rows"], 1):
         links[key].append("row-audit")
     assert row["evidence"], key
     rows.append(row)
-figures = load(args.suite_directory / "figures.json")["figures"] + load(args.suite_directory / "probability-plots.json")
+figures = load(args.suite_directory / "figures.json")["figures"] + load(args.suite_directory / "probability-plots.json")["figures"]
 expected_files = {Path(entry["path"]).name for entry in inventory["figures"]}
 assert len(figures) == len(expected_files) == 17 and {entry["file"] for entry in figures} == expected_files
 report = dict(source=inventory["source"], notebook_sha256=inventory["source_sha256"],

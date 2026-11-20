@@ -17,9 +17,13 @@ source = json.loads(Path(__file__).with_name("ibm028-inventory.json").read_bytes
 environment = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent / "data"))
 
 
+checked_rows = set()
+
+
 def literal(number):
     row = source["rows"][number - 1]
     assert row["id"].endswith(f"M{number:03d}")
+    checked_rows.add(row["id"])
     return row["literal"]
 
 
@@ -78,7 +82,7 @@ for index, (column, image) in enumerate(zip(aligned(columns), action)):
         check(bound, expected)
         witnesses.append(dict(index=index, candidate=candidate, expected=int(expected)))
 
-report = dict(source=source["source"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
+report = dict(checked_rows=sorted(checked_rows), source=source["source"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               m119_input=annotated, m119_copy=columns, m118_copy=general,
               m123_context=context, m123_copy=declared, m123_operator="QFT_4", m128_rejected_operator="identity(4)", cases=witnesses)
 args.output.write_bytes((json.dumps(report, indent=2, ensure_ascii=False) + "\n").encode())

@@ -63,9 +63,15 @@ def check_lesson(verify):
                 relation([355], data, abs(offset) <= 1)
                 relation([364], data, Fraction(1, size) <= delta <= Fraction(1, 2))
                 relation([370], data, True)
+            for turn in (-3,-1,1,3):
+                theta = Fraction(4*y+turn,4*size)
+                phase = ref + [("y",y), ("θ",str(theta))]
+                relation([355], phase, abs(turn) == 1)
+                relation([370], phase, True)
             value([350], ref+[("y", y)], Fraction(y-1, size))
             value([351], ref+[("y", y)], Fraction(y+1, size))
             value([365], ref+[("z", y)], Fraction(y, size))
+        relation([370], ref+[("y",size//2), ("θ",str(Fraction(1,4*size)))], True)
         for z in (-1, 0, size//2-1, size//2, size-1, size):
             for n, label, limit in [(226, "y", size//2), (242, "x", size//2), (268, "u", size),
                                     (316, "y", size), (344, "y", size), (363, "y", size)]:

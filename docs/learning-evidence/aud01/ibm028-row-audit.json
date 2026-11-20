@@ -1,28 +1,28 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/phase-estimation-procedure.ipynb",
   "notebook_sha256": "2ff07f29f923364ca6d47b07a36266bebe64e335cce6d50cdeed2d1cbf39af4e",
-  "worker_sha256": "a3034b2b6e198838a4f906580560e8f5da8222e9d9eb75829b862385fb8cc9e2",
-  "windows_records_sha256": "64dd21506a32a8893ac21d4a7568b479769b65ece15f85925dc4d3dc108d94a9",
+  "worker_sha256": "16d47e5f65217a52f29f52062fdc8f21a6ab5300325f148c0cbdead071c4f70a",
+  "windows_records_sha256": "e430cd3678e36573ce538b7533cef734952b8336ed3187de6ec07d1d6328abce",
   "suites_sha256": {
-    "bit-fraction": "3730d4d6ba12ad30b77e47d4b6fcf03638570088ed15501e43d7399628d487fd",
-    "bit-word": "4d424928eb1719c45a3732ac119e0103100d2275e9a648a59fce6d7f1031a57f",
-    "two-bit-arithmetic": "154dde171fd3db59cdab57793e39900956c0effc380074e19e863bff41267e4c",
-    "fourier-basis": "173ad70796517daca00f2f0ad23855c41ec0124a5a93d4486dec95088d857576",
-    "fourier-names": "a46d63ccc51d3ea84e66ab23182d38e24933c90ec3c91761868fac4daac86ea6",
-    "fraction-digits": "c297be3046be3ad6e4a21f0469efaca8ae2d9696f36b84403ee665c087fbbe0d",
-    "geometric-series": "998e885979eff853470c9b5141eebf50f5738da00b3bee68d8f1330ba8b0665a",
-    "ket-families": "e9cf4330d1f2969a8db6bf69f04fbb22aa65ab128e410050c5600c671f3a2773",
-    "ket-lists": "4eadc6678e8feda5429e8c4adc4419fcb518264761187cabe16ad7d3fd2591c6",
-    "kickback-states": "aae116408320c8c74b5773b048c180632dfb32808dc1a4797a24d5a387cfb37c",
-    "open-bits": "53b08006563c95644ff9138c4bb6c6a40a9609947f6af9dbbe2de208c2518995",
-    "orthogonality": "d867206fea9ee72b232f83bb08ad33d13e9d5d0608d6ec73034aead69c388cfd",
-    "phase-probability": "8a2a66b46c6962fb52df8db9e6ca371e6f88e369507c4f3a920f7c88ab01497e",
-    "rounded-values": "b679b5e56e8d8e8f237a80ee5675f6ce2ca67a6472e87e9ee9db308f5e5888f8",
-    "signed-endpoints": "ea29e4bfada2d7cfb77572abf0dac65bbc39e4b655e4924afa639365365595bb",
-    "state-action": "f4329fc2006d820bac83f14652d19d8bd8ed162178ddee510674339dbfa13247",
-    "copy-meaning": "76d6118b7023280b579f1b3d70bfacd8298a8543b714a1b7aa359b60e687b812",
-    "figures": "71a358493061473bc915eb3568af9653ff14284135c0e995ab13592bdfcf72ad",
-    "probability-plots": "dbd594655af32123e8875246f3312f9f511e9e336c8f1ced34ddf71c0c355a9d"
+    "bit-fraction": "6bf3ad0f97b27756c1e95ecb495eb80d67aeb62f1dfbecef54684d8341904a4d",
+    "bit-word": "50c3b6e030975ae72fc4e6860e53967031becc208a8737c1401f67dc79848404",
+    "two-bit-arithmetic": "9f4b48ca6413404d20efa7ee1eaa78a1d8a20f1d5e0b6594ccec34838c48a11c",
+    "fourier-basis": "5b1eaabf321718e0bc57c89c67292979f506c8bc3c94b97795bf092ac1c77173",
+    "fourier-names": "354c8262d36ae50b601ebe91e5fb4dfabdf40e00acc58d4e760c6ec3500b8a2c",
+    "fraction-digits": "f4db8184cc039badcf2874e529ee5413d0991b4321d5af7b882c5c5bcfa5c83f",
+    "geometric-series": "f896c2e7f599c7e2106707c3ca036998852751ee98d92205937f5eb341fc9689",
+    "ket-families": "d255ef040ae58f776be42323f0a1cf9441e6292b5f2613694205af9992bb8a52",
+    "ket-lists": "1274e2c8a90067bacdf4998b2e19f67c1e2e62b40e8cb6f494106a7b6942c3a6",
+    "kickback-states": "a68b26d1f255746c68dc02faa5cceb271a52cf66a588c9478218a7681836da3c",
+    "open-bits": "cfded5317a45a4177e6973971b4d4462e319de76028a9f176a62fc4fefbbee8f",
+    "orthogonality": "1bd09f75da180e7b2a7b69e64bb15acc97dbdddce4dc515471e7df0b44fb7a2c",
+    "phase-probability": "df95e8bfeb7531483ffca17ce15f1d4938e828d54f8eac5df74df581bcb3e679",
+    "rounded-values": "20150c9a448539e0870c13c7857ddbb50b33afaf786271575eab06f099e84c0b",
+    "signed-endpoints": "fe7082ce8a26ef3e0a4a71a4d3202d80671be6fd1a24696b02a223bee16f54f7",
+    "state-action": "6484e8df05ced5a4b12684a3160a5e34df3b1569fe4bf0b4342e5af4047ce1ad",
+    "copy-meaning": "6f0b8826cb001b1d06469ca42da79a5b02241d4b1c8dde847c099aa8c9dc00ef",
+    "figures": "8d6a25ab55f869e78ebe04267e75512adc620631a49f7e5ad1ba62bb759f6a10",
+    "probability-plots": "bdf2b44ae702dd363c5ce84e3a18a81e3c115721b81d7bd7c1874b3aa59e4177"
   },
   "figures": [
     "QFT_32.svg",
@@ -1297,6 +1297,7 @@
       "display": "x ∈ {0, 1, 2, 3}",
       "copy": "qmember(x,qset(vector(0,1,2,3)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1346,6 +1347,7 @@
       "display": "y = 4'θ'",
       "copy": "(y)==(4'θ')",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1358,6 +1360,7 @@
       "display": "y ∈ {0, 1, 2, 3}",
       "copy": "qmember(y,qset(vector(0,1,2,3)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1370,6 +1373,7 @@
       "display": "'θ' ∈ {0, 0.25, 0.5, 0.75}",
       "copy": "qmember('θ',qset(vector(0,1 ∕ 4,1 ∕ 2,3 ∕ 4)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1458,6 +1462,7 @@
       "display": "y ∈ {0, 1, 2, 3}",
       "copy": "qmember(y,qset(vector(0,1,2,3)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1694,6 +1699,7 @@
       "display": "y ∈ {0, 1, 2, 3}",
       "copy": "qmember(y,qset(vector(0,1,2,3)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1742,6 +1748,7 @@
       "display": "y ∈ {0, 1, 2, 3}",
       "copy": "qmember(y,qset(vector(0,1,2,3)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -1790,6 +1797,7 @@
       "display": "'θ' ∈ {0, 0.25, 0.5, 0.75}",
       "copy": "qmember('θ',qset(vector(0,1 ∕ 4,1 ∕ 2,3 ∕ 4)))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -2454,6 +2462,7 @@
       "display": "1 / N · (∑_{k=0}^{N − 1} (\"ω_N\"^((y − z) · k))) = ⟨φ_z|φ_y⟩",
       "copy": "(qadjacent(1 ∕ 'N',qsum(qpower(\"ω_N\",qmul(\"qboundindex_0\",qsub(y,z))),0,qsub('N',1),\"qboundindex_0\")))==(qmul(qdag(qnamedket(\"φ_z\")),qnamedket(\"φ_y\")))",
       "evidence": [
+        "state-action",
         "copy-meaning"
       ],
       "copy_after_reentry": "(qadjacent(1 ∕ 'N',qsum(qpower(\"ω_N\",qmul(\"qboundindex_1\",qsub(y,z))),0,qsub('N',1),\"qboundindex_1\")))==(qmul(qdag(qnamedket(\"φ_z\")),qnamedket(\"φ_y\")))"
@@ -3229,6 +3238,7 @@
       "display": "a ∈ {0, 1} and b ∈ {0, 1}",
       "copy": "(qmember('a',qset(vector(0,1))) and qmember('b',qset(vector(0,1))))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -3253,6 +3263,7 @@
       "display": "ω_(2^m)^(0.5 · 2^m · a · b + a · y + 2^m · b · x + 2xy) = ω_(2^m)^(2^m · b · x) · ω_(2^m)^(2 · xy) · ω_(2^m)^(2^(m − 1) · a · b) · ω_(2^m)^(a · y) = (−1)^(a · b) · ω_(2^(m − 1))^(xy) · ω_(2^m)^(a · y)",
       "copy": "qequalchain(vector(qindexedlabel(\"ω_\", qpower(2, 'm'), \"\")^((2^'m' ⋅ 'a' ⋅ 'b') ∕ 2 + 'a' ⋅ y + 2^'m' ⋅ 'b' ⋅ x + 2 ⋅ x ⋅ y),qadjacent(qadjacent(qadjacent(qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qadjacent(qpower(2,'m'),'b'x)),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qadjacent(2,xy))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qadjacent(qpower(2,qsub('m',1)),'a''b'))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qmul('a',y))),qadjacent(qadjacent(qpower(−1,qmul('a','b')),qpower(qindexedlabel(\"ω_\",qpower(2,qsub('m',1)),\"\"),qmul(x,y))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qmul('a',y)))))",
       "evidence": [
+        "state-action",
         "copy-meaning"
       ],
       "copy_after_reentry": "qequalchain(vector(qindexedlabel(\"ω_\", qpower(2, 'm'), \"\")^((2^'m' ⋅ 'a' ⋅ 'b') ∕ 2 + 'a' ⋅ y + 2^'m' ⋅ 'b' ⋅ x + 2 ⋅ x ⋅ y),qadjacent(qadjacent(qadjacent(qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qadjacent(qpower(2,'m'),qadjacent('b',x))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qadjacent(2,xy))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qadjacent(qpower(2,qsub('m',1)),qadjacent('a','b')))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qmul('a',y))),qadjacent(qadjacent(qpower(−1,qmul('a','b')),qpower(qindexedlabel(\"ω_\",qpower(2,qsub('m',1)),\"\"),qmul(x,y))),qpower(qindexedlabel(\"ω_\",qpower(2,'m'),\"\"),qmul('a',y)))))"
@@ -3351,6 +3362,7 @@
       "display": "a ∈ {0, 1} and b ∈ {0, 1}",
       "copy": "(qmember('a',qset(vector(0,1))) and qmember('b',qset(vector(0,1))))",
       "evidence": [
+        "two-bit-arithmetic",
         "copy-meaning"
       ]
     },
@@ -4137,13 +4149,12 @@
       "start": 38571,
       "end": 38646,
       "input": "$$\n\\bigl\\vert e^{2\\pi i \\delta} - 1\\bigr\\vert \\leq 2\\pi\\vert\\delta\\vert.\n$$",
-      "display": "|e^(2iπ'δ') − 1| − (2 · π · |'δ'|) ≤ 0",
-      "copy": "(|e^(2iπ'δ') − 1| − qadjacent(qadjacent(2, π), qbars('δ')))<=(0)",
+      "display": "|e^(2 · π · i · 'δ') − 1| ≤ 2 · π · |'δ'|",
+      "copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),'δ')),1)),qadjacent(qadjacent(2,π),qbars('δ')),2)",
       "evidence": [
         "signed-endpoints",
         "copy-meaning"
-      ],
-      "copy_after_reentry": "(qsub(qbars(qsub(qpower(e,qadjacent(qadjacent(2,iπ),'δ')),1)),qadjacent(qadjacent(2,π),qbars('δ'))))<=(0)"
+      ]
     },
     {
       "id": "IBM028-2ff07f29-M339",
@@ -4175,13 +4186,12 @@
       "start": 38917,
       "end": 39014,
       "input": "$$\n\\frac{2\\pi\\vert\\delta\\vert}{\\bigl\\vert e^{2\\pi i \\delta} - 1\\bigr\\vert} \\leq \\frac{\\pi}{2},\n$$",
-      "display": "|e^(2iπ'δ') − 1| > 0 and 2 · π · |'δ'| − 0.5π |e^(2iπ'δ') − 1| ≤ 0",
-      "copy": "((abs(e^(2iπ'δ') − 1))>(0) and (qadjacent(qadjacent(2, π), qbars('δ')) − (π |e^(2iπ'δ') − 1|) ∕ 2)<=(0))",
+      "display": "2 · π · |'δ'| / |e^(2 · π · i · 'δ') − 1| ≤ 0.5π",
+      "copy": "qcompare(qadjacent(qadjacent(2, π), qbars('δ')) ∕ qbars(qsub(qpower(e, qadjacent(qadjacent(qadjacent(2, π), i), 'δ')), 1)),π ∕ 2,2)",
       "evidence": [
         "signed-endpoints",
         "copy-meaning"
-      ],
-      "copy_after_reentry": "((abs(e^(2iπ'δ') − 1))>(0) and (qsub(qadjacent(qadjacent(2,π),qbars('δ')),qadjacent(π, qbars(qsub(qpower(e, qadjacent(qadjacent(2, iπ), 'δ')), 1))) ∕ 2))<=(0))"
+      ]
     },
     {
       "id": "IBM028-2ff07f29-M342",
@@ -4189,13 +4199,12 @@
       "start": 39024,
       "end": 39096,
       "input": "$$\n\\bigl\\vert e^{2\\pi i \\delta} - 1\\bigr\\vert \\geq 4\\vert\\delta\\vert.\n$$",
-      "display": "|e^(2iπ'δ') − 1| − (4 · |'δ'|) ≥ 0",
-      "copy": "(|e^(2iπ'δ') − 1| − qadjacent(4, qbars('δ')))>=(0)",
+      "display": "|e^(2 · π · i · 'δ') − 1| ≥ 4 · |'δ'|",
+      "copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),'δ')),1)),qadjacent(4,qbars('δ')),3)",
       "evidence": [
         "signed-endpoints",
         "copy-meaning"
-      ],
-      "copy_after_reentry": "(qsub(qbars(qsub(qpower(e,qadjacent(qadjacent(2,iπ),'δ')),1)),qadjacent(4,qbars('δ'))))>=(0)"
+      ]
     },
     {
       "id": "IBM028-2ff07f29-M343",
@@ -4347,11 +4356,12 @@
       "start": 39799,
       "end": 39966,
       "input": "$$\n   \\left\\vert e^{2\\pi i (2^m \\theta - y)} - 1\\right\\vert\n   \\geq 4 \\vert 2^m \\theta - y \\vert = 4 \\cdot 2^m \\cdot \\Bigl\\vert \\theta - \\frac{y}{2^m}\\Bigr\\vert.\n   $$",
-      "display": "y ≥ 2^m · 'θ' and |e^(2i ⋅ 2^'m' ⋅ π'θ' − 2iπy) − 1| − 4y ≥ −(4 · 2^m · 'θ') or 4y + |e^(2i ⋅ 2^'m' ⋅ π'θ' − 2iπy) − 1| ≥ 4 · 2^m · 'θ' and y < 2^m · 'θ'",
-      "copy": "(((4 ⋅ y + |e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ π ⋅ y) − 1|)>=(4 ⋅ 2^'m' ⋅ 'θ') and (y)<(2^'m' ⋅ 'θ')) or ((y)>=(2^'m' ⋅ 'θ') and (|e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ π ⋅ y) − 1| − 4 ⋅ y)>=(−4 ⋅ 2^'m' ⋅ 'θ')))",
+      "display": "1 and |e^(2 · π · i · (2^m · 'θ' − y)) − 1| ≥ 4 · |2^m · 'θ' − y|",
+      "copy": "(1 and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub(qadjacent(qpower(2, 'm'), 'θ'), y))),1)),qadjacent(4,qbars(qsub(qadjacent(qpower(2,'m'),'θ'),y))),3))",
       "evidence": [
         "copy-meaning"
-      ]
+      ],
+      "copy_after_reentry": "(1 and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub(qadjacent(qpower(2,'m'),'θ'),y)))),1)),qadjacent(4,qbars(qsub(qadjacent(qpower(2,'m'),'θ'),y))),3))"
     },
     {
       "id": "IBM028-2ff07f29-M356",
@@ -4359,11 +4369,12 @@
       "start": 40058,
       "end": 40178,
       "input": "$$\n   \\left\\vert e^{2\\pi i (\\theta - y/2^m)} - 1\\right\\vert \\leq 2\\pi \\Bigl\\vert \\theta - \\frac{y}{2^m}\\Bigr\\vert.\n   $$",
-      "display": "y > 2^m · 'θ' and |e^(2iπ'θ' − 2i ⋅ 0.5^'m' ⋅ πy) − 1| − (2 · 0.5^m · π · y) ≤ −2π'θ' or y ≤ 2^m · 'θ' and 2 · 0.5^m · π · y + |e^(2iπ'θ' − 2i ⋅ 0.5^'m' ⋅ πy) − 1| ≤ 2π'θ'",
-      "copy": "(((2 ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y + |e^(2 ⋅ i ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y) − 1|)<=(2π'θ') and (y)<=(2^'m' ⋅ 'θ')) or ((y)>(2^'m' ⋅ 'θ') and (|e^(2 ⋅ i ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y) − 1| − 2 ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y)<=(−2π'θ')))",
+      "display": "|e^(2 · π · i · ('θ' − y / 2^m)) − 1| ≤ 2 · π · |'θ' − y / 2^m|",
+      "copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub('θ', y ∕ qpower(2, 'm')))),1)),qadjacent(qadjacent(2,π),qbars(qsub('θ',y ∕ qpower(2, 'm')))),2)",
       "evidence": [
         "copy-meaning"
-      ]
+      ],
+      "copy_after_reentry": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qadjacent(qadjacent(2,π),qbars(qsub('θ',y ∕ qpower(2, 'm')))),2)"
     },
     {
       "id": "IBM028-2ff07f29-M357",
@@ -4527,11 +4538,12 @@
       "start": 40958,
       "end": 41031,
       "input": "$$\n   \\left\\vert e^{2\\pi i (2^m \\theta - y)} - 1\\right\\vert \\leq 2,\n   $$",
-      "display": "e^(2i · 2^m · π · 'θ') > 0 and 1 ∕ e^(2iπy) ≥ −(1 / e^(2i · 2^m · π · 'θ')) and 1 ∕ e^(2iπy) ≤ 3 / e^(2i · 2^m · π · 'θ') or 1 ∕ e^(2iπy) ≥ 3 / e^(2i · 2^m · π · 'θ') and e^(2i · 2^m · π · 'θ') < 0 and 1 ∕ e^(2iπy) ≤ −(1 / e^(2i · 2^m · π · 'θ'))",
-      "copy": "(((1 ∕ e^(2iπy))<=(3 ∕ e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ')) and (1 ∕ e^(2iπy))>=(−1 ∕ e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ')) and (e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ'))>(0)) or ((1 ∕ e^(2iπy))<=(−1 ∕ e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ')) and (1 ∕ e^(2iπy))>=(3 ∕ e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ')) and (e^(2 ⋅ i ⋅ 2^'m' ⋅ π ⋅ 'θ'))<(0)))",
+      "display": "|e^(2 · π · i · (2^m · 'θ' − y)) − 1| ≤ 2",
+      "copy": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub(qadjacent(qpower(2, 'm'), 'θ'), y))),1)),2,2)",
       "evidence": [
         "copy-meaning"
-      ]
+      ],
+      "copy_after_reentry": "qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub(qadjacent(qpower(2,'m'),'θ'),y)))),1)),2,2)"
     },
     {
       "id": "IBM028-2ff07f29-M371",
@@ -4563,11 +4575,12 @@
       "start": 41322,
       "end": 41462,
       "input": "$$\n   \\left\\vert e^{2\\pi i (\\theta - y/2^m)} - 1\\right\\vert \\geq  4\\Bigl\\vert \\theta - \\frac{y}{2^m}\\Bigr\\vert\n   \\geq 4 \\cdot 2^{-m}.\n   $$",
-      "display": "y ≥ 2^m · 'θ' + 1 and |e^(2iπ'θ' − 2i ⋅ 0.5^'m' ⋅ πy) − 1| − (4 · 0.5^m · y) ≥ −4'θ' or 4 · 0.5^m · y + |e^(2iπ'θ' − 2i ⋅ 0.5^'m' ⋅ πy) − 1| ≥ 4'θ' and y ≤ 2^m · 'θ' − 1",
-      "copy": "(((4 ⋅ (1 ∕ 2)^'m' ⋅ y + |e^(2 ⋅ i ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y) − 1|)>=(4'θ') and (y)<=(2^'m' ⋅ 'θ' − 1)) or ((y)>=(2^'m' ⋅ 'θ' + 1) and (|e^(2 ⋅ i ⋅ π ⋅ 'θ' − 2 ⋅ i ⋅ (1 ∕ 2)^'m' ⋅ π ⋅ y) − 1| − 4 ⋅ (1 ∕ 2)^'m' ⋅ y)>=(−4'θ')))",
+      "display": "|e^(2 · π · i · ('θ' − y / 2^m)) − 1| ≥ 4 · |'θ' − y / 2^m| and y ≥ 2^m · 'θ' + 1 or |e^(2 · π · i · ('θ' − y / 2^m)) − 1| ≥ 4 · |'θ' − y / 2^m| and y ≤ 2^m · 'θ' − 1",
+      "copy": "(((y)<=(2^'m' ⋅ 'θ' − 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub('θ', y ∕ qpower(2, 'm')))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)) or ((y)>=(2^'m' ⋅ 'θ' + 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),i ⋅ qsub('θ', y ∕ qpower(2, 'm')))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)))",
       "evidence": [
         "copy-meaning"
-      ]
+      ],
+      "copy_after_reentry": "(((y)<=(2^'m' ⋅ 'θ' − 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)) or ((y)>=(2^'m' ⋅ 'θ' + 1) and qcompare(qbars(qsub(qpower(e,qadjacent(qadjacent(2,π),qmul(i,qsub('θ',y ∕ qpower(2, 'm'))))),1)),qadjacent(4,qbars(qsub('θ',y ∕ qpower(2, 'm')))),3)))"
     },
     {
       "id": "IBM028-2ff07f29-M374",

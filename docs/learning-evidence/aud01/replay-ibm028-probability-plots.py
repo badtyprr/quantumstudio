@@ -88,5 +88,6 @@ for figure, stem, n, multiple, outcomes in plots:
         evidence.append(dict(outcome=outcome, vertices=len(points), max_absolute_error=error, worker=samples))
     report.append(dict(id=figure, source=source, file=path.name, sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
                        dimension=n, phase_multiplier=multiple, curves=evidence))
-args.output.write_bytes((json.dumps(report, indent=2) + "\n").encode())
+result = dict(worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(), figures=report)
+args.output.write_bytes((json.dumps(result, indent=2) + "\n").encode())
 print(f"Verified {len(report)} plots and {sum(len(p['curves']) for p in report)} probability curves.")
