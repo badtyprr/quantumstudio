@@ -1,0 +1,119 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "5b9e2b2df183216a8113f1d5b0d172b1038d387c7d01fef58405af95ef0b52b8",
+  "records_sha256": "b87882b8f4da79167533765a7bc9678cda7612ebaf0683ca459724afdf340329",
+  "inputs": [
+    [
+      "M363",
+      "$N = bc$",
+      "0"
+    ],
+    [
+      "M369",
+      "$c$",
+      "0"
+    ],
+    [
+      "M388",
+      "$c = N/d$",
+      "0"
+    ],
+    [
+      "M399",
+      "$c = N/d$",
+      "0"
+    ],
+    [
+      "speed_squared",
+      "c^2",
+      "0"
+    ],
+    [
+      "speed_matrix",
+      "[c;2*c]",
+      "0"
+    ],
+    [
+      "frequency",
+      "MHz",
+      "0"
+    ],
+    [
+      "length",
+      "qphysicalunit(\"m\",\"k\")",
+      "0"
+    ],
+    [
+      "time",
+      "qphysicalunit(\"s\",\"m\")",
+      "0"
+    ],
+    [
+      "scalar",
+      "\"c\"",
+      "0"
+    ],
+    [
+      "angle",
+      "sin(t)",
+      "0"
+    ],
+    [
+      "nested_angle",
+      "sin(sin(t))",
+      "0"
+    ]
+  ],
+  "values": {
+    "M363": {
+      "display": "N = 299.792458 · b · km ∕ ms",
+      "copy": "('N')==(('b')*((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\")))"
+    },
+    "M369": {
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    "M388": {
+      "display": "N = 299.792458 · d · km ∕ ms and d ≠ 0",
+      "copy": "(('N')==(('d')*((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))) and ('d')!=(0))"
+    },
+    "M399": {
+      "display": "N = 299.792458 · d · km ∕ ms and d ≠ 0",
+      "copy": "(('N')==(('d')*((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))) and ('d')!=(0))"
+    },
+    "speed_squared": {
+      "display": "89.875517873681764 PGy",
+      "copy": "(89875517873681764)*(qphysicalunit(\"Gy\",\"\"))"
+    },
+    "speed_matrix": {
+      "display": "[(299.792458 km ∕ ms); (599.584916 km ∕ ms)]",
+      "copy": "matrix(2,1,[((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\")),((qphysicalunit(\"s\",\"\"))^(−1))*(599584916)*(qphysicalunit(\"m\",\"\"))])"
+    },
+    "frequency": {
+      "display": "1 MHz",
+      "copy": "(1000000)*(qphysicalunit(\"Hz\",\"\"))"
+    },
+    "length": {
+      "display": "1 km",
+      "copy": "(1000)*(qphysicalunit(\"m\",\"\"))"
+    },
+    "time": {
+      "display": "1 ms",
+      "copy": "(1 ∕ 1000)*(qphysicalunit(\"s\",\"\"))"
+    },
+    "scalar": {
+      "display": "c",
+      "copy": "'c'"
+    },
+    "angle": {
+      "display": "sin('t' rad)",
+      "copy": "sin(('t')*(qphysicalunit(\"rad\",\"\")))"
+    },
+    "nested_angle": {
+      "display": "sin(sin('t' rad) ⋅ rad)",
+      "copy": "sin((qphysicalunit(\"rad\",\"\"))*(sin(('t')*(qphysicalunit(\"rad\",\"\")))))"
+    }
+  },
+  "classical_speed_copy": "(149896229 ∕ 500000) km ∕ ms"
+}

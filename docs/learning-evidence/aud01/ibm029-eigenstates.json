@@ -1,0 +1,114 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "5b9e2b2df183216a8113f1d5b0d172b1038d387c7d01fef58405af95ef0b52b8",
+  "source_ids": [
+    92,
+    98,
+    107,
+    108,
+    113,
+    115,
+    116,
+    117,
+    120,
+    123,
+    125,
+    331
+  ],
+  "examples": [
+    {
+      "N": 15,
+      "a": 1,
+      "dimension": 16,
+      "orbit": [
+        1
+      ],
+      "order": 1,
+      "root_of_unity": "1",
+      "eigenvalue_checks": 1,
+      "inner_products": 1,
+      "basis_reconstructions": 1
+    },
+    {
+      "N": 15,
+      "a": 4,
+      "dimension": 16,
+      "orbit": [
+        1,
+        4
+      ],
+      "order": 2,
+      "root_of_unity": "-1",
+      "eigenvalue_checks": 2,
+      "inner_products": 4,
+      "basis_reconstructions": 1
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "dimension": 16,
+      "orbit": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "order": 4,
+      "root_of_unity": "i",
+      "eigenvalue_checks": 4,
+      "inner_products": 16,
+      "basis_reconstructions": 1
+    },
+    {
+      "N": 15,
+      "a": 14,
+      "dimension": 16,
+      "orbit": [
+        1,
+        14
+      ],
+      "order": 2,
+      "root_of_unity": "-1",
+      "eigenvalue_checks": 2,
+      "inner_products": 4,
+      "basis_reconstructions": 1
+    },
+    {
+      "N": 21,
+      "a": 2,
+      "dimension": 32,
+      "orbit": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        11
+      ],
+      "order": 6,
+      "root_of_unity": "(1+i*sqrt(3))/2",
+      "eigenvalue_checks": 6,
+      "inner_products": 36,
+      "basis_reconstructions": 1
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "dimension": 32,
+      "orbit": [
+        1,
+        5,
+        4,
+        20,
+        16,
+        17
+      ],
+      "order": 6,
+      "root_of_unity": "(1+i*sqrt(3))/2",
+      "eigenvalue_checks": 6,
+      "inner_products": 36,
+      "basis_reconstructions": 1
+    }
+  ]
+}

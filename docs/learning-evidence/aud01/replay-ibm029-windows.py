@@ -9,8 +9,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("directory", type=Path)
 parser.add_argument("--package", type=Path)
 parser.add_argument("--report", type=Path)
+parser.add_argument("--inventory", type=Path, default=Path(__file__).with_name("ibm029-inventory.json"))
 args = parser.parse_args()
-inventory = json.loads(Path(__file__).with_name("ibm029-inventory.json").read_bytes())
+inventory = json.loads(args.inventory.read_bytes())
 rows = inventory["rows"]
 # The shared Windows runner has a lesson-specific matrix declaration for
 # IBM-028 M123. These keys identify the unmodified, context-free Shor inputs.
