@@ -1,0 +1,128 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "26d8387c56da6fdd3597a56091fa23eef3c2c3c714e32c2ca46c83f7b4e48e9d",
+  "source_ids": [
+    331,
+    336,
+    337,
+    340,
+    341,
+    342,
+    343,
+    344
+  ],
+  "examples": [
+    {
+      "N": 5,
+      "a": 4,
+      "order": 2,
+      "width": 3,
+      "orbit": [
+        1,
+        4
+      ],
+      "circuit": "sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(modmul(4,5)),s_0,[2,3,4,5]),apply(fourier(8)~,s_0,[0,1,2])],basis(1,64),s_0)",
+      "amplitudes": 64,
+      "reduced_matrix_entries": 64,
+      "max_amplitude_error": 2.3333027021856455e-16,
+      "max_density_error": 2.226832385710002e-16,
+      "measurement_probabilities": [
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "N": 7,
+      "a": 2,
+      "order": 3,
+      "width": 4,
+      "orbit": [
+        1,
+        2,
+        4
+      ],
+      "circuit": "sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(H,s_0,[3]),apply(controlled(modmul(4,7)),s_0,[0,4,5,6]),apply(controlled(modmul(2,7)),s_0,[1,4,5,6]),apply(controlled(modmul(4,7)),s_0,[2,4,5,6]),apply(controlled(modmul(2,7)),s_0,[3,4,5,6]),apply(fourier(16)~,s_0,[0,1,2,3])],basis(1,128),s_0)",
+      "amplitudes": 128,
+      "reduced_matrix_entries": 256,
+      "max_amplitude_error": 6.389813363550566e-16,
+      "max_density_error": 4.2847669856627135e-16,
+      "measurement_probabilities": [
+        0.3359375,
+        0.0028167157329138377,
+        0.003628641359900487,
+        0.005972916367407881,
+        0.015625,
+        0.22951251819299018,
+        0.058871358640099514,
+        0.01169784970668811,
+        0.0078125,
+        0.01169784970668811,
+        0.058871358640099514,
+        0.22951251819299018,
+        0.015625,
+        0.005972916367407881,
+        0.003628641359900487,
+        0.0028167157329138377
+      ]
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "order": 4,
+      "width": 3,
+      "orbit": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "circuit": "sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(modmul(4,15)),s_0,[1,3,4,5,6]),apply(controlled(modmul(2,15)),s_0,[2,3,4,5,6]),apply(fourier(8)~,s_0,[0,1,2])],basis(1,128),s_0)",
+      "amplitudes": 128,
+      "reduced_matrix_entries": 64,
+      "max_amplitude_error": 2.0481143217365067e-16,
+      "max_density_error": 1.8200938125092988e-16,
+      "measurement_probabilities": [
+        0.25,
+        0.0,
+        0.25,
+        0.0,
+        0.25,
+        0.0,
+        0.25,
+        0.0
+      ]
+    },
+    {
+      "N": 21,
+      "a": 2,
+      "order": 6,
+      "width": 2,
+      "orbit": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        11
+      ],
+      "circuit": "sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(controlled(modmul(4,21)),s_0,[0,2,3,4,5,6]),apply(controlled(modmul(2,21)),s_0,[1,2,3,4,5,6]),apply(fourier(4)~,s_0,[0,1])],basis(1,128),s_0)",
+      "amplitudes": 128,
+      "reduced_matrix_entries": 16,
+      "max_amplitude_error": 2.6269184877946193e-16,
+      "max_density_error": 8.326672684688674e-17,
+      "measurement_probabilities": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  ]
+}

@@ -1,0 +1,665 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "26d8387c56da6fdd3597a56091fa23eef3c2c3c714e32c2ca46c83f7b4e48e9d",
+  "windows_records_sha256": "246af61196d9caf1b821ddbe813b6910b866a8b18c77e1ddd22178a31dfc5256",
+  "inputs": [
+    [
+      "M289",
+      "$k/r$",
+      "0"
+    ],
+    [
+      "M291",
+      "$\\alpha = y/2^m$",
+      "0"
+    ],
+    [
+      "M294",
+      "$$\n\\frac{u}{v} = \\frac{k}{r}.\n$$",
+      "0"
+    ],
+    [
+      "M298",
+      "$k=0$",
+      "0"
+    ],
+    [
+      "M306",
+      "$u/v = k/r$",
+      "0"
+    ],
+    [
+      "M307",
+      "$k\\in\\{0,\\ldots,r-1\\}$",
+      "0"
+    ],
+    [
+      "denominators-15-1",
+      "vector(denominator(0))",
+      "0"
+    ],
+    [
+      "denominators-15-4",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(256/512,15),x)))",
+      "0"
+    ],
+    [
+      "denominators-7-2",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(43/128,7),x)),denominator(qsumset(x,recoverphase(85/128,7),x)))",
+      "0"
+    ],
+    [
+      "denominators-15-2",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(128/512,15),x)),denominator(qsumset(x,recoverphase(256/512,15),x)),denominator(qsumset(x,recoverphase(384/512,15),x)))",
+      "0"
+    ],
+    [
+      "denominators-21-2",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(341/2048,21),x)),denominator(qsumset(x,recoverphase(683/2048,21),x)),denominator(qsumset(x,recoverphase(1024/2048,21),x)),denominator(qsumset(x,recoverphase(1365/2048,21),x)),denominator(qsumset(x,recoverphase(1707/2048,21),x)))",
+      "0"
+    ],
+    [
+      "denominators-35-2",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(683/8192,35),x)),denominator(qsumset(x,recoverphase(1365/8192,35),x)),denominator(qsumset(x,recoverphase(2048/8192,35),x)),denominator(qsumset(x,recoverphase(2731/8192,35),x)),denominator(qsumset(x,recoverphase(3413/8192,35),x)),denominator(qsumset(x,recoverphase(4096/8192,35),x)),denominator(qsumset(x,recoverphase(4779/8192,35),x)),denominator(qsumset(x,recoverphase(5461/8192,35),x)),denominator(qsumset(x,recoverphase(6144/8192,35),x)),denominator(qsumset(x,recoverphase(6827/8192,35),x)),denominator(qsumset(x,recoverphase(7509/8192,35),x)))",
+      "0"
+    ],
+    [
+      "denominators-17-3",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(128/2048,17),x)),denominator(qsumset(x,recoverphase(256/2048,17),x)),denominator(qsumset(x,recoverphase(384/2048,17),x)),denominator(qsumset(x,recoverphase(512/2048,17),x)),denominator(qsumset(x,recoverphase(640/2048,17),x)),denominator(qsumset(x,recoverphase(768/2048,17),x)),denominator(qsumset(x,recoverphase(896/2048,17),x)),denominator(qsumset(x,recoverphase(1024/2048,17),x)),denominator(qsumset(x,recoverphase(1152/2048,17),x)),denominator(qsumset(x,recoverphase(1280/2048,17),x)),denominator(qsumset(x,recoverphase(1408/2048,17),x)),denominator(qsumset(x,recoverphase(1536/2048,17),x)),denominator(qsumset(x,recoverphase(1664/2048,17),x)),denominator(qsumset(x,recoverphase(1792/2048,17),x)),denominator(qsumset(x,recoverphase(1920/2048,17),x)))",
+      "0"
+    ],
+    [
+      "denominators-31-3",
+      "vector(denominator(0),denominator(qsumset(x,recoverphase(68/2048,31),x)),denominator(qsumset(x,recoverphase(137/2048,31),x)),denominator(qsumset(x,recoverphase(205/2048,31),x)),denominator(qsumset(x,recoverphase(273/2048,31),x)),denominator(qsumset(x,recoverphase(341/2048,31),x)),denominator(qsumset(x,recoverphase(410/2048,31),x)),denominator(qsumset(x,recoverphase(478/2048,31),x)),denominator(qsumset(x,recoverphase(546/2048,31),x)),denominator(qsumset(x,recoverphase(614/2048,31),x)),denominator(qsumset(x,recoverphase(683/2048,31),x)),denominator(qsumset(x,recoverphase(751/2048,31),x)),denominator(qsumset(x,recoverphase(819/2048,31),x)),denominator(qsumset(x,recoverphase(887/2048,31),x)),denominator(qsumset(x,recoverphase(956/2048,31),x)),denominator(qsumset(x,recoverphase(1024/2048,31),x)),denominator(qsumset(x,recoverphase(1092/2048,31),x)),denominator(qsumset(x,recoverphase(1161/2048,31),x)),denominator(qsumset(x,recoverphase(1229/2048,31),x)),denominator(qsumset(x,recoverphase(1297/2048,31),x)),denominator(qsumset(x,recoverphase(1365/2048,31),x)),denominator(qsumset(x,recoverphase(1434/2048,31),x)),denominator(qsumset(x,recoverphase(1502/2048,31),x)),denominator(qsumset(x,recoverphase(1570/2048,31),x)),denominator(qsumset(x,recoverphase(1638/2048,31),x)),denominator(qsumset(x,recoverphase(1707/2048,31),x)),denominator(qsumset(x,recoverphase(1775/2048,31),x)),denominator(qsumset(x,recoverphase(1843/2048,31),x)),denominator(qsumset(x,recoverphase(1911/2048,31),x)),denominator(qsumset(x,recoverphase(1980/2048,31),x)))",
+      "0"
+    ],
+    [
+      "combine-proper-divisors",
+      "lcm(denominator(qsumset(x,recoverphase(341/1024,21),x)),denominator(qsumset(x,recoverphase(512/1024,21),x)))",
+      "0"
+    ]
+  ],
+  "examples": [
+    {
+      "N": 15,
+      "a": 1,
+      "order": 1,
+      "phase_grid": 512,
+      "key": "denominators-15-1",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        }
+      ],
+      "success_after_independent_samples": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    },
+    {
+      "N": 15,
+      "a": 4,
+      "order": 2,
+      "phase_grid": 512,
+      "key": "denominators-15-4",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 256,
+          "u": 1,
+          "v": 2
+        }
+      ],
+      "success_after_independent_samples": [
+        "1/2",
+        "3/4",
+        "7/8",
+        "15/16",
+        "31/32",
+        "63/64"
+      ]
+    },
+    {
+      "N": 7,
+      "a": 2,
+      "order": 3,
+      "phase_grid": 128,
+      "key": "denominators-7-2",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 43,
+          "u": 1,
+          "v": 3
+        },
+        {
+          "k": 2,
+          "y": 85,
+          "u": 2,
+          "v": 3
+        }
+      ],
+      "success_after_independent_samples": [
+        "2/3",
+        "8/9",
+        "26/27",
+        "80/81",
+        "242/243",
+        "728/729"
+      ]
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "order": 4,
+      "phase_grid": 512,
+      "key": "denominators-15-2",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 128,
+          "u": 1,
+          "v": 4
+        },
+        {
+          "k": 2,
+          "y": 256,
+          "u": 1,
+          "v": 2
+        },
+        {
+          "k": 3,
+          "y": 384,
+          "u": 3,
+          "v": 4
+        }
+      ],
+      "success_after_independent_samples": [
+        "1/2",
+        "3/4",
+        "7/8",
+        "15/16",
+        "31/32",
+        "63/64"
+      ]
+    },
+    {
+      "N": 21,
+      "a": 2,
+      "order": 6,
+      "phase_grid": 2048,
+      "key": "denominators-21-2",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 341,
+          "u": 1,
+          "v": 6
+        },
+        {
+          "k": 2,
+          "y": 683,
+          "u": 1,
+          "v": 3
+        },
+        {
+          "k": 3,
+          "y": 1024,
+          "u": 1,
+          "v": 2
+        },
+        {
+          "k": 4,
+          "y": 1365,
+          "u": 2,
+          "v": 3
+        },
+        {
+          "k": 5,
+          "y": 1707,
+          "u": 5,
+          "v": 6
+        }
+      ],
+      "success_after_independent_samples": [
+        "1/3",
+        "2/3",
+        "91/108",
+        "25/27",
+        "3751/3888",
+        "637/648"
+      ]
+    },
+    {
+      "N": 35,
+      "a": 2,
+      "order": 12,
+      "phase_grid": 8192,
+      "key": "denominators-35-2",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 683,
+          "u": 1,
+          "v": 12
+        },
+        {
+          "k": 2,
+          "y": 1365,
+          "u": 1,
+          "v": 6
+        },
+        {
+          "k": 3,
+          "y": 2048,
+          "u": 1,
+          "v": 4
+        },
+        {
+          "k": 4,
+          "y": 2731,
+          "u": 1,
+          "v": 3
+        },
+        {
+          "k": 5,
+          "y": 3413,
+          "u": 5,
+          "v": 12
+        },
+        {
+          "k": 6,
+          "y": 4096,
+          "u": 1,
+          "v": 2
+        },
+        {
+          "k": 7,
+          "y": 4779,
+          "u": 7,
+          "v": 12
+        },
+        {
+          "k": 8,
+          "y": 5461,
+          "u": 2,
+          "v": 3
+        },
+        {
+          "k": 9,
+          "y": 6144,
+          "u": 3,
+          "v": 4
+        },
+        {
+          "k": 10,
+          "y": 6827,
+          "u": 5,
+          "v": 6
+        },
+        {
+          "k": 11,
+          "y": 7509,
+          "u": 11,
+          "v": 12
+        }
+      ],
+      "success_after_independent_samples": [
+        "1/3",
+        "2/3",
+        "91/108",
+        "25/27",
+        "3751/3888",
+        "637/648"
+      ]
+    },
+    {
+      "N": 17,
+      "a": 3,
+      "order": 16,
+      "phase_grid": 2048,
+      "key": "denominators-17-3",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 128,
+          "u": 1,
+          "v": 16
+        },
+        {
+          "k": 2,
+          "y": 256,
+          "u": 1,
+          "v": 8
+        },
+        {
+          "k": 3,
+          "y": 384,
+          "u": 3,
+          "v": 16
+        },
+        {
+          "k": 4,
+          "y": 512,
+          "u": 1,
+          "v": 4
+        },
+        {
+          "k": 5,
+          "y": 640,
+          "u": 5,
+          "v": 16
+        },
+        {
+          "k": 6,
+          "y": 768,
+          "u": 3,
+          "v": 8
+        },
+        {
+          "k": 7,
+          "y": 896,
+          "u": 7,
+          "v": 16
+        },
+        {
+          "k": 8,
+          "y": 1024,
+          "u": 1,
+          "v": 2
+        },
+        {
+          "k": 9,
+          "y": 1152,
+          "u": 9,
+          "v": 16
+        },
+        {
+          "k": 10,
+          "y": 1280,
+          "u": 5,
+          "v": 8
+        },
+        {
+          "k": 11,
+          "y": 1408,
+          "u": 11,
+          "v": 16
+        },
+        {
+          "k": 12,
+          "y": 1536,
+          "u": 3,
+          "v": 4
+        },
+        {
+          "k": 13,
+          "y": 1664,
+          "u": 13,
+          "v": 16
+        },
+        {
+          "k": 14,
+          "y": 1792,
+          "u": 7,
+          "v": 8
+        },
+        {
+          "k": 15,
+          "y": 1920,
+          "u": 15,
+          "v": 16
+        }
+      ],
+      "success_after_independent_samples": [
+        "1/2",
+        "3/4",
+        "7/8",
+        "15/16",
+        "31/32",
+        "63/64"
+      ]
+    },
+    {
+      "N": 31,
+      "a": 3,
+      "order": 30,
+      "phase_grid": 2048,
+      "key": "denominators-31-3",
+      "samples": [
+        {
+          "k": 0,
+          "y": 0,
+          "u": 0,
+          "v": 1
+        },
+        {
+          "k": 1,
+          "y": 68,
+          "u": 1,
+          "v": 30
+        },
+        {
+          "k": 2,
+          "y": 137,
+          "u": 1,
+          "v": 15
+        },
+        {
+          "k": 3,
+          "y": 205,
+          "u": 1,
+          "v": 10
+        },
+        {
+          "k": 4,
+          "y": 273,
+          "u": 2,
+          "v": 15
+        },
+        {
+          "k": 5,
+          "y": 341,
+          "u": 1,
+          "v": 6
+        },
+        {
+          "k": 6,
+          "y": 410,
+          "u": 1,
+          "v": 5
+        },
+        {
+          "k": 7,
+          "y": 478,
+          "u": 7,
+          "v": 30
+        },
+        {
+          "k": 8,
+          "y": 546,
+          "u": 4,
+          "v": 15
+        },
+        {
+          "k": 9,
+          "y": 614,
+          "u": 3,
+          "v": 10
+        },
+        {
+          "k": 10,
+          "y": 683,
+          "u": 1,
+          "v": 3
+        },
+        {
+          "k": 11,
+          "y": 751,
+          "u": 11,
+          "v": 30
+        },
+        {
+          "k": 12,
+          "y": 819,
+          "u": 2,
+          "v": 5
+        },
+        {
+          "k": 13,
+          "y": 887,
+          "u": 13,
+          "v": 30
+        },
+        {
+          "k": 14,
+          "y": 956,
+          "u": 7,
+          "v": 15
+        },
+        {
+          "k": 15,
+          "y": 1024,
+          "u": 1,
+          "v": 2
+        },
+        {
+          "k": 16,
+          "y": 1092,
+          "u": 8,
+          "v": 15
+        },
+        {
+          "k": 17,
+          "y": 1161,
+          "u": 17,
+          "v": 30
+        },
+        {
+          "k": 18,
+          "y": 1229,
+          "u": 3,
+          "v": 5
+        },
+        {
+          "k": 19,
+          "y": 1297,
+          "u": 19,
+          "v": 30
+        },
+        {
+          "k": 20,
+          "y": 1365,
+          "u": 2,
+          "v": 3
+        },
+        {
+          "k": 21,
+          "y": 1434,
+          "u": 7,
+          "v": 10
+        },
+        {
+          "k": 22,
+          "y": 1502,
+          "u": 11,
+          "v": 15
+        },
+        {
+          "k": 23,
+          "y": 1570,
+          "u": 23,
+          "v": 30
+        },
+        {
+          "k": 24,
+          "y": 1638,
+          "u": 4,
+          "v": 5
+        },
+        {
+          "k": 25,
+          "y": 1707,
+          "u": 5,
+          "v": 6
+        },
+        {
+          "k": 26,
+          "y": 1775,
+          "u": 13,
+          "v": 15
+        },
+        {
+          "k": 27,
+          "y": 1843,
+          "u": 9,
+          "v": 10
+        },
+        {
+          "k": 28,
+          "y": 1911,
+          "u": 14,
+          "v": 15
+        },
+        {
+          "k": 29,
+          "y": 1980,
+          "u": 29,
+          "v": 30
+        }
+      ],
+      "success_after_independent_samples": [
+        "4/15",
+        "16/25",
+        "2821/3375",
+        "208/225",
+        "2929531/3037500",
+        "138229/140625"
+      ]
+    }
+  ]
+}
