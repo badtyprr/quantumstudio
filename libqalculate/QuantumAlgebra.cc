@@ -553,6 +553,62 @@ bool stateActionOperand(const MathStructure &value,const EvaluationOptions &eo,u
          (value[1].representsScalar() && stateActionOperand(value[0],eo,depth+1));
  return false;
 }
+// Recover the unique reduced u/v with v < N and |phase - u/v| < 1/(2N²).
+int recoverPhaseFraction(MathStructure &out,const MathStructure &raw,const EvaluationOptions &options) {
+ EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
+ MathStructure phase=raw[0],bound=raw[1];phase.eval(exact);bound.eval(exact);
+ if(!bound.isInteger() || bound.isApproximate() || bound.number()<2) {
+  if(bound.containsUnknowns() && bound.representsScalar())return 0;
+  CALCULATOR->error(true,"Phase recovery requires an exact integer bound of at least two.",NULL);return 0;
+ }
+ if(phase.containsUnknowns() && phase.representsScalar())return 0;
+ if(phase.isApproximate() || !phase.representsReal()) {
+  CALCULATOR->error(true,"Phase recovery requires an exact real phase between zero and one.",NULL);return 0;
+ }
+ MathStructure positive=phase,belowOne=phase;
+ positive.transform(COMPARISON_GREATER,m_zero);positive.eval(exact);
+ belowOne.transform(COMPARISON_LESS,m_one);belowOne.eval(exact);
+ if(positive.isZero() || belowOne.isZero()) {
+  CALCULATOR->error(true,"Phase recovery requires a phase strictly between zero and one.",NULL);return 0;
+ }
+ if(!positive.isOne() || !belowOne.isOne())return 0;
+
+ const Number &n=bound.number();
+ Number tolerance=Number(1)/(n*n*2);
+ Number rationalPhase;
+ if(phase.isNumber() && phase.number().isRational())rationalPhase=phase.number();
+ else {
+  // Floor to a rational within 1/(4N³) of the exact phase. A qualifying
+  // u/v is then within 1/(2v²) of that rational (v <= N-1), hence is one
+  // of its continued-fraction convergents. Test acceptance on the original.
+  Number scale=n*n*n*4;
+  MathStructure scaled=phase;scaled*=MathStructure(scale);
+  MathStructure lower(CALCULATOR->getFunctionById(FUNCTION_ID_FLOOR),&scaled,NULL);
+  lower.eval(exact);
+  if(!lower.isInteger() || lower.isApproximate())return 0;
+  rationalPhase=lower.number()/scale;
+ }
+ Number dividend=rationalPhase.numerator(),divisor=rationalPhase.denominator();
+ Number previousU(0),u(1),previousV(1),v(0);
+ MathStructure entries;entries.clearVector();
+ while(!divisor.isZero()) {
+  if(CALCULATOR->aborted())return 0;
+  Number coefficient;
+  if(!dividend.irem(divisor,coefficient))return 0;
+  Number nextV=coefficient*v+previousV;
+  if(nextV>=n)break;
+  Number nextU=coefficient*u+previousU;
+  Number candidate=nextU/nextV;
+  MathStructure difference=phase;difference-=MathStructure(candidate);
+  MathStructure accepted(CALCULATOR->getFunctionById(FUNCTION_ID_ABS),&difference,NULL);
+  accepted.transform(COMPARISON_LESS,MathStructure(tolerance));accepted.eval(exact);
+  if(accepted.isOne()) {entries.addChild(MathStructure(candidate));break;}
+  if(!accepted.isZero())return 0;
+  previousU=u;u=nextU;previousV=v;v=nextV;
+  Number remainder=dividend;dividend=divisor;divisor=remainder;
+ }
+ out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+}
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
@@ -612,6 +668,7 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=value.number().integerLength();return 1;
   }
+  if(op=="qrecoverphase")return recoverPhaseFraction(out,raw,eo);
   if(op=="qintegergcd") {
    MathStructure args=raw;
    for(size_t k=0;k<2;++k) {
@@ -1198,6 +1255,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qrecoverphase",2));
  calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));

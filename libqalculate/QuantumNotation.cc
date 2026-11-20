@@ -345,7 +345,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qfamilyat",2},
  {"qpostselect",2},
- {"qresidues",1},{"qunitsmod",1},{"qintegergcd",2},{"qpower",2},{"qresidue",2},
+ {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
@@ -1354,6 +1354,7 @@ class Parser {
     if(name=="bitword")name="qbitword";
     if(name=="residues")name="qresidues";
     if(name=="invertible_residues")name="qunitsmod";
+    if(name=="recoverphase")name="qrecoverphase";
     if(name=="integergcd")name="qintegergcd";
     if(name=="geosum")name="qgeometricsum";
     if(name=="density") name="qdensity";

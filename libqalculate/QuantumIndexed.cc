@@ -174,7 +174,7 @@ bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return quantumComplexDomain(value) || name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;

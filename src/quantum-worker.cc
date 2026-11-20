@@ -328,6 +328,11 @@ int main(int argc,char **argv) {
   std::cerr << "The calculation did not preserve the independent expressions.";return 2;
  }
  PrintOptions po; po.use_unicode_signs=true;
+ // Exact set elements distinguish nearby rationals even when their decimal
+ // displays would round to the same value.
+ if(result.isFunction() && result.function()->referenceName()=="qset" && !result.isApproximate()) {
+  po.number_fraction_format=FRACTION_FRACTIONAL;po.restrict_fraction_length=false;
+ }
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
  MathStructure display=result; display.format(po);
  if(!json) std::cout << display.print(po) << std::endl;

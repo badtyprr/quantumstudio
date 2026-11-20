@@ -204,6 +204,8 @@ class Printer {
   if(name=="qbitlength" && value.size()==1)return Fragment("bitlength("+render(value[0],depth+1).text+")");
   if((name=="qresidues" || name=="qunitsmod") && value.size()==1)
    return Fragment(std::string(name=="qresidues" ? "residues(" : "invertible_residues(")+render(value[0],depth+1).text+")");
+  if(name=="qrecoverphase" && value.size()==2)
+   return Fragment("recoverphase("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qintegergcd" && value.size()==2)
    return Fragment("integergcd("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qresidue" && value.size()==2)
