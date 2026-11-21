@@ -1,0 +1,40 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/quantum-teleportation.ipynb",
+  "notebook_sha256": "a126b0f66b405b79c3829c598cd7688075e91a80d002ab5dcb5d9194dacbf023",
+  "worker_sha256": "1b81664ed39ce406bca70767295805d1f93b3fe170eb923576510fa5ff67a643",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "edd7c3d7e2e1cf27b0ee4b91c353cc57d9753a60a0a1c8c1607dda5666197cd4",
+  "suite": {
+    "passed": true,
+    "checks": 1316,
+    "calls": 147,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 146,
+    "restored_identically": 146,
+    "stable_after_text_reentry": 144,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM049-a126b0f6-M139",
+      "message": "Expected a quantum expression at byte 5"
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM049-a126b0f6-M140",
+      "first": "qcompare(qketstate(\"pi_1\"),qmul(1 ∕ √(2),qadd(qadd(qadd(qadjacent('α',qtensor(qtensor(qbasis(0,'B'),qbasis(\"γ_0\",'R')),qbasis(0,'A''Q'))),qadjacent('α',qtensor(qtensor(qbasis(1,'B'),qbasis(\"γ_0\",'R')),qbasis(10,'A''Q')))),qadjacent('β',qtensor(qtensor(qbasis(0,'B'),qbasis(\"γ_1\",'R')),qbasis(11,'A''Q')))),qadjacent('β',qtensor(qtensor(qbasis(1,'B'),qbasis(\"γ_1\",'R')),qbasis(1,'A''Q'))))),4)",
+      "second": "qcompare(qketstate(\"pi_1\"),qmul(1 ∕ qpower(2, 1 ∕ 2),qadd(qadd(qadd(qadjacent('α',qtensor(qtensor(qbasis(0,'B'),qbasis(\"γ_0\",'R')),qbasis(0,qadjacent('A','Q')))),qadjacent('α',qtensor(qtensor(qbasis(1,'B'),qbasis(\"γ_0\",'R')),qbasis(10,qadjacent('A','Q'))))),qadjacent('β',qtensor(qtensor(qbasis(0,'B'),qbasis(\"γ_1\",'R')),qbasis(11,qadjacent('A','Q'))))),qadjacent('β',qtensor(qtensor(qbasis(1,'B'),qbasis(\"γ_1\",'R')),qbasis(1,qadjacent('A','Q')))))),4)"
+    },
+    {
+      "id": "IBM049-a126b0f6-M141",
+      "first": "\\begin{gathered}qcompare(qketstate(\"pi_2\"),qadjacent(qadjacent(1 ∕ 2,qadd(qadjacent('α',qtensor(qbasis(0,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(1,'B'),qbasis(\"γ_1\",'R'))))),qbasis(0,'A''Q')),4)\\\\qadjacent(qadjacent(1 ∕ 2,qsub(qadjacent('α',qtensor(qbasis(0,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(1,'B'),qbasis(\"γ_1\",'R'))))),qbasis(1,'A''Q'))\\\\qadjacent(qadjacent(1 ∕ 2,qadd(qadjacent('α',qtensor(qbasis(1,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(0,'B'),qbasis(\"γ_1\",'R'))))),qbasis(10,'A''Q'))\\\\qadjacent(qadjacent(1 ∕ 2,qsub(qadjacent('α',qtensor(qbasis(1,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(0,'B'),qbasis(\"γ_1\",'R'))))),qbasis(11,'A''Q'))\\end{gathered}",
+      "second": "\\begin{gathered}qcompare(qketstate(\"pi_2\"),qadjacent(qadjacent(1 ∕ 2,qadd(qadjacent('α',qtensor(qbasis(0,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(1,'B'),qbasis(\"γ_1\",'R'))))),qbasis(0,qadjacent('A','Q'))),4)\\\\qadjacent(qadjacent(1 ∕ 2,qsub(qadjacent('α',qtensor(qbasis(0,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(1,'B'),qbasis(\"γ_1\",'R'))))),qbasis(1,qadjacent('A','Q')))\\\\qadjacent(qadjacent(1 ∕ 2,qadd(qadjacent('α',qtensor(qbasis(1,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(0,'B'),qbasis(\"γ_1\",'R'))))),qbasis(10,qadjacent('A','Q')))\\\\qadjacent(qadjacent(1 ∕ 2,qsub(qadjacent('α',qtensor(qbasis(1,'B'),qbasis(\"γ_0\",'R'))),qadjacent('β',qtensor(qbasis(0,'B'),qbasis(\"γ_1\",'R'))))),qbasis(11,qadjacent('A','Q')))\\end{gathered}"
+    }
+  ],
+  "failures": []
+}
