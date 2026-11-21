@@ -1,0 +1,73 @@
+{
+  "sources": {
+    "29": {
+      "url": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+      "sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681"
+    },
+    "34": {
+      "url": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
+      "sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b"
+    }
+  },
+  "mode": "Scalar algebra",
+  "windows_records_sha256": "15b10ea50783bd5b15d3da1680e0a10fe12759d7283aaa3810ccc543dd844287",
+  "application_sha256": "2335cbbb65a216fcd8725775417f380337e8adf4cb6736afee9fff97e4efdc53",
+  "worker_sha256": "e2173bd57f398e5ed859f335a1d43cf7be3e27b6308fb4a5cc03d283f1e7ada4",
+  "session_store_checks": 72,
+  "suite": {
+    "passed": true,
+    "checks": 414,
+    "calls": 46,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "results": {
+    "ibm029-362": "(('b')>=(2) and ('c')>=(2))",
+    "ibm029-363": "('N')==('b''c')",
+    "ibm029-369": "'c'",
+    "ibm029-374": "(('j')>=(2) and ('s')>=(2))",
+    "ibm029-425": "1",
+    "ibm034-132": "qindexrange(1,'T')",
+    "ibm034-133": "'T'",
+    "ibm034-134": "('T')==(1)",
+    "ibm034-135": "'T'",
+    "ibm034-136": "'T'",
+    "ibm034-137": "qscalarupdate('T',ceil(qadjacent(5 \u2215 4,'T')))",
+    "ibm034-138": "'T'",
+    "lower-1-3": "0",
+    "factor-1-3-0": "1",
+    "factor-1-3-1": "0",
+    "independent-1-3": "0",
+    "lower-2-2": "1",
+    "factor-2-2-0": "1",
+    "factor-2-2-1": "0",
+    "independent-2-2": "1",
+    "lower-3-5": "1",
+    "factor-3-5-0": "1",
+    "factor-3-5-1": "0",
+    "independent-3-5": "1",
+    "lower-3-1": "0",
+    "factor-3-1-0": "1",
+    "factor-3-1-1": "0",
+    "independent-3-1": "0",
+    "limit-initial-1": "1",
+    "limit-update-1": "2",
+    "limit-initial-2": "0",
+    "limit-update-2": "3",
+    "limit-initial-4": "0",
+    "limit-update-4": "5",
+    "exponent": "18",
+    "group": "18",
+    "function": "5",
+    "pi-before": "1",
+    "pi-factor": "1",
+    "pi-tex": "1",
+    "trailing-digit": "12",
+    "indexed-0": "6",
+    "indexed-1": "6",
+    "speed-default": "((qphysicalunit(\"s\",\"\"))^(\u22121))*(299792458)*(qphysicalunit(\"m\",\"\"))",
+    "gate-default": "1",
+    "pauli-default": "1"
+  }
+}

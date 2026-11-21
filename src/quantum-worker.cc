@@ -426,7 +426,7 @@ int main(int argc,char **argv) {
  // A whole alignment of wide Pauli words can be evaluated in the exact
  // binary symplectic representation. Other uses still receive dense matrices.
  std::vector<std::string> pauliLines;
- if(json && !approximate && independentLines.size()>1 && input.find("context(")==std::string::npos) {
+ if(json && !approximate && independentLines.size()>1 && input.find("context(")==std::string::npos && input.find("scalars:")==std::string::npos) {
   std::string packed="quantum:vector(";
   for(const auto &line:independentLines) {
    std::string word,shown;

@@ -35,7 +35,9 @@ class SessionStoreTests {
    expected=Valid();expected.Mode=5;expected.Expression="$a_1 a_0$";expected.History[0].Mode=5;
    SessionStore.Save(path,expected);var word=SessionStore.Load(path);
    Require(word.Mode==5 && word.Expression=="$a_1 a_0$" && word.History[0].Mode==5,"Binary word mode was lost");
-   expected.Mode=6;Reject(delegate {SessionStore.Validate(expected);});
+   expected.Mode=6;expected.History[0].Mode=6;SessionStore.Save(path,expected);
+   var scalar=SessionStore.Load(path);Require(scalar.Mode==6 && scalar.History[0].Mode==6,"Scalar algebra mode was lost");
+   expected.Mode=7;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Evaluation=-1;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Expression=" ";Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Result=new string('x',32769);Reject(delegate {SessionStore.Validate(expected);});

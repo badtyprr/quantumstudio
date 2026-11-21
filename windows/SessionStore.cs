@@ -77,7 +77,7 @@ static class SessionStore {
   }
  }
  static void ValidateExpression(string expression,int mode,int evaluation) {
-  if(expression==null || StrictUtf8.GetByteCount(expression)>32000 || mode<0 || mode>5 || evaluation<0 || evaluation>1)
+  if(expression==null || StrictUtf8.GetByteCount(expression)>32000 || mode<0 || mode>6 || evaluation<0 || evaluation>1)
    throw new InvalidDataException("Session expressions must be at most 32 KB and use valid notation and evaluation modes.");
  }
  static void ValidateBases(BasisDeclaration[] bases,int version) {
