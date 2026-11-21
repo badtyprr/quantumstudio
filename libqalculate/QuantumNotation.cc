@@ -2288,6 +2288,17 @@ class Parser {
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
  }
+ std::string modularPowerMember(const std::string &value,const std::string &collection) const {
+  if(!modularPowers)return value;
+  auto ungroup=[](std::string term) {
+   while(term.size()>2 && term.front()=='(' && term.back()==')')term=term.substr(1,term.size()-2);
+   return term;
+  };
+  std::string power=ungroup(value),domain=ungroup(collection);
+  if(power.compare(0,7,"qpower(")!=0 || power.back()!=')' ||
+     (domain.compare(0,10,"qresidues(")!=0 && domain.compare(0,10,"qunitsmod(")!=0) || domain.back()!=')')return value;
+  return "qmodpower("+power.substr(7,power.size()-8)+","+domain.substr(10,domain.size()-11)+")";
+ }
  std::string equalityChain(std::vector<std::string> operands,bool prepare) {
   bool growthClass=false;
   for(size_t k=1;k<operands.size();++k) {
@@ -2357,7 +2368,7 @@ class Parser {
     for(const auto &probe:probes) {
      std::string member;
      if(membership) {
-      member="qmember("+probe+","+left+")";
+      member="qmember("+modularPowerMember(probe,left)+","+left+")";
       if(relation=="∉")member="!("+member+")";
      } else {
       // In a shared bound, a bare c names a scalar parameter.
@@ -2458,16 +2469,9 @@ class Parser {
     operands.back()=left;
    }
    if(modularPowers && (relation=="∈" || relation=="∉")) {
-    auto ungroup=[](std::string term) {
-     // Parser-produced compounds use function calls. Parentheses around a
-     // single operand preserve the grouping written in the original input.
-     while(term.size()>2 && term.front()=='(' && term.back()==')')term=term.substr(1,term.size()-2);
-     return term;
-    };
-    std::string power=ungroup(left),domain=ungroup(right);
-    size_t start=domain.compare(0,10,"qresidues(")==0 ? 10 : domain.compare(0,10,"qunitsmod(")==0 ? 10 : 0;
-    if(start && power.compare(0,7,"qpower(")==0 && power.back()==')' && domain.back()==')') {
-     left="qmodpower("+power.substr(7,power.size()-8)+","+domain.substr(start,domain.size()-start-1)+")";
+    std::string reduced=modularPowerMember(left,right);
+    if(reduced!=left) {
+     left=reduced;
      if(!result.empty()) {
       if(!exactPrefix || operands.size()<2)throw std::runtime_error("Group the modular power membership separately from this comparison.");
       operands.back()=left;
