@@ -68,4 +68,17 @@ if __name__ == '__main__':
         result = run(expression)
         assert result.returncode == 2 and not result.stdout and result.stderr, (name, result.returncode, result.stdout, result.stderr)
 
+    register = request("Hadamard register", r"$H^{\otimes n}|0\rangle$")["copy_text"]
+    assert request("copied register", register)["copy_text"] == register
+    for width in (1, 2, 3):
+        size = 2**width
+        amplitudes = ",".join([f"1/sqrt({size})"]*size)
+        compare = f'qcompare(replace({register},"n",{width}),matrix({size},1,[{amplitudes}]),4)'
+        assert request("all amplitudes", compare)["copy_text"] == "1"
+    flipped = request("bit-flipped register", r"$X^{\otimes 2}|0\rangle$")["copy_text"]
+    assert request("bit order", f"qcompare({flipped},[0;0;0;1],4)")["copy_text"] == "1"
+    assert request("wrong ket", f"qcompare({flipped},[1;0;0;0],4)")["copy_text"] == "0"
+    diffusion = request("diffusion", r"$D=2|\psi\rangle\langle\psi|-I$")["copy_text"]
+    assert request("copied diffusion operator", diffusion)["copy_text"] == diffusion
+
     print('Wide basis worker outcomes:', len(check_wide_copy(request, rejected)))

@@ -2274,6 +2274,17 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     return "matrix("+std::to_string(logical.size())+",2,vector("+entries+"))";
    }
   }
+  // In the register-preparation shorthand, the tensor exponent supplies
+  // the width of the all-zero input register.
+  if(s.find("\\otimes")!=std::string::npos) {
+   static const std::regex zeroRegister(R"(^\s*([HIXYZST])\s*\^\s*\{\s*\\otimes\s*([a-z]|[0-9]+)\s*\}\s*\|\s*0\s*\\rangle\s*$)");
+   std::smatch prep;
+   if(std::regex_match(s,prep,zeroRegister)) {
+    std::string width=prep[2].str();
+    if(asciiLetter((unsigned char)width[0]))width="\""+width+"\"";
+    return "qzeroimage(qtensorpow("+prep[1].str()+","+width+"))";
+   }
+  }
   static const std::regex hydrogen(R"(^\s*\\text\{H\}_\{?2\}?\s*$)");
   if(std::regex_match(s,hydrogen))return "\"H₂\"";
   static const std::regex percentage(R"(^\s*([+-]?[0-9]+(?:\.[0-9]+)?)\s*\\?%\s*$)");
