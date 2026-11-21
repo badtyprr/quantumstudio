@@ -1813,6 +1813,47 @@ class QuantumIndexedFunction: public MathFunction {
    else out.set(CALCULATOR->getFunction("qset"),&entries,NULL);
    return 1;
   }
+  if(op=="qcomposemaps") {
+   MathStructure maps;
+   // Keep the vector wrapper around a single map: generic evaluation
+   // collapses a singleton list and exposes the matrix rows as entries.
+   if(raw[0].isFunction() && raw[0].function()->referenceName()=="qindexedentries") {
+    if(!indexedEntries(maps,raw[0],eo))return 0;
+   } else {maps=raw[0];maps.eval(eo);}
+   if(!maps.isVector()) {
+    if(!maps.containsUnknowns())CALCULATOR->error(true,"Composition requires an ordered list of matrices.",NULL);
+    return 0;
+   }
+   if(!maps.size()) {CALCULATOR->error(true,"Matrix composition requires at least one map.",NULL);return 0;}
+   for(size_t i=0;i<maps.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure map=maps[i];
+    if(map.isNumber()) {
+     MathStructure scalar=map;map.clearMatrix();map.resizeMatrix(1,1,scalar);
+    } else if(map.isVector() && !map.isMatrix() && map.size()>0) {
+     MathStructure row=map;map.clearMatrix();map.resizeMatrix(1,row.size(),m_zero);
+     for(size_t j=0;j<row.size();++j)element(map,0,j)=row[j];
+    }
+    if(!map.isMatrix()) {
+     if(!map.isSymbolic() && !map.containsUnknowns())CALCULATOR->error(true,"Matrix composition requires matrix-valued maps.",NULL);
+     return 0;
+    }
+    if(!i) {out=map;continue;}
+    if(map.columns()!=out.rows()) {CALCULATOR->error(true,"The dimensions of consecutive maps do not agree.",NULL);return 0;}
+    MathStructure previous=out;
+    out.set(CALCULATOR->getFunction("qmul"),&map,&previous,NULL);
+    out.eval(eo);
+    if(map.rows()==1 && previous.columns()==1 && !out.isVector()) {
+     MathStructure scalar=out;out.clearMatrix();out.resizeMatrix(1,1,scalar);
+    }
+    if(map.rows()==1 && out.isVector() && !out.isMatrix() && out.size()==previous.columns()) {
+     MathStructure row=out;out.clearMatrix();out.resizeMatrix(1,row.size(),m_zero);
+     for(size_t j=0;j<row.size();++j)element(out,0,j)=row[j];
+    }
+    if(!out.isMatrix())return 0;
+   }
+   return 1;
+  }
   if(op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
@@ -2386,6 +2427,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralentry",2));
  calculator.addFunction(new QuantumIndexedFunction("qspectralket",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
+ calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));

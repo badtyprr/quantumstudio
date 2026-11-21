@@ -305,7 +305,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
 }
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
-std::string scalarProductSum(const std::string &input,size_t start,size_t &end) {
+std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
  size_t at=start;
  auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {space();if(input.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
@@ -320,12 +320,30 @@ std::string scalarProductSum(const std::string &input,size_t start,size_t &end) 
     if(index.size()>32)return false;++at;
    }
    if(at==input.size())return false;++at;
-  } else if(input[at]>='0' && input[at]<='9')index+=input[at++];
+  } else if(std::isalnum((unsigned char)input[at]))index+=input[at++];
   else return false;
   return !index.empty();
  };
  std::string first,second,lastFirst,lastSecond,upperA,upperB,lowerA,lowerB;
- if(!factor(first,upperA) || !factor(second,upperB) || !token("+") || !token("\\cdots") || !token("+") ||
+ if(!factor(first,upperA))return "";
+ // Read a descending family of maps in application order: the map
+ // with the lowest index acts first on the input column.
+ size_t afterFirst=at;
+ token("\\,");
+ if(token("\\cdots")) {
+  token("\\,");
+  if(!factor(lastFirst,lowerA) || first!=lastFirst || lowerA!="1" ||
+     first.size()!=1 || first[0]<'A' || first[0]>'Z')return "";
+  if(!(upperA.size()==1 && asciiLetter(upperA[0])) &&
+     (upperA[0]=='0' || upperA.find_first_not_of("0123456789")!=std::string::npos))return "";
+  space();
+  if(at<input.size() && input[at]=='.' && input.find_first_not_of(" \t\r\n",at+1)==std::string::npos)++at;
+  if(at<input.size() && std::string(",)}=").find(input[at])==std::string::npos && !std::isspace((unsigned char)input[at]))return "";
+  end=at;
+  return "qcomposemaps(qindexedentries(\""+first+"_\",1,"+upperA+",vector()))";
+ }
+ at=afterFirst;
+ if(!factor(second,upperB) || !token("+") || !token("\\cdots") || !token("+") ||
     !factor(lastFirst,lowerA) || !factor(lastSecond,lowerB))return "";
  if(first!=lastFirst || second!=lastSecond || upperA!=upperB || lowerA!="0" || lowerB!="0")return "";
  space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
@@ -1332,7 +1350,7 @@ class TeXReader {
         TeXReader(series.body).run(nullptr)+")";end=series.end;
       }
      }
-     if(product.empty())product=scalarProductSum(input,pos,end);
+     if(product.empty())product=indexedProduct(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
    }

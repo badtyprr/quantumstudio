@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(M_n \,\cdots\, M_1)","qcomposemaps(qindexedentries(\"M_\",1,n,vector()))");
+  rejects(R"(M_n \,\cdots\, K_1)");
   equal(R"(\vert\text{heads}\rangle)","|heads>");
   equal(R"(\ket{\text{tails}})","|tails>");
   equal(R"(\langle\text{heads}\vert)","<heads|");

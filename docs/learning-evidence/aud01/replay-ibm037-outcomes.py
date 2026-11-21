@@ -57,3 +57,12 @@ for number, (at_zero, at_one) in enumerate([(0,0), (0,1), (1,0), (1,1)], 1):
     expected_tables.append(f"""matrix(3,2,['a',"f_{number}(a)",0,{at_zero},1,{at_one}])""")
 assert tables == "vector(" + ",".join(expected_tables) + ")"
 print("Verified all eight function values and their table headings")
+composition = evaluate("quantum:" + inventory["rows"][147]["literal"])
+assert evaluate("quantum:" + composition) == composition
+reset = "matrix(2,2,[1,1,0,0])"
+flip = "matrix(2,2,[0,1,1,0])"
+for first, second, expected in [(reset,flip,"matrix(2,2,[0,0,1,1])"), (flip,reset,reset)]:
+    assigned = f'replace(replace({composition},"M_1",{first}),"M_2",{second})'
+    assert evaluate(f"quantum:replace({assigned},n,2)") == expected
+    assert evaluate(f"quantum:replace({assigned},n,1)") == first
+print("Verified ordered matrix composition, reversed order and single-map bounds")
