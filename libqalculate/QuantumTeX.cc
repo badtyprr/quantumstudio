@@ -2470,6 +2470,34 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(modularPowers && s.find("\\psi_")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  // The modular notation supplies the residue-basis convention; the omitted
+  // modulus remains an editable parameter in the state definition.
+  static const std::regex openKet(R"(\\vert(?![A-Za-z]))"),closeKet(R"(\\rangle(?![A-Za-z]))");
+  std::string state=std::regex_replace(std::regex_replace(s,openKet,"|"),closeKet,">");
+  // Keep separated control words and letters distinct when ignoring layout.
+  static const std::regex splitWord(R"((\\[A-Za-z]+)\s+([A-Za-z]))"),singleIndex(R"(_\{([A-Za-z0-9])\})");
+  state=std::regex_replace(state,splitWord,"$1#$2");
+  state.erase(std::remove_if(state.begin(),state.end(),asciiSpace),state.end());
+  state=std::regex_replace(state,singleIndex,"_$1");
+  static const std::regex uniform(R"(^\|\\psi_0>=\\frac\{\|1>\+\|([a-z])>\+\\cdots\+\|\1\^\{([a-z])-1\}>\}\{\\sqrt\{\2\}\}$)");
+  static const std::regex phased(R"(^\|\\psi_1>=\\frac\{\|1>\+\\omega_([a-z])\^\{-1\}\|([a-z])>\+\\cdots\+\\omega_\1\^\{-\(\1-1\)\}\|\2\^\{\1-1\}>\}\{\\sqrt\{\1\}\}$)");
+  std::smatch m;
+  if(std::regex_match(state,m,uniform))return "qorbitket(\""+m[1].str()+"\",\"N\",\""+m[2].str()+"\",0)";
+  if(std::regex_match(state,m,phased))return "qorbitket(\""+m[2].str()+"\",\"N\",\""+m[1].str()+"\",1)";
+  auto steps=indexedParts(state,"=");
+  static const std::regex action(R"(^M_([a-z])\|\\psi_0>$)");
+  if(steps.size()==4 && steps.back()=="|\\psi_0>" && std::regex_match(steps[0],m,action)) {
+   std::string a=m[1].str();
+   static const std::regex denominator(R"(\}\{\\sqrt\{([a-z])\}\}$)");
+   if(std::regex_search(steps[1],m,denominator)) {
+    std::string r=m[1].str(),tail="}{\\sqrt{"+r+"}}";
+    std::string sum="\\frac{|"+a+">+\\cdots+|"+a+"^{"+r+"-1}>+|";
+    if(steps[1]==sum+a+"^"+r+">"+tail && steps[2]==sum+"1>"+tail)
+     return "qfixedby(qresiduemultiplier(\""+a+"\",\"N\"),qorbitket(\""+a+"\",\"N\",\""+r+"\",0))";
+   }
+  }
+ }
  if(s.find("\\begin{cases}")!=std::string::npos) {
   std::string definition=registerMultiplierCases(s);
   if(!definition.empty())return definition;

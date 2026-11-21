@@ -1,0 +1,13 @@
+{
+  "sources": [
+    "IBM029-9ea5aee3-M092",
+    "IBM029-9ea5aee3-M098",
+    "IBM029-9ea5aee3-M107"
+  ],
+  "states": 36,
+  "amplitude_comparisons": 741,
+  "absolute_tolerance": 1e-12,
+  "exact_norm_and_eigenvalue_checks": 18,
+  "invariance_checks": 13,
+  "clipboard_sessions": 8
+}
