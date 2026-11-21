@@ -651,3 +651,6 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm033-reflection-windows.json
 EXTRA_DIST += docs/learning-evidence/aud02/replay-updated-runtime-examples.py
 EXTRA_DIST += docs/learning-evidence/aud02/updated-runtime-samples.json
 EXTRA_DIST += docs/learning-evidence/aud02/mod013-updated-manila-results.json
+EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-syntax.json
+EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-symbols.json
+EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-discovery.md
