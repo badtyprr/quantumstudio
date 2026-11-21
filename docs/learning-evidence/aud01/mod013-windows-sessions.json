@@ -1,0 +1,101 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/modules/quantum-mechanics/nmr-with-qiskit.ipynb",
+  "notebook_sha256": "057fe876a3ed23e7bea2c8cea8370c76631577b94141189d65149584c86be2f4",
+  "worker_sha256": "517843093469c88fc634a87807b69c555a76382c79d5997d3be7e3df34343531",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "0a7957187ca0639662a5882d9e16dffe7417cb536e3da5493c7efda862fcc22c",
+  "suite": {
+    "passed": true,
+    "checks": 2432,
+    "calls": 285,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 266,
+    "restored_identically": 266,
+    "stable_after_text_reentry": 266,
+    "source_diagnostic": 19
+  },
+  "diagnostics": [
+    {
+      "id": "MOD013-057fe876-M013",
+      "message": "Unsupported TeX command: \\boldsymbol at byte 12"
+    },
+    {
+      "id": "MOD013-057fe876-M017",
+      "message": "Unsupported TeX command: \\mp at byte 14"
+    },
+    {
+      "id": "MOD013-057fe876-M023",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M025",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M035",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M036",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M047",
+      "message": "A powered trigonometric function requires a parenthesized or braced argument at byte 21"
+    },
+    {
+      "id": "MOD013-057fe876-M049",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M051",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M075",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "MOD013-057fe876-M080",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M144",
+      "message": "Unsupported TeX command: \\gtrsim at byte 12"
+    },
+    {
+      "id": "MOD013-057fe876-M157",
+      "message": "Unsupported TeX command: \\gg at byte 4"
+    },
+    {
+      "id": "MOD013-057fe876-M162",
+      "message": "Unsupported TeX command: \\underbrace at byte 16"
+    },
+    {
+      "id": "MOD013-057fe876-M199",
+      "message": "Unsupported TeX command: \\Rightarrow at byte 16"
+    },
+    {
+      "id": "MOD013-057fe876-M237",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M247",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M280",
+      "message": "Unsupported TeX command: \\leftrightarrow at byte 19"
+    },
+    {
+      "id": "MOD013-057fe876-M284",
+      "message": "Unsupported TeX command: \\sim at byte 5"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

@@ -630,3 +630,7 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm139-layout.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm139-layout-observable.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm139-images.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm139-workflows.md
+EXTRA_DIST += docs/learning-evidence/aud01/mod013-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01/mod013-windows-sessions.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-mod013-nmr.py
+EXTRA_DIST += docs/learning-evidence/aud01/mod013-manila-results.json
