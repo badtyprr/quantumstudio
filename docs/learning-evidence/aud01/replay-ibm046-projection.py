@@ -94,3 +94,24 @@ for dimension in (2, 3):
                 bound = f"replace(({bound}),{name},{value})"
             assert evaluate(bound) == ("1" if complete else "0")
 print("Verified projector completeness in two and three dimensions and rejected repeated projectors")
+
+block_equation = evaluate(rows[194]["literal"])
+assert block_equation == rows[194]["copy"]
+for dimension in (2, 3):
+    size = dimension * dimension
+    cells = [0] * (size * size)
+    bindings = [("m", str(dimension))]
+    for k in range(dimension):
+        cells[(k * dimension + k) * size + k] = 1
+        ket = f"basis({k},{dimension})"
+        bindings.append((f'"Π_{k}"', f"{ket}*dagger({ket})"))
+    for changed in (False, True):
+        cells[-1] = int(changed)
+        matrix = f"matrix({size},{size},[" + ",".join(map(str, cells)) + "])"
+        terms = [('"M"', matrix), *bindings]
+        for sequence in (terms, list(reversed(terms))):
+            bound = block_equation
+            for name, value in sequence:
+                bound = f"replace(({bound}),{name},{value})"
+            assert evaluate(bound) == ("0" if changed else "1")
+print("Verified the block matrix layout and its zero-filled columns in dimensions two and three")
