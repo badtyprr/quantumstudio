@@ -1,0 +1,41 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis.ipynb",
+  "notebook_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "0726153ec19c36847d73f0276f6d206becc658cf659198c8245458015d5a004b",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "1dd8969ff11b61de172581104e8fc047eb62bc21c8a6a7a20d756d0444dda0c1",
+  "suite": {
+    "passed": true,
+    "checks": 1025,
+    "calls": 117,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 113,
+    "restored_identically": 113,
+    "stable_after_text_reentry": 113,
+    "source_diagnostic": 4
+  },
+  "diagnostics": [
+    {
+      "id": "IBM033-cf35c640-M056",
+      "message": "Argument 1 in qidentity() must be an integer >= 1 and <= 10000000 or a square matrix.\nMaximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M064",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M067",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M111",
+      "message": "Maximum recursive depth reached."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}
