@@ -50,3 +50,10 @@ for zero_image, expected in [(tails, "1"), (heads, "0")]:
     bound = bound.replace('qstatecall("f_4",1)', tails)
     assert evaluate(bound) == expected
 print("Verified ordered coordinates and the constant-one map")
+tables = evaluate("quantum:" + inventory["rows"][66]["literal"])
+assert evaluate(tables) == tables
+expected_tables = []
+for number, (at_zero, at_one) in enumerate([(0,0), (0,1), (1,0), (1,1)], 1):
+    expected_tables.append(f"""matrix(3,2,['a',"f_{number}(a)",0,{at_zero},1,{at_one}])""")
+assert tables == "vector(" + ",".join(expected_tables) + ")"
+print("Verified all eight function values and their table headings")

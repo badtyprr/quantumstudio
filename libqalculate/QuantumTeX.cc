@@ -761,11 +761,11 @@ class TeXReader {
  }
  // Raw groups are used only for command names and environment names, which
  // cannot contain TeX structure. Unlike expression groups, no evaluation occurs.
- std::string nameGroup() {
+ std::string nameGroup(bool columnSpec=false) {
   space(); if(pos==input.size() || input[pos++]!='{') throw std::runtime_error(error("Expected {name}"));
   size_t start=pos;
   while(pos<input.size() && input[pos]!='}') {
-   if(!std::isalnum((unsigned char)input[pos]) && input[pos]!='*') throw std::runtime_error(error("Invalid TeX name"));
+   if(!std::isalnum((unsigned char)input[pos]) && input[pos]!='*' && !(columnSpec && input[pos]=='|')) throw std::runtime_error(error("Invalid TeX name"));
    ++pos;
   }
   if(pos==input.size()) throw std::runtime_error(error("Unclosed TeX name"));
@@ -854,7 +854,8 @@ class TeXReader {
  }
  // A horizontal rule separates column labels from reported numeric data.
  std::string numericTable() {
-  const std::string alignment=nameGroup();
+  std::string alignment=nameGroup(true);
+  alignment.erase(std::remove(alignment.begin(),alignment.end(),'|'),alignment.end());
   if(alignment.empty() || alignment.find_first_not_of("lcr")!=std::string::npos)
    throw std::runtime_error(error("A numeric table requires l, c or r for each column"));
   const std::string endMarker="\\end{array}";
@@ -1167,7 +1168,20 @@ class TeXReader {
   }
   if(name=="begin") {
    auto env=nameGroup();
-   if(env=="array")return numericTable();
+   if(env=="array") {
+    std::string tables=numericTable();
+    bool grouped=false;
+    while(true) {
+     size_t saved=pos;space();
+     if(input.compare(pos,6,"\\qquad")!=0) {pos=saved;break;}
+     pos+=6;space();
+     if(input.compare(pos,13,"\\begin{array}")!=0) {pos=saved;break;}
+     pos+=13;
+     tables+=","+numericTable();
+     grouped=true;
+    }
+    return grouped ? "vector("+tables+")" : tables;
+   }
    if(env=="cases") {
     // On the left of a cases definition, 0.a denotes a single fractional
     // bit. Validate its width when the bit is assigned a concrete value.

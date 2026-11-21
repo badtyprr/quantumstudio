@@ -329,6 +329,9 @@ int main() {
   equal("2a_(0,1)", "2qindexedcoefficient(\"a_\",(0),(1))");
   equal(R"(\begin{array}{lr}N & \text{Success probability}\\ \hline 2 & 0.50\\4 & 1.00\end{array})",
         "matrix(3,2,vector(\"N\",\"Success probability\",2,0.50,4,1.00))");
+  equal(R"(\begin{array}{c|r}a & f(a)\\\hline 0 & 1\end{array}\qquad \begin{array}{c}b\\\hline 0\end{array})",
+        "vector(matrix(2,2,vector(\"a\",\"f(a)\",0,1)),matrix(2,1,vector(\"b\",0)))");
+  rejects(R"(\begin{array}{|}a\\\hline 0\end{array})");
   rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2\end{array})");
   rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2 & 1.2.3\end{array})");
   rejects(R"(\begin{array}{c}N\\ 2\end{array})");
