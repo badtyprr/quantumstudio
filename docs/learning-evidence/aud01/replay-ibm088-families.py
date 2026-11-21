@@ -43,3 +43,40 @@ for invalid in ("qkrylovstates(X,|0>,0,0)", "qkrylovstates(X,|00>,0,2)"):
     p=subprocess.run([worker,"--json"],input=("quantum:"+invalid).encode(),env=env,capture_output=True)
     assert p.returncode and b"Krylov" in p.stderr
 print("Verified the three-step Krylov phase, its counterexample and invalid counts and dimensions.")
+
+# The side condition N=2^n is independent of entrywise matrix equality.
+definition = run(source(88,3).replace("'N'","4"))
+for r in range(4):
+    for c in range(4):
+        definition=definition.replace(f'"H_{r},{c}"',str(int(r==c)))
+for qubits,operator,truth in [(2,"identity(4)","1"),(1,"identity(4)","0"),(2,"2*identity(4)","0")]:
+    bound=definition.replace("(n)",f"({qubits})").replace("qoperatorref('H')",operator)
+    assert run(bound)==truth
+
+expansion=run(source(88,8).replace("'Q'","2"))
+for label,value in (("α_1","2"),("P_1","X"),("α_2","-1"),("P_2","Z")):
+    expansion=expansion.replace('"'+label+'"',"("+value+")")
+for total,truth in [("(2*X-Z)","1"),("(2*X+Z)","0")]:
+    assert run(expansion.replace("qoperatorref('H')",total))==truth
+
+# A finite realization of M004's annotated project/diagonalize diagram.
+# Columns are |00> and |11>. Couplings to omitted basis vectors drop out.
+hamiltonian="matrix(4,4,[2,1,0,i,1,4,0,0,0,0,-2,0,-i,0,0,2])"
+basis="matrix(4,2,[1,0,0,0,0,0,0,1])"
+projection=f"qmul(qdag({basis}),qmul({hamiltonian},{basis}))"
+assert run(f"qcompare({projection},matrix(2,2,[2,i,-i,2]),4)")=="1"
+assert run(f"qcompare(qheigenvalues({projection}),matrix(2,1,[1,3]),4)")=="1"
+print("Verified Hamiltonian dimension, signed Pauli expansion, subspace projection and projected energies.")
+
+rows=json.loads(Path(__file__).with_name("ibm088-inventory.json").read_bytes())["rows"]
+context='matrixcontext("H",(4),(4),"hermitian"):'
+for row in (3,7,8,15):
+    expr=run(context+rows[row-1]["literal"])
+    assert """operatorparam('H',4,"hermitian")""" in expr
+    assert run(expr)==expr
+entry=run(context+rows[6]["literal"])
+entry=entry.replace("""operatorparam('H',4,"hermitian")""",hamiltonian)
+for first,last,value in (("00","11","i"),("11","00","-i")):
+    actual=entry.replace('qnamedket("b_i")',f"|{first}>").replace('qnamedket("b_j")',f"|{last}>")
+    assert run(f"qcompare({actual},{value},4)")=="1"
+print("Verified the declared Hamiltonian across four formulas and both conjugate entries.")
