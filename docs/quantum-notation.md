@@ -359,6 +359,10 @@ This convention supports IBM's finite index domains `\{0,\ldots,n-1\}` after sup
 
 This is an explicit step +1 convention, not arbitrary sequence inference. Descending or stepped sequences, multiple leading terms such as `\{0,1,\ldots,3\}`, tuples of ensemble entries, and infinite endpoints are not inferred by this form. Existing parser and collection limits still apply.
 
+## Two-argument probability functions
+
+In Quantum notation, `p(N,s)` represents a scalar probability with two ordered arguments. It stays symbolic until you supply a value. For example, `replace((p(16,4) >= 3/4), p(16,4), 2/3)` returns 0. The displayed expression and its Copy text both accept substitutions. The existing input-size convention for `p(n,m)` and explicit `cost(...)` expressions still applies.
+
 ## Numerical conventions
 
 TeX `\tilde{\rho}` and `\widetilde{\rho}` denote the distinct symbol `ρ_tilde`; they do not evaluate to `ρ`. This supports estimated-state notation in the IBM tomography lesson. Subscripts outside the decoration follow the suffix, so `\tilde{x}_0` names `x_tilde_0`. These symbols can be bound as finite-sum indices. The decoration does not define a state or automatically reconstruct one: supply the symbol's value when a numerical result is needed. Compound operands such as `\tilde{x+y}` are rejected because their meaning is not specified by a symbol decoration.
