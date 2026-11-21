@@ -1,0 +1,185 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/introduction.ipynb",
+  "source_sha256": "7a1e4999246cae78a4bae99822fcb4fae29e556a6b1358249d611ae102db7a57",
+  "worker_sha256": "1b81664ed39ce406bca70767295805d1f93b3fe170eb923576510fa5ff67a643",
+  "revision": "1bebb83be6ce93f4330316cac9ddf09d1fdc4d0c",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 17
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM048-7a1e4999-M001",
+      "cell": 0,
+      "start": 3776,
+      "end": 3885,
+      "literal": "$$\n\\vert \\phi^+ \\rangle =\n\\frac{1}{\\sqrt{2}} \\vert 00\\rangle + \\frac{1}{\\sqrt{2}} \\vert 11\\rangle.\n\\tag{1}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M002",
+      "cell": 0,
+      "start": 4083,
+      "end": 4157,
+      "literal": "$$\n\\frac{1}{2} \\vert 00 \\rangle + \\frac{1}{2} \\vert 11 \\rangle.\n\\tag{2}\n$$",
+      "status": "exact",
+      "display": "[0.5; 0; 0; 0.5]",
+      "copy": "matrix(4,1,[1 ∕ 2,0,0,1 ∕ 2])"
+    },
+    {
+      "id": "IBM048-7a1e4999-M003",
+      "cell": 0,
+      "start": 4222,
+      "end": 4227,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M004",
+      "cell": 0,
+      "start": 4899,
+      "end": 4904,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M005",
+      "cell": 0,
+      "start": 4909,
+      "end": 4914,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM048-7a1e4999-M006",
+      "cell": 0,
+      "start": 5336,
+      "end": 5341,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM048-7a1e4999-M007",
+      "cell": 0,
+      "start": 5608,
+      "end": 5613,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M008",
+      "cell": 0,
+      "start": 5658,
+      "end": 5663,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM048-7a1e4999-M009",
+      "cell": 0,
+      "start": 6008,
+      "end": 6013,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M010",
+      "cell": 0,
+      "start": 6095,
+      "end": 6100,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM048-7a1e4999-M011",
+      "cell": 0,
+      "start": 6299,
+      "end": 6304,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M012",
+      "cell": 0,
+      "start": 6474,
+      "end": 6479,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM048-7a1e4999-M013",
+      "cell": 0,
+      "start": 6624,
+      "end": 6629,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM048-7a1e4999-M014",
+      "cell": 0,
+      "start": 7152,
+      "end": 7164,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM048-7a1e4999-M015",
+      "cell": 0,
+      "start": 7188,
+      "end": 7200,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM048-7a1e4999-M016",
+      "cell": 0,
+      "start": 7224,
+      "end": 7249,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM048-7a1e4999-M017",
+      "cell": 0,
+      "start": 7274,
+      "end": 7279,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    }
+  ]
+}
