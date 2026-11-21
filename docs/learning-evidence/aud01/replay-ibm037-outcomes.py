@@ -37,3 +37,16 @@ for number in range(52, 58):
     else:
         assert evaluate(copied) == 'qketstate("tails")'
 print("Verified six named-outcome examples and both negative controls")
+coordinates = evaluate("quantum:" + inventory["rows"][96]["literal"])
+assert coordinates == "qtuple(vector('b','a'))"
+assert evaluate("quantum:(3,2)") == "qtuple(vector(3,2))"
+
+# The fourth truth table sends both input bits to one.
+chain = evaluate("quantum:" + inventory["rows"][106]["literal"])
+assert chain.startswith("qequalchain(")
+for zero_image, expected in [(tails, "1"), (heads, "0")]:
+    bound = chain.replace('"M_4"', "matrix(2,2,[0,0,1,1])")
+    bound = bound.replace('qstatecall("f_4",0)', zero_image)
+    bound = bound.replace('qstatecall("f_4",1)', tails)
+    assert evaluate(bound) == expected
+print("Verified ordered coordinates and the constant-one map")

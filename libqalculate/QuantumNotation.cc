@@ -1212,7 +1212,7 @@ class Parser {
      else if(c==')' || c==']') {if(nesting==0)break;--nesting;}
      else if(nesting==0) {
       if(c=='|' && k>start) {closing=k;break;}
-      if(c=='<' || c=='>' || c==',' || c==';')break;
+      if(c=='<' || c=='>' || c=='=' || c==',' || c==';')break;
      }
     }
     std::string body=closing==std::string::npos ? "" : labelText(s.substr(start,closing-start));
@@ -2226,6 +2226,13 @@ class Parser {
     std::vector<std::string> probes{left};
     do {probes.push_back(setUnion());} while(take(','));
     const std::string relation=takeComparisonRelation();
+    // A closing parenthesis ends an ordered tuple. Function arguments
+    // use expression(false) and keep their own comma separators.
+    if(relation.empty() && p<s.size() && s[p]==')') {
+     std::string tuple="qtuple(vector("+probes.front();
+     for(size_t i=1;i<probes.size();++i)tuple+=","+probes[i];
+     tuple+="))";checkSize(tuple);return tuple;
+    }
     bool membership=relation=="∈" || relation=="∉";
     int kind=comparisonKind(relation);
     if(!membership && kind>=4)throw std::runtime_error("Expected a shared ordering or set membership relation after the comma-separated operands.");

@@ -24,6 +24,9 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("(b,a)","(qtuple(vector(b,a)))");
+ equal("(2, 1, 0)","(qtuple(vector(2,1,0)))");
+ rejects("a,b");rejects("(a,b,)");
  equal("x=y=z","qequalchain(vector(x,y,z))");
  equal("x=y!=z","(qcompare(x,y,4)&&qcompare(y,z,5))");
  equal("|x+y>","qcomputationalket(qadd(x,y))");
