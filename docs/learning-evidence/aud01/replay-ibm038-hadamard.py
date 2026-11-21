@@ -58,3 +58,16 @@ assert rows[158]["id"].endswith("M159")
 assert evaluate(fourier.replace("U =", r"\mathrm{QFT}_{4} =")) == "1"
 assert evaluate(fourier.replace("U =", r"\mathrm{QFT}_{4} =").replace("& i &", "& -i &", 1)) == "0"
 print("Verified the three cyclic transitions with the lesson matrix, and its separate four-dimensional Fourier example")
+
+# Materialize the finite sum before assigning individual coefficient names.
+# Each subsequent step uses the previous calculation's Copy representation.
+for number in [3,4]:
+    equation = evaluate(rows[number-1]["literal"])
+    for vector,truth in [("[3*i;4]","1"),("[4*i;4]","0")]:
+        result = equation
+        for key,value in [("n","2"),("v",vector),('"α_1"',"3*i"),('"α_2"',"4")]:
+            result = evaluate(f"replace(({result}),{key},{value})")
+        assert result == truth, (number,vector,result)
+one_based = "qonebasedcolumn(\"a_\",3,1)"
+assert evaluate(one_based) == 'matrix(3,1,["a_1","a_2","a_3"])'
+print("Verified one-based column dimensions, complex coefficients, norm and changed-vector controls")

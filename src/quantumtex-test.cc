@@ -315,7 +315,8 @@ int main() {
   equal("[α_0; ⋮; α_{n-1}]", "qindexedcolumn(\"α_\",(n-1),0)");
   equal(R"(\begin{pmatrix}\alpha_0\\\alpha_1\\\vdots\\\alpha_{n-1}\end{pmatrix})", "qindexedcolumn(\"α_\",(n-1),1)");
   equal(R"(\begin{bmatrix}a_0\\\vdots\\a_3\end{bmatrix})", "qindexedcolumn(\"a_\",(3),0)");
-  for(const auto &input:{"[a_1; ⋮; a_n]", "[a_0; a_2; ⋮; a_n]", "[a_0; ⋮; b_n]", "[a_0; ⋮; a_n-1]", "[a_0; ⋮; a_1; a_n]", "[a_0; ⋮; a_(n,2)]",
+  equal("[a_1; ⋮; a_n]", "qonebasedcolumn(\"a_\",(n),1)");
+  for(const auto &input:{"[a_2; ⋮; a_n]", "[a_0; a_2; ⋮; a_n]", "[a_0; ⋮; b_n]", "[a_0; ⋮; a_n-1]", "[a_0; ⋮; a_1; a_n]", "[a_0; ⋮; a_(n,2)]",
     R"(\begin{pmatrix}\alpha_0\\\vdots\\\alpha_n-1\end{pmatrix})"})rejects(input);
   equal("[[a_0; ⋮; a_n]]", "[qindexedcolumn(\"a_\",(n),0)]");
   equal("[\"⋮\"]", "[\"⋮\"]");

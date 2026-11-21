@@ -301,7 +301,7 @@ class Printer {
    };
    return Fragment(side(0)+operators[value[2].number().intValue()]+side(1),5);
   }
-  if(((name=="qindexedcolumn" || name=="qdescendingcolumn") && value.size()==3) || ((name=="qindexedmatrix" || name=="qsamplebitmatrix") && value.size()==5)) {
+  if(((name=="qindexedcolumn" || name=="qonebasedcolumn" || name=="qdescendingcolumn") && value.size()==3) || ((name=="qindexedmatrix" || name=="qsamplebitmatrix") && value.size()==5)) {
    const bool samples=name=="qsamplebitmatrix";
    const bool matrix=samples || name=="qindexedmatrix";
    std::string prefix=value[0].isSymbolic() ? value[0].symbol() : "";
@@ -334,7 +334,7 @@ class Printer {
      for(int row=minima[0];row>=0;--row)text+="; "+prefix+std::to_string(row);
      return Fragment(text+"]");
     }
-    for(int row=0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
+    for(int row=name=="qonebasedcolumn" ? 1 : 0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
     return Fragment(text+"⋮; "+prefix+"("+endpoints[0]+")]");
    }
    if(safe && !samples) {

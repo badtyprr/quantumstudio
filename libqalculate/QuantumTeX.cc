@@ -402,7 +402,7 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   size_t close=rows[row].find(']');
   if(close!=std::string::npos)rows[row]=trim(rows[row].substr(close+1));
  }
- auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
+ auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries starting at 0 or 1, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
  if(rows.size()<3 || rows.size()>1027 || (rows[1]!=marker && rows[rows.size()-2]!=marker))invalid();
  if(rows[rows.size()-2]==marker && std::count(rows.begin(),rows.end(),"0")==int(rows.size()-1))
   return "qtexzerocolumn("+std::to_string(rows.size()-2)+")";
@@ -451,9 +451,10 @@ std::string indexedColumn(const std::string &raw, bool tex) {
  bool descending=rows[1]==marker && indices.back()=="0" && !(rows[rows.size()-2]==marker && indices.front()=="0");
  if(descending)std::reverse(indices.begin(),indices.end());
  else if(rows[rows.size()-2]!=marker)invalid();
- for(size_t i=0;i+1<indices.size();++i)if(indices[i]!=std::to_string(i))invalid();
- const char *operation=descending ? "qdescendingcolumn" : "qindexedcolumn";
- return std::string(operation)+"(\""+quantumTeX(family)+"_\",("+indices.back()+"),"+std::to_string(rows.size()-3)+")";
+ const unsigned first=indices.front()=="1" && !descending ? 1 : 0;
+ for(size_t i=0;i+1<indices.size();++i)if(indices[i]!=std::to_string(first+i))invalid();
+ const char *operation=descending ? "qdescendingcolumn" : first ? "qonebasedcolumn" : "qindexedcolumn";
+ return std::string(operation)+"(\""+quantumTeX(family)+"_\",("+indices.back()+"),"+std::to_string(first+rows.size()-3)+")";
 }
 // Split only at the current matrix level; commas in grouped paired indices
 // and delimiters in quoted labels must not create extra cells.

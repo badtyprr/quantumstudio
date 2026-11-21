@@ -1154,6 +1154,7 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   if((op=="qnorm" || op=="qnormalize") && !a.isVector() && a.containsUnknowns()) {
+   if(a.isUnknown() || a.isSymbolic())return 0;
    MathStructure rows,columns;
    if(matrixShape(a,rows,columns,eo)) {
     if(unequalKnownDimensions(columns,m_one))CALCULATOR->error(true,"norm and normalize require a column ket.",NULL);

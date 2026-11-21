@@ -1716,7 +1716,7 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
-  if(op=="qindexedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
+  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
    const bool samples=op=="qsamplebitmatrix";
    const bool matrix=samples || op=="qindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
@@ -1731,7 +1731,7 @@ class QuantumIndexedFunction: public MathFunction {
    // Endpoint bounds also cap the product at 1024 * 1024 matrix cells.
    for(int axis=0;axis<(matrix ? 2 : 1);++axis) {
     MathStructure last=raw[1+axis],minimum=raw[(matrix ? 3 : 2)+axis];last.eval(exact);minimum.eval(exact);
-    const int offset=samples && axis==0 ? 1 : 0;
+    const int offset=(samples || op=="qonebasedcolumn") && axis==0 ? 1 : 0;
     if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<offset || minimum.number()>1023+offset) {
      CALCULATOR->error(true,"An indexed array minimum must be an integer from 0 to 1023.",NULL);return 0;
     }
@@ -1745,7 +1745,7 @@ class QuantumIndexedFunction: public MathFunction {
    out.clearMatrix();out.resizeMatrix(dimensions[0],dimensions[1],m_zero);
    for(int row=0;row<dimensions[0];++row)for(int col=0;col<dimensions[1];++col) {
     if(CALCULATOR->aborted())return 0;
-    int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row;
+    int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row+(op=="qonebasedcolumn" ? 1 : 0);
     if(samples)element(out,row,col).set(prefix+std::to_string(row+1)+"_"+std::to_string(dimensions[1]-1-col),true);
     else element(out,row,col).set(prefix+std::to_string(index)+(matrix ? ","+std::to_string(col) : ""),true);
    }
@@ -2478,6 +2478,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qonebasedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
  calculator.addFunction(new QuantumIndexedFunction("qsamplewordrows",5));
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
