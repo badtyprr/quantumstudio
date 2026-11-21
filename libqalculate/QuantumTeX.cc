@@ -1469,6 +1469,7 @@ class TeXReader {
      else result+="_"+index;
     } else if(grouped && !result.empty() && (result.back()=='>' || result.back()=='|'))result+="_("+index+")";
     else {
+     index=trim(index);
      bool compound=false;for(unsigned char c:index)if(c<128 && !std::isalnum(c) && c!='_' && !std::isspace(c))compound=true;
      // Preserve arithmetic subscripts for scalar references and declarations
      // as well as state families. Atomic labels retain their spelling.

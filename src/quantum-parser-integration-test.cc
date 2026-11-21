@@ -39,6 +39,7 @@ int main(){try {
  equal("quantum:exp(2*pi*i/100)≈0.998-0.063i","0");
  equal(R"(quantum:replace((δ=\pm 1/2),δ,-1/2))","1");
  equal("quantum:replace((δ=±1/2),δ,0)","0");
+ equal(R"(quantum:replace((Z_{\mathrm{OR}}), "Z_OR", 7))","7");
  equal("quantum:3=1±2*3-4","1");
  equal(R"(quantum:0\in\bigl[-1/2,1/2\bigr])","1");
  equal("quantum:1∈(0,1)","0");equal("quantum:1∈[1,1]","1");

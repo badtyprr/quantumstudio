@@ -326,6 +326,8 @@ int main() {
   rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2\end{array})");
   rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2 & 1.2.3\end{array})");
   rejects(R"(\begin{array}{c}N\\ 2\end{array})");
+  equal(R"(Z_{\mathrm{OR}})","Z_OR");
+  equal(R"(U_{ f })","U_f");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";
