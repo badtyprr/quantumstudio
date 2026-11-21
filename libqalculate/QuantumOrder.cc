@@ -431,7 +431,7 @@ class QuantumOrderFunction: public MathFunction {
    bool equal=false;
    // A state family can be defined later. Keep each matrix on its own
    // side of the comparison and retain evaluated arguments for re-entry.
-   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate"}) {
+   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate","qnamedket"}) {
     const auto function=CALCULATOR->getFunction(state);
     if(!args[0].containsFunction(function) && !args[1].containsFunction(function))continue;
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
@@ -446,6 +446,11 @@ class QuantumOrderFunction: public MathFunction {
    // Preserve products with adjoints until the factors have concrete values.
    // Scalar comparison would rewrite the equality as a difference from zero.
    if(kind>=4 && gramFactor(args[0]) && gramFactor(args[1]) && !args[0].equals(args[1]))return 0;
+   if(kind>=4)for(unsigned k=0;k<2;++k) {
+    const MathStructure &identity=args[k], &product=args[1-k];
+    if(identity.isFunction() && identity.function()->referenceName()=="qidentitylike" &&
+       identity.size()==1 && identity[0].equals(product) && gramFactor(product))return 0;
+   }
    if(kind>=4 && (quantumComplexDomain(args[0]) || quantumComplexDomain(args[1]))) {
     if(quantumComplexDomain(args[0]) && quantumComplexDomain(args[1])) {
      out=(args[0].function()==args[1].function())==(kind==4) ? 1 : 0;return 1;
