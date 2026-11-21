@@ -1,0 +1,19 @@
+{
+  "dataset_source": "https://raw.githubusercontent.com/qiskit-community/prototype-quantum-kernel-training/cd25fde180712d78a4ac8a5b8071443cec7ea68c/data/dataset_graph7.csv",
+  "dataset_sha256": "357b4356a558c5b8387e9765a955327fc2786b4d231483f57b7504ca0e3788ba",
+  "qubits": 7,
+  "features": 14,
+  "selected_rows": [
+    14,
+    19
+  ],
+  "shots": 10000,
+  "seed": 24,
+  "observed_overlap": 0.6893,
+  "exact_overlap": 0.6971627087403623,
+  "notebook_sha256": "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381",
+  "executed_code_cells": [
+    5
+  ],
+  "qiskit": "2.6.2"
+}

@@ -1,0 +1,496 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/quantum-kernel-methods.ipynb",
+  "source_sha256": "76b7eaf248593faf84d322d622c59c40b1cbc9abf897894de0795d422973858b",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "mode": "Quantum notation",
+  "markdown_cells": 31,
+  "code_cells": 30,
+  "summary": {
+    "exact": 42,
+    "diagnostic": 5
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 3158,
+      "end": 3325,
+      "alt": "Classical_Review_background_kernel_circuit",
+      "path": "/learning/images/courses/quantum-machine-learning/quantum-kernel-methods/classical-review-background-kernel-circuit.avif"
+    },
+    {
+      "cell": 22,
+      "start": 1397,
+      "end": 1538,
+      "alt": "Bad results from a zz feature map.",
+      "path": "/learning/images/courses/quantum-machine-learning/quantum-kernel-methods/zzfeaturemap-bad-results.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM099-76b7eaf2-M001",
+      "cell": 0,
+      "start": 562,
+      "end": 577,
+      "literal": "$\\Phi(\\vec{x})$",
+      "status": "exact",
+      "display": "qvectorref('x') ⋅ 'Φ'",
+      "copy": "qvectorref('x') ⋅ 'Φ'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M002",
+      "cell": 0,
+      "start": 596,
+      "end": 621,
+      "literal": "$\\vec{x}\\in \\mathbb{R}^d$",
+      "status": "diagnostic",
+      "message": "Membership requires a scalar or binary-string label."
+    },
+    {
+      "id": "IBM099-76b7eaf2-M003",
+      "cell": 0,
+      "start": 625,
+      "end": 659,
+      "literal": "$\\Phi(\\vec{x})\\in \\mathbb{R}^{d'}$",
+      "status": "diagnostic",
+      "message": "Unclosed quoted label at byte 41"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M004",
+      "cell": 0,
+      "start": 675,
+      "end": 681,
+      "literal": "$d'>d$",
+      "status": "diagnostic",
+      "message": "Unclosed quoted label at byte 5"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M005",
+      "cell": 0,
+      "start": 895,
+      "end": 951,
+      "literal": "$K:\\mathbb{R}^d\\times\\mathbb{R}^d\\rightarrow \\mathbb{R}$",
+      "status": "exact",
+      "display": "qfunctiontype('K', qmul(qpower('R', 'd'), qpower('R', 'd')), 'R')",
+      "copy": "qfunctiontype('K',qmul(qpower('R','d'),qpower('R','d')),'R')"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M006",
+      "cell": 0,
+      "start": 957,
+      "end": 998,
+      "literal": "$K(x,y) = \\langle \\Phi(x)|\\Phi(y)\\rangle$",
+      "status": "exact",
+      "display": "['K'x  'K'y] = qstatecall('Φ', x)† · qstatecall('Φ', y)",
+      "copy": "qcompare(vector('K'x,'K'y),qmul(qdag(qstatecall('Φ',x)),qstatecall('Φ',y)),4)"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M007",
+      "cell": 0,
+      "start": 1284,
+      "end": 1293,
+      "literal": "$\\Phi(x)$",
+      "status": "exact",
+      "display": "x'Φ'",
+      "copy": "x'Φ'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M008",
+      "cell": 0,
+      "start": 1298,
+      "end": 1307,
+      "literal": "$\\Phi(y)$",
+      "status": "exact",
+      "display": "y'Φ'",
+      "copy": "y'Φ'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M009",
+      "cell": 0,
+      "start": 3438,
+      "end": 3461,
+      "literal": "$|0\\rangle^{\\otimes N}$",
+      "status": "exact",
+      "display": "|0^N⟩",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),'N')"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M010",
+      "cell": 0,
+      "start": 3482,
+      "end": 3485,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M011",
+      "cell": 0,
+      "start": 3504,
+      "end": 3515,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M012",
+      "cell": 0,
+      "start": 3618,
+      "end": 3629,
+      "literal": "$\\vec{x}_i$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"x_\",'i',\"\"))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M013",
+      "cell": 0,
+      "start": 3648,
+      "end": 3665,
+      "literal": "$\\Phi(\\vec{x}_i)$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'",
+      "copy": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M014",
+      "cell": 0,
+      "start": 3716,
+      "end": 3727,
+      "literal": "$\\vec{x}_j$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'j', \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"x_\",'j',\"\"))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M015",
+      "cell": 0,
+      "start": 3731,
+      "end": 3748,
+      "literal": "$\\Phi(\\vec{x}_j)$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ'",
+      "copy": "qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M016",
+      "cell": 0,
+      "start": 3779,
+      "end": 3847,
+      "literal": "$$\n|\\psi(\\vec{x}_i)\\rangle = \\Phi(\\vec{x}_i)|0\\rangle^{\\otimes N}\n$$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) = qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ' · |0^N⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qadjacent(qmul('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M017",
+      "cell": 0,
+      "start": 3848,
+      "end": 3917,
+      "literal": "$$\n|\\psi(\\vec{x}_j)\\rangle = \\Phi(\\vec{x}_j)|0\\rangle^{\\otimes N}.\n$$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'j', \"\"))) = qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ' · |0^N⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qadjacent(qmul('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M018",
+      "cell": 0,
+      "start": 4033,
+      "end": 4170,
+      "literal": "$$\n\\langle\\psi(\\vec{x}_j)|\\psi(\\vec{x}_i)\\rangle = \\langle 0 |^{\\otimes N}\\Phi^\\dagger(\\vec{x}_j)\\Phi(\\vec{x}_i)|0\\rangle^{\\otimes N}.\n$$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'j', \"\")))† · qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) = [1; 0]†^{⊗ N} · 'Φ'† · qvectorref(qindexedlabel(\"x_\", 'j', \"\")) · qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ' · |0^N⟩",
+      "copy": "qcompare(qmul(qdag(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'j',\"\")))),qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))),qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(qdag(matrix(2,1,vector(1,0))),'N'),qdag('Φ')),qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qmul('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M019",
+      "cell": 0,
+      "start": 4214,
+      "end": 4237,
+      "literal": "$|0\\rangle^{\\otimes N}$",
+      "status": "exact",
+      "display": "|0^N⟩",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),'N')"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M020",
+      "cell": 0,
+      "start": 4257,
+      "end": 4282,
+      "literal": "$\\Phi^\\dagger(\\vec{x}_j)$",
+      "status": "exact",
+      "display": "'Φ'† · qvectorref(qindexedlabel(\"x_\", 'j', \"\"))",
+      "copy": "qadjacent(qdag('Φ'),qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M021",
+      "cell": 0,
+      "start": 4287,
+      "end": 4304,
+      "literal": "$\\Phi(\\vec{x}_i)$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'",
+      "copy": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M022",
+      "cell": 0,
+      "start": 4350,
+      "end": 4373,
+      "literal": "$|0\\rangle^{\\otimes N}$",
+      "status": "exact",
+      "display": "|0^N⟩",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),'N')"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M023",
+      "cell": 0,
+      "start": 4377,
+      "end": 4474,
+      "literal": "$$\nP_0 = |\\langle0|^{\\otimes N}\\Phi^\\dagger(\\vec{x}_j)\\Phi(\\vec{x}_i)|0\\rangle^{\\otimes N}|^2.\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed magnitude of a Dirac expression; use |<a|U|b>|."
+    },
+    {
+      "id": "IBM099-76b7eaf2-M024",
+      "cell": 0,
+      "start": 4516,
+      "end": 4522,
+      "literal": "$||^2$",
+      "status": "diagnostic",
+      "message": "Unclosed ASCII norm; use ||expression||."
+    },
+    {
+      "id": "IBM099-76b7eaf2-M025",
+      "cell": 0,
+      "start": 4739,
+      "end": 4762,
+      "literal": "$|0\\rangle^{\\otimes N}$",
+      "status": "exact",
+      "display": "|0^N⟩",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),'N')"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M026",
+      "cell": 0,
+      "start": 6699,
+      "end": 6722,
+      "literal": "$|0\\rangle^{\\otimes N}$",
+      "status": "exact",
+      "display": "|0^N⟩",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),'N')"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M027",
+      "cell": 6,
+      "start": 46,
+      "end": 51,
+      "literal": "$U_1$",
+      "status": "exact",
+      "display": "\"U_1\"",
+      "copy": "\"U_1\""
+    },
+    {
+      "id": "IBM099-76b7eaf2-M028",
+      "cell": 6,
+      "start": 56,
+      "end": 61,
+      "literal": "$U_2$",
+      "status": "exact",
+      "display": "\"U_2\"",
+      "copy": "\"U_2\""
+    },
+    {
+      "id": "IBM099-76b7eaf2-M029",
+      "cell": 16,
+      "start": 175,
+      "end": 190,
+      "literal": "$|00000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(32,1,[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M030",
+      "cell": 24,
+      "start": 187,
+      "end": 195,
+      "literal": "$2^{10}$",
+      "status": "exact",
+      "display": "1024",
+      "copy": "1024"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M031",
+      "cell": 24,
+      "start": 672,
+      "end": 683,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M032",
+      "cell": 24,
+      "start": 878,
+      "end": 889,
+      "literal": "$0.90^{10}$",
+      "status": "exact",
+      "display": "0.3486784401",
+      "copy": "3486784401 ∕ 10000000000"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M033",
+      "cell": 24,
+      "start": 1282,
+      "end": 1293,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M034",
+      "cell": 25,
+      "start": 567,
+      "end": 574,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M035",
+      "cell": 31,
+      "start": 342,
+      "end": 353,
+      "literal": "$\\vec{x}_i$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"x_\",'i',\"\"))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M036",
+      "cell": 31,
+      "start": 358,
+      "end": 369,
+      "literal": "$\\vec{x}_j$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"x_\", 'j', \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"x_\",'j',\"\"))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M037",
+      "cell": 38,
+      "start": 671,
+      "end": 678,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M038",
+      "cell": 57,
+      "start": 175,
+      "end": 190,
+      "literal": "$|00000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(32,1,[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M039",
+      "cell": 59,
+      "start": 634,
+      "end": 645,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M040",
+      "cell": 59,
+      "start": 753,
+      "end": 756,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M041",
+      "cell": 59,
+      "start": 820,
+      "end": 831,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M042",
+      "cell": 59,
+      "start": 896,
+      "end": 907,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M043",
+      "cell": 59,
+      "start": 918,
+      "end": 925,
+      "literal": "$100\\%$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M044",
+      "cell": 59,
+      "start": 962,
+      "end": 965,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M045",
+      "cell": 59,
+      "start": 1026,
+      "end": 1037,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M046",
+      "cell": 59,
+      "start": 1052,
+      "end": 1061,
+      "literal": "$(1-p)^N$",
+      "status": "exact",
+      "display": "(1 − p)^N",
+      "copy": "(1 − 'p')^'N'"
+    },
+    {
+      "id": "IBM099-76b7eaf2-M047",
+      "cell": 59,
+      "start": 1066,
+      "end": 1069,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    }
+  ]
+}

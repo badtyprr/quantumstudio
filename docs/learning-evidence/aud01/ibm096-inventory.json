@@ -1,0 +1,215 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/introduction.ipynb",
+  "source_sha256": "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "mode": "Quantum notation",
+  "markdown_cells": 7,
+  "code_cells": 1,
+  "summary": {
+    "exact": 13,
+    "diagnostic": 6
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 2756,
+      "end": 2888,
+      "alt": "QML_CR_background_Sup_Unsup.avif",
+      "path": "/learning/images/courses/quantum-machine-learning/introduction/qml-cr-background-sup-unsup.avif"
+    },
+    {
+      "cell": 0,
+      "start": 4434,
+      "end": 4558,
+      "alt": "QML_CR_background_2D-3D.avif",
+      "path": "/learning/images/courses/quantum-machine-learning/introduction/qml-cr-background-2d-3d.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM096-aad7521b-M001",
+      "cell": 0,
+      "start": 6596,
+      "end": 6606,
+      "literal": "$2^4 = 16$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM096-aad7521b-M002",
+      "cell": 0,
+      "start": 7254,
+      "end": 7336,
+      "literal": "$$\n|s\\rangle = a|0000\\rangle+b|0001\\rangle+c|0010\\rangle+... a, b, c \\in \\reals\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\reals at byte 78"
+    },
+    {
+      "id": "IBM096-aad7521b-M003",
+      "cell": 0,
+      "start": 7372,
+      "end": 7375,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM096-aad7521b-M004",
+      "cell": 0,
+      "start": 7377,
+      "end": 7380,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM096-aad7521b-M005",
+      "cell": 0,
+      "start": 7382,
+      "end": 7385,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM096-aad7521b-M006",
+      "cell": 0,
+      "start": 7558,
+      "end": 7648,
+      "literal": "$$\n|\\psi \\rangle = A|0000\\rangle+B|0001\\rangle+C|0010\\rangle+... A, B, C \\in \\mathbb{C}\n$$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 34"
+    },
+    {
+      "id": "IBM096-aad7521b-M007",
+      "cell": 0,
+      "start": 8097,
+      "end": 8164,
+      "literal": "$|\\psi\\rangle = \\frac{1}{\\sqrt{2}}\\left(|0\\rangle+|1\\rangle\\right)$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,[1 ∕ √(2),1 ∕ √(2)]),4)"
+    },
+    {
+      "id": "IBM096-aad7521b-M008",
+      "cell": 0,
+      "start": 8201,
+      "end": 8212,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM096-aad7521b-M009",
+      "cell": 0,
+      "start": 8216,
+      "end": 8227,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM096-aad7521b-M010",
+      "cell": 0,
+      "start": 12660,
+      "end": 12663,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM096-aad7521b-M011",
+      "cell": 0,
+      "start": 12680,
+      "end": 12683,
+      "literal": "$g$",
+      "status": "exact",
+      "display": "g",
+      "copy": "'g'"
+    },
+    {
+      "id": "IBM096-aad7521b-M012",
+      "cell": 0,
+      "start": 12687,
+      "end": 12727,
+      "literal": "$\\mathbb{Z}^*_p = {1, 2, . . . , p − 1}$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 17"
+    },
+    {
+      "id": "IBM096-aad7521b-M013",
+      "cell": 0,
+      "start": 12804,
+      "end": 12821,
+      "literal": "$\\text{log}_g(x)$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 11"
+    },
+    {
+      "id": "IBM096-aad7521b-M014",
+      "cell": 0,
+      "start": 12831,
+      "end": 12854,
+      "literal": "$x \\in \\mathbb{Z}^*_p $",
+      "status": "diagnostic",
+      "message": "Set entries must be scalars or valid binary-string labels."
+    },
+    {
+      "id": "IBM096-aad7521b-M015",
+      "cell": 0,
+      "start": 12878,
+      "end": 12913,
+      "literal": "$n = \\lceil{\\text{log}_2(p)}\\rceil$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM096-aad7521b-M016",
+      "cell": 0,
+      "start": 12954,
+      "end": 12957,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM096-aad7521b-M017",
+      "cell": 6,
+      "start": 349,
+      "end": 365,
+      "literal": "$|\\phi_i\\rangle$",
+      "status": "exact",
+      "display": "|φ_i⟩",
+      "copy": "qketstate(\"φ_i\")"
+    },
+    {
+      "id": "IBM096-aad7521b-M018",
+      "cell": 6,
+      "start": 419,
+      "end": 433,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM096-aad7521b-M019",
+      "cell": 6,
+      "start": 461,
+      "end": 498,
+      "literal": "$P_i = |\\langle\\phi_i|\\psi\\rangle|^2$",
+      "status": "exact",
+      "display": "\"P_i\" = |qmul(qdag(qnamedket(\"φ_i\")), qnamedket('ψ'))|²",
+      "copy": "qcompare(\"P_i\",|qmul(qdag(qnamedket(\"φ_i\")), qnamedket('ψ'))|²,4)"
+    }
+  ]
+}
