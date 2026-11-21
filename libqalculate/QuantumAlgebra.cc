@@ -809,6 +809,49 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=relation;return 1;
   }
+  if(op=="qpolynomialat") {
+   MathStructure coefficients=raw[0],argument=raw[1];
+   coefficients.eval(eo);argument.eval(eo);
+   if(coefficients.isSymbolic() || coefficients.isUnknown())return 0;
+   if(!coefficients.isVector() || coefficients.isMatrix() || coefficients.size()==0) {
+    CALCULATOR->error(true,"A polynomial filter needs a coefficient vector, constant term first.",NULL);return 0;
+   }
+   for(size_t i=0;i<coefficients.size();++i) {
+    if(!coefficients[i].isNumber() || coefficients[i].number().includesInfinity()) {
+     CALCULATOR->error(true,"Polynomial coefficients must be finite numbers.",NULL);return 0;
+    }
+   }
+   if(argument.containsUnknowns() || argument.isSymbolic() || argument.isFunction())return 0;
+   bool matrix=argument.isMatrix();
+   if(matrix ? argument.rows()!=argument.columns() : !argument.isNumber()) {
+    CALCULATOR->error(true,"A polynomial filter needs a scalar or square matrix.",NULL);return 0;
+   }
+   const bool oneByOne=matrix && argument.rows()==1;
+   if(oneByOne) {
+    MathStructure scalar=*argument.getElement(1,1);
+    argument=scalar;matrix=false;
+   }
+   if(argument.containsInfinity()) {
+    CALCULATOR->error(true,"Polynomial arguments must be finite.",NULL);return 0;
+   }
+   if(matrix)out.setToIdentityMatrix(argument.rows());
+   else out=1;
+   out.multiply(coefficients.last());out.eval(eo);
+   for(size_t i=coefficients.size()-1;i>0;--i) {
+    if(CALCULATOR->aborted())return 0;
+    out.multiply(argument);out.eval(eo);
+    if(matrix) {
+     if(!out.isMatrix() || out.rows()!=argument.rows() || out.columns()!=argument.columns())return 0;
+     for(size_t j=1;j<=argument.rows();++j)out.getElement(j,j)->add(coefficients[i-1]);
+    } else out.add(coefficients[i-1]);
+    out.eval(eo);
+   }
+   if(oneByOne) {
+    MathStructure scalar=out;
+    out.clearMatrix();out.resizeMatrix(1,1,scalar);
+   }
+   return 1;
+  }
   if(op=="qvectorref") {
    MathStructure value=raw[0];value.eval(eo);
    if(value.isSymbolic() || value.isUnknown() || (value.isFunction() && value.function()->referenceName()=="qindexedlabel"))return 0;
@@ -1514,6 +1557,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
  calculator.addFunction(new QuantumAlgebraFunction("qallmembers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));

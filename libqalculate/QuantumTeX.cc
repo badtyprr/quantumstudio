@@ -2351,6 +2351,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    return "qcompare(qmul(qoperatorref(\"H_tilde\"),"+state+"),qmul(\""+eigenproblem[2].str()+
       "\",qmul(qoperatorref(\"S\"),"+state+")),4)";
   }
+  if(s.find("f(H)")!=std::string::npos && s.find("f(E_")!=std::string::npos) {
+   static const std::regex hFilter(R"(f\(H\))");
+   static const std::regex energyFilter(R"(f\(E_([a-z])\))");
+   static const std::regex amplitude(R"(\\gamma_([a-z])(?=f\(E_))");
+   s=std::regex_replace(s,amplitude,"qindexedlabel(\"γ_\",$1,\"\")*");
+   s=std::regex_replace(s,hFilter,"qpolynomialat(\"f\",qoperatorref(\"H\"))");
+   s=std::regex_replace(s,energyFilter,"qpolynomialat(\"f\",E_$1)");
+  }
   // A cost on a ket and a filter on an energy have scalar function values.
   static const std::regex scalarInput(R"((^|[^A-Za-z])f\(\s*(?=\||E_(?:[A-Za-z0-9]|\{)))");
   s=std::regex_replace(s,scalarInput,"$1qscalarat(\"f\",");

@@ -113,3 +113,19 @@ for j,k,expected in [(1,0,"i"),(0,1,"(-i)"),(1,1,"1")]:
     assert run(sample.replace('"entry"',expected))=="1"
     assert run(sample.replace('"entry"',"0"))=="0"
 print("Verified the generalized eigenproblem and both signs of Krylov time evolution.")
+
+# The same polynomial acts on the Hamiltonian and on its eigenvalues.
+spectral=course_source(92,333)
+index='"qboundindex_0"'
+energy=f'qindexedlabel("E_",{index},"")'
+spectral=spectral.replace(f"qindexedket({energy})",f"qbasis({index},2)")
+spectral=spectral.replace(energy,f"(1-2*{index})").replace(f'qindexedlabel("γ_",{index},"")',"1")
+spectral=spectral.replace("'N'","1").replace("'H'","Z").replace("'f'","vector(1,2,3)")
+assert run(spectral.replace("qnamedket('ψ')","(|0>+|1>)"))=="1"
+assert run(spectral.replace("qnamedket('ψ')","(|0>-|1>)"))=="0"
+assert run("qpolynomialat(vector(1,2,3),X)")=="matrix(2,2,[4,2,2,4])"
+assert run("qpolynomialat(vector(4),Z)")=="matrix(2,2,[4,0,0,4])"
+assert run("qcompare(qpolynomialat(vector(3,2),matrix(1,1,[4])),matrix(1,1,[11]),4)")=="1"
+run("qpolynomialat(vector(2,3),matrix(2,1,[1,1]))",error="square matrix")
+run("qpolynomialat(vector(2,infinity),X)",error="finite numbers")
+print("Verified the polynomial spectral expansion and finite matrix evaluation.")
