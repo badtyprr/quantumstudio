@@ -321,6 +321,11 @@ int main() {
   equal(R"(\begin{pmatrix}a_{0,0}&a_{0,1}\\a_{1,0}&a_{1,1}\end{pmatrix})", "[qindexedcoefficient(\"a_\",(0),(0)),qindexedcoefficient(\"a_\",(0),(1));qindexedcoefficient(\"a_\",(1),(0)),qindexedcoefficient(\"a_\",(1),(1))]");
   rejects("a_(0,1,2)");rejects("a_(0,)");
   equal("2a_(0,1)", "2qindexedcoefficient(\"a_\",(0),(1))");
+  equal(R"(\begin{array}{lr}N & \text{Success probability}\\ \hline 2 & 0.50\\4 & 1.00\end{array})",
+        "matrix(3,2,vector(\"N\",\"Success probability\",2,0.50,4,1.00))");
+  rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2\end{array})");
+  rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2 & 1.2.3\end{array})");
+  rejects(R"(\begin{array}{c}N\\ 2\end{array})");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";

@@ -852,6 +852,54 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
+ // A horizontal rule separates column labels from reported numeric data.
+ std::string numericTable() {
+  const std::string alignment=nameGroup();
+  if(alignment.empty() || alignment.find_first_not_of("lcr")!=std::string::npos)
+   throw std::runtime_error(error("A numeric table requires l, c or r for each column"));
+  const std::string endMarker="\\end{array}";
+  const size_t end=input.find(endMarker,pos);
+  if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  std::string values;
+  size_t rows=0;
+  while(pos<end) {
+   size_t rowEnd=input.find("\\\\",pos);
+   if(rowEnd==std::string::npos || rowEnd>end)rowEnd=end;
+   std::string row=trim(input.substr(pos,rowEnd-pos));
+   pos=rowEnd==end ? end : rowEnd+2;
+   if(row.empty() && pos==end)break;
+   if(rows==1) {
+    if(row.compare(0,6,"\\hline")!=0)throw std::runtime_error(error("A numeric table requires a horizontal rule below the labels"));
+    row=trim(row.substr(6));
+   }
+   size_t column=0,start=0;
+   while(true) {
+    size_t separator=row.find('&',start);
+    std::string cell=trim(row.substr(start,separator==std::string::npos ? std::string::npos : separator-start));
+    if(!rows) {
+     if(cell.compare(0,6,"\\text{")==0 && cell.back()=='}')cell=trim(cell.substr(6,cell.size()-7));
+     if(cell.empty() || cell.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_ (),-")!=std::string::npos)
+      throw std::runtime_error(error("Unsupported column label in numeric table"));
+     cell="\""+cell+"\"";
+    } else {
+     size_t digit=!cell.empty() && (cell[0]=='+' || cell[0]=='-') ? 1 : 0;
+     const size_t point=cell.find('.',digit);
+     if(cell.find_first_of("0123456789",digit)==std::string::npos || cell.find_first_not_of("0123456789.",digit)!=std::string::npos ||
+        (point!=std::string::npos && cell.find('.',point+1)!=std::string::npos))
+      throw std::runtime_error(error("Numeric table entries must be integers or decimals"));
+    }
+    if(!values.empty())values+=",";
+    values+=cell;++column;
+    if(separator==std::string::npos)break;
+    start=separator+1;
+   }
+   if(column!=alignment.size())throw std::runtime_error(error("Numeric table row width differs from its column declaration"));
+   ++rows;
+  }
+  if(rows<2)throw std::runtime_error(error("A numeric table requires column labels and data"));
+  pos=end+endMarker.size();
+  return "matrix("+std::to_string(rows)+","+std::to_string(alignment.size())+",vector("+values+"))";
+ }
  std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false,std::string *preceding=nullptr) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
@@ -1108,6 +1156,7 @@ class TeXReader {
   }
   if(name=="begin") {
    auto env=nameGroup();
+   if(env=="array")return numericTable();
    if(env=="cases") {
     // On the left of a cases definition, 0.a denotes a single fractional
     // bit. Validate its width when the bit is assigned a concrete value.
