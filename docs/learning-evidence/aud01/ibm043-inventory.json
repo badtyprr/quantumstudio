@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/qiskit-implementation.ipynb",
   "source_sha256": "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840",
-  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
-  "revision": "957638fa60bad7210f0e290fa61464d732e6e934",
+  "worker_sha256": "ef12551a1071244da3b8ce55484a6ece16b522619a6dfe8a5417a0f7da83a570",
+  "revision": "68b98f600b38d651667933a47142e2913eedaf42",
   "mode": "Quantum notation",
   "markdown_cells": 10,
   "code_cells": 10,
   "summary": {
-    "exact": 14,
-    "diagnostic": 2
+    "exact": 16
   },
   "figures": [],
   "rows": [
@@ -98,8 +97,9 @@
       "start": 189,
       "end": 219,
       "literal": "$(H\\otimes I)\\vert\\phi\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "([1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] ⊗ [1, 0; 0, 1]) |φ⟩",
+      "copy": "qadjacent(qtensor(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),matrix(2,2,[1,0,0,1])),qnamedket('φ'))"
     },
     {
       "id": "IBM043-971002d9-M010",
@@ -107,8 +107,9 @@
       "start": 224,
       "end": 286,
       "literal": "$\\vert\\phi\\rangle = \\vert + \\rangle \\otimes \\vert {-i}\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ = [0.5; −0.5i; 0.5; −0.5i]",
+      "copy": "qcompare(qketstate('φ'),matrix(4,1,[1 ∕ 2,−i ∕ 2,1 ∕ 2,−i ∕ 2]),4)"
     },
     {
       "id": "IBM043-971002d9-M011",

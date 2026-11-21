@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/quantum-information.ipynb",
   "source_sha256": "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5",
-  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
-  "revision": "957638fa60bad7210f0e290fa61464d732e6e934",
+  "worker_sha256": "ef12551a1071244da3b8ce55484a6ece16b522619a6dfe8a5417a0f7da83a570",
+  "revision": "68b98f600b38d651667933a47142e2913eedaf42",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 242,
-    "diagnostic": 90
+    "exact": 278,
+    "diagnostic": 54
   },
   "figures": [],
   "rows": [
@@ -29,8 +29,8 @@
       "end": 990,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M003",
@@ -39,8 +39,8 @@
       "end": 1007,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M004",
@@ -48,8 +48,9 @@
       "start": 1071,
       "end": 1096,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M005",
@@ -77,8 +78,9 @@
       "start": 1417,
       "end": 1442,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M008",
@@ -164,8 +166,9 @@
       "start": 3771,
       "end": 3791,
       "literal": "$\\vert \\phi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
     },
     {
       "id": "IBM042-1173c31c-M017",
@@ -174,8 +177,8 @@
       "end": 3842,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M018",
@@ -194,8 +197,8 @@
       "end": 3918,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M020",
@@ -203,8 +206,9 @@
       "start": 3939,
       "end": 3986,
       "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
     },
     {
       "id": "IBM042-1173c31c-M021",
@@ -212,8 +216,9 @@
       "start": 4026,
       "end": 4065,
       "literal": "$\\vert \\phi \\rangle \\vert \\psi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
     },
     {
       "id": "IBM042-1173c31c-M022",
@@ -230,8 +235,9 @@
       "start": 4158,
       "end": 4183,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M024",
@@ -239,8 +245,9 @@
       "start": 4300,
       "end": 4325,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M025",
@@ -248,8 +255,9 @@
       "start": 4348,
       "end": 4395,
       "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
     },
     {
       "id": "IBM042-1173c31c-M026",
@@ -258,8 +266,8 @@
       "end": 4447,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M027",
@@ -267,8 +275,9 @@
       "start": 4472,
       "end": 4492,
       "literal": "$\\vert \\phi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
     },
     {
       "id": "IBM042-1173c31c-M028",
@@ -277,8 +286,8 @@
       "end": 4506,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M029",
@@ -296,8 +305,9 @@
       "start": 4665,
       "end": 4712,
       "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
     },
     {
       "id": "IBM042-1173c31c-M031",
@@ -314,8 +324,9 @@
       "start": 5536,
       "end": 5556,
       "literal": "$\\vert \\phi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
     },
     {
       "id": "IBM042-1173c31c-M033",
@@ -333,8 +344,9 @@
       "start": 5617,
       "end": 5645,
       "literal": "$\\|\\vert \\phi \\rangle\\| = 1$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "qnorm(qnamedket('φ')) − 1 = 0",
+      "copy": "(qnorm(qnamedket('φ')) − 1)==(0)"
     },
     {
       "id": "IBM042-1173c31c-M035",
@@ -353,7 +365,7 @@
       "end": 5749,
       "literal": "$\\|\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle\\| = 1$",
       "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4.\nQuantum operation requires a matrix (kets are column matrices)."
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
     },
     {
       "id": "IBM042-1173c31c-M037",
@@ -361,8 +373,9 @@
       "start": 5754,
       "end": 5801,
       "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
     },
     {
       "id": "IBM042-1173c31c-M038",
@@ -436,8 +449,9 @@
       "start": 6919,
       "end": 6937,
       "literal": "$\\vert\\phi\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
     },
     {
       "id": "IBM042-1173c31c-M046",
@@ -455,8 +469,9 @@
       "start": 6972,
       "end": 7098,
       "literal": "$$\n  \\vert\\phi\\rangle\\otimes\\vert\\psi\\rangle\n  = \\frac{1}{\\sqrt{2}} \\vert 00\\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert 11\\rangle.\n$$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "[(−1 ∕ √(2)); 0; 0; (−1 ∕ √(2))] + |φ⟩ ⊗ |ψ⟩ = 0",
+      "copy": "((matrix(4,1,[−1 ∕ √(2),0,0,−1 ∕ √(2)]))+ (qtensor(qnamedket('φ'),qnamedket('ψ'))))==(0)"
     },
     {
       "id": "IBM042-1173c31c-M048",
@@ -473,8 +488,9 @@
       "start": 7279,
       "end": 7312,
       "literal": "$\\langle 0 \\vert \\phi\\rangle = 0$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "[1; 0]† |φ⟩ = 0",
+      "copy": "(qmul(qdag(matrix(2,1,vector(1,0))),qnamedket('φ')))==(0)"
     },
     {
       "id": "IBM042-1173c31c-M050",
@@ -621,8 +637,8 @@
       "end": 12002,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M065",
@@ -631,8 +647,8 @@
       "end": 12016,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M066",
@@ -641,8 +657,8 @@
       "end": 12034,
       "literal": "$\\mathsf{Z}$",
       "status": "exact",
-      "display": "[1, 0; 0, −1]",
-      "copy": "matrix(2,2,[1,0,0,−1])"
+      "display": "Z",
+      "copy": "'Z'"
     },
     {
       "id": "IBM042-1173c31c-M067",
@@ -651,8 +667,8 @@
       "end": 12081,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M068",
@@ -661,8 +677,8 @@
       "end": 12121,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M069",
@@ -671,8 +687,8 @@
       "end": 12177,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M070",
@@ -681,8 +697,8 @@
       "end": 12194,
       "literal": "$\\mathsf{Z}$",
       "status": "exact",
-      "display": "[1, 0; 0, −1]",
-      "copy": "matrix(2,2,[1,0,0,−1])"
+      "display": "Z",
+      "copy": "'Z'"
     },
     {
       "id": "IBM042-1173c31c-M071",
@@ -711,8 +727,8 @@
       "end": 12586,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M074",
@@ -721,8 +737,8 @@
       "end": 12600,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M075",
@@ -731,8 +747,8 @@
       "end": 12618,
       "literal": "$\\mathsf{Z}$",
       "status": "exact",
-      "display": "[1, 0; 0, −1]",
-      "copy": "matrix(2,2,[1,0,0,−1])"
+      "display": "Z",
+      "copy": "'Z'"
     },
     {
       "id": "IBM042-1173c31c-M076",
@@ -895,8 +911,8 @@
       "end": 14424,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M093",
@@ -905,8 +921,8 @@
       "end": 14441,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M094",
@@ -965,8 +981,8 @@
       "end": 14990,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M100",
@@ -975,8 +991,8 @@
       "end": 15007,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M101",
@@ -1004,8 +1020,9 @@
       "start": 15112,
       "end": 15137,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M104",
@@ -1051,8 +1068,8 @@
       "end": 15558,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M109",
@@ -1061,8 +1078,8 @@
       "end": 15575,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M110",
@@ -1090,8 +1107,8 @@
       "end": 15823,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M113",
@@ -1120,8 +1137,8 @@
       "end": 16232,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M116",
@@ -1130,8 +1147,8 @@
       "end": 16297,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M117",
@@ -1150,8 +1167,8 @@
       "end": 16472,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M119",
@@ -1160,8 +1177,8 @@
       "end": 16532,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M120",
@@ -1180,8 +1197,8 @@
       "end": 16672,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M122",
@@ -1230,8 +1247,8 @@
       "end": 17167,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M127",
@@ -1260,8 +1277,8 @@
       "end": 17368,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M130",
@@ -1279,8 +1296,9 @@
       "start": 17423,
       "end": 17448,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M132",
@@ -1299,8 +1317,8 @@
       "end": 17716,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M134",
@@ -1339,8 +1357,8 @@
       "end": 17923,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M138",
@@ -1378,8 +1396,9 @@
       "start": 18360,
       "end": 18385,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M142",
@@ -1398,8 +1417,8 @@
       "end": 18672,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M144",
@@ -1437,8 +1456,9 @@
       "start": 19280,
       "end": 19305,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M148",
@@ -1475,8 +1495,9 @@
       "start": 19807,
       "end": 19832,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M152",
@@ -1495,8 +1516,8 @@
       "end": 20194,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M154",
@@ -1525,8 +1546,8 @@
       "end": 20617,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M157",
@@ -1554,8 +1575,9 @@
       "start": 20817,
       "end": 20842,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M160",
@@ -1592,8 +1614,9 @@
       "start": 21337,
       "end": 21362,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M164",
@@ -1611,8 +1634,9 @@
       "start": 22014,
       "end": 22039,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M166",
@@ -1630,8 +1654,8 @@
       "end": 22218,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M168",
@@ -1716,8 +1740,8 @@
       "end": 26346,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M177",
@@ -1726,8 +1750,8 @@
       "end": 26360,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M178",
@@ -1736,8 +1760,8 @@
       "end": 26378,
       "literal": "$\\mathsf{Z}$",
       "status": "exact",
-      "display": "[1, 0; 0, −1]",
-      "copy": "matrix(2,2,[1,0,0,−1])"
+      "display": "Z",
+      "copy": "'Z'"
     },
     {
       "id": "IBM042-1173c31c-M179",
@@ -1754,8 +1778,9 @@
       "start": 28170,
       "end": 28189,
       "literal": "$\\vert \\phi\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
     },
     {
       "id": "IBM042-1173c31c-M181",
@@ -1773,8 +1798,9 @@
       "start": 28245,
       "end": 28288,
       "literal": "$\\vert \\phi\\rangle\\otimes\\vert \\pi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |pi⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket(\"pi\"))"
     },
     {
       "id": "IBM042-1173c31c-M183",
@@ -1782,8 +1808,9 @@
       "start": 28307,
       "end": 28350,
       "literal": "$\\vert \\pi\\rangle\\otimes\\vert \\phi \\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|pi⟩ ⊗ |φ⟩",
+      "copy": "qtensor(qnamedket(\"pi\"),qnamedket('φ'))"
     },
     {
       "id": "IBM042-1173c31c-M184",
@@ -2048,8 +2075,8 @@
       "end": 33532,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M211",
@@ -2068,8 +2095,8 @@
       "end": 33598,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M213",
@@ -2087,8 +2114,9 @@
       "start": 33697,
       "end": 33722,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M215",
@@ -2116,8 +2144,9 @@
       "start": 34050,
       "end": 34075,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M218",
@@ -2164,8 +2193,9 @@
       "start": 34404,
       "end": 34429,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M223",
@@ -2467,8 +2497,8 @@
       "end": 40352,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M255",
@@ -2477,8 +2507,8 @@
       "end": 40369,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M256",
@@ -2486,8 +2516,9 @@
       "start": 40445,
       "end": 40470,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M257",
@@ -2496,8 +2527,8 @@
       "end": 40531,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M258",
@@ -2516,8 +2547,8 @@
       "end": 40633,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M260",
@@ -2526,8 +2557,8 @@
       "end": 40740,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M261",
@@ -2546,8 +2577,8 @@
       "end": 40830,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M263",
@@ -2556,8 +2587,8 @@
       "end": 40873,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M264",
@@ -2576,8 +2607,8 @@
       "end": 40932,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M266",
@@ -2586,8 +2617,8 @@
       "end": 40977,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M267",
@@ -2596,8 +2627,8 @@
       "end": 41019,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M268",
@@ -2606,8 +2637,8 @@
       "end": 41086,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M269",
@@ -2626,8 +2657,8 @@
       "end": 41202,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M271",
@@ -2646,8 +2677,8 @@
       "end": 41364,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M273",
@@ -2655,8 +2686,9 @@
       "start": 41384,
       "end": 41409,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M274",
@@ -2675,8 +2707,8 @@
       "end": 41462,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M276",
@@ -2685,8 +2717,8 @@
       "end": 41493,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M277",
@@ -2705,8 +2737,8 @@
       "end": 41614,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M279",
@@ -2715,8 +2747,8 @@
       "end": 41631,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M280",
@@ -2725,8 +2757,8 @@
       "end": 41691,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M281",
@@ -2735,8 +2767,8 @@
       "end": 41725,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M282",
@@ -2754,8 +2786,9 @@
       "start": 42297,
       "end": 42322,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M284",
@@ -2774,8 +2807,8 @@
       "end": 42424,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M286",
@@ -2784,8 +2817,8 @@
       "end": 42460,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M287",
@@ -2793,8 +2826,9 @@
       "start": 42489,
       "end": 42514,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M288",
@@ -2813,8 +2847,8 @@
       "end": 42671,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M290",
@@ -2823,8 +2857,8 @@
       "end": 42688,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M291",
@@ -2842,8 +2876,9 @@
       "start": 42760,
       "end": 42785,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M293",
@@ -2862,8 +2897,8 @@
       "end": 43861,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M295",
@@ -2872,8 +2907,8 @@
       "end": 43878,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M296",
@@ -2891,8 +2926,9 @@
       "start": 43974,
       "end": 43999,
       "literal": "$(\\mathsf{X},\\mathsf{Y})$",
-      "status": "diagnostic",
-      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
     },
     {
       "id": "IBM042-1173c31c-M298",
@@ -2901,8 +2937,8 @@
       "end": 44126,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M299",
@@ -2911,8 +2947,8 @@
       "end": 44163,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M300",
@@ -2990,8 +3026,8 @@
       "end": 44936,
       "literal": "$\\mathsf{X}$",
       "status": "exact",
-      "display": "[0, 1; 1, 0]",
-      "copy": "matrix(2,2,[0,1,1,0])"
+      "display": "X",
+      "copy": "'X'"
     },
     {
       "id": "IBM042-1173c31c-M308",
@@ -3000,8 +3036,8 @@
       "end": 44953,
       "literal": "$\\mathsf{Y}$",
       "status": "exact",
-      "display": "[0, −i; i, 0]",
-      "copy": "matrix(2,2,[0,−i,i,0])"
+      "display": "Y",
+      "copy": "'Y'"
     },
     {
       "id": "IBM042-1173c31c-M309",
