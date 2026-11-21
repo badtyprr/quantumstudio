@@ -2327,6 +2327,36 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s=std::regex_replace(s,initialState,"\\phi(0)");
   }
  }
+ if(mathWrapper) {
+  // Indexed energies in a weighted energy sum are scalars, including E_0(1).
+  if(s.find("\\sum")!=std::string::npos) {
+   static const std::regex energyFactor(R"((E_(?:[0-9]|\{[0-9]+\}))\s*\(([0-9]+)\))");
+   s=std::regex_replace(s,energyFactor,"$1 * ($2)");
+  }
+  // A named shot count is a single variable in sampling-error formulas.
+  static const std::regex shotRoot(R"(\\sqrt\{\s*shots\s*\})");
+  s=std::regex_replace(s,shotRoot,"qsqrt(\"shots\")");
+  // A proportionality coefficient between two named kets is a scalar.
+  static const std::regex scaledKet(R"((\\rangle\s*=\s*)c\s*(?=\|))");
+  s=std::regex_replace(s,scaledKet,"$1\"c\"*");
+ }
+ if(s.find("H_{\\mathcal{")!=std::string::npos) {
+  static const std::regex projected(R"(H_\{\\mathcal\{([A-Z])\}\^\{\(([a-z])\)\}\})");
+  std::smatch m;
+  if(std::regex_search(s,m,projected)) {
+   const std::string index=m[2].str();
+   s=std::regex_replace(s,projected,"qoperatorref(qindexedlabel(\"H_$1(\",\"$2\",\")\"))");
+   // The parenthesized superscripts in this subspace eigenproblem
+   // identify the sampled batch on the eigenvector and energy as well.
+   const std::string superscript="^{("+index+")}";
+   for(const std::string &name:{std::string("\\psi"),std::string("E")}) {
+    std::string token=name+superscript;
+    std::string value=name=="E" ? "qindexedlabel(\"E(\",\""+index+"\",\")\")" : "\\psi("+index+")";
+    for(size_t pos=s.find(token);pos!=std::string::npos;pos=s.find(token,pos+value.size()))
+     s.replace(pos,token.size(),value);
+   }
+  }
+ }
  if(s.find("U_{")!=std::string::npos) {
   static const std::regex applied(R"(U_\{\\text\{([A-Za-z]+)\}\}\s*\()");
   s=std::regex_replace(s,applied,"qoperatorat(\"U_$1\",");

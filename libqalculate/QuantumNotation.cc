@@ -627,8 +627,7 @@ class Parser {
   const std::string prefix="\"qboundindex_";
   if(original.compare(0,prefix.size(),prefix)==0 && original.size()>prefix.size()+1 &&
      original.find_first_not_of("0123456789",prefix.size())==original.size()-1 && original.back()=='"') {
-   auto saved=copiedBinders.emplace(original,symbol);
-   if(!saved.second)saved.first->second.clear();
+   copiedBinders.emplace(symbol,original);
   }
   // A subscript that names this binder is a reference, not an opaque label.
   // Keep the index as a separate expression so nested binders and later
@@ -2518,13 +2517,12 @@ class Parser {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
   if(!copiedBinders.empty()) {
-   std::map<std::string,std::string> originalNames;
-   for(const auto &binder:copiedBinders)if(!binder.second.empty())originalNames.emplace(binder.second,binder.first);
+   // Each scoped declaration has its own fresh key, including repeated copies.
    size_t at=0;
    while((at=out.find_first_of("\"'",at))!=std::string::npos) {
     size_t end=out.find(out[at],at+1);if(end==std::string::npos)break;
-    auto name=originalNames.find(out.substr(at,end+1-at));
-    if(name==originalNames.end())at=end+1;
+    auto name=copiedBinders.find(out.substr(at,end+1-at));
+    if(name==copiedBinders.end())at=end+1;
     else {out.replace(at,end+1-at,name->second);at+=name->second.size();}
    }
   }

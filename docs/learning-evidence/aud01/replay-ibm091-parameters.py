@@ -50,3 +50,31 @@ assert source(35)=='qketstate("ψ_var")'
 assert source(84)=='"N_GCP"'
 assert run(source(81).replace("n","7"))=="7"
 assert run(r"$U_{var}(\vec{\theta})$")==run(r"$U_{\text{var}}(\vec{\theta})$")
+
+# Verify each row of the lower-bound derivation for an equal mixture of
+# energies 2 and 4. A trial energy can satisfy the bound yet miss the mean.
+import re
+derivation=source(45).replace('"E_0"', '2')
+derivation=re.sub(r'qindexedlabel\("c_","qboundindex_\d+",""\)', '(1/sqrt(2))', derivation)
+derivation=re.sub(r'qindexedlabel\("E_",("qboundindex_\d+"),""\)', r'(2+2*\1)', derivation)
+derivation=re.sub(r'\bn\b', '1', derivation)
+for energy, expected in [(1,(0,0)), (2,(0,1)), (3,(1,1)), (4,(0,1))]:
+    assert run(derivation.replace('"E_var"',str(energy))) == (
+        r'\begin{gathered}%d\\%d\end{gathered}' % expected)
+
+def course_source(course, row):
+    inventory=Path(__file__).with_name(f"ibm{course:03}-inventory.json")
+    result=run(json.loads(inventory.read_bytes())["rows"][row-1]["literal"])
+    assert run(result)==result
+    return result
+
+scaled=course_source(92,81).replace("qketstate('b')","2*|0>").replace("qketstate(x)","|0>")
+assert run(scaled.replace("'c'","2"))=="1"
+assert run(scaled.replace("'c'","0"))=="0"
+assert run(course_source(93,114).replace('"shots"',"400"))=="20"
+projected=course_source(94,89)
+eigenproblem=course_source(94,90).replace(projected,"Z").replace("qstatecall('ψ','k')","|0>")
+energy_label="""qindexedlabel("E(",'k',')')"""
+assert run(eigenproblem.replace(energy_label,"1"))=="1"
+assert run(eigenproblem.replace(energy_label,"-1"))=="0"
+print("Verified the variational energy bound, ket scaling, shot count and sampled eigenproblem.")
