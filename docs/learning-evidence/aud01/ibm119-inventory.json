@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/variational-quantum-algorithms.ipynb",
   "source_sha256": "2de3fbcf7eaa75852ac3859bedcfa4cf17afbc13dacc88ca1a75a0f06912706e",
-  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
-  "revision": "158fb202",
+  "worker_sha256": "1be3a4e5f897ea560e48f8ce2c8888a131cc400126e118c3d491de71a3d5c347",
+  "revision": "c81e1648",
   "mode": "Quantum notation",
   "markdown_cells": 52,
   "code_cells": 50,
@@ -699,8 +699,8 @@
       "end": 377,
       "literal": "$H^{\\otimes n}|0\\rangle$",
       "status": "exact",
-      "display": "([1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}) ([1; 0])",
-      "copy": "qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),matrix(2,1,vector(1,0)))"
+      "display": "qzeroimage(qtensorpow([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], 'n'))",
+      "copy": "qzeroimage(qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n'))"
     },
     {
       "id": "IBM119-2de3fbcf-M068",
