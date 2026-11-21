@@ -1,0 +1,136 @@
+{
+  "figures": [
+    {
+      "lesson": 80,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/intro/error-handling.avif",
+      "alt": "Image of errors being reduced by error suppression, then correction, then mitigation.",
+      "sha256": "3c3d44785086b6490a3c651a31d5d73dd51f901ced11a27aae3ddf5d7ab4eb37"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/spam-errors.avif",
+      "alt": "A two-part figure. On the left is a histogram showing the ideal and noisy measurement results. On the right is a reduced assignment matrix mapping probabilities from the noisy measured results to the ideal case.",
+      "sha256": "331df9a6d7d316c3692de88ab0c5bd4dbf5105f244cf4a76203f232ed3c1fe89"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/energy-relax.avif",
+      "alt": "A Bloch sphere with a shaded region near the zero-state pole. The region is a shrunken oblate spheroid.",
+      "sha256": "c9a73a92a327feee4b02702a7f2b7a81fe0e99d6a2743638cc42fc00a46e3d5f"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/dephasing.avif",
+      "alt": "A Bloch sphere with a shaded region extending to both poles along the vertical z axis, but shrunken in the x-y plane. The region is again a shrunken oblate spheroid, but this time still centered on the origin and shrunken toward the z-axis.",
+      "sha256": "890ba78a93dcd7f69bc3d749a54428f759fb1f55fa7b2f7177938e6371deb03d"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/pauli.avif",
+      "alt": "A Bloch sphere with a shaded region shrunken uniformly toward the center.",
+      "sha256": "e69f915f1e5a3304ae306d1b0eb4ee6bcc973728835fbb8707b607377337298f"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/gate-errors.avif",
+      "alt": "Small circuit diagrams showing that a gate error on a rotation could show up as misalignment (as in a slight erroneous rotation about Y when intending to rotate about X) or as over/under rotation (as in an erroneous extra rotation about X).",
+      "sha256": "dddbc4a4b512fda109543cd648f762b4ead7dae6fd7279a55a2e8e0d9fbcc4ee"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/error-prop.avif",
+      "alt": "Four circuit diagrams showing how errors can propagate. If a qubit is not entangled with other qubits, an error is confined. Most qubits will be entangled with some others, and thus errors can propagate from one qubit to another.",
+      "sha256": "61444f706be609815bb8c1fd1786c7330ba9f75d1843140487ba8a69906bac66"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/circ.avif",
+      "alt": "A ten-qubit quantum circuit that has been transpiled and has many entangling and rotation layers.",
+      "sha256": "01c517cc1ffb2986f8008555e170210de0a69f05a987dab1010cbc2d11103e56"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/circ-boxed.avif",
+      "alt": "The same ten-qubit quantum circuit as in the previous figure, but now similar layers have been \"boxed\", meaning they have been outlined in a red box.",
+      "sha256": "17dfe3411d7ab1056b16ef0bf16350f60afce64b1a8c24a8b309ff83745dc9a9"
+    },
+    {
+      "lesson": 81,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/noise-and-errors/slc-xyz.avif",
+      "alt": "An error susceptibility map is shown for errors of various types.",
+      "sha256": "76ec564ff01d06d8e9e6a11baa0baee7cd4cf7923d0a551598170bc31cd1b95c"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/precess.avif",
+      "alt": "A Bloch sphere with a state vector initially equal to the plus state. The state then precesses around the z axis while remaining in the xy plane, consistent with time evolution in the presence of a magnetic field oriented along the z axis.",
+      "sha256": "0e85ff81930d4ed1a70a843f94ba48b9b7f6009355974e3387ff85b600138cb9"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/dephasing.avif",
+      "alt": "Three panels, each showing a Bloch sphere. The first shows a pure quantum state vector, the plus state. The second shows a broadened, shorter region of state space, indicating a mixed state with imperfect phase information. The third shows a tiny region near the origin corresponding to complete dephasing.",
+      "sha256": "a0644e5400843825f7de8e136b4bfd3c6b2158c3d1558ade71ef4204dbb65066"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/xy4.avif",
+      "alt": "A quantum circuit showing a sequence of four quantum gates used in dynamical decoupling: an X gate, a Y gate, a second X gate, and a second Y gate.",
+      "sha256": "e5c430850afa0cbe036a461923462a14b077a14b76b43e5195e4388a9e07d713"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/accumulation.avif",
+      "alt": "Two images. First, vectors denoting errors arranged in a line such that they add up coherently to a large error. Second, vectors in random directions being added to yield a smaller net effect, as in incoherent error accumulation.",
+      "sha256": "c4296cec04cc1a663babcfbab45b6f45906e1c9c6a7f2e096391e59095f19025"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/twirl-4.avif",
+      "alt": "Four images showing pieces of four quantum circuits, each with two qubits. The first is a simple CNOT gate. The others each show a CNOT gate but surrounded by Pauli gates in a way that preserves the overall logic of a CNOT operation.",
+      "sha256": "c8a3f5ad68d3d7559d1e8c1b0b9d84745c5dda9e7f850134d2b259646ed18821"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/twirl-steps.avif",
+      "alt": "A CNOT operation on a two-qubit quantum circuit, surrounded by three X gates. Points are labeled a-d at the beginning of the circuit, after an X gate on the control qubit, after the CNOT gate, and after a final X gate is applied to each of the two qubits, respectively.",
+      "sha256": "f659c6f6eb1ea50598d681afd0c8b35a1883f6e462283ff183a006a566bd3a63"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/twirl-mult.avif",
+      "alt": "A quantum circuit with four qubits and three CNOT gates in a ladder arrangement. In twirling, each of these CNOT gates is surrounded by a different set of Pauli gates.",
+      "sha256": "878dff000ee0361a7647c2d139a508c90f0a3f68e44fb2aeb6f515c408e692eb"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/twirl-check.avif",
+      "alt": "A quantum circuit with two qubits. The initial state is labeled \"a\", then an X gate acts on qubit 0 and a Y gate acts on qubit 1. After that, the state is labeled \"b\". Then a CNOT gate acts with qubit 0 as the control and qubit 1 as the target. After that, CNOT gate the state is labeled \"c\". Finally, a Y gate acts on qubit 0 and a Z gate acts on qubit 1. The final state is labeled \"d\".",
+      "sha256": "75eaac5247de531ff24ddefd4fbc923cebcbd3416bae78946db30d6a8b70add4"
+    },
+    {
+      "lesson": 82,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-suppression/ghz-transpile.avif",
+      "alt": "A diagram of the layout of qubits on a quantum computer called ibm_fez. It shows how qubits are chosen to minimize swapping of information.",
+      "sha256": "2e3127f9f8464a33effb44b987357035019f4e5695f1a5de65cacec8ab69eaba"
+    },
+    {
+      "lesson": 83,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-mitigation/m3-counts.avif",
+      "alt": "A histogram of many measurements. Two matrices are also shown. One is a full assignment matrix describing all possible measurements. The other is a reduced matrix functioning as an assignment matrix only in the subspace of measured states.",
+      "sha256": "038bb7487e12a6316486ad90984e6ce26de6dbac785fd1731c957292f1053e40"
+    },
+    {
+      "lesson": 83,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-mitigation/trex-diagram.avif",
+      "alt": "A diagram showing how Pauli gates are used in measurement twirling.",
+      "sha256": "5771f8ab7829f7d2217f7ee1b850b0e8d7a50c8228789426121d2ff3489060a0"
+    },
+    {
+      "lesson": 83,
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-mitigation/zne.avif",
+      "alt": "A diagram showing many expectation values at many noise levels. These results lie approximately on a line, and the best fit line is traced backwards to the zero-noise case. This is zero noise extrapolation.",
+      "sha256": "7bd3cf9f9b54a8c442abaa4b512f2ae64df45528f18924b025dad0fea298e3a9"
+    }
+  ]
+}

@@ -1,0 +1,2769 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
+  "source_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
+  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
+  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
+  "mode": "Quantum notation",
+  "markdown_cells": 70,
+  "code_cells": 74,
+  "summary": {
+    "exact": 175,
+    "diagnostic": 109
+  },
+  "figures": [
+    {
+      "cell": 1,
+      "start": 1377,
+      "end": 1705,
+      "alt": "A histogram of many measurements. Two matrices are also shown. One is a full assignment matrix describing all possible measurements. The other is a reduced matrix functioning as an assignment matrix only in the subspace of measured states.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-mitigation/m3-counts.avif"
+    },
+    {
+      "cell": 46,
+      "start": 2050,
+      "end": 2209,
+      "alt": "A diagram showing how Pauli gates are used in measurement twirling.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-mitigation/trex-diagram.avif"
+    },
+    {
+      "cell": 76,
+      "start": 677,
+      "end": 966,
+      "alt": "A diagram showing many expectation values at many noise levels. These results lie approximately on a line, and the best fit line is traced backwards to the zero-noise case. This is zero noise extrapolation.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/error-mitigation/zne.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM083-0db143f4-M001",
+      "cell": 1,
+      "start": 356,
+      "end": 367,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M002",
+      "cell": 1,
+      "start": 372,
+      "end": 383,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M003",
+      "cell": 1,
+      "start": 827,
+      "end": 830,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM083-0db143f4-M004",
+      "cell": 1,
+      "start": 847,
+      "end": 855,
+      "literal": "$A_{ij}$",
+      "status": "exact",
+      "display": "\"A_ij\"",
+      "copy": "\"A_ij\""
+    },
+    {
+      "id": "IBM083-0db143f4-M005",
+      "cell": 1,
+      "start": 903,
+      "end": 906,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM083-0db143f4-M006",
+      "cell": 1,
+      "start": 937,
+      "end": 940,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM083-0db143f4-M007",
+      "cell": 1,
+      "start": 1028,
+      "end": 1044,
+      "literal": "$p_{\\text{obs}}$",
+      "status": "exact",
+      "display": "\"p_obs\"",
+      "copy": "\"p_obs\""
+    },
+    {
+      "id": "IBM083-0db143f4-M008",
+      "cell": 1,
+      "start": 1082,
+      "end": 1100,
+      "literal": "$p_{\\text{ideal}}$",
+      "status": "exact",
+      "display": "\"p_ideal\"",
+      "copy": "\"p_ideal\""
+    },
+    {
+      "id": "IBM083-0db143f4-M009",
+      "cell": 1,
+      "start": 1130,
+      "end": 1174,
+      "literal": "$$\np_{\\text{obs}} = A\\, p_{\\text{ideal}}.\n$$",
+      "status": "exact",
+      "display": "A = \"p_obs\" ∕ \"p_ideal\" and \"p_ideal\" ≠ 0 or \"p_ideal\" = 0 and \"p_obs\" = 0",
+      "copy": "(((\"p_ideal\")!=(0) and ('A')==(\"p_obs\" ∕ \"p_ideal\")) or ((\"p_ideal\")==(0) and (\"p_obs\")==(0)))"
+    },
+    {
+      "id": "IBM083-0db143f4-M010",
+      "cell": 1,
+      "start": 1208,
+      "end": 1211,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM083-0db143f4-M011",
+      "cell": 1,
+      "start": 1804,
+      "end": 1822,
+      "literal": "$p_{\\text{ideal}}$",
+      "status": "exact",
+      "display": "\"p_ideal\"",
+      "copy": "\"p_ideal\""
+    },
+    {
+      "id": "IBM083-0db143f4-M012",
+      "cell": 1,
+      "start": 1873,
+      "end": 1876,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM083-0db143f4-M013",
+      "cell": 1,
+      "start": 2649,
+      "end": 2665,
+      "literal": "$2^n \\times 2^n$",
+      "status": "exact",
+      "display": "4^n",
+      "copy": "4^n"
+    },
+    {
+      "id": "IBM083-0db143f4-M014",
+      "cell": 7,
+      "start": 290,
+      "end": 301,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M015",
+      "cell": 7,
+      "start": 305,
+      "end": 316,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M016",
+      "cell": 22,
+      "start": 361,
+      "end": 364,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM083-0db143f4-M017",
+      "cell": 22,
+      "start": 922,
+      "end": 925,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM083-0db143f4-M018",
+      "cell": 45,
+      "start": 703,
+      "end": 711,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M019",
+      "cell": 45,
+      "start": 737,
+      "end": 753,
+      "literal": "$2^N \\times 2^N$",
+      "status": "exact",
+      "display": "4^N",
+      "copy": "4^'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M020",
+      "cell": 45,
+      "start": 817,
+      "end": 820,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M021",
+      "cell": 46,
+      "start": 924,
+      "end": 957,
+      "literal": "$|1\\rangle \\rightarrow |0\\rangle$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M022",
+      "cell": 46,
+      "start": 1528,
+      "end": 1531,
+      "literal": "$O$",
+      "status": "exact",
+      "display": "O",
+      "copy": "'O'"
+    },
+    {
+      "id": "IBM083-0db143f4-M023",
+      "cell": 46,
+      "start": 1584,
+      "end": 1662,
+      "literal": "$$\n\\langle O \\rangle_\\text{ideal} \\approx a \\langle O \\rangle_\\text{meas}+b\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 32"
+    },
+    {
+      "id": "IBM083-0db143f4-M024",
+      "cell": 46,
+      "start": 1670,
+      "end": 1673,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM083-0db143f4-M025",
+      "cell": 46,
+      "start": 1721,
+      "end": 1724,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM083-0db143f4-M026",
+      "cell": 46,
+      "start": 1778,
+      "end": 1787,
+      "literal": "$\\approx$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M027",
+      "cell": 46,
+      "start": 2522,
+      "end": 2533,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M028",
+      "cell": 46,
+      "start": 2582,
+      "end": 2593,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M029",
+      "cell": 46,
+      "start": 3002,
+      "end": 3083,
+      "literal": "$$\n\\langle O \\rangle_\\text{ideal} \\approx a \\langle O \\rangle_\\text{twirled}+0\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 32"
+    },
+    {
+      "id": "IBM083-0db143f4-M030",
+      "cell": 46,
+      "start": 3255,
+      "end": 3258,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM083-0db143f4-M031",
+      "cell": 46,
+      "start": 3322,
+      "end": 3433,
+      "literal": "$$\n\\langle O \\rangle_\\text{ideal} \\approx \\langle O \\rangle_\\text{TREX} = a \\langle O \\rangle_\\text{twirled}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 32"
+    },
+    {
+      "id": "IBM083-0db143f4-M032",
+      "cell": 46,
+      "start": 3720,
+      "end": 3738,
+      "literal": "$\\langle O\\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M033",
+      "cell": 46,
+      "start": 3753,
+      "end": 3756,
+      "literal": "$O$",
+      "status": "exact",
+      "display": "O",
+      "copy": "'O'"
+    },
+    {
+      "id": "IBM083-0db143f4-M034",
+      "cell": 46,
+      "start": 3893,
+      "end": 3901,
+      "literal": "$\\delta$",
+      "status": "exact",
+      "display": "'δ'",
+      "copy": "'δ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M035",
+      "cell": 46,
+      "start": 4198,
+      "end": 4216,
+      "literal": "$\\langle O\\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M036",
+      "cell": 46,
+      "start": 4366,
+      "end": 4399,
+      "literal": "$|1\\rangle \\rightarrow |0\\rangle$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M037",
+      "cell": 46,
+      "start": 4412,
+      "end": 4445,
+      "literal": "$|0\\rangle \\rightarrow |1\\rangle$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M038",
+      "cell": 46,
+      "start": 5295,
+      "end": 5351,
+      "literal": "$|\\psi\\rangle = \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle)$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,[1 ∕ √(2),1 ∕ √(2)]),4)"
+    },
+    {
+      "id": "IBM083-0db143f4-M039",
+      "cell": 46,
+      "start": 5373,
+      "end": 5391,
+      "literal": "$\\langle Z\\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M040",
+      "cell": 46,
+      "start": 5465,
+      "end": 5476,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M041",
+      "cell": 46,
+      "start": 5495,
+      "end": 5498,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM083-0db143f4-M042",
+      "cell": 46,
+      "start": 5548,
+      "end": 5559,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M043",
+      "cell": 46,
+      "start": 5576,
+      "end": 5579,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M044",
+      "cell": 46,
+      "start": 5789,
+      "end": 5808,
+      "literal": "$\\langle Z \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M045",
+      "cell": 46,
+      "start": 5914,
+      "end": 5933,
+      "literal": "$\\langle Z \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M046",
+      "cell": 46,
+      "start": 6383,
+      "end": 6402,
+      "literal": "$\\langle Z \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M047",
+      "cell": 46,
+      "start": 6701,
+      "end": 6724,
+      "literal": "$\\langle Z \\rangle = 0$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M048",
+      "cell": 46,
+      "start": 6747,
+      "end": 7126,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle & = \\frac{1}{\\sqrt{2}}(\\langle0|+\\langle1|) Z \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle)\\\\\n& = \\frac{1}{2}(\\langle0|Z|0\\rangle+\\langle0|Z|1\\rangle+\\langle1|Z|0\\rangle+\\langle1|Z|1\\rangle)\\\\\n& = \\frac{1}{2}((1)\\langle0|0\\rangle+(-1)\\langle0|1\\rangle+(1)\\langle1|0\\rangle+(-1)\\langle1|1\\rangle)\\\\\n& = \\frac{1}{2}(1+0+0+-1)\\\\\n& = 0\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M049",
+      "cell": 46,
+      "start": 7167,
+      "end": 7178,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M050",
+      "cell": 46,
+      "start": 7182,
+      "end": 7193,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M051",
+      "cell": 46,
+      "start": 7267,
+      "end": 7278,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M052",
+      "cell": 46,
+      "start": 7345,
+      "end": 7356,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M053",
+      "cell": 46,
+      "start": 7386,
+      "end": 7397,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M054",
+      "cell": 46,
+      "start": 7448,
+      "end": 7459,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M055",
+      "cell": 46,
+      "start": 7484,
+      "end": 7495,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M056",
+      "cell": 46,
+      "start": 7504,
+      "end": 7515,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M057",
+      "cell": 46,
+      "start": 7599,
+      "end": 7654,
+      "literal": "$$\n\\langle Z \\rangle = (0.545)(1)+(0.455)(-1) = 0.09\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M058",
+      "cell": 46,
+      "start": 7914,
+      "end": 7922,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M059",
+      "cell": 46,
+      "start": 7928,
+      "end": 7936,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M060",
+      "cell": 46,
+      "start": 7967,
+      "end": 7984,
+      "literal": "$0 \\rightarrow 1$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M061",
+      "cell": 46,
+      "start": 8000,
+      "end": 8008,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M062",
+      "cell": 46,
+      "start": 8014,
+      "end": 8022,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M063",
+      "cell": 46,
+      "start": 8071,
+      "end": 8079,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M064",
+      "cell": 46,
+      "start": 8085,
+      "end": 8093,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M065",
+      "cell": 46,
+      "start": 8123,
+      "end": 8140,
+      "literal": "$1 \\rightarrow 0$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M066",
+      "cell": 46,
+      "start": 8156,
+      "end": 8164,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M067",
+      "cell": 46,
+      "start": 8170,
+      "end": 8178,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M068",
+      "cell": 46,
+      "start": 8227,
+      "end": 8235,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M069",
+      "cell": 46,
+      "start": 8241,
+      "end": 8249,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M070",
+      "cell": 46,
+      "start": 8279,
+      "end": 8296,
+      "literal": "$1 \\rightarrow 0$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M071",
+      "cell": 46,
+      "start": 8312,
+      "end": 8320,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M072",
+      "cell": 46,
+      "start": 8326,
+      "end": 8334,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M073",
+      "cell": 46,
+      "start": 8383,
+      "end": 8391,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M074",
+      "cell": 46,
+      "start": 8397,
+      "end": 8405,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M075",
+      "cell": 46,
+      "start": 8436,
+      "end": 8453,
+      "literal": "$0 \\rightarrow 1$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M076",
+      "cell": 46,
+      "start": 8469,
+      "end": 8477,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M077",
+      "cell": 46,
+      "start": 8483,
+      "end": 8491,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M078",
+      "cell": 46,
+      "start": 8638,
+      "end": 8805,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle & = (0.2475)(1)+(0.0025)(-1)+(0.225)(-1)+(0.025)(1)\\\\\n& + (0.225)(1)+(0.025)(-1)+(0.2475)(-1)+(0.0025)(1)\\\\\n& = 0\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M079",
+      "cell": 46,
+      "start": 9250,
+      "end": 9253,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM083-0db143f4-M080",
+      "cell": 62,
+      "start": 56,
+      "end": 64,
+      "literal": "$7\\pi/8$",
+      "status": "exact",
+      "display": "0.875π",
+      "copy": "(7 ∕ 8) ⋅ π"
+    },
+    {
+      "id": "IBM083-0db143f4-M081",
+      "cell": 62,
+      "start": 111,
+      "end": 122,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M082",
+      "cell": 62,
+      "start": 127,
+      "end": 138,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M083",
+      "cell": 62,
+      "start": 365,
+      "end": 429,
+      "literal": "$$\n\\langle Z \\rangle = \\langle \\psi |Z|\\psi \\rangle = -0.9239\n$$",
+      "status": "diagnostic",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM083-0db143f4-M084",
+      "cell": 62,
+      "start": 772,
+      "end": 1998,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle & = \\langle \\psi |Z|\\psi \\rangle\\\\\n& = \\langle 0 |RX^\\dagger (7\\pi/8) \\quad Z \\quad RX(7\\pi/8)|0 \\rangle\\\\\n& = \\begin{pmatrix}1 & 0\\end{pmatrix}\\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) & -i\\sin\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right) & \\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix} \\begin{pmatrix}1 & 0 \\\\ 0 & -1\\end{pmatrix} \\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) & -i\\sin\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right) & \\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix}\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\\\\n& = \\begin{pmatrix}1 & 0\\end{pmatrix}\\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) & -i\\sin\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right) & \\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix} \\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix}\\\\\n& = \\begin{pmatrix}1 & 0\\end{pmatrix}\\begin{pmatrix}\\cos^2\\left(\\frac{7\\pi}{16}\\right)-\\sin^2\\left(\\frac{7\\pi}{16}\\right) \\\\ -2\\sin\\left(\\frac{7\\pi}{16}\\right)\\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix}\\\\\n& = \\cos^2\\left(\\frac{7\\pi}{16}\\right)-\\sin^2\\left(\\frac{7\\pi}{16}\\right)\\\\\n& = -0.9239...\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM083-0db143f4-M085",
+      "cell": 64,
+      "start": 77,
+      "end": 97,
+      "literal": "$\\langle Z_i\\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M086",
+      "cell": 64,
+      "start": 156,
+      "end": 169,
+      "literal": "$i^\\text{th}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M087",
+      "cell": 64,
+      "start": 219,
+      "end": 222,
+      "literal": "$I$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M088",
+      "cell": 64,
+      "start": 238,
+      "end": 251,
+      "literal": "$i^\\text{th}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M089",
+      "cell": 64,
+      "start": 278,
+      "end": 281,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M090",
+      "cell": 75,
+      "start": 698,
+      "end": 709,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M091",
+      "cell": 75,
+      "start": 814,
+      "end": 825,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M092",
+      "cell": 75,
+      "start": 830,
+      "end": 841,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M093",
+      "cell": 76,
+      "start": 1419,
+      "end": 1422,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM083-0db143f4-M094",
+      "cell": 76,
+      "start": 1478,
+      "end": 1481,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM083-0db143f4-M095",
+      "cell": 76,
+      "start": 1698,
+      "end": 1701,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM083-0db143f4-M096",
+      "cell": 76,
+      "start": 1835,
+      "end": 1838,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM083-0db143f4-M097",
+      "cell": 76,
+      "start": 2069,
+      "end": 2104,
+      "literal": "$$\n\\text{Runtime} \\sim k \\cdot S\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 16"
+    },
+    {
+      "id": "IBM083-0db143f4-M098",
+      "cell": 76,
+      "start": 2112,
+      "end": 2115,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM083-0db143f4-M099",
+      "cell": 77,
+      "start": 172,
+      "end": 175,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM083-0db143f4-M100",
+      "cell": 77,
+      "start": 181,
+      "end": 195,
+      "literal": "$GG^\\dagger G$",
+      "status": "exact",
+      "display": "G³ − iG ⋅ ℑ(G²)",
+      "copy": "G³ − iG ⋅ ℑ(G²)"
+    },
+    {
+      "id": "IBM083-0db143f4-M101",
+      "cell": 77,
+      "start": 258,
+      "end": 278,
+      "literal": "$G^\\dagger = G^{-1}$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM083-0db143f4-M102",
+      "cell": 77,
+      "start": 298,
+      "end": 316,
+      "literal": "$GG^\\dagger G = G$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM083-0db143f4-M103",
+      "cell": 77,
+      "start": 347,
+      "end": 350,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM083-0db143f4-M104",
+      "cell": 77,
+      "start": 354,
+      "end": 365,
+      "literal": "$G^\\dagger$",
+      "status": "exact",
+      "display": "G − i ⋅ ℑ(G)",
+      "copy": "G − i ⋅ ℑ(G)"
+    },
+    {
+      "id": "IBM083-0db143f4-M105",
+      "cell": 77,
+      "start": 522,
+      "end": 525,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM083-0db143f4-M106",
+      "cell": 77,
+      "start": 577,
+      "end": 591,
+      "literal": "$GG^\\dagger G$",
+      "status": "exact",
+      "display": "G³ − iG ⋅ ℑ(G²)",
+      "copy": "G³ − iG ⋅ ℑ(G²)"
+    },
+    {
+      "id": "IBM083-0db143f4-M107",
+      "cell": 77,
+      "start": 655,
+      "end": 661,
+      "literal": "$\\ell$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ell at byte 5"
+    },
+    {
+      "id": "IBM083-0db143f4-M108",
+      "cell": 77,
+      "start": 669,
+      "end": 690,
+      "literal": "$G(G^\\dagger G)^\\ell$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ell at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M109",
+      "cell": 77,
+      "start": 715,
+      "end": 724,
+      "literal": "$2\\ell+1$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ell at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M110",
+      "cell": 77,
+      "start": 1658,
+      "end": 1672,
+      "literal": "$GG^\\dagger G$",
+      "status": "exact",
+      "display": "G³ − iG ⋅ ℑ(G²)",
+      "copy": "G³ − iG ⋅ ℑ(G²)"
+    },
+    {
+      "id": "IBM083-0db143f4-M111",
+      "cell": 77,
+      "start": 1807,
+      "end": 1844,
+      "literal": "$ABC\\rightarrow ABC(ABC)^\\dagger ABC$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 5"
+    },
+    {
+      "id": "IBM083-0db143f4-M112",
+      "cell": 77,
+      "start": 2833,
+      "end": 2924,
+      "literal": "$|\\psi\\rangle = \\frac{1}{\\sqrt{2}}\\left(|0\\rangle^{\\otimes N}+|1\\rangle^{\\otimes N}\\right)$",
+      "status": "exact",
+      "display": "|ψ⟩ = 1 / √(2) · (|0^N⟩ + |1^N⟩)",
+      "copy": "qcompare(qketstate('ψ'),qadjacent(1 ∕ qsqrt(2),qadd(qtensorpow(matrix(2,1,vector(1,0)),'N'),qtensorpow(matrix(2,1,vector(0,1)),'N'))),4)"
+    },
+    {
+      "id": "IBM083-0db143f4-M113",
+      "cell": 77,
+      "start": 2975,
+      "end": 2990,
+      "literal": "$Z^{\\otimes N}$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]^{⊗ N}",
+      "copy": "qtensorpow(matrix(2,2,[1,0,0,−1]),'N')"
+    },
+    {
+      "id": "IBM083-0db143f4-M114",
+      "cell": 77,
+      "start": 3056,
+      "end": 3090,
+      "literal": "$\\langle Z^{\\otimes N}\\rangle = 1$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M115",
+      "cell": 77,
+      "start": 3203,
+      "end": 3206,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M116",
+      "cell": 77,
+      "start": 3257,
+      "end": 3260,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M117",
+      "cell": 80,
+      "start": 28,
+      "end": 82,
+      "literal": "$\\text{CNOT}^{-1} = \\text{CNOT}^\\dagger = \\text{CNOT}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M118",
+      "cell": 80,
+      "start": 163,
+      "end": 177,
+      "literal": "$GG^\\dagger G$",
+      "status": "exact",
+      "display": "G³ − iG ⋅ ℑ(G²)",
+      "copy": "G³ − iG ⋅ ℑ(G²)"
+    },
+    {
+      "id": "IBM083-0db143f4-M119",
+      "cell": 80,
+      "start": 257,
+      "end": 270,
+      "literal": "$0^\\text{th}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M120",
+      "cell": 110,
+      "start": 583,
+      "end": 592,
+      "literal": "$\\lambda$",
+      "status": "exact",
+      "display": "'λ'",
+      "copy": "'λ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M121",
+      "cell": 110,
+      "start": 666,
+      "end": 675,
+      "literal": "$\\lambda$",
+      "status": "exact",
+      "display": "'λ'",
+      "copy": "'λ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M122",
+      "cell": 110,
+      "start": 781,
+      "end": 790,
+      "literal": "$\\lambda$",
+      "status": "exact",
+      "display": "'λ'",
+      "copy": "'λ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M123",
+      "cell": 111,
+      "start": 1612,
+      "end": 1618,
+      "literal": "$\\rho$",
+      "status": "exact",
+      "display": "'ρ'",
+      "copy": "'ρ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M124",
+      "cell": 111,
+      "start": 1717,
+      "end": 1720,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM083-0db143f4-M125",
+      "cell": 111,
+      "start": 1755,
+      "end": 1800,
+      "literal": "$$\n\\mathcal{U}(\\rho) = U\\,\\rho\\,U^\\dagger.\n$$",
+      "status": "exact",
+      "display": "U · 'ρ' − (U · 'ρ' · U†) = 0",
+      "copy": "(qadd(qmul('U','ρ'),qmul(−1,qadjacent(qadjacent('U','ρ'),qdag('U')))))==(0)"
+    },
+    {
+      "id": "IBM083-0db143f4-M126",
+      "cell": 111,
+      "start": 1948,
+      "end": 2062,
+      "literal": "$$\n\\mathcal{E}(\\rho) = \\mathcal{N}\\!\\left(\\mathcal{U}(\\rho)\\right)\n= \\mathcal{N}\\!\\left(U\\rho U^\\dagger\\right),\n$$",
+      "status": "exact",
+      "display": "E · 'ρ' = N · U · 'ρ' = U · 'ρ' · U† · N",
+      "copy": "qequalchain(vector('E''ρ','N''U''ρ',qmul('N',qadjacent(qmul('U','ρ'),qdag('U')))))"
+    },
+    {
+      "id": "IBM083-0db143f4-M127",
+      "cell": 111,
+      "start": 2069,
+      "end": 2082,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M128",
+      "cell": 111,
+      "start": 2188,
+      "end": 2201,
+      "literal": "$\\mathcal{U}$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM083-0db143f4-M129",
+      "cell": 111,
+      "start": 2203,
+      "end": 2216,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M130",
+      "cell": 111,
+      "start": 2222,
+      "end": 2235,
+      "literal": "$\\mathcal{E}$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM083-0db143f4-M131",
+      "cell": 111,
+      "start": 2299,
+      "end": 2312,
+      "literal": "$\\mathcal{U}$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM083-0db143f4-M132",
+      "cell": 111,
+      "start": 2364,
+      "end": 2377,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M133",
+      "cell": 111,
+      "start": 2389,
+      "end": 2402,
+      "literal": "$\\mathcal{E}$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM083-0db143f4-M134",
+      "cell": 111,
+      "start": 2495,
+      "end": 2508,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M135",
+      "cell": 111,
+      "start": 3240,
+      "end": 3253,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M136",
+      "cell": 111,
+      "start": 3266,
+      "end": 3330,
+      "literal": "$$\n\\mathcal{N}^{-1} \\circ \\mathcal{E} \\;\\approx\\; \\mathcal{U}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 24"
+    },
+    {
+      "id": "IBM083-0db143f4-M137",
+      "cell": 111,
+      "start": 3389,
+      "end": 3407,
+      "literal": "$\\mathcal{N}^{-1}$",
+      "status": "exact",
+      "display": "1 / N",
+      "copy": "1 ∕ 'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M138",
+      "cell": 111,
+      "start": 3452,
+      "end": 3465,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M139",
+      "cell": 111,
+      "start": 3549,
+      "end": 3562,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M140",
+      "cell": 111,
+      "start": 3784,
+      "end": 3839,
+      "literal": "$$\n\\mathcal{N}^{-1} = \\sum_i \\eta_i\\, \\mathcal{O}_i.\n$$",
+      "status": "exact",
+      "display": "∑_{k ∈ \"indexset_i\"} (η_k · O_k) = 1 / N",
+      "copy": "(qsumset(qadjacent(qindexedlabel(\"η_\",\"qboundindex_0\",\"\"),qindexedlabel(\"O_\",\"qboundindex_0\",\"\")),\"indexset_i\",\"qboundindex_0\"))==(1 ∕ 'N')"
+    },
+    {
+      "id": "IBM083-0db143f4-M141",
+      "cell": 111,
+      "start": 3851,
+      "end": 3866,
+      "literal": "$\\mathcal{O}_i$",
+      "status": "exact",
+      "display": "\"O_i\"",
+      "copy": "\"O_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M142",
+      "cell": 111,
+      "start": 4001,
+      "end": 4009,
+      "literal": "$\\eta_i$",
+      "status": "exact",
+      "display": "\"η_i\"",
+      "copy": "\"η_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M143",
+      "cell": 111,
+      "start": 4101,
+      "end": 4109,
+      "literal": "$\\eta_i$",
+      "status": "exact",
+      "display": "\"η_i\"",
+      "copy": "\"η_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M144",
+      "cell": 111,
+      "start": 4174,
+      "end": 4209,
+      "literal": "$$\n\\gamma \\equiv \\sum_i |\\eta_i|\n$$",
+      "status": "diagnostic",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM083-0db143f4-M145",
+      "cell": 111,
+      "start": 4288,
+      "end": 4300,
+      "literal": "$\\gamma > 1$",
+      "status": "exact",
+      "display": "'γ' > 1",
+      "copy": "('γ')>(1)"
+    },
+    {
+      "id": "IBM083-0db143f4-M146",
+      "cell": 111,
+      "start": 4655,
+      "end": 4658,
+      "literal": "$O$",
+      "status": "exact",
+      "display": "O",
+      "copy": "'O'"
+    },
+    {
+      "id": "IBM083-0db143f4-M147",
+      "cell": 111,
+      "start": 4844,
+      "end": 4859,
+      "literal": "$\\mathcal{O}_i$",
+      "status": "exact",
+      "display": "\"O_i\"",
+      "copy": "\"O_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M148",
+      "cell": 111,
+      "start": 4880,
+      "end": 4920,
+      "literal": "$$\n  p_i = \\frac{|\\eta_i|}{\\gamma}.\n  $$",
+      "status": "exact",
+      "display": "\"p_i\" = |\"η_i\"| / 'γ'",
+      "copy": "(\"p_i\")==(qbars(\"η_i\") ∕ 'γ')"
+    },
+    {
+      "id": "IBM083-0db143f4-M149",
+      "cell": 111,
+      "start": 4952,
+      "end": 4990,
+      "literal": "$$\n  w_i = \\mathrm{sign}(\\eta_i).\n  $$",
+      "status": "exact",
+      "display": "g = −(i ⋅ \"w_i\" / (n · s · \"η_i\")) and n ≠ 0 and s ≠ 0 and \"η_i\" ≠ 0 or n = 0 and \"w_i\" = 0 and s ≠ 0 or s = 0 and \"w_i\" = 0 or \"w_i\" = 0 and \"η_i\" = 0 and s ≠ 0",
+      "copy": "(((\"w_i\")==(0) and (\"η_i\")==(0) and ('s')!=(0)) or ((\"w_i\")==(0) and ('s')!=(0) and (n)==(0)) or ((\"w_i\")==(0) and ('s')==(0)) or ((\"η_i\")!=(0) and ('g')==(−(i ⋅ \"w_i\") ∕ (n ⋅ 's' ⋅ \"η_i\")) and ('s')!=(0) and (n)!=(0)))"
+    },
+    {
+      "id": "IBM083-0db143f4-M150",
+      "cell": 111,
+      "start": 5225,
+      "end": 5249,
+      "literal": "$\\hat{O}_{\\mathrm{PEC}}$",
+      "status": "exact",
+      "display": "\"O_PEC\"",
+      "copy": "\"O_PEC\""
+    },
+    {
+      "id": "IBM083-0db143f4-M151",
+      "cell": 111,
+      "start": 5260,
+      "end": 5351,
+      "literal": "$$\n\\mathbb{E}\\!\\left[\\hat{O}_{\\mathrm{PEC}}\\right] = \\langle O \\rangle_{\\mathrm{ideal}},\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M152",
+      "cell": 111,
+      "start": 5377,
+      "end": 5390,
+      "literal": "$\\mathcal{N}$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM083-0db143f4-M153",
+      "cell": 111,
+      "start": 6433,
+      "end": 6512,
+      "literal": "$$\n\\operatorname{Var}\\!\\left(\\hat{O}_{\\mathrm{PEC}}\\right) \\propto \\gamma^2,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\propto at byte 65"
+    },
+    {
+      "id": "IBM083-0db143f4-M154",
+      "cell": 111,
+      "start": 6523,
+      "end": 6590,
+      "literal": "$$\n\\boxed{\\text{Required number of shots} \\;\\propto\\; \\gamma^2.}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\boxed at byte 8"
+    },
+    {
+      "id": "IBM083-0db143f4-M155",
+      "cell": 111,
+      "start": 6752,
+      "end": 6766,
+      "literal": "$\\gamma_k > 1$",
+      "status": "exact",
+      "display": "\"γ_k\" > 1",
+      "copy": "(\"γ_k\")>(1)"
+    },
+    {
+      "id": "IBM083-0db143f4-M156",
+      "cell": 111,
+      "start": 6849,
+      "end": 6909,
+      "literal": "$$\n\\gamma_{\\mathrm{total}} \\sim \\prod_{k=1}^{d} \\gamma_k,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\sim at byte 30"
+    },
+    {
+      "id": "IBM083-0db143f4-M157",
+      "cell": 111,
+      "start": 6916,
+      "end": 6919,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM083-0db143f4-M158",
+      "cell": 111,
+      "start": 7307,
+      "end": 7319,
+      "literal": "$\\leq 10-20$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M159",
+      "cell": 111,
+      "start": 9527,
+      "end": 9536,
+      "literal": "$\\lambda$",
+      "status": "exact",
+      "display": "'λ'",
+      "copy": "'λ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M160",
+      "cell": 111,
+      "start": 9538,
+      "end": 9600,
+      "literal": "$$\nE(\\lambda) = E(0) + c_1 \\lambda + c_2 \\lambda^2 + \\cdots\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 58"
+    },
+    {
+      "id": "IBM083-0db143f4-M161",
+      "cell": 111,
+      "start": 9743,
+      "end": 9752,
+      "literal": "$\\lambda$",
+      "status": "exact",
+      "display": "'λ'",
+      "copy": "'λ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M162",
+      "cell": 111,
+      "start": 10553,
+      "end": 10561,
+      "literal": "$\\gamma$",
+      "status": "exact",
+      "display": "'γ'",
+      "copy": "'γ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M163",
+      "cell": 111,
+      "start": 11624,
+      "end": 11661,
+      "literal": "$N\\text{hardware noise} = \\mathcal N$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 23"
+    },
+    {
+      "id": "IBM083-0db143f4-M164",
+      "cell": 112,
+      "start": 357,
+      "end": 560,
+      "literal": "$$\n\\begin{aligned}\n\\lvert \\psi \\rangle & = \\cos(\\tfrac{\\pi}{6})\\lvert 0\\rangle + \\sin(\\tfrac{\\pi}{6})\\lvert 1\\rangle\\\\\n& = \\frac{\\sqrt{3}}{2}\\lvert 0\\rangle + \\frac{1}{2}\\lvert 1\\rangle.\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(√(3) ∕ 2); (1 ∕ 2)] = [(√(3) ∕ 2); (1 ∕ 2)]",
+      "copy": "qequalchain(vector(qketstate('ψ'),matrix(2,1,[√(3) ∕ 2,1 ∕ 2]),matrix(2,1,[√(3) ∕ 2,1 ∕ 2])))"
+    },
+    {
+      "id": "IBM083-0db143f4-M165",
+      "cell": 112,
+      "start": 591,
+      "end": 760,
+      "literal": "$$\n\\rho_{\\text{ideal}} = \\lvert \\psi \\rangle \\langle \\psi \\rvert\n=\n\\begin{pmatrix}\n\\frac{3}{4} & \\frac{\\sqrt{3}}{4} \\\\\n\\frac{\\sqrt{3}}{4} & \\frac{1}{4}\n\\end{pmatrix}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M166",
+      "cell": 112,
+      "start": 1011,
+      "end": 1014,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM083-0db143f4-M167",
+      "cell": 112,
+      "start": 1016,
+      "end": 1098,
+      "literal": "$$\n\\mathcal{E}(\\rho) = (1 - p)\\rho + \\frac{p}{3}\n(X\\rho X + Y\\rho Y + Z\\rho Z).\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M168",
+      "cell": 112,
+      "start": 1138,
+      "end": 1148,
+      "literal": "$p = 0.15$",
+      "status": "exact",
+      "display": "p = 0.15",
+      "copy": "('p')==(3 ∕ 20)"
+    },
+    {
+      "id": "IBM083-0db143f4-M169",
+      "cell": 112,
+      "start": 1713,
+      "end": 1789,
+      "literal": "$$\\mathcal{E}(\\rho) = \\left(1 - \\frac{4p}{3}\\right)\\rho\n+ \\frac{2p}{3} I.\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M170",
+      "cell": 112,
+      "start": 1795,
+      "end": 1805,
+      "literal": "$p = 0.15$",
+      "status": "exact",
+      "display": "p = 0.15",
+      "copy": "('p')==(3 ∕ 20)"
+    },
+    {
+      "id": "IBM083-0db143f4-M171",
+      "cell": 112,
+      "start": 1807,
+      "end": 1828,
+      "literal": "$\\frac{4p}{3} = 0.20$",
+      "status": "exact",
+      "display": "p = 0.15",
+      "copy": "('p')==(3 ∕ 20)"
+    },
+    {
+      "id": "IBM083-0db143f4-M172",
+      "cell": 112,
+      "start": 1833,
+      "end": 1854,
+      "literal": "$\\frac{2p}{3} = 0.10$",
+      "status": "exact",
+      "display": "p = 0.15",
+      "copy": "('p')==(3 ∕ 20)"
+    },
+    {
+      "id": "IBM083-0db143f4-M173",
+      "cell": 112,
+      "start": 1861,
+      "end": 1904,
+      "literal": "$$\n\\mathcal{E}(\\rho) = 0.8 \\rho + 0.1 I.\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M174",
+      "cell": 112,
+      "start": 1934,
+      "end": 2116,
+      "literal": "$$\n\\rho_{\\text{noisy}}\n=\n0.8\n\\begin{pmatrix}\n\\frac{3}{4} & \\frac{\\sqrt{3}}{4} \\\\\n\\frac{\\sqrt{3}}{4} & \\frac{1}{4}\n\\end{pmatrix}\n+\n0.1\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & 1\n\\end{pmatrix}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M175",
+      "cell": 112,
+      "start": 2138,
+      "end": 2246,
+      "literal": "$$\n\\rho_{\\text{noisy}}\n=\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\n\\quad \\text{(rounded)}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M176",
+      "cell": 112,
+      "start": 2539,
+      "end": 2612,
+      "literal": "$$\n\\mathcal{E}^{-1}(\\rho) =\n\\frac{1}{0.8}\n\\left(\n\\rho - 0.1 I\n\\right).\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M177",
+      "cell": 112,
+      "start": 3380,
+      "end": 3398,
+      "literal": "$\\mathcal{E}^{-1}$",
+      "status": "exact",
+      "display": "1 / E",
+      "copy": "1 ∕ 'E'"
+    },
+    {
+      "id": "IBM083-0db143f4-M178",
+      "cell": 112,
+      "start": 3448,
+      "end": 3525,
+      "literal": "$$\n\\rho_{\\text{test}}\n=\n\\begin{pmatrix}\n0.95 & 0 \\\\\n0 & 0.05\n\\end{pmatrix}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 19"
+    },
+    {
+      "id": "IBM083-0db143f4-M179",
+      "cell": 112,
+      "start": 3629,
+      "end": 3956,
+      "literal": "$$\n\\begin{aligned}\n\\mathcal{E}^{-1}(\\rho_{\\text{test}}) & = \\frac{1}{0.8} \\left(\\rho_{\\text{test}} - 0.1 I\\right)\\\\\n& = \\frac{1}{0.8} \\left(\\begin{pmatrix} 0.95 & 0 \\\\ 0 & 0.05 \\end{pmatrix} - \\begin{pmatrix} 0.1 & 0 \\\\ 0 & 0.1 \\end{pmatrix}\\right)\\\\\n& = \\begin{pmatrix} 1.0625 & 0 \\\\ 0 & -0.0625 \\end{pmatrix}\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 52"
+    },
+    {
+      "id": "IBM083-0db143f4-M180",
+      "cell": 112,
+      "start": 4082,
+      "end": 4093,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M181",
+      "cell": 112,
+      "start": 4143,
+      "end": 4154,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M182",
+      "cell": 112,
+      "start": 4527,
+      "end": 4545,
+      "literal": "$\\mathcal{E}^{-1}$",
+      "status": "exact",
+      "display": "1 / E",
+      "copy": "1 ∕ 'E'"
+    },
+    {
+      "id": "IBM083-0db143f4-M183",
+      "cell": 112,
+      "start": 4680,
+      "end": 5070,
+      "literal": "$$\n\\begin{aligned}\n\\rho_{\\text{recovered}} & = \\mathcal{E}^{-1}(\\rho_\\text{noisy})\\\\\n & =\\frac{1}{0.8} \\left( \\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\n-\n\\begin{pmatrix}\n0.1 & 0 \\\\\n0 & 0.1\n\\end{pmatrix}\n\\right)\\\\\n& =\n\\frac{1}{0.8}\n\\begin{pmatrix}\n0.6 & 0.346 \\\\\n0.346 & 0.2\n\\end{pmatrix}\\\\\n& \\approx\n\\begin{pmatrix}\n0.75 & 0.433 \\\\\n0.433 & 0.25\n\\end{pmatrix}\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 40"
+    },
+    {
+      "id": "IBM083-0db143f4-M184",
+      "cell": 112,
+      "start": 5420,
+      "end": 5514,
+      "literal": "$$\n\\mathcal{E} = (1 - p)\\mathcal{I}\n+ \\frac{p}{3}(\\mathcal{X} + \\mathcal{Y} + \\mathcal{Z}),\n$$",
+      "status": "exact",
+      "display": "E = [1 − (0.666666666666666666666666666667 · p), (0.333333333333333333333333333333 − 0.333333333333333333333333333333i) · p; (0.333333333333333333333333333333 + 0.333333333333333333333333333333i) · p, 1 − (1.33333333333333333333333333333 · p)]",
+      "copy": "qcompare('E',matrix(2,2,[1 − (2 ∕ 3)'p',(1 ∕ 3 − i ∕ 3)'p',((1 + i)'p') ∕ 3,1 − (4 ∕ 3)'p']),4)"
+    },
+    {
+      "id": "IBM083-0db143f4-M185",
+      "cell": 112,
+      "start": 5522,
+      "end": 5551,
+      "literal": "$\\mathcal{X}(\\rho) = X\\rho X$",
+      "status": "exact",
+      "display": "[0, 'ρ' − (X · 'ρ'); 'ρ' − (X · 'ρ'), 0] = [0, 0; 0, 0]",
+      "copy": "(matrix(2,2,[0,'ρ' − 'X''ρ','ρ' − 'X''ρ',0]))==(matrix(2,2,[0,0,0,0]))"
+    },
+    {
+      "id": "IBM083-0db143f4-M186",
+      "cell": 112,
+      "start": 5589,
+      "end": 5639,
+      "literal": "$$\n\\mathcal{E}^{-1}=\\sum_j \\eta_j \\mathcal{P}_j\n$$",
+      "status": "exact",
+      "display": "∑_{k ∈ \"indexset_j\"} (η_k · P_k) = 1 / E",
+      "copy": "(qsumset(qadjacent(qindexedlabel(\"η_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),\"indexset_j\",\"qboundindex_0\"))==(1 ∕ 'E')"
+    },
+    {
+      "id": "IBM083-0db143f4-M187",
+      "cell": 112,
+      "start": 5650,
+      "end": 5665,
+      "literal": "$\\mathcal{P}_j$",
+      "status": "exact",
+      "display": "\"P_j\"",
+      "copy": "\"P_j\""
+    },
+    {
+      "id": "IBM083-0db143f4-M188",
+      "cell": 112,
+      "start": 5713,
+      "end": 5721,
+      "literal": "$\\eta_j$",
+      "status": "exact",
+      "display": "\"η_j\"",
+      "copy": "\"η_j\""
+    },
+    {
+      "id": "IBM083-0db143f4-M189",
+      "cell": 112,
+      "start": 5751,
+      "end": 5763,
+      "literal": "$\\eta_j < 0$",
+      "status": "exact",
+      "display": "\"η_j\" < 0",
+      "copy": "(\"η_j\")<(0)"
+    },
+    {
+      "id": "IBM083-0db143f4-M190",
+      "cell": 112,
+      "start": 5831,
+      "end": 5841,
+      "literal": "$|\\eta_j|$",
+      "status": "exact",
+      "display": "|\"η_j\"|",
+      "copy": "qbars(\"η_j\")"
+    },
+    {
+      "id": "IBM083-0db143f4-M191",
+      "cell": 112,
+      "start": 5981,
+      "end": 6000,
+      "literal": "$\\langle Z \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M192",
+      "cell": 112,
+      "start": 6029,
+      "end": 6048,
+      "literal": "$\\rho_\\text{noisy}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM083-0db143f4-M193",
+      "cell": 112,
+      "start": 6091,
+      "end": 6110,
+      "literal": "$\\rho_\\text{ideal}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM083-0db143f4-M194",
+      "cell": 112,
+      "start": 6116,
+      "end": 6135,
+      "literal": "$\\rho_\\text{ideal}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM083-0db143f4-M195",
+      "cell": 112,
+      "start": 6148,
+      "end": 6588,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{ideal} & =\\text{Tr}(Z \\rho_\\text{ideal})\\\\\n& = \\text{Tr}\\left( \\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n\\frac{3}{4} & \\frac{\\sqrt{3}}{4} \\\\\n\\frac{\\sqrt{3}}{4} & \\frac{1}{4}\n\\end{pmatrix}\\right)\\\\\n& = \\text{Tr}\\left(\n\\begin{pmatrix}\n\\frac{3}{4} & \\frac{\\sqrt{3}}{4} \\\\\n-\\frac{\\sqrt{3}}{4} & -\\frac{1}{4}\n\\end{pmatrix}\\right)\\\\\n&=\\frac{3}{4}-\\frac{1}{4}\\\\\n&=0.5\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M196",
+      "cell": 112,
+      "start": 6647,
+      "end": 6998,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{noisy} & =\\text{Tr}\\left(Z \\rho_\\text{noisy}\\right)\\\\\n& = \\text{Tr}\\left( \\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\\right)\\\\\n& = \\text{Tr}\\left(\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n-0.346 & -0.3\n\\end{pmatrix}\\right)\\\\\n&=0.7-0.3\\\\\n&=0.4\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M197",
+      "cell": 112,
+      "start": 7594,
+      "end": 7687,
+      "literal": "$$\n\\mathcal{E} = (1 - p)\\mathcal{I} + \\frac{p}{3}(\\mathcal{X} + \\mathcal{Y} + \\mathcal{Z})\n$$",
+      "status": "exact",
+      "display": "E = [1 − (0.666666666666666666666666666667 · p), (0.333333333333333333333333333333 − 0.333333333333333333333333333333i) · p; (0.333333333333333333333333333333 + 0.333333333333333333333333333333i) · p, 1 − (1.33333333333333333333333333333 · p)]",
+      "copy": "qcompare('E',matrix(2,2,[1 − (2 ∕ 3)'p',(1 ∕ 3 − i ∕ 3)'p',((1 + i)'p') ∕ 3,1 − (4 ∕ 3)'p']),4)"
+    },
+    {
+      "id": "IBM083-0db143f4-M198",
+      "cell": 112,
+      "start": 7727,
+      "end": 7820,
+      "literal": "$$\n\\mathcal{E}^{-1}\n=\n\\alpha\\,\\mathcal{I} + \\beta(\\mathcal{X} + \\mathcal{Y} + \\mathcal{Z})\n$$",
+      "status": "exact",
+      "display": "[(1 − (E · 'α') − (E · 'β')) / E, 1 / E + (−1 + i)'β'; 1 / E + (−1 − i)'β', (E · 'β' − (E · 'α') + 1) / E] = [0, 0; 0, 0]",
+      "copy": "(matrix(2,2,[(1 − 'E' ⋅ 'α' − 'E' ⋅ 'β') ∕ 'E',1 ∕ 'E' + (−1 + i)'β',1 ∕ 'E' + (−1 − i)'β',('E' ⋅ 'β' − 'E' ⋅ 'α' + 1) ∕ 'E']))==(matrix(2,2,[0,0,0,0]))"
+    },
+    {
+      "id": "IBM083-0db143f4-M199",
+      "cell": 112,
+      "start": 8082,
+      "end": 8090,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM083-0db143f4-M200",
+      "cell": 112,
+      "start": 8095,
+      "end": 8102,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM083-0db143f4-M201",
+      "cell": 112,
+      "start": 8344,
+      "end": 8352,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM083-0db143f4-M202",
+      "cell": 112,
+      "start": 8357,
+      "end": 8364,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM083-0db143f4-M203",
+      "cell": 112,
+      "start": 8901,
+      "end": 8920,
+      "literal": "$\\alpha+3\\beta = 1$",
+      "status": "exact",
+      "display": "'α' = 1 − 3'β'",
+      "copy": "('α')==(1 − 3'β')"
+    },
+    {
+      "id": "IBM083-0db143f4-M204",
+      "cell": 112,
+      "start": 9097,
+      "end": 9110,
+      "literal": "$\\mathcal{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M205",
+      "cell": 112,
+      "start": 9460,
+      "end": 9485,
+      "literal": "$\\langle Z \\rangle = 0.5$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M206",
+      "cell": 112,
+      "start": 9936,
+      "end": 9944,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM083-0db143f4-M207",
+      "cell": 112,
+      "start": 9949,
+      "end": 9956,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM083-0db143f4-M208",
+      "cell": 112,
+      "start": 9982,
+      "end": 10076,
+      "literal": "$$\n\\mathcal{E}^{-1}\n=\n\\alpha\\,\\mathcal{I} + \\beta(\\mathcal{X} + \\mathcal{Y} + \\mathcal{Z}),\n$$",
+      "status": "exact",
+      "display": "[(1 − (E · 'α') − (E · 'β')) / E, 1 / E + (−1 + i)'β'; 1 / E + (−1 − i)'β', (E · 'β' − (E · 'α') + 1) / E] = [0, 0; 0, 0]",
+      "copy": "(matrix(2,2,[(1 − 'E' ⋅ 'α' − 'E' ⋅ 'β') ∕ 'E',1 ∕ 'E' + (−1 + i)'β',1 ∕ 'E' + (−1 − i)'β',('E' ⋅ 'β' − 'E' ⋅ 'α' + 1) ∕ 'E']))==(matrix(2,2,[0,0,0,0]))"
+    },
+    {
+      "id": "IBM083-0db143f4-M209",
+      "cell": 112,
+      "start": 10134,
+      "end": 10140,
+      "literal": "$\\rho$",
+      "status": "exact",
+      "display": "'ρ'",
+      "copy": "'ρ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M210",
+      "cell": 112,
+      "start": 10194,
+      "end": 10300,
+      "literal": "$$\n\\mathcal{X}(\\rho) = X\\rho X, \\qquad\n\\mathcal{Y}(\\rho) = Y\\rho Y, \\qquad\n\\mathcal{Z}(\\rho) = Z\\rho Z.\n$$",
+      "status": "exact",
+      "display": "[0, 'ρ' − (X · 'ρ'); 'ρ' − (X · 'ρ'), 0] = [0, 0; 0, 0] and [0, i · Y · 'ρ' − i'ρ'; i'ρ' − (i · Y · 'ρ'), 0] = [0, 0; 0, 0] and ['ρ' − (Z · 'ρ'), 0; 0, Z · 'ρ' − 'ρ'] = [0, 0; 0, 0]",
+      "copy": "((matrix(2,2,['ρ' − 'Z''ρ',0,0,'Z''ρ' − 'ρ']))==(matrix(2,2,[0,0,0,0])) and (matrix(2,2,[0,'ρ' − 'X''ρ','ρ' − 'X''ρ',0]))==(matrix(2,2,[0,0,0,0])) and (matrix(2,2,[0,i'Y''ρ' − i'ρ',i'ρ' − i'Y''ρ',0]))==(matrix(2,2,[0,0,0,0])))"
+    },
+    {
+      "id": "IBM083-0db143f4-M211",
+      "cell": 112,
+      "start": 10311,
+      "end": 10329,
+      "literal": "$\\mathcal{E}^{-1}$",
+      "status": "exact",
+      "display": "1 / E",
+      "copy": "1 ∕ 'E'"
+    },
+    {
+      "id": "IBM083-0db143f4-M212",
+      "cell": 112,
+      "start": 10333,
+      "end": 10339,
+      "literal": "$\\rho$",
+      "status": "exact",
+      "display": "'ρ'",
+      "copy": "'ρ'"
+    },
+    {
+      "id": "IBM083-0db143f4-M213",
+      "cell": 112,
+      "start": 10347,
+      "end": 10439,
+      "literal": "$$\n\\mathcal{E}^{-1}(\\rho)\n=\n\\alpha\\,\\rho\n+\n\\beta\\left(X\\rho X + Y\\rho Y + Z\\rho Z\\right).\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M214",
+      "cell": 112,
+      "start": 10470,
+      "end": 10670,
+      "literal": "$$\n\\begin{aligned}\n\\mathrm{Tr}\\!\\left[\\mathcal{E}^{-1}(\\rho)\\right]\n&=\n\\alpha\\,\\mathrm{Tr}(\\rho)\n+\n\\beta\\Big(\n\\mathrm{Tr}(X\\rho X)\n+\n\\mathrm{Tr}(Y\\rho Y)\n+\n\\mathrm{Tr}(Z\\rho Z)\n\\Big).\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "(T · r · 'ρ' − (Tr('ρ') · E · 'α')) / E = 0",
+      "copy": "(qmul((('T' ⋅ 'r' ⋅ 'ρ' − qtrace('ρ') ⋅ 'E' ⋅ 'α') ∕ 'E'),qbasis(0,1)))==(qmul((0),qbasis(0,1)))"
+    },
+    {
+      "id": "IBM083-0db143f4-M215",
+      "cell": 112,
+      "start": 10747,
+      "end": 10818,
+      "literal": "$$\n\\mathrm{Tr}(P\\rho P) = \\mathrm{Tr}(\\rho),\n\\qquad P \\in \\{X,Y,Z\\}.\n$$",
+      "status": "diagnostic",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM083-0db143f4-M216",
+      "cell": 112,
+      "start": 10831,
+      "end": 10925,
+      "literal": "$$\n\\mathrm{Tr}\\!\\left[\\mathcal{E}^{-1}(\\rho)\\right]\n=\n(\\alpha + 3\\beta)\\,\\mathrm{Tr}(\\rho).\n$$",
+      "status": "exact",
+      "display": "(T · r · 'ρ' + (−(E · 'α') − (3 · E · 'β')) · Tr('ρ')) / E = 0",
+      "copy": "(qmul((('T' ⋅ 'r' ⋅ 'ρ' + (−'E' ⋅ 'α' − 3 ⋅ 'E' ⋅ 'β') ⋅ qtrace('ρ')) ∕ 'E'),qbasis(0,1)))==(qmul((0),qbasis(0,1)))"
+    },
+    {
+      "id": "IBM083-0db143f4-M217",
+      "cell": 112,
+      "start": 11063,
+      "end": 11166,
+      "literal": "$$\n\\mathrm{Tr}\\!\\left[\\mathcal{E}^{-1}(\\rho)\\right]\n=\n\\mathrm{Tr}(\\rho)\n\\qquad \\text{for all } \\rho.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 93"
+    },
+    {
+      "id": "IBM083-0db143f4-M218",
+      "cell": 112,
+      "start": 11211,
+      "end": 11237,
+      "literal": "$$\n\\alpha + 3\\beta = 1.\n$$",
+      "status": "exact",
+      "display": "'α' = 1 − 3'β'",
+      "copy": "('α')==(1 − 3'β')"
+    },
+    {
+      "id": "IBM083-0db143f4-M219",
+      "cell": 112,
+      "start": 11285,
+      "end": 11430,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{PEC}\n& =\n\\alpha(+0.4)\n+\n\\beta(-0.4)\n+\n\\beta(-0.4)\n+\n\\beta(+0.4)\n& = 0.4(\\alpha-\\beta)\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM083-0db143f4-M220",
+      "cell": 112,
+      "start": 11533,
+      "end": 11604,
+      "literal": "$$\n\\langle Z\\rangle_\\text{PEC}\n=\n\\langle Z\\rangle_\\text{ideal}\n=\n0.5\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 29"
+    },
+    {
+      "id": "IBM083-0db143f4-M221",
+      "cell": 112,
+      "start": 11623,
+      "end": 11650,
+      "literal": "$$\n0.4(\\alpha-\\beta)=0.5\n$$",
+      "status": "exact",
+      "display": "'α' = 'β' + 1.25",
+      "copy": "('α')==('β' + 5 ∕ 4)"
+    },
+    {
+      "id": "IBM083-0db143f4-M222",
+      "cell": 112,
+      "start": 11683,
+      "end": 11691,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM083-0db143f4-M223",
+      "cell": 112,
+      "start": 11696,
+      "end": 11703,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM083-0db143f4-M224",
+      "cell": 112,
+      "start": 11717,
+      "end": 11756,
+      "literal": "$$\n\\alpha = 1.1875\\\\\n\\beta = -0.0625\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 19"
+    },
+    {
+      "id": "IBM083-0db143f4-M225",
+      "cell": 112,
+      "start": 12122,
+      "end": 12130,
+      "literal": "$p=0.15$",
+      "status": "exact",
+      "display": "p = 0.15",
+      "copy": "('p')==(3 ∕ 20)"
+    },
+    {
+      "id": "IBM083-0db143f4-M226",
+      "cell": 112,
+      "start": 12171,
+      "end": 12315,
+      "literal": "$$\n\\mathcal{E}^{-1} =\\underbrace{1.1875}_{\\alpha}\\,\\mathcal{I}\n\\;+\\;\n\\underbrace{(-0.0625)}_{\\beta}\n(\\mathcal{X} + \\mathcal{Y} + \\mathcal{Z})\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\underbrace at byte 31"
+    },
+    {
+      "id": "IBM083-0db143f4-M227",
+      "cell": 112,
+      "start": 12562,
+      "end": 12604,
+      "literal": "$$\n|\\alpha| = 1.1875\\\\\n|\\beta| = 0.0625\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 21"
+    },
+    {
+      "id": "IBM083-0db143f4-M228",
+      "cell": 112,
+      "start": 12643,
+      "end": 12683,
+      "literal": "$$\nW = 1.1875 + 3\\times0.0625 = 1.375\n$$",
+      "status": "exact",
+      "display": "W = 11 ∕ 8 = 11 ∕ 8",
+      "copy": "qequalchain(vector('W',11 ∕ 8,11 ∕ 8))"
+    },
+    {
+      "id": "IBM083-0db143f4-M229",
+      "cell": 112,
+      "start": 12811,
+      "end": 12824,
+      "literal": "$\\mathcal{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M230",
+      "cell": 112,
+      "start": 13254,
+      "end": 13257,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M231",
+      "cell": 112,
+      "start": 13267,
+      "end": 13274,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM083-0db143f4-M232",
+      "cell": 112,
+      "start": 13301,
+      "end": 13323,
+      "literal": "$\\text{sign} \\times W$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M233",
+      "cell": 112,
+      "start": 13466,
+      "end": 13479,
+      "literal": "$\\mathcal{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M234",
+      "cell": 112,
+      "start": 13618,
+      "end": 13631,
+      "literal": "$\\mathcal{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M235",
+      "cell": 112,
+      "start": 13695,
+      "end": 13698,
+      "literal": "$+$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M236",
+      "cell": 112,
+      "start": 13752,
+      "end": 13759,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM083-0db143f4-M237",
+      "cell": 112,
+      "start": 13786,
+      "end": 13790,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M238",
+      "cell": 112,
+      "start": 13849,
+      "end": 13889,
+      "literal": "$(+1) \\times (+1) \\times 1.375 = +1.375$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M239",
+      "cell": 112,
+      "start": 13944,
+      "end": 13957,
+      "literal": "$\\mathcal{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M240",
+      "cell": 112,
+      "start": 14026,
+      "end": 14029,
+      "literal": "$+$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M241",
+      "cell": 112,
+      "start": 14074,
+      "end": 14078,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM083-0db143f4-M242",
+      "cell": 112,
+      "start": 14111,
+      "end": 14155,
+      "literal": "$$\n(-1) \\times (+1) \\times 1.375 = -1.375\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M243",
+      "cell": 112,
+      "start": 14268,
+      "end": 14271,
+      "literal": "$-$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M244",
+      "cell": 112,
+      "start": 14365,
+      "end": 14369,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM083-0db143f4-M245",
+      "cell": 112,
+      "start": 14408,
+      "end": 14452,
+      "literal": "$$\n(-1) \\times (-1) \\times 1.375 = +1.375\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M246",
+      "cell": 112,
+      "start": 14520,
+      "end": 14523,
+      "literal": "$-$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M247",
+      "cell": 112,
+      "start": 14577,
+      "end": 14581,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M248",
+      "cell": 112,
+      "start": 14605,
+      "end": 14649,
+      "literal": "$$\n(+1) \\times (-1) \\times 1.375 = -1.375\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M249",
+      "cell": 112,
+      "start": 14717,
+      "end": 14720,
+      "literal": "$-$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M250",
+      "cell": 112,
+      "start": 14774,
+      "end": 14778,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M251",
+      "cell": 112,
+      "start": 14802,
+      "end": 14846,
+      "literal": "$$\n(+1) \\times (-1) \\times 1.375 = -1.375\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM083-0db143f4-M252",
+      "cell": 112,
+      "start": 14928,
+      "end": 14980,
+      "literal": "$$\n\\{ +1.375,-1.375,+1.375,-1.375,-1.375,\\dots \\}\n$$",
+      "status": "diagnostic",
+      "message": "Expected endpoints for an ascending integer range at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M253",
+      "cell": 112,
+      "start": 15222,
+      "end": 15238,
+      "literal": "$W \\equiv 1.375$",
+      "status": "diagnostic",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM083-0db143f4-M254",
+      "cell": 112,
+      "start": 15593,
+      "end": 15598,
+      "literal": "$P_i$",
+      "status": "exact",
+      "display": "\"P_i\"",
+      "copy": "\"P_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M255",
+      "cell": 112,
+      "start": 15656,
+      "end": 15672,
+      "literal": "$N_\\text{shots}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 15"
+    },
+    {
+      "id": "IBM083-0db143f4-M256",
+      "cell": 112,
+      "start": 15716,
+      "end": 15721,
+      "literal": "$P_i$",
+      "status": "exact",
+      "display": "\"P_i\"",
+      "copy": "\"P_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M257",
+      "cell": 112,
+      "start": 15734,
+      "end": 15743,
+      "literal": "$S_{P_i}$",
+      "status": "exact",
+      "display": "\"S_P_i\"",
+      "copy": "\"S_P_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M258",
+      "cell": 112,
+      "start": 15752,
+      "end": 15755,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM083-0db143f4-M259",
+      "cell": 112,
+      "start": 15814,
+      "end": 15827,
+      "literal": "$j^\\text{th}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M260",
+      "cell": 112,
+      "start": 15862,
+      "end": 15875,
+      "literal": "$i^\\text{th}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M261",
+      "cell": 112,
+      "start": 15882,
+      "end": 15890,
+      "literal": "$z_{ij}$",
+      "status": "exact",
+      "display": "\"z_ij\"",
+      "copy": "\"z_ij\""
+    },
+    {
+      "id": "IBM083-0db143f4-M262",
+      "cell": 112,
+      "start": 15922,
+      "end": 16053,
+      "literal": "$$\n\\langle Z \\rangle_\\text{PEC} = \\frac{W}{N_\\text{shots}}\\sum_{i\\in \\{I, X, Y, Z\\}} \\text{sign}_i \\sum_{j\\in S_{P_i}}{ z_{i,j}}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 30"
+    },
+    {
+      "id": "IBM083-0db143f4-M263",
+      "cell": 112,
+      "start": 16073,
+      "end": 16078,
+      "literal": "$P_i$",
+      "status": "exact",
+      "display": "\"P_i\"",
+      "copy": "\"P_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M264",
+      "cell": 112,
+      "start": 16125,
+      "end": 16130,
+      "literal": "$p_i$",
+      "status": "exact",
+      "display": "\"p_i\"",
+      "copy": "\"p_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M265",
+      "cell": 112,
+      "start": 16173,
+      "end": 16262,
+      "literal": "$$\np_i = \\frac{\\text{Number of shots with Pauli } P_i \\text{ applied}}{N_\\text{shots}}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M266",
+      "cell": 112,
+      "start": 16289,
+      "end": 16483,
+      "literal": "$$\n\\begin{aligned}\n\\frac{1}{N_\\text{shots}}\\sum_{j\\in S_{P_i}}{z_{i,j}} & = \\frac{p_i}{N_{\\text{shots with }P_i}}\\sum_{j\\in S_{P_i}}{ z_{i,j}}\\\\\n&  = p_i \\langle Z \\rangle_{P_i}\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 41"
+    },
+    {
+      "id": "IBM083-0db143f4-M267",
+      "cell": 112,
+      "start": 16490,
+      "end": 16515,
+      "literal": "$\\langle Z \\rangle_{P_i}$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M268",
+      "cell": 112,
+      "start": 16587,
+      "end": 16592,
+      "literal": "$P_i$",
+      "status": "exact",
+      "display": "\"P_i\"",
+      "copy": "\"P_i\""
+    },
+    {
+      "id": "IBM083-0db143f4-M269",
+      "cell": 112,
+      "start": 16799,
+      "end": 17150,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_{I} & = \\text{Tr}\\left(ZI\\rho_{\\text{noisy}}I\\right) = 0.4\\\\\n\\langle Z \\rangle_{X} & = \\text{Tr}\\left(ZX\\rho_{\\text{noisy}}X\\right) = -0.4\\\\\n\\langle Z \\rangle_{Y} & = \\text{Tr}\\left(ZY\\rho_{\\text{noisy}}Y\\right) = -0.4\\\\\n\\langle Z \\rangle_{Z} & = \\text{Tr}\\left(ZZ\\rho_{\\text{noisy}}Z\\right) = 0.4\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 53"
+    },
+    {
+      "id": "IBM083-0db143f4-M270",
+      "cell": 112,
+      "start": 17213,
+      "end": 17238,
+      "literal": "$\\langle Z \\rangle_{P_i}$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M271",
+      "cell": 112,
+      "start": 17332,
+      "end": 17868,
+      "literal": "$$\n\\begin{aligned}\n\n\\langle Z \\rangle_{I} & = \\text{Tr}\\left(ZI\\rho_{\\text{noisy}}I\\right) \\\\\n& =\\text{Tr}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & 1\n\\end{pmatrix}\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & 1\n\\end{pmatrix}\\\\\n\n& = \\text{Tr}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\\\\\n\n& = \\text{Tr}\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n-0.346 & -0.3\n\\end{pmatrix}\\\\\n& = 0.7 - 0.3 = 0.4\n\n\\end{aligned}\n\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 54"
+    },
+    {
+      "id": "IBM083-0db143f4-M272",
+      "cell": 112,
+      "start": 17870,
+      "end": 18575,
+      "literal": "$$\n\\begin{aligned}\n\n\\langle Z \\rangle_{X} & = \\text{Tr}\\left(ZX\\rho_{\\text{noisy}}X\\right) \\\\\n& =\\text{Tr}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1 \\\\\n1 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1 \\\\\n1 & 0\n\\end{pmatrix}\\\\\n\n& = \\text{Tr}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1 \\\\\n1 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n0.346 & 0.7 \\\\\n0.3 & 0.346\n\\end{pmatrix}\\\\\n\n& = \\text{Tr}\n\\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0.3 & 0.346 \\\\\n-0.346 & -0.7\n\\end{pmatrix}\\\\\n\n& = \\text{Tr}\n\\begin{pmatrix}\n0.3 & 0.346 \\\\\n-0.346 & -0.7\n\\end{pmatrix}\\\\\n\n& = 0.3 - 0.7 = -0.4\n\n\\end{aligned}\n\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 54"
+    },
+    {
+      "id": "IBM083-0db143f4-M273",
+      "cell": 112,
+      "start": 18698,
+      "end": 18998,
+      "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{PEC} & = W \\sum_{i\\in \\{I, X, Y, Z\\}} p_i \\times \\text{sign}_i \\times \\langle Z \\rangle_{P_i}\\\\\n& = (1.375)\\times \\left((0.864)(+1)(0.40)+(0.045)(-1)(-0.40)+(0.045)(-1)(-0.40)+(0.045)(-1)(0.40)\\right)\\\\\n& = (1.375)\\times(0.364)\\\\\n& = (0.50)\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM083-0db143f4-M274",
+      "cell": 112,
+      "start": 19026,
+      "end": 19034,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM083-0db143f4-M275",
+      "cell": 112,
+      "start": 19039,
+      "end": 19046,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM083-0db143f4-M276",
+      "cell": 112,
+      "start": 19419,
+      "end": 19457,
+      "literal": "$\\langle Z \\rangle_\\text{ideal} = 0.5$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 31"
+    },
+    {
+      "id": "IBM083-0db143f4-M277",
+      "cell": 112,
+      "start": 20190,
+      "end": 20203,
+      "literal": "$|\\pm 1| = 1$",
+      "status": "diagnostic",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    },
+    {
+      "id": "IBM083-0db143f4-M278",
+      "cell": 112,
+      "start": 20240,
+      "end": 20243,
+      "literal": "$W$",
+      "status": "exact",
+      "display": "W",
+      "copy": "'W'"
+    },
+    {
+      "id": "IBM083-0db143f4-M279",
+      "cell": 112,
+      "start": 20262,
+      "end": 20265,
+      "literal": "$W$",
+      "status": "exact",
+      "display": "W",
+      "copy": "'W'"
+    },
+    {
+      "id": "IBM083-0db143f4-M280",
+      "cell": 112,
+      "start": 20296,
+      "end": 20342,
+      "literal": "$$\n\\text{variance} \\propto W^2 \\approx 1.89\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 17"
+    },
+    {
+      "id": "IBM083-0db143f4-M281",
+      "cell": 115,
+      "start": 151,
+      "end": 154,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM083-0db143f4-M282",
+      "cell": 115,
+      "start": 214,
+      "end": 217,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M283",
+      "cell": 115,
+      "start": 257,
+      "end": 260,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM083-0db143f4-M284",
+      "cell": 115,
+      "start": 263,
+      "end": 317,
+      "literal": "$$\n\\mathcal{H} = J_X\\sum_i{X_iX_{i+1}}+B\\sum_i{Z_i}\n$$",
+      "status": "diagnostic",
+      "message": "Argument 2, Lower limit (i), in sum() must be an integer.\nArgument 3, Upper limit (n), in sum() must be an integer."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/introduction.mdx",
+  "source_sha256": "472a25ee24bf7f5929d968bb5eb91693207e707ebde0edd2dab3450783b74e7a",
+  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
+  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1460,
+      "end": 1628,
+      "alt": "Image of errors being reduced by error suppression, then correction, then mitigation.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/intro/error-handling.avif"
+    }
+  ],
+  "rows": []
+}

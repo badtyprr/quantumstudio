@@ -18,6 +18,11 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "472a25ee24bf7f5929d968bb5eb91693207e707ebde0edd2dab3450783b74e7a": ("IBM080", "introduction", 0, 1),
+    "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993": ("IBM081", "noise-and-errors", 309, 9),
+    "a3fcfc9e0a84f18267115e9b1597efca99d08deb94a9c5b37b1c8a27eb44dfc5": ("IBM082", "error-suppression", 111, 9),
+    "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0": ("IBM083", "error-mitigation", 284, 3),
+    "d76bfe7cca292d48e3396c2c1b35c23849ce0e9a22c09b3611f843177811d672": ("IBM084", "error-correction-i", 488, 0),
     "c6594e782df4c62b653d6e571b96f6fed6a9c2783991d6f998cc9db65baff427": ("IBM074", "introduction", 0, 0),
     "7f001ec597b80e45be630d4d77f00c26607588bccb334712507f786f1a5392c1": ("IBM075", "running-quantum-circuits", 0, 2),
     "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23": ("IBM076", "utility-scale-qaoa", 37, 6),
@@ -111,12 +116,18 @@ lessons = {
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
     parser.error(f"Expected {args.lesson}, got {lesson}")
-cells = json.loads(data)["cells"]
+extension = "mdx" if lesson == "IBM080" else "ipynb"
+cells = ([{"cell_type": "markdown", "source": data.decode()}] if extension == "mdx"
+         else json.loads(data)["cells"])
 types = Counter(c["cell_type"] for c in cells)
 single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM081": (26,18),
+    "IBM082": (41,40),
+    "IBM083": (70,74),
+    "IBM084": (69,39),
     "IBM037": (2,0), "IBM038": (2,0), "IBM039": (19,18),
     "IBM041": (2,0), "IBM042": (2,0), "IBM043": (10,10),
     "IBM046": (2,0), "IBM047": (2,0), "IBM049": (2,0), "IBM050": (2,0),
@@ -182,9 +193,11 @@ if "IBM069" <= lesson <= "IBM073":
     course,chapter = "use-a-qc-today",""
 elif "IBM074" <= lesson <= "IBM079":
     course,chapter = "quantum-computing-in-practice",""
+elif "IBM080" <= lesson <= "IBM084":
+    course,chapter = "tools-for-quantum-advantage",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
-          f"learning/courses/{path}.ipynb")
+          f"learning/courses/{path}.{extension}")
 counts = Counter(row["status"] for row in rows)
 report = dict(source=source, source_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               revision=args.revision, mode="Quantum notation", markdown_cells=types["markdown"], code_cells=types["code"],
