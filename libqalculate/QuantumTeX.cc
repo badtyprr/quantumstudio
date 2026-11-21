@@ -1659,7 +1659,8 @@ class TeXReader {
    const bool separate=alignmentCells.size()>1 && std::all_of(alignmentCells.begin(),alignmentCells.end(),completeAlignedEquation);
    const size_t stride=separate ? 1 : 2;
    for(size_t cell=0;cell<alignmentCells.size();cell+=stride) {
-    std::string value=alignmentCells[cell];bool indented=value.empty() && cell+1<alignmentCells.size();
+    std::string value=alignmentCells[cell];
+    bool indented=cell+1<alignmentCells.size() && (value.empty() || (value.size()==1 && value.find_first_of("+-*/@#")!=std::string::npos));
     if(!separate && cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
     value=trim(withoutDisplayPunctuation(value));
     if(value.empty())throw std::runtime_error(error("Empty aligned expression"));
@@ -1830,6 +1831,17 @@ class TeXReader {
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
    else if(input[pos]=='_') {
+    if(input.compare(pos,10,"_{\\mathsf{")==0) {
+     size_t close=input.find("}}",pos+10);
+     size_t ketEnd=result.find_last_not_of(" \t\r\n"),ketStart=result.rfind('|',ketEnd);
+     if(close!=std::string::npos && ketEnd!=std::string::npos && result[ketEnd]=='>' && ketStart!=std::string::npos) {
+      std::string labels=input.substr(pos+10,close-pos-10);
+      if(labels.empty() || labels.size()>32 || labels.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")!=std::string::npos)
+       throw std::runtime_error(error("Expected uppercase register names on a ket"));
+      result.replace(ketStart,std::string::npos,"qregket("+result.substr(ketStart,ketEnd+1-ketStart)+",\""+labels+"\")");
+      pos=close+2;continue;
+     }
+    }
     size_t stateDelimiter=result.find_last_of("|<>");
     bool stateSubscript=stateLabel;
     if(!stateSubscript && stateDelimiter!=std::string::npos && result[stateDelimiter]!='>') {
@@ -2106,6 +2118,28 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  if(splitDimensions)normalized+="))";
  std::string result=TeXReader(normalized).run(lines);
+ if(normalized.find("_{\\mathsf{")!=std::string::npos && result.find("qregket(")!=std::string::npos) {
+  std::string value=trim(result),order;
+  static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+)"\))ket");
+  for(std::sregex_iterator it(value.begin(),value.end(),subscript),end;it!=end;++it)
+   for(char wire:(*it)[1].str())if(order.find(wire)==std::string::npos)order+=wire;
+  // Alignment environments group the entire equation. Remove that one
+  // wrapper only when it encloses every operand.
+  if(value.size()>1 && value.front()=='(' && value.back()==')') {
+   size_t depth=0,end=0;
+   for(;end<value.size();++end) {
+    if(value[end]=='(')++depth;
+    if(value[end]==')' && --depth==0)break;
+   }
+   if(end+1==value.size())value=value.substr(1,value.size()-2);
+  }
+  auto operands=indexedParts(value,"=");
+  result.clear();
+  for(const auto &operand:operands) {
+   if(!result.empty())result+="=";
+   result+=operand.find("qregket(")==std::string::npos ? operand : "qorderedket("+operand+",\""+order+"\")";
+  }
+ }
  if(bitWord)result=orderedBitWord(result);
  for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
  return result;

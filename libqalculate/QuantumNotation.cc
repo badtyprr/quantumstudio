@@ -355,6 +355,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qptrace",2},
  {"qptraceselect",3},
  {"qsubsystems",3},
+ {"qregket",2},{"qorderedket",2},
  {"qptracedim",3},
  {"qptm",1},
  {"qpaulivec",1},
