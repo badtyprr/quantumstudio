@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
   "source_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
-  "worker_sha256": "dfd2b342f2a858048590d287c077a25924eb5350bc03f32a591e6da1464e9754",
-  "revision": "db02294c",
+  "worker_sha256": "62cd634bec9d073015c4ac8912e918b70991bac5f864dbb339b2bc2ca9690c3c",
+  "revision": "56d25bff",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 35,
-    "diagnostic": 2
+    "exact": 37
   },
   "figures": [
     {
@@ -191,8 +190,9 @@
       "start": 7073,
       "end": 7084,
       "literal": "$\\min 𝑓(𝑥)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\min at byte 5"
+      "status": "exact",
+      "display": "qsetminimum(qfunctionrange('f'))",
+      "copy": "qsetminimum(qfunctionrange('f'))"
     },
     {
       "id": "IBM076-b057ac80-M015",
@@ -290,8 +290,9 @@
       "start": 8276,
       "end": 8372,
       "literal": "$$\n\\sum_{ij}Q_{ij}z_iz_j - Q_{ij}z_i - Q_{ij}z_j = z^TQz + (-\\sum_{ij} Q_{ij}z_i + Q_{ij}z_j)\n$$",
-      "status": "diagnostic",
-      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+      "status": "exact",
+      "display": "qpairtotal('Q', 'z', qsub(qsub(qmul(qmul(\"weight\", \"leftword\"), \"rightword\"), qmul(\"weight\", \"leftword\")), qmul(\"weight\", \"rightword\")), \"weight\", \"leftword\", \"rightword\") − (qpairtotal('Q', 'z', qmul(qmul(\"weight\", \"leftword\"), \"rightword\"), \"weight\", \"leftword\", \"rightword\") − qpairtotal('Q', 'z', qadd(qmul(\"weight\", \"leftword\"), qmul(\"weight\", \"rightword\")), \"weight\", \"leftword\", \"rightword\")) = 0",
+      "copy": "(qadd(qmul(−1,qsub(qpairtotal('Q','z',qmul(qmul(\"weight\",\"leftword\"),\"rightword\"),\"weight\",\"leftword\",\"rightword\"),qpairtotal('Q','z',qadd(qmul(\"weight\",\"leftword\"),qmul(\"weight\",\"rightword\")),\"weight\",\"leftword\",\"rightword\"))),qpairtotal('Q','z',qsub(qsub(qmul(qmul(\"weight\",\"leftword\"),\"rightword\"),qmul(\"weight\",\"leftword\")),qmul(\"weight\",\"rightword\")),\"weight\",\"leftword\",\"rightword\")))==(0)"
     },
     {
       "id": "IBM076-b057ac80-M025",
@@ -310,8 +311,8 @@
       "end": 8511,
       "literal": "$$\nb_i = -\\sum_{j} Q_{ij} + Q_{ji}\n$$",
       "status": "exact",
-      "display": "−(∑_{k ∈ \"indexset_j\"} (\"Q_ij\")) + \"Q_ji\" = \"b_i\"",
-      "copy": "(qadd(−qsumset(\"Q_ij\", \"indexset_j\", \"qboundindex_0\"),\"Q_ji\"))==(\"b_i\")"
+      "display": "qisingfield('Q', 'i') = \"b_i\"",
+      "copy": "(qisingfield('Q','i'))==(\"b_i\")"
     },
     {
       "id": "IBM076-b057ac80-M027",

@@ -1,33 +1,23 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
   "notebook_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
-  "worker_sha256": "dfd2b342f2a858048590d287c077a25924eb5350bc03f32a591e6da1464e9754",
+  "worker_sha256": "62cd634bec9d073015c4ac8912e918b70991bac5f864dbb339b2bc2ca9690c3c",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "e656d14faa212e0b788f070f4043ee4921bbceb6c3ca52fdb5deddb2956e4d0f",
+  "records_sha256": "4d746f73b8cf8c5f8f3c34a619978ee99bfbea9806c605e91faedc8b103f4be9",
   "suite": {
     "passed": true,
-    "checks": 319,
+    "checks": 333,
     "calls": 37,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 35,
-    "restored_identically": 35,
-    "stable_after_text_reentry": 35,
-    "source_diagnostic": 2
+    "source_exact": 37,
+    "restored_identically": 37,
+    "stable_after_text_reentry": 37
   },
-  "diagnostics": [
-    {
-      "id": "IBM076-b057ac80-M014",
-      "message": "Unsupported TeX command: \\min at byte 5"
-    },
-    {
-      "id": "IBM076-b057ac80-M024",
-      "message": "A finite sum/product requires lower and upper bounds at byte 11"
-    }
-  ],
+  "diagnostics": [],
   "changed_copy": [],
   "failures": []
 }

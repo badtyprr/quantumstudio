@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/mapping.ipynb",
   "source_sha256": "c73c951ff00e85b24a28f6bb4ef9fe5237a5eba375ff174639a14918e1ce01a4",
-  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
-  "revision": "88544e4f",
+  "worker_sha256": "62cd634bec9d073015c4ac8912e918b70991bac5f864dbb339b2bc2ca9690c3c",
+  "revision": "56d25bff",
   "mode": "Quantum notation",
   "markdown_cells": 4,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 9,
-    "exact": 67
+    "diagnostic": 6,
+    "exact": 70
   },
   "figures": [
     {
@@ -461,8 +461,9 @@
       "start": 14247,
       "end": 14343,
       "literal": "$$\n\\begin{aligned}\n|0\\rangle & = \\text{ empty}\\\\\n|1\\rangle & = \\text{ occupied}\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 45"
+      "status": "exact",
+      "display": "1.  [1; 0] = |empty⟩\n\n2.  [0; 1] = |occupied⟩",
+      "copy": "\\begin{gathered}qcompare(matrix(2,1,[1,0]),qketstate(\"empty\"),4)\\\\qcompare(matrix(2,1,[0,1]),qketstate(\"occupied\"),4)\\end{gathered}"
     },
     {
       "id": "IBM078-c73c951f-M045",
@@ -599,8 +600,9 @@
       "start": 15556,
       "end": 15568,
       "literal": "$\\sigma_k^-$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 7"
+      "status": "exact",
+      "display": "qspinladder('N', 'k', 1)",
+      "copy": "qspinladder('N','k',1)"
     },
     {
       "id": "IBM078-c73c951f-M059",
@@ -618,8 +620,9 @@
       "start": 15615,
       "end": 15627,
       "literal": "$\\sigma_k^+$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 7"
+      "status": "exact",
+      "display": "qspinladder('N', 'k', 0)",
+      "copy": "qspinladder('N','k',0)"
     },
     {
       "id": "IBM078-c73c951f-M061",
