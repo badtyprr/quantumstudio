@@ -520,3 +520,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm083-readout-table.py docs/l
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm084-stabilizer-context.py docs/learning-evidence/aud01/ibm084-stabilizer-context.json
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm085-media.json docs/learning-evidence/aud01/ibm085-inventory.json docs/learning-evidence/aud01/ibm085-windows-sessions.json docs/learning-evidence/aud01/ibm086-inventory.json docs/learning-evidence/aud01/ibm086-windows-sessions.json docs/learning-evidence/aud01/ibm087-inventory.json docs/learning-evidence/aud01/ibm087-windows-sessions.json docs/learning-evidence/aud01/ibm088-inventory.json docs/learning-evidence/aud01/ibm088-windows-sessions.json docs/learning-evidence/aud01/ibm089-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm088-families.py docs/learning-evidence/aud01/replay-ibm088-skqd.py docs/learning-evidence/aud01/ibm088-local-skqd.json

@@ -646,6 +646,27 @@ class QuantumAlgebraFunction: public MathFunction {
    MathStructure unequal(5);
    out.set(CALCULATOR->getFunction("qcompare"),&left,&right,&unequal,NULL);out.eval(eo);return 1;
   }
+  if(op=="qkrylovstates") {
+   MathStructure h=raw[0],state=raw[1],step=raw[2],count=raw[3];
+   h.eval(eo);state.eval(eo);step.eval(eo);count.eval(eo);
+   if(!count.isNumber())return 0;
+   if(!count.isInteger() || count.number()<1 || count.number()>1024) {
+    CALCULATOR->error(true,"A Krylov family requires 1 to 1024 states.",NULL);return 0;
+   }
+   if(!h.isMatrix() || !state.isMatrix() || !step.representsReal())return 0;
+   if(h.rows()!=h.columns() || state.columns()!=1 || h.rows()!=state.rows()) {
+    CALCULATOR->error(true,"The Krylov Hamiltonian and initial ket require compatible dimensions.",NULL);return 0;
+   }
+   MathStructure evolution(CALCULATOR->getFunction("qevolution"),&h,&step,NULL);
+   evolution.eval(eo);if(!evolution.isMatrix())return 0;
+   const int size=count.number().intValue();
+   out.clearVector();out.addChild(state);
+   for(int j=1;j<size;++j) {
+    if(CALCULATOR->aborted())return 0;
+    state=multiply(evolution,state,eo,false);out.addChild(state);
+   }
+   return 1;
+  }
   if(op=="qpropagator") {
    MathStructure h=raw[0],time=raw[1];h.eval(eo);time.eval(eo);
    if(!h.isMatrix() || !time.representsReal()) {
@@ -1486,6 +1507,6 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  calculator.addFunction(new QuantumAlgebraFunction("qcomputationalket",1));
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qoperatorunequal",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qkrylovstates",4},{"qoperatorunequal",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }
