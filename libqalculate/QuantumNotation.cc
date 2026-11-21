@@ -839,8 +839,8 @@ class Parser {
   // a computed basis index, such as mod(k,3), remain function arguments.
   std::vector<std::string> registers;size_t start=0;int nesting=0;
   for(size_t k=0;k<label.size();++k) {
-   if(label[k]=='(' || label[k]=='[')++nesting;
-   else if(label[k]==')' || label[k]==']')--nesting;
+   if(label[k]=='(' || label[k]=='[' || label[k]=='{')++nesting;
+   else if(label[k]==')' || label[k]==']' || label[k]=='}')--nesting;
    else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
   }
   if(!registers.empty()) {
