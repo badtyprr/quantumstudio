@@ -736,7 +736,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"↦")==0 || s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("qtexcongruent") || word("qtexmodulus") || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("qtexcongruent") || word("qtexmodulus") || word("qpostmod") || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -2068,8 +2068,8 @@ class Parser {
   if(end<s.size() && (std::isalnum((unsigned char)s[end]) || s[end]=='_' || (unsigned char)s[end]>=128))return false;
   p=end;return true;
  }
- std::string product() {
-  auto a=diracFactor();
+ std::string product() {return productTail(diracFactor());}
+ std::string productTail(std::string a) {
   while(true) {
    if(takeWord("pmod")) {
     need('(');auto modulus=expression();need(')');
@@ -2120,7 +2120,21 @@ class Parser {
   }
   return a;
  }
- std::string additive() {return additiveTail(product());}
+ std::string additive() {
+  size_t start=p;
+  std::string value=additiveTail(product());
+  if(!takeWord("qpostmod"))return value;
+  // The postfix annotation scopes the preceding sum. Parse its powers and
+  // quotients with the explicitly supplied modulus before evaluating them.
+  bool previousScalar=scalarNotation;scalarNotation=true;
+  need('(');auto modulus=expression();need(')');
+  size_t end=p;p=start;
+  std::string previous=ringModulus;ringModulus=modulus;
+  value=additiveTail(product());
+  ringModulus=previous;scalarNotation=previousScalar;p=end;
+  value="qmodpower("+value+",1,"+modulus+")";
+  return additiveTail(productTail(value));
+ }
  bool takeSetOperator(const std::string &token) {
   ws();if(s.compare(p,token.size(),token)!=0)return false;p+=token.size();return true;
  }

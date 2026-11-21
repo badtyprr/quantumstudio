@@ -971,12 +971,12 @@ class TeXReader {
   ++pos;
  }
  // Match only the text label that introduces a parenthesized modulus.
- bool takeModulusLabel(bool congruence) {
+ bool takeModulusLabel(bool &roman) {
   size_t start=pos;
   space();
   size_t length=0;
-  if(congruence && input.compare(pos,7,"\\textrm")==0)length=7;
-  else if(congruence && input.compare(pos,7,"\\mathrm")==0)length=7;
+  if(input.compare(pos,7,"\\textrm")==0)length=7;
+  else if(input.compare(pos,7,"\\mathrm")==0)length=7;
   else if(input.compare(pos,5,"\\text")==0)length=5;
   if(length) {
    pos+=length;space();
@@ -984,7 +984,7 @@ class TeXReader {
     ++pos;space();
     if(input.compare(pos,3,"mod")==0) {
      pos+=3;space();
-     if(pos<input.size() && input[pos]=='}') {++pos;return true;}
+     if(pos<input.size() && input[pos]=='}') {++pos;roman=length==7;return true;}
     }
    }
   }
@@ -1990,10 +1990,11 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
-    if(open=='(' && takeModulusLabel(congruence)) {
+    bool roman=false;
+    if(open=='(' && takeModulusLabel(roman)) {
      auto modulus=trim(read(end));
      if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
-     result=trim(result)+(congruence ? " qtexmodulus (" : " pmod (")+modulus+")";
+     result=trim(result)+(congruence ? " qtexmodulus (" : roman ? " qpostmod (" : " pmod (")+modulus+")";
      congruence=false;continue;
     }
     // Mixed delimiters denote a half-open interval only after membership.
@@ -2274,29 +2275,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // The lesson lists two numbers in prose. Each trailing modulus applies
   // to the complete arithmetic expression before it, including its offset.
   static const std::regex marker(R"(\(\s*\\(?:textrm|mathrm)\{\s*mod\s*\}(?:\s|\\[,;!])*([A-Za-z]|[0-9]+)\s*\)(?:\s|\\q?quad)*$)");
-  auto residueValue=[&](const std::string &text) -> std::string {
-   std::smatch m;
-   if(!std::regex_search(text,m,marker))return "";
-   std::string value=trim(text.substr(0,m.position()));
-   if(value.empty())return "";
-   std::string modulus=m[1];
-   if(asciiLetter(modulus[0]))modulus="\""+modulus+"\"";
-   return "qringexpr("+modulus+","+quantumTeX(value)+")";
-  };
   std::string text=trim(s);
   if(!text.empty() && text.back()=='.')text.pop_back();
   auto listed=indexedParts(text,"\\text{and}");
-  if(listed.size()==2) {
-   auto left=residueValue(listed[0]),right=residueValue(listed[1]);
-   if(!left.empty() && !right.empty())return "vector("+left+","+right+")";
-  } else if(listed.size()==1) {
-   auto sides=indexedParts(text,"=");
-   if(sides.size()==1) {
-    auto value=residueValue(sides[0]);if(!value.empty())return value;
-   } else if(sides.size()==2 && !sides[1].empty()) {
-    auto left=residueValue(sides[0]);if(!left.empty())return "qcompare("+left+","+quantumTeX(sides[1])+",4)";
-   }
-  }
+  if(listed.size()==2 && std::regex_search(listed[0],marker) && std::regex_search(listed[1],marker))
+   return "vector("+quantumTeX(listed[0])+","+quantumTeX(listed[1])+")";
  }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {

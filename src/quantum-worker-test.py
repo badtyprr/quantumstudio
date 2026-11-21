@@ -61,6 +61,9 @@ for base, expected in [(14,"vector(13,0)"), (0,"vector(14,1)")]:
     assert data("quantum:"+bound)["copy_text"] == expected
 assert data(r"quantum:$2^4\;(\textrm{mod}\;15)=1$")["copy_text"] == "1"
 assert data(r"quantum:$2^4\;(\mathrm{mod}\;15)=16$")["copy_text"] == "0"
+for postfix in (r"$2=7(\mathrm{mod}\;5)$", r"$(7(\textrm{mod}\;5))=2$",
+                r"7(\mathrm{mod}\;5)=2 or 1", r"$2+5(\mathrm{mod}\;5)=2$"):
+    assert data("quantum:"+postfix)["copy_text"] == "1"
 
 for equation, modulus, expected in [(r"5^2=1", "6", 1), (r"5^2=1", "7", 0),
                                     (r"3+5=1", "7", 1), (r"2^8=4^4", "{21}", 1)]:
