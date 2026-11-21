@@ -101,3 +101,18 @@ def tuples(items):
 assert run(dataset.replace('"X_ex"',tuples(points[::-1])))=="1"
 assert run(dataset.replace('"X_ex"',tuples(points[:-1])))=="0"
 print("Verified real feature-space dimensions, finite datasets, percentages and encoder binding.")
+
+# U acts before W. Reversing X and H would change the sign of <X>.
+qnn=other_source(100,9).replace("'θ'","3").replace("'x'","vector(2,4)")
+classes=other_source(100,8).replace("'θ'","3").replace("'x'","vector(2,4)")
+def model_table(value):
+    return f"vector(vector(vector(3,vector(2,4)),{value}))"
+for outcome in (-1,0,1):
+    assert run(classes.replace("'f'",model_table(outcome)))==("0" if outcome==0 else "1")
+for x_gate,h_gate in [("X","H"),("(X ⊗ I)","(H ⊗ I)")]:
+    circuit=qnn.replace("'U'",f"vector(vector(vector(2,4),{x_gate}))")
+    circuit=circuit.replace("'W'",f"vector(vector(3,{h_gate}))").replace("'O'",x_gate)
+    assert run(circuit.replace("'f'",model_table(-1)))=="1"
+    assert run(circuit.replace("'f'",model_table(1)))=="0"
+run("qzeroimage(matrix(3,3,[1,0,0,0,1,0,0,0,1]))","power-of-two dimension")
+print("Verified both classifier labels and signed expectations on one and two qubits.")

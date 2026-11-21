@@ -2486,6 +2486,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   auto feature=[&](const std::string &arg) {
    return "qfeatureat(\"Φ\","+vectorArgument(arg)+")";
   };
+  if(s.find("f_\\theta")!=std::string::npos) {
+   const std::string model="f_\\\\theta\\(("+vec+")\\)";
+   static const std::regex labels("^\\s*"+model+"\\s*\\\\rightarrow\\s*\\\\pm\\s*1\\s*$");
+   if(std::regex_match(s,call,labels)) {
+    std::string output="qscalarat(\"f\",vector(\"θ\","+vectorArgument(call[1].str())+"))";
+    return "qcompare(qpower("+output+",2),1,4)";
+   }
+   static const std::regex expectation("^\\s*"+model+R"(\s*=\s*\\langle\s*0\|U\^\{\\dagger\}\(\1\)W\^\\dagger\(\\theta\)OW\(\\theta\)U\(\1\)\|0\\rangle\s*$)");
+   if(std::regex_match(s,call,expectation)) {
+    std::string input=vectorArgument(call[1].str());
+    std::string state="qmul(qoperatorat(\"W\",\"θ\"),qzeroimage(qoperatorat(\"U\","+input+")))";
+    return "qcompare(qscalarat(\"f\",vector(\"θ\","+input+")),qexpect(qoperatorref(\"O\"),"+state+"),4)";
+   }
+  }
   static const std::regex featureKet("\\|\\\\Phi\\(("+vec+")\\)\\\\rangle");
   static const std::regex featureOperator(R"(\\mathscr\{U\}_\{\\text\{([A-Za-z]+)\}\}\s*(?:\\left)?\()");
   s=std::regex_replace(s,featureOperator,"qoperatorat(\"U_$1\",");

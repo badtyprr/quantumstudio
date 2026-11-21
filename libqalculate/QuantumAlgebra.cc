@@ -929,6 +929,20 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=value;return 1;
   }
+  if(op=="qzeroimage") {
+   MathStructure opMatrix=raw[0];opMatrix.eval(eo);
+   if(!opMatrix.isMatrix()) {
+    if(opMatrix.isFunction() || opMatrix.isSymbolic() || opMatrix.isUnknown())return 0;
+    CALCULATOR->error(true,"An all-zero input requires a square qubit operator.",NULL);return 0;
+   }
+   size_t n=opMatrix.rows();
+   if(n==0 || n!=opMatrix.columns() || (n & (n-1))) {
+    CALCULATOR->error(true,"An all-zero input requires a square operator of power-of-two dimension.",NULL);return 0;
+   }
+   out.clearMatrix();out.resizeMatrix(n,1,m_zero);
+   for(size_t r=0;r<n;++r)*out.getElement(r+1,1)=*opMatrix.getElement(r+1,1);
+   return 1;
+  }
   if(op=="qoperatorref") {
    MathStructure value=raw[0];value.eval(eo);
    if(!value.isMatrix()) {
@@ -1625,6 +1639,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qrealvectormember",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectordot",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qzeroimage",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
