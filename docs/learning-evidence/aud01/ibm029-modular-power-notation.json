@@ -1,0 +1,10 @@
+{
+  "source_ids": [
+    "IBM029-9ea5aee3-M176",
+    "IBM029-9ea5aee3-M178"
+  ],
+  "worker_sha256": "07331db1bd15e9e9034a12c1f72faa4bfdb11e6ab95722da282eb8851508f553",
+  "finite_cases": 201,
+  "windows_sessions": 11,
+  "windows_clipboard_cases": 11
+}

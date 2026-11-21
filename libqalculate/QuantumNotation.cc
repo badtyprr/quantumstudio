@@ -348,7 +348,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
- {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qpower",2},{"qresidue",2},
+ {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
@@ -428,6 +428,7 @@ class Parser {
  bool spinContext=false;
  bool setNotation=false;
  bool scalarNotation=false;
+ bool modularPowers=false;
  std::string updateVariable;
  std::vector<std::string> declaredGates;
  bool costContext=false;
@@ -2287,6 +2288,17 @@ class Parser {
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
  }
+ std::string modularPowerMember(const std::string &value,const std::string &collection) const {
+  if(!modularPowers)return value;
+  auto ungroup=[](std::string term) {
+   while(term.size()>2 && term.front()=='(' && term.back()==')')term=term.substr(1,term.size()-2);
+   return term;
+  };
+  std::string power=ungroup(value),domain=ungroup(collection);
+  if(power.compare(0,7,"qpower(")!=0 || power.back()!=')' ||
+     (domain.compare(0,10,"qresidues(")!=0 && domain.compare(0,10,"qunitsmod(")!=0) || domain.back()!=')')return value;
+  return "qmodpower("+power.substr(7,power.size()-8)+","+domain.substr(10,domain.size()-11)+")";
+ }
  std::string equalityChain(std::vector<std::string> operands,bool prepare) {
   bool growthClass=false;
   for(size_t k=1;k<operands.size();++k) {
@@ -2356,7 +2368,7 @@ class Parser {
     for(const auto &probe:probes) {
      std::string member;
      if(membership) {
-      member="qmember("+probe+","+left+")";
+      member="qmember("+modularPowerMember(probe,left)+","+left+")";
       if(relation=="∉")member="!("+member+")";
      } else {
       // In a shared bound, a bare c names a scalar parameter.
@@ -2455,6 +2467,17 @@ class Parser {
    if(relation=="=" || relation=="==") {
     prepareEquality(left,right);
     operands.back()=left;
+   }
+   if(modularPowers && (relation=="∈" || relation=="∉")) {
+    std::string reduced=modularPowerMember(left,right);
+    if(reduced!=left) {
+     left=reduced;
+     if(!result.empty()) {
+      if(!exactPrefix || operands.size()<2)throw std::runtime_error("Group the modular power membership separately from this comparison.");
+      operands.back()=left;
+      result=operands.size()==2 ? "qcompare("+operands.front()+","+left+",4)" : equalityChain(operands,false);
+     }
+    }
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
    if(relation=="≈") {
@@ -2618,7 +2641,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),s(text) {}
  std::string run() {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
@@ -2683,11 +2706,13 @@ std::string translateQuantum(const std::string &expression) {
  std::string s=unicodeArithmetic(quantumWhitespace(expression,true));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
+ const size_t first=s.find_first_not_of(" \t\r\n");
+ const bool modular=first!=std::string::npos && s.compare(first,10,"modpowers:")==0;
  bool sets=false,scalars=false;
  s=quantumTeX(s,nullptr,&sets,&scalars);
  if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin,sets,scalars).run();
+ return Parser(s,spin,sets,scalars || modular,modular).run();
 }

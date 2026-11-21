@@ -1060,16 +1060,26 @@ class QuantumAlgebraFunction: public MathFunction {
    out=value.number().integerLength();return 1;
   }
   if(op=="qrecoverphase")return recoverPhaseFraction(out,raw,eo);
-  if(op=="qintegergcd") {
+  if(op=="qintegergcd" || op=="qmodpower") {
    MathStructure args=raw;
-   for(size_t k=0;k<2;++k) {
+   bool pending=false;
+   for(size_t k=0;k<args.size();++k) {
     args[k].eval(eo);
-    if(args[k].isInteger() && !args[k].isApproximate())continue;
-    if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar())continue;
-    CALCULATOR->error(true,"Integer GCD requires two exact integers.",NULL);return 0;
+    if(args[k].isInteger() && !args[k].isApproximate() && (k!=2 || args[k].number().isPositive()))continue;
+    if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar()) {pending=true;continue;}
+    CALCULATOR->error(true,op=="qmodpower" ? "Modular powers require exact integers and a positive modulus." : "Integer GCD requires two exact integers.",NULL);return 0;
+   }
+   if(pending)return 0;
+   if(op=="qmodpower") {
+    if(args[1].number().isNegative()) {
+     Number divisor=args[0].number();
+     if(!divisor.gcd(args[2].number()) || !divisor.isOne()) {
+      CALCULATOR->error(true,"A negative modular exponent requires an invertible base.",NULL);return 0;
+     }
+    }
+    out.set(CALCULATOR->getFunctionById(FUNCTION_ID_POWER_MOD),&args[0],&args[1],&args[2],NULL);return 1;
    }
    // Polynomial GCD would assume two unbound integer labels are coprime.
-   if(!args[0].isInteger() || !args[1].isInteger())return 0;
    Number result=args[0].number();
    if(!result.gcd(args[1].number()))return 0;
    out=result;return 1;
@@ -1681,6 +1691,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
  calculator.addFunction(new QuantumAlgebraFunction("qrecoverphase",2));
  calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qmodpower",3));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));

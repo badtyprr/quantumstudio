@@ -2210,9 +2210,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool spinNumber=input.compare(first,5,"spin:")==0;
  const bool sets=input.compare(first,5,"sets:")==0;
  const bool scalars=input.compare(first,8,"scalars:")==0;
+ const bool modularPowers=input.compare(first,10,"modpowers:")==0;
  if(scalarNotation)*scalarNotation=scalars;
- if(dimensions || fractionBits || bitWord || spinNumber || scalars) {
-  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : 8));
+ if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : modularPowers ? 10 : 8));
   if(first==std::string::npos)return "";
  } else if(sets) {
   if(setNotation)*setNotation=true;
