@@ -1,12 +1,12 @@
 {
   "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
-  "worker_sha256": "ab0fc4d1a2460e654dc5346042022bd806c487ece784abde94a895bd012e5b78",
+  "worker_sha256": "72e716f495033f6a2468e5dca675d7ca33b99cb9da338095836e0c997016b681",
   "inequalities": [
     {
       "id": "IBM034-94ee62dd-M056",
       "source": "$$\np(N,1) \\geq 1 - \\frac{1}{N}\n$$",
       "display": "N > 0 and p(N, 1) · N − N ≥ −1 or N < 0 and p(N, 1) · N − N ≤ −1",
-      "copy": "((('N')<(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')<=(−1)) or (('N')>(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')>=(−1)))",
+      "copy": "((('N')<(0) and (qadd(qmul('N',qprobabilitycall('N',1)),qmul(−1,'N')))<=(−1)) or (('N')>(0) and (qadd(qmul('N',qprobabilitycall('N',1)),qmul(−1,'N')))>=(−1)))",
       "substitutions_checked": 18
     },
     {
@@ -20,21 +20,21 @@
       "id": "IBM034-94ee62dd-M074",
       "source": "$p(N,1) \\geq 1 - 1/N$",
       "display": "N > 0 and p(N, 1) · N − N ≥ −1 or N < 0 and p(N, 1) · N − N ≤ −1",
-      "copy": "((('N')<(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')<=(−1)) or (('N')>(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')>=(−1)))",
+      "copy": "((('N')<(0) and (qadd(qmul('N',qprobabilitycall('N',1)),qmul(−1,'N')))<=(−1)) or (('N')>(0) and (qadd(qmul('N',qprobabilitycall('N',1)),qmul(−1,'N')))>=(−1)))",
       "substitutions_checked": 18
     },
     {
       "id": "IBM034-94ee62dd-M097",
       "source": "$$\np(N,s) \\geq 1 - \\frac{s}{N},\n$$",
       "display": "N > 0 and p(N, s) · N − N ≥ −s or N < 0 and p(N, s) · N − N ≤ −s",
-      "copy": "((('N')<(0) and (qprobabilitycall('N', 's') ⋅ 'N' − 'N')<=(−'s')) or (('N')>(0) and (qprobabilitycall('N', 's') ⋅ 'N' − 'N')>=(−'s')))",
+      "copy": "((('N')<(0) and (qadd(qmul('N',qprobabilitycall('N','s')),qmul(−1,'N')))<=(−'s')) or (('N')>(0) and (qadd(qmul('N',qprobabilitycall('N','s')),qmul(−1,'N')))>=(−'s')))",
       "substitutions_checked": 18
     },
     {
       "id": "IBM034-94ee62dd-M106",
       "source": "$$\np(N,s) \\geq \\frac{s}{N}.\n$$",
       "display": "N > 0 and p(N, s) · N ≥ s or N < 0 and p(N, s) · N ≤ s",
-      "copy": "((('N')<(0) and (qprobabilitycall('N', 's') ⋅ 'N')<=('s')) or (('N')>(0) and (qprobabilitycall('N', 's') ⋅ 'N')>=('s')))",
+      "copy": "((('N')<(0) and (qmul('N',qprobabilitycall('N','s')))<=('s')) or (('N')>(0) and (qmul('N',qprobabilitycall('N','s')))>=('s')))",
       "substitutions_checked": 18
     }
   ]
