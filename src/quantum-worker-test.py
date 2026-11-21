@@ -46,6 +46,21 @@ for dimension in (1, 3, 15, 128):
 assert data("quantum:basis(0,16) ∈ basisset(15)")["copy_text"] == "0"
 assert data("quantum:qset(vector(basis(1,3),basis(0,3)))")["copy_text"] != "basisset(2)"
 
+# A leading list shares the ordering relation and keeps factor names bindable.
+for expr, expected in [(r"$b,c\geq 2$", (1,0,0)), (r"$s,j\geq 2$", (1,0,0))]:
+    first,second=expr[1],expr[3]
+    result=data("quantum:"+expr)["copy_text"]
+    for (x,y),value in zip(((2,3),(1,3),(2,1)),expected):
+        assert data(f'quantum:replace(replace(({result}),"{first}",{x}),"{second}",{y})')["copy_text"]==str(value)
+for bound in ("-2","N"):
+    shared=data("quantum:b,c>="+bound)["copy_text"]
+    predicate=f'replace(replace(({shared}),"b",3),"c",-3)'
+    if bound=="N":
+        predicate=f'replace(({predicate}),"N",2)'
+    assert data("quantum:"+predicate)["copy_text"]=="0"
+for expr,value in (("1,2,3<4",1),("1,2,3<3",0),("1,2<=2",1),("3,2>2",0),("max(1,2)",2)):
+    assert data("quantum:"+expr)["copy_text"]==str(value)
+
 # Compare the two full operands in the specified residue class.
 for formula, expected in (
     (r"$3 \cdot 5 \equiv 1 \; (\textrm{mod } 7)$", "1"),

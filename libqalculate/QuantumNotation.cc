@@ -2211,12 +2211,21 @@ class Parser {
    } else {
     std::vector<std::string> probes{left};
     do {probes.push_back(setUnion());} while(take(','));
-    bool excluded=takeSetOperator("∉");
-    if(!excluded && !takeSetOperator("∈"))throw std::runtime_error("Expected a shared set membership relation after the comma-separated operands.");
+    const std::string relation=takeComparisonRelation();
+    bool membership=relation=="∈" || relation=="∉";
+    int kind=comparisonKind(relation);
+    if(!membership && kind>=4)throw std::runtime_error("Expected a shared ordering or set membership relation after the comma-separated operands.");
     left=setUnion();
     for(const auto &probe:probes) {
-     std::string member="qmember("+probe+","+left+")";
-     if(excluded)member="!("+member+")";
+     std::string member;
+     if(membership) {
+      member="qmember("+probe+","+left+")";
+      if(relation=="∉")member="!("+member+")";
+     } else {
+      // In a shared bound, a bare c names a scalar parameter.
+      const std::string operand=probe=="c" ? indexableLabel(probe) : probe;
+      member="qcompare("+operand+","+left+","+std::to_string(kind)+")";
+     }
      if(!result.empty())result+="&&";
      result+=member;checkSize(result);
     }
