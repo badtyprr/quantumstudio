@@ -1448,27 +1448,30 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out=total;out.eval(exact);return 1;
   }
-  if(op=="qoperatorat") {
+  if(op=="qoperatorat" || op=="qscalarat") {
+   const bool scalar=op=="qscalarat";
    MathStructure table=raw[0],parameter=raw[1];
    table.eval(eo);parameter.eval(eo);
    if(table.isSymbolic() || table.isUnknown() || parameter.containsUnknowns())return 0;
    if(!table.isVector()) {
-    CALCULATOR->error(true,"An operator family requires a table of parameter and matrix pairs.",NULL);return 0;
+    CALCULATOR->error(true,scalar ? "A scalar function requires a table of input and value pairs." : "An operator family requires a table of parameter and matrix pairs.",NULL);return 0;
    }
    bool found=false;
    for(size_t i=0;i<table.size();++i) {
     if(CALCULATOR->aborted())return 0;
     const MathStructure &pair=table[i];
-    if(!pair.isVector() || pair.size()!=2 || !pair[1].isMatrix() || pair[1].rows()!=pair[1].columns()) {
-     CALCULATOR->error(true,"Each operator family entry needs a parameter and a square matrix.",NULL);return 0;
+    if(!pair.isVector() || pair.size()!=2 || (scalar ? !pair[1].isNumber() || pair[1].number().includesInfinity() :
+        !pair[1].isMatrix() || pair[1].rows()!=pair[1].columns())) {
+     CALCULATOR->error(true,scalar ? "Each scalar function entry needs an input and a finite numeric value." :
+         "Each operator family entry needs a parameter and a square matrix.",NULL);return 0;
     }
     if(!pair[0].equals(parameter))continue;
     if(found && !out.equals(pair[1])) {
-     CALCULATOR->error(true,"Conflicting operators for the same parameter.",NULL);return 0;
+     CALCULATOR->error(true,scalar ? "Conflicting scalar function values for the same input." : "Conflicting operators for the same parameter.",NULL);return 0;
     }
     out=pair[1];found=true;
    }
-   if(!found)CALCULATOR->error(true,"The operator family has no entry for this parameter.",NULL);
+   if(!found)CALCULATOR->error(true,scalar ? "The scalar function has no entry for this input." : "The operator family has no entry for this parameter.",NULL);
    return found ? 1 : 0;
   }
   if(op=="qmeanat") {
@@ -2952,6 +2955,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qwalkindicator",3));
  calculator.addFunction(new QuantumIndexedFunction("qpairtotal",6));
  calculator.addFunction(new QuantumIndexedFunction("qoperatorat",2));
+ calculator.addFunction(new QuantumIndexedFunction("qscalarat",2));
  calculator.addFunction(new QuantumIndexedFunction("qmeanat",2));
  calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
  calculator.addFunction(new QuantumIndexedFunction("qmaxcut",2));

@@ -2328,6 +2328,13 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  // A cost on a ket and a filter on an energy have scalar function values.
+  static const std::regex scalarInput(R"((^|[^A-Za-z])f\(\s*(?=\||E_(?:[A-Za-z0-9]|\{)))");
+  s=std::regex_replace(s,scalarInput,"$1qscalarat(\"f\",");
+  if(s.find("qscalarat(")!=std::string::npos) {
+   static const std::regex polynomialAtZero(R"((^|[^A-Za-z])p\(0\))");
+   s=std::regex_replace(s,polynomialAtZero,"$1qscalarat(\"p\",0)");
+  }
   // Indexed energies in a weighted energy sum are scalars, including E_0(1).
   if(s.find("\\sum")!=std::string::npos) {
    static const std::regex energyFactor(R"((E_(?:[0-9]|\{[0-9]+\}))\s*\(([0-9]+)\))");

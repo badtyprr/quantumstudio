@@ -78,3 +78,23 @@ energy_label="""qindexedlabel("E(",'k',')')"""
 assert run(eigenproblem.replace(energy_label,"1"))=="1"
 assert run(eigenproblem.replace(energy_label,"-1"))=="0"
 print("Verified the variational energy bound, ket scaling, shot count and sampled eigenproblem.")
+
+# The quadratic objective acts on a correction vector. Its value at |1>
+# for A=Z, residual |0> and d=4 is -1-2*0+4=3.
+objective=course_source(92,106).replace('qnamedket("p_0")',"|1>").replace('qnamedket("R_0")',"|0>")
+objective=objective.replace("'A'","Z").replace("'d'","4")
+for value,expected in [(3,"1"),(7,"0")]:
+    table=f"vector(vector(|0>,9),vector(|1>,{value}))"
+    assert run(objective.replace("'f'",table))==expected
+scalar=course_source(92,112).replace('qnamedket("p_0")',"|0>")
+assert run(scalar.replace("'f'","vector(vector(|0>,9),vector(|1>,3))"))=="9"
+run(scalar.replace("'f'","vector(vector(|1>,3))"),error="no entry")
+run(scalar.replace("'f'","vector(vector(|0>,1),vector(|0>,2))"),error="Conflicting")
+run(scalar.replace("'f'","vector(vector(|0>,Z))"),error="finite numeric value")
+filtered=course_source(92,347).replace('"E_0"',"2")
+for value,expected in [(-1,"1"),(1,"1"),(0,"0")]:
+    assert run(filtered.replace("'f'",f"vector(vector(2,{value}))"))==expected
+normalization=course_source(92,386).replace('"E_0"',"2").replace("'f'","vector(vector(2,1))")
+for value,expected in [(1,"1"),(2,"0")]:
+    assert run(normalization.replace("'p'",f"vector(vector(0,{value}))"))==expected
+print("Verified scalar objective and energy filter values at distinct vector and scalar inputs.")
