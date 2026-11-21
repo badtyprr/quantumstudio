@@ -2446,6 +2446,37 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   return quantumTeX(binaryLogs ? "binarylogs:"+part : part);
  };
  std::string s=input.substr(first,last-first+1);
+ // Keep a pasted lesson formula intact as the first argument of a
+ // substitution. Its relation must be parsed before binding the parameter.
+ if(s.find('$')!=std::string::npos && s.find("replace")!=std::string::npos && s.front()!='$') {
+  const size_t prefix=input.find_first_not_of(" \t\r\n");
+  const std::string mode=input.substr(prefix,contextStart-prefix);
+  char quote=0;
+  for(size_t i=0;i<s.size();++i) {
+   if(quote) {if(s[i]==quote)quote=0;continue;}
+   if(s[i]=='\'' || s[i]=='"') {quote=s[i];continue;}
+   if(s.compare(i,7,"replace")!=0 || (i && (std::isalnum((unsigned char)s[i-1]) || s[i-1]=='_')))continue;
+   size_t pos=s.find_first_not_of(" \t\r\n",i+7);
+   if(pos==std::string::npos || s[pos]!='(')continue;
+   size_t groups=0;
+   for(++pos;pos<s.size() && (asciiSpace(s[pos]) || s[pos]=='(');++pos)if(s[pos]=='(')++groups;
+   if(pos==s.size() || s[pos]!='$')continue;
+   const size_t width=s.compare(pos,2,"$$")==0 ? 2 : 1;
+   size_t end=pos+width;
+   while((end=s.find('$',end))!=std::string::npos) {
+    if(width==2 && s.compare(end,2,"$$")!=0) {++end;continue;}
+    size_t after=s.find_first_not_of(" \t\r\n",end+width),closed=0;
+    while(closed<groups && after!=std::string::npos && s[after]==')') {
+     ++closed;after=s.find_first_not_of(" \t\r\n",after+1);
+    }
+    if(closed==groups && after!=std::string::npos && s[after]==',') {
+     std::string translated="("+quantumTeX(mode+s.substr(pos,end+width-pos))+")";
+     s.replace(pos,end+width-pos,translated);i=pos+translated.size()-1;break;
+    }
+    end+=width;
+   }
+  }
+ }
  // Inline Markdown can leave the radix point immediately outside the
  // math span, as in .$01$. The selected mode supplies it for $01$ alone.
  if(fractionBits && s.compare(0,2,".$")==0)s.erase(0,1);

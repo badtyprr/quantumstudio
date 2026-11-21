@@ -395,6 +395,20 @@ for cost, expected in ((6, "1"), (7, "0")):
     probe = f"replace(replace(replace(cost(g(n,m)<=c*h(n,m)),g(n,m),{cost}),h(n,m),3),cost(c),2)"
     assert data("quantum:" + probe)["copy_text"] == expected
 assert data("quantum:cost(replace((c>0),c,-1))")["copy_text"] == "0"
+for delimiters in ("$","$$"):
+    formula=delimiters+"m = O(n)"+delimiters
+    for width,expected in (("2*n+1","1"),("n^2","0")):
+        assert data(f'quantum:replace(({formula}),"m",{width})')["copy_text"]==expected
+run('quantum:replace(($m = O(n)),"m",2*n+1)',success=False)
+assert data('quantum:1+replace (($m=O(n)$),"m",2*n+1)')["copy_text"]=="2"
+assert data('quantum:vector(replace(($m=O(n)$),"m",2*n+1),replace(($m=O(n)$),"m",n^2))')["copy_text"]=="vector(1,0)"
+assert data('quantum:replace(replace(($m=O(n)$),"m",n^2),"z",3)')["copy_text"]=="0"
+assert data('quantum:replace(($$'+residue_action+'$$),"N",5)')["copy_text"]=="qresiduemultiplier('a',5)"
+caption=r"$a^r \equiv 1$ $(\textrm{mod } N)$"
+for source in (caption,data("quantum:"+caption)["copy_text"]):
+    bound=data('quantum:replace(('+source+'),"N",5)')["copy_text"]
+    for power,expected in ((2,"0"),(4,"1")):
+        assert data(f'quantum:replace(replace(({bound}),"a",2),"r",{power})')["copy_text"]==expected
 assert data("quantum:nn^2=O(n^3)")["copy_text"] == "1"
 assert data("quantum:cost(replace(replace(nm^2,n,3),m,2))")["copy_text"] == "12"
 for source, binding, expected in [
