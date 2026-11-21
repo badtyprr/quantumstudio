@@ -1,0 +1,1094 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables.ipynb",
+  "source_sha256": "0433727528907ded030073bbbf7ee5a0660767aa7be20eccaf62fd6607f59f7b",
+  "worker_sha256": "c0f881671d83f34f96ff5e205ab18d1022b36fd2ee35e7d26829abc7b272c0df",
+  "revision": "7167e450241b03fc70575305b6e776e60638f890",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 105
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 12698,
+      "end": 12878,
+      "alt": "Circuit for measuring a Pauli observable using phase estimation",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-Pauli.svg"
+    },
+    {
+      "cell": 0,
+      "start": 13139,
+      "end": 13335,
+      "alt": "Circuit for measuring a 3-qubit Pauli observable using phase estimation",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-3-qubit-Pauli.svg"
+    },
+    {
+      "cell": 0,
+      "start": 14519,
+      "end": 14693,
+      "alt": "Circuit for measuring a ZZ observable using phase estimation",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-ZZ.svg"
+    },
+    {
+      "cell": 0,
+      "start": 14814,
+      "end": 14970,
+      "alt": "Simplified circuit for measuring a ZZ observable",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/simplified-ZZ.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM058-04337275-M001",
+      "cell": 0,
+      "start": 545,
+      "end": 556,
+      "literal": "$2\\times 2$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM058-04337275-M002",
+      "cell": 0,
+      "start": 617,
+      "end": 862,
+      "literal": "$$\n\\mathbb{I} =\n\\begin{pmatrix}\n  1 & 0\\\\\n  0 & 1\n\\end{pmatrix}\n\\qquad\nX =\n\\begin{pmatrix}\n  0 & 1\\\\\n  1 & 0\n\\end{pmatrix}\n\\qquad\nY =\n\\begin{pmatrix}\n  0 & -i\\\\\n  i & 0\n\\end{pmatrix}\n\\qquad\nZ =\n\\begin{pmatrix}\n  1 & 0\\\\\n  0 & -1\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM058-04337275-M003",
+      "cell": 0,
+      "start": 979,
+      "end": 989,
+      "literal": "$\\sigma_x$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M004",
+      "cell": 0,
+      "start": 991,
+      "end": 1001,
+      "literal": "$\\sigma_y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M005",
+      "cell": 0,
+      "start": 1007,
+      "end": 1017,
+      "literal": "$\\sigma_z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M006",
+      "cell": 0,
+      "start": 1143,
+      "end": 1146,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M007",
+      "cell": 0,
+      "start": 1148,
+      "end": 1151,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M008",
+      "cell": 0,
+      "start": 1157,
+      "end": 1160,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M009",
+      "cell": 0,
+      "start": 1380,
+      "end": 1426,
+      "literal": "$$\nXY = -YX \\qquad XZ = -ZX \\qquad YZ = -ZY\n$$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM058-04337275-M010",
+      "cell": 0,
+      "start": 1877,
+      "end": 1953,
+      "literal": "$$\nXX = YY = ZZ = \\mathbb{I} \\qquad\nXY = iZ \\qquad YZ = iX \\qquad ZX = iY\n$$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM058-04337275-M011",
+      "cell": 0,
+      "start": 2152,
+      "end": 2159,
+      "literal": "$\\pm i$",
+      "status": "exact",
+      "display": "\\{i, −i\\}",
+      "copy": "qset(vector(i,−i))"
+    },
+    {
+      "id": "IBM058-04337275-M012",
+      "cell": 0,
+      "start": 2244,
+      "end": 2247,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M013",
+      "cell": 0,
+      "start": 2265,
+      "end": 2270,
+      "literal": "$X Z$",
+      "status": "exact",
+      "display": "[0, −1; 1, 0]",
+      "copy": "matrix(2,2,[0,−1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M014",
+      "cell": 0,
+      "start": 2300,
+      "end": 2303,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M015",
+      "cell": 0,
+      "start": 2308,
+      "end": 2311,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M016",
+      "cell": 0,
+      "start": 2352,
+      "end": 2355,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M017",
+      "cell": 0,
+      "start": 2392,
+      "end": 2395,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M018",
+      "cell": 0,
+      "start": 2419,
+      "end": 2422,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M019",
+      "cell": 0,
+      "start": 2485,
+      "end": 2488,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M020",
+      "cell": 0,
+      "start": 2878,
+      "end": 2881,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M021",
+      "cell": 0,
+      "start": 2941,
+      "end": 2946,
+      "literal": "$n=9$",
+      "status": "exact",
+      "display": "n = 9",
+      "copy": "(n)==(9)"
+    },
+    {
+      "id": "IBM058-04337275-M022",
+      "cell": 0,
+      "start": 2949,
+      "end": 3419,
+      "literal": "$$\n\\begin{gathered}\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\\\[1mm]\nX \\otimes X \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\\\[1mm]\nX \\otimes Y \\otimes Z \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes X \\otimes Y \\otimes Z\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "1.  (I@I@I@I@I@I@I@I@I)\n\n2.  (X@X@I@I@I@I@I@I@I)\n\n3.  (X@Y@Z@I@I@I@X@Y@Z)",
+      "copy": "\\begin{gathered}(I@I@I@I@I@I@I@I@I)\\\\(X@X@I@I@I@I@I@I@I)\\\\(X@Y@Z@I@I@I@X@Y@Z)\\end{gathered}"
+    },
+    {
+      "id": "IBM058-04337275-M023",
+      "cell": 0,
+      "start": 3577,
+      "end": 3584,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM058-04337275-M024",
+      "cell": 0,
+      "start": 3589,
+      "end": 3596,
+      "literal": "$\\pm i$",
+      "status": "exact",
+      "display": "\\{i, −i\\}",
+      "copy": "qset(vector(i,−i))"
+    },
+    {
+      "id": "IBM058-04337275-M025",
+      "cell": 0,
+      "start": 3912,
+      "end": 3915,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M026",
+      "cell": 0,
+      "start": 4055,
+      "end": 4058,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM058-04337275-M027",
+      "cell": 0,
+      "start": 4082,
+      "end": 4085,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM058-04337275-M028",
+      "cell": 0,
+      "start": 4112,
+      "end": 4115,
+      "literal": "$6$",
+      "status": "exact",
+      "display": "6",
+      "copy": "6"
+    },
+    {
+      "id": "IBM058-04337275-M029",
+      "cell": 0,
+      "start": 4156,
+      "end": 4159,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M030",
+      "cell": 0,
+      "start": 4930,
+      "end": 4949,
+      "literal": "$P_1, \\ldots,  P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM058-04337275-M031",
+      "cell": 0,
+      "start": 4954,
+      "end": 4957,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M032",
+      "cell": 0,
+      "start": 5022,
+      "end": 5040,
+      "literal": "$P_1, \\ldots, P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM058-04337275-M033",
+      "cell": 0,
+      "start": 5268,
+      "end": 5302,
+      "literal": "$\\langle P_1, \\ldots, P_r \\rangle$",
+      "status": "exact",
+      "display": "qpauligroup(qindexedentries(\"P_\", 1, 'r', []))",
+      "copy": "qpauligroup(qindexedentries(\"P_\",1,'r',vector()))"
+    },
+    {
+      "id": "IBM058-04337275-M034",
+      "cell": 0,
+      "start": 5393,
+      "end": 5503,
+      "literal": "$$\n\\langle X, Y, Z \\rangle = \\bigl\\{\\alpha P\\,:\\,\\alpha\\in\\{1,i,-1,-i\\},\\; P\\in\\{\\mathbb{I},X,Y,Z\\} \\bigr\\}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M035",
+      "cell": 0,
+      "start": 5700,
+      "end": 5703,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M036",
+      "cell": 0,
+      "start": 5741,
+      "end": 5821,
+      "literal": "$$\n\\langle X, Z\\rangle = \\{ \\mathbb{I}, X, Z, -iY, -\\mathbb{I}, -X, -Z, iY \\}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M037",
+      "cell": 0,
+      "start": 5883,
+      "end": 5888,
+      "literal": "$n=2$",
+      "status": "exact",
+      "display": "n = 2",
+      "copy": "(n)==(2)"
+    },
+    {
+      "id": "IBM058-04337275-M038",
+      "cell": 0,
+      "start": 5891,
+      "end": 6009,
+      "literal": "$$\n\\langle X \\otimes X, Z \\otimes Z\\rangle = \\{ \\mathbb{I}\\otimes\\mathbb{I}, X\\otimes X, Z\\otimes Z, -Y\\otimes Y \\}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M039",
+      "cell": 0,
+      "start": 6077,
+      "end": 6089,
+      "literal": "$X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 1; 0, 0, 1, 0; 0, 1, 0, 0; 1, 0, 0, 0]",
+      "copy": "matrix(4,4,[0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0])"
+    },
+    {
+      "id": "IBM058-04337275-M040",
+      "cell": 0,
+      "start": 6094,
+      "end": 6106,
+      "literal": "$Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM058-04337275-M041",
+      "cell": 0,
+      "start": 6117,
+      "end": 6279,
+      "literal": "$$\n\\begin{aligned}\n(X\\otimes X)(Z\\otimes Z) & = (XZ) \\otimes (XZ)\\\\\n& = (-ZX)\\otimes (-ZX)\\\\\n& = (ZX)\\otimes (ZX)\\\\\n& = (Z\\otimes Z)(X\\otimes X).\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M042",
+      "cell": 0,
+      "start": 6323,
+      "end": 6326,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M043",
+      "cell": 0,
+      "start": 6632,
+      "end": 6635,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M044",
+      "cell": 0,
+      "start": 6654,
+      "end": 6657,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M045",
+      "cell": 0,
+      "start": 6701,
+      "end": 6704,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M046",
+      "cell": 0,
+      "start": 6820,
+      "end": 6823,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M047",
+      "cell": 0,
+      "start": 6960,
+      "end": 6963,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M048",
+      "cell": 0,
+      "start": 7177,
+      "end": 7180,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M049",
+      "cell": 0,
+      "start": 7252,
+      "end": 7292,
+      "literal": "$$\nA = \\sum_{k = 1}^m \\lambda_k \\Pi_k\n$$",
+      "status": "exact",
+      "display": "∑_{k=1}^{m} (λ_k · Π_k) = A",
+      "copy": "(qsum(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qindexedlabel(\"Π_\",\"qboundindex_0\",\"\")),1,'m',\"qboundindex_0\"))==('A')"
+    },
+    {
+      "id": "IBM058-04337275-M050",
+      "cell": 0,
+      "start": 7333,
+      "end": 7361,
+      "literal": "$\\lambda_1,\\ldots,\\lambda_m$",
+      "status": "exact",
+      "display": "(λ_1, …, λ_m)",
+      "copy": "qindexedlist(\"λ_\",1,'m',vector())"
+    },
+    {
+      "id": "IBM058-04337275-M051",
+      "cell": 0,
+      "start": 7378,
+      "end": 7398,
+      "literal": "$\\Pi_1,\\ldots,\\Pi_m$",
+      "status": "exact",
+      "display": "(Π_1, …, Π_m)",
+      "copy": "qindexedlist(\"Π_\",1,'m',vector())"
+    },
+    {
+      "id": "IBM058-04337275-M052",
+      "cell": 0,
+      "start": 7411,
+      "end": 7453,
+      "literal": "$$\n\\Pi_1 + \\cdots + \\Pi_m = \\mathbb{I}.\n$$",
+      "status": "exact",
+      "display": "qindexedsum(\"Π_\", 1, 'm', []) = qidentitylike(qindexedsum(\"Π_\", 1, 'm', []))",
+      "copy": "qcompare(qindexedsum(\"Π_\",1,'m',vector()),qidentitylike(qindexedsum(\"Π_\",1,'m',vector())),4)"
+    },
+    {
+      "id": "IBM058-04337275-M053",
+      "cell": 0,
+      "start": 7634,
+      "end": 7678,
+      "literal": "$\\lambda_1 > \\lambda_2 > \\cdots > \\lambda_m$",
+      "status": "exact",
+      "display": "qstrictorder(qindexedentries(\"λ_\", 1, 'm', []), 1)",
+      "copy": "qstrictorder(qindexedentries(\"λ_\",1,'m',vector()),1)"
+    },
+    {
+      "id": "IBM058-04337275-M054",
+      "cell": 0,
+      "start": 7715,
+      "end": 7718,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M055",
+      "cell": 0,
+      "start": 7814,
+      "end": 7817,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM058-04337275-M056",
+      "cell": 0,
+      "start": 7877,
+      "end": 7897,
+      "literal": "$\\Pi_1,\\ldots,\\Pi_m$",
+      "status": "exact",
+      "display": "(Π_1, …, Π_m)",
+      "copy": "qindexedlist(\"Π_\",1,'m',vector())"
+    },
+    {
+      "id": "IBM058-04337275-M057",
+      "cell": 0,
+      "start": 7919,
+      "end": 7947,
+      "literal": "$\\lambda_1,\\ldots,\\lambda_m$",
+      "status": "exact",
+      "display": "(λ_1, …, λ_m)",
+      "copy": "qindexedlist(\"λ_\",1,'m',vector())"
+    },
+    {
+      "id": "IBM058-04337275-M058",
+      "cell": 0,
+      "start": 8268,
+      "end": 8541,
+      "literal": "$$\n\\begin{gathered}\nX = \\vert {+} \\rangle\\langle {+} \\vert - \\vert {-} \\rangle\\langle {-} \\vert\\\\\nY = \\vert {+i} \\rangle\\langle {+i} \\vert - \\vert {-i} \\rangle\\langle {-i} \\vert\\\\\nZ = \\vert {0} \\rangle\\langle {0} \\vert - \\vert {1} \\rangle\\langle {1} \\vert\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1\n\n3.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM058-04337275-M059",
+      "cell": 0,
+      "start": 8571,
+      "end": 8574,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M060",
+      "cell": 0,
+      "start": 8576,
+      "end": 8579,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M061",
+      "cell": 0,
+      "start": 8585,
+      "end": 8588,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M062",
+      "cell": 0,
+      "start": 8716,
+      "end": 9019,
+      "literal": "$$\n\\begin{gathered}\n\\bigl\\{\\vert {+} \\rangle\\langle {+} \\vert, \\vert {-} \\rangle\\langle {-} \\vert \\bigr\\} \\\\\n\\bigl\\{\\vert {+i} \\rangle\\langle {+i} \\vert, \\vert {-i} \\rangle\\langle {-i} \\vert\\bigr\\} \\\\\n\\bigl\\{\\vert {0} \\rangle\\langle {0} \\vert, \\vert {1} \\rangle\\langle {1} \\vert\\bigr\\}\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "1.  \\{[0.5, 0.5; 0.5, 0.5], [0.5, −0.5; −0.5, 0.5]\\}\n\n2.  \\{[0.5, −0.5i; 0.5i, 0.5], [0.5, 0.5i; −0.5i, 0.5]\\}\n\n3.  \\{[1, 0; 0, 0], [0, 0; 0, 1]\\}",
+      "copy": "\\begin{gathered}qset(vector(matrix(2,2,[1 ∕ 2,1 ∕ 2,1 ∕ 2,1 ∕ 2]),matrix(2,2,[1 ∕ 2,−1 ∕ 2,−1 ∕ 2,1 ∕ 2])))\\\\qset(vector(matrix(2,2,[1 ∕ 2,−i ∕ 2,i ∕ 2,1 ∕ 2]),matrix(2,2,[1 ∕ 2,i ∕ 2,−i ∕ 2,1 ∕ 2])))\\\\qset(vector(matrix(2,2,[1,0,0,0]),matrix(2,2,[0,0,0,1])))\\end{gathered}"
+    },
+    {
+      "id": "IBM058-04337275-M063",
+      "cell": 0,
+      "start": 9099,
+      "end": 9103,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M064",
+      "cell": 0,
+      "start": 9108,
+      "end": 9112,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM058-04337275-M065",
+      "cell": 0,
+      "start": 9152,
+      "end": 9155,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M066",
+      "cell": 0,
+      "start": 9170,
+      "end": 9173,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM058-04337275-M067",
+      "cell": 0,
+      "start": 9192,
+      "end": 9195,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M068",
+      "cell": 0,
+      "start": 9405,
+      "end": 9408,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM058-04337275-M069",
+      "cell": 0,
+      "start": 9477,
+      "end": 9480,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM058-04337275-M070",
+      "cell": 0,
+      "start": 9636,
+      "end": 9640,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M071",
+      "cell": 0,
+      "start": 9645,
+      "end": 9649,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM058-04337275-M072",
+      "cell": 0,
+      "start": 9752,
+      "end": 9761,
+      "literal": "$n\\geq 2$",
+      "status": "exact",
+      "display": "n ≥ 2",
+      "copy": "(n)>=(2)"
+    },
+    {
+      "id": "IBM058-04337275-M073",
+      "cell": 0,
+      "start": 9893,
+      "end": 9897,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M074",
+      "cell": 0,
+      "start": 9902,
+      "end": 9906,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM058-04337275-M075",
+      "cell": 0,
+      "start": 10097,
+      "end": 10100,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M076",
+      "cell": 0,
+      "start": 10128,
+      "end": 10133,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM058-04337275-M077",
+      "cell": 0,
+      "start": 10313,
+      "end": 10322,
+      "literal": "$2^{n-1}$",
+      "status": "exact",
+      "display": "0.5 ⋅ 2^n",
+      "copy": "2^n ∕ 2"
+    },
+    {
+      "id": "IBM058-04337275-M078",
+      "cell": 0,
+      "start": 10357,
+      "end": 10360,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M079",
+      "cell": 0,
+      "start": 10663,
+      "end": 10666,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M080",
+      "cell": 0,
+      "start": 10720,
+      "end": 10725,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM058-04337275-M081",
+      "cell": 0,
+      "start": 10805,
+      "end": 10809,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M082",
+      "cell": 0,
+      "start": 10814,
+      "end": 10818,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM058-04337275-M083",
+      "cell": 0,
+      "start": 10871,
+      "end": 10883,
+      "literal": "$Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM058-04337275-M084",
+      "cell": 0,
+      "start": 11015,
+      "end": 11361,
+      "literal": "$$\n\\begin{aligned}\nZ\\otimes Z & = (\\vert 0\\rangle\\langle 0\\vert - \\vert 1\\rangle\\langle 1\\vert) \\otimes (\\vert 0\\rangle\\langle 0\\vert - \\vert 1\\rangle\\langle 1\\vert)\\\\\n& = \\bigl( \\vert 00\\rangle\\langle 00\\vert + \\vert 11\\rangle\\langle 11\\vert \\bigr) - \\bigl( \\vert 01\\rangle\\langle 01\\vert + \\vert 10\\rangle\\langle 10\\vert \\bigr)\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M085",
+      "cell": 0,
+      "start": 11380,
+      "end": 11408,
+      "literal": "$Z\\otimes Z = \\Pi_0 - \\Pi_1$",
+      "status": "exact",
+      "display": "[\"Π_1\" − \"Π_0\" + 1, \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\"; \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\" − 1, \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\"; \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\" − 1, \"Π_1\" − \"Π_0\"; \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\", \"Π_1\" − \"Π_0\" + 1] = [0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0]",
+      "copy": "(matrix(4,4,[\"Π_1\" − \"Π_0\" + 1,\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\" − 1,\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\" − 1,\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\",\"Π_1\" − \"Π_0\" + 1]))==(matrix(4,4,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]))"
+    },
+    {
+      "id": "IBM058-04337275-M086",
+      "cell": 0,
+      "start": 11414,
+      "end": 11585,
+      "literal": "$$\n\\Pi_0 = \\vert 00\\rangle\\langle 00\\vert + \\vert 11\\rangle\\langle 11\\vert\n\\quad\\text{and}\\quad\n\\Pi_1 = \\vert 01\\rangle\\langle 01\\vert + \\vert 10\\rangle\\langle 10\\vert,\n$$",
+      "status": "exact",
+      "display": "\"Π_0\" = [1, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 1] and \"Π_1\" = [0, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 0]",
+      "copy": "(qcompare(\"Π_0\",matrix(4,4,[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]),4) and qcompare(\"Π_1\",matrix(4,4,[0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0]),4))"
+    },
+    {
+      "id": "IBM058-04337275-M087",
+      "cell": 0,
+      "start": 11688,
+      "end": 11708,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM058-04337275-M088",
+      "cell": 0,
+      "start": 11808,
+      "end": 11812,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M089",
+      "cell": 0,
+      "start": 11926,
+      "end": 11943,
+      "literal": "$\\vert 00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM058-04337275-M090",
+      "cell": 0,
+      "start": 11947,
+      "end": 11964,
+      "literal": "$\\vert 11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM058-04337275-M091",
+      "cell": 0,
+      "start": 12035,
+      "end": 12038,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M092",
+      "cell": 0,
+      "start": 12242,
+      "end": 12245,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM058-04337275-M093",
+      "cell": 0,
+      "start": 12319,
+      "end": 12322,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM058-04337275-M094",
+      "cell": 0,
+      "start": 12327,
+      "end": 12330,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M095",
+      "cell": 0,
+      "start": 12410,
+      "end": 12414,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM058-04337275-M096",
+      "cell": 0,
+      "start": 12419,
+      "end": 12423,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM058-04337275-M097",
+      "cell": 0,
+      "start": 13035,
+      "end": 13038,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM058-04337275-M098",
+      "cell": 0,
+      "start": 13062,
+      "end": 13089,
+      "literal": "$P_2\\otimes P_1\\otimes P_0$",
+      "status": "exact",
+      "display": "(\"P_2\" ⊗ \"P_1\") ⊗ \"P_0\"",
+      "copy": "qtensor(qtensor(\"P_2\",\"P_1\"),\"P_0\")"
+    },
+    {
+      "id": "IBM058-04337275-M099",
+      "cell": 0,
+      "start": 13109,
+      "end": 13136,
+      "literal": "$P_0,P_1,P_2 \\in \\{X,Y,Z\\}$",
+      "status": "exact",
+      "display": "\"P_0\" ∈ \\{[0, 1; 1, 0], [0, −i; i, 0], [1, 0; 0, −1]\\} and \"P_1\" ∈ \\{[0, 1; 1, 0], [0, −i; i, 0], [1, 0; 0, −1]\\} and \"P_2\" ∈ \\{[0, 1; 1, 0], [0, −i; i, 0], [1, 0; 0, −1]\\}",
+      "copy": "(qmember(\"P_0\",qset(vector(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(0,−i,i,0)),matrix(2,2,vector(1,0,0,−1))))) and qmember(\"P_1\",qset(vector(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(0,−i,i,0)),matrix(2,2,vector(1,0,0,−1))))) and qmember(\"P_2\",qset(vector(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(0,−i,i,0)),matrix(2,2,vector(1,0,0,−1))))))"
+    },
+    {
+      "id": "IBM058-04337275-M100",
+      "cell": 0,
+      "start": 13366,
+      "end": 13369,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M101",
+      "cell": 0,
+      "start": 13403,
+      "end": 13406,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M102",
+      "cell": 0,
+      "start": 13805,
+      "end": 13808,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM058-04337275-M103",
+      "cell": 0,
+      "start": 14227,
+      "end": 14245,
+      "literal": "$U^2 = \\mathbb{I}$",
+      "status": "exact",
+      "display": "[U^2 − 1, U^2; U^2, U^2 − 1] = [0, 0; 0, 0]",
+      "copy": "(matrix(2,2,['U'² − 1,'U'²,'U'²,'U'² − 1]))==(matrix(2,2,[0,0,0,0]))"
+    },
+    {
+      "id": "IBM058-04337275-M104",
+      "cell": 0,
+      "start": 14381,
+      "end": 14393,
+      "literal": "$Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM058-04337275-M105",
+      "cell": 0,
+      "start": 14750,
+      "end": 14753,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    }
+  ]
+}

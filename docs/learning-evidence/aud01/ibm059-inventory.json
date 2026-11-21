@@ -1,0 +1,820 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited.ipynb",
+  "source_sha256": "8c130abce137e248aa0e3bf1ee7cffacefd66ccd8700cf8cbe31a321d2ae333a",
+  "worker_sha256": "c0f881671d83f34f96ff5e205ab18d1022b36fd2ee35e7d26829abc7b272c0df",
+  "revision": "7167e450241b03fc70575305b6e776e60638f890",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 79
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 2344,
+      "end": 2519,
+      "alt": "Parity check circuit for the 3-bit repetition code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/3-bit-repetition-parity-checks.svg"
+    },
+    {
+      "cell": 0,
+      "start": 9758,
+      "end": 9922,
+      "alt": "Subspace division for 3-bit repetition code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-generator-table.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM059-8c130abc-M001",
+      "cell": 0,
+      "start": 448,
+      "end": 492,
+      "literal": "$\\alpha\\vert 0\\rangle + \\beta\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "['α'; 'β']",
+      "copy": "matrix(2,1,['α','β'])"
+    },
+    {
+      "id": "IBM059-8c130abc-M002",
+      "cell": 0,
+      "start": 508,
+      "end": 580,
+      "literal": "$$\n\\vert\\psi\\rangle = \\alpha\\vert 000\\rangle + \\beta\\vert 111\\rangle.\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = ['α'; 0; 0; 0; 0; 0; 0; 'β']",
+      "copy": "qcompare(qketstate('ψ'),matrix(8,1,['α',0,0,0,0,0,0,'β']),4)"
+    },
+    {
+      "id": "IBM059-8c130abc-M003",
+      "cell": 0,
+      "start": 592,
+      "end": 610,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M004",
+      "cell": 0,
+      "start": 809,
+      "end": 997,
+      "literal": "$$\n\\begin{aligned}\n  (Z \\otimes Z \\otimes \\mathbb{I}) \\vert\\psi\\rangle & = \\vert\\psi\\rangle\\\\[1mm]\n  (\\mathbb{I} \\otimes Z \\otimes Z) \\vert\\psi\\rangle & = \\vert\\psi\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  (([1, 0; 0, −1] ⊗ [1, 0; 0, −1]) ⊗ [1, 0; 0, 1]) |ψ⟩ = |ψ⟩\n\n2.  (([1, 0; 0, 1] ⊗ [1, 0; 0, −1]) ⊗ [1, 0; 0, −1]) |ψ⟩ = |ψ⟩",
+      "copy": "\\begin{gathered}qcompare(qadjacent(qtensor(qtensor(matrix(2,2,vector(1,0,0,−1)),matrix(2,2,vector(1,0,0,−1))),matrix(2,2,vector(1,0,0,1))),qnamedket('ψ')),qketstate('ψ'),4)\\\\qcompare(qadjacent(qtensor(qtensor(matrix(2,2,vector(1,0,0,1)),matrix(2,2,vector(1,0,0,−1))),matrix(2,2,vector(1,0,0,−1))),qnamedket('ψ')),qketstate('ψ'),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM059-8c130abc-M005",
+      "cell": 0,
+      "start": 1039,
+      "end": 1042,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M006",
+      "cell": 0,
+      "start": 1084,
+      "end": 1102,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M007",
+      "cell": 0,
+      "start": 1139,
+      "end": 1157,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M008",
+      "cell": 0,
+      "start": 1179,
+      "end": 1209,
+      "literal": "$Z\\otimes Z\\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M009",
+      "cell": 0,
+      "start": 1226,
+      "end": 1229,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M010",
+      "cell": 0,
+      "start": 1274,
+      "end": 1277,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M011",
+      "cell": 0,
+      "start": 1366,
+      "end": 1384,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M012",
+      "cell": 0,
+      "start": 1815,
+      "end": 1845,
+      "literal": "$Z\\otimes Z\\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M013",
+      "cell": 0,
+      "start": 1850,
+      "end": 1880,
+      "literal": "$\\mathbb{I}\\otimes Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M014",
+      "cell": 0,
+      "start": 2052,
+      "end": 2056,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M015",
+      "cell": 0,
+      "start": 2078,
+      "end": 2096,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M016",
+      "cell": 0,
+      "start": 2151,
+      "end": 2154,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M017",
+      "cell": 0,
+      "start": 2599,
+      "end": 2603,
+      "literal": "$00$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM059-8c130abc-M018",
+      "cell": 0,
+      "start": 2707,
+      "end": 2737,
+      "literal": "$Z\\otimes Z\\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M019",
+      "cell": 0,
+      "start": 2742,
+      "end": 2772,
+      "literal": "$\\mathbb{I}\\otimes Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M020",
+      "cell": 0,
+      "start": 2908,
+      "end": 3136,
+      "literal": "$$\n\\langle Z\\otimes Z\\otimes \\mathbb{I}, \\mathbb{I}\\otimes Z\\otimes Z\\rangle\n= \\{\n  \\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I},\n  Z\\otimes Z\\otimes\\mathbb{I},\n  Z\\otimes\\mathbb{I}\\otimes Z,\n  \\mathbb{I}\\otimes Z\\otimes Z\n\\}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M021",
+      "cell": 0,
+      "start": 3440,
+      "end": 3469,
+      "literal": "$Z\\otimes\\mathbb{I}\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M022",
+      "cell": 0,
+      "start": 3972,
+      "end": 3990,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M023",
+      "cell": 0,
+      "start": 4039,
+      "end": 4042,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M024",
+      "cell": 0,
+      "start": 4057,
+      "end": 4060,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M025",
+      "cell": 0,
+      "start": 4070,
+      "end": 4159,
+      "literal": "$$\n\\vert\\psi\\rangle \\mapsto (X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ ↦ (([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) |ψ⟩",
+      "copy": "qstateaction(qketstate('ψ'),qadjacent(qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1))),qnamedket('ψ')))"
+    },
+    {
+      "id": "IBM059-8c130abc-M026",
+      "cell": 0,
+      "start": 4364,
+      "end": 4394,
+      "literal": "$Z\\otimes Z\\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M027",
+      "cell": 0,
+      "start": 4399,
+      "end": 4429,
+      "literal": "$\\mathbb{I}\\otimes Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M028",
+      "cell": 0,
+      "start": 4506,
+      "end": 4524,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M029",
+      "cell": 0,
+      "start": 4549,
+      "end": 4552,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M030",
+      "cell": 0,
+      "start": 4717,
+      "end": 4720,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M031",
+      "cell": 0,
+      "start": 4725,
+      "end": 4728,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M032",
+      "cell": 0,
+      "start": 4815,
+      "end": 4845,
+      "literal": "$Z\\otimes Z\\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M033",
+      "cell": 0,
+      "start": 4865,
+      "end": 4902,
+      "literal": "$X\\otimes\\mathbb{I}\\otimes\\mathbb{I}$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1; 1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M034",
+      "cell": 0,
+      "start": 4923,
+      "end": 4941,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M035",
+      "cell": 0,
+      "start": 4974,
+      "end": 5004,
+      "literal": "$Z\\otimes Z\\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M036",
+      "cell": 0,
+      "start": 5023,
+      "end": 5041,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M037",
+      "cell": 0,
+      "start": 5044,
+      "end": 5332,
+      "literal": "$$\n\\begin{aligned}\n(Z \\otimes Z \\otimes \\mathbb{I})(X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle\n& = -(X \\otimes \\mathbb{I} \\otimes \\mathbb{I})(Z \\otimes Z \\otimes \\mathbb{I})\\vert\\psi\\rangle \\\\\n& = -(X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "((([1, 0; 0, −1] ⊗ [1, 0; 0, −1]) ⊗ [1, 0; 0, 1]) · (([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1])) (|ψ⟩) = (−(([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) · (([1, 0; 0, −1] ⊗ [1, 0; 0, −1]) ⊗ [1, 0; 0, 1])) (|ψ⟩) = −(([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) |ψ⟩",
+      "copy": "qequalchain(vector(qadjacent(qadjacent(qtensor(qtensor(matrix(2,2,vector(1,0,0,−1)),matrix(2,2,vector(1,0,0,−1))),matrix(2,2,vector(1,0,0,1))),qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1)))),qnamedket('ψ')),qadjacent(qadjacent(qmul(−1,qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1)))),qtensor(qtensor(matrix(2,2,vector(1,0,0,−1)),matrix(2,2,vector(1,0,0,−1))),matrix(2,2,vector(1,0,0,1)))),qnamedket('ψ')),qadjacent(qmul(−1,qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1)))),qnamedket('ψ'))))"
+    },
+    {
+      "id": "IBM059-8c130abc-M038",
+      "cell": 0,
+      "start": 5345,
+      "end": 5405,
+      "literal": "$(X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "(([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) |ψ⟩",
+      "copy": "qadjacent(qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1))),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM059-8c130abc-M039",
+      "cell": 0,
+      "start": 5427,
+      "end": 5459,
+      "literal": "$Z \\otimes Z \\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M040",
+      "cell": 0,
+      "start": 5476,
+      "end": 5480,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M041",
+      "cell": 0,
+      "start": 5534,
+      "end": 5566,
+      "literal": "$Z \\otimes Z \\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M042",
+      "cell": 0,
+      "start": 5593,
+      "end": 5653,
+      "literal": "$(X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "(([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) |ψ⟩",
+      "copy": "qadjacent(qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1))),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM059-8c130abc-M043",
+      "cell": 0,
+      "start": 5733,
+      "end": 5737,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M044",
+      "cell": 0,
+      "start": 5982,
+      "end": 5986,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M045",
+      "cell": 0,
+      "start": 5989,
+      "end": 6274,
+      "literal": "$$\n\\begin{aligned}\n(\\mathbb{I} \\otimes Z \\otimes Z)(X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle\n& = (X \\otimes \\mathbb{I} \\otimes \\mathbb{I})(\\mathbb{I} \\otimes Z \\otimes Z)\\vert\\psi\\rangle\\\\\n& = (X \\otimes \\mathbb{I} \\otimes \\mathbb{I}) \\vert\\psi\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "((([1, 0; 0, 1] ⊗ [1, 0; 0, −1]) ⊗ [1, 0; 0, −1]) · (([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1])) (|ψ⟩) = ((([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) · (([1, 0; 0, 1] ⊗ [1, 0; 0, −1]) ⊗ [1, 0; 0, −1])) (|ψ⟩) = (([0, 1; 1, 0] ⊗ [1, 0; 0, 1]) ⊗ [1, 0; 0, 1]) |ψ⟩",
+      "copy": "qequalchain(vector(qadjacent(qadjacent(qtensor(qtensor(matrix(2,2,vector(1,0,0,1)),matrix(2,2,vector(1,0,0,−1))),matrix(2,2,vector(1,0,0,−1))),qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1)))),qnamedket('ψ')),qadjacent(qadjacent(qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1))),qtensor(qtensor(matrix(2,2,vector(1,0,0,1)),matrix(2,2,vector(1,0,0,−1))),matrix(2,2,vector(1,0,0,−1)))),qnamedket('ψ')),qadjacent(qtensor(qtensor(matrix(2,2,vector(0,1,1,0)),matrix(2,2,vector(1,0,0,1))),matrix(2,2,vector(1,0,0,1))),qnamedket('ψ'))))"
+    },
+    {
+      "id": "IBM059-8c130abc-M046",
+      "cell": 0,
+      "start": 6364,
+      "end": 6382,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M047",
+      "cell": 0,
+      "start": 6483,
+      "end": 6487,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M048",
+      "cell": 0,
+      "start": 6491,
+      "end": 6495,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M049",
+      "cell": 0,
+      "start": 6764,
+      "end": 6782,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM059-8c130abc-M050",
+      "cell": 0,
+      "start": 7215,
+      "end": 7562,
+      "literal": "$$\n\\begin{aligned}\n(Z \\otimes Z \\otimes \\mathbb{I})(X \\otimes \\mathbb{I} \\otimes \\mathbb{I})\n& = -(X \\otimes \\mathbb{I} \\otimes \\mathbb{I})(Z \\otimes Z \\otimes \\mathbb{I})\\\\[1mm]\n(\\mathbb{I} \\otimes Z \\otimes Z)(X \\otimes \\mathbb{I} \\otimes \\mathbb{I})\n& = (X \\otimes \\mathbb{I} \\otimes \\mathbb{I})(\\mathbb{I} \\otimes Z \\otimes Z)\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1",
+      "copy": "\\begin{gathered}1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM059-8c130abc-M051",
+      "cell": 0,
+      "start": 7686,
+      "end": 7690,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M052",
+      "cell": 0,
+      "start": 7694,
+      "end": 7698,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M053",
+      "cell": 0,
+      "start": 8061,
+      "end": 8380,
+      "literal": "$$\n\\begin{array}{c|cccc}\n& \\mathbb{I}\\otimes\\mathbb{I} \\otimes\\mathbb{I} & X \\otimes \\mathbb{I} \\otimes \\mathbb{I}\n& \\mathbb{I}\\otimes X\\otimes\\mathbb{I} & \\mathbb{I} \\otimes\\mathbb{I} \\otimes X \\\\ \\hline\nZ\\otimes Z\\otimes\\mathbb{I} & +1 & -1 & -1 & +1 \\\\\n\\mathbb{I}\\otimes Z\\otimes Z & +1 & +1 & -1 & -1\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[qoutcome(\"syndrome\"), [1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1; 1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0]; [1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1], 1, −1, −1, 1; [1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1], 1, 1, −1, −1]",
+      "copy": "vector(vector(qoutcome(\"syndrome\"),matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1]),matrix(8,8,[0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0]),matrix(8,8,[0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0]),matrix(8,8,[0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0])),vector(matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1]),1,−1,−1,1),vector(matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1]),1,1,−1,−1))"
+    },
+    {
+      "id": "IBM059-8c130abc-M054",
+      "cell": 0,
+      "start": 8506,
+      "end": 8510,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M055",
+      "cell": 0,
+      "start": 8514,
+      "end": 8518,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M056",
+      "cell": 0,
+      "start": 8773,
+      "end": 8777,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M057",
+      "cell": 0,
+      "start": 8782,
+      "end": 8786,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M058",
+      "cell": 0,
+      "start": 8807,
+      "end": 8810,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM059-8c130abc-M059",
+      "cell": 0,
+      "start": 8815,
+      "end": 8818,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M060",
+      "cell": 0,
+      "start": 8918,
+      "end": 8922,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M061",
+      "cell": 0,
+      "start": 8927,
+      "end": 8931,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M062",
+      "cell": 0,
+      "start": 8997,
+      "end": 9001,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M063",
+      "cell": 0,
+      "start": 9006,
+      "end": 9010,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M064",
+      "cell": 0,
+      "start": 10026,
+      "end": 10030,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M065",
+      "cell": 0,
+      "start": 10061,
+      "end": 10065,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M066",
+      "cell": 0,
+      "start": 10117,
+      "end": 10121,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM059-8c130abc-M067",
+      "cell": 0,
+      "start": 10138,
+      "end": 10167,
+      "literal": "$Z\\otimes Z\\otimes\\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M068",
+      "cell": 0,
+      "start": 10275,
+      "end": 10279,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM059-8c130abc-M069",
+      "cell": 0,
+      "start": 10763,
+      "end": 10772,
+      "literal": "$(+1,+1)$",
+      "status": "exact",
+      "display": "(1, 1)",
+      "copy": "qtuple(vector(1,1))"
+    },
+    {
+      "id": "IBM059-8c130abc-M070",
+      "cell": 0,
+      "start": 10797,
+      "end": 10815,
+      "literal": "$\\vert 000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(8,1,[1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M071",
+      "cell": 0,
+      "start": 10820,
+      "end": 10838,
+      "literal": "$\\vert 111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1]",
+      "copy": "matrix(8,1,[0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M072",
+      "cell": 0,
+      "start": 11282,
+      "end": 11291,
+      "literal": "$(+1,+1)$",
+      "status": "exact",
+      "display": "(1, 1)",
+      "copy": "qtuple(vector(1,1))"
+    },
+    {
+      "id": "IBM059-8c130abc-M073",
+      "cell": 0,
+      "start": 11402,
+      "end": 11441,
+      "literal": "$\\mathbb{I}\\otimes \\mathbb{I}\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, −1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M074",
+      "cell": 0,
+      "start": 11443,
+      "end": 11464,
+      "literal": "$Z\\otimes Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, −1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1])"
+    },
+    {
+      "id": "IBM059-8c130abc-M075",
+      "cell": 0,
+      "start": 11470,
+      "end": 11491,
+      "literal": "$X\\otimes X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M076",
+      "cell": 0,
+      "start": 12017,
+      "end": 12026,
+      "literal": "$(+1,+1)$",
+      "status": "exact",
+      "display": "(1, 1)",
+      "copy": "qtuple(vector(1,1))"
+    },
+    {
+      "id": "IBM059-8c130abc-M077",
+      "cell": 0,
+      "start": 12234,
+      "end": 12256,
+      "literal": "$X\\otimes X \\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M078",
+      "cell": 0,
+      "start": 12439,
+      "end": 12442,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM059-8c130abc-M079",
+      "cell": 0,
+      "start": 12485,
+      "end": 12614,
+      "literal": "$$\n(X\\otimes X \\otimes X)(\\alpha \\vert 000\\rangle + \\beta \\vert 111\\rangle) =\n\\alpha \\vert 111\\rangle + \\beta \\vert 000\\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    }
+  ]
+}

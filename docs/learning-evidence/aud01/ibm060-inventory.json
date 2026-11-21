@@ -1,0 +1,2873 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes.ipynb",
+  "source_sha256": "3d9008806bedf42d297a5206c86df441a937583cbe8336d8c1e41728928b6d07",
+  "worker_sha256": "c0f881671d83f34f96ff5e205ab18d1022b36fd2ee35e7d26829abc7b272c0df",
+  "revision": "7167e450241b03fc70575305b6e776e60638f890",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 268,
+    "diagnostic": 18
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 24319,
+      "end": 24472,
+      "alt": "Clifford encoder for the 7-qubit Steane code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/Steane-encoder.svg"
+    },
+    {
+      "cell": 0,
+      "start": 36113,
+      "end": 36270,
+      "alt": "Lowest-weight error correction diagram",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/lowest-weight-correction.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM060-3d900880-M001",
+      "cell": 0,
+      "start": 439,
+      "end": 442,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M002",
+      "cell": 0,
+      "start": 491,
+      "end": 494,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M003",
+      "cell": 0,
+      "start": 519,
+      "end": 535,
+      "literal": "$P_1,\\ldots,P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M004",
+      "cell": 0,
+      "start": 726,
+      "end": 802,
+      "literal": "$$\n   P_j P_k = P_k P_j \\qquad \\text{(for all $j,k\\in\\{1,\\ldots,r\\}$)}\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 69"
+    },
+    {
+      "id": "IBM060-3d900880-M005",
+      "cell": 0,
+      "start": 870,
+      "end": 990,
+      "literal": "$$\n   P_k \\notin \\langle P_1,\\ldots,P_{k-1},P_{k+1},\\ldots,P_r\\rangle \\qquad \\text{(for all $k\\in\\{1,\\ldots,r\\}$)}\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 113"
+    },
+    {
+      "id": "IBM060-3d900880-M006",
+      "cell": 0,
+      "start": 1079,
+      "end": 1152,
+      "literal": "$$\n   -\\mathbb{I}^{\\otimes n} \\notin \\langle P_1,\\ldots, P_r\\rangle\n   $$",
+      "status": "exact",
+      "display": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))",
+      "copy": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))"
+    },
+    {
+      "id": "IBM060-3d900880-M007",
+      "cell": 0,
+      "start": 1220,
+      "end": 1238,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM060-3d900880-M008",
+      "cell": 0,
+      "start": 1290,
+      "end": 1363,
+      "literal": "$P_1 \\vert\\psi\\rangle = \\cdots = P_r \\vert\\psi\\rangle = \\vert\\psi\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 30"
+    },
+    {
+      "id": "IBM060-3d900880-M009",
+      "cell": 0,
+      "start": 1382,
+      "end": 1445,
+      "literal": "$-\\mathbb{I}^{\\otimes n} \\notin \\langle P_1,\\ldots, P_r\\rangle$",
+      "status": "exact",
+      "display": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))",
+      "copy": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))"
+    },
+    {
+      "id": "IBM060-3d900880-M010",
+      "cell": 0,
+      "start": 1557,
+      "end": 1573,
+      "literal": "$P_1,\\ldots,P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M011",
+      "cell": 0,
+      "start": 1647,
+      "end": 1660,
+      "literal": "$\\mathcal{C}$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M012",
+      "cell": 0,
+      "start": 1678,
+      "end": 1681,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M013",
+      "cell": 0,
+      "start": 1722,
+      "end": 1725,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M014",
+      "cell": 0,
+      "start": 1759,
+      "end": 1889,
+      "literal": "$$\n\\mathcal{C} = \\bigl\\{ \\vert\\psi\\rangle \\,:\\, P_1 \\vert\\psi\\rangle = \\cdots = P_r \\vert\\psi\\rangle = \\vert\\psi\\rangle \\bigr\\}\n$$",
+      "status": "diagnostic",
+      "message": "Use an index, finite collection and predicate in a set builder at byte 126"
+    },
+    {
+      "id": "IBM060-3d900880-M015",
+      "cell": 0,
+      "start": 2140,
+      "end": 2158,
+      "literal": "$P_1, \\ldots, P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M016",
+      "cell": 0,
+      "start": 2202,
+      "end": 2238,
+      "literal": "$$\n\\langle P_1,\\ldots,P_r\\rangle.\n$$",
+      "status": "exact",
+      "display": "qpauligroup(qindexedentries(\"P_\", 1, 'r', []))",
+      "copy": "qpauligroup(qindexedentries(\"P_\",1,'r',vector()))"
+    },
+    {
+      "id": "IBM060-3d900880-M017",
+      "cell": 0,
+      "start": 2479,
+      "end": 2482,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M018",
+      "cell": 0,
+      "start": 2588,
+      "end": 2592,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M019",
+      "cell": 0,
+      "start": 2633,
+      "end": 2637,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M020",
+      "cell": 0,
+      "start": 4196,
+      "end": 4221,
+      "literal": "$-\\mathbb{I}^{\\otimes n}$",
+      "status": "exact",
+      "display": "−[1, 0; 0, 1]^{⊗ n}",
+      "copy": "qmul(−1,qtensorpow(matrix(2,2,vector(1,0,0,1)),n))"
+    },
+    {
+      "id": "IBM060-3d900880-M021",
+      "cell": 0,
+      "start": 4376,
+      "end": 4379,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M022",
+      "cell": 0,
+      "start": 4745,
+      "end": 4748,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M023",
+      "cell": 0,
+      "start": 4800,
+      "end": 4803,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M024",
+      "cell": 0,
+      "start": 4970,
+      "end": 5002,
+      "literal": "$Z \\otimes Z \\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M025",
+      "cell": 0,
+      "start": 5007,
+      "end": 5039,
+      "literal": "$\\mathbb{I} \\otimes Z \\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M026",
+      "cell": 0,
+      "start": 5169,
+      "end": 5201,
+      "literal": "$Z \\otimes Z \\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M027",
+      "cell": 0,
+      "start": 5206,
+      "end": 5238,
+      "literal": "$\\mathbb{I} \\otimes Z \\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M028",
+      "cell": 0,
+      "start": 5266,
+      "end": 5436,
+      "literal": "$$\n(Z \\otimes Z \\otimes \\mathbb{I})(\\mathbb{I} \\otimes Z \\otimes Z) = Z \\otimes \\mathbb{I} \\otimes Z\n= (\\mathbb{I} \\otimes Z \\otimes Z)(Z \\otimes Z \\otimes \\mathbb{I})\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M029",
+      "cell": 0,
+      "start": 5513,
+      "end": 5892,
+      "literal": "$$\n\\begin{aligned}\nZ \\otimes Z \\otimes \\mathbb{I} \\notin \\langle\\mathbb{I} \\otimes Z \\otimes Z\\rangle\n& = \\{\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}, \\mathbb{I} \\otimes Z \\otimes Z\\}\\\\[1mm]\n\\mathbb{I} \\otimes Z \\otimes Z \\notin \\langle Z \\otimes Z \\otimes \\mathbb{I}\\rangle\n& = \\{\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}, Z \\otimes Z \\otimes \\mathbb{I}\\}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1",
+      "copy": "\\begin{gathered}1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM060-3d900880-M030",
+      "cell": 0,
+      "start": 5926,
+      "end": 5944,
+      "literal": "$\\vert 000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(8,1,[1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M031",
+      "cell": 0,
+      "start": 5949,
+      "end": 5967,
+      "literal": "$\\vert 111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1]",
+      "copy": "matrix(8,1,[0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M032",
+      "cell": 0,
+      "start": 6039,
+      "end": 6071,
+      "literal": "$Z \\otimes Z \\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M033",
+      "cell": 0,
+      "start": 6076,
+      "end": 6108,
+      "literal": "$\\mathbb{I} \\otimes Z \\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, −1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, −1, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 1]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M034",
+      "cell": 0,
+      "start": 6199,
+      "end": 6483,
+      "literal": "$$\n-\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}\\notin\n\\langle Z \\otimes Z \\otimes \\mathbb{I}, \\mathbb{I} \\otimes Z \\otimes Z\\rangle\n= \\{\n  \\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I},\n  Z\\otimes Z\\otimes\\mathbb{I},\n  Z\\otimes\\mathbb{I}\\otimes Z,\n  \\mathbb{I}\\otimes Z\\otimes Z\n\\}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M035",
+      "cell": 0,
+      "start": 6862,
+      "end": 6894,
+      "literal": "$X \\otimes X \\otimes \\mathbb{I}$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M036",
+      "cell": 0,
+      "start": 6899,
+      "end": 6931,
+      "literal": "$\\mathbb{I} \\otimes X \\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M037",
+      "cell": 0,
+      "start": 6980,
+      "end": 6992,
+      "literal": "$X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 1; 0, 0, 1, 0; 0, 1, 0, 0; 1, 0, 0, 0]",
+      "copy": "matrix(4,4,[0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M038",
+      "cell": 0,
+      "start": 7017,
+      "end": 7029,
+      "literal": "$Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M039",
+      "cell": 0,
+      "start": 7399,
+      "end": 8572,
+      "literal": "$$\n\\begin{gathered}\nZ \\otimes Z \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\\\\[1mm]\n\\mathbb{I} \\otimes Z \\otimes Z \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\\\\[1mm]\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\nZ \\otimes Z \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\\\\[1mm]\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes Z \\otimes Z \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\\\\[1mm]\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\nZ \\otimes Z \\otimes \\mathbb{I}\\\\[1mm]\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes\n\\mathbb{I} \\otimes Z \\otimes Z\\\\[1mm]\nX \\otimes X \\otimes X \\otimes X \\otimes X \\otimes X \\otimes\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\\\\[1mm]\n\\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\\otimes\nX \\otimes X \\otimes X \\otimes X \\otimes X \\otimes X\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "1.  (Z@Z@I@I@I@I@I@I@I)\n\n2.  (I@Z@Z@I@I@I@I@I@I)\n\n3.  (I@I@I@Z@Z@I@I@I@I)\n\n4.  (I@I@I@I@Z@Z@I@I@I)\n\n5.  (I@I@I@I@I@I@Z@Z@I)\n\n6.  (I@I@I@I@I@I@I@Z@Z)\n\n7.  (X@X@X@X@X@X@I@I@I)\n\n8.  (I@I@I@X@X@X@X@X@X)",
+      "copy": "\\begin{gathered}(Z@Z@I@I@I@I@I@I@I)\\\\(I@Z@Z@I@I@I@I@I@I)\\\\(I@I@I@Z@Z@I@I@I@I)\\\\(I@I@I@I@Z@Z@I@I@I)\\\\(I@I@I@I@I@I@Z@Z@I)\\\\(I@I@I@I@I@I@I@Z@Z)\\\\(X@X@X@X@X@X@I@I@I)\\\\(I@I@I@X@X@X@X@X@X)\\end{gathered}"
+    },
+    {
+      "id": "IBM060-3d900880-M040",
+      "cell": 0,
+      "start": 8996,
+      "end": 9017,
+      "literal": "$X\\otimes X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M041",
+      "cell": 0,
+      "start": 9037,
+      "end": 9040,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M042",
+      "cell": 0,
+      "start": 9081,
+      "end": 9102,
+      "literal": "$X\\otimes X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M043",
+      "cell": 0,
+      "start": 9121,
+      "end": 9124,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M044",
+      "cell": 0,
+      "start": 9593,
+      "end": 10387,
+      "literal": "$$\n\\begin{array}{ccccccccc}\nZ & Z & \\mathbb{I} &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I}\\\\[1mm]\n\\mathbb{I} & Z & Z &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I}\\\\[1mm]\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\nZ & Z & \\mathbb{I} &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I}\\\\[1mm]\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\n\\mathbb{I} & Z & Z &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I}\\\\[1mm]\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\nZ & Z & \\mathbb{I}\\\\[1mm]\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I} &\n\\mathbb{I} & Z & Z\\\\[1mm]\nX & X & X & X & X & X &\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I}\\\\[1mm]\n\\mathbb{I} & \\mathbb{I} & \\mathbb{I}&\nX & X & X & X & X & X\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[9, 0, 384, 0; 9, 0, 192, 0; 9, 0, 48, 0; 9, 0, 24, 0; 9, 0, 6, 0; 9, 0, 3, 0; 9, 504, 0, 0; 9, 63, 0, 0]",
+      "copy": "matrix(8,4,[9,0,384,0,9,0,192,0,9,0,48,0,9,0,24,0,9,0,6,0,9,0,3,0,9,504,0,0,9,63,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M045",
+      "cell": 0,
+      "start": 10628,
+      "end": 11026,
+      "literal": "$$\n\\begin{array}{ccccccc}\nZ & Z & Z & Z & \\mathbb{I} & \\mathbb{I} & \\mathbb{I} \\\\[1mm]\nZ & Z & \\mathbb{I} & \\mathbb{I} & Z & Z & \\mathbb{I} \\\\[1mm]\nZ & \\mathbb{I} & Z & \\mathbb{I} & Z & \\mathbb{I} & Z \\\\[1mm]\nX & X & X & X & \\mathbb{I} & \\mathbb{I} & \\mathbb{I} \\\\[1mm]\nX & X & \\mathbb{I} & \\mathbb{I} & X & X & \\mathbb{I} \\\\[1mm]\nX & \\mathbb{I} & X & \\mathbb{I} & X & \\mathbb{I} & X\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[7, 0, 120, 0; 7, 0, 102, 0; 7, 0, 85, 0; 7, 120, 0, 0; 7, 102, 0, 0; 7, 85, 0, 0]",
+      "copy": "matrix(6,4,[7,0,120,0,7,0,102,0,7,0,85,0,7,120,0,0,7,102,0,0,7,85,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M046",
+      "cell": 0,
+      "start": 11176,
+      "end": 11179,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M047",
+      "cell": 0,
+      "start": 11362,
+      "end": 11365,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M048",
+      "cell": 0,
+      "start": 11437,
+      "end": 11440,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M049",
+      "cell": 0,
+      "start": 11620,
+      "end": 11623,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M050",
+      "cell": 0,
+      "start": 11630,
+      "end": 11633,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M051",
+      "cell": 0,
+      "start": 11754,
+      "end": 11766,
+      "literal": "$X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 1; 0, 0, 1, 0; 0, 1, 0, 0; 1, 0, 0, 0]",
+      "copy": "matrix(4,4,[0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M052",
+      "cell": 0,
+      "start": 11771,
+      "end": 11783,
+      "literal": "$Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M053",
+      "cell": 0,
+      "start": 12330,
+      "end": 12508,
+      "literal": "$$\n\\begin{array}{ccccc}\nX & Z & Z & X & \\mathbb{I} \\\\[1mm]\n\\mathbb{I} & X & Z & Z & X \\\\[1mm]\nX & \\mathbb{I} & X & Z & Z \\\\[1mm]\nZ & X & \\mathbb{I} & X & Z \\\\[1mm]\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[5, 18, 12, 0; 5, 9, 6, 0; 5, 20, 3, 0; 5, 10, 17, 0]",
+      "copy": "matrix(4,4,[5,18,12,0,5,9,6,0,5,20,3,0,5,10,17,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M054",
+      "cell": 0,
+      "start": 12934,
+      "end": 12989,
+      "literal": "$$\n\\begin{array}{cc}\nZ & Z \\\\[1mm]\nX & X\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[2, 0, 3, 0; 2, 3, 0, 0]",
+      "copy": "matrix(2,4,[2,0,3,0,2,3,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M055",
+      "cell": 0,
+      "start": 13069,
+      "end": 13089,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM060-3d900880-M056",
+      "cell": 0,
+      "start": 13207,
+      "end": 13255,
+      "literal": "$(\\vert 000\\rangle + \\vert 111\\rangle)/\\sqrt{2}$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(8,1,[1 ∕ √(2),0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM060-3d900880-M057",
+      "cell": 0,
+      "start": 13258,
+      "end": 13357,
+      "literal": "$$\n\\begin{array}{cc}\nZ & Z & \\mathbb{I} \\\\[1mm]\n\\mathbb{I} & Z & Z \\\\[1mm]\nX & X & X\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[3, 0, 6, 0; 3, 0, 3, 0; 3, 7, 0, 0]",
+      "copy": "matrix(3,4,[3,0,6,0,3,0,3,0,3,7,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M058",
+      "cell": 0,
+      "start": 13437,
+      "end": 13440,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M059",
+      "cell": 0,
+      "start": 13469,
+      "end": 13485,
+      "literal": "$P_1,\\ldots,P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M060",
+      "cell": 0,
+      "start": 13646,
+      "end": 13649,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M061",
+      "cell": 0,
+      "start": 13678,
+      "end": 13696,
+      "literal": "$P_1, \\ldots, P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M062",
+      "cell": 0,
+      "start": 13968,
+      "end": 13977,
+      "literal": "$2^{n-r}$",
+      "status": "exact",
+      "display": "0.5^r · 2^n",
+      "copy": "(1 ∕ 2)^'r' ⋅ 2^n"
+    },
+    {
+      "id": "IBM060-3d900880-M063",
+      "cell": 0,
+      "start": 13982,
+      "end": 13987,
+      "literal": "$n-r$",
+      "status": "exact",
+      "display": "n − r",
+      "copy": "n − 'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M064",
+      "cell": 0,
+      "start": 14058,
+      "end": 14061,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M065",
+      "cell": 0,
+      "start": 14466,
+      "end": 14471,
+      "literal": "$n=3$",
+      "status": "exact",
+      "display": "n = 3",
+      "copy": "(n)==(3)"
+    },
+    {
+      "id": "IBM060-3d900880-M066",
+      "cell": 0,
+      "start": 14483,
+      "end": 14488,
+      "literal": "$r=2$",
+      "status": "exact",
+      "display": "r = 2",
+      "copy": "('r')==(2)"
+    },
+    {
+      "id": "IBM060-3d900880-M067",
+      "cell": 0,
+      "start": 14822,
+      "end": 14834,
+      "literal": "$X\\otimes X$",
+      "status": "exact",
+      "display": "[0, 0, 0, 1; 0, 0, 1, 0; 0, 1, 0, 0; 1, 0, 0, 0]",
+      "copy": "matrix(4,4,[0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M068",
+      "cell": 0,
+      "start": 14839,
+      "end": 14851,
+      "literal": "$Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M069",
+      "cell": 0,
+      "start": 14907,
+      "end": 14927,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM060-3d900880-M070",
+      "cell": 0,
+      "start": 14961,
+      "end": 14966,
+      "literal": "$n=2$",
+      "status": "exact",
+      "display": "n = 2",
+      "copy": "(n)==(2)"
+    },
+    {
+      "id": "IBM060-3d900880-M071",
+      "cell": 0,
+      "start": 14978,
+      "end": 14983,
+      "literal": "$r=2$",
+      "status": "exact",
+      "display": "r = 2",
+      "copy": "('r')==(2)"
+    },
+    {
+      "id": "IBM060-3d900880-M072",
+      "cell": 0,
+      "start": 15246,
+      "end": 15279,
+      "literal": "$$\nP_1^{a_1} \\cdots P_r^{a_r},\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 18"
+    },
+    {
+      "id": "IBM060-3d900880-M073",
+      "cell": 0,
+      "start": 15287,
+      "end": 15313,
+      "literal": "$a_1,\\ldots,a_r\\in\\{0,1\\}$",
+      "status": "diagnostic",
+      "message": "Membership requires a scalar or binary-string label."
+    },
+    {
+      "id": "IBM060-3d900880-M074",
+      "cell": 0,
+      "start": 15538,
+      "end": 15558,
+      "literal": "$\\{P_1,\\ldots,P_r\\}$",
+      "status": "exact",
+      "display": "qindexedset(\"P_\", 1, 'r', [])",
+      "copy": "qindexedset(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M075",
+      "cell": 0,
+      "start": 15602,
+      "end": 15609,
+      "literal": "$\\Pi_k$",
+      "status": "exact",
+      "display": "\"Π_k\"",
+      "copy": "\"Π_k\""
+    },
+    {
+      "id": "IBM060-3d900880-M076",
+      "cell": 0,
+      "start": 15649,
+      "end": 15653,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M077",
+      "cell": 0,
+      "start": 15670,
+      "end": 15675,
+      "literal": "$P_k$",
+      "status": "exact",
+      "display": "\"P_k\"",
+      "copy": "\"P_k\""
+    },
+    {
+      "id": "IBM060-3d900880-M078",
+      "cell": 0,
+      "start": 15686,
+      "end": 15706,
+      "literal": "$k\\in\\{1,\\ldots,r\\}$",
+      "status": "exact",
+      "display": "k ∈ indexrange(1, r)",
+      "copy": "qmember('k',qindexrange(1,'r'))"
+    },
+    {
+      "id": "IBM060-3d900880-M079",
+      "cell": 0,
+      "start": 15831,
+      "end": 15883,
+      "literal": "$$\n\\Pi_k = \\frac{\\mathbb{I}^{\\otimes n} + P_k}{2}\n$$",
+      "status": "exact",
+      "display": "qimplicitidentity()^{⊗ n} + \"P_k\" = 2 \"Π_k\"",
+      "copy": "(qadd(qtensorpow(qimplicitidentity(),n),\"P_k\"))==(2 \"Π_k\")"
+    },
+    {
+      "id": "IBM060-3d900880-M080",
+      "cell": 0,
+      "start": 15900,
+      "end": 15913,
+      "literal": "$\\mathcal{C}$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M081",
+      "cell": 0,
+      "start": 15967,
+      "end": 15970,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M082",
+      "cell": 0,
+      "start": 16000,
+      "end": 16016,
+      "literal": "$P_1,\\ldots,P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M083",
+      "cell": 0,
+      "start": 16039,
+      "end": 16042,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M084",
+      "cell": 0,
+      "start": 16062,
+      "end": 16082,
+      "literal": "$\\Pi_1,\\ldots,\\Pi_r$",
+      "status": "exact",
+      "display": "(Π_1, …, Π_r)",
+      "copy": "qindexedlist(\"Π_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M085",
+      "cell": 0,
+      "start": 16168,
+      "end": 16188,
+      "literal": "$\\Pi_1,\\ldots,\\Pi_r$",
+      "status": "exact",
+      "display": "(Π_1, …, Π_r)",
+      "copy": "qindexedlist(\"Π_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M086",
+      "cell": 0,
+      "start": 16439,
+      "end": 16457,
+      "literal": "$\\Pi_1\\cdots\\Pi_r$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 12"
+    },
+    {
+      "id": "IBM060-3d900880-M087",
+      "cell": 0,
+      "start": 16496,
+      "end": 16509,
+      "literal": "$\\mathcal{C}$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M088",
+      "cell": 0,
+      "start": 16546,
+      "end": 16564,
+      "literal": "$\\Pi_1\\cdots\\Pi_r$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 12"
+    },
+    {
+      "id": "IBM060-3d900880-M089",
+      "cell": 0,
+      "start": 16643,
+      "end": 16853,
+      "literal": "$$\n\\Pi_1\\cdots\\Pi_r\n= \\biggl(\\frac{\\mathbb{I}^{\\otimes n} + P_1}{2}\\biggr)\\cdots\\biggl(\\frac{\\mathbb{I}^{\\otimes n} + P_r}{2}\\biggr)\n= \\frac{1}{2^r}\\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} P_1^{a_1}\\cdots P_r^{a_r}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 13"
+    },
+    {
+      "id": "IBM060-3d900880-M090",
+      "cell": 0,
+      "start": 17226,
+      "end": 17239,
+      "literal": "$\\mathcal{C}$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M091",
+      "cell": 0,
+      "start": 17276,
+      "end": 17446,
+      "literal": "$$\n\\operatorname{dim}(\\mathcal{C}) =\n\\operatorname{Tr}(\\Pi_1\\cdots\\Pi_r) =\n\\frac{1}{2^r} \\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r})\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 65"
+    },
+    {
+      "id": "IBM060-3d900880-M092",
+      "cell": 0,
+      "start": 17533,
+      "end": 17578,
+      "literal": "$P_1^0 \\cdots P_r^0 = \\mathbb{I}^{\\otimes n}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 13"
+    },
+    {
+      "id": "IBM060-3d900880-M093",
+      "cell": 0,
+      "start": 17596,
+      "end": 17653,
+      "literal": "$$\n  \\operatorname{Tr}(P_1^{0}\\cdots P_r^{0}) = 2^n.\n  $$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 35"
+    },
+    {
+      "id": "IBM060-3d900880-M094",
+      "cell": 0,
+      "start": 17661,
+      "end": 17697,
+      "literal": "$(a_1,\\ldots,a_r) \\neq (0,\\ldots,0)$",
+      "status": "exact",
+      "display": "(a_1, …, a_r) ≠ \\{0\\}",
+      "copy": "(qindexedlist(\"a_\",1,'r',vector()))!=(qset(vector(0)))"
+    },
+    {
+      "id": "IBM060-3d900880-M095",
+      "cell": 0,
+      "start": 17711,
+      "end": 17738,
+      "literal": "$P_1^{a_1}\\cdots P_r^{a_r}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 16"
+    },
+    {
+      "id": "IBM060-3d900880-M096",
+      "cell": 0,
+      "start": 17747,
+      "end": 17754,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM060-3d900880-M097",
+      "cell": 0,
+      "start": 17802,
+      "end": 17826,
+      "literal": "$\\mathbb{I}^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]^{⊗ n}",
+      "copy": "qtensorpow(matrix(2,2,[1,0,0,1]),n)"
+    },
+    {
+      "id": "IBM060-3d900880-M098",
+      "cell": 0,
+      "start": 17883,
+      "end": 17903,
+      "literal": "$\\{P_1,\\ldots,P_r\\}$",
+      "status": "exact",
+      "display": "qindexedset(\"P_\", 1, 'r', [])",
+      "copy": "qindexedset(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M099",
+      "cell": 0,
+      "start": 17926,
+      "end": 17951,
+      "literal": "$-\\mathbb{I}^{\\otimes n}$",
+      "status": "exact",
+      "display": "−[1, 0; 0, 1]^{⊗ n}",
+      "copy": "qmul(−1,qtensorpow(matrix(2,2,vector(1,0,0,1)),n))"
+    },
+    {
+      "id": "IBM060-3d900880-M100",
+      "cell": 0,
+      "start": 18110,
+      "end": 18169,
+      "literal": "$$\n  \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r}) = 0.\n  $$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 37"
+    },
+    {
+      "id": "IBM060-3d900880-M101",
+      "cell": 0,
+      "start": 18216,
+      "end": 18225,
+      "literal": "$2^{n-r}$",
+      "status": "exact",
+      "display": "0.5^r · 2^n",
+      "copy": "(1 ∕ 2)^'r' ⋅ 2^n"
+    },
+    {
+      "id": "IBM060-3d900880-M102",
+      "cell": 0,
+      "start": 18239,
+      "end": 18481,
+      "literal": "$$\n\\begin{aligned}\n\\operatorname{dim}(\\mathcal{C}) & =\n\\frac{1}{2^r} \\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r}) \\\\\n& = \\frac{1}{2^r} \\operatorname{Tr}(P_1^{0}\\cdots P_r^{0}) \\\\\n& = 2^{n-r}.\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "A register sum requires matching indexed endpoints and an explicit alphabet power at byte 101"
+    },
+    {
+      "id": "IBM060-3d900880-M103",
+      "cell": 0,
+      "start": 18536,
+      "end": 18561,
+      "literal": "$-\\mathbb{I}^{\\otimes n}$",
+      "status": "exact",
+      "display": "−[1, 0; 0, 1]^{⊗ n}",
+      "copy": "qmul(−1,qtensorpow(matrix(2,2,vector(1,0,0,1)),n))"
+    },
+    {
+      "id": "IBM060-3d900880-M104",
+      "cell": 0,
+      "start": 18772,
+      "end": 18781,
+      "literal": "$2^{n-r}$",
+      "status": "exact",
+      "display": "0.5^r · 2^n",
+      "copy": "(1 ∕ 2)^'r' ⋅ 2^n"
+    },
+    {
+      "id": "IBM060-3d900880-M105",
+      "cell": 0,
+      "start": 18856,
+      "end": 18881,
+      "literal": "$-\\mathbb{I}^{\\otimes n}$",
+      "status": "exact",
+      "display": "−[1, 0; 0, 1]^{⊗ n}",
+      "copy": "qmul(−1,qtensorpow(matrix(2,2,vector(1,0,0,1)),n))"
+    },
+    {
+      "id": "IBM060-3d900880-M106",
+      "cell": 0,
+      "start": 19412,
+      "end": 19415,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M107",
+      "cell": 0,
+      "start": 19448,
+      "end": 19451,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM060-3d900880-M108",
+      "cell": 0,
+      "start": 19809,
+      "end": 19812,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M109",
+      "cell": 0,
+      "start": 20244,
+      "end": 20247,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M110",
+      "cell": 0,
+      "start": 20272,
+      "end": 20275,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM060-3d900880-M111",
+      "cell": 0,
+      "start": 20364,
+      "end": 20367,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M112",
+      "cell": 0,
+      "start": 20390,
+      "end": 20393,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM060-3d900880-M113",
+      "cell": 0,
+      "start": 20404,
+      "end": 20433,
+      "literal": "$$\nU P U^{\\dagger} = \\pm Q\n$$",
+      "status": "exact",
+      "display": "qsignedequal(qadjacent(qadjacent('U', 'P'), qdag('U')), 'Q')",
+      "copy": "qsignedequal(qadjacent(qadjacent('U','P'),qdag('U')),'Q')"
+    },
+    {
+      "id": "IBM060-3d900880-M114",
+      "cell": 0,
+      "start": 20444,
+      "end": 20447,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M115",
+      "cell": 0,
+      "start": 20470,
+      "end": 20473,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM060-3d900880-M116",
+      "cell": 0,
+      "start": 20514,
+      "end": 20542,
+      "literal": "$U P U^{\\dagger} = \\alpha Q$",
+      "status": "exact",
+      "display": "U · P · U† = Q · 'α'",
+      "copy": "(qadjacent(qadjacent('U','P'),qdag('U')))==('Q''α')"
+    },
+    {
+      "id": "IBM060-3d900880-M117",
+      "cell": 0,
+      "start": 20547,
+      "end": 20570,
+      "literal": "$\\alpha\\notin\\{+1,-1\\}$",
+      "status": "exact",
+      "display": "!qmember('α', qset([1  −1]))",
+      "copy": "!qmember('α', qset([1  −1]))"
+    },
+    {
+      "id": "IBM060-3d900880-M118",
+      "cell": 0,
+      "start": 20576,
+      "end": 20579,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM060-3d900880-M119",
+      "cell": 0,
+      "start": 20595,
+      "end": 20598,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM060-3d900880-M120",
+      "cell": 0,
+      "start": 20603,
+      "end": 20606,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM060-3d900880-M121",
+      "cell": 0,
+      "start": 20757,
+      "end": 20761,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M122",
+      "cell": 0,
+      "start": 20766,
+      "end": 20770,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M123",
+      "cell": 0,
+      "start": 20796,
+      "end": 20804,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM060-3d900880-M124",
+      "cell": 0,
+      "start": 20952,
+      "end": 20955,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM060-3d900880-M125",
+      "cell": 0,
+      "start": 20971,
+      "end": 20974,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M126",
+      "cell": 0,
+      "start": 21039,
+      "end": 21122,
+      "literal": "$$\nH X H^{\\dagger} = Z, \\qquad\nH Y H^{\\dagger} = -Y, \\qquad\nH Z H^{\\dagger} = X,\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M127",
+      "cell": 0,
+      "start": 21128,
+      "end": 21131,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M128",
+      "cell": 0,
+      "start": 21140,
+      "end": 21223,
+      "literal": "$$\nS X S^{\\dagger} = Y, \\qquad\nS Y S^{\\dagger} = -X, \\qquad\nS Z S^{\\dagger} = Z.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M129",
+      "cell": 0,
+      "start": 21399,
+      "end": 21402,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M130",
+      "cell": 0,
+      "start": 21407,
+      "end": 21410,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M131",
+      "cell": 0,
+      "start": 21628,
+      "end": 21631,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M132",
+      "cell": 0,
+      "start": 21902,
+      "end": 21905,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM060-3d900880-M133",
+      "cell": 0,
+      "start": 22048,
+      "end": 22051,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M134",
+      "cell": 0,
+      "start": 22376,
+      "end": 22379,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M135",
+      "cell": 0,
+      "start": 22412,
+      "end": 22415,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M136",
+      "cell": 0,
+      "start": 23190,
+      "end": 23193,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM060-3d900880-M137",
+      "cell": 0,
+      "start": 23220,
+      "end": 23223,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M138",
+      "cell": 0,
+      "start": 23243,
+      "end": 23246,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M139",
+      "cell": 0,
+      "start": 23272,
+      "end": 23275,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM060-3d900880-M140",
+      "cell": 0,
+      "start": 23295,
+      "end": 23298,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM060-3d900880-M141",
+      "cell": 0,
+      "start": 23326,
+      "end": 23344,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM060-3d900880-M142",
+      "cell": 0,
+      "start": 23360,
+      "end": 23446,
+      "literal": "$$\n\\vert\\psi\\rangle = U \\bigl(\\vert 0^{n-m} \\rangle \\otimes \\vert \\phi\\rangle\\bigr)\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = U · ([1; 0]^{⊗ n − m} ⊗ |φ⟩)",
+      "copy": "qcompare(qketstate('ψ'),qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),qsub(n,'m')),qnamedket('φ'))),4)"
+    },
+    {
+      "id": "IBM060-3d900880-M143",
+      "cell": 0,
+      "start": 23544,
+      "end": 23562,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM060-3d900880-M144",
+      "cell": 0,
+      "start": 23969,
+      "end": 23972,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M145",
+      "cell": 0,
+      "start": 24036,
+      "end": 24052,
+      "literal": "$O(n^2/\\log(n))$",
+      "status": "exact",
+      "display": "O(n^2 / ln(n))",
+      "copy": "qbigorder(qpower(n, 2) ∕ ln(n))"
+    },
+    {
+      "id": "IBM060-3d900880-M146",
+      "cell": 0,
+      "start": 24106,
+      "end": 24109,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M147",
+      "cell": 0,
+      "start": 24307,
+      "end": 24310,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM060-3d900880-M148",
+      "cell": 0,
+      "start": 24502,
+      "end": 24505,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M149",
+      "cell": 0,
+      "start": 24563,
+      "end": 24580,
+      "literal": "$P_1,\\ldots, P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M150",
+      "cell": 0,
+      "start": 24717,
+      "end": 24720,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M151",
+      "cell": 0,
+      "start": 24758,
+      "end": 24761,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M152",
+      "cell": 0,
+      "start": 24799,
+      "end": 24803,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M153",
+      "cell": 0,
+      "start": 24807,
+      "end": 24811,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M154",
+      "cell": 0,
+      "start": 24857,
+      "end": 24860,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM060-3d900880-M155",
+      "cell": 0,
+      "start": 24866,
+      "end": 24870,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M156",
+      "cell": 0,
+      "start": 24875,
+      "end": 24878,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM060-3d900880-M157",
+      "cell": 0,
+      "start": 24884,
+      "end": 24888,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M158",
+      "cell": 0,
+      "start": 24922,
+      "end": 24925,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M159",
+      "cell": 0,
+      "start": 25002,
+      "end": 25018,
+      "literal": "$(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "IBM060-3d900880-M160",
+      "cell": 0,
+      "start": 25081,
+      "end": 25085,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M161",
+      "cell": 0,
+      "start": 25184,
+      "end": 25187,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M162",
+      "cell": 0,
+      "start": 25194,
+      "end": 25197,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M163",
+      "cell": 0,
+      "start": 25498,
+      "end": 25501,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M164",
+      "cell": 0,
+      "start": 25572,
+      "end": 25575,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M165",
+      "cell": 0,
+      "start": 25629,
+      "end": 25707,
+      "literal": "$$\n   E = \\pm Q \\; \\text{for some}\\; Q \\in \\langle P_1,\\ldots,P_r\\rangle\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 33"
+    },
+    {
+      "id": "IBM060-3d900880-M166",
+      "cell": 0,
+      "start": 25726,
+      "end": 25729,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M167",
+      "cell": 0,
+      "start": 25802,
+      "end": 25818,
+      "literal": "$(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "IBM060-3d900880-M168",
+      "cell": 0,
+      "start": 25837,
+      "end": 25840,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M169",
+      "cell": 0,
+      "start": 25888,
+      "end": 25891,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M170",
+      "cell": 0,
+      "start": 26011,
+      "end": 26159,
+      "literal": "$$\n   E\\neq \\pm Q\\; \\text{for} \\; Q \\in \\langle P_1,\\ldots,P_r\\rangle, \\;\\text{but}\\;\n   E P_k = P_k E \\;\\text{for every}\\; k\\in\\{1,\\ldots,r\\}\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 29"
+    },
+    {
+      "id": "IBM060-3d900880-M171",
+      "cell": 0,
+      "start": 26257,
+      "end": 26260,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M172",
+      "cell": 0,
+      "start": 26319,
+      "end": 26335,
+      "literal": "$(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "IBM060-3d900880-M173",
+      "cell": 0,
+      "start": 26340,
+      "end": 26343,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M174",
+      "cell": 0,
+      "start": 26391,
+      "end": 26394,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M175",
+      "cell": 0,
+      "start": 26461,
+      "end": 26536,
+      "literal": "$$\n   P_k E = -E P_k \\; \\text{for at least one} \\; k\\in\\{1,\\ldots,r\\}\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM060-3d900880-M176",
+      "cell": 0,
+      "start": 26572,
+      "end": 26588,
+      "literal": "$(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "IBM060-3d900880-M177",
+      "cell": 0,
+      "start": 26603,
+      "end": 26606,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M178",
+      "cell": 0,
+      "start": 26662,
+      "end": 26665,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M179",
+      "cell": 0,
+      "start": 26803,
+      "end": 26833,
+      "literal": "$E \\ket{\\psi} = \\pm\\ket{\\psi}$",
+      "status": "exact",
+      "display": "qsignedequal(qadjacent('E', qnamedket('ψ')), qnamedket('ψ'))",
+      "copy": "qsignedequal(qadjacent('E',qnamedket('ψ')),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM060-3d900880-M180",
+      "cell": 0,
+      "start": 26858,
+      "end": 26870,
+      "literal": "$\\ket{\\psi}$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM060-3d900880-M181",
+      "cell": 0,
+      "start": 26943,
+      "end": 26946,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M182",
+      "cell": 0,
+      "start": 27010,
+      "end": 27013,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M183",
+      "cell": 0,
+      "start": 27225,
+      "end": 27229,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M184",
+      "cell": 0,
+      "start": 27346,
+      "end": 27349,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M185",
+      "cell": 0,
+      "start": 27511,
+      "end": 27536,
+      "literal": "$E = X\\otimes X\\otimes X$",
+      "status": "exact",
+      "display": "E = [0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0, 0, 0]",
+      "copy": "qcompare('E',matrix(8,8,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0]),4)"
+    },
+    {
+      "id": "IBM060-3d900880-M186",
+      "cell": 0,
+      "start": 27592,
+      "end": 27595,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M187",
+      "cell": 0,
+      "start": 27709,
+      "end": 27712,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M188",
+      "cell": 0,
+      "start": 27727,
+      "end": 27743,
+      "literal": "$P_1,\\ldots,P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M189",
+      "cell": 0,
+      "start": 27872,
+      "end": 27875,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M190",
+      "cell": 0,
+      "start": 27913,
+      "end": 27929,
+      "literal": "$P_1,\\ldots,P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M191",
+      "cell": 0,
+      "start": 28076,
+      "end": 28079,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M192",
+      "cell": 0,
+      "start": 28215,
+      "end": 28218,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M193",
+      "cell": 0,
+      "start": 28303,
+      "end": 28307,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM060-3d900880-M194",
+      "cell": 0,
+      "start": 28433,
+      "end": 28436,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M195",
+      "cell": 0,
+      "start": 28568,
+      "end": 28571,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M196",
+      "cell": 0,
+      "start": 28805,
+      "end": 28808,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M197",
+      "cell": 0,
+      "start": 28995,
+      "end": 29006,
+      "literal": "$[[n,m,d]]$",
+      "status": "exact",
+      "display": "[n  'm'  'd']",
+      "copy": "matrix(1,3,[n,'m','d'])"
+    },
+    {
+      "id": "IBM060-3d900880-M198",
+      "cell": 0,
+      "start": 29098,
+      "end": 29101,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M199",
+      "cell": 0,
+      "start": 29156,
+      "end": 29159,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM060-3d900880-M200",
+      "cell": 0,
+      "start": 29203,
+      "end": 29206,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM060-3d900880-M201",
+      "cell": 0,
+      "start": 29315,
+      "end": 29713,
+      "literal": "$$\n\\begin{array}{ccccccc}\nZ & Z & Z & Z & \\mathbb{I} & \\mathbb{I} & \\mathbb{I} \\\\[1mm]\nZ & Z & \\mathbb{I} & \\mathbb{I} & Z & Z & \\mathbb{I} \\\\[1mm]\nZ & \\mathbb{I} & Z & \\mathbb{I} & Z & \\mathbb{I} & Z \\\\[1mm]\nX & X & X & X & \\mathbb{I} & \\mathbb{I} & \\mathbb{I} \\\\[1mm]\nX & X & \\mathbb{I} & \\mathbb{I} & X & X & \\mathbb{I} \\\\[1mm]\nX & \\mathbb{I} & X & \\mathbb{I} & X & \\mathbb{I} & X\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[7, 0, 120, 0; 7, 0, 102, 0; 7, 0, 85, 0; 7, 120, 0, 0; 7, 102, 0, 0; 7, 85, 0, 0]",
+      "copy": "matrix(6,4,[7,0,120,0,7,0,102,0,7,0,85,0,7,120,0,0,7,102,0,0,7,85,0,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M202",
+      "cell": 0,
+      "start": 29811,
+      "end": 29814,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M203",
+      "cell": 0,
+      "start": 29934,
+      "end": 29937,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M204",
+      "cell": 0,
+      "start": 30123,
+      "end": 30126,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M205",
+      "cell": 0,
+      "start": 30143,
+      "end": 30259,
+      "literal": "$$\nE = P \\otimes Q \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\n$$",
+      "status": "exact",
+      "display": "E = (((((P ⊗ Q) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()",
+      "copy": "('E')==(qtensor(qtensor(qtensor(qtensor(qtensor(qtensor('P','Q'),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()))"
+    },
+    {
+      "id": "IBM060-3d900880-M206",
+      "cell": 0,
+      "start": 30265,
+      "end": 30268,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM060-3d900880-M207",
+      "cell": 0,
+      "start": 30273,
+      "end": 30276,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM060-3d900880-M208",
+      "cell": 0,
+      "start": 30500,
+      "end": 30503,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M209",
+      "cell": 0,
+      "start": 30596,
+      "end": 30599,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M210",
+      "cell": 0,
+      "start": 30691,
+      "end": 30913,
+      "literal": "$$\n\\begin{gathered}\nZ \\otimes \\mathbb{I} \\otimes Z \\otimes \\mathbb{I} \\otimes Z \\otimes \\mathbb{I} \\otimes Z\\\\[1mm]\nX \\otimes \\mathbb{I} \\otimes X \\otimes \\mathbb{I} \\otimes X \\otimes \\mathbb{I} \\otimes X\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "1.  (Z@I@Z@I@Z@I@Z)\n\n2.  (X@I@X@I@X@I@X)",
+      "copy": "\\begin{gathered}(Z@I@Z@I@Z@I@Z)\\\\(X@I@X@I@X@I@X)\\end{gathered}"
+    },
+    {
+      "id": "IBM060-3d900880-M211",
+      "cell": 0,
+      "start": 30933,
+      "end": 30936,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM060-3d900880-M212",
+      "cell": 0,
+      "start": 30950,
+      "end": 30953,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M213",
+      "cell": 0,
+      "start": 31131,
+      "end": 31134,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M214",
+      "cell": 0,
+      "start": 31153,
+      "end": 31156,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM060-3d900880-M215",
+      "cell": 0,
+      "start": 31175,
+      "end": 31178,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M216",
+      "cell": 0,
+      "start": 31183,
+      "end": 31186,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M217",
+      "cell": 0,
+      "start": 31202,
+      "end": 31205,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M218",
+      "cell": 0,
+      "start": 31312,
+      "end": 31315,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M219",
+      "cell": 0,
+      "start": 31320,
+      "end": 31323,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M220",
+      "cell": 0,
+      "start": 31351,
+      "end": 31367,
+      "literal": "$P = \\mathbb{I}$",
+      "status": "exact",
+      "display": "P = [1, 0; 0, 1]",
+      "copy": "qcompare('P',matrix(2,2,[1,0,0,1]),4)"
+    },
+    {
+      "id": "IBM060-3d900880-M221",
+      "cell": 0,
+      "start": 31451,
+      "end": 31454,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM060-3d900880-M222",
+      "cell": 0,
+      "start": 31461,
+      "end": 31464,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM060-3d900880-M223",
+      "cell": 0,
+      "start": 31533,
+      "end": 31549,
+      "literal": "$Q = \\mathbb{I}$",
+      "status": "exact",
+      "display": "Q = [1, 0; 0, 1]",
+      "copy": "qcompare('Q',matrix(2,2,[1,0,0,1]),4)"
+    },
+    {
+      "id": "IBM060-3d900880-M224",
+      "cell": 0,
+      "start": 31581,
+      "end": 31584,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M225",
+      "cell": 0,
+      "start": 31978,
+      "end": 32068,
+      "literal": "$\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}\\otimes X\\otimes X\\otimes X$",
+      "status": "exact",
+      "display": "[0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0]",
+      "copy": "(I@I@I@I@X@X@X)"
+    },
+    {
+      "id": "IBM060-3d900880-M226",
+      "cell": 0,
+      "start": 32073,
+      "end": 32163,
+      "literal": "$\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}\\otimes\\mathbb{I}\\otimes Z\\otimes Z\\otimes Z$",
+      "status": "exact",
+      "display": "[1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1  0  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0; 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  −1]",
+      "copy": "(I@I@I@I@Z@Z@Z)"
+    },
+    {
+      "id": "IBM060-3d900880-M227",
+      "cell": 0,
+      "start": 32436,
+      "end": 32454,
+      "literal": "$P_1, \\ldots, P_r$",
+      "status": "exact",
+      "display": "(P_1, …, P_r)",
+      "copy": "qindexedlist(\"P_\",1,'r',vector())"
+    },
+    {
+      "id": "IBM060-3d900880-M228",
+      "cell": 0,
+      "start": 32461,
+      "end": 32464,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM060-3d900880-M229",
+      "cell": 0,
+      "start": 32654,
+      "end": 32659,
+      "literal": "$2^r$",
+      "status": "exact",
+      "display": "2^r",
+      "copy": "2^'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M230",
+      "cell": 0,
+      "start": 32683,
+      "end": 32688,
+      "literal": "$4^n$",
+      "status": "exact",
+      "display": "4^n",
+      "copy": "4^n"
+    },
+    {
+      "id": "IBM060-3d900880-M231",
+      "cell": 0,
+      "start": 32729,
+      "end": 32738,
+      "literal": "$4^n/2^r$",
+      "status": "exact",
+      "display": "0.5^r · 4^n",
+      "copy": "(1 ∕ 2)^'r' ⋅ 4^n"
+    },
+    {
+      "id": "IBM060-3d900880-M232",
+      "cell": 0,
+      "start": 32876,
+      "end": 32885,
+      "literal": "$4^n/2^r$",
+      "status": "exact",
+      "display": "0.5^r · 4^n",
+      "copy": "(1 ∕ 2)^'r' ⋅ 4^n"
+    },
+    {
+      "id": "IBM060-3d900880-M233",
+      "cell": 0,
+      "start": 33218,
+      "end": 33221,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M234",
+      "cell": 0,
+      "start": 33253,
+      "end": 33256,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M235",
+      "cell": 0,
+      "start": 33315,
+      "end": 33319,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M236",
+      "cell": 0,
+      "start": 33382,
+      "end": 33387,
+      "literal": "$2^r$",
+      "status": "exact",
+      "display": "2^r",
+      "copy": "2^'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M237",
+      "cell": 0,
+      "start": 33458,
+      "end": 33461,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M238",
+      "cell": 0,
+      "start": 33471,
+      "end": 33476,
+      "literal": "$2^r$",
+      "status": "exact",
+      "display": "2^r",
+      "copy": "2^'r'"
+    },
+    {
+      "id": "IBM060-3d900880-M239",
+      "cell": 0,
+      "start": 33513,
+      "end": 33522,
+      "literal": "$4^{n-r}$",
+      "status": "exact",
+      "display": "0.25^r · 4^n",
+      "copy": "(1 ∕ 4)^'r' ⋅ 4^n"
+    },
+    {
+      "id": "IBM060-3d900880-M240",
+      "cell": 0,
+      "start": 33661,
+      "end": 33666,
+      "literal": "$n=r$",
+      "status": "exact",
+      "display": "r = n",
+      "copy": "('r')==(n)"
+    },
+    {
+      "id": "IBM060-3d900880-M241",
+      "cell": 0,
+      "start": 34742,
+      "end": 34745,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM060-3d900880-M242",
+      "cell": 0,
+      "start": 34974,
+      "end": 34977,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM060-3d900880-M243",
+      "cell": 0,
+      "start": 35013,
+      "end": 35022,
+      "literal": "$(d-1)/2$",
+      "status": "exact",
+      "display": "0.5 · d − 0.5",
+      "copy": "'d' ∕ 2 − 1 ∕ 2"
+    },
+    {
+      "id": "IBM060-3d900880-M244",
+      "cell": 0,
+      "start": 35383,
+      "end": 35399,
+      "literal": "$(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "IBM060-3d900880-M245",
+      "cell": 0,
+      "start": 35840,
+      "end": 35843,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM060-3d900880-M246",
+      "cell": 0,
+      "start": 35853,
+      "end": 35856,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM060-3d900880-M247",
+      "cell": 0,
+      "start": 36004,
+      "end": 36025,
+      "literal": "$s\\neq(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "s ≠ \\{1\\}",
+      "copy": "('s')!=(qset(vector(1)))"
+    },
+    {
+      "id": "IBM060-3d900880-M248",
+      "cell": 0,
+      "start": 36046,
+      "end": 36049,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M249",
+      "cell": 0,
+      "start": 36083,
+      "end": 36088,
+      "literal": "$d/2$",
+      "status": "exact",
+      "display": "0.5 · d",
+      "copy": "'d' ∕ 2"
+    },
+    {
+      "id": "IBM060-3d900880-M250",
+      "cell": 0,
+      "start": 36297,
+      "end": 36300,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M251",
+      "cell": 0,
+      "start": 36325,
+      "end": 36328,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM060-3d900880-M252",
+      "cell": 0,
+      "start": 36503,
+      "end": 36510,
+      "literal": "$C = E$",
+      "status": "exact",
+      "display": "C = E",
+      "copy": "('C')==('E')"
+    },
+    {
+      "id": "IBM060-3d900880-M253",
+      "cell": 0,
+      "start": 36579,
+      "end": 36582,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M254",
+      "cell": 0,
+      "start": 36628,
+      "end": 36631,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M255",
+      "cell": 0,
+      "start": 36641,
+      "end": 36644,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M256",
+      "cell": 0,
+      "start": 36720,
+      "end": 36723,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M257",
+      "cell": 0,
+      "start": 36754,
+      "end": 36759,
+      "literal": "$d/2$",
+      "status": "exact",
+      "display": "0.5 · d",
+      "copy": "'d' ∕ 2"
+    },
+    {
+      "id": "IBM060-3d900880-M258",
+      "cell": 0,
+      "start": 36818,
+      "end": 36821,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M259",
+      "cell": 0,
+      "start": 36879,
+      "end": 36882,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M260",
+      "cell": 0,
+      "start": 36936,
+      "end": 36954,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM060-3d900880-M261",
+      "cell": 0,
+      "start": 36972,
+      "end": 36992,
+      "literal": "$CE\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "(C · E) (|ψ⟩)",
+      "copy": "qadjacent('C''E',qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM060-3d900880-M262",
+      "cell": 0,
+      "start": 37024,
+      "end": 37028,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M263",
+      "cell": 0,
+      "start": 37191,
+      "end": 37209,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM060-3d900880-M264",
+      "cell": 0,
+      "start": 37227,
+      "end": 37230,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M265",
+      "cell": 0,
+      "start": 37235,
+      "end": 37238,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M266",
+      "cell": 0,
+      "start": 37280,
+      "end": 37284,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M267",
+      "cell": 0,
+      "start": 37349,
+      "end": 37354,
+      "literal": "$P_k$",
+      "status": "exact",
+      "display": "\"P_k\"",
+      "copy": "\"P_k\""
+    },
+    {
+      "id": "IBM060-3d900880-M268",
+      "cell": 0,
+      "start": 37415,
+      "end": 37483,
+      "literal": "$$\nP_k E = \\alpha E P_k\n\\quad\\text{and}\\quad\nP_k C = \\alpha C P_k\n$$",
+      "status": "exact",
+      "display": "\"P_k\" = 0 or 'α' = 1 or C = 0 and E = 0",
+      "copy": "((\"P_k\")==(0) or ('α')==(1) or (('C')==(0) and ('E')==(0)))"
+    },
+    {
+      "id": "IBM060-3d900880-M269",
+      "cell": 0,
+      "start": 37507,
+      "end": 37527,
+      "literal": "$\\alpha\\in\\{+1,-1\\}$",
+      "status": "exact",
+      "display": "'α' ∈ \\{1, −1\\}",
+      "copy": "qmember('α',qset(vector(1,−1)))"
+    },
+    {
+      "id": "IBM060-3d900880-M270",
+      "cell": 0,
+      "start": 37549,
+      "end": 37552,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM060-3d900880-M271",
+      "cell": 0,
+      "start": 37578,
+      "end": 37581,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM060-3d900880-M272",
+      "cell": 0,
+      "start": 37592,
+      "end": 37595,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M273",
+      "cell": 0,
+      "start": 37600,
+      "end": 37603,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M274",
+      "cell": 0,
+      "start": 37630,
+      "end": 37693,
+      "literal": "$$\nP_k (CE) = \\alpha C P_k E = \\alpha^2 (CE) P_k = (CE) P_k,\n$$",
+      "status": "exact",
+      "display": "C · E · P · '_' · k = C · E · \"P_k\" · 'α' = C · E · \"P_k\" · 'α'² = C · E · \"P_k\"",
+      "copy": "qequalchain(vector('C''E''P''_''k','C''E' ⋅ \"P_k\" ⋅ 'α','C' ⋅ 'E' ⋅ \"P_k\" ⋅ 'α'²,'C''E' ⋅ \"P_k\"))"
+    },
+    {
+      "id": "IBM060-3d900880-M275",
+      "cell": 0,
+      "start": 37698,
+      "end": 37703,
+      "literal": "$P_k$",
+      "status": "exact",
+      "display": "\"P_k\"",
+      "copy": "\"P_k\""
+    },
+    {
+      "id": "IBM060-3d900880-M276",
+      "cell": 0,
+      "start": 37718,
+      "end": 37722,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M277",
+      "cell": 0,
+      "start": 37751,
+      "end": 37755,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M278",
+      "cell": 0,
+      "start": 37840,
+      "end": 37856,
+      "literal": "$(+1,\\ldots,+1)$",
+      "status": "exact",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "IBM060-3d900880-M279",
+      "cell": 0,
+      "start": 37883,
+      "end": 37887,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M280",
+      "cell": 0,
+      "start": 37939,
+      "end": 37942,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM060-3d900880-M281",
+      "cell": 0,
+      "start": 37947,
+      "end": 37950,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM060-3d900880-M282",
+      "cell": 0,
+      "start": 38056,
+      "end": 38060,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M283",
+      "cell": 0,
+      "start": 38083,
+      "end": 38086,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM060-3d900880-M284",
+      "cell": 0,
+      "start": 38106,
+      "end": 38110,
+      "literal": "$CE$",
+      "status": "exact",
+      "display": "C · E",
+      "copy": "'C''E'"
+    },
+    {
+      "id": "IBM060-3d900880-M285",
+      "cell": 0,
+      "start": 38744,
+      "end": 38756,
+      "literal": "$\\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM060-3d900880-M286",
+      "cell": 0,
+      "start": 38761,
+      "end": 38764,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    }
+  ]
+}

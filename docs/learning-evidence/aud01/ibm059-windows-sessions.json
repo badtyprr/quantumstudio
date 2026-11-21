@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/repetition-code-revisited.ipynb",
+  "notebook_sha256": "8c130abce137e248aa0e3bf1ee7cffacefd66ccd8700cf8cbe31a321d2ae333a",
+  "worker_sha256": "c0f881671d83f34f96ff5e205ab18d1022b36fd2ee35e7d26829abc7b272c0df",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "f7dd29235d459b644d9f51270e2b05cfe4a97775331d1cdbcd927a6875b768d1",
+  "suite": {
+    "passed": true,
+    "checks": 711,
+    "calls": 79,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 79,
+    "restored_identically": 79,
+    "stable_after_text_reentry": 79
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
