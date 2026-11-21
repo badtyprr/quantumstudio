@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
   "source_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
-  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
-  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
+  "worker_sha256": "0364e55a22cbe8e09e811abdd413d1af0bdbf8f799a82ee2318e9b22263bce30",
+  "revision": "2fa588d640236e6f5ac04eed5ce7c7f92939f0df",
   "mode": "Quantum notation",
   "markdown_cells": 70,
   "code_cells": 74,
   "summary": {
-    "exact": 175,
-    "diagnostic": 109
+    "exact": 190,
+    "diagnostic": 94
   },
   "figures": [
     {
@@ -259,7 +259,7 @@
       "end": 1662,
       "literal": "$$\n\\langle O \\rangle_\\text{ideal} \\approx a \\langle O \\rangle_\\text{meas}+b\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 32"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM083-0db143f4-M024",
@@ -317,7 +317,7 @@
       "end": 3083,
       "literal": "$$\n\\langle O \\rangle_\\text{ideal} \\approx a \\langle O \\rangle_\\text{twirled}+0\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 32"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM083-0db143f4-M030",
@@ -336,7 +336,7 @@
       "end": 3433,
       "literal": "$$\n\\langle O \\rangle_\\text{ideal} \\approx \\langle O \\rangle_\\text{TREX} = a \\langle O \\rangle_\\text{twirled}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 32"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM083-0db143f4-M032",
@@ -344,8 +344,9 @@
       "start": 3720,
       "end": 3738,
       "literal": "$\\langle O\\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect(qoperatorref('O'), qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(qoperatorref('O'),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M033",
@@ -373,8 +374,9 @@
       "start": 4198,
       "end": 4216,
       "literal": "$\\langle O\\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect(qoperatorref('O'), qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(qoperatorref('O'),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M036",
@@ -410,8 +412,9 @@
       "start": 5373,
       "end": 5391,
       "literal": "$\\langle Z\\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M040",
@@ -459,8 +462,9 @@
       "start": 5789,
       "end": 5808,
       "literal": "$\\langle Z \\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M045",
@@ -468,8 +472,9 @@
       "start": 5914,
       "end": 5933,
       "literal": "$\\langle Z \\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M046",
@@ -477,8 +482,9 @@
       "start": 6383,
       "end": 6402,
       "literal": "$\\langle Z \\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M047",
@@ -486,8 +492,9 @@
       "start": 6701,
       "end": 6724,
       "literal": "$\\langle Z \\rangle = 0$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = 0",
+      "copy": "qcompare(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),0,4)"
     },
     {
       "id": "IBM083-0db143f4-M048",
@@ -495,8 +502,9 @@
       "start": 6747,
       "end": 7126,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle & = \\frac{1}{\\sqrt{2}}(\\langle0|+\\langle1|) Z \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle)\\\\\n& = \\frac{1}{2}(\\langle0|Z|0\\rangle+\\langle0|Z|1\\rangle+\\langle1|Z|0\\rangle+\\langle1|Z|1\\rangle)\\\\\n& = \\frac{1}{2}((1)\\langle0|0\\rangle+(-1)\\langle0|1\\rangle+(1)\\langle1|0\\rangle+(-1)\\langle1|1\\rangle)\\\\\n& = \\frac{1}{2}(1+0+0+-1)\\\\\n& = 0\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = 0 = 0 = 0 = 0 = 0",
+      "copy": "qequalchain(vector(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),0,0,0,0,0))"
     },
     {
       "id": "IBM083-0db143f4-M049",
@@ -584,8 +592,9 @@
       "start": 7599,
       "end": 7654,
       "literal": "$$\n\\langle Z \\rangle = (0.545)(1)+(0.455)(-1) = 0.09\n$$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = 9 ∕ 100 = 9 ∕ 100",
+      "copy": "qequalchain(vector(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),9 ∕ 100,9 ∕ 100))"
     },
     {
       "id": "IBM083-0db143f4-M058",
@@ -773,8 +782,9 @@
       "start": 8638,
       "end": 8805,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle & = (0.2475)(1)+(0.0025)(-1)+(0.225)(-1)+(0.025)(1)\\\\\n& + (0.225)(1)+(0.025)(-1)+(0.2475)(-1)+(0.0025)(1)\\\\\n& = 0\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = 0 = 0",
+      "copy": "qequalchain(vector(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),0,0))"
     },
     {
       "id": "IBM083-0db143f4-M079",
@@ -822,8 +832,9 @@
       "start": 365,
       "end": 429,
       "literal": "$$\n\\langle Z \\rangle = \\langle \\psi |Z|\\psi \\rangle = -0.9239\n$$",
-      "status": "diagnostic",
-      "message": "Use a basis label or a named column vector inside a ket."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = ⟨ψ| [1, 0; 0, −1] |ψ⟩ = −9239 ∕ 10000",
+      "copy": "qequalchain(vector(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),qmul(qmul(qdag(qnamedket('ψ')),matrix(2,2,vector(1,0,0,−1))),qnamedket('ψ')),−9239 ∕ 10000))"
     },
     {
       "id": "IBM083-0db143f4-M084",
@@ -832,7 +843,7 @@
       "end": 1998,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle & = \\langle \\psi |Z|\\psi \\rangle\\\\\n& = \\langle 0 |RX^\\dagger (7\\pi/8) \\quad Z \\quad RX(7\\pi/8)|0 \\rangle\\\\\n& = \\begin{pmatrix}1 & 0\\end{pmatrix}\\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) & -i\\sin\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right) & \\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix} \\begin{pmatrix}1 & 0 \\\\ 0 & -1\\end{pmatrix} \\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) & -i\\sin\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right) & \\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix}\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\\\\n& = \\begin{pmatrix}1 & 0\\end{pmatrix}\\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) & -i\\sin\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right) & \\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix} \\begin{pmatrix}\\cos\\left(\\frac{7\\pi}{16}\\right) \\\\ -i\\sin\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix}\\\\\n& = \\begin{pmatrix}1 & 0\\end{pmatrix}\\begin{pmatrix}\\cos^2\\left(\\frac{7\\pi}{16}\\right)-\\sin^2\\left(\\frac{7\\pi}{16}\\right) \\\\ -2\\sin\\left(\\frac{7\\pi}{16}\\right)\\cos\\left(\\frac{7\\pi}{16}\\right)\\end{pmatrix}\\\\\n& = \\cos^2\\left(\\frac{7\\pi}{16}\\right)-\\sin^2\\left(\\frac{7\\pi}{16}\\right)\\\\\n& = -0.9239...\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Use a basis label or a named column vector inside a ket."
+      "message": "Invalid decimal number at byte 582"
     },
     {
       "id": "IBM083-0db143f4-M085",
@@ -1870,8 +1881,9 @@
       "start": 5981,
       "end": 6000,
       "literal": "$\\langle Z \\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM083-0db143f4-M192",
@@ -1907,7 +1919,7 @@
       "end": 6588,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{ideal} & =\\text{Tr}(Z \\rho_\\text{ideal})\\\\\n& = \\text{Tr}\\left( \\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n\\frac{3}{4} & \\frac{\\sqrt{3}}{4} \\\\\n\\frac{\\sqrt{3}}{4} & \\frac{1}{4}\n\\end{pmatrix}\\right)\\\\\n& = \\text{Tr}\\left(\n\\begin{pmatrix}\n\\frac{3}{4} & \\frac{\\sqrt{3}}{4} \\\\\n-\\frac{\\sqrt{3}}{4} & -\\frac{1}{4}\n\\end{pmatrix}\\right)\\\\\n&=\\frac{3}{4}-\\frac{1}{4}\\\\\n&=0.5\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 48"
+      "message": "Unsupported text in a mathematical expression at byte 69"
     },
     {
       "id": "IBM083-0db143f4-M196",
@@ -1916,7 +1928,7 @@
       "end": 6998,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{noisy} & =\\text{Tr}\\left(Z \\rho_\\text{noisy}\\right)\\\\\n& = \\text{Tr}\\left( \\begin{pmatrix}\n1 & 0 \\\\\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n0.346 & 0.3\n\\end{pmatrix}\\right)\\\\\n& = \\text{Tr}\\left(\n\\begin{pmatrix}\n0.7 & 0.346 \\\\\n-0.346 & -0.3\n\\end{pmatrix}\\right)\\\\\n&=0.7-0.3\\\\\n&=0.4\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 48"
+      "message": "Unsupported text in a mathematical expression at byte 69"
     },
     {
       "id": "IBM083-0db143f4-M197",
@@ -2004,8 +2016,9 @@
       "start": 9460,
       "end": 9485,
       "literal": "$\\langle Z \\rangle = 0.5$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = 0.5",
+      "copy": "qcompare(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),1 ∕ 2,4)"
     },
     {
       "id": "IBM083-0db143f4-M206",
@@ -2141,7 +2154,7 @@
       "end": 11430,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{PEC}\n& =\n\\alpha(+0.4)\n+\n\\beta(-0.4)\n+\n\\beta(-0.4)\n+\n\\beta(+0.4)\n& = 0.4(\\alpha-\\beta)\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 46"
+      "message": "An aligned continuation requires a preceding expression at byte 149"
     },
     {
       "id": "IBM083-0db143f4-M220",
@@ -2149,8 +2162,9 @@
       "start": 11533,
       "end": 11604,
       "literal": "$$\n\\langle Z\\rangle_\\text{PEC}\n=\n\\langle Z\\rangle_\\text{ideal}\n=\n0.5\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 29"
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"PEC state\")) = qexpect([1  0; 0  −1], qoperatorref(\"ideal state\")) = 1 ∕ 2",
+      "copy": "qequalchain(vector(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"PEC state\")),qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"ideal state\")),1 ∕ 2))"
     },
     {
       "id": "IBM083-0db143f4-M221",
@@ -2555,7 +2569,7 @@
       "end": 16053,
       "literal": "$$\n\\langle Z \\rangle_\\text{PEC} = \\frac{W}{N_\\text{shots}}\\sum_{i\\in \\{I, X, Y, Z\\}} \\text{sign}_i \\sum_{j\\in S_{P_i}}{ z_{i,j}}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 30"
+      "message": "Unsupported text in a mathematical expression at byte 64"
     },
     {
       "id": "IBM083-0db143f4-M263",
@@ -2657,7 +2671,7 @@
       "end": 18998,
       "literal": "$$\n\\begin{aligned}\n\\langle Z \\rangle_\\text{PEC} & = W \\sum_{i\\in \\{I, X, Y, Z\\}} p_i \\times \\text{sign}_i \\times \\langle Z \\rangle_{P_i}\\\\\n& = (1.375)\\times \\left((0.864)(+1)(0.40)+(0.045)(-1)(-0.40)+(0.045)(-1)(-0.40)+(0.045)(-1)(0.40)\\right)\\\\\n& = (1.375)\\times(0.364)\\\\\n& = (0.50)\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 46"
+      "message": "Unsupported text in a mathematical expression at byte 110"
     },
     {
       "id": "IBM083-0db143f4-M274",
@@ -2685,8 +2699,9 @@
       "start": 19419,
       "end": 19457,
       "literal": "$\\langle Z \\rangle_\\text{ideal} = 0.5$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 31"
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"ideal state\")) = 0.5",
+      "copy": "qcompare(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"ideal state\")),1 ∕ 2,4)"
     },
     {
       "id": "IBM083-0db143f4-M277",

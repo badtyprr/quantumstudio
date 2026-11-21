@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
   "notebook_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
-  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
+  "worker_sha256": "0364e55a22cbe8e09e811abdd413d1af0bdbf8f799a82ee2318e9b22263bce30",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "516594aed0899a9f32a1d2f0046b7819e87501dabfa40ee1a56bef223f446165",
+  "records_sha256": "c54bace993ce4ab48728504a8ad145017bbef5db2e67f998739f65f27b6654da",
   "suite": {
     "passed": true,
-    "checks": 1793,
+    "checks": 1898,
     "calls": 284,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 175,
-    "restored_identically": 175,
-    "stable_after_text_reentry": 175,
-    "source_diagnostic": 109
+    "source_exact": 190,
+    "restored_identically": 190,
+    "stable_after_text_reentry": 190,
+    "source_diagnostic": 94
   },
   "diagnostics": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "id": "IBM083-0db143f4-M023",
-      "message": "Unsupported text in a mathematical expression at byte 32"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM083-0db143f4-M026",
@@ -37,19 +37,11 @@
     },
     {
       "id": "IBM083-0db143f4-M029",
-      "message": "Unsupported text in a mathematical expression at byte 32"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM083-0db143f4-M031",
-      "message": "Unsupported text in a mathematical expression at byte 32"
-    },
-    {
-      "id": "IBM083-0db143f4-M032",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M035",
-      "message": "Unclosed bra."
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM083-0db143f4-M036",
@@ -58,34 +50,6 @@
     {
       "id": "IBM083-0db143f4-M037",
       "message": "Unexpected notation at byte 6"
-    },
-    {
-      "id": "IBM083-0db143f4-M039",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M044",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M045",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M046",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M047",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M048",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M057",
-      "message": "Unclosed bra."
     },
     {
       "id": "IBM083-0db143f4-M058",
@@ -168,16 +132,8 @@
       "message": "Expected a quantum expression at byte 1"
     },
     {
-      "id": "IBM083-0db143f4-M078",
-      "message": "Unclosed bra."
-    },
-    {
-      "id": "IBM083-0db143f4-M083",
-      "message": "Use a basis label or a named column vector inside a ket."
-    },
-    {
       "id": "IBM083-0db143f4-M084",
-      "message": "Use a basis label or a named column vector inside a ket."
+      "message": "Invalid decimal number at byte 582"
     },
     {
       "id": "IBM083-0db143f4-M085",
@@ -300,10 +256,6 @@
       "message": "Unsupported text in a mathematical expression at byte 40"
     },
     {
-      "id": "IBM083-0db143f4-M191",
-      "message": "Unclosed bra."
-    },
-    {
       "id": "IBM083-0db143f4-M192",
       "message": "Unsupported text in a mathematical expression at byte 18"
     },
@@ -317,15 +269,11 @@
     },
     {
       "id": "IBM083-0db143f4-M195",
-      "message": "Unsupported text in a mathematical expression at byte 48"
+      "message": "Unsupported text in a mathematical expression at byte 69"
     },
     {
       "id": "IBM083-0db143f4-M196",
-      "message": "Unsupported text in a mathematical expression at byte 48"
-    },
-    {
-      "id": "IBM083-0db143f4-M205",
-      "message": "Unclosed bra."
+      "message": "Unsupported text in a mathematical expression at byte 69"
     },
     {
       "id": "IBM083-0db143f4-M213",
@@ -341,11 +289,7 @@
     },
     {
       "id": "IBM083-0db143f4-M219",
-      "message": "Unsupported text in a mathematical expression at byte 46"
-    },
-    {
-      "id": "IBM083-0db143f4-M220",
-      "message": "Unsupported text in a mathematical expression at byte 29"
+      "message": "An aligned continuation requires a preceding expression at byte 149"
     },
     {
       "id": "IBM083-0db143f4-M224",
@@ -405,7 +349,7 @@
     },
     {
       "id": "IBM083-0db143f4-M262",
-      "message": "Unsupported text in a mathematical expression at byte 30"
+      "message": "Unsupported text in a mathematical expression at byte 64"
     },
     {
       "id": "IBM083-0db143f4-M265",
@@ -437,11 +381,7 @@
     },
     {
       "id": "IBM083-0db143f4-M273",
-      "message": "Unsupported text in a mathematical expression at byte 46"
-    },
-    {
-      "id": "IBM083-0db143f4-M276",
-      "message": "Unsupported text in a mathematical expression at byte 31"
+      "message": "Unsupported text in a mathematical expression at byte 110"
     },
     {
       "id": "IBM083-0db143f4-M277",

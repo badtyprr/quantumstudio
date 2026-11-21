@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-suppression.ipynb",
   "source_sha256": "a3fcfc9e0a84f18267115e9b1597efca99d08deb94a9c5b37b1c8a27eb44dfc5",
-  "worker_sha256": "0a498f87efd8690b4c161abdfb1feef79af727fbf5f9d072889aaf56c48002ff",
-  "revision": "4bd12264ffcf1f436cc2fd701eabb236b1633690",
+  "worker_sha256": "0364e55a22cbe8e09e811abdd413d1af0bdbf8f799a82ee2318e9b22263bce30",
+  "revision": "2fa588d640236e6f5ac04eed5ce7c7f92939f0df",
   "mode": "Quantum notation",
   "markdown_cells": 41,
   "code_cells": 40,
   "summary": {
-    "exact": 95,
-    "diagnostic": 16
+    "exact": 98,
+    "diagnostic": 13
   },
   "figures": [
     {
@@ -794,8 +794,9 @@
       "start": 1707,
       "end": 1726,
       "literal": "$\\langle X \\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([0  1; 1  0], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(0,1,1,0)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM082-a3fcfc9e-M074",
@@ -843,8 +844,9 @@
       "start": 251,
       "end": 270,
       "literal": "$\\langle X \\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([0  1; 1  0], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(0,1,1,0)),qoperatorref(\"measurement state\"))"
     },
     {
       "id": "IBM082-a3fcfc9e-M079",
@@ -872,8 +874,9 @@
       "start": 92,
       "end": 115,
       "literal": "$\\langle X \\rangle = 1$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qexpect([0  1; 1  0], qoperatorref(\"measurement state\")) = 1",
+      "copy": "qcompare(qexpect(matrix(2,2,vector(0,1,1,0)),qoperatorref(\"measurement state\")),1,4)"
     },
     {
       "id": "IBM082-a3fcfc9e-M082",
